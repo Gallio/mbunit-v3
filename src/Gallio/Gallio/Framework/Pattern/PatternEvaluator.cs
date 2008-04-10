@@ -305,19 +305,22 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private void PublishExceptionAsAnnotation(ICodeElementInfo codeElement, Exception ex)
+        /// <summary>
+        /// Publishes an exception as an annotation about a particular code element.
+        /// </summary>
+        /// <param name="codeElement">The code element, or null if none</param>
+        /// <param name="ex">The exception to publish</param>
+        public void PublishExceptionAsAnnotation(ICodeElementInfo codeElement, Exception ex)
         {
             if (ex is PatternUsageErrorException)
             {
                 testModel.AddAnnotation(new Annotation(AnnotationType.Error, codeElement,
-                    ex.Message,
-                    ex.InnerException != null ? ExceptionUtils.SafeToString(ex) : null));
+                    ex.Message, ex.InnerException));
             }
             else
             {
                 testModel.AddAnnotation(new Annotation(AnnotationType.Error, codeElement,
-                    "An internal error occurred while evaluating a pattern.",
-                    ExceptionUtils.SafeToString(ex)));
+                    "An exception was thrown while exploring tests.", ex));
             }
         }
     }

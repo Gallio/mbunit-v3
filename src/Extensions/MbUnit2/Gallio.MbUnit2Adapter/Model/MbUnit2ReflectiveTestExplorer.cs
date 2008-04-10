@@ -52,7 +52,7 @@ namespace Gallio.MbUnit2Adapter.Model
     /// <seealso cref="MbUnit2NativeTestExplorer"/>
     internal static class MbUnit2ReflectiveTestExplorer
     {
-        public static ITest BuildAssemblyTest(IAssemblyInfo assembly, ICollection<KeyValuePair<ITest, string>> unresolvedDependencies)
+        public static ITest BuildAssemblyTest(TestModel testModel, IAssemblyInfo assembly, ICollection<KeyValuePair<ITest, string>> unresolvedDependencies)
         {
             BaseTest assemblyTest = new BaseTest(assembly.Name, assembly);
             assemblyTest.Kind = TestKinds.Assembly;
@@ -63,27 +63,26 @@ namespace Gallio.MbUnit2Adapter.Model
                 unresolvedDependencies.Add(new KeyValuePair<ITest, string>(assemblyTest, attrib.AssemblyName));
 
             foreach (ITypeInfo type in assembly.GetExportedTypes())
-                BuildFixturesFromType(assemblyTest, type);
+                BuildFixturesFromType(testModel, assemblyTest, type);
 
             return assemblyTest;
         }
 
-        private static void BuildFixturesFromType(ITest parent, ITypeInfo type)
+        private static void BuildFixturesFromType(TestModel testModel, ITest parent, ITypeInfo type)
         {
             try
             {
                 foreach (TestFixturePatternAttribute2 attrib in AttributeUtils.GetAttributes<TestFixturePatternAttribute2>(type, true))
-                    BuildTestFixtureFromPatternAttribute(parent, type, attrib);
+                    BuildTestFixtureFromPatternAttribute(testModel, parent, type, attrib);
             }
             catch (Exception ex)
             {
-                parent.AddChild(new ErrorTest(type,
-                    String.Format("An exception occurred while building fixtures from type '{0}'.", type),
-                    ex));
+                testModel.AddAnnotation(new Annotation(AnnotationType.Error, type,
+                    "An exception was thrown while exploring an MbUnit v2 test type.", ex));
             }
         }
 
-        private static void BuildTestFixtureFromPatternAttribute(ITest parent, ITypeInfo type, TestFixturePatternAttribute2 attrib)
+        private static void BuildTestFixtureFromPatternAttribute(TestModel testModel, ITest parent, ITypeInfo type, TestFixturePatternAttribute2 attrib)
         {
             BaseTest fixtureTest = new BaseTest(type.Name, type);
             fixtureTest.Kind = TestKinds.Fixture;
@@ -93,7 +92,7 @@ namespace Gallio.MbUnit2Adapter.Model
             TestFixtureAttribute2 fixtureAttrib = attrib as TestFixtureAttribute2;
             if (fixtureAttrib != null)
             {
-                PopulateTestFixture(fixtureTest, type, fixtureAttrib);
+                PopulateTestFixture(testModel, fixtureTest, type, fixtureAttrib);
             }
             else
             {
@@ -103,7 +102,7 @@ namespace Gallio.MbUnit2Adapter.Model
             parent.AddChild(fixtureTest);
         }
 
-        private static void PopulateTestFixture(ITest fixtureTest, ITypeInfo type, TestFixtureAttribute2 fixtureAttrib)
+        private static void PopulateTestFixture(TestModel testModel, ITest fixtureTest, ITypeInfo type, TestFixtureAttribute2 fixtureAttrib)
         {
             IMethodInfo setUpMethod = GetMethodWithAttribute<SetUpAttribute2>(type);
             IMethodInfo tearDownMethod = GetMethodWithAttribute<TearDownAttribute2>(type);
@@ -118,11 +117,11 @@ namespace Gallio.MbUnit2Adapter.Model
 
             foreach (IMethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public))
             {
-                BuildTestsFromMethod(fixtureTest, method, namePrefix, nameSuffix);
+                BuildTestsFromMethod(testModel, fixtureTest, method, namePrefix, nameSuffix);
             }
         }
 
-        private static void BuildTestsFromMethod(ITest parent, IMethodInfo method, string namePrefix, string nameSuffix)
+        private static void BuildTestsFromMethod(TestModel testModel, ITest parent, IMethodInfo method, string namePrefix, string nameSuffix)
         {
             try
             {
@@ -137,9 +136,8 @@ namespace Gallio.MbUnit2Adapter.Model
             }
             catch (Exception ex)
             {
-                parent.AddChild(new ErrorTest(method,
-                    String.Format("An exception occurred while building tests from method '{0}' in type '{1}'.", method, method.DeclaringType),
-                    ex));
+                testModel.AddAnnotation(new Annotation(AnnotationType.Error, method,
+                    "An exception was thrown while exploring an MbUnit v2 test method.", ex));
             }
         }
 

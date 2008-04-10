@@ -66,7 +66,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 ITest frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
                 ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest);
 
-                if (consumer != null)
+                if (assemblyTest != null && consumer != null)
                     consumer(assemblyTest);
             }
         }
@@ -136,13 +136,13 @@ namespace Gallio.MbUnit2Adapter.Model
                 if (loadedAssembly != null)
                     assemblyTest = MbUnit2NativeTestExplorer.BuildAssemblyTest(loadedAssembly, unresolvedDependencies);
                 else
-                    assemblyTest = MbUnit2ReflectiveTestExplorer.BuildAssemblyTest(assembly, unresolvedDependencies);
+                    assemblyTest = MbUnit2ReflectiveTestExplorer.BuildAssemblyTest(TestModel, assembly, unresolvedDependencies);
             }
             catch (Exception ex)
             {
-                assemblyTest = new ErrorTest(assembly,
-                    String.Format("An exception occurred while enumerating MbUnit v2 tests in assembly '{0}'.", assembly.Name),
-                    ex);
+                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly,
+                    "An exception was thrown while exploring an MbUnit v2 test assembly.", ex));
+                return null;
             }
 
             for (int i = 0; i < unresolvedDependencies.Count; i++)

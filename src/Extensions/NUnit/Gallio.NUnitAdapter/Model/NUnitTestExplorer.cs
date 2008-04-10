@@ -54,7 +54,7 @@ namespace Gallio.NUnitAdapter.Model
                 ITest frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
                 ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest);
 
-                if (consumer != null)
+                if (assemblyTest != null && consumer != null)
                     consumer(assemblyTest);
             }
         }
@@ -94,15 +94,18 @@ namespace Gallio.NUnitAdapter.Model
             if (!assemblyTests.TryGetValue(assembly, out assemblyTest))
             {
                 assemblyTest = CreateAssemblyTest(assembly);
-                frameworkTest.AddChild(assemblyTest);
+                if (assemblyTest != null)
+                {
+                    frameworkTest.AddChild(assemblyTest);
 
-                assemblyTests.Add(assembly, assemblyTest);
+                    assemblyTests.Add(assembly, assemblyTest);
+                }
             }
 
             return assemblyTest;
         }
 
-        private static ITest CreateAssemblyTest(IAssemblyInfo assembly)
+        private ITest CreateAssemblyTest(IAssemblyInfo assembly)
         {
             // Resolve test assembly.
             string location;
@@ -112,9 +115,8 @@ namespace Gallio.NUnitAdapter.Model
             }
             catch (Exception ex)
             {
-                return new ErrorTest(assembly,
-                    String.Format("Could not resolve location of assembly '{0}'.", assembly.Name),
-                    ex);
+                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly, "Could not resolve the location of an NUnit test assembly.", ex));
+                return null;
             }
 
             try
@@ -131,9 +133,8 @@ namespace Gallio.NUnitAdapter.Model
             }
             catch (Exception ex)
             {
-                return new ErrorTest(null,
-                    "An exception occurred while enumerating NUnit tests.",
-                    ex);
+                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly, "An exception was thrown while exploring an NUnit test assembly.", ex));
+                return null;
             }
         }
 

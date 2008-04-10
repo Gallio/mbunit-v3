@@ -23,7 +23,7 @@
 using System;
 using Gallio.Concurrency;
 using Gallio.Framework;
-using Gallio.Hosting;
+using Gallio.Reflection;
 using MbUnit.Framework;
 using MbUnit.Pex.TestResources;
 using Microsoft.Pex.Engine;
@@ -44,7 +44,7 @@ namespace MbUnit.Pex.Tests.Integration
             options.DoNotOpenReport = true;
             options.CompileTestProject = true;
             options.TestNoPartialClasses = true;
-            options.Assembly = Loader.GetFriendlyAssemblyLocation(typeof(MbUnitTestSampleForPex).Assembly);
+            options.Assembly = AssemblyUtils.GetFriendlyAssemblyLocation(typeof(MbUnitTestSampleForPex).Assembly);
 
             string arguments = String.Join(" ", options.GetCommandLineArguments(true));
 

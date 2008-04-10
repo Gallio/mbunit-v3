@@ -141,10 +141,7 @@ namespace Gallio.MSTestAdapter
                 }
                 catch (Exception ex)
                 {
-                    //TODO: Localize this string
-                    typeTest = new ErrorTest(type,
-                        String.Format("An exception occurred while generating an MSTest test from '{0}'.", type),
-                        ex);
+                    TestModel.AddAnnotation(new Annotation(AnnotationType.Error, type, "An exception was thrown while exploring an MSTest test type.", ex));
                 }
 
                 if (typeTest != null)

@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Model
 {
@@ -31,7 +32,7 @@ namespace Gallio.Model
         private readonly string details;
 
         /// <summary>
-        /// Creates an annotation.
+        /// Creates an annotation with a detail message string.
         /// </summary>
         /// <param name="type">The annotation type</param>
         /// <param name="codeElement">The associated code element, or null if none</param>
@@ -44,6 +45,31 @@ namespace Gallio.Model
             this.codeElement = codeElement;
             this.message = message;
             this.details = details;
+        }
+
+        /// <summary>
+        /// Creates an annotation with a detail exception.
+        /// </summary>
+        /// <param name="type">The annotation type</param>
+        /// <param name="codeElement">The associated code element, or null if none</param>
+        /// <param name="message">The annotation message</param>
+        /// <param name="ex">The exception to use as additional details or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        public Annotation(AnnotationType type, ICodeElementInfo codeElement, string message, Exception ex)
+            : this(type, codeElement, message, ex != null ? ExceptionUtils.SafeToString(ex) : null)
+        {
+        }
+
+        /// <summary>
+        /// Creates an annotation with no details.
+        /// </summary>
+        /// <param name="type">The annotation type</param>
+        /// <param name="codeElement">The associated code element, or null if none</param>
+        /// <param name="message">The annotation message</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        public Annotation(AnnotationType type, ICodeElementInfo codeElement, string message)
+            : this(type, codeElement, message, (string) null)
+        {
         }
 
         /// <summary>

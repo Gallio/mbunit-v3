@@ -82,7 +82,7 @@ namespace MbUnit.Framework
                 throw new SilentTestException(TestOutcome.Pending, message);
             });
 
-            scope.TestModel.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement, message, null));
+            scope.TestModel.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement, message));
         }
     }
 }

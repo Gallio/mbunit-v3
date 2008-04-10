@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Framework.Pattern;
-using Gallio.Hosting;
+using Gallio.Reflection;
 using MbUnit.Framework;
 using MbUnit.Pex;
 using Microsoft.ExtendedReflection.Collections;
@@ -112,7 +112,7 @@ namespace MbUnit.Pex
 
         private static void AddReferenceToAssembly(IManagedProject project, Assembly assembly)
         {
-            project.AddReference(assembly.GetName().Name, Loader.GetFriendlyAssemblyLocation(assembly), null);
+            project.AddReference(assembly.GetName().Name, AssemblyUtils.GetFriendlyAssemblyLocation(assembly), null);
         }
 
         public override void MarkTestClass(TypeDefinitionBuilder type)

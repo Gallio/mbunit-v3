@@ -40,3 +40,60 @@ Remarks:
 - MbUnit v3 [RowTest] not yet implemented.
 - Data-driven testing features postponed to subsequent release.
 - Still lots of loose ends floating around.
+
+
+*** 2008/03/23: Alpha 2
+
+Many improvements particularly in terms of the API and test model.
+Full support for data-driven testing.
+MbUnit v3 is used throughout but not yet feature complete and still
+  contains some legacy MbUnit v2 elements such as the assertion syntax.
+
+Gallio Achievements:
+
+- Pattern Test Framework.
+- Data binding.
+- Data sources.
+- Formatters.
+- Converters.
+- ReSharper integration.
+- NBehave on Gallio prototype.
+- Simpler Test / TestStep object model.
+- Icarus is usable.
+- Hosting API for out-of-process test execution.
+- NCover and TypeMock integration.
+- PowerShell integration.
+- Pex integration.
+- ASP.Net MVC integration.
+- Improved installer.
+- New website.
+
+MbUnit Achievements:
+
+- Fully usable but not feature complete.
+- Data-driven tests.
+
+
+*** 2008/04/13: Alpha 3
+
+Bug fixes and additional features based on feedback from Alpha 2.
+
+Gallio Achievements:
+
+- Added Annotations to mark usage errors and warnings in tests instead of Error Test.
+- ReSharper plugin displays annotations.
+- Icarus supports test execution logs.
+- Report navigation stripes.
+- Data binding scopes.
+- CSV data source.
+- Data-driven test instances are grouped by test.
+- Test assembly configuration files.
+- Internalized the dependency on Windsor.
+- MSTest integration.
+
+MbUnit Achievements:
+
+- Pairwise, combinatorial and sequential joins.
+- Constructor parameter data binding.
+- Improved implicit data binding index computation based on binding scopes.
+

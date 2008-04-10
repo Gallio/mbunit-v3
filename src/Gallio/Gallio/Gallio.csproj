@@ -356,7 +356,6 @@
     <Compile Include="Runner\Harness\ContextualLogTraceListener.cs" />
     <Compile Include="Model\BaseTestExplorer.cs" />
     <Compile Include="Model\BaseTestParameter.cs" />
-    <Compile Include="Model\ErrorTest.cs" />
     <Compile Include="Model\Execution\BaseTestController.cs" />
     <Compile Include="Model\Execution\ErrorTestController.cs" />
     <Compile Include="Model\Filters\FilterFormatter.cs" />

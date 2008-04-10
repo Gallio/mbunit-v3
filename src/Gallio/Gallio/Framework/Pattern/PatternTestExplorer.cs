@@ -148,7 +148,7 @@ namespace Gallio.Framework.Pattern
             return frameworkScope;
         }
 
-        private void InitializeAssembly(PatternEvaluationScope frameworkScope, IAssemblyInfo assembly)
+        private static void InitializeAssembly(PatternEvaluationScope frameworkScope, IAssemblyInfo assembly)
         {
             foreach (TestAssemblyInitializationAttribute attrib in AttributeUtils.GetAttributes<TestAssemblyInitializationAttribute>(assembly, false))
             {
@@ -158,7 +158,7 @@ namespace Gallio.Framework.Pattern
                 }
                 catch (Exception ex)
                 {
-                    TestModel.RootTest.AddChild(new ErrorTest(assembly, String.Format("Error initializing assembly '{0}'", assembly.Name), ex));
+                    frameworkScope.Evaluator.PublishExceptionAsAnnotation(assembly, ex);
                 }
             }
         }
