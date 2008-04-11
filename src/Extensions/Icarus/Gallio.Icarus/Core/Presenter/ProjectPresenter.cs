@@ -46,11 +46,6 @@ namespace Gallio.Icarus.Core.Presenter
             set { projectAdapter.TotalWorkUnits = value; }
         }
 
-        public string ReportPath
-        {
-            set { projectAdapter.ReportPath = value; }
-        }
-
         public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)
         {
             projectAdapter = view;
@@ -87,7 +82,7 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void OnGenerateReport(object sender, EventArgs e)
         {
-            testRunnerModel.GenerateReport();
+            projectAdapter.ReportPath = testRunnerModel.GenerateReport();
         }
 
         public void StopTests(object sender, EventArgs e)

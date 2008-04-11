@@ -68,7 +68,7 @@ namespace Gallio.Icarus.Core.Model
         public TestRunnerModel()
         {
             // create test runner
-#if DEBUG
+#if XDEBUG
             testRunner = new DomainTestRunner(new LocalTestDomainFactory());
 #else
             testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess, new NameValueCollection());
@@ -80,6 +80,7 @@ namespace Gallio.Icarus.Core.Model
             // get a report manager
             reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
             executionLogFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Gallio\Icarus\ExecutionLog");
+            reportFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Gallio\Icarus\Reports");
             SetupExecutionLog();
         }
 
@@ -145,16 +146,19 @@ namespace Gallio.Icarus.Core.Model
                 runTestsProgressMonitor.Cancel();
         }
 
-        public void GenerateReport()
+        public string GenerateReport()
         {
+            string reportPath = string.Empty;
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 IReportContainer reportContainer = CreateReportContainer(reportMonitor.Report);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(reportMonitor.Report, reportContainer);
 
                 // format the report as xml
-                reportManager.Format(reportWriter, "xml", new NameValueCollection(), progressMonitor);
+                reportManager.Format(reportWriter, "html", new NameValueCollection(), progressMonitor);
+                reportPath = Path.Combine(reportFolder, reportWriter.ReportDocumentPaths[0]);
             });
+            return reportPath;
         }
 
         private IReportContainer CreateReportContainer(Report report)

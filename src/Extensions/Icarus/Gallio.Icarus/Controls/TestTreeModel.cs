@@ -101,7 +101,7 @@ namespace Gallio.Icarus.Controls
 
         private void ResetTestStatus(Node node)
         {
-            ((TestTreeNode)node).TestStatus = TestStatus.Inconclusive;
+            ((TestTreeNode)node).TestStatus = TestStatus.Skipped;
             foreach (Node n in node.Nodes)
                 ResetTestStatus(n);
         }

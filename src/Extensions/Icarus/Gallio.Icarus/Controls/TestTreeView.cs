@@ -69,10 +69,10 @@ namespace Gallio.Icarus.Controls
                     e.TextColor = Color.Red;
                     break;
                 case TestStatus.Skipped:
-                    e.TextColor = Color.Yellow;
+                    e.TextColor = Color.SlateGray;
                     break;
                 case TestStatus.Inconclusive:
-                    e.TextColor = Color.SlateGray;
+                    e.TextColor = Color.Yellow;
                     break;
             }
         }

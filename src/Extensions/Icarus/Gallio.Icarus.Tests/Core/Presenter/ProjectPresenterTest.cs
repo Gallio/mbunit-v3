@@ -110,16 +110,6 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             projectPresenter.StatusText = "blah blah";
         }
 
-        [Test]
-        public void ReportPath_Test()
-        {
-            string reportPath = "test";
-            mockAdapter.ReportPath = reportPath;
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.ReportPath = reportPath;
-        }
-
         [Test, Category("ProjectPresenter"), Category("AnotherCategory"), Author("Graham Hay")]
         public void CompletedWorkUnits_Test()
         {
@@ -164,7 +154,8 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         [Test]
         public void GenerateReport_Test()
         {
-            mockModel.GenerateReport();
+            Expect.Call(mockModel.GenerateReport()).Return("test");
+            mockAdapter.ReportPath = "test";
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             generateReportEvent.Raise(mockAdapter, EventArgs.Empty);

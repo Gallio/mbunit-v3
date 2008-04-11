@@ -25,7 +25,7 @@ namespace Gallio.Icarus.Controls
 {
     public class TestTreeNode : Node
     {
-        private TestStatus testStatus = TestStatus.Inconclusive;
+        private TestStatus testStatus = TestStatus.Skipped;
         private bool sourceCodeAvailable, isTest;
         private string name, nodeType;
         protected Image nodeTypeIcon, testStatusIcon;
@@ -97,7 +97,7 @@ namespace Gallio.Icarus.Controls
                 if (Parent == null || Parent.Nodes.Count == 1)
                     return TestStatus;
 
-                TestStatus ts = TestStatus.Inconclusive;
+                TestStatus ts = TestStatus.Skipped;
                 foreach (Node node in Parent.Nodes)
                 {
                     TestTreeNode child = node as TestTreeNode;
@@ -105,9 +105,9 @@ namespace Gallio.Icarus.Controls
                     {
                         if (child.TestStatus == TestStatus.Failed)
                             return TestStatus.Failed;
-                        if (child.TestStatus == TestStatus.Skipped)
-                            ts = TestStatus.Skipped;
-                        if (child.TestStatus == TestStatus.Passed && ts != TestStatus.Skipped)
+                        if (child.TestStatus == TestStatus.Inconclusive)
+                            ts = TestStatus.Inconclusive;
+                        if (child.TestStatus == TestStatus.Passed && ts != TestStatus.Inconclusive)
                             ts = TestStatus.Passed;
                     }
                 }
@@ -270,9 +270,9 @@ namespace Gallio.Icarus.Controls
                     return global::Gallio.Icarus.Properties.Resources.cross;
                 case TestStatus.Passed:
                     return global::Gallio.Icarus.Properties.Resources.tick;
-                case TestStatus.Skipped:
-                    return global::Gallio.Icarus.Properties.Resources.error;
                 case TestStatus.Inconclusive:
+                    return global::Gallio.Icarus.Properties.Resources.error;
+                case TestStatus.Skipped:
                 default:
                     return null;
             }

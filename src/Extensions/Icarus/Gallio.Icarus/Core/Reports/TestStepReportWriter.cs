@@ -57,9 +57,8 @@ namespace Gallio.Icarus.Core.Reports
             TestData testData = testModelData.Tests[testStepRun.Step.TestId];
             Statistics statistics = CalculateStatistics(testStepRun);
             
-            xmlTextWriter.WriteRaw(String.Format("<li><span class=\"testStepRunHeading\"><b>{1}</b> Passed: {2} Failed: {3} Ignored: {4}</span>", 
-                testStepRun.Step.Id, testStepRun.Step.Name, statistics.passedCount, statistics.failedCount, 
-                (statistics.inconclusiveCount + statistics.skippedCount)));
+            xmlTextWriter.WriteRaw(String.Format("<li><span class=\"testStepRunHeading\"><b>{1}</b> Passed: {2} Failed: {3} Inconclusive: {4} Skipped: {5}</span>", 
+                testStepRun.Step.Id, testStepRun.Step.Name, statistics.passedCount, statistics.failedCount, statistics.inconclusiveCount, statistics.skippedCount));
             
             // stat panel
             xmlTextWriter.WriteRaw("<div class=\"panel\">");
@@ -80,14 +79,10 @@ namespace Gallio.Icarus.Core.Reports
                 xmlTextWriter.WriteRaw(String.Format("Duration: {0}s, Assertions: {1}.", statistics.duration.ToString(), statistics.assertCount));
             
             // metadata
-            xmlTextWriter.WriteRaw("<ul class=\"metadata\">");
-            if (testStepRun.Step.IsPrimary)
-                RenderMetadata(xmlTextWriter, testStepRun, testData);
-            else
-                RenderMetadata(xmlTextWriter, testStepRun);
-            xmlTextWriter.WriteRaw("</ul><div class=\"testStepRun\">");
+            RenderMetadata(xmlTextWriter, testStepRun, testData);
 
             // execution logs
+            xmlTextWriter.WriteRaw("<div class=\"testStepRun\">");
             if (testStepRun.ExecutionLog.Streams.Count > 0)
                 RenderExecutionLogStreams(xmlTextWriter, testStepRun);
             xmlTextWriter.WriteRaw("</div>");
@@ -105,15 +100,32 @@ namespace Gallio.Icarus.Core.Reports
 
         private static void RenderMetadata(XmlTextWriter xmlTextWriter, TestStepRun testStepRun, TestData testData)
         {
-            foreach (string key in testData.Metadata.Keys)
-                xmlTextWriter.WriteRaw(String.Format("<li>{0}: {1}</li>", key, testData.Metadata[key]));
-            RenderMetadata(xmlTextWriter, testStepRun);
+            MetadataMap visibleEntries = testStepRun.Step.Metadata.Copy();
+            visibleEntries.Remove(MetadataKeys.TestKind);
+            if (testStepRun.Step.IsPrimary)
+            {
+                visibleEntries.AddAll(testData.Metadata);
+                visibleEntries.Remove(MetadataKeys.TestKind);
+            }
+            if (visibleEntries.Keys.Count > 0)
+            {
+                xmlTextWriter.WriteRaw("<ul class=\"metadata\">");
+                foreach (string key in visibleEntries.Keys)
+                    RenderMetadataValues(xmlTextWriter, key, visibleEntries[key]);
+                xmlTextWriter.WriteRaw("</ul>");
+            }
         }
 
-        private static void RenderMetadata(XmlTextWriter xmlTextWriter, TestStepRun testStepRun)
+        private static void RenderMetadataValues(XmlTextWriter xmlTextWriter, string key, IList<string> values)
         {
-            foreach (string key in testStepRun.Step.Metadata.Keys)
-                xmlTextWriter.WriteRaw(String.Format("<li>{0}: {1}</li>", key, testStepRun.Step.Metadata[key]));
+            xmlTextWriter.WriteRaw(String.Format("<li>{0}: ", key));
+            for (int i = 0; i < values.Count; i++)
+            {
+                xmlTextWriter.WriteRaw(values[i]);
+                if (i < (values.Count - 1))
+                    xmlTextWriter.WriteRaw(",");
+            }
+            xmlTextWriter.WriteRaw("</li>");
         }
 
         private static void RenderExecutionLogStreams(XmlTextWriter xmlTextWriter, TestStepRun testStepRun)

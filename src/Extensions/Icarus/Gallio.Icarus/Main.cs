@@ -56,7 +56,6 @@ namespace Gallio.Icarus
         private TestResults testResults;
         private ReportWindow reportWindow;
         private LogWindow runtimeWindow;
-        //private PerformanceMonitor performanceMonitor;
         private About aboutDialog;
         private PropertiesWindow propertiesWindow;
         private FiltersWindow filtersWindow;
@@ -83,7 +82,6 @@ namespace Gallio.Icarus
                     ((TestTreeModel)((SortedTreeModel)value).InnerModel).TestResult += delegate(object sender, TestResultEventArgs e)
                     {
                         testResults.UpdateTestResults(e.TestName, e.TestOutcome, e.Duration, e.TypeName, e.NamespaceName, e.AssemblyName);
-                        //performanceMonitor.UpdateTestResults(e.TestOutcome, e.TypeName, e.NamespaceName, e.AssemblyName);
                     };
                 }
             }
@@ -874,17 +872,12 @@ namespace Gallio.Icarus
         {
             try
             {
-                // create folder (if necessary)
-                string gallioDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Gallio/Icarus");
-                if (!Directory.Exists(gallioDir))
-                    Directory.CreateDirectory(gallioDir);
-
                 // save test filter
                 OnSaveFilter("AutoSave");
 
                 // save project
                 if (SaveProject != null)
-                    SaveProject(this, new SingleEventArgs<string>(Path.Combine(gallioDir, "Icarus.gallio")));
+                    SaveProject(this, new SingleEventArgs<string>(string.Empty));
 
                 // save dock panel config
                 dockPanel.SaveAsXml(dockConfigFile);
