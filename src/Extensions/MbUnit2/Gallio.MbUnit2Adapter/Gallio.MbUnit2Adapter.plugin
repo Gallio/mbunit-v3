@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-  <castle>
-    <facilities>
-    </facilities>
-
+  <gallio>
     <components>
       <component id="MbUnit2Adapter.TestFramework"
                  service="Gallio.Model.ITestFramework, Gallio"
@@ -13,5 +10,5 @@
                  service="Gallio.Runner.Domains.IHostTestDomainContributor, Gallio"
                  type="Gallio.MbUnit2Adapter.Model.MbUnit2AssemblyBindingRedirect, Gallio.MbUnit2Adapter" />
     </components>
-  </castle>
+  </gallio>
 </configuration>

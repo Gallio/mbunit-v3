@@ -72,6 +72,7 @@
     <Compile Include="Runtime\ConsoleSupport\NativeConsole.cs" />
     <Compile Include="Runtime\ConsoleSupport\ResponseFileReader.cs" />
     <Compile Include="Runtime\ConsoleSupport\RichConsoleLogger.cs" />
+    <Compile Include="Runtime\GallioSectionHandler.cs" />
     <Compile Include="Runtime\Loader\DefaultLoader.cs" />
     <Compile Include="Runtime\Loader\ILoader.cs" />
     <Compile Include="Runtime\Logging\BaseLogger.cs" />

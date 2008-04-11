@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-  <castle>
+  <gallio>
     <components>
       <component id="XunitAdapter.TestFramework"
                  service="Gallio.Model.ITestFramework, Gallio"
                  type="Gallio.XunitAdapter.Model.XunitTestFramework, Gallio.XunitAdapter" />
     </components>
-  </castle>
+  </gallio>
 </configuration>

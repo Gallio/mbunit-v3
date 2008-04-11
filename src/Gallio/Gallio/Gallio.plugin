@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-  <castle>
+  <gallio>
     <components>
       <component id="Core.Loader"
                  service="Gallio.Runtime.Loader.ILoader, Gallio"
@@ -210,5 +210,5 @@
                  service="Gallio.Framework.Data.Formatters.IFormattingRule, Gallio"
                  type="Gallio.Framework.Data.Formatters.XPathNavigableFormattingRule, Gallio" />
     </components>
-  </castle>
+  </gallio>
 </configuration>

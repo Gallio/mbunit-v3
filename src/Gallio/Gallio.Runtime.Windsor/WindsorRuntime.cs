@@ -132,8 +132,8 @@ namespace Gallio.Runtime.Windsor
             }
             else
             {
-                if (ConfigurationManager.GetSection("castle") != null)
-                    LoadConfigurationFromResource(new ConfigResource());
+                if (ConfigurationManager.GetSection(GallioSectionHandler.SectionName) != null)
+                    LoadConfigurationFromResource(new ConfigResource(GallioSectionHandler.SectionName));
             }
 
             LoadAllPluginConfiguration();
@@ -291,9 +291,9 @@ namespace Gallio.Runtime.Windsor
                 throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture,
                     "Plugin manifest Xml file '{0}' yielded unexpected Xml node after pre-processing.", configFile));
 
-            XmlElement castleElement = rootElement.SelectSingleNode("//castle") as XmlElement;
-            if (castleElement != null)
-                LoadConfigurationFromResource(new StaticContentResource(castleElement.OuterXml));
+            XmlElement gallioElement = rootElement.SelectSingleNode(@"//" + GallioSectionHandler.SectionName) as XmlElement;
+            if (gallioElement != null)
+                LoadConfigurationFromResource(new StaticContentResource(gallioElement.OuterXml));
 
             // Register the plugin path.
             string pluginName = Path.GetFileNameWithoutExtension(configFile);
