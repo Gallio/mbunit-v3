@@ -45,12 +45,12 @@ namespace Gallio.Icarus
         private string projectFileName = String.Empty;
         private Settings settings;
         private string settingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
-            "Gallio/Icarus/Icarus.settings");
+            "Gallio\\Icarus\\Icarus.settings");
         
         // dock panel windows
         private DeserializeDockContent deserializeDockContent;
         private string dockConfigFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "Gallio/Icarus/DockPanel.config");
+            "Gallio\\Icarus\\DockPanel.config");
         private TestExplorer testExplorer;
         private AssemblyList assemblyList;
         private TestResults testResults;
@@ -365,7 +365,14 @@ namespace Gallio.Icarus
 
         public string ProjectFileName
         {
-            set { projectFileName = value; }
+            set
+            {
+                projectFileName = value;
+                if (value != string.Empty)
+                    Text = String.Format("{0} - Gallio Icarus", value);
+                else
+                    Text = "Gallio Icarus";
+            }
         }
 
         public IList<string> TestFilters
@@ -608,9 +615,7 @@ namespace Gallio.Icarus
                 saveFile.DefaultExt = "Gallio Projects (*.gallio)|*.gallio";
                 saveFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
                 if (saveFile.ShowDialog() == DialogResult.OK)
-                {
-                    projectFileName = saveFile.FileName;
-                }
+                    ProjectFileName = saveFile.FileName;
             }
 
             StatusText = "Saving project";
@@ -755,6 +760,7 @@ namespace Gallio.Icarus
 
         private void CreateNewProject()
         {
+            ProjectFileName = string.Empty;
             StatusText = "Creating new project";
             StartWorkerTask(delegate
             {

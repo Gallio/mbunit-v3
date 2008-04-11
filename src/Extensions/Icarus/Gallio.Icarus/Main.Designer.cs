@@ -683,7 +683,6 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem debugTraceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem warningsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem failuresToolStripMenuItem;
-        //private System.Windows.Forms.ToolStripMenuItem performanceMonitorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testResultsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runtimeToolStripMenuItem;

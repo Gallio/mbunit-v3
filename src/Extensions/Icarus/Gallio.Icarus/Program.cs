@@ -67,7 +67,7 @@ namespace Gallio.Icarus
                     if (main.Settings.RestorePreviousSettings)
                     {
                         string defaultProject = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                            "Gallio/Icarus/Icarus.gallio");
+                            "Gallio\\Icarus\\Icarus.gallio");
                         if (File.Exists(defaultProject))
                             main.ProjectFileName = defaultProject;
                     }
