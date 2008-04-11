@@ -267,7 +267,21 @@ html
             </xsl:otherwise>
           </xsl:choose>
 
-          <a href="#testStepRun-{$id}"><xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="g:testStep/@name" /></xsl:call-template></a>
+          <a href="#testStepRun-{$id}">
+            <xsl:attribute name="onclick">
+              <xsl:text>expand([</xsl:text>
+              <xsl:for-each select="ancestor-or-self::g:testStepRun">
+                <xsl:if test="position() != 1">
+                  <xsl:text>,</xsl:text>
+                </xsl:if>
+                <xsl:text>'detailPanel-</xsl:text>
+                <xsl:value-of select="g:testStep/@id"/>
+                <xsl:text>'</xsl:text>
+              </xsl:for-each>
+              <xsl:text>]);</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="g:testStep/@name" /></xsl:call-template>
+          </a>
 
           <xsl:call-template name="outcome-bar">
             <xsl:with-param name="statistics" select="$statistics" />
