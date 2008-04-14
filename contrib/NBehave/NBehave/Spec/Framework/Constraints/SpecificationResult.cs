@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using Gallio.Framework.Data.Formatters;
-using Gallio.Hosting;
+using Gallio.Runtime;
 using Gallio.Utilities;
 
 namespace NBehave.Spec.Framework.Constraints
@@ -41,14 +41,14 @@ namespace NBehave.Spec.Framework.Constraints
 
         public static SpecificationResult CreateCriteriaFailure(object actualValue)
         {
-            IFormatter formatter = Runtime.Instance.Resolve<IFormatter>();
+            IFormatter formatter = RuntimeAccessor.Instance.Resolve<IFormatter>();
             return new SpecificationResult(false, String.Format(
                 "Actual: {0}", formatter.Format(actualValue)));
         }
 
         public static SpecificationResult CreateComparisonFailure(object expectedValue, object actualValue)
         {
-            IFormatter formatter = Runtime.Instance.Resolve<IFormatter>();
+            IFormatter formatter = RuntimeAccessor.Instance.Resolve<IFormatter>();
             return new SpecificationResult(false, String.Format(
                 "Expected: {0}\n\tActual: {1}", formatter.Format(expectedValue), formatter.Format(actualValue)));
         }

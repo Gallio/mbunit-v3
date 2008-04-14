@@ -35,13 +35,13 @@ namespace NBehave.Spec.Framework
     /// }
     /// </code>
     /// </example>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
+    [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
     public class ContextAttribute : TestTypePatternAttribute
     {
         /// <inheritdoc />
-        protected override PatternTest CreateTest(IPatternTestBuilder containingTestBuilder, ITypeInfo type)
+        protected override PatternTest CreateTest(PatternEvaluationScope constainingScope, ITypeInfo type)
         {
-            PatternTest test = base.CreateTest(containingTestBuilder, type);
+            PatternTest test = base.CreateTest(constainingScope, type);
             test.Name = NameSanitizer.MakeNameFromIdentifier(test.Name);
             test.Kind = NBehaveTestKinds.Context;
             return test;

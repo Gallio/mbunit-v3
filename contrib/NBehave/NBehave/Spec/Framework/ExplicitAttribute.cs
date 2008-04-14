@@ -39,8 +39,7 @@ namespace NBehave.Spec.Framework
     /// particularly expensive or require manual supervision by an operator.
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method,
-        AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ExplicitAttribute : TestDecoratorPatternAttribute
     {
         private readonly string reason;
@@ -76,15 +75,15 @@ namespace NBehave.Spec.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(IPatternTestBuilder builder, ICodeElementInfo codeElement)
+        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            builder.Test.Metadata.Add(MetadataKeys.ExplicitReason, reason);
+            scope.Test.Metadata.Add(MetadataKeys.ExplicitReason, reason);
 
-            builder.Test.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
+            scope.Test.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
             {
                 if (!state.IsExplicit)
                 {
-                    string message = "The test will not run unless explicitly selected.";
+                    string message = "The specification will not run unless explicitly selected.";
                     if (reason.Length != 0)
                         message += "\nReason: " + reason;
 

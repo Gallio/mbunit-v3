@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Pattern;
-using Gallio.Model;
 using Gallio.Reflection;
 using NBehave.Core;
 
@@ -12,18 +11,13 @@ namespace NBehave.Spec.Framework
     /// When applied to a method of a context class, declares a tear down action to be performed after
     /// evaluating each specification.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
-    public class TearDownAttribute : ContributionPatternAttribute
+    [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
+    public class TearDownAttribute : ContributionMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override void DecorateContainingTest(IPatternTestBuilder containingTestBuilder, ICodeElementInfo codeElement)
+        protected override void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
         {
-            if (containingTestBuilder.Test.Kind != NBehaveTestKinds.Context)
-                throw new ModelException("The [TearDown] attribute can only appear within a context class.");
-
-            IMethodInfo method = (IMethodInfo)codeElement;
-
-            containingTestBuilder.Test.TestInstanceActions.DecorateChildTestChain.After(
+            containingScope.Test.TestInstanceActions.DecorateChildTestChain.After(
                 delegate(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildActions)
                 {
                     decoratedChildActions.TestInstanceActions.TearDownTestInstanceChain.After(delegate
@@ -31,6 +25,16 @@ namespace NBehave.Spec.Framework
                         testInstanceState.InvokeFixtureMethod(method, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance);
                     });
                 });
+        }
+
+        /// <inheritdoc />
+        protected override void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
+        {
+            base.Validate(containingScope, method);
+
+            if (!containingScope.IsTestDeclaration
+                || containingScope.Test.Kind != NBehaveTestKinds.Context)
+                throw new PatternUsageErrorException("The [TearDown] attribute can only appear on a method within a context class.");
         }
     }
 }

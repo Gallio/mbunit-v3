@@ -50,16 +50,13 @@ namespace NBehave.Spec.Framework
     /// }
     /// </code>
     /// </example>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple = false, Inherited = true)]
     public class SpecificationAttribute : TestMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override PatternTest CreateTest(IPatternTestBuilder containingTestBuilder, IMethodInfo method)
+        protected override PatternTest CreateTest(PatternEvaluationScope containingScope, IMethodInfo method)
         {
-            if (containingTestBuilder.Test.Kind != NBehaveTestKinds.Context)
-                throw new ModelException("The [Specification] attribute can only appear within a context class.");
-
-            PatternTest test = base.CreateTest(containingTestBuilder, method);
+            PatternTest test = base.CreateTest(containingScope, method);
             test.Name = NameSanitizer.MakeNameFromIdentifier(test.Name);
             test.Kind = NBehaveTestKinds.Specification;
             return test;
@@ -95,6 +92,16 @@ namespace NBehave.Spec.Framework
                     if (failed)
                         throw new SilentTestException(TestOutcome.Failed);
                 });
+        }
+
+        /// <inheritdoc />
+        protected override void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
+        {
+            base.Validate(containingScope, method);
+
+            if (!containingScope.IsTestDeclaration
+                || containingScope.Test.Kind != NBehaveTestKinds.Context)
+                throw new PatternUsageErrorException("The [Specification] attribute can only appear on a method within a context class.");
         }
     }
 }

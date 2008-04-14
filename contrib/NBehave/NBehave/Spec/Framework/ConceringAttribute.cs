@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
 using NBehave.Core;
@@ -11,6 +9,7 @@ namespace NBehave.Spec.Framework
     /// Specifies a description of a concern that is to be exercised by a particular context
     /// or specification.  The concern is presented as metadata in reports.
     /// </summary>
+    [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple=true, Inherited=true)]
     public class ConceringAttribute : MetadataPatternAttribute
     {
         private readonly string concern;

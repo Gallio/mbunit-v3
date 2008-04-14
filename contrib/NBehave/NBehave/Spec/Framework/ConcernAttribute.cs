@@ -36,24 +36,24 @@ namespace NBehave.Spec.Framework
     /// }
     /// </code>
     /// </example>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple=false, Inherited=true)]
+    [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
     public class ConcernAttribute : TestTypePatternAttribute
     {
         /// <inheritdoc />
-        protected override PatternTest CreateTest(IPatternTestBuilder containingTestBuilder, ITypeInfo type)
+        protected override PatternTest CreateTest(PatternEvaluationScope constainingScope, ITypeInfo type)
         {
-            PatternTest test = base.CreateTest(containingTestBuilder, type);
+            PatternTest test = base.CreateTest(constainingScope, type);
             test.Name = NameSanitizer.MakeNameFromIdentifier(test.Name);
             test.Kind = NBehaveTestKinds.Concern;
             return test;
         }
 
         /// <inheritdoc />
-        protected override void InitializeTest(IPatternTestBuilder typeTestBuilder, ITypeInfo type)
+        protected override void InitializeTest(PatternEvaluationScope typeScope, ITypeInfo type)
         {
-            base.InitializeTest(typeTestBuilder, type);
+            base.InitializeTest(typeScope, type);
 
-            typeTestBuilder.Test.Metadata.Add(NBehaveMetadataKeys.Concern, typeTestBuilder.Test.Name);
+            typeScope.Test.Metadata.Add(NBehaveMetadataKeys.Concern, typeScope.Test.Name);
         }
     }
 }
