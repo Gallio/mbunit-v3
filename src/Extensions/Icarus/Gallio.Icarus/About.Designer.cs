@@ -100,8 +100,9 @@ namespace Gallio.Icarus
             this.websiteLink.Size = new System.Drawing.Size(169, 17);
             this.websiteLink.TabIndex = 6;
             this.websiteLink.TabStop = true;
-            this.websiteLink.Text = "Website: http://www.mbunit.com/";
+            this.websiteLink.Text = "Website: http://www.gallio.org/";
             this.websiteLink.UseCompatibleTextRendering = true;
+            this.websiteLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(websiteLink_LinkClicked);
             // 
             // About
             // 

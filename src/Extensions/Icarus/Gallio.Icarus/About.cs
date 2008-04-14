@@ -47,5 +47,23 @@ namespace Gallio.Icarus
         {
             Close();
         }
+
+        void websiteLink_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                VisitGallioLink();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to open the gallio.org website.\n" + ex.ToString());
+            }
+        }
+
+        private void VisitGallioLink()
+        {
+            this.websiteLink.LinkVisited = true;
+            System.Diagnostics.Process.Start("http://www.gallio.org");
+        }
     }
 }
