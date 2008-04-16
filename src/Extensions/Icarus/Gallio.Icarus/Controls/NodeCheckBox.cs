@@ -38,7 +38,7 @@ namespace Gallio.Icarus.Controls
                     SetCheckState(args.Node, state);
                     ((TestTreeNode)args.Node.Tag).UpdateStateOfRelatedNodes();
                     Parent.EndUpdate();
-                    ((TestTreeModel)((SortedTreeModel)Parent.Model).InnerModel).OnTestCountChanged(EventArgs.Empty);
+                    ((TestTreeModel)Parent.Model).OnTestCountChanged(EventArgs.Empty);
                     args.Handled = true;
                 }
             }

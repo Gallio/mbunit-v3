@@ -27,7 +27,6 @@ namespace Gallio.Icarus
     public partial class TestExplorer : DockWindow
     {
         private IProjectAdapterView projectAdapterView;
-        private TestTreeModel testTreeModel;
 
         public string TreeFilter
         {
@@ -54,7 +53,6 @@ namespace Gallio.Icarus
             set
             {
                 testTree.Model = value;
-                testTreeModel = (TestTreeModel)((SortedTreeModel)value).InnerModel;
             }
         }
 
@@ -117,22 +115,22 @@ namespace Gallio.Icarus
 
         private void filterPassedTestsToolStripButton_Click(object sender, EventArgs e)
         {
-            testTreeModel.FilterPassed = filterPassedTestsToolStripMenuItem.Checked = filterPassedTestsToolStripButton.Checked;
+            ((TestTreeModel)testTree.Model).FilterPassed = filterPassedTestsToolStripMenuItem.Checked = filterPassedTestsToolStripButton.Checked;
         }
 
         private void filterFailedTestsToolStripButton_Click(object sender, EventArgs e)
         {
-            testTreeModel.FilterFailed = filterFailedTestsToolStripMenuItem.Checked = filterFailedTestsToolStripButton.Checked;
+            ((TestTreeModel)testTree.Model).FilterFailed = filterFailedTestsToolStripMenuItem.Checked = filterFailedTestsToolStripButton.Checked;
         }
 
         private void filterSkippedTestsToolStripButton_Click(object sender, EventArgs e)
         {
-            testTreeModel.FilterSkipped = filterSkippedTestsToolStripMenuItem.Checked = filterSkippedTestsToolStripButton.Checked;
+            ((TestTreeModel)testTree.Model).FilterSkipped = filterSkippedTestsToolStripMenuItem.Checked = filterSkippedTestsToolStripButton.Checked;
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
         {
-            testTreeModel.ResetTestStatus();
+            ((TestTreeModel)testTree.Model).ResetTestStatus();
         }
 
         private void expandAllMenuItem_Click(object sender, EventArgs e)
@@ -177,17 +175,17 @@ namespace Gallio.Icarus
 
         private void filterPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            testTreeModel.FilterPassed = filterPassedTestsToolStripButton.Checked = filterPassedTestsToolStripMenuItem.Checked;
+            ((TestTreeModel)testTree.Model).FilterPassed = filterPassedTestsToolStripButton.Checked = filterPassedTestsToolStripMenuItem.Checked;
         }
 
         private void filterFailedTestsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            testTreeModel.FilterFailed = filterFailedTestsToolStripButton.Checked = filterFailedTestsToolStripMenuItem.Checked;
+            ((TestTreeModel)testTree.Model).FilterFailed = filterFailedTestsToolStripButton.Checked = filterFailedTestsToolStripMenuItem.Checked;
         }
 
         private void filterSkippedTestsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            testTreeModel.FilterSkipped = filterSkippedTestsToolStripButton.Checked = filterSkippedTestsToolStripMenuItem.Checked;
+            ((TestTreeModel)testTree.Model).FilterSkipped = filterSkippedTestsToolStripButton.Checked = filterSkippedTestsToolStripMenuItem.Checked;
         }
 
         private void addAssembliesToolStripMenuItem_Click(object sender, EventArgs e)

@@ -35,7 +35,7 @@ namespace Gallio.Icarus.Core.CustomEventArgs
     public class GetTestTreeEventArgs : EventArgs
     {
         private readonly string mode;
-        private readonly bool reloadTestModelData;
+        private readonly bool reloadTestModelData, shadowCopyEnabled;
         private readonly TestPackageConfig testPackageConfig;
 
         public GetTestTreeEventArgs(string mode, bool reloadTestModelData)
@@ -44,9 +44,9 @@ namespace Gallio.Icarus.Core.CustomEventArgs
             this.reloadTestModelData = reloadTestModelData;
         }
 
-        public GetTestTreeEventArgs(string mode, bool reloadTestModelData, TestPackageConfig testPackageConfig)
-            : this(mode, reloadTestModelData)
+        public GetTestTreeEventArgs(bool shadowCopyEnabled, TestPackageConfig testPackageConfig)
         {
+            this.shadowCopyEnabled = shadowCopyEnabled;
             this.testPackageConfig = testPackageConfig;
         }
 
@@ -58,6 +58,11 @@ namespace Gallio.Icarus.Core.CustomEventArgs
         public bool ReloadTestModelData
         {
             get { return reloadTestModelData; }
+        }
+
+        public bool ShadowCopyEnabled
+        {
+            get { return shadowCopyEnabled; }
         }
 
         public TestPackageConfig TestPackageConfig

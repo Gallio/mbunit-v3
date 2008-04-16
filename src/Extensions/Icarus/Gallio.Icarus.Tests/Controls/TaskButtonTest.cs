@@ -23,7 +23,7 @@ using MbUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
-namespace Gallio.Icarus.Tests.Controls
+namespace Gallio.Icarus.Controls.Tests
 {
     [TestFixture]
     public class TaskButtonTest

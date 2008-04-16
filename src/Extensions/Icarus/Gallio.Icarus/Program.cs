@@ -16,23 +16,27 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using Gallio.Runtime;
 using Gallio.Icarus.Adapter;
 using Gallio.Icarus.AdapterModel;
 using Gallio.Icarus.Core.Model;
 using Gallio.Icarus.Core.Presenter;
-using Gallio.Runtime.ConsoleSupport;
 using Gallio.Reflection;
+using Gallio.Runner;
+using Gallio.Runner.Domains;
 using Gallio.Runner.Projects;
+using Gallio.Runner.Reports;
+using Gallio.Runtime;
+using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Windsor;
+using System.Collections.Specialized;
+using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Core.Interfaces;
 
 namespace Gallio.Icarus
 {
     static class Program
     {
         private static Main main;
-        private static ProjectAdapter projectAdapter;
-        private static ProjectPresenter projectPresenter;
 
         /// <summary>
         /// The main entry point for the application.
@@ -55,7 +59,7 @@ namespace Gallio.Icarus
             using (RuntimeBootstrap.Initialize(WindsorRuntimeFactory.Instance, runtimeSetup, new IcarusLogger(main)))
             {
                 // wire up model
-                projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());
+                IProjectAdapter projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());
                 if (args.Length > 0)
                 {
                     Project project = ParseArguments(args);
@@ -64,16 +68,15 @@ namespace Gallio.Icarus
                 }
                 else
                 {
-                    if (main.Settings.RestorePreviousSettings)
-                    {
-                        string defaultProject = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                            "Gallio\\Icarus\\Icarus.gallio");
-                        if (File.Exists(defaultProject))
-                            main.ProjectFileName = defaultProject;
-                    }
+                    if (main.Settings.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
+                        main.ProjectFileName = Paths.DefaultProject;
                 }
 
-                projectPresenter = new ProjectPresenter(projectAdapter, new TestRunnerModel());
+                ITestRunner testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(main.Settings.TestRunnerFactory,
+                    new NameValueCollection());
+                IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+                ITestRunnerModel testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+                IProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, testRunnerModel);
 
                 Application.Run(main);
             }

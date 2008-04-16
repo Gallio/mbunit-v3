@@ -19,7 +19,7 @@ using Gallio.Icarus.Controls;
 
 using MbUnit.Framework;
 
-namespace Gallio.Icarus.Tests.Controls
+namespace Gallio.Icarus.Controls.Tests
 {
     [TestFixture]
     public class TestTreeViewTest

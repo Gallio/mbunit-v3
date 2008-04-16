@@ -15,16 +15,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-
 using Aga.Controls.Tree;
-
+using Gallio.Icarus.Controls.Interfaces;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Model;
 
 namespace Gallio.Icarus.Controls
 {
-    public class TestTreeModel : TreeModel
+    public class TestTreeModel : TreeModel, ITestTreeModel
     {
         private bool filterPassed, filterFailed, filterSkipped;
 

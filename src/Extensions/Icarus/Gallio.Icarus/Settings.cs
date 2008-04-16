@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Utilities;
+using Gallio.Runner;
 
 namespace Gallio.Icarus
 {
@@ -25,8 +26,18 @@ namespace Gallio.Icarus
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public class Settings : ICloneable
     {
+        private string testRunnerFactory = StandardTestRunnerFactoryNames.IsolatedProcess;
+        // Switch above & below to step into tests
+        //private string testRunnerFactory = StandardTestRunnerFactoryNames.LocalAppDomain;
         private bool restorePreviousSettings = true;
         private List<string> pluginDirectories;
+
+        [XmlAttribute("testRunnerFactory")]
+        public string TestRunnerFactory
+        {
+            get { return testRunnerFactory; }
+            set { testRunnerFactory = value; }
+        }
 
         [XmlAttribute("restorePreviousSettings")]
         public bool RestorePreviousSettings

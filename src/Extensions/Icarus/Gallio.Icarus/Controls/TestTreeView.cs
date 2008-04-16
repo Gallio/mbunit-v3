@@ -72,7 +72,7 @@ namespace Gallio.Icarus.Controls
                     e.TextColor = Color.SlateGray;
                     break;
                 case TestStatus.Inconclusive:
-                    e.TextColor = Color.Yellow;
+                    e.TextColor = Color.Gold;
                     break;
             }
         }

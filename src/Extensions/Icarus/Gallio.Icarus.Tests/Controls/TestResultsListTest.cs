@@ -21,7 +21,7 @@ using Gallio.Icarus.Controls;
 using MbUnit.Framework;
 using Gallio.Model;
 
-namespace Gallio.Icarus.Tests.Controls
+namespace Gallio.Icarus.Controls.Tests
 {
     [TestFixture]
     public class TestResultsListTest
@@ -34,8 +34,8 @@ namespace Gallio.Icarus.Tests.Controls
             testResultsList = new TestResultsList();
             testResultsList.UpdateTestResults("test1", TestOutcome.Passed, Color.Green, "10", "type", "namespace", "assembly");
             testResultsList.UpdateTestResults("test2", TestOutcome.Failed, Color.Red, "10", "type", "namespace", "assembly");
-            testResultsList.UpdateTestResults("test3", TestOutcome.Skipped, Color.Yellow, "10", "type", "namespace", "assembly");
-            testResultsList.UpdateTestResults("test4", TestOutcome.Inconclusive, Color.SlateGray, "10", "type", "namespace", "assembly");
+            testResultsList.UpdateTestResults("test3", TestOutcome.Skipped, Color.SlateGray, "10", "type", "namespace", "assembly");
+            testResultsList.UpdateTestResults("test4", TestOutcome.Inconclusive, Color.Gold, "10", "type", "namespace", "assembly");
             Assert.AreEqual(4, testResultsList.Items.Count);
         }
 

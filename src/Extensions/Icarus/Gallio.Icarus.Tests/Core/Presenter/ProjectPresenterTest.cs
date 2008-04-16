@@ -15,10 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
-using Gallio.Icarus.Core.Presenter;
+using Gallio.Icarus.Interfaces;
 using Gallio.Icarus.Tests;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -129,25 +128,51 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         }
 
         [Test]
-        public void GetTestTree_Test()
+        public void GetTestTree_Test_ShadowCopyEnabled()
         {
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             TestModelData testModelData = new TestModelData(new TestData("test", "test"));
             mockModel.LoadTestPackage(testPackageConfig);
             Expect.Call(mockModel.BuildTestModel()).Return(testModelData);
             mockAdapter.TestModelData = testModelData;
-            mockAdapter.DataBind("mode");
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            getTestTreeEvent.Raise(mockAdapter, new GetTestTreeEventArgs("mode", true, testPackageConfig));
+            getTestTreeEvent.Raise(mockAdapter, new GetTestTreeEventArgs(true, testPackageConfig));
         }
 
         [Test]
-        public void RunTests_Test()
+        public void GetTestTree_Test_NoShadowCopy()
+        {
+            TestPackageConfig testPackageConfig = new TestPackageConfig();
+            TestModelData testModelData = new TestModelData(new TestData("test", "test"));
+            mockModel.LoadTestPackage(testPackageConfig);
+            Expect.Call(mockModel.BuildTestModel()).Return(testModelData);
+            mockAdapter.TestModelData = testModelData;
+            mockModel.UnloadTestPackage();
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            getTestTreeEvent.Raise(mockAdapter, new GetTestTreeEventArgs(false, testPackageConfig));
+        }
+
+        [Test]
+        public void RunTests_Test_NoShadowCopy()
+        {
+            mockModel.LoadTestPackage(null);
+            LastCall.IgnoreArguments();
+            Expect.Call(mockModel.BuildTestModel()).Return(null);
+            mockModel.RunTests();
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            runTestsEvent.Raise(mockAdapter, EventArgs.Empty);
+        }
+
+        [Test]
+        public void RunTests_Test_ShadowCopyEnabled()
         {
             mockModel.RunTests();
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            projectPresenter.TestPackageLoaded = true;
             runTestsEvent.Raise(mockAdapter, EventArgs.Empty);
         }
 
@@ -214,21 +239,33 @@ namespace Gallio.Icarus.Core.Presenter.Tests
             getTestFrameworksEvent.Raise(mockAdapter, EventArgs.Empty);
         }
 
-        //[Test]
-        //public void GetExecutionLog_Test()
-        //{
-        //    MemoryStream memoryStream = new MemoryStream(); 
-        //    Expect.Call(mockModel.GetExecutionLog("test")).Return(memoryStream);
-        //    mockAdapter.ExecutionLog = memoryStream;
-        //    mocks.ReplayAll();
-        //    projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-        //    getExecutionLogEvent.Raise(mockAdapter, new SingleEventArgs<string>("test"));
-        //}
+        [Test]
+        public void GetExecutionLog_Test()
+        {
+            string testId = "test";
+            TestModelData testModelData = new TestModelData(new TestData("test", "test"));
+            MemoryStream memoryStream = new MemoryStream();
+            Expect.Call(mockAdapter.TestModelData).Return(testModelData);
+            Expect.Call(mockModel.GetExecutionLog(testId, testModelData)).Return(memoryStream);
+            mockAdapter.ExecutionLog = memoryStream;
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            getExecutionLogEvent.Raise(mockAdapter, new SingleEventArgs<string>(testId));
+        }
 
         [Test]
         public void UnloadTestPackage_Test()
         {
             mockModel.UnloadTestPackage();
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            projectPresenter.TestPackageLoaded = true;
+            unloadTestPackageEvent.Raise(mockAdapter, EventArgs.Empty);
+        }
+
+        [Test]
+        public void UnloadTestPackage_Package_Not_Loaded_Test()
+        {
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             unloadTestPackageEvent.Raise(mockAdapter, EventArgs.Empty);

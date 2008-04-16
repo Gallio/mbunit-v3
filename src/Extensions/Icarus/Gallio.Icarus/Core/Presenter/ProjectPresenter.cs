@@ -14,15 +14,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Specialized;
-
-using Gallio.Runtime.Hosting;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
+using Gallio.Icarus.Interfaces;
+using Gallio.Model;
 using Gallio.Model.Serialization;
-using Gallio.Runner;
 using Gallio.Runner.Reports;
-using Gallio.Runner.Domains;
 
 namespace Gallio.Icarus.Core.Presenter
 {
@@ -30,6 +27,8 @@ namespace Gallio.Icarus.Core.Presenter
     {
         private readonly IProjectAdapter projectAdapter;
         private readonly ITestRunnerModel testRunnerModel;
+        private TestPackageConfig testPackageConfig;
+        private bool testPackageLoaded;
 
         public string StatusText
         {
@@ -44,6 +43,12 @@ namespace Gallio.Icarus.Core.Presenter
         public int TotalWorkUnits
         {
             set { projectAdapter.TotalWorkUnits = value; }
+        }
+
+        public bool TestPackageLoaded
+        {
+            get { return testPackageLoaded; }
+            set { testPackageLoaded = value; }
         }
 
         public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)
@@ -67,16 +72,30 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void GetTestTree(object sender, GetTestTreeEventArgs e)
         {
-            if (e.ReloadTestModelData)
+            if (testPackageLoaded)
             {
-                testRunnerModel.LoadTestPackage(e.TestPackageConfig);
-                projectAdapter.TestModelData = testRunnerModel.BuildTestModel();
+                testRunnerModel.UnloadTestPackage();
+                testPackageLoaded = false;
             }
-            projectAdapter.DataBind(e.Mode);
+            testPackageConfig = e.TestPackageConfig;
+            testRunnerModel.LoadTestPackage(testPackageConfig);
+            testPackageLoaded = true;
+            projectAdapter.TestModelData = testRunnerModel.BuildTestModel();
+            if (!e.ShadowCopyEnabled)
+            {
+                testRunnerModel.UnloadTestPackage();
+                testPackageLoaded = false;
+            }
         }
 
         public void RunTests(object sender, EventArgs e)
         {
+            if (!testPackageLoaded)
+            {
+                // shadow copy is disabled so we need to reload the test package
+                testRunnerModel.LoadTestPackage(testPackageConfig);
+                testRunnerModel.BuildTestModel();
+            }
             testRunnerModel.RunTests();
         }
 
@@ -122,7 +141,8 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void OnUnloadTestPackage(object sender, EventArgs e)
         {
-            testRunnerModel.UnloadTestPackage();
+            if (testPackageLoaded)
+                testRunnerModel.UnloadTestPackage();
         }
     }
 }

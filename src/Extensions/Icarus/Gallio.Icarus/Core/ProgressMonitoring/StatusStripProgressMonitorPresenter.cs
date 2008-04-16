@@ -60,6 +60,7 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
                     sb.Append(currentSubTaskName);
                 }
 
+                //sb.Append(String.Format(" ({0:P})", (ProgressMonitor.CompletedWorkUnits / ProgressMonitor.TotalWorkUnits) * 100));
                 presenter.StatusText = sb.ToString();
             }
 

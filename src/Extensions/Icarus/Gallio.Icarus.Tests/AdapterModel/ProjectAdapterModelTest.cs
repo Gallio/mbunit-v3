@@ -16,23 +16,22 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
-
-using Gallio.Icarus.AdapterModel;
 using Gallio.Icarus.Controls;
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Tests;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
-
 using MbUnit.Framework;
+using Gallio.Icarus.Controls.Interfaces;
+using Gallio.Runner.Reports;
+using Gallio.Icarus.Core.CustomEventArgs;
+using Rhino.Mocks;
 
-using Aga.Controls.Tree;
-
-namespace Gallio.Icarus.Tests
+namespace Gallio.Icarus.AdapterModel.Tests
 {
     [TestFixture]
-    public class ProjectAdapterModelTest
+    public class ProjectAdapterModelTest : MockTest
     {
         private ProjectAdapterModel projectAdapterModel;
 
@@ -46,7 +45,7 @@ namespace Gallio.Icarus.Tests
         public void BuildNamespaceTestTree_Test()
         {
             projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
-            TestTreeModel testTreeModel = (TestTreeModel)((SortedTreeModel)projectAdapterModel.TreeModel).InnerModel;
+            ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
             Assert.AreEqual(1, testTreeModel.Nodes.Count);
 
             // check Root node
@@ -106,7 +105,7 @@ namespace Gallio.Icarus.Tests
             foreach (string name in names)
             {
                 projectAdapterModel.BuildTestTree(CreateTestModel(), name);
-                TestTreeModel testTreeModel = (TestTreeModel)((SortedTreeModel)projectAdapterModel.TreeModel).InnerModel;
+                ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
                 Assert.AreEqual(1, testTreeModel.Nodes.Count);
 
                 // check Root node
@@ -208,7 +207,7 @@ namespace Gallio.Icarus.Tests
         public void ApplyNoneFilter_Test()
         {
             projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
-            TestTreeModel testTreeModel = (TestTreeModel)((SortedTreeModel)projectAdapterModel.TreeModel).InnerModel;
+            ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
             Filter<ITest> filter = new NoneFilter<ITest>();
             projectAdapterModel.ApplyFilter(filter);
             Assert.IsFalse(testTreeModel.Root.IsChecked);
@@ -218,7 +217,7 @@ namespace Gallio.Icarus.Tests
         public void ApplyFilter_Test()
         {
             projectAdapterModel.BuildTestTree(CreateTestModel(), "Namespaces");
-            TestTreeModel testTreeModel = (TestTreeModel)((SortedTreeModel)projectAdapterModel.TreeModel).InnerModel;
+            ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
             Filter<ITest> filter = new OrFilter<ITest>(new Filter<ITest>[] { new IdFilter<ITest>(new EqualityFilter<string>("Test2")), 
                 new IdFilter<ITest>(new EqualityFilter<string>("Fixture2")) });
             projectAdapterModel.ApplyFilter(filter);
@@ -239,6 +238,72 @@ namespace Gallio.Icarus.Tests
             // fixture2 node
             node = (TestTreeNode)node.Parent.Nodes[1];
             Assert.AreEqual(CheckState.Checked, node.CheckState);
+        }
+
+        [Test]
+        public void CreateFilter_Test_AnyFilter()
+        {
+            ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
+            testTreeModel.Nodes.Add(new TestTreeNode("test", "test", "test"));
+            Filter<ITest> filter = projectAdapterModel.CreateFilter();
+            Assert.IsTrue(filter is AnyFilter<ITest>);
+        }
+
+        [Test]
+        public void CreateFilter_Test_NoneFilter()
+        {
+            ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
+            TestTreeNode test = new TestTreeNode("test", "test", "test");
+            test.CheckState = CheckState.Unchecked;
+            testTreeModel.Nodes.Add(test);
+            Filter<ITest> filter = projectAdapterModel.CreateFilter();
+            Assert.IsTrue(filter is NoneFilter<ITest>);
+        }
+
+        [Test]
+        public void CreateFilter_Test()
+        {
+            ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
+            TestTreeNode root = new TestTreeNode("root", "root", "root");
+            root.CheckState = CheckState.Indeterminate;
+            TestTreeNode ns = new TestTreeNode("ns", "ns", TestKinds.Namespace);
+            root.Nodes.Add(ns);
+            TestTreeNode child = new TestTreeNode("child", "child", "child");
+            ns.Nodes.Add(child);
+            testTreeModel.Nodes.Add(root);
+            Filter<ITest> filter = projectAdapterModel.CreateFilter();
+            Assert.AreEqual(1, ((OrFilter<ITest>)filter).Filters.Length);
+            filter = ((OrFilter<ITest>)filter).Filters[0];
+            Assert.AreEqual(1, ((OrFilter<ITest>)filter).Filters.Length);
+            filter = ((OrFilter<ITest>)filter).Filters[0];
+            Assert.AreEqual(1, ((OrFilter<ITest>)filter).Filters.Length);
+            filter = ((OrFilter<ITest>)filter).Filters[0];
+            Assert.AreEqual("child", ((EqualityFilter<string>)((IdFilter<ITest>)filter).ValueFilter).Comparand);
+        }
+
+        [Test]
+        public void ResetTestStatus_Test()
+        {
+            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            testTreeModel.ResetTestStatus();
+            mocks.ReplayAll();
+            projectAdapterModel.TreeModel = testTreeModel;
+            projectAdapterModel.ResetTestStatus();
+        }
+
+        [Test]
+        public void Update_Test()
+        {
+            TestData testData = new TestData("test", "test");
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("test", "test", "test", "test"));
+            testStepRun.Step.IsTestCase = true;
+            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            testTreeModel.UpdateTestStatus(testData.Id, testStepRun.Result.Outcome.Status);
+            testTreeModel.OnTestResult(null);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            projectAdapterModel.TreeModel = testTreeModel;
+            projectAdapterModel.Update(testData, testStepRun);
         }
     }
 }

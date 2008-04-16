@@ -20,7 +20,7 @@ using Gallio.Icarus.Core.Remoting;
 
 using MbUnit.Framework;
 
-namespace Gallio.Icarus.Tests.Core.Remoting
+namespace Gallio.Icarus.Core.Remoting.Tests
 {
     [TestFixture]
     public class AssemblyWatcherTest

@@ -80,7 +80,7 @@ namespace Gallio.Icarus.Interfaces
         void ReloadTree();
         void SaveReport(string fileName, string reportType);
         void WriteToLog(LogSeverity severity, string message, Exception exception);
-        void Reset();
+        void ResetTests();
         void CreateReport();
         void AddAssembliesToTree();
         void RemoveAssembliesFromTree();

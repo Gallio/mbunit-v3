@@ -37,11 +37,16 @@ namespace Gallio.Icarus.Adapter
         private TestModelData testModelData;
         private Project project;
         private AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
+        private string mode;
 
         public TestModelData TestModelData
         {
             get { return testModelData; }
-            set { testModelData = value; }
+            set
+            {
+                testModelData = value;
+                DataBind();
+            }
         }
 
         public Project Project
@@ -214,7 +219,7 @@ namespace Gallio.Icarus.Adapter
         private void RemoveAssemblyEventHandler(object sender, SingleEventArgs<string> e)
         {
             string fileName;
-            if (testModelData.Tests.ContainsKey(e.Arg))
+            if (testModelData != null && testModelData.Tests.ContainsKey(e.Arg))
                 fileName = testModelData.Tests[e.Arg].Metadata.GetValue(MetadataKeys.CodeBase);
             else
                 fileName = e.Arg;
@@ -226,8 +231,15 @@ namespace Gallio.Icarus.Adapter
 
         private void GetTestTreeEventHandler(object sender, GetTestTreeEventArgs e)
         {
-            if (GetTestTree != null)
-                GetTestTree(this, new GetTestTreeEventArgs(e.Mode, e.ReloadTestModelData, project.TestPackageConfig));
+            mode = e.Mode;
+            if (e.ReloadTestModelData)
+            {
+                if (GetTestTree != null)
+                    GetTestTree(this, new GetTestTreeEventArgs(project.TestPackageConfig.HostSetup.ShadowCopy, 
+                        project.TestPackageConfig));
+            }
+            else
+                DataBind();
         }
 
         private void RunTestsEventHandler(object sender, EventArgs e)
@@ -316,22 +328,27 @@ namespace Gallio.Icarus.Adapter
             if (projectFileName == string.Empty)
             {
                 // create folder (if necessary)
-                string gallioDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Gallio/Icarus");
-                if (!Directory.Exists(gallioDir))
-                    Directory.CreateDirectory(gallioDir);
-                projectFileName = Path.Combine(gallioDir, "Icarus.gallio");
+                if (!Directory.Exists(Paths.IcarusAppDataFolder))
+                    Directory.CreateDirectory(Paths.IcarusAppDataFolder);
+                projectFileName = Paths.DefaultProject;
             }
             XmlSerializationUtils.SaveToXml(project, projectFileName);
         }
 
         private void OpenProjectEventHandler(object sender, OpenProjectEventArgs e)
         {
+            // fail fast
+            if (!File.Exists(e.FileName))
+                throw new ArgumentException(String.Format("Project file {0} does not exist.", e.FileName));
+
             // deserialize project
             Project = XmlSerializationUtils.LoadFromXml<Project>(e.FileName);
 
             // load test model data
+            mode = e.Mode;
             if (GetTestTree != null)
-                GetTestTree(this, new GetTestTreeEventArgs(e.Mode, true, project.TestPackageConfig));
+                GetTestTree(this, new GetTestTreeEventArgs(project.TestPackageConfig.HostSetup.ShadowCopy, 
+                    project.TestPackageConfig));
 
             ApplyFilter("AutoSave");
         }
@@ -369,7 +386,7 @@ namespace Gallio.Icarus.Adapter
             ApplyFilter(e.Arg);
         }
 
-        public void DataBind(string mode)
+        private void DataBind()
         {
             projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(project.TestPackageConfig.AssemblyFiles);
             projectAdapterModel.BuildTestTree(testModelData, mode);

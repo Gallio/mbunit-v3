@@ -27,68 +27,181 @@ using Gallio.Model.Filters;
 using MbUnit.Framework;
 
 using Rhino.Mocks;
+using Gallio.Runner;
+using Gallio.Runner.Reports;
+using Gallio.Model.Serialization;
+using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Model.Execution;
+using Gallio.Runtime;
+using System.Collections.Specialized;
 
 namespace Gallio.Icarus.Core.Model.Tests
 {
     [TestFixture]
     public class TestRunnerModelTest : MockTest
     {
-        //private IProjectAdapter mockAdapter;
-        //private ITestRunnerModel mockModel;
-        //private ProjectPresenter mockProjectPresenter;
         private TestRunnerModel testRunnerModel;
+        private ITestRunner testRunner;
+        private IReportManager reportManager;
 
         [SetUp]
         public void SetUp()
         {
-            testRunnerModel = new TestRunnerModel();
+            // set up test runner mock
+            testRunner = mocks.CreateMock<ITestRunner>();
+            testRunner.TestPackageChanged += null;
+            LastCall.IgnoreArguments();
+            testRunner.BuildTestModelComplete += null;
+            LastCall.IgnoreArguments();
+            testRunner.RunTestsStarting += null;
+            LastCall.IgnoreArguments();
+            testRunner.RunTestsComplete += null;
+            LastCall.IgnoreArguments();
+            TestEventDispatcher testEventDispatcher = mocks.CreateMock<TestEventDispatcher>();
+            Expect.Call(testRunner.EventDispatcher).Return(testEventDispatcher).Repeat.AtLeastOnce();
+            testEventDispatcher.Lifecycle += null;
+            LastCall.IgnoreArguments();
+            testEventDispatcher.ExecutionLog += null;
+            LastCall.IgnoreArguments();
+
+            reportManager = mocks.CreateMock<IReportManager>();
         }
 
         [Test, ExpectedArgumentNullException("projectPresenter")]
         public void SetProjectPresenterNull_Test()
         {
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             testRunnerModel.ProjectPresenter = null;
         }
 
-        //[Test]
-        //public void TestRunnerModel_Test()
-        //{
-        //    // set up mocks
-        //    mockAdapter = MockRepository.GenerateStub<IProjectAdapter>();
-        //    mockModel = MockRepository.GenerateStub<ITestRunnerModel>();
-        //    mockProjectPresenter = mocks.CreateMock<ProjectPresenter>(mockAdapter, mockModel);
-        //    testRunnerModel.ProjectPresenter = mockProjectPresenter;
+        [Test]
+        public void BuildTestModel_Test()
+        {
+            testRunner.BuildTestModel(null);
+            LastCall.IgnoreArguments();
+            TestModelData testModelData = new TestModelData(new TestData("test", "test"));
+            Expect.Call(testRunner.TestModelData).Return(testModelData);
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            TestModelData tmd = testRunnerModel.BuildTestModel();
+            Assert.AreEqual(testModelData, tmd);
+        }
 
-        //    // set up expectations
-        //    mockProjectPresenter.TotalWorkUnits = 0;
-        //    LastCall.IgnoreArguments();
-        //    mockProjectPresenter.StatusText = "";
-        //    LastCall.IgnoreArguments();
-        //    mockProjectPresenter.CompletedWorkUnits = 0;
-        //    LastCall.IgnoreArguments();
+        [Test]
+        public void LoadTestPackage_Test()
+        {
+            TestPackageConfig testPackageConfig = new TestPackageConfig();
+            testRunner.LoadTestPackage(testPackageConfig, null);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            testRunnerModel.LoadTestPackage(testPackageConfig);
+        }
 
-        //    mocks.ReplayAll();
-            
-        //    // these cannot be split up into seperate tests
-        //    testRunnerModel.LoadTestPackage(new TestPackageConfig());
-        //    testRunnerModel.BuildTestModel();
-        //    testRunnerModel.ReportFolder = Path.GetTempPath();
-        //    testRunnerModel.RunTests();
-        //    testRunnerModel.GenerateReport();
-        //    testRunnerModel.SaveReportAs(Path.GetTempFileName(), "html");
-        //    testRunnerModel.StopTests();
-        //}
+        [Test]
+        public void GetExecutionLog_Test()
+        {
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            Assert.IsNull(testRunnerModel.GetExecutionLog("test", new TestModelData(new TestData("test", "test"))));
+        }
 
-        //[Test]
-        //public void GetReportTypes_Test()
-        //{
-        //    IList<string> reportTypes = testRunnerModel.GetReportTypes();
-        //}
+        [Test]
+        public void GetReportTypes_Test()
+        {
+            IList<string> reportTypes = new List<string>();
+            reportTypes.Add("test");
+            IRegisteredComponentResolver<IReportFormatter> formatterResolver = mocks.CreateMock<IRegisteredComponentResolver<IReportFormatter>>();
+            Expect.Call(formatterResolver.GetNames()).Return(reportTypes);
+            Expect.Call(reportManager.FormatterResolver).Return(formatterResolver);
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            Assert.AreEqual(reportTypes, testRunnerModel.GetReportTypes());
+        }
 
-        //[Test]
-        //public void GetTestFrameworks_Test()
-        //{
-        //    IList<string> frameworks = testRunnerModel.GetTestFrameworks();
-        //}
+        [Test]
+        public void GetTestFrameworks_Test()
+        {
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            IList<string> testFrameworks = testRunnerModel.GetTestFrameworks();
+        }
+
+        [Test]
+        public void GenerateReport_Test()
+        {
+            IReportWriter reportWriter = mocks.CreateMock<IReportWriter>();
+            IList<string> reportDocumentPaths = new List<string>();
+            reportDocumentPaths.Add("test");
+            Expect.Call(reportWriter.ReportDocumentPaths).Return(reportDocumentPaths);
+            Expect.Call(reportManager.CreateReportWriter(null, null)).Return(reportWriter);
+            LastCall.IgnoreArguments();
+            reportManager.Format(reportWriter, "html", new NameValueCollection(), null);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            testRunnerModel.ReportFolder = @"c:\";
+            Assert.AreEqual(@"c:\test", testRunnerModel.GenerateReport());
+        }
+
+        [Test]
+        public void RunTests_Test()
+        {
+            IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
+            Expect.Call(projectPresenter.CompletedWorkUnits = 0).Repeat.AtLeastOnce();
+            projectPresenter.StatusText = string.Empty;
+            testRunner.RunTests(null);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            testRunnerModel.ProjectPresenter = projectPresenter;
+            testRunnerModel.RunTests();
+        }
+
+        [Test]
+        public void SaveReportAs_Test()
+        {
+            IReportWriter reportWriter = mocks.CreateMock<IReportWriter>();
+            Expect.Call(reportManager.CreateReportWriter(null, null)).Return(reportWriter);
+            LastCall.IgnoreArguments();
+            string format = "format";
+            reportManager.Format(reportWriter, format, new NameValueCollection(), null);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            string fileName = Path.GetTempFileName();
+            testRunnerModel.SaveReportAs(fileName, format);
+        }
+
+        [Test]
+        public void SetFilter_Test()
+        {
+            TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
+            Expect.Call(testRunner.TestExecutionOptions).Return(testExecutionOptions);
+            Filter<ITest> filter = new NoneFilter<ITest>();
+            testExecutionOptions.Filter = filter;
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            testRunnerModel.SetFilter(filter);
+        }
+
+        [Test]
+        public void StopTests_Test()
+        {
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            testRunnerModel.StopTests();
+        }
+
+        [Test]
+        public void UnloadTestPackage_Test()
+        {
+            testRunner.UnloadTestPackage(null);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            testRunnerModel.UnloadTestPackage();
+        }
     }
 }

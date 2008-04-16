@@ -38,12 +38,11 @@ namespace Gallio.Icarus.Core.Model
     public class TestRunnerModel : ITestRunnerModel
     {
         private readonly ITestRunner testRunner;
+        private readonly IReportManager reportManager;
         private ReportMonitor reportMonitor = null;
         private IProjectPresenter projectPresenter = null;
-        private IProgressMonitorProvider progressMonitorProvider = null;
+        private IProgressMonitorProvider progressMonitorProvider = NullProgressMonitorProvider.Instance;
         private IProgressMonitor runTestsProgressMonitor = null;
-        private TestRunnerMonitor testRunnerMonitor = null;
-        private IReportManager reportManager;
         private string reportFolder;
         private string executionLogFolder;
         private string reportNameFormat = "test-report-{0}-{1}";
@@ -65,38 +64,18 @@ namespace Gallio.Icarus.Core.Model
             set { reportFolder = value; }
         }
 
-        public TestRunnerModel()
+        public TestRunnerModel(ITestRunner testRunner, IReportManager reportManager)
         {
-            // create test runner
-#if XDEBUG
-            testRunner = new DomainTestRunner(new LocalTestDomainFactory());
-#else
-            testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess, new NameValueCollection());
-#endif
+            this.testRunner = testRunner;
+            this.reportManager = reportManager;
+
             // attach report monitor to test runner
             reportMonitor = new ReportMonitor();
             reportMonitor.Attach(testRunner);
 
-            // get a report manager
-            reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
-            executionLogFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Gallio\Icarus\ExecutionLog");
-            reportFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Gallio\Icarus\Reports");
-            SetupExecutionLog();
-        }
-
-        private void SetupExecutionLog()
-        {
-            if (!Directory.Exists(executionLogFolder))
-                Directory.CreateDirectory(executionLogFolder);
-
-            // output css file
-            Stream css = Assembly.GetExecutingAssembly().GetManifestResourceStream("Gallio.Icarus.Core.Reports.ExecutionLog.css");
-            FileStream fs = File.Open(Path.Combine(executionLogFolder, "ExecutionLog.css"), FileMode.Create, FileAccess.Write);
-            const int size = 4096;
-            byte[] bytes = new byte[size];
-            int numBytes;
-            while ((numBytes = css.Read(bytes, 0, size)) > 0)
-                fs.Write(bytes, 0, numBytes);
+            // set up reports
+            executionLogFolder = Path.Combine(Paths.IcarusAppDataFolder, @"ExecutionLog");
+            reportFolder = Path.Combine(Paths.IcarusAppDataFolder, @"Reports");
         }
 
         public void LoadTestPackage(TestPackageConfig testPackageConfig)
@@ -120,13 +99,10 @@ namespace Gallio.Icarus.Core.Model
         {
             // tidy up last run
             reportMonitor.ResetReport();
-            // clear old attachments
-            DirectoryInfo di = new DirectoryInfo(executionLogFolder);
-            foreach (DirectoryInfo attachmentFolder in di.GetDirectories())
-                attachmentFolder.Delete(true);
+            SetupExecutionLog();
 
             // attach test runner monitor
-            testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor, executionLogFolder);
+            ITestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor, executionLogFolder);
             testRunnerMonitor.Attach(testRunner);
 
             // run tests
@@ -187,6 +163,30 @@ namespace Gallio.Icarus.Core.Model
                 }
             }
             return null;
+        }
+
+        private void SetupExecutionLog()
+        {
+            if (!Directory.Exists(executionLogFolder))
+                Directory.CreateDirectory(executionLogFolder);
+
+            // clear old attachments
+            DirectoryInfo di = new DirectoryInfo(executionLogFolder);
+            foreach (DirectoryInfo attachmentFolder in di.GetDirectories())
+                attachmentFolder.Delete(true);
+
+            // output css file
+            string cssFile = Path.Combine(executionLogFolder, "ExecutionLog.css");
+            if (!File.Exists(cssFile))
+            {
+                Stream css = Assembly.GetExecutingAssembly().GetManifestResourceStream("Gallio.Icarus.Core.Reports.ExecutionLog.css");
+                FileStream fs = File.Open(cssFile, FileMode.Create, FileAccess.Write);
+                const int size = 4096;
+                byte[] bytes = new byte[size];
+                int numBytes;
+                while ((numBytes = css.Read(bytes, 0, size)) > 0)
+                    fs.Write(bytes, 0, numBytes);
+            }
         }
 
         public IList<string> GetReportTypes()

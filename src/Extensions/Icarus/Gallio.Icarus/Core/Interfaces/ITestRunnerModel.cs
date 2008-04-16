@@ -26,16 +26,16 @@ namespace Gallio.Icarus.Core.Interfaces
     public interface ITestRunnerModel
     {
         IProjectPresenter ProjectPresenter { set; }
-        void LoadTestPackage(TestPackageConfig testpackage);
         TestModelData BuildTestModel();
-        void RunTests();
-        void StopTests();
-        string GenerateReport();
-        void SaveReportAs(string fileName, string format);
+        void LoadTestPackage(TestPackageConfig testpackage);
         Stream GetExecutionLog(string testId, TestModelData testModelData);
         IList<string> GetReportTypes();
         IList<string> GetTestFrameworks();
+        string GenerateReport();
+        void RunTests();
+        void SaveReportAs(string fileName, string format);
         void SetFilter(Filter<ITest> filter);
+        void StopTests();
         void UnloadTestPackage();
     }
 }

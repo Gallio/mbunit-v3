@@ -18,8 +18,9 @@ using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.ProgressMonitoring;
 
 using MbUnit.Framework;
+using Gallio.Icarus.Tests;
 
-namespace Gallio.Icarus.Tests.Core.ProgressMonitoring
+namespace Gallio.Icarus.Core.ProgressMonitoring.Tests
 {
     [TestFixture]
     public class StatusStripProgressMonitorPresenterTest : MockTest

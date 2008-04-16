@@ -44,13 +44,9 @@ namespace Gallio.Icarus
         
         private string projectFileName = String.Empty;
         private Settings settings;
-        private string settingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
-            "Gallio\\Icarus\\Icarus.settings");
         
         // dock panel windows
         private DeserializeDockContent deserializeDockContent;
-        private string dockConfigFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "Gallio\\Icarus\\DockPanel.config");
         private TestExplorer testExplorer;
         private AssemblyList assemblyList;
         private TestResults testResults;
@@ -75,11 +71,11 @@ namespace Gallio.Icarus
                 else
                 {
                     testExplorer.TreeModel = value;
-                    ((TestTreeModel)((SortedTreeModel)value).InnerModel).TestCountChanged += delegate
+                    ((TestTreeModel)value).TestCountChanged += delegate
                     {
-                        TotalTests = ((TestTreeModel)((SortedTreeModel)value).InnerModel).TestCount;
+                        TotalTests = ((TestTreeModel)value).TestCount;
                     };
-                    ((TestTreeModel)((SortedTreeModel)value).InnerModel).TestResult += delegate(object sender, TestResultEventArgs e)
+                    ((TestTreeModel)value).TestResult += delegate(object sender, TestResultEventArgs e)
                     {
                         testResults.UpdateTestResults(e.TestName, e.TestOutcome, e.Duration, e.TypeName, e.NamespaceName, e.AssemblyName);
                     };
@@ -291,8 +287,8 @@ namespace Gallio.Icarus
         {
             try
             {
-                if (File.Exists(settingsFile))
-                    return XmlSerializationUtils.LoadFromXml<Settings>(settingsFile);
+                if (File.Exists(Paths.SettingsFile))
+                    return XmlSerializationUtils.LoadFromXml<Settings>(Paths.SettingsFile);
             }
             catch
             { }
@@ -475,11 +471,11 @@ namespace Gallio.Icarus
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Text = String.Format(Text, appVersion.Major, appVersion.Minor);
 
-            if (File.Exists(dockConfigFile))
+            if (File.Exists(Paths.DockConfigFile))
             {
                 try
                 {
-                    dockPanel.LoadFromXml(dockConfigFile, deserializeDockContent);
+                    dockPanel.LoadFromXml(Paths.DockConfigFile, deserializeDockContent);
                 }
                 catch
                 { }
@@ -526,10 +522,8 @@ namespace Gallio.Icarus
         {
             try
             {
-                StatusText = "Running tests";
-
                 // reset progress monitors
-                Reset();
+                ResetTests();
 
                 // enable/disable buttons
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
@@ -564,7 +558,6 @@ namespace Gallio.Icarus
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
-            StatusText = "Reloading...";
             StartWorkerTask(delegate
             {
                 ThreadedReloadTree(true);
@@ -586,7 +579,6 @@ namespace Gallio.Icarus
 
         private void OpenProjectFromFile(string fileName)
         {
-            StatusText = "Opening project";
             try
             {
                 if (OpenProject != null)
@@ -596,7 +588,6 @@ namespace Gallio.Icarus
             {
                 NotifyException(ex);
             }
-            StatusText = string.Empty;
         }
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -618,7 +609,6 @@ namespace Gallio.Icarus
                     ProjectFileName = saveFile.FileName;
             }
 
-            StatusText = "Saving project";
             StartWorkerTask(delegate
             {
                 if (SaveProject != null)
@@ -638,7 +628,6 @@ namespace Gallio.Icarus
             openFile.Multiselect = true;
             if (openFile.ShowDialog() == DialogResult.OK)
             {
-                StatusText = "Adding assemblies";
                 StartWorkerTask(delegate
                 {
                     if (AddAssemblies != null)
@@ -658,7 +647,6 @@ namespace Gallio.Icarus
 
         private void ThreadedReloadTree(bool reloadTestModelData)
         {
-            StatusText = "Reloading tree";
             if (GetTestTree != null)
                 GetTestTree(this, new GetTestTreeEventArgs(testExplorer.TreeFilter, reloadTestModelData));
         }
@@ -670,7 +658,7 @@ namespace Gallio.Icarus
             {
                 try
                 {
-                    XmlSerializationUtils.SaveToXml<Settings>(settings, settingsFile);
+                    XmlSerializationUtils.SaveToXml<Settings>(settings, Paths.SettingsFile);
                 }
                 catch (Exception ex)
                 {
@@ -686,7 +674,7 @@ namespace Gallio.Icarus
             Close();
         }
 
-        public void Reset()
+        public void ResetTests()
         {
             testResults.Reset();
             if (ResetTestStatus != null)
@@ -700,7 +688,6 @@ namespace Gallio.Icarus
 
         public void RemoveAssembliesFromTree()
         {
-            StatusText = "Removing assemblies";
             StartWorkerTask(delegate
             {
                 // remove assemblies
@@ -717,7 +704,6 @@ namespace Gallio.Icarus
 
         private void CancelTests()
         {
-            StatusText = "Stopping tests";
             StartWorkerTask(delegate
             {
                 if (StopTests != null)
@@ -734,7 +720,6 @@ namespace Gallio.Icarus
 
         public void ThreadedRemoveAssembly(string assembly)
         {
-            StatusText = "Removing assembly";
             StartWorkerTask(delegate
             {
                 if (RemoveAssembly != null)
@@ -761,7 +746,6 @@ namespace Gallio.Icarus
         private void CreateNewProject()
         {
             ProjectFileName = string.Empty;
-            StatusText = "Creating new project";
             StartWorkerTask(delegate
             {
                 if (NewProject != null)
@@ -816,7 +800,7 @@ namespace Gallio.Icarus
                     break;
 
                 case LogSeverity.Warning:
-                    color = Color.Yellow;
+                    color = Color.Gold;
                     break;
 
                 case LogSeverity.Info:
@@ -841,14 +825,13 @@ namespace Gallio.Icarus
 
         private void ThreadedCreateReport()
         {
-            StatusText = "Generating report";
             if (GenerateReport != null)
                 GenerateReport(this, EventArgs.Empty);
         }
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Reset();
+            ResetTests();
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -876,22 +859,32 @@ namespace Gallio.Icarus
 
         private void SaveStateOnClose()
         {
+            // FIXME: Improve error handling
             try
             {
                 // save test filter
                 OnSaveFilter("AutoSave");
+            }
+            catch
+            { }
 
+            try
+            {
                 // save project
                 if (SaveProject != null)
                     SaveProject(this, new SingleEventArgs<string>(string.Empty));
 
-                // save dock panel config
-                dockPanel.SaveAsXml(dockConfigFile);
             }
             catch
+            { }
+
+            try
             {
-                // FIXME.  Must be able to improve this!
+                // save dock panel config
+                dockPanel.SaveAsXml(Paths.DockConfigFile);
             }
+            catch
+            { }
         }
 
         public void ViewSourceCode(string testId)
@@ -1048,8 +1041,6 @@ namespace Gallio.Icarus
             {
                 if (!workerTask.IsAborted)
                 {
-                    StatusText = "";
-
                     if (workerTask.Result.Exception != null)
                         NotifyException(workerTask.Result.Exception);
                 }
@@ -1063,7 +1054,6 @@ namespace Gallio.Icarus
             Task cachedWorkerTask = Interlocked.Exchange(ref workerTask, null);
             if (cachedWorkerTask != null)
             {
-                StatusText = "Aborting worker thread";
                 cachedWorkerTask.Abort();
                 cachedWorkerTask.Join(TimeSpan.FromMilliseconds(2000));
             }

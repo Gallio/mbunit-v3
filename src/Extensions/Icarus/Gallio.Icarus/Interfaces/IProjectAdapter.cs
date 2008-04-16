@@ -18,13 +18,11 @@ using System.Collections.Generic;
 using System.IO;
 
 using Gallio.Icarus.Core.CustomEventArgs;
-using Gallio.Model;
 using Gallio.Model.Serialization;
-using Gallio.Runner;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
 
-namespace Gallio.Icarus.Core.Interfaces
+namespace Gallio.Icarus.Interfaces
 {
     public interface IProjectAdapter
     {
@@ -48,7 +46,6 @@ namespace Gallio.Icarus.Core.Interfaces
         Stream ExecutionLog { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
-        void DataBind(string mode);
         void Update(TestData testData, TestStepRun testStepRun);
     }
 }

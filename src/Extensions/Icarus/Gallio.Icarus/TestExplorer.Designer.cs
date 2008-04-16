@@ -288,7 +288,7 @@ namespace Gallio.Icarus
             this.sortTree});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(225, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(256, 25);
             this.toolStrip1.TabIndex = 5;
             // 
             // treeViewComboBox
@@ -342,6 +342,7 @@ namespace Gallio.Icarus
             this.sortTree.Name = "sortTree";
             this.sortTree.Size = new System.Drawing.Size(23, 22);
             this.sortTree.Text = "Sort Tree";
+            this.sortTree.Visible = false;
             this.sortTree.Click += new System.EventHandler(this.sortTree_Click);
             // 
             // TestExplorer

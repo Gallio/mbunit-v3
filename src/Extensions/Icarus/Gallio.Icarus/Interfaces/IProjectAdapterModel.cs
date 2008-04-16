@@ -15,19 +15,18 @@
 
 using System.Collections.Generic;
 using System.Windows.Forms;
-
-using Aga.Controls.Tree;
-
+using Gallio.Icarus.Controls;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
+using Gallio.Icarus.Controls.Interfaces;
 
 namespace Gallio.Icarus.Interfaces
 {
     public interface IProjectAdapterModel
     {
-        ITreeModel TreeModel { get; }
+        ITestTreeModel TreeModel { get; set; }
         void BuildTestTree(TestModelData testModelData, string mode);
         ListViewItem[] BuildAssemblyList(List<string> assemblyList);
         void Update(TestData testData, TestStepRun testStepRun);

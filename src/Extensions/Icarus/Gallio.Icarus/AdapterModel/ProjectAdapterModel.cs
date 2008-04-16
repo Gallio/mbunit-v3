@@ -17,20 +17,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-
 using Aga.Controls.Tree;
-
 using Gallio.Icarus.Controls;
+using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Icarus.Core.CustomEventArgs;
+using Gallio.Icarus.Controls.Interfaces;
 
 namespace Gallio.Icarus.AdapterModel
 {
@@ -39,18 +37,17 @@ namespace Gallio.Icarus.AdapterModel
     /// </summary>
     public class ProjectAdapterModel : IProjectAdapterModel
     {
-        private TestTreeModel testTreeModel;
-        private SortedTreeModel sortedTreeModel;
+        private ITestTreeModel testTreeModel;
 
-        public ITreeModel TreeModel
+        public ITestTreeModel TreeModel
         {
-            get { return sortedTreeModel; }
+            get { return testTreeModel; }
+            set { testTreeModel = value; }
         }
 
         public ProjectAdapterModel()
         {
             testTreeModel = new TestTreeModel();
-            sortedTreeModel = new SortedTreeModel(testTreeModel);
         }
 
         /// <summary>
@@ -188,21 +185,6 @@ namespace Gallio.Icarus.AdapterModel
             }
         }
 
-        private Image GetNodeTypeIcon(string componentKind)
-        {
-            switch (componentKind)
-            {
-                case TestKinds.Assembly:
-                    return global::Gallio.Icarus.Properties.Resources.Assembly;
-                case TestKinds.Fixture:
-                    return global::Gallio.Icarus.Properties.Resources.Fixture;
-                case TestKinds.Test:
-                    return global::Gallio.Icarus.Properties.Resources.Test;
-                default:
-                    return null;
-            }
-        }
-
         public ListViewItem[] BuildAssemblyList(List<string> assemblyList)
         {
             ListViewItem[] assemblies = new ListViewItem[assemblyList.Count];
@@ -221,10 +203,11 @@ namespace Gallio.Icarus.AdapterModel
         {
             // update tree model
             testTreeModel.UpdateTestStatus(testData.Id, testStepRun.Result.Outcome.Status);
-            // get code reference (if there is one)
-            CodeReference codeReference = testData.CodeReference;
             if (testStepRun.Step.IsTestCase)
             {
+                // get code reference (if there is one)
+                CodeReference codeReference = testData.CodeReference;
+
                 // update test results
                 double duration = (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds;
                 testTreeModel.OnTestResult(new TestResultEventArgs(testData.Name, testStepRun.Result.Outcome,

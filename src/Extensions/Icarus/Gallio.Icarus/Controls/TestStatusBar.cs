@@ -28,13 +28,13 @@ namespace Gallio.Icarus.Controls
         private Color failedColor = Color.Red;
         private int failedTests = 0;
         
-        private Color skippedColor = Color.Yellow;
+        private Color skippedColor = Color.SlateGray;
         private int skippedTests = 0;
 
         private Color passedColor = Color.Green;
         private int passedTests = 0;
 
-        private Color inconclusiveColor = Color.SlateGray;
+        private Color inconclusiveColor = Color.Gold;
         private int inconclusiveTests = 0;
 
         private int totalTests = 0;
@@ -164,7 +164,7 @@ namespace Gallio.Icarus.Controls
         public override string Text
         {
             // Force the control to display this text always.
-            get { return "{0} tests - {1} passed - {2} skipped - {3} failed - {4} inconclusive - {5:0.0}s"; }
+            get { return "{0} tests - {1} passed - {2} failed - {3} inconclusive - {4} skipped - {5:0.0}s"; }
         }
 
         [Browsable(false)]
@@ -234,21 +234,28 @@ namespace Gallio.Icarus.Controls
                     float right = r.Left + width;
                     DrawProgressRegion(e.Graphics, r, left, width, passedColor);
 
+                    // Draw failed region.
+                    width = r.Width * (failedTests / (float)totalTests);
+                    left = right;
+                    right = left + width;
+                    DrawProgressRegion(e.Graphics, r, left, width, failedColor);
+
+                    // Draw inconclusive region.
+                    width = r.Width * (inconclusiveTests / (float)totalTests);
+                    left = right;
+                    right = left + width;
+                    DrawProgressRegion(e.Graphics, r, left, width, inconclusiveColor);
+
                     // Draw skipped region.
                     width = r.Width * (skippedTests / (float)totalTests);
                     left = right;
                     right = left + width;
                     DrawProgressRegion(e.Graphics, r, left, width, skippedColor);
-
-                    // Draw failed region.
-                    width = r.Width * (failedTests / (float)totalTests);
-                    left = right;
-                    DrawProgressRegion(e.Graphics, r, left, width, failedColor);
                 }
                 else
                 {
                     // in classic (/unit test) mode, if any tests have failed show whole bar as failed
-                    float width = r.Width * ((passedTests + failedTests + skippedTests) / (float)totalTests);
+                    float width = r.Width * ((passedTests + failedTests + inconclusiveTests) / (float)totalTests);
                     float left = r.Left;
                     DrawProgressRegion(e.Graphics, r, left, width, failedColor);
                 }
@@ -258,8 +265,8 @@ namespace Gallio.Icarus.Controls
             e.Graphics.DrawRectangle(Pens.Black, r);
 
             // Build up the display text.
-            string text = string.Format(CultureInfo.CurrentCulture, Text, totalTests, 
-                passedTests, skippedTests, failedTests, inconclusiveTests, elapsedTime);
+            string text = string.Format(CultureInfo.CurrentCulture, Text, totalTests,
+                passedTests, failedTests, inconclusiveTests, skippedTests, elapsedTime);
 
             // Draw the text to the center of the control.
             StringFormat format = new StringFormat(StringFormatFlags.NoClip);
@@ -284,6 +291,7 @@ namespace Gallio.Icarus.Controls
             passedTests = 0;
             failedTests = 0;
             skippedTests = 0;
+            inconclusiveTests = 0;
 
             elapsedTime = 0;
 

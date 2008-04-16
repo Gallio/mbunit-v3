@@ -62,11 +62,11 @@ namespace Gallio.Icarus
                         break;
                     case TestStatus.Skipped:
                         testProgressStatusBar.Skipped += 1;
-                        foreColor = Color.Yellow;
+                        foreColor = Color.SlateGray;
                         break;
                     case TestStatus.Inconclusive:
                         testProgressStatusBar.Inconclusive += 1;
-                        foreColor = Color.SlateGray;
+                        foreColor = Color.Gold;
                         break;
                 }
                 testResultsList.UpdateTestResults(testName, testOutcome, foreColor, duration.ToString(),

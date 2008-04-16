@@ -21,7 +21,7 @@ using Gallio.Icarus.Tests.Properties;
 
 using MbUnit.Framework;
 
-namespace Gallio.Icarus.Tests.Controls
+namespace Gallio.Icarus.Controls.Tests
 {
     [TestFixture]
     public class TestStatusBarTest
@@ -77,7 +77,7 @@ namespace Gallio.Icarus.Tests.Controls
         [Test]
         public void InconclusiveColor_Test()
         {
-            Assert.AreEqual(Color.Yellow, testStatusBar.SkippedColor);
+            Assert.AreEqual(Color.SlateGray, testStatusBar.SkippedColor);
             testStatusBar.SkippedColor = Color.Black;
             Assert.AreEqual(Color.Black, testStatusBar.SkippedColor);
         }
@@ -100,7 +100,8 @@ namespace Gallio.Icarus.Tests.Controls
         [Test]
         public void Text_Test()
         {
-            Assert.AreEqual("{0} tests - {1} passed - {2} skipped - {3} failed - {4} inconclusive - {5:0.0}s", testStatusBar.Text);
+            Assert.AreEqual("{0} tests - {1} passed - {2} failed - {3} inconclusive - {4} skipped - {5:0.0}s", 
+                testStatusBar.Text);
         }
 
         [Test]
