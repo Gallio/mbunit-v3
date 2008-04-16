@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
+using Gallio.Runtime;
 
 namespace Gallio.Runner
 {
@@ -34,6 +36,17 @@ namespace Gallio.Runner
                 throw new ArgumentNullException("reportDocumentPath");
 
             Process.Start(reportDocumentPath);
+        }
+
+        /// <summary>
+        /// Creates a test runner given its factory name.
+        /// </summary>
+        /// <param name="factoryName">The test runner factory name</param>
+        /// <returns>The test runner</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryName"/> is null</exception>
+        public static ITestRunner CreateTestRunnerByName(string factoryName)
+        {
+            return RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(factoryName);
         }
     }
 }

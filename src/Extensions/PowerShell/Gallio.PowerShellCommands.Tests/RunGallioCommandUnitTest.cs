@@ -40,7 +40,7 @@ namespace Gallio.PowerShellCommands.Tests
             {
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsTrue(launcher.EchoResults);
-                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.Filter);
+                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.Filter);
                 Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
@@ -49,9 +49,6 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
                 Assert.IsFalse(launcher.ShowReports);
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
-                Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
-
-                Assert.AreEqual(0, launcher.CustomMonitors.Count);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
@@ -96,7 +93,7 @@ namespace Gallio.PowerShellCommands.Tests
             {
                 Assert.IsTrue(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
-                Assert.AreEqual("Type: SimpleTest", launcher.Filter.ToFilterExpr());
+                Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.Filter.ToFilterExpr());
                 Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
@@ -105,9 +102,6 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
                 Assert.AreEqual(StandardTestRunnerFactoryNames.LocalAppDomain, launcher.TestRunnerFactoryName);
-                Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
-
-                Assert.AreEqual(0, launcher.CustomMonitors.Count);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);

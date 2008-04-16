@@ -15,14 +15,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using Gallio.Collections;
+using Gallio.Runner.Events;
+using Gallio.Runtime;
+using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
 using Gallio.Runner;
-using Gallio.Runner.Domains;
-using Gallio.Runner.Monitors;
 using Gallio.Runner.Reports;
 using JetBrains.ReSharper.TaskRunnerFramework;
 
@@ -92,33 +94,44 @@ namespace Gallio.ReSharperRunner.Tasks
 
         private void RunTests()
         {
-            using (ITestRunner runner = new DomainTestRunner(new LocalTestDomainFactory()))
+            ILogger logger = RuntimeAccessor.Logger;
+            ITestRunner runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.LocalAppDomain);
+
+            // Set parameters.
+            TestPackageConfig packageConfig = new TestPackageConfig();
+            packageConfig.AssemblyFiles.AddRange(assemblyLocations);
+
+            TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
+
+            TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
+
+            TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
+            testExecutionOptions.Filter = new IdFilter<ITest>(new OrFilter<string>(GenericUtils.ConvertAllToArray<string, Filter<string>>(
+                explicitTestIds, delegate(string testId)
+                {
+                    return new EqualityFilter<string>(testId);
+                })));
+
+            // Install the listeners.
+            runner.Events.TestStepStarted += TestStepStarted;
+            runner.Events.TestStepFinished += TestStepFinished;
+            runner.Events.TestStepLifecyclePhaseChanged += TestStepLifecyclePhaseChanged;
+
+            // Run the tests.
+            try
             {
-                // Set parameters.
-                TestPackageConfig packageConfig = new TestPackageConfig();
-                packageConfig.AssemblyFiles.AddRange(assemblyLocations);
-
-                runner.TestExecutionOptions.Filter = new IdFilter<ITest>(new OrFilter<string>(GenericUtils.ConvertAllToArray<string, Filter<string>>(
-                    explicitTestIds, delegate(string testId)
-                    {
-                        return new EqualityFilter<string>(testId);
-                    })));
-
-                // Install the listeners.
-                ReportMonitor reportMonitor = new ReportMonitor();
-                reportMonitor.Attach(runner);
-                reportMonitor.TestStepStarting += TestStepStarting;
-                reportMonitor.TestStepLifecyclePhaseChanged += TestStepLifecyclePhaseChanged;
-                reportMonitor.TestStepFinished += TestStepFinished;
-
-                // Run the tests.
-                runner.LoadTestPackage(packageConfig, CreateProgressMonitor());
-                runner.BuildTestModel(CreateProgressMonitor());
-                runner.RunTests(CreateProgressMonitor());
+                runner.Initialize(testRunnerOptions, logger, CreateProgressMonitor());
+                runner.Load(packageConfig, CreateProgressMonitor());
+                runner.Explore(testExplorationOptions, CreateProgressMonitor());
+                runner.Run(testExecutionOptions, CreateProgressMonitor());
+            }
+            finally
+            {
+                runner.Dispose(CreateProgressMonitor());
             }
         }
 
-        private void TestStepStarting(object sender, TestStepRunEventArgs e)
+        private void TestStepStarted(object sender, TestStepStartedEventArgs e)
         {
             GallioTestItemTask testTask;
             if (testTasks.TryGetValue(e.Test.Id, out testTask))
@@ -127,7 +140,7 @@ namespace Gallio.ReSharperRunner.Tasks
             }
         }
 
-        private void TestStepLifecyclePhaseChanged(object sender, TestStepRunEventArgs e)
+        private void TestStepLifecyclePhaseChanged(object sender, TestStepLifecyclePhaseChangedEventArgs e)
         {
             GallioTestItemTask testTask;
             if (testTasks.TryGetValue(e.Test.Id, out testTask))
@@ -136,7 +149,7 @@ namespace Gallio.ReSharperRunner.Tasks
             }
         }
 
-        private void TestStepFinished(object sender, TestStepRunEventArgs e)
+        private void TestStepFinished(object sender, TestStepFinishedEventArgs e)
         {
             GallioTestItemTask testTask;
             if (testTasks.TryGetValue(e.Test.Id, out testTask))

@@ -29,8 +29,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Creates a test runner.
         /// </summary>
-        /// <param name="runnerOptions">The test runner options, not null</param>
         /// <returns>The test runner</returns>
-        ITestRunner CreateTestRunner(NameValueCollection runnerOptions);
+        ITestRunner CreateTestRunner();
     }
 }

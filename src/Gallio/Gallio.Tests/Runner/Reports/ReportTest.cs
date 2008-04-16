@@ -17,7 +17,9 @@ using System;
 using System.IO;
 using System.Xml.Serialization;
 using Gallio.Model;
+using Gallio.Reflection;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.Loader;
 using MbUnit.Framework;
 using MbUnit.Framework.Xml;
 using Gallio.Model.Serialization;
@@ -26,8 +28,7 @@ namespace Gallio.Tests.Runner.Reports
 {
     [TestFixture]
     [TestsOn(typeof(Report))]
-    [Author("Jeff", "jeff@ingenio.com")]
-    public class ReportTests
+    public class ReportTests : BaseUnitTest
     {
         [Test]
         public void ReportTypeIsXmlSerializable()
@@ -42,9 +43,9 @@ namespace Gallio.Tests.Runner.Reports
             StringWriter writer = new StringWriter();
 
             Report report = new Report();
-            report.PackageRun = new PackageRun();
-            report.PackageRun.RootTestStepRun = new TestStepRun(new TestStepData("456", "abc", "456:abc", "testId"));
-            report.PackageRun.RootTestStepRun.Children.Add(new TestStepRun(new TestStepData("child", "child", "child", "child")));
+            report.TestPackageRun = new TestPackageRun();
+            report.TestPackageRun.RootTestStepRun = new TestStepRun(new TestStepData("456", "abc", "456:abc", "testId"));
+            report.TestPackageRun.RootTestStepRun.Children.Add(new TestStepRun(new TestStepData("child", "child", "child", "child")));
 
             serializer.Serialize(writer, report);
 
@@ -57,23 +58,24 @@ namespace Gallio.Tests.Runner.Reports
         {
             Report report = new Report();
 
-            Assert.IsNull(report.TestModelData);
+            Assert.IsNull(report.TestModel);
 
             TestModelData value = MockTestDataFactory.CreateEmptyTestModel();
-            report.TestModelData = value;
-            Assert.AreSame(value, report.TestModelData);
+            report.TestModel = value;
+            Assert.AreSame(value, report.TestModel);
         }
 
         [Test]
-        public void GetAndSetPackage()
+        public void GetAndSetPackageConfig()
         {
             Report report = new Report();
 
-            Assert.IsNull(report.TestModelData);
+            Assert.IsNull(report.TestModel);
 
             TestPackageConfig value = new TestPackageConfig();
-            report.PackageConfig = value;
-            Assert.AreSame(value, report.PackageConfig);
+
+            report.TestPackageConfig = value;
+            Assert.AreSame(value, report.TestPackageConfig);
         }
 
         [Test]
@@ -81,11 +83,11 @@ namespace Gallio.Tests.Runner.Reports
         {
             Report report = new Report();
 
-            Assert.IsNull(report.PackageRun);
+            Assert.IsNull(report.TestPackageRun);
 
-            PackageRun value = new PackageRun();
-            report.PackageRun = value;
-            Assert.AreSame(value, report.PackageRun);
+            TestPackageRun value = new TestPackageRun();
+            report.TestPackageRun = value;
+            Assert.AreSame(value, report.TestPackageRun);
         }
     }
 }

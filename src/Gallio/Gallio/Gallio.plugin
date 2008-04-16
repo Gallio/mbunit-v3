@@ -76,7 +76,7 @@
       
       <component id="Core.LocalAppDomainTestRunnerFactory"
                  service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                 type="Gallio.Runner.DomainTestRunnerFactory, Gallio">
+                 type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
         <parameters>
           <domainFactory>${Core.LocalTestDomainFactory}</domainFactory>
           <name>LocalAppDomain</name>
@@ -86,7 +86,7 @@
       
       <component id="Core.IsolatedAppDomainTestRunnerFactory"
                  service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                 type="Gallio.Runner.DomainTestRunnerFactory, Gallio">
+                 type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
         <parameters>
           <domainFactory>${Core.IsolatedAppDomainTestDomainFactory}</domainFactory>
           <name>IsolatedAppDomain</name>
@@ -96,7 +96,7 @@
       
       <component id="Core.IsolatedProcessTestRunnerFactory"
                  service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                 type="Gallio.Runner.DomainTestRunnerFactory, Gallio">
+                 type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
         <parameters>
           <domainFactory>${Core.IsolatedProcessTestDomainFactory}</domainFactory>
           <name>IsolatedProcess</name>

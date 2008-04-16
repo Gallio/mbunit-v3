@@ -76,7 +76,6 @@
     <Compile Include="IcarusLoggerTest.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenterTest.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorProviderTest.cs" />
-    <Compile Include="Core\ProgressMonitoring\TestRunnerMonitorTest.cs" />
     <Compile Include="OptionsTest.cs" />
     <Compile Include="Core\Model\TestRunnerModelTest.cs" />
     <Compile Include="Core\Presenter\ProjectPresenterTest.cs" />

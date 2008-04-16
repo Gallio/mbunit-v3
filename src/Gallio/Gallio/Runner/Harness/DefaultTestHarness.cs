@@ -38,8 +38,8 @@ namespace Gallio.Runner.Harness
     /// </remarks>
     public class DefaultTestHarness : ITestHarness
     {
-        private ITestContextTracker contextTracker;
-        private ILoader loader;
+        private readonly ITestContextTracker contextTracker;
+        private readonly ILoader loader;
 
         private bool isDisposed;
 
@@ -79,7 +79,6 @@ namespace Gallio.Runner.Harness
 
                 package = null;
                 model = null;
-                contextTracker = null;
                 frameworks = null;
                 environments = null;
             }
@@ -126,7 +125,7 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public void LoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
+        public void Load(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
@@ -195,7 +194,7 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public void BuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
+        public void Explore(TestExplorationOptions options, IProgressMonitor progressMonitor)
         {
             if (options == null)
                 throw new ArgumentNullException(@"options");
@@ -225,7 +224,7 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public void RunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
+        public void Run(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
         {
             if (options == null)
                 throw new ArgumentNullException(@"options");

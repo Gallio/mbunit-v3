@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
+using Gallio.Icarus.Core.Presenter;
 using Gallio.Icarus.Interfaces;
 using Gallio.Icarus.Tests;
 using Gallio.Model;
@@ -28,7 +29,7 @@ using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using System.IO;
 
-namespace Gallio.Icarus.Core.Presenter.Tests
+namespace Gallio.Icarus.Tests.Core.Presenter
 {
     [TestFixture]
     public class ProjectPresenterTest : MockTest
@@ -132,8 +133,8 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             TestModelData testModelData = new TestModelData(new TestData("test", "test"));
-            mockModel.LoadTestPackage(testPackageConfig);
-            Expect.Call(mockModel.BuildTestModel()).Return(testModelData);
+            mockModel.Load(testPackageConfig);
+            Expect.Call(mockModel.Explore()).Return(testModelData);
             mockAdapter.TestModelData = testModelData;
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
@@ -145,31 +146,31 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         {
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             TestModelData testModelData = new TestModelData(new TestData("test", "test"));
-            mockModel.LoadTestPackage(testPackageConfig);
-            Expect.Call(mockModel.BuildTestModel()).Return(testModelData);
+            mockModel.Load(testPackageConfig);
+            Expect.Call(mockModel.Explore()).Return(testModelData);
             mockAdapter.TestModelData = testModelData;
-            mockModel.UnloadTestPackage();
+            mockModel.Unload();
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             getTestTreeEvent.Raise(mockAdapter, new GetTestTreeEventArgs(false, testPackageConfig));
         }
 
         [Test]
-        public void RunTests_Test_NoShadowCopy()
+        public void Run_Test_NoShadowCopy()
         {
-            mockModel.LoadTestPackage(null);
+            mockModel.Load(null);
             LastCall.IgnoreArguments();
-            Expect.Call(mockModel.BuildTestModel()).Return(null);
-            mockModel.RunTests();
+            Expect.Call(mockModel.Explore()).Return(null);
+            mockModel.Run();
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             runTestsEvent.Raise(mockAdapter, EventArgs.Empty);
         }
 
         [Test]
-        public void RunTests_Test_ShadowCopyEnabled()
+        public void Run_Test_ShadowCopyEnabled()
         {
-            mockModel.RunTests();
+            mockModel.Run();
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.TestPackageLoaded = true;
@@ -254,9 +255,9 @@ namespace Gallio.Icarus.Core.Presenter.Tests
         }
 
         [Test]
-        public void UnloadTestPackage_Test()
+        public void Unload_Test()
         {
-            mockModel.UnloadTestPackage();
+            mockModel.Unload();
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             projectPresenter.TestPackageLoaded = true;

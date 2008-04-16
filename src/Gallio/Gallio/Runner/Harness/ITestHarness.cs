@@ -54,15 +54,15 @@ namespace Gallio.Runner.Harness
         void AddTestEnvironment(ITestEnvironment environment);
 
         /// <summary>
-        /// Loads the test package into the test harness.
+        /// Loads a test package into the test harness.
         /// </summary>
         /// <param name="packageConfig">The test package configuration</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="packageConfig"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadTestPackage" /> has already been called once
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Load" /> has already been called once
         /// because this interface does not support unloading packages except by disposing the harness
         /// and recreating it</exception>
-        void LoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
+        void Load(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Populates the test model.
@@ -70,8 +70,8 @@ namespace Gallio.Runner.Harness
         /// <param name="options">The test enumeration options</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadTestPackage" /> has not been called yet</exception>
-        void BuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor);
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Load" /> has not been called yet</exception>
+        void Explore(TestExplorationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Runs the tests.
@@ -81,7 +81,7 @@ namespace Gallio.Runner.Harness
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/>,
         /// <paramref name="listener"/> or <paramref name="options"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTestModel" /> has not been called yet</exception>
-        void RunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Explore" /> has not been called yet</exception>
+        void Run(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
     }
 }

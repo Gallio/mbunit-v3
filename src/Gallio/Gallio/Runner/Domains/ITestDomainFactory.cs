@@ -14,10 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Gallio.Runner.Harness;
-using Gallio.Runner.Domains;
 
 namespace Gallio.Runner.Domains
 {

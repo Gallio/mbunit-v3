@@ -217,7 +217,7 @@ namespace Gallio.TDNetRunner.Tests
         {
             Assert.IsFalse(launcher.DoNotRun);
             Assert.IsFalse(launcher.EchoResults);
-            Assert.AreEqual(filter.ToFilterExpr(), launcher.Filter.ToFilterExpr());
+            Assert.AreEqual(filter.ToFilterExpr(), launcher.TestExecutionOptions.Filter.ToFilterExpr());
             Assert.IsInstanceOfType(typeof(FilteredLogger), launcher.Logger);
             Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
             Assert.AreEqual(Path.Combine(Path.GetTempPath(), @"Gallio.TDNetRunner"), launcher.ReportDirectory);
@@ -226,10 +226,6 @@ namespace Gallio.TDNetRunner.Tests
             Assert.AreEqual(Path.GetFileName(assemblyFile), launcher.ReportNameFormat);
             Assert.IsFalse(launcher.ShowReports);
             Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedAppDomain, launcher.TestRunnerFactoryName);
-            Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
-
-            Assert.AreEqual(1, launcher.CustomMonitors.Count);
-            Assert.IsInstanceOfType(typeof(TDNetLogMonitor), launcher.CustomMonitors[0]);
 
             Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);

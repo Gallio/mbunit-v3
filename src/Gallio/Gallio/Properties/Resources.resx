@@ -138,41 +138,6 @@
   <data name="ConsoleProgressMonitor_CancelingBanner" xml:space="preserve">
     <value>&gt;&gt;&gt; CANCELING &lt;&lt;&lt;</value>
   </data>
-  <data name="DebugMonitor_MessageEvent_EventFormat" xml:space="preserve">
-    <value>[Message: {0}] - {1}</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_Start_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: Start ({0})]</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_SetPhase_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: Set Phase ({0})]
-	Phase Name: {1}</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_Finish_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: Finish ({0})]
-	Outcome:  {1}
-	Asserts:  {2}
-	Duration: {3:0.000}s</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_Write_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Write ({0})]
-	Stream Name: {1}
-	Text:        {2}</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_AttachText_EventFormat" xml:space="preserve">
-    <value>[Execution Log: AttachText ({0})]
-	Attachment Name:         {1}
-	Attachment Content Type: {2}</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_BeginSection_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Begin Section ({0})]
-	Stream Name:  {1}
-	Section Name: {2}</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_EndSection_EventFormat" xml:space="preserve">
-    <value>[Execution Log: End Section ({0})]
-	Stream Name: {1}</value>
-  </data>
   <data name="CommandLineOutput_ShortForm" xml:space="preserve">
     <value>(Short form: {0})</value>
   </data>
@@ -239,16 +204,6 @@
   <data name="CommandLineArgumentParser_ArgumentObjectIsOfIncorrectType" xml:space="preserve">
     <value>Parsed argument object is not of the correct type.</value>
   </data>
-  <data name="DebugMonitor_ExecutionLogEvent_EmbedExisting_EventFormat" xml:space="preserve">
-    <value>[Execution Log: Embed Existing ({0})]
-	Stream Name:     {1}
-	Attachment Name: {2}</value>
-  </data>
-  <data name="DebugMonitor_LifecycleEvent_AddMetadata_EventFormat" xml:space="preserve">
-    <value>[Lifecycle: Add Metadata ({0})]
-	Metadata Key:   {1}
-	Metadata Value: {2}</value>
-  </data>
   <data name="FilterParser_EmptyFilterError" xml:space="preserve">
     <value>The filter expression can't be empty</value>
   </data>
@@ -287,10 +242,5 @@
   </data>
   <data name="FilterParser_UnexpectedEndOfInput" xml:space="preserve">
     <value>Unexpected end of input</value>
-  </data>
-  <data name="DebugMonitor_ExecutionLogEvent_AttachBytes_EventFormat" xml:space="preserve">
-    <value>[Execution Log: AttachBytes ({0})]
-	Attachment Name:         {1}
-	Attachment Content Type: {2}</value>
   </data>
 </root>

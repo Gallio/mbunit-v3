@@ -78,5 +78,20 @@ namespace Gallio.Model.Execution
             get { return skipTestExecution; }
             set { skipTestExecution = value; }
         }
+
+        /// <summary>
+        /// Creates a copy of the options.
+        /// </summary>
+        /// <returns>The copy</returns>
+        public TestExecutionOptions Copy()
+        {
+            TestExecutionOptions copy = new TestExecutionOptions();
+
+            copy.filter = filter;
+            copy.skipDynamicTests = skipDynamicTests;
+            copy.skipTestExecution = skipTestExecution;
+
+            return copy;
+        }
     }
 }

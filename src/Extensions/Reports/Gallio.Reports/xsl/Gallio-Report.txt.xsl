@@ -17,7 +17,7 @@
   <xsl:template match="g:report">
 		<xsl:apply-templates select="." mode="results"/>
     <xsl:apply-templates select="g:testModel/g:annotations" />
-    <xsl:apply-templates select="g:packageRun/g:statistics" />
+    <xsl:apply-templates select="g:testPackageRun/g:statistics" />
   </xsl:template>
   
 	<xsl:template match="g:statistics">
@@ -80,7 +80,7 @@
   </xsl:template>
 
   <xsl:template match="g:report" mode="results">
-    <xsl:variable name="testCases" select="g:packageRun/g:testStepRun/descendant-or-self::g:testStepRun[g:testStep/@isTestCase='true']" />
+    <xsl:variable name="testCases" select="g:testPackageRun/g:testStepRun/descendant-or-self::g:testStepRun[g:testStep/@isTestCase='true']" />
     
     <xsl:variable name="passed" select="$testCases[g:result/g:outcome/@status='passed']" />
     <xsl:variable name="failed" select="$testCases[g:result/g:outcome/@status='failed']" />

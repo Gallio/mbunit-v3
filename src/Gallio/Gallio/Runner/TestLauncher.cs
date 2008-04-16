@@ -20,12 +20,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using Gallio.Model.Execution;
+using Gallio.Runner.Extensions;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Model;
-using Gallio.Model.Filters;
-using Gallio.Runner.Monitors;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Runner
@@ -36,7 +36,7 @@ namespace Gallio.Runner
     /// start to finish and provides a simplified pattern for running tests.
     /// </para>
     /// <para>
-    /// The lifecycle is as follows:
+    /// The basic usage pattern is as follows:
     /// <list type="numbered">
     /// <item>Create the launcher.</item>
     /// <item>Set properties to specify the inputs and outputs of the test run.</item>
@@ -56,27 +56,24 @@ namespace Gallio.Runner
     /// by setting the <see cref="TestRunnerFactoryName" /> property.
     /// </para>
     /// </summary>
-    /// <todo>
-    /// More validation of arguments up front.  Particularly report formats.
-    /// </todo>
     public class TestLauncher
     {
         #region Private Members
 
-        private TestPackageConfig testPackageConfig;
         private RuntimeFactory runtimeFactory;
         private RuntimeSetup runtimeSetup;
+
+        private string testRunnerFactoryName;
+        private TestRunnerOptions testRunnerOptions;
+        private TestPackageConfig testPackageConfig;
+        private TestExplorationOptions testExplorationOptions;
+        private TestExecutionOptions testExecutionOptions;
 
         private readonly List<string> reportFormats;
         private readonly NameValueCollection reportFormatOptions;
 
         private IProgressMonitorProvider progressMonitorProvider;
         private ILogger logger;
-
-        private Filter<ITest> filter;
-
-        private string testRunnerFactoryName;
-        private readonly NameValueCollection testRunnerOptions;
 
         private bool echoResults;
         private bool doNotRun;
@@ -85,8 +82,8 @@ namespace Gallio.Runner
         private string reportDirectory;
         private string reportNameFormat;
 
-        private readonly ReportMonitor reportMonitor;
-        private readonly List<ITestRunnerMonitor> customMonitors;
+        private readonly List<ITestRunnerExtension> extensions;
+        private readonly List<string> extensionSpecifications;
 
         private bool showReports;
 
@@ -97,10 +94,11 @@ namespace Gallio.Runner
         /// </summary>
         public TestLauncher()
         {
-            testPackageConfig = new TestPackageConfig();
-
             testRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
-            testRunnerOptions = new NameValueCollection();
+            testRunnerOptions = new TestRunnerOptions();
+            testPackageConfig = new TestPackageConfig();
+            testExplorationOptions = new TestExplorationOptions();
+            testExecutionOptions = new TestExecutionOptions();
 
             reportDirectory = @"";
             reportNameFormat = @"test-report-{0}-{1}";
@@ -110,10 +108,8 @@ namespace Gallio.Runner
             progressMonitorProvider = NullProgressMonitorProvider.Instance;
             logger = NullLogger.Instance;
 
-            filter = new AnyFilter<ITest>();
-
-            reportMonitor = new ReportMonitor();
-            customMonitors = new List<ITestRunnerMonitor>();
+            extensions = new List<ITestRunnerExtension>();
+            extensionSpecifications = new List<string>();
         }
 
         /// <summary>
@@ -155,43 +151,6 @@ namespace Gallio.Runner
                     throw new ArgumentNullException(@"value");
 
                 logger = value;
-            }
-        }
-
-        /// <summary>
-        /// <para>
-        /// Gets or sets the test filter to apply.
-        /// </para>
-        /// <para>
-        /// The default filter is an instance of <see cref="AnyFilter{T}" />.
-        /// </para>
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        public Filter<ITest> Filter
-        {
-            get { return filter; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-
-                filter = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the test package.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        public TestPackageConfig TestPackageConfig
-        {
-            get { return testPackageConfig; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-
-                testPackageConfig = value;
             }
         }
 
@@ -258,11 +217,67 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Gets the mutable collection of options for the test runner.
+        /// Gets or sets the test runner options.
         /// </summary>
-        public NameValueCollection TestRunnerOptions
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public TestRunnerOptions TestRunnerOptions
         {
             get { return testRunnerOptions; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                testRunnerOptions = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the test package.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public TestPackageConfig TestPackageConfig
+        {
+            get { return testPackageConfig; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+
+                testPackageConfig = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the test exploration options.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public TestExplorationOptions TestExplorationOptions
+        {
+            get { return testExplorationOptions; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+
+                testExplorationOptions = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the test execution options.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public TestExecutionOptions TestExecutionOptions
+        {
+            get { return testExecutionOptions; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+
+                testExecutionOptions = value;
+            }
         }
 
         /// <summary>
@@ -357,20 +372,6 @@ namespace Gallio.Runner
 
         /// <summary>
         /// <para>
-        /// Gets the test runner's report monitor.
-        /// </para>
-        /// <para>
-        /// The report monitor fires events during test execution to allow test results
-        /// to be retrieved incrementally as the test executes.
-        /// </para>
-        /// </summary>
-        public ReportMonitor ReportMonitor
-        {
-            get { return reportMonitor; }
-        }
-
-        /// <summary>
-        /// <para>
         /// Gets or sets whether to show the reports after the test run finishes.
         /// </para>
         /// <para>
@@ -400,19 +401,33 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// <para>
-        /// Gets a mutable list of custom <see cref="ITestRunnerMonitor" /> objects that
-        /// will be attached to the <see cref="ITestRunner" /> just prior to test execution
-        /// then detached afterwards.
-        /// </para>
-        /// <para>
-        /// The test runner fires events throughout the test execution lifecycle.  Custom
-        /// monitors can capture those events and perform real-time updates as required.
-        /// </para>
+        /// Adds a test runner extension.
         /// </summary>
-        public IList<ITestRunnerMonitor> CustomMonitors
+        /// <param name="extension">The extension</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="extension"/> is null</exception>
+        public void AddExtension(ITestRunnerExtension extension)
         {
-            get { return customMonitors; }
+            if (extension == null)
+                throw new ArgumentNullException("extension");
+
+            extensions.Add(extension);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Adds a test runner extension with a given specification.
+        /// </para>
+        /// <seealso cref="TestRunnerExtensionUtils.CreateExtensionFromSpecification"/>
+        /// for an explanation of the specification syntax.
+        /// </summary>
+        /// <param name="extensionSpecification">The extension specification</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="extensionSpecification"/> is null</exception>
+        public void AddExtensionSpecification(string extensionSpecification)
+        {
+            if (extensionSpecification == null)
+                throw new ArgumentNullException("extensionSpecification");
+
+            extensionSpecifications.Add(extensionSpecification);
         }
 
         #region Public Methods
@@ -432,15 +447,19 @@ namespace Gallio.Runner
         /// Runtimes cannot be nested.  So if the launcher is asked to initialize the runtime and
         /// it has already been initialized then an exception will be thrown.
         /// </remarks>
-        /// <returns>An integer representing the result of the execution.</returns>
+        /// <returns>A result object</returns>
         public TestLauncherResult Run()
         {
-            reportMonitor.ResetReport();
+            Canonicalize(null);
+            DisplayConfiguration();
 
-            TestLauncherResult result = new TestLauncherResult(reportMonitor.Report);
+            VerifyAssemblies();
 
-            if (!PrepareToRun(result))
-                return result;
+            if (testPackageConfig.AssemblyFiles.Count == 0)
+            {
+                logger.Log(LogSeverity.Warning, "No test assemblies to execute!");
+                return CreateResult(ResultCode.NoTests);
+            }
 
             logger.Log(LogSeverity.Info, "Initializing the test runner.");
 
@@ -448,91 +467,131 @@ namespace Gallio.Runner
                 ? RuntimeBootstrap.Initialize(runtimeFactory, runtimeSetup, logger)
                 : null)
             {
-                using (ITestRunner runner = CreateRunner(result))
+                return RunWithRuntime();
+            }
+        }
+
+        private TestLauncherResult RunWithRuntime()
+        {
+            IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+            if (!ValidateReportFormats(reportManager))
+                return CreateResult(ResultCode.InvalidArguments);
+
+            ITestRunnerManager manager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
+            ITestRunnerFactory factory = manager.FactoryResolver.Resolve(testRunnerFactoryName);
+            if (factory == null)
+            {
+                logger.Log(LogSeverity.Error, String.Format("Unrecognized test runner factory name: '{0}'.", testRunnerFactoryName));
+                return CreateResult(ResultCode.InvalidArguments);
+            }
+
+            ITestRunner runner = factory.CreateTestRunner();
+            try
+            {
+                DoRegisterExtensions(runner);
+                DoInitialize(runner);
+
+                return RunWithInitializedRunner(runner, reportManager);
+            }
+            finally
+            {
+                DoDispose(runner);
+            }
+        }
+
+        private TestLauncherResult RunWithInitializedRunner(ITestRunner runner, IReportManager reportManager)
+        {
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            logger.Log(LogSeverity.Info, String.Format("Start time: {0}", DateTime.Now.ToShortTimeString()));
+
+            TestLauncherResult result;
+            bool wasCanceled = false;
+            try
+            {
+                // Run initial phases.
+                try
                 {
-                    if (runner == null)
-                        return result;
+                    DoLoad(runner);
+                    DoExplore(runner);
+                }
+                catch (OperationCanceledException)
+                {
+                    wasCanceled = true;
+                }
 
-                    IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
-                    if (!InitializeRunner(result, runner, reportManager))
-                        return result;
-
-                    Stopwatch stopWatch = Stopwatch.StartNew();
-                    logger.Log(LogSeverity.Info, String.Format("Start time: {0}", DateTime.Now.ToShortTimeString()));
-
+                // Run tests.
+                if (! wasCanceled && !doNotRun)
+                {
                     try
                     {
-                        // Run initial phases.
-                        if (!RunInitialPhases(result, runner))
-                            return result;
-
-                        // Run tests.
-                        if (!doNotRun)
-                        {
-                            try
-                            {
-                                RunTests(runner);
-
-                                if (result.Report.PackageRun.Statistics.FailedCount > 0)
-                                    result.SetResultCode(ResultCode.Failure);
-                                else if (result.Report.PackageRun.Statistics.TestCount == 0)
-                                    result.SetResultCode(ResultCode.NoTests);
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                result.SetResultCode(ResultCode.Canceled);
-                            }
-                        }
-                    }
-                    finally
-                    {
-                        // Create a new report object before unloading to ensure we retain the previous report.
-                        reportMonitor.ResetReport();
-
-                        // Unload the package now since we're done with it.
-                        // This also provides more meaningful progress information to the user
-                        // than if we're simply waited until the runner was disposed.
-                        try
-                        {
-                            UnloadTestPackage(runner);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            result.SetResultCode(ResultCode.Canceled);
-                        }
-                    }
-
-                    // Generate reports even if the test run is canceled, unless this step
-                    // also gets canceled.
-                    try
-                    {
-                        GenerateReports(result, reportManager);
+                        DoRun(runner);
                     }
                     catch (OperationCanceledException)
                     {
-                        result.SetResultCode(ResultCode.Canceled);
+                        wasCanceled = true;
                     }
+                }
 
-                    // Done.
-                    logger.Log(LogSeverity.Info, String.Format("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
-                        DateTime.Now.ToShortTimeString(),
-                        stopWatch.Elapsed.TotalSeconds));
-
-                    if (showReports)
-                    {
-                        logger.Log(LogSeverity.Info, "Displaying reports.");
-                        ShowReportDocuments(result);
-                    }
-
-                    // Produce a failure in case there were error annotations.
-                    if (! ignoreAnnotations
-                        && result.ResultCode == ResultCode.Success
-                        && result.Report.TestModelData.GetErrorAnnotationCount() != 0)
-                        result.SetResultCode(ResultCode.Failure);
-
-                    return result;
+                result = new TestLauncherResult(runner.Report);
+            }
+            finally
+            {
+                // Unload the package now since we're done with it.
+                // This also provides more meaningful progress information to the user
+                // than if we're simply waited until the runner was disposed.
+                try
+                {
+                    DoUnload(runner);
+                }
+                catch (OperationCanceledException)
+                {
+                    wasCanceled = true;
                 }
             }
+
+            // Generate reports even if the test run is canceled, unless this step
+            // also gets canceled.
+            try
+            {
+                if (result.Report.TestPackageRun != null)
+                    GenerateReports(result, reportManager);
+            }
+            catch (OperationCanceledException)
+            {
+                wasCanceled = true;
+            }
+
+            // Done.
+            logger.Log(LogSeverity.Info, String.Format("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
+                DateTime.Now.ToShortTimeString(),
+                stopWatch.Elapsed.TotalSeconds));
+
+            if (showReports && result.ReportDocumentPaths.Count != 0)
+            {
+                logger.Log(LogSeverity.Info, "Displaying reports.");
+                ShowReportDocuments(result);
+            }
+
+            // Produce the final result code.
+            if (wasCanceled)
+            {
+                result.SetResultCode(ResultCode.Canceled);
+            }
+            else
+            {
+                if (! ignoreAnnotations
+                    && result.Report.TestModel != null
+                    && result.Report.TestModel.GetErrorAnnotationCount() != 0)
+                    result.SetResultCode(ResultCode.Failure);
+                else if (result.Report.TestPackageRun != null
+                    && result.Statistics.FailedCount > 0)
+                    result.SetResultCode(ResultCode.Failure);
+                else if (result.Report.TestPackageRun != null
+                    && result.Statistics.TestCount == 0)
+                    result.SetResultCode(ResultCode.NoTests);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -540,8 +599,15 @@ namespace Gallio.Runner
         /// </summary>
         /// <param name="result">The test results to use</param>
         /// <param name="reportManager">The report manager</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="result"/>
+        /// or <paramref name="reportManager"/> is null</exception>
         public void GenerateReports(TestLauncherResult result, IReportManager reportManager)
         {
+            if (result == null)
+                throw new ArgumentNullException("result");
+            if (reportManager == null)
+                throw new ArgumentNullException("reportManager");
+
             if (reportFormats.Count == 0)
                 return;
 
@@ -597,52 +663,6 @@ namespace Gallio.Runner
 
         #region Private Methods
 
-        private bool PrepareToRun(TestLauncherResult result)
-        {
-            Canonicalize(null);
-            DisplayConfiguration();
-
-            VerifyAssemblies();
-
-            if (!HasTestAssemblies())
-            {
-                result.SetResultCode(ResultCode.NoTests);
-                return false;
-            }
-
-            return true;
-        }
-
-        private ITestRunner CreateRunner(TestLauncherResult result)
-        {
-            ITestRunnerManager manager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
-            ITestRunnerFactory factory = manager.FactoryResolver.Resolve(testRunnerFactoryName);
-
-            if (factory == null)
-            {
-                result.SetResultCode(ResultCode.InvalidArguments);
-                logger.Log(LogSeverity.Error, String.Format("Unrecognized test runner factory name: '{0}'.", testRunnerFactoryName));
-                return null;
-            }
-
-            return factory.CreateTestRunner(testRunnerOptions);
-        }
-
-        private bool InitializeRunner(TestLauncherResult result, ITestRunner runner, IReportManager reportManager)
-        {
-            if (!ValidateReportFormats(reportManager))
-            {
-                result.SetResultCode(ResultCode.InvalidArguments);
-                return false;
-            }
-
-            reportMonitor.Attach(runner);
-            AttachDebugMonitor(runner);
-            AttachLogMonitorIfNeeded(runner);
-            AttachCustomMonitors(runner);
-            return true;
-        }
-
         private bool ValidateReportFormats(IReportManager reportManager)
         {
             foreach (string reportFormat in reportFormats)
@@ -664,42 +684,16 @@ namespace Gallio.Runner
             return true;
         }
 
-        private void AttachDebugMonitor(ITestRunner runner)
-        {
-            new DebugMonitor(logger).Attach(runner);
-        }
-
-        private void AttachLogMonitorIfNeeded(ITestRunner runner)
+        private void DoRegisterExtensions(ITestRunner runner)
         {
             if (echoResults)
-            {
-                LogMonitor logMonitor = new LogMonitor(logger, reportMonitor);
-                logMonitor.Attach(runner);
-            }
-        }
+                runner.RegisterExtension(new LogExtension());
 
-        private void AttachCustomMonitors(ITestRunner runner)
-        {
-            foreach (ITestRunnerMonitor monitor in customMonitors)
-            {
-                monitor.Attach(runner);
-            }
-        }
+            foreach (ITestRunnerExtension extension in extensions)
+                runner.RegisterExtension(extension);
 
-        private bool RunInitialPhases(TestLauncherResult result, ITestRunner runner)
-        {
-            try
-            {
-                ApplyFilter(runner);
-                LoadTestPackage(runner);
-                BuildTestModel(runner);
-                return true;
-            }
-            catch (OperationCanceledException)
-            {
-                result.SetResultCode(ResultCode.Canceled);
-                return false;
-            }
+            foreach (string extensionSpecification in extensionSpecifications)
+                runner.RegisterExtension(TestRunnerExtensionUtils.CreateExtensionFromSpecification(extensionSpecification));
         }
 
         /// <summary>
@@ -759,51 +753,51 @@ namespace Gallio.Runner
                 runtimeSetup.Canonicalize(baseDirectory);
         }
 
-        private bool HasTestAssemblies()
-        {
-            if (testPackageConfig.AssemblyFiles.Count == 0)
-            {
-                logger.Log(LogSeverity.Warning, "No test assemblies to execute!");
-                return false;
-            }
-
-            return true;
-        }
-
-        private void ApplyFilter(ITestRunner runner)
-        {
-            runner.TestExecutionOptions.Filter = filter;
-        }
-
-        private void LoadTestPackage(ITestRunner runner)
+        private void DoInitialize(ITestRunner runner)
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                runner.LoadTestPackage(testPackageConfig, progressMonitor);
+                runner.Initialize(testRunnerOptions, logger, progressMonitor);
             });
         }
 
-        private void BuildTestModel(ITestRunner runner)
+        private void DoLoad(ITestRunner runner)
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                runner.BuildTestModel(progressMonitor);
+                runner.Load(testPackageConfig, progressMonitor);
             });
         }
 
-        private void RunTests(ITestRunner runner)
+        private void DoExplore(ITestRunner runner)
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                runner.RunTests(progressMonitor);
+                runner.Explore(testExplorationOptions, progressMonitor);
             });
         }
 
-        private void UnloadTestPackage(ITestRunner runner)
+        private void DoRun(ITestRunner runner)
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                runner.UnloadTestPackage(progressMonitor);
+                runner.Run(testExecutionOptions, progressMonitor);
+            });
+        }
+
+        private void DoUnload(ITestRunner runner)
+        {
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                runner.Unload(progressMonitor);
+            });
+        }
+
+        private void DoDispose(ITestRunner runner)
+        {
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                runner.Dispose(progressMonitor);
             });
         }
 
@@ -815,11 +809,21 @@ namespace Gallio.Runner
 
         private string GenerateReportName(Report report)
         {
-            DateTime reportTime = report.PackageRun != null ? report.PackageRun.StartTime : DateTime.Now;
+            DateTime reportTime = report.TestPackageRun != null ? report.TestPackageRun.StartTime : DateTime.Now;
 
             return String.Format(CultureInfo.InvariantCulture, reportNameFormat,
                 reportTime.ToString(@"yyyyMMdd"),
                 reportTime.ToString(@"HHmmss"));
+        }
+
+        private TestLauncherResult CreateResult(int resultCode)
+        {
+            Report report = new Report();
+            report.TestPackageConfig = testPackageConfig;
+
+            TestLauncherResult result = new TestLauncherResult(report);
+            result.SetResultCode(resultCode);
+            return result;
         }
 
         #endregion

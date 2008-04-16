@@ -17,21 +17,23 @@ using System;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Text;
+using Gallio.Model.Execution;
+using Gallio.Runner.Events;
+using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Serialization;
-using Gallio.Runner.Monitors;
 using Gallio.Runner.Reports;
 using Gallio.Icarus.Core.Reports;
 using Gallio.Runner;
-using Gallio.Runner.Domains;
 using Gallio.Model.Filters;
 using System.Globalization;
 using System.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus.Core.Model
 {
@@ -39,13 +41,17 @@ namespace Gallio.Icarus.Core.Model
     {
         private readonly ITestRunner testRunner;
         private readonly IReportManager reportManager;
-        private ReportMonitor reportMonitor = null;
-        private IProjectPresenter projectPresenter = null;
+        private readonly TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
+        private readonly TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
+
+        private IProjectPresenter projectPresenter;
+
         private IProgressMonitorProvider progressMonitorProvider = NullProgressMonitorProvider.Instance;
-        private IProgressMonitor runTestsProgressMonitor = null;
+        private IProgressMonitor runTestsProgressMonitor;
+
+        private string reportNameFormat = "test-report-{0}-{1}";
         private string reportFolder;
         private string executionLogFolder;
-        private string reportNameFormat = "test-report-{0}-{1}";
 
         public IProjectPresenter ProjectPresenter
         {
@@ -69,51 +75,61 @@ namespace Gallio.Icarus.Core.Model
             this.testRunner = testRunner;
             this.reportManager = reportManager;
 
-            // attach report monitor to test runner
-            reportMonitor = new ReportMonitor();
-            reportMonitor.Attach(testRunner);
+            testRunner.Events.TestStepFinished += HandleTestStepFinished;
 
             // set up reports
             executionLogFolder = Path.Combine(Paths.IcarusAppDataFolder, @"ExecutionLog");
             reportFolder = Path.Combine(Paths.IcarusAppDataFolder, @"Reports");
         }
 
-        public void LoadTestPackage(TestPackageConfig testPackageConfig)
+        public void Initialize()
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                testRunner.LoadTestPackage(testPackageConfig, progressMonitor);
+                TestRunnerOptions options = new TestRunnerOptions();
+                ILogger logger = RuntimeAccessor.Logger;
+                testRunner.Initialize(options, logger, progressMonitor);
             });
         }
 
-        public TestModelData BuildTestModel()
+        public void Dispose()
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                testRunner.BuildTestModel(progressMonitor);
+                testRunner.Dispose(progressMonitor);
             });
-            return testRunner.TestModelData;
         }
 
-        public void RunTests()
+        public void Load(TestPackageConfig testPackageConfig)
         {
-            // tidy up last run
-            reportMonitor.ResetReport();
+            Unload();
+
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                testRunner.Load(testPackageConfig, progressMonitor);
+            });
+        }
+
+        public TestModelData Explore()
+        {
+            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                testRunner.Explore(testExplorationOptions, progressMonitor);
+            });
+            return testRunner.Report.TestModel;
+        }
+
+        public void Run()
+        {
             SetupExecutionLog();
-
-            // attach test runner monitor
-            ITestRunnerMonitor testRunnerMonitor = new TestRunnerMonitor(projectPresenter, reportMonitor, executionLogFolder);
-            testRunnerMonitor.Attach(testRunner);
 
             // run tests
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 runTestsProgressMonitor = progressMonitor;
-                testRunner.RunTests(progressMonitor);
-            });
 
-            // detach test runner monitor
-            testRunnerMonitor.Detach();
+                testRunner.Run(testExecutionOptions, progressMonitor);
+            });
         }
 
         public void StopTests()
@@ -127,8 +143,8 @@ namespace Gallio.Icarus.Core.Model
             string reportPath = string.Empty;
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                IReportContainer reportContainer = CreateReportContainer(reportMonitor.Report);
-                IReportWriter reportWriter = reportManager.CreateReportWriter(reportMonitor.Report, reportContainer);
+                IReportContainer reportContainer = CreateReportContainer(testRunner.Report);
+                IReportWriter reportWriter = reportManager.CreateReportWriter(testRunner.Report, reportContainer);
 
                 // format the report as xml
                 reportManager.Format(reportWriter, "html", new NameValueCollection(), progressMonitor);
@@ -145,7 +161,7 @@ namespace Gallio.Icarus.Core.Model
 
         private string GenerateReportName(Report report)
         {
-            DateTime reportTime = report.PackageRun != null ? report.PackageRun.StartTime : DateTime.Now;
+            DateTime reportTime = report.TestPackageRun != null ? report.TestPackageRun.StartTime : DateTime.Now;
 
             return String.Format(CultureInfo.InvariantCulture, reportNameFormat,
                 reportTime.ToString(@"yyyyMMdd"),
@@ -154,9 +170,9 @@ namespace Gallio.Icarus.Core.Model
 
         public Stream GetExecutionLog(string testId, TestModelData testModelData)
         {
-            if (reportMonitor.Report.PackageRun != null)
+            if (testRunner.Report.TestPackageRun != null)
             {
-                foreach (TestStepRun testStepRun in reportMonitor.Report.PackageRun.AllTestStepRuns)
+                foreach (TestStepRun testStepRun in testRunner.Report.TestPackageRun.AllTestStepRuns)
                 {
                     if (testStepRun.Step.TestId == testId)
                         return TestStepReportWriter.OutputReport(testStepRun, testModelData, executionLogFolder);
@@ -200,7 +216,7 @@ namespace Gallio.Icarus.Core.Model
             {
                 progressMonitor.BeginTask("Generating report.", 100);
 
-                Report report = reportMonitor.Report;
+                Report report = testRunner.Report;
                 IReportContainer reportContainer = new FileSystemReportContainer(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
 
@@ -225,15 +241,36 @@ namespace Gallio.Icarus.Core.Model
 
         public void SetFilter(Filter<ITest> filter)
         {
-            testRunner.TestExecutionOptions.Filter = filter;
+            testExecutionOptions.Filter = filter;
         }
 
-        public void UnloadTestPackage()
+        public void Unload()
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                testRunner.UnloadTestPackage(progressMonitor);
+                testRunner.Unload(progressMonitor);
             });
+        }
+
+        private void HandleTestStepFinished(object sender, TestStepFinishedEventArgs e)
+        {
+            projectPresenter.Update(e.Test, e.TestStepRun);
+
+            // store attachments as we go along for the execution log viewer!
+            string attachmentDirectory = string.Empty;
+            if (e.TestStepRun.ExecutionLog.Attachments.Count > 0)
+            {
+                attachmentDirectory = Path.Combine(reportFolder, FileUtils.EncodeFileName(e.TestStepRun.Step.Id));
+                if (!Directory.Exists(attachmentDirectory))
+                    Directory.CreateDirectory(attachmentDirectory);
+            }
+
+            foreach (ExecutionLogAttachment ela in e.TestStepRun.ExecutionLog.Attachments)
+            {
+                string fileName = Path.Combine(attachmentDirectory, FileUtils.EncodeFileName(ela.Name));
+                using (FileStream fs = File.Open(fileName, FileMode.Create, FileAccess.Write))
+                    ela.SaveContents(fs, Encoding.Default);
+            }
         }
     }
 }

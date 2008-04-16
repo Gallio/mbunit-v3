@@ -136,7 +136,7 @@ namespace Gallio.TDNetRunner
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-            launcher.Filter = filter;
+            launcher.TestExecutionOptions.Filter = filter;
             launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
 
             launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
@@ -148,7 +148,7 @@ namespace Gallio.TDNetRunner
             launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTestRunner).Assembly));
 
             // This monitor will inform the user in real-time what's going on
-            launcher.CustomMonitors.Add(new TDNetLogMonitor(testListener, launcher.ReportMonitor));
+            launcher.AddExtension(new TDNetLogExtension(testListener));
 
             string location = AssemblyUtils.GetFriendlyAssemblyLocation(assembly);
             launcher.TestPackageConfig.AssemblyFiles.Add(location);

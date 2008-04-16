@@ -46,18 +46,16 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public ITestRunner CreateTestRunner(string factoryName, NameValueCollection runnerOptions)
+        public ITestRunner CreateTestRunner(string factoryName)
         {
             if (factoryName == null)
                 throw new ArgumentNullException(@"factoryName");
-            if (runnerOptions == null)
-                throw new ArgumentNullException(@"runnerOptions");
 
             ITestRunnerFactory factory = FactoryResolver.Resolve(factoryName);
             if (factory == null)
                 throw new InvalidOperationException(String.Format("There is no test runner factory named '{0}'.", factoryName));
 
-            return factory.CreateTestRunner(runnerOptions);
+            return factory.CreateTestRunner();
         }
     }
 }

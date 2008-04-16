@@ -80,7 +80,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TDNetLogger.cs" />
-    <Compile Include="TDNetLogMonitor.cs" />
+    <Compile Include="TDNetLogExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

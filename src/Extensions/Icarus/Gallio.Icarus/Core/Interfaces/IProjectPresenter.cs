@@ -37,6 +37,6 @@ namespace Gallio.Icarus.Core.Interfaces
         void Update(TestData testData, TestStepRun testStepRun);
         void OnGetTestFrameworks(object sender, EventArgs e);
         void OnGetExecutionLog(object sender, SingleEventArgs<string> e);
-        void OnUnloadTestPackage(object sender, EventArgs e);
+        void OnUnload(object sender, EventArgs e);
     }
 }

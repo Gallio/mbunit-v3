@@ -274,6 +274,8 @@ namespace Gallio.Runtime.Hosting
             private const string HostAppFileName = "Gallio.Host.exe";
 
             private readonly HostSetup hostSetup;
+            private readonly bool isHostCopyRequired;
+
             private readonly string hostAppPath;
             private readonly string hostConfigPath;
 
@@ -281,7 +283,13 @@ namespace Gallio.Runtime.Hosting
             {
                 this.hostSetup = hostSetup;
 
-                hostAppPath = Path.Combine(hostSetup.ApplicationBaseDirectory, "Gallio.Host." + uniqueId + ".tmp");
+                isHostCopyRequired = IsHostCopyRequired(hostSetup);
+
+                if (isHostCopyRequired)
+                    hostAppPath = Path.Combine(hostSetup.ApplicationBaseDirectory, "Gallio.Host." + uniqueId + ".tmp");
+                else
+                    hostAppPath = Path.Combine(RuntimeAccessor.InstallationPath, "Gallio.Host.exe");
+
                 hostConfigPath = hostAppPath + ".config";
             }
 
@@ -292,25 +300,31 @@ namespace Gallio.Runtime.Hosting
 
             public void Initialize()
             {
-                string installedHostProcessPath = GetInstalledHostProcessPath();
-
-                try
+                if (isHostCopyRequired)
                 {
-                    File.Copy(installedHostProcessPath, hostAppPath);
+                    string installedHostProcessPath = GetInstalledHostProcessPath();
 
-                    string configurationXml = hostSetup.Configuration.ToString();
-                    File.WriteAllText(hostConfigPath, configurationXml);
-                }
-                catch (Exception ex)
-                {
-                    throw new HostException(String.Format("Could not copy the configured host application to '{0}'.", hostAppPath), ex);
+                    try
+                    {
+                        File.Copy(installedHostProcessPath, hostAppPath);
+
+                        string configurationXml = hostSetup.Configuration.ToString();
+                        File.WriteAllText(hostConfigPath, configurationXml);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new HostException(String.Format("Could not copy the configured host application to '{0}'.", hostAppPath), ex);
+                    }
                 }
             }
 
             public void Dispose()
             {
-                SafeDelete(hostAppPath);
-                SafeDelete(hostConfigPath);
+                if (isHostCopyRequired)
+                {
+                    SafeDelete(hostAppPath);
+                    SafeDelete(hostConfigPath);
+                }
             }
 
             private static void SafeDelete(string path)
@@ -336,6 +350,30 @@ namespace Gallio.Runtime.Hosting
                     throw new HostException(String.Format("Could not find the installed host application in '{0}'.", hostProcessPath));
 
                 return hostProcessPath;
+            }
+
+            /// <summary>
+            /// To set certain configuration parameters we much create a temporary copy
+            /// of the host application.  This step might be alleviated if we instead
+            /// reimplemented the host using the CLR Hosting APIs to override the setting
+            /// of these parameters in an in-place executable without requiring any
+            /// edits to the configuration file itself.
+            /// </summary>
+            private static bool IsHostCopyRequired(HostSetup setup)
+            {
+                return setup.ApplicationBaseDirectory != RuntimeAccessor.InstallationPath
+                    || !IsDefaultHostConfiguration(setup.Configuration);
+            }
+
+            private static bool IsDefaultHostConfiguration(HostConfiguration config)
+            {
+                return config.AssemblyDependencies.Count == 0
+                    && config.AssemblyQualifications.Count == 0
+                    && config.AssertUiEnabled == false
+                    && config.ConfigurationXml == null
+                    && config.LegacyUnhandledExceptionPolicyEnabled == true
+                    && config.RemotingCustomErrorsEnabled == false
+                    && config.SupportedRuntimeVersions.Count == 0;
             }
         }
     }

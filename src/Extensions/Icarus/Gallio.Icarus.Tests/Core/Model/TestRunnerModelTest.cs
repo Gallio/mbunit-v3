@@ -23,7 +23,7 @@ using Gallio.Icarus.Core.Presenter;
 using Gallio.Icarus.Tests;
 using Gallio.Model;
 using Gallio.Model.Filters;
-
+using Gallio.Runner.Events;
 using MbUnit.Framework;
 
 using Rhino.Mocks;
@@ -34,6 +34,8 @@ using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model.Execution;
 using Gallio.Runtime;
 using System.Collections.Specialized;
+using Rhino.Mocks.Constraints;
+using Rhino.Mocks.Interfaces;
 
 namespace Gallio.Icarus.Core.Model.Tests
 {
@@ -42,6 +44,7 @@ namespace Gallio.Icarus.Core.Model.Tests
     {
         private TestRunnerModel testRunnerModel;
         private ITestRunner testRunner;
+        private ITestRunnerEvents testRunnerEvents;
         private IReportManager reportManager;
 
         [SetUp]
@@ -49,20 +52,8 @@ namespace Gallio.Icarus.Core.Model.Tests
         {
             // set up test runner mock
             testRunner = mocks.CreateMock<ITestRunner>();
-            testRunner.TestPackageChanged += null;
-            LastCall.IgnoreArguments();
-            testRunner.BuildTestModelComplete += null;
-            LastCall.IgnoreArguments();
-            testRunner.RunTestsStarting += null;
-            LastCall.IgnoreArguments();
-            testRunner.RunTestsComplete += null;
-            LastCall.IgnoreArguments();
-            TestEventDispatcher testEventDispatcher = mocks.CreateMock<TestEventDispatcher>();
-            Expect.Call(testRunner.EventDispatcher).Return(testEventDispatcher).Repeat.AtLeastOnce();
-            testEventDispatcher.Lifecycle += null;
-            LastCall.IgnoreArguments();
-            testEventDispatcher.ExecutionLog += null;
-            LastCall.IgnoreArguments();
+            testRunnerEvents = mocks.DynamicMock<ITestRunnerEvents>();
+            SetupResult.For(testRunner.Events).Return(testRunnerEvents);
 
             reportManager = mocks.CreateMock<IReportManager>();
         }
@@ -78,13 +69,13 @@ namespace Gallio.Icarus.Core.Model.Tests
         [Test]
         public void BuildTestModel_Test()
         {
-            testRunner.BuildTestModel(null);
+            testRunner.Explore(null, null);
             LastCall.IgnoreArguments();
             TestModelData testModelData = new TestModelData(new TestData("test", "test"));
-            Expect.Call(testRunner.TestModelData).Return(testModelData);
+            Expect.Call(testRunner.Report.TestModel).Return(testModelData);
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
-            TestModelData tmd = testRunnerModel.BuildTestModel();
+            TestModelData tmd = testRunnerModel.Explore();
             Assert.AreEqual(testModelData, tmd);
         }
 
@@ -92,11 +83,11 @@ namespace Gallio.Icarus.Core.Model.Tests
         public void LoadTestPackage_Test()
         {
             TestPackageConfig testPackageConfig = new TestPackageConfig();
-            testRunner.LoadTestPackage(testPackageConfig, null);
+            testRunner.Load(testPackageConfig, null);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
-            testRunnerModel.LoadTestPackage(testPackageConfig);
+            testRunnerModel.Load(testPackageConfig);
         }
 
         [Test]
@@ -151,12 +142,12 @@ namespace Gallio.Icarus.Core.Model.Tests
             IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
             Expect.Call(projectPresenter.CompletedWorkUnits = 0).Repeat.AtLeastOnce();
             projectPresenter.StatusText = string.Empty;
-            testRunner.RunTests(null);
+            testRunner.Run(null, null);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             testRunnerModel.ProjectPresenter = projectPresenter;
-            testRunnerModel.RunTests();
+            testRunnerModel.Run();
         }
 
         [Test]
@@ -178,12 +169,23 @@ namespace Gallio.Icarus.Core.Model.Tests
         public void SetFilter_Test()
         {
             TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
-            Expect.Call(testRunner.TestExecutionOptions).Return(testExecutionOptions);
             Filter<ITest> filter = new NoneFilter<ITest>();
             testExecutionOptions.Filter = filter;
+
+            Expect.Call(delegate { testRunner.Run(null, null); })
+                .Constraints(Is.NotNull(), Is.NotNull())
+                .Do((Action<TestExecutionOptions, IProgressMonitor>)
+                delegate(TestExecutionOptions options, IProgressMonitor progressMonitor)
+                {
+                    Assert.AreSame(filter, options.Filter);
+                });
+
             mocks.ReplayAll();
+
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             testRunnerModel.SetFilter(filter);
+
+            testRunnerModel.Run();
         }
 
         [Test]
@@ -197,11 +199,11 @@ namespace Gallio.Icarus.Core.Model.Tests
         [Test]
         public void UnloadTestPackage_Test()
         {
-            testRunner.UnloadTestPackage(null);
+            testRunner.Unload(null);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
-            testRunnerModel.UnloadTestPackage();
+            testRunnerModel.Unload();
         }
     }
 }

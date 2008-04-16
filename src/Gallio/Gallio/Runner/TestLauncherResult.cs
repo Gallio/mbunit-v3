@@ -62,24 +62,22 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// A short summary with the number of test that passed, failed and so on.
+        /// Gets a short summary with the number of test that passed, failed and so on.
         /// </summary>
         public string ResultSummary
         {
-            get
-            {
-                return Statistics.FormatTestCaseResultSummary();
-            }
+            get { return Statistics.FormatTestCaseResultSummary(); }
         }
 
         /// <summary>
-        /// The statistics of the execution.
+        /// Gets the statistics of the execution from the report
+        /// or an empty statistics object if none.
         /// </summary>
-        public PackageRunStatistics Statistics
+        public Statistics Statistics
         {
             get
             {
-                return report != null && report.PackageRun != null ? report.PackageRun.Statistics : new PackageRunStatistics();
+                return report != null && report.TestPackageRun != null ? report.TestPackageRun.Statistics : new Statistics();
             }
         }
 

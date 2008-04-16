@@ -48,7 +48,7 @@ namespace Gallio.NCoverIntegration.Tests
             launcher.TestPackageConfig.AssemblyFiles.Add(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly));
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = tempPath;
             launcher.TestRunnerFactoryName = NCoverTestRunnerFactoryName;
-            launcher.Filter = new TypeFilter<ITest>(new EqualityFilter<string>(simpleTestType.FullName), false);
+            launcher.TestExecutionOptions.Filter = new TypeFilter<ITest>(new EqualityFilter<string>(simpleTestType.FullName), false);
 
             TestLauncherResult result = launcher.Run();
 

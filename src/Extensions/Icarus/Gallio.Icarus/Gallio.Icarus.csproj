@@ -136,7 +136,6 @@
     <Compile Include="Core\Presenter\ProjectPresenter.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorProvider.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenter.cs" />
-    <Compile Include="Core\ProgressMonitoring\TestRunnerMonitor.cs" />
     <Compile Include="Core\Remoting\AssemblyWatcher.cs" />
     <Compile Include="DockWindow.cs">
       <SubType>Form</SubType>

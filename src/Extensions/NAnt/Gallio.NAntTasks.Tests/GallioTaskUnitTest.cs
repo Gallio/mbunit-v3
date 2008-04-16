@@ -51,7 +51,7 @@ namespace Gallio.NAntTasks.Tests
             {
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsTrue(launcher.EchoResults);
-                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.Filter);
+                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.Filter);
                 Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
@@ -60,7 +60,6 @@ namespace Gallio.NAntTasks.Tests
                 Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
                 Assert.IsFalse(launcher.ShowReports);
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
-                Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
@@ -107,7 +106,7 @@ namespace Gallio.NAntTasks.Tests
             {
                 Assert.IsTrue(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
-                Assert.AreEqual("Type: SimpleTest", launcher.Filter.ToFilterExpr());
+                Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.Filter.ToFilterExpr());
                 Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
@@ -116,9 +115,6 @@ namespace Gallio.NAntTasks.Tests
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
                 Assert.AreEqual(StandardTestRunnerFactoryNames.LocalAppDomain, launcher.TestRunnerFactoryName);
-                Assert.AreEqual(0, launcher.TestRunnerOptions.Count);
-
-                Assert.AreEqual(0, launcher.CustomMonitors.Count);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
@@ -150,15 +146,15 @@ namespace Gallio.NAntTasks.Tests
             task.SetRunLauncherAction(delegate
             {
                 Report report = new Report();
-                report.PackageRun = new PackageRun();
-                report.PackageRun.Statistics.AssertCount = 42;
-                report.PackageRun.Statistics.Duration = 1.5;
-                report.PackageRun.Statistics.FailedCount = 5;
-                report.PackageRun.Statistics.InconclusiveCount = 11;
-                report.PackageRun.Statistics.PassedCount = 21;
-                report.PackageRun.Statistics.SkippedCount = 1;
-                report.PackageRun.Statistics.StepCount = 30;
-                report.PackageRun.Statistics.TestCount = 28;
+                report.TestPackageRun = new TestPackageRun();
+                report.TestPackageRun.Statistics.AssertCount = 42;
+                report.TestPackageRun.Statistics.Duration = 1.5;
+                report.TestPackageRun.Statistics.FailedCount = 5;
+                report.TestPackageRun.Statistics.InconclusiveCount = 11;
+                report.TestPackageRun.Statistics.PassedCount = 21;
+                report.TestPackageRun.Statistics.SkippedCount = 1;
+                report.TestPackageRun.Statistics.StepCount = 30;
+                report.TestPackageRun.Statistics.TestCount = 28;
 
                 TestLauncherResult result = new TestLauncherResult(report);
                 result.SetResultCode(ResultCode.Failure);

@@ -451,7 +451,7 @@ namespace Gallio.NAntTasks
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-            launcher.Filter = GetFilter();
+            launcher.TestExecutionOptions.Filter = GetFilter();
             launcher.ShowReports = showReports;
             launcher.DoNotRun = doNotRun;
             launcher.IgnoreAnnotations = ignoreAnnotations;
@@ -512,7 +512,7 @@ namespace Gallio.NAntTasks
 
         private void PopulateStatistics(TestLauncherResult result)
         {
-            PackageRunStatistics stats = result.Statistics;
+            Statistics stats = result.Statistics;
 
             Properties[statisticsPropertiesPrefix + @"TestCount"] = stats.TestCount.ToString();
             Properties[statisticsPropertiesPrefix + @"StepCount"] = stats.StepCount.ToString();

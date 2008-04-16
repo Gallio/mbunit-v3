@@ -57,15 +57,24 @@
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Gallio.Host.exe.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <GallioProjectOutputPath>..\Gallio\bin</GallioProjectOutputPath>
   </PropertyGroup>
   <Target Name="BeforeBuild">
     <Delete Files="$(GallioProjectOutputPath)\$(TargetFileName)" Condition="Exists('$(GallioProjectOutputPath)\$(TargetFileName)')" />
+    <Delete Files="$(GallioProjectOutputPath)\$(TargetFileName).config" Condition="Exists('$(GallioProjectOutputPath)\$(TargetFileName).config')" />
   </Target>
   <Target Name="AfterBuild">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GallioProjectOutputPath)" Condition="Exists('$(TargetPath)')">
+      <Output TaskParameter="DestinationFiles" ItemName="FilesWrites" />
+    </Copy>
+    <Copy SourceFiles="$(TargetPath).config" DestinationFolder="$(GallioProjectOutputPath)" Condition="Exists('$(TargetPath).config')">
       <Output TaskParameter="DestinationFiles" ItemName="FilesWrites" />
     </Copy>
   </Target>

@@ -91,8 +91,8 @@ namespace Gallio.Runner.Reports
 
         private static void FixImplicitIds(Report report)
         {
-            if (report.PackageRun != null && report.PackageRun.RootTestStepRun != null)
-                FixImplicitIds(report.PackageRun.RootTestStepRun, null);
+            if (report.TestPackageRun != null && report.TestPackageRun.RootTestStepRun != null)
+                FixImplicitIds(report.TestPackageRun.RootTestStepRun, null);
         }
 
         private static void FixImplicitIds(TestStepRun testStepRun, string parentId)
@@ -112,11 +112,11 @@ namespace Gallio.Runner.Reports
 
             using (progressMonitor)
             {
-                if (report.PackageRun == null)
+                if (report.TestPackageRun == null)
                     return;
 
                 List<ExecutionLogAttachment> attachmentsToLoad = new List<ExecutionLogAttachment>();
-                foreach (TestStepRun testStepRun in report.PackageRun.AllTestStepRuns)
+                foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
                 {
                     foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
                     {

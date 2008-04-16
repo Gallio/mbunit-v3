@@ -57,7 +57,7 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override TestPackageData InternalLoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
+        protected override TestPackageData InternalLoad(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             progressMonitor.SetStatus("Creating test harness.");
 
@@ -68,25 +68,25 @@ namespace Gallio.Runner.Domains
 
             progressMonitor.Worked(0.1);
 
-            harness.LoadTestPackage(packageConfig, progressMonitor.CreateSubProgressMonitor(0.9));
+            harness.Load(packageConfig, progressMonitor.CreateSubProgressMonitor(0.9));
             return new TestPackageData(harness.TestPackage);
         }
 
         /// <inheritdoc />
-        protected override TestModelData InternalBuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
+        protected override TestModelData InternalExplore(TestExplorationOptions options, IProgressMonitor progressMonitor)
         {
-            harness.BuildTestModel(options, progressMonitor.CreateSubProgressMonitor(1));
+            harness.Explore(options, progressMonitor.CreateSubProgressMonitor(1));
             return new TestModelData(harness.TestModel);
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
+        protected override void InternalRun(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
         {
-            harness.RunTests(options, listener, progressMonitor.CreateSubProgressMonitor(1));
+            harness.Run(options, listener, progressMonitor.CreateSubProgressMonitor(1));
         }
 
         /// <inheritdoc />
-        protected override void InternalUnloadTestPackage(IProgressMonitor progressMonitor)
+        protected override void InternalUnload(IProgressMonitor progressMonitor)
         {
             try
             {

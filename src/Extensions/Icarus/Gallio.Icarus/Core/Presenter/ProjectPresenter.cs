@@ -67,23 +67,26 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.SaveReportAs += SaveReportAs;
             projectAdapter.GetTestFrameworks += OnGetTestFrameworks;
             projectAdapter.GetExecutionLog += OnGetExecutionLog;
-            projectAdapter.UnloadTestPackage += OnUnloadTestPackage;
+            projectAdapter.UnloadTestPackage += OnUnload;
         }
 
         public void GetTestTree(object sender, GetTestTreeEventArgs e)
         {
+            // FIXME: should we always unload, what if shadow copy if not enabled?
+            //        also, you can find out whether shadow copy if enabled
+            //        just by looking at the test package configuration. -- Jeff.
             if (testPackageLoaded)
             {
-                testRunnerModel.UnloadTestPackage();
+                testRunnerModel.Unload();
                 testPackageLoaded = false;
             }
             testPackageConfig = e.TestPackageConfig;
-            testRunnerModel.LoadTestPackage(testPackageConfig);
+            testRunnerModel.Load(testPackageConfig);
             testPackageLoaded = true;
-            projectAdapter.TestModelData = testRunnerModel.BuildTestModel();
+            projectAdapter.TestModelData = testRunnerModel.Explore();
             if (!e.ShadowCopyEnabled)
             {
-                testRunnerModel.UnloadTestPackage();
+                testRunnerModel.Unload();
                 testPackageLoaded = false;
             }
         }
@@ -93,10 +96,10 @@ namespace Gallio.Icarus.Core.Presenter
             if (!testPackageLoaded)
             {
                 // shadow copy is disabled so we need to reload the test package
-                testRunnerModel.LoadTestPackage(testPackageConfig);
-                testRunnerModel.BuildTestModel();
+                testRunnerModel.Load(testPackageConfig);
+                testRunnerModel.Explore();
             }
-            testRunnerModel.RunTests();
+            testRunnerModel.Run();
         }
 
         public void OnGenerateReport(object sender, EventArgs e)
@@ -139,10 +142,10 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.ExecutionLog = testRunnerModel.GetExecutionLog(e.Arg, projectAdapter.TestModelData);
         }
 
-        public void OnUnloadTestPackage(object sender, EventArgs e)
+        public void OnUnload(object sender, EventArgs e)
         {
             if (testPackageLoaded)
-                testRunnerModel.UnloadTestPackage();
+                testRunnerModel.Unload();
         }
     }
 }

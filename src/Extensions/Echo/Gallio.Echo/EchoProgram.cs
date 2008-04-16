@@ -111,7 +111,7 @@ namespace Gallio.Echo
             launcher.IgnoreAnnotations = Arguments.IgnoreAnnotations;
 
             if (!String.IsNullOrEmpty(Arguments.Filter))
-                launcher.Filter = FilterUtils.ParseTestFilter(Arguments.Filter);
+                launcher.TestExecutionOptions.Filter = FilterUtils.ParseTestFilter(Arguments.Filter);
 
             launcher.EchoResults = !Arguments.NoEchoResults;
             launcher.ShowReports = Arguments.ShowReports;

@@ -16,7 +16,7 @@
 
       <component id="TypeMockIntegration.TypeMockTestRunnerFactory"
                  service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                 type="Gallio.Runner.DomainTestRunnerFactory, Gallio">
+                 type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
         <parameters>
           <domainFactory>${TypeMockIntegration.TypeMockTestDomainFactory}</domainFactory>
           <name>TypeMock</name>

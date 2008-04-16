@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Utilities;
 
@@ -29,7 +28,6 @@ namespace Gallio.Model.Serialization
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class TestPackageData : TestComponentData
     {
-        private readonly List<string> assemblyFullNames;
         private TestPackageConfig config;
 
         /// <summary>
@@ -37,7 +35,6 @@ namespace Gallio.Model.Serialization
         /// </summary>
         private TestPackageData()
         {
-            assemblyFullNames = new List<string>();
         }
 
         /// <summary>
@@ -51,13 +48,12 @@ namespace Gallio.Model.Serialization
                 throw new ArgumentNullException("source");
 
             config = source.Config;
-            assemblyFullNames = new List<string>();
         }
 
         /// <summary>
         /// Gets or sets the test package configuration.
         /// </summary>
-        [XmlElement("config", IsNullable=false)]
+        [XmlElement("testPackageConfig", IsNullable = false)]
         public TestPackageConfig Config
         {
             get { return config; }
@@ -67,16 +63,6 @@ namespace Gallio.Model.Serialization
                     throw new ArgumentNullException("value");
                 config = value;
             }
-        }
-
-        /// <summary>
-        /// Gets the full names of the assemblies that belong to the test package.
-        /// </summary>
-        [XmlArray("assemblyFullNames", IsNullable = false)]
-        [XmlArrayItem("assemblyFullNames", typeof(string), IsNullable = false)]
-        public List<string> AssemblyFullNames
-        {
-            get { return assemblyFullNames; }
         }
     }
 }

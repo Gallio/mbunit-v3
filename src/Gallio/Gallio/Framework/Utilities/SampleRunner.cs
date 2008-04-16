@@ -135,7 +135,7 @@ namespace Gallio.Framework.Utilities
         /// <returns>The test data, or null if not found</returns>
         public TestData GetTestData(CodeReference codeReference)
         {
-            foreach (TestData data in Report.TestModelData.Tests.Values)
+            foreach (TestData data in Report.TestModel.Tests.Values)
             {
                 if (data.CodeReference == codeReference)
                     return data;
@@ -155,7 +155,7 @@ namespace Gallio.Framework.Utilities
         /// <returns>The first test step run, or null if not found</returns>
         public TestStepRun GetPrimaryTestStepRun(CodeReference codeReference)
         {
-            return GenericUtils.Find(Report.PackageRun.AllTestStepRuns, delegate(TestStepRun run)
+            return GenericUtils.Find(Report.TestPackageRun.AllTestStepRuns, delegate(TestStepRun run)
             {
                 return run.Step.IsPrimary && run.Step.CodeReference == codeReference;
             });
@@ -173,7 +173,7 @@ namespace Gallio.Framework.Utilities
         public IList<TestStepRun> GetTestCaseRunsWithin(CodeReference codeReference)
         {
             List<TestStepRun> runs = new List<TestStepRun>();
-            foreach (TestStepRun containerRun in Report.PackageRun.AllTestStepRuns)
+            foreach (TestStepRun containerRun in Report.TestPackageRun.AllTestStepRuns)
             {
                 if (containerRun.Step.IsPrimary && containerRun.Step.CodeReference == codeReference)
                 {
@@ -198,7 +198,7 @@ namespace Gallio.Framework.Utilities
             TestLauncher launcher = new TestLauncher();
             launcher.TestPackageConfig = packageConfig;
             launcher.Logger = new LogStreamLogger(logStreamWriter);
-            launcher.Filter = new OrFilter<ITest>(filters.ToArray());
+            launcher.TestExecutionOptions.Filter = new OrFilter<ITest>(filters.ToArray());
             launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
 
             string reportDirectory = Path.GetTempPath();
@@ -207,7 +207,7 @@ namespace Gallio.Framework.Utilities
             launcher.ReportFormatOptions.Add(@"SaveAttachmentContents", @"false");
             launcher.ReportFormats.Add(@"Text");
 
-            using (logStreamWriter.BeginSection("Debug Output"))
+            using (logStreamWriter.BeginSection("Log Output"))
                 result = launcher.Run();
 
             using (logStreamWriter.BeginSection("Text Report"))

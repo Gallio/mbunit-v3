@@ -21,15 +21,15 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Runner.Reports
 {
     [TestFixture]
-    [TestsOn(typeof(PackageRunStatistics))]
+    [TestsOn(typeof(Statistics))]
     public class PackageRunStatisticsTests
     {
-        private PackageRunStatistics stats;
+        private Statistics stats;
 
         [SetUp]
         public void TestStart()
         {
-            stats = new PackageRunStatistics();
+            stats = new Statistics();
         }
 
         [Test]

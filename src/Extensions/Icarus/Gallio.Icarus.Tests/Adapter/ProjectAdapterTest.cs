@@ -614,11 +614,11 @@ namespace Gallio.Icarus.Adapter.Tests
         public void UnloadTestPackage_Test()
         {
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
-            mockPresenter.OnUnloadTestPackage(projectAdapter, EventArgs.Empty);
+            mockPresenter.OnUnload(projectAdapter, EventArgs.Empty);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.UnloadTestPackage += new EventHandler<EventArgs>(mockPresenter.OnUnloadTestPackage);
+            projectAdapter.UnloadTestPackage += new EventHandler<EventArgs>(mockPresenter.OnUnload);
             unloadTestPackageEvent.Raise(mockView, EventArgs.Empty);
         }
 

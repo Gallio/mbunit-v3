@@ -419,7 +419,7 @@ namespace Gallio.PowerShellCommands
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = Logger;
             launcher.ProgressMonitorProvider = ProgressMonitorProvider;
-            launcher.Filter = GetFilter();
+            launcher.TestExecutionOptions.Filter = GetFilter();
             launcher.ShowReports = showReports.IsPresent;
             launcher.TestRunnerFactoryName = runnerType;
             launcher.DoNotRun = doNotRun.IsPresent;

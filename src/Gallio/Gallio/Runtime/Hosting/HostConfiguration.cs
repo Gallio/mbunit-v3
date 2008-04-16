@@ -32,26 +32,23 @@ namespace Gallio.Runtime.Hosting
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class HostConfiguration
     {
+        private readonly List<AssemblyQualification> assemblyQualifications;
+        private readonly List<AssemblyDependency> assemblyDependencies;
+        private readonly List<string> supportedRuntimeVersions;
+
         private string configurationXml;
         private bool legacyUnhandledExceptionPolicyEnabled = true;
         private bool assertUiEnabled;
         private bool remotingCustomErrorsEnabled;
 
-        private readonly List<AssemblyQualification> assemblyQualifications;
-        private readonly List<AssemblyDependency> assemblyDependencies;
-        private readonly List<string> supportedRuntimeVersions;
-
         /// <summary>
-        /// Creates a default host configuration with a built-in assembly binding for the
-        /// primary Gallio assembly.
+        /// Creates a default host configuration.
         /// </summary>
         public HostConfiguration()
         {
             assemblyQualifications = new List<AssemblyQualification>();
             assemblyDependencies = new List<AssemblyDependency>();
             supportedRuntimeVersions = new List<string>();
-
-            SetBuiltInAssemblyBindings();
         }
 
         /// <summary>
@@ -211,11 +208,6 @@ namespace Gallio.Runtime.Hosting
                 copy.assemblyQualifications.Add(qualification.Copy());
 
             return copy;
-        }
-
-        private void SetBuiltInAssemblyBindings()
-        {
-            AddAssemblyBinding(typeof(HostConfiguration).Assembly, false);
         }
 
         private void ConfigureLegacyUnhandledExceptionPolicy(XmlElement rootElement)
@@ -389,13 +381,14 @@ namespace Gallio.Runtime.Hosting
         [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
         public sealed class AssemblyDependency
         {
+            private readonly List<AssemblyBindingRedirect> bindingRedirects;
+            private readonly List<AssemblyCodeBase> codeBases;
+
             private string assemblyName;
             private string assemblyPublicKeyToken;
             private string assemblyCulture;
             private string assemblyProcessorArchitecture;
             private bool applyPublisherPolicy = true;
-            private List<AssemblyBindingRedirect> bindingRedirects;
-            private List<AssemblyCodeBase> codeBases;
 
             /// <summary>
             /// Creates an uninitialized instance for Xml deserialization.

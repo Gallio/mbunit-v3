@@ -16,7 +16,7 @@
 
       <component id="NCoverIntegration.NCoverTestRunnerFactory"
                  service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                 type="Gallio.Runner.DomainTestRunnerFactory, Gallio">
+                 type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
         <parameters>
           <domainFactory>${NCoverIntegration.NCoverTestDomainFactory}</domainFactory>
           <name>NCover</name>

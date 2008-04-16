@@ -28,7 +28,7 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Creates a log writer.
         /// </summary>
-        /// <param name="listener">The event listener</param>
+        /// <param name="listener">The test listener to which notifications are dispatched</param>
         /// <param name="stepId">The step id</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="listener"/> or
         /// <paramref name="stepId"/> is null</exception>
@@ -52,37 +52,37 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         protected override void AttachTextImpl(string attachmentName, string contentType, string text)
         {
-            listener.NotifyLogEvent(LogEventArgs.CreateAttachTextEvent(stepId, attachmentName, contentType, text));
+            listener.NotifyTestStepLogTextAttachmentAdded(stepId, attachmentName, contentType, text);
         }
 
         /// <inheritdoc />
         protected override void AttachBytesImpl(string attachmentName, string contentType, byte[] bytes)
         {
-            listener.NotifyLogEvent(LogEventArgs.CreateAttachBytesEvent(stepId, attachmentName, contentType, bytes));
+            listener.NotifyTestStepLogBinaryAttachmentAdded(stepId, attachmentName, contentType, bytes);
         }
 
         /// <inheritdoc />
         protected override void WriteImpl(string streamName, string text)
         {
-            listener.NotifyLogEvent(LogEventArgs.CreateWriteEvent(stepId, streamName, text));
+            listener.NotifyTestStepLogStreamTextWritten(stepId, streamName, text);
         }
 
         /// <inheritdoc />
         protected override void EmbedImpl(string streamName, string attachmentName)
         {
-            listener.NotifyLogEvent(LogEventArgs.CreateEmbedEvent(stepId, streamName, attachmentName));
+            listener.NotifyTestStepLogStreamAttachmentEmbedded(stepId, streamName, attachmentName);
         }
 
         /// <inheritdoc />
         protected override void BeginSectionImpl(string streamName, string sectionName)
         {
-            listener.NotifyLogEvent(LogEventArgs.CreateBeginSectionEvent(stepId, streamName, sectionName));
+            listener.NotifyTestStepLogStreamSectionStarted(stepId, streamName, sectionName);
         }
 
         /// <inheritdoc />
         protected override void EndSectionImpl(string streamName)
         {
-            listener.NotifyLogEvent(LogEventArgs.CreateEndSectionEvent(stepId, streamName));
+            listener.NotifyTestStepLogStreamSectionFinished(stepId, streamName);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Gallio.Model.Execution
         /// Creates a test context manager.
         /// </summary>
         /// <param name="contextTracker">The test context tracker</param>
-        /// <param name="listener">The test listener to which test events are dispatched</param>
+        /// <param name="listener">The test listener to which notifications are dispatched</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>
         /// or <paramref name="listener"/> is null</exception>
         public ObservableTestContextManager(ITestContextTracker contextTracker,

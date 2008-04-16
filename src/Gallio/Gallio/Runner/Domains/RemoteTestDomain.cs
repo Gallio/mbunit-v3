@@ -57,13 +57,13 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override TestPackageData InternalLoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
+        protected override TestPackageData InternalLoad(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             Connect(packageConfig, progressMonitor.CreateSubProgressMonitor(0.1));
 
             try
             {
-                proxy.LoadTestPackage(packageConfig, new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(0.9)));
+                proxy.Load(packageConfig, new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(0.9)));
                 return proxy.TestPackageData; 
             }
             catch (Exception ex)
@@ -73,11 +73,11 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override TestModelData InternalBuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
+        protected override TestModelData InternalExplore(TestExplorationOptions options, IProgressMonitor progressMonitor)
         {
             try
             {
-                proxy.BuildTestModel(options, new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(1)));
+                proxy.Explore(options, new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(1)));
                 return proxy.TestModelData;
             }
             catch (Exception ex)
@@ -87,12 +87,12 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override void InternalRunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
+        protected override void InternalRun(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
         {
             try
             {
-                proxy.RunTests(options,
-                    new RemoteTestListener(listener),
+                proxy.Run(options,
+                    listener, // FIXME: new RemoteTestListener(listener)
                     new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(1)));
             }
             catch (Exception ex)
@@ -102,12 +102,12 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        protected override void InternalUnloadTestPackage(IProgressMonitor progressMonitor)
+        protected override void InternalUnload(IProgressMonitor progressMonitor)
         {
             try
             {
                 if (proxy != null)
-                    proxy.UnloadPackage(new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(0.9)));
+                    proxy.Unload(new RemoteProgressMonitor(progressMonitor.CreateSubProgressMonitor(0.9)));
             }
             catch (Exception ex)
             {

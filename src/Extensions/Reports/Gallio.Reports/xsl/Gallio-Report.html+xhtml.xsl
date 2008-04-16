@@ -87,18 +87,18 @@ html
       <div class="header-image"></div>
     </div>
     <div id="Navigator" class="navigator">
-      <xsl:apply-templates select="g:packageRun" mode="navigator" />
+      <xsl:apply-templates select="g:testPackageRun" mode="navigator" />
     </div>
     <div id="Content" class="content">
-      <xsl:apply-templates select="g:packageRun" mode="statistics" />
-      <xsl:apply-templates select="g:packageConfig" mode="assemblies" />
+      <xsl:apply-templates select="g:testPackageRun" mode="statistics" />
+      <xsl:apply-templates select="g:testPackageConfig" mode="assemblies" />
       <xsl:apply-templates select="g:testModel/g:annotations" mode="annotations"/>
-      <xsl:apply-templates select="g:packageRun" mode="summary"/>
-      <xsl:apply-templates select="g:packageRun" mode="details"/>
+      <xsl:apply-templates select="g:testPackageRun" mode="summary"/>
+      <xsl:apply-templates select="g:testPackageRun" mode="details"/>
     </div>
   </xsl:template>
   
-  <xsl:template match="g:packageConfig" mode="assemblies">
+  <xsl:template match="g:testPackageConfig" mode="assemblies">
     <div id="Assemblies" class="section">
       <h2>Assemblies</h2>
       <div class="section-content">
@@ -157,7 +157,7 @@ html
     </li>
   </xsl:template>
   
-  <xsl:template match="g:packageRun" mode="navigator">
+  <xsl:template match="g:testPackageRun" mode="navigator">
     <xsl:variable name="box-label"><xsl:call-template name="format-statistics"><xsl:with-param name="statistics" select="g:statistics" /></xsl:call-template></xsl:variable>
     <a href="#Statistics" title="{$box-label}">
       <xsl:attribute name="class">navigator-box <xsl:call-template name="status-from-statistics"><xsl:with-param name="statistics" select="g:statistics" /></xsl:call-template></xsl:attribute>
@@ -187,7 +187,7 @@ html
     </div>
   </xsl:template>
   
-  <xsl:template match="g:packageRun" mode="statistics">
+  <xsl:template match="g:testPackageRun" mode="statistics">
     <div id="Statistics" class="section">
       <h2>Statistics</h2>
       <div class="section-content">
@@ -225,7 +225,7 @@ html
     </tr>
   </xsl:template>
 
-  <xsl:template match="g:packageRun" mode="summary">
+  <xsl:template match="g:testPackageRun" mode="summary">
     <div id="Summary" class="section">
       <h2>Summary</h2>
       <div class="section-content">
@@ -299,7 +299,7 @@ html
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="g:packageRun" mode="details">
+  <xsl:template match="g:testPackageRun" mode="details">
     <div id="Details" class="section">
       <h2>Details</h2>
       <div class="section-content">

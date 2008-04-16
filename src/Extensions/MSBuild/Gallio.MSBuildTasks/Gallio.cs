@@ -30,7 +30,6 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime.Windsor;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using ILogger=Microsoft.Build.Framework.ILogger;
 
 namespace Gallio.MSBuildTasks
 {
@@ -643,7 +642,7 @@ namespace Gallio.MSBuildTasks
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-            launcher.Filter = GetFilter();
+            launcher.TestExecutionOptions.Filter = GetFilter();
             launcher.ShowReports = showReports;
             launcher.DoNotRun = doNotRun;
             launcher.IgnoreAnnotations = ignoreAnnotations;
@@ -657,7 +656,7 @@ namespace Gallio.MSBuildTasks
             launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Gallio).Assembly));
 
             if (echoResults)
-                launcher.CustomMonitors.Add(new TaskTestRunnerMonitor(Log, launcher.ReportMonitor));
+                launcher.AddExtension(new TaskLogExtension(Log));
 
             if (applicationBaseDirectory != null)
                 launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory.ItemSpec;
@@ -703,7 +702,7 @@ namespace Gallio.MSBuildTasks
 
         private void PopulateStatistics(TestLauncherResult result)
         {
-            PackageRunStatistics stats = result.Statistics;
+            Statistics stats = result.Statistics;
             assertCount = stats.AssertCount;
             duration = stats.Duration;
             failedCount = stats.FailedCount;

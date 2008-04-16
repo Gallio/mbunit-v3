@@ -26,7 +26,7 @@ namespace Gallio.Model.Execution
 {
     /// <summary>
     /// An observable test context monitors translates state changes on the
-    /// test context into events on a <see cref="ITestListener" />.
+    /// test context into notifications on a <see cref="ITestListener" />.
     /// </summary>
     internal class ObservableTestContext : ITestContext
     {
@@ -108,7 +108,7 @@ namespace Gallio.Model.Execution
                         return;
 
                     lifecyclePhase = value;
-                    Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateSetPhaseEvent(testStep.Id, lifecyclePhase));
+                    Listener.NotifyTestStepLifecyclePhaseChanged(testStep.Id, lifecyclePhase);
                 }
             }
         }
@@ -185,7 +185,7 @@ namespace Gallio.Model.Execution
                     throw new InvalidOperationException("Cannot add metadata unless the test step is running.");
 
                 testStep.Metadata.CopyOnWriteAdd(metadataKey, metadataValue);
-                Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateAddMetadataEvent(testStep.Id, metadataKey, metadataValue));
+                Listener.NotifyTestStepMetadataAdded(testStep.Id, metadataKey, metadataValue);
             }
         }
 
@@ -249,7 +249,7 @@ namespace Gallio.Model.Execution
                 stopwatch = Stopwatch.StartNew();
 
                 // Dispatch the start notification.
-                Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateStartEvent(new TestStepData(testStep)));
+                Listener.NotifyTestStepStarted(new TestStepData(testStep));
 
                 // Consider the test started.
                 executionStatus = StatusStarted;
@@ -304,7 +304,7 @@ namespace Gallio.Model.Execution
                 result.Duration = actualDuration.GetValueOrDefault(stopwatch.Elapsed).TotalSeconds;
                 result.Outcome = outcome;
 
-                Listener.NotifyLifecycleEvent(LifecycleEventArgs.CreateFinishEvent(testStep.Id, result));
+                Listener.NotifyTestStepFinished(testStep.Id, result);
 
                 if (contextCookie != null)
                 {

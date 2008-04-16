@@ -76,7 +76,7 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        public void LoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
+        public void Load(TestPackageConfig packageConfig, IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
@@ -89,17 +89,17 @@ namespace Gallio.Runner.Domains
             {
                 progressMonitor.BeginTask("Loading test package.", 1.05);
 
-                UnloadPackage(progressMonitor.CreateSubProgressMonitor(0.05));
+                Unload(progressMonitor.CreateSubProgressMonitor(0.05));
 
                 TestPackageConfig canonicalPackageConfig = packageConfig.Copy();
                 canonicalPackageConfig.Canonicalize(null);
 
-                packageData = InternalLoadTestPackage(canonicalPackageConfig, progressMonitor);
+                packageData = InternalLoad(canonicalPackageConfig, progressMonitor);
             }
         }
 
         /// <inheritdoc />
-        public void BuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor)
+        public void Explore(TestExplorationOptions options, IProgressMonitor progressMonitor)
         {
             if (options == null)
                 throw new ArgumentNullException("options");
@@ -115,12 +115,12 @@ namespace Gallio.Runner.Domains
                 if (packageData == null)
                     throw new InvalidOperationException("No test package has been loaded.");
 
-                modelData = InternalBuildTestModel(options, progressMonitor);
+                modelData = InternalExplore(options, progressMonitor);
             }
         }
 
         /// <inheritdoc />
-        public void UnloadPackage(IProgressMonitor progressMonitor)
+        public void Unload(IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
@@ -132,7 +132,7 @@ namespace Gallio.Runner.Domains
                 if (packageData != null)
                 {
                     progressMonitor.BeginTask("Unloading test package.", 1);
-                    InternalUnloadTestPackage(progressMonitor);
+                    InternalUnload(progressMonitor);
 
                     packageData = null;
                     modelData = null;
@@ -141,7 +141,7 @@ namespace Gallio.Runner.Domains
         }
 
         /// <inheritdoc />
-        public void RunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
+        public void Run(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
         {
             if (options == null)
                 throw new ArgumentNullException("options");
@@ -159,7 +159,7 @@ namespace Gallio.Runner.Domains
                 if (modelData == null)
                     throw new InvalidOperationException("The test model has not been built.");
 
-                InternalRunTests(options, listener, progressMonitor);
+                InternalRun(options, listener, progressMonitor);
             }
         }
 
@@ -169,34 +169,34 @@ namespace Gallio.Runner.Domains
         protected abstract void InternalDispose();
 
         /// <summary>
-        /// Internal implementation of <see cref="LoadTestPackage" />.
+        /// Internal implementation of <see cref="Load" />.
         /// </summary>
         /// <param name="packageConfig">The test package configuration</param>
         /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <returns>The test package data</returns>
-        protected abstract TestPackageData InternalLoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
+        protected abstract TestPackageData InternalLoad(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// Internal implementation of <see cref="BuildTestModel" />.
+        /// Internal implementation of <see cref="Explore" />.
         /// </summary>
         /// <param name="options">The test enumeration options</param>
         /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
         /// <returns>The test model data</returns>
-        protected abstract TestModelData InternalBuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor);
+        protected abstract TestModelData InternalExplore(TestExplorationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// Internal implementation of <see cref="RunTests" />.
+        /// Internal implementation of <see cref="Run" />.
         /// </summary>
         /// <param name="options">The test execution options</param>
         /// <param name="listener">The test listener for monitoring test execution</param>
         /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
-        protected abstract void InternalRunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
+        protected abstract void InternalRun(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// Internal implementation of <see cref="UnloadPackage" />.
+        /// Internal implementation of <see cref="Unload" />.
         /// </summary>
         /// <param name="progressMonitor">The progress monitor with 1 work unit to do</param>
-        protected abstract void InternalUnloadTestPackage(IProgressMonitor progressMonitor);
+        protected abstract void InternalUnload(IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Throws <see cref="ObjectDisposedException"/> if the domain has been disposed.

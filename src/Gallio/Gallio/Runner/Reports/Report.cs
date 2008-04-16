@@ -30,38 +30,38 @@ namespace Gallio.Runner.Reports
     [XmlType(Namespace=XmlSerializationUtils.GallioNamespace)]
     public sealed class Report
     {
-        private TestPackageConfig packageConfig;
-        private TestModelData testModelData;
-        private PackageRun packageRun;
+        private TestPackageConfig testPackageConfig;
+        private TestModelData testModel;
+        private TestPackageRun testPackageRun;
 
         /// <summary>
-        /// Gets or sets the test package configuration for the report, or null if none.
+        /// Gets or sets the test package configuration, or null if none.
         /// </summary>
-        [XmlElement("packageConfig", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        public TestPackageConfig PackageConfig
+        [XmlElement("testPackageConfig", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        public TestPackageConfig TestPackageConfig
         {
-            get { return packageConfig; }
-            set { packageConfig = value; }
+            get { return testPackageConfig; }
+            set { testPackageConfig = value; }
         }
 
         /// <summary>
-        /// Gets or sets the test model for the report, or null if none.
+        /// Gets or sets the test model, or null if none.
         /// </summary>
         [XmlElement("testModel", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        public TestModelData TestModelData
+        public TestModelData TestModel
         {
-            get { return testModelData; }
-            set { testModelData = value; }
+            get { return testModel; }
+            set { testModel = value; }
         }
 
         /// <summary>
-        /// Gets or sets the package run information included in the report, or null if none.
+        /// Gets or sets the test package run results, or null if none.
         /// </summary>
-        [XmlElement("packageRun", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        public PackageRun PackageRun
+        [XmlElement("testPackageRun", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        public TestPackageRun TestPackageRun
         {
-            get { return packageRun; }
-            set { packageRun = value; }
+            get { return testPackageRun; }
+            set { testPackageRun = value; }
         }
     }
 }

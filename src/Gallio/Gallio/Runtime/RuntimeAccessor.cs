@@ -84,7 +84,7 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
-        /// Gets the local path of the Gallio installation.
+        /// Gets the path of the Gallio installation.
         /// </summary>
         /// <returns>The installation path</returns>
         public static string InstallationPath

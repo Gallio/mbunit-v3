@@ -26,6 +26,7 @@ namespace Gallio.Tests.Runner
     [TestFixture]
     [TestsOn(typeof(TestLauncher))]
     [Author("Julian", "jhidalgo@mercatus.cl")]
+    [Annotation(AnnotationType.Warning, "These tests are almost useless.  Fixme.")]
     public class TestLauncherTest
     {
         private TestLauncher launcher;
@@ -65,14 +66,7 @@ namespace Gallio.Tests.Runner
         [Test]
         public void Filter_DefaultIsAnyFilter()
         {
-            Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.Filter);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Filter_ThrowsIfNull()
-        {
-            launcher.Filter = null;
+            Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.Filter);
         }
     }
 }

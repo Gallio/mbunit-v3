@@ -76,7 +76,7 @@ namespace Gallio.Runner.Domains
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="packageConfig"/> is null</exception>
         /// <exception cref="RunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void LoadTestPackage(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
+        void Load(TestPackageConfig packageConfig, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Populates the test model.
@@ -86,8 +86,8 @@ namespace Gallio.Runner.Domains
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="RunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="LoadTestPackage" /> has not been called.</exception>
-        void BuildTestModel(TestEnumerationOptions options, IProgressMonitor progressMonitor);
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Load" /> has not been called.</exception>
+        void Explore(TestExplorationOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Runs the tests.
@@ -97,8 +97,8 @@ namespace Gallio.Runner.Domains
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/>,
         /// <paramref name="listener"/> or <paramref name="options"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="BuildTestModel" /> has not been called.</exception>
-        void RunTests(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Explore" /> has not been called.</exception>
+        void Run(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Unloads the current test package so that the test domain can
@@ -108,6 +108,6 @@ namespace Gallio.Runner.Domains
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
         /// <exception cref="RunnerException">Thrown if an error occurs</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the domain has been disposed</exception>
-        void UnloadPackage(IProgressMonitor progressMonitor);
+        void Unload(IProgressMonitor progressMonitor);
     }
 }

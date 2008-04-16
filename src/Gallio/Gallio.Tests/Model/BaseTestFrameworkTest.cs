@@ -67,8 +67,8 @@ namespace Gallio.Tests.Model
             TestPackageConfig config = new TestPackageConfig();
             config.AssemblyFiles.Add(AssemblyUtils.GetFriendlyAssemblyCodeBase(sampleAssembly));
 
-            harness.LoadTestPackage(config, NullProgressMonitor.CreateInstance());
-            harness.BuildTestModel(new TestEnumerationOptions(), NullProgressMonitor.CreateInstance());
+            harness.Load(config, NullProgressMonitor.CreateInstance());
+            harness.Explore(new TestExplorationOptions(), NullProgressMonitor.CreateInstance());
 
             testModel = harness.TestModel;
         }

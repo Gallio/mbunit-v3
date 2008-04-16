@@ -34,9 +34,9 @@ namespace Gallio.Tests.Runner.Reports
                 return;
             }
 
-            AreEqual(expected.PackageConfig, actual.PackageConfig);
-            ModelAssert.AreEqual(expected.TestModelData, actual.TestModelData);
-            AreEqual(expected.PackageRun, actual.PackageRun);
+            AreEqual(expected.TestPackageConfig, actual.TestPackageConfig);
+            ModelAssert.AreEqual(expected.TestModel, actual.TestModel);
+            AreEqual(expected.TestPackageRun, actual.TestPackageRun);
         }
 
         public static void AreEqual(TestPackageConfig expected, TestPackageConfig actual)
@@ -53,7 +53,7 @@ namespace Gallio.Tests.Runner.Reports
             // TODO: Compare HostSetup objects.
         }
 
-        public static void AreEqual(PackageRun expected, PackageRun actual)
+        public static void AreEqual(TestPackageRun expected, TestPackageRun actual)
         {
             if (expected == null)
             {
@@ -68,7 +68,7 @@ namespace Gallio.Tests.Runner.Reports
             MbUnit.Framework.InterimAssert.WithPairs(expected.AllTestStepRuns, actual.AllTestStepRuns, AreEqual);
         }
 
-        public static void AreEqual(PackageRunStatistics expected, PackageRunStatistics actual)
+        public static void AreEqual(Statistics expected, Statistics actual)
         {
             if (expected == null)
             {
