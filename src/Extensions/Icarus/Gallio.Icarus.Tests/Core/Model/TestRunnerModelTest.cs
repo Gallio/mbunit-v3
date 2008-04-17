@@ -67,12 +67,14 @@ namespace Gallio.Icarus.Core.Model.Tests
         }
 
         [Test]
-        public void BuildTestModel_Test()
+        public void Explore_Test()
         {
             testRunner.Explore(null, null);
             LastCall.IgnoreArguments();
             TestModelData testModelData = new TestModelData(new TestData("test", "test"));
-            Expect.Call(testRunner.Report.TestModel).Return(testModelData);
+            Report report = new Report();
+            report.TestModel = testModelData;
+            Expect.Call(testRunner.Report).Return(report);
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             TestModelData tmd = testRunnerModel.Explore();
@@ -80,9 +82,11 @@ namespace Gallio.Icarus.Core.Model.Tests
         }
 
         [Test]
-        public void LoadTestPackage_Test()
+        public void Load_Test()
         {
             TestPackageConfig testPackageConfig = new TestPackageConfig();
+            testRunner.Unload(null);
+            LastCall.IgnoreArguments();
             testRunner.Load(testPackageConfig, null);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
@@ -93,6 +97,7 @@ namespace Gallio.Icarus.Core.Model.Tests
         [Test]
         public void GetExecutionLog_Test()
         {
+            Expect.Call(testRunner.Report).Return(new Report());
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             Assert.IsNull(testRunnerModel.GetExecutionLog("test", new TestModelData(new TestData("test", "test"))));
@@ -130,6 +135,8 @@ namespace Gallio.Icarus.Core.Model.Tests
             LastCall.IgnoreArguments();
             reportManager.Format(reportWriter, "html", new NameValueCollection(), null);
             LastCall.IgnoreArguments();
+            Report report = new Report();
+            Expect.Call(testRunner.Report).Return(report).Repeat.Twice();
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             testRunnerModel.ReportFolder = @"c:\";
@@ -159,6 +166,8 @@ namespace Gallio.Icarus.Core.Model.Tests
             string format = "format";
             reportManager.Format(reportWriter, format, new NameValueCollection(), null);
             LastCall.IgnoreArguments();
+            Report report = new Report();
+            Expect.Call(testRunner.Report).Return(report);
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             string fileName = Path.GetTempFileName();

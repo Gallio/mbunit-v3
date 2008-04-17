@@ -26,40 +26,18 @@ using Gallio.Model.Serialization;
 namespace Gallio.Icarus.Tests
 {
     [TestFixture]
-    public class LogWindowTest
+    public class RuntimeLogWindowTest
     {
-        [Test]
-        public void AppendText_Test()
-        {
-            string text = "blah blah blah";
-            LogWindow logWindow = new LogWindow();
-            Assert.AreEqual("Log", logWindow.Text);
-            Assert.AreEqual(string.Empty, logWindow.LogBody);
-            logWindow.AppendText(text);
-            Assert.AreEqual(text, logWindow.LogBody);
-        }
-
-        [Test]
-        public void AppendText2_Test()
-        {
-            string text = "blah blah blah";
-            LogWindow logWindow = new LogWindow("test");
-            Assert.AreEqual("test", logWindow.Text);
-            Assert.AreEqual(string.Empty, logWindow.LogBody);
-            logWindow.AppendText(text, Color.Black);
-            Assert.AreEqual(text, logWindow.LogBody);
-        }
-
         [Test]
         public void Clear_Test()
         {
             string text = "blah blah blah";
-            LogWindow logWindow = new LogWindow();
-            Assert.AreEqual(string.Empty, logWindow.LogBody);
-            logWindow.AppendText(text);
-            Assert.AreEqual(text, logWindow.LogBody);
-            logWindow.Clear();
-            Assert.AreEqual(string.Empty, logWindow.LogBody);
+            RuntimeLogWindow runtimeLogWindow = new RuntimeLogWindow();
+            Assert.AreEqual(string.Empty, runtimeLogWindow.LogBody);
+            runtimeLogWindow.AppendText(text, Color.Black);
+            Assert.AreEqual(text, runtimeLogWindow.LogBody);
+            runtimeLogWindow.Clear();
+            Assert.AreEqual(string.Empty, runtimeLogWindow.LogBody);
         }
     }
 }

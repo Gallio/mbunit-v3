@@ -34,6 +34,7 @@ using Gallio.Reflection;
 using Gallio.Utilities;
 
 using WeifenLuo.WinFormsUI.Docking;
+using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus
 {
@@ -51,11 +52,12 @@ namespace Gallio.Icarus
         private AssemblyList assemblyList;
         private TestResults testResults;
         private ReportWindow reportWindow;
-        private LogWindow runtimeWindow;
+        private RuntimeLogWindow runtimeLogWindow;
         private About aboutDialog;
         private PropertiesWindow propertiesWindow;
         private FiltersWindow filtersWindow;
         private ExecutionLogWindow executionLogWindow;
+        private AnnotationsWindow annotationsWindow;
         
         public ITreeModel TreeModel
         {
@@ -387,6 +389,23 @@ namespace Gallio.Icarus
             }
         }
 
+        public List<AnnotationData> Annotations
+        {
+            set
+            {
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate { Annotations = value; });
+                }
+                else
+                {
+                    annotationsWindow.Annotations = value;
+                    if (value.Count > 0)
+                        annotationsWindow.Show();
+                }
+            }
+        }
+
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<SingleEventArgs<IList<string>>> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
@@ -420,12 +439,12 @@ namespace Gallio.Icarus
             assemblyList = new AssemblyList(this);
             testResults = new TestResults();
             reportWindow = new ReportWindow(this);
-            runtimeWindow = new LogWindow("Runtime");
-            //performanceMonitor = new PerformanceMonitor();
+            runtimeLogWindow = new RuntimeLogWindow();
             aboutDialog = new About();
             propertiesWindow = new PropertiesWindow(this);
             filtersWindow = new FiltersWindow(this);
             executionLogWindow = new ExecutionLogWindow();
+            annotationsWindow = new AnnotationsWindow();
 
             deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
         }
@@ -440,29 +459,18 @@ namespace Gallio.Icarus
                 return testResults;
             else if (persistString == typeof(ReportWindow).ToString())
                 return reportWindow;
-            //else if (persistString == typeof(PerformanceMonitor).ToString())
-            //    return performanceMonitor;
             else if (persistString == typeof(PropertiesWindow).ToString())
                 return propertiesWindow;
             else if (persistString == typeof(FiltersWindow).ToString())
                 return filtersWindow;
             else if (persistString == typeof(ExecutionLogWindow).ToString())
                 return executionLogWindow;
+            else if (persistString == typeof(RuntimeLogWindow).ToString())
+                return runtimeLogWindow;
+            else if (persistString == typeof(AnnotationsWindow).ToString())
+                return annotationsWindow;
             else
-            {
-                string[] parsedStrings = persistString.Split(new char[] { ',' });
-                if (parsedStrings.Length != 2)
-                    return null;
-                if (parsedStrings[0] != typeof(LogWindow).ToString())
-                    return null;
-                switch (parsedStrings[1])
-                {
-                    case "Runtime":
-                        return runtimeWindow;
-                    default:
-                        return null;
-                }
-            }
+                return null;
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -483,10 +491,10 @@ namespace Gallio.Icarus
             else
             {
                 assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
-                //performanceMonitor.Show(dockPanel);
                 testResults.Show(dockPanel);
                 executionLogWindow.Show(dockPanel);
-                runtimeWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                runtimeLogWindow.Show(dockPanel, DockState.DockBottomAutoHide);
+                annotationsWindow.Show(dockPanel, DockState.DockBottomAutoHide);
                 testExplorer.Show(dockPanel, DockState.DockLeft);
             }
 
@@ -811,8 +819,8 @@ namespace Gallio.Icarus
                     color = Color.DarkGray;
                     break;
             }
-            runtimeWindow.AppendText(message, color);
-            runtimeWindow.AppendText(ExceptionUtils.SafeToString(exception), color);
+            runtimeLogWindow.AppendText(message, color);
+            runtimeLogWindow.AppendText(ExceptionUtils.SafeToString(exception), color);
         }
 
         public void CreateReport()
@@ -898,9 +906,6 @@ namespace Gallio.Icarus
             ToolStripMenuItem item = (ToolStripMenuItem)sender;
             switch (item.Name)
             {
-                //case "performanceMonitorToolStripMenuItem":
-                //    performanceMonitor.Show(dockPanel);
-                //    break;
                 case "testResultsToolStripMenuItem":
                     testResults.Show(dockPanel);
                     break;
@@ -914,8 +919,8 @@ namespace Gallio.Icarus
                     CreateReport();
                     reportWindow.Show(dockPanel);
                     break;
-                case "runtimeToolStripMenuItem":
-                    runtimeWindow.Show(dockPanel);
+                case "runtimeLogToolStripMenuItem":
+                    runtimeLogWindow.Show(dockPanel);
                     break;
                 case "propertiesToolStripMenuItem":
                     propertiesWindow.Show(dockPanel);
@@ -925,6 +930,9 @@ namespace Gallio.Icarus
                     break;
                 case "executionLogToolStripMenuItem":
                     executionLogWindow.Show(dockPanel);
+                    break;
+                case "annotationsToolStripMenuItem":
+                    annotationsWindow.Show(dockPanel);
                     break;
             }
         }

@@ -72,18 +72,11 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void GetTestTree(object sender, GetTestTreeEventArgs e)
         {
-            // FIXME: should we always unload, what if shadow copy if not enabled?
-            //        also, you can find out whether shadow copy if enabled
-            //        just by looking at the test package configuration. -- Jeff.
-            if (testPackageLoaded)
-            {
-                testRunnerModel.Unload();
-                testPackageLoaded = false;
-            }
             testPackageConfig = e.TestPackageConfig;
             testRunnerModel.Load(testPackageConfig);
             testPackageLoaded = true;
             projectAdapter.TestModelData = testRunnerModel.Explore();
+            projectAdapter.DataBind();
             if (!e.ShadowCopyEnabled)
             {
                 testRunnerModel.Unload();

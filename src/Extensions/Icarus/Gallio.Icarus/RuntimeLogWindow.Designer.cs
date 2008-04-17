@@ -15,7 +15,7 @@
 
 namespace Gallio.Icarus
 {
-    partial class LogWindow
+    partial class RuntimeLogWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -43,7 +43,7 @@ namespace Gallio.Icarus
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RuntimeLogWindow));
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.logBody = new System.Windows.Forms.RichTextBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -101,15 +101,16 @@ namespace Gallio.Icarus
             this.clearAllToolStripButton.Text = "Clear All";
             this.clearAllToolStripButton.Click += new System.EventHandler(this.clearAllToolStripButton_Click);
             // 
-            // LogWindow
+            // RuntimeLogWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 273);
             this.Controls.Add(this.toolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "LogWindow";
-            this.Text = "Log";
+            this.Name = "RuntimeLogWindow";
+            this.TabText = "Runtime log";
+            this.Text = "Runtime log";
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.PerformLayout();

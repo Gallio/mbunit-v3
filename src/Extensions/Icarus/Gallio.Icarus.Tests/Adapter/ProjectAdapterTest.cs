@@ -207,12 +207,6 @@ namespace Gallio.Icarus.Adapter.Tests
             TestData testData = new TestData("test", "test");
             testData.Metadata.SetValue(MetadataKeys.CodeBase, "test.dll");
             TestModelData testModelData = new TestModelData(testData);
-            ListViewItem[] assemblies = new ListViewItem[] { };
-            Expect.Call(mockModel.BuildAssemblyList(null)).Return(assemblies);
-            LastCall.IgnoreArguments();
-            mockView.Assemblies = assemblies;
-            mockModel.BuildTestTree(testModelData, null);
-            mockView.LoadComplete();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.TestModelData = testModelData;
@@ -252,16 +246,20 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void GetTestTree_Test_NoReload()
         {
-            TestPackageConfig testPackageConfig = new TestPackageConfig();
-            mockView.Assemblies = null;
+            string mode = "test";
+            TestData testData = new TestData("id", "name");
+            TestModelData testModelData = new TestModelData(testData);
+            ListViewItem[] assemblies = new ListViewItem[] { };
+            Expect.Call(mockModel.BuildAssemblyList(null)).Return(assemblies);
             LastCall.IgnoreArguments();
-            Expect.Call(mockModel.BuildAssemblyList(testPackageConfig.AssemblyFiles)).Return(new ListViewItem[0]);
-            mockModel.BuildTestTree(null, "");
-            LastCall.IgnoreArguments();
+            mockView.Assemblies = assemblies;
+            mockModel.BuildTestTree(testModelData, mode);
+            mockView.Annotations = testModelData.Annotations;
             mockView.LoadComplete();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            getTestTreeEvent.Raise(mockView, new GetTestTreeEventArgs("mode", false));
+            projectAdapter.TestModelData = testModelData;
+            getTestTreeEvent.Raise(mockView, new GetTestTreeEventArgs(mode, false));
         }
 
         [Test]
@@ -454,12 +452,6 @@ namespace Gallio.Icarus.Adapter.Tests
             TestData testData = new TestData("id", "name");
             testData.CodeLocation = codeLocation;
             TestModelData testModelData = new TestModelData(testData);
-            ListViewItem[] assemblies = new ListViewItem[] { };
-            Expect.Call(mockModel.BuildAssemblyList(null)).Return(assemblies);
-            LastCall.IgnoreArguments();
-            mockView.Assemblies = assemblies;
-            mockModel.BuildTestTree(testModelData, null);
-            mockView.LoadComplete();
             mockView.SourceCodeLocation = codeLocation;
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
@@ -651,15 +643,9 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void TestModelData_Test()
         {
+            mocks.ReplayAll();
             TestData testData = new TestData("id", "name");
             TestModelData testModelData = new TestModelData(testData);
-            ListViewItem[] assemblies = new ListViewItem[] { };
-            Expect.Call(mockModel.BuildAssemblyList(null)).Return(assemblies);
-            LastCall.IgnoreArguments();
-            mockView.Assemblies = assemblies;
-            mockModel.BuildTestTree(testModelData, null);
-            mockView.LoadComplete();
-            mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.TestModelData = testModelData;
             Assert.AreEqual(testModelData, projectAdapter.TestModelData);

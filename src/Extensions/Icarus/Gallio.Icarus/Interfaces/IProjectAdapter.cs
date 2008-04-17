@@ -47,5 +47,6 @@ namespace Gallio.Icarus.Interfaces
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
         void Update(TestData testData, TestStepRun testStepRun);
+        void DataBind();
     }
 }

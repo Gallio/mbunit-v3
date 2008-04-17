@@ -67,12 +67,12 @@
     <Compile Include="Controls\TestTreeViewTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RuntimeLogWindowTest.cs" />
     <Compile Include="FiltersWindowTest.cs" />
     <Compile Include="Core\Remoting\AssemblyWatcherTest.cs" />
     <Compile Include="PropertiesWindowTest.cs" />
     <Compile Include="TestExplorerTest.cs" />
     <Compile Include="TestResultsTest.cs" />
-    <Compile Include="LogWindowTest.cs" />
     <Compile Include="IcarusLoggerTest.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenterTest.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorProviderTest.cs" />

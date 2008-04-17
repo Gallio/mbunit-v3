@@ -42,11 +42,7 @@ namespace Gallio.Icarus.Adapter
         public TestModelData TestModelData
         {
             get { return testModelData; }
-            set
-            {
-                testModelData = value;
-                DataBind();
-            }
+            set { testModelData = value; }
         }
 
         public Project Project
@@ -386,10 +382,11 @@ namespace Gallio.Icarus.Adapter
             ApplyFilter(e.Arg);
         }
 
-        private void DataBind()
+        public void DataBind()
         {
             projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(project.TestPackageConfig.AssemblyFiles);
             projectAdapterModel.BuildTestTree(testModelData, mode);
+            projectAdapterView.Annotations = testModelData.Annotations;
             projectAdapterView.LoadComplete();
         }
 

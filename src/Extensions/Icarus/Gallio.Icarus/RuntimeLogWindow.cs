@@ -18,24 +18,19 @@ using System.Drawing;
 
 namespace Gallio.Icarus
 {
-    public partial class LogWindow : DockWindow
+    public partial class RuntimeLogWindow : DockWindow
     {
         public string LogBody
         {
             get { return logBody.Text; }
         }
 
-        public LogWindow()
+        public RuntimeLogWindow()
         {
             InitializeComponent();
         }
 
-        public LogWindow(string text) : this()
-        {
-            Text = text;
-        }
-
-        public void AppendText(string text)
+        private void AppendText(string text)
         {
             logBody.AppendText(text);
         }
@@ -64,11 +59,6 @@ namespace Gallio.Icarus
         private void clearAllToolStripButton_Click(object sender, EventArgs e)
         {
             logBody.Clear();
-        }
-
-        protected override string GetPersistString()
-        {
-            return GetType().ToString() + "," + Text;
         }
     }
 }
