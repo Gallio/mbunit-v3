@@ -32,11 +32,8 @@ namespace Gallio.Runtime.Hosting
     /// exception handling code and sends periodic heartbeat ping message.
     /// </para>
     /// </summary>
-    public abstract class RemoteHost : IHost
+    public abstract class RemoteHost : BaseHost
     {
-        private readonly HostSetup hostSetup;
-        private readonly ILogger logger;
-        private bool isDisposed;
         private IHostService hostService;
         private TimeSpan? pingInterval;
 
@@ -53,29 +50,8 @@ namespace Gallio.Runtime.Hosting
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>
         /// or <paramref name="logger"/> is null</exception>
         protected RemoteHost(HostSetup hostSetup, ILogger logger)
+            : base(hostSetup, logger)
         {
-            if (hostSetup == null)
-                throw new ArgumentNullException("hostSetup");
-            if (logger == null)
-                throw new ArgumentNullException("logger");
-
-            this.hostSetup = hostSetup;
-            this.logger = logger;
-        }
-
-        /// <summary>
-        /// Gets the logger.
-        /// </summary>
-        protected ILogger Logger
-        {
-            get { return logger; }
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -96,15 +72,8 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        public HostSetup GetHostSetup()
+        protected override void PingImpl()
         {
-            return hostSetup.Copy();
-        }
-
-        /// <inheritdoc />
-        public void Ping()
-        {
-            ThrowIfDisposed();
             ThrowIfNotInitialized();
 
             try
@@ -118,12 +87,8 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        public void DoCallback(CrossAppDomainDelegate callback)
+        protected override void DoCallbackImpl(CrossAppDomainDelegate callback)
         {
-            if (callback == null)
-                throw new ArgumentNullException("callback");
-
-            ThrowIfDisposed();
             ThrowIfNotInitialized();
 
             try
@@ -137,14 +102,8 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        public ObjectHandle CreateInstance(string assemblyName, string typeName)
+        protected override ObjectHandle CreateInstanceImpl(string assemblyName, string typeName)
         {
-            if (assemblyName == null)
-                throw new ArgumentNullException("assemblyName");
-            if (typeName == null)
-                throw new ArgumentNullException("typeName");
-
-            ThrowIfDisposed();
             ThrowIfNotInitialized();
 
             try
@@ -158,14 +117,8 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        public ObjectHandle CreateInstanceFrom(string assemblyPath, string typeName)
+        protected override ObjectHandle CreateInstanceFromImpl(string assemblyPath, string typeName)
         {
-            if (assemblyPath == null)
-                throw new ArgumentNullException("assemblyPath");
-            if (typeName == null)
-                throw new ArgumentNullException("typeName");
-
-            ThrowIfDisposed();
             ThrowIfNotInitialized();
 
             try
@@ -179,16 +132,8 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        public void InitializeRuntime(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
+        protected override void InitializeRuntimeImpl(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
         {
-            if (runtimeFactory == null)
-                throw new ArgumentNullException("runtimeFactory");
-            if (runtimeSetup == null)
-                throw new ArgumentNullException("runtimeSetup");
-            if (logger == null)
-                throw new ArgumentNullException("logger");
-
-            ThrowIfDisposed();
             ThrowIfNotInitialized();
 
             try
@@ -202,9 +147,8 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        public void ShutdownRuntime()
+        protected override void ShutdownRuntimeImpl()
         {
-            ThrowIfDisposed();
             ThrowIfNotInitialized();
 
             try
@@ -221,7 +165,7 @@ namespace Gallio.Runtime.Hosting
         /// Disposes the remote host.
         /// </summary>
         /// <param name="disposing">True if disposing</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             StopPingTimer();
 
@@ -245,28 +189,14 @@ namespace Gallio.Runtime.Hosting
             finally
             {
                 hostService = null;
-                isDisposed = true;
+                base.Dispose(disposing);
             }
-        }
-
-        private void ThrowIfDisposed()
-        {
-            if (isDisposed)
-                throw new ObjectDisposedException(GetType().Name);
         }
 
         private void ThrowIfNotInitialized()
         {
             if (hostService == null)
                 throw new InvalidOperationException("The host has not been initialized.");
-        }
-
-        /// <summary>
-        /// Gets the internal host setup information without copying it.
-        /// </summary>
-        protected HostSetup HostSetup
-        {
-            get { return hostSetup; }
         }
 
         /// <summary>

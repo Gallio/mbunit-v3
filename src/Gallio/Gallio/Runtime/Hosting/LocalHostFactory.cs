@@ -13,22 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Gallio.Runtime.Logging;
 
-namespace Gallio.Runner.Events
+namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// Arguments for an event raised to indicate that the test runner disposal has finished.
+    /// <para>
+    /// A factory for initialized <see cref="LocalHost" /> hosts.
+    /// </para>
     /// </summary>
-    public sealed class DisposeFinishedEventArgs : OperationFinishedEventArgs
+    public class LocalHostFactory : BaseHostFactory
     {
-        /// <summary>
-        /// Initializes the event arguments.
-        /// </summary>
-        /// <param name="success">True if the disposal was completed successfully</param>
-        public DisposeFinishedEventArgs(bool success)
-            : base(success)
+        /// <inheritdoc />
+        protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
+            return new LocalHost(hostSetup, logger);
         }
     }
 }

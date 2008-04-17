@@ -109,6 +109,9 @@
     <Compile Include="Runtime\ConsoleSupport\ResponseFileReader.cs" />
     <Compile Include="Runtime\ConsoleSupport\RichConsoleLogger.cs" />
     <Compile Include="Runtime\GallioSectionHandler.cs" />
+    <Compile Include="Runtime\Hosting\BaseHost.cs" />
+    <Compile Include="Runtime\Hosting\LocalHost.cs" />
+    <Compile Include="Runtime\Hosting\LocalHostFactory.cs" />
     <Compile Include="Runtime\Loader\DefaultLoader.cs" />
     <Compile Include="Runtime\Loader\ILoader.cs" />
     <Compile Include="Runtime\Logging\BaseLogger.cs" />

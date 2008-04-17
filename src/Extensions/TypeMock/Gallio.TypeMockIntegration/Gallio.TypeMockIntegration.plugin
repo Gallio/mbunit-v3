@@ -18,7 +18,7 @@
                  service="Gallio.Runner.ITestRunnerFactory, Gallio"
                  type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
         <parameters>
-          <domainFactory>${TypeMockIntegration.TypeMockTestDomainFactory}</domainFactory>
+          <hostFactory>${TypeMockIntegration.TypeMockHostFactory}</hostFactory>
           <name>TypeMock</name>
           <description>Runs tests in an external process with TypeMock.Net.  TypeMock.Net v4 must be installed for this mode to work.</description>
         </parameters>
