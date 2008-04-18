@@ -43,123 +43,125 @@ namespace Gallio.Icarus
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestResults));
             this.resultsFilterPanel = new System.Windows.Forms.Panel();
             this.testProgressStatusBar = new Gallio.Icarus.Controls.TestStatusBar();
-            this.filterTestResultsCombo = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.testResultsList = new Gallio.Icarus.Controls.TestResultsList();
-            this.TestCol = new System.Windows.Forms.ColumnHeader();
-            this.ResultCol = new System.Windows.Forms.ColumnHeader();
-            this.DurationCol = new System.Windows.Forms.ColumnHeader();
-            this.TypeCol = new System.Windows.Forms.ColumnHeader();
-            this.NamespaceCol = new System.Windows.Forms.ColumnHeader();
-            this.AssemblyCol = new System.Windows.Forms.ColumnHeader();
+            this.Status = new System.Windows.Forms.ColumnHeader();
+            this.StepName = new System.Windows.Forms.ColumnHeader();
+            this.TestKind = new System.Windows.Forms.ColumnHeader();
+            this.Duration = new System.Windows.Forms.ColumnHeader();
+            this.Asserts = new System.Windows.Forms.ColumnHeader();
+            this.CodeReference = new System.Windows.Forms.ColumnHeader();
+            this.Assembly = new System.Windows.Forms.ColumnHeader();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.resultsFilterPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // resultsFilterPanel
             // 
             this.resultsFilterPanel.Controls.Add(this.testProgressStatusBar);
-            this.resultsFilterPanel.Controls.Add(this.filterTestResultsCombo);
-            this.resultsFilterPanel.Controls.Add(this.label3);
             this.resultsFilterPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.resultsFilterPanel.Location = new System.Drawing.Point(0, 0);
             this.resultsFilterPanel.Name = "resultsFilterPanel";
-            this.resultsFilterPanel.Size = new System.Drawing.Size(292, 99);
+            this.resultsFilterPanel.Size = new System.Drawing.Size(555, 58);
             this.resultsFilterPanel.TabIndex = 2;
             // 
             // testProgressStatusBar
             // 
             this.testProgressStatusBar.BackColor = System.Drawing.Color.White;
             this.testProgressStatusBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.testProgressStatusBar.ElapsedTime = 0;
+            this.testProgressStatusBar.Failed = 0;
+            this.testProgressStatusBar.FailedColor = System.Drawing.Color.Red;
             this.testProgressStatusBar.Font = new System.Drawing.Font("Verdana", 8F);
+            this.testProgressStatusBar.Inconclusive = 0;
+            this.testProgressStatusBar.InconclusiveColor = System.Drawing.Color.Gold;
             this.testProgressStatusBar.Location = new System.Drawing.Point(0, 0);
             this.testProgressStatusBar.Mode = "MbUnit";
             this.testProgressStatusBar.Name = "testProgressStatusBar";
-            this.testProgressStatusBar.Size = new System.Drawing.Size(292, 56);
+            this.testProgressStatusBar.Passed = 0;
+            this.testProgressStatusBar.PassedColor = System.Drawing.Color.Green;
+            this.testProgressStatusBar.Size = new System.Drawing.Size(555, 56);
+            this.testProgressStatusBar.Skipped = 0;
+            this.testProgressStatusBar.SkippedColor = System.Drawing.Color.SlateGray;
             this.testProgressStatusBar.TabIndex = 5;
-            // 
-            // filterTestResultsCombo
-            // 
-            this.filterTestResultsCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.filterTestResultsCombo.FormattingEnabled = true;
-            this.filterTestResultsCombo.Items.AddRange(new object[] {
-            "All tests",
-            "Passed tests",
-            "Failed tests",
-            "Skipped tests",
-            "Inconclusive tests"});
-            this.filterTestResultsCombo.Location = new System.Drawing.Point(74, 68);
-            this.filterTestResultsCombo.Name = "filterTestResultsCombo";
-            this.filterTestResultsCombo.Size = new System.Drawing.Size(189, 21);
-            this.filterTestResultsCombo.TabIndex = 1;
-            this.filterTestResultsCombo.SelectedIndexChanged += new System.EventHandler(this.filterTestResultsCombo_SelectedIndexChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 71);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Show only";
+            this.testProgressStatusBar.Text = "{0} tests - {1} passed - {2} failed - {3} inconclusive - {4} skipped - {5:0.0}s";
+            this.testProgressStatusBar.Total = 0;
             // 
             // testResultsList
             // 
             this.testResultsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.TestCol,
-            this.ResultCol,
-            this.DurationCol,
-            this.TypeCol,
-            this.NamespaceCol,
-            this.AssemblyCol});
+            this.Status,
+            this.StepName,
+            this.TestKind,
+            this.Duration,
+            this.Asserts,
+            this.CodeReference,
+            this.Assembly});
             this.testResultsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.testResultsList.Location = new System.Drawing.Point(0, 99);
+            this.testResultsList.Location = new System.Drawing.Point(0, 58);
             this.testResultsList.Name = "testResultsList";
-            this.testResultsList.Size = new System.Drawing.Size(292, 174);
+            this.testResultsList.Size = new System.Drawing.Size(555, 215);
+            this.testResultsList.SmallImageList = this.imageList1;
             this.testResultsList.TabIndex = 3;
             this.testResultsList.UseCompatibleStateImageBehavior = false;
             this.testResultsList.View = System.Windows.Forms.View.Details;
             // 
-            // TestCol
+            // Status
             // 
-            this.TestCol.Text = "Test";
-            this.TestCol.Width = 200;
+            this.Status.Text = "";
+            this.Status.Width = 25;
             // 
-            // ResultCol
+            // StepName
             // 
-            this.ResultCol.Text = "Result";
-            this.ResultCol.Width = 100;
+            this.StepName.Text = "Step name";
+            this.StepName.Width = 200;
             // 
-            // DurationCol
+            // TestKind
             // 
-            this.DurationCol.Text = "Duration (ms)";
-            this.DurationCol.Width = 100;
+            this.TestKind.Text = "Test kind";
             // 
-            // TypeCol
+            // Duration
             // 
-            this.TypeCol.Text = "Type";
+            this.Duration.Text = "Duration (s)";
+            this.Duration.Width = 70;
             // 
-            // NamespaceCol
+            // Asserts
             // 
-            this.NamespaceCol.Text = "Namespace";
+            this.Asserts.Text = "Asserts";
+            this.Asserts.Width = 50;
             // 
-            // AssemblyCol
+            // CodeReference
             // 
-            this.AssemblyCol.Text = "Assembly";
+            this.CodeReference.Text = "Code reference";
+            this.CodeReference.Width = 200;
+            // 
+            // Assembly
+            // 
+            this.Assembly.Text = "Assembly";
+            this.Assembly.Width = 200;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "tick.png");
+            this.imageList1.Images.SetKeyName(1, "cross.png");
+            this.imageList1.Images.SetKeyName(2, "error.png");
             // 
             // TestResults
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 273);
+            this.ClientSize = new System.Drawing.Size(555, 273);
             this.Controls.Add(this.testResultsList);
             this.Controls.Add(this.resultsFilterPanel);
             this.Name = "TestResults";
             this.TabText = "Test results";
             this.Text = "Test results";
             this.resultsFilterPanel.ResumeLayout(false);
-            this.resultsFilterPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -167,15 +169,15 @@ namespace Gallio.Icarus
         #endregion
 
         private System.Windows.Forms.Panel resultsFilterPanel;
-        private System.Windows.Forms.ComboBox filterTestResultsCombo;
-        private System.Windows.Forms.Label label3;
         private Gallio.Icarus.Controls.TestResultsList testResultsList;
-        private System.Windows.Forms.ColumnHeader TestCol;
-        private System.Windows.Forms.ColumnHeader ResultCol;
-        private System.Windows.Forms.ColumnHeader DurationCol;
-        private System.Windows.Forms.ColumnHeader TypeCol;
-        private System.Windows.Forms.ColumnHeader NamespaceCol;
-        private System.Windows.Forms.ColumnHeader AssemblyCol;
+        private System.Windows.Forms.ColumnHeader StepName;
+        private System.Windows.Forms.ColumnHeader Duration;
+        private System.Windows.Forms.ColumnHeader CodeReference;
+        private System.Windows.Forms.ColumnHeader Assembly;
         private Gallio.Icarus.Controls.TestStatusBar testProgressStatusBar;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ColumnHeader Status;
+        private System.Windows.Forms.ColumnHeader TestKind;
+        private System.Windows.Forms.ColumnHeader Asserts;
     }
 }

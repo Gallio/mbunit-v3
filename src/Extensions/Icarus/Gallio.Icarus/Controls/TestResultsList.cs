@@ -20,32 +20,20 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Gallio.Model;
+using Gallio.Model.Serialization;
+using Gallio.Runner.Reports;
+using Gallio.Reflection;
 
 namespace Gallio.Icarus.Controls
 {
     public class TestResultsList : ListView
     {
         private TestResultsListColumnSorter columnSorter;
-        private List<ListViewItem> passed, failed, skipped, inconclusive;
-        private string filter = string.Empty;
-
-        public string Filter
-        {
-            set
-            {
-                filter = value;
-                FilterItems();
-            }
-        }
 
         public TestResultsList()
         {
             columnSorter = new TestResultsListColumnSorter();
             ListViewItemSorter = columnSorter;
-            passed = new List<ListViewItem>();
-            failed = new List<ListViewItem>();
-            skipped = new List<ListViewItem>();
-            inconclusive = new List<ListViewItem>();
         }
 
         protected override void OnColumnClick(ColumnClickEventArgs e)
@@ -72,65 +60,31 @@ namespace Gallio.Icarus.Controls
             Sort();
         }
 
-        public void UpdateTestResults(string testName, TestOutcome testOutcome, Color foreColor, 
-            string duration, string typeName, string namespaceName, string assemblyName)
+        public void UpdateTestResults(TestData testData, TestStepRun testStepRun)
         {
-            ListViewItem lvi = new ListViewItem(testName);
-            lvi.UseItemStyleForSubItems = false;
-            lvi.SubItems.Add(new ListViewItem.ListViewSubItem(lvi, testOutcome.ToString(), foreColor, BackColor, Font));
-            lvi.SubItems.AddRange(new string[] { duration, typeName, namespaceName, assemblyName });
-            switch (testOutcome.Status)
+            int imgIndex = -1;
+            switch (testStepRun.Result.Outcome.Status)
             {
-                case TestStatus.Passed:
-                    passed.Add(lvi);
-                    break;
                 case TestStatus.Failed:
-                    failed.Add(lvi);
-                    break;
-                case TestStatus.Skipped:
-                    skipped.Add(lvi);
+                    imgIndex = 1;
                     break;
                 case TestStatus.Inconclusive:
-                    inconclusive.Add(lvi);
+                    imgIndex = 2;
+                    break;
+                case TestStatus.Passed:
+                    imgIndex = 0;
                     break;
             }
-            if (filter == string.Empty || testOutcome.Status.ToString() == filter)
-                Items.Add((ListViewItem)lvi.Clone());
-        }
-
-        private void FilterItems()
-        {
-            Items.Clear();
-            switch (filter)
-            {
-                case "passed":
-                    Items.AddRange(passed.ToArray());
-                    break;
-                case "failed":
-                    Items.AddRange(failed.ToArray());
-                    break;
-                case "inconclusive":
-                    Items.AddRange(inconclusive.ToArray());
-                    break;
-                case "skipped":
-                    Items.AddRange(skipped.ToArray());
-                    break;
-                default:
-                    Items.AddRange(failed.ToArray());
-                    Items.AddRange(inconclusive.ToArray());
-                    Items.AddRange(passed.ToArray());
-                    Items.AddRange(skipped.ToArray());
-                    break;
-            }
+            ListViewItem lvi = new ListViewItem(string.Empty, imgIndex);
+            lvi.SubItems.AddRange(new string[] { testStepRun.Step.Name, testData.Metadata.GetValue(MetadataKeys.TestKind), 
+                testStepRun.Result.Duration.ToString("0.000"), testStepRun.Result.AssertCount.ToString(), testStepRun.Step.CodeReference.TypeName, 
+                testStepRun.Step.CodeReference.AssemblyName });
+            Items.Add(lvi);
         }
 
         public new void Clear()
         {
             Items.Clear();
-            passed.Clear();
-            failed.Clear();
-            inconclusive.Clear();
-            skipped.Clear();
         }
     }
 
@@ -183,8 +137,14 @@ namespace Gallio.Icarus.Controls
             listviewY = (ListViewItem)y;
 
             // Compare the two items
-            if (ColumnToSort == 2)
+            if (ColumnToSort == 0)
             {
+                // status column
+                compareResult = listviewX.ImageIndex.CompareTo(listviewY.ImageIndex);
+            }
+            else if (ColumnToSort == 3)
+            {
+                // duration column
                 decimal left = Convert.ToDecimal(listviewX.SubItems[ColumnToSort].Text);
                 decimal right = Convert.ToDecimal(listviewY.SubItems[ColumnToSort].Text);
                 if (left < right)
@@ -198,7 +158,10 @@ namespace Gallio.Icarus.Controls
                 }
             }
             else
+            {
+                // standard text sort (ci)
                 compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
+            }
 
             // Calculate correct return value based on object comparison
             if (OrderOfSort == SortOrder.Ascending)

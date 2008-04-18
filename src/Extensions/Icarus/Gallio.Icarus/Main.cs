@@ -79,7 +79,10 @@ namespace Gallio.Icarus
                     };
                     ((TestTreeModel)value).TestResult += delegate(object sender, TestResultEventArgs e)
                     {
-                        testResults.UpdateTestResults(e.TestName, e.TestOutcome, e.Duration, e.TypeName, e.NamespaceName, e.AssemblyName);
+                        if (testResults.InvokeRequired)
+                            testResults.Invoke((MethodInvoker)delegate { testResults.UpdateTestResults(e.TestData, e.TestStepRun); });
+                        else
+                            testResults.UpdateTestResults(e.TestData, e.TestStepRun);
                     };
                 }
             }
@@ -260,6 +263,18 @@ namespace Gallio.Icarus
         {
             set
             {
+                foreach (DockPane dockPane in dockPanel.Panes)
+                {
+                    foreach (IDockContent dockContent in dockPane.Contents)
+                    {
+                        if (dockContent.ToString() == value.Path)
+                        {
+                            ((CodeWindow)dockContent).JumpTo(value.Line, value.Column);
+                            dockContent.DockHandler.Show();
+                            return;
+                        }
+                    }
+                }
                 CodeWindow codeWindow = new CodeWindow(value);
                 codeWindow.Show(dockPanel, DockState.Document);
             }
@@ -444,7 +459,7 @@ namespace Gallio.Icarus
             propertiesWindow = new PropertiesWindow(this);
             filtersWindow = new FiltersWindow(this);
             executionLogWindow = new ExecutionLogWindow();
-            annotationsWindow = new AnnotationsWindow();
+            annotationsWindow = new AnnotationsWindow(this);
 
             deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
         }

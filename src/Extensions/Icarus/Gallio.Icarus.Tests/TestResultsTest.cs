@@ -29,11 +29,5 @@ namespace Gallio.Icarus.Tests
         {
             testResults = new TestResults();
         }
-
-        [Test]
-        public void UpdateTestResults_Test()
-        {
-            testResults.UpdateTestResults("test", TestOutcome.Passed, 10, "type", "namespace", "assembly");
-        }
     }
 }

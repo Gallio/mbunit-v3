@@ -20,11 +20,13 @@ using System.Windows.Forms;
 
 using Gallio.Model;
 using Gallio.Model.Serialization;
+using Gallio.Icarus.Interfaces;
 
 namespace Gallio.Icarus
 {
     public partial class AnnotationsWindow : DockWindow
     {
+        private readonly IProjectAdapterView projectAdapterView;
         private List<AnnotationData> annotations;
         
         public List<AnnotationData> Annotations
@@ -36,8 +38,9 @@ namespace Gallio.Icarus
             }
         }
 
-        public AnnotationsWindow()
+        public AnnotationsWindow(IProjectAdapterView projectAdapterView)
         {
+            this.projectAdapterView = projectAdapterView;
             InitializeComponent();
         }
 
@@ -76,12 +79,19 @@ namespace Gallio.Icarus
             ListViewItem lvi = new ListViewItem(annotationData.Message, imgIndex);
             lvi.SubItems.AddRange(new string[] { annotationData.Details, annotationData.CodeLocation.ToString(), 
                         annotationData.CodeReference.ToString() });
+            lvi.Tag = annotationData;
             annotationsListView.Items.Add(lvi);
         }
 
         private void annotationsToolStripButton_Click(object sender, EventArgs e)
         {
             PopulateListView();
+        }
+
+        private void annotationsListView_DoubleClick(object sender, EventArgs e)
+        {
+            foreach (ListViewItem lvi in annotationsListView.SelectedItems)
+                projectAdapterView.SourceCodeLocation = ((AnnotationData)lvi.Tag).CodeLocation;
         }
     }
 }

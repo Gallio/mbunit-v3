@@ -30,31 +30,30 @@
 using System;
 
 using Gallio.Model;
+using Gallio.Model.Serialization;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Core.CustomEventArgs 
 {
     public class TestResultEventArgs : EventArgs
     {
-        private string testName, typeName, namespaceName, assemblyName;
-        private TestOutcome testOutcome;
-        private double duration;
+        private readonly TestData testData;
+        private readonly TestStepRun testStepRun;
 
-        public string TestName { get { return testName; } }
-        public TestOutcome TestOutcome { get { return testOutcome; } }
-        public double Duration { get { return duration; } }
-        public string TypeName { get { return typeName; } }
-        public string NamespaceName { get { return namespaceName; } }
-        public string AssemblyName { get { return assemblyName; } }
-
-        public TestResultEventArgs(string testName, TestOutcome testOutcome, double duration, 
-            string typeName, string namespaceName, string assemblyName)
+        public TestData TestData
         {
-            this.testName = testName;
-            this.testOutcome = testOutcome;
-            this.duration = duration;
-            this.typeName = typeName;
-            this.namespaceName = namespaceName;
-            this.assemblyName = assemblyName;
+            get { return testData; }
+        }
+
+        public TestStepRun TestStepRun
+        {
+            get { return testStepRun; }
+        }
+
+        public TestResultEventArgs(TestData testData, TestStepRun testStepRun)
+        {
+            this.testData = testData;
+            this.testStepRun = testStepRun;
         }
     }
 }

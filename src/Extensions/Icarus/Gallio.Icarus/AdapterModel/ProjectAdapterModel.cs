@@ -202,17 +202,7 @@ namespace Gallio.Icarus.AdapterModel
         public void Update(TestData testData, TestStepRun testStepRun)
         {
             // update tree model
-            testTreeModel.UpdateTestStatus(testData.Id, testStepRun.Result.Outcome.Status);
-            if (testStepRun.Step.IsTestCase)
-            {
-                // get code reference (if there is one)
-                CodeReference codeReference = testData.CodeReference;
-
-                // update test results
-                double duration = (testStepRun.EndTime - testStepRun.StartTime).TotalMilliseconds;
-                testTreeModel.OnTestResult(new TestResultEventArgs(testData.Name, testStepRun.Result.Outcome,
-                    duration, codeReference.TypeName, codeReference.NamespaceName, codeReference.AssemblyName));
-            }
+            testTreeModel.UpdateTestStatus(testData, testStepRun);
         }
 
         public Filter<ITest> CreateFilter()

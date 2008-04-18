@@ -32,46 +32,6 @@ namespace Gallio.Icarus.Controls.Tests
         public void SetUp()
         {
             testResultsList = new TestResultsList();
-            testResultsList.UpdateTestResults("test1", TestOutcome.Passed, Color.Green, "10", "type", "namespace", "assembly");
-            testResultsList.UpdateTestResults("test2", TestOutcome.Failed, Color.Red, "10", "type", "namespace", "assembly");
-            testResultsList.UpdateTestResults("test3", TestOutcome.Skipped, Color.SlateGray, "10", "type", "namespace", "assembly");
-            testResultsList.UpdateTestResults("test4", TestOutcome.Inconclusive, Color.Gold, "10", "type", "namespace", "assembly");
-            Assert.AreEqual(4, testResultsList.Items.Count);
-        }
-
-        [Test]
-        public void FilterPassed_Test()
-        {
-            testResultsList.Filter = TestOutcome.Passed.ToString();
-            Assert.AreEqual(1, testResultsList.Items.Count);
-        }
-
-        [Test]
-        public void FilterFailed_Test()
-        {
-            testResultsList.Filter = TestOutcome.Failed.ToString();
-            Assert.AreEqual(1, testResultsList.Items.Count);
-        }
-
-        [Test]
-        public void FilterSkipped_Test()
-        {
-            testResultsList.Filter = TestOutcome.Skipped.ToString();
-            Assert.AreEqual(1, testResultsList.Items.Count);
-        }
-
-        [Test]
-        public void FilterInconclusive_Test()
-        {
-            testResultsList.Filter = TestOutcome.Inconclusive.ToString();
-            Assert.AreEqual(1, testResultsList.Items.Count);
-        }
-
-        [Test]
-        public void RemoveFilter_Test()
-        {
-            testResultsList.Filter = string.Empty;
-            Assert.AreEqual(4, testResultsList.Items.Count);
         }
 
         [Test]

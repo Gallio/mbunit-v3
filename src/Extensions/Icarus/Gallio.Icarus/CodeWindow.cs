@@ -21,22 +21,33 @@ namespace Gallio.Icarus
 {
     public partial class CodeWindow : DockWindow
     {
+        private readonly CodeLocation codeLocation;
+
         public CodeWindow(CodeLocation codeLocation)
         {
+            this.codeLocation = codeLocation;
+
             InitializeComponent();
 
             if (codeLocation == CodeLocation.Unknown)
-            {
                 Text = "(unknown)";
-            }
             else
             {
                 Text = Path.GetFileName(codeLocation.Path) ?? "(unknown)";
                 textEditorControl.LoadFile(codeLocation.Path);
-
                 if (codeLocation.Line != 0)
                     textEditorControl.ActiveTextAreaControl.JumpTo(codeLocation.Line, codeLocation.Column);
             }
+        }
+
+        public void JumpTo(int line, int column)
+        {
+            textEditorControl.ActiveTextAreaControl.JumpTo(line, column);
+        }
+
+        public override string ToString()
+        {
+            return codeLocation.Path;
         }
     }
 }

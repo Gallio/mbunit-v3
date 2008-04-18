@@ -298,8 +298,7 @@ namespace Gallio.Icarus.AdapterModel.Tests
             TestStepRun testStepRun = new TestStepRun(new TestStepData("test", "test", "test", "test"));
             testStepRun.Step.IsTestCase = true;
             ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
-            testTreeModel.UpdateTestStatus(testData.Id, testStepRun.Result.Outcome.Status);
-            testTreeModel.OnTestResult(null);
+            testTreeModel.UpdateTestStatus(testData, testStepRun);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapterModel.TreeModel = testTreeModel;

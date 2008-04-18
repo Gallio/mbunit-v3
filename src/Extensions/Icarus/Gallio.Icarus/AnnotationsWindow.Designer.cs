@@ -90,12 +90,14 @@ namespace Gallio.Icarus
             this.annotationsListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.annotationsListView.FullRowSelect = true;
             this.annotationsListView.Location = new System.Drawing.Point(0, 0);
+            this.annotationsListView.MultiSelect = false;
             this.annotationsListView.Name = "annotationsListView";
             this.annotationsListView.Size = new System.Drawing.Size(409, 248);
             this.annotationsListView.SmallImageList = this.imageList1;
             this.annotationsListView.TabIndex = 0;
             this.annotationsListView.UseCompatibleStateImageBehavior = false;
             this.annotationsListView.View = System.Windows.Forms.View.Details;
+            this.annotationsListView.DoubleClick += new System.EventHandler(this.annotationsListView_DoubleClick);
             // 
             // annotationMessage
             // 

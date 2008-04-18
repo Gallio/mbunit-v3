@@ -19,6 +19,8 @@ using Gallio.Model;
 using Aga.Controls.Tree;
 using System.Collections.ObjectModel;
 using System.Collections;
+using Gallio.Model.Serialization;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Controls.Interfaces
 {
@@ -35,10 +37,9 @@ namespace Gallio.Icarus.Controls.Interfaces
         TreePath GetPath(Node node);
         void OnStructureChanged(TreePathEventArgs args);
         void ResetTestStatus();
-        void UpdateTestStatus(string testId, TestStatus testStatus);
+        void UpdateTestStatus(TestData testData, TestStepRun testStepRun);
         void FilterTree();
         void OnTestCountChanged(EventArgs e);
-        void OnTestResult(TestResultEventArgs e);
 
         event EventHandler<EventArgs> TestCountChanged;
         event EventHandler<TestResultEventArgs> TestResult;

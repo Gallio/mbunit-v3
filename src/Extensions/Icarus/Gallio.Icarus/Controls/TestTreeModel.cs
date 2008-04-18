@@ -19,6 +19,8 @@ using Aga.Controls.Tree;
 using Gallio.Icarus.Controls.Interfaces;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Model;
+using Gallio.Model.Serialization;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Controls
 {
@@ -104,14 +106,20 @@ namespace Gallio.Icarus.Controls
                 ResetTestStatus(n);
         }
 
-        public void UpdateTestStatus(string testId, TestStatus testStatus)
+        public void UpdateTestStatus(TestData testData, TestStepRun testStepRun)
         {
-            List<TestTreeNode> nodes = Root.Find(testId, true);
+            List<TestTreeNode> nodes = Root.Find(testData.Id, true);
             foreach (TestTreeNode node in nodes)
             {
-                node.TestStatus = testStatus;
-                Filter(node);
+                // combine test status
+                if (testStepRun.Result.Outcome.Status > node.TestStatus || testStepRun.Step.IsPrimary)
+                {
+                    node.TestStatus = testStepRun.Result.Outcome.Status;
+                    Filter(node);
+                }
             }
+            if (TestResult != null)
+                TestResult(this, new TestResultEventArgs(testData, testStepRun));
         }
 
         public void FilterTree()
@@ -201,12 +209,6 @@ namespace Gallio.Icarus.Controls
         {
             if (TestCountChanged != null)
                 TestCountChanged(this, e);
-        }
-
-        public void OnTestResult(TestResultEventArgs e)
-        {
-            if (TestResult != null)
-                TestResult(this, e);
         }
     }
 }
