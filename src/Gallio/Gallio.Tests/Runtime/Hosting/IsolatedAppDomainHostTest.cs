@@ -22,7 +22,7 @@ namespace Gallio.Tests.Runtime.Hosting
     [TestsOn(typeof(IsolatedAppDomainHost))]
     [TestsOn(typeof(IsolatedAppDomainHostFactory))]
     [DependsOn(typeof(BaseHostFactoryTest))]
-    public class IsolatedAppDomainHostTest : AbstractHostFactoryTest
+    public class IsolatedAppDomainHostTest : RemoteHostFactoryTest
     {
         public override IHostFactory Factory
         {

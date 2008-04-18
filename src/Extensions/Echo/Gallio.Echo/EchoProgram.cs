@@ -106,6 +106,7 @@ namespace Gallio.Echo
             GenericUtils.AddAll(Arguments.ReportTypes, launcher.ReportFormats);
 
             launcher.TestRunnerFactoryName = Arguments.RunnerType;
+            GenericUtils.AddAll(Arguments.RunnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
             launcher.DoNotRun = Arguments.DoNotRun;
             launcher.IgnoreAnnotations = Arguments.IgnoreAnnotations;

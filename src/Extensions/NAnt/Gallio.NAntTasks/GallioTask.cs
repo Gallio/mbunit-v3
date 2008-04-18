@@ -105,6 +105,7 @@ namespace Gallio.NAntTasks
         private string statisticsPropertiesPrefix;
         private bool showReports;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
+        private string[] runnerExtensions = EmptyArray<string>.Instance;
         private bool doNotRun;
         private bool ignoreAnnotations;
         private bool echoResults = true;
@@ -298,7 +299,7 @@ namespace Gallio.NAntTasks
         /// </summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>The types supported "out of the box" are: LocalAppDomain, IsolatedAppDomain
+        /// <item>The types supported "out of the box" are: Local, IsolatedAppDomain
         /// and IsolatedProcess (default), but more types could be available as plugins.</item>
         /// <item>The runner types are not case sensitive.</item>
         /// </list>
@@ -307,6 +308,35 @@ namespace Gallio.NAntTasks
         public string RunnerType
         {
             set { runnerType = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Specifies the type, assembly, and parameters of custom test runner
+        /// extensions to use during the test run in the form:
+        /// '[Namespace.]Type,Assembly[;Parameters]'.
+        /// </para>
+        /// <para>
+        /// eg. 'FancyLogger,MyCustomExtensions.dll;SomeParameters'
+        /// </para>
+        /// </summary>
+        /// <example>
+        /// The following example runs tests using a custom logger extension:
+        /// <code>
+        /// <![CDATA[
+        /// <gallio>
+        ///     <runner-extensions>
+        ///         <include name="FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting" />
+        ///     </runner-extensions>
+        ///     <!-- More options -->
+        /// </gallio>
+        /// ]]>
+        /// </code>
+        /// </example>
+        [BuildElementArray("runner-extensions", ElementType = typeof(string))]
+        public string[] RunnerExtensions
+        {
+            set { runnerExtensions = value; }
         }
 
         /// <summary>
@@ -456,7 +486,10 @@ namespace Gallio.NAntTasks
             launcher.DoNotRun = doNotRun;
             launcher.IgnoreAnnotations = ignoreAnnotations;
             launcher.EchoResults = echoResults;
+
             launcher.TestRunnerFactoryName = runnerType;
+            if (runnerExtensions != null)
+                GenericUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
             launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
             launcher.RuntimeSetup = new RuntimeSetup();

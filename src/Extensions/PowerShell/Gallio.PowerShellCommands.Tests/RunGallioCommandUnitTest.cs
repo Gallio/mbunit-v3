@@ -79,7 +79,7 @@ namespace Gallio.PowerShellCommands.Tests
             task.ReportTypes = new string[] { "XML", "Html" };
             task.ReportNameFormat = "report";
             task.ShowReports = true;
-            task.RunnerType = StandardTestRunnerFactoryNames.LocalAppDomain;
+            task.RunnerType = StandardTestRunnerFactoryNames.Local;
 
             task.PluginDirectories = new string[] { "plugin" };
             task.Assemblies = new string[] { "assembly1", "assembly2" };
@@ -101,7 +101,7 @@ namespace Gallio.PowerShellCommands.Tests
                 CollectionAssert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
-                Assert.AreEqual(StandardTestRunnerFactoryNames.LocalAppDomain, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);

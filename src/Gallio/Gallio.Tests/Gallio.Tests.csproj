@@ -118,6 +118,8 @@
     <Compile Include="Framework\Pattern\PatternTestFrameworkTest.cs" />
     <Compile Include="Framework\Pattern\ToolInfoTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
+    <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
+    <Compile Include="Runtime\Hosting\LocalHostTest.cs" />
     <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />
@@ -126,7 +128,7 @@
     <Compile Include="Runtime\Remoting\BaseClientChannelTest.cs" />
     <Compile Include="Runtime\Remoting\BaseServerChannelTest.cs" />
     <Compile Include="Runtime\Remoting\BinaryIpcChannelTest.cs" />
-    <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
+    <Compile Include="Runtime\Hosting\RemoteHostFactoryTest.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentParserTests.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineOutputTests.cs" />
     <Compile Include="Framework\ContextTest.cs" />
@@ -189,6 +191,7 @@
     <Compile Include="Runner\TestLauncherTest.cs" />
     <Compile Include="Reflection\Impl\DefaultXmlDocumentationResolverTest.cs" />
     <Compile Include="Collections\TreeUtilsTest.cs" />
+    <Compile Include="Utilities\CurrentDirectorySwitcherTest.cs" />
     <Compile Include="Utilities\ExceptionUtilsTest.cs" />
     <Compile Include="Runtime\CorrelatedExceptionEventArgsTest.cs" />
     <Compile Include="Utilities\MimeTypesTest.cs" />

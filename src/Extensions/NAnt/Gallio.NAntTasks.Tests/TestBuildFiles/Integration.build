@@ -92,5 +92,15 @@
     </gallio>
     
     <fail if="${ExitCode != '0'}" >Expected failure result code, was ${ExitCode}!</fail>
+  </target>
+  
+  <target name="Extensions">
+    <gallio result-property="ExitCode" filter="Type: PassingTests" ignore-annotations="true">
+      <runner-extensions>
+        <include 
+      </runner-extensions>
+    </gallio>
+    
+    <fail if="${ExitCode != '0'}" >Expected successful result code, was ${ExitCode}!</fail>
   </target>  
 </project>

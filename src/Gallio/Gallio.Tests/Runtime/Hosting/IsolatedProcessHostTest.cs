@@ -15,7 +15,6 @@
 
 using System;
 using System.Threading;
-using Gallio.Runtime.Logging;
 using Gallio.Framework.Utilities;
 using Gallio.Runtime.Hosting;
 using Gallio.Tests.Runtime.Remoting;
@@ -28,7 +27,7 @@ namespace Gallio.Tests.Runtime.Hosting
     [TestsOn(typeof(IsolatedProcessHostFactory))]
     [DependsOn(typeof(BaseHostFactoryTest))]
     [DependsOn(typeof(BinaryIpcChannelTest))]
-    public class IsolatedProcessHostTest : AbstractHostFactoryTest
+    public class IsolatedProcessHostTest : RemoteHostFactoryTest
     {
         public override IHostFactory Factory
         {

@@ -34,8 +34,8 @@ namespace Gallio.Echo
         [CommandLineArgument(
             CommandLineArgumentFlags.MultipleUnique,
             ShortName = "hd",
-            LongName = "hint-directories",
-            Description = "The directories used for loading assemblies and other dependent resources.",
+            LongName = "hint-directory",
+            Description = "Additional directories used for loading assemblies and other dependent resources.",
             ValueLabel = "dir"
             )]
         public string[] HintDirectories;
@@ -148,9 +148,17 @@ namespace Gallio.Echo
              CommandLineArgumentFlags.AtMostOnce,
              LongName = "runner",
              ValueLabel = "type",
-             Description = "Specifies the type of test runner to use.  See below for all supported types.  The default is '" + StandardTestRunnerFactoryNames.IsolatedAppDomain + "'"
+             Description = "Specifies the type of test runner to use.  See below for all supported types.  The default is '" + StandardTestRunnerFactoryNames.Local + "'"
              )]
-        public string RunnerType = StandardTestRunnerFactoryNames.IsolatedAppDomain;
+        public string RunnerType = StandardTestRunnerFactoryNames.Local;
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.Multiple,
+             LongName = "extension",
+             ValueLabel = "specification",
+             Description = "Specifies the type, assembly, and parameters of custom test runner extensions to use during the test run in the form:\n'[Namespace.]Type,Assembly[;Parameters]'.\neg. 'FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting'"
+             )]
+        public string[] RunnerExtensions;
 
         #endregion
 

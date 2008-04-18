@@ -92,7 +92,7 @@ namespace Gallio.NAntTasks.Tests
             task.ReportTypes = "XML;Html";
             task.ReportNameFormat = "report";
             task.ShowReports = true;
-            task.RunnerType = StandardTestRunnerFactoryNames.LocalAppDomain;
+            task.RunnerType = StandardTestRunnerFactoryNames.Local;
 
             task.PluginDirectories = new DirSet[] { CreateDirSet("plugin") };
             task.Assemblies = new FileSet[] { CreateFileSet("assembly1"), CreateFileSet("assembly2") };
@@ -114,7 +114,7 @@ namespace Gallio.NAntTasks.Tests
                 CollectionAssert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
-                Assert.AreEqual(StandardTestRunnerFactoryNames.LocalAppDomain, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);

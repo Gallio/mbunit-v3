@@ -78,33 +78,33 @@
         </parameters>
       </component>
       
-      <component id="Core.LocalAppDomainTestRunnerFactory"
+      <component id="Core.LocalTestRunnerFactory"
                  service="Gallio.Runner.ITestRunnerFactory, Gallio"
                  type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
         <parameters>
           <hostFactory>${Core.LocalHostFactory}</hostFactory>
-          <name>LocalAppDomain</name>
-          <description>Runs tests within the same AppDomain as the test runner application itself.  This mode provides the least test isolation and is unable to control certain global AppDomain policies.  Only use this mode if the test runner process is expected to be terminated soon after the test run.</description>
+          <name>Local</name>
+          <description>Runs tests locally within the same process as the test runner application.</description>
         </parameters>
       </component>
-      
+
       <component id="Core.IsolatedAppDomainTestRunnerFactory"
                  service="Gallio.Runner.ITestRunnerFactory, Gallio"
                  type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
         <parameters>
           <hostFactory>${Core.IsolatedAppDomainHostFactory}</hostFactory>
           <name>IsolatedAppDomain</name>
-          <description>Runs tests within an isolated AppDomain of the test runner process.  This mode is most often used when running tests because it provides adequate isolation for most purposes, has a low overhead, and is easy to debug or profile.</description>
+          <description>Runs tests within an isolated AppDomain of the same process as the test runner application.  The additional isolation provided is not generally required since tests typically run in their own isolated AppDomain nested within the test runner.</description>
         </parameters>
       </component>
       
-      <component id="Core.IsolatedProcessTestRunnerFactory"
+      <component id="Core.ProcessTestRunnerFactory"
                  service="Gallio.Runner.ITestRunnerFactory, Gallio"
                  type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
         <parameters>
           <hostFactory>${Core.IsolatedProcessHostFactory}</hostFactory>
           <name>IsolatedProcess</name>
-          <description>Runs tests within an isolated process external to the test runner.  This mode is used to force tests to run in a different process which can be monitored separately and may have different priviledges or process-level configuration.</description>
+          <description>Runs tests within an isolated process external to the test runner.  This mode protects the test runner application from faults that may occur during test execution.</description>
         </parameters>
       </component>
 

@@ -28,7 +28,7 @@ namespace Gallio.Runner.Extensions
         /// Creates an extension from its specification.
         /// </para>
         /// <para>
-        /// An extension specification has the form "[ExtensionNamespace.]ExtensionClassName,{ExtensionAssemblyName|ExtensionAssemblyFile}[;ExtensionParameters]".
+        /// An extension specification has the form "[Namespace.]Type,Assembly[;Parameters]".
         /// The extension class must implement <see cref="ITestRunnerExtension" />.  The namespace may be omitted
         /// if the assembly contains exactly one class with the specified name.  The parameter string is passed
         /// to the extension exactly as written.
@@ -113,14 +113,13 @@ namespace Gallio.Runner.Extensions
         private static Type GetTypeByName(Assembly assembly, string typeName)
         {
             Type type = assembly.GetType(typeName);
+            if (type != null)
+                return type;
 
-            if (type == null)
+            foreach (Type candidate in assembly.GetExportedTypes())
             {
-                foreach (Type candidate in assembly.GetExportedTypes())
-                {
-                    if (candidate.Name == typeName)
-                        return candidate;
-                }
+                if (candidate.Name == typeName)
+                    return candidate;
             }
 
             return null;

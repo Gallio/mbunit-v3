@@ -199,7 +199,7 @@ namespace Gallio.Framework.Utilities
             launcher.TestPackageConfig = packageConfig;
             launcher.Logger = new LogStreamLogger(logStreamWriter);
             launcher.TestExecutionOptions.Filter = new OrFilter<ITest>(filters.ToArray());
-            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.LocalAppDomain;
+            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
 
             string reportDirectory = Path.GetTempPath();
             launcher.ReportDirectory = reportDirectory;

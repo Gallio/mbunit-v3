@@ -268,11 +268,18 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
         <maml:name>RunnerType</maml:name>
         <maml:description>
-          <maml:para>Sets the type of test runner to use (LocalAppDomain, IsolatedAppDomain or IsolatedProcess, but more could be available as plugins).</maml:para>
+          <maml:para>Sets the type of test runner to use: Local, IsolatedAppDomain, IsolatedProcess, or others that may be provided by plugins.</maml:para>
         </maml:description>
         <dev:defaultValue>IsolatedProcess</dev:defaultValue>
       </command:parameter>
 
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
+        <maml:name>RunnerExtensions</maml:name>
+        <maml:description>
+          <maml:para>Specifies the type, assembly, and parameters of custom test runner extensions to use during the test run in the form: '[Namespace.]Type,Assembly[;Parameters].  eg. ['FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting']</maml:para>
+        </maml:description>
+      </command:parameter>
+      
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
         <maml:name>ShadowCopy</maml:name>
         <maml:description>

@@ -308,7 +308,10 @@ namespace Gallio.Runtime.Hosting
                     {
                         File.Copy(installedHostProcessPath, hostAppPath);
 
-                        string configurationXml = hostSetup.Configuration.ToString();
+                        HostConfiguration configuration = hostSetup.Configuration.Copy();
+                        configuration.AddAssemblyBinding(GetType().Assembly, false);
+
+                        string configurationXml = configuration.ToString();
                         File.WriteAllText(hostConfigPath, configurationXml);
                     }
                     catch (Exception ex)

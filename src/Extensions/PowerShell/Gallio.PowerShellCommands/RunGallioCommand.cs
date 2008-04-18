@@ -25,6 +25,7 @@ using Gallio.PowerShellCommands.Properties;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runtime.Windsor;
+using Gallio.Utilities;
 
 namespace Gallio.PowerShellCommands
 {
@@ -56,10 +57,11 @@ namespace Gallio.PowerShellCommands
         private string workingDirectory = "";
         private SwitchParameter shadowCopy;
 
-        private string[] reportTypes = new string[] { };
+        private string[] reportTypes = EmptyArray<string>.Instance;
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
+        private string[] runnerExtensions = EmptyArray<string>.Instance;
         private string filter = "*";
         private SwitchParameter showReports;
         private SwitchParameter doNotRun;
@@ -308,7 +310,7 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>The types supported "out of the box" are: LocalAppDomain, IsolatedAppDomain
+        /// <item>The types supported "out of the box" are: Local, IsolatedAppDomain
         /// and IsolatedProcess (default), but more types could be available as plugins.</item>
         /// <item>The runner types are not case sensitive.</item>
         /// </list>
@@ -318,6 +320,29 @@ namespace Gallio.PowerShellCommands
         public string RunnerType
         {
             set { runnerType = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Specifies the type, assembly, and parameters of custom test runner
+        /// extensions to use during the test run in the form:
+        /// '[Namespace.]Type,Assembly[;Parameters]'.
+        /// </para>
+        /// <para>
+        /// eg. 'FancyLogger,MyCustomExtensions.dll;SomeParameters'
+        /// </para>
+        /// </summary>
+        /// <example>
+        /// The following example runs tests using a custom logger extension:
+        /// <code>
+        /// Run-Gallio SomeAssembly.dll -runner-extensions ['FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting']
+        /// </code>
+        /// </example>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("runner-extensions")]
+        public string[] RunnerExtensions
+        {
+            set { runnerExtensions = value; }
         }
 
         /// <summary>
@@ -395,23 +420,16 @@ namespace Gallio.PowerShellCommands
 
         internal TestLauncherResult ExecuteWithCurrentDirectory()
         {
-            string oldDirectory = Environment.CurrentDirectory;
-            try
+            if (SessionState != null)
             {
-                if (SessionState != null)
-                {
-                    // FIXME: Will this throw an exception if the current path is
-                    //        within a virtual file system?
-                    string resolvedDirectory = SessionState.Path.CurrentFileSystemLocation.Path;
-                    Environment.CurrentDirectory = resolvedDirectory;
-                }
+                // FIXME: Will this throw an exception if the current path is
+                //        within a virtual file system?
+                string resolvedDirectory = SessionState.Path.CurrentFileSystemLocation.Path;
+                using (new CurrentDirectorySwitcher(resolvedDirectory))
+                    return Execute();
+            }
 
-                return Execute();
-            }
-            finally
-            {
-                Environment.CurrentDirectory = oldDirectory;
-            }
+            return Execute();
         }
         
         internal TestLauncherResult Execute()
@@ -421,10 +439,13 @@ namespace Gallio.PowerShellCommands
             launcher.ProgressMonitorProvider = ProgressMonitorProvider;
             launcher.TestExecutionOptions.Filter = GetFilter();
             launcher.ShowReports = showReports.IsPresent;
-            launcher.TestRunnerFactoryName = runnerType;
             launcher.DoNotRun = doNotRun.IsPresent;
             launcher.IgnoreAnnotations = ignoreAnnotations.IsPresent;
             launcher.EchoResults = !noEchoResults.IsPresent;
+
+            launcher.TestRunnerFactoryName = runnerType;
+            if (runnerExtensions != null)
+                GenericUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
             launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
             launcher.RuntimeSetup = new RuntimeSetup();

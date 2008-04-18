@@ -95,7 +95,7 @@ namespace Gallio.ReSharperRunner.Tasks
         private void RunTests()
         {
             ILogger logger = RuntimeAccessor.Logger;
-            ITestRunner runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.LocalAppDomain);
+            ITestRunner runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.Local);
 
             // Set parameters.
             TestPackageConfig packageConfig = new TestPackageConfig();

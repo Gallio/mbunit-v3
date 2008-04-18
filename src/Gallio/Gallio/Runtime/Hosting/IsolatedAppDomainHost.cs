@@ -22,6 +22,7 @@ using System.Security.Policy;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -44,7 +45,7 @@ namespace Gallio.Runtime.Hosting
     public class IsolatedAppDomainHost : RemoteHost
     {
         private AppDomain appDomain;
-        private string oldWorkingDirectory;
+        private CurrentDirectorySwitcher currentDirectorySwitcher;
         private string temporaryConfigurationFilePath;
 
         /// <summary>
@@ -95,8 +96,7 @@ namespace Gallio.Runtime.Hosting
 
         private void SetWorkingDirectory()
         {
-            oldWorkingDirectory = Environment.CurrentDirectory;
-            Environment.CurrentDirectory = HostSetup.WorkingDirectory;
+            currentDirectorySwitcher = new CurrentDirectorySwitcher(HostSetup.WorkingDirectory);
         }
 
         private void CreateTemporaryConfigurationFile()
@@ -123,9 +123,6 @@ namespace Gallio.Runtime.Hosting
                     appDomainSetup.ShadowCopyDirectories = null;
                 }
 
-                if (!RuntimeAccessor.IsUsingMono)
-                    ConfigureAppDomainSetupForCLR(appDomainSetup);
-
                 // TODO: Might need to be more careful about how the Evidence is derived.
                 Evidence evidence = AppDomain.CurrentDomain.Evidence;
                 PermissionSet defaultPermissionSet = new PermissionSet(PermissionState.Unrestricted);
@@ -144,14 +141,6 @@ namespace Gallio.Runtime.Hosting
             string assemblyFile = AssemblyUtils.GetFriendlyAssemblyLocation(type.Assembly);
             return (T)appDomain.CreateInstanceFromAndUnwrap(assemblyFile, type.FullName, false,
                 BindingFlags.Default, null, args, null, null, null);
-        }
-
-        private static void ConfigureAppDomainSetupForCLR(AppDomainSetup appDomainSetup)
-        {
-            // NOTE: Loader optimization option not supported by Mono.
-
-            // Disabled due to bug: http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=95157
-            // appDomainSetup.LoaderOptimization = LoaderOptimization.MultiDomain;
         }
 
         private void InitializeHostService()
@@ -181,8 +170,8 @@ namespace Gallio.Runtime.Hosting
         {
             try
             {
-                if (oldWorkingDirectory != null)
-                    Environment.CurrentDirectory = oldWorkingDirectory;
+                if (currentDirectorySwitcher != null)
+                    currentDirectorySwitcher.Dispose();
             }
             catch (Exception ex)
             {
@@ -190,7 +179,7 @@ namespace Gallio.Runtime.Hosting
             }
             finally
             {
-                oldWorkingDirectory = null;
+                currentDirectorySwitcher = null;
             }
         }
 

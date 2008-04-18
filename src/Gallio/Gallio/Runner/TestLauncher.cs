@@ -94,7 +94,7 @@ namespace Gallio.Runner
         /// </summary>
         public TestLauncher()
         {
-            testRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
+            testRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
             testRunnerOptions = new TestRunnerOptions();
             testPackageConfig = new TestPackageConfig();
             testExplorationOptions = new TestExplorationOptions();
@@ -200,7 +200,7 @@ namespace Gallio.Runner
         /// the <see cref="ITestRunner" /> at test execution time.
         /// </para>
         /// <para>
-        /// The default value is <see cref="StandardTestRunnerFactoryNames.IsolatedAppDomain"/>.
+        /// The default value is <see cref="StandardTestRunnerFactoryNames.Local"/>.
         /// </para>
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
@@ -230,6 +230,26 @@ namespace Gallio.Runner
 
                 testRunnerOptions = value;
             }
+        }
+
+        /// <summary>
+        /// Gets a mutable list of test runner extensions to register with
+        /// the test runner during test execution.
+        /// </summary>
+        public IList<ITestRunnerExtension> TestRunnerExtensions
+        {
+            get { return extensions; }
+        }
+
+        /// <summary>
+        /// Gets a mutable list of test runner extension specifications to instantiate
+        /// and register with the test runner during test execution.
+        /// </summary>
+        /// <seealso cref="TestRunnerExtensionUtils.CreateExtensionFromSpecification"/>
+        /// for an explanation of the specification syntax.
+        public IList<string> TestRunnerExtensionSpecifications
+        {
+            get { return extensionSpecifications; }
         }
 
         /// <summary>
@@ -398,36 +418,6 @@ namespace Gallio.Runner
         {
             get { return ignoreAnnotations; }
             set { ignoreAnnotations = value; }
-        }
-
-        /// <summary>
-        /// Adds a test runner extension.
-        /// </summary>
-        /// <param name="extension">The extension</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="extension"/> is null</exception>
-        public void AddExtension(ITestRunnerExtension extension)
-        {
-            if (extension == null)
-                throw new ArgumentNullException("extension");
-
-            extensions.Add(extension);
-        }
-
-        /// <summary>
-        /// <para>
-        /// Adds a test runner extension with a given specification.
-        /// </para>
-        /// <seealso cref="TestRunnerExtensionUtils.CreateExtensionFromSpecification"/>
-        /// for an explanation of the specification syntax.
-        /// </summary>
-        /// <param name="extensionSpecification">The extension specification</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="extensionSpecification"/> is null</exception>
-        public void AddExtensionSpecification(string extensionSpecification)
-        {
-            if (extensionSpecification == null)
-                throw new ArgumentNullException("extensionSpecification");
-
-            extensionSpecifications.Add(extensionSpecification);
         }
 
         #region Public Methods

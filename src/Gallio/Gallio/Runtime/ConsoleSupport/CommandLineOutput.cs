@@ -112,7 +112,7 @@ namespace Gallio.Runtime.ConsoleSupport
                 int maxLength = lineLength - currentIndentation - 1;
 
                 int pos = text.IndexOf('\n');
-                if (pos < 0)
+                if (pos < 0 || pos > maxLength)
                 {
                     if (text.Length <= maxLength)
                     {

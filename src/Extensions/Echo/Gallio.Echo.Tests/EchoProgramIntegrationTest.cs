@@ -52,6 +52,14 @@ namespace Gallio.Echo.Tests
             Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero because the unhandled exception test still passes.");
         }
 
+        [Test]
+        public void EchoSupportsCustomExtensions()
+        {
+            ProcessTask task = RunEcho("/ignore-annotations /filter:Type:PassingTests /extension:DebugExtension,Gallio");
+            Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
+            Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero because the unhandled exception test still passes.");
+        }
+
         private ProcessTask RunEcho(string options)
         {
             string testAssemblyPath = AssemblyUtils.GetAssemblyLocalPath(typeof(SimpleTest).Assembly);

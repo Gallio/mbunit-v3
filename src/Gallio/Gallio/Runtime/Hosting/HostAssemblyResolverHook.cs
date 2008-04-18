@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.Remoting;
 using System.Threading;
 using Gallio.Runtime.Remoting;
 using Gallio.Reflection;
@@ -48,25 +49,50 @@ namespace Gallio.Runtime.Hosting
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> is null</exception>
         public static void Install(IHost host)
         {
-            Type resolverType = typeof(Resolver);
-            Resolver remoteResolver = (Resolver) host.CreateInstanceFrom(AssemblyUtils.GetAssemblyLocalPath(resolverType.Assembly), resolverType.FullName).Unwrap();
-
+            Resolver remoteResolver = (Resolver)CreateRemoveResolver(host).Unwrap();
             remoteResolver.Initialize(LocalResolver);
+        }
+
+        private static ObjectHandle CreateRemoveResolver(IHost host)
+        {
+            Type resolverType = typeof(Resolver);
+            Assembly resolverAssembly = resolverType.Assembly;
+            try
+            {
+                return host.CreateInstance(resolverAssembly.FullName, resolverType.FullName);
+            }
+            catch (Exception)
+            {
+                return host.CreateInstanceFrom(AssemblyUtils.GetAssemblyLocalPath(resolverAssembly), resolverType.FullName);
+            }
         }
 
         /// <exludedoc />
         /// <summary>
         /// This class is intended for internal use only.
         /// </summary>
-        public sealed class Resolver : LongLivedMarshalByRefObject
+        public interface IResolver
         {
-            private Resolver masterResolver;
+            /// <excludedoc />
+            /// <summary>
+            /// This method is intended for internal use only.
+            /// </summary>
+            string ResolveAssemblyLocalPath(string assemblyName, bool reflectionOnly);
+        }
+
+        /// <exludedoc />
+        /// <summary>
+        /// This class is intended for internal use only.
+        /// </summary>
+        public sealed class Resolver : LongLivedMarshalByRefObject, IResolver
+        {
+            private IResolver masterResolver;
 
             /// <excludedoc />
             /// <summary>
             /// This method is intended for internal use only.
             /// </summary>
-            public void Initialize(Resolver masterResolver)
+            public void Initialize(IResolver masterResolver)
             {
                 this.masterResolver = masterResolver;
 

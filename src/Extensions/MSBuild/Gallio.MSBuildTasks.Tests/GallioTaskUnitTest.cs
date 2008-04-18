@@ -91,7 +91,7 @@ namespace Gallio.MSBuildTasks.Tests
             task.ReportTypes = new string[] { "XML", "Html" };
             task.ReportNameFormat = "report";
             task.ShowReports = true;
-            task.RunnerType = StandardTestRunnerFactoryNames.LocalAppDomain;
+            task.RunnerType = StandardTestRunnerFactoryNames.Local;
 
             task.PluginDirectories = new ITaskItem[] { new TaskItem("plugin") };
             task.Assemblies = new ITaskItem[] { new TaskItem("assembly1"), new TaskItem("assembly2") };
@@ -113,7 +113,7 @@ namespace Gallio.MSBuildTasks.Tests
                 CollectionAssert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
-                Assert.AreEqual(StandardTestRunnerFactoryNames.LocalAppDomain, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);

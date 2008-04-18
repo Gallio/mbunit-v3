@@ -16,6 +16,7 @@
 using System;
 using System.Runtime.Remoting;
 using Gallio.Runtime.Logging;
+using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -28,6 +29,7 @@ namespace Gallio.Runtime.Hosting
     public class LocalHost : BaseHost
     {
         private bool wasRuntimeInitializedByThisHost;
+        private CurrentDirectorySwitcher currentDirectorySwitcher;
 
         /// <summary>
         /// Creates a local host.
@@ -39,6 +41,20 @@ namespace Gallio.Runtime.Hosting
         public LocalHost(HostSetup hostSetup, ILogger logger)
             : base(hostSetup, logger)
         {
+            if (hostSetup.WorkingDirectory.Length != 0)
+                currentDirectorySwitcher = new CurrentDirectorySwitcher(hostSetup.WorkingDirectory);
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            if (currentDirectorySwitcher != null)
+            {
+                currentDirectorySwitcher.Dispose();
+                currentDirectorySwitcher = null;
+            }
+
+            base.Dispose(disposing);
         }
 
         /// <inheritdoc />

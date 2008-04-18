@@ -225,7 +225,7 @@ namespace Gallio.TDNetRunner.Tests
             CollectionAssert.AreElementsEqual(new string[] { "html" }, launcher.ReportFormats);
             Assert.AreEqual(Path.GetFileName(assemblyFile), launcher.ReportNameFormat);
             Assert.IsFalse(launcher.ShowReports);
-            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedAppDomain, launcher.TestRunnerFactoryName);
+            Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
 
             Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);

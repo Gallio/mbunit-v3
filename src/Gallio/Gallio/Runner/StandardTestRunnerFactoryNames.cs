@@ -21,17 +21,22 @@ namespace Gallio.Runner
     public static class StandardTestRunnerFactoryNames
     {
         /// <summary>
-        /// Runs tests in the local AppDomain.
+        /// Runs the test runner in the local AppDomain.
         /// </summary>
-        public const string LocalAppDomain = "LocalAppDomain";
+        /// <remarks>
+        /// This is is usually the default mode because tests typically
+        /// run inside of isolated AppDomains of their own nested within
+        /// the test runner.
+        /// </remarks>
+        public const string Local = "Local";
 
         /// <summary>
-        /// Runs tests in an isolated AppDomain of the current process.
+        /// Runs the test runner in an isolated AppDomain of the current process.
         /// </summary>
         public const string IsolatedAppDomain = "IsolatedAppDomain";
 
         /// <summary>
-        /// Runs tests in an isolated process.
+        /// Runs the test runner in an isolated process.
         /// </summary>
         public const string IsolatedProcess = "IsolatedProcess";
     }

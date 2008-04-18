@@ -88,10 +88,11 @@ namespace Gallio.MSBuildTasks
         private bool shadowCopy;
 
         private string filter = "*";
-        private string[] reportTypes = new string[] { };
+        private string[] reportTypes = EmptyArray<string>.Instance;
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private ITaskItem reportDirectory = null;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
+        private string[] runnerExtensions = EmptyArray<string>.Instance;
         private bool ignoreFailures;
         private bool showReports;
         private bool doNotRun;
@@ -283,7 +284,7 @@ namespace Gallio.MSBuildTasks
         /// </summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>The types supported "out of the box" are: LocalAppDomain, IsolatedAppDomain
+        /// <item>The types supported "out of the box" are: Local, IsolatedAppDomain
         /// and IsolatedProcess (default), but more types could be available as plugins.</item>
         /// <item>The runner types are not case sensitive.</item>
         /// </list>
@@ -291,6 +292,37 @@ namespace Gallio.MSBuildTasks
         public string RunnerType
         {
             set { runnerType = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Specifies the type, assembly, and parameters of custom test runner
+        /// extensions to use during the test run in the form:
+        /// '[Namespace.]Type,Assembly[;Parameters]'.
+        /// </para>
+        /// <para>
+        /// eg. 'FancyLogger,MyCustomExtensions.dll;SomeParameters'
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// Since semicolons are used to delimit multiple property values in MSBuild,
+        /// it may be necessary to escape semicolons that appear as part of test
+        /// runner extension specifications to ensure MSBuild does not misinterpret them.
+        /// An escaped semicolon may be written as "%3B" in the build file.
+        /// </remarks>
+        /// <example>
+        /// The following example runs tests using a custom logger extension:
+        /// <code>
+        /// <![CDATA[
+        /// <Target Name="MyTarget">
+        ///     <Gallio Assemblies="MyAssembly" RunnerExtensions="FancyLogger,MyExtensions.dll%3BColorOutput,FancyIndenting" />
+        /// </Target>
+        /// ]]>
+        /// </code>
+        /// </example>
+        public string[] RunnerExtensions
+        {
+            set { runnerExtensions = value; }
         }
 
         /// <summary>
@@ -656,7 +688,7 @@ namespace Gallio.MSBuildTasks
             launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Gallio).Assembly));
 
             if (echoResults)
-                launcher.AddExtension(new TaskLogExtension(Log));
+                launcher.TestRunnerExtensions.Add(new TaskLogExtension(Log));
 
             if (applicationBaseDirectory != null)
                 launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory.ItemSpec;
@@ -676,6 +708,8 @@ namespace Gallio.MSBuildTasks
                 GenericUtils.AddAll(reportTypes, launcher.ReportFormats);
 
             launcher.TestRunnerFactoryName = runnerType;
+            if (runnerExtensions != null)
+                GenericUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
             TestLauncherResult result = RunLauncher(launcher);
             exitCode = result.ResultCode;

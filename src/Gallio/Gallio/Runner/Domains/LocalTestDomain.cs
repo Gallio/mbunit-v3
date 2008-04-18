@@ -20,6 +20,7 @@ using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Harness;
+using Gallio.Utilities;
 
 namespace Gallio.Runner.Domains
 {
@@ -35,7 +36,7 @@ namespace Gallio.Runner.Domains
         private ITestHarnessFactory harnessFactory;
         private ITestHarness harness;
 
-        private string oldWorkingDirectory;
+        private CurrentDirectorySwitcher currentDirectorySwitcher;
 
         /// <summary>
         /// Creates a local test domain using the specified resolver manager.
@@ -61,8 +62,7 @@ namespace Gallio.Runner.Domains
         {
             progressMonitor.SetStatus("Creating test harness.");
 
-            oldWorkingDirectory = Environment.CurrentDirectory;
-            Environment.CurrentDirectory = packageConfig.HostSetup.ApplicationBaseDirectory;
+            currentDirectorySwitcher = new CurrentDirectorySwitcher(packageConfig.HostSetup.WorkingDirectory);
 
             harness = harnessFactory.CreateHarness();
 
@@ -101,10 +101,10 @@ namespace Gallio.Runner.Domains
             {
                 harness = null;
 
-                if (oldWorkingDirectory != null)
+                if (currentDirectorySwitcher != null)
                 {
-                    Environment.CurrentDirectory = oldWorkingDirectory;
-                    oldWorkingDirectory = null;
+                    currentDirectorySwitcher.Dispose();
+                    currentDirectorySwitcher = null;
                 }
             }
         }
