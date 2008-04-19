@@ -101,7 +101,14 @@ namespace Gallio.Runtime.Hosting
 
         private void CreateTemporaryConfigurationFile()
         {
-            string configurationXml = HostSetup.Configuration.ToString();
+            HostConfiguration configuration = HostSetup.Configuration;
+            if (HostSetup.ApplicationBaseDirectory != RuntimeAccessor.InstallationPath)
+            {
+                configuration = configuration.Copy();
+                configuration.AddAssemblyBinding(GetType().Assembly, false);
+            }
+
+            string configurationXml = configuration.ToString();
 
             temporaryConfigurationFilePath = Path.GetTempFileName();
             File.WriteAllText(temporaryConfigurationFilePath, configurationXml);
