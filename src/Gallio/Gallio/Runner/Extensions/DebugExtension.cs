@@ -91,7 +91,7 @@ namespace Gallio.Runner.Extensions
 
             Events.TestStepStarted += delegate(object sender, TestStepStartedEventArgs e)
             {
-                LogDebugFormat("[TestStepStarted({0}]",
+                LogDebugFormat("[TestStepStarted({0})]",
                     e.TestStepRun.Step.FullName);
             };
 
@@ -106,14 +106,14 @@ namespace Gallio.Runner.Extensions
 
             Events.TestStepLifecyclePhaseChanged += delegate(object sender, TestStepLifecyclePhaseChangedEventArgs e)
             {
-                LogDebugFormat("[TestStepLifecyclePhaseChanged({0}]\n\tPhase: {1}",
+                LogDebugFormat("[TestStepLifecyclePhaseChanged({0})]\n\tPhase: {1}",
                     e.TestStepRun.Step.FullName,
                     e.LifecyclePhase);
             };
 
             Events.TestStepMetadataAdded += delegate(object sender, TestStepMetadataAddedEventArgs e)
             {
-                LogDebugFormat("[TestStepMetadataAddedEventArgs({0}]\n\tKey: {1}\n\tValue: {2}",
+                LogDebugFormat("[TestStepMetadataAddedEventArgs({0})]\n\tKey: {1}\n\tValue: {2}",
                     e.TestStepRun.Step.FullName,
                     e.MetadataKey,
                     e.MetadataValue);
@@ -121,7 +121,7 @@ namespace Gallio.Runner.Extensions
 
             Events.TestStepLogBinaryAttachmentAdded += delegate(object sender, TestStepLogBinaryAttachmentAddedEventArgs e)
             {
-                LogDebugFormat("[TestStepLogBinaryAttachmentAdded({0}]\n\tName: {1}\n\tContentType: {2}",
+                LogDebugFormat("[TestStepLogBinaryAttachmentAdded({0})]\n\tName: {1}\n\tContentType: {2}",
                     e.TestStepRun.Step.FullName,
                     e.AttachmentName,
                     e.ContentType);
@@ -129,7 +129,7 @@ namespace Gallio.Runner.Extensions
 
             Events.TestStepLogTextAttachmentAdded += delegate(object sender, TestStepLogTextAttachmentAddedEventArgs e)
             {
-                LogDebugFormat("[TestStepLogTextAttachmentAdded({0}]\n\tName: {1}\n\tContentType: {2}",
+                LogDebugFormat("[TestStepLogTextAttachmentAdded({0})]\n\tName: {1}\n\tContentType: {2}",
                     e.TestStepRun.Step.FullName,
                     e.AttachmentName,
                     e.ContentType);

@@ -55,8 +55,10 @@ namespace Gallio.Echo.Tests
         [Test]
         public void EchoSupportsCustomExtensions()
         {
-            ProcessTask task = RunEcho("/ignore-annotations /filter:Type:PassingTests /extension:DebugExtension,Gallio");
+            ProcessTask task = RunEcho("/ignore-annotations /filter:Type:PassingTests /extension:DebugExtension,Gallio /v:Debug");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
+            Assert.Contains(task.ConsoleOutput, "Runner Extensions: DebugExtension,Gallio");
+            Assert.Contains(task.ConsoleOutput, "TestStepStarted");
             Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero because the unhandled exception test still passes.");
         }
 

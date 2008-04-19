@@ -240,6 +240,7 @@ namespace Gallio.Echo
             sw.WriteLine("Filter: {0}", Filter);
 
             sw.WriteLine("Runner Type: {0}", RunnerType);
+            sw.WriteLine("Runner Extensions: {0}", String.Join(", ", RunnerExtensions));
 
             sw.WriteLine("Verbosity: {0}", Verbosity);
             sw.WriteLine("No Echo Results: {0}", NoEchoResults);
