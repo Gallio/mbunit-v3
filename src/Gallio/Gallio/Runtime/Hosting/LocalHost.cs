@@ -46,6 +46,12 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
+        public override bool IsLocal
+        {
+            get { return true; }
+        }
+
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (currentDirectorySwitcher != null)

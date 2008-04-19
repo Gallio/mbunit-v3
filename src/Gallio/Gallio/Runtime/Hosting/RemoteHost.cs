@@ -54,6 +54,12 @@ namespace Gallio.Runtime.Hosting
         {
         }
 
+        /// <inheritdoc />
+        public override bool IsLocal
+        {
+            get { return false; }
+        }
+
         /// <summary>
         /// Initializes the remote host and makes it ready for use.
         /// </summary>

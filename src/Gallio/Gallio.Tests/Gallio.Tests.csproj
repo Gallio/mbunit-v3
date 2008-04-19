@@ -119,7 +119,7 @@
     <Compile Include="Framework\Pattern\ToolInfoTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
-    <Compile Include="Runtime\Hosting\LocalHostTest.cs" />
+    <Compile Include="Runtime\Hosting\LocalHostFactoryTest.cs" />
     <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />

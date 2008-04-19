@@ -45,15 +45,21 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Installs the assembly resolver hook in the specified host.
         /// </summary>
+        /// <remarks>
+        /// Does nothing if the host is local.
+        /// </remarks>
         /// <param name="host">The host</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> is null</exception>
         public static void Install(IHost host)
         {
-            Resolver remoteResolver = (Resolver)CreateRemoveResolver(host).Unwrap();
-            remoteResolver.Initialize(LocalResolver);
+            if (!host.IsLocal)
+            {
+                Resolver remoteResolver = (Resolver)CreateRemoteResolver(host).Unwrap();
+                remoteResolver.Initialize(LocalResolver);
+            }
         }
 
-        private static ObjectHandle CreateRemoveResolver(IHost host)
+        private static ObjectHandle CreateRemoteResolver(IHost host)
         {
             Type resolverType = typeof(Resolver);
             Assembly resolverAssembly = resolverType.Assembly;

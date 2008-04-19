@@ -76,6 +76,9 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
+        public abstract bool IsLocal { get; }
+
+        /// <inheritdoc />
         public void DoCallback(CrossAppDomainDelegate callback)
         {
             if (callback == null)

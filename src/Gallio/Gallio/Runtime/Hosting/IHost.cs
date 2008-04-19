@@ -36,5 +36,12 @@ namespace Gallio.Runtime.Hosting
         /// Gets a deep copy of the host setup information.
         /// </summary>
         HostSetup GetHostSetup();
+
+        /// <summary>
+        /// Returns true if the host is local to the creating AppDomain, false if it
+        /// must be accessed across a remote channel.  A local host might not
+        /// support all configuration options.
+        /// </summary>
+        bool IsLocal { get; }
     }
 }

@@ -205,6 +205,7 @@ namespace Gallio.Runner
                 throw new InvalidOperationException("The previous test package must be unloaded before a new one can be loaded.");
 
             testPackageConfig = testPackageConfig.Copy();
+            testPackageConfig.Canonicalize(null);
 
             using (progressMonitor)
             {

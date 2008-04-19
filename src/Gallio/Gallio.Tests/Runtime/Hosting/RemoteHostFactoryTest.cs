@@ -34,6 +34,13 @@ namespace Gallio.Tests.Runtime.Hosting
     public abstract class RemoteHostFactoryTest : AbstractHostFactoryTest
     {
         [Test]
+        public void IsLocalFlagShouldBeFalse()
+        {
+            using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
+                Assert.IsFalse(host.IsLocal);
+        }
+
+        [Test]
         public void DoCallbackHasRemoteSideEffects()
         {
             using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
