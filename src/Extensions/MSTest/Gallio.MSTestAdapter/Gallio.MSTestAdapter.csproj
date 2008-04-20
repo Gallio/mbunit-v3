@@ -39,12 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MSTest.cs" />
-    <Compile Include="MSTestAssembly.cs" />
-    <Compile Include="MSTestAttributes.cs" />
-    <Compile Include="MSTestController.cs" />
-    <Compile Include="MSTestExplorer.cs" />
-    <Compile Include="MSTestFramework.cs" />
+    <Compile Include="Model\MSTest.cs" />
+    <Compile Include="Model\MSTestAssembly.cs" />
+    <Compile Include="Model\MSTestAttributes.cs" />
+    <Compile Include="Model\MSTestController.cs" />
+    <Compile Include="Model\MSTestExplorer.cs" />
+    <Compile Include="Model\MSTestFramework.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
