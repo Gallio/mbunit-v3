@@ -83,7 +83,6 @@ namespace Gallio.MSTestAdapter
             using (progressMonitor)
             {
                 progressMonitor.BeginTask(Resources.MSTestController_RunningMSTestTests, rootTestCommand.TestCount);
-
                 if (options.SkipTestExecution)
                 {
                     SkipAll(rootTestCommand, parentTestStep);
@@ -108,11 +107,11 @@ namespace Gallio.MSTestAdapter
                 try
                 {
                     IList<ITestCommand> allCommands = testCommand.GetAllCommands();
-                    DeleteResultFileIfExists(assemblyTest);
+                    DeleteOutputFilesIfExist(assemblyTest);
                     GenerateTestList(assemblyTest, allCommands);
                     ExecuteTests(context, assemblyTest);
-                    ProcessTestResults(context, assemblyTest, allCommands);
-                    context.FinishStep(TestOutcome.Passed, null);
+                    bool passed = ProcessTestResults(context, testCommand, allCommands);
+                    context.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
                 }
                 catch (Exception ex)
                 {
@@ -124,8 +123,9 @@ namespace Gallio.MSTestAdapter
             progressMonitor.Worked(1);
         }
 
-        private static void DeleteResultFileIfExists(MSTestAssembly assemblyTest)
+        private static void DeleteOutputFilesIfExist(MSTestAssembly assemblyTest)
         {
+            //TODO: Should we wrap the potential exceptions that can occur here?
             if (File.Exists(assemblyTest.FullResultsFileName))
             {
                 File.Delete(assemblyTest.FullResultsFileName);
@@ -201,32 +201,28 @@ namespace Gallio.MSTestAdapter
             MSTestProcess.Run(null);
         }
 
-        private static void ProcessTestResults(ITestContext assemblyContext, MSTestAssembly assemblyTest, IEnumerable<ITestCommand> allCommands)
+        private static bool ProcessTestResults(ITestContext assemblyContext, ITestCommand assemblyCommand, IEnumerable<ITestCommand> allCommands)
         {
-            Dictionary<string, ITestCommand> testCommandsByTestGuid = GroupCommandsByTestGuid(allCommands);
-            Dictionary<ITestCommand, ITestContext> startedCommands = new Dictionary<ITestCommand, ITestContext>();
-            Dictionary<ITestCommand, bool> outcomes = new Dictionary<ITestCommand, bool>();
+            MSTestAssembly assemblyTest = (MSTestAssembly)assemblyCommand.Test;
 
+            // Erros in the class or assembly setup/teardown methods are put in a general error
+            // section by MSTest, so we log them at the assembly level.
             ProcessGeneralErrorMessages(assemblyContext, assemblyTest);
-            ProcessExecutedTests(assemblyTest, testCommandsByTestGuid, startedCommands, assemblyContext.TestStep, outcomes);
+
+            Dictionary<string, MSTestExecutionInfo> testExecutionInfos = ExtractExecutedTestsInformation(assemblyTest);
 
             // The ignored tests won't be run by MSTest. In the case where all the selected tests
             // have been ignored, we won't even have a results file, so we need to process them
             // here.
-            ProcessIgnoredTests(testCommandsByTestGuid, startedCommands, assemblyContext.TestStep);
+            ProcessIgnoredTests(testExecutionInfos, allCommands);
 
-            foreach (ITestCommand command in startedCommands.Keys)
+            bool passed = true;
+            foreach (ITestCommand command in assemblyCommand.Children)
             {
-                if (outcomes.ContainsKey(command))
-                {
-                    TestOutcome outcome = (outcomes[command]) ? TestOutcome.Passed : TestOutcome.Failed;
-                    startedCommands[command].FinishStep(outcome, null);
-                }
-                else
-                {
-                    startedCommands[command].FinishStep(TestOutcome.Passed, null);
-                }
+                passed &= ProcessTestCommand(command, assemblyContext.TestStep, testExecutionInfos);
             }
+
+            return passed;
         }
 
         private static void ProcessGeneralErrorMessages(ITestContext assemblyContext, MSTestAssembly assemblyTest)
@@ -244,104 +240,120 @@ namespace Gallio.MSTestAdapter
             }
         }
 
-        private static void ProcessExecutedTests(MSTestAssembly assemblyTest, IDictionary<string, ITestCommand> testCommandsByTestGuid, IDictionary<ITestCommand, ITestContext> startedCommands, ITestStep assemblyTestStep, IDictionary<ITestCommand, bool> outcomes)
+        private static bool ProcessTestCommand(ITestCommand command, ITestStep parentStep, Dictionary<string, MSTestExecutionInfo> testExecutionInfos)
         {
+            ITestContext testContext = command.StartPrimaryChildStep(parentStep);
+            MSTest test = (MSTest)command.Test;
+            try
+            {
+                if (test.IsTestCase)
+                {
+                    if (testExecutionInfos.ContainsKey(test.Guid))
+                    {
+                        MSTestExecutionInfo testExecutionInfo = testExecutionInfos[test.Guid];
+                        if (testExecutionInfo.StdOut != null) LogStdOut(testContext, testExecutionInfo.StdOut);
+                        if (testExecutionInfo.Errors != null) LogError(testContext, testExecutionInfo.Errors);
+                        testContext.FinishStep(testExecutionInfo.Outcome, testExecutionInfo.Duration);
+                        return (testExecutionInfo.Outcome != TestOutcome.Error && testExecutionInfo.Outcome != TestOutcome.Failed);
+                    }
+                    testContext.FinishStep(TestOutcome.Passed, null);
+                    return true;
+                }
+                else if (command.Children.Count > 0)
+                {
+                    bool passed = true;
+                    foreach (ITestCommand child in command.Children)
+                    {
+                        passed &= ProcessTestCommand(child, testContext.TestStep, testExecutionInfos);
+                    }
+                    testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
+                    return passed;
+                }
+                else
+                {
+                    testContext.FinishStep(TestOutcome.Passed, null);
+                    return true;
+                }
+            }
+            catch
+            {
+                testContext.FinishStep(TestOutcome.Error, null);
+                throw;
+            }
+        }        
+
+        private static Dictionary<string, MSTestExecutionInfo> ExtractExecutedTestsInformation(MSTestAssembly assemblyTest)
+        {
+            Dictionary<string, MSTestExecutionInfo> testsExecutionInfo = new Dictionary<string, MSTestExecutionInfo>();
             if (File.Exists(assemblyTest.FullResultsFileName))
             {
-                using (XmlReader reader = XmlReader.Create(assemblyTest.FullResultsFileName))
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.IgnoreComments = true;
+                settings.IgnoreProcessingInstructions = true;
+                settings.IgnoreWhitespace = true;
+                using (XmlReader reader = XmlReader.Create(assemblyTest.FullResultsFileName, settings))
                 {
                     while (reader.ReadToFollowing("UnitTestResult"))
                     {
-                        string id = reader.GetAttribute("testId");
-                        string duration = reader.GetAttribute("duration");
-                        string outcome = reader.GetAttribute("outcome");
-                        ITestCommand currentCommand = testCommandsByTestGuid[id];
-                        ITestStep parentStep =
-                            ProcessParentTestCommand(startedCommands, currentCommand.Parent, assemblyTestStep);
-                        bool passed = ProcessTestMethod(reader, currentCommand, parentStep, outcome, duration);
-                        ProcessOutcome(currentCommand, outcomes, passed);
+                        MSTestExecutionInfo testExecutionInfo = new MSTestExecutionInfo();
+                        testExecutionInfo.Guid = reader.GetAttribute("testId");
+                        testExecutionInfo.Duration = GetDuration(reader.GetAttribute("duration"));
+                        testExecutionInfo.Outcome = GetTestOutcome(reader.GetAttribute("outcome"));
+                        reader.ReadToFollowing("Output");
+                        reader.Read();
+                        if (reader.Name == "StdOut")
+                        {
+                            testExecutionInfo.StdOut = reader.ReadString();
+                            reader.Read();
+                        }
+                        if (reader.Name == "ErrorInfo")
+                        {
+                            testExecutionInfo.Errors = ReadErrors(reader);
+                        }
+                        testsExecutionInfo.Add(testExecutionInfo.Guid, testExecutionInfo);
+                    }
+                }
+            }
+
+            return testsExecutionInfo;
+        }
+
+        private static void ProcessIgnoredTests(Dictionary<string, MSTestExecutionInfo> testCommandsByTestGuid, IEnumerable<ITestCommand> allCommands)
+        {
+            foreach (ITestCommand command in allCommands)
+            {
+                MSTest test = command.Test as MSTest;
+                if (test != null && test.IsTestCase)
+                {
+                    string ignoreReason = test.Metadata.GetValue(MetadataKeys.IgnoreReason);
+                    if (!String.IsNullOrEmpty(ignoreReason))
+                    {
+                        MSTestExecutionInfo testExecutionInfo = new MSTestExecutionInfo();
+                        testExecutionInfo.Guid = test.Guid;
+                        testExecutionInfo.Outcome = TestOutcome.Ignored;
+                        testCommandsByTestGuid.Add(testExecutionInfo.Guid, testExecutionInfo);
                     }
                 }
             }
         }
 
-        private static void ProcessIgnoredTests(IDictionary<string, ITestCommand> testCommandsByTestGuid, IDictionary<ITestCommand, ITestContext> startedCommands, ITestStep assemblyTestStep)
+        private static string ReadErrors(XmlReader reader)
         {
-            foreach (string guid in testCommandsByTestGuid.Keys)
-            {
-                ITestCommand currentCommand = testCommandsByTestGuid[guid];
-                string ignoreReason = currentCommand.Test.Metadata.GetValue(MetadataKeys.IgnoreReason);
-                if (!String.IsNullOrEmpty(ignoreReason))
-                {
-                    ITestStep parentStep =
-                        ProcessParentTestCommand(startedCommands, currentCommand.Parent, assemblyTestStep);
-                    ITestContext context = currentCommand.StartPrimaryChildStep(parentStep);
-                    context.FinishStep(TestOutcome.Ignored, null);
-                }
-            }
+            reader.ReadToFollowing("Message");
+            string message = reader.ReadString();
+            reader.ReadToFollowing("StackTrace");
+            message += "\n" + reader.ReadString();
+            return message;
         }
 
-        private static void ProcessOutcome(ITestCommand currentCommand, IDictionary<ITestCommand, bool> outcomes, bool passed)
-        {
-            if (outcomes.ContainsKey(currentCommand.Parent))
-            {
-                outcomes[currentCommand] &= passed;
-            }
-            else
-            {
-                outcomes.Add(currentCommand, passed);
-            }
-        }
-
-        private static ITestStep ProcessParentTestCommand(IDictionary<ITestCommand, ITestContext> startedCommands, ITestCommand currentCommand, ITestStep assemblyTestStep)
-        {
-            ITestStep parentStep;
-            if (!startedCommands.ContainsKey(currentCommand))
-            {
-                ITestContext parentContext = currentCommand.StartPrimaryChildStep(assemblyTestStep);
-                startedCommands.Add(currentCommand, parentContext);
-                parentStep = parentContext.TestStep;
-            }
-            else
-            {
-                parentStep = startedCommands[currentCommand].TestStep;
-            }
-            return parentStep;
-        }
-
-        private static bool ProcessTestMethod(XmlReader reader, ITestCommand currentCommand, ITestStep parentStep, string outcome, string duration)
-        {
-            ITestContext context = currentCommand.StartPrimaryChildStep(parentStep);
-            TestOutcome testOutcome = GetTestOutcome(outcome);
-            reader.ReadToFollowing("Output");
-            ReadStdOut(reader, context);
-            if (testOutcome == TestOutcome.Failed)
-            {
-                ReadErrors(reader, context);
-            }
-            context.FinishStep(testOutcome, GetDuration(duration));
-
-            return (testOutcome == TestOutcome.Passed) ? true : false;
-        }
-
-        private static void ReadErrors(XmlReader reader, ITestContext context)
-        {
-            if (reader.ReadToFollowing("ErrorInfo"))
-            {
-                reader.ReadToFollowing("Message");
-                string message = reader.ReadString();
-                reader.ReadToFollowing("StackTrace");
-                message += "\n" + reader.ReadString();
-                LogError(context, message);
-            }
-        }
-
-        private static void ReadStdOut(XmlReader reader, ITestContext context)
+        private static string ReadStdOut(XmlReader reader)
         {
             if (reader.ReadToFollowing("StdOut"))
             {
-                LogStdOut(context, reader.ReadString());
+                return reader.ReadString();
             }
+
+            return null;
         }
 
         private static void LogStdOut(ITestContext context, string message)
@@ -426,24 +438,18 @@ namespace Gallio.MSTestAdapter
             return TimeSpan.Parse(duration);
         }
 
-        private static Dictionary<string, ITestCommand> GroupCommandsByTestGuid(IEnumerable<ITestCommand> allCommands)
-        {
-            Dictionary<string, ITestCommand> testCommandsByTestGuid = new Dictionary<string, ITestCommand>();
-            foreach (ITestCommand command in allCommands)
-            {
-                MSTest test = command.Test as MSTest;
-                if (test != null && test.IsTestCase)
-                {
-                    testCommandsByTestGuid.Add(test.Guid, command);
-                }
-            }
-
-            return testCommandsByTestGuid;
-        }
-
         private static string QuoteFilename(string filename)
         {
             return "\"" + filename + "\"";
+        }
+
+        private class MSTestExecutionInfo
+        {
+            public string Guid;
+            public TimeSpan? Duration;
+            public TestOutcome Outcome;
+            public string StdOut = null;
+            public string Errors = null;
         }
     }
 }
