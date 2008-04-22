@@ -6,8 +6,8 @@
     <CSharpProject Include="Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources.csproj" />
     <CSharpProject Include="Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests.csproj" />
 
-    <CSharpProject Include="Gallio.MSTestAdapter\Gallio.MSTestRunner.csproj" />
-    <CSharpProject Include="Gallio.MSTestAdapter.Tests\Gallio.MSTestRunner.Tests.csproj" />
+    <CSharpProject Include="Gallio.MSTestRunner\Gallio.MSTestRunner.csproj" />
+    <CSharpProject Include="Gallio.MSTestRunner.Tests\Gallio.MSTestRunner.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +24,6 @@
 
   <ItemGroup>
     <TestAssembly Include="Gallio.MSTestAdapter.Tests\bin\Gallio.MSTestAdapter.Tests.dll" />
-    <TestAssembly Include="Gallio.MSTestAdapter.Tests\bin\Gallio.MSTestRunner.Tests.dll" />
+    <TestAssembly Include="Gallio.MSTestRunner.Tests\bin\Gallio.MSTestRunner.Tests.dll" />
   </ItemGroup>
 </Project>
