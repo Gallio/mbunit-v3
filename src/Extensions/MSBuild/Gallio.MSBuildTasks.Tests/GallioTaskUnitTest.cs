@@ -58,7 +58,11 @@ namespace Gallio.MSBuildTasks.Tests
                 CollectionAssert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
                 Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
                 Assert.IsFalse(launcher.ShowReports);
+
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(1, launcher.TestRunnerExtensions.Count);
+                Assert.IsInstanceOfType(typeof(TaskLogExtension), launcher.TestRunnerExtensions[0]);
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestRunnerExtensionSpecifications);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
@@ -91,7 +95,9 @@ namespace Gallio.MSBuildTasks.Tests
             task.ReportTypes = new string[] { "XML", "Html" };
             task.ReportNameFormat = "report";
             task.ShowReports = true;
+
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
+            task.RunnerExtensions = new string[] { "DebugExtension,Gallio" };
 
             task.PluginDirectories = new ITaskItem[] { new TaskItem("plugin") };
             task.Assemblies = new ITaskItem[] { new TaskItem("assembly1"), new TaskItem("assembly2") };
@@ -113,7 +119,10 @@ namespace Gallio.MSBuildTasks.Tests
                 CollectionAssert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
+
                 Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(0, launcher.TestRunnerExtensions.Count);
+                CollectionAssert.AreElementsEqual(new string[] { "DebugExtension,Gallio" }, launcher.TestRunnerExtensionSpecifications);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);

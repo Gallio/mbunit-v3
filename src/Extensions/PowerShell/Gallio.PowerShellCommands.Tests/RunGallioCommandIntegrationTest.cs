@@ -78,6 +78,15 @@ namespace Gallio.PowerShellCommands.Tests
             StringAssert.Like(task.ConsoleOutput, "ResultCode *: 0");
         }
 
+        [Test]
+        public void CmdletSupportsCustomExtensions()
+        {
+            ProcessTask task = RunPowerShell("-filter Type:PassingTests -ignore-annotations -runner-extension 'DebugExtension,Gallio'");
+            Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
+            Assert.Contains(task.ConsoleOutput, "TestStepStarted"); // text appears in the debug output
+            Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero.");
+        }
+
         private ProcessTask RunPowerShell(string options)
         {
             string executablePath = Path.Combine(
@@ -87,7 +96,7 @@ namespace Gallio.PowerShellCommands.Tests
             string workingDirectory = Path.GetDirectoryName((AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)));
 
             ProcessTask task = Tasks.StartProcessTask(executablePath,
-               "\"& Add-PSSnapIn Gallio; Run-Gallio 'MbUnit.TestResources.dll' -pd '" +
+               "\"& Add-PSSnapIn Gallio; $DebugPreference = 'Continue'; Run-Gallio 'MbUnit.TestResources.dll' -pd '" +
                RuntimeAccessor.InstallationPath + "' " + options + "\"",
                workingDirectory);
 

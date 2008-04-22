@@ -59,7 +59,10 @@ namespace Gallio.NAntTasks.Tests
                 CollectionAssert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
                 Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
                 Assert.IsFalse(launcher.ShowReports);
+
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(0, launcher.TestRunnerExtensions.Count);
+                CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestRunnerExtensionSpecifications);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
@@ -92,7 +95,9 @@ namespace Gallio.NAntTasks.Tests
             task.ReportTypes = "XML;Html";
             task.ReportNameFormat = "report";
             task.ShowReports = true;
+
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
+            task.RunnerExtensions = new string[] { "DebugExtension,Gallio" };
 
             task.PluginDirectories = new DirSet[] { CreateDirSet("plugin") };
             task.Assemblies = new FileSet[] { CreateFileSet("assembly1"), CreateFileSet("assembly2") };
@@ -114,7 +119,10 @@ namespace Gallio.NAntTasks.Tests
                 CollectionAssert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
+
                 Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
+                Assert.AreEqual(0, launcher.TestRunnerExtensions.Count);
+                CollectionAssert.AreElementsEqual(new string[] { "DebugExtension,Gallio" }, launcher.TestRunnerExtensionSpecifications);
 
                 Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);

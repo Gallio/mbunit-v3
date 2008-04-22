@@ -335,11 +335,11 @@ namespace Gallio.PowerShellCommands
         /// <example>
         /// The following example runs tests using a custom logger extension:
         /// <code>
-        /// Run-Gallio SomeAssembly.dll -runner-extensions ['FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting']
+        /// Run-Gallio SomeAssembly.dll -runner-extension 'FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting'
         /// </code>
         /// </example>
         [Parameter(ValueFromPipelineByPropertyName = true)]
-        [Alias("runner-extensions")]
+        [Alias("runner-extension")]
         public string[] RunnerExtensions
         {
             set { runnerExtensions = value; }

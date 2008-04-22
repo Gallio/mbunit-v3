@@ -13,36 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.VisualStudio.TestTools.Common;
 
-namespace MbUnit.TestResources
+namespace Gallio.MSTestRunner
 {
-    /// <summary>
-    /// This class is used by the MSBuild task tests. Please don't modify it.
-    /// </summary>
-    [TestFixture]
-    public class PassingTests
+    internal static class GallioTestTypes
     {
-        [Test]
-        public void Pass()
-        {
-            Assert.AreEqual(1, 0 + 1);
-            Assert.AreEqual(2, 1 + 1);
-            Assert.AreEqual(3, 2 + 1);
-        }
-
-        [Test]
-        public void PassAgain()
-        {
-        }
-    }
-
-    [Context]
-    public class Context
-    {
-        [TestFixture]
-        public class Spec
-        {
-        }
+        public static readonly TestType Test = new TestType(new Guid("{F3589083-259C-4054-87F7-75CDAD4B08E5}"));
     }
 }

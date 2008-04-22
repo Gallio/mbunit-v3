@@ -3,6 +3,7 @@ REM Installs a reference to the Gallio test runner for ReSharper for local debug
 
 setlocal
 set LOCALDIR=%~dp0
+set SRCDIR=%LOCALDIR%..\..\
 
 set RESHARPERRUNNER_DLL=%LOCALDIR%Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll
 set RESHARPER_DIR=%PROGRAMFILES%\JetBrains\ReSharper
@@ -41,6 +42,18 @@ if not exist "%RESHARPER_PLUGINS_DIR%" mkdir "%RESHARPER_PLUGINS_DIR%"
 if not exist "%GALLIO_PLUGIN_DIR%" mkdir "%GALLIO_PLUGIN_DIR%"
 
 copy "%RESHARPERRUNNER_DLL%" "%GALLIO_PLUGIN_DIR%" /Y >nul
-copy "%RESHARPERRUNNER_DLL%.config" "%GALLIO_PLUGIN_DIR%" /Y >nul
+call :PATCH_CONFIG "%SRCDIR%\Gallio\Gallio\bin" "%RESHARPERRUNNER_DLL%.config" "%GALLIO_PLUGIN_DIR%\Gallio.ReSharperRunner.dll.config"
+
+goto :EOF
+
+
+:PATCH_CONFIG
+set INSTALLATION_PATH=%~dpnx1
+set SOURCE_FILE=%~dpnx2
+set DEST_FILE=%~dpnx3
+
+for /F "tokens=*" %%V in ('echo %INSTALLATION_PATH%^| sed s/\\/\\\\\\\\/g') do set ESCAPED_INSTALLATION_PATH=%%V
+sed "s/<!--PLACEHOLDER-->/%ESCAPED_INSTALLATION_PATH%/" < "%SOURCE_FILE%" > "%DEST_FILE%"
+
 goto :EOF
 

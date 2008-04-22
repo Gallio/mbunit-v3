@@ -53,6 +53,8 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
         protected virtual void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
         {
+            if (containingScope.IsTestDeclaration || method == null)
+                ThrowUsageErrorException(String.Format("This attribute can only be used on a method within a test type."));
         }
 
         /// <summary>
@@ -64,8 +66,6 @@ namespace Gallio.Framework.Pattern
         /// <param name="method">The method to process</param>
         protected virtual void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
         {
-            if (containingScope.IsTestDeclaration || method == null)
-                ThrowUsageErrorException(String.Format("This attribute can only be used on a method within a test type."));
         }
     }
 }

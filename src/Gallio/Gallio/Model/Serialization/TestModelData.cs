@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Gallio.Collections;
 using Gallio.Model.Serialization;
 using Gallio.Utilities;
 
@@ -136,7 +137,8 @@ namespace Gallio.Model.Serialization
                     if (tests == null)
                     {
                         tests = new Dictionary<string, TestData>();
-                        PopulateTests(rootTest);
+                        foreach (TestData test in AllTests)
+                            tests[test.Id] = test;
                     }
 
                     return tests;
@@ -144,12 +146,24 @@ namespace Gallio.Model.Serialization
             }
         }
 
-        private void PopulateTests(TestData test)
+        /// <summary>
+        /// Recursively enumerates all tests including the root test.
+        /// </summary>
+        [XmlIgnore]
+        public IEnumerable<TestData> AllTests
         {
-            tests[test.Id] = test;
+            get
+            {
+                if (rootTest == null)
+                    return EmptyArray<TestData>.Instance;
 
-            foreach (TestData child in test.Children)
-                PopulateTests(child);
+                return TreeUtils.GetPreOrderTraversal(rootTest, GetChildren);
+            }
+        }
+
+        private static IEnumerable<TestData> GetChildren(TestData node)
+        {
+            return node.Children;
         }
     }
 }

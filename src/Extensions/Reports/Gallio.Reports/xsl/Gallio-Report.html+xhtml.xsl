@@ -64,7 +64,7 @@ html
 html
 {
 	margin: 0px 0px 0px 0px;
-	padding: 0px 16px 0px 0px;
+	padding: 0px 17px 0px 0px;
 	overflow: auto;
 }
       </style>

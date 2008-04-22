@@ -13,35 +13,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Framework;
+using System;
+using System.Runtime.Serialization;
+using Microsoft.VisualStudio.TestTools.Common;
+using TestResultData = Gallio.Model.TestResult;
 
-namespace MbUnit.TestResources
+namespace Gallio.MSTestRunner
 {
-    /// <summary>
-    /// This class is used by the MSBuild task tests. Please don't modify it.
-    /// </summary>
-    [TestFixture]
-    public class PassingTests
+    internal sealed class GallioTestResult : TestResultAggregation
     {
-        [Test]
-        public void Pass()
-        {
-            Assert.AreEqual(1, 0 + 1);
-            Assert.AreEqual(2, 1 + 1);
-            Assert.AreEqual(3, 2 + 1);
-        }
-
-        [Test]
-        public void PassAgain()
+        public GallioTestResult(GallioTestResult result)
+            : base(result)
         {
         }
-    }
 
-    [Context]
-    public class Context
-    {
-        [TestFixture]
-        public class Spec
+        public GallioTestResult(TestResult result)
+            : base(result)
+        {
+        }
+
+        public GallioTestResult(TestResultData result)
+        {
+        }
+
+        public override object Clone()
+        {
+            return new GallioTestResult(this);
+        }
+
+        public void MergeFrom(GallioTestResult source)
         {
         }
     }

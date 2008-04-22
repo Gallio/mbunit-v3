@@ -382,7 +382,7 @@ Function PatchReSharperConfigFile
 	PatchLoop:
 	FileRead $1 $3
 	IfErrors PatchDone
-	${StrReplace} $3 "..\..\..\Gallio\bin<!-- Pre-configured for debugging purposes -->" "$INSTDIR\bin" $3
+	${StrReplace} $3 "<!--PLACEHOLDER-->" "$INSTDIR\bin" $3
 	FileWrite $2 $3
 	GoTo PatchLoop
 

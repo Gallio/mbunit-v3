@@ -14,34 +14,33 @@
 // limitations under the License.
 
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Text;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
-using MbUnit.Framework;
+using Microsoft.VisualStudio.TestTools.Common;
 
-namespace Gallio.Tests.Utilities
+namespace Gallio.MSTestRunner
 {
-    [TestFixture]
-    [TestsOn(typeof(CurrentDirectorySwitcher))]
-    public class CurrentDirectorySwitcherTest
+    internal class WarningLogger : BaseLogger
     {
-        [Test, ExpectedArgumentNullException]
-        public void ShouldThrowIfDirectoryIsNull()
+        private readonly IWarningHandler warningHandler;
+
+        public WarningLogger(IWarningHandler warningHandler)
         {
-            new CurrentDirectorySwitcher(null);
+            this.warningHandler = warningHandler;
         }
 
-        [Test]
-        public void ShouldSetAndResetCurrentDirectory()
+        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
         {
-            string originalDirectory = Environment.CurrentDirectory;
-            string newDirectory = Path.GetTempPath().TrimEnd('\\');
-
-            using (new CurrentDirectorySwitcher(newDirectory))
+            if (severity >= LogSeverity.Warning)
             {
-                Assert.AreEqual(newDirectory, Environment.CurrentDirectory);
-            }
+                string warning = exception == null
+                    ? message
+                    : string.Concat(message, ExceptionUtils.SafeToString(exception));
 
-            Assert.AreEqual(originalDirectory, Environment.CurrentDirectory);
+                warningHandler.Write(null, new WarningEventArgs(warning));
+            }
         }
     }
 }

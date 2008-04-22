@@ -276,7 +276,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
         <maml:name>RunnerExtensions</maml:name>
         <maml:description>
-          <maml:para>Specifies the type, assembly, and parameters of custom test runner extensions to use during the test run in the form: '[Namespace.]Type,Assembly[;Parameters].  eg. ['FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting']</maml:para>
+          <maml:para>Specifies the type, assembly, and parameters of custom test runner extensions to use during the test run in the form: '[Namespace.]Type,Assembly[;Parameters].  eg. 'FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting'</maml:para>
         </maml:description>
       </command:parameter>
       
