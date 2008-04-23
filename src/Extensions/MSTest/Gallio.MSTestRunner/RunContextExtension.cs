@@ -23,16 +23,13 @@ using Microsoft.VisualStudio.TestTools.Execution;
 
 namespace Gallio.MSTestRunner
 {
-    internal class ResultPublisherExtension : TestRunnerExtension
+    internal class RunContextExtension : TestRunnerExtension
     {
         private readonly IRunContext runContext;
         private readonly Dictionary<string, GallioTestElement> testElementsById;
 
-        public ResultPublisherExtension(IRunContext runContext)
+        public RunContextExtension(IRunContext runContext)
         {
-            if (runContext == null)
-                throw new ArgumentNullException("runContext");
-
             this.runContext = runContext;
 
             testElementsById = new Dictionary<string, GallioTestElement>();
@@ -49,18 +46,14 @@ namespace Gallio.MSTestRunner
 
             Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
             {
-                GallioTestElement gallioTestElement = GetTestElement(e.Test);
-                if (gallioTestElement != null)
+                if (e.TestStepRun.Step.IsTestCase)
                 {
-                    // TODO
-                    /*
-                    // FIXME: untested and probably incorrect...
-                    TestResultMessage message = new TestResultMessage(
-                        new ComputerInfo(Environment.MachineName),
-                        runContext.RunConfig.TestRun.Id, gallioTestElement, TestMessageKind.TestEnd);
-
-                    runContext.ResultSink.AddResult(message);
-                     */
+                    GallioTestElement gallioTestElement = GetTestElement(e.Test);
+                    if (gallioTestElement != null)
+                    {
+                        GallioTestResult result = new GallioTestResult(e.TestStepRun, runContext.RunConfig.TestRun.Id, gallioTestElement);
+                        runContext.ResultSink.AddResult(result);
+                    }
                 }
             };
         }

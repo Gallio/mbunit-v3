@@ -46,7 +46,7 @@ namespace Gallio.Runtime.Remoting
             IDictionary channelProperties = new Hashtable();
             channelProperties[@"connectionTimeout"] = ConnectionTimeoutMillis;
             channelProperties[@"name"] = @"ipc-client:" + portName;
-            channelProperties[@"secure"] = true;
+            channelProperties[@"secure"] = false;
 
             return new IpcClientChannel(channelProperties, CreateClientChannelSinkProvider());
         }

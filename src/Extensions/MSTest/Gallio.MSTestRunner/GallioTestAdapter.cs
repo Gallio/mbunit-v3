@@ -29,9 +29,10 @@ using ITestContext=Microsoft.VisualStudio.TestTools.Execution.ITestContext;
 
 namespace Gallio.MSTestRunner
 {
-    internal class GallioTestAdapter : ILoadTestAdapter
+    internal class GallioTestAdapter : ITestAdapter
     {
         private Gallio.Runner.ITestRunner runner;
+        private IRunContext runContext;
 
         private IProgressMonitor currentProgressMonitor;
 
@@ -39,11 +40,13 @@ namespace Gallio.MSTestRunner
 
         public void Initialize(IRunContext runContext)
         {
+            this.runContext = runContext;
+
             ITestRunnerManager runnerManager = RuntimeProvider.GetRuntime().Resolve<ITestRunnerManager>();
             runner = runnerManager.CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess);
-            runner.RegisterExtension(new ResultPublisherExtension(runContext));
+            runner.RegisterExtension(new RunContextExtension(runContext));
 
-            ILogger logger = NullLogger.Instance;
+            ILogger logger = new RunContextLogger(runContext);
             TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
 
             RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
@@ -59,9 +62,9 @@ namespace Gallio.MSTestRunner
             {
                 GallioTestElement gallioTestElement = testElement as GallioTestElement;
                 if (gallioTestElement != null
-                    && !testPackageConfig.AssemblyFiles.Contains(gallioTestElement.AssemblyPath))
+                    && !testPackageConfig.AssemblyFiles.Contains(gallioTestElement.Storage))
                 {
-                    testPackageConfig.AssemblyFiles.Add(gallioTestElement.AssemblyPath);
+                    testPackageConfig.AssemblyFiles.Add(gallioTestElement.Storage);
                 }
             }
 
@@ -82,6 +85,8 @@ namespace Gallio.MSTestRunner
 
         public void Cleanup()
         {
+            runContext = null;
+
             if (runner != null)
             {
                 runner.Dispose(NullProgressMonitor.CreateInstance());
@@ -95,30 +100,31 @@ namespace Gallio.MSTestRunner
 
         public void Run(ITestElement testElement, ITestContext testContext)
         {
-        }
+            if (runContext != null)
+            {
+                TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
 
-        public void LoadRun(ITestElement testElement, ITestContext testContext)
-        {
+                List<Filter<string>> idFilters = new List<Filter<string>>();
+                foreach (ITestElement includedTestElement in runContext.RunConfig.TestElements)
+                {
+                    GallioTestElement gallioTestElement = includedTestElement as GallioTestElement;
+                    if (gallioTestElement != null)
+                        idFilters.Add(new EqualityFilter<string>(gallioTestElement.GallioTestId));
+                }
+
+                testExecutionOptions.Filter = new IdFilter<ITest>(new OrFilter<string>(idFilters.ToArray()));
+
+                RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
+                {
+                    runner.Run(testExecutionOptions, progressMonitor);
+                });
+
+                runContext = null;
+            }
         }
 
         public void PreTestRunFinished(IRunContext runContext)
         {
-            TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
-
-            List<Filter<string>> idFilters = new List<Filter<string>>();
-            foreach (ITestElement testElement in runContext.RunConfig.TestElements)
-            {
-                GallioTestElement gallioTestElement = testElement as GallioTestElement;
-                if (gallioTestElement != null)
-                    idFilters.Add(new EqualityFilter<string>(gallioTestElement.GallioTestId));
-            }
-
-            testExecutionOptions.Filter = new IdFilter<ITest>(new OrFilter<string>(idFilters.ToArray()));
-
-            RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.Run(testExecutionOptions, progressMonitor);
-            });
         }
 
         public void StopTestRun()

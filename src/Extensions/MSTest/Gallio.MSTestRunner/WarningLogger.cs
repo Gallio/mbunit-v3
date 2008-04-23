@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 using Microsoft.VisualStudio.TestTools.Common;

@@ -15,40 +15,45 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Microsoft.VisualStudio.TestTools.Common;
+using System.Runtime.InteropServices;
 
 namespace Gallio.MSTestRunner
 {
+    [Serializable]
+    [Guid(Guids.GallioTestTypeGuidString)]
     internal sealed class GallioTestElement : TestElement
     {
-        [PersistenceElementName("assemblyPath")]
-        private string assemblyPath;
-
         [PersistenceElementName("gallioTestId")]
         private string gallioTestId;
 
-        public GallioTestElement(TestData test, string assemblyPath)
-            : base(GenerateTestId(test), test.Name, string.Empty)
+        public GallioTestElement(TestData test, string assemblyPath, ProjectData projectData)
+            : base(GenerateTestId(test), test.FullName, test.Metadata.GetValue(MetadataKeys.Description) ?? "", assemblyPath)
         {
-            Description = test.Metadata.GetValue(MetadataKeys.Description);
-
             foreach (KeyValuePair<string, IList<string>> pair in test.Metadata)
             {
                 Properties[pair.Key] = pair.Value.Count == 1 ? (object)pair.Value[0] : pair.Value;
             }
 
-            this.assemblyPath = assemblyPath;
+            Owner = test.Metadata.GetValue(MetadataKeys.AuthorName) ?? "";
+
             gallioTestId = test.Id;
+            ProjectData = projectData;
         }
 
         public GallioTestElement(GallioTestElement element)
             : base(element)
         {
-            assemblyPath = element.assemblyPath;
             gallioTestId = element.gallioTestId;
+        }
+
+        private GallioTestElement(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
         }
 
         public override object Clone()
@@ -56,24 +61,24 @@ namespace Gallio.MSTestRunner
             return new GallioTestElement(this);
         }
 
-        public string AssemblyPath
-        {
-            get { return assemblyPath; }
-        }
-
         public string GallioTestId
         {
             get { return gallioTestId; }
         }
 
+        public override string HumanReadableId
+        {
+            get { return Name; }
+        }
+
         public override string Adapter
         {
-            get { return typeof(GallioTestAdapter).FullName; }
+            get { return typeof(GallioTestAdapter).AssemblyQualifiedName; }
         }
 
         public override bool CanBeAggregated
         {
-            get { return true; }
+            get { return false; }
         }
 
         public override bool IsLoadTestCandidate
@@ -94,7 +99,7 @@ namespace Gallio.MSTestRunner
 
         public override TestType TestType
         {
-            get { return GallioTestTypes.Test; }
+            get { return Guids.GallioTestType; }
         }
 
         private static TestId GenerateTestId(TestData test)

@@ -45,7 +45,7 @@ namespace Gallio.Runtime.Remoting
             IDictionary channelProperties = new Hashtable();
             channelProperties[@"name"] = @"ipc-server:" + portName;
             channelProperties[@"portName"] = portName;
-            channelProperties[@"secure"] = true;
+            channelProperties[@"secure"] = false;
             channelProperties[@"exclusiveAddressUse"] = true;
             //channelProperties[@"authorizedGroup"] = "Everyone";
 

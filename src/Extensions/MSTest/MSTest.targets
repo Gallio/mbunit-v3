@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <MSTestPath Condition="'$(MSTestPath)'=='' and Exists('$(ProgramFiles)\Microsoft Visual Studio 9.0\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.QualityTools.Common.dll')">$(ProgramFiles)\Microsoft Visual Studio 9.0\Common7\IDE\PrivateAssemblies;$(ProgramFiles)\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies</MSTestPath>
+    <MSTestPath Condition="'$(MSTestPath)'=='' and Exists('$(ProgramFiles)\Microsoft Visual Studio 2008 SDK\VisualStudioIntegration\Common\Assemblies\Microsoft.VisualStudio.QualityTools.Common.dll')">$(ProgramFiles)\Microsoft Visual Studio 2008 SDK\VisualStudioIntegration\Common\Assemblies</MSTestPath>
 
     <MSTestInstalled>false</MSTestInstalled>
     <MSTestInstalled Condition="'$(MSTestPath)'!=''">true</MSTestInstalled>
@@ -21,6 +21,6 @@
   </Choose>
 
   <Target Name="MissingMSTest">
-    <Warning Text="Skipped build.  MSTest is not installed or could not be located." />
+    <Warning Text="Skipped build.  Visual Studio 2008 SDK is not installed or could not be located." />
   </Target>
 </Project>

@@ -32,6 +32,7 @@ namespace Gallio.Model.Serialization
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class TestData : TestComponentData
     {
+        private string fullName;
         private readonly List<TestData> children;
         private readonly List<TestParameterData> parameters;
         private bool isTestCase;
@@ -49,10 +50,17 @@ namespace Gallio.Model.Serialization
         /// </summary>
         /// <param name="id">The component id</param>
         /// <param name="name">The component name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/> is null</exception>
-        public TestData(string id, string name)
+        /// <param name="fullName">The full name of the test</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/>, <paramref name="name"/>,
+        /// or <paramref name="fullName"/> is null</exception>
+        public TestData(string id, string name, string fullName)
             : base(id, name)
         {
+            if (fullName == null)
+                throw new ArgumentNullException(@"fullName");
+
+            this.fullName = fullName;
+
             children = new List<TestData>();
             parameters = new List<TestParameterData>();
         }
@@ -65,6 +73,9 @@ namespace Gallio.Model.Serialization
         public TestData(ITest source)
             : base(source)
         {
+            fullName = source.FullName;
+            isTestCase = source.IsTestCase;
+
             children = new List<TestData>();
             parameters = new List<TestParameterData>();
 
@@ -77,8 +88,22 @@ namespace Gallio.Model.Serialization
             {
                 return new TestParameterData(parameter);
             });
+        }
 
-            isTestCase = source.IsTestCase;
+        /// <summary>
+        /// Gets or sets the full name of the test.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        [XmlAttribute("fullName")]
+        public string FullName
+        {
+            get { return fullName; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(@"value");
+                fullName = value;
+            }
         }
 
         /// <summary>

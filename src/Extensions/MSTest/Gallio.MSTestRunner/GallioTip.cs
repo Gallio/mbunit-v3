@@ -66,7 +66,7 @@ namespace Gallio.MSTestRunner
                 TestModelData model = runner.Report.TestModel;
                 foreach (TestData test in model.AllTests)
                     if (test.IsTestCase)
-                        tests.Add(new GallioTestElement(test, location));
+                        tests.Add(new GallioTestElement(test, location, projectData));
             }
             finally
             {
@@ -102,7 +102,7 @@ namespace Gallio.MSTestRunner
 
         public override TestType TestType
         {
-            get { return GallioTestTypes.Test; }
+            get { return Guids.GallioTestType; }
         }
     }
 }
