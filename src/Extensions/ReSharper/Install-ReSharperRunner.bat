@@ -1,11 +1,11 @@
-@echo off
+@echo off & if not "%ECHO%"=="" echo %ECHO%
 REM Installs a reference to the Gallio test runner for ReSharper for local debugging.
 
 setlocal
 set LOCALDIR=%~dp0
 set SRCDIR=%LOCALDIR%..\..\
 
-set RESHARPERRUNNER_DLL=%LOCALDIR%Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll
+set RESHARPERRUNNER_BIN_DIR=%LOCALDIR%Gallio.ReSharperRunner\bin
 set RESHARPER_DIR=%PROGRAMFILES%\JetBrains\ReSharper
 
 echo Installing the locally compiled Gallio test runner for ReSharper.
@@ -41,8 +41,10 @@ set GALLIO_PLUGIN_DIR=%RESHARPER_PLUGINS_DIR%\Gallio
 if not exist "%RESHARPER_PLUGINS_DIR%" mkdir "%RESHARPER_PLUGINS_DIR%"
 if not exist "%GALLIO_PLUGIN_DIR%" mkdir "%GALLIO_PLUGIN_DIR%"
 
-copy "%RESHARPERRUNNER_DLL%" "%GALLIO_PLUGIN_DIR%" /Y >nul
-call :PATCH_CONFIG "%SRCDIR%\Gallio\Gallio\bin" "%RESHARPERRUNNER_DLL%.config" "%GALLIO_PLUGIN_DIR%\Gallio.ReSharperRunner.dll.config"
+copy "%RESHARPERRUNNER_BIN_DIR%\Gallio*.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
+copy "%RESHARPERRUNNER_BIN_DIR%\Castle*.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
+
+call :PATCH_CONFIG "%SRCDIR%\Gallio\Gallio\bin" "%RESHARPERRUNNER_BIN_DIR%\Gallio.ReSharperRunner.dll.config" "%GALLIO_PLUGIN_DIR%\Gallio.ReSharperRunner.dll.config"
 
 goto :EOF
 

@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
+using Gallio.ReSharperRunner.Runtime;
 using Gallio.Runtime;
-using Gallio.ReSharperRunner.Hosting;
 using JetBrains.ReSharper.TaskRunnerFramework;
 
 namespace Gallio.ReSharperRunner.Tasks
@@ -44,7 +44,7 @@ namespace Gallio.ReSharperRunner.Tasks
 
         public override TaskResult Start(TaskExecutionNode node)
         {
-            RuntimeProxy.Initialize();
+            RuntimeProvider.Initialize();
             return TaskResult.Success; 
         }
 
@@ -55,7 +55,7 @@ namespace Gallio.ReSharperRunner.Tasks
 
         public override TaskResult Finish(TaskExecutionNode node)
         {
-            if (!RuntimeProxy.IsInitialized)
+            if (!RuntimeAccessor.IsInitialized)
                 return TaskResult.Error;
 
             return executeResult;

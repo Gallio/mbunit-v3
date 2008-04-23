@@ -17,9 +17,9 @@ using System;
 using System.Collections;
 using Gallio.Model;
 using Gallio.Model.Serialization;
+using Gallio.MSTestRunner.Runtime;
 using Gallio.Runner;
 using Gallio.Runner.Extensions;
-using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 using Microsoft.VisualStudio.TestTools.Common;
 using TestResult=Microsoft.VisualStudio.TestTools.Common.TestResult;
@@ -44,7 +44,7 @@ namespace Gallio.MSTestRunner
 
         public override ICollection Load(string location, ProjectData projectData, IWarningHandler warningHandler)
         {
-            ITestRunnerManager runnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
+            ITestRunnerManager runnerManager = RuntimeProvider.GetRuntime().Resolve<ITestRunnerManager>();
             ITestRunner runner = runnerManager.CreateTestRunner(StandardTestRunnerFactoryNames.Local);
 
             ArrayList tests = new ArrayList();

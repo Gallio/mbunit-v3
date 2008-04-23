@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -92,29 +92,20 @@
     <Compile Include="GallioDaemonStage.cs" />
     <Compile Include="GallioDaemonStageProcess.cs" />
     <Compile Include="GallioProjectFileState.cs" />
-    <Compile Include="GallioTestProviderDelegate.cs" />
     <Compile Include="GallioTestElement.cs" />
     <Compile Include="GallioTestPresenter.cs" />
-    <Compile Include="Hosting\AssemblyLoader.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Hosting\ReSharperLogger.cs" />
+    <Compile Include="Runtime\ReSharperLogger.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicy.cs" />
     <Compile Include="Reflection\PsiReflectionPolicy.cs" />
     <Compile Include="Reflection\ReSharperReflectionPolicy.cs" />
-    <Compile Include="Tasks\GallioRemoteAction.cs" />
+    <Compile Include="Runtime\RuntimeProvider.cs" />
     <Compile Include="Tasks\GallioRemoteTaskRunner.cs" />
     <Compile Include="Tasks\GallioRemoteTask.cs" />
-    <Compile Include="Hosting\RuntimeProxyException.cs" />
-    <Compile Include="Hosting\RuntimeProxy.cs" />
     <Compile Include="Tasks\GallioTestAssemblyTask.cs" />
     <Compile Include="Tasks\GallioTestExplicitTask.cs" />
     <Compile Include="Tasks\GallioTestRunTask.cs" />
-    <Compile Include="Tasks\GallioTestRunAction.cs" />
     <Compile Include="Tasks\GallioTestItemTask.cs" />
     <Compile Include="GallioTestProvider.cs" />
-    <Compile Include="IUnitTestProviderDelegate.cs" />
-    <Compile Include="NullTestProviderDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -15,7 +15,12 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.ReSharperRunner.Hosting;
+using Gallio.Model;
+using Gallio.Reflection;
+using Gallio.ReSharperRunner.Reflection;
+using Gallio.ReSharperRunner.Runtime;
+using Gallio.ReSharperRunner.Tasks;
+using Gallio.Runtime.Loader;
 using JetBrains.CommonControls;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
@@ -24,25 +29,35 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.TaskRunnerFramework;
 using JetBrains.ReSharper.UnitTestExplorer;
 using JetBrains.Shell;
+using JetBrains.Shell.Progress;
 using JetBrains.UI.TreeView;
 using JetBrains.Util.DataStructures.TreeModel;
+using Gallio.Runtime;
 
 namespace Gallio.ReSharperRunner
 {
     /// <summary>
     /// This is the main entry point into the Gallio test runner for ReSharper.
     /// </summary>
-    /// <remarks>
-    /// The implementation of this class must not use Gallio types since
-    /// it is possible that those types could not be loaded.  Service location
-    /// should be performed via the <see cref="RuntimeProxy"/>.
-    /// </remarks>
     [UnitTestProvider]
     public class GallioTestProvider : IUnitTestProvider
     {
         public const string ProviderId = "Gallio";
 
-        private IUnitTestProviderDelegate @delegate;
+        private readonly ILoader loader;
+        private readonly IRuntime runtime;
+        private readonly GallioTestPresenter presenter;
+
+        /// <summary>
+        /// Initializes the provider.
+        /// </summary>
+        public GallioTestProvider()
+        {
+            runtime = RuntimeProvider.GetRuntime();
+            loader = runtime.Resolve<ILoader>();
+
+            presenter = new GallioTestPresenter();
+        }
 
         /// <summary>
         /// Explores the "world", i.e. retrieves tests not associated with current solution.
@@ -52,7 +67,7 @@ namespace Gallio.ReSharperRunner
             if (consumer == null)
                 throw new ArgumentNullException("consumer");
 
-            Delegate.ExploreExternal(consumer);
+            // Nothing to do currently.
         }
 
         /// <summary>
@@ -65,7 +80,7 @@ namespace Gallio.ReSharperRunner
             if (consumer == null)
                 throw new ArgumentNullException("consumer");
 
-            Delegate.ExploreSolution(solution, consumer);
+            // Nothing to do currently.
         }
 
         /// <summary>
@@ -80,7 +95,17 @@ namespace Gallio.ReSharperRunner
             if (consumer == null)
                 throw new ArgumentNullException("consumer");
 
-            Delegate.ExploreAssembly(assembly, project, consumer);
+            MetadataReflectionPolicy reflectionPolicy = new MetadataReflectionPolicy(assembly, project);
+            IAssemblyInfo assemblyInfo = reflectionPolicy.Wrap(assembly);
+
+            if (assemblyInfo != null)
+            {
+                ConsumerAdapter consumerAdapter = new ConsumerAdapter(this, consumer);
+                ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
+
+                explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
+                explorer.FinishModel();
+            }
         }
 
         /// <summary>
@@ -93,7 +118,41 @@ namespace Gallio.ReSharperRunner
             if (consumer == null)
                 throw new ArgumentNullException("consumer");
 
-            Delegate.ExploreFile(psiFile, consumer, interrupted);
+            PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
+            ConsumerAdapter consumerAdapter = new ConsumerAdapter(this, consumer);
+            ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
+
+            psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
+            {
+                ITypeDeclaration declaration = element as ITypeDeclaration;
+                if (declaration != null)
+                    ExploreTypeDeclaration(reflectionPolicy, explorer, declaration, consumerAdapter.Consume);
+            }, delegate(IElement element)
+            {
+                if (interrupted())
+                    throw new ProcessCancelledException();
+
+                // Stop recursing at the first type declaration found.
+                return element is ITypeDeclaration;
+            }));
+
+            // Note: We don't call FinishModel because we know the model will be incomplete.
+
+            GallioProjectFileState state = explorer.TestModel.Annotations.Count != 0
+                ? new GallioProjectFileState(explorer.TestModel.Annotations)
+                : null;
+            GallioProjectFileState.SetFileState(psiFile.GetProjectFile(), state);
+        }
+
+        private static void ExploreTypeDeclaration(PsiReflectionPolicy reflectionPolicy, ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)
+        {
+            ITypeInfo typeInfo = reflectionPolicy.Wrap(declaration.DeclaredElement);
+
+            if (typeInfo != null)
+                explorer.ExploreType(typeInfo, consumer);
+
+            foreach (ITypeDeclaration nestedDeclaration in declaration.NestedTypeDeclarations)
+                ExploreTypeDeclaration(reflectionPolicy, explorer, nestedDeclaration, consumer);
         }
 
         /// <summary>
@@ -104,7 +163,13 @@ namespace Gallio.ReSharperRunner
             if (element == null)
                 throw new ArgumentNullException("element");
 
-            return Delegate.IsUnitTestElement(element);
+            PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
+            ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
+            if (elementInfo == null)
+                return false;
+
+            ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
+            return explorer.IsTest(elementInfo);
         }
 
         /// <summary>
@@ -121,7 +186,7 @@ namespace Gallio.ReSharperRunner
             if (state == null)
                 throw new ArgumentNullException("state");
 
-            Delegate.Present(element, item, node, state);
+            presenter.UpdateItem(element, node, item, state);
         }
 
         /// <summary>
@@ -129,7 +194,7 @@ namespace Gallio.ReSharperRunner
         /// </summary>
         public RemoteTaskRunnerInfo GetTaskRunnerInfo()
         {
-            return Delegate.GetTaskRunnerInfo();
+            return new RemoteTaskRunnerInfo(typeof(GallioRemoteTaskRunner));
         }
 
         /// <summary>
@@ -166,7 +231,53 @@ namespace Gallio.ReSharperRunner
             if (explicitElements == null)
                 throw new ArgumentNullException("explicitElements");
 
-            return Delegate.GetTaskSequence(element, explicitElements);
+            GallioTestElement topElement = (GallioTestElement)element;
+            List<UnitTestTask> tasks = new List<UnitTestTask>();
+
+            // Add the run task.  Must always be first.
+            tasks.Add(new UnitTestTask(null, GallioTestRunTask.Instance));
+
+            // Add the test case branch.
+            AddTestTasksFromRootToLeaf(tasks, topElement);
+
+            // Now that we're done with the critical parts of the task tree, we can add other
+            // arbitrary elements.  We don't care about the structure of the task tree beyond this depth.
+
+            // Add the assembly location.
+            tasks.Add(new UnitTestTask(null, new GallioTestAssemblyTask(topElement.GetAssemblyLocation())));
+
+            // Add explicit element markers.
+            foreach (GallioTestElement explicitElement in explicitElements)
+                tasks.Add(new UnitTestTask(null, new GallioTestExplicitTask(explicitElement.Test.Id)));
+
+            return tasks;
+        }
+
+        private static void AddTestTasksFromRootToLeaf(List<UnitTestTask> tasks, GallioTestElement element)
+        {
+            // This is disabled right now because R# does weird things with the test tree
+            // It introduces additional bogus top-level notes in the Unit Test Session.
+            //
+            // To reproduce:
+            //   Run a test by clicking on the Run Test action in the margin of a test editor.
+            //   Modify the test.
+            //   Switch to Projects and Namespaces view.
+            //   Then click Run All Tests from within the Unit Test Session.
+            //
+            // Notice:
+            //   The first time, all is well.
+            //   The second time, a new node for the test fixture's containing namespace is created at the top level.
+            //   so the fixture will appear twice, once under its project and once under the duplicate namespace.
+            /*
+            GallioTestElement parentElement = element.Parent as GallioTestElement;
+            if (parentElement != null)
+                AddTestTasksFromRootToLeaf(tasks, parentElement);
+             */
+
+            if (!element.Test.IsTestCase)
+                return; // workaround
+
+            tasks.Add(new UnitTestTask(element, new GallioTestItemTask(element.Test.Id)));
         }
 
         /// <summary>
@@ -179,7 +290,10 @@ namespace Gallio.ReSharperRunner
             if (y == null)
                 throw new ArgumentNullException("y");
 
-            return Delegate.CompareUnitTestElements(x, y);
+            GallioTestElement xe = (GallioTestElement)x;
+            GallioTestElement ye = (GallioTestElement)y;
+
+            return xe.CompareTo(ye);
         }
 
         /// <summary>
@@ -197,22 +311,94 @@ namespace Gallio.ReSharperRunner
             get { return ProviderId; }
         }
 
-        private IUnitTestProviderDelegate Delegate
-        {
-            get
-            {
-                if (@delegate == null)
-                {
-                    if (RuntimeProxy.TryInitializeWithPrompt())
-                        @delegate = RuntimeProxy.Resolve<IUnitTestProviderDelegate>();
-                    else
-                        @delegate = new NullTestProviderDelegate();
 
-                    @delegate.SetProvider(this);
+        private sealed class ConsumerAdapter
+        {
+            private readonly IUnitTestProvider provider;
+            private readonly Dictionary<ITest, UnitTestElement> tests = new Dictionary<ITest, UnitTestElement>();
+            private readonly UnitTestElementConsumer consumer;
+
+            public ConsumerAdapter(IUnitTestProvider provider, UnitTestElementConsumer consumer)
+            {
+                this.provider = provider;
+                this.consumer = consumer;
+            }
+
+            public ConsumerAdapter(IUnitTestProvider provider, UnitTestElementLocationConsumer consumer)
+                : this(provider, delegate(UnitTestElement element)
+                {
+                    consumer(element.GetDisposition());
+                }) 
+            {
+            }
+
+            public void Consume(ITest test)
+            {
+                Consume(test, null);
+            }
+
+            private void Consume(ITest test, UnitTestElement parentElement)
+            {
+                UnitTestElement element;
+
+                if (ShouldTestBePresented(test))
+                {
+                    element = MapTest(test, parentElement);
+                    consumer(element);
+                }
+                else
+                {
+                    element = null;
                 }
 
-                return @delegate;
+                foreach (ITest childTest in test.Children)
+                    Consume(childTest, element);
             }
+
+            private UnitTestElement MapTest(ITest test, UnitTestElement parentElement)
+            {
+                UnitTestElement element;
+                if (!tests.TryGetValue(test, out element))
+                {
+                    element = new GallioTestElement(test, provider, parentElement);
+                    tests.Add(test, element);
+                }
+
+                return element;
+            }
+
+            /// <summary>
+            /// ReSharper does not know how to present tests with a granularity any
+            /// larger than a namespace.  The tree it shows to users in such cases is
+            /// not very helpful because it appear that the root test is a child of the
+            /// project that resides in the root namespace.  So we filter out
+            /// certain kinds of tests from view.
+            /// </summary>
+            private static bool ShouldTestBePresented(ITest test)
+            {
+                switch (test.Metadata.GetValue(MetadataKeys.TestKind))
+                {
+                    case TestKinds.Root:
+                    case TestKinds.Framework:
+                    case TestKinds.Assembly:
+                        return false;
+
+                    default:
+                        return true;
+                }
+            }
+        }
+
+        private ITestExplorer CreateTestExplorer(IReflectionPolicy reflectionPolicy)
+        {
+            TestPackage testPackage = new TestPackage(new TestPackageConfig(), reflectionPolicy, loader);
+            TestModel testModel = new TestModel(testPackage);
+
+            AggregateTestExplorer aggregate = new AggregateTestExplorer(testModel);
+            foreach (ITestFramework framework in runtime.ResolveAll<ITestFramework>())
+                aggregate.AddTestExplorer(framework.CreateTestExplorer(testModel));
+
+            return aggregate;
         }
     }
 }

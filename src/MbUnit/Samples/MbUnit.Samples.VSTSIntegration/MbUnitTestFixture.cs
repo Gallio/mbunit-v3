@@ -13,21 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using JetBrains.ReSharper.TaskRunnerFramework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using MbUnit.Framework;
 
-namespace Gallio.ReSharperRunner.Tasks
+namespace MbUnit.Samples.VSTSIntegration
 {
-    /// <summary>
-    /// A remotely executable action.
-    /// </summary>
-    public abstract class GallioRemoteAction
+    [TestFixture]
+    public class MbUnitTestFixture
     {
-        /// <summary>
-        /// Executes the task recursively.
-        /// </summary>
-        /// <param name="server">The remote task server</param>
-        /// <param name="node">The task execution node</param>
-        /// <returns>The execution result</returns>
-        public abstract TaskResult ExecuteRecursive(IRemoteTaskServer server, TaskExecutionNode node);
+        [Test]
+        public void Pass()
+        {
+        }
+
+        [Test]
+        public void Fail()
+        {
+            Assert.Fail();
+        }
     }
 }

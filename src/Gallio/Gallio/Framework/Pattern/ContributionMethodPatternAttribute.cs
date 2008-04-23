@@ -53,7 +53,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
         protected virtual void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
         {
-            if (containingScope.IsTestDeclaration || method == null)
+            if (! containingScope.IsTestDeclaration || method == null)
                 ThrowUsageErrorException(String.Format("This attribute can only be used on a method within a test type."));
         }
 

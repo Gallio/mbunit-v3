@@ -15,7 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Xml.Serialization;
+using Gallio.Reflection;
 using Gallio.Runtime;
 using Gallio.Utilities;
 
@@ -70,7 +72,7 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
-        /// Gets or sets the installation configuraiton, or null to determine it automatically.
+        /// Gets or sets the installation configuration, or null to determine it automatically.
         /// </summary>
         /// <value>
         /// The installation configuration.  Default is <c>null</c>.
@@ -123,6 +125,19 @@ namespace Gallio.Runtime
             FileUtils.CanonicalizePaths(baseDirectory, pluginDirectories);
             installationPath = FileUtils.CanonicalizePath(baseDirectory, installationPath);
             configurationFilePath = FileUtils.CanonicalizePath(baseDirectory, configurationFilePath);
+        }
+
+        /// <summary>
+        /// Sets the configuration file path to the *.config file associated with an assembly.
+        /// </summary>
+        /// <param name="assembly">The assembly</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        public void SetConfigurationFilePathFromAssembly(Assembly assembly)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
+
+            configurationFilePath = AssemblyUtils.GetAssemblyLocalPath(assembly) + @".config";
         }
     }
 }

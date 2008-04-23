@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <gallio>
-    <components>
-      <component id="NCoverIntegration.NCoverHostFactory"
-                 service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
-                 type="Gallio.NCoverIntegration.NCoverHostFactory, Gallio.NCoverIntegration" />      
-      
-      <component id="NCoverIntegration.NCoverTestDomainFactory"
-                 service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
-                 type="Gallio.Runner.Domains.HostTestDomainFactory, Gallio">
-        <parameters>
-          <hostFactory>${NCoverIntegration.NCoverHostFactory}</hostFactory>
-        </parameters>
-      </component>
+    <runtime>
+      <components>
+        <component id="NCoverIntegration.NCoverHostFactory"
+                   service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
+                   type="Gallio.NCoverIntegration.NCoverHostFactory, Gallio.NCoverIntegration" />      
+        
+        <component id="NCoverIntegration.NCoverTestDomainFactory"
+                   service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
+                   type="Gallio.Runner.Domains.HostTestDomainFactory, Gallio">
+          <parameters>
+            <hostFactory>${NCoverIntegration.NCoverHostFactory}</hostFactory>
+          </parameters>
+        </component>
 
-      <component id="NCoverIntegration.NCoverTestRunnerFactory"
-                 service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                 type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
-        <parameters>
-          <hostFactory>${NCoverIntegration.NCoverHostFactory}</hostFactory>
-          <name>NCover</name>
-          <description>Runs tests in an external process with NCover.  The NCover report is written to the current directory as a file named 'Coverage.xml'.  NCover does not need to be installed separately.</description>
-        </parameters>
-      </component>
-    </components>
+        <component id="NCoverIntegration.NCoverTestRunnerFactory"
+                   service="Gallio.Runner.ITestRunnerFactory, Gallio"
+                   type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
+          <parameters>
+            <hostFactory>${NCoverIntegration.NCoverHostFactory}</hostFactory>
+            <name>NCover</name>
+            <description>Runs tests in an external process with NCover.  The NCover report is written to the current directory as a file named 'Coverage.xml'.  NCover does not need to be installed separately.</description>
+          </parameters>
+        </component>
+      </components>
+    </runtime>
   </gallio>
 </configuration>

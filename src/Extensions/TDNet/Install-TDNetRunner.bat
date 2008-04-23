@@ -1,4 +1,4 @@
-@echo off
+@echo off & if not "%ECHO%"=="" echo %ECHO%
 REM Installs a reference to the Gallio test runner for TestDriven.Net for local debugging.
 
 setlocal

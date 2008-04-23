@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
+using Gallio.MSTestRunner.Runtime;
 using Gallio.Runner;
-using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Microsoft.VisualStudio.TestTools.Common;
@@ -39,7 +39,7 @@ namespace Gallio.MSTestRunner
 
         public void Initialize(IRunContext runContext)
         {
-            ITestRunnerManager runnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
+            ITestRunnerManager runnerManager = RuntimeProvider.GetRuntime().Resolve<ITestRunnerManager>();
             runner = runnerManager.CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess);
             runner.RegisterExtension(new ResultPublisherExtension(runContext));
 

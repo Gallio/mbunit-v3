@@ -70,15 +70,6 @@ namespace Gallio.Runtime.Windsor
             container = new WindsorContainer();
             pluginDirectories = new List<string>();
             pluginPaths = new Dictionary<string, string>();
-
-            ConfigureForDebugging();
-
-            SetInstallationPath();
-            SetInstallationConfiguration();
-
-            ConfigureDefaultPluginDirectories();
-            ConfigurePluginDirectoriesFromSetup();
-            ConfigurePluginDirectoriesFromInstallationConfiguration();
         }
 
         /// <inheritdoc />
@@ -89,27 +80,6 @@ namespace Gallio.Runtime.Windsor
                 container.Dispose();
                 container = null;
             }
-        }
-
-        /// <summary>
-        /// Gets a mutable list of directories to be searched recursively for plugins configuration files.
-        /// </summary>
-        /// <value>
-        /// Initially the list contains the directory where the runtime library is located.
-        /// </value>
-        public IList<string> PluginDirectories
-        {
-            get { return pluginDirectories; }
-        }
-
-        /// <summary>
-        /// Adds a plugin directory to be searched recursively.
-        /// </summary>
-        /// <param name="pluginDirectory">The plugin directory to add</param>
-        public void AddPluginDirectory(string pluginDirectory)
-        {
-            if (!pluginDirectories.Contains(pluginDirectory))
-                pluginDirectories.Add(pluginDirectory);
         }
 
         /// <inheritdoc />
@@ -133,8 +103,17 @@ namespace Gallio.Runtime.Windsor
             else
             {
                 if (ConfigurationManager.GetSection(GallioSectionHandler.SectionName) != null)
-                    LoadConfigurationFromResource(new ConfigResource(GallioSectionHandler.SectionName));
+                    LoadConfigurationFromResource(new ConfigResource(GallioSectionHandler.SectionName), GallioSectionHandler.SectionName);
             }
+
+            ConfigureForDebugging();
+
+            SetInstallationPath();
+            SetInstallationConfiguration();
+
+            ConfigureDefaultPluginDirectories();
+            ConfigurePluginDirectoriesFromSetup();
+            ConfigurePluginDirectoriesFromInstallationConfiguration();
 
             LoadAllPluginConfiguration();
             RunContainerInstaller();
@@ -205,12 +184,18 @@ namespace Gallio.Runtime.Windsor
                 throw new ObjectDisposedException("The runtime has been disposed.");
         }
 
+        private void AddPluginDirectory(string pluginDirectory)
+        {
+            if (!pluginDirectories.Contains(pluginDirectory))
+                pluginDirectories.Add(pluginDirectory);
+        }
+
         private void SetInstallationPath()
         {
             if (runtimeSetup.InstallationPath == null)
                 runtimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(IRuntime).Assembly));
-            else
-                runtimeSetup.InstallationPath = Path.GetFullPath(runtimeSetup.InstallationPath);
+
+            runtimeSetup.InstallationPath = Path.GetFullPath(runtimeSetup.InstallationPath);
         }
 
         private void SetInstallationConfiguration()
@@ -275,25 +260,8 @@ namespace Gallio.Runtime.Windsor
             assemblyResolverManager.AddHintDirectory(Path.Combine(pluginPath, @"bin"));
 
             // Load the configuration.
-            XmlElement rootElement;
-            try
-            {
-                FileResource pluginManifestResource = new FileResource(configFile);
-                XmlProcessor xmlProcessor = new XmlProcessor();
-                rootElement = xmlProcessor.Process(pluginManifestResource) as XmlElement;
-            }
-            catch (Exception ex)
-            {
-                throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture,
-                    "Unable to load or process config file '{0}'.", configFile), ex);
-            }
-            if (rootElement == null)
-                throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture,
-                    "Plugin manifest Xml file '{0}' yielded unexpected Xml node after pre-processing.", configFile));
-
-            XmlElement gallioElement = rootElement.SelectSingleNode(@"//" + GallioSectionHandler.SectionName) as XmlElement;
-            if (gallioElement != null)
-                LoadConfigurationFromResource(new StaticContentResource(gallioElement.OuterXml));
+            FileResource pluginManifestResource = new FileResource(configFile);
+            LoadConfigurationFromResource(pluginManifestResource, configFile);
 
             // Register the plugin path.
             string pluginName = Path.GetFileNameWithoutExtension(configFile);
@@ -301,10 +269,41 @@ namespace Gallio.Runtime.Windsor
             pluginPaths.Add(pluginName.ToLowerInvariant(), contentPath);
         }
 
-        private void LoadConfigurationFromResource(IResource resource)
+        private void LoadConfigurationFromResource(IResource resource, string resourceName)
         {
-            XmlInterpreter configInterpreter = new XmlInterpreter(resource);
-            configInterpreter.ProcessResource(resource, container.Kernel.ConfigurationStore);
+            XmlElement rootElement;
+            try
+            {
+                XmlProcessor xmlProcessor = new XmlProcessor();
+                rootElement = xmlProcessor.Process(resource) as XmlElement;
+            }
+            catch (Exception ex)
+            {
+                throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture,
+                    "Unable to load or process config resource '{0}'.", resourceName), ex);
+            }
+            if (rootElement == null)
+                throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture,
+                    "Plugin config resource '{0}' yielded an unexpected Xml node after pre-processing.", resourceName));
+
+            XmlElement gallioElement = rootElement.SelectSingleNode(@"//" + GallioSectionHandler.SectionName) as XmlElement;
+            if (gallioElement != null)
+                LoadConfigurationFromXml(gallioElement);
+        }
+
+        private void LoadConfigurationFromXml(XmlElement gallioElement)
+        {
+            XmlElement runtimeElement = gallioElement.SelectSingleNode("runtime") as XmlElement;
+            if (runtimeElement != null)
+            {
+                StaticContentResource resource = new StaticContentResource(runtimeElement.OuterXml);
+                XmlInterpreter configInterpreter = new XmlInterpreter(resource);
+                configInterpreter.ProcessResource(resource, container.Kernel.ConfigurationStore);
+            }
+
+            XmlElement installationPathElement = gallioElement.SelectSingleNode("installation/path") as XmlElement;
+            if (installationPathElement != null && installationPathElement.InnerText.Length != 0)
+                runtimeSetup.InstallationPath = installationPathElement.InnerText;
         }
 
         private void RunContainerInstaller()
@@ -324,9 +323,15 @@ namespace Gallio.Runtime.Windsor
         private void ConfigureForDebugging()
         {
             // Find the root "src" dir.
-            string gallioBinDir = Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(WindsorRuntime).Assembly));
+            string initPath;
+            if (! string.IsNullOrEmpty(runtimeSetup.InstallationPath))
+                initPath = runtimeSetup.InstallationPath;
+            else if (! string.IsNullOrEmpty(runtimeSetup.ConfigurationFilePath))
+                initPath = runtimeSetup.ConfigurationFilePath;
+            else
+                initPath = AssemblyUtils.GetAssemblyLocalPath(typeof(WindsorRuntime).Assembly);
 
-            string srcDir = gallioBinDir;
+            string srcDir = initPath;
             while (srcDir != null && Path.GetFileName(srcDir) != @"src")
                 srcDir = Path.GetDirectoryName(srcDir);
 

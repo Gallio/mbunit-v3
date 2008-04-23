@@ -18,7 +18,7 @@ using System;
 using Gallio.Runtime.Logging;
 using JetBrains.Util;
 
-namespace Gallio.ReSharperRunner.Hosting
+namespace Gallio.ReSharperRunner.Runtime
 {
     internal class ReSharperLogger : BaseLogger
     {

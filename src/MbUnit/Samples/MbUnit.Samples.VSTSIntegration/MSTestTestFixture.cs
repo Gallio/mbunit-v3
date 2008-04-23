@@ -13,27 +13,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using MbUnit.Framework;
+using System;
+using System.Text;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MbUnit.TestResources
+namespace MbUnit.Samples.VSTSIntegration
 {
     /// <summary>
-    /// This class is used by the MSBuild task tests. Please don't modify it.
+    /// Summary description for UnitTest1
     /// </summary>
-    [TestFixture]
-    public class PassingTests
+    [TestClass]
+    public class MSTestTestFixture
     {
-        [Test]
-        public void Pass()
+        private TestContext testContextInstance;
+
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
+        public TestContext TestContext
         {
-            Assert.AreEqual(1, 0 + 1);
-            Assert.AreEqual(2, 1 + 1);
-            Assert.AreEqual(3, 2 + 1);
+            get { return testContextInstance; }
+            set { testContextInstance = value; }
         }
 
-        [Test]
-        public void PassAgain()
+        [TestMethod]
+        public void Pass()
         {
+        }
+
+        [TestMethod]
+        public void Fail()
+        {
+            Assert.Fail();
         }
     }
 }

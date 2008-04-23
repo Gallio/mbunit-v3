@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.ReSharperRunner.Hosting;
+using Gallio.ReSharperRunner.Runtime;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.UnitTestExplorer;
@@ -30,9 +30,7 @@ namespace Gallio.ReSharperRunner
     {
         public IDaemonStageProcess CreateProcess(IDaemonProcess process)
         {
-            if (!RuntimeProxy.TryInitializeWithPrompt())
-                return null;
-
+            RuntimeProvider.GetRuntime();
             return new GallioDaemonStageProcess(process);
         }
 

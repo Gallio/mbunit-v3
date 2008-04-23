@@ -52,12 +52,15 @@ namespace Gallio.MSTestRunner
                 GallioTestElement gallioTestElement = GetTestElement(e.Test);
                 if (gallioTestElement != null)
                 {
+                    // TODO
+                    /*
                     // FIXME: untested and probably incorrect...
                     TestResultMessage message = new TestResultMessage(
                         new ComputerInfo(Environment.MachineName),
                         runContext.RunConfig.TestRun.Id, gallioTestElement, TestMessageKind.TestEnd);
 
                     runContext.ResultSink.AddResult(message);
+                     */
                 }
             };
         }

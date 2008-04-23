@@ -412,6 +412,10 @@ Function un.UninstallReSharperRunner
 	!insertmacro GetReSharperPluginDir "$1" "$0"
 
 	StrCmp "" "$ReSharperPluginDir" Done
+		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.dll"
+		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.XmlSerializers.dll"
+		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.Runtime.Windsor.dll"
+		
 		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll"
 		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll.config"
 		${un.SafeRMDir} "$ReSharperPluginDir\Gallio"
@@ -427,6 +431,10 @@ FunctionEnd
 
 	StrCmp "" "$ReSharperPluginDir" +5
 		SetOutPath "$ReSharperPluginDir\Gallio"
+		File "${SourcePath}\Gallio.dll"
+		File "${SourcePath}\Gallio.XmlSerializers.dll"
+		File "${SourcePath}\Gallio.Runtime.Windsor.dll"
+
 		File "${SourcePath}\Gallio.ReSharperRunner.dll"
 		File "/oname=Gallio.ReSharperRunner.dll.config.orig" "${SourcePath}\Gallio.ReSharperRunner.dll.config"
 		Call PatchReSharperConfigFile
