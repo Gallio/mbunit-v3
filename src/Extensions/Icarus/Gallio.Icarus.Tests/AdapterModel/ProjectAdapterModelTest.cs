@@ -163,19 +163,19 @@ namespace Gallio.Icarus.AdapterModel.Tests
 
         private TestModelData CreateTestModel()
         {
-            TestData rootTest = new TestData("Root", "Root");
-            TestData framework = new TestData("Framework", "Framework");
+            TestData rootTest = new TestData("Root", "Root", "Root");
+            TestData framework = new TestData("Framework", "Framework", "Framework");
             framework.Metadata.SetValue(MetadataKeys.TestKind, "Framework");
             rootTest.Children.Add(framework);
-            TestData assembly = new TestData("Assembly", "Assembly");
+            TestData assembly = new TestData("Assembly", "Assembly", "Assembly");
             assembly.Metadata.SetValue(MetadataKeys.TestKind, "Assembly");
             assembly.Metadata.SetValue(MetadataKeys.CodeBase, "CodeBase");
             framework.Children.Add(assembly);
-            TestData fixture = new TestData("Fixture", "Fixture");
+            TestData fixture = new TestData("Fixture", "Fixture", "Fixture");
             fixture.CodeReference = CodeReference.CreateFromNamespace("Namespace");
             fixture.Metadata.SetValue(MetadataKeys.TestKind, "Fixture");
             assembly.Children.Add(fixture);
-            TestData test1 = new TestData("Test1", "Test1");
+            TestData test1 = new TestData("Test1", "Test1", "Test1");
             test1.Metadata.SetValue(MetadataKeys.TestKind, "Test");
             test1.Metadata.SetValue(MetadataKeys.AuthorName, "Authors");
             test1.Metadata.SetValue(MetadataKeys.CategoryName, "Categories");
@@ -183,20 +183,20 @@ namespace Gallio.Icarus.AdapterModel.Tests
             test1.Metadata.SetValue(MetadataKeys.TestsOn, "TestsOn");
             test1.IsTestCase = true;
             fixture.Children.Add(test1);
-            TestData test2 = new TestData("Test2", "Test2");
+            TestData test2 = new TestData("Test2", "Test2", "Test2");
             test2.Metadata.SetValue(MetadataKeys.TestKind, "Test");
             test2.IsTestCase = true;
             fixture.Children.Add(test2);
-            TestData fixture2 = new TestData("Fixture2", "Fixture2");
+            TestData fixture2 = new TestData("Fixture2", "Fixture2", "Fixture2");
             fixture2.CodeReference = CodeReference.CreateFromNamespace("Namespace");
             fixture2.Metadata.SetValue(MetadataKeys.TestKind, "Fixture");
             assembly.Children.Add(fixture2);
-            TestData test3 = new TestData("Test3", "Test3");
+            TestData test3 = new TestData("Test3", "Test3", "Test3");
             test3.Metadata.SetValue(MetadataKeys.TestKind, "Test");
             test3.IsTestCase = true;
             test3.CodeLocation = new CodeLocation("path", 1, 1);
             fixture2.Children.Add(test3);
-            TestData test4 = new TestData("Test4", "Test4");
+            TestData test4 = new TestData("Test4", "Test4", "Test4");
             test4.Metadata.SetValue(MetadataKeys.TestKind, "Other");
             test4.IsTestCase = true;
             fixture2.Children.Add(test4);
@@ -294,7 +294,7 @@ namespace Gallio.Icarus.AdapterModel.Tests
         [Test]
         public void Update_Test()
         {
-            TestData testData = new TestData("test", "test");
+            TestData testData = new TestData("test", "test", "test");
             TestStepRun testStepRun = new TestStepRun(new TestStepData("test", "test", "test", "test"));
             testStepRun.Step.IsTestCase = true;
             ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();

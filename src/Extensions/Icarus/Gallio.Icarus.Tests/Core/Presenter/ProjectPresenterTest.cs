@@ -132,7 +132,7 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         public void GetTestTree_Test_ShadowCopyEnabled()
         {
             TestPackageConfig testPackageConfig = new TestPackageConfig();
-            TestModelData testModelData = new TestModelData(new TestData("test", "test"));
+            TestModelData testModelData = new TestModelData(new TestData("test", "test", "test"));
             mockModel.Load(testPackageConfig);
             Expect.Call(mockModel.Explore()).Return(testModelData);
             mockAdapter.TestModelData = testModelData;
@@ -146,7 +146,7 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         public void GetTestTree_Test_NoShadowCopy()
         {
             TestPackageConfig testPackageConfig = new TestPackageConfig();
-            TestModelData testModelData = new TestModelData(new TestData("test", "test"));
+            TestModelData testModelData = new TestModelData(new TestData("test", "test", "test"));
             mockModel.Load(testPackageConfig);
             Expect.Call(mockModel.Explore()).Return(testModelData);
             mockAdapter.TestModelData = testModelData;
@@ -246,7 +246,7 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         public void GetExecutionLog_Test()
         {
             string testId = "test";
-            TestModelData testModelData = new TestModelData(new TestData("test", "test"));
+            TestModelData testModelData = new TestModelData(new TestData("test", "test", "test"));
             MemoryStream memoryStream = new MemoryStream();
             Expect.Call(mockAdapter.TestModelData).Return(testModelData);
             Expect.Call(mockModel.GetExecutionLog(testId, testModelData)).Return(memoryStream);
@@ -277,7 +277,7 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         [Test]
         public void Update_Test()
         {
-            TestData testData = new TestData("test1", "test1");
+            TestData testData = new TestData("test1", "test1", "test1");
             TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "test1"));
             mockAdapter.Update(testData, testStepRun);
             mocks.ReplayAll();

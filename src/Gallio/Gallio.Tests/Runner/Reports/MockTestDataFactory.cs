@@ -27,7 +27,7 @@ namespace Gallio.Tests.Runner.Reports
     {
         public static TestModelData CreateEmptyTestModel()
         {
-            TestData root = new TestData("root", "root");
+            TestData root = new TestData("root", "root", "root");
             return new TestModelData(root);
         }
     }

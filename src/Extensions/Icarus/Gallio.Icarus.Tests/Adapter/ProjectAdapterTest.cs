@@ -204,7 +204,7 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void Remove_Assembly_By_Id_Test()
         {
-            TestData testData = new TestData("test", "test");
+            TestData testData = new TestData("test", "test", "test");
             testData.Metadata.SetValue(MetadataKeys.CodeBase, "test.dll");
             TestModelData testModelData = new TestModelData(testData);
             mocks.ReplayAll();
@@ -247,7 +247,7 @@ namespace Gallio.Icarus.Adapter.Tests
         public void GetTestTree_Test_NoReload()
         {
             string mode = "test";
-            TestData testData = new TestData("id", "name");
+            TestData testData = new TestData("id", "name", "fullname");
             TestModelData testModelData = new TestModelData(testData);
             ListViewItem[] assemblies = new ListViewItem[] { };
             Expect.Call(mockModel.BuildAssemblyList(null)).Return(assemblies);
@@ -449,7 +449,7 @@ namespace Gallio.Icarus.Adapter.Tests
         public void GetSourceLocation_Test()
         {
             CodeLocation codeLocation = new CodeLocation("path", 1, 1);
-            TestData testData = new TestData("id", "name");
+            TestData testData = new TestData("id", "name", "fullname");
             testData.CodeLocation = codeLocation;
             TestModelData testModelData = new TestModelData(testData);
             mockView.SourceCodeLocation = codeLocation;
@@ -529,7 +529,7 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void Update_Test()
         {
-            TestData testData = new TestData("test1", "test1");
+            TestData testData = new TestData("test1", "test1", "test1");
             TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "test1"));
             mockModel.Update(testData, testStepRun);
             mocks.ReplayAll();
@@ -644,7 +644,7 @@ namespace Gallio.Icarus.Adapter.Tests
         public void TestModelData_Test()
         {
             mocks.ReplayAll();
-            TestData testData = new TestData("id", "name");
+            TestData testData = new TestData("id", "name", "fullname");
             TestModelData testModelData = new TestModelData(testData);
             projectAdapter = new ProjectAdapter(mockView, mockModel);
             projectAdapter.TestModelData = testModelData;

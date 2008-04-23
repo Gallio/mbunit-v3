@@ -71,7 +71,7 @@ namespace Gallio.Icarus.Core.Model.Tests
         {
             testRunner.Explore(null, null);
             LastCall.IgnoreArguments();
-            TestModelData testModelData = new TestModelData(new TestData("test", "test"));
+            TestModelData testModelData = new TestModelData(new TestData("test", "test", "test"));
             Report report = new Report();
             report.TestModel = testModelData;
             Expect.Call(testRunner.Report).Return(report);
@@ -100,7 +100,7 @@ namespace Gallio.Icarus.Core.Model.Tests
             Expect.Call(testRunner.Report).Return(new Report());
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
-            Assert.IsNull(testRunnerModel.GetExecutionLog("test", new TestModelData(new TestData("test", "test"))));
+            Assert.IsNull(testRunnerModel.GetExecutionLog("test", new TestModelData(new TestData("test", "test", "test"))));
         }
 
         [Test]
