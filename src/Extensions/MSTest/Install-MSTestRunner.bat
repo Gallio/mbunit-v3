@@ -38,11 +38,9 @@ call :PATCH_CONFIG "%SRCDIR%\Gallio\Gallio\bin" "%MSTESTRUNNER_BIN_DIR%\Gallio.M
 "%REG%" ADD %VS_TEST_TYPE_KEY% /V SatelliteDllName /D "Gallio.MSTestRunner.dll" /F >nul
 "%REG%" ADD %VS_TEST_TYPE_KEY% /V TipProvider /D "Gallio.MSTestRunner.GallioTip, Gallio.MSTestRunner" /F >nul
 "%REG%" ADD %VS_TEST_TYPE_KEY% /V ServiceType /D "Gallio.MSTestRunner.SGallioTestService, Gallio.MSTestRunner" /F >nul
-REM "%REG%" ADD %VS_TEST_TYPE_KEY% /V VsEditor /D "{00000000-0000-0000-0000-000000000000}" /F >nul
 
 "%REG%" ADD %VS_TEST_TYPE_KEY%\Extensions /V .dll /T REG_DWORD /D "101" /F >nul
 "%REG%" ADD %VS_TEST_TYPE_KEY%\Extensions /V .exe /T REG_DWORD /D "101" /F >nul
-"%REG%" ADD %VS_TEST_TYPE_KEY%\Extensions /V .gallio /T REG_DWORD /D "101" /F >nul
 
 "%REG%" ADD "%VS_PRODUCT_KEY%" /V Package /D "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" /F >nul
 "%REG%" ADD "%VS_PRODUCT_KEY%" /V UseInterface /T REG_DWORD /D "1" /F >nul
@@ -57,6 +55,8 @@ REM "%REG%" ADD %VS_TEST_TYPE_KEY% /V VsEditor /D "{00000000-0000-0000-0000-0000
 "%REG%" ADD %VS_PACKAGE_KEY% /V ProductName /D "Gallio.MSTestRunner" /F >nul
 "%REG%" ADD %VS_PACKAGE_KEY% /V CompanyName /D "Gallio Project" /F >nul
 
+"%REG%" ADD "%VS_ROOT_KEY%\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" /V "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" /T REG_DWORD /D "0" /F >nul
+
 "%VS_INSTALL_DIR%\devenv.exe" /setup /nosetupvstemplates
 goto :EOF
 
@@ -68,6 +68,9 @@ del "%VS_PRIVATE_ASSEMBLIES_DIR%\Castle*.*" 2>nul
 "%REG%" DELETE "%VS_TEST_TYPE_KEY%" /F 2>nul >nul
 "%REG%" DELETE "%VS_PRODUCT_KEY%" /F 2>nul >nul
 "%REG%" DELETE "%VS_PACKAGE_KEY%" /F 2>nul >nul
+
+"%REG%" DELETE "%VS_ROOT_KEY%\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" /V "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" /F 2>nul >nul
+
 goto :EOF
 
 

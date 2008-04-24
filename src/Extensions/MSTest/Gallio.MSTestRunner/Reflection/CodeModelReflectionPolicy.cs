@@ -1,3 +1,18 @@
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -174,19 +189,20 @@ namespace Gallio.MSTestRunner.Reflection
 
         protected override AssemblyName GetAssemblyName(StaticAssemblyWrapper assembly)
         {
-            IModule moduleHandle = (IModule) assembly.Handle;
-            return GetAssemblyName(moduleHandle);
+            Project projectHandle = (Project)assembly.Handle;
+            return GetAssemblyName(projectHandle);
         }
 
         protected override string GetAssemblyPath(StaticAssemblyWrapper assembly)
         {
-            IModule moduleHandle = (IModule)assembly.Handle;
-            return GetAssemblyFile(moduleHandle).Location.FullPath;
+            Project projectHandle = (Project)assembly.Handle;
+            projectHandle.ConfigurationManager.
+            return GetAssemblyFile(projectHandle).Location.FullPath;
         }
 
         protected override IList<AssemblyName> GetAssemblyReferences(StaticAssemblyWrapper assembly)
         {
-            IProject projectHandle = assembly.Handle as IProject;
+            Project projectHandle = assembly.Handle as Project;
             if (projectHandle != null)
             {
                 ICollection<IModuleReference> moduleRefs = projectHandle.GetModuleReferences();
@@ -202,20 +218,20 @@ namespace Gallio.MSTestRunner.Reflection
 
         protected override IList<StaticDeclaredTypeWrapper> GetAssemblyExportedTypes(StaticAssemblyWrapper assembly)
         {
-            IModule moduleHandle = (IModule)assembly.Handle;
-            return GetAssemblyTypes(moduleHandle, false);
+            Project projectHandle = (Project)assembly.Handle;
+            return GetAssemblyTypes(projectHandle, false);
         }
 
         protected override IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(StaticAssemblyWrapper assembly)
         {
-            IModule moduleHandle = (IModule)assembly.Handle;
-            return GetAssemblyTypes(moduleHandle, true);
+            Project projectHandle = (Project)assembly.Handle;
+            return GetAssemblyTypes(projectHandle, true);
         }
 
         protected override StaticDeclaredTypeWrapper GetAssemblyType(StaticAssemblyWrapper assembly, string typeName)
         {
-            IModule moduleHandle = (IModule)assembly.Handle;
-            ITypeElement typeHandle = GetAssemblyDeclarationsCache(moduleHandle).GetTypeElementByCLRName(typeName);
+            Project projectHandle = (Project)assembly.Handle;
+            CodeType typeHandle = projectHandle.CodeModel.CodeTypeFromFullName(typeName);
             return typeHandle != null ? MakeDeclaredTypeWithoutSubstitution(typeHandle) : null;
         }
 
@@ -230,25 +246,14 @@ namespace Gallio.MSTestRunner.Reflection
             return desiredAssemblyName.Name == candidateAssemblyName.Name;
         }
 
-        private static AssemblyName GetAssemblyName(IModule moduleHandle)
+        private static AssemblyName GetAssemblyName(Project projectHandle)
         {
-            IProject projectHandle = moduleHandle as IProject;
-            if (projectHandle != null)
-            {
-                AssemblyName name = GetAssemblyFile(projectHandle).AssemblyName;
-                if (name.Version == null)
-                {
-                    name = (AssemblyName) name.Clone();
-                    name.Version = new Version(0, 0, 0, 0);
-                }
-                return name;
-            }
 
-            IAssembly assemblyHandle = (IAssembly) moduleHandle;
+            IAssembly assemblyHandle = (IAssembly) projectHandle;
             return assemblyHandle.AssemblyName;
         }
 
-        private IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(IModule moduleHandle, bool includeNonPublicTypes)
+        private IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(Project projectHandle, bool includeNonPublicTypes)
         {
             INamespace namespaceHandle = codeModel.GetNamespace("");
             IDeclarationsCache cache = GetAssemblyDeclarationsCache(moduleHandle);
@@ -288,16 +293,6 @@ namespace Gallio.MSTestRunner.Reflection
                 foreach (ITypeElement nestedType in typeHandle.NestedTypes)
                     PopulateAssemblyTypes(types, nestedType, includeNonPublicTypes);
             }
-        }
-
-        private IDeclarationsCache GetAssemblyDeclarationsCache(IModule moduleHandle)
-        {
-            IProject projectHandle = moduleHandle as IProject;
-            if (projectHandle != null)
-                return codeModel.GetDeclarationsCache(DeclarationsCacheScope.ProjectScope(projectHandle, false), true);
-
-            IAssembly assemblyHandle = (IAssembly) moduleHandle;
-            return codeModel.GetDeclarationsCache(DeclarationsCacheScope.LibraryScope(assemblyHandle, false), true);
         }
         #endregion
 

@@ -10,8 +10,12 @@
   <Choose>
     <When Condition="$(ReSharperInstalled)">
       <ItemGroup>
-        <Binary Include="Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll" />
-        <Binary Include="Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll.config" />
+        <Binary Include="Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll">
+          <Folder>ReSharper</Folder>
+	</Binary>
+        <Binary Include="Gallio.ReSharperRunner\bin\Gallio.ReSharperRunner.dll.config">
+          <Folder>ReSharper</Folder>
+        </Binary>
       </ItemGroup>
 
       <ItemGroup>

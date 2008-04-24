@@ -1,6 +1,8 @@
 !include "StrRep.nsh"
 !include "Path.nsh"
 !include "SafeUninstall.nsh"
+!include "PatchConfigFile.nsh"
+!include "VisualStudio.nsh"
 
 ; Check arguments.
 !ifndef VERSION
@@ -79,7 +81,9 @@ Var UserContext
 !system 'if not exist "${TARGETDIR}\docs\Gallio.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\docs\vs\Gallio.HxS" echo !define MISSING_VS_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\bin\MbUnit.Pex.dll" echo !define MISSING_MBUNIT_PEX_PACKAGE >> "${DETECT_TEMP}"'
-!system 'if not exist "${TARGETDIR}\bin\Gallio.ReSharperRunner.dll" echo !define MISSING_RESHARPER_RUNNER >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\bin\ReSharper\Gallio.ReSharperRunner.dll" echo !define MISSING_RESHARPER_RUNNER >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll" echo !define MISSING_MSTEST_RUNNER >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\bin\MSTest\Gallio.MSTestAdapter.dll" echo !define MISSING_MSTEST_ADAPTER >> "${DETECT_TEMP}"'
 !include "${DETECT_TEMP}"
 !delfile "${DETECT_TEMP}"
 
@@ -99,6 +103,15 @@ Var UserContext
 !ifdef MISSING_RESHARPER_RUNNER
 	!warning "Missing ReSharper runner."
 !endif
+
+!ifdef MISSING_MSTEST_RUNNER
+	!warning "Missing MSTest runner."
+!endif
+
+!ifdef MISSING_MSTEST_ADAPTER
+	!warning "Missing MSTest adapter."
+!endif
+
 
 ; Define sections
 Section "!Gallio" GallioSection
@@ -195,8 +208,7 @@ Section "MbUnit v3 Visual Studio 2005 Templates" MbUnit3VS2005TemplatesSection
 	SetOutPath "$0\ProjectTemplates\VisualBasic\Test"
 	File "${TARGETDIR}\extras\Templates\VS2005\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
 
-	; Run DevEnv /setup to register the templates.
-	ExecWait '"$0\devenv.exe" /setup'
+	StrCpy $VS2005UpdateRequired "1"
 
 	SkipVS2005Templates:
 SectionEnd
@@ -237,8 +249,7 @@ Section "MbUnit v3 Visual Studio 2008 Templates" MbUnit3VS2008TemplatesSection
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB" "TestFrameworkName" "MbUnit v3"
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB" "AdditionalInfo" "http://www.mbunit.com/"
 
-	; Run DevEnv /setup to register the templates.
-	ExecWait '"$0\devenv.exe" /setup'
+	StrCpy $VS2008UpdateRequired "1"
 
 	SkipVS2008Templates:
 SectionEnd
@@ -254,6 +265,7 @@ Section "MbUnit v2 Plugin" MbUnit2PluginSection
 	File /r "${TARGETDIR}\bin\MbUnit2\*"
 SectionEnd
 
+!ifndef MISSING_MSTEST_ADAPTER
 Section "MSTest Plugin" MSTestPluginSection
 	; Set Section properties
 	SetOverwrite on
@@ -262,6 +274,7 @@ Section "MSTest Plugin" MSTestPluginSection
 	SetOutPath "$INSTDIR\bin\MSTest"
 	File /r "${TARGETDIR}\bin\MSTest\*"
 SectionEnd
+!endif
 
 Section "NUnit Plugin" NUnitPluginSection
 	; Set Section properties
@@ -372,38 +385,6 @@ Var ReSharperPluginDir
 	StrCpy $ReSharperPluginDir "$APPDATA\JetBrains\ReSharper\${RSVersion}\${VSVersion}\Plugins"
 !macroend
 
-Function PatchReSharperConfigFile
-	PatchRetry:
-	FileOpen $1 "Gallio.ReSharperRunner.dll.config.orig" "r"
-	IfErrors PatchError
-	FileOpen $2 "Gallio.ReSharperRunner.dll.config" "w"
-	IfErrors PatchErrorCloseSource
-	
-	PatchLoop:
-	FileRead $1 $3
-	IfErrors PatchDone
-	${StrReplace} $3 "<!--PLACEHOLDER-->" "$INSTDIR\bin" $3
-	FileWrite $2 $3
-	GoTo PatchLoop
-
-	PatchDone:
-	ClearErrors
-	FileClose $2
-	FileClose $1
-	Delete "$OUTDIR\Gallio.ReSharperRunner.dll.config.orig"
-	IfErrors PatchError
-	PatchSkip:
-	Return
-
-	PatchErrorCloseSource:
-	FileClose $1
-	PatchError:
-	ClearErrors
-	MessageBox MB_ABORTRETRYIGNORE "Error patching ReSharper plug-in configuration file." IDRETRY PatchRetry IDIGNORE PatchSkip
-	Abort
-
-FunctionEnd
-
 Function un.UninstallReSharperRunner
 	Exch $0 ; VSVersion
 	Exch 1
@@ -435,9 +416,9 @@ FunctionEnd
 		File "${SourcePath}\Gallio.XmlSerializers.dll"
 		File "${SourcePath}\Gallio.Runtime.Windsor.dll"
 
-		File "${SourcePath}\Gallio.ReSharperRunner.dll"
-		File "/oname=Gallio.ReSharperRunner.dll.config.orig" "${SourcePath}\Gallio.ReSharperRunner.dll.config"
-		Call PatchReSharperConfigFile
+		File "${SourcePath}\ReSharper\Gallio.ReSharperRunner.dll"
+		File "/oname=Gallio.ReSharperRunner.dll.config.orig" "${SourcePath}\ReSharper\Gallio.ReSharperRunner.dll.config"
+		${PatchConfigFile} "Gallio.ReSharperRunner.dll.config.orig" "Gallio.ReSharperRunner.dll.config"
 !macroend
 
 !macro UninstallReSharperRunner RSVersion VSVersion
@@ -454,6 +435,81 @@ Section "ReSharper v3.1 Runner" ReSharperRunnerSection
 	!insertmacro InstallReSharperRunner "v3.1" "vs8.0" "${TARGETDIR}\bin"
 	!insertmacro InstallReSharperRunner "v3.1" "vs9.0" "${TARGETDIR}\bin"
 SectionEnd
+!endif
+
+!ifndef MISSING_MSTEST_RUNNER
+Section "Visual Studio Team Test Runner (Experimental!)" MSTestRunnerSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	DetailPrint "Installing Visual Studio Team Test runner."
+	ClearErrors
+	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
+	IfErrors SkipVS2008Setup
+
+	SetOutPath "$0\PrivateAssemblies"
+	File "${TARGETDIR}\bin\Gallio.dll"
+	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
+	File "${TARGETDIR}\bin\Gallio.Runtime.Windsor.dll"
+
+	File "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll"
+	File "/oname=Gallio.MSTestRunner.dll.config.orig" "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll.config"
+	${PatchConfigFile} "Gallio.MSTestRunner.dll.config.orig" "Gallio.MSTestRunner.dll.config"
+
+	; Register the product
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner" "Package" "{9e600ffc-344d-4e6f-89c0-ded6afb42459}"
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner" "UseInterface" 1
+
+	; Register the package
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "" "Gallio.MSTestRunner.GallioPackage, Gallio.MSTestRunner"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "InprocServer32" "$WINDIR\system32\mscoree.dll"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "Class" "Gallio.MSTestRunner.GallioPackage"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "Assembly" "Gallio.MSTestRunner"
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "ID" 1
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "MinEdition" "Standard"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "ProductVersion" "3.0"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "ProductName" "Gallio.MSTestRunner"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "CompanyName" "Gallio Project"
+
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" 0
+
+	; Register the test types
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "NameId" "#100"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "SatelliteBasePath" "$0\PrivateAssemblies"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "SatelliteDllName" "Gallio.MSTestRunner.dll"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "TipProvider" "Gallio.MSTestRunner.GallioTip, Gallio.MSTestRunner"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "ServiceType" "Gallio.MSTestRunner.SGallioTestService, Gallio.MSTestRunner"
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}\Extensions" ".dll" 101
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}\Extensions" ".exe" 101
+
+	StrCpy $VS2008UpdateRequired "1"
+
+	SkipVS2008Setup:
+SectionEnd
+
+!macro UninstallMSTestRunner
+	DetailPrint "Uninstalling Visual Studio Team Test runner."
+	ClearErrors
+	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
+	IfErrors SkipVS2008Setup
+
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.dll"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.XmlSerializers.dll"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.Runtime.Windsor.dll"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config.orig"
+
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner"
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}"
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}"
+	DeleteRegValue HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" "{9e600ffc-344d-4e6f-89c0-ded6afb42459}"
+
+	StrCpy $VS2008UpdateRequired "1"
+
+	SkipVS2008Setup:
+!macroend
 !endif
 
 !macro InstallTDNetRunner Key Framework Priority
@@ -491,11 +547,13 @@ Section "TestDriven.Net Runner" TDNetAddInSection
 		!insertmacro InstallTDNetRunner "Gallio_MbUnit2" "MbUnit.Framework" "5"
 	NoMbUnit2:
 
+!ifndef MISSING_MSTEST_ADAPTER
 	SectionGetFlags ${MSTestPluginSection} $0
 	IntOp $0 $0 & ${SF_SELECTED}
 	IntCmp $0 0 NoMSTest
 		!insertmacro InstallTDNetRunner "Gallio_MSTest" "Microsoft.VisualStudio.QualityTools.UnitTestFramework" "5"
 	NoMSTest:
+!endif
 
 	SectionGetFlags ${NUnitPluginSection} $0
 	IntOp $0 $0 & ${SF_SELECTED}
@@ -587,6 +645,9 @@ SectionEnd
 SectionGroupEnd
 
 Section -FinishSection
+	!insertmacro UpdateVS2005IfNeeded
+	!insertmacro UpdateVS2008IfNeeded
+
 	WriteRegStr SHCTX "Software\${APPNAME}" "" "$INSTDIR"
 	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
 	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$INSTDIR\uninstall.exe"
@@ -602,6 +663,9 @@ SectionEnd
 
 ;Uninstall section
 Section Uninstall
+	StrCpy $VS2005UpdateRequired "1"
+	StrCpy $VS2008UpdateRequired "1"
+
 	; Remove the Gallio bin folder to the path
 	DetailPrint "Removing Gallio from path."
 	${un.RemovePath} "$UserContext" "$INSTDIR\bin"
@@ -625,6 +689,12 @@ Section Uninstall
 		!insertmacro UninstallReSharperRunner "v3.1" "vs9.0"
 	!endif
 
+	; Uninstall from Visual Studio
+	!ifndef MISSING_MSTEST_RUNNER
+		DetailPrint "Uninstalled Visual Studio Team Test runner."
+		!insertmacro UninstallMSTestRunner
+	!endif
+
 	; Uninstall from PowerShell
 	DetailPrint "Uninstalling PowerShell runner."
 	DeleteRegKey SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio"
@@ -646,9 +716,6 @@ Section Uninstall
 	${un.SafeDelete} "$0\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip"
 	${un.SafeDelete} "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip"
 
-	; Run DevEnv /setup to unregister the templates.
-	ExecWait '"$0\devenv.exe" /setup'
-
 	SkipVS2005Templates:
 
 	; Uninstall the Visual Studio 2008 templates
@@ -667,10 +734,11 @@ Section Uninstall
 	${un.SafeDelete} "$0\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip"
 	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB"
 
-	; Run DevEnv /setup to unregister the templates.
-	ExecWait '"$0\devenv.exe" /setup'
-
 	SkipVS2008Templates:
+
+	; Update Visual Studio
+	!insertmacro UpdateVS2005IfNeeded
+	!insertmacro UpdateVS2008IfNeeded
 
 	; Delete Shortcuts
 	DetailPrint "Uninstalling shortcuts."
@@ -701,7 +769,9 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit3VS2008TemplatesSection} "Installs the MbUnit v3 Visual Studio 2008 templates."
 
 	!insertmacro MUI_DESCRIPTION_TEXT ${MbUnit2PluginSection} "Installs the MbUnit v2 plugin.  Enables Gallio to run MbUnit v2 tests."
-	!insertmacro MUI_DESCRIPTION_TEXT ${MSTestPluginSection} "Installs the MSTest plugin.  Enables Gallio to run MSTest tests."
+	!ifndef MISSING_MSTEST_ADAPTER
+		!insertmacro MUI_DESCRIPTION_TEXT ${MSTestPluginSection} "Installs the MSTest plugin.  Enables Gallio to run MSTest tests."
+	!endif
 	!insertmacro MUI_DESCRIPTION_TEXT ${NUnitPluginSection} "Installs the NUnit plugin.  Enables Gallio to run NUnit tests."
 	!insertmacro MUI_DESCRIPTION_TEXT ${XunitPluginSection} "Installs the Xunit plugin.  Enables Gallio to run xUnit.Net tests."
 
@@ -712,6 +782,9 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${PowerShellCommandsSection} "Installs the PowerShell commands."
 	!ifndef MISSING_RESHARPER_RUNNER
 		!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3.1 plug-in."
+	!endif
+	!ifndef MISSING_MSTEST_RUNNER
+		!insertmacro MUI_DESCRIPTION_TEXT ${MSTestRunnerSection} "Installs the Visual Studio Team Test integration package for Visual Studio 2008."
 	!endif
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in."
 
@@ -731,6 +804,9 @@ SectionEnd
 
 ; Initialization code
 Function .onInit
+	StrCpy $VS2005UpdateRequired "0"
+	StrCpy $VS2008UpdateRequired "0"
+
 	; Extract install option pages.
 	!insertmacro MUI_INSTALLOPTIONS_EXTRACT "AddRemovePage.ini"
 	!insertmacro MUI_INSTALLOPTIONS_EXTRACT "UserSelectionPage.ini"
@@ -749,7 +825,9 @@ Function .onInit
 	SectionSetInstTypes ${MbUnit3VS2008TemplatesSection} 3
 
 	SectionSetInstTypes ${MbUnit2PluginSection} 1
-	SectionSetInstTypes ${MSTestPluginSection} 1
+	!ifndef MISSING_MSTEST_ADAPTER
+		SectionSetInstTypes ${MSTestPluginSection} 1
+	!endif
 	SectionSetInstTypes ${NUnitPluginSection} 1
 	SectionSetInstTypes ${XunitPluginSection} 1
 
@@ -760,6 +838,9 @@ Function .onInit
 	SectionSetInstTypes ${PowerShellCommandsSection} 3
 	!ifndef MISSING_RESHARPER_RUNNER
 		SectionSetInstTypes ${ReSharperRunnerSection} 3
+	!endif
+	!ifndef MISSING_MSTEST_RUNNER
+		SectionSetInstTypes ${MSTestRunnerSection} 0
 	!endif
 	SectionSetInstTypes ${TDNetAddInSection} 3
 
