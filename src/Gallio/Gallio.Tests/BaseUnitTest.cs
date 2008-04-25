@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Framework;
+using Gallio.Model;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -49,7 +51,7 @@ namespace Gallio.Tests
         [TearDown]
         public virtual void TearDown()
         {
-            if (mocks != null)
+            if (mocks != null && Context.CurrentContext.Outcome.Status == TestStatus.Passed)
             {
                 try
                 {

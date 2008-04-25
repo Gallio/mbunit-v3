@@ -51,7 +51,6 @@ namespace Gallio.Icarus.Core.Presenter
         public bool TestPackageLoaded
         {
             get { return testPackageLoaded; }
-            set { testPackageLoaded = value; }
         }
 
         public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)

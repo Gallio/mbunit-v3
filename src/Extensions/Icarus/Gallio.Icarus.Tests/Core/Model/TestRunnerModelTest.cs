@@ -85,11 +85,15 @@ namespace Gallio.Icarus.Core.Model.Tests
         public void Load_Test()
         {
             TestPackageConfig testPackageConfig = new TestPackageConfig();
+
+            Expect.Call(testRunner.Report).Return(null);
             testRunner.Unload(null);
             LastCall.IgnoreArguments();
             testRunner.Load(testPackageConfig, null);
             LastCall.IgnoreArguments();
+
             mocks.ReplayAll();
+
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             testRunnerModel.Load(testPackageConfig);
         }
@@ -208,9 +212,12 @@ namespace Gallio.Icarus.Core.Model.Tests
         [Test]
         public void UnloadTestPackage_Test()
         {
+            Expect.Call(testRunner.Report).Return(null);
             testRunner.Unload(null);
             LastCall.IgnoreArguments();
+
             mocks.ReplayAll();
+
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             testRunnerModel.Unload();
         }

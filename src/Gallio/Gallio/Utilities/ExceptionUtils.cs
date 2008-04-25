@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Reflection;
+using System.Security.Permissions;
 using Gallio.Runtime;
 
 namespace Gallio.Utilities
@@ -71,6 +73,8 @@ namespace Gallio.Utilities
         /// This implementation is based on code by Brad Wilson.
         /// </remarks>
         /// <param name="ex">The exception to rethrow</param>
+        [DebuggerStepThrough, DebuggerHidden]
+        [ReflectionPermission(SecurityAction.Assert, MemberAccess=true)]
         public static void RethrowWithNoStackTraceLoss(Exception ex)
         {
             if (ex == null)
@@ -79,12 +83,16 @@ namespace Gallio.Utilities
             // Hack the stack trace so it appears to have been preserved.
             // If we can't hack the stack trace, then there's not much we can do as anything we
             // choose will alter the semantics of test execution.
-            FieldInfo remoteStackTraceString = typeof(Exception).GetField(
-                RuntimeDetection.IsUsingMono ? @"remote_stack_string" : @"_remoteStackTraceString",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-
-            if (remoteStackTraceString != null)
-                remoteStackTraceString.SetValue(ex, ex.StackTrace);
+            if (RuntimeDetection.IsUsingMono)
+            {
+                MethodInfo method = typeof(Exception).GetMethod("FixRemotingException", BindingFlags.Instance | BindingFlags.NonPublic);
+                ex = (Exception) method.Invoke(ex, null);
+            }
+            else
+            {
+                MethodInfo method = typeof(Exception).GetMethod("InternalPreserveStackTrace", BindingFlags.Instance | BindingFlags.NonPublic);
+                method.Invoke(ex, null);
+            }
 
             throw ex;
         }
@@ -97,6 +105,7 @@ namespace Gallio.Utilities
         /// <param name="args">The method arguments, or null if none</param>
         /// <returns>The method return value, or null if none</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
+        [DebuggerStepThrough, DebuggerHidden]
         public static object InvokeMethodWithoutTargetInvocationException(MethodBase method, object obj, object[] args)
         {
             if (method == null)

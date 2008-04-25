@@ -137,7 +137,9 @@ namespace Gallio.Icarus.Tests.Core.Presenter
             Expect.Call(mockModel.Explore()).Return(testModelData);
             mockAdapter.TestModelData = testModelData;
             mockAdapter.DataBind();
+
             mocks.ReplayAll();
+
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             getTestTreeEvent.Raise(mockAdapter, new GetTestTreeEventArgs(true, testPackageConfig));
         }
@@ -160,11 +162,14 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         [Test]
         public void Run_Test_NoShadowCopy()
         {
+            mockModel.Unload();
             mockModel.Load(null);
             LastCall.IgnoreArguments();
-            Expect.Call(mockModel.Explore()).Return(null);
+            Expect.Call(mockModel.Explore()).Return(new TestModelData(new TestData("test", "test", "test")));
             mockModel.Run();
+
             mocks.ReplayAll();
+
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
             runTestsEvent.Raise(mockAdapter, EventArgs.Empty);
         }
@@ -172,10 +177,15 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         [Test]
         public void Run_Test_ShadowCopyEnabled()
         {
+            mockModel.Unload();
+            mockModel.Load(null);
+            LastCall.IgnoreArguments();
+            Expect.Call(mockModel.Explore()).Return(new TestModelData(new TestData("test", "test", "test")));
             mockModel.Run();
+
             mocks.ReplayAll();
+
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.TestPackageLoaded = true;
             runTestsEvent.Raise(mockAdapter, EventArgs.Empty);
         }
 
@@ -259,10 +269,19 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         [Test]
         public void Unload_Test()
         {
+            TestPackageConfig testPackageConfig = new TestPackageConfig();
+            TestModelData testModelData = new TestModelData(new TestData("test", "test", "test"));
+            mockModel.Load(testPackageConfig);
+            LastCall.IgnoreArguments();
+            Expect.Call(mockModel.Explore()).Return(testModelData);
             mockModel.Unload();
+            mockAdapter.TestModelData = testModelData;
+            mockAdapter.DataBind();
+
             mocks.ReplayAll();
+
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.TestPackageLoaded = true;
+            getTestTreeEvent.Raise(mockAdapter, new GetTestTreeEventArgs(false, testPackageConfig));
             unloadTestPackageEvent.Raise(mockAdapter, EventArgs.Empty);
         }
 
