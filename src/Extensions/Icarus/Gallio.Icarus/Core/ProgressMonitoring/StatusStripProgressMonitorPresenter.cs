@@ -32,7 +32,6 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         protected override void Initialize()
         {
             ProgressMonitor.TaskStarting += HandleTaskStarting;
-            ProgressMonitor.TaskFinished += HandleTaskFinished;
             ProgressMonitor.Changed += HandleChanged;
         }
 
@@ -46,10 +45,18 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         {
             if (ProgressMonitor.IsCanceled)
             {
+                presenter.CompletedWorkUnits = 0;
                 presenter.StatusText = "Tests cancelled";
+            }
+            else if (ProgressMonitor.IsDone)
+            {
+                presenter.CompletedWorkUnits = 0;
+                presenter.StatusText = "";
             }
             else
             {
+                presenter.CompletedWorkUnits = Convert.ToInt32(ProgressMonitor.CompletedWorkUnits);
+
                 StringBuilder sb = new StringBuilder();
                 sb.Append(ProgressMonitor.TaskName);
 
@@ -64,12 +71,6 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
                 presenter.StatusText = sb.ToString();
             }
 
-            presenter.CompletedWorkUnits = Convert.ToInt32(ProgressMonitor.CompletedWorkUnits);
-        }
-
-        private void HandleTaskFinished(object sender, EventArgs e)
-        {
-            presenter.CompletedWorkUnits = 0;
         }
     }
 }

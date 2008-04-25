@@ -52,6 +52,7 @@ namespace Gallio.Icarus.Core.Model
         private string reportNameFormat = "test-report-{0}-{1}";
         private string reportFolder;
         private string executionLogFolder;
+        private Report previousReportFromUnloadedPackage;
 
         public IProjectPresenter ProjectPresenter
         {
@@ -68,6 +69,16 @@ namespace Gallio.Icarus.Core.Model
         public string ReportFolder
         {
             set { reportFolder = value; }
+        }
+
+        public Report Report
+        {
+            get
+            {
+                if (previousReportFromUnloadedPackage != null)
+                    return previousReportFromUnloadedPackage;
+                return testRunner.Report;
+            }
         }
 
         public TestRunnerModel(ITestRunner testRunner, IReportManager reportManager)
@@ -103,6 +114,7 @@ namespace Gallio.Icarus.Core.Model
         public void Load(TestPackageConfig testPackageConfig)
         {
             Unload();
+            previousReportFromUnloadedPackage = null;
 
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
@@ -116,7 +128,8 @@ namespace Gallio.Icarus.Core.Model
             {
                 testRunner.Explore(testExplorationOptions, progressMonitor);
             });
-            return testRunner.Report.TestModel;
+
+            return Report.TestModel;
         }
 
         public void Run()
@@ -143,8 +156,8 @@ namespace Gallio.Icarus.Core.Model
             string reportPath = string.Empty;
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                IReportContainer reportContainer = CreateReportContainer(testRunner.Report);
-                IReportWriter reportWriter = reportManager.CreateReportWriter(testRunner.Report, reportContainer);
+                IReportContainer reportContainer = CreateReportContainer(Report);
+                IReportWriter reportWriter = reportManager.CreateReportWriter(Report, reportContainer);
 
                 // format the report as xml
                 reportManager.Format(reportWriter, "html", new NameValueCollection(), progressMonitor);
@@ -170,14 +183,15 @@ namespace Gallio.Icarus.Core.Model
 
         public Stream GetExecutionLog(string testId, TestModelData testModelData)
         {
-            if (testRunner.Report.TestPackageRun != null)
+            if (Report.TestPackageRun != null)
             {
-                foreach (TestStepRun testStepRun in testRunner.Report.TestPackageRun.AllTestStepRuns)
+                foreach (TestStepRun testStepRun in Report.TestPackageRun.AllTestStepRuns)
                 {
                     if (testStepRun.Step.TestId == testId)
                         return TestStepReportWriter.OutputReport(testStepRun, testModelData, executionLogFolder);
                 }
             }
+
             return null;
         }
 
@@ -216,9 +230,8 @@ namespace Gallio.Icarus.Core.Model
             {
                 progressMonitor.BeginTask("Generating report.", 100);
 
-                Report report = testRunner.Report;
                 IReportContainer reportContainer = new FileSystemReportContainer(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
-                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+                IReportWriter reportWriter = reportManager.CreateReportWriter(Report, reportContainer);
 
                 // Delete the report if it exists already.
                 reportContainer.DeleteReport();
@@ -246,6 +259,8 @@ namespace Gallio.Icarus.Core.Model
 
         public void Unload()
         {
+            previousReportFromUnloadedPackage = testRunner.Report;
+
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 testRunner.Unload(progressMonitor);

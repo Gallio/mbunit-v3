@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 
 namespace Gallio.Utilities
 {
@@ -57,6 +58,35 @@ namespace Gallio.Utilities
             {
                 return String.Format("An exception of type '{0}' occurred.  Details are not available because a second exception of type '{1}' occurred in Exception.ToString().",
                     ex.GetType().FullName, ex2.GetType().FullName);
+            }
+        }
+
+        /// <summary>
+        /// Rethrows an exception without discarding its stack trace.
+        /// This enables the inner exception of <see cref="TargetInvocationException" />
+        /// to be unwrapped.
+        /// </summary>
+        /// <remarks>
+        /// This code is used courtesy of Brad Wilson.
+        /// </remarks>
+        /// <param name="ex">The exception to rethrow</param>
+        public static void RethrowWithNoStackTraceLoss(Exception ex)
+        {
+            if (ex == null)
+                throw new ArgumentNullException("ex");
+
+            // Hack the stack trace so it appears to have been preserved.
+            FieldInfo remoteStackTraceString = typeof(Exception).GetField(@"_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (remoteStackTraceString != null)
+            {
+                remoteStackTraceString.SetValue(ex, ex.StackTrace);
+                throw ex;
+            }
+            else
+            {
+                // If we can't hack the stack trace, then at least try to do something sensible
+                // to preserve the stack trace.
+                throw new TargetInvocationException(ex);
             }
         }
     }

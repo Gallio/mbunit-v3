@@ -74,14 +74,16 @@ namespace Gallio.Icarus
                     main.Settings.TestRunnerFactory);
 
                 IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
-                using (ITestRunnerModel testRunnerModel = new TestRunnerModel(testRunner, reportManager))
-                {
-                    testRunnerModel.Initialize();
+                ITestRunnerModel testRunnerModel = new TestRunnerModel(testRunner, reportManager);
 
-                    IProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, testRunnerModel);
-                    Application.Run(main);
-                    GC.KeepAlive(projectPresenter);
-                }
+                IProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, testRunnerModel);
+
+                testRunnerModel.Initialize();
+                main.CleanUp += delegate { testRunnerModel.Dispose(); };
+
+                Application.Run(main);
+
+                GC.KeepAlive(projectPresenter);
             }
         }
 

@@ -30,9 +30,10 @@ namespace Gallio.Icarus
             InitializeComponent();
         }
 
-        private void AppendText(string text)
+        public void AppendTextLine(string text, Color color)
         {
-            logBody.AppendText(text);
+            AppendText(text, color);
+            AppendText("\n", color);
         }
 
         public void AppendText(string text, Color color)

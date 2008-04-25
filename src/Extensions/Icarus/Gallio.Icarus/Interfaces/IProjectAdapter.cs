@@ -42,7 +42,6 @@ namespace Gallio.Icarus.Interfaces
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
         IList<string> TestFrameworks { set; }
-        Exception Exception { set; }
         Stream ExecutionLog { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }

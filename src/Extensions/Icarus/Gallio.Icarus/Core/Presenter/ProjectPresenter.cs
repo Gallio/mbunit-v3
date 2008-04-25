@@ -28,7 +28,10 @@ namespace Gallio.Icarus.Core.Presenter
         private readonly IProjectAdapter projectAdapter;
         private readonly ITestRunnerModel testRunnerModel;
         private TestPackageConfig testPackageConfig;
+
+        private bool shadowCopyEnabled;
         private bool testPackageLoaded;
+        private TestModelData testModelData;
 
         public string StatusText
         {
@@ -72,27 +75,27 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void GetTestTree(object sender, GetTestTreeEventArgs e)
         {
+            Unload();
+
             testPackageConfig = e.TestPackageConfig;
-            testRunnerModel.Load(testPackageConfig);
-            testPackageLoaded = true;
-            projectAdapter.TestModelData = testRunnerModel.Explore();
+            shadowCopyEnabled = e.ShadowCopyEnabled;
+
+            projectAdapter.TestModelData = Explore();
             projectAdapter.DataBind();
-            if (!e.ShadowCopyEnabled)
-            {
-                testRunnerModel.Unload();
-                testPackageLoaded = false;
-            }
+
+            if (!shadowCopyEnabled)
+                Unload();
         }
 
         public void RunTests(object sender, EventArgs e)
         {
-            if (!testPackageLoaded)
+            if (Explore() != null)
             {
-                // shadow copy is disabled so we need to reload the test package
-                testRunnerModel.Load(testPackageConfig);
-                testRunnerModel.Explore();
+                testRunnerModel.Run();
             }
-            testRunnerModel.Run();
+
+            if (!shadowCopyEnabled)
+                Unload();
         }
 
         public void OnGenerateReport(object sender, EventArgs e)
@@ -137,8 +140,39 @@ namespace Gallio.Icarus.Core.Presenter
 
         public void OnUnload(object sender, EventArgs e)
         {
+            Unload();
+        }
+
+        private void Load()
+        {
+            if (!testPackageLoaded)
+            {
+                testRunnerModel.Load(testPackageConfig);
+
+                testPackageLoaded = true;
+                testModelData = null;
+            }
+        }
+
+        private void Unload()
+        {
             if (testPackageLoaded)
+            {
                 testRunnerModel.Unload();
+
+                testPackageLoaded = false;
+                testModelData = null;
+            }
+        }
+
+        private TestModelData Explore()
+        {
+            Load();
+
+            if (testModelData == null)
+                testModelData = testRunnerModel.Explore();
+
+            return testModelData;
         }
     }
 }

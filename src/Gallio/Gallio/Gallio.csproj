@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -62,6 +62,7 @@
     <Compile Include="Concurrency\ThreadAbortScope.cs" />
     <Compile Include="Concurrency\ThreadTask.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
+    <Compile Include="Model\Execution\RemoteTestListener.cs" />
     <Compile Include="Runner\Events\DisposeFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\DisposeStartedEventArgs.cs" />
     <Compile Include="Runner\Events\ExploreFinishedEventArgs.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Runner\Extensions\ITestRunnerExtension.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtension.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtils.cs" />
+    <Compile Include="Runner\HostedTestDomainController.cs" />
     <Compile Include="Runner\HostedTestListener.cs" />
     <Compile Include="Runner\HostedTestRunner.cs" />
     <Compile Include="Runner\Events\InitializeFinishedEventArgs.cs" />
@@ -593,6 +595,7 @@
     <Compile Include="Reflection\Impl\IXmlDocumentationResolver.cs" />
     <Compile Include="Collections\CollectionUtils.cs" />
     <Compile Include="Collections\GenericUtils.cs" />
+    <Compile Include="Utilities\Sync.cs" />
     <Compile Include="Utilities\XmlSerializationUtils.cs" />
     <Compile Include="Utilities\NonInlinedAttribute.cs" />
     <Compile Include="Runtime\CorrelatedExceptionEventArgs.cs" />

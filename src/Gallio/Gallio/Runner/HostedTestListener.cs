@@ -23,7 +23,7 @@ using Gallio.Runner.Reports;
 
 namespace Gallio.Runner
 {
-    internal sealed class HostedTestListener : MarshalByRefObject, ITestListener, IDisposable
+    internal sealed class HostedTestListener : ITestListener, IDisposable
     {
         private readonly TestRunnerEventDispatcher eventDispatcher;
         private readonly Report report;

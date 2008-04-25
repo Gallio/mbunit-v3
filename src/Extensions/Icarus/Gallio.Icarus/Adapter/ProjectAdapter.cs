@@ -111,11 +111,6 @@ namespace Gallio.Icarus.Adapter
             set { projectAdapterView.TestFrameworks = value; }
         }
 
-        public Exception Exception
-        {
-            set { projectAdapterView.NotifyException(value); }
-        }
-
         public Stream ExecutionLog
         {
             set { projectAdapterView.ExecutionLog = value; }

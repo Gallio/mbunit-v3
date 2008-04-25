@@ -21,6 +21,7 @@ using Aga.Controls.Tree;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
@@ -32,19 +33,10 @@ namespace Gallio.Icarus
         {
             get
             {
-                if (InvokeRequired)
-                {
-                    string treeFilter = "";
-                    Invoke((MethodInvoker)delegate()
-                    {
-                        treeFilter = TreeFilter;
-                    });
-                    return treeFilter;
-                }
-                else
+                return Sync.Invoke<string>(this, delegate
                 {
                     return (string)treeViewComboBox.SelectedItem;
-                }
+                });
             }
         }
 

@@ -115,6 +115,12 @@ namespace Gallio.Runtime
             if (unhandledException == null)
                 throw new ArgumentNullException("unhandledException");
 
+            // If the thread is being aborted, then ignore thread abort exceptions that
+            // are caught in the process of shutting it down.  Instead we may assume that
+            // the code responsible for the abort will take care of reporting what happened.
+            if (unhandledException is ThreadAbortException)
+                return;
+
             ReportInternal(message, unhandledException, true);
         }
 

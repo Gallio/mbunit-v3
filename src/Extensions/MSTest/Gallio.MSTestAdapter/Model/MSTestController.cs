@@ -335,16 +335,6 @@ namespace Gallio.MSTestAdapter
             return message;
         }
 
-        private static string ReadStdOut(XmlReader reader)
-        {
-            if (reader.ReadToFollowing("StdOut"))
-            {
-                return reader.ReadString();
-            }
-
-            return null;
-        }
-
         private static void LogStdOut(ITestContext context, string message)
         {
             context.LogWriter.Write(LogStreamNames.ConsoleOutput, message);
@@ -352,11 +342,7 @@ namespace Gallio.MSTestAdapter
 
         private static void LogError(ITestContext context, string message)
         {
-            ITestLogWriter writer = context.LogWriter;
-            string streamName = LogStreamNames.Failures;
-            writer.BeginSection(streamName, "Internal Error");
-            writer.Write(streamName, message);
-            writer.EndSection(streamName);
+            context.LogWriter.Write(LogStreamNames.Failures, message);
         }
 
         private static TestOutcome GetTestOutcome(string outcome)

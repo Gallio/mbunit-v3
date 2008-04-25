@@ -42,6 +42,8 @@ namespace Gallio.Icarus
         {
             this.projectAdapterView = projectAdapterView;
             InitializeComponent();
+
+            Annotations = new List<AnnotationData>();
         }
 
         private void PopulateListView()

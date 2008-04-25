@@ -517,16 +517,6 @@ namespace Gallio.Icarus.Adapter.Tests
         }
 
         [Test]
-        public void Exception_Test()
-        {
-            Exception exception = new Exception("message");
-            mockView.NotifyException(exception);
-            mocks.ReplayAll();
-            projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.Exception = exception;
-        }
-
-        [Test]
         public void Update_Test()
         {
             TestData testData = new TestData("test1", "test1", "test1");

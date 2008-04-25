@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -24,12 +23,12 @@ using System.Windows.Forms;
 
 using Aga.Controls.Tree;
 using Gallio.Concurrency;
+using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
-using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Utilities;
 
@@ -40,9 +39,9 @@ namespace Gallio.Icarus
 {
     public partial class Main : Form, IProjectAdapterView
     {
-        private Task workerTask = null;
-        private Thread executionLogThread = null;
-        
+        private TaskManager primaryTaskManager = new TaskManager();
+        private TaskManager executionLogTaskManager = new TaskManager();
+
         private string projectFileName = String.Empty;
         private Settings settings;
         
@@ -63,14 +62,7 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
-                {
-                    Invoke(new MethodInvoker(delegate()
-                        {
-                            TreeModel = value;
-                        }));
-                }
-                else
+                Sync.Invoke(this, delegate
                 {
                     testExplorer.TreeModel = value;
                     ((TestTreeModel)value).TestCountChanged += delegate
@@ -79,12 +71,12 @@ namespace Gallio.Icarus
                     };
                     ((TestTreeModel)value).TestResult += delegate(object sender, TestResultEventArgs e)
                     {
-                        if (testResults.InvokeRequired)
-                            testResults.Invoke((MethodInvoker)delegate { testResults.UpdateTestResults(e.TestData, e.TestStepRun); });
-                        else
+                        Sync.Invoke(this, delegate
+                        {
                             testResults.UpdateTestResults(e.TestData, e.TestStepRun);
+                        });
                     };
-                }
+                });
             }
         }
 
@@ -92,17 +84,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
-                {
-                    Invoke(new MethodInvoker(delegate()
-                    {
-                        Assemblies = value;
-                    }));
-                }
-                else
+                Sync.Invoke(this, delegate
                 {
                     assemblyList.DataBind(value);
-                }
+                });
             }
         }
 
@@ -110,15 +95,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
+                Sync.Invoke(this, delegate
                 {
-                    Invoke((MethodInvoker)delegate()
-                    {
-                        StatusText = value;
-                    });
-                }
-                else
                     toolStripStatusLabel.Text = value;
+                });
             }
         }
 
@@ -126,15 +106,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
+                Sync.Invoke(this, delegate
                 {
-                    Invoke((MethodInvoker)delegate()
-                    {
-                        TotalWorkUnits = value;
-                    });
-                }
-                else
                     toolStripProgressBar.Maximum = value;
+                });
             }
         }
 
@@ -142,15 +117,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
+                Sync.Invoke(this, delegate
                 {
-                    Invoke((MethodInvoker)delegate()
-                    {
-                        CompletedWorkUnits = value;
-                    });
-                }
-                else
                     toolStripProgressBar.Value = value;
+                });
             }
         }
 
@@ -158,17 +128,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
-                {
-                    Invoke((MethodInvoker)delegate()
-                    {
-                        TotalTests = value;
-                    });
-                }
-                else
+                Sync.Invoke(this, delegate
                 {
                     testResults.TotalTests = value;
-                }
+                });
             }
         }
 
@@ -178,17 +141,10 @@ namespace Gallio.Icarus
             {
                 if (value != "")
                 {
-                    if (InvokeRequired)
-                    {
-                        Invoke(new MethodInvoker(delegate()
-                        {
-                            ReportPath = value;
-                        }));
-                    }
-                    else
+                    Sync.Invoke(this, delegate
                     {
                         reportWindow.ReportPath = value;
-                    }
+                    });
                 }
             }
         }
@@ -197,17 +153,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
-                {
-                    Invoke(new MethodInvoker(delegate()
-                    {
-                        ReportTypes = value;
-                    }));
-                }
-                else
+                Sync.Invoke(this, delegate
                 {
                     reportWindow.ReportTypes = value;
-                }
+                });
             }
         }
 
@@ -215,31 +164,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
-                {
-                    Invoke(new MethodInvoker(delegate()
-                    {
-                        TestFrameworks = value;
-                    }));
-                }
-                else
+                Sync.Invoke(this, delegate
                 {
                     aboutDialog.TestFrameworks = value;
-                }
-            }
-        }
-
-        public void NotifyException(Exception value)
-        {
-            if (InvokeRequired)
-            {
-                Invoke(new MethodInvoker(delegate() { NotifyException(value); }));
-            }
-            else
-            {
-                if (!(value is ThreadAbortException))
-                    MessageBox.Show(String.Format("Message: {0}\nStack trace: {1}", value.Message, value.StackTrace), "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                });
             }
         }
 
@@ -247,15 +175,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
+                Sync.Invoke(this, delegate
                 {
-                    Invoke(new MethodInvoker(delegate()
-                    {
-                        ExecutionLog = value;
-                    }));
-                }
-                else
                     executionLogWindow.Log = value;
+                });
             }
         }
 
@@ -316,15 +239,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
+                Sync.Invoke(this, delegate
                 {
-                    Invoke(new MethodInvoker(delegate()
-                        {
-                            HintDirectories = value;
-                        }));
-                }
-                else
                     propertiesWindow.HintDirectories = value;
+                });
             }
         }
 
@@ -332,15 +250,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
+                Sync.Invoke(this, delegate
                 {
-                    Invoke(new MethodInvoker(delegate()
-                    {
-                        ApplicationBaseDirectory = value;
-                    }));
-                }
-                else
                     propertiesWindow.ApplicationBaseDirectory = value;
+                });
             }
         }
 
@@ -348,15 +261,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
+                Sync.Invoke(this, delegate
                 {
-                    Invoke(new MethodInvoker(delegate()
-                    {
-                        WorkingDirectory = value;
-                    }));
-                }
-                else
                     propertiesWindow.WorkingDirectory = value;
+                });
             }
         }
 
@@ -364,15 +272,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
+                Sync.Invoke(this, delegate
                 {
-                    Invoke(new MethodInvoker(delegate()
-                    {
-                        ShadowCopy = value;
-                    }));
-                }
-                else
                     propertiesWindow.ShadowCopy = value;
+                });
             }
         }
 
@@ -392,15 +295,10 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
+                Sync.Invoke(this, delegate
                 {
-                    Invoke(new MethodInvoker(delegate()
-                    {
-                        TestFilters = value;
-                    }));
-                }
-                else
                     filtersWindow.Filters = value;
+                });
             }
         }
 
@@ -408,16 +306,12 @@ namespace Gallio.Icarus
         {
             set
             {
-                if (InvokeRequired)
-                {
-                    Invoke((MethodInvoker)delegate { Annotations = value; });
-                }
-                else
+                Sync.Invoke(this, delegate
                 {
                     annotationsWindow.Annotations = value;
                     if (value.Count > 0)
                         annotationsWindow.Show();
-                }
+                });
             }
         }
 
@@ -445,10 +339,13 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> ResetTestStatus;
         public event EventHandler<SingleEventArgs<string>> GetExecutionLog;
         public event EventHandler<EventArgs> UnloadTestPackage;
+        public event EventHandler<EventArgs> CleanUp;
 
         public Main()
         {
             InitializeComponent();
+
+            UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
 
             testExplorer = new TestExplorer(this);
             assemblyList = new AssemblyList(this);
@@ -494,26 +391,22 @@ namespace Gallio.Icarus
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Text = String.Format(Text, appVersion.Major, appVersion.Minor);
 
-            if (File.Exists(Paths.DockConfigFile))
-            {
-                try
-                {
-                    dockPanel.LoadFromXml(Paths.DockConfigFile, deserializeDockContent);
-                }
-                catch
-                { }
-            }
-            else
-            {
-                assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
-                testResults.Show(dockPanel);
-                executionLogWindow.Show(dockPanel);
-                runtimeLogWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-                annotationsWindow.Show(dockPanel, DockState.DockBottomAutoHide);
-                testExplorer.Show(dockPanel, DockState.DockLeft);
-            }
+            // Set default docking first.  If the file load fails or if a new
+            // view is added then it will get a default view.
+            assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
+            testResults.Show(dockPanel, DockState.Document);
+            executionLogWindow.Show(dockPanel, DockState.Document);
+            runtimeLogWindow.DockPanel = dockPanel;
+            annotationsWindow.Show(dockPanel, DockState.Document);
+            testExplorer.Show(dockPanel, DockState.DockLeft);
+            assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
+            reportWindow.DockPanel = dockPanel;
+            propertiesWindow.DockPanel = dockPanel;
+            filtersWindow.DockPanel = dockPanel;
 
-            StartWorkerTask(delegate
+            LoadDockState();
+
+            primaryTaskManager.StartTask(delegate
             {
                 if (GetReportTypes != null)
                     GetReportTypes(this, EventArgs.Empty);
@@ -524,6 +417,19 @@ namespace Gallio.Icarus
                 else
                     ThreadedReloadTree(true);
             });
+        }
+
+        private void LoadDockState()
+        {
+            if (File.Exists(Paths.DockConfigFile))
+            {
+                try
+                {
+                    dockPanel.LoadFromXml(Paths.DockConfigFile, deserializeDockContent);
+                }
+                catch
+                { }
+            }
         }
 
         private void fileExit_Click(object sender, EventArgs e)
@@ -552,7 +458,7 @@ namespace Gallio.Icarus
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
 
-                StartWorkerTask(delegate
+                primaryTaskManager.StartTask(delegate
                 {
                     // save test filter
                     OnSaveFilter("LastRun");
@@ -575,13 +481,13 @@ namespace Gallio.Icarus
             }
             catch (Exception ex)
             {
-                NotifyException(ex);
+                UnhandledExceptionPolicy.Report("An exception occurred while starting the tests.", ex);
             }
         }
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
-            StartWorkerTask(delegate
+            primaryTaskManager.StartTask(delegate
             {
                 ThreadedReloadTree(true);
             });
@@ -593,7 +499,7 @@ namespace Gallio.Icarus
             openFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
             if (openFile.ShowDialog() == DialogResult.OK)
             {
-                StartWorkerTask(delegate
+                primaryTaskManager.StartTask(delegate
                 {
                     OpenProjectFromFile(openFile.FileName);
                 });
@@ -609,7 +515,7 @@ namespace Gallio.Icarus
             }
             catch (Exception ex)
             {
-                NotifyException(ex);
+                UnhandledExceptionPolicy.Report("An exception occurred while opening a project.", ex);
             }
         }
 
@@ -632,7 +538,7 @@ namespace Gallio.Icarus
                     ProjectFileName = saveFile.FileName;
             }
 
-            StartWorkerTask(delegate
+            primaryTaskManager.StartTask(delegate
             {
                 if (SaveProject != null)
                     SaveProject(this, new SingleEventArgs<string>(projectFileName));
@@ -651,7 +557,7 @@ namespace Gallio.Icarus
             openFile.Multiselect = true;
             if (openFile.ShowDialog() == DialogResult.OK)
             {
-                StartWorkerTask(delegate
+                primaryTaskManager.StartTask(delegate
                 {
                     if (AddAssemblies != null)
                         AddAssemblies(this, new SingleEventArgs<IList<string>>(openFile.FileNames));
@@ -662,7 +568,7 @@ namespace Gallio.Icarus
 
         public void ReloadTree()
         {
-            StartWorkerTask(delegate
+            primaryTaskManager.StartTask(delegate
             {
                 ThreadedReloadTree(false);
             });
@@ -685,7 +591,7 @@ namespace Gallio.Icarus
                 }
                 catch (Exception ex)
                 {
-                    NotifyException(ex);
+                    UnhandledExceptionPolicy.Report("An exception occurred while saving the report.", ex);
                 }
             }
             if (!options.IsDisposed)
@@ -711,7 +617,7 @@ namespace Gallio.Icarus
 
         public void RemoveAssembliesFromTree()
         {
-            StartWorkerTask(delegate
+            primaryTaskManager.StartTask(delegate
             {
                 // remove assemblies
                 if (RemoveAssemblies != null)
@@ -727,7 +633,7 @@ namespace Gallio.Icarus
 
         private void CancelTests()
         {
-            StartWorkerTask(delegate
+            primaryTaskManager.StartTask(delegate
             {
                 if (StopTests != null)
                     StopTests(this, new EventArgs());
@@ -743,7 +649,7 @@ namespace Gallio.Icarus
 
         public void ThreadedRemoveAssembly(string assembly)
         {
-            StartWorkerTask(delegate
+            primaryTaskManager.StartTask(delegate
             {
                 if (RemoveAssembly != null)
                     RemoveAssembly(this, new SingleEventArgs<string>(assembly));
@@ -769,7 +675,7 @@ namespace Gallio.Icarus
         private void CreateNewProject()
         {
             ProjectFileName = string.Empty;
-            StartWorkerTask(delegate
+            primaryTaskManager.StartTask(delegate
             {
                 if (NewProject != null)
                     NewProject(this, EventArgs.Empty);
@@ -815,32 +721,37 @@ namespace Gallio.Icarus
 
         public void WriteToLog(LogSeverity severity, string message, Exception exception)
         {
-            Color color = Color.Black;
-            switch (severity)
+            Sync.Invoke(this, delegate
             {
-                case LogSeverity.Error:
-                    color = Color.Red;
-                    break;
+                Color color = Color.Black;
+                switch (severity)
+                {
+                    case LogSeverity.Error:
+                        color = Color.Red;
+                        break;
 
-                case LogSeverity.Warning:
-                    color = Color.Gold;
-                    break;
+                    case LogSeverity.Warning:
+                        color = Color.Gold;
+                        break;
 
-                case LogSeverity.Info:
-                    color = Color.Gray;
-                    break;
+                    case LogSeverity.Info:
+                        color = Color.Gray;
+                        break;
 
-                case LogSeverity.Debug:
-                    color = Color.DarkGray;
-                    break;
-            }
-            runtimeLogWindow.AppendText(message, color);
-            runtimeLogWindow.AppendText(ExceptionUtils.SafeToString(exception), color);
+                    case LogSeverity.Debug:
+                        color = Color.DarkGray;
+                        break;
+                }
+
+                runtimeLogWindow.AppendTextLine(message, color);
+                if (exception != null)
+                    runtimeLogWindow.AppendTextLine(ExceptionUtils.SafeToString(exception), color);
+            });
         }
 
         public void CreateReport()
         {
-            StartWorkerTask(delegate
+            primaryTaskManager.StartTask(delegate
             {
                 ThreadedCreateReport();
             });
@@ -863,14 +774,14 @@ namespace Gallio.Icarus
             {
                 e.Cancel = true;
 
-                StartWorkerTask(delegate
+                primaryTaskManager.StartTask(delegate
                 {
                     try
                     {
                         if (UnloadTestPackage != null)
                             UnloadTestPackage(this, EventArgs.Empty);
 
-                        SaveStateOnClose();
+                        CleanUpOnClose();
                     }
                     finally
                     {
@@ -880,7 +791,7 @@ namespace Gallio.Icarus
             }
         }
 
-        private void SaveStateOnClose()
+        private void CleanUpOnClose()
         {
             // FIXME: Improve error handling
             try
@@ -908,6 +819,13 @@ namespace Gallio.Icarus
             }
             catch
             { }
+
+            EventHandlerUtils.SafeInvoke(CleanUp, this, EventArgs.Empty);
+
+            primaryTaskManager.AbortTask();
+            executionLogTaskManager.AbortTask();
+
+            UnhandledExceptionPolicy.ReportUnhandledException -= ReportUnhandledException;
         }
 
         public void ViewSourceCode(string testId)
@@ -969,7 +887,7 @@ namespace Gallio.Icarus
             if (TaskDialog.Show("Assembly changed", filePath + " has changed, would you like to reload the test model?", 
                 taskButtons) == yes)
             {
-                StartWorkerTask(delegate()
+                primaryTaskManager.StartTask(delegate()
                 {
                     ThreadedReloadTree(true);
                 });
@@ -1020,66 +938,33 @@ namespace Gallio.Icarus
 
         public void LoadComplete()
         {
-            if (InvokeRequired)
-            {
-                Invoke((MethodInvoker)delegate { LoadComplete(); });
-            }
-            else
+            Sync.Invoke(this, delegate
             {
                 testExplorer.ExpandAll();
                 startButton.Enabled = true;
                 startTestsToolStripMenuItem.Enabled = true;
-            }
+            });
         }
 
         public void OnGetExecutionLog(string testId)
         {
-            if (executionLogThread != null)
+            executionLogTaskManager.StartTask(delegate
             {
-                executionLogThread.Abort();
-                executionLogThread = null;
-            }
-            executionLogThread = new Thread(delegate()
-                {
-                    try
-                    {
-                        if (GetExecutionLog != null)
-                            GetExecutionLog(this, new SingleEventArgs<string>(testId));
-                    }
-                    catch (Exception ex)
-                    {
-                        NotifyException(ex);
-                    }
-                });
-            executionLogThread.Start();
+                if (GetExecutionLog != null)
+                    GetExecutionLog(this, new SingleEventArgs<string>(testId));
+            });
         }
 
-        private void StartWorkerTask(Action action)
+        private void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)
         {
-            AbortWorkerTask();
+            if (e.Exception is ThreadAbortException || e.IsRecursive)
+                return;
 
-            workerTask = new ThreadTask("Icarus Worker", action);
-
-            workerTask.Terminated += delegate
+            Sync.Invoke(this, delegate
             {
-                if (!workerTask.IsAborted)
-                {
-                    if (workerTask.Result.Exception != null)
-                        NotifyException(workerTask.Result.Exception);
-                }
-            };
-
-            workerTask.Start();
-        }
-
-        private void AbortWorkerTask()
-        {
-            Task cachedWorkerTask = Interlocked.Exchange(ref workerTask, null);
-            if (cachedWorkerTask != null)
-            {
-                cachedWorkerTask.Abort();
-                cachedWorkerTask.Join(TimeSpan.FromMilliseconds(2000));
-            }
+                // FIXME: Should be replaced by a dialog.
+                MessageBox.Show(this, e.GetDescription(), e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            });
         }
     }
 }

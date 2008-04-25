@@ -51,8 +51,7 @@ namespace Gallio.Runner
         private State state;
         private IHost host;
         private Report report;
-
-        private ITestDomain domain;
+        private HostedTestDomainController testDomainController;
 
         private enum State
         {
@@ -388,11 +387,11 @@ namespace Gallio.Runner
             report = new Report();
             report.TestPackageConfig = testPackageConfig;
 
-            InitializeHost(5, progressMonitor);
-            LoadTestDomains(testPackageConfig, 5, progressMonitor);
+            InitializeHost(progressMonitor, 5);
+            LoadTestDomains(testPackageConfig, progressMonitor, 5);
         }
 
-        private void InitializeHost(double totalWork, IProgressMonitor progressMonitor)
+        private void InitializeHost(IProgressMonitor progressMonitor, double totalWork)
         {
             progressMonitor.SetStatus("Initializing the host environment.");
 
@@ -409,14 +408,12 @@ namespace Gallio.Runner
             progressMonitor.Worked(totalWork);
         }
 
-        private void LoadTestDomains(TestPackageConfig testPackageConfig, double totalWork, IProgressMonitor progressMonitor)
+        private void LoadTestDomains(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor, double totalWork)
         {
-            progressMonitor.SetStatus("Creating test domains.");
+            progressMonitor.SetStatus("Loading tests.");
 
-            // HACK: Temporary workaround until we refactor ITestDomain.
-            ITestHarnessFactory harnessFactory = RuntimeAccessor.Instance.Resolve<ITestHarnessFactory>();
-            domain = new LocalTestDomain(harnessFactory);
-            domain.Load(testPackageConfig, progressMonitor.CreateSubProgressMonitor(totalWork));
+            testDomainController = new HostedTestDomainController(host);
+            testDomainController.LoadTestDomains(testPackageConfig, logger, progressMonitor.CreateSubProgressMonitor(totalWork));
         }
 
         private void DoExplore(TestExplorationOptions options, IProgressMonitor progressMonitor)
@@ -425,14 +422,14 @@ namespace Gallio.Runner
             report = new Report();
             report.TestPackageConfig = oldReport.TestPackageConfig;
 
-            ExploreTestDomains(options, 10, progressMonitor);
+            ExploreTestDomains(options, progressMonitor, 10);
         }
 
-        private void ExploreTestDomains(TestExplorationOptions options, double totalWork, IProgressMonitor progressMonitor)
+        private void ExploreTestDomains(TestExplorationOptions options, IProgressMonitor progressMonitor, double totalWork)
         {
-            domain.Explore(options, progressMonitor.CreateSubProgressMonitor(totalWork));
+            progressMonitor.SetStatus("Exploring tests.");
 
-            report.TestModel = domain.TestModelData;
+            report.TestModel = testDomainController.ExploreTestDomains(options, progressMonitor.CreateSubProgressMonitor(totalWork));
         }
 
         private void DoRun(TestExecutionOptions options, IProgressMonitor progressMonitor)
@@ -450,7 +447,7 @@ namespace Gallio.Runner
             {
                 using (HostedTestListener listener = new HostedTestListener(eventDispatcher, report, syncRoot))
                 {
-                    RunTestDomains(options, listener, 10, progressMonitor);
+                    RunTestDomains(options, listener, progressMonitor, 10);
                 }
             }
             finally
@@ -460,9 +457,11 @@ namespace Gallio.Runner
             }
         }
 
-        private void RunTestDomains(TestExecutionOptions options, ITestListener listener, double totalWork, IProgressMonitor progressMonitor)
+        private void RunTestDomains(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor, double totalWork)
         {
-            domain.Run(options, listener, progressMonitor.CreateSubProgressMonitor(totalWork));
+            progressMonitor.SetStatus("Running tests.");
+
+            testDomainController.RunTestDomains(options, listener, progressMonitor.CreateSubProgressMonitor(totalWork));
         }
 
         private void DoUnload(IProgressMonitor progressMonitor)
@@ -471,21 +470,22 @@ namespace Gallio.Runner
 
             try
             {
-                UnloadTestDomains(5, progressMonitor);
+                UnloadTestDomains(progressMonitor, 5);
             }
             finally
             {
-                DisposeHost(5, progressMonitor);
+                DisposeHost(progressMonitor, 5);
             }
         }
 
-        private void UnloadTestDomains(double totalWork, IProgressMonitor progressMonitor)
+        private void UnloadTestDomains(IProgressMonitor progressMonitor, double totalWork)
         {
-            domain.Unload(progressMonitor.CreateSubProgressMonitor(totalWork));
-            domain = null;
+            progressMonitor.SetStatus("Unloading tests.");
+
+            testDomainController.UnloadTestDomains(progressMonitor.CreateSubProgressMonitor(totalWork));
         }
 
-        private void DisposeHost(double totalWork, IProgressMonitor progressMonitor)
+        private void DisposeHost(IProgressMonitor progressMonitor, double totalWork)
         {
             progressMonitor.SetStatus("Shutting down the host environment.");
 
