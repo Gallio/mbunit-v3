@@ -20,12 +20,12 @@ using Gallio.Model;
 using JetBrains.ProjectModel;
 using JetBrains.Util;
 
-namespace Gallio.ReSharperRunner
+namespace Gallio.ReSharperRunner.Daemons
 {
     /// <summary>
-    /// Provides state information to the <see cref="GallioDaemonStageProcess" />
-    /// when associated with a <see cref="IProjectFile" />.  This allows the <see cref="GallioTestProviderDelegate" />
-    /// to feed annotation information to the daemon for use in generating custom highlights.
+    /// Provides state information to the <see cref="GallioAnnotationDaemonStageProcess" />
+    /// when associated with a <see cref="IProjectFile" />.  This allows the <see cref="GallioTestProvider" />
+    /// to feed annotations and other information to the daemons for use in generating custom highlights.
     /// </summary>
     internal class GallioProjectFileState
     {

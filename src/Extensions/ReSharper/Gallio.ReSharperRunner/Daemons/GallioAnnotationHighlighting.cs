@@ -18,7 +18,7 @@ using System.Drawing;
 using Gallio.Model;
 using JetBrains.ReSharper.Daemon;
 
-namespace Gallio.ReSharperRunner
+namespace Gallio.ReSharperRunner.Daemons
 {
     internal class GallioAnnotationHighlighting : IHighlighting
     {

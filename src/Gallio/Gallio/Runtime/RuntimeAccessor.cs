@@ -71,19 +71,6 @@ namespace Gallio.Runtime
         public static event EventHandler InstanceChanged;
 
         /// <summary>
-        /// Returns true if the application is running within the Mono runtime.
-        /// </summary>
-        /// <remarks>
-        /// It is occasionally necessary to tailor the execution of the test runner
-        /// depending on whether Mono is running.  However, the number of such
-        /// customizations should be very limited.
-        /// </remarks>
-        public static bool IsUsingMono
-        {
-            get { return Type.GetType(@"Mono.Runtime") != null; }
-        }
-
-        /// <summary>
         /// Gets the path of the Gallio installation.
         /// </summary>
         /// <returns>The installation path</returns>

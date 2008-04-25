@@ -22,9 +22,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Gallio.ReSharperRunner.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,9 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Gallio.ReSharperRunner.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Metadata, Version=3.0.517.8, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
@@ -88,10 +88,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GallioAnnotationHighlighting.cs" />
-    <Compile Include="GallioDaemonStage.cs" />
-    <Compile Include="GallioDaemonStageProcess.cs" />
-    <Compile Include="GallioProjectFileState.cs" />
+    <Compile Include="Daemons\GallioAnnotationHighlighting.cs" />
+    <Compile Include="Daemons\GallioAnnotationDaemonStage.cs" />
+    <Compile Include="Daemons\GallioAnnotationDaemonStageProcess.cs" />
+    <Compile Include="Daemons\GallioProjectFileState.cs" />
+    <Compile Include="TestExplorerFactory.cs" />
     <Compile Include="GallioTestElement.cs" />
     <Compile Include="GallioTestPresenter.cs" />
     <Compile Include="Runtime\ReSharperLogger.cs" />

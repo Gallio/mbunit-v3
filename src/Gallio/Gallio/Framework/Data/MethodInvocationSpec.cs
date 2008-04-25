@@ -20,6 +20,7 @@ using System.Text;
 using Gallio.Framework.Data.Conversions;
 using Gallio.Framework.Data.Formatters;
 using Gallio.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Framework.Data
 {
@@ -115,12 +116,13 @@ namespace Gallio.Framework.Data
         /// <returns>The method result value</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is
         /// null but the method is non-static</exception>
+        /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
         public object Invoke(object obj)
         {
             if (obj == null && !resolvedMethod.IsStatic)
                 throw new ArgumentNullException("obj", "The object must not be null if the method is non-static.");
 
-            return resolvedMethod.Invoke(obj, resolvedArguments);
+            return ExceptionUtils.InvokeMethodWithoutTargetInvocationException(resolvedMethod, obj, resolvedArguments);
         }
 
         /// <inheritdoc />

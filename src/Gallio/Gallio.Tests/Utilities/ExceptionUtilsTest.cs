@@ -14,8 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Reflection;
+using Gallio.Collections;
+using Gallio.Framework;
 using Gallio.Utilities;
 using MbUnit.Framework;
 
@@ -45,6 +46,53 @@ namespace Gallio.Tests.Utilities
 
             Assert.Contains(text, typeof(HostileException).FullName);
             Assert.Contains(text, typeof(RevengeOfTheHostileException).FullName);
+        }
+
+        [Test]
+        public void RethrowWithNoStackTraceLoss()
+        {
+            try
+            {
+                try
+                {
+                    ThrowBoom();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ExceptionUtils.RethrowWithNoStackTraceLoss(ex);
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                Assert.Contains(ex.StackTrace, "ThrowBoom");
+            }
+        }
+
+        public static void ThrowBoom()
+        {
+            throw new InvalidOperationException("Boom!");
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void InvokeMethodWithoutTargetInvocationExceptionShouldThrowIfMethodIsNull()
+        {
+            ExceptionUtils.InvokeMethodWithoutTargetInvocationException(null, "abc", EmptyArray<object>.Instance);
+        }
+
+        [Test]
+        public void InvokeMethodWithoutTargetInvocationExceptionShouldNotWrapTheException()
+        {
+            try
+            {
+                MethodInfo method = GetType().GetMethod("ThrowBoom");
+                ExceptionUtils.InvokeMethodWithoutTargetInvocationException(method, null, null);
+                Assert.Fail("Should have thrown an InvalidOperationException");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Assert.Contains(ex.StackTrace, "ThrowBoom");
+            }
         }
 
         private class HostileException : Exception

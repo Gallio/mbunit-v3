@@ -231,6 +231,18 @@ namespace Gallio.Tests.Framework.Data
             Assert.AreEqual(1, GenericClass<int>.staticMethodParamValue);
         }
 
+
+        [Test]
+        public void InvokeThrowsUnwrappedException()
+        {
+            ITypeInfo type = Reflector.Wrap(typeof(NonGenericClass));
+            IMethodInfo method = type.GetMethod("StaticMethodThatThrows", PublicStatic);
+            Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
+
+            MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), method, slotValues, NullConverter.Instance);
+            InterimAssert.Throws<InvalidOperationException>(delegate { spec.Invoke(null); });
+        }
+
         [Test]
         public void SpecPropertiesDescribeTheMethod()
         {
@@ -305,6 +317,11 @@ namespace Gallio.Tests.Framework.Data
 
             public static void StaticMethod(int intValue)
             {
+            }
+
+            public static void StaticMethodThatThrows()
+            {
+                throw new InvalidOperationException("Boom!");
             }
         }
 

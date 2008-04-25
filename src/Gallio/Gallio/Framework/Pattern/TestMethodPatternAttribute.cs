@@ -155,8 +155,7 @@ namespace Gallio.Framework.Pattern
             test.TestInstanceActions.ExecuteTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
-                    if (testInstanceState.TestMethod != null && testInstanceState.TestArguments != null)
-                        testInstanceState.TestMethod.Invoke(testInstanceState.FixtureInstance, testInstanceState.TestArguments);
+                    testInstanceState.InvokeTestMethod();
                 });
         }
 

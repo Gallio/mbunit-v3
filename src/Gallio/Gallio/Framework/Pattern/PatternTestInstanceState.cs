@@ -22,6 +22,7 @@ using Gallio.Framework.Data.Binders;
 using Gallio.Framework.Data.Conversions;
 using Gallio.Framework.Data.Formatters;
 using Gallio.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Framework.Pattern
 {
@@ -286,7 +287,6 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="ArgumentException">Thrown if the slots or values in <see cref="SlotValues" />
         /// or <see cref="FixtureType" /> are not appropriate for invoking <paramref name="method"/></exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null</exception>
-        /// <exception cref="TargetInvocationException">Thrown if the method itself throws an exception</exception>
         /// <seealso cref="MethodInvocationSpec"/>
         public MethodInvocationSpec GetTestMethodInvocationSpec(IMethodInfo method)
         {
@@ -312,7 +312,7 @@ namespace Gallio.Framework.Pattern
         /// or <see cref="FixtureType" /> or <see cref="FixtureInstance" /> are not appropriate for
         /// invoking <paramref name="method"/></exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null</exception>
-        /// <exception cref="TargetInvocationException">Thrown if the method itself throws an exception</exception>
+        /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
         /// <seealso cref="MethodInvocationSpec"/>
         public object InvokeFixtureMethod(IMethodInfo method, IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues)
         {
@@ -325,6 +325,22 @@ namespace Gallio.Framework.Pattern
 
             MethodInvocationSpec spec = new MethodInvocationSpec(fixtureType, method, slotValues, Converter);
             return spec.Invoke(fixtureInstance);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Invokes the test method specified by <see cref="TestMethod" />, <see cref="FixtureInstance" />
+        /// and <see cref="TestArguments" />.  If there is no test method or no arguments, does nothing.
+        /// </para>
+        /// </summary>
+        /// <returns>The method return value, or null if there was none</returns>
+        /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
+        public object InvokeTestMethod()
+        {
+            if (testMethod != null && testArguments != null)
+                return ExceptionUtils.InvokeMethodWithoutTargetInvocationException(testMethod, fixtureInstance, testArguments);
+
+            return null;
         }
     }
 }

@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.Runtime;
 
 namespace Gallio.Utilities
 {
@@ -67,7 +68,7 @@ namespace Gallio.Utilities
         /// to be unwrapped.
         /// </summary>
         /// <remarks>
-        /// This code is used courtesy of Brad Wilson.
+        /// This implementation is based on code by Brad Wilson.
         /// </remarks>
         /// <param name="ex">The exception to rethrow</param>
         public static void RethrowWithNoStackTraceLoss(Exception ex)
@@ -76,17 +77,39 @@ namespace Gallio.Utilities
                 throw new ArgumentNullException("ex");
 
             // Hack the stack trace so it appears to have been preserved.
-            FieldInfo remoteStackTraceString = typeof(Exception).GetField(@"_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
+            // If we can't hack the stack trace, then there's not much we can do as anything we
+            // choose will alter the semantics of test execution.
+            FieldInfo remoteStackTraceString = typeof(Exception).GetField(
+                RuntimeDetection.IsUsingMono ? @"remote_stack_string" : @"_remoteStackTraceString",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
             if (remoteStackTraceString != null)
-            {
                 remoteStackTraceString.SetValue(ex, ex.StackTrace);
-                throw ex;
-            }
-            else
+
+            throw ex;
+        }
+
+        /// <summary>
+        /// Invokes a method without producing a <see cref="TargetInvocationException" />
+        /// </summary>
+        /// <param name="method">The method to invoke</param>
+        /// <param name="obj">The instance on which to invoke the method, or null if none</param>
+        /// <param name="args">The method arguments, or null if none</param>
+        /// <returns>The method return value, or null if none</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/> is null</exception>
+        public static object InvokeMethodWithoutTargetInvocationException(MethodBase method, object obj, object[] args)
+        {
+            if (method == null)
+                throw new ArgumentNullException("method");
+
+            try
             {
-                // If we can't hack the stack trace, then at least try to do something sensible
-                // to preserve the stack trace.
-                throw new TargetInvocationException(ex);
+                return method.Invoke(obj, args);
+            }
+            catch (TargetInvocationException ex)
+            {
+                RethrowWithNoStackTraceLoss(ex.InnerException);
+                throw;
             }
         }
     }

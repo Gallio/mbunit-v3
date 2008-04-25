@@ -14,29 +14,25 @@
 // limitations under the License.
 
 using System;
-using Gallio.ReSharperRunner.Runtime;
-using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Daemon;
-using JetBrains.ReSharper.UnitTestExplorer;
 
-namespace Gallio.ReSharperRunner
+namespace Gallio.Runtime
 {
     /// <summary>
-    /// This daemon stage adds support for displaying annotations produced by
-    /// the test exploration process.
+    /// Provides functions for detecting CLR runtime parameters.
     /// </summary>
-    [DaemonStage(StagesBefore=new Type[] { typeof(UnitTestDaemonStage)})]
-    public class GallioDaemonStage : IDaemonStage
+    public class RuntimeDetection
     {
-        public IDaemonStageProcess CreateProcess(IDaemonProcess process)
+        /// <summary>
+        /// Returns true if the application is running within the Mono runtime.
+        /// </summary>
+        /// <remarks>
+        /// It is occasionally necessary to tailor the execution of the test runner
+        /// depending on whether Mono is running.  However, the number of such
+        /// customizations should be very limited.
+        /// </remarks>
+        public static bool IsUsingMono
         {
-            RuntimeProvider.GetRuntime();
-            return new GallioDaemonStageProcess(process);
-        }
-
-        public ErrorStripeRequest NeedsErrorStripe(IProjectFile projectFile)
-        {
-            return ErrorStripeRequest.STRIPE_AND_ERRORS;
+            get { return Type.GetType(@"Mono.Runtime") != null; }
         }
     }
 }

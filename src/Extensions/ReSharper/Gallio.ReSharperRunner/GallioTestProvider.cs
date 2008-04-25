@@ -17,10 +17,10 @@ using System;
 using System.Collections.Generic;
 using Gallio.Model;
 using Gallio.Reflection;
+using Gallio.ReSharperRunner.Daemons;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.ReSharperRunner.Runtime;
 using Gallio.ReSharperRunner.Tasks;
-using Gallio.Runtime.Loader;
 using JetBrains.CommonControls;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
@@ -32,7 +32,6 @@ using JetBrains.Shell;
 using JetBrains.Shell.Progress;
 using JetBrains.UI.TreeView;
 using JetBrains.Util.DataStructures.TreeModel;
-using Gallio.Runtime;
 
 namespace Gallio.ReSharperRunner
 {
@@ -44,18 +43,15 @@ namespace Gallio.ReSharperRunner
     {
         public const string ProviderId = "Gallio";
 
-        private readonly ILoader loader;
-        private readonly IRuntime runtime;
         private readonly GallioTestPresenter presenter;
+        private readonly TestExplorerFactory explorerFactory;
 
         /// <summary>
         /// Initializes the provider.
         /// </summary>
         public GallioTestProvider()
         {
-            runtime = RuntimeProvider.GetRuntime();
-            loader = runtime.Resolve<ILoader>();
-
+            explorerFactory = new TestExplorerFactory(RuntimeProvider.GetRuntime());
             presenter = new GallioTestPresenter();
         }
 
@@ -101,7 +97,7 @@ namespace Gallio.ReSharperRunner
             if (assemblyInfo != null)
             {
                 ConsumerAdapter consumerAdapter = new ConsumerAdapter(this, consumer);
-                ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
+                ITestExplorer explorer = explorerFactory.CreateTestExplorer(reflectionPolicy);
 
                 explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
                 explorer.FinishModel();
@@ -120,7 +116,7 @@ namespace Gallio.ReSharperRunner
 
             PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
             ConsumerAdapter consumerAdapter = new ConsumerAdapter(this, consumer);
-            ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
+            ITestExplorer explorer = explorerFactory.CreateTestExplorer(reflectionPolicy);
 
             psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
             {
@@ -168,7 +164,7 @@ namespace Gallio.ReSharperRunner
             if (elementInfo == null)
                 return false;
 
-            ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
+            ITestExplorer explorer = explorerFactory.CreateTestExplorer(reflectionPolicy);
             return explorer.IsTest(elementInfo);
         }
 
@@ -387,18 +383,6 @@ namespace Gallio.ReSharperRunner
                         return true;
                 }
             }
-        }
-
-        private ITestExplorer CreateTestExplorer(IReflectionPolicy reflectionPolicy)
-        {
-            TestPackage testPackage = new TestPackage(new TestPackageConfig(), reflectionPolicy, loader);
-            TestModel testModel = new TestModel(testPackage);
-
-            AggregateTestExplorer aggregate = new AggregateTestExplorer(testModel);
-            foreach (ITestFramework framework in runtime.ResolveAll<ITestFramework>())
-                aggregate.AddTestExplorer(framework.CreateTestExplorer(testModel));
-
-            return aggregate;
         }
     }
 }

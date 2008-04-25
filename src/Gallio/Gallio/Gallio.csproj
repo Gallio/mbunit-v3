@@ -307,6 +307,7 @@
     <Compile Include="Runtime\Hosting\HostAssemblyResolverHook.cs" />
     <Compile Include="Runtime\Hosting\IsolatedAppDomainHost.cs" />
     <Compile Include="Runtime\Hosting\IsolatedProcessHost.cs" />
+    <Compile Include="Runtime\RuntimeDetection.cs" />
     <Compile Include="Runtime\RuntimeRegisteredComponentResolver.cs" />
     <Compile Include="Runtime\Hosting\HostConfiguration.cs" />
     <Compile Include="Runtime\Hosting\HostException.cs" />

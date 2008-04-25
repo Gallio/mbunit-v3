@@ -16,19 +16,20 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Model;
+using Gallio.ReSharperRunner.Daemons;
 using Gallio.ReSharperRunner.Reflection;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace Gallio.ReSharperRunner
+namespace Gallio.ReSharperRunner.Daemons
 {
-    internal class GallioDaemonStageProcess : IDaemonStageProcess
+    internal class GallioAnnotationDaemonStageProcess : IDaemonStageProcess
     {
         private readonly IDaemonProcess process;
 
-        public GallioDaemonStageProcess(IDaemonProcess process)
+        public GallioAnnotationDaemonStageProcess(IDaemonProcess process)
         {
             this.process = process;
         }

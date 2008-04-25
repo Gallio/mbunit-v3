@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
@@ -78,11 +77,9 @@ namespace MbUnit.Framework
 
                         throw new SilentTestException(TestOutcome.Failed);
                     }
-                    catch (TargetInvocationException ex)
+                    catch (Exception ex)
                     {
-                        Exception exception = ex.InnerException ?? ex;
-
-                        Type exceptionType = exception.GetType();
+                        Type exceptionType = ex.GetType();
                         if (exceptionType.Name != expectedExceptionType
                             && exceptionType.FullName != expectedExceptionType
                             && exceptionType.AssemblyQualifiedName != expectedExceptionType)
@@ -90,7 +87,7 @@ namespace MbUnit.Framework
                             using (Log.Failures.BeginSection("Expected Exception"))
                             {
                                 Log.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
-                                Log.Failures.WriteLine(ExceptionUtils.SafeToString(exception));
+                                Log.Failures.WriteLine(ExceptionUtils.SafeToString(ex));
                             }
 
                             throw new SilentTestException(TestOutcome.Failed);

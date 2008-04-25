@@ -23,7 +23,6 @@ namespace Gallio.ReSharperRunner.Tasks
     /// A remote task that is intended to be executed within the Gallio
     /// runtime environment.
     /// </summary>
-    /// </remarks>
     [Serializable]
     public abstract class GallioRemoteTask : RemoteTask
     {

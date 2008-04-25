@@ -281,9 +281,6 @@ namespace Gallio.Framework
             }
             catch (Exception ex)
             {
-                if (ex is TargetInvocationException)
-                    ex = ex.InnerException;
-
                 TestOutcome outcome;
                 TestException testException = ex as TestException;
                 if (testException != null)

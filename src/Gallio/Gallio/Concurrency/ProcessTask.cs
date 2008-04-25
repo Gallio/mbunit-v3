@@ -40,6 +40,8 @@ namespace Gallio.Concurrency
 
         private bool captureConsoleOutput;
         private bool captureConsoleError;
+        private bool useShellExecute;
+        private bool createWindow;
 
         private StringWriter consoleOutputCaptureWriter;
         private StringWriter consoleErrorCaptureWriter;
@@ -137,6 +139,34 @@ namespace Gallio.Concurrency
         }
 
         /// <summary>
+        /// <para>
+        /// Gets or sets whether to execute the command with the Windows shell.
+        /// </para>
+        /// <para>
+        /// The default value is <c>false</c>.
+        /// </para>
+        /// </summary>
+        public bool UseShellExecute
+        {
+            get { return useShellExecute; }
+            set { useShellExecute = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets or sets whether to create a window for the command prompt.
+        /// </para>
+        /// <para>
+        /// The default value is <c>false</c>.
+        /// </para>
+        /// </summary>
+        public bool CreateWindow
+        {
+            get { return createWindow; }
+            set { createWindow = value; }
+        }
+
+        /// <summary>
         /// Gets the captured contents of the console output stream written by the process.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the process has not been started
@@ -223,8 +253,8 @@ namespace Gallio.Concurrency
             ProcessStartInfo startInfo = new ProcessStartInfo(executablePath, arguments);
 
             startInfo.WorkingDirectory = workingDirectory;
-            startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
+            startInfo.UseShellExecute = useShellExecute;
+            startInfo.CreateNoWindow = ! createWindow;
 
             startInfo.RedirectStandardOutput = captureConsoleOutput || ConsoleOutputDataReceived != null;
             if (startInfo.RedirectStandardOutput)
