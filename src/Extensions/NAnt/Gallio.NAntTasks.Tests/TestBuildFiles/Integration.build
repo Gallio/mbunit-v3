@@ -99,6 +99,9 @@
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
+      <plugin-directories>
+        <include name="${GallioPath}" />
+      </plugin-directories>
       <runner-extension value="DebugExtension, Gallio" />
     </gallio>
     
