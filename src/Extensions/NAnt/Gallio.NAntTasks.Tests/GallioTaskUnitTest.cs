@@ -97,7 +97,7 @@ namespace Gallio.NAntTasks.Tests
             task.ShowReports = true;
 
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
-            task.RunnerExtensions = new string[] { "DebugExtension,Gallio" };
+            task.RunnerExtensions.Add(new Argument("DebugExtension,Gallio"));
 
             task.PluginDirectories = new DirSet[] { CreateDirSet("plugin") };
             task.Assemblies = new FileSet[] { CreateFileSet("assembly1"), CreateFileSet("assembly2") };

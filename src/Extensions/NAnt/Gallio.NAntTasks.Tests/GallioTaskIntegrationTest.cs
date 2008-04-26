@@ -19,10 +19,7 @@ using Gallio.Framework;
 using Gallio.Reflection;
 using MbUnit.Framework;
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using Gallio.Runner;
 
 namespace Gallio.NAntTasks.Tests
 {
@@ -51,6 +48,14 @@ namespace Gallio.NAntTasks.Tests
         }
 
         [Test]
+        public void TaskSupportsCustomExtensions()
+        {
+            ProcessTask task = RunNAnt("Extensions");
+            Assert.Contains(task.ConsoleOutput, "TestStepStarted"); // text appears in the debug output
+            Assert.AreEqual(0, task.ExitCode);
+        }
+
+        [Test]
         [Row("PassingTests", true, Description = @"
             This target only runs tests that pass,
             so the task should have set the ExitCode property to ResultCode.Success.")]
@@ -76,15 +81,21 @@ namespace Gallio.NAntTasks.Tests
         [Row("UnhandledException", true, Description = @"
             This target runs tests with unhandled exceptions that nevertheless pass.
             NAnt should not terminate abruptly when this occurs so it should return a successful result code.")]
-        public void RunNAnt(string target, bool expectedResult)
+        public void ExpectedResultIsObtained(string target, bool expectedResult)
+        {
+            ProcessTask task = RunNAnt(target);
+            Assert.AreEqual(expectedResult, task.ExitCode == 0, "Unexpected exit code.");
+        }
+
+        private ProcessTask RunNAnt(string target)
         {
             ProcessTask task = Tasks.StartProcessTask(executablePath,
-                String.Concat("/f:Integration.build ", target,
+                String.Concat("-debug /f:Integration.build ", target,
                 " /D:GallioPath=\"", RuntimeAccessor.InstallationPath, "\""),
                 workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");
-            Assert.AreEqual(expectedResult, task.ExitCode == 0, "Unexpected exit code.");
+            return task;
         }
     }
 }

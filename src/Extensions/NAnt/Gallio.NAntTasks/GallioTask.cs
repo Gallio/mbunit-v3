@@ -105,7 +105,7 @@ namespace Gallio.NAntTasks
         private string statisticsPropertiesPrefix;
         private bool showReports;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
-        private string[] runnerExtensions = EmptyArray<string>.Instance;
+        private ArgumentCollection runnerExtensions = new ArgumentCollection();
         private bool doNotRun;
         private bool ignoreAnnotations;
         private bool echoResults = true;
@@ -325,18 +325,16 @@ namespace Gallio.NAntTasks
         /// <code>
         /// <![CDATA[
         /// <gallio>
-        ///     <runner-extensions>
-        ///         <include name="FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting" />
-        ///     </runner-extensions>
+        ///     <runner-extension value="FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting" />
         ///     <!-- More options -->
         /// </gallio>
         /// ]]>
         /// </code>
         /// </example>
-        [BuildElementArray("runner-extensions", ElementType = typeof(string))]
-        public string[] RunnerExtensions
+        [BuildElementArray("runner-extension")]
+        public ArgumentCollection RunnerExtensions
         {
-            set { runnerExtensions = value; }
+            get { return runnerExtensions; }
         }
 
         /// <summary>
@@ -489,7 +487,10 @@ namespace Gallio.NAntTasks
 
             launcher.TestRunnerFactoryName = runnerType;
             if (runnerExtensions != null)
-                GenericUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
+            {
+                foreach (Argument arg in runnerExtensions)
+                    launcher.TestRunnerExtensionSpecifications.Add(arg.Value);
+            }
 
             launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
             launcher.RuntimeSetup = new RuntimeSetup();

@@ -51,6 +51,14 @@ namespace Gallio.MSBuildTasks.Tests
         }
 
         [Test]
+        public void TaskSupportsCustomExtensions()
+        {
+            ProcessTask task = RunMSBuild("Extensions");
+            Assert.Contains(task.ConsoleOutput, "TestStepStarted"); // text appears in the debug output
+            Assert.AreEqual(0, task.ExitCode);
+        }
+
+        [Test]
         [Row("PassingTests", true, Description=@"
             This target only runs tests that pass,
             so the task should have set the ExitCode property to ResultCode.Success.")]
@@ -76,15 +84,21 @@ namespace Gallio.MSBuildTasks.Tests
         [Row("UnhandledException", true, Description = @"
             This target runs tests with unhandled exceptions that nevertheless pass.
             MSBuild should not terminate abruptly when this occurs so it should return a successful result code.")]
-        public void RunMSBuild(string target, bool expectedResult)
+        public void ExpectedResultIsObtained(string target, bool expectedResult)
+        {
+            ProcessTask task = RunMSBuild(target);
+            Assert.AreEqual(expectedResult, task.ExitCode == 0, "Unexpected exit code.");
+        }
+
+        private ProcessTask RunMSBuild(string target)
         {
             ProcessTask task = Tasks.StartProcessTask(executablePath,
-                String.Concat("Integration.proj /t:", target,
+                String.Concat("Integration.proj /v:detailed /t:", target,
                 " /p:GallioPath=\"", RuntimeAccessor.InstallationPath, "\""),
                 workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");
-            Assert.AreEqual(expectedResult, task.ExitCode == 0, "Unexpected exit code.");
+            return task;
         }
     }
 }

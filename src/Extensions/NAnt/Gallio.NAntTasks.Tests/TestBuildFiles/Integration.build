@@ -96,9 +96,10 @@
   
   <target name="Extensions">
     <gallio result-property="ExitCode" filter="Type: PassingTests" ignore-annotations="true">
-      <runner-extensions>
-        <include 
-      </runner-extensions>
+      <assemblies>
+        <include name="${TestAssembly}" />
+      </assemblies>
+      <runner-extension value="DebugExtension, Gallio" />
     </gallio>
     
     <fail if="${ExitCode != '0'}" >Expected successful result code, was ${ExitCode}!</fail>

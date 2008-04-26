@@ -387,21 +387,20 @@ namespace Gallio.Runner
             report = new Report();
             report.TestPackageConfig = testPackageConfig;
 
-            InitializeHost(progressMonitor, 5);
+            InitializeHost(testPackageConfig.HostSetup, progressMonitor, 5);
             LoadTestDomains(testPackageConfig, progressMonitor, 5);
         }
 
-        private void InitializeHost(IProgressMonitor progressMonitor, double totalWork)
+        private void InitializeHost(HostSetup packageHostSetup, IProgressMonitor progressMonitor, double totalWork)
         {
             progressMonitor.SetStatus("Initializing the host environment.");
 
+            // Configure the host's primary parameters.
+            // FIXME: The division of labor between hosts and domains is unclear currently.
             HostSetup hostSetup = new HostSetup();
-            hostSetup.WorkingDirectory = RuntimeAccessor.InstallationPath;
             hostSetup.ApplicationBaseDirectory = RuntimeAccessor.InstallationPath;
-            hostSetup.ShadowCopy = false;
-            hostSetup.Configuration.LegacyUnhandledExceptionPolicyEnabled = true;
-            hostSetup.Configuration.AssertUiEnabled = false;
-            hostSetup.Configuration.RemotingCustomErrorsEnabled = false;
+            hostSetup.WorkingDirectory = packageHostSetup.WorkingDirectory;
+            hostSetup.ShadowCopy = packageHostSetup.ShadowCopy;
 
             host = hostFactory.CreateHost(hostSetup, logger);
 

@@ -84,7 +84,7 @@ namespace Gallio.PowerShellCommands.Tests
             ProcessTask task = RunPowerShell("-filter Type:PassingTests -ignore-annotations -runner-extension 'DebugExtension,Gallio'");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.Contains(task.ConsoleOutput, "TestStepStarted"); // text appears in the debug output
-            Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero.");
+            StringAssert.Like(task.ConsoleOutput, "ResultCode *: 0");
         }
 
         private ProcessTask RunPowerShell(string options)

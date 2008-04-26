@@ -71,4 +71,15 @@
     <Error Text="Expected successful result code, was '$(ExitCode)'."
            Condition="'$(ExitCode)' != '0'" />
   </Target>  
+  
+  <Target Name="Extensions">
+    <Gallio Filter="Type: PassingTests" Assemblies="$(TestAssembly)"
+            PluginDirectories="$(GallioPath)" IgnoreAnnotations="true"
+            RunnerExtensions="DebugExtension, Gallio">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Gallio>
+    
+    <Error Text="Expected successful result code, was '$(ExitCode)'."
+           Condition="'$(ExitCode)' != '0'" />
+  </Target>  
 </Project>
