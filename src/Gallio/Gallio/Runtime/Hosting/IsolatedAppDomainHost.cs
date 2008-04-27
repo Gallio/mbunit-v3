@@ -16,9 +16,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Security;
-using System.Security.Permissions;
-using System.Security.Policy;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Reflection;
@@ -56,7 +53,7 @@ namespace Gallio.Runtime.Hosting
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>
         /// or <paramref name="logger"/> is null</exception>
         public IsolatedAppDomainHost(HostSetup hostSetup, ILogger logger)
-            : base(hostSetup, logger)
+            : base(hostSetup, logger, null)
         {
         }
 
@@ -70,7 +67,7 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        protected override void InitializeImpl()
+        protected override IRemoteHostService AcquireRemoteHostService()
         {
             try
             {
@@ -78,7 +75,7 @@ namespace Gallio.Runtime.Hosting
                 CreateTemporaryConfigurationFile();
                 CreateAppDomain();
 
-                InitializeHostService();
+                return CreateRemoteInstance<RemoteHostService>(appDomain, (TimeSpan?)null);
             }
             catch (Exception)
             {
@@ -118,23 +115,7 @@ namespace Gallio.Runtime.Hosting
         {
             try
             {
-                AppDomainSetup appDomainSetup = new AppDomainSetup();
-
-                appDomainSetup.ApplicationBase = HostSetup.ApplicationBaseDirectory;
-                appDomainSetup.ApplicationName = @"IsolatedAppDomainHost";
-                appDomainSetup.ConfigurationFile = temporaryConfigurationFilePath;
-
-                if (HostSetup.ShadowCopy)
-                {
-                    appDomainSetup.ShadowCopyFiles = @"true";
-                    appDomainSetup.ShadowCopyDirectories = null;
-                }
-
-                // TODO: Might need to be more careful about how the Evidence is derived.
-                Evidence evidence = AppDomain.CurrentDomain.Evidence;
-                PermissionSet defaultPermissionSet = new PermissionSet(PermissionState.Unrestricted);
-                StrongName[] fullTrustAssemblies = new StrongName[0];
-                appDomain = AppDomain.CreateDomain(appDomainSetup.ApplicationName, evidence, appDomainSetup, defaultPermissionSet, fullTrustAssemblies);
+                appDomain = AppDomainUtils.CreateAppDomain(@"IsolatedAppDomainHost", HostSetup.ApplicationBaseDirectory, temporaryConfigurationFilePath, HostSetup.ShadowCopy);
             }
             catch (Exception ex)
             {
@@ -148,12 +129,6 @@ namespace Gallio.Runtime.Hosting
             string assemblyFile = AssemblyUtils.GetFriendlyAssemblyLocation(type.Assembly);
             return (T)appDomain.CreateInstanceFromAndUnwrap(assemblyFile, type.FullName, false,
                 BindingFlags.Default, null, args, null, null, null);
-        }
-
-        private void InitializeHostService()
-        {
-            IHostService hostService = CreateRemoteInstance<RemoteHostService>(appDomain, (TimeSpan?)null);
-            ConfigureHostService(hostService, null);
         }
 
         private void UnloadAppDomain()

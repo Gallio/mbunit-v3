@@ -33,7 +33,7 @@ namespace Gallio.TypeMockIntegration
                 throw new IntegrationNotInstalledException("TypeMock does not appear to be installed.");
 
             TypeMockHost host = new TypeMockHost(hostSetup, logger);
-            host.Initialize();
+            host.Connect();
             return host;
         }
     }

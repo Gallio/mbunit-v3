@@ -27,7 +27,9 @@ namespace Gallio.Runtime.Hosting
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            return new LocalHost(hostSetup, logger);
+            LocalHost host = new LocalHost(hostSetup, logger);
+            host.Connect();
+            return host;
         }
     }
 }

@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Runtime.Remoting;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
@@ -28,8 +27,7 @@ namespace Gallio.Runtime.Hosting
     /// </summary>
     public class LocalHost : BaseHost
     {
-        private bool wasRuntimeInitializedByThisHost;
-        private CurrentDirectorySwitcher currentDirectorySwitcher;
+        private readonly CurrentDirectorySwitcher currentDirectorySwitcher;
 
         /// <summary>
         /// Creates a local host.
@@ -46,65 +44,35 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        public override bool IsLocal
+        public sealed override bool IsLocal
         {
             get { return true; }
+        }
+
+        /// <inheritdoc />
+        protected sealed override IHostService AcquireHostService()
+        {
+            return new LocalHostService();
+        }
+
+        /// <inheritdoc />
+        protected sealed override void ReleaseHostService(IHostService hostService)
+        {
+            LocalHostService localHostService = (LocalHostService)hostService;
+            localHostService.Dispose();
         }
 
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (currentDirectorySwitcher != null)
-            {
                 currentDirectorySwitcher.Dispose();
-                currentDirectorySwitcher = null;
-            }
 
             base.Dispose(disposing);
         }
 
-        /// <inheritdoc />
-        protected override void DoCallbackImpl(CrossAppDomainDelegate callback)
+        private sealed class LocalHostService : BaseHostService
         {
-            callback();
-        }
-
-        /// <inheritdoc />
-        protected override void PingImpl()
-        {
-            // Nothing to do.
-        }
-
-        /// <inheritdoc />
-        protected override ObjectHandle CreateInstanceImpl(string assemblyName, string typeName)
-        {
-            return Activator.CreateInstance(assemblyName, typeName);
-        }
-
-        /// <inheritdoc />
-        protected override ObjectHandle CreateInstanceFromImpl(string assemblyPath, string typeName)
-        {
-            return Activator.CreateInstanceFrom(assemblyPath, typeName);
-        }
-
-        /// <inheritdoc />
-        protected override void InitializeRuntimeImpl(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
-        {
-            if (!wasRuntimeInitializedByThisHost && !RuntimeAccessor.IsInitialized)
-            {
-                RuntimeBootstrap.Initialize(runtimeFactory, runtimeSetup, logger);
-                wasRuntimeInitializedByThisHost = true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void ShutdownRuntimeImpl()
-        {
-            if (wasRuntimeInitializedByThisHost)
-            {
-                wasRuntimeInitializedByThisHost = false;
-                RuntimeBootstrap.Shutdown();
-            }
         }
     }
 }

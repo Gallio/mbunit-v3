@@ -15,8 +15,8 @@
 
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading;
 using Gallio.Runtime.Logging;
 using Gallio.Concurrency;
@@ -43,6 +43,8 @@ namespace Gallio.Runtime.Hosting
     /// </summary>
     public class IsolatedProcessHost : RemoteHost
     {
+        private const string HostAppFileName = "Gallio.Host.exe";
+
         private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyPollInterval = TimeSpan.FromSeconds(0.5);
         private static readonly TimeSpan PingInterval = TimeSpan.FromSeconds(5);
@@ -65,34 +67,30 @@ namespace Gallio.Runtime.Hosting
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
         /// or <paramref name="logger"/> is null</exception>
         public IsolatedProcessHost(HostSetup hostSetup, ILogger logger)
-            : base(hostSetup, logger)
+            : base(hostSetup, logger, PingInterval)
         {
             uniqueId = Hash64.CreateUniqueHash().ToString();
         }
 
         /// <inheritdoc />
-        protected override void InitializeImpl()
+        protected override IRemoteHostService AcquireRemoteHostService()
         {
             try
             {
-                string hostArguments;
+                string hostConnectionArguments;
                 Func<IClientChannel> clientChannelFactory;
                 Func<IServerChannel> callbackChannelFactory;
-                PrepareConnection(uniqueId, out hostArguments, out clientChannelFactory, out callbackChannelFactory);
+                PrepareConnection(uniqueId, out hostConnectionArguments, out clientChannelFactory, out callbackChannelFactory);
 
-                StartProcess(hostArguments);
+                StartProcess(hostConnectionArguments);
                 EnsureProcessIsRunning();
 
                 clientChannel = clientChannelFactory();
                 callbackChannel = callbackChannelFactory();
 
-                IHostService hostService = HostServiceChannelInterop.GetRemoteHostService(clientChannel);
+                IRemoteHostService hostService = HostServiceChannelInterop.GetRemoteHostService(clientChannel);
                 WaitUntilReady(hostService);
-
-                if (HostSetup.ShadowCopy)
-                    hostService.DoCallback(RemotelyEnableShadowCopy);
-
-                ConfigureHostService(hostService, PingInterval);
+                return hostService;
             }
             catch (Exception ex)
             {
@@ -134,16 +132,16 @@ namespace Gallio.Runtime.Hosting
         /// Prepares the parameters for the remote connection.
         /// </summary>
         /// <param name="uniqueId">The unique id of the host</param>
-        /// <param name="hostArguments">Set to the host application arguments used to configure its server channel</param>
+        /// <param name="hostConnectionArguments">Set to the host application arguments used to configure its server channel</param>
         /// <param name="clientChannelFactory">Set to a factory used to create the local client channel</param>
         /// <param name="callbackChannelFactory">Set to a factory used to create the local server channel to allow the remote host to call back to this one</param>
-        protected virtual void PrepareConnection(string uniqueId, out string hostArguments,
+        protected virtual void PrepareConnection(string uniqueId, out string hostConnectionArguments,
             out Func<IClientChannel> clientChannelFactory, out Func<IServerChannel> callbackChannelFactory)
         {
 #if true
             string portName = @"IsolatedProcessHost." + uniqueId;
 
-            hostArguments = "/ipc-port:" + portName;
+            hostConnectionArguments = "/ipc-port:" + portName;
             clientChannelFactory = delegate { return new BinaryIpcClientChannel(portName); };
             callbackChannelFactory = delegate { return new BinaryIpcServerChannel(portName + ".Callback"); };
 #else
@@ -158,32 +156,31 @@ namespace Gallio.Runtime.Hosting
 #endif
         }
 
-        private void StartProcess(string hostArguments)
+        private void StartProcess(string hostConnectionArguments)
         {
-            HostApplicationProfile profile = new HostApplicationProfile(HostSetup, uniqueId);
-            try
-            {
-                profile.Initialize();
+            HostConfiguration editedHostConfiguration = HostSetup.Configuration.Copy();
+            editedHostConfiguration.AddAssemblyBinding(typeof(IsolatedProcessHost).Assembly, false);
 
-                hostArguments = String.Format(CultureInfo.InvariantCulture,
-                    "{0} /timeout:{1} /owner-process:{2}",
-                    hostArguments, (int)WatchdogTimeout.TotalSeconds, Process.GetCurrentProcess().Id);
+            string configurationFile = Path.GetTempFileName();
+            File.WriteAllText(configurationFile, editedHostConfiguration.ToString());
 
-                processTask = CreateProcessTask(profile.HostProcessPath, hostArguments, HostSetup.WorkingDirectory);
-                processTask.CaptureConsoleOutput = true;
-                processTask.CaptureConsoleError = true;
-                processTask.ConsoleOutputDataReceived += LogConsoleOutput;
-                processTask.ConsoleErrorDataReceived += LogConsoleError;
-                processTask.Terminated += LogExitCode;
-                processTask.Terminated += delegate { profile.Dispose(); };
+            StringBuilder hostArguments = new StringBuilder();
+            hostArguments.Append(hostConnectionArguments);
+            hostArguments.Append(@" /timeout:").Append((int)WatchdogTimeout.TotalSeconds);
+            hostArguments.Append(@" /owner-process:").Append(Process.GetCurrentProcess().Id);
+            hostArguments.Append(@" ""/application-base-directory:").Append(FileUtils.StripTrailingBackslash(HostSetup.ApplicationBaseDirectory)).Append('"');
+            hostArguments.Append(@" ""/configuration-file:").Append(configurationFile).Append('"');
+            if (HostSetup.ShadowCopy)
+                hostArguments.Append(@" /shadow-copy");
 
-                processTask.Start();
-            }
-            catch (Exception)
-            {
-                profile.Dispose();
-                throw;
-            }
+            processTask = CreateProcessTask(GetInstalledHostProcessPath(), hostArguments.ToString(), HostSetup.WorkingDirectory);
+            processTask.CaptureConsoleOutput = true;
+            processTask.CaptureConsoleError = true;
+            processTask.ConsoleOutputDataReceived += LogConsoleOutput;
+            processTask.ConsoleErrorDataReceived += LogConsoleError;
+            processTask.Terminated += LogExitCode;
+
+            processTask.Start();
         }
 
         private void LogConsoleOutput(object sender, DataReceivedEventArgs e)
@@ -259,125 +256,13 @@ namespace Gallio.Runtime.Hosting
             }
         }
 
-        private static void RemotelyEnableShadowCopy()
+        private static string GetInstalledHostProcessPath()
         {
-            // Note: These functions have been deprecated but they are our only choice for configuring
-            //       shadow copying once the application has been loaded short of creating another AppDomain.
-#pragma warning disable 618
-            AppDomain.CurrentDomain.SetShadowCopyFiles();
-            AppDomain.CurrentDomain.SetShadowCopyPath(null);
-#pragma warning restore 618
-        }
+            string hostProcessPath = Path.Combine(RuntimeAccessor.InstallationPath, HostAppFileName);
+            if (!File.Exists(hostProcessPath))
+                throw new HostException(String.Format("Could not find the installed host application in '{0}'.", hostProcessPath));
 
-        private sealed class HostApplicationProfile : IDisposable
-        {
-            private const string HostAppFileName = "Gallio.Host.exe";
-
-            private readonly HostSetup hostSetup;
-            private readonly bool isHostCopyRequired;
-
-            private readonly string hostAppPath;
-            private readonly string hostConfigPath;
-
-            public HostApplicationProfile(HostSetup hostSetup, string uniqueId)
-            {
-                this.hostSetup = hostSetup;
-
-                isHostCopyRequired = IsHostCopyRequired(hostSetup);
-
-                if (isHostCopyRequired)
-                    hostAppPath = Path.Combine(hostSetup.ApplicationBaseDirectory, "Gallio.Host." + uniqueId + ".tmp");
-                else
-                    hostAppPath = Path.Combine(RuntimeAccessor.InstallationPath, "Gallio.Host.exe");
-
-                hostConfigPath = hostAppPath + ".config";
-            }
-
-            public string HostProcessPath
-            {
-                get { return hostAppPath; }
-            }
-
-            public void Initialize()
-            {
-                if (isHostCopyRequired)
-                {
-                    string installedHostProcessPath = GetInstalledHostProcessPath();
-
-                    try
-                    {
-                        File.Copy(installedHostProcessPath, hostAppPath);
-
-                        HostConfiguration configuration = hostSetup.Configuration.Copy();
-                        configuration.AddAssemblyBinding(GetType().Assembly, false);
-
-                        string configurationXml = configuration.ToString();
-                        File.WriteAllText(hostConfigPath, configurationXml);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new HostException(String.Format("Could not copy the configured host application to '{0}'.", hostAppPath), ex);
-                    }
-                }
-            }
-
-            public void Dispose()
-            {
-                if (isHostCopyRequired)
-                {
-                    SafeDelete(hostAppPath);
-                    SafeDelete(hostConfigPath);
-                }
-            }
-
-            private static void SafeDelete(string path)
-            {
-                try
-                {
-                    if (File.Exists(path))
-                        File.Delete(path);
-                }
-                catch (FileNotFoundException)
-                {
-                }
-                catch (Exception ex)
-                {
-                    UnhandledExceptionPolicy.Report(String.Format("Could not temporary file '{0}'.", path), ex);
-                }
-            }
-
-            private static string GetInstalledHostProcessPath()
-            {
-                string hostProcessPath = Path.Combine(RuntimeAccessor.InstallationPath, HostAppFileName);
-                if (!File.Exists(hostProcessPath))
-                    throw new HostException(String.Format("Could not find the installed host application in '{0}'.", hostProcessPath));
-
-                return hostProcessPath;
-            }
-
-            /// <summary>
-            /// To set certain configuration parameters we much create a temporary copy
-            /// of the host application.  This step might be alleviated if we instead
-            /// reimplemented the host using the CLR Hosting APIs to override the setting
-            /// of these parameters in an in-place executable without requiring any
-            /// edits to the configuration file itself.
-            /// </summary>
-            private static bool IsHostCopyRequired(HostSetup setup)
-            {
-                return setup.ApplicationBaseDirectory != RuntimeAccessor.InstallationPath
-                    || !IsDefaultHostConfiguration(setup.Configuration);
-            }
-
-            private static bool IsDefaultHostConfiguration(HostConfiguration config)
-            {
-                return config.AssemblyDependencies.Count == 0
-                    && config.AssemblyQualifications.Count == 0
-                    && config.AssertUiEnabled == false
-                    && config.ConfigurationXml == null
-                    && config.LegacyUnhandledExceptionPolicyEnabled == true
-                    && config.RemotingCustomErrorsEnabled == false
-                    && config.SupportedRuntimeVersions.Count == 0;
-            }
+            return hostProcessPath;
         }
     }
 }

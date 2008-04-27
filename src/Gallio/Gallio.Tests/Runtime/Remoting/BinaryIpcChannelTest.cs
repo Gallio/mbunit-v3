@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Runtime.Remoting;
 using Gallio.Framework.Utilities;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Remoting;
@@ -51,7 +50,7 @@ namespace Gallio.Tests.Runtime.Remoting
             {
                 HostAssemblyResolverHook.Install(host);
 
-                host.DoCallback(RemoteCallback);
+                host.GetHostService().DoCallback(RemoteCallback);
 
                 using (BinaryIpcClientChannel clientChannel = new BinaryIpcClientChannel(PortName))
                 {

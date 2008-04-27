@@ -22,21 +22,18 @@ using Gallio.Properties;
 
 namespace Gallio.Runtime.Hosting
 {
-    /// <summary>
     /// <para>
-    /// An implementation of <see cref="IHost" /> intended to be accessed
-    /// via .Net remoting from some other application context.
+    /// An implementation of <see cref="IHost" /> that communicates with a 
+    /// <see cref="RemoteHostService" /> that resides in a different context
+    /// using .Net remoting.
     /// </para>
     /// <para>
-    /// This implementation wraps a <see cref="IHostService" /> with additional
-    /// exception handling code and sends periodic heartbeat ping message.
+    /// This implementation also provides a mechanism for periodically polling
+    /// the remote service to keep it alive and to detect abrupt disconnection.
     /// </para>
-    /// </summary>
     public abstract class RemoteHost : BaseHost
     {
-        private IHostService hostService;
-        private TimeSpan? pingInterval;
-
+        private readonly TimeSpan? pingInterval;
         private readonly object pingLock = new object();
         private Timer pingTimer;
         private bool lastPingFailed;
@@ -47,11 +44,13 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
         /// <param name="logger">The logger for host message output</param>
+        /// <param name="pingInterval">The automatic ping interval, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>
         /// or <paramref name="logger"/> is null</exception>
-        protected RemoteHost(HostSetup hostSetup, ILogger logger)
+        protected RemoteHost(HostSetup hostSetup, ILogger logger, TimeSpan? pingInterval)
             : base(hostSetup, logger)
         {
+            this.pingInterval = pingInterval;
         }
 
         /// <inheritdoc />
@@ -60,173 +59,38 @@ namespace Gallio.Runtime.Hosting
             get { return false; }
         }
 
-        /// <summary>
-        /// Initializes the remote host and makes it ready for use.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if the host has already been initialized.</exception>
-        public void Initialize()
+        /// <inheritdoc />
+        protected sealed override IHostService AcquireHostService()
         {
-            ThrowIfDisposed();
+            IRemoteHostService remoteHostService = AcquireRemoteHostService();
+            if (remoteHostService == null)
+                return null;
 
-            if (hostService != null)
-                throw new InvalidOperationException("The host has already been initialized.");
-
-            InitializeImpl();
-
-            if (hostService == null)
-                throw new HostException("The subclass did not configure the host service.");
+            StartPingTimer();
+            return new ProxyHostService(remoteHostService);
         }
 
         /// <inheritdoc />
-        protected override void PingImpl()
-        {
-            ThrowIfNotInitialized();
-
-            try
-            {
-                hostService.Ping();
-            }
-            catch (Exception ex)
-            {
-                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void DoCallbackImpl(CrossAppDomainDelegate callback)
-        {
-            ThrowIfNotInitialized();
-
-            try
-            {
-                hostService.DoCallback(callback);
-            }
-            catch (Exception ex)
-            {
-                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override ObjectHandle CreateInstanceImpl(string assemblyName, string typeName)
-        {
-            ThrowIfNotInitialized();
-
-            try
-            {
-                return hostService.CreateInstance(assemblyName, typeName);
-            }
-            catch (Exception ex)
-            {
-                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override ObjectHandle CreateInstanceFromImpl(string assemblyPath, string typeName)
-        {
-            ThrowIfNotInitialized();
-
-            try
-            {
-                return hostService.CreateInstanceFrom(assemblyPath, typeName);
-            }
-            catch (Exception ex)
-            {
-                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void InitializeRuntimeImpl(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
-        {
-            ThrowIfNotInitialized();
-
-            try
-            {
-                hostService.InitializeRuntime(runtimeFactory, runtimeSetup, new RemoteLogger(logger));
-            }
-            catch (Exception ex)
-            {
-                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void ShutdownRuntimeImpl()
-        {
-            ThrowIfNotInitialized();
-
-            try
-            {
-                hostService.ShutdownRuntime();
-            }
-            catch (Exception ex)
-            {
-                throw new RemotingException(Resources.RemoteHost_RemoteException, ex);
-            }
-        }
-
-        /// <summary>
-        /// Disposes the remote host.
-        /// </summary>
-        /// <param name="disposing">True if disposing</param>
-        protected override void Dispose(bool disposing)
+        protected sealed override void ReleaseHostService(IHostService hostService)
         {
             StopPingTimer();
 
-            try
-            {
-                if (disposing)
-                {
-                    if (hostService != null)
-                        hostService.Dispose();
-                }
-            }
-            catch (RemotingException)
-            {
-                // Ignore remoting exceptions that are probably just signalling that
-                // the remote link has already been severed.
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("Could not send Dispose message to remote host service.", ex);
-            }
-            finally
-            {
-                hostService = null;
-                base.Dispose(disposing);
-            }
+            ProxyHostService proxyHostService = (ProxyHostService)hostService;
+            proxyHostService.Dispose();
         }
 
-        private void ThrowIfNotInitialized()
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
         {
-            if (hostService == null)
-                throw new InvalidOperationException("The host has not been initialized.");
+            StopPingTimer();
+            base.Dispose(disposing);
         }
 
         /// <summary>
-        /// Initializes the host.
-        /// Must call <see cref="ConfigureHostService"/> to configure the host service.
+        /// Connects to the remote host service.
         /// </summary>
-        protected abstract void InitializeImpl();
-
-        /// <summary>
-        /// Configures the host service parameters.
-        /// </summary>
-        /// <param name="hostService">The remote host service</param>
-        /// <param name="pingInterval">The automatic ping interval, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostService"/> is null</exception>
-        protected void ConfigureHostService(IHostService hostService, TimeSpan? pingInterval)
-        {
-            if (hostService == null)
-                throw new ArgumentNullException("hostService");
-
-            this.hostService = hostService;
-            this.pingInterval = pingInterval;
-
-            StartPingTimer();
-        }
+        /// <returns>The remote host service</returns>
+        protected abstract IRemoteHostService AcquireRemoteHostService();
 
         private void StartPingTimer()
         {
@@ -268,6 +132,7 @@ namespace Gallio.Runtime.Hosting
 #if DEBUG // FIXME: For debugging the remoting starvation issue.  See Google Code issue #147.  Remove when fixed.
                 RuntimeAccessor.Logger.Log(LogSeverity.Debug, String.Format("[Ping] {0:o}", DateTime.Now));
 #endif
+                IHostService hostService = HostService;
                 if (hostService != null)
                     hostService.Ping();
 
@@ -285,6 +150,97 @@ namespace Gallio.Runtime.Hosting
             {
                 if (pinged)
                     pingInProgress = false;
+            }
+        }
+
+        private sealed class ProxyHostService : BaseHostService
+        {
+            private IRemoteHostService hostService;
+
+            public ProxyHostService(IRemoteHostService hostService)
+            {
+                this.hostService = hostService;
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+
+                if (hostService != null)
+                {
+                    try
+                    {
+                        hostService.Shutdown();
+                    }
+                    catch (Exception)
+                    {
+                        // Ignore the exception since we're shutting down anyways.
+                    }
+                }
+
+                hostService = null;
+            }
+
+            protected override void PingImpl()
+            {
+                ThrowIfNotConnected();
+
+                try
+                {
+                    hostService.Ping();
+                }
+                catch (Exception ex)
+                {
+                    throw new HostException(Resources.RemoteHost_RemoteException, ex);
+                }
+            }
+
+            protected override void DoCallbackImpl(CrossAppDomainDelegate callback)
+            {
+                ThrowIfNotConnected();
+
+                try
+                {
+                    hostService.DoCallback(callback);
+                }
+                catch (Exception ex)
+                {
+                    throw new HostException(Resources.RemoteHost_RemoteException, ex);
+                }
+            }
+
+            protected override ObjectHandle CreateInstanceImpl(string assemblyName, string typeName)
+            {
+                ThrowIfNotConnected();
+
+                try
+                {
+                    return hostService.CreateInstance(assemblyName, typeName);
+                }
+                catch (Exception ex)
+                {
+                    throw new HostException(Resources.RemoteHost_RemoteException, ex);
+                }
+            }
+
+            protected override ObjectHandle CreateInstanceFromImpl(string assemblyPath, string typeName)
+            {
+                ThrowIfNotConnected();
+
+                try
+                {
+                    return hostService.CreateInstanceFrom(assemblyPath, typeName);
+                }
+                catch (Exception ex)
+                {
+                    throw new HostException(Resources.RemoteHost_RemoteException, ex);
+                }
+            }
+
+            private void ThrowIfNotConnected()
+            {
+                if (hostService == null)
+                    throw new InvalidOperationException("The remote host service is not connected.");
             }
         }
     }

@@ -13,23 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.Logging;
+using System;
 
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// <para>
-    /// A factory for initialized <see cref="IsolatedProcessHost" /> hosts.
-    /// </para>
+    /// A specialization of host service designed for hosts that are remotely managed.
     /// </summary>
-    public class IsolatedProcessHostFactory : BaseHostFactory
+    public interface IRemoteHostService : IHostService
     {
-        /// <inheritdoc />
-        protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
-        {
-            IsolatedProcessHost host = new IsolatedProcessHost(hostSetup, logger);
-            host.Connect();
-            return host;
-        }
+        /// <summary>
+        /// Remotely shuts down the host service.
+        /// </summary>
+        void Shutdown();
     }
 }

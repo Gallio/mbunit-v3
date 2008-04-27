@@ -40,16 +40,16 @@ namespace Gallio.Runner
         public void LoadTestDomains(TestPackageConfig testPackageConfig, ILogger logger, IProgressMonitor progressMonitor)
         {
             if (! host.IsLocal)
-            {
                 HostAssemblyResolverHook.Install(host);
-                host.InitializeRuntime(RuntimeAccessor.Instance.GetRuntimeFactory(),
-                    RuntimeAccessor.Instance.GetRuntimeSetup(), logger);
-            }
 
             Type remoteType = typeof(Remote);
-            remote = (Remote)host.CreateInstance(remoteType.Assembly.FullName, remoteType.FullName).Unwrap();
+            remote = (Remote)host.GetHostService().CreateInstance(remoteType.Assembly.FullName, remoteType.FullName).Unwrap();
 
-            remote.LoadTestDomains(testPackageConfig, new RemoteLogger(logger), new RemoteProgressMonitor(progressMonitor));
+            if (! host.IsLocal)
+                remote.InitializeRuntime(RuntimeAccessor.Instance.GetRuntimeFactory(),
+                    RuntimeAccessor.Instance.GetRuntimeSetup(), new RemoteLogger(logger));
+
+            remote.LoadTestDomains(testPackageConfig, new RemoteProgressMonitor(progressMonitor));
         }
 
         public TestModelData ExploreTestDomains(TestExplorationOptions options, IProgressMonitor progressMonitor)
@@ -67,12 +67,11 @@ namespace Gallio.Runner
             if (remote != null)
             {
                 remote.UnloadTestDomains(new RemoteProgressMonitor(progressMonitor));
-                remote = null;
-            }
 
-            if (!host.IsLocal)
-            {
-                host.ShutdownRuntime();
+                if (!host.IsLocal)
+                    remote.ShutdownRuntime();
+
+                remote = null;
             }
         }
 
@@ -80,7 +79,17 @@ namespace Gallio.Runner
         {
             private ITestDomain domain;
 
-            public void LoadTestDomains(TestPackageConfig testPackageConfig, ILogger logger, IProgressMonitor progressMonitor)
+            public void InitializeRuntime(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
+            {
+                RuntimeBootstrap.Initialize(runtimeFactory, runtimeSetup, logger);
+            }
+
+            public void ShutdownRuntime()
+            {
+                RuntimeBootstrap.Shutdown();
+            }
+
+            public void LoadTestDomains(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
             {
                 // HACK: Temporary workaround until we refactor ITestDomain.
                 ITestHarnessFactory harnessFactory = RuntimeAccessor.Instance.Resolve<ITestHarnessFactory>();

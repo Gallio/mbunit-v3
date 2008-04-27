@@ -29,7 +29,7 @@ namespace Gallio.Runtime.Hosting
         protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
             IsolatedAppDomainHost host = new IsolatedAppDomainHost(hostSetup, logger);
-            host.Initialize();
+            host.Connect();
             return host;
         }
     }

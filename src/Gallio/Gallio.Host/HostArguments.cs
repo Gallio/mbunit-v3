@@ -59,6 +59,32 @@ namespace Gallio.Host
         public int OwnerProcessId = -1;
 
         [CommandLineArgument(
+            CommandLineArgumentFlags.AtMostOnce,
+            ShortName = "abd",
+            LongName = "application-base-directory",
+            Description = "The application base directory.",
+            ValueLabel = "dir"
+            )]
+        public string ApplicationBaseDirectory;
+
+        [CommandLineArgument(
+            CommandLineArgumentFlags.AtMostOnce,
+            ShortName = "cf",
+            LongName = "configuration-file",
+            Description = "The XML configuration file.",
+            ValueLabel = "file"
+            )]
+        public string ConfigurationFile;
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "sc",
+             LongName = "shadow-copy",
+             Description = "Enable shadow copying of assemblies."
+             )]
+        public bool ShadowCopy;
+        
+        [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "h",
              LongName = "help",

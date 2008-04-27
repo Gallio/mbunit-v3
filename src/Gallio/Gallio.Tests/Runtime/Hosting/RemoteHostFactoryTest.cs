@@ -17,16 +17,10 @@ using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using Gallio.Runtime.Logging;
 using Gallio.Collections;
-using Gallio.Runtime;
 using Gallio.Framework.Utilities;
 using Gallio.Runtime.Hosting;
-using Gallio.Reflection;
-using Gallio.Runtime.Windsor;
 using MbUnit.Framework;
-using Rhino.Mocks;
-using Rhino.Mocks.Constraints;
 
 namespace Gallio.Tests.Runtime.Hosting
 {
@@ -49,9 +43,9 @@ namespace Gallio.Tests.Runtime.Hosting
 
                 Assert.AreEqual(0, callbackCounter);
 
-                host.DoCallback(DoCallbackHasRemoteSideEffectsCallback);
-                InterimAssert.Throws<Exception>(delegate { host.DoCallback(DoCallbackHasRemoteSideEffectsCallback); });
-                host.DoCallback(DoCallbackHasRemoteSideEffectsCallback);
+                host.GetHostService().DoCallback(DoCallbackHasRemoteSideEffectsCallback);
+                InterimAssert.Throws<Exception>(delegate { host.GetHostService().DoCallback(DoCallbackHasRemoteSideEffectsCallback); });
+                host.GetHostService().DoCallback(DoCallbackHasRemoteSideEffectsCallback);
 
                 Assert.AreEqual(0, callbackCounter);
             }
@@ -65,37 +59,6 @@ namespace Gallio.Tests.Runtime.Hosting
         }
 
         [Test]
-        public void RemoteRuntimeCanAccessTheLogger()
-        {
-            ILogger logger = Mocks.CreateMock<ILogger>();
-
-            using (Mocks.Record())
-            {
-                logger.Log(LogSeverity.Error, "message", null);
-
-                logger.Log(LogSeverity.Debug, null, null);
-                LastCall.Constraints(Is.Equal(LogSeverity.Debug), Is.Anything(), Is.Anything()).Repeat.Any();
-            }
-
-            using (Mocks.Playback())
-            {
-                using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
-                {
-                    HostAssemblyResolverHook.Install(host);
-                    host.InitializeRuntime(WindsorRuntimeFactory.Instance, new RuntimeSetup(), logger);
-
-                    host.DoCallback(RemoteRuntimeCanAccessTheLoggerCallback);
-
-                    host.ShutdownRuntime();
-                }
-            }
-        }
-        private static void RemoteRuntimeCanAccessTheLoggerCallback()
-        {
-            RuntimeAccessor.Logger.Log(LogSeverity.Error, "message", null);
-        }
-
-        [Test]
         public void HostRunsWithShadowCopyingEnabledOnRequest()
         {
             HostSetup hostSetup = new HostSetup();
@@ -104,7 +67,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.DoCallback(HostRunsWithShadowCopyingEnabledOnRequestCallback);
+                host.GetHostService().DoCallback(HostRunsWithShadowCopyingEnabledOnRequestCallback);
             }
         }
         private static void HostRunsWithShadowCopyingEnabledOnRequestCallback()
@@ -121,7 +84,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.DoCallback(HostRunsWithSpecifiedApplicationBaseDirectoryCallback);
+                host.GetHostService().DoCallback(HostRunsWithSpecifiedApplicationBaseDirectoryCallback);
             }
         }
         private static void HostRunsWithSpecifiedApplicationBaseDirectoryCallback()
@@ -143,7 +106,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.DoCallback(HostRunsWithSpecifiedConfigurationXmlCallback);
+                host.GetHostService().DoCallback(HostRunsWithSpecifiedConfigurationXmlCallback);
             }
         }
         private static void HostRunsWithSpecifiedConfigurationXmlCallback()
@@ -160,7 +123,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.DoCallback(HostRunsWithAssertUiEnabledCallback);
+                host.GetHostService().DoCallback(HostRunsWithAssertUiEnabledCallback);
             }
 
             hostSetup.Configuration.AssertUiEnabled = false;
@@ -168,7 +131,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.DoCallback(HostRunsWithAssertUiDisabledCallback);
+                host.GetHostService().DoCallback(HostRunsWithAssertUiDisabledCallback);
             }
         }
         private static void HostRunsWithAssertUiEnabledCallback()

@@ -15,15 +15,13 @@
 
 using System;
 using System.Runtime.Remoting;
-using Gallio.Runtime.Logging;
-using Gallio.Runtime;
 
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
     /// <para>
     /// A host service enables a local client to interact with a remotely
-    /// executing hosting process.
+    /// executing hosting environment.
     /// </para>
     /// <para>
     /// A host service implementation may choose to implement a keep-alive
@@ -31,7 +29,7 @@ namespace Gallio.Runtime.Hosting
     /// when it has not received a ping within a set period of time.
     /// </para>
     /// </summary>
-    public interface IHostService : IDisposable
+    public interface IHostService
     {
         /// <summary>
         /// Pings the host to verify and maintain connectivity.
@@ -71,20 +69,5 @@ namespace Gallio.Runtime.Hosting
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyPath"/> or
         /// <paramref name="typeName"/> is null</exception>
         ObjectHandle CreateInstanceFrom(string assemblyPath, string typeName);
-
-        /// <summary>
-        /// Initializes the runtime.
-        /// </summary>
-        /// <param name="runtimeFactory">The runtime factory</param>
-        /// <param name="runtimeSetup">The runtime setup</param>
-        /// <param name="logger">The logger</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimeFactory"/>,
-        /// <paramref name="runtimeSetup"/> or <paramref name="logger"/> is null</exception>
-        void InitializeRuntime(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger);
-
-        /// <summary>
-        /// Shuts down the runtime.
-        /// </summary>
-        void ShutdownRuntime();
     }
 }

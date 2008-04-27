@@ -34,12 +34,12 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="channel">The channel</param>
         /// <returns>The remote host service</returns>
-        public static IHostService GetRemoteHostService(IClientChannel channel)
+        public static IRemoteHostService GetRemoteHostService(IClientChannel channel)
         {
             if (channel == null)
                 throw new ArgumentNullException("channel");
 
-            return (IHostService)channel.GetService(typeof(IHostService), ServiceName);
+            return (IRemoteHostService)channel.GetService(typeof(IRemoteHostService), ServiceName);
         }
 
         /// <summary>

@@ -48,7 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HostArguments.cs" />
+    <Compile Include="HostEndpoint.cs" />
     <Compile Include="HostProgram.cs" />
+    <Compile Include="HostTerminationReason.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

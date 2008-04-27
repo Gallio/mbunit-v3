@@ -14,10 +14,10 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
+using System.IO;
+using Gallio.Reflection;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Hosting;
-using Gallio.Runtime.Remoting;
 using Gallio.Runtime;
 using Gallio.Utilities;
 
@@ -43,10 +43,9 @@ namespace Gallio.Host
                 return 0;
             }
 
-            if (Arguments.IpcPortName != null && Arguments.TcpPortNumber >= 0
-                || Arguments.IpcPortName == null && Arguments.TcpPortNumber < 0)
+            if (! ValidateArguments())
             {
-                ShowErrorMessage("Either /ipc-port or /tcp-port must be specified, not both.");
+                ShowHelp();
                 return 1;
             }
 
@@ -55,7 +54,7 @@ namespace Gallio.Host
 
             try
             {
-                InitializeAndRunHost();
+                RunEndpoint();
             }
             catch (Exception ex)
             {
@@ -70,70 +69,86 @@ namespace Gallio.Host
             return 0;
         }
 
-        private void InitializeAndRunHost()
+        private bool ValidateArguments()
         {
-            IServerChannel serverChannel;
-            IClientChannel callbackChannel;
-            if (Arguments.IpcPortName != null)
+            if (Arguments.IpcPortName != null && Arguments.TcpPortNumber >= 0
+                || Arguments.IpcPortName == null && Arguments.TcpPortNumber < 0)
             {
-                Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'", Arguments.IpcPortName));
-
-                serverChannel = new BinaryIpcServerChannel(Arguments.IpcPortName);
-                callbackChannel = new BinaryIpcClientChannel(Arguments.IpcPortName + @".Callback");
-            }
-            else
-            {
-                Console.WriteLine(String.Format("* Listening for connections on TCP port: '{0}'", Arguments.TcpPortNumber));
-
-                serverChannel = new BinaryTcpServerChannel("localhost", Arguments.TcpPortNumber);
-                callbackChannel = new BinaryTcpClientChannel("localhost", Arguments.TcpPortNumber);
+                ShowErrorMessage("Either /ipc-port or /tcp-port must be specified, not both.");
+                return false;
             }
 
-            Process ownerProcess = null;
-            try
+            if (Arguments.ApplicationBaseDirectory != null && !Directory.Exists(Arguments.ApplicationBaseDirectory))
             {
-                if (Arguments.OwnerProcessId >= 0)
-                    ownerProcess = Process.GetProcessById(Arguments.OwnerProcessId);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine(String.Format("* The owner process with PID {0} does not appear to be running!",
-                    Arguments.OwnerProcessId));
-                return;
+                ShowErrorMessage("The specified application base directory does not exist.");
+                return false;
             }
 
-            TimeSpan? watchdogTimeout = Arguments.TimeoutSeconds <= 0 ? (TimeSpan?)null : TimeSpan.FromSeconds(Arguments.TimeoutSeconds);
-
-            using (serverChannel)
+            if (Arguments.ConfigurationFile != null && !File.Exists(Arguments.ConfigurationFile))
             {
-                using (callbackChannel)
-                {
-                    RunHost(serverChannel, watchdogTimeout, ownerProcess);
-                }
+                ShowErrorMessage("The specified configuration file does not exist.");
+                return false;
             }
+
+            return true;
         }
 
-        private void RunHost(IServerChannel serverChannel, TimeSpan? watchdogTimeout, Process ownerProcess)
+        private void RunEndpoint()
         {
-            using (RemoteHostService hostService = new RemoteHostService(watchdogTimeout))
+            AppDomain appDomain = null;
+            try
             {
-                if (ownerProcess != null)
+                appDomain = AppDomainUtils.CreateAppDomain(@"IsolatedProcessHost",
+                    Arguments.ApplicationBaseDirectory, Arguments.ConfigurationFile, Arguments.ShadowCopy);
+
+                Type endpointType = typeof(HostEndpoint);
+                HostEndpoint endpoint = (HostEndpoint) appDomain.CreateInstanceFromAndUnwrap(
+                            AssemblyUtils.GetAssemblyLocalPath(endpointType.Assembly), endpointType.FullName);
+
+                if (Arguments.OwnerProcessId >= 0)
                 {
-                    ownerProcess.Exited += delegate { hostService.Dispose(); };
-                    ownerProcess.EnableRaisingEvents = true;
+                    if (! endpoint.SetOwnerProcess(Arguments.OwnerProcessId))
+                    {
+                        Console.WriteLine(String.Format("* The owner process with PID {0} does not appear to be running!", Arguments.OwnerProcessId));
+                        return;
+                    }
                 }
 
-                if (ownerProcess == null || !ownerProcess.HasExited)
+                if (Arguments.IpcPortName != null)
                 {
-                    HostServiceChannelInterop.RegisterWithChannel(hostService, serverChannel);
-                    hostService.WaitUntilDisposed();
+                    Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'", Arguments.IpcPortName));
+                    endpoint.InitializeIpcChannel(Arguments.IpcPortName);
+                }
+                else
+                {
+                    Console.WriteLine(String.Format("* Listening for connections on TCP port: '{0}'", Arguments.TcpPortNumber));
+                    endpoint.InitializeTcpChannel(Arguments.TcpPortNumber);
                 }
 
-                if (hostService.WatchdogTimerExpired)
-                    Console.WriteLine("* Watchdog timer expired!");
+                TimeSpan? watchdogTimeout = Arguments.TimeoutSeconds <= 0
+                    ? (TimeSpan?) null
+                    : TimeSpan.FromSeconds(Arguments.TimeoutSeconds);
 
-                if (ownerProcess != null && ownerProcess.HasExited)
-                    Console.WriteLine("* Owner process terminated abruptly!");
+                HostTerminationReason reason = endpoint.Run(watchdogTimeout);
+
+                switch (reason)
+                {
+                    case HostTerminationReason.WatchdogTimeout:
+                        Console.WriteLine("* Watchdog timer expired!");
+                        break;
+
+                    case HostTerminationReason.Disowned:
+                        Console.WriteLine("* Owner process terminated abruptly!");
+                        break;
+
+                    case HostTerminationReason.Disposed:
+                        break;
+                }
+            }
+            finally
+            {
+                if (appDomain != null)
+                    AppDomain.Unload(appDomain);
             }
         }
 
@@ -142,7 +157,7 @@ namespace Gallio.Host
             if (e.IsRecursive)
                 return;
 
-            Console.WriteLine("* Unhandled exception: " + e.GetDescription());
+            Console.WriteLine(String.Format("* Unhandled exception: {0}", e.GetDescription()));
         }
 
         [STAThread]

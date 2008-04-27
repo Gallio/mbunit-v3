@@ -147,11 +147,11 @@ namespace Gallio.Runner.Domains
         {
             try
             {
-                host.InitializeRuntime(runtimeFactory, runtimeSetup, logger);
+                //host.InitializeRuntime(runtimeFactory, runtimeSetup, logger);
 
                 Type factoryType = typeof(LocalTestDomainFactory);
                 ITestDomainFactory factory = (ITestDomainFactory)
-                    host.CreateInstance(factoryType.Assembly.FullName, factoryType.FullName).Unwrap();
+                    host.GetHostService(). CreateInstance(factoryType.Assembly.FullName, factoryType.FullName).Unwrap();
                 return factory.CreateDomain();
             }
             catch (Exception ex)
@@ -162,8 +162,8 @@ namespace Gallio.Runner.Domains
 
         private void ShutdownTestRunner()
         {
-            if (host != null)
-                host.ShutdownRuntime();
+            //if (host != null)
+            //    host.ShutdownRuntime();
         }
     }
 }

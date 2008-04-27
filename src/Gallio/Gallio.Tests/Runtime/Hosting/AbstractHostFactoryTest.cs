@@ -44,14 +44,16 @@ namespace Gallio.Tests.Runtime.Hosting
         public void PingSucceedsUntilHostIsDisposed()
         {
             IHost host;
+            IHostService hostService;
             using (host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 // Should work fine.
-                host.Ping();
+                hostService = host.GetHostService();
+                hostService.Ping();
             }
 
             // Should fail.
-            InterimAssert.Throws<Exception>(delegate { host.Ping(); });
+            InterimAssert.Throws<Exception>(delegate { hostService.Ping(); });
         }
 
         [Test]
@@ -60,7 +62,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 Type remoteType = typeof(ArrayList);
-                ObjectHandle handle = host.CreateInstance(remoteType.Assembly.FullName, remoteType.FullName);
+                ObjectHandle handle = host.GetHostService().CreateInstance(remoteType.Assembly.FullName, remoteType.FullName);
 
                 Assert.IsInstanceOfType(remoteType, handle.Unwrap());
             }
@@ -72,7 +74,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 Type serviceType = typeof(RemoteHostFactoryTest.TestService);
-                RemoteHostFactoryTest.TestService serviceProxy = (RemoteHostFactoryTest.TestService)host.CreateInstanceFrom(
+                RemoteHostFactoryTest.TestService serviceProxy = (RemoteHostFactoryTest.TestService)host.GetHostService().CreateInstanceFrom(
                     AssemblyUtils.GetAssemblyLocalPath(serviceType.Assembly), serviceType.FullName).Unwrap();
 
                 Assert.AreEqual(42, serviceProxy.Add(23, 19));
@@ -90,7 +92,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.DoCallback(HostRunsInRequestedWorkingDirectoryCallback);
+                host.GetHostService().DoCallback(HostRunsInRequestedWorkingDirectoryCallback);
             }
 
             Assert.AreEqual(oldWorkingDirectory, Environment.CurrentDirectory,

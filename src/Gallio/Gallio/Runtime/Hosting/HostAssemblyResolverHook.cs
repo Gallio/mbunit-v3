@@ -63,13 +63,14 @@ namespace Gallio.Runtime.Hosting
         {
             Type resolverType = typeof(Resolver);
             Assembly resolverAssembly = resolverType.Assembly;
+            IHostService hostService = host.GetHostService();
             try
             {
-                return host.CreateInstance(resolverAssembly.FullName, resolverType.FullName);
+                return hostService.CreateInstance(resolverAssembly.FullName, resolverType.FullName);
             }
             catch (Exception)
             {
-                return host.CreateInstanceFrom(AssemblyUtils.GetAssemblyLocalPath(resolverAssembly), resolverType.FullName);
+                return hostService.CreateInstanceFrom(AssemblyUtils.GetAssemblyLocalPath(resolverAssembly), resolverType.FullName);
             }
         }
 

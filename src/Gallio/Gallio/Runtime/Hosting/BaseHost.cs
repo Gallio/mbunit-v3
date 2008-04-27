@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Runtime.Remoting;
 using Gallio.Runtime.Logging;
+using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -24,8 +24,14 @@ namespace Gallio.Runtime.Hosting
     /// </summary>
     public abstract class BaseHost : IHost
     {
+        private readonly object syncRoot = new object();
+
         private readonly HostSetup hostSetup;
         private readonly ILogger logger;
+        private IHostService hostService;
+        private event EventHandler disconnectedHandlers;
+
+        private bool wasInitialized;
         private bool isDisposed;
 
         /// <summary>
@@ -46,6 +52,150 @@ namespace Gallio.Runtime.Hosting
             this.logger = logger;
         }
 
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
+        public event EventHandler Disconnected
+        {
+            add
+            {
+                lock (syncRoot)
+                {
+                    ThrowIfDisposed();
+
+                    if (hostService != null)
+                    {
+                        disconnectedHandlers += value;
+                        return;
+                    }
+                }
+
+                EventHandlerUtils.SafeInvoke(value, this, EventArgs.Empty);
+            }
+            remove
+            {
+                lock (syncRoot)
+                {
+                    ThrowIfDisposed();
+
+                    disconnectedHandlers -= value;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public abstract bool IsLocal { get; }
+
+        /// <inheritdoc />
+        public bool IsConnected
+        {
+            get
+            {
+                lock (syncRoot)
+                {
+                    ThrowIfDisposed();
+
+                    return hostService != null;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public HostSetup GetHostSetup()
+        {
+            lock (syncRoot)
+            {
+                ThrowIfDisposed();
+                return hostSetup.Copy();
+            }
+        }
+
+        /// <summary>
+        /// Initializes the host and connects to the host service.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the host has already been initialized</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        /// <exception cref="HostException">Thrown if an exception occurred while connecting to the host</exception>
+        public void Connect()
+        {
+            lock (syncRoot)
+            {
+                ThrowIfDisposed();
+                if (wasInitialized)
+                    throw new InvalidOperationException("The host has already been initialized.");
+
+                wasInitialized = true;
+            }
+
+            try
+            {
+                hostService = AcquireHostService();
+            }
+            catch (Exception ex)
+            {
+                throw new HostException("An exception occurred while connecting to the host service.", ex);
+            }
+            finally
+            {
+                if (hostService == null)
+                    NotifyDisconnected();
+            }
+        }
+
+        /// <inheritdoc />
+        public void Disconnect()
+        {
+            IHostService cachedHostService;
+            lock (syncRoot)
+            {
+                ThrowIfDisposed();
+                if (hostService == null)
+                    return;
+
+                cachedHostService = hostService;
+            }
+
+            if (cachedHostService != null)
+            {
+                try
+                {
+                    ReleaseHostService(cachedHostService);
+                }
+                catch (Exception ex)
+                {
+                    UnhandledExceptionPolicy.Report("An exception occurred while disconnecting from the host service.", ex);
+                }
+            }
+
+            NotifyDisconnected();
+        }
+
+        /// <inheritdoc />
+        public IHostService GetHostService()
+        {
+            lock (syncRoot)
+            {
+                ThrowIfDisposed();
+
+                if (hostService == null)
+                    throw new InvalidOperationException("The host has been disconnected.");
+                return hostService;
+            }
+        }
+
+        /// <summary>
+        /// Gets an reference to the host service, or null if not connected.
+        /// </summary>
+        protected IHostService HostService
+        {
+            get { return hostService; }
+        }
+
         /// <summary>
         /// Gets the internal host setup information without copying it.
         /// </summary>
@@ -62,123 +212,19 @@ namespace Gallio.Runtime.Hosting
             get { return logger; }
         }
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc />
-        public HostSetup GetHostSetup()
-        {
-            return hostSetup.Copy();
-        }
-
-        /// <inheritdoc />
-        public abstract bool IsLocal { get; }
-
-        /// <inheritdoc />
-        public void DoCallback(CrossAppDomainDelegate callback)
-        {
-            if (callback == null)
-                throw new ArgumentNullException("callback");
-
-            ThrowIfDisposed();
-            DoCallbackImpl(callback);
-        }
-
-        /// <inheritdoc />
-        public void Ping()
-        {
-            ThrowIfDisposed();
-            PingImpl();
-        }
-
-        /// <inheritdoc />
-        public ObjectHandle CreateInstance(string assemblyName, string typeName)
-        {
-            if (assemblyName == null)
-                throw new ArgumentNullException("assemblyName");
-            if (typeName == null)
-                throw new ArgumentNullException("typeName");
-
-            ThrowIfDisposed();
-            return CreateInstanceImpl(assemblyName, typeName);
-        }
-
-        /// <inheritdoc />
-        public ObjectHandle CreateInstanceFrom(string assemblyPath, string typeName)
-        {
-            if (assemblyPath == null)
-                throw new ArgumentNullException("assemblyPath");
-            if (typeName == null)
-                throw new ArgumentNullException("typeName");
-
-            ThrowIfDisposed();
-            return CreateInstanceFromImpl(assemblyPath, typeName);
-        }
-
-        /// <inheritdoc />
-        public void InitializeRuntime(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
-        {
-            if (runtimeFactory == null)
-                throw new ArgumentNullException("runtimeFactory");
-            if (runtimeSetup == null)
-                throw new ArgumentNullException("runtimeSetup");
-            if (logger == null)
-                throw new ArgumentNullException("logger");
-
-            ThrowIfDisposed();
-            InitializeRuntimeImpl(runtimeFactory, runtimeSetup, logger);
-        }
-
-        /// <inheritdoc />
-        public void ShutdownRuntime()
-        {
-            ThrowIfDisposed();
-            ShutdownRuntimeImpl();
-        }
+        /// <summary>
+        /// Gets the host service.
+        /// </summary>
+        /// <returns>The host service, or null if the host service was not available</returns>
+        protected abstract IHostService AcquireHostService();
 
         /// <summary>
-        /// Internal implementation of <see cref="DoCallback"/>.
+        /// Releases the host service.
         /// </summary>
-        /// <param name="callback">The callback to invoke within the host, not null</param>
-        protected abstract void DoCallbackImpl(CrossAppDomainDelegate callback);
-
-        /// <summary>
-        /// Internal implementation of <see cref="Ping"/>.
-        /// </summary>
-        protected abstract void PingImpl();
-
-        /// <summary>
-        /// Internal implementation of <see cref="CreateInstance"/>.
-        /// </summary>
-        /// <param name="assemblyName">The assembly name, not null</param>
-        /// <param name="typeName">The type name, not null</param>
-        /// <returns>The created object handle</returns>
-        protected abstract ObjectHandle CreateInstanceImpl(string assemblyName, string typeName);
-
-        /// <summary>
-        /// Internal implementation of <see cref="CreateInstanceFrom" />.
-        /// </summary>
-        /// <param name="assemblyPath">The assembly path, not null</param>
-        /// <param name="typeName">The type name, not null</param>
-        /// <returns>The created object handle</returns>
-        protected abstract ObjectHandle CreateInstanceFromImpl(string assemblyPath, string typeName);
-
-        /// <summary>
-        /// Internal implementation of <see cref="InitializeRuntime" />.
-        /// </summary>
-        /// <param name="runtimeFactory">The runtime factory, not null</param>
-        /// <param name="runtimeSetup">The runtime setup, not null</param>
-        /// <param name="logger">The logger, not null</param>
-        protected abstract void InitializeRuntimeImpl(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger);
-
-        /// <summary>
-        /// Internal implementation of <see cref="ShutdownRuntime" />.
-        /// </summary>
-        protected abstract void ShutdownRuntimeImpl();
+        /// <param name="hostService">The host service that is being released, not null</param>
+        protected virtual void ReleaseHostService(IHostService hostService)
+        {
+        }
 
         /// <summary>
         /// Disposes the host.
@@ -186,7 +232,11 @@ namespace Gallio.Runtime.Hosting
         /// <param name="disposing">True if disposing</param>
         protected virtual void Dispose(bool disposing)
         {
-            isDisposed = true;
+            if (!isDisposed)
+            {
+                Disconnect();
+                isDisposed = true;
+            }
         }
 
         /// <summary>
@@ -196,6 +246,25 @@ namespace Gallio.Runtime.Hosting
         {
             if (isDisposed)
                 throw new ObjectDisposedException(GetType().Name);
+        }
+
+        /// <summary>
+        /// Sets the state of the host to disconnected and notifies clients.
+        /// </summary>
+        protected void NotifyDisconnected()
+        {
+            EventHandler cachedDisconnectedHandlers;
+            lock (syncRoot)
+            {
+                if (hostService == null)
+                    return;
+
+                cachedDisconnectedHandlers = disconnectedHandlers;
+                disconnectedHandlers = null;
+                hostService = null;
+            }
+
+            EventHandlerUtils.SafeInvoke(cachedDisconnectedHandlers, this, EventArgs.Empty);
         }
     }
 }

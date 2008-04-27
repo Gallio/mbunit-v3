@@ -43,7 +43,7 @@ namespace Gallio.TypeMockIntegration.Tests
             {
                 HostAssemblyResolverHook.Install(host);
 
-                host.DoCallback(AssertTypeMockIsRunning);
+                host.GetHostService().DoCallback(AssertTypeMockIsRunning);
             }
         }
 

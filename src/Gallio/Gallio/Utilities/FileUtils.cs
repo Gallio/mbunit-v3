@@ -153,6 +153,20 @@ namespace Gallio.Utilities
         }
 
         /// <summary>
+        /// Strips the trailing backslash off of a directory path, if present.
+        /// </summary>
+        /// <param name="path">The path to strip, or null if none</param>
+        /// <returns>The stripped path, or null if none</returns>
+        public static string StripTrailingBackslash(string path)
+        {
+            if (path == null)
+                return null;
+            if (path.EndsWith(@"\"))
+                return path.Substring(0, path.Length - 1);
+            return path;
+        }
+
+        /// <summary>
         /// <para>
         /// Copies the contents of a source stream to a destination stream.
         /// </para>

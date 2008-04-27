@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Runtime.Remoting;
-using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -30,12 +28,15 @@ namespace Gallio.Runtime.Hosting
     /// in an isolated process, or connect to an existing remote process.
     /// </para>
     /// </summary>
-    public interface IHost : IHostService
+    public interface IHost : IDisposable
     {
         /// <summary>
-        /// Gets a deep copy of the host setup information.
+        /// An event that is raised when the host is disconnected.
+        /// If the host has already been disconnected, the event is fired immediately.
         /// </summary>
-        HostSetup GetHostSetup();
+        /// <seealso cref="IsConnected"/>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        event EventHandler Disconnected;
 
         /// <summary>
         /// Returns true if the host is local to the creating AppDomain, false if it
@@ -43,5 +44,34 @@ namespace Gallio.Runtime.Hosting
         /// support all configuration options.
         /// </summary>
         bool IsLocal { get; }
+
+        /// <summary>
+        /// Returns true if the host is connected.
+        /// </summary>
+        /// <remarks>
+        /// A host may become disconnected non-deterministically due to a failure in the
+        /// host's communication channel or some other remote eventuality.
+        /// </remarks>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        bool IsConnected { get; }
+
+        /// <summary>
+        /// Gets a host service that can be used to perform operations within the host's environment.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the host has been disconnected</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        IHostService GetHostService();
+
+        /// <summary>
+        /// Gets a deep copy of the host setup information.
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        HostSetup GetHostSetup();
+
+        /// <summary>
+        /// Disconnects the host.
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">Thrown if the host has been disposed</exception>
+        void Disconnect();
     }
 }

@@ -50,7 +50,7 @@ namespace Gallio.Tests.Runtime.Remoting
             {
                 HostAssemblyResolverHook.Install(host);
 
-                host.DoCallback(RemoteCallback);
+                host.GetHostService().DoCallback(RemoteCallback);
 
                 using (BinaryTcpClientChannel clientChannel = new BinaryTcpClientChannel("localhost", PortNumber))
                 {

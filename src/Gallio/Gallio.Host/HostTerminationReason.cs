@@ -13,23 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.Logging;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Gallio.Runtime.Hosting
+namespace Gallio.Host
 {
-    /// <summary>
-    /// <para>
-    /// A factory for initialized <see cref="IsolatedProcessHost" /> hosts.
-    /// </para>
-    /// </summary>
-    public class IsolatedProcessHostFactory : BaseHostFactory
+    internal enum HostTerminationReason
     {
-        /// <inheritdoc />
-        protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
-        {
-            IsolatedProcessHost host = new IsolatedProcessHost(hostSetup, logger);
-            host.Connect();
-            return host;
-        }
+        /// <summary>
+        /// The host was remotely disposed.
+        /// </summary>
+        Disposed,
+
+        /// <summary>
+        /// The watchdog timer expired.
+        /// </summary>
+        WatchdogTimeout,
+
+        /// <summary>
+        /// The owner process terminated.
+        /// </summary>
+        Disowned
     }
 }

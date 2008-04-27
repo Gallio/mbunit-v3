@@ -222,9 +222,6 @@
   <data name="FilterParser_ValueExpected" xml:space="preserve">
     <value>Value expected</value>
   </data>
-  <data name="RemoteHost_RemoteException" xml:space="preserve">
-    <value>The remote host service threw an exception or could not be reached.</value>
-  </data>
   <data name="FilterParser_UnexpectedCharacterFound" xml:space="preserve">
     <value>Unexpected character found ({0})</value>
   </data>
@@ -242,5 +239,8 @@
   </data>
   <data name="FilterParser_UnexpectedEndOfInput" xml:space="preserve">
     <value>Unexpected end of input</value>
+  </data>
+  <data name="RemoteHost_RemoteException" xml:space="preserve">
+    <value>The remote host service threw an exception or could not be reached.</value>
   </data>
 </root>

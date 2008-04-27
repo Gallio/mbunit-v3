@@ -14,20 +14,17 @@
 // limitations under the License.
 
 using System;
-using System.Runtime.Remoting;
 using System.Threading;
 using Gallio.Runtime.Logging;
-using Gallio.Runtime.Remoting;
 using Gallio.Runtime;
 
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// A host service is a <see cref="MarshalByRefObject" /> implementation of
-    /// <see cref="IHostService" /> suitable for access across a remoting channel.
+    /// A remotely accessible host service.
     /// </summary>
     /// <see cref="HostServiceChannelInterop"/>
-    public class RemoteHostService : LongLivedMarshalByRefObject, IHostService
+    public class RemoteHostService : BaseHostService, IRemoteHostService
     {
         private readonly object watchdogLock = new object();
         private readonly int watchdogTimeoutMilliseconds;
@@ -51,14 +48,6 @@ namespace Gallio.Runtime.Hosting
             StartWatchdogTimer();
         }
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            StopWatchdogTimer();
-
-            shutdownEvent.Set();
-        }
-
         /// <summary>
         /// Returns true if the watchdog timer expired.
         /// </summary>
@@ -68,15 +57,23 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// Waits until the host service is disposed or a ping timeout occurs.
+        /// Waits until the host service is shutdown or a ping timeout occurs.
         /// </summary>
-        public void WaitUntilDisposed()
+        public void WaitUntilShutdown()
         {
             shutdownEvent.WaitOne();
         }
 
         /// <inheritdoc />
-        public void Ping()
+        public void Shutdown()
+        {
+            StopWatchdogTimer();
+
+            shutdownEvent.Set();
+        }
+
+        /// <inheritdoc />
+        protected override void PingImpl()
         {
 #if DEBUG // FIXME: For debugging the remoting starvation issue.  See Google Code issue #147.  Remove when fixed.
             RuntimeAccessor.Logger.Log(LogSeverity.Debug, String.Format("[Pong] {0:o}", DateTime.Now));
@@ -86,33 +83,10 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        public void DoCallback(CrossAppDomainDelegate callback)
+        protected override void Dispose(bool disposing)
         {
-            callback();
-        }
-
-        /// <inheritdoc />
-        public ObjectHandle CreateInstance(string assemblyName, string typeName)
-        {
-            return Activator.CreateInstance(assemblyName, typeName);
-        }
-
-        /// <inheritdoc />
-        public ObjectHandle CreateInstanceFrom(string assemblyPath, string typeName)
-        {
-            return Activator.CreateInstanceFrom(assemblyPath, typeName);
-        }
-
-        /// <inheritdoc />
-        public void InitializeRuntime(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
-        {
-            RuntimeBootstrap.Initialize(runtimeFactory, runtimeSetup, logger);
-        }
-
-        /// <inheritdoc />
-        public void ShutdownRuntime()
-        {
-            RuntimeBootstrap.Shutdown();
+            base.Dispose(disposing);
+            Shutdown();
         }
 
         private void StartWatchdogTimer()
@@ -150,7 +124,7 @@ namespace Gallio.Runtime.Hosting
         private void HandleWatchdogTimerExpired(object state)
         {
             watchdogTimerExpired = true;
-            Dispose();
+            Shutdown();
         }
     }
 }
