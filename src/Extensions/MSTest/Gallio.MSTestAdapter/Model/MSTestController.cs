@@ -24,7 +24,7 @@ using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Concurrency;
 using Microsoft.Win32;
 
-namespace Gallio.MSTestAdapter
+namespace Gallio.MSTestAdapter.Model
 {
     internal class MSTestController : BaseTestController
     {

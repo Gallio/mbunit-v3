@@ -46,14 +46,5 @@ namespace Gallio.Tests.Framework.Pattern
         {
             Assert.AreEqual("Gallio Pattern Test Framework", framework.Name);
         }
-
-        [Test]
-        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
-        {
-            sampleAssembly = typeof(Int32).Assembly;
-            PopulateTestTree();
-
-            Assert.AreEqual(0, testModel.RootTest.Children.Count);
-        }
     }
 }

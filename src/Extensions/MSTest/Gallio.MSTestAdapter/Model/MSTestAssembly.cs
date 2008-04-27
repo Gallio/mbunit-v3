@@ -16,7 +16,7 @@
 using System;
 using Gallio.Reflection;
 
-namespace Gallio.MSTestAdapter
+namespace Gallio.MSTestAdapter.Model
 {
     internal class MSTestAssembly : MSTest
     {

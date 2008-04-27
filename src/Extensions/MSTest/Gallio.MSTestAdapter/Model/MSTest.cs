@@ -20,7 +20,7 @@ using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Model.Execution;
 
-namespace Gallio.MSTestAdapter
+namespace Gallio.MSTestAdapter.Model
 {
     internal class MSTest : BaseTest
     {

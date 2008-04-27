@@ -47,15 +47,6 @@ namespace Gallio.NUnitAdapter.Tests.Model
         }
 
         [Test]
-        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
-        {
-            sampleAssembly = typeof(Int32).Assembly;
-            PopulateTestTree();
-
-            Assert.AreEqual(0, testModel.RootTest.Children.Count);
-        }
-
-        [Test]
         public void PopulateTestTree_CapturesTestStructureAndBasicMetadata()
         {
             Version expectedVersion = typeof(NUnit.Framework.Assert).Assembly.GetName().Version;

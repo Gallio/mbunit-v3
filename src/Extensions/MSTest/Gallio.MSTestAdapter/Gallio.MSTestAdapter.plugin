@@ -5,7 +5,7 @@
       <components>
         <component id="MSTestAdapter.TestFramework"
                    service="Gallio.Model.ITestFramework, Gallio"
-                   type="Gallio.MSTestAdapter.MSTestFramework, Gallio.MSTestAdapter" />
+                   type="Gallio.MSTestAdapter.Model.MSTestFramework, Gallio.MSTestAdapter" />
       </components>
     </runtime>
   </gallio>

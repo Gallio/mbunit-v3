@@ -15,7 +15,7 @@
 
 using Gallio.Model;
 
-namespace Gallio.MSTestAdapter
+namespace Gallio.MSTestAdapter.Model
 {
     /// <summary>
     /// Builds a test object model based on reflection against MSTest framework attributes.

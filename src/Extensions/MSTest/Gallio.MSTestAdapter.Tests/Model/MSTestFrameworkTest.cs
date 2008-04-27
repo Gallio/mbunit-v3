@@ -1,4 +1,4 @@
-// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,19 +17,18 @@ using System;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Reflection;
-using Gallio.XunitAdapter.Model;
-using Gallio.XunitAdapter.TestResources;
-using Gallio.XunitAdapter.TestResources.Metadata;
+using Gallio.MSTestAdapter.Model;
+using Gallio.MSTestAdapter.TestResources;
+using Gallio.MSTestAdapter.TestResources.Metadata;
 using Gallio.Tests.Model;
 using MbUnit.Framework;
-using XunitAssert=Xunit.Assert;
 
-namespace Gallio.XunitAdapter.Tests.Model
+namespace Gallio.MSTestAdapter.Tests.Model
 {
     [TestFixture]
-    [TestsOn(typeof(XunitTestFramework))]
-    [Author("Jeff", "jeff@ingenio.com")]
-    public class XunitTestFrameworkTest : BaseTestFrameworkTest
+    [TestsOn(typeof(MSTestFramework))]
+    [Author("Julian", "julian.hidalgo@gallio.org")]
+    public class MSTestFrameworkTest : BaseTestFrameworkTest
     {
         protected override Assembly GetSampleAssembly()
         {
@@ -38,19 +37,18 @@ namespace Gallio.XunitAdapter.Tests.Model
 
         protected override ITestFramework CreateFramework()
         {
-            return new XunitTestFramework();
+            return new MSTestFramework();
         }
 
         [Test]
-        public void NameIsXunit()
+        public void NameIsMSTest()
         {
-            Assert.AreEqual("xUnit.Net", framework.Name);
+            Assert.AreEqual("MSTest", framework.Name);
         }
 
         [Test]
         public void PopulateTestTree_CapturesTestStructureAndBasicMetadata()
         {
-            Version expectedVersion = typeof(XunitAssert).Assembly.GetName().Version;
             PopulateTestTree();
 
             RootTest rootTest = testModel.RootTest;
@@ -64,36 +62,36 @@ namespace Gallio.XunitAdapter.Tests.Model
             Assert.AreSame(testModel.RootTest, frameworkTest.Parent);
             Assert.AreEqual(TestKinds.Framework, frameworkTest.Kind);
             Assert.IsNull(frameworkTest.CodeElement);
-            Assert.AreEqual("xUnit.Net v" + expectedVersion, frameworkTest.Name);
+            Assert.AreEqual("MSTest v9.0.0.0", frameworkTest.Name);
             Assert.IsFalse(frameworkTest.IsTestCase);
             Assert.AreEqual(1, frameworkTest.Children.Count);
 
-            BaseTest assemblyTest = (BaseTest)frameworkTest.Children[0];
+            MSTestAssembly assemblyTest = (MSTestAssembly)frameworkTest.Children[0];
             Assert.AreSame(frameworkTest, assemblyTest.Parent);
             Assert.AreEqual(TestKinds.Assembly, assemblyTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeElement.CodeReference);
             Assert.AreEqual(sampleAssembly.GetName().Name, assemblyTest.Name);
             Assert.IsFalse(assemblyTest.IsTestCase);
-            Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
+            Assert.GreaterEqualThan(assemblyTest.Children.Count, 2);
 
-            XunitTest fixtureTest = (XunitTest)GetDescendantByName(assemblyTest, "SimpleTest");
+            MSTest fixtureTest = (MSTest)GetDescendantByName(assemblyTest, "SimpleTest");
             Assert.AreSame(assemblyTest, fixtureTest.Parent);
             Assert.AreEqual(TestKinds.Fixture, fixtureTest.Kind);
-            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.XunitAdapter.TestResources", "Gallio.XunitAdapter.TestResources.SimpleTest", null, null),
+            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.MSTestAdapter.TestResources", "Gallio.MSTestAdapter.TestResources.SimpleTest", null, null),
                 fixtureTest.CodeElement.CodeReference);
             Assert.AreEqual("SimpleTest", fixtureTest.Name);
             Assert.IsFalse(fixtureTest.IsTestCase);
             Assert.AreEqual(2, fixtureTest.Children.Count);
 
-            XunitTest passTest = (XunitTest)GetDescendantByName(fixtureTest, "Pass");
-            XunitTest failTest = (XunitTest)GetDescendantByName(fixtureTest, "Fail");
+            MSTest passTest = (MSTest)GetDescendantByName(fixtureTest, "Pass");
+            MSTest failTest = (MSTest)GetDescendantByName(fixtureTest, "Fail");
 
             Assert.IsNotNull(passTest, "Cannot find test case 'Pass'");
             Assert.IsNotNull(failTest, "Cannot find test case 'Fail'");
- 
+
             Assert.AreSame(fixtureTest, passTest.Parent);
             Assert.AreEqual(TestKinds.Test, passTest.Kind);
-            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.XunitAdapter.TestResources", "Gallio.XunitAdapter.TestResources.SimpleTest", "Pass", null),
+            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.MSTestAdapter.TestResources", "Gallio.MSTestAdapter.TestResources.SimpleTest", "Pass", null),
                 passTest.CodeElement.CodeReference);
             Assert.AreEqual("Pass", passTest.Name);
             Assert.IsTrue(passTest.IsTestCase);
@@ -101,7 +99,7 @@ namespace Gallio.XunitAdapter.Tests.Model
 
             Assert.AreSame(fixtureTest, failTest.Parent);
             Assert.AreEqual(TestKinds.Test, failTest.Kind);
-            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.XunitAdapter.TestResources", "Gallio.XunitAdapter.TestResources.SimpleTest", "Fail", null),
+            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.MSTestAdapter.TestResources", "Gallio.MSTestAdapter.TestResources.SimpleTest", "Fail", null),
                 failTest.CodeElement.CodeReference);
             Assert.AreEqual("Fail", failTest.Name);
             Assert.IsTrue(failTest.IsTestCase);
@@ -113,9 +111,9 @@ namespace Gallio.XunitAdapter.Tests.Model
         {
             PopulateTestTree();
 
-            XunitTest test = (XunitTest)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
-            XunitTest passTest = (XunitTest)GetDescendantByName(test, "Pass");
-            XunitTest failTest = (XunitTest)GetDescendantByName(test, "Fail");
+            MSTest test = (MSTest)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
+            MSTest passTest = (MSTest)GetDescendantByName(test, "Pass");
+            MSTest failTest = (MSTest)GetDescendantByName(test, "Fail");
 
             Assert.AreEqual("<summary>\nA simple test fixture.\n</summary>", test.Metadata.GetValue(MetadataKeys.XmlDocumentation));
             Assert.AreEqual("<summary>\nA passing test.\n</summary>", passTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
@@ -123,24 +121,25 @@ namespace Gallio.XunitAdapter.Tests.Model
         }
 
         [Test]
-        public void MetadataImport_SkipReason()
+        public void MetadataImport_IgnoreReason()
         {
             PopulateTestTree();
 
-            XunitTest fixture = (XunitTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
-            XunitTest test = (XunitTest)fixture.Children[0];
-            Assert.AreEqual("For testing purposes.", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
+            MSTest fixture = (MSTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
+            MSTest test = (MSTest)fixture.Children[0];
+            Assert.AreEqual("Ignored", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
         }
 
         [Test]
+        [Ignore("The test metadata is not being added yet")]
         public void MetadataImport_Property()
         {
             PopulateTestTree();
 
-            XunitTest fixture = (XunitTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
-            XunitTest test = (XunitTest)fixture.Children[0];
-            Assert.AreEqual("customvalue-1", test.Metadata.GetValue("customkey-1"));
-            Assert.AreEqual("customvalue-2", test.Metadata.GetValue("customkey-2"));
+            MSTest fixture = (MSTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
+            MSTest test = (MSTest)fixture.Children[0];
+            Assert.AreEqual("Julian", test.Metadata.GetValue("Owner"));
+            Assert.AreEqual("1", test.Metadata.GetValue("Priority"));
         }
 
         [Test]
@@ -154,9 +153,9 @@ namespace Gallio.XunitAdapter.Tests.Model
             Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
             Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
             StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
-            Assert.AreEqual("A sample test assembly for xUnit.Net.", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("A sample test assembly for MSTest.", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
-            Assert.AreEqual("Gallio.XunitAdapter.TestResources", assemblyTest.Metadata.GetValue(MetadataKeys.Title));
+            Assert.AreEqual("Gallio.MSTestAdapter.TestResources", assemblyTest.Metadata.GetValue(MetadataKeys.Title));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
 
             Assert.AreEqual("1.2.3.4", assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));

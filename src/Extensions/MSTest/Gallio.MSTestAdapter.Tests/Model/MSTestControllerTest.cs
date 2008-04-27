@@ -16,28 +16,14 @@
 using Gallio.Model;
 using Gallio.Tests.Model;
 using MbUnit.Framework;
+using Gallio.MSTestAdapter.Model;
 using Gallio.MSTestAdapter.TestResources;
 
-namespace Gallio.MSTestAdapter.Tests
+namespace Gallio.MSTestAdapter.Tests.Model
 {
-    [TestsOn(typeof(MSTestFramework))]
-    [Author("Julian", "julian.hidalgo@gallio.com")]
-    public class MSTestFrameworkTest : BaseTestFrameworkTest
+    [TestsOn(typeof(MSTestController))]
+    [Author("Julian", "julian.hidalgo@gallio.org")]
+    public class MSTestControllerTest
     {
-        protected override System.Reflection.Assembly GetSampleAssembly()
-        {
-            return typeof(SimpleTest).Assembly;
-        }
-
-        protected override ITestFramework CreateFramework()
-        {
-            return new MSTestFramework();
-        }
-
-        [Test]
-        public void NameIsNUnit()
-        {
-            Assert.AreEqual("MSTest", framework.Name);
-        }
     }
 }

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using Gallio.Reflection;
 using Gallio.Model;
 
-namespace Gallio.MSTestAdapter
+namespace Gallio.MSTestAdapter.Model
 {
     /// <summary>
     /// Explores tests in MSTest assemblies.
@@ -153,7 +153,7 @@ namespace Gallio.MSTestAdapter
 
             return typeTest;
         }
-        
+
         private static MSTest CreateTypeTest(ITypeInfo typeInfo)
         {
             MSTest typeTest = new MSTest(typeInfo.Name, typeInfo);
@@ -173,6 +173,8 @@ namespace Gallio.MSTestAdapter
                 }
             }
 
+            PopulateTestClassMetadata(typeInfo);
+
             // Add XML documentation.
             string xmlDocumentation = typeInfo.GetXmlDocumentation();
             if (xmlDocumentation != null)
@@ -181,11 +183,44 @@ namespace Gallio.MSTestAdapter
             return typeTest;
         }
 
+        private static void PopulateTestClassMetadata(ITypeInfo typeInfo)
+        {
+            IEnumerable<IAttributeInfo> attributes = typeInfo.GetAttributeInfos(null, true);
+            foreach (IAttributeInfo attribute in attributes)
+            {
+                switch (attribute.Type.Name)
+                {
+                    case MSTestAttributes.AspNetDevelopmentServerAttribute:
+                        break;
+                    case MSTestAttributes.CredentialAttribute:
+                        break;
+                    case MSTestAttributes.CssIterationAttribute:
+                        break;
+                    case MSTestAttributes.CssProjectStructureAttribute:
+                        break;
+                    case MSTestAttributes.DataSourceAttribute:
+                        break;
+                    case MSTestAttributes.DeploymentItemAttribute:
+                        break;
+                    case MSTestAttributes.DescriptionAttribute:
+                        break;
+                    case MSTestAttributes.ExpectedExceptionAttribute:
+                        break;
+                    case MSTestAttributes.HostTypeAttribute:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         private static MSTest CreateMethodTest(ITypeInfo typeInfo, IMethodInfo methodInfo)
         {
             MSTest methodTest = new MSTest(methodInfo.Name, methodInfo);
             methodTest.Kind = TestKinds.Test;
             methodTest.IsTestCase = true;
+
+            //PopulateTestMethodMetadata(typeInfo, methodTest);
 
             // Add skip reason.
             string skipReason = null;
@@ -201,6 +236,25 @@ namespace Gallio.MSTestAdapter
                 methodTest.Metadata.SetValue(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
             return methodTest;
+        }
+
+        private static void PopulateTestMethodMetadata(ITypeInfo typeInfo, MSTest methodTest)
+        {
+            IEnumerable<IAttributeInfo> attributes = typeInfo.GetAttributeInfos(null, true);
+            foreach (IAttributeInfo attribute in attributes)
+            {
+                switch (attribute.Type.FullName)
+                {
+                    case MSTestAttributes.OwnerAttribute:
+                        methodTest.Metadata.SetValue(attribute.Type.Name, attribute.GetFieldValue("Owner").ToString());
+                        break;
+                    case MSTestAttributes.PriorityAttribute:
+                        methodTest.Metadata.SetValue(attribute.Type.Name, attribute.GetFieldValue("Priority").ToString());
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         private static bool IsFixture(ITypeInfo type)

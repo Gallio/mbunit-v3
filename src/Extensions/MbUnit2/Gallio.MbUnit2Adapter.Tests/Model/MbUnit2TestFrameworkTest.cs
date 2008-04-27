@@ -48,15 +48,6 @@ namespace Gallio.MbUnit2Adapter.Tests.Model
         }
 
         [Test]
-        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
-        {
-            sampleAssembly = typeof(Int32).Assembly;
-            PopulateTestTree();
-
-            Assert.AreEqual(0, testModel.RootTest.Children.Count);
-        }
-
-        [Test]
         public void PopulateTestTree_CapturesTestStructureAndBasicMetadata()
         {
             Version expectedVersion = typeof(MbUnit2::MbUnit.Framework.Assert).Assembly.GetName().Version;

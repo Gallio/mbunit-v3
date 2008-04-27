@@ -21,13 +21,19 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Gallio.MSTestAdapter.TestResources")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyDescription("A sample test assembly for MSTest.")]
+[assembly: AssemblyConfiguration("Test")]
+[assembly: AssemblyCompany("MbUnit Project")]
 [assembly: AssemblyProduct("Gallio")]
 [assembly: AssemblyCopyright("Copyright © 2005-2008 Gallio Project - http://www.gallio.org/")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("Gallio")]
 [assembly: AssemblyCulture("")]
+[assembly: AssemblyInformationalVersion("1.2.3.4")]
+
+#if ! HAVE_ASSEMBLY_VERSION
+[assembly: AssemblyFileVersion("1.2.3.4")]
+[assembly: AssemblyVersion("1.2.3.4")]
+#endif
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

@@ -13,9 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.MSTestAdapter.Model;
 using MbUnit.Framework;
 
-namespace Gallio.MSTestAdapter.Tests
+namespace Gallio.MSTestAdapter.Tests.Model
 {
     [TestsOn(typeof(MSTest))]
     [Author("Julian", "julian.hidalgo@gallio.com")]

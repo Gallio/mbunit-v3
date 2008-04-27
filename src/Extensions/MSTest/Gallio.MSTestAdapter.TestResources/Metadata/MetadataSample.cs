@@ -15,30 +15,18 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Gallio.MSTestAdapter.TestResources
+namespace Gallio.MSTestAdapter.TestResources.Metadata
 {
-    /// <summary>
-    /// A simple test fixture.
-    /// </summary>
     [TestClass]
-    public class SimpleTest
+    public class MetadataSample
     {
-        /// <summary>
-        /// A passing test.
-        /// </summary>
         [TestMethod]
-        public void Pass()
+        [Ignore]
+        [Owner("Julian")]
+        [Priority(1)]
+        [DataSource("A datasource")]
+        public void Test()
         {
-            Assert.AreEqual(1, 1);
-        }
-
-        /// <summary>
-        /// A failing test.
-        /// </summary>
-        [TestMethod]
-        public void Fail()
-        {
-            Assert.AreEqual(1, 0);
         }
     }
 }

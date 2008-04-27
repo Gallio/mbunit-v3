@@ -19,7 +19,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.MSTestAdapter.Tests.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -39,8 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MSTestFrameworkTest.cs" />
-    <Compile Include="MSTestTest.cs" />
+    <Compile Include="Model\MSTestControllerTest.cs" />
+    <Compile Include="Model\MSTestFrameworkTest.cs" />
+    <Compile Include="Model\MSTestTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +66,9 @@
       <Project>{8FC20489-148C-4220-AA3B-0BA8B6BC2AC7}</Project>
       <Name>Gallio.MSTestAdapter</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Integration\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\MSTest.targets" />
