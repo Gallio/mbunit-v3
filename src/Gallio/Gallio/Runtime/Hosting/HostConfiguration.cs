@@ -146,11 +146,33 @@ namespace Gallio.Runtime.Hosting
         /// <param name="bindingRedirect">True if a catch-all binding redirect should be used to
         /// ensure that this exact version of the assembly is loaded no matter which version
         /// was originally requested</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
         public void AddAssemblyBinding(Assembly assembly, bool bindingRedirect)
         {
-            AssemblyName assemblyName = assembly.GetName();
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
 
-            assemblyQualifications.Add(new AssemblyQualification(assemblyName.Name, assembly.FullName));
+            AddAssemblyBinding(assembly.GetName(), assembly.CodeBase, bindingRedirect);
+        }
+
+        /// <summary>
+        /// Adds a binding to the configuration for the specified assembly.
+        /// </summary>
+        /// <param name="assemblyName">The assembly name</param>
+        /// <param name="codeBase">The assembly code base Uri</param>
+        /// <param name="bindingRedirect">True if a catch-all binding redirect should be used to
+        /// ensure that this exact version of the assembly is loaded no matter which version
+        /// was originally requested</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/>
+        /// or <paramref name="codeBase"/> is null</exception>
+        public void AddAssemblyBinding(AssemblyName assemblyName, string codeBase, bool bindingRedirect)
+        {
+            if (assemblyName == null)
+                throw new ArgumentNullException("assemblyName");
+            if (codeBase == null)
+                throw new ArgumentNullException("codeBase");
+
+            assemblyQualifications.Add(new AssemblyQualification(assemblyName.Name, assemblyName.FullName));
 
             AssemblyDependency assemblyDependency = new AssemblyDependency(assemblyName.Name);
 
@@ -159,10 +181,10 @@ namespace Gallio.Runtime.Hosting
 
             if (bindingRedirect)
                 assemblyDependency.BindingRedirects.Add(new AssemblyBindingRedirect(
-                    "0.0.0.0-65535.65535.65535.65535",
+                    @"0.0.0.0-65535.65535.65535.65535",
                     assemblyName.Version.ToString()));
 
-            assemblyDependency.CodeBases.Add(new AssemblyCodeBase(assemblyName.Version.ToString(), assembly.CodeBase));
+            assemblyDependency.CodeBases.Add(new AssemblyCodeBase(assemblyName.Version.ToString(), codeBase));
 
             assemblyDependencies.Add(assemblyDependency);
         }

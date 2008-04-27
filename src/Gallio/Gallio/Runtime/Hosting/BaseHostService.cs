@@ -41,13 +41,13 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <inheritdoc />
-        public void DoCallback(CrossAppDomainDelegate callback)
+        public TResult Do<TArg, TResult>(Func<TArg, TResult> func, TArg arg)
         {
-            if (callback == null)
-                throw new ArgumentNullException("callback");
+            if (func == null)
+                throw new ArgumentNullException("func");
 
             ThrowIfDisposed();
-            DoCallbackImpl(callback);
+            return DoImpl(func, arg);
         }
 
         /// <inheritdoc />
@@ -75,12 +75,16 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// Internal implementation of <see cref="DoCallback"/>.
+        /// Internal implementation of <see cref="Do"/>.
         /// </summary>
-        /// <param name="callback">The callback to invoke within the host, not null</param>
-        protected virtual void DoCallbackImpl(CrossAppDomainDelegate callback)
+        /// <param name="func">The action to perform, not null</param>
+        /// <param name="arg">The argument value, if any</param>
+        /// <returns>The result value, if any</returns>
+        /// <typeparam name="TArg">The argument type</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        protected virtual TResult DoImpl<TArg, TResult>(Func<TArg, TResult> func, TArg arg)
         {
-            callback();
+            return func(arg);
         }
 
         /// <summary>

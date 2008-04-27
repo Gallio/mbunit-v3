@@ -6,14 +6,6 @@
         <component id="TypeMockIntegration.TypeMockHostFactory"
                    service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
                    type="Gallio.TypeMockIntegration.TypeMockHostFactory, Gallio.TypeMockIntegration" />      
-        
-        <component id="TypeMockIntegration.TypeMockTestDomainFactory"
-                   service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
-                   type="Gallio.Runner.Domains.HostTestDomainFactory, Gallio">
-          <parameters>
-            <hostFactory>${TypeMockIntegration.TypeMockHostFactory}</hostFactory>
-          </parameters>
-        </component>
 
         <component id="TypeMockIntegration.TypeMockTestRunnerFactory"
                    service="Gallio.Runner.ITestRunnerFactory, Gallio"

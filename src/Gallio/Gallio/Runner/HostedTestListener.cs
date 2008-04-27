@@ -207,8 +207,8 @@ namespace Gallio.Runner
 
         private TestData GetTestData(string testId)
         {
-            TestData testData;
-            if (!report.TestModel.Tests.TryGetValue(testId, out testData))
+            TestData testData = report.TestModel.GetTestById(testId);
+            if (testData == null)
                 throw new InvalidOperationException("The test id was not recognized.  It may belong to an earlier test run that has since completed.");
             return testData;
         }

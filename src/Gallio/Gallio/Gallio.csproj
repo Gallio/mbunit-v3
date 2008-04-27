@@ -63,6 +63,15 @@
     <Compile Include="Concurrency\ThreadTask.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
     <Compile Include="Model\Execution\RemoteTestListener.cs" />
+    <Compile Include="Model\TestDomainSetup.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runner\Drivers\AggregateTestDriver.cs" />
+    <Compile Include="Runner\Drivers\BaseTestDriver.cs" />
+    <Compile Include="Runner\Drivers\LocalTestDriver.cs" />
+    <Compile Include="Runner\Drivers\ITestDriver.cs" />
+    <Compile Include="Runner\Drivers\MultiDomainTestDriver.cs" />
+    <Compile Include="Runner\Drivers\ProxyTestDriver.cs" />
     <Compile Include="Runner\Events\DisposeFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\DisposeStartedEventArgs.cs" />
     <Compile Include="Runner\Events\ExploreFinishedEventArgs.cs" />
@@ -70,7 +79,6 @@
     <Compile Include="Runner\Extensions\ITestRunnerExtension.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtension.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtils.cs" />
-    <Compile Include="Runner\HostedTestDomainController.cs" />
     <Compile Include="Runner\HostedTestListener.cs" />
     <Compile Include="Runner\HostedTestRunner.cs" />
     <Compile Include="Runner\Events\InitializeFinishedEventArgs.cs" />
@@ -114,6 +122,7 @@
     <Compile Include="Runtime\Hosting\AppDomainUtils.cs" />
     <Compile Include="Runtime\Hosting\BaseHost.cs" />
     <Compile Include="Runtime\Hosting\BaseHostService.cs" />
+    <Compile Include="Runtime\Hosting\HostUtils.cs" />
     <Compile Include="Runtime\Hosting\IRemoteHostService.cs" />
     <Compile Include="Runtime\Hosting\LocalHost.cs" />
     <Compile Include="Runtime\Hosting\LocalHostFactory.cs" />
@@ -379,8 +388,6 @@
     <Compile Include="Reflection\Impl\UnresolvedType.cs" />
     <Compile Include="Runner\HostedTestRunnerFactory.cs" />
     <Compile Include="Runner\DefaultTestRunnerManager.cs" />
-    <Compile Include="Runner\Domains\HostTestDomain.cs" />
-    <Compile Include="Runner\Domains\IHostTestDomainContributor.cs" />
     <Compile Include="Runner\ITestRunnerFactory.cs" />
     <Compile Include="Runner\ITestRunnerManager.cs" />
     <Compile Include="Runner\Reports\ReportContainerUtils.cs" />
@@ -522,18 +529,11 @@
     <Compile Include="Runner\Reports\Statistics.cs" />
     <Compile Include="Runner\Reports\Report.cs" />
     <Compile Include="Runner\Reports\TestStepRun.cs" />
-    <Compile Include="Runner\Domains\BaseTestDomain.cs" />
     <Compile Include="Runner\RunnerException.cs" />
     <Compile Include="Model\Filters\FilterParser.cs" />
-    <Compile Include="Runner\Domains\HostTestDomainFactory.cs" />
-    <Compile Include="Runner\Domains\ITestDomain.cs" />
-    <Compile Include="Runner\Domains\ITestDomainFactory.cs" />
     <Compile Include="Runner\ITestRunner.cs" />
-    <Compile Include="Runner\Domains\LocalTestDomain.cs" />
-    <Compile Include="Runner\Domains\LocalTestDomainFactory.cs" />
     <Compile Include="Runner\Extensions\DebugExtension.cs" />
     <Compile Include="Runner\Extensions\LogExtension.cs" />
-    <Compile Include="Runner\Domains\RemoteTestDomain.cs" />
     <Compile Include="Runner\ResultCode.cs" />
     <Compile Include="Runner\TestLauncher.cs" />
     <Compile Include="Runtime\Loader\DefaultAssemblyResolverManager.cs" />

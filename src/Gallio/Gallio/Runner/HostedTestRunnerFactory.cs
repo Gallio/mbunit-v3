@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model;
 using Gallio.Runtime.Hosting;
 
 namespace Gallio.Runner
@@ -25,6 +26,7 @@ namespace Gallio.Runner
     public class HostedTestRunnerFactory : ITestRunnerFactory
     {
         private readonly IHostFactory hostFactory;
+        private readonly ITestFramework[] frameworks;
         private readonly string name;
         private readonly string description;
 
@@ -32,20 +34,24 @@ namespace Gallio.Runner
         /// Creates a test runner factory.
         /// </summary>
         /// <param name="hostFactory">The host factory</param>
+        /// <param name="frameworks">The test frameworks</param>
         /// <param name="name">The test runner factory name</param>
         /// <param name="description">The test runner factory description</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
-        /// <paramref name="name"/> or <paramref name="description"/> is null</exception>
-        public HostedTestRunnerFactory(IHostFactory hostFactory, string name, string description)
+        /// <paramref name="frameworks"/>, <paramref name="name"/> or <paramref name="description"/> is null</exception>
+        public HostedTestRunnerFactory(IHostFactory hostFactory, ITestFramework[] frameworks, string name, string description)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
+            if (frameworks == null)
+                throw new ArgumentNullException("frameworks");
             if (name == null)
                 throw new ArgumentNullException("name");
             if (description == null)
                 throw new ArgumentNullException("description");
 
             this.hostFactory = hostFactory;
+            this.frameworks = frameworks;
             this.name = name;
             this.description = description;
         }
@@ -65,7 +71,7 @@ namespace Gallio.Runner
         /// <inheritdoc />
         public ITestRunner CreateTestRunner()
         {
-            return new HostedTestRunner(hostFactory);
+            return new HostedTestRunner(hostFactory, frameworks);
         }
     }
 }

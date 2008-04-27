@@ -45,7 +45,7 @@ namespace Gallio.Tests.Runtime
             using (IHost host = new IsolatedProcessHostFactory().CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.GetHostService().DoCallback(PolicyPerformsCorrelationThenReportingCallback);
+                host.GetHostService().Do<object, object>(PolicyPerformsCorrelationThenReportingCallback, null);
             }
         }
 
@@ -55,11 +55,11 @@ namespace Gallio.Tests.Runtime
             using (IHost host = new IsolatedProcessHostFactory().CreateHost(new HostSetup(), new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.GetHostService().DoCallback(PolicyHandlesUnhandledExceptionsAndRecursionCallback);
+                host.GetHostService().Do<object, object>(PolicyHandlesUnhandledExceptionsAndRecursionCallback, null);
             }
         }
 
-        private static void PolicyPerformsCorrelationThenReportingCallback()
+        private static object PolicyPerformsCorrelationThenReportingCallback(object dummy)
         {
             Exception ex = new Exception();
             CorrelatedExceptionEventArgs finalArgs = null;
@@ -80,9 +80,10 @@ namespace Gallio.Tests.Runtime
             Assert.AreEqual("foo\nbar", finalArgs.Message);
             Assert.AreSame(ex, finalArgs.Exception);
             Assert.IsFalse(finalArgs.IsRecursive);
+            return null;
         }
 
-        private static void PolicyHandlesUnhandledExceptionsAndRecursionCallback()
+        private static object PolicyHandlesUnhandledExceptionsAndRecursionCallback(object dummy)
         {
             List<CorrelatedExceptionEventArgs> args = new List<CorrelatedExceptionEventArgs>();
 
@@ -118,6 +119,7 @@ namespace Gallio.Tests.Runtime
 
             Assert.AreEqual("Reporting error.", args[2].Exception.Message);
             Assert.IsTrue(args[2].IsRecursive);
+            return null;
         }
     }
 }

@@ -15,7 +15,6 @@
 
 using System;
 using System.Reflection;
-using System.Runtime.Remoting;
 using System.Threading;
 using Gallio.Runtime.Remoting;
 using Gallio.Reflection;
@@ -54,23 +53,8 @@ namespace Gallio.Runtime.Hosting
         {
             if (!host.IsLocal)
             {
-                Resolver remoteResolver = (Resolver)CreateRemoteResolver(host).Unwrap();
+                Resolver remoteResolver = HostUtils.CreateInstance<Resolver>(host);
                 remoteResolver.Initialize(LocalResolver);
-            }
-        }
-
-        private static ObjectHandle CreateRemoteResolver(IHost host)
-        {
-            Type resolverType = typeof(Resolver);
-            Assembly resolverAssembly = resolverType.Assembly;
-            IHostService hostService = host.GetHostService();
-            try
-            {
-                return hostService.CreateInstance(resolverAssembly.FullName, resolverType.FullName);
-            }
-            catch (Exception)
-            {
-                return hostService.CreateInstanceFrom(AssemblyUtils.GetAssemblyLocalPath(resolverAssembly), resolverType.FullName);
             }
         }
 

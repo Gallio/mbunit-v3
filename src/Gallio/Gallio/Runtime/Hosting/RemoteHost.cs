@@ -195,13 +195,13 @@ namespace Gallio.Runtime.Hosting
                 }
             }
 
-            protected override void DoCallbackImpl(CrossAppDomainDelegate callback)
+            protected override TResult DoImpl<TArg, TResult>(Func<TArg, TResult> func, TArg arg)
             {
                 ThrowIfNotConnected();
 
                 try
                 {
-                    hostService.DoCallback(callback);
+                    return hostService.Do(func, arg);
                 }
                 catch (Exception ex)
                 {

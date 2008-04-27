@@ -92,16 +92,17 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.GetHostService().DoCallback(HostRunsInRequestedWorkingDirectoryCallback);
+                string remoteWorkingDirectory = host.GetHostService().Do<object, string>(GetWorkingDirectory, null);
+                AssertArePathsEqualIgnoringFinalBackslash(Path.GetTempPath(), remoteWorkingDirectory);
             }
 
             Assert.AreEqual(oldWorkingDirectory, Environment.CurrentDirectory,
                 "Current working directory of the calling process should be unchanged or at least restored once the host is disposed.");
         }
 
-        protected static void HostRunsInRequestedWorkingDirectoryCallback()
+        protected static string GetWorkingDirectory(object ignored)
         {
-            AssertArePathsEqualIgnoringFinalBackslash(Path.GetTempPath(), Environment.CurrentDirectory);
+            return Environment.CurrentDirectory;
         }
 
         protected static void AssertArePathsEqualIgnoringFinalBackslash(string expected, string actual)

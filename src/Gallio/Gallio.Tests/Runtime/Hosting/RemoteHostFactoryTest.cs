@@ -43,19 +43,21 @@ namespace Gallio.Tests.Runtime.Hosting
 
                 Assert.AreEqual(0, callbackCounter);
 
-                host.GetHostService().DoCallback(DoCallbackHasRemoteSideEffectsCallback);
-                InterimAssert.Throws<Exception>(delegate { host.GetHostService().DoCallback(DoCallbackHasRemoteSideEffectsCallback); });
-                host.GetHostService().DoCallback(DoCallbackHasRemoteSideEffectsCallback);
+                Assert.AreEqual(1, host.GetHostService().Do<int, int>(DoCallbackHasRemoteSideEffectsCallback, 1));
+                InterimAssert.Throws<Exception>(delegate { host.GetHostService().Do<int, int>(DoCallbackHasRemoteSideEffectsCallback, 1); });
+                Assert.AreEqual(5, host.GetHostService().Do<int, int>(DoCallbackHasRemoteSideEffectsCallback, 3));
 
                 Assert.AreEqual(0, callbackCounter);
             }
         }
 
         private static int callbackCounter;
-        private static void DoCallbackHasRemoteSideEffectsCallback()
+        private static int DoCallbackHasRemoteSideEffectsCallback(int increment)
         {
-            if (callbackCounter++ == 1)
+            callbackCounter += increment;
+            if (callbackCounter == 2)
                 throw new Exception("Test exception.");
+            return callbackCounter;
         }
 
         [Test]
@@ -67,12 +69,12 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.GetHostService().DoCallback(HostRunsWithShadowCopyingEnabledOnRequestCallback);
+                Assert.IsTrue(host.GetHostService().Do<object, bool>(IsShadowCopyFilesEnabled, null));
             }
         }
-        private static void HostRunsWithShadowCopyingEnabledOnRequestCallback()
+        private static bool IsShadowCopyFilesEnabled(object dummy)
         {
-            Assert.IsTrue(AppDomain.CurrentDomain.ShadowCopyFiles);
+            return AppDomain.CurrentDomain.ShadowCopyFiles;
         }
 
         [Test]
@@ -84,12 +86,12 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.GetHostService().DoCallback(HostRunsWithSpecifiedApplicationBaseDirectoryCallback);
+                AssertArePathsEqualIgnoringFinalBackslash(Path.GetTempPath(), host.GetHostService().Do<object, string>(GetApplicationBaseDirectory, null));
             }
         }
-        private static void HostRunsWithSpecifiedApplicationBaseDirectoryCallback()
+        private static string GetApplicationBaseDirectory(object dummy)
         {
-            AssertArePathsEqualIgnoringFinalBackslash(Path.GetTempPath(), AppDomain.CurrentDomain.BaseDirectory);
+            return AppDomain.CurrentDomain.BaseDirectory;
         }
 
         [Test]
@@ -106,12 +108,13 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.GetHostService().DoCallback(HostRunsWithSpecifiedConfigurationXmlCallback);
+                string setting = host.GetHostService().Do<object, string>(GetTestSetting, null);
+                Assert.AreEqual("TestValue", setting);
             }
         }
-        private static void HostRunsWithSpecifiedConfigurationXmlCallback()
+        private static string GetTestSetting(object dummy)
         {
-            Assert.AreEqual("TestValue", ConfigurationManager.AppSettings.Get("TestSetting"));
+            return ConfigurationManager.AppSettings.Get("TestSetting");
         }
 
         [Test]
@@ -123,7 +126,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.GetHostService().DoCallback(HostRunsWithAssertUiEnabledCallback);
+                Assert.IsTrue(host.GetHostService().Do<object, bool>(GetAssertUiEnabledFlag, null));
             }
 
             hostSetup.Configuration.AssertUiEnabled = false;
@@ -131,16 +134,12 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.GetHostService().DoCallback(HostRunsWithAssertUiDisabledCallback);
+                Assert.IsFalse(host.GetHostService().Do<object, bool>(GetAssertUiEnabledFlag, null));
             }
         }
-        private static void HostRunsWithAssertUiEnabledCallback()
+        private static bool GetAssertUiEnabledFlag(object dummy)
         {
-            Assert.IsTrue(GetDefaultTraceListener().AssertUiEnabled);
-        }
-        private static void HostRunsWithAssertUiDisabledCallback()
-        {
-            Assert.IsFalse(GetDefaultTraceListener().AssertUiEnabled);
+            return GetDefaultTraceListener().AssertUiEnabled;
         }
 
         private static DefaultTraceListener GetDefaultTraceListener()

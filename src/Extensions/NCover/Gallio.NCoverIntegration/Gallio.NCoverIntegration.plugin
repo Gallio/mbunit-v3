@@ -6,14 +6,6 @@
         <component id="NCoverIntegration.NCoverHostFactory"
                    service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
                    type="Gallio.NCoverIntegration.NCoverHostFactory, Gallio.NCoverIntegration" />      
-        
-        <component id="NCoverIntegration.NCoverTestDomainFactory"
-                   service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
-                   type="Gallio.Runner.Domains.HostTestDomainFactory, Gallio">
-          <parameters>
-            <hostFactory>${NCoverIntegration.NCoverHostFactory}</hostFactory>
-          </parameters>
-        </component>
 
         <component id="NCoverIntegration.NCoverTestRunnerFactory"
                    service="Gallio.Runner.ITestRunnerFactory, Gallio"

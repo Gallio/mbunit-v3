@@ -6,10 +6,6 @@
         <component id="MbUnit2Adapter.TestFramework"
                    service="Gallio.Model.ITestFramework, Gallio"
                    type="Gallio.MbUnit2Adapter.Model.MbUnit2TestFramework, Gallio.MbUnit2Adapter" />
-
-        <component id="MbUnit2Adapter.AssemblyBindingRedirect"
-                   service="Gallio.Runner.Domains.IHostTestDomainContributor, Gallio"
-                   type="Gallio.MbUnit2Adapter.Model.MbUnit2AssemblyBindingRedirect, Gallio.MbUnit2Adapter" />
       </components>
     </runtime>
   </gallio>

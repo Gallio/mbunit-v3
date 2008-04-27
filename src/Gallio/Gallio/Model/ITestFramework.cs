@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using Gallio.Model;
+using Gallio.Runtime.Hosting;
 
 namespace Gallio.Model
 {
@@ -36,5 +38,15 @@ namespace Gallio.Model
         /// <param name="testModel">The test model to populate incrementally as tests are discovered</param>
         /// <returns>The test explorer</returns>
         ITestExplorer CreateTestExplorer(TestModel testModel);
+
+        /// <summary>
+        /// Applies additional contributions to a test domain, if desired.
+        /// </summary>
+        /// <remarks>
+        /// This method may be used by a test framework to set additional binding redirects
+        /// or hint directories prior to loading a test package in a test domain.
+        /// </remarks>
+        /// <param name="testDomainSetup">The test domain setup to modify</param>
+        void ConfigureTestDomain(TestDomainSetup testDomainSetup);
     }
 }

@@ -125,28 +125,6 @@ namespace Gallio.Model.Serialization
         }
 
         /// <summary>
-        /// Gets a dictionary of tests indexed by id.
-        /// </summary>
-        [XmlIgnore]
-        public IDictionary<string, TestData> Tests
-        {
-            get
-            {
-                lock (this)
-                {
-                    if (tests == null)
-                    {
-                        tests = new Dictionary<string, TestData>();
-                        foreach (TestData test in AllTests)
-                            tests[test.Id] = test;
-                    }
-
-                    return tests;
-                }
-            }
-        }
-
-        /// <summary>
         /// Recursively enumerates all tests including the root test.
         /// </summary>
         [XmlIgnore]
@@ -159,6 +137,65 @@ namespace Gallio.Model.Serialization
 
                 return TreeUtils.GetPreOrderTraversal(rootTest, GetChildren);
             }
+        }
+
+        /// <summary>
+        /// Gets a test by its id.
+        /// </summary>
+        /// <param name="testId">The test id</param>
+        /// <returns>The test, or null if not found</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testId"/> is null</exception>
+        public TestData GetTestById(string testId)
+        {
+            if (testId == null)
+                throw new ArgumentNullException("testId");
+
+            lock (this)
+            {
+                if (tests == null)
+                {
+                    tests = new Dictionary<string, TestData>();
+                    foreach (TestData test in AllTests)
+                        tests[test.Id] = test;
+                }
+
+                TestData testData;
+                tests.TryGetValue(testId, out testData);
+                return testData;
+            }
+        }
+
+        /// <summary>
+        /// Resets the test index by id in case the test model has been modified.
+        /// </summary>
+        public void ResetIndex()
+        {
+            lock (this)
+                tests = null;
+        }
+
+        /// <summary>
+        /// Merges the contents of another test model with this one.
+        /// </summary>
+        /// <param name="source">The source test model</param>
+        public void MergeFrom(TestModelData source)
+        {
+            annotations.AddRange(source.annotations);
+
+            foreach (TestData sourceTest in source.AllTests)
+            {
+                TestData targetTest = GetTestById(sourceTest.Id);
+                if (targetTest != null)
+                {
+                    foreach (TestData sourceChild in sourceTest.Children)
+                    {
+                        if (GetTestById(sourceChild.Id) == null)
+                            targetTest.Children.Add(sourceChild);
+                    }
+                }
+            }
+
+            ResetIndex();
         }
 
         private static IEnumerable<TestData> GetChildren(TestData node)

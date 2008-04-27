@@ -43,7 +43,7 @@ namespace Gallio.Tests.Runtime.Hosting
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
                 HostAssemblyResolverHook.Install(host);
-                host.GetHostService().DoCallback(ThrowUnhandledExceptionCallback);
+                host.GetHostService().Do<object, object>(ThrowUnhandledExceptionCallback, null);
 
                 // Ping the host a few times to ensure that the process does not terminate abruptly.
                 // In practice it may continue to service requests for a little while after the
@@ -55,7 +55,7 @@ namespace Gallio.Tests.Runtime.Hosting
                 }
             }
         }
-        private static void ThrowUnhandledExceptionCallback()
+        private static object ThrowUnhandledExceptionCallback(object dummy)
         {
             Thread t = new Thread((ThreadStart)delegate
             {
@@ -63,6 +63,7 @@ namespace Gallio.Tests.Runtime.Hosting
             });
 
             t.Start();
+            return null;
         }
     }
 }

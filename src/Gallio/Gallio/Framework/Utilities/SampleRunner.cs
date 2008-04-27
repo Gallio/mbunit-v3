@@ -135,7 +135,7 @@ namespace Gallio.Framework.Utilities
         /// <returns>The test data, or null if not found</returns>
         public TestData GetTestData(CodeReference codeReference)
         {
-            foreach (TestData data in Report.TestModel.Tests.Values)
+            foreach (TestData data in Report.TestModel.AllTests)
             {
                 if (data.CodeReference == codeReference)
                     return data;

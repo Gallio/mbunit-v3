@@ -210,8 +210,9 @@ namespace Gallio.Icarus.Adapter
         private void RemoveAssemblyEventHandler(object sender, SingleEventArgs<string> e)
         {
             string fileName;
-            if (testModelData != null && testModelData.Tests.ContainsKey(e.Arg))
-                fileName = testModelData.Tests[e.Arg].Metadata.GetValue(MetadataKeys.CodeBase);
+            TestData test = testModelData != null ? testModelData.GetTestById(e.Arg) : null;
+            if (test != null)
+                fileName = test.Metadata.GetValue(MetadataKeys.CodeBase);
             else
                 fileName = e.Arg;
             
@@ -367,7 +368,7 @@ namespace Gallio.Icarus.Adapter
 
         private void OnGetSourceLocation(object sender, SingleEventArgs<string> e)
         {
-            TestData testData = testModelData.Tests[e.Arg];
+            TestData testData = testModelData.GetTestById(e.Arg);
             if (testData != null)
                 projectAdapterView.SourceCodeLocation = testData.CodeLocation;
         }

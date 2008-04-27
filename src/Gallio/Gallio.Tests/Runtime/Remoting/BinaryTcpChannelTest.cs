@@ -50,7 +50,7 @@ namespace Gallio.Tests.Runtime.Remoting
             {
                 HostAssemblyResolverHook.Install(host);
 
-                host.GetHostService().DoCallback(RemoteCallback);
+                host.GetHostService().Do<object, object>(RemoteCallback, null);
 
                 using (BinaryTcpClientChannel clientChannel = new BinaryTcpClientChannel("localhost", PortNumber))
                 {
@@ -61,11 +61,12 @@ namespace Gallio.Tests.Runtime.Remoting
             }
         }
 
-        public static void RemoteCallback()
+        public static object RemoteCallback(object dummy)
         {
             BinaryTcpServerChannel serverChannel = new BinaryTcpServerChannel("localhost", PortNumber);
             TestService serviceProvider = new TestService();
             serverChannel.RegisterService(ServiceName, serviceProvider);
+            return null;
         }
 
         public class TestService : MarshalByRefObject

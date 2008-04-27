@@ -38,16 +38,31 @@
       <HintPath>..\libs\MbUnit.Framework.dll</HintPath>
       <Aliases>MbUnit2</Aliases>
     </Reference>
+    <Reference Include="MbUnit.Framework.2.0, Version=2.4.2.145, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\MbUnit.Framework.2.0.dll</HintPath>
+    </Reference>
     <Reference Include="QuickGraph, Version=2.4.2.2, Culture=neutral, PublicKeyToken=975e84d0c8d6464d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\QuickGraph.dll</HintPath>
     </Reference>
+    <Reference Include="QuickGraph.Algorithms, Version=2.4.2.145, Culture=neutral, PublicKeyToken=975e84d0c8d6464d">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\QuickGraph.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="Refly, Version=2.4.2.145, Culture=neutral, PublicKeyToken=829676e11975a31c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Refly.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TestFu, Version=2.4.2.145, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\TestFu.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\MbUnit2AssemblyBindingRedirect.cs" />
     <Compile Include="Model\MbUnit2AssemblyTest.cs" />
     <Compile Include="Model\MbUnit2MetadataUtils.cs" />
     <Compile Include="Model\MbUnit2NativeTestExplorer.cs" />

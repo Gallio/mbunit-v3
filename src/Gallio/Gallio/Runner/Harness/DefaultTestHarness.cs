@@ -306,5 +306,22 @@ namespace Gallio.Runner.Harness
             if (isDisposed)
                 throw new ObjectDisposedException("The test harness has been disposed.");
         }
+
+        /// <inheritdoc />
+        public void Unload(IProgressMonitor progressMonitor)
+        {
+            if (progressMonitor == null)
+                throw new ArgumentNullException(@"progressMonitor");
+
+            ThrowIfDisposed();
+
+            using (progressMonitor)
+            {
+                progressMonitor.BeginTask("Unloading tests.", 1);
+
+                package = null;
+                model = null;
+            }
+        }
     }
 }

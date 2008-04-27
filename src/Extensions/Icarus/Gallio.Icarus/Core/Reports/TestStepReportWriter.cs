@@ -54,7 +54,10 @@ namespace Gallio.Icarus.Core.Reports
 
         private static void RenderTestStepRun(XmlTextWriter xmlTextWriter, TestStepRun testStepRun, TestModelData testModelData)
         {
-            TestData testData = testModelData.Tests[testStepRun.Step.TestId];
+            TestData testData = testModelData.GetTestById(testStepRun.Step.TestId);
+            if (testData == null)
+                throw new InvalidOperationException("The step referenced an unknown test.");
+
             Statistics statistics = CalculateStatistics(testStepRun);
             
             xmlTextWriter.WriteRaw(String.Format("<li><span class=\"testStepRunHeading\"><b>{1}</b> Passed: {2} Failed: {3} Inconclusive: {4} Skipped: {5}</span>", 

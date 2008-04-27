@@ -13,8 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.IO;
+using System.Reflection;
 using Gallio.Model;
 using Gallio.MbUnit2Adapter.Properties;
+using Gallio.Runtime.Hosting;
 
 namespace Gallio.MbUnit2Adapter.Model
 {
@@ -23,6 +27,16 @@ namespace Gallio.MbUnit2Adapter.Model
     /// </summary>
     public class MbUnit2TestFramework : BaseTestFramework
     {
+        private static readonly string[] frameworkAssemblyFiles = new string[]
+        {
+            @"MbUnit.Framework.dll",
+            @"MbUnit.Framework.2.0.dll",
+            @"QuickGraph.Algorithms.dll",
+            @"QuickGraph.dll",
+            @"Refly.dll",
+            @"TestFu.dll"
+        };
+
         /// <inheritdoc />
         public override string Name
         {
@@ -33,6 +47,40 @@ namespace Gallio.MbUnit2Adapter.Model
         public override ITestExplorer CreateTestExplorer(TestModel testModel)
         {
             return new MbUnit2TestExplorer(testModel);
+        }
+
+        /// <inheritdoc />
+        public override void ConfigureTestDomain(TestDomainSetup testDomainSetup)
+        {
+            foreach (string assembly in testDomainSetup.TestPackageConfig.AssemblyFiles)
+            {
+                string dir = Path.GetDirectoryName(assembly);
+                if (ConfigureAssemblyRedirects(dir, testDomainSetup.TestPackageConfig.HostSetup.Configuration))
+                    return;
+            }
+        }
+
+        private static bool ConfigureAssemblyRedirects(string dir, HostConfiguration config)
+        {
+            bool foundOne = false;
+            foreach (string file in frameworkAssemblyFiles)
+            {
+                string path = Path.Combine(dir, file);
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        AssemblyName assemblyName = AssemblyName.GetAssemblyName(path);
+                        config.AddAssemblyBinding(assemblyName, new Uri(path).ToString(), true);
+                        foundOne = true;
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+            return foundOne;
         }
     }
 }

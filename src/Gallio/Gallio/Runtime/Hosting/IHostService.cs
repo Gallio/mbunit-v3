@@ -39,16 +39,22 @@ namespace Gallio.Runtime.Hosting
 
         /// <summary>
         /// <para>
-        /// Asks the host to invoke the specified callback.
+        /// Asks the host to perform the specified action remotely.
         /// </para>
         /// <para>
-        /// The callback must be a serializable delegate so that it can be sent
-        /// to the host and executed.
+        /// The action must be a serializable delegate so that it can be sent
+        /// to the host and executed.  Generally speaking, this means it must either be
+        /// a delegate for a static method or its target object must be serializable.
+        /// The argument and result values must also be serializable (or null).
         /// </para>
         /// </summary>
-        /// <param name="callback">The callback</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is null</exception>
-        void DoCallback(CrossAppDomainDelegate callback);
+        /// <param name="func">The action to perform</param>
+        /// <param name="arg">The argument value, if any</param>
+        /// <returns>The result value, if any</returns>
+        /// <typeparam name="TArg">The argument type</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null</exception>
+        TResult Do<TArg, TResult>(Func<TArg, TResult> func, TArg arg);
 
         /// <summary>
         /// Creates an instance of a remote object given an assembly name and type name.

@@ -43,14 +43,14 @@ namespace Gallio.TypeMockIntegration.Tests
             {
                 HostAssemblyResolverHook.Install(host);
 
-                host.GetHostService().DoCallback(AssertTypeMockIsRunning);
+                bool isTypeMockRunning = host.GetHostService().Do<object, bool>(IsTypeMockRunning, null);
+                Assert.IsTrue(isTypeMockRunning, "TypeMock should be attached to the host process.");
             }
         }
 
-        private static void AssertTypeMockIsRunning()
+        private static bool IsTypeMockRunning(object dummy)
         {
-            Assert.IsTrue(TypeMockProcess.IsEnabled(Process.GetCurrentProcess()),
-                "TypeMock should be attached to the current process.");
+            return TypeMockProcess.IsEnabled(Process.GetCurrentProcess());
         }
     }
 }

@@ -59,26 +59,6 @@
                    service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
                    type="Gallio.Runtime.Hosting.IsolatedProcessHostFactory, Gallio" />
         
-        <component id="Core.LocalTestDomainFactory"
-                   service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
-                   type="Gallio.Runner.Domains.LocalTestDomainFactory, Gallio" />
-
-        <component id="Core.IsolatedAppDomainTestDomainFactory"
-                   service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
-                   type="Gallio.Runner.Domains.HostTestDomainFactory, Gallio">
-          <parameters>
-            <hostFactory>${Core.IsolatedAppDomainHostFactory}</hostFactory>
-          </parameters>
-        </component>
-
-        <component id="Core.IsolatedProcessTestDomainFactory"
-                   service="Gallio.Runner.Domains.ITestDomainFactory, Gallio"
-                   type="Gallio.Runner.Domains.HostTestDomainFactory, Gallio">
-          <parameters>
-            <hostFactory>${Core.IsolatedProcessHostFactory}</hostFactory>
-          </parameters>
-        </component>
-        
         <component id="Core.LocalTestRunnerFactory"
                    service="Gallio.Runner.ITestRunnerFactory, Gallio"
                    type="Gallio.Runner.HostedTestRunnerFactory, Gallio">

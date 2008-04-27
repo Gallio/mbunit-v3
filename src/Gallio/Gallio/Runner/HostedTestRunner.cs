@@ -18,10 +18,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Runner.Domains;
+using Gallio.Runner.Drivers;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
-using Gallio.Runner.Harness;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
@@ -39,6 +38,7 @@ namespace Gallio.Runner
     public class HostedTestRunner : ITestRunner
     {
         private readonly IHostFactory hostFactory;
+        private readonly ITestFramework[] frameworks;
 
         private readonly TestRunnerEventDispatcher eventDispatcher;
         private readonly object syncRoot;
@@ -51,7 +51,7 @@ namespace Gallio.Runner
         private State state;
         private IHost host;
         private Report report;
-        private HostedTestDomainController testDomainController;
+        private ITestDriver testDriver;
 
         private enum State
         {
@@ -67,13 +67,18 @@ namespace Gallio.Runner
         /// Creates a hosted test runner.
         /// </summary>
         /// <param name="hostFactory">The host factory</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/> is null</exception>
-        public HostedTestRunner(IHostFactory hostFactory)
+        /// <param name="frameworks">The test frameworks</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>
+        /// or <paramref name="frameworks"/> is null</exception>
+        public HostedTestRunner(IHostFactory hostFactory, ITestFramework[] frameworks)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
+            if (frameworks == null)
+                throw new ArgumentNullException("frameworks");
 
             this.hostFactory = hostFactory;
+            this.frameworks = frameworks;
 
             eventDispatcher = new TestRunnerEventDispatcher();
             syncRoot = new object();
@@ -403,6 +408,9 @@ namespace Gallio.Runner
             hostSetup.ShadowCopy = packageHostSetup.ShadowCopy;
 
             host = hostFactory.CreateHost(hostSetup, logger);
+            testDriver = new MultiDomainTestDriver(frameworks, host);
+            testDriver.Initialize(RuntimeAccessor.Instance.GetRuntimeFactory(),
+                RuntimeAccessor.Instance.GetRuntimeSetup(), logger);
 
             progressMonitor.Worked(totalWork);
         }
@@ -411,8 +419,7 @@ namespace Gallio.Runner
         {
             progressMonitor.SetStatus("Loading tests.");
 
-            testDomainController = new HostedTestDomainController(host);
-            testDomainController.LoadTestDomains(testPackageConfig, logger, progressMonitor.CreateSubProgressMonitor(totalWork));
+            testDriver.Load(testPackageConfig, progressMonitor.CreateSubProgressMonitor(totalWork));
         }
 
         private void DoExplore(TestExplorationOptions options, IProgressMonitor progressMonitor)
@@ -428,7 +435,7 @@ namespace Gallio.Runner
         {
             progressMonitor.SetStatus("Exploring tests.");
 
-            report.TestModel = testDomainController.ExploreTestDomains(options, progressMonitor.CreateSubProgressMonitor(totalWork));
+            report.TestModel = testDriver.Explore(options, progressMonitor.CreateSubProgressMonitor(totalWork));
         }
 
         private void DoRun(TestExecutionOptions options, IProgressMonitor progressMonitor)
@@ -460,7 +467,7 @@ namespace Gallio.Runner
         {
             progressMonitor.SetStatus("Running tests.");
 
-            testDomainController.RunTestDomains(options, listener, progressMonitor.CreateSubProgressMonitor(totalWork));
+            testDriver.Run(options, listener, progressMonitor.CreateSubProgressMonitor(totalWork));
         }
 
         private void DoUnload(IProgressMonitor progressMonitor)
@@ -481,12 +488,18 @@ namespace Gallio.Runner
         {
             progressMonitor.SetStatus("Unloading tests.");
 
-            testDomainController.UnloadTestDomains(progressMonitor.CreateSubProgressMonitor(totalWork));
+            testDriver.Unload(progressMonitor.CreateSubProgressMonitor(totalWork));
         }
 
         private void DisposeHost(IProgressMonitor progressMonitor, double totalWork)
         {
             progressMonitor.SetStatus("Shutting down the host environment.");
+
+            if (testDriver != null)
+            {
+                testDriver.Dispose();
+                testDriver = null;
+            }
 
             if (host != null)
             {

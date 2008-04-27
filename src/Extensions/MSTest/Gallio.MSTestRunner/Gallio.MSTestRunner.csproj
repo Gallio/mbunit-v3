@@ -17,6 +17,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
     <ProjectGuid>{E1110FC0-7833-4393-A88A-BB83F405908F}</ProjectGuid>
+    <MSTestVSIPRequired>true</MSTestVSIPRequired>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

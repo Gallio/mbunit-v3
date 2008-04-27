@@ -28,5 +28,10 @@ namespace Gallio.Model
         {
             return new NullTestExplorer(testModel);
         }
+
+        /// <inheritdoc />
+        public virtual void ConfigureTestDomain(TestDomainSetup testDomainSetup)
+        {
+        }
     }
 }

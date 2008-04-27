@@ -83,5 +83,12 @@ namespace Gallio.Runner.Harness
         /// <paramref name="listener"/> or <paramref name="options"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="Explore" /> has not been called yet</exception>
         void Run(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Unloads the tests.
+        /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
+        void Unload(IProgressMonitor progressMonitor);
     }
 }
