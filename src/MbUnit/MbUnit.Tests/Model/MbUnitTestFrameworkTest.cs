@@ -98,20 +98,6 @@ namespace MbUnit.Tests.Model
         }
 
         [Test]
-        public void MetadataImport_XmlDocumentation()
-        {
-            PopulateTestTree();
-
-            PatternTest test = (PatternTest)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
-            PatternTest passTest = (PatternTest)GetDescendantByName(test, "Pass");
-            PatternTest failTest = (PatternTest)GetDescendantByName(test, "Fail");
-
-            Assert.AreEqual("<summary>\nA simple test fixture.\n</summary>", test.Metadata.GetValue(MetadataKeys.XmlDocumentation));
-            Assert.AreEqual("<summary>\nA passing test.\n</summary>", passTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
-            Assert.AreEqual("<summary>\nA failing test.\n</summary>", failTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
-        }
-
-        [Test]
         public void MetadataImport_XmlDocumentation_TestParameters()
         {
             PopulateTestTree();
@@ -122,27 +108,6 @@ namespace MbUnit.Tests.Model
 
             Assert.AreEqual("<summary>\nA field parameter.\n</summary>", fieldParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
             Assert.AreEqual("<summary>\nA property parameter.\n</summary>", propertyParameter.Metadata.GetValue(MetadataKeys.XmlDocumentation));
-        }
-
-        [Test]
-        public void MetadataImport_AssemblyAttributes()
-        {
-            PopulateTestTree();
-
-            PatternTest frameworkTest = (PatternTest)testModel.RootTest.Children[0];
-            PatternTest assemblyTest = (PatternTest) frameworkTest.Children[0];
-
-            Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
-            Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
-            StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
-            Assert.AreEqual("A sample test assembly for MbUnit.", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
-            Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
-            Assert.AreEqual("MbUnit.TestResources", assemblyTest.Metadata.GetValue(MetadataKeys.Title));
-            Assert.AreEqual("MbUnit", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
-
-            Assert.AreEqual("1.2.3.4", assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));
-            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.FileVersion));
-            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.Version));
-        }
+        }        
     }
 }
