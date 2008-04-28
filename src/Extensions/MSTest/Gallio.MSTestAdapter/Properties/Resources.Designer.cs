@@ -77,5 +77,23 @@ namespace Gallio.MSTestAdapter.Properties {
                 return ResourceManager.GetString("MSTestController_RunningMSTestTests", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Ignore attribute was applied to this class..
+        /// </summary>
+        internal static string MSTestExplorer_IgnoreAttributeWasAppliedToClass {
+            get {
+                return ResourceManager.GetString("MSTestExplorer_IgnoreAttributeWasAppliedToClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Ignore attribute was applied to this test..
+        /// </summary>
+        internal static string MSTestExplorer_IgnoreAttributeWasAppliedToTest {
+            get {
+                return ResourceManager.GetString("MSTestExplorer_IgnoreAttributeWasAppliedToTest", resourceCulture);
+            }
+        }
     }
 }

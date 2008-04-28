@@ -126,20 +126,51 @@ namespace Gallio.MSTestAdapter.Tests.Model
             PopulateTestTree();
 
             MSTest fixture = (MSTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
+            Assert.AreEqual("The Ignore attribute was applied to this class.", fixture.Metadata.GetValue(MetadataKeys.IgnoreReason));
+            
             MSTest test = (MSTest)fixture.Children[0];
-            Assert.AreEqual("Ignored", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
+            Assert.AreEqual("The Ignore attribute was applied to this test.", test.Metadata.GetValue(MetadataKeys.IgnoreReason));
         }
 
         [Test]
-        [Ignore("The test metadata is not being added yet")]
-        public void MetadataImport_Property()
+        public void MetadataImport_TestClass()
         {
             PopulateTestTree();
 
             MSTest fixture = (MSTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
+            Assert.IsNotNull(fixture, "Cannot find fixture 'MetadataSample'.");
+
+            Assert.AreEqual(@"Path=file1.xml, OutputDirectory=c:\SomePath\", fixture.Metadata.GetValue(MSTestMetadataKeys.DeploymentItem));
+        }
+
+        [Test]
+        public void MetadataImport_TestMethod()
+        {
+            PopulateTestTree();
+
+            MSTest fixture = (MSTest)GetDescendantByName(testModel.RootTest, typeof(MetadataSample).Name);
+            Assert.IsNotNull(fixture, "Cannot find fixture 'MetadataSample'.");
+            
             MSTest test = (MSTest)fixture.Children[0];
-            Assert.AreEqual("Julian", test.Metadata.GetValue("Owner"));
-            Assert.AreEqual("1", test.Metadata.GetValue("Priority"));
+            Assert.IsNotNull(fixture, "Cannot find test method 'Test' in fixture 'MetadataSample'.");
+
+            Assert.AreEqual(@"Name=WebSite1, PathToWebApp=C:\WebSites\WebSite1, WebAppRoot=/WebSite1", test.Metadata.GetValue(MSTestMetadataKeys.AspNetDevelopmentServer));
+            Assert.AreEqual(@"PathToWebApp=C:\WebSites\WebSite1, WebAppRoot=/WebSite1", test.Metadata.GetValue(MSTestMetadataKeys.AspNetDevelopmentServerHost));
+            Assert.AreEqual("UserName=Julian, Password=secret, Domain=gallio.org", test.Metadata.GetValue(MSTestMetadataKeys.Credential));
+            Assert.AreEqual("vstfs:///Classification/Node/3fe569cd-f84e-4375-a0f3-760ccb143bb7", test.Metadata.GetValue(MSTestMetadataKeys.CssIteration));
+            Assert.AreEqual("Gallio", test.Metadata.GetValue(MSTestMetadataKeys.CssProjectStructure));
+            Assert.AreEqual(@"ConnectionString=Server=.;Database=SomeDatabase;Trusted_Connection=Yes;, " +
+                "DataAccessMethod=Sequential, ProviderInvariantName=System.Data.SqlClient, TableName=Products", test.Metadata.GetValue(MSTestMetadataKeys.DataSource));
+            Assert.AreEqual(@"Path=file1.xml, OutputDirectory=c:\SomePath\", test.Metadata.GetValue(MSTestMetadataKeys.DeploymentItem));  
+            Assert.AreEqual("A simple test with lots of metadata", test.Metadata.GetValue(MSTestMetadataKeys.Description));
+            Assert.AreEqual("HostType=ASP.NET, HostData=data", test.Metadata.GetValue(MSTestMetadataKeys.HostType));
+            Assert.AreEqual("Julian", test.Metadata.GetValue(MSTestMetadataKeys.Owner));
+            Assert.AreEqual("1", test.Metadata.GetValue(MSTestMetadataKeys.Priority));
+            Assert.AreEqual("100", test.Metadata.GetValue(MSTestMetadataKeys.Timeout));
+            Assert.AreEqual("http://www.gallio.org", test.Metadata.GetValue(MSTestMetadataKeys.UrlToTest));
+            Assert.AreEqual("1", test.Metadata.GetValue(MSTestMetadataKeys.WorkItem));
+            Assert.AreEqual("value1", test.Metadata.GetValue("key1"));
+            Assert.AreEqual("value2", test.Metadata.GetValue("key2"));
         }
 
         [Test]

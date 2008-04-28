@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using Gallio.Reflection;
 using Gallio.Model;
+using Gallio.MSTestAdapter.Properties;
 
 namespace Gallio.MSTestAdapter.Model
 {
@@ -154,7 +155,7 @@ namespace Gallio.MSTestAdapter.Model
             return typeTest;
         }
 
-        private static MSTest CreateTypeTest(ITypeInfo typeInfo)
+        private MSTest CreateTypeTest(ITypeInfo typeInfo)
         {
             MSTest typeTest = new MSTest(typeInfo.Name, typeInfo);
             typeTest.Kind = TestKinds.Fixture;
@@ -166,14 +167,21 @@ namespace Gallio.MSTestAdapter.Model
                 {
                     if (methodAttribute.Type.FullName.CompareTo(MSTestAttributes.TestMethodAttribute) == 0)
                     {
-                        MSTest testMethod = CreateMethodTest(typeInfo, method);
-                        typeTest.AddChild(testMethod);
+                        try
+                        {
+                            MSTest testMethod = CreateMethodTest(typeInfo, method);
+                            typeTest.AddChild(testMethod);
+                        }
+                        catch (Exception ex)
+                        {
+                            TestModel.AddAnnotation(new Annotation(AnnotationType.Error, method, "An exception was thrown while exploring an MSTest test method.", ex));
+                        }
                         break;
                     }
                 }
             }
 
-            PopulateTestClassMetadata(typeInfo);
+            PopulateTestClassMetadata(typeInfo, typeTest);
 
             // Add XML documentation.
             string xmlDocumentation = typeInfo.GetXmlDocumentation();
@@ -183,30 +191,18 @@ namespace Gallio.MSTestAdapter.Model
             return typeTest;
         }
 
-        private static void PopulateTestClassMetadata(ITypeInfo typeInfo)
+        private static void PopulateTestClassMetadata(ITypeInfo typeInfo, MSTest typeTest)
         {
             IEnumerable<IAttributeInfo> attributes = typeInfo.GetAttributeInfos(null, true);
             foreach (IAttributeInfo attribute in attributes)
             {
-                switch (attribute.Type.Name)
+                switch (attribute.Type.FullName)
                 {
-                    case MSTestAttributes.AspNetDevelopmentServerAttribute:
-                        break;
-                    case MSTestAttributes.CredentialAttribute:
-                        break;
-                    case MSTestAttributes.CssIterationAttribute:
-                        break;
-                    case MSTestAttributes.CssProjectStructureAttribute:
-                        break;
-                    case MSTestAttributes.DataSourceAttribute:
-                        break;
                     case MSTestAttributes.DeploymentItemAttribute:
+                        typeTest.Metadata.SetValue(MSTestMetadataKeys.DeploymentItem, GetDeploymentItem(attribute));
                         break;
-                    case MSTestAttributes.DescriptionAttribute:
-                        break;
-                    case MSTestAttributes.ExpectedExceptionAttribute:
-                        break;
-                    case MSTestAttributes.HostTypeAttribute:
+                    case MSTestAttributes.IgnoreAttribute:
+                        typeTest.Metadata.SetValue(MetadataKeys.IgnoreReason, Resources.MSTestExplorer_IgnoreAttributeWasAppliedToClass);
                         break;
                     default:
                         break;
@@ -220,15 +216,7 @@ namespace Gallio.MSTestAdapter.Model
             methodTest.Kind = TestKinds.Test;
             methodTest.IsTestCase = true;
 
-            //PopulateTestMethodMetadata(typeInfo, methodTest);
-
-            // Add skip reason.
-            string skipReason = null;
-            if (IsIgnored(methodInfo, out skipReason))
-            {
-                if (skipReason != null)
-                    methodTest.Metadata.SetValue(MetadataKeys.IgnoreReason, skipReason);
-            }
+            PopulateTestMethodMetadata(methodInfo, methodTest);
 
             // Add XML documentation.
             string xmlDocumentation = methodInfo.GetXmlDocumentation();
@@ -238,23 +226,147 @@ namespace Gallio.MSTestAdapter.Model
             return methodTest;
         }
 
-        private static void PopulateTestMethodMetadata(ITypeInfo typeInfo, MSTest methodTest)
+        private static void PopulateTestMethodMetadata(IMethodInfo methodInfo, MSTest methodTest)
         {
-            IEnumerable<IAttributeInfo> attributes = typeInfo.GetAttributeInfos(null, true);
+            IEnumerable<IAttributeInfo> attributes = methodInfo.GetAttributeInfos(null, true);
             foreach (IAttributeInfo attribute in attributes)
             {
                 switch (attribute.Type.FullName)
                 {
+                    case MSTestAttributes.AspNetDevelopmentServerAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.AspNetDevelopmentServer, GetAspNetDevelopmentServer(attribute));
+                        break;
+                    case MSTestAttributes.AspNetDevelopmentServerHostAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.AspNetDevelopmentServerHost, GetAspNetDevelopmentServerHost(attribute));
+                        break;
+                    case MSTestAttributes.CredentialAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.Credential, GetCredential(attribute));
+                        break;
+                    case MSTestAttributes.CssIterationAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.CssIteration, GetAttributePropertyValue(attribute, MSTestMetadataKeys.CssIteration));
+                        break;
+                    case MSTestAttributes.CssProjectStructureAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.CssProjectStructure, GetAttributePropertyValue(attribute, MSTestMetadataKeys.CssProjectStructure));
+                        break;
+                    case MSTestAttributes.DeploymentItemAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.DeploymentItem, GetDeploymentItem(attribute));
+                        break;
+                    case MSTestAttributes.DataSourceAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.DataSource, GetDatasource(attribute));
+                        break;
+                    case MSTestAttributes.DescriptionAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.Description, GetAttributePropertyValue(attribute, MSTestMetadataKeys.Description));
+                        break;
+                    case MSTestAttributes.HostTypeAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.HostType, GetHostType(attribute));
+                        break;
+                    case MSTestAttributes.IgnoreAttribute:
+                        methodTest.Metadata.SetValue(MetadataKeys.IgnoreReason, Resources.MSTestExplorer_IgnoreAttributeWasAppliedToTest);
+                        break;
                     case MSTestAttributes.OwnerAttribute:
-                        methodTest.Metadata.SetValue(attribute.Type.Name, attribute.GetFieldValue("Owner").ToString());
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.Owner, GetAttributePropertyValue(attribute, MSTestMetadataKeys.Owner));
                         break;
                     case MSTestAttributes.PriorityAttribute:
-                        methodTest.Metadata.SetValue(attribute.Type.Name, attribute.GetFieldValue("Priority").ToString());
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.Priority, GetAttributePropertyValue(attribute, MSTestMetadataKeys.Priority));
+                        break;
+                    case MSTestAttributes.TestPropertyAttribute:
+                        AddTestProperty(attribute, methodTest);
+                        break;
+                    case MSTestAttributes.TimeoutAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.Timeout, GetAttributePropertyValue(attribute, MSTestMetadataKeys.Timeout));
+                        break;
+                    case MSTestAttributes.UrlToTestAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.UrlToTest, GetAttributePropertyValue(attribute, MSTestMetadataKeys.UrlToTest));
+                        break;
+                    case MSTestAttributes.WorkItemAttribute:
+                        methodTest.Metadata.SetValue(MSTestMetadataKeys.WorkItem, GetAttributePropertyValue(attribute, "Id"));
                         break;
                     default:
                         break;
                 }
             }
+        }
+
+        private static string GetAttributePropertyValue(IAttributeInfo attributeInfo, string propertyName)
+        {
+            Attribute attribute = (Attribute)attributeInfo.Resolve();
+            PropertyInfo property = attributeInfo.Type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance).Resolve(false);
+            object value = property.GetValue(attribute, null);
+            if (value != null)
+                return value.ToString();
+            return null;
+        }
+
+        private static string GetAspNetDevelopmentServer(IAttributeInfo attributeInfo)
+        {
+            string name = GetAttributePropertyValue(attributeInfo, "Name");
+
+            return "Name=" + name + ", " + GetAspNetDevelopmentServerHost(attributeInfo);
+        }
+
+        private static string GetAspNetDevelopmentServerHost(IAttributeInfo attributeInfo)
+        {
+            string pathToWebApp = GetAttributePropertyValue(attributeInfo, "PathToWebApp");
+            string webAppRoot = GetAttributePropertyValue(attributeInfo, "WebAppRoot");
+            string aspNetDevelopmentServerHost = "PathToWebApp=" + pathToWebApp +
+                ", WebAppRoot=" + webAppRoot;
+
+            return aspNetDevelopmentServerHost;
+        }
+
+        private static string GetCredential(IAttributeInfo attributeInfo)
+        {
+            string domain = GetAttributePropertyValue(attributeInfo, "Domain");
+            string password = GetAttributePropertyValue(attributeInfo, "Password");
+            string userName = GetAttributePropertyValue(attributeInfo, "UserName");
+            string credential = "UserName=" + userName +
+                ", Password=" + password;
+            if (domain != null)
+                credential += ", Domain=" + domain;
+
+            return credential;
+        }
+
+        private static string GetDatasource(IAttributeInfo attributeInfo)
+        {
+            string connectionString = GetAttributePropertyValue(attributeInfo, "ConnectionString");
+            string dataAccessMethod = GetAttributePropertyValue(attributeInfo, "DataAccessMethod");
+            string dataSourceSettingName = GetAttributePropertyValue(attributeInfo, "DataSourceSettingName");
+            string providerInvariantName = GetAttributePropertyValue(attributeInfo, "ProviderInvariantName");
+            string tableName = GetAttributePropertyValue(attributeInfo, "TableName");
+
+            string datasource = "ConnectionString=" + connectionString;
+            if (dataAccessMethod != null)
+                datasource += ", DataAccessMethod=" + dataAccessMethod;
+            if (dataSourceSettingName != null)
+                datasource += ", DataSourceSettingName=" + dataSourceSettingName;
+            if (providerInvariantName != null)
+                datasource += ", ProviderInvariantName=" + providerInvariantName;
+            if (providerInvariantName != null)
+                datasource += ", TableName=" + tableName;
+
+            return datasource;
+        }
+
+        private static string GetDeploymentItem(IAttributeInfo attributeInfo)
+        {
+            string path = GetAttributePropertyValue(attributeInfo, "Path");
+            string outputDirectory = GetAttributePropertyValue(attributeInfo, "OutputDirectory");
+            return "Path=" + path + ", OutputDirectory=" + outputDirectory;
+        }
+
+        private static string GetHostType(IAttributeInfo attributeInfo)
+        {
+            string hostType = GetAttributePropertyValue(attributeInfo, "HostType");
+            string hostData = GetAttributePropertyValue(attributeInfo, "HostData");
+            return "HostType=" + hostType + ", HostData=" + hostData;
+        }
+
+        private static void AddTestProperty(IAttributeInfo attributeInfo, MSTest methodTest)
+        {
+            string name = GetAttributePropertyValue(attributeInfo, "Name");
+            string value = GetAttributePropertyValue(attributeInfo, "Value");
+            methodTest.Metadata.Add(name, value);
         }
 
         private static bool IsFixture(ITypeInfo type)
@@ -268,23 +380,6 @@ namespace Gallio.MSTestAdapter.Model
                 }
             }
 
-            return false;
-        }
-
-        private static bool IsIgnored(IMethodInfo methodInfo, out string skipReason)
-        {
-            IEnumerable<IAttributeInfo> attributes = methodInfo.GetAttributeInfos(null, true);
-            foreach (IAttributeInfo attribute in attributes)
-            {
-                if (attribute.Type.FullName.CompareTo(MSTestAttributes.IgnoreAttribute) == 0)
-                {
-                    //TODO: Get the real reason
-                    skipReason = "Ignored";
-                    return true;
-                }
-            }
-
-            skipReason = null;
             return false;
         }
     }

@@ -14,17 +14,34 @@
 // limitations under the License.
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Web;
 
 namespace Gallio.MSTestAdapter.TestResources.Metadata
 {
     [TestClass]
+    [DeploymentItem("file1.xml", @"c:\SomePath\")]
+    [Ignore]
     public class MetadataSample
     {
         [TestMethod]
+        [Credential("Julian", "secret", "gallio.org")]
+        [CssIteration("vstfs:///Classification/Node/3fe569cd-f84e-4375-a0f3-760ccb143bb7")]
+        [CssProjectStructure("Gallio")]
+        [DataSource("System.Data.SqlClient", "Server=.;Database=SomeDatabase;Trusted_Connection=Yes;",
+            "Products", DataAccessMethod.Sequential)]
+        [DeploymentItem("file1.xml", @"c:\SomePath\")]
+        [Description("A simple test with lots of metadata")]
+        [HostType("ASP.NET", "data")]
         [Ignore]
         [Owner("Julian")]
         [Priority(1)]
-        [DataSource("A datasource")]
+        [TestProperty("key1", "value1")]
+        [TestProperty("key2", "value2")]
+        [Timeout(100)]
+        [UrlToTest("http://www.gallio.org")]
+        [WorkItem(1)]
+        [AspNetDevelopmentServer("WebSite1", @"C:\WebSites\WebSite1", "/WebSite1")]
+        [AspNetDevelopmentServerHost(@"C:\WebSites\WebSite1", "/WebSite1")]
         public void Test()
         {
         }

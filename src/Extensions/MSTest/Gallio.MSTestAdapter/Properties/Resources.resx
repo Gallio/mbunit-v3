@@ -123,4 +123,10 @@
   <data name="MSTestController_RunningMSTestTests" xml:space="preserve">
     <value>Running MSTest tests</value>
   </data>
+  <data name="MSTestExplorer_IgnoreAttributeWasAppliedToClass" xml:space="preserve">
+    <value>The Ignore attribute was applied to this class.</value>
+  </data>
+  <data name="MSTestExplorer_IgnoreAttributeWasAppliedToTest" xml:space="preserve">
+    <value>The Ignore attribute was applied to this test.</value>
+  </data>
 </root>
