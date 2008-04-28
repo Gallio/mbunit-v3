@@ -255,7 +255,7 @@ namespace Gallio.MSTestAdapter.Model
                         methodTest.Metadata.SetValue(MSTestMetadataKeys.DataSource, GetDatasource(attribute));
                         break;
                     case MSTestAttributes.DescriptionAttribute:
-                        methodTest.Metadata.SetValue(MSTestMetadataKeys.Description, GetAttributePropertyValue(attribute, MSTestMetadataKeys.Description));
+                        methodTest.Metadata.SetValue(MetadataKeys.Description, GetAttributePropertyValue(attribute, MetadataKeys.Description));
                         break;
                     case MSTestAttributes.HostTypeAttribute:
                         methodTest.Metadata.SetValue(MSTestMetadataKeys.HostType, GetHostType(attribute));

@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\MSTestControllerTest.cs" />
+    <Compile Include="Model\MSTestExplorerTest.cs" />
     <Compile Include="Model\MSTestFrameworkTest.cs" />
     <Compile Include="Model\MSTestTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

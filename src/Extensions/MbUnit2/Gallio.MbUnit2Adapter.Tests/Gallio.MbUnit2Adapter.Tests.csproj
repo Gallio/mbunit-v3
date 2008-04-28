@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\MbUnit2TestExplorerTest.cs" />
     <Compile Include="Model\MbUnit2TestFrameworkTest.cs" />
     <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="XunitTestController_RunningXunitTests" xml:space="preserve">
-    <value>Running xUnit.Net tests.</value>
+    <value>Running xUnit.net tests.</value>
   </data>
   <data name="XunitTestExplorer_FrameworkNameWithVersionFormat" xml:space="preserve">
-    <value>xUnit.Net v{0}</value>
+    <value>xUnit.net v{0}</value>
   </data>
   <data name="XunitTestFramework_XunitFrameworkName" xml:space="preserve">
-    <value>xUnit.Net</value>
+    <value>xUnit.net</value>
   </data>
 </root>

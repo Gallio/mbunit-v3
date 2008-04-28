@@ -30,7 +30,7 @@ namespace Gallio.MSTestAdapter.TestResources.Metadata
         [DataSource("System.Data.SqlClient", "Server=.;Database=SomeDatabase;Trusted_Connection=Yes;",
             "Products", DataAccessMethod.Sequential)]
         [DeploymentItem("file1.xml", @"c:\SomePath\")]
-        [Description("A simple test with lots of metadata")]
+        [Description("A sample description.")]
         [HostType("ASP.NET", "data")]
         [Ignore]
         [Owner("Julian")]

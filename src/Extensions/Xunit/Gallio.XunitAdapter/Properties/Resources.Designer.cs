@@ -61,7 +61,7 @@ namespace Gallio.XunitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Running xUnit.Net tests..
+        ///   Looks up a localized string similar to Running xUnit.net tests..
         /// </summary>
         internal static string XunitTestController_RunningXunitTests {
             get {
@@ -70,7 +70,7 @@ namespace Gallio.XunitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to xUnit.Net v{0}.
+        ///   Looks up a localized string similar to xUnit.net v{0}.
         /// </summary>
         internal static string XunitTestExplorer_FrameworkNameWithVersionFormat {
             get {
@@ -79,7 +79,7 @@ namespace Gallio.XunitAdapter.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to xUnit.Net.
+        ///   Looks up a localized string similar to xUnit.net.
         /// </summary>
         internal static string XunitTestFramework_XunitFrameworkName {
             get {

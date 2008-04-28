@@ -117,6 +117,7 @@
     <Compile Include="Framework\Data\XmlDataSetTest.cs" />
     <Compile Include="Framework\Pattern\PatternTestFrameworkTest.cs" />
     <Compile Include="Framework\Pattern\ToolInfoTest.cs" />
+    <Compile Include="Model\BaseTestExplorerTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
     <Compile Include="Runtime\Hosting\LocalHostFactoryTest.cs" />

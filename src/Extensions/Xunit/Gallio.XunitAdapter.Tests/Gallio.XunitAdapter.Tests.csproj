@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\XunitTestExplorerTest.cs" />
     <Compile Include="Model\XunitTestFrameworkTest.cs" />
     <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

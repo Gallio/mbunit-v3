@@ -149,7 +149,7 @@ namespace Gallio.XunitAdapter.Model
                 }
                 catch (Exception ex)
                 {
-                    TestModel.AddAnnotation(new Annotation(AnnotationType.Error, type, "An exception was thrown while exploring an xUnit.Net test type.", ex));
+                    TestModel.AddAnnotation(new Annotation(AnnotationType.Error, type, "An exception was thrown while exploring an xUnit.net test type.", ex));
                 }
 
                 if (typeTest != null)

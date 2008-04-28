@@ -49,7 +49,7 @@ namespace Gallio.XunitAdapter.Model
             }
             catch (ArgumentException)
             {
-                // Note: xUnit.Net looks for attribute property values even in cases
+                // Note: xUnit.net looks for attribute property values even in cases
                 // where they are not initialized via the property such as the
                 // Name property of a Trait.  So we eat the exception and try to 
                 // fall back on the property of the real attribute instance itself.

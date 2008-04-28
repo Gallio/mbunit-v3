@@ -1,4 +1,4 @@
-// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,29 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern alias MbUnit2;
-using System.Reflection;
-using Gallio.MbUnit2Adapter.Model;
-using Gallio.MbUnit2Adapter.TestResources;
 using Gallio.Model;
+using Gallio.Reflection;
+using Gallio.XunitAdapter.TestResources;
+using Gallio.XunitAdapter.TestResources.Metadata;
 using Gallio.Tests.Model;
+using Gallio.XunitAdapter.Model;
 using MbUnit.Framework;
 
-namespace Gallio.MbUnit2Adapter.Tests.Model
+namespace Gallio.XunitAdapter.Tests.Model
 {
     [TestFixture]
-    [TestsOn(typeof(MbUnit2TestFramework))]
-    [Author("Jeff", "jeff@ingenio.com")]
-    public class MbUnit2TestFrameworkTest : BaseTestFrameworkTest
+    [TestsOn(typeof(XunitTestExplorer))]
+    [Author("Julian", "julian.hidalgo@gallio.org")]
+    public class XunitTestExplorerTest : BaseTestExplorerTest<SimpleTest>
     {
-        protected override Assembly GetSampleAssembly()
-        {
-            return typeof(SimpleTest).Assembly;
-        }
-
         protected override ITestFramework CreateFramework()
         {
-            return new MbUnit2TestFramework();
-        }        
+            return new XunitTestFramework();
+        }
     }
 }

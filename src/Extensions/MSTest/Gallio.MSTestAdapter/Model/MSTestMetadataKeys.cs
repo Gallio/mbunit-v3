@@ -59,11 +59,6 @@ namespace Gallio.Model
         public const string DeploymentItem = "DeploymentItem";        
 
         /// <summary>
-        /// The metadata key for the test's description.
-        /// </summary>
-        public const string Description = "Description";
-
-        /// <summary>
         /// The metadata key for the type of host that the unit test will run in.
         /// </summary>
         public const string HostType = "HostType";

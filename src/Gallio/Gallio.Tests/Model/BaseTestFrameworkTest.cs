@@ -62,15 +62,6 @@ namespace Gallio.Tests.Model
             }
         }
 
-        [Test]
-        public void PopulateTestTree_WhenAssemblyDoesNotReferenceFramework_IsEmpty()
-        {
-            sampleAssembly = typeof(int).Assembly;
-            PopulateTestTree();
-
-            Assert.AreEqual(0, testModel.RootTest.Children.Count);
-        }
-
         protected void PopulateTestTree()
         {
             TestPackageConfig config = new TestPackageConfig();

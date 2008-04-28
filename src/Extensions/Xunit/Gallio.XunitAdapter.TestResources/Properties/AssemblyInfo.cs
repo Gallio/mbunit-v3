@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Gallio.XunitAdapter.TestResources")]
-[assembly: AssemblyDescription("A sample test assembly for xUnit.Net.")]
+[assembly: AssemblyDescription("A sample test assembly for xUnit.net.")]
 [assembly: AssemblyConfiguration("Test")]
 [assembly: AssemblyCompany("MbUnit Project")]
 [assembly: AssemblyProduct("Gallio")]

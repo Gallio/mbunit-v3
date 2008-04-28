@@ -1,7 +1,7 @@
-xUnit.Net Adapter Plugin
+xUnit.net Adapter Plugin
 ========================
 
-This plugin uses the xUnit.Net test runner to adapt xUnit.Net tests so that
+This plugin uses the xUnit.net test runner to adapt xUnit.net tests so that
 they can run within Gallio and be manipulated by Gallio-based tools.
 
 The plugin assembly is deliberately NOT signed using a strong name.

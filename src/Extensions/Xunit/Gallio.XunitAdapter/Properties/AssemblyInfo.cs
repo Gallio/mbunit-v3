@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Gallio.XunitAdapter")]
-[assembly: AssemblyDescription("xUnit.Net adapter plugin for Gallio.")]
+[assembly: AssemblyDescription("xUnit.net adapter plugin for Gallio.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Gallio")]
