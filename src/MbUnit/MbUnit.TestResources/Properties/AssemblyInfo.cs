@@ -21,12 +21,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MbUnit.TestResources")]
-[assembly: AssemblyDescription("A sample test assembly for MbUnit.")]
+[assembly: AssemblyDescription("A sample test assembly for Gallio Pattern Test Framework.")]
 [assembly: AssemblyConfiguration("Test")]
 [assembly: AssemblyCompany("MbUnit Project")]
-[assembly: AssemblyProduct("MbUnit")]
+[assembly: AssemblyProduct("Gallio")]
 [assembly: AssemblyCopyright("Copyright © 2005-2008 Gallio Project - http://www.gallio.org/")]
-[assembly: AssemblyTrademark("MbUnit")]
+[assembly: AssemblyTrademark("Gallio")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyInformationalVersion("1.2.3.4")]
 

@@ -52,7 +52,7 @@ namespace Gallio.Tests.Model
             framework = CreateFramework();
             harness.AddTestFramework(framework);
             adapterAssemblyName = framework.GetType().Assembly.GetName().Name;
-            testResourcesNamespace = adapterAssemblyName + ".TestResources";
+            testResourcesNamespace = sampleAssembly.GetName().Name;
         }
 
         [TearDown]

@@ -55,6 +55,7 @@
     <Compile Include="Framework\DataBindingTest.cs" />
     <Compile Include="Integration\ContextOutcomeTest.cs" />
     <Compile Include="Integration\FixtureInheritanceTest.cs" />
+    <Compile Include="Model\MbUnitTestExplorerTest.cs" />
     <Compile Include="Model\MbUnitTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Framework\Reflection\BaseSample.cs" />
