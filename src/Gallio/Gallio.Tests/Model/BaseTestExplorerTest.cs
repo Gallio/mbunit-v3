@@ -95,6 +95,7 @@ namespace Gallio.Tests.Model
             //Assert.AreEqual("MSTest v9.0.0.0", frameworkTest.Name);
             //Assert.AreEqual("MbUnit v" + expectedVersion, frameworkTest.Name);
             //Assert.AreEqual("xUnit.net v" + expectedVersion, frameworkTest.Name);
+            //Assert.AreEqual("NUnit v" + expectedVersion, frameworkTest.Name);
             Assert.IsFalse(frameworkTest.IsTestCase);
             Assert.AreEqual(1, frameworkTest.Children.Count);
 

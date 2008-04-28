@@ -45,79 +45,7 @@ namespace Gallio.NUnitAdapter.Tests.Model
         {
             Assert.AreEqual("NUnit", framework.Name);
         }
-
-        [Test]
-        public void PopulateTestTree_CapturesTestStructureAndBasicMetadata()
-        {
-            Version expectedVersion = typeof(NUnit.Framework.Assert).Assembly.GetName().Version;
-            PopulateTestTree();
-
-            RootTest rootTest = testModel.RootTest;
-            Assert.IsNull(rootTest.Parent);
-            Assert.AreEqual(TestKinds.Root, rootTest.Kind);
-            Assert.IsNull(rootTest.CodeElement);
-            Assert.IsFalse(rootTest.IsTestCase);
-            Assert.AreEqual(1, rootTest.Children.Count);
-
-            BaseTest frameworkTest = (BaseTest)rootTest.Children[0];
-            Assert.AreSame(testModel.RootTest, frameworkTest.Parent);
-            Assert.AreEqual(TestKinds.Framework, frameworkTest.Kind);
-            Assert.IsNull(frameworkTest.CodeElement);
-            Assert.AreEqual("NUnit v" + expectedVersion, frameworkTest.Name);
-            Assert.IsFalse(frameworkTest.IsTestCase);
-            Assert.AreEqual(1, frameworkTest.Children.Count);
-
-            NUnitTest assemblyTest = (NUnitTest)frameworkTest.Children[0];
-            Assert.AreSame(frameworkTest, assemblyTest.Parent);
-            Assert.AreEqual(TestKinds.Assembly, assemblyTest.Kind);
-            Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeElement.CodeReference);
-            Assert.AreEqual(sampleAssembly.GetName().Name, assemblyTest.Name);
-            Assert.IsFalse(assemblyTest.IsTestCase);
-            Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
-
-            NUnitTest fixtureTest = (NUnitTest)GetDescendantByName(assemblyTest, "SimpleTest");
-            Assert.AreSame(assemblyTest, fixtureTest.Parent);
-            Assert.AreEqual(TestKinds.Fixture, fixtureTest.Kind);
-            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.NUnitAdapter.TestResources", "Gallio.NUnitAdapter.TestResources.SimpleTest", null, null),
-                fixtureTest.CodeElement.CodeReference);
-            Assert.AreEqual("SimpleTest", fixtureTest.Name);
-            Assert.IsFalse(fixtureTest.IsTestCase);
-            Assert.AreEqual(2, fixtureTest.Children.Count);
-
-            NUnitTest passTest = (NUnitTest)GetDescendantByName(fixtureTest, "Pass");
-            NUnitTest failTest = (NUnitTest)GetDescendantByName(fixtureTest, "Fail");
- 
-            Assert.AreSame(fixtureTest, passTest.Parent);
-            Assert.AreEqual(TestKinds.Test, passTest.Kind);
-            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.NUnitAdapter.TestResources", "Gallio.NUnitAdapter.TestResources.SimpleTest", "Pass", null),
-                passTest.CodeElement.CodeReference);
-            Assert.AreEqual("Pass", passTest.Name);
-            Assert.IsTrue(passTest.IsTestCase);
-            Assert.AreEqual(0, passTest.Children.Count);
-
-            Assert.AreSame(fixtureTest, failTest.Parent);
-            Assert.AreEqual(TestKinds.Test, failTest.Kind);
-            Assert.AreEqual(new CodeReference(sampleAssembly.FullName, "Gallio.NUnitAdapter.TestResources", "Gallio.NUnitAdapter.TestResources.SimpleTest", "Fail", null),
-                failTest.CodeElement.CodeReference);
-            Assert.AreEqual("Fail", failTest.Name);
-            Assert.IsTrue(failTest.IsTestCase);
-            Assert.AreEqual(0, failTest.Children.Count);
-        }
-
-        [Test]
-        public void MetadataImport_XmlDocumentation()
-        {
-            PopulateTestTree();
-
-            NUnitTest test = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(SimpleTest).Name);
-            NUnitTest passTest = (NUnitTest)GetDescendantByName(test, "Pass");
-            NUnitTest failTest = (NUnitTest)GetDescendantByName(test, "Fail");
-
-            Assert.AreEqual("<summary>\nA simple test fixture.\n</summary>", test.Metadata.GetValue(MetadataKeys.XmlDocumentation));
-            Assert.AreEqual("<summary>\nA passing test.\n</summary>", passTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
-            Assert.AreEqual("<summary>\nA failing test.\n</summary>", failTest.Metadata.GetValue(MetadataKeys.XmlDocumentation));
-        }
-
+        
         [Test]
         public void MetadataImport_Description()
         {
@@ -155,28 +83,7 @@ namespace Gallio.NUnitAdapter.Tests.Model
             Assert.AreEqual("customvalue-1", test.Metadata.GetValue("customkey-1"));
             Assert.AreEqual("customvalue-2", test.Metadata.GetValue("customkey-2"));
         }
-
-        [Test]
-        public void MetadataImport_AssemblyAttributes()
-        {
-            PopulateTestTree();
-
-            BaseTest frameworkTest = (BaseTest)testModel.RootTest.Children[0];
-            NUnitTest assemblyTest = (NUnitTest)frameworkTest.Children[0];
-
-            Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
-            Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
-            StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
-            Assert.AreEqual("A sample test assembly for NUnit.", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
-            Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
-            Assert.AreEqual("Gallio.NUnitAdapter.TestResources", assemblyTest.Metadata.GetValue(MetadataKeys.Title));
-            Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
-
-            Assert.AreEqual("1.2.3.4", assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));
-            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.FileVersion));
-            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.Version));
-        }
-
+        
         [Test]
         public void DoesNotChokeOnAmbiguousMatch()
         {
