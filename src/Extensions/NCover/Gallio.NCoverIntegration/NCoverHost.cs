@@ -31,10 +31,11 @@ namespace Gallio.NCoverIntegration
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
         /// <param name="logger">The logger for host message output</param>
+        /// <param name="installationPath">The runtime installation path where the hosting executable will be found</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
-        /// or <paramref name="logger"/> is null</exception>
-        public NCoverHost(HostSetup hostSetup, ILogger logger)
-            : base(hostSetup, logger)
+        /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null</exception>
+        public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath)
+            : base(hostSetup, logger, installationPath)
         {
         }
 

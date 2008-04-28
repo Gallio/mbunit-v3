@@ -65,6 +65,8 @@ namespace Gallio.Runner.Drivers
             foreach (string assemblyFile in testPackageConfig.AssemblyFiles)
             {
                 TestDomainSetup testDomain = new TestDomainSetup(testPackageConfig.Copy());
+                testDomain.TestPackageConfig.AssemblyFiles.Clear();
+                testDomain.TestPackageConfig.AssemblyFiles.Add(assemblyFile);
 
                 string assemblyConfigFile = assemblyFile + @".config";
                 if (File.Exists(assemblyConfigFile))

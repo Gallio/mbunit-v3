@@ -99,7 +99,7 @@ namespace Gallio.Runtime.Hosting
         private void CreateTemporaryConfigurationFile()
         {
             HostConfiguration configuration = HostSetup.Configuration;
-            if (HostSetup.ApplicationBaseDirectory != RuntimeAccessor.InstallationPath)
+            if (HostSetup.ApplicationBaseDirectory != AppDomain.CurrentDomain.BaseDirectory)
             {
                 configuration = configuration.Copy();
                 configuration.AddAssemblyBinding(GetType().Assembly, false);

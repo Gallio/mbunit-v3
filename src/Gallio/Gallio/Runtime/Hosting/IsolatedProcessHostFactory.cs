@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime.Hosting
@@ -24,10 +25,46 @@ namespace Gallio.Runtime.Hosting
     /// </summary>
     public class IsolatedProcessHostFactory : BaseHostFactory
     {
+        private readonly string installationPath;
+
+        /// <summary>
+        /// Creates a host factory.
+        /// </summary>
+        /// <param name="runtime">The runtime</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtime"/> is null</exception>
+        public IsolatedProcessHostFactory(IRuntime runtime)
+        {
+            if (runtime == null)
+                throw new ArgumentNullException("runtime");
+
+            installationPath = runtime.GetRuntimeSetup().InstallationPath;
+        }
+
+        /// <summary>
+        /// Creates a host factory.
+        /// </summary>
+        /// <param name="installationPath">The installation path of the host executable</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="installationPath"/> is null</exception>
+        public IsolatedProcessHostFactory(string installationPath)
+        {
+            if (installationPath == null)
+                throw new ArgumentNullException("installationPath");
+
+            this.installationPath = installationPath;
+        }
+
+        /// <summary>
+        /// Gets the installation path of the host executable.
+        /// </summary>
+        protected string InstallationPath
+        {
+            get { return installationPath; }
+        }
+
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            IsolatedProcessHost host = new IsolatedProcessHost(hostSetup, logger);
+            IsolatedProcessHost host = new IsolatedProcessHost(hostSetup, logger, installationPath);
             host.Connect();
             return host;
         }

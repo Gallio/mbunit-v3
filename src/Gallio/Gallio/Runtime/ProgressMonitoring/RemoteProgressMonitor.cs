@@ -50,20 +50,12 @@ namespace Gallio.Runtime.ProgressMonitoring
                 throw new ArgumentNullException("progressMonitor");
 
             forwarder = new Forwarder(progressMonitor);
+            RemotelyRegisterDispatcher();
         }
 
         void IDeserializationCallback.OnDeserialization(object sender)
         {
-            dispatcher = new Dispatcher(this);
-
-            try
-            {
-                forwarder.RegisterDispatcher(dispatcher);
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("Could not remotely register the progress monitor callback dispatcher.", ex);
-            }
+            RemotelyRegisterDispatcher();
         }
 
         /// <inheritdoc />
@@ -100,6 +92,20 @@ namespace Gallio.Runtime.ProgressMonitoring
         protected override void OnCancel()
         {
             forwarder.Cancel();
+        }
+
+        private void RemotelyRegisterDispatcher()
+        {
+            dispatcher = new Dispatcher(this);
+
+            try
+            {
+                forwarder.RegisterDispatcher(dispatcher);
+            }
+            catch (Exception ex)
+            {
+                UnhandledExceptionPolicy.Report("Could not remotely register the progress monitor callback dispatcher.", ex);
+            }
         }
 
         /// <summary>

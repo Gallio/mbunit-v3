@@ -54,6 +54,8 @@ namespace Gallio.Runtime.Hosting
         // FIXME: Large timeout to workaround the remoting starvation issue.  See Google Code issue #147.  Reduce value when fixed.
         private static readonly TimeSpan WatchdogTimeout = TimeSpan.FromSeconds(120);
 
+        private readonly string installationPath;
+
         private readonly string uniqueId;
         private ProcessTask processTask;
         private IClientChannel clientChannel;
@@ -64,11 +66,16 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
         /// <param name="logger">The logger for host message output</param>
+        /// <param name="installationPath">The runtime installation path where the hosting executable will be found</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
-        /// or <paramref name="logger"/> is null</exception>
-        public IsolatedProcessHost(HostSetup hostSetup, ILogger logger)
+        /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null</exception>
+        public IsolatedProcessHost(HostSetup hostSetup, ILogger logger, string installationPath)
             : base(hostSetup, logger, PingInterval)
         {
+            if (installationPath == null)
+                throw new ArgumentNullException("installationPath");
+
+            this.installationPath = installationPath;
             uniqueId = Hash64.CreateUniqueHash().ToString();
         }
 
@@ -256,9 +263,9 @@ namespace Gallio.Runtime.Hosting
             }
         }
 
-        private static string GetInstalledHostProcessPath()
+        private string GetInstalledHostProcessPath()
         {
-            string hostProcessPath = Path.Combine(RuntimeAccessor.InstallationPath, HostAppFileName);
+            string hostProcessPath = Path.Combine(installationPath, HostAppFileName);
             if (!File.Exists(hostProcessPath))
                 throw new HostException(String.Format("Could not find the installed host application in '{0}'.", hostProcessPath));
 

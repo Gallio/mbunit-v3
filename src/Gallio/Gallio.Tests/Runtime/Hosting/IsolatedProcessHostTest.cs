@@ -16,6 +16,7 @@
 using System;
 using System.Threading;
 using Gallio.Framework.Utilities;
+using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Tests.Runtime.Remoting;
 using MbUnit.Framework;
@@ -31,7 +32,7 @@ namespace Gallio.Tests.Runtime.Hosting
     {
         public override IHostFactory Factory
         {
-            get { return new IsolatedProcessHostFactory(); }
+            get { return new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath); }
         }
 
         [Test]
