@@ -50,9 +50,9 @@ namespace Gallio.Runner.Drivers
         public event EventHandler Disposed;
 
         /// <inheritdoc />
-        protected override void InitializeImpl(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
+        protected override void InitializeImpl(RuntimeSetup runtimeSetup, ILogger logger)
         {
-            testDriver.Initialize(runtimeFactory, runtimeSetup, new RemoteLogger(logger));
+            testDriver.Initialize(runtimeSetup, new RemoteLogger(logger));
         }
 
         /// <inheritdoc />

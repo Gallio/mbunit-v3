@@ -41,7 +41,6 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
-using Gallio.Runtime.Windsor;
 using NAnt.Core;
 using NAnt.Core.Attributes;
 using NAnt.Core.Types;
@@ -492,7 +491,6 @@ namespace Gallio.NAntTasks
                     launcher.TestRunnerExtensionSpecifications.Add(arg.Value);
             }
 
-            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
             launcher.RuntimeSetup = new RuntimeSetup();
 
             // Set the installation path explicitly to ensure that we do not encounter problems

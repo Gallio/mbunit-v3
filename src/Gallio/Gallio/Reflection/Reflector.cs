@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using Gallio.Reflection.Impl;
 using Gallio.Utilities;
@@ -322,7 +323,7 @@ namespace Gallio.Reflection
         /// </para>
         /// </remarks>
         /// <returns>The code reference</returns>
-        [NonInlined(SecurityAction.Demand)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static IFunctionInfo GetExecutingFunction()
         {
             return GetFunctionFromStackFrame(1);
@@ -351,7 +352,7 @@ namespace Gallio.Reflection
         /// </para>
         /// </remarks>
         /// <returns>The code reference</returns>
-        [NonInlined(SecurityAction.Demand)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static IFunctionInfo GetCallingFunction()
         {
             return GetFunctionFromStackFrame(2);
@@ -365,7 +366,7 @@ namespace Gallio.Reflection
         /// if it is 1, it will refer to the caller's caller, and so on.</param>
         /// <returns>The code reference</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="framesToSkip"/> is less than zero</exception>
-        [NonInlined(SecurityAction.Demand)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static IFunctionInfo GetFunctionFromStackFrame(int framesToSkip)
         {
             if (framesToSkip < 0)

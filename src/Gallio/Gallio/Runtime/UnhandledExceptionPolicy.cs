@@ -15,6 +15,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Threading;
 using Gallio.Runtime;
@@ -124,7 +125,7 @@ namespace Gallio.Runtime
             ReportInternal(message, unhandledException, true);
         }
 
-        [NonInlined(SecurityAction.Demand)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static void ReportInternal(string message, Exception unhandledException, bool includeReporterStackTrace)
         {
             if (recursionGuard == 2)
@@ -149,7 +150,7 @@ namespace Gallio.Runtime
             }
         }
 
-        [NonInlined(SecurityAction.Demand)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static string GetCallersCallerStackTrace()
         {
             try

@@ -24,7 +24,6 @@ using Gallio.Model.Filters;
 using Gallio.PowerShellCommands.Properties;
 using Gallio.Reflection;
 using Gallio.Runner;
-using Gallio.Runtime.Windsor;
 using Gallio.Utilities;
 
 namespace Gallio.PowerShellCommands
@@ -447,7 +446,6 @@ namespace Gallio.PowerShellCommands
             if (runnerExtensions != null)
                 GenericUtils.AddAll(runnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
-            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
             launcher.RuntimeSetup = new RuntimeSetup();
 
             // Set the installation path explicitly to ensure that we do not encounter problems

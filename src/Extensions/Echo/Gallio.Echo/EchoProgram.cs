@@ -26,7 +26,6 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
-using Gallio.Runtime.Windsor;
 
 namespace Gallio.Echo
 {
@@ -84,7 +83,6 @@ namespace Gallio.Echo
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(Console);
 
-            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
             launcher.RuntimeSetup = new RuntimeSetup();
             launcher.RuntimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
@@ -207,7 +205,7 @@ namespace Gallio.Echo
             if (Arguments != null && Arguments.PluginDirectories != null)
                 setup.PluginDirectories.AddRange(Arguments.PluginDirectories);
 
-            using (RuntimeBootstrap.Initialize(WindsorRuntimeFactory.Instance, setup, CreateLogger()))
+            using (RuntimeBootstrap.Initialize(setup, CreateLogger()))
             {
                 IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
                 ShowRegisteredComponents("Supported report types:", reportManager.FormatterResolver);

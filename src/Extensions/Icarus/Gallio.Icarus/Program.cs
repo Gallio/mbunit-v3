@@ -26,7 +26,6 @@ using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
-using Gallio.Runtime.Windsor;
 using Gallio.Icarus.Interfaces;
 using Gallio.Icarus.Core.Interfaces;
 
@@ -54,7 +53,7 @@ namespace Gallio.Icarus
             // which will confuse the runtime into searching in the wrong place for plugins.
             runtimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Program).Assembly));
             runtimeSetup.PluginDirectories.AddRange(main.Settings.PluginDirectories);
-            using (RuntimeBootstrap.Initialize(WindsorRuntimeFactory.Instance, runtimeSetup, new IcarusLogger(main)))
+            using (RuntimeBootstrap.Initialize(runtimeSetup, new IcarusLogger(main)))
             {
                 // wire up model
                 IProjectAdapter projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());

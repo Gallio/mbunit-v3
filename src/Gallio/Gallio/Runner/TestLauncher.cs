@@ -48,8 +48,7 @@ namespace Gallio.Runner
     /// By default, the launcher assumes that a runtime environment has already been
     /// established and is accessible via the <see cref="RuntimeAccessor" />.  If there
     /// is no runtime yet, then you can cause one to be configured automatically for the
-    /// duration of the test run by setting the <see cref="RuntimeSetup"/> and <see cref="RuntimeFactory" />
-    /// properties accordingly.
+    /// duration of the test run by setting the <see cref="RuntimeSetup"/> property accordingly.
     /// </para>
     /// <para>
     /// You can override the default <see cref="ITestRunner" /> that is created
@@ -60,7 +59,6 @@ namespace Gallio.Runner
     {
         #region Private Members
 
-        private RuntimeFactory runtimeFactory;
         private RuntimeSetup runtimeSetup;
 
         private string testRunnerFactoryName;
@@ -156,33 +154,13 @@ namespace Gallio.Runner
 
         /// <summary>
         /// <para>
-        /// Gets or sets the <see cref="RuntimeFactory" /> to use for automatically initializing
-        /// the runtime during test execution or <c>null</c> if the runtime is already initialized.
-        /// </para>
-        /// <para>
-        /// If this value if not <c>null</c> then the launcher will initialize the runtime
-        /// using this <see cref="RuntimeFactory" /> and the <see cref="RuntimeSetup"/> just prior to
-        /// test execution and will automatically shut down the runtime just afterwards.
-        /// </para>
-        /// <para>
-        /// The default value is <c>null</c> which assumes that the runtime is already initialized.
-        /// </para>
-        /// </summary>
-        public RuntimeFactory RuntimeFactory
-        {
-            get { return runtimeFactory; }
-            set { runtimeFactory = value; }
-        }
-
-        /// <summary>
-        /// <para>
         /// Gets or sets the <see cref="RuntimeSetup" /> to use for automatically initializing
         /// the runtime during test execution or <c>null</c> if the runtime is already initialized.
         /// </para>
         /// <para>
         /// If this value if not <c>null</c> then the launcher will initialize the runtime
-        /// using this <see cref="RuntimeSetup" /> and the <see cref="RuntimeFactory"/> just prior to
-        /// test execution and will automatically shut down the runtime just afterwards.
+        /// using this <see cref="RuntimeSetup" /> just prior to test execution and will
+        /// automatically shut down the runtime just afterwards.
         /// </para>
         /// <para>
         /// The default value is <c>null</c> which assumes that the runtime is already initialized.
@@ -427,7 +405,7 @@ namespace Gallio.Runner
         /// Runs the test package as configured.
         /// </para>
         /// <para>
-        /// If <see cref="RuntimeSetup" /> and <see cref="RuntimeFactory" /> are non-<c>null</c>,
+        /// If <see cref="RuntimeSetup" /> is non-<c>null</c>,
         /// initializes the runtime for the duration of this method then shuts it down automatically
         /// before returning.  Otherwise assumes the runtime has already been initialized and
         /// accesses it using <see cref="RuntimeAccessor" />.
@@ -453,8 +431,8 @@ namespace Gallio.Runner
 
             logger.Log(LogSeverity.Info, "Initializing the test runner.");
 
-            using (runtimeFactory != null && runtimeSetup != null
-                ? RuntimeBootstrap.Initialize(runtimeFactory, runtimeSetup, logger)
+            using (runtimeSetup != null
+                ? RuntimeBootstrap.Initialize(runtimeSetup, logger)
                 : null)
             {
                 return RunWithRuntime();

@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using Gallio.Reflection;
 using Gallio.Utilities;
@@ -63,7 +64,7 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual("GetFunctionFromStackFrame", r.Name);
         }
 
-        [NonInlined(SecurityAction.Demand)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private IFunctionInfo GetFunctionFromStackFrame_Helper()
         {
             return Reflector.GetFunctionFromStackFrame(1);
@@ -76,7 +77,7 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual("GetCallingFunction", r.Name);
         }
 
-        [NonInlined(SecurityAction.Demand)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private IFunctionInfo GetCallingFunction_Helper()
         {
             return Reflector.GetCallingFunction();

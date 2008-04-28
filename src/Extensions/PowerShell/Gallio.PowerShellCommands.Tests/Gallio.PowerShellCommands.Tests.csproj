@@ -53,10 +53,6 @@
       <Project>{35FFAF24-1019-4BE2-901D-02E627C757DC}</Project>
       <Name>Gallio.Host</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Runtime.Windsor\Gallio.Runtime.Windsor.csproj">
-      <Project>{E66579E8-6CA7-477B-9645-4DB48E6F872F}</Project>
-      <Name>Gallio.Runtime.Windsor</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
       <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
       <Name>MbUnit.TestResources</Name>

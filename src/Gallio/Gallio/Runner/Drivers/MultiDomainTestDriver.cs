@@ -77,7 +77,7 @@ namespace Gallio.Runner.Drivers
 
                 ILogger logger = new RemoteLogger(Logger);
                 ITestDriver testDriver = remote.CreateRemoteTestDriver(testDomain, logger);
-                testDriver.Initialize(RuntimeFactory, RuntimeSetup, logger);
+                testDriver.Initialize(RuntimeSetup, logger);
 
                 yield return new Partition(new ProxyTestDriver(testDriver), testDomain.TestPackageConfig);
             }

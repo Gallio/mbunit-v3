@@ -16,7 +16,6 @@
 using System;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
-using Gallio.Runtime.Windsor;
 
 namespace Gallio.ReSharperRunner.Runtime
 {

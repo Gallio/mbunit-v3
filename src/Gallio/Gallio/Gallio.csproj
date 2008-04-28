@@ -43,8 +43,25 @@
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="ISymWrapper" />
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
@@ -394,6 +411,8 @@
     <Compile Include="Runner\Reports\TestOutcomeSummary.cs" />
     <Compile Include="Runner\StandardTestRunnerFactoryNames.cs" />
     <Compile Include="Runtime\RuntimeBootstrap.cs" />
+    <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
+    <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
     <Compile Include="Utilities\CurrentDirectorySwitcher.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
     <Compile Include="Utilities\Memoizer.cs" />
@@ -401,7 +420,6 @@
     <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolver.cs" />
     <Compile Include="Reflection\Impl\IDebugSymbolResolver.cs" />
-    <Compile Include="Runtime\RuntimeFactory.cs" />
     <Compile Include="Reflection\Impl\XmlDocumentationUtils.cs" />
     <Compile Include="Reflection\CodeLocation.cs" />
     <Compile Include="Model\BaseTestFramework.cs" />
@@ -601,7 +619,6 @@
     <Compile Include="Collections\GenericUtils.cs" />
     <Compile Include="Utilities\Sync.cs" />
     <Compile Include="Utilities\XmlSerializationUtils.cs" />
-    <Compile Include="Utilities\NonInlinedAttribute.cs" />
     <Compile Include="Runtime\CorrelatedExceptionEventArgs.cs" />
     <Compile Include="Utilities\StringUtils.cs" />
     <Compile Include="Framework\Log.cs" />

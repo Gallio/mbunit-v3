@@ -9,16 +9,11 @@
 
   <ItemGroup>
     <DocumentedAssembly Include="Gallio\bin\Gallio.dll" />
-    <DocumentedAssembly Include="Gallio.Runtime.Windsor\bin\Gallio.Runtime.Windsor.dll" />
   </ItemGroup>
 
   <ItemGroup>
     <File Include="Gallio Website.url" />
   
-    <Binary Include="$(RootDir)\libs\ReferenceAssemblies\System.Core.dll" />
-
-    <Binary Include="Gallio\bin\Gallio.dll" />
-    <Binary Include="Gallio\bin\Gallio.pdb" />
     <Binary Include="Gallio\bin\Gallio.XmlSerializers.dll" />
     <Binary Include="Gallio\Gallio.plugin" />
 
@@ -34,6 +29,6 @@
   </ItemGroup>
 
   <Target Name="AfterBuild">
-    <Exec Command="&quot;$(LibsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Runtime.Windsor\bin\Gallio.Runtime.Windsor.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.Core.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.MicroKernel.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.Windsor.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.DynamicProxy2.dll&quot; /internalize &quot;/out:$(TargetBinDir)\Gallio.Runtime.Windsor.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+    <Exec Command="&quot;$(LibsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.Core.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.MicroKernel.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.Windsor.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.DynamicProxy2.dll&quot; /internalize &quot;/out:$(TargetBinDir)\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
   </Target>
 </Project>

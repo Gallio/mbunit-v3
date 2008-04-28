@@ -59,10 +59,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio.Runtime.Windsor\Gallio.Runtime.Windsor.csproj">
-      <Project>{E66579E8-6CA7-477B-9645-4DB48E6F872F}</Project>
-      <Name>Gallio.Runtime.Windsor</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>

@@ -129,12 +129,9 @@ Section "!Gallio" GallioSection
 	SetOutPath "$INSTDIR\bin"
 	File "${TARGETDIR}\bin\Gallio.dll"
 	File "${TARGETDIR}\bin\Gallio.pdb"
+	File "${TARGETDIR}\bin\Gallio.xml"
 	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
 	File "${TARGETDIR}\bin\Gallio.plugin"
-	File "${TARGETDIR}\bin\Gallio.xml"
-	File "${TARGETDIR}\bin\Gallio.Runtime.Windsor.dll"
-	File "${TARGETDIR}\bin\Gallio.Runtime.Windsor.pdb"
-	File "${TARGETDIR}\bin\Gallio.Runtime.Windsor.xml"
 	File "${TARGETDIR}\bin\Gallio.Host.exe"
 
 	SetOutPath "$INSTDIR\bin\Reports"
@@ -395,7 +392,6 @@ Function un.UninstallReSharperRunner
 	StrCmp "" "$ReSharperPluginDir" Done
 		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.dll"
 		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.XmlSerializers.dll"
-		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.Runtime.Windsor.dll"
 		
 		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll"
 		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll.config"
@@ -414,7 +410,6 @@ FunctionEnd
 		SetOutPath "$ReSharperPluginDir\Gallio"
 		File "${SourcePath}\Gallio.dll"
 		File "${SourcePath}\Gallio.XmlSerializers.dll"
-		File "${SourcePath}\Gallio.Runtime.Windsor.dll"
 
 		File "${SourcePath}\ReSharper\Gallio.ReSharperRunner.dll"
 		File "/oname=Gallio.ReSharperRunner.dll.config.orig" "${SourcePath}\ReSharper\Gallio.ReSharperRunner.dll.config"
@@ -451,7 +446,6 @@ Section "Visual Studio Team Test Runner (Experimental!)" MSTestRunnerSection
 	SetOutPath "$0\PrivateAssemblies"
 	File "${TARGETDIR}\bin\Gallio.dll"
 	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
-	File "${TARGETDIR}\bin\Gallio.Runtime.Windsor.dll"
 
 	File "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll"
 	File "/oname=Gallio.MSTestRunner.dll.config.orig" "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll.config"
@@ -496,7 +490,6 @@ SectionEnd
 
 	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.dll"
 	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.XmlSerializers.dll"
-	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.Runtime.Windsor.dll"
 	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll"
 	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config"
 	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config.orig"

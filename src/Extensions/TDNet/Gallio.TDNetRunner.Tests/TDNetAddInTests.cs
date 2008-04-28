@@ -23,7 +23,6 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
-using Gallio.Runtime.Windsor;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using TestDriven.Framework;
@@ -227,7 +226,6 @@ namespace Gallio.TDNetRunner.Tests
             Assert.IsFalse(launcher.ShowReports);
             Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
 
-            Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
             Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTestRunner).Assembly)), launcher.RuntimeSetup.InstallationPath);
             CollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);

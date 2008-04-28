@@ -27,7 +27,6 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
-using Gallio.Runtime.Windsor;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -679,7 +678,6 @@ namespace Gallio.MSBuildTasks
             launcher.DoNotRun = doNotRun;
             launcher.IgnoreAnnotations = ignoreAnnotations;
 
-            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
             launcher.RuntimeSetup = new RuntimeSetup();
 
             // Set the installation path explicitly to ensure that we do not encounter problems

@@ -31,12 +31,11 @@ namespace Gallio.Runner.Drivers
         /// <summary>
         /// Initializes the test driver.
         /// </summary>
-        /// <param name="runtimeFactory">The runtime factory</param>
         /// <param name="runtimeSetup">The runtime setup</param>
         /// <param name="logger">The logger</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimeFactory"/>,
-        /// <paramref name="runtimeSetup"/> or <paramref name="logger"/> is null</exception>
-        void Initialize(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimeSetup"/>
+        /// or <paramref name="logger"/> is null</exception>
+        void Initialize(RuntimeSetup runtimeSetup, ILogger logger);
 
         /// <summary>
         /// Loads a test package.

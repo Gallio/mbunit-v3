@@ -20,7 +20,6 @@ using System.Reflection;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Reflection;
-using Gallio.Runtime.Windsor;
 using Gallio.TDNetRunner.Properties;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
@@ -139,7 +138,6 @@ namespace Gallio.TDNetRunner
             launcher.TestExecutionOptions.Filter = filter;
             launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
 
-            launcher.RuntimeFactory = WindsorRuntimeFactory.Instance;
             launcher.RuntimeSetup = new RuntimeSetup();
 
             // Set the installation path explicitly to ensure that we do not encounter problems

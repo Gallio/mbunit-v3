@@ -78,11 +78,5 @@ namespace Gallio.Runtime
         /// </summary>
         /// <returns>The runtime setup</returns>
         RuntimeSetup GetRuntimeSetup();
-
-        /// <summary>
-        /// Gets the factory used to create this runtime.
-        /// </summary>
-        /// <returns>The runtime factory</returns>
-        RuntimeFactory GetRuntimeFactory();
     }
 }

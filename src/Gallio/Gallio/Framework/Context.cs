@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Threading;
 using Gallio;
@@ -309,7 +310,7 @@ namespace Gallio.Framework
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the action</exception>
-        [NonInlined(SecurityAction.Demand)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public Context RunStep(string name, Action action)
         {
             return RunStep(name, Reflector.GetCallingFunction(), action);

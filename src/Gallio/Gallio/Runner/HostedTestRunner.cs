@@ -409,8 +409,7 @@ namespace Gallio.Runner
 
             host = hostFactory.CreateHost(hostSetup, logger);
             testDriver = new MultiDomainTestDriver(frameworks, host);
-            testDriver.Initialize(RuntimeAccessor.Instance.GetRuntimeFactory(),
-                RuntimeAccessor.Instance.GetRuntimeSetup(), logger);
+            testDriver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(), logger);
 
             progressMonitor.Worked(totalWork);
         }

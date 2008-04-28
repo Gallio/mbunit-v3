@@ -33,22 +33,19 @@ namespace Gallio.Runner.Drivers
     /// </remarks>
     public abstract class BaseTestDriver : LongLivedMarshalByRefObject, ITestDriver
     {
-        private RuntimeFactory runtimeFactory;
         private RuntimeSetup runtimeSetup;
         private ILogger logger;
         private bool initializedRuntime;
 
         /// <inheritdoc />
-        public void Initialize(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
+        public void Initialize(RuntimeSetup runtimeSetup, ILogger logger)
         {
-            if (runtimeFactory == null)
-                throw new ArgumentNullException("runtimeFactory");
             if (runtimeSetup == null)
                 throw new ArgumentNullException("runtimeSetup");
             if (logger == null)
                 throw new ArgumentNullException("logger");
 
-            InitializeImpl(runtimeFactory, runtimeSetup, logger);
+            InitializeImpl(runtimeSetup, logger);
         }
 
         /// <inheritdoc />
@@ -103,14 +100,6 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <summary>
-        /// Gets the runtime factory, or null if not initialized.
-        /// </summary>
-        protected RuntimeFactory RuntimeFactory
-        {
-            get { return runtimeFactory; }
-        }
-
-        /// <summary>
         /// Gets the runtime setup, or null if not initialized.
         /// </summary>
         protected RuntimeSetup RuntimeSetup
@@ -130,15 +119,14 @@ namespace Gallio.Runner.Drivers
         /// Internal implementation of <see cref="Initialize" />.
         /// Called after argument validation takes place.
         /// </summary>
-        protected virtual void InitializeImpl(RuntimeFactory runtimeFactory, RuntimeSetup runtimeSetup, ILogger logger)
+        protected virtual void InitializeImpl(RuntimeSetup runtimeSetup, ILogger logger)
         {
-            this.runtimeFactory = runtimeFactory;
             this.runtimeSetup = runtimeSetup;
             this.logger = logger;
 
             if (!RuntimeAccessor.IsInitialized)
             {
-                RuntimeBootstrap.Initialize(runtimeFactory, runtimeSetup, logger);
+                RuntimeBootstrap.Initialize(runtimeSetup, logger);
                 initializedRuntime = true;
             }
         }
@@ -153,7 +141,6 @@ namespace Gallio.Runner.Drivers
             {
                 initializedRuntime = false;
 
-                runtimeFactory = null;
                 runtimeSetup = null;
                 logger = null;
 

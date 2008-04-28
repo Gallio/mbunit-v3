@@ -20,7 +20,6 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
-using Gallio.Runtime.Windsor;
 using MbUnit.Framework;
 using Gallio.PowerShellCommands;
 
@@ -53,7 +52,6 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual(0, launcher.TestRunnerExtensions.Count);
                 CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestRunnerExtensionSpecifications);
 
-                Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
                 Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(RunGallioCommand).Assembly)), launcher.RuntimeSetup.InstallationPath);
                 CollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
@@ -111,7 +109,6 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual(0, launcher.TestRunnerExtensions.Count);
                 CollectionAssert.AreElementsEqual(new string[] { "DebugExtension,Gallio" }, launcher.TestRunnerExtensionSpecifications);
 
-                Assert.AreEqual(WindsorRuntimeFactory.Instance, launcher.RuntimeFactory);
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
                 Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(RunGallioCommand).Assembly)), launcher.RuntimeSetup.InstallationPath);
                 CollectionAssert.AreElementsEqual(new string[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);

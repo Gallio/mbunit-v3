@@ -16,7 +16,6 @@
 using System;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
-using Gallio.Runtime.Windsor;
 
 namespace Gallio.MSTestRunner.Runtime
 {
@@ -40,7 +39,7 @@ namespace Gallio.MSTestRunner.Runtime
                     setup.SetConfigurationFilePathFromAssembly(typeof(RuntimeProvider).Assembly);
 
                     ILogger logger = NullLogger.Instance;
-                    RuntimeBootstrap.Initialize(WindsorRuntimeFactory.Instance, setup, logger);
+                    RuntimeBootstrap.Initialize(setup, logger);
                 }
             }
         }

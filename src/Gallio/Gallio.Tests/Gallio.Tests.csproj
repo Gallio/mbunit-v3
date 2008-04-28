@@ -211,10 +211,6 @@
       <Project>{35FFAF24-1019-4BE2-901D-02E627C757DC}</Project>
       <Name>Gallio.Host</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.Runtime.Windsor\Gallio.Runtime.Windsor.csproj">
-      <Project>{E66579E8-6CA7-477B-9645-4DB48E6F872F}</Project>
-      <Name>Gallio.Runtime.Windsor</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>

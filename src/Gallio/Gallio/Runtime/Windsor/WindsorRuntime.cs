@@ -144,12 +144,6 @@ namespace Gallio.Runtime.Windsor
         }
 
         /// <inheritdoc />
-        public RuntimeFactory GetRuntimeFactory()
-        {
-            return WindsorRuntimeFactory.Instance;
-        }
-
-        /// <inheritdoc />
         public string MapUriToLocalPath(Uri uri)
         {
             if (uri.IsFile)
