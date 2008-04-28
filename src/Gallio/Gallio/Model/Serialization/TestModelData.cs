@@ -187,11 +187,14 @@ namespace Gallio.Model.Serialization
                 TestData targetTest = GetTestById(sourceTest.Id);
                 if (targetTest != null)
                 {
+                    foreach (KeyValuePair<string, IList<string>> pairs in sourceTest.Metadata)
+                        foreach (string value in pairs.Value)
+                            if (!targetTest.Metadata.Contains(pairs.Key, value))
+                                targetTest.Metadata.Add(pairs.Key, value);
+
                     foreach (TestData sourceChild in sourceTest.Children)
-                    {
                         if (GetTestById(sourceChild.Id) == null)
                             targetTest.Children.Add(sourceChild);
-                    }
                 }
             }
 
