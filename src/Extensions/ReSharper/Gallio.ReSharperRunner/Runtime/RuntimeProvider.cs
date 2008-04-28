@@ -39,7 +39,7 @@ namespace Gallio.ReSharperRunner.Runtime
                     setup.SetConfigurationFilePathFromAssembly(typeof(RuntimeProvider).Assembly);
 
                     ILogger logger = new ReSharperLogger();
-                    RuntimeBootstrap.Initialize(WindsorRuntimeFactory.Instance, setup, logger);
+                    RuntimeBootstrap.Initialize(setup, logger);
                 }
             }
         }
