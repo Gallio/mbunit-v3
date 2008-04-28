@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Serialization;
@@ -81,13 +82,23 @@ namespace Gallio.Runner.Drivers
             {
                 progressMonitor.BeginTask("Running tests.", 1);
 
-                if (partitions.Count != 0)
+                MergeRootTestListener mergeListener = new MergeRootTestListener(listener);
+                mergeListener.StartRootTestStep();
+                try
                 {
-                    double workPerPartition = 1.0 / partitions.Count;
-                    foreach (Partition partition in partitions)
+                    if (partitions.Count != 0)
                     {
-                        partition.TestDriver.Run(options, listener, progressMonitor.CreateSubProgressMonitor(workPerPartition));
+                        double workPerPartition = 1.0 / partitions.Count;
+                        foreach (Partition partition in partitions)
+                        {
+                            partition.TestDriver.Run(options, mergeListener,
+                                progressMonitor.CreateSubProgressMonitor(workPerPartition));
+                        }
                     }
+                }
+                finally
+                {
+                    mergeListener.FinishRootTestStep();
                 }
             }
         }
@@ -190,6 +201,133 @@ namespace Gallio.Runner.Drivers
             public TestPackageConfig TestPackageConfig
             {
                 get { return testPackageConfig; }
+            }
+        }
+
+        /// <summary>
+        /// A test listener that consolidates the root steps across all test
+        /// domains into a single one.
+        /// </summary>
+        /// <todo author="jeff">
+        /// This feels like a great big gigantic hack to make up for the fact that the
+        /// test model knows nothing at all about intersecting test domains.  Probably
+        /// what needs to happen is to allow the test model to have multiple roots.
+        /// </todo>
+        private sealed class MergeRootTestListener : ITestListener
+        {
+            private readonly ITestListener listener;
+            private readonly Dictionary<string, string> redirectedSteps;
+
+            private TestStepData rootTestStepData;
+            private TestResult rootTestStepResult;
+            private Stopwatch stopwatch;
+
+            public MergeRootTestListener(ITestListener listener)
+            {
+                this.listener = listener;
+                redirectedSteps = new Dictionary<string, string>();
+            }
+
+            public void StartRootTestStep()
+            {
+                RootTest rootTest = new RootTest();
+                BaseTestStep rootTestStep = new BaseTestStep(rootTest, null);
+                rootTestStepData = new TestStepData(rootTestStep);
+                rootTestStepResult = new TestResult();
+                rootTestStepResult.Outcome = TestOutcome.Passed;
+                stopwatch = Stopwatch.StartNew();
+
+                listener.NotifyTestStepStarted(rootTestStepData);
+            }
+
+            public void FinishRootTestStep()
+            {
+                rootTestStepResult.Duration = stopwatch.Elapsed.TotalSeconds;
+
+                listener.NotifyTestStepFinished(rootTestStepData.Id, rootTestStepResult);
+            }
+
+            public void NotifyTestStepStarted(TestStepData step)
+            {
+                if (step.ParentId == null)
+                {
+                    redirectedSteps.Add(step.Id, rootTestStepData.Id);
+                }
+                else
+                {
+                    step.ParentId = Redirect(step.ParentId);
+                    listener.NotifyTestStepStarted(step);
+                }
+            }
+
+            public void NotifyTestStepLifecyclePhaseChanged(string stepId, string lifecyclePhase)
+            {
+                stepId = Redirect(stepId);
+                listener.NotifyTestStepLifecyclePhaseChanged(stepId, lifecyclePhase);
+            }
+
+            public void NotifyTestStepMetadataAdded(string stepId, string metadataKey, string metadataValue)
+            {
+                stepId = Redirect(stepId);
+                listener.NotifyTestStepMetadataAdded(stepId, metadataKey, metadataValue);
+            }
+
+            public void NotifyTestStepFinished(string stepId, TestResult result)
+            {
+                if (redirectedSteps.ContainsKey(stepId))
+                {
+                    rootTestStepResult.AssertCount += result.AssertCount;
+                    rootTestStepResult.Outcome = rootTestStepResult.Outcome.CombineWith(result.Outcome);
+                }
+                else
+                {
+                    listener.NotifyTestStepFinished(stepId, result);
+                }
+            }
+
+            public void NotifyTestStepLogTextAttachmentAdded(string stepId, string attachmentName, string contentType, string text)
+            {
+                stepId = Redirect(stepId);
+                listener.NotifyTestStepLogTextAttachmentAdded(stepId, attachmentName, contentType, text);
+            }
+
+            public void NotifyTestStepLogBinaryAttachmentAdded(string stepId, string attachmentName, string contentType, byte[] bytes)
+            {
+                stepId = Redirect(stepId);
+                listener.NotifyTestStepLogBinaryAttachmentAdded(stepId, attachmentName, contentType, bytes);
+            }
+
+            public void NotifyTestStepLogStreamTextWritten(string stepId, string streamName, string text)
+            {
+                stepId = Redirect(stepId);
+                listener.NotifyTestStepLogStreamTextWritten(stepId, streamName, text);
+            }
+
+            public void NotifyTestStepLogStreamAttachmentEmbedded(string stepId, string streamName,
+                string attachmentName)
+            {
+                stepId = Redirect(stepId);
+                listener.NotifyTestStepLogStreamAttachmentEmbedded(stepId, streamName, attachmentName);
+            }
+
+            public void NotifyTestStepLogStreamSectionStarted(string stepId, string streamName, string sectionName)
+            {
+                stepId = Redirect(stepId);
+                listener.NotifyTestStepLogStreamSectionStarted(stepId, streamName, sectionName);
+            }
+
+            public void NotifyTestStepLogStreamSectionFinished(string stepId, string streamName)
+            {
+                stepId = Redirect(stepId);
+                listener.NotifyTestStepLogStreamSectionFinished(stepId, streamName);
+            }
+
+            private string Redirect(string id)
+            {
+                string targetId;
+                if (redirectedSteps.TryGetValue(id, out targetId))
+                    return targetId;
+                return id;
             }
         }
     }

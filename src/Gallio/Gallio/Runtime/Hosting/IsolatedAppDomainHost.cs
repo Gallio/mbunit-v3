@@ -98,12 +98,8 @@ namespace Gallio.Runtime.Hosting
 
         private void CreateTemporaryConfigurationFile()
         {
-            HostConfiguration configuration = HostSetup.Configuration;
-            if (HostSetup.ApplicationBaseDirectory != AppDomain.CurrentDomain.BaseDirectory)
-            {
-                configuration = configuration.Copy();
-                configuration.AddAssemblyBinding(GetType().Assembly, false);
-            }
+            HostConfiguration configuration = HostSetup.Configuration.Copy();
+            configuration.AddAssemblyBinding(typeof(IsolatedAppDomainHost).Assembly, false);
 
             string configurationXml = configuration.ToString();
 
