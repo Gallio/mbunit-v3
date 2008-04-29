@@ -18,6 +18,7 @@
     <Binary Include="Gallio\Gallio.plugin" />
 
     <Binary Include="Gallio.Host\bin\Gallio.Host.exe" />
+    <Binary Include="Gallio.Host\Gallio.Host.exe.config" />
   </ItemGroup>
 
   <ItemGroup>

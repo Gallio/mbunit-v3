@@ -133,6 +133,7 @@ Section "!Gallio" GallioSection
 	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
 	File "${TARGETDIR}\bin\Gallio.plugin"
 	File "${TARGETDIR}\bin\Gallio.Host.exe"
+	File "${TARGETDIR}\bin\Gallio.Host.exe.config"
 
 	SetOutPath "$INSTDIR\bin\Reports"
 	File /r "${TARGETDIR}\bin\Reports\*"
