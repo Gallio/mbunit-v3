@@ -407,7 +407,7 @@ FunctionEnd
 !macro InstallReSharperRunner RSVersion VSVersion SourcePath
 	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
 
-	StrCmp "" "$ReSharperPluginDir" +5
+	StrCmp "" "$ReSharperPluginDir" +9
 		SetOutPath "$ReSharperPluginDir\Gallio"
 		File "${SourcePath}\Gallio.dll"
 		File "${SourcePath}\Gallio.XmlSerializers.dll"
@@ -431,79 +431,6 @@ Section "ReSharper v3.1 Runner" ReSharperRunnerSection
 	!insertmacro InstallReSharperRunner "v3.1" "vs8.0" "${TARGETDIR}\bin"
 	!insertmacro InstallReSharperRunner "v3.1" "vs9.0" "${TARGETDIR}\bin"
 SectionEnd
-!endif
-
-!ifndef MISSING_MSTEST_RUNNER
-Section "Visual Studio Team Test Runner (Experimental!)" MSTestRunnerSection
-	; Set Section properties
-	SetOverwrite on
-	
-	; Set Section Files and Shortcuts
-	DetailPrint "Installing Visual Studio Team Test runner."
-	ClearErrors
-	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
-	IfErrors SkipVS2008Setup
-
-	SetOutPath "$0\PrivateAssemblies"
-	File "${TARGETDIR}\bin\Gallio.dll"
-	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
-
-	File "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll"
-	File "/oname=Gallio.MSTestRunner.dll.config.orig" "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll.config"
-	${PatchConfigFile} "Gallio.MSTestRunner.dll.config.orig" "Gallio.MSTestRunner.dll.config"
-
-	; Register the product
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner" "Package" "{9e600ffc-344d-4e6f-89c0-ded6afb42459}"
-	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner" "UseInterface" 1
-
-	; Register the package
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "" "Gallio.MSTestRunner.GallioPackage, Gallio.MSTestRunner"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "InprocServer32" "$WINDIR\system32\mscoree.dll"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "Class" "Gallio.MSTestRunner.GallioPackage"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "Assembly" "Gallio.MSTestRunner"
-	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "ID" 1
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "MinEdition" "Standard"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "ProductVersion" "3.0"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "ProductName" "Gallio.MSTestRunner"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "CompanyName" "Gallio Project"
-
-	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" 0
-
-	; Register the test types
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "NameId" "#100"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "SatelliteBasePath" "$0\PrivateAssemblies"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "SatelliteDllName" "Gallio.MSTestRunner.dll"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "TipProvider" "Gallio.MSTestRunner.GallioTip, Gallio.MSTestRunner"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "ServiceType" "Gallio.MSTestRunner.SGallioTestService, Gallio.MSTestRunner"
-	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}\Extensions" ".dll" 101
-	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}\Extensions" ".exe" 101
-
-	StrCpy $VS2008UpdateRequired "1"
-
-	SkipVS2008Setup:
-SectionEnd
-
-!macro UninstallMSTestRunner
-	DetailPrint "Uninstalling Visual Studio Team Test runner."
-	ClearErrors
-	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
-	IfErrors SkipVS2008Setup
-
-	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.dll"
-	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.XmlSerializers.dll"
-	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll"
-	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config"
-	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config.orig"
-
-	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner"
-	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}"
-	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}"
-	DeleteRegValue HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" "{9e600ffc-344d-4e6f-89c0-ded6afb42459}"
-
-	StrCpy $VS2008UpdateRequired "1"
-
-	SkipVS2008Setup:
-!macroend
 !endif
 
 !macro InstallTDNetRunner Key Framework Priority
@@ -637,6 +564,83 @@ Section "CruiseControl.Net extensions" CCNetSection
 SectionEnd
 
 SectionGroupEnd
+
+!ifndef MISSING_MSTEST_RUNNER
+SectionGroup "Experimental"
+
+Section "Visual Studio Team Test Runner (Experimental!)" MSTestRunnerSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	DetailPrint "Installing Visual Studio Team Test runner."
+	ClearErrors
+	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
+	IfErrors SkipVS2008Setup
+
+	SetOutPath "$0\PrivateAssemblies"
+	File "${TARGETDIR}\bin\Gallio.dll"
+	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
+
+	File "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll"
+	File "/oname=Gallio.MSTestRunner.dll.config.orig" "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll.config"
+	${PatchConfigFile} "Gallio.MSTestRunner.dll.config.orig" "Gallio.MSTestRunner.dll.config"
+
+	; Register the product
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner" "Package" "{9e600ffc-344d-4e6f-89c0-ded6afb42459}"
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner" "UseInterface" 1
+
+	; Register the package
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "" "Gallio.MSTestRunner.GallioPackage, Gallio.MSTestRunner"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "InprocServer32" "$WINDIR\system32\mscoree.dll"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "Class" "Gallio.MSTestRunner.GallioPackage"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "Assembly" "Gallio.MSTestRunner"
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "ID" 1
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "MinEdition" "Standard"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "ProductVersion" "3.0"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "ProductName" "Gallio.MSTestRunner"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}" "CompanyName" "Gallio Project"
+
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" 0
+
+	; Register the test types
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "NameId" "#100"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "SatelliteBasePath" "$0\PrivateAssemblies"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "SatelliteDllName" "Gallio.MSTestRunner.dll"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "TipProvider" "Gallio.MSTestRunner.GallioTip, Gallio.MSTestRunner"
+	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "ServiceType" "Gallio.MSTestRunner.SGallioTestService, Gallio.MSTestRunner"
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}\Extensions" ".dll" 101
+	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}\Extensions" ".exe" 101
+
+	StrCpy $VS2008UpdateRequired "1"
+
+	SkipVS2008Setup:
+SectionEnd
+
+!macro UninstallMSTestRunner
+	DetailPrint "Uninstalling Visual Studio Team Test runner."
+	ClearErrors
+	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
+	IfErrors SkipVS2008Setup
+
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.dll"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.XmlSerializers.dll"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config.orig"
+
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner"
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}"
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}"
+	DeleteRegValue HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" "{9e600ffc-344d-4e6f-89c0-ded6afb42459}"
+
+	StrCpy $VS2008UpdateRequired "1"
+
+	SkipVS2008Setup:
+!macroend
+
+SectionGroupEnd
+!endif
 
 Section -FinishSection
 	!insertmacro UpdateVS2005IfNeeded

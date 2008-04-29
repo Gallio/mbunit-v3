@@ -14,12 +14,12 @@ Function PatchConfigFile
 	Exch $0 ; new name
 	Exch 1
 	Exch $1 ; old name
-	Exch 2
 	Push $2
 	Push $3
 	Push $4
 	Push $5
 
+	DetailPrint "Patch: $1"
 	PatchRetry:
 	FileOpen $3 $1 "r"
 	IfErrors PatchError
