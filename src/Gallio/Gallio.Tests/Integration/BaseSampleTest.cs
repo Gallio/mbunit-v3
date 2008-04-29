@@ -15,7 +15,9 @@
 
 using System;
 using Gallio.Framework.Utilities;
+using Gallio.Model.Execution;
 using Gallio.Runner.Reports;
+using MbUnit.Framework;
 
 namespace Gallio.Tests.Integration
 {
@@ -41,17 +43,27 @@ namespace Gallio.Tests.Integration
 
         public Report Report
         {
-            get { return runner.Report; }
+            get { return Runner.Report; }
+        }
+
+        protected void InitializeRunner()
+        {
+            runner = new SampleRunner();
         }
 
         protected void RunFixtures(params Type[] fixtureTypes)
         {
-            runner = new SampleRunner();
+            InitializeRunner();
 
             foreach (Type fixtureType in fixtureTypes)
                 runner.AddFixture(fixtureType);
 
             runner.Run();
+        }
+
+        protected static void AssertLogOutputContains(TestStepRun run, string expectedOutput)
+        {
+            Assert.Contains(run.ExecutionLog.GetStream(LogStreamNames.Default).ToString(), expectedOutput);
         }
     }
 }

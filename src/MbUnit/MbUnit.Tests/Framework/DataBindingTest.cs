@@ -72,12 +72,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(output.Length, runs.Count, "Different number of runs than expected.");
 
             for (int i = 0; i < output.Length; i++)
-                AssertLogOutput(runs[i], output[i]);
-        }
-
-        private static void AssertLogOutput(TestStepRun run, string expectedOutput)
-        {
-            Assert.Contains(run.ExecutionLog.GetStream(LogStreamNames.Default).ToString(), expectedOutput);
+                AssertLogOutputContains(runs[i], output[i]);
         }
 
 

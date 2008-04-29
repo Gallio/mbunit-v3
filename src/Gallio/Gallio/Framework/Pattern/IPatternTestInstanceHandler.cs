@@ -76,6 +76,7 @@ namespace Gallio.Framework.Pattern
         /// <item>Modifying the <see cref="PatternTestState" /> object in any way.</item>
         /// <item>Modifying the <see cref="PatternTestStep" /> object in any way UNLESS <see cref="PatternTestInstanceState.IsReusingPrimaryTestStep" />
         /// is false.</item>
+        /// <item>Skipping the test instance by throwing an appropriate <see cref="SilentTestException" />.</item>
         /// </list>
         /// </para>
         /// </summary>

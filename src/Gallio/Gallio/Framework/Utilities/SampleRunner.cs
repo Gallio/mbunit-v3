@@ -111,6 +111,23 @@ namespace Gallio.Framework.Utilities
         }
 
         /// <summary>
+        /// Adds a test method to the list of filters, and automatically adds its containing
+        /// test assembly to the package configuration, if not already added.
+        /// </summary>
+        /// <param name="fixtureType">The test fixture type</param>
+        /// <param name="methodName">The test method name</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fixtureType"/> or <paramref name="methodName"/> is null</exception>
+        public void AddMethod(Type fixtureType, string methodName)
+        {
+            AddAssembly(fixtureType.Assembly);
+            AddFilter(new AndFilter<ITest>(new Filter<ITest>[]
+            {
+                new TypeFilter<ITest>(new EqualityFilter<string>(fixtureType.AssemblyQualifiedName), false),
+                new MemberFilter<ITest>(new EqualityFilter<string>(methodName))
+            }));
+        }
+
+        /// <summary>
         /// Adds a test filter to the combined list of filters that select which tests to include in the run,
         /// if not already added.
         /// </summary>

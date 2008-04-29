@@ -39,6 +39,7 @@
       <HintPath>..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -49,6 +50,8 @@
     <Compile Include="Framework\AssertWithReflectionTest.cs" />
     <Compile Include="Framework\AssertWithTypeTest.cs" />
     <Compile Include="Framework\CollectionAssertTest.cs" />
+    <Compile Include="Framework\ConfigurationFileTest.cs" />
+    <Compile Include="Framework\ExplicitTest.cs" />
     <Compile Include="Framework\CsvDataTest.cs" />
     <Compile Include="Framework\FileAssertTest.cs" />
     <Compile Include="Framework\GenericAssertTest.cs" />
@@ -90,6 +93,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Framework\CsvDataTest.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MbUnit.Tests.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compatibility\" />

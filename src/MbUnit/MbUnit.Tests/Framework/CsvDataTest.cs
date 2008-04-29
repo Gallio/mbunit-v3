@@ -20,6 +20,7 @@ using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests.Integration;
+using Gallio.Utilities;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
@@ -28,19 +29,12 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(CsvDataAttribute))]
     public class CsvDataTest : BaseSampleTest
     {
-        [SetUp]
+        [FixtureSetUp]
         public void RunSample()
         {
-            string oldDirectory = Environment.CurrentDirectory;
-            try
+            using (new CurrentDirectorySwitcher(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(CsvDataTest).Assembly))))
             {
-                Environment.CurrentDirectory = Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(CsvDataTest).Assembly));
-
                 RunFixtures(typeof(CsvDataSample));
-            }
-            finally
-            {
-                Environment.CurrentDirectory = oldDirectory;
             }
         }
 
@@ -59,12 +53,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(output.Length, run.Children.Count, "Different number of runs than expected.");
 
             for (int i = 0; i < output.Length; i++)
-                AssertLogOutput(run.Children[i], output[i]);
-        }
-
-        private static void AssertLogOutput(TestStepRun run, string expectedOutput)
-        {
-            Assert.Contains(run.ExecutionLog.GetStream(LogStreamNames.Default).ToString(), expectedOutput);
+                AssertLogOutputContains(run.Children[i], output[i]);
         }
     }
 

@@ -70,7 +70,7 @@ namespace Gallio.Runner.Drivers
 
                 string assemblyConfigFile = assemblyFile + @".config";
                 if (File.Exists(assemblyConfigFile))
-                    testPackageConfig.HostSetup.Configuration.ConfigurationXml = File.ReadAllText(assemblyConfigFile);
+                    testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml = File.ReadAllText(assemblyConfigFile);
 
                 foreach (ITestFramework framework in frameworks)
                     framework.ConfigureTestDomain(testDomain);

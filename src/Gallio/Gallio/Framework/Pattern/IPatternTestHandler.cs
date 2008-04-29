@@ -65,6 +65,7 @@ namespace Gallio.Framework.Pattern
         /// <item>Adding or changing slot binding accessors via <see cref="PatternTestState.SlotBindingAccessors"/>.</item>
         /// <item>Configuring the <see cref="PatternTestState.PrimaryTestStep"/> in anticipation of test execution.</item>
         /// <item>Accessing user data via <see cref="PatternTestState.Data" />.</item>
+        /// <item>Skipping the test by throwing an appropriate <see cref="SilentTestException" />.</item>
         /// </list>
         /// </para>
         /// <para>

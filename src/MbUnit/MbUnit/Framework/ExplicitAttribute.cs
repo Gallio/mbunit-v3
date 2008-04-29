@@ -79,7 +79,7 @@ namespace MbUnit.Framework
         {
             scope.Test.Metadata.Add(MetadataKeys.ExplicitReason, reason);
 
-            scope.Test.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
+            scope.Test.TestActions.BeforeTestChain.Before(delegate(PatternTestState state)
             {
                 if (!state.IsExplicit)
                 {
