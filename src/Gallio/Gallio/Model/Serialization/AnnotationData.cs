@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Text;
 using System.Xml.Serialization;
 using Gallio.Reflection;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
 namespace Gallio.Model.Serialization
@@ -127,6 +129,59 @@ namespace Gallio.Model.Serialization
         {
             get { return details; }
             set { details = value; }
+        }
+
+        /// <summary>
+        /// Writes the annotation to a logger for presentation.
+        /// </summary>
+        /// <param name="logger">The logger</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        public void Log(ILogger logger)
+        {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
+            StringBuilder message = new StringBuilder();
+            message.Append(Message);
+
+            if (CodeLocation != CodeLocation.Unknown)
+            {
+                message.Append("\n\tLocation: ");
+                message.Append(CodeLocation);
+            }
+
+            if (CodeLocation.Line == 0 && CodeReference != CodeReference.Unknown)
+            {
+                message.Append("\n\tReference: ");
+                message.Append(CodeReference);
+            }
+
+            if (!string.IsNullOrEmpty(Details))
+            {
+                message.Append("\n\tDetails: ");
+                message.Append(Details);
+            }
+
+            LogSeverity severity = GetLogSeverityForAnnotation(Type);
+            logger.Log(severity, message.ToString());
+        }
+
+        private static LogSeverity GetLogSeverityForAnnotation(AnnotationType type)
+        {
+            switch (type)
+            {
+                case AnnotationType.Error:
+                    return LogSeverity.Error;
+
+                case AnnotationType.Warning:
+                    return LogSeverity.Warning;
+
+                case AnnotationType.Info:
+                    return LogSeverity.Info;
+
+                default:
+                    throw new ArgumentException("type");
+            }
         }
     }
 }

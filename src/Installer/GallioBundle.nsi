@@ -134,6 +134,7 @@ Section "!Gallio" GallioSection
 	File "${TARGETDIR}\bin\Gallio.plugin"
 	File "${TARGETDIR}\bin\Gallio.Host.exe"
 	File "${TARGETDIR}\bin\Gallio.Host.exe.config"
+	File "${TARGETDIR}\bin\Gallio.Loader.dll"
 
 	SetOutPath "$INSTDIR\bin\Reports"
 	File /r "${TARGETDIR}\bin\Reports\*"
@@ -391,9 +392,7 @@ Function un.UninstallReSharperRunner
 	!insertmacro GetReSharperPluginDir "$1" "$0"
 
 	StrCmp "" "$ReSharperPluginDir" Done
-		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.dll"
-		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.XmlSerializers.dll"
-		
+		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.Loader.dll"
 		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll"
 		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll.config"
 		${un.SafeRMDir} "$ReSharperPluginDir\Gallio"
@@ -407,11 +406,9 @@ FunctionEnd
 !macro InstallReSharperRunner RSVersion VSVersion SourcePath
 	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
 
-	StrCmp "" "$ReSharperPluginDir" +9
+	StrCmp "" "$ReSharperPluginDir" +8
 		SetOutPath "$ReSharperPluginDir\Gallio"
-		File "${SourcePath}\Gallio.dll"
-		File "${SourcePath}\Gallio.XmlSerializers.dll"
-
+		File "${SourcePath}\Gallio.Loader.dll"
 		File "${SourcePath}\ReSharper\Gallio.ReSharperRunner.dll"
 		File "/oname=Gallio.ReSharperRunner.dll.config.orig" "${SourcePath}\ReSharper\Gallio.ReSharperRunner.dll.config"
 		${PatchConfigFile} "Gallio.ReSharperRunner.dll.config.orig" "Gallio.ReSharperRunner.dll.config"
@@ -579,9 +576,7 @@ Section "Visual Studio Team Test Runner (Experimental!)" MSTestRunnerSection
 	IfErrors SkipVS2008Setup
 
 	SetOutPath "$0\PrivateAssemblies"
-	File "${TARGETDIR}\bin\Gallio.dll"
-	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
-
+	File "${TARGETDIR}\bin\Gallio.Loader.dll"
 	File "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll"
 	File "/oname=Gallio.MSTestRunner.dll.config.orig" "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll.config"
 	${PatchConfigFile} "Gallio.MSTestRunner.dll.config.orig" "Gallio.MSTestRunner.dll.config"
@@ -623,8 +618,7 @@ SectionEnd
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
 	IfErrors SkipVS2008Setup
 
-	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.dll"
-	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.XmlSerializers.dll"
+	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.Loader.dll"
 	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll"
 	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config"
 	${un.SafeDelete} "$0\PrivateAssemblies\Gallio.MSTestRunner.dll.config.orig"
@@ -689,7 +683,6 @@ Section Uninstall
 
 	; Uninstall from Visual Studio
 	!ifndef MISSING_MSTEST_RUNNER
-		DetailPrint "Uninstalled Visual Studio Team Test runner."
 		!insertmacro UninstallMSTestRunner
 	!endif
 

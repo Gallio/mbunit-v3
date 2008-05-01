@@ -34,28 +34,44 @@ namespace Gallio.Collections
         private Dictionary<string, object> items;
 
         /// <summary>
-        /// Gets a value from the collection.
+        /// Tries to get a value from the collection.
         /// </summary>
-        /// <typeparam name="T">The type of value to retrieve</typeparam>
         /// <param name="key">The key</param>
-        /// <returns>The associated value, or <c>default(T)</c> if none present</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
-        public T GetValue<T>(string key)
+        /// <param name="value">Set to the value, or <c>default(T)</c> if none present</param>
+        /// <returns>True if a value was obtained</returns>
+        /// <typeparam name="T">The value type</typeparam>
+        public bool TryGetValue<T>(Key<T> key, out T value)
         {
-            if (key == null)
-                throw new ArgumentNullException("key");
-
             lock (this)
             {
                 if (items != null)
                 {
-                    object value;
-                    if (items.TryGetValue(key, out value))
-                        return (T)value;
+                    object rawValue;
+                    if (items.TryGetValue(key.Name, out rawValue))
+                    {
+                        value = (T)rawValue;
+                        return true;
+                    }
                 }
 
-                return default(T);
+                value = default(T);
+                return false;
             }
+        }
+
+        /// <summary>
+        /// Gets a value from the collection.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <returns>The associated value</returns>
+        /// <exception cref="KeyNotFoundException">Thrown if <paramref name="key"/> was not found.</exception>
+        /// <typeparam name="T">The value type</typeparam>
+        public T GetValue<T>(Key<T> key)
+        {
+            T value;
+            if (!TryGetValue(key, out value))
+                throw new KeyNotFoundException(String.Format("Did not find a value associated with key '{0}'.", key));
+            return value;
         }
 
         /// <summary>
@@ -64,14 +80,12 @@ namespace Gallio.Collections
         /// <param name="key">The key</param>
         /// <returns>True if the key has an associated value</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
-        public bool HasValue(string key)
+        /// <typeparam name="T">The value type</typeparam>
+        public bool HasValue<T>(Key<T> key)
         {
-            if (key == null)
-                throw new ArgumentNullException("key");
-
             lock (this)
             {
-                return items != null && items.ContainsKey(key);
+                return items != null && items.ContainsKey(key.Name);
             }
         }
 
@@ -79,26 +93,29 @@ namespace Gallio.Collections
         /// Sets a value in the collection.
         /// </summary>
         /// <param name="key">The key</param>
-        /// <param name="value">The value to set, or null to remove the value</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null</exception>
-        public void SetValue(string key, object value)
+        /// <param name="value">The value to set</param>
+        /// <typeparam name="T">The value type</typeparam>
+        public void SetValue<T>(Key<T> key, T value)
         {
-            if (key == null)
-                throw new ArgumentNullException("key");
-
             lock (this)
             {
-                if (value == null)
-                {
-                    if (items != null)
-                        items.Remove(key);
-                }
-                else
-                {
-                    if (items == null)
-                        items = new Dictionary<string, object>();
-                    items[key] = value;
-                }
+                if (items == null)
+                    items = new Dictionary<string, object>();
+                items[key.Name] = value;
+            }
+        }
+
+        /// <summary>
+        /// Removes a value from the collection.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <typeparam name="T">The value type</typeparam>
+        public void RemoveValue<T>(Key<T> key)
+        {
+            lock (this)
+            {
+                if (items != null)
+                    items.Remove(key.Name);
             }
         }
     }

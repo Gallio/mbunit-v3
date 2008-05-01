@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Gallio.Collections;
 using MbUnit.Framework;
 
@@ -29,49 +28,41 @@ namespace Gallio.Tests.Collections
         public void NonExistantValuesCannotBeRetrieved()
         {
             UserDataCollection collection = new UserDataCollection();
-            Assert.IsFalse(collection.HasValue("key"));
-            Assert.IsNull(collection.GetValue<object>("key"));
-            Assert.AreEqual(0, collection.GetValue<int>("key"));
+            Assert.IsFalse(collection.HasValue(new Key<int>("key")));
+            int value;
+            Assert.IsFalse(collection.TryGetValue(new Key<int>("key"), out value));
+            Assert.AreEqual(0, value);
+            InterimAssert.Throws<KeyNotFoundException>(delegate { collection.GetValue(new Key<int>("key"));});
+        }
+
+        [Test]
+        public void NonExistantValuesCanBeRemovedWithoutSideEffects()
+        {
+            UserDataCollection collection = new UserDataCollection();
+            collection.RemoveValue(new Key<int>("key"));
+            Assert.IsFalse(collection.HasValue(new Key<int>("key")));
         }
 
         [Test]
         public void ExistingValuesCanBeRetrieved()
         {
             UserDataCollection collection = new UserDataCollection();
-            collection.SetValue("key", 123);
-            Assert.IsTrue(collection.HasValue("key"));
-            Assert.AreEqual(123, collection.GetValue<int>("key"));
+            collection.SetValue(new Key<int>("key"), 123);
+            Assert.IsTrue(collection.HasValue(new Key<int>("key")));
+            Assert.AreEqual(123, collection.GetValue(new Key<int>("key")));
+            int value;
+            Assert.IsTrue(collection.TryGetValue(new Key<int>("key"), out value));
+            Assert.AreEqual(123, value);
         }
 
         [Test]
-        public void SetValueRemovesValueWhenValueIsNull()
+        public void ExistingValuesCanBeRemoved()
         {
             UserDataCollection collection = new UserDataCollection();
-            collection.SetValue("key", 123);
-            Assert.IsTrue(collection.HasValue("key"));
-            collection.SetValue("key", null);
-            Assert.IsFalse(collection.HasValue("key"));
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void SetValueThrowsIfKeyIsNull()
-        {
-            UserDataCollection collection = new UserDataCollection();
-            collection.SetValue(null, "abc");
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void GetValueThrowsIfKeyIsNull()
-        {
-            UserDataCollection collection = new UserDataCollection();
-            collection.GetValue<object>(null);
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void HasValueThrowsIfKeyIsNull()
-        {
-            UserDataCollection collection = new UserDataCollection();
-            collection.HasValue(null);
+            collection.SetValue(new Key<int>("key"), 123);
+            Assert.IsTrue(collection.HasValue(new Key<int>("key")));
+            collection.RemoveValue(new Key<int>("key"));
+            Assert.IsFalse(collection.HasValue(new Key<int>("key")));
         }
     }
 }

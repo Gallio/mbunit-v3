@@ -204,7 +204,7 @@ namespace Gallio.ReSharperRunner.Reflection
         #endregion
 
         #region Assemblies
-        protected override StaticAssemblyWrapper LoadAssemblyInternal(AssemblyName assemblyName)
+        protected override IAssemblyInfo LoadAssemblyImpl(AssemblyName assemblyName)
         {
             foreach (IProject project in psiManager.Solution.GetAllProjects())
             {
@@ -222,6 +222,11 @@ namespace Gallio.ReSharperRunner.Reflection
 
             throw new ArgumentException(String.Format("Could not find assembly '{0}' in the ReSharper code cache.",
                 assemblyName.FullName));
+        }
+
+        protected override IAssemblyInfo LoadAssemblyFromImpl(string assemblyFile)
+        {
+            throw new NotSupportedException("The PSI metadata policy does not support loading assemblies from files.");
         }
 
         protected override IEnumerable<StaticAttributeWrapper> GetAssemblyCustomAttributes(StaticAssemblyWrapper assembly)
@@ -430,8 +435,6 @@ namespace Gallio.ReSharperRunner.Reflection
             StaticAttributeWrapper attribute)
         {
             IAttributeInstance attributeHandle = (IAttributeInstance)attribute.Handle;
-            List<KeyValuePair<StaticFieldWrapper, object>> values = new List<KeyValuePair<StaticFieldWrapper, object>>();
-
             foreach (StaticFieldWrapper field in attribute.Type.GetFields(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (ReflectorAttributeUtils.IsAttributeField(field))
@@ -439,19 +442,15 @@ namespace Gallio.ReSharperRunner.Reflection
                     IField fieldHandle = (IField)field.Handle;
                     ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, fieldHandle);
                     if (!value.IsBadValue())
-                        values.Add(new KeyValuePair<StaticFieldWrapper, object>(field, ResolveAttributeValue(value.Value)));
+                        yield return new KeyValuePair<StaticFieldWrapper, object>(field, ResolveAttributeValue(value.Value));
                 }
             }
-
-            return values;
         }
 
         protected override IEnumerable<KeyValuePair<StaticPropertyWrapper, object>> GetAttributePropertyArguments(
             StaticAttributeWrapper attribute)
         {
             IAttributeInstance attributeHandle = (IAttributeInstance)attribute.Handle;
-            List<KeyValuePair<StaticPropertyWrapper, object>> values = new List<KeyValuePair<StaticPropertyWrapper, object>>();
-
             foreach (StaticPropertyWrapper property in attribute.Type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (ReflectorAttributeUtils.IsAttributeProperty(property))
@@ -459,11 +458,9 @@ namespace Gallio.ReSharperRunner.Reflection
                     IProperty propertyHandle = (IProperty)property.Handle;
                     ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, propertyHandle);
                     if (!value.IsBadValue())
-                        values.Add(new KeyValuePair<StaticPropertyWrapper, object>(property, ResolveAttributeValue(value.Value)));
+                        yield return new KeyValuePair<StaticPropertyWrapper, object>(property, ResolveAttributeValue(value.Value));
                 }
             }
-
-            return values;
         }
 
         private object ResolveAttributeValue(object value)

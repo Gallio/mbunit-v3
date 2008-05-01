@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Loader;
 using Gallio.ReSharperRunner.Runtime;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Daemon;
@@ -28,6 +29,11 @@ namespace Gallio.ReSharperRunner.Daemons
     [DaemonStage(StagesBefore=new Type[] { typeof(UnitTestDaemonStage)})]
     public class GallioAnnotationDaemonStage : IDaemonStage
     {
+        static GallioAnnotationDaemonStage()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioTestProvider).Assembly);
+        }
+
         public IDaemonStageProcess CreateProcess(IDaemonProcess process)
         {
             RuntimeProvider.Initialize();

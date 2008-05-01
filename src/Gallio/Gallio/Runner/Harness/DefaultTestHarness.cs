@@ -142,7 +142,7 @@ namespace Gallio.Runner.Harness
                 progressMonitor.BeginTask("Loading test package.", 10);
                 progressMonitor.SetStatus("Performing pre-processing.");
 
-                package = new TestPackage(packageConfig, Reflector.ReflectionPolicy, loader);
+                package = new TestPackage(packageConfig, Reflector.NativeReflectionPolicy, loader);
 
                 foreach (string path in packageConfig.HintDirectories)
                     loader.AssemblyResolverManager.AddHintDirectory(path);

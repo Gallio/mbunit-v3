@@ -90,7 +90,7 @@ namespace Gallio.Runtime.Windsor
 
             ThrowIfDisposed();
 
-            container.Kernel.Resolver.AddSubResolver(new ArrayResolver(container.Kernel));
+            container.Kernel.Resolver.AddSubResolver(new ArraySubDependencyResolver(container.Kernel));
             container.Kernel.AddComponentInstance(@"Core.Logger", typeof(ILogger), logger);
             container.Kernel.AddComponentInstance(@"Core.Runtime", typeof(IRuntime), this);
             container.Kernel.AddComponentInstance(@"Core.AssemblyResolverManager", typeof(IAssemblyResolverManager), assemblyResolverManager);

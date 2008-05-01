@@ -16,6 +16,7 @@
 using System;
 using System.Threading;
 using Gallio;
+using Gallio.Collections;
 using Gallio.Framework.Pattern;
 using Gallio.Reflection;
 
@@ -40,7 +41,7 @@ namespace MbUnit.Framework
     public abstract class TestDecoratorAttribute : TestDecoratorPatternAttribute
     {
         private static int nextUniqueId;
-        private readonly string defaultActionKey = @"DefaultAction:" + Interlocked.Increment(ref nextUniqueId);
+        private readonly Key<Action<PatternTestInstanceState>> defaultActionKey = new Key<Action<PatternTestInstanceState>>(@"DefaultAction:" + Interlocked.Increment(ref nextUniqueId));
 
         /// <summary>
         /// Initializes the test.
@@ -135,14 +136,14 @@ namespace MbUnit.Framework
                 }
                 finally
                 {
-                    testInstanceState.Data.SetValue(defaultActionKey, null);
+                    testInstanceState.Data.RemoveValue(defaultActionKey);
                 }
             });
         }
 
         private void InvokeDefaultAction(PatternTestInstanceState testInstanceState)
         {
-            Action<PatternTestInstanceState> action = testInstanceState.Data.GetValue<Action<PatternTestInstanceState>>(defaultActionKey);
+            Action<PatternTestInstanceState> action = testInstanceState.Data.GetValue(defaultActionKey);
             action(testInstanceState);
         }
     }

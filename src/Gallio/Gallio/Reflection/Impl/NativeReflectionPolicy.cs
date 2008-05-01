@@ -17,13 +17,18 @@ using System.Reflection;
 
 namespace Gallio.Reflection.Impl
 {
-    internal sealed class NativeReflectionPolicy : IReflectionPolicy
+    internal sealed class NativeReflectionPolicy : BaseReflectionPolicy
     {
         public static readonly NativeReflectionPolicy Instance = new NativeReflectionPolicy();
 
-        public IAssemblyInfo LoadAssembly(AssemblyName assemblyName)
+        protected override IAssemblyInfo LoadAssemblyImpl(AssemblyName assemblyName)
         {
             return Reflector.Wrap(Assembly.Load(assemblyName));
+        }
+
+        protected override IAssemblyInfo LoadAssemblyFromImpl(string assemblyFile)
+        {
+            return Reflector.Wrap(Assembly.LoadFrom(assemblyFile));
         }
     }
 }

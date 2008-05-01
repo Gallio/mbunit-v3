@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Model;
 using Gallio.Reflection;
@@ -35,7 +36,7 @@ namespace Gallio.Framework.Pattern
     [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
     public class TestTypePatternAttribute : PatternAttribute
     {
-        private const string FixtureObjectCreationSpecKey = "FixtureObjectCreationSpec";
+        private static readonly Key<ObjectCreationSpec> FixtureObjectCreationSpecKey = new Key<ObjectCreationSpec>("FixtureObjectCreationSpec");
 
         /// <inheritdoc />
         public override bool IsPrimary
@@ -210,7 +211,7 @@ namespace Gallio.Framework.Pattern
                 {
                     if (!type.IsAbstract && !type.IsInterface)
                     {
-                        ObjectCreationSpec spec = testInstanceState.Data.GetValue<ObjectCreationSpec>(FixtureObjectCreationSpecKey);
+                        ObjectCreationSpec spec = testInstanceState.Data.GetValue(FixtureObjectCreationSpecKey);
 
                         testInstanceState.FixtureInstance = spec.CreateInstance();
                     }

@@ -77,9 +77,10 @@ namespace MbUnit.Framework
             
             scope.Test.Metadata.Add(MetadataKeys.PendingReason, reason);
 
-            scope.Test.TestActions.InitializeTestChain.Before(delegate
+            scope.Test.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
             {
-                throw new SilentTestException(TestOutcome.Pending, message);
+                if (! state.IsExplicit)
+                    throw new SilentTestException(TestOutcome.Pending, message);
             });
 
             scope.TestModel.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement, message));

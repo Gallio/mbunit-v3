@@ -41,9 +41,8 @@ set GALLIO_PLUGIN_DIR=%RESHARPER_PLUGINS_DIR%\Gallio
 if not exist "%RESHARPER_PLUGINS_DIR%" mkdir "%RESHARPER_PLUGINS_DIR%"
 if not exist "%GALLIO_PLUGIN_DIR%" mkdir "%GALLIO_PLUGIN_DIR%"
 
-copy "%RESHARPERRUNNER_BIN_DIR%\Gallio*.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
-copy "%RESHARPERRUNNER_BIN_DIR%\Castle*.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
-
+copy "%RESHARPERRUNNER_BIN_DIR%\Gallio.Loader.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
+copy "%RESHARPERRUNNER_BIN_DIR%\Gallio.ReSharperRunner.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
 call :PATCH_CONFIG "%SRCDIR%\Gallio\Gallio\bin" "%RESHARPERRUNNER_BIN_DIR%\Gallio.ReSharperRunner.dll.config" "%GALLIO_PLUGIN_DIR%\Gallio.ReSharperRunner.dll.config"
 
 goto :EOF

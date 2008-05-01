@@ -21,12 +21,14 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
 using Gallio.MSTestRunner;
+using Gallio.MSTestRunner.Runtime;
 using Gallio.Runtime;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.Vsip;
 using Microsoft.VisualStudio;
+using Gallio.Loader;
 
 namespace Gallio.MSTestRunner
 {
@@ -47,6 +49,11 @@ namespace Gallio.MSTestRunner
         private static GallioPackage instance;
         private ServiceProvider services;
         private BuildEvents buildEvents;
+
+        static GallioPackage()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
+        }
 
         public GallioPackage()
         {
@@ -154,7 +161,7 @@ namespace Gallio.MSTestRunner
                     foreach (ITestElement testElement in tmi.GetTests())
                         if (testElement is GallioTestElement
                             && (projectUniqueName == null || testElement.ProjectData.ProjectRelativePath == projectUniqueName))
-                            testsToRemove.Add(testElement.Id);
+                            testsToRemove.Add(testElement);
 
                     if (testsToRemove.Count != 0)
                         tmi.ReleaseTests(testsToRemove);

@@ -76,9 +76,10 @@ namespace MbUnit.Framework
             
             scope.Test.Metadata.Add(MetadataKeys.IgnoreReason, reason);
 
-            scope.Test.TestActions.InitializeTestChain.Before(delegate
+            scope.Test.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
             {
-                throw new SilentTestException(TestOutcome.Ignored, message);
+                if (! state.IsExplicit)
+                    throw new SilentTestException(TestOutcome.Ignored, message);
             });
 
             scope.TestModel.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement, message));

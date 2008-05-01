@@ -15,6 +15,7 @@
 
 using System;
 using System.Xml;
+using Gallio.Loader;
 using JetBrains.ReSharper.TaskRunnerFramework;
 
 namespace Gallio.ReSharperRunner.Tasks
@@ -26,6 +27,11 @@ namespace Gallio.ReSharperRunner.Tasks
     [Serializable]
     public abstract class GallioRemoteTask : RemoteTask
     {
+        static GallioRemoteTask()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioTestProvider).Assembly);
+        }
+
         protected GallioRemoteTask()
             : base(GallioTestProvider.ProviderId)
         {

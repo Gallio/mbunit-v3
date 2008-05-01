@@ -17,9 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Security.Permissions;
 using Gallio.Reflection.Impl;
-using Gallio.Utilities;
 
 namespace Gallio.Reflection
 {
@@ -30,11 +28,12 @@ namespace Gallio.Reflection
     public static class Reflector
     {
         /// <summary>
-        /// Gets the singleton instance of the standard <see cref="IReflectionPolicy" />.
+        /// Gets the singleton instance of the native <see cref="IReflectionPolicy" />
+        /// based on .Net reflection.
         /// </summary>
-        public static IReflectionPolicy ReflectionPolicy
+        public static IReflectionPolicy NativeReflectionPolicy
         {
-            get { return NativeReflectionPolicy.Instance; }
+            get { return Impl.NativeReflectionPolicy.Instance; }
         }
 
         /// <summary>

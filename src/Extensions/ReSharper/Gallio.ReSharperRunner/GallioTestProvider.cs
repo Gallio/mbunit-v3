@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Daemons;
@@ -44,14 +45,19 @@ namespace Gallio.ReSharperRunner
         public const string ProviderId = "Gallio";
 
         private readonly GallioTestPresenter presenter;
-        private readonly TestExplorerFactory explorerFactory;
+        private readonly ITestPackageExplorerFactory explorerFactory;
+
+        static GallioTestProvider()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioTestProvider).Assembly);
+        }
 
         /// <summary>
         /// Initializes the provider.
         /// </summary>
         public GallioTestProvider()
         {
-            explorerFactory = new TestExplorerFactory(RuntimeProvider.GetRuntime());
+            explorerFactory = RuntimeProvider.GetRuntime().Resolve<ITestPackageExplorerFactory>();
             presenter = new GallioTestPresenter();
         }
 
@@ -97,7 +103,7 @@ namespace Gallio.ReSharperRunner
             if (assemblyInfo != null)
             {
                 ConsumerAdapter consumerAdapter = new ConsumerAdapter(this, consumer);
-                ITestExplorer explorer = explorerFactory.CreateTestExplorer(reflectionPolicy);
+                ITestExplorer explorer = explorerFactory.CreateTestExplorer(new TestPackageConfig(), reflectionPolicy);
 
                 explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
                 explorer.FinishModel();
@@ -116,7 +122,7 @@ namespace Gallio.ReSharperRunner
 
             PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
             ConsumerAdapter consumerAdapter = new ConsumerAdapter(this, consumer);
-            ITestExplorer explorer = explorerFactory.CreateTestExplorer(reflectionPolicy);
+            ITestExplorer explorer = explorerFactory.CreateTestExplorer(new TestPackageConfig(), reflectionPolicy);
 
             psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
             {
@@ -164,7 +170,7 @@ namespace Gallio.ReSharperRunner
             if (elementInfo == null)
                 return false;
 
-            ITestExplorer explorer = explorerFactory.CreateTestExplorer(reflectionPolicy);
+            ITestExplorer explorer = explorerFactory.CreateTestExplorer(new TestPackageConfig(), reflectionPolicy);
             return explorer.IsTest(elementInfo);
         }
 

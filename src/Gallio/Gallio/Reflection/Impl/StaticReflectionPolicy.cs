@@ -39,17 +39,8 @@ namespace Gallio.Reflection.Impl
     /// generic type arguments.
     /// </para>
     /// </remarks>
-    public abstract class StaticReflectionPolicy : IReflectionPolicy
+    public abstract class StaticReflectionPolicy : BaseReflectionPolicy
     {
-        /// <inheritdoc />
-        public IAssemblyInfo LoadAssembly(AssemblyName assemblyName)
-        {
-            if (assemblyName == null)
-                throw new ArgumentNullException("assemblyName");
-
-            return LoadAssemblyInternal(assemblyName);
-        }
-
         #region Wrapper Comparisons
         /// <summary>
         /// Determines if two wrappers represent the same object.
@@ -74,14 +65,6 @@ namespace Gallio.Reflection.Impl
         #endregion
 
         #region Assemblies
-        /// <summary>
-        /// Loads an assembly.
-        /// </summary>
-        /// <param name="assemblyName">The assembly name, not null</param>
-        /// <returns>The loaded assembly wrapper</returns>
-        /// <exception cref="Exception">Any exception may be thrown if the loading fails</exception>
-        protected abstract StaticAssemblyWrapper LoadAssemblyInternal(AssemblyName assemblyName);
-
         /// <summary>
         /// Gets the custom attributes of an assembly.
         /// </summary>

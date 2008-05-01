@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Loader;
 using Gallio.ReSharperRunner.Runtime;
 using Gallio.Runtime;
 using JetBrains.ReSharper.TaskRunnerFramework;
@@ -32,6 +33,11 @@ namespace Gallio.ReSharperRunner.Tasks
     public class GallioRemoteTaskRunner : RecursiveRemoteTaskRunner
     {
         private TaskResult executeResult;
+
+        static GallioRemoteTaskRunner()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioTestProvider).Assembly);
+        }
 
         public GallioRemoteTaskRunner(IRemoteTaskServer server)
             : base(server)

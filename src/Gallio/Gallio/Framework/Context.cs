@@ -47,7 +47,7 @@ namespace Gallio.Framework
     /// <seealso cref="Step"/>
     public sealed class Context
     {
-        private const string GallioFrameworkContextKey = "Gallio.Framework.Context";
+        private static readonly Key<Context> GallioFrameworkContextKey = new Key<Context>("Gallio.Framework.Context");
         private readonly ITestContext inner;
         private readonly Sandbox sandbox;
         private readonly LogWriter logWriter;
@@ -469,8 +469,8 @@ namespace Gallio.Framework
             UserDataCollection data = inner.Data;
             lock (data)
             {
-                Context context = inner.Data.GetValue<Context>(GallioFrameworkContextKey);
-                if (context == null)
+                Context context;
+                if (! inner.Data.TryGetValue(GallioFrameworkContextKey, out context))
                     context = PrepareContext(inner, null);
 
                 return context;

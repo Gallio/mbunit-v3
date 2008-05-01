@@ -15,12 +15,12 @@
 
 using System;
 using System.Collections;
+using System.IO;
+using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.MSTestRunner.Runtime;
-using Gallio.Runner;
-using Gallio.Runner.Extensions;
-using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Reflection;
 using Microsoft.VisualStudio.TestTools.Common;
 using TestResult=Microsoft.VisualStudio.TestTools.Common.TestResult;
 
@@ -34,6 +34,11 @@ namespace Gallio.MSTestRunner
     {
         private readonly ITmi tmi;
 
+        static GallioTip()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
+        }
+
         public GallioTip(ITmi tmi)
         {
             if (tmi == null)
@@ -44,34 +49,28 @@ namespace Gallio.MSTestRunner
 
         public override ICollection Load(string location, ProjectData projectData, IWarningHandler warningHandler)
         {
-            ITestRunnerManager runnerManager = RuntimeProvider.GetRuntime().Resolve<ITestRunnerManager>();
-            ITestRunner runner = runnerManager.CreateTestRunner(StandardTestRunnerFactoryNames.Local);
+            ITestPackageExplorerFactory explorerFactory = RuntimeProvider.GetRuntime().Resolve<ITestPackageExplorerFactory>();
+            WarningLogger logger = new WarningLogger(warningHandler);
 
             ArrayList tests = new ArrayList();
-            try
+            TestPackageConfig testPackageConfig = new TestPackageConfig();
+            testPackageConfig.AssemblyFiles.Add(location);
+
+            ReflectionOnlyAssemblyLoader loader = new ReflectionOnlyAssemblyLoader();
+            loader.AddHintDirectory(Path.GetDirectoryName(location));
+
+            ITestExplorer explorer = explorerFactory.CreateTestExplorer(testPackageConfig, loader.ReflectionPolicy);
+            IAssemblyInfo assembly = loader.ReflectionPolicy.LoadAssemblyFrom(location);
+            explorer.ExploreAssembly(assembly, null);
+
+            foreach (ITest test in explorer.TestModel.AllTests)
             {
-                runner.RegisterExtension(new LogExtension());
-
-                WarningLogger logger = new WarningLogger(warningHandler);
-                TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
-                runner.Initialize(testRunnerOptions, logger, NullProgressMonitor.CreateInstance());
-
-                TestPackageConfig testPackageConfig = new TestPackageConfig();
-                testPackageConfig.AssemblyFiles.Add(location);
-                runner.Load(testPackageConfig, NullProgressMonitor.CreateInstance());
-
-                TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
-                runner.Explore(testExplorationOptions, NullProgressMonitor.CreateInstance());
-
-                TestModelData model = runner.Report.TestModel;
-                foreach (TestData test in model.AllTests)
-                    if (test.IsTestCase)
-                        tests.Add(new GallioTestElement(test, location, projectData));
+                if (test.IsTestCase)
+                    tests.Add(new GallioTestElement(new TestData(test), location, projectData));
             }
-            finally
-            {
-                runner.Dispose(NullProgressMonitor.CreateInstance());
-            }
+
+            foreach (Annotation annotation in explorer.TestModel.Annotations)
+                new AnnotationData(annotation).Log(logger);
 
             return tests;
         }

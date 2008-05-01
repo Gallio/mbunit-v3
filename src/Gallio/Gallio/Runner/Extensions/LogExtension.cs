@@ -62,29 +62,7 @@ namespace Gallio.Runner.Extensions
         /// <param name="annotation">The annotation to log</param>
         protected virtual void LogAnnotation(AnnotationData annotation)
         {
-            StringBuilder message = new StringBuilder();
-            message.Append(annotation.Message);
-
-            if (annotation.CodeLocation != CodeLocation.Unknown)
-            {
-                message.Append("\n\tLocation: ");
-                message.Append(annotation.CodeLocation);
-            }
-
-            if (annotation.CodeLocation.Line == 0 && annotation.CodeReference != CodeReference.Unknown)
-            {
-                message.Append("\n\tReference: ");
-                message.Append(annotation.CodeReference);
-            }
-
-            if (!string.IsNullOrEmpty(annotation.Details))
-            {
-                message.Append("\n\tDetails: ");
-                message.Append(annotation.Details);
-            }
-
-            LogSeverity severity = GetLogSeverityForAnnotation(annotation.Type);
-            Logger.Log(severity, message.ToString());
+            annotation.Log(Logger);
         }
 
         /// <summary>
@@ -155,24 +133,6 @@ namespace Gallio.Runner.Extensions
 
                 default:
                     throw new ArgumentException("outcome");
-            }
-        }
-
-        private static LogSeverity GetLogSeverityForAnnotation(AnnotationType type)
-        {
-            switch (type)
-            {
-                case AnnotationType.Error:
-                    return LogSeverity.Error;
-
-                case AnnotationType.Warning:
-                    return LogSeverity.Warning;
-
-                case AnnotationType.Info:
-                    return LogSeverity.Info;
-
-                default:
-                    throw new ArgumentException("type");
             }
         }
     }

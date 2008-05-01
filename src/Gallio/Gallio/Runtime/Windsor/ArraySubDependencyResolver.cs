@@ -27,11 +27,11 @@ namespace Gallio.Runtime.Windsor
     /// This code is courtesy of Hammett: http://hammett.castleproject.org/?p=257
     /// </para>
     /// </summary>
-    internal class ArrayResolver : ISubDependencyResolver
+    internal class ArraySubDependencyResolver : ISubDependencyResolver
     {
         private readonly IKernel kernel;
 
-        public ArrayResolver(IKernel kernel)
+        public ArraySubDependencyResolver(IKernel kernel)
         {
             this.kernel = kernel;
         }

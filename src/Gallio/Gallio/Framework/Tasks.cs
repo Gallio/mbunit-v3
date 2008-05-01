@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using Gallio;
+using Gallio.Collections;
 using Gallio.Concurrency;
 using Gallio.Framework;
 
@@ -33,8 +34,8 @@ namespace Gallio.Framework
     /// </summary>
     public static class Tasks
     {
-        private const string ContainerKey = "Tasks.Container";
-        private const string FailureFlagKey = "Tasks.Failure";
+        private static readonly Key<TaskContainer> ContainerKey = new Key<TaskContainer>("Tasks.Container");
+        private static readonly Key<object> FailureFlagKey = new Key<object>("Tasks.Failure");
 
         private static readonly TimeSpan DisposeTimeout = new TimeSpan(0, 0, 5);
 
@@ -229,8 +230,8 @@ namespace Gallio.Framework
 
             lock (context)
             {
-                TaskContainer container = context.Data.GetValue<TaskContainer>(ContainerKey);
-                if (container == null)
+                TaskContainer container;
+                if (! context.Data.TryGetValue(ContainerKey, out container))
                 {
                     container = CreateContainer(context);
                     context.Data.SetValue(ContainerKey, container);
@@ -276,12 +277,14 @@ namespace Gallio.Framework
 
         private static bool FailureFlag
         {
-            get
+            get { return Context.CurrentContext.Data.HasValue(FailureFlagKey); }
+            set
             {
-                object value = Context.CurrentContext.Data.GetValue<object>(FailureFlagKey);
-                return value != null ? (bool)value : false;
+                if (value)
+                    Context.CurrentContext.Data.SetValue(FailureFlagKey, null);
+                else
+                    Context.CurrentContext.Data.RemoveValue(FailureFlagKey);
             }
-            set { Context.CurrentContext.Data.SetValue(FailureFlagKey, value); }
         }
     }
 }

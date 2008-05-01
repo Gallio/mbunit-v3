@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
@@ -31,151 +32,211 @@ namespace Gallio.MSTestRunner
 {
     internal class GallioTestAdapter : ITestAdapter
     {
-        private Gallio.Runner.ITestRunner runner;
-        private IRunContext runContext;
+        private readonly ITestAdapter shim;
 
-        private IProgressMonitor currentProgressMonitor;
+        static GallioTestAdapter()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
+        }
 
-        private volatile bool isCanceled;
+        public GallioTestAdapter()
+        {
+            shim = new Shim();
+        }
 
         public void Initialize(IRunContext runContext)
         {
-            this.runContext = runContext;
-
-            ITestRunnerManager runnerManager = RuntimeProvider.GetRuntime().Resolve<ITestRunnerManager>();
-            runner = runnerManager.CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess);
-            runner.RegisterExtension(new RunContextExtension(runContext));
-
-            ILogger logger = new RunContextLogger(runContext);
-            TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
-
-            RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.Initialize(testRunnerOptions, logger, progressMonitor);
-            });
-
-            if (isCanceled)
-                return;
-
-            TestPackageConfig testPackageConfig = new TestPackageConfig();
-            foreach (ITestElement testElement in runContext.RunConfig.TestElements)
-            {
-                GallioTestElement gallioTestElement = testElement as GallioTestElement;
-                if (gallioTestElement != null
-                    && !testPackageConfig.AssemblyFiles.Contains(gallioTestElement.Storage))
-                {
-                    testPackageConfig.AssemblyFiles.Add(gallioTestElement.Storage);
-                }
-            }
-
-            RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.Load(testPackageConfig, progressMonitor);
-            });
-
-            if (isCanceled)
-                return;
-
-            TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
-            RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.Explore(testExplorationOptions, progressMonitor);
-            });
-        }
-
-        public void Cleanup()
-        {
-            runContext = null;
-
-            if (runner != null)
-            {
-                runner.Dispose(NullProgressMonitor.CreateInstance());
-                runner = null;
-            }
+            shim.Initialize(runContext);
         }
 
         public void ReceiveMessage(object obj)
         {
-        }
-
-        public void Run(ITestElement testElement, ITestContext testContext)
-        {
-            if (runContext != null)
-            {
-                TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
-
-                List<Filter<string>> idFilters = new List<Filter<string>>();
-                foreach (ITestElement includedTestElement in runContext.RunConfig.TestElements)
-                {
-                    GallioTestElement gallioTestElement = includedTestElement as GallioTestElement;
-                    if (gallioTestElement != null)
-                        idFilters.Add(new EqualityFilter<string>(gallioTestElement.GallioTestId));
-                }
-
-                testExecutionOptions.Filter = new IdFilter<ITest>(new OrFilter<string>(idFilters.ToArray()));
-
-                RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
-                {
-                    runner.Run(testExecutionOptions, progressMonitor);
-                });
-
-                runContext = null;
-            }
+            shim.ReceiveMessage(obj);
         }
 
         public void PreTestRunFinished(IRunContext runContext)
         {
+            shim.PreTestRunFinished(runContext);
+        }
+
+        public void Run(ITestElement testElement, ITestContext testContext)
+        {
+            shim.Run(testElement, testContext);
+        }
+
+        public void Cleanup()
+        {
+            shim.Cleanup();
         }
 
         public void StopTestRun()
         {
-            CancelRun();
+            shim.StopTestRun();
         }
 
         public void AbortTestRun()
         {
-            CancelRun();
+            shim.AbortTestRun();
         }
 
         public void PauseTestRun()
         {
-            throw new NotSupportedException();
+            shim.PauseTestRun();
         }
 
         public void ResumeTestRun()
         {
-            throw new NotSupportedException();
+            shim.ResumeTestRun();
         }
 
-        private void CancelRun()
+        private sealed class Shim : ITestAdapter
         {
-            lock (this)
+            private Gallio.Runner.ITestRunner runner;
+            private IRunContext runContext;
+
+            private IProgressMonitor currentProgressMonitor;
+
+            private volatile bool isCanceled;
+
+            public void Initialize(IRunContext runContext)
             {
-                isCanceled = true;
+                this.runContext = runContext;
 
-                if (currentProgressMonitor != null)
-                    currentProgressMonitor.Cancel();
+                ITestRunnerManager runnerManager = RuntimeProvider.GetRuntime().Resolve<ITestRunnerManager>();
+                runner = runnerManager.CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess);
+                runner.RegisterExtension(new RunContextExtension(runContext));
+
+                ILogger logger = new RunContextLogger(runContext);
+                TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
+
+                RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
+                {
+                    runner.Initialize(testRunnerOptions, logger, progressMonitor);
+                });
+
+                if (isCanceled)
+                    return;
+
+                TestPackageConfig testPackageConfig = new TestPackageConfig();
+                foreach (ITestElement testElement in runContext.RunConfig.TestElements)
+                {
+                    GallioTestElement gallioTestElement = testElement as GallioTestElement;
+                    if (gallioTestElement != null
+                        && !testPackageConfig.AssemblyFiles.Contains(gallioTestElement.Storage))
+                    {
+                        testPackageConfig.AssemblyFiles.Add(gallioTestElement.Storage);
+                    }
+                }
+
+                RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
+                {
+                    runner.Load(testPackageConfig, progressMonitor);
+                });
+
+                if (isCanceled)
+                    return;
+
+                TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
+                RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
+                {
+                    runner.Explore(testExplorationOptions, progressMonitor);
+                });
             }
-        }
 
-        private void RunWithProgressMonitor(Action<IProgressMonitor> action)
-        {
-            try
+            public void Cleanup()
+            {
+                runContext = null;
+
+                if (runner != null)
+                {
+                    runner.Dispose(NullProgressMonitor.CreateInstance());
+                    runner = null;
+                }
+            }
+
+            public void ReceiveMessage(object obj)
+            {
+            }
+
+            public void Run(ITestElement testElement, ITestContext testContext)
+            {
+                if (runContext != null)
+                {
+                    TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
+
+                    List<Filter<string>> idFilters = new List<Filter<string>>();
+                    foreach (ITestElement includedTestElement in runContext.RunConfig.TestElements)
+                    {
+                        GallioTestElement gallioTestElement = includedTestElement as GallioTestElement;
+                        if (gallioTestElement != null)
+                            idFilters.Add(new EqualityFilter<string>(gallioTestElement.GallioTestId));
+                    }
+
+                    testExecutionOptions.Filter = new IdFilter<ITest>(new OrFilter<string>(idFilters.ToArray()));
+
+                    RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
+                    {
+                        runner.Run(testExecutionOptions, progressMonitor);
+                    });
+
+                    runContext = null;
+                }
+            }
+
+            public void PreTestRunFinished(IRunContext runContext)
+            {
+            }
+
+            public void StopTestRun()
+            {
+                CancelRun();
+            }
+
+            public void AbortTestRun()
+            {
+                CancelRun();
+            }
+
+            public void PauseTestRun()
+            {
+                throw new NotSupportedException();
+            }
+
+            public void ResumeTestRun()
+            {
+                throw new NotSupportedException();
+            }
+
+            private void CancelRun()
             {
                 lock (this)
                 {
-                    if (isCanceled)
-                        return;
+                    isCanceled = true;
 
-                    currentProgressMonitor = NullProgressMonitor.CreateInstance();
+                    if (currentProgressMonitor != null)
+                        currentProgressMonitor.Cancel();
                 }
-
-                action(currentProgressMonitor);
             }
-            finally
+
+            private void RunWithProgressMonitor(Action<IProgressMonitor> action)
             {
-                lock (this)
-                    currentProgressMonitor = null;
+                try
+                {
+                    lock (this)
+                    {
+                        if (isCanceled)
+                            return;
+
+                        currentProgressMonitor = NullProgressMonitor.CreateInstance();
+                    }
+
+                    action(currentProgressMonitor);
+                }
+                finally
+                {
+                    lock (this)
+                        currentProgressMonitor = null;
+                }
             }
         }
     }

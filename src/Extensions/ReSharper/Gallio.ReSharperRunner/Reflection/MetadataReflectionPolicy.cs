@@ -101,9 +101,17 @@ namespace Gallio.ReSharperRunner.Reflection
         #endregion
 
         #region Assemblies
-        protected override StaticAssemblyWrapper LoadAssemblyInternal(AssemblyName assemblyName)
+        protected override IAssemblyInfo LoadAssemblyImpl(AssemblyName assemblyName)
         {
             return Wrap(LoadMetadataAssembly(assemblyName, true));
+        }
+
+        protected override IAssemblyInfo LoadAssemblyFromImpl(string assemblyFile)
+        {
+            if (metadataLoader != null)
+                return Wrap(metadataLoader.LoadFrom(assemblyFile, DummyLoadReferencePredicate));
+
+            throw new InvalidOperationException(String.Format("The metadata loader could not load assembly '{0}'.", assemblyFile));
         }
 
         protected override IEnumerable<StaticAttributeWrapper> GetAssemblyCustomAttributes(StaticAssemblyWrapper assembly)
@@ -230,12 +238,8 @@ namespace Gallio.ReSharperRunner.Reflection
             IMetadataCustomAttribute attributeHandle = (IMetadataCustomAttribute)attribute.Handle;
 
             IMetadataCustomAttributeFieldInitialization[] initializations = attributeHandle.InitializedFields;
-            Dictionary<StaticFieldWrapper, object> values = new Dictionary<StaticFieldWrapper, object>(initializations.Length);
-
             foreach (IMetadataCustomAttributeFieldInitialization initialization in initializations)
-                values.Add(Wrap(initialization.Field), ResolveAttributeValue(initialization.Value));
-
-            return values;
+                yield return new KeyValuePair<StaticFieldWrapper, object>(Wrap(initialization.Field), ResolveAttributeValue(initialization.Value));
         }
 
         protected override IEnumerable<KeyValuePair<StaticPropertyWrapper, object>> GetAttributePropertyArguments(
@@ -244,12 +248,8 @@ namespace Gallio.ReSharperRunner.Reflection
             IMetadataCustomAttribute attributeHandle = (IMetadataCustomAttribute)attribute.Handle;
 
             IMetadataCustomAttributePropertyInitialization[] initializations = attributeHandle.InitializedProperties;
-            Dictionary<StaticPropertyWrapper, object> values = new Dictionary<StaticPropertyWrapper, object>(initializations.Length);
-
             foreach (IMetadataCustomAttributePropertyInitialization initialization in initializations)
-                values.Add(Wrap(initialization.Property), ResolveAttributeValue(initialization.Value));
-
-            return values;
+                yield return new KeyValuePair<StaticPropertyWrapper, object>(Wrap(initialization.Property), ResolveAttributeValue(initialization.Value));
         }
 
         private object ResolveAttributeValue(object value)
@@ -550,7 +550,7 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             IMetadataTypeInfo typeHandle = (IMetadataTypeInfo)type.Handle;
             IMetadataClassType baseClassTypeHandle = typeHandle.Base;
-            return baseClassTypeHandle != null ? MakeDeclaredType(typeHandle.Base) : null;
+            return baseClassTypeHandle != null ? MakeDeclaredType(baseClassTypeHandle) : null;
         }
 
         protected override IList<StaticDeclaredTypeWrapper> GetTypeInterfaces(StaticDeclaredTypeWrapper type)

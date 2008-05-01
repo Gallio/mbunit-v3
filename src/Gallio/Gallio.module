@@ -19,6 +19,9 @@
 
     <Binary Include="Gallio.Host\bin\Gallio.Host.exe" />
     <Binary Include="Gallio.Host\Gallio.Host.exe.config" />
+
+    <Binary Include="Gallio.Loader\bin\Gallio.Loader.dll" />
+    <Binary Include="Gallio.Loader\bin\Gallio.Loader.pdb" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +33,6 @@
   </ItemGroup>
 
   <Target Name="AfterBuild">
-    <Exec Command="&quot;$(LibsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.Core.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.MicroKernel.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.Windsor.dll&quot; &quot;$(RootDir)\libs\Castle\bin\Castle.DynamicProxy2.dll&quot; /internalize &quot;/out:$(TargetBinDir)\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+    <Exec Command="&quot;$(LibsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; &quot;Gallio\bin\Castle.Core.dll&quot; &quot;Gallio\bin\Castle.MicroKernel.dll&quot; &quot;Gallio\bin\Castle.Windsor.dll&quot; &quot;Gallio\bin\Castle.DynamicProxy2.dll&quot; &quot;Gallio\bin\Mono.Cecil.dll&quot; /internalize &quot;/out:$(TargetBinDir)\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
   </Target>
 </Project>

@@ -476,7 +476,8 @@ namespace Gallio.Tests.Reflection
                 Assert.AreEqual(target.IsHideBySig, info.IsHideBySig);
 
                 Assert.AreEqual(target.Attributes & MethodAttributesMask, info.MethodAttributes & MethodAttributesMask);
-                Assert.AreEqual(target.CallingConvention, info.CallingConvention);
+                if (supportsCallingConventions)
+                    Assert.AreEqual(target.CallingConvention, info.CallingConvention);
                 AreElementsEqualWhenResolved(target.GetParameters(), info.Parameters);
 
                 // The source location may not be exactly the same with some wrappers.

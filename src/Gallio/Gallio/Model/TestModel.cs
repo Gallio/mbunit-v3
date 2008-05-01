@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Collections;
 
 namespace Gallio.Model
 {
@@ -73,6 +74,20 @@ namespace Gallio.Model
         }
 
         /// <summary>
+        /// Recursively enumerates all tests including the root test.
+        /// </summary>
+        public IEnumerable<ITest> AllTests
+        {
+            get
+            {
+                if (rootTest == null)
+                    return EmptyArray<ITest>.Instance;
+
+                return TreeUtils.GetPreOrderTraversal<ITest>(rootTest, GetChildren);
+            }
+        }
+
+        /// <summary>
         /// <para>
         /// Gets the read-only list of annotations.
         /// </para>
@@ -109,6 +124,11 @@ namespace Gallio.Model
                 throw new ArgumentNullException("annotation");
 
             annotations.Add(annotation);
+        }
+
+        private static IEnumerable<ITest> GetChildren(ITest node)
+        {
+            return node.Children;
         }
     }
 }

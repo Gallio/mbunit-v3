@@ -19,7 +19,7 @@ Function PatchConfigFile
 	Push $4
 	Push $5
 
-	DetailPrint "Patch: $1"
+	DetailPrint "Patch: $0"
 	PatchRetry:
 	FileOpen $3 $1 "r"
 	IfErrors PatchError

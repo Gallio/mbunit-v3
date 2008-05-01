@@ -15,6 +15,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Runner.Reports;
@@ -29,6 +30,11 @@ namespace Gallio.MSTestRunner
     [Serializable]
     internal sealed class GallioTestResult : TestResult
     {
+        static GallioTestResult()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
+        }
+
         public GallioTestResult(GallioTestResult result)
             : base(result)
         {

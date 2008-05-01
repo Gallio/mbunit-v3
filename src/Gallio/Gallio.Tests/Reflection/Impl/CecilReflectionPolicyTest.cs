@@ -18,15 +18,26 @@ using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Reflection
+namespace Gallio.Tests.Reflection.Impl
 {
     [TestFixture]
-    [TestsOn(typeof(NativeReflectionPolicy))]
-    public class NativeReflectionPolicyTest : BaseReflectionPolicyTest
+    [TestsOn(typeof(CecilReflectionPolicy))]
+    [Pending("We will need to enhance Cecil's handling of custom attributes so that we can reliably handle array and type values.")]
+    public class CecilReflectionPolicyTest : BaseReflectionPolicyTest
     {
+        private CecilReflectionPolicy policy;
+
+        public override void SetUp()
+        {
+            base.SetUp();
+            WrapperAssert.SupportsSpecialFeatures = false;
+
+            policy = new CecilReflectionPolicy();
+        }
+
         protected override IReflectionPolicy ReflectionPolicy
         {
-            get { return Reflector.ReflectionPolicy; }
+            get { return policy; }
         }
     }
 }

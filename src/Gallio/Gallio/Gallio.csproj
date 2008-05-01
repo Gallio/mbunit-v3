@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -45,21 +45,25 @@
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.Core.dll</HintPath>
+      <HintPath>..\libs\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.DynamicProxy2.dll</HintPath>
+      <HintPath>..\libs\Castle.DynamicProxy2.dll</HintPath>
     </Reference>
     <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.MicroKernel.dll</HintPath>
+      <HintPath>..\libs\Castle.MicroKernel.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Castle\bin\Castle.Windsor.dll</HintPath>
+      <HintPath>..\libs\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="ISymWrapper" />
+    <Reference Include="Mono.Cecil, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -71,6 +75,7 @@
     <Compile Include="Action.cs" />
     <Compile Include="Collections\CollectionEqualityComparer.cs" />
     <Compile Include="Collections\HashSet.cs" />
+    <Compile Include="Collections\Key.cs" />
     <Compile Include="Concurrency\ProcessTask.cs" />
     <Compile Include="Concurrency\Task.cs" />
     <Compile Include="Concurrency\TaskContainer.cs" />
@@ -78,11 +83,16 @@
     <Compile Include="Concurrency\TaskResult.cs" />
     <Compile Include="Concurrency\ThreadAbortScope.cs" />
     <Compile Include="Concurrency\ThreadTask.cs" />
+    <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
     <Compile Include="Model\Execution\RemoteTestListener.cs" />
+    <Compile Include="Model\ITestPackageExplorerFactory.cs" />
     <Compile Include="Model\TestDomainSetup.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Reflection\Impl\BaseReflectionPolicy.cs" />
+    <Compile Include="Reflection\Impl\CecilReflectionPolicy.cs" />
+    <Compile Include="Reflection\ReflectionOnlyAssemblyLoader.cs" />
     <Compile Include="Runner\Drivers\AggregateTestDriver.cs" />
     <Compile Include="Runner\Drivers\BaseTestDriver.cs" />
     <Compile Include="Runner\Drivers\LocalTestDriver.cs" />

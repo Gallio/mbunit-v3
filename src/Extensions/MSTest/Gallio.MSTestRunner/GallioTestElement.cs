@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Microsoft.VisualStudio.TestTools.Common;
@@ -31,8 +32,13 @@ namespace Gallio.MSTestRunner
         [PersistenceElementName("gallioTestId")]
         private string gallioTestId;
 
+        static GallioTestElement()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
+        }
+
         public GallioTestElement(TestData test, string assemblyPath, ProjectData projectData)
-            : base(GenerateTestId(test), test.FullName, test.Metadata.GetValue(MetadataKeys.Description) ?? "", assemblyPath)
+            : base(GenerateTestId(test), test.Name, test.Metadata.GetValue(MetadataKeys.Description) ?? "", assemblyPath)
         {
             foreach (KeyValuePair<string, IList<string>> pair in test.Metadata)
             {

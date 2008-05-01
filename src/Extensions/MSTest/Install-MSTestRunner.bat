@@ -35,8 +35,8 @@ exit /b 0
 
 
 :INSTALL
-copy "%MSTESTRUNNER_BIN_DIR%\Gallio*.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
-copy "%MSTESTRUNNER_BIN_DIR%\Castle*.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
+copy "%MSTESTRUNNER_BIN_DIR%\Gallio.Loader.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
+copy "%MSTESTRUNNER_BIN_DIR%\Gallio.MSTestRunner.dll" "%VS_PRIVATE_ASSEMBLIES_DIR%" /Y >nul
 call :PATCH_CONFIG "%SRCDIR%\Gallio\Gallio\bin" "%MSTESTRUNNER_BIN_DIR%\Gallio.MSTestRunner.dll.config" "%VS_PRIVATE_ASSEMBLIES_DIR%\Gallio.MSTestRunner.dll.config"
 
 "%REG%" ADD %VS_TEST_TYPE_KEY% /V NameId /D "#100" /F >nul
@@ -66,8 +66,9 @@ exit /b 0
 
 
 :UNINSTALL
-del "%VS_PRIVATE_ASSEMBLIES_DIR%\Gallio*.*" 2>nul
-del "%VS_PRIVATE_ASSEMBLIES_DIR%\Castle*.*" 2>nul
+del "%VS_PRIVATE_ASSEMBLIES_DIR%\Gallio.Loader.dll" 2>nul
+del "%VS_PRIVATE_ASSEMBLIES_DIR%\Gallio.MSTestRunner.dll" 2>nul
+del "%VS_PRIVATE_ASSEMBLIES_DIR%\Gallio.MSTestRunner.dll.config" 2>nul
 
 "%REG%" DELETE "%VS_TEST_TYPE_KEY%" /F 2>nul >nul
 "%REG%" DELETE "%VS_PRODUCT_KEY%" /F 2>nul >nul

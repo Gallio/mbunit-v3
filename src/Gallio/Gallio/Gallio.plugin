@@ -11,6 +11,10 @@
                    service="Gallio.Runtime.IRegisteredComponentResolver`1, Gallio"
                    type="Gallio.Runtime.RuntimeRegisteredComponentResolver`1, Gallio" />
 
+        <component id="Core.TestPackageExplorerFactory"
+                   service="Gallio.Model.ITestPackageExplorerFactory, Gallio"
+                   type="Gallio.Model.DefaultTestPackageExplorerFactory, Gallio" />
+        
         <component id="Core.TestRunnerManager"
                    service="Gallio.Runner.ITestRunnerManager, Gallio"
                    type="Gallio.Runner.DefaultTestRunnerManager, Gallio" />

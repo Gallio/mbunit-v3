@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Loader;
 using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.Vsip;
 
@@ -21,6 +22,11 @@ namespace Gallio.MSTestRunner
 {
     internal class GallioTuip : BaseTuip, SGallioTestService
     {
+        static GallioTuip()
+        {
+            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
+        }
+
         public GallioTuip(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
