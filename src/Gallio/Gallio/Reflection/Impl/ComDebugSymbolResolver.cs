@@ -61,6 +61,9 @@ namespace Gallio.Reflection.Impl
                 ISymbolMethod method = reader.GetMethod(new SymbolToken(methodToken));
 
                 int seqPtCount = method.SequencePointCount;
+                if (seqPtCount == 0)
+                    return CodeLocation.Unknown;
+
                 ISymbolDocument[] docs = new ISymbolDocument[seqPtCount];
                 int[] offsets = new int[seqPtCount];
                 int[] lines = new int[seqPtCount];
