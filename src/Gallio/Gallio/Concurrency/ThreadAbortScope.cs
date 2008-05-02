@@ -164,7 +164,8 @@ namespace Gallio.Concurrency
         /// </summary>
         private void WaitForThreadAbortIfAborting()
         {
-            while (Thread.VolatileRead(ref state) == AbortingState)
+            while (Thread.VolatileRead(ref state) == AbortingState
+                && Thread.CurrentThread.ThreadState == ThreadState.AbortRequested)
                 Thread.Sleep(0);
         }
     }

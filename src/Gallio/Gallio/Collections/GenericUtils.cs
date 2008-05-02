@@ -14,9 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Gallio.Collections
 {
@@ -173,6 +171,39 @@ namespace Gallio.Collections
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Returns true if the elements of both lists are equal but possibly appear in a different order.
+        /// Handles elements that appear multiple times and ensures that they appear the same
+        /// number of times in each list.
+        /// </summary>
+        /// <param name="a">The first collection</param>
+        /// <param name="b">The second collection</param>
+        /// <returns>True if the elements are equal</returns>
+        public static bool ElementsEqualOrderIndependent<T>(IList<T> a, IList<T> b)
+        {
+            int count = a.Count;
+            if (count != b.Count)
+                return false;
+
+            Dictionary<T, int> ca = new Dictionary<T, int>();
+            Dictionary<T, int> cb = new Dictionary<T, int>();
+
+            foreach (T ea in a)
+                IncrementCounter(ea, ca);
+            foreach (T eb in b)
+                IncrementCounter(eb, cb);
+
+            return KeyValuePairsEqual(ca, cb);
+        }
+
+        private static void IncrementCounter<T>(T elem, Dictionary<T, int> table)
+        {
+            int counter;
+            table.TryGetValue(elem, out counter);
+            counter += 1;
+            table[elem] = counter;
         }
     }
 }

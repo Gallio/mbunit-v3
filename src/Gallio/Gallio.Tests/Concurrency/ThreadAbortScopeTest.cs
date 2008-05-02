@@ -144,11 +144,11 @@ namespace Gallio.Tests.Concurrency
         }
 
         [Test]
-        [Ignore("This test fails occasionally.  Exact cause has yet to be determined.")]
+        [Ignore("This test fails occasionally.  Exact cause is non-deterministic and has yet to be determined.")]
         public void TryToAsynchronouslyHitARunningActionRandomlyInAllPossibleWays()
         {
             // Like sitting ducks...
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 ThreadAbortScope scope = new ThreadAbortScope();
 

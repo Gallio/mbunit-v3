@@ -26,7 +26,7 @@ namespace Gallio.Runtime.Hosting
     [Serializable]
     [XmlRoot("hostSetup", Namespace = XmlSerializationUtils.GallioNamespace)]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-    public sealed class HostSetup
+    public sealed class HostSetup : IEquatable<HostSetup>
     {
         private string applicationBaseDirectory = @"";
         private string workingDirectory = @"";
@@ -141,6 +141,31 @@ namespace Gallio.Runtime.Hosting
         {
             applicationBaseDirectory = FileUtils.CanonicalizePath(baseDirectory, applicationBaseDirectory);
             workingDirectory = FileUtils.CanonicalizePath(baseDirectory, workingDirectory);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as HostSetup);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(HostSetup other)
+        {
+            return other != null
+                && applicationBaseDirectory == other.applicationBaseDirectory
+                && workingDirectory == other.workingDirectory
+                && shadowCopy == other.shadowCopy
+                && Configuration.Equals(other.Configuration);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return applicationBaseDirectory.GetHashCode()
+                ^ workingDirectory.GetHashCode()
+                ^ Configuration.GetHashCode()
+                ^ shadowCopy.GetHashCode();
         }
     }
 }

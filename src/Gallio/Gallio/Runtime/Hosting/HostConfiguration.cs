@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using Gallio.Collections;
 using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
@@ -30,7 +31,7 @@ namespace Gallio.Runtime.Hosting
     [Serializable]
     [XmlRoot("hostConfiguration", Namespace = XmlSerializationUtils.GallioNamespace)]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-    public sealed class HostConfiguration
+    public sealed class HostConfiguration : IEquatable<HostConfiguration>
     {
         private readonly List<AssemblyQualification> assemblyQualifications;
         private readonly List<AssemblyDependency> assemblyDependencies;
@@ -232,6 +233,34 @@ namespace Gallio.Runtime.Hosting
             return copy;
         }
 
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as HostConfiguration);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(HostConfiguration other)
+        {
+            return other != null
+                && legacyUnhandledExceptionPolicyEnabled == other.legacyUnhandledExceptionPolicyEnabled
+                && assertUiEnabled == other.assertUiEnabled
+                && remotingCustomErrorsEnabled == other.remotingCustomErrorsEnabled
+                && configurationXml == other.configurationXml
+                && GenericUtils.ElementsEqualOrderIndependent(assemblyQualifications, other.assemblyQualifications)
+                && GenericUtils.ElementsEqualOrderIndependent(assemblyDependencies, other.assemblyDependencies)
+                && GenericUtils.ElementsEqualOrderIndependent(supportedRuntimeVersions, other.supportedRuntimeVersions);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return legacyUnhandledExceptionPolicyEnabled.GetHashCode()
+                ^ assertUiEnabled.GetHashCode()
+                ^ remotingCustomErrorsEnabled.GetHashCode()
+                ^ (configurationXml != null ? configurationXml.GetHashCode() : 0);
+        }
+
         private void ConfigureLegacyUnhandledExceptionPolicy(XmlElement rootElement)
         {
             XmlElement sectionElement = GetOrCreateChildElement(rootElement, "runtime", null);
@@ -316,7 +345,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         [Serializable]
         [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-        public sealed class AssemblyQualification
+        public sealed class AssemblyQualification : IEquatable<AssemblyQualification>
         {
             private string partialName;
             private string fullName;
@@ -393,6 +422,27 @@ namespace Gallio.Runtime.Hosting
                 qualifyAssemblyElement.SetAttribute("partialName", partialName);
                 qualifyAssemblyElement.SetAttribute("fullName", fullName);
             }
+
+            /// <inheritdoc />
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as AssemblyQualification);
+            }
+
+            /// <inheritdoc />
+            public bool Equals(AssemblyQualification other)
+            {
+                return other != null
+                    && partialName == other.partialName
+                    && fullName == other.fullName;
+            }
+
+            /// <inheritdoc />
+            public override int GetHashCode()
+            {
+                return partialName.GetHashCode()
+                    ^ fullName.GetHashCode();
+            }
         }
 
         /// <summary>
@@ -401,7 +451,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         [Serializable]
         [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-        public sealed class AssemblyDependency
+        public sealed class AssemblyDependency : IEquatable<AssemblyDependency>
         {
             private readonly List<AssemblyBindingRedirect> bindingRedirects;
             private readonly List<AssemblyCodeBase> codeBases;
@@ -535,6 +585,32 @@ namespace Gallio.Runtime.Hosting
                 return copy;
             }
 
+            /// <inheritdoc />
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as AssemblyDependency);
+            }
+
+            /// <inheritdoc />
+            public bool Equals(AssemblyDependency other)
+            {
+                return other != null
+                    && applyPublisherPolicy == other.applyPublisherPolicy
+                    && assemblyCulture == other.assemblyCulture
+                    && assemblyName == other.assemblyName
+                    && assemblyProcessorArchitecture == other.assemblyProcessorArchitecture
+                    && assemblyPublicKeyToken == other.assemblyPublicKeyToken
+                    && GenericUtils.ElementsEqualOrderIndependent(bindingRedirects, other.bindingRedirects)
+                    && GenericUtils.ElementsEqualOrderIndependent(codeBases, other.codeBases);
+            }
+
+            /// <inheritdoc />
+            public override int GetHashCode()
+            {
+                return applyPublisherPolicy.GetHashCode()
+                    ^ (assemblyName != null ? assemblyName.GetHashCode() : 0);
+            }
+
             internal void AddConfigurationElement(XmlElement parent)
             {
                 XmlElement dependentAssemblyElement = CreateChildElement(parent, "dependentAssembly", null);
@@ -571,7 +647,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         [Serializable]
         [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-        public sealed class AssemblyBindingRedirect
+        public sealed class AssemblyBindingRedirect : IEquatable<AssemblyBindingRedirect>
         {
             private string oldVersionRange;
             private string newVersion;
@@ -646,6 +722,27 @@ namespace Gallio.Runtime.Hosting
                 return new AssemblyBindingRedirect(oldVersionRange, newVersion);
             }
 
+            /// <inheritdoc />
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as AssemblyBindingRedirect);
+            }
+
+            /// <inheritdoc />
+            public bool Equals(AssemblyBindingRedirect other)
+            {
+                return other != null
+                    && oldVersionRange == other.oldVersionRange
+                    && newVersion == other.newVersion;
+            }
+
+            /// <inheritdoc />
+            public override int GetHashCode()
+            {
+                return oldVersionRange.GetHashCode()
+                    ^ newVersion.GetHashCode();
+            }
+
             internal void AddConfigurationElement(XmlElement parent)
             {
                 XmlElement bindingRedirectElement = CreateChildElement(parent, "bindingRedirect", null);
@@ -659,7 +756,7 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         [Serializable]
         [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-        public class AssemblyCodeBase
+        public class AssemblyCodeBase : IEquatable<AssemblyCodeBase>
         {
             private string version;
             private string uri;
@@ -730,6 +827,27 @@ namespace Gallio.Runtime.Hosting
             public AssemblyCodeBase Copy()
             {
                 return new AssemblyCodeBase(version, uri);
+            }
+
+            /// <inheritdoc />
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as AssemblyCodeBase);
+            }
+
+            /// <inheritdoc />
+            public bool Equals(AssemblyCodeBase other)
+            {
+                return other != null
+                    && version == other.version
+                    && uri == other.uri;
+            }
+
+            /// <inheritdoc />
+            public override int GetHashCode()
+            {
+                return version.GetHashCode()
+                    ^ uri.GetHashCode();
             }
 
             internal void AddConfigurationElement(XmlElement parent)
