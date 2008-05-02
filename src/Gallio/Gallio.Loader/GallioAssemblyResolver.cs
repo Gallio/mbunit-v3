@@ -61,7 +61,7 @@ namespace Gallio.Loader
     /// primary assembly that specifies the path of the main Gallio assembly like this:
     /// </para>
     /// <code>
-    /// <![[CDATA
+    /// <![CDATA[
     /// <configuration>
     ///   <gallio>
     ///     <installation>
@@ -69,6 +69,7 @@ namespace Gallio.Loader
     ///     </installation>
     ///   </gallio>
     /// </configuration>
+    /// ]]>
     /// </code>
     /// <para>
     /// Then install the assembly resolver in your program BEFORE referencing any
