@@ -22,7 +22,7 @@ namespace Gallio.Tests.Reflection.Impl
 {
     [TestFixture]
     [TestsOn(typeof(CecilReflectionPolicy))]
-    [Pending("We will need to enhance Cecil's handling of custom attributes so that we can reliably handle array and type values.")]
+    [Pending("There are known bugs in the underlying implementation some of which are due to missing features in Cecil.")]
     public class CecilReflectionPolicyTest : BaseReflectionPolicyTest
     {
         private CecilReflectionPolicy policy;
