@@ -129,21 +129,21 @@ namespace Gallio.Reflection.Impl
         /// </summary>
         /// <param name="attribute">The attribute, not null</param>
         /// <returns>The constructor argument values</returns>
-        protected internal abstract object[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute);
+        protected internal abstract ConstantValue[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute);
 
         /// <summary>
         /// Gets the field arguments of an attribute.
         /// </summary>
         /// <param name="attribute">The attribute, not null</param>
         /// <returns>The field argument values</returns>
-        protected internal abstract IEnumerable<KeyValuePair<StaticFieldWrapper, object>> GetAttributeFieldArguments(StaticAttributeWrapper attribute);
+        protected internal abstract IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>> GetAttributeFieldArguments(StaticAttributeWrapper attribute);
 
         /// <summary>
         /// Gets the property arguments of an attribute.
         /// </summary>
         /// <param name="attribute">The attribute, not null</param>
         /// <returns>The property argument values</returns>
-        protected internal abstract IEnumerable<KeyValuePair<StaticPropertyWrapper, object>> GetAttributePropertyArguments(StaticAttributeWrapper attribute);
+        protected internal abstract IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>> GetAttributePropertyArguments(StaticAttributeWrapper attribute);
         #endregion
 
         #region Member

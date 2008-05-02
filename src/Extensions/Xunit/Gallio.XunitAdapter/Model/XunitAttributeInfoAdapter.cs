@@ -38,14 +38,14 @@ namespace Gallio.XunitAdapter.Model
 
         public T GetInstance<T>() where T : Attribute
         {
-            return (T)target.Resolve();
+            return (T)target.Resolve(false);
         }
 
         public TValue GetPropertyValue<TValue>(string propertyName)
         {
             try
             {
-                return (TValue)target.GetPropertyValue(propertyName);
+                return (TValue)target.GetPropertyValue(propertyName).Resolve(false);
             }
             catch (ArgumentException)
             {
@@ -53,7 +53,7 @@ namespace Gallio.XunitAdapter.Model
                 // where they are not initialized via the property such as the
                 // Name property of a Trait.  So we eat the exception and try to 
                 // fall back on the property of the real attribute instance itself.
-                object attrib = target.Resolve();
+                object attrib = target.Resolve(false);
                 PropertyInfo property = attrib.GetType().GetProperty(propertyName);
                 if (property == null)
                     throw;

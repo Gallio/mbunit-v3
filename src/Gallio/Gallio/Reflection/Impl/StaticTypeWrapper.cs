@@ -306,7 +306,6 @@ namespace Gallio.Reflection.Impl
         {
             if (type != null)
             {
-
                 throw new NotImplementedException("IsAssignableFrom not implemented for static types yet.");
             }
 

@@ -120,7 +120,7 @@ namespace Gallio.Reflection
         public static IEnumerable<object> ResolveAttributes(IEnumerable<IAttributeInfo> attributes)
         {
             foreach (IAttributeInfo attribute in attributes)
-                yield return attribute.Resolve();
+                yield return attribute.Resolve(false);
         }
     }
 }

@@ -289,7 +289,7 @@ namespace Gallio.MSTestAdapter.Model
 
         private static string GetAttributePropertyValue(IAttributeInfo attributeInfo, string propertyName)
         {
-            Attribute attribute = (Attribute)attributeInfo.Resolve();
+            Attribute attribute = (Attribute)attributeInfo.Resolve(false);
             PropertyInfo property = attributeInfo.Type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance).Resolve(false);
             object value = property.GetValue(attribute, null);
             if (value != null)

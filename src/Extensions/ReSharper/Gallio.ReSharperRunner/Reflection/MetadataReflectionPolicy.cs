@@ -226,35 +226,33 @@ namespace Gallio.ReSharperRunner.Reflection
                 MakeDeclaredTypeWithoutSubstitution(usedConstructor.DeclaringType));
         }
 
-        protected override object[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
+        protected override ConstantValue[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
         {
             IMetadataCustomAttribute attributeHandle = (IMetadataCustomAttribute)attribute.Handle;
-            return Array.ConvertAll<object, object>(attributeHandle.ConstructorArguments, ResolveAttributeValue);
+            return Array.ConvertAll<object, ConstantValue>(attributeHandle.ConstructorArguments, ConvertConstantValue);
         }
 
-        protected override IEnumerable<KeyValuePair<StaticFieldWrapper, object>> GetAttributeFieldArguments(
-            StaticAttributeWrapper attribute)
+        protected override IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>> GetAttributeFieldArguments(StaticAttributeWrapper attribute)
         {
             IMetadataCustomAttribute attributeHandle = (IMetadataCustomAttribute)attribute.Handle;
 
             IMetadataCustomAttributeFieldInitialization[] initializations = attributeHandle.InitializedFields;
             foreach (IMetadataCustomAttributeFieldInitialization initialization in initializations)
-                yield return new KeyValuePair<StaticFieldWrapper, object>(Wrap(initialization.Field), ResolveAttributeValue(initialization.Value));
+                yield return new KeyValuePair<StaticFieldWrapper, ConstantValue>(Wrap(initialization.Field), ConvertConstantValue(initialization.Value));
         }
 
-        protected override IEnumerable<KeyValuePair<StaticPropertyWrapper, object>> GetAttributePropertyArguments(
-            StaticAttributeWrapper attribute)
+        protected override IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>> GetAttributePropertyArguments(StaticAttributeWrapper attribute)
         {
             IMetadataCustomAttribute attributeHandle = (IMetadataCustomAttribute)attribute.Handle;
 
             IMetadataCustomAttributePropertyInitialization[] initializations = attributeHandle.InitializedProperties;
             foreach (IMetadataCustomAttributePropertyInitialization initialization in initializations)
-                yield return new KeyValuePair<StaticPropertyWrapper, object>(Wrap(initialization.Property), ResolveAttributeValue(initialization.Value));
+                yield return new KeyValuePair<StaticPropertyWrapper, ConstantValue>(Wrap(initialization.Property), ConvertConstantValue(initialization.Value));
         }
 
-        private object ResolveAttributeValue(object value)
+        private ConstantValue ConvertConstantValue(object value)
         {
-            return ResolveConstant<IMetadataType>(value, delegate(IMetadataType type) { return MakeType(type).Resolve(false); });
+            return ConvertConstantValue<IMetadataType>(value, delegate(IMetadataType type) { return MakeType(type); });
         }
 
         private IEnumerable<StaticAttributeWrapper> EnumerateAttributesForEntity(IMetadataEntity entityHandle)

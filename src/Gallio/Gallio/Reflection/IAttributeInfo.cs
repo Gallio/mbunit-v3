@@ -41,7 +41,7 @@ namespace Gallio.Reflection
         /// <returns>The value, or a default value of the field's type if the field with the specified name
         /// was not initialized by the attribute declaration</returns>
         /// <exception cref="ArgumentException">Thrown if there is no writable instance field with the specified name</exception>
-        object GetFieldValue(string name);
+        ConstantValue GetFieldValue(string name);
 
         /// <summary>
         /// Gets an attribute property value.
@@ -50,29 +50,31 @@ namespace Gallio.Reflection
         /// <returns>The value, or a default value of the propery's type if the property with the specified name was not
         /// initialized by the attribute declaration</returns>
         /// <exception cref="ArgumentException">Thrown if there is no writable instance property with the specified name</exception>
-        object GetPropertyValue(string name);
+        ConstantValue GetPropertyValue(string name);
 
         /// <summary>
         /// Gets the initialized attribute constructor argument values.
         /// </summary>
         /// <exception cref="NotSupportedException">Thrown if not supported</exception>
-        object[] InitializedArgumentValues { get; }
+        ConstantValue[] InitializedArgumentValues { get; }
 
         /// <summary>
         /// Gets the initialized attribute field values.
         /// </summary>
-        IDictionary<IFieldInfo, object> InitializedFieldValues { get; }
+        IEnumerable<KeyValuePair<IFieldInfo, ConstantValue>> InitializedFieldValues { get; }
 
         /// <summary>
         /// Gets the initialized attribute property values.
         /// </summary>
-        IDictionary<IPropertyInfo, object> InitializedPropertyValues { get; }
+        IEnumerable<KeyValuePair<IPropertyInfo, ConstantValue>> InitializedPropertyValues { get; }
 
         /// <summary>
         /// Gets the attribute as an object.
         /// </summary>
+        /// <param name="throwOnError">If true, throws an exception if the target could
+        /// not be resolved, otherwise the result may include unresolved types, enums or arrays</param>
         /// <returns>The attribute</returns>
         /// <exception cref="CodeElementResolveException">Thrown if the attribute could not be resolved</exception>
-        object Resolve();
+        object Resolve(bool throwOnError);
     }
 }

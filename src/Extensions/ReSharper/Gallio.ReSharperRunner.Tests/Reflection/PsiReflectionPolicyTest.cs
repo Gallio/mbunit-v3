@@ -51,6 +51,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             WrapperAssert.SupportsEventFields = false;
             WrapperAssert.SupportsGenericParameterAttributes = false;
             WrapperAssert.SupportsFinalizers = false;
+            WrapperAssert.SupportsStaticConstructors = false; // compiler generated static constructors introduced by static readonly fields are not supported
 
             PsiManager manager = PsiManager.GetInstance(SolutionManager.Instance.CurrentSolution);
 

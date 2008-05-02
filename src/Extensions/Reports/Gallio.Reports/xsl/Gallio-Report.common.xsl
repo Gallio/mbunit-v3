@@ -253,7 +253,7 @@
         </xsl:when>
         
         <!-- characters to break before -->
-        <xsl:when test="$char = '.' or $char = '/' or $char = '\' or $char = ':' or $char = '(' or $char = '&lt;' or $char = '[' or $char = '{'">
+        <xsl:when test="$char = '.' or $char = '/' or $char = '\' or $char = ':' or $char = '(' or $char = '&lt;' or $char = '[' or $char = '{' or $char = '_'">
           <wbr/>
           <xsl:value-of select="$char"/>
           <xsl:call-template name="print-text-with-breaks">

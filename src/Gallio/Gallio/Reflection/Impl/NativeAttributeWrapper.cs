@@ -43,64 +43,56 @@ namespace Gallio.Reflection.Impl
             get { throw new NotSupportedException("Cannot get original constructor of an Attribute object."); }
         }
 
-        public object[] InitializedArgumentValues
+        public ConstantValue[] InitializedArgumentValues
         {
             get { throw new NotSupportedException("Cannot get original constructor arguments of an Attribute object."); }
         }
 
-        public object GetFieldValue(string name)
+        public ConstantValue GetFieldValue(string name)
         {
             FieldInfo field = attrib.GetType().GetField(name, BindingFlags.Instance | BindingFlags.Public);
             if (field != null && ReflectorAttributeUtils.IsAttributeField(Reflector.Wrap(field)))
-                return field.GetValue(attrib);
+                return ConstantValue.FromNative(field.GetValue(attrib));
 
             throw new ArgumentException(String.Format("The attribute does not have a writable instance field named '{0}'.", name));
         }
 
-        public object GetPropertyValue(string name)
+        public ConstantValue GetPropertyValue(string name)
         {
             PropertyInfo property = attrib.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public);
             if (property != null && ReflectorAttributeUtils.IsAttributeProperty(Reflector.Wrap(property)))
-                return property.GetValue(attrib, null);
+                return ConstantValue.FromNative(property.GetValue(attrib, null));
 
             throw new ArgumentException(String.Format("The attribute does not have a writable instance property named '{0}'.", name));
         }
 
-        public IDictionary<IFieldInfo, object> InitializedFieldValues
+        public IEnumerable<KeyValuePair<IFieldInfo, ConstantValue>> InitializedFieldValues
         {
             get
             {
-                Dictionary<IFieldInfo, object> values = new Dictionary<IFieldInfo, object>();
-
                 foreach (FieldInfo field in attrib.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
                 {
                     IFieldInfo fieldInfo = Reflector.Wrap(field);
                     if (ReflectorAttributeUtils.IsAttributeField(fieldInfo))
-                        values.Add(fieldInfo, field.GetValue(attrib));
+                        yield return new KeyValuePair<IFieldInfo, ConstantValue>(fieldInfo, ConstantValue.FromNative(field.GetValue(attrib)));
                 }
-
-                return values;
             }
         }
 
-        public IDictionary<IPropertyInfo, object> InitializedPropertyValues
+        public IEnumerable<KeyValuePair<IPropertyInfo, ConstantValue>> InitializedPropertyValues
         {
             get
             {
-                Dictionary<IPropertyInfo, object> values = new Dictionary<IPropertyInfo, object>();
-
                 foreach (PropertyInfo property in attrib.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
                 {
                     IPropertyInfo propertyInfo = Reflector.Wrap(property);
                     if (ReflectorAttributeUtils.IsAttributeProperty(propertyInfo))
-                        values.Add(propertyInfo, property.GetValue(attrib, null));
+                        yield return new KeyValuePair<IPropertyInfo, ConstantValue>(propertyInfo, ConstantValue.FromNative(property.GetValue(attrib, null)));
                 }
-
-                return values;
             }
         }
 
-        public object Resolve()
+        public object Resolve(bool throwOnError)
         {
             return attrib;
         }

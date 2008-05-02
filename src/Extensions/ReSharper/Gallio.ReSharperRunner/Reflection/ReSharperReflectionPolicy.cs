@@ -65,35 +65,38 @@ namespace Gallio.ReSharperRunner.Reflection
         protected abstract IProject GetProject(StaticWrapper element);
 
         /// <summary>
-        /// Resolves the types that may be present in constant values.
+        /// Converts constant values from a foreign form to a native one.
         /// </summary>
-        /// <param name="value">The unresolved value</param>
-        /// <param name="typeResolver">A function for resolving types</param>
-        /// <returns>The value with types fully resolved</returns>
-        protected static object ResolveConstant<TType>(object value, Func<TType, Type> typeResolver)
+        /// <param name="value">The foreign constant value</param>
+        /// <param name="typeConstructor">A function for resolving types</param>
+        /// <returns>The native constant value</returns>
+        protected static ConstantValue ConvertConstantValue<TType>(object value, Func<TType, ITypeInfo> typeConstructor)
             where TType : class
         {
+            if (value == null)
+                return new ConstantValue(Reflector.Wrap(typeof(object)), null);
+
             if (value != null)
             {
                 TType type = value as TType;
                 if (type != null)
-                    return typeResolver(type);
+                    return new ConstantValue(Reflector.Wrap(typeof(Type)), typeConstructor(type));
 
                 Type valueType = value.GetType();
                 if (valueType.IsArray)
                 {
                     Array valueArray = (Array) value;
                     int length = valueArray.Length;
-                    Array resolvedValueArray = Array.CreateInstance(MapConstantArrayElementType<TType>(valueType), length);
+                    ConstantValue[] array = new ConstantValue[length];
 
                     for (int i = 0; i < length; i++)
-                        resolvedValueArray.SetValue(ResolveConstant(valueArray.GetValue(i), typeResolver), i);
+                        array[i] = ConvertConstantValue(valueArray.GetValue(i), typeConstructor);
 
-                    return resolvedValueArray;
+                    return new ConstantValue(Reflector.Wrap(MapConstantArrayElementType<TType>(valueType).MakeArrayType()), array);
                 }
             }
 
-            return value;
+            return new ConstantValue(Reflector.Wrap(value.GetType()), value);
         }
 
         private static Type MapConstantArrayElementType<TType>(Type arrayType)

@@ -1,0 +1,971 @@
+Index: Mono.Cecil.csproj
+===================================================================
+--- Mono.Cecil.csproj	(revision 102295)
++++ Mono.Cecil.csproj	(working copy)
+@@ -236,6 +236,7 @@
+     <Compile Include="Mono.Cecil\CallSite.cs" />
+     <Compile Include="Mono.Cecil\CompactFrameworkCompatibility.cs" />
+     <Compile Include="Mono.Cecil\Constants.cs" />
++    <Compile Include="Mono.Cecil\ConstantValue.cs" />
+     <Compile Include="Mono.Cecil\ConstraintCollection.cs" />
+     <Compile Include="Mono.Cecil\ConstructorCollection.cs" />
+     <Compile Include="Mono.Cecil\CustomAttribute.cs" />
+@@ -362,5 +363,7 @@
+   </ItemGroup>
+   <ItemGroup>
+     <Reference Include="System" />
++    <Reference Include="System.Data" />
++    <Reference Include="System.Xml" />
+   </ItemGroup>
+-</Project>
++</Project>
+\ No newline at end of file
+Index: Mono.Cecil.dll.sources
+===================================================================
+--- Mono.Cecil.dll.sources	(revision 102295)
++++ Mono.Cecil.dll.sources	(working copy)
+@@ -19,6 +19,7 @@
+ ./Mono.Cecil/CallSite.cs
+ ./Mono.Cecil/CompactFrameworkCompatibility.cs
+ ./Mono.Cecil/Constants.cs
++./Mono.Cecil/ConstantValue.cs
+ ./Mono.Cecil/ConstraintCollection.cs
+ ./Mono.Cecil/ConstructorCollection.cs
+ ./Mono.Cecil/CustomAttribute.cs
+Index: Mono.Cecil.Signatures/CustomAttrib.cs
+===================================================================
+--- Mono.Cecil.Signatures/CustomAttrib.cs	(revision 102295)
++++ Mono.Cecil.Signatures/CustomAttrib.cs	(working copy)
+@@ -28,8 +28,6 @@
+ 
+ namespace Mono.Cecil.Signatures {
+ 
+-	using Mono.Cecil.Metadata;
+-
+ 	internal sealed class CustomAttrib {
+ 
+ 		public const ushort StdProlog = 0x0001;
+@@ -49,32 +47,16 @@
+ 
+ 		public struct FixedArg {
+ 
+-			public bool SzArray;
+-			public uint NumElem;
+-			public Elem [] Elems;
++            public ConstantValue Value;
+ 		}
+ 
+-		public struct Elem {
+-
+-			public bool Simple;
+-			public bool String;
+-			public bool Type;
+-			public bool BoxedValueType;
+-
+-			public ElementType FieldOrPropType;
+-			public object Value;
+-
+-			public TypeReference ElemType;
+-		}
+-
+ 		public struct NamedArg {
+ 
+ 			public bool Field;
+ 			public bool Property;
+ 
+-			public ElementType FieldOrPropType;
+ 			public string FieldOrPropName;
+-			public FixedArg FixedArg;
+-		}
++            public ConstantValue Value;
++        }
+ 	}
+ }
+Index: Mono.Cecil.Signatures/SignatureReader.cs
+===================================================================
+--- Mono.Cecil.Signatures/SignatureReader.cs	(revision 102295)
++++ Mono.Cecil.Signatures/SignatureReader.cs	(working copy)
+@@ -633,69 +633,75 @@
+ 			TypeReference param, ref bool read, bool resolve)
+ 		{
+ 			CustomAttrib.FixedArg fa = new CustomAttrib.FixedArg ();
+-			if (param is ArrayType) {
+-				param = ((ArrayType) param).ElementType;
+-				fa.SzArray = true;
+-				fa.NumElem = br.ReadUInt32 ();
+-
+-				if (fa.NumElem == 0 || fa.NumElem == 0xffffffff) {
+-					fa.Elems = new CustomAttrib.Elem [0];
+-					fa.NumElem = 0;
+-					return fa;
+-				}
+-
+-				fa.Elems = new CustomAttrib.Elem [fa.NumElem];
+-				for (int i = 0; i < fa.NumElem; i++)
+-					fa.Elems [i] = ReadElem (data, br, param, ref read, resolve);
+-			} else
+-				fa.Elems = new CustomAttrib.Elem [] { ReadElem (data, br, param, ref read, resolve) };
+-
++            fa.Value = ReadElem(data, br, param, ref read, resolve);
+ 			return fa;
+ 		}
+ 
+-		TypeReference CreateEnumTypeReference (string enumName)
++		TypeReference CreateTypeReference (string typeName, bool isValueType)
+ 		{
+ 			string asmName = null;
+-			int asmStart = enumName.IndexOf (',');
++			int asmStart = typeName.IndexOf (',');
+ 			if (asmStart != -1) {
+-				asmName = enumName.Substring (asmStart + 1);
+-				enumName = enumName.Substring (0, asmStart);
++				asmName = typeName.Substring (asmStart + 1);
++				typeName = typeName.Substring (0, asmStart);
+ 			}
+ 			// Inner class style is reflection style.
+-			enumName = enumName.Replace ('+', '/');
+-			AssemblyNameReference asm;
+-			if (asmName == null) {
+-				// If no assembly is given then the ECMA standard says the
+-				// assembly is either the current one or mscorlib.
+-				if (m_reflectReader.Module.Types.Contains (enumName))
+-					return m_reflectReader.Module.Types [enumName];
++			typeName = typeName.Replace ('+', '/');
++            return CreateTypeReference(typeName, asmName, isValueType);
++		}
+ 
+-				asm = m_reflectReader.Corlib;
+-			} else
+-				asm = AssemblyNameReference.Parse (asmName);
++        TypeReference CreateTypeReference(string typeName, string asmName, bool isValueType)
++        {
++            int typeNameLength = typeName.Length;
++            if (typeNameLength >= 2)
++            {
++                // FIXME: The name parsing is really lame here and does not support things like generics.
++                char lastChar = typeName[typeNameLength - 1];
++                if (lastChar == ']' && typeName[typeNameLength - 2] == '[')
++                    return new ArrayType(CreateTypeReference(typeName.Substring(0, typeNameLength - 2), asmName, isValueType));
++                if (lastChar == '&')
++                    return new ReferenceType(CreateTypeReference(typeName.Substring(0, typeNameLength - 1), asmName, isValueType));
++                if (lastChar == '*')
++                    return new PointerType(CreateTypeReference(typeName.Substring(0, typeNameLength - 1), asmName, isValueType));
++            }
+ 
+-			string [] outers = enumName.Split ('/');
+-			string outerfullname = outers [0];
+-			string ns = null;
+-			int nsIndex = outerfullname.LastIndexOf ('.');
+-			if (nsIndex != -1)
+-				ns = outerfullname.Substring (0, nsIndex);
+-			string name = outerfullname.Substring (nsIndex + 1);
+-			TypeReference decType = new TypeReference (name, ns, asm);
+-			for (int i = 1; i < outers.Length; i++) {
+-				TypeReference t = new TypeReference (outers [i], null, asm);
+-				t.DeclaringType = decType;
+-				decType = t;
+-			}
+-			decType.IsValueType = true;
++            AssemblyNameReference asm;
++            if (asmName == null)
++            {
++                // If no assembly is given then the ECMA standard says the
++                // assembly is either the current one or mscorlib.
++                if (m_reflectReader.Module.Types.Contains(typeName))
++                    return m_reflectReader.Module.Types[typeName];
+ 
+-			return decType;
+-		}
++                asm = m_reflectReader.Corlib;
++            }
++            else
++                asm = AssemblyNameReference.Parse(asmName);
+ 
+-		TypeReference ReadTypeReference (byte [] data, BinaryReader br, out ElementType elemType)
++            string[] outers = typeName.Split('/');
++            string outerfullname = outers[0];
++            string ns = null;
++            int nsIndex = outerfullname.LastIndexOf('.');
++            if (nsIndex != -1)
++                ns = outerfullname.Substring(0, nsIndex);
++            string name = outerfullname.Substring(nsIndex + 1);
++            TypeReference decType = new TypeReference(name, ns, asm);
++            for (int i = 1; i < outers.Length; i++)
++            {
++                TypeReference t = new TypeReference(outers[i], null, asm);
++                t.DeclaringType = decType;
++                decType = t;
++            }
++
++            decType.IsValueType = isValueType;
++
++            return decType;
++        }
++
++		TypeReference ReadTypeReference (byte [] data, BinaryReader br)
+ 		{
+ 			bool array = false;
+-			elemType = (ElementType) br.ReadByte ();
++			ElementType elemType = (ElementType) br.ReadByte ();
+ 			if (elemType == ElementType.SzArray) {
+ 				elemType = (ElementType) br.ReadByte ();
+ 				array = true;
+@@ -703,7 +709,7 @@
+ 
+ 			TypeReference res;
+ 			if (elemType == ElementType.Enum)
+-				res = CreateEnumTypeReference (ReadUTF8String (data, br));
++				res = CreateTypeReference (ReadUTF8String (data, br), true);
+ 			else
+ 				res = TypeReferenceFromElemType (elemType);
+ 
+@@ -766,71 +772,55 @@
+ 			} else
+ 				throw new MetadataFormatException ("Wrong kind of namedarg found: 0x" + kind.ToString("x2"));
+ 
+-			TypeReference elemType = ReadTypeReference (data, br, out na.FieldOrPropType);
++			TypeReference elemType = ReadTypeReference (data, br);
+ 			na.FieldOrPropName = ReadUTF8String (data, br);
+-			na.FixedArg = ReadFixedArg (data, br, elemType, ref read, resolve);
++            na.Value = ReadElem(data, br, elemType, ref read, resolve);
+ 
+ 			return na;
+ 		}
+ 
+-		CustomAttrib.Elem ReadElem (byte [] data, BinaryReader br, TypeReference elemType, ref bool read, bool resolve)
++		ConstantValue ReadElem (byte [] data, BinaryReader br, TypeReference elemType, ref bool read, bool resolve)
+ 		{
+-			CustomAttrib.Elem elem = new CustomAttrib.Elem ();
++            if (elemType is ArrayType)
++            {
++                TypeReference arrayElemType = ((ArrayType)elemType).ElementType;
++                uint numElem = br.ReadUInt32();
+ 
++                if (numElem == 0xffffffff)
++                    numElem = 0;
++
++                ConstantValue[] values = new ConstantValue[numElem];
++                for (int i = 0; i < numElem; i++)
++                    values[i] = ReadElem(data, br, arrayElemType, ref read, resolve);
++                return new ConstantValue(elemType, values);
++            }
++
+ 			string elemName = elemType.FullName;
+ 
+ 			if (elemName == Constants.Object) {
+-				elemType = ReadTypeReference (data, br, out elem.FieldOrPropType);
+-				if (elemType is ArrayType) {
+-					read = false; // Don't know how to represent arrays as an object value.
+-					return elem;
+-				} else if (elemType.FullName == Constants.Object)
+-					throw new MetadataFormatException ("Non valid type in CustomAttrib.Elem after boxed prefix: 0x{0}",
+-						((byte) elem.FieldOrPropType).ToString ("x2"));
++				elemType = ReadTypeReference (data, br);
++                if (elemType.FullName == Constants.Object)
++					throw new MetadataFormatException ("Non valid type in CustomAttrib.Elem after boxed prefix.");
+ 
+-				elem = ReadElem (data, br, elemType, ref read, resolve);
+-				elem.String = elem.Simple = elem.Type = false;
+-				elem.BoxedValueType = true;
+-				return elem;
++                return ReadElem(data, br, elemType, ref read, resolve);
+ 			}
+ 
+-			elem.ElemType = elemType;
+-
+-			if (elemName == Constants.Type || elemName == Constants.String) {
+-				switch (elemType.FullName) {
+-				case Constants.String:
+-					elem.String = true;
+-					elem.BoxedValueType = elem.Simple = elem.Type = false;
+-					break;
+-				case Constants.Type:
+-					elem.Type = true;
+-					elem.BoxedValueType = elem.Simple = elem.String = false;
+-					break;
+-				}
+-
+-				if (data [br.BaseStream.Position] == 0xff) { // null
+-					elem.Value = null;
+-					br.BaseStream.Position++;
+-				} else {
+-					elem.Value = ReadUTF8String (data, br);
+-				}
+-				return elem;
+-			}
+-
+-			elem.String = elem.Type = elem.BoxedValueType = false;
+-			if (!ReadSimpleValue (br, ref elem, elem.ElemType)) {
+-				if (!resolve) { // until enums writing is implemented
+-					read = false;
+-					return elem;
+-				}
+-				TypeReference typeRef = GetEnumUnderlyingType (elem.ElemType, resolve);
+-				if (typeRef == null || !ReadSimpleValue (br, ref elem, typeRef))
+-					read = false;
+-			}
+-
+-			return elem;
++            return new ConstantValue(elemType, ReadSimpleValue(data, br, elemType, ref read, resolve));
+ 		}
+ 
++        private static string ReadStringOrTypeName(byte[] data, BinaryReader br)
++        {
++            if (data[br.BaseStream.Position] == 0xff)
++            { // null
++                br.BaseStream.Position++;
++                return null;
++            }
++            else
++            {
++                return ReadUTF8String(data, br);
++            }
++        }
++
+ 		TypeReference GetEnumUnderlyingType (TypeReference enumType, bool resolve)
+ 		{
+ 			TypeDefinition type = enumType as TypeDefinition;
+@@ -849,50 +839,44 @@
+ 			return null;
+ 		}
+ 
+-		bool ReadSimpleValue (BinaryReader br, ref CustomAttrib.Elem elem, TypeReference type)
++		object ReadSimpleValue (byte[] data, BinaryReader br, TypeReference type, ref bool read, bool resolve)
+ 		{
+ 			switch (type.FullName) {
+-			case Constants.Boolean :
+-				elem.Value = br.ReadByte () == 1;
+-				break;
++            case Constants.String :
++                return ReadStringOrTypeName(data, br);
++            case Constants.Type:
++                return CreateTypeReference(ReadStringOrTypeName(data, br), false); // fixme: we don't know whether the type is a value type
++            case Constants.Boolean :
++				return br.ReadByte () == 1;
+ 			case Constants.Char :
+-				elem.Value = (char) br.ReadUInt16 ();
+-				break;
++				return (char) br.ReadUInt16 ();
+ 			case Constants.Single :
+-				elem.Value = br.ReadSingle ();
+-				break;
++				return br.ReadSingle ();
+ 			case Constants.Double :
+-				elem.Value = br.ReadDouble ();
+-				break;
++				return br.ReadDouble ();
+ 			case Constants.Byte :
+-				elem.Value = br.ReadByte ();
+-				break;
++				return br.ReadByte ();
+ 			case Constants.Int16 :
+-				elem.Value = br.ReadInt16 ();
+-				break;
++				return br.ReadInt16 ();
+ 			case Constants.Int32 :
+-				elem.Value = br.ReadInt32 ();
+-				break;
++				return br.ReadInt32 ();
+ 			case Constants.Int64 :
+-				elem.Value = br.ReadInt64 ();
+-				break;
++				return br.ReadInt64 ();
+ 			case Constants.SByte :
+-				elem.Value = br.ReadSByte ();
+-				break;
++				return br.ReadSByte ();
+ 			case Constants.UInt16 :
+-				elem.Value = br.ReadUInt16 ();
+-				break;
++				return br.ReadUInt16 ();
+ 			case Constants.UInt32 :
+-				elem.Value = br.ReadUInt32 ();
+-				break;
++				return br.ReadUInt32 ();
+ 			case Constants.UInt64 :
+-				elem.Value = br.ReadUInt64 ();
+-				break;
++				return br.ReadUInt64 ();
+ 			default : // enum
+-				return false;
++                TypeReference enumType = GetEnumUnderlyingType(type, resolve);
++                if (enumType != null)
++                    return ReadSimpleValue(data, br, enumType, ref read, resolve);
++                read = false;
++                return null;
+ 			}
+-			elem.Simple = true;
+-			return true;
+ 		}
+ 
+ 		MarshalSig ReadMarshalSig (byte [] data)
+Index: Mono.Cecil.Signatures/SignatureWriter.cs
+===================================================================
+--- Mono.Cecil.Signatures/SignatureWriter.cs	(revision 102295)
++++ Mono.Cecil.Signatures/SignatureWriter.cs	(working copy)
+@@ -407,11 +407,7 @@
+ 
+ 		void Write (CustomAttrib.FixedArg fa, MemoryBinaryWriter writer)
+ 		{
+-			if (fa.SzArray)
+-				writer.Write (fa.NumElem);
+-
+-			foreach (CustomAttrib.Elem elem in fa.Elems)
+-				Write (elem, writer);
++            Write(fa.Value, writer, false);
+ 		}
+ 
+ 		static string GetEnumFullName (TypeReference type)
+@@ -436,63 +432,96 @@
+ 			else
+ 				throw new MetadataFormatException ("Unknown kind of namedarg");
+ 
+-			if (na.FieldOrPropType == ElementType.Class)
+-				na.FieldOrPropType = ElementType.Enum;
++            WriteTypeReference(na.Value.Type, writer);
++			Write (na.FieldOrPropName);
++			Write (na.Value, writer, false);
++		}
+ 
+-			if (na.FixedArg.SzArray)
+-				writer.Write ((byte) ElementType.SzArray);
++        private void WriteTypeReference(TypeReference type, MemoryBinaryWriter writer)
++        {
++            ElementType elementType = GetElementTypeFromTypeReference(type);
+ 
+-			if (na.FieldOrPropType == ElementType.Object)
+-				writer.Write ((byte) ElementType.Boxed);
+-			else
+-				writer.Write ((byte) na.FieldOrPropType);
++            if (elementType == ElementType.Object)
++                writer.Write((byte)ElementType.Boxed);
++            else
++                writer.Write((byte)elementType);
+ 
+-			if (na.FieldOrPropType == ElementType.Enum)
+-				Write (GetEnumFullName (na.FixedArg.Elems [0].ElemType));
++            if (elementType == ElementType.Enum)
++                Write(GetEnumFullName(type));
++        }
+ 
+-			Write (na.FieldOrPropName);
++		static ElementType GetElementTypeFromTypeReference (TypeReference type)
++		{
++            string name = type.FullName;
+ 
+-			Write (na.FixedArg, writer);
+-		}
++            switch (name)
++            {
++                case Constants.Void:
++                    return ElementType.Void;
++                case Constants.Object:
++                    return ElementType.Object;
++                case Constants.Boolean:
++                    return ElementType.Boolean;
++                case Constants.String:
++                    return ElementType.String;
++                case Constants.Char:
++                    return ElementType.Char;
++                case Constants.SByte:
++                    return ElementType.I1;
++                case Constants.Byte:
++                    return ElementType.U1;
++                case Constants.Int16:
++                    return ElementType.I2;
++                case Constants.UInt16:
++                    return ElementType.U2;
++                case Constants.Int32:
++                    return ElementType.I4;
++                case Constants.UInt32:
++                    return ElementType.U4;
++                case Constants.Int64:
++                    return ElementType.I8;
++                case Constants.UInt64:
++                    return ElementType.U8;
++                case Constants.Single:
++                    return ElementType.R4;
++                case Constants.Double:
++                    return ElementType.R8;
++                case Constants.IntPtr:
++                    return ElementType.I;
++                case Constants.UIntPtr:
++                    return ElementType.U;
++                case Constants.Type:
++                    return ElementType.Type;
++            }
+ 
+-		static ElementType GetElementTypeFromTypeCode (TypeCode tc)
+-		{
+-			switch (tc) {
+-			case TypeCode.Byte:
+-				return ElementType.U1;
+-			case TypeCode.SByte:
+-				return ElementType.I1;
+-			case TypeCode.Int16:
+-				return ElementType.I2;
+-			case TypeCode.UInt16:
+-				return ElementType.U2;
+-			case TypeCode.Int32:
+-				return ElementType.I4;
+-			case TypeCode.UInt32:
+-				return ElementType.U4;
+-			case TypeCode.Int64:
+-				return ElementType.I8;
+-			case TypeCode.UInt64:
+-				return ElementType.U8;
+-			default:
+-				throw new ArgumentException ("tc");
+-			}
++            if (type is ArrayType)
++            {
++                ArrayType aryType = type as ArrayType;
++                if (aryType.IsSizedArray)
++                    return ElementType.SzArray;
++                return ElementType.Array;
++            }
++
++            // fixme: not entirely accurate, could see other types here if there's an error
++            return ElementType.Enum;
+ 		}
+ 
+-		void Write (CustomAttrib.Elem elem, MemoryBinaryWriter writer)
++		void Write (ConstantValue elem, MemoryBinaryWriter writer, bool boxed)
+ 		{
+-			if (elem.String)
+-				elem.FieldOrPropType = ElementType.String;
+-			else if (elem.Type)
+-				elem.FieldOrPropType = ElementType.Type;
++            ElementType elementType = GetElementTypeFromTypeReference(elem.Type);
++            if (boxed)
++                WriteTypeReference(elem.Type, writer);
+ 
+-			if (elem.FieldOrPropType == ElementType.Class) // an enum in fact
+-				elem.FieldOrPropType = GetElementTypeFromTypeCode (Type.GetTypeCode (elem.Value.GetType ()));
+-
+-			if (elem.BoxedValueType)
+-				Write (elem.FieldOrPropType);
+-
+-			switch (elem.FieldOrPropType) {
++			switch (elementType) {
++            case ElementType.Array :
++                ArrayType arrayType = (ArrayType) elem.Type;
++                ConstantValue[] arrayValues = (ConstantValue[])elem.Value;
++                int length = arrayValues.Length;
++                writer.Write((uint)length);
++                bool arrayValuesBoxed = ! arrayType.ElementType.IsValueType;
++                for (int i = 0; i < length; i++)
++                    Write(arrayValues[i], writer, arrayValuesBoxed);
++                break;
+ 			case ElementType.Boolean :
+ 				writer.Write ((byte) ((bool) elem.Value ? 1 : 0));
+ 				break;
+@@ -530,25 +559,31 @@
+ 				writer.Write ((long) elem.Value);
+ 				break;
+ 			case ElementType.String :
++                WriteStringOrTypeName((string) elem.Value, writer);
++                break;
+ 			case ElementType.Type :
+-				string s = elem.Value as string;
+-				if (s == null)
+-					writer.Write ((byte) 0xff);
+-				else if (s.Length == 0)
+-					writer.Write ((byte) 0x00);
+-				else
+-					Write (s);
+-				break;
++                WriteStringOrTypeName(((TypeReference) elem.Value).FullName, writer);
++                break;
+ 			case ElementType.Object :
+ 				if (elem.Value != null)
+ 					throw new NotSupportedException ("Unknown state");
+ 				writer.Write ((byte) 0xff);
+ 				break;
+ 			default :
+-				throw new NotImplementedException ("WriteElem " + elem.FieldOrPropType.ToString ());
++				throw new NotImplementedException ("WriteElem " + elem.Type.ToString ());
+ 			}
+ 		}
+ 
++        private void WriteStringOrTypeName(string value, MemoryBinaryWriter writer)
++        {
++            if (value == null)
++                writer.Write((byte)0xff);
++            else if (value.Length == 0)
++                writer.Write((byte)0x00);
++            else
++                Write(value);
++        }
++
+ 		void Write (string s)
+ 		{
+ 			byte [] str = Encoding.UTF8.GetBytes (s);
+Index: Mono.Cecil/ConstantValue.cs
+===================================================================
+--- Mono.Cecil/ConstantValue.cs	(revision 0)
++++ Mono.Cecil/ConstantValue.cs	(revision 0)
+@@ -0,0 +1,98 @@
++//
++// ConstantValue.cs
++//
++// Author:
++//   Jeff Brown (jeff.brown@gmail.com)
++//
++// (C) 2008 Jeff Brown
++//
++// Permission is hereby granted, free of charge, to any person obtaining
++// a copy of this software and associated documentation files (the
++// "Software"), to deal in the Software without restriction, including
++// without limitation the rights to use, copy, modify, merge, publish,
++// distribute, sublicense, and/or sell copies of the Software, and to
++// permit persons to whom the Software is furnished to do so, subject to
++// the following conditions:
++//
++// The above copyright notice and this permission notice shall be
++// included in all copies or substantial portions of the Software.
++//
++// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++//
++
++namespace Mono.Cecil
++{
++    using System;
++
++    /// <summary>
++    /// Specifies a typed constant value.
++    /// </summary>
++    public struct ConstantValue
++    {
++        private readonly TypeReference type;
++        private readonly object value;
++
++        /// <summary>
++        /// Creates a constant value.
++        /// </summary>
++        /// <param name="type">The constant value type</param>
++        /// <param name="value">The constant value</param>
++        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
++        public ConstantValue(TypeReference type, object value)
++        {
++            if (type == null)
++                throw new ArgumentNullException("type");
++
++            this.type = type;
++            this.value = value;
++        }
++
++        /// <summary>
++        /// <para>
++        /// Gets the type of the constant.
++        /// </para>
++        /// <para>
++        /// The type may be an array type, an enum type, a primitive type, or the <see cref="System.Type" /> type.
++        /// </para>
++        /// </summary>
++        public TypeReference Type
++        {
++            get { return type; }
++        }
++
++        /// <summary>
++        /// <para>
++        /// Gets the value of the constant.
++        /// </para>
++        /// <para>
++        /// The value is represented differently depending upon its type.
++        /// <list type="bullet">
++        /// <item>If the constant is a primitive value, then the value will be a primitive value such as an
++        /// integer, string, float or null.</item>
++        /// <item>If the constant is an enum, then the value will be a primitive value of the underlying type of the enum.</item>
++        /// <item>If the constant is an array, then the value will be an array of <see cref="ConstantValue" />
++        /// objects representing the elements of the array.</item>
++        /// <item>If the constant is a type, then the value will be a <see cref="TypeReference" />.</item>
++        /// </list>
++        /// </para>
++        /// </summary>
++        public object Value
++        {
++            get { return value; }
++        }
++
++        /// <summary>
++        /// Returns true if the value is an array.
++        /// </summary>
++        public bool IsArray
++        {
++            get { return type is ArrayType; }
++        }
++    }
++}
+Index: Mono.Cecil/CustomAttribute.cs
+===================================================================
+--- Mono.Cecil/CustomAttribute.cs	(revision 102295)
++++ Mono.Cecil/CustomAttribute.cs	(working copy)
+@@ -36,8 +36,6 @@
+ 		IList m_parameters;
+ 		IDictionary m_fields;
+ 		IDictionary m_properties;
+-		IDictionary m_fieldTypes;
+-		IDictionary m_propTypes;
+ 		IDictionary m_annotations;
+ 
+ 		bool m_resolved;
+@@ -74,24 +72,6 @@
+ 			}
+ 		}
+ 
+-		internal IDictionary FieldTypes {
+-			get {
+-				if (m_fieldTypes == null)
+-					m_fieldTypes = new Hashtable ();
+-
+-				return m_fieldTypes;
+-			}
+-		}
+-
+-		internal IDictionary PropertyTypes {
+-			get {
+-				if (m_propTypes == null)
+-					m_propTypes = new Hashtable ();
+-
+-				return m_propTypes;
+-			}
+-		}
+-
+ 		public bool Resolved {
+ 			get { return m_resolved; }
+ 			set { m_resolved = value; }
+@@ -122,26 +102,6 @@
+ 			m_blob = blob;
+ 		}
+ 
+-		public TypeReference GetFieldType (string fieldName)
+-		{
+-			return (TypeReference) FieldTypes [fieldName];
+-		}
+-
+-		public TypeReference GetPropertyType (string propertyName)
+-		{
+-			return (TypeReference) PropertyTypes [propertyName];
+-		}
+-
+-		public void SetFieldType (string fieldName, TypeReference type)
+-		{
+-			FieldTypes [fieldName] = type;
+-		}
+-
+-		public void SetPropertyType (string propertyName, TypeReference type)
+-		{
+-			PropertyTypes [propertyName] = type;
+-		}
+-
+ 		public CustomAttribute Clone ()
+ 		{
+ 			return Clone (this, new ImportContext (NullReferenceImporter.Instance));
+@@ -172,9 +132,7 @@
+ 			foreach (object o in ConstructorParameters)
+ 				target.ConstructorParameters.Add (o);
+ 			Clone (Fields, target.Fields);
+-			Clone (FieldTypes, target.FieldTypes);
+ 			Clone (Properties, target.Properties);
+-			Clone (PropertyTypes, target.PropertyTypes);
+ 		}
+ 
+ 		public bool Resolve ()
+Index: Mono.Cecil/ReflectionReader.cs
+===================================================================
+--- Mono.Cecil/ReflectionReader.cs	(revision 102295)
++++ Mono.Cecil/ReflectionReader.cs	(working copy)
+@@ -827,36 +827,6 @@
+ 			}
+ 		}
+ 
+-		static object GetFixedArgValue (CustomAttrib.FixedArg fa)
+-		{
+-			if (fa.SzArray) {
+-				object [] vals = new object [fa.NumElem];
+-				for (int j = 0; j < vals.Length; j++)
+-					vals [j] = fa.Elems [j].Value;
+-				return vals;
+-			} else
+-				return fa.Elems [0].Value;
+-		}
+-
+-		TypeReference GetFixedArgType (CustomAttrib.FixedArg fa)
+-		{
+-			if (fa.SzArray) {
+-				if (fa.NumElem == 0)
+-					return new ArrayType (SearchCoreType (Constants.Object));
+-				else
+-					return new ArrayType (fa.Elems [0].ElemType);
+-			} else
+-				return fa.Elems [0].ElemType;
+-		}
+-
+-		TypeReference GetNamedArgType (CustomAttrib.NamedArg na)
+-		{
+-			if (na.FieldOrPropType == ElementType.Boxed)
+-				return SearchCoreType (Constants.Object);
+-
+-			return GetFixedArgType (na.FixedArg);
+-		}
+-
+ 		protected CustomAttribute BuildCustomAttribute (MethodReference ctor, byte [] data, CustomAttrib sig)
+ 		{
+ 			CustomAttribute cattr = new CustomAttribute (ctor);
+@@ -867,16 +837,13 @@
+ 			}
+ 
+ 			foreach (CustomAttrib.FixedArg fa in sig.FixedArgs)
+-				cattr.ConstructorParameters.Add (GetFixedArgValue (fa));
++				cattr.ConstructorParameters.Add (fa.Value);
+ 
+ 			foreach (CustomAttrib.NamedArg na in sig.NamedArgs) {
+-				object value = GetFixedArgValue (na.FixedArg);
+ 				if (na.Field) {
+-					cattr.Fields [na.FieldOrPropName] = value;
+-					cattr.SetFieldType (na.FieldOrPropName, GetNamedArgType (na));
++					cattr.Fields [na.FieldOrPropName] = na.Value;
+ 				} else if (na.Property) {
+-					cattr.Properties [na.FieldOrPropName] = value;
+-					cattr.SetPropertyType (na.FieldOrPropName, GetNamedArgType (na));
++					cattr.Properties [na.FieldOrPropName] = na.Value;
+ 				} else
+ 					throw new ReflectionException ("Non valid named arg");
+ 			}
+Index: Mono.Cecil/ReflectionWriter.cs
+===================================================================
+--- Mono.Cecil/ReflectionWriter.cs	(revision 102295)
++++ Mono.Cecil/ReflectionWriter.cs	(working copy)
+@@ -1329,76 +1329,21 @@
+ 			return string.Concat (t.Namespace, ".", t.Name);
+ 		}
+ 
+-		static CustomAttrib.Elem CreateElem (TypeReference type, object value)
++		static CustomAttrib.FixedArg CreateFixedArg (ConstantValue value)
+ 		{
+-			CustomAttrib.Elem elem = new CustomAttrib.Elem ();
+-			elem.Value = value;
+-			elem.ElemType = type;
+-			elem.FieldOrPropType = GetCorrespondingType (type.FullName);
+-
+-			switch (elem.FieldOrPropType) {
+-			case ElementType.Boolean :
+-			case ElementType.Char :
+-			case ElementType.R4 :
+-			case ElementType.R8 :
+-			case ElementType.I1 :
+-			case ElementType.I2 :
+-			case ElementType.I4 :
+-			case ElementType.I8 :
+-			case ElementType.U1 :
+-			case ElementType.U2 :
+-			case ElementType.U4 :
+-			case ElementType.U8 :
+-				elem.Simple = true;
+-				break;
+-			case ElementType.String:
+-				elem.String = true;
+-				break;
+-			case ElementType.Type:
+-				elem.Type = true;
+-				break;
+-			case ElementType.Object:
+-				elem.BoxedValueType = true;
+-				if (value == null)
+-					elem.FieldOrPropType = ElementType.String;
+-				else
+-					elem.FieldOrPropType = GetCorrespondingType (
+-						GetObjectTypeName (value));
+-				break;
+-			}
+-
+-			return elem;
+-		}
+-
+-		static CustomAttrib.FixedArg CreateFixedArg (TypeReference type, object value)
+-		{
+ 			CustomAttrib.FixedArg fa = new CustomAttrib.FixedArg ();
+-			if (value is object []) {
+-				fa.SzArray = true;
+-				object [] values = value as object [];
+-				TypeReference obj = ((ArrayType) type).ElementType;
+-				fa.NumElem = (uint) values.Length;
+-				fa.Elems = new CustomAttrib.Elem [values.Length];
+-				for (int i = 0; i < values.Length; i++)
+-					fa.Elems [i] = CreateElem (obj, values [i]);
+-			} else {
+-				fa.Elems = new CustomAttrib.Elem [1];
+-				fa.Elems [0] = CreateElem (type, value);
+-			}
+-
++            fa.Value = value;
+ 			return fa;
+ 		}
+ 
+-		static CustomAttrib.NamedArg CreateNamedArg (TypeReference type, string name,
+-			object value, bool field)
++		static CustomAttrib.NamedArg CreateNamedArg (string name, ConstantValue value, bool field)
+ 		{
+ 			CustomAttrib.NamedArg na = new CustomAttrib.NamedArg ();
+ 			na.Field = field;
+ 			na.Property = !field;
+ 
+ 			na.FieldOrPropName = name;
+-			na.FieldOrPropType = GetCorrespondingType (type.FullName);
+-			na.FixedArg = CreateFixedArg (type, value);
++            na.Value = value;
+ 
+ 			return na;
+ 		}
+@@ -1411,8 +1356,7 @@
+ 			cas.FixedArgs = new CustomAttrib.FixedArg [ca.Constructor.Parameters.Count];
+ 
+ 			for (int i = 0; i < cas.FixedArgs.Length; i++)
+-				cas.FixedArgs [i] = CreateFixedArg (
+-					ca.Constructor.Parameters [i].ParameterType, ca.ConstructorParameters [i]);
++				cas.FixedArgs [i] = CreateFixedArg ((ConstantValue) ca.ConstructorParameters [i]);
+ 
+ 			int nn = ca.Fields.Count + ca.Properties.Count;
+ 			cas.NumNamed = (ushort) nn;
+@@ -1422,14 +1366,12 @@
+ 				int curs = 0;
+ 				foreach (DictionaryEntry entry in ca.Fields) {
+ 					string field = (string) entry.Key;
+-					cas.NamedArgs [curs++] = CreateNamedArg (
+-						ca.GetFieldType (field), field, entry.Value, true);
++					cas.NamedArgs [curs++] = CreateNamedArg (field, (ConstantValue) entry.Value, true);
+ 				}
+ 
+ 				foreach (DictionaryEntry entry in ca.Properties) {
+ 					string property = (string) entry.Key;
+-					cas.NamedArgs [curs++] = CreateNamedArg (
+-						ca.GetPropertyType (property), property, entry.Value, false);
++					cas.NamedArgs [curs++] = CreateNamedArg (property, (ConstantValue)entry.Value, false);
+ 				}
+ 			}
+ 
+Index: Mono.Cecil/SecurityDeclarationReader.cs
+===================================================================
+--- Mono.Cecil/SecurityDeclarationReader.cs	(revision 102295)
++++ Mono.Cecil/SecurityDeclarationReader.cs	(working copy)
+@@ -149,10 +149,10 @@
+ 
+ 				if (na.Field) {
+ 					FieldInfo fi = secattr.GetField (na.FieldOrPropName);
+-					fi.SetValue (sa, na.FixedArg.Elems[0].Value);
++					fi.SetValue (sa, na.Value.Value);
+ 				} else if (na.Property) {
+ 					PropertyInfo pi = secattr.GetProperty (na.FieldOrPropName);
+-					pi.SetValue (sa, na.FixedArg.Elems[0].Value, null);
++					pi.SetValue (sa, na.Value.Value, null);
+ 				}
+ 			}
+ 

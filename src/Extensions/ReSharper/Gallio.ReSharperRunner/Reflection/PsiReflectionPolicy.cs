@@ -391,22 +391,22 @@ namespace Gallio.ReSharperRunner.Reflection
             return new StaticConstructorWrapper(this, constructorHandle, MakeDeclaredType(declaredTypeHandle));
         }
 
-        protected override object[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
+        protected override ConstantValue[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
         {
             IAttributeInstance attributeHandle = (IAttributeInstance)attribute.Handle;
 
             IList<IParameter> parameters = attributeHandle.Constructor.Parameters;
             if (parameters.Count == 0)
-                return EmptyArray<object>.Instance;
+                return EmptyArray<ConstantValue>.Instance;
 
-            List<object> values = new List<object>();
+            List<ConstantValue> values = new List<ConstantValue>();
             for (int i = 0; ; i++)
             {
                 ConstantValue2 rawValue = GetAttributePositionParameterHack(attributeHandle, i);
                 if (rawValue.IsBadValue())
                     break;
 
-                values.Add(ResolveAttributeValue(rawValue.Value));
+                values.Add(ConvertConstantValue(rawValue.Value));
             }
 
             int lastParameterIndex = parameters.Count - 1;
@@ -417,22 +417,20 @@ namespace Gallio.ReSharperRunner.Reflection
             // Note: When presented with a constructor that accepts a variable number of
             //       arguments, ReSharper treats them as a sequence of normal parameter
             //       values.  So we we need to map them back into a params array appropriately.                
-            object[] args = new object[parameters.Count];
+            ConstantValue[] args = new ConstantValue[parameters.Count];
             values.CopyTo(0, args, 0, lastParameterIndex);
 
-            Type lastParameterType = MakeType(lastParameter.Type).Resolve(true).GetElementType();
             int varArgsCount = values.Count - lastParameterIndex;
-            Array varArgs = Array.CreateInstance(lastParameterType, varArgsCount);
+            ConstantValue[] varArgs = new ConstantValue[varArgsCount];
 
             for (int i = 0; i < varArgsCount; i++)
-                varArgs.SetValue(values[lastParameterIndex + i], i);
+                varArgs[i] = values[lastParameterIndex + i];
 
-            args[lastParameterIndex] = varArgs;
+            args[lastParameterIndex] = new ConstantValue(MakeType(lastParameter.Type), varArgs);
             return args;
         }
 
-        protected override IEnumerable<KeyValuePair<StaticFieldWrapper, object>> GetAttributeFieldArguments(
-            StaticAttributeWrapper attribute)
+        protected override IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>> GetAttributeFieldArguments(StaticAttributeWrapper attribute)
         {
             IAttributeInstance attributeHandle = (IAttributeInstance)attribute.Handle;
             foreach (StaticFieldWrapper field in attribute.Type.GetFields(BindingFlags.Public | BindingFlags.Instance))
@@ -442,13 +440,12 @@ namespace Gallio.ReSharperRunner.Reflection
                     IField fieldHandle = (IField)field.Handle;
                     ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, fieldHandle);
                     if (!value.IsBadValue())
-                        yield return new KeyValuePair<StaticFieldWrapper, object>(field, ResolveAttributeValue(value.Value));
+                        yield return new KeyValuePair<StaticFieldWrapper, ConstantValue>(field, ConvertConstantValue(value.Value));
                 }
             }
         }
 
-        protected override IEnumerable<KeyValuePair<StaticPropertyWrapper, object>> GetAttributePropertyArguments(
-            StaticAttributeWrapper attribute)
+        protected override IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>> GetAttributePropertyArguments(StaticAttributeWrapper attribute)
         {
             IAttributeInstance attributeHandle = (IAttributeInstance)attribute.Handle;
             foreach (StaticPropertyWrapper property in attribute.Type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -458,14 +455,14 @@ namespace Gallio.ReSharperRunner.Reflection
                     IProperty propertyHandle = (IProperty)property.Handle;
                     ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, propertyHandle);
                     if (!value.IsBadValue())
-                        yield return new KeyValuePair<StaticPropertyWrapper, object>(property, ResolveAttributeValue(value.Value));
+                        yield return new KeyValuePair<StaticPropertyWrapper, ConstantValue>(property, ConvertConstantValue(value.Value));
                 }
             }
         }
 
-        private object ResolveAttributeValue(object value)
+        private ConstantValue ConvertConstantValue(object value)
         {
-            return ResolveConstant<IType>(value, delegate(IType type) { return MakeType(type).Resolve(false); });
+            return ConvertConstantValue<IType>(value, delegate(IType type) { return MakeType(type); });
         }
         #endregion
 

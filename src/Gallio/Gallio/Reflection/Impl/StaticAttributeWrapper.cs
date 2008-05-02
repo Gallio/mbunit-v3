@@ -58,75 +58,71 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public object GetFieldValue(string name)
+        public ConstantValue GetFieldValue(string name)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            foreach (KeyValuePair<StaticFieldWrapper, object> entry in Policy.GetAttributeFieldArguments(this))
+            foreach (KeyValuePair<StaticFieldWrapper, ConstantValue> entry in Policy.GetAttributeFieldArguments(this))
                 if (entry.Key.Name == name)
                     return entry.Value;
 
             IFieldInfo field = Type.GetField(name, BindingFlags.Public | BindingFlags.Instance);
             if (field != null && ReflectorAttributeUtils.IsAttributeField(field))
-                return ReflectionUtils.GetDefaultValue(field.ValueType.TypeCode);
+                return ConstantValue.FromNative(ReflectionUtils.GetDefaultValue(field.ValueType.TypeCode));
 
             throw new ArgumentException(String.Format("The attribute does not have a writable instance field named '{0}'.", name));
         }
 
         /// <inheritdoc />
-        public object GetPropertyValue(string name)
+        public ConstantValue GetPropertyValue(string name)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            foreach (KeyValuePair<StaticPropertyWrapper, object> entry in Policy.GetAttributePropertyArguments(this))
+            foreach (KeyValuePair<StaticPropertyWrapper, ConstantValue> entry in Policy.GetAttributePropertyArguments(this))
                 if (entry.Key.Name == name)
                     return entry.Value;
 
             IPropertyInfo property = Type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
             if (property != null && ReflectorAttributeUtils.IsAttributeProperty(property))
-                return ReflectionUtils.GetDefaultValue(property.ValueType.TypeCode);
+                return ConstantValue.FromNative(ReflectionUtils.GetDefaultValue(property.ValueType.TypeCode));
 
             throw new ArgumentException(String.Format("The attribute does not have a writable instance property named '{0}'.", name));
         }
 
         /// <inheritdoc />
-        public object[] InitializedArgumentValues
+        public ConstantValue[] InitializedArgumentValues
         {
             get { return Policy.GetAttributeConstructorArguments(this); }
         }
 
         /// <inheritdoc />
-        public IDictionary<IFieldInfo, object> InitializedFieldValues
+        public IEnumerable<KeyValuePair<IFieldInfo, ConstantValue>> InitializedFieldValues
         {
             get
             {
-                Dictionary<IFieldInfo, object> result = new Dictionary<IFieldInfo, object>();
-                foreach (KeyValuePair<StaticFieldWrapper, object> entry in Policy.GetAttributeFieldArguments(this))
-                    result.Add(entry.Key, entry.Value);
-                return result;
+                foreach (KeyValuePair<StaticFieldWrapper, ConstantValue> entry in Policy.GetAttributeFieldArguments(this))
+                    yield return new KeyValuePair<IFieldInfo, ConstantValue>(entry.Key, entry.Value);
             }
         }
 
         /// <inheritdoc />
-        public IDictionary<IPropertyInfo, object> InitializedPropertyValues
+        public IEnumerable<KeyValuePair<IPropertyInfo, ConstantValue>> InitializedPropertyValues
         {
             get
             {
-                Dictionary<IPropertyInfo, object> result = new Dictionary<IPropertyInfo, object>();
-                foreach (KeyValuePair<StaticPropertyWrapper, object> entry in Policy.GetAttributePropertyArguments(this))
-                    result.Add(entry.Key, entry.Value);
-                return result;
+                foreach (KeyValuePair<StaticPropertyWrapper, ConstantValue> entry in Policy.GetAttributePropertyArguments(this))
+                    yield return new KeyValuePair<IPropertyInfo, ConstantValue>(entry.Key, entry.Value);
             }
         }
 
         /// <inheritdoc />
-        public object Resolve()
+        public object Resolve(bool throwOnError)
         {
             return resolveMemoizer.Memoize(delegate
             {
-                return ReflectorAttributeUtils.CreateAttribute(this);
+                return ReflectorAttributeUtils.CreateAttribute(this, throwOnError);
             });
         }
 

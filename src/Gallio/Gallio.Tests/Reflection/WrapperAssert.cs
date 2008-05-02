@@ -102,6 +102,7 @@ namespace Gallio.Tests.Reflection
         private bool supportsGenericParameterAttributes = true;
         private bool supportsEventFields = true;
         private bool supportsFinalizers = true;
+        private bool supportsStaticConstructors = true;
 
         public WrapperAssert()
         {
@@ -164,6 +165,14 @@ namespace Gallio.Tests.Reflection
         public bool SupportsFinalizers
         {
             set { supportsFinalizers = value; }
+        }
+
+        /// <summary>
+        /// Specifies whether the reflection API supports static constructors.
+        /// </summary>
+        public bool SupportsStaticConstructors
+        {
+            set { supportsStaticConstructors = value; }
         }
 
         public void AreEquivalent(string namespaceName, INamespaceInfo info)
@@ -268,14 +277,14 @@ namespace Gallio.Tests.Reflection
         public void AreEquivalent(Attribute target, IAttributeInfo info, bool recursive)
         {
             AreEqualWhenResolved(target.GetType(), info.Type);
-            AreEqual(target.GetType(), info.Resolve().GetType());
+            AreEqual(target.GetType(), info.Resolve(false).GetType());
 
             foreach (FieldInfo field in target.GetType().GetFields())
-                Assert.AreEqual(field.GetValue(target), info.GetFieldValue(field.Name));
+                Assert.AreEqual(field.GetValue(target), info.GetFieldValue(field.Name).Resolve(false));
 
             foreach (PropertyInfo property in target.GetType().GetProperties())
                 if (property.CanRead && property.CanWrite)
-                    Assert.AreEqual(property.GetValue(target, null), info.GetPropertyValue(property.Name));
+                    Assert.AreEqual(property.GetValue(target, null), info.GetPropertyValue(property.Name).Resolve(false));
 
             if (recursive)
             {
@@ -551,7 +560,8 @@ namespace Gallio.Tests.Reflection
                     return; // Stop here for special types.
 
                 AreElementsEqualWhenResolved(target.GetInterfaces(), info.Interfaces);
-                AreElementsEqualWhenResolved(target.GetConstructors(All), info.GetConstructors(All));
+                BindingFlags constructorFlags = supportsStaticConstructors ? All : BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+                AreElementsEqualWhenResolved(target.GetConstructors(constructorFlags), info.GetConstructors(constructorFlags));
                 AreElementsEqualWhenResolved(target.GetEvents(All), info.GetEvents(All));
                 AreElementsEqualWhenResolved(target.GetFields(All), info.GetFields(All));
                 AreElementsEqualWhenResolved(target.GetMethods(All), info.GetMethods(All));
@@ -996,7 +1006,7 @@ namespace Gallio.Tests.Reflection
         {
             List<object> actualResolvedObjects = new List<object>();
             foreach (IAttributeInfo attrib in actual)
-                actualResolvedObjects.Add(attrib.Resolve());
+                actualResolvedObjects.Add(attrib.Resolve(false));
 
             AreAttributesOfSameTypesExcludingSpecialAttributes(expected, actualResolvedObjects);
         }

@@ -43,17 +43,21 @@ namespace Gallio.Reflection.Impl
         /// directly.
         /// </remarks>
         /// <param name="attribute">The attribute description</param>
+        /// <param name="throwOnError">If true, throws an exception if the target could
+        /// not be resolved, otherwise the result may include unresolved types, enums or arrays</param>
         /// <returns>The attribute instance</returns>
-        public static object CreateAttribute(IAttributeInfo attribute)
+        /// <exception cref="CodeElementResolveException">Thrown if the attribute could not be resolved</exception>
+        public static object CreateAttribute(IAttributeInfo attribute, bool throwOnError)
         {
             ConstructorInfo constructor = attribute.Constructor.Resolve(true);
-            object instance = constructor.Invoke(attribute.InitializedArgumentValues);
+            object instance = constructor.Invoke(Array.ConvertAll<ConstantValue, object>(attribute.InitializedArgumentValues,
+                delegate (ConstantValue constantValue) { return constantValue.Resolve(throwOnError); }));
 
-            foreach (KeyValuePair<IFieldInfo, object> initializer in attribute.InitializedFieldValues)
-                initializer.Key.Resolve(true).SetValue(instance, initializer.Value);
+            foreach (KeyValuePair<IFieldInfo, ConstantValue> initializer in attribute.InitializedFieldValues)
+                initializer.Key.Resolve(true).SetValue(instance, initializer.Value.Resolve(throwOnError));
 
-            foreach (KeyValuePair<IPropertyInfo, object> initializer in attribute.InitializedPropertyValues)
-                initializer.Key.Resolve(true).SetValue(instance, initializer.Value, null);
+            foreach (KeyValuePair<IPropertyInfo, ConstantValue> initializer in attribute.InitializedPropertyValues)
+                initializer.Key.Resolve(true).SetValue(instance, initializer.Value.Resolve(throwOnError), null);
 
             return instance;
         }

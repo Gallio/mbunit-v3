@@ -5,6 +5,7 @@
     <CSharpProject Include="Gallio\Gallio.csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host.csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests.csproj" />
+    <CSharpProject Include="Gallio.Loader\Gallio.Loader.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -101,6 +101,45 @@ namespace Gallio.Reflection.Impl
         {
             return accessorHandle != null ? new StaticMethodWrapper(this, accessorHandle, member.DeclaringType, member.ReflectedType, member.Substitution) : null;
         }
+
+        private StaticConstructorWrapper WrapConstructor(MethodReference methodRefHandle)
+        {
+            StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(methodRefHandle.DeclaringType);
+            TypeDefinition declaringTypeDefnHandle = (TypeDefinition)declaringType.Handle;
+            MethodDefinition methodDefnHandle = FindMatchingMethod(methodRefHandle.GetOriginalMethod(), declaringTypeDefnHandle.Constructors);
+            return new StaticConstructorWrapper(this, methodDefnHandle, declaringType);
+        }
+
+        private StaticMethodWrapper WrapMethod(MethodReference methodRefHandle)
+        {
+            StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(methodRefHandle.DeclaringType);
+            TypeDefinition declaringTypeDefnHandle = (TypeDefinition)declaringType.Handle;
+            MethodDefinition methodDefnHandle = FindMatchingMethod(methodRefHandle.GetOriginalMethod(), declaringTypeDefnHandle.Methods);
+            StaticMethodWrapper method = new StaticMethodWrapper(this, methodDefnHandle, declaringType, declaringType, declaringType.Substitution);
+
+            GenericInstanceMethod genericInstance = methodRefHandle as GenericInstanceMethod;
+            if (genericInstance != null)
+            {
+                method = method.MakeGenericMethod(CollectionUtils.ConvertAllToArray<TypeReference, ITypeInfo>(genericInstance.GenericArguments,
+                    delegate(TypeReference genericArgumentHandle) { return MakeType(genericArgumentHandle); }));
+            }
+
+            return method;
+        }
+
+        private MethodDefinition FindMatchingMethod(MethodReference methodRefHandle, IList methodDefnHandles)
+        {
+            return CollectionUtils.Find<MethodDefinition>(methodDefnHandles, delegate(MethodDefinition methodDefnHandle)
+            {
+                if (methodDefnHandle.Name != methodRefHandle.Name
+                    || methodDefnHandle.GenericParameters.Count != methodRefHandle.GenericParameters.Count
+                    || methodDefnHandle.Parameters.Count != methodRefHandle.Parameters.Count)
+                    return false;
+
+                // FIXME: Very imprecise.  Should consider exact argument types.
+                return true;
+            });
+        }
         #endregion
 
         #region Assemblies
@@ -183,7 +222,10 @@ namespace Gallio.Reflection.Impl
             foreach (ModuleDefinition moduleHandle in assemblyHandle.Modules)
             {
                 foreach (TypeDefinition typeHandle in moduleHandle.Types)
-                    yield return typeHandle;
+                {
+                    if (! typeHandle.Name.StartsWith("<")) // exclude types like <Module> and <PrivateImplementationDetails>
+                        yield return typeHandle;
+                }
             }
         }
         #endregion
@@ -192,17 +234,16 @@ namespace Gallio.Reflection.Impl
         protected internal override StaticConstructorWrapper GetAttributeConstructor(StaticAttributeWrapper attribute)
         {
             CustomAttribute attributeHandle = (CustomAttribute)attribute.Handle;
-            return new StaticConstructorWrapper(this, attributeHandle.Constructor, GetAttributeType(attributeHandle));
+            return WrapConstructor(attributeHandle.Constructor);
         }
 
-        protected internal override object[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
+        protected internal override ConstantValue[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
         {
             CustomAttribute attributeHandle = (CustomAttribute)attribute.Handle;
-            return CollectionUtils.ConvertAllToArray<object, object>(attributeHandle.ConstructorParameters, ResolveAttributeValue);
+            return CollectionUtils.ConvertAllToArray<Mono.Cecil.ConstantValue, ConstantValue>(attributeHandle.ConstructorParameters, ConvertConstantValue);
         }
 
-        protected internal override IEnumerable<KeyValuePair<StaticFieldWrapper, object>> GetAttributeFieldArguments(
-            StaticAttributeWrapper attribute)
+        protected internal override IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>> GetAttributeFieldArguments(StaticAttributeWrapper attribute)
         {
             CustomAttribute attributeHandle = (CustomAttribute)attribute.Handle;
             StaticDeclaredTypeWrapper declaringType = GetAttributeType(attributeHandle);
@@ -210,14 +251,13 @@ namespace Gallio.Reflection.Impl
             foreach (DictionaryEntry entry in attributeHandle.Fields)
             {
                 string fieldName = (string) entry.Key;
-                object value = ResolveAttributeValue(entry.Value);
+                ConstantValue value = ConvertConstantValue((Mono.Cecil.ConstantValue)entry.Value);
                 StaticFieldWrapper field = (StaticFieldWrapper) declaringType.GetField(fieldName, BindingFlags.Public | BindingFlags.Instance);
-                yield return new KeyValuePair<StaticFieldWrapper, object>(field, value);
+                yield return new KeyValuePair<StaticFieldWrapper, ConstantValue>(field, value);
             }
         }
 
-        protected internal override IEnumerable<KeyValuePair<StaticPropertyWrapper, object>> GetAttributePropertyArguments(
-            StaticAttributeWrapper attribute)
+        protected internal override IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>> GetAttributePropertyArguments(StaticAttributeWrapper attribute)
         {
             CustomAttribute attributeHandle = (CustomAttribute)attribute.Handle;
             StaticDeclaredTypeWrapper declaringType = GetAttributeType(attributeHandle);
@@ -225,16 +265,10 @@ namespace Gallio.Reflection.Impl
             foreach (DictionaryEntry entry in attributeHandle.Properties)
             {
                 string propertyName = (string)entry.Key;
-                object value = ResolveAttributeValue(entry.Value);
+                ConstantValue value = ConvertConstantValue((Mono.Cecil.ConstantValue)entry.Value);
                 StaticPropertyWrapper field = (StaticPropertyWrapper)declaringType.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
-                yield return new KeyValuePair<StaticPropertyWrapper, object>(field, value);
+                yield return new KeyValuePair<StaticPropertyWrapper, ConstantValue>(field, value);
             }
-        }
-
-        private object ResolveAttributeValue(object value)
-        {
-            // FIXME: This won't work for Type or array values.
-            return value;
         }
 
         private IEnumerable<StaticAttributeWrapper> EnumerateAttributes(CustomAttributeCollection attributeHandles)
@@ -249,6 +283,32 @@ namespace Gallio.Reflection.Impl
         private StaticDeclaredTypeWrapper GetAttributeType(CustomAttribute attributeHandle)
         {
             return MakeDeclaredType(attributeHandle.Constructor.DeclaringType);
+        }
+
+        private ConstantValue ConvertConstantValue(Mono.Cecil.ConstantValue constant)
+        {
+            ITypeInfo type = MakeType(constant.Type);
+
+            if (constant.Value != null)
+            {
+                TypeReference typeRef = constant.Value as TypeReference;
+                if (typeRef != null)
+                    return new ConstantValue(type, MakeType(typeRef));
+
+                ArrayType arrayType = constant.Type as ArrayType;
+                if (arrayType != null)
+                {
+                    Mono.Cecil.ConstantValue[] arrayConstants = (Mono.Cecil.ConstantValue[])constant.Value;
+                    int length = arrayConstants.Length;
+
+                    ConstantValue[] array = new ConstantValue[length];
+                    for (int i = 0; i < length; i++)
+                        array[i] = ConvertConstantValue(arrayConstants[i]);
+                    return new ConstantValue(type, array);
+                }
+            }
+
+            return new ConstantValue(type, constant.Value);
         }
         #endregion
 
@@ -505,11 +565,8 @@ namespace Gallio.Reflection.Impl
         {
             TypeDefinition typeHandle = (TypeDefinition)type.Handle;
 
-            foreach (MethodDefinition methodHandle in typeHandle.Methods)
-            {
-                if (methodHandle.IsConstructor)
-                    yield return new StaticConstructorWrapper(this, methodHandle, type);
-            }
+            foreach (MethodDefinition methodHandle in typeHandle.Constructors)
+                yield return new StaticConstructorWrapper(this, methodHandle, type);
         }
 
         protected internal override IEnumerable<StaticMethodWrapper> GetTypeMethods(StaticDeclaredTypeWrapper type,
@@ -518,10 +575,7 @@ namespace Gallio.Reflection.Impl
             TypeDefinition typeHandle = (TypeDefinition)type.Handle;
 
             foreach (MethodDefinition methodHandle in typeHandle.Methods)
-            {
-                if (!methodHandle.IsConstructor)
-                    yield return new StaticMethodWrapper(this, methodHandle, type, reflectedType, type.Substitution);
-            }
+                yield return new StaticMethodWrapper(this, methodHandle, type, reflectedType, type.Substitution);
         }
 
         protected internal override IEnumerable<StaticPropertyWrapper> GetTypeProperties(StaticDeclaredTypeWrapper type,
@@ -637,8 +691,7 @@ namespace Gallio.Reflection.Impl
             else
             {
                 MethodReference methodHandle = (MethodReference)parameterHandle.Owner;
-                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(methodHandle.DeclaringType);
-                StaticMethodWrapper declaringMethod = new StaticMethodWrapper(this, methodHandle, declaringType, declaringType, declaringType.Substitution);
+                StaticMethodWrapper declaringMethod = WrapMethod(methodHandle);
                 return StaticGenericParameterWrapper.CreateGenericMethodParameter(this, parameterHandle, declaringMethod);
             }
         }

@@ -379,7 +379,7 @@ namespace Gallio.Tests.Reflection
 
             WrapperAssert.AreEquivalent(target, info, false);
 
-            SampleAttribute resolvedAttrib = (SampleAttribute)info.Resolve();
+            SampleAttribute resolvedAttrib = (SampleAttribute)info.Resolve(true);
             Assert.AreEqual(target.param, resolvedAttrib.param);
             Assert.AreEqual(target.Field, resolvedAttrib.Field);
             Assert.AreEqual(target.Property, resolvedAttrib.Property);
@@ -392,26 +392,34 @@ namespace Gallio.Tests.Reflection
             {
                 // This is also acceptable behavior.
             }
+            Dictionary<IFieldInfo, object> fieldValues = new Dictionary<IFieldInfo, object>();
+            foreach (KeyValuePair<IFieldInfo, ConstantValue> entry in info.InitializedFieldValues)
+                fieldValues.Add(entry.Key, entry.Value.Resolve(true));
+
+            Dictionary<IPropertyInfo, object> propertyValues = new Dictionary<IPropertyInfo, object>();
+            foreach (KeyValuePair<IPropertyInfo, ConstantValue> entry in info.InitializedPropertyValues)
+                propertyValues.Add(entry.Key, entry.Value.Resolve(true));
 
             if (target.param == typeof(int))
             {
                 try
                 {
-                    CollectionAssert.AreElementsEqual(new object[] { typeof(int) }, info.InitializedArgumentValues);
+                    object[] values = GenericUtils.ConvertAllToArray<ConstantValue, object>(info.InitializedArgumentValues,
+                        delegate(ConstantValue constantValue) { return constantValue.Resolve(true); });
+
+                    CollectionAssert.AreElementsEqual(new object[] { typeof(int) }, values);
                 }
                 catch (NotSupportedException)
                 {
                     // This is also acceptable behavior.
                 }
 
-                IDictionary<IFieldInfo, object> fieldValues = info.InitializedFieldValues;
                 if (fieldValues.Count != 0)
                 {
                     Assert.AreEqual(1, fieldValues.Count, "The implementation may return values for uninitialized fields, but there is only one such field.");
                     Assert.AreEqual(0, fieldValues[GetField(typeof(SampleAttribute).GetField("Field"))]);
                 }
 
-                IDictionary<IPropertyInfo, object> propertyValues = info.InitializedPropertyValues;
                 if (propertyValues.Count != 0)
                 {
                     Assert.AreEqual(1, propertyValues.Count, "The implementation may return values uninitialized properties, but there is only one such field.");
@@ -422,20 +430,24 @@ namespace Gallio.Tests.Reflection
             {
                 try
                 {
-                    CollectionAssert.AreElementsEqual(new object[] { typeof(string[]) }, info.InitializedArgumentValues);
+                    object[] values = GenericUtils.ConvertAllToArray<ConstantValue, object>(info.InitializedArgumentValues,
+                        delegate(ConstantValue constantValue) { return constantValue.Resolve(true); });
+
+                    CollectionAssert.AreElementsEqual(new object[] { typeof(string[]) }, values);
                 }
                 catch (NotSupportedException)
                 {
                     // This is also acceptable behavior.
                 }
 
+
                 CollectionAssert.AreElementsEqual(new KeyValuePair<IFieldInfo, object>[] {
                     new KeyValuePair<IFieldInfo, object>(GetField(typeof(SampleAttribute).GetField("Field")), 2)
-                }, info.InitializedFieldValues);
+                }, fieldValues);
 
                 CollectionAssert.AreElementsEqual(new KeyValuePair<IPropertyInfo, object>[] {
                     new KeyValuePair<IPropertyInfo, object>(GetProperty(typeof(SampleAttribute).GetProperty("Property")), "foo")
-                }, info.InitializedPropertyValues);
+                }, propertyValues);
             }
         }
 

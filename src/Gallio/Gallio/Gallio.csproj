@@ -90,6 +90,7 @@
     <Compile Include="Model\TestDomainSetup.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Reflection\ConstantValue.cs" />
     <Compile Include="Reflection\Impl\BaseReflectionPolicy.cs" />
     <Compile Include="Reflection\Impl\CecilReflectionPolicy.cs" />
     <Compile Include="Reflection\ReflectionOnlyAssemblyLoader.cs" />
