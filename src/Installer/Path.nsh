@@ -19,9 +19,9 @@
 ;   VALUE   - the value to store
 !macro SetPath CONTEXT VALUE
 	StrCmp "${CONTEXT}" "all" +3
-		WriteRegStr HKCU "${USERPATHREGKEY}" "PATH" "${VALUE}"
+		WriteRegExpandStr HKCU "${USERPATHREGKEY}" "PATH" "${VALUE}"
 		Goto +2
-		WriteRegStr HKLM "${SYSTEMPATHREGKEY}" "PATH" "${VALUE}"
+		WriteRegExpandStr HKLM "${SYSTEMPATHREGKEY}" "PATH" "${VALUE}"
 
 	SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
 !macroend
