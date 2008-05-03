@@ -66,7 +66,7 @@ namespace Gallio.MSTestRunner
             foreach (ITest test in explorer.TestModel.AllTests)
             {
                 if (test.IsTestCase)
-                    tests.Add(new GallioTestElement(new TestData(test), location, projectData));
+                    tests.Add(GallioTestElementFactory.CreateTestElement(new TestData(test), location, projectData));
             }
 
             foreach (Annotation annotation in explorer.TestModel.Annotations)

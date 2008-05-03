@@ -600,8 +600,6 @@ Section "Visual Studio Team Test Runner (Experimental!)" MSTestRunnerSection
 
 	; Register the test types
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "NameId" "#100"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "SatelliteBasePath" "$0\PrivateAssemblies"
-	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "SatelliteDllName" "Gallio.MSTestRunner.dll"
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "TipProvider" "Gallio.MSTestRunner.GallioTip, Gallio.MSTestRunner"
 	WriteRegStr HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}" "ServiceType" "Gallio.MSTestRunner.SGallioTestService, Gallio.MSTestRunner"
 	WriteRegDWORD HKLM "SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}\Extensions" ".dll" 101

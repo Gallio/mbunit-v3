@@ -40,8 +40,6 @@ copy "%MSTESTRUNNER_BIN_DIR%\Gallio.MSTestRunner.dll" "%VS_PRIVATE_ASSEMBLIES_DI
 call :PATCH_CONFIG "%SRCDIR%\Gallio\Gallio\bin" "%MSTESTRUNNER_BIN_DIR%\Gallio.MSTestRunner.dll.config" "%VS_PRIVATE_ASSEMBLIES_DIR%\Gallio.MSTestRunner.dll.config"
 
 "%REG%" ADD %VS_TEST_TYPE_KEY% /V NameId /D "#100" /F >nul
-"%REG%" ADD %VS_TEST_TYPE_KEY% /V SatelliteBasePath /D "%VS_PRIVATE_ASSEMBLIES_DIR%" /F >nul
-"%REG%" ADD %VS_TEST_TYPE_KEY% /V SatelliteDllName /D "Gallio.MSTestRunner.dll" /F >nul
 "%REG%" ADD %VS_TEST_TYPE_KEY% /V TipProvider /D "Gallio.MSTestRunner.GallioTip, Gallio.MSTestRunner" /F >nul
 "%REG%" ADD %VS_TEST_TYPE_KEY% /V ServiceType /D "Gallio.MSTestRunner.SGallioTestService, Gallio.MSTestRunner" /F >nul
 

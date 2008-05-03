@@ -32,7 +32,7 @@ namespace Gallio.MSTestRunner
 {
     internal class GallioTestAdapter : ITestAdapter
     {
-        private readonly ITestAdapter shim;
+        private readonly Shim shim;
 
         static GallioTestAdapter()
         {
@@ -89,7 +89,7 @@ namespace Gallio.MSTestRunner
             shim.ResumeTestRun();
         }
 
-        private sealed class Shim : ITestAdapter
+        private sealed class Shim : MarshalByRefObject
         {
             private Gallio.Runner.ITestRunner runner;
             private IRunContext runContext;
@@ -97,6 +97,11 @@ namespace Gallio.MSTestRunner
             private IProgressMonitor currentProgressMonitor;
 
             private volatile bool isCanceled;
+
+            public override object InitializeLifetimeService()
+            {
+                return null;
+            }
 
             public void Initialize(IRunContext runContext)
             {

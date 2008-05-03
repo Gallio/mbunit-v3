@@ -14,12 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
-using Gallio.Loader;
-using Gallio.Model;
-using Gallio.Model.Serialization;
+using Gallio.MSTestRunner.Resources;
 using Microsoft.VisualStudio.TestTools.Common;
 using System.Runtime.InteropServices;
 
@@ -29,37 +26,63 @@ namespace Gallio.MSTestRunner
     [Guid(Guids.GallioTestTypeGuidString)]
     internal sealed class GallioTestElement : TestElement
     {
+        private const string GallioTestIdKey = "Gallio.TestId";
+        private const string AssemblyNameKey = "Gallio.AssemblyName";
+        private const string NamespaceNameKey = "Gallio.NamespaceName";
+        private const string TypeNameKey = "Gallio.TypeName";
+        private const string MemberNameKey = "Gallio.MemberName";
+        private const string ParameterNameKey = "Gallio.ParameterName";
+        private const string LocationKey = "Gallio.Location";
+
         [PersistenceElementName("gallioTestId")]
         private string gallioTestId;
 
-        static GallioTestElement()
+        [PersistenceElementName("assemblyName")]
+        private string assemblyName;
+
+        [PersistenceElementName("namespaceName")]
+        private string namespaceName;
+
+        [PersistenceElementName("typeName")]
+        private string typeName;
+
+        [PersistenceElementName("memberName")]
+        private string memberName;
+
+        [PersistenceElementName("parameterName")]
+        private string parameterName;
+
+        [PersistenceElementName("location")]
+        private string location;
+
+        public GallioTestElement(string id, string name, string description, string assemblyPath)
+            : base(GenerateTestId(id), name, description, assemblyPath)
         {
-            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
-        }
-
-        public GallioTestElement(TestData test, string assemblyPath, ProjectData projectData)
-            : base(GenerateTestId(test), test.Name, test.Metadata.GetValue(MetadataKeys.Description) ?? "", assemblyPath)
-        {
-            foreach (KeyValuePair<string, IList<string>> pair in test.Metadata)
-            {
-                Properties[pair.Key] = pair.Value.Count == 1 ? (object)pair.Value[0] : pair.Value;
-            }
-
-            Owner = test.Metadata.GetValue(MetadataKeys.AuthorName) ?? "";
-
-            gallioTestId = test.Id;
-            ProjectData = projectData;
+            gallioTestId = id;
         }
 
         public GallioTestElement(GallioTestElement element)
             : base(element)
         {
             gallioTestId = element.gallioTestId;
+            assemblyName = element.assemblyName;
+            namespaceName = element.namespaceName;
+            typeName = element.typeName;
+            memberName = element.memberName;
+            parameterName = element.parameterName;
+            location = element.location;
         }
 
         private GallioTestElement(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            gallioTestId = info.GetString(GallioTestIdKey);
+            assemblyName = info.GetString(AssemblyNameKey);
+            namespaceName = info.GetString(NamespaceNameKey);
+            typeName = info.GetString(TypeNameKey);
+            memberName = info.GetString(MemberNameKey);
+            parameterName = info.GetString(ParameterNameKey);
+            location = info.GetString(LocationKey);
         }
 
         public override object Clone()
@@ -108,9 +131,79 @@ namespace Gallio.MSTestRunner
             get { return Guids.GallioTestType; }
         }
 
-        private static TestId GenerateTestId(TestData test)
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            Guid guid = new Guid(Encoding.ASCII.GetBytes(test.Id.PadRight(16)));
+            base.GetObjectData(info, context);
+            info.AddValue(GallioTestIdKey, gallioTestId);
+            info.AddValue(AssemblyNameKey, assemblyName);
+            info.AddValue(NamespaceNameKey, namespaceName);
+            info.AddValue(TypeNameKey, typeName);
+            info.AddValue(MemberNameKey, memberName);
+            info.AddValue(ParameterNameKey, parameterName);
+            info.AddValue(LocationKey, location);
+        }
+
+        [PropertyWindow]
+        [UserVisibleProperty("{2b5a8f49-d24c-4296-8b24-c96c42b707eb}")]
+        [TestCaseManagementDisplayName(typeof(VSPackage), VSPackageResourceIds.AssemblyNamePropertyNameKey)]
+        [LocalizedDescription(typeof(VSPackage), VSPackageResourceIds.AssemblyNamePropertyDescriptionKey)]
+        [GroupingProperty]
+        //[HelpKeyword("key")]
+        public string AssemblyName
+        {
+            get { return assemblyName; }
+        }
+
+        [PropertyWindow]
+        [UserVisibleProperty("{a6c1dfdb-bb98-4e3b-9bb5-523e4550e82f}")]
+        [TestCaseManagementDisplayName(typeof(VSPackage), VSPackageResourceIds.TypeNamePropertyNameKey)]
+        [LocalizedDescription(typeof(VSPackage), VSPackageResourceIds.TypeNamePropertyDescriptionKey)]
+        [GroupingProperty]
+        //[HelpKeyword("key")]
+        public string TypeName
+        {
+            get { return typeName; }
+        }
+
+        [PropertyWindow]
+        [UserVisibleProperty("{81728549-1eb7-4df1-9ce6-7f9836c9581f}")]
+        [TestCaseManagementDisplayName(typeof(VSPackage), VSPackageResourceIds.MemberNamePropertyNameKey)]
+        [LocalizedDescription(typeof(VSPackage), VSPackageResourceIds.MemberNamePropertyDescriptionKey)]
+        [GroupingProperty]
+        //[HelpKeyword("key")]
+        public string MemberName
+        {
+            get { return memberName; }
+        }
+
+        [PropertyWindow]
+        [UserVisibleProperty("{36ee7063-fa7f-4ae2-87f5-b93d69ec1657}")]
+        [TestCaseManagementDisplayName(typeof(VSPackage), VSPackageResourceIds.LocationPropertyNameKey)]
+        [LocalizedDescription(typeof(VSPackage), VSPackageResourceIds.LocationPropertyDescriptionKey)]
+        [GroupingProperty]
+        //[HelpKeyword("key")]
+        public string Location
+        {
+            get { return location; }
+        }
+
+        internal void SetCodeReference(string assemblyName, string namespaceName, string typeName, string memberName, string parameterName)
+        {
+            this.assemblyName = assemblyName;
+            this.namespaceName = namespaceName;
+            this.typeName = typeName;
+            this.memberName = memberName;
+            this.parameterName = parameterName;
+        }
+
+        internal void SetCodeLocation(string location)
+        {
+            this.location = location;
+        }
+
+        private static TestId GenerateTestId(string testId)
+        {
+            Guid guid = new Guid(Encoding.ASCII.GetBytes(testId.PadRight(16)));
             return new TestId(guid);
         }
     }

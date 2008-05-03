@@ -21,6 +21,7 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
 using Gallio.MSTestRunner;
+using Gallio.MSTestRunner.Resources;
 using Gallio.MSTestRunner.Runtime;
 using Gallio.Runtime;
 using Microsoft.VisualStudio.Shell;
@@ -36,11 +37,11 @@ namespace Gallio.MSTestRunner
         // Note: can't register by CodeBase because the Tip loader assumes the assembly can be resolved by name.
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\9.0")]
     [InstalledProductRegistration(true, null, null, null)]
-    [ProvideLoadKey("Standard", "3.0", "Gallio.MSTestRunner", "Gallio Project", ResourceIds.ProductLoadKeyId)]
+    [ProvideLoadKey("Standard", "3.0", "Gallio.MSTestRunner", "Gallio Project", VSPackageResourceIds.ProductLoadKeyId)]
     [ProvideTip(typeof(GallioTip), typeof(SGallioTestService))]
     [ProvideServiceForTestType(typeof(GallioTestElement), typeof(SGallioTestService))]
     [RegisterTestTypeNoEditor(typeof(GallioTestElement), typeof(GallioTip), new string[] { "dll", "exe" },
-        new int[] { ResourceIds.TestTypeIconId, ResourceIds.TestTypeIconId }, ResourceIds.TestTypeNameId)]
+      new int[] { VSPackageResourceIds.TestTypeIconId, VSPackageResourceIds.TestTypeIconId }, VSPackageResourceIds.TestTypeNameId)]
     [Guid(Guids.MSTestRunnerPkgGuidString)]
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     [ComVisible(true)]
@@ -135,7 +136,7 @@ namespace Gallio.MSTestRunner
 
         int IVsInstalledProduct.IdIcoLogoForAboutbox(out uint pIdIco)
         {
-            pIdIco = ResourceIds.ProductIconId;
+            pIdIco = VSPackageResourceIds.ProductIconId;
             return VSConstants.S_OK;
         }
 

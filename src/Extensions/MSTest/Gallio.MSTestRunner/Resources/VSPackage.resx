@@ -122,13 +122,37 @@
     <comment>Package Load Key</comment>
   </data>
   <data name="100" xml:space="preserve">
-    <value>Gallio Test</value>
+    <value>Gallio Test Case</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="101" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Test.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Test.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Product.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Product.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AssemblyNamePropertyDescription" xml:space="preserve">
+    <value>The name of the assembly that declares the test.</value>
+  </data>
+  <data name="AssemblyNamePropertyName" xml:space="preserve">
+    <value>Assembly Name</value>
+  </data>
+  <data name="LocationDescription" xml:space="preserve">
+    <value>The source location of the test.</value>
+  </data>
+  <data name="LocationName" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="MemberNamePropertyDescription" xml:space="preserve">
+    <value>The name of the method, property, field, or event that declares the test.</value>
+  </data>
+  <data name="MemberNamePropertyName" xml:space="preserve">
+    <value>Member Name</value>
+  </data>
+  <data name="TypeNamePropertyDescription" xml:space="preserve">
+    <value>The name of the type that declares the test.</value>
+  </data>
+  <data name="TypeNamePropertyName" xml:space="preserve">
+    <value>Type Name</value>
   </data>
 </root>
