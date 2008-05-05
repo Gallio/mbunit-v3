@@ -47,7 +47,7 @@ namespace Gallio.ReSharperRunner
 
         static GallioTestProvider()
         {
-            GallioAssemblyResolver.Install(typeof(GallioTestProvider).Assembly);
+            GallioLoader.Initialize(typeof(GallioTestProvider).Assembly);
         }
 
         public GallioTestProvider()

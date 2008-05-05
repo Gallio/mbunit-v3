@@ -15,14 +15,7 @@
 
 using System;
 using System.Runtime.Serialization;
-using Gallio.Loader;
-using Gallio.Model;
-using Gallio.Model.Execution;
-using Gallio.Runner.Reports;
 using Microsoft.VisualStudio.TestTools.Common;
-using GallioTestOutcome = Gallio.Model.TestOutcome;
-using TestOutcome=Microsoft.VisualStudio.TestTools.Common.TestOutcome;
-using TestResult=Microsoft.VisualStudio.TestTools.Common.TestResult;
 
 namespace Gallio.MSTestRunner
 {
@@ -30,11 +23,6 @@ namespace Gallio.MSTestRunner
     [Serializable]
     internal sealed class GallioTestResult : TestResult
     {
-        static GallioTestResult()
-        {
-            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
-        }
-
         public GallioTestResult(GallioTestResult result)
             : base(result)
         {
@@ -45,31 +33,9 @@ namespace Gallio.MSTestRunner
         {
         }
 
-        public GallioTestResult(TestStepRun run, Guid runId, ITestElement test)
-            : base(Environment.MachineName, runId, test)
+        public GallioTestResult(string computerName, Guid runId, ITestElement test)
+            : base(computerName, runId, test)
         {
-            Outcome = GetOutcome(run.Result.Outcome);
-
-            foreach (ExecutionLogStream stream in run.ExecutionLog.Streams)
-            {
-                string contents = stream.ToString();
-
-                if (stream.Name == LogStreamNames.DebugTrace)
-                    DebugTrace += contents;
-                else if (stream.Name == LogStreamNames.ConsoleOutput)
-                    StdOut += contents;
-                else if (stream.Name == LogStreamNames.ConsoleError)
-                    StdErr += contents;
-                else if (stream.Name == LogStreamNames.Failures || stream.Name == LogStreamNames.Warnings)
-                    ErrorMessage += contents;
-                else
-                    DebugTrace += contents;
-            }
-
-            m_duration = TimeSpan.FromSeconds(run.Result.Duration);
-            m_startTime = run.StartTime;
-            m_endTime = run.EndTime;
-            m_testName = run.Step.FullName;
         }
 
         private GallioTestResult(SerializationInfo info, StreamingContext context)
@@ -86,32 +52,16 @@ namespace Gallio.MSTestRunner
         {
         }
 
-        private static TestOutcome GetOutcome(GallioTestOutcome outcome)
+        public void SetTestName(string name)
         {
-            if (outcome == GallioTestOutcome.Canceled)
-                return TestOutcome.Aborted;
-            if (outcome == GallioTestOutcome.Error)
-                return TestOutcome.Error;
-            if (outcome == GallioTestOutcome.Timeout)
-                return TestOutcome.Timeout;
-            if (outcome == GallioTestOutcome.Ignored || outcome == GallioTestOutcome.Pending || outcome == GallioTestOutcome.Explicit)
-                return TestOutcome.NotRunnable;
+            m_testName = name;
+        }
 
-            switch (outcome.Status)
-            {
-                case TestStatus.Passed:
-                    return TestOutcome.Passed;
-
-                case TestStatus.Inconclusive:
-                    return TestOutcome.Inconclusive;
-
-                case TestStatus.Skipped:
-                    return TestOutcome.NotExecuted;
-
-                case TestStatus.Failed:
-                default:
-                    return TestOutcome.Failed;
-            }
+        public void SetTimings(DateTime startTime, DateTime endTime, TimeSpan duration)
+        {
+            m_startTime = startTime;
+            m_endTime = endTime;
+            m_duration = duration;
         }
     }
 }

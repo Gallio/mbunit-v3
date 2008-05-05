@@ -565,12 +565,12 @@ SectionGroupEnd
 !ifndef MISSING_MSTEST_RUNNER
 SectionGroup "Experimental"
 
-Section "Visual Studio Team Test Runner (Experimental!)" MSTestRunnerSection
+Section "Visual Studio Team System Extension (Experimental!)" MSTestRunnerSection
 	; Set Section properties
 	SetOverwrite on
 	
 	; Set Section Files and Shortcuts
-	DetailPrint "Installing Visual Studio Team Test runner."
+	DetailPrint "Installing Visual Studio Team System extension."
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
 	IfErrors SkipVS2008Setup
@@ -611,7 +611,7 @@ Section "Visual Studio Team Test Runner (Experimental!)" MSTestRunnerSection
 SectionEnd
 
 !macro UninstallMSTestRunner
-	DetailPrint "Uninstalling Visual Studio Team Test runner."
+	DetailPrint "Uninstalling Visual Studio Team System extension."
 	ClearErrors
 	ReadRegStr $0 HKLM "SOFTWARE\Microsoft\VisualStudio\9.0" "InstallDir"
 	IfErrors SkipVS2008Setup
@@ -773,7 +773,7 @@ SectionEnd
 		!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3.1 plug-in."
 	!endif
 	!ifndef MISSING_MSTEST_RUNNER
-		!insertmacro MUI_DESCRIPTION_TEXT ${MSTestRunnerSection} "Installs the Visual Studio Team Test integration package for Visual Studio 2008."
+		!insertmacro MUI_DESCRIPTION_TEXT ${MSTestRunnerSection} "Installs the Gallio extension for Visual Studio Team System in Visual Studio 2008."
 	!endif
 	!insertmacro MUI_DESCRIPTION_TEXT ${TDNetAddInSection} "Installs the TestDriven.Net add-in."
 

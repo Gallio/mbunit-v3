@@ -90,6 +90,11 @@ namespace Gallio.MSTestRunner
             return new GallioTestElement(this);
         }
 
+        public string AssemblyPath
+        {
+            get { return Storage; }
+        }
+
         public string GallioTestId
         {
             get { return gallioTestId; }

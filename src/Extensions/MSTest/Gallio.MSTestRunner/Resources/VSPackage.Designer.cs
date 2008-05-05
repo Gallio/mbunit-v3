@@ -70,7 +70,7 @@ namespace Gallio.MSTestRunner.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gallio Test Case.
+        ///   Looks up a localized string similar to Gallio Test.
         /// </summary>
         internal static string _100 {
             get {

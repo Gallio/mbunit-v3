@@ -31,7 +31,7 @@ namespace Gallio.ReSharperRunner.Daemons
     {
         static GallioAnnotationDaemonStage()
         {
-            GallioAssemblyResolver.Install(typeof(GallioTestProvider).Assembly);
+            GallioLoader.Initialize(typeof(GallioTestProvider).Assembly);
         }
 
         public IDaemonStageProcess CreateProcess(IDaemonProcess process)

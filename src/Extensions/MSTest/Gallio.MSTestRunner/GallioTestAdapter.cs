@@ -15,12 +15,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Security;
+using System.Security.Permissions;
+using System.Security.Policy;
 using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
 using Gallio.MSTestRunner.Runtime;
 using Gallio.Runner;
+using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Microsoft.VisualStudio.TestTools.Common;
@@ -30,18 +35,38 @@ using ITestContext=Microsoft.VisualStudio.TestTools.Execution.ITestContext;
 
 namespace Gallio.MSTestRunner
 {
+    /// <summary>
+    /// <para>
+    /// The Gallio test adapter.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// We launch tests using a separate Gallio test runner AppDomain because we need to override
+    /// the assembly resolution policy of the VSTS host.  Otherwise it's possible for test
+    /// assemblies to interfere with the Gallio runtime particularly if the tests link to Gallio.dll
+    /// itself.
+    /// </para>
+    /// <para>
+    /// It's important to note that the adapter will run in a different context from the rest
+    /// of the infrastructure.  Typically this will be inside of a standalone hosting process.
+    /// If you are attempting to debug the adapter, be sure to attach your debugger to the
+    /// hosting process.
+    /// </para>
+    /// </remarks>
     internal class GallioTestAdapter : ITestAdapter
     {
-        private readonly Shim shim;
+        private static readonly object runnerAppDomainSyncRoot = new object();
+        private static AppDomain runnerAppDomain;
 
-        static GallioTestAdapter()
-        {
-            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
-        }
+        private readonly IShim shim;
 
         public GallioTestAdapter()
         {
-            shim = new Shim();
+            PrepareRunnerAppDomain();
+
+            shim = (IShim)runnerAppDomain.CreateInstanceFromAndUnwrap(typeof(Shim).Assembly.Location, typeof(Shim).FullName);
+            shim.AddHintDirectory(Path.GetDirectoryName(typeof(IRunContext).Assembly.Location));
         }
 
         public void Initialize(IRunContext runContext)
@@ -89,7 +114,30 @@ namespace Gallio.MSTestRunner
             shim.ResumeTestRun();
         }
 
-        private sealed class Shim : MarshalByRefObject
+        private static void PrepareRunnerAppDomain()
+        {
+            lock (runnerAppDomainSyncRoot)
+            {
+                if (runnerAppDomain != null)
+                    return;
+
+                string installationPath = GallioLoader.Initialize(typeof(GallioTestAdapter).Assembly).InstallationPath;
+                AppDomainSetup appDomainSetup = new AppDomainSetup();
+                appDomainSetup.ApplicationName = "Gallio";
+                appDomainSetup.ApplicationBase = installationPath;
+                Evidence evidence = AppDomain.CurrentDomain.Evidence;
+                PermissionSet defaultPermissionSet = new PermissionSet(PermissionState.Unrestricted);
+                StrongName[] fullTrustAssemblies = new StrongName[0];
+                runnerAppDomain = AppDomain.CreateDomain(appDomainSetup.ApplicationName, evidence, appDomainSetup, defaultPermissionSet, fullTrustAssemblies);
+            }
+        }
+
+        private interface IShim : ITestAdapter
+        {
+            void AddHintDirectory(string path);
+        }
+
+        private sealed class Shim : MarshalByRefObject, IShim
         {
             private Gallio.Runner.ITestRunner runner;
             private IRunContext runContext;
@@ -101,6 +149,12 @@ namespace Gallio.MSTestRunner
             public override object InitializeLifetimeService()
             {
                 return null;
+            }
+
+            public void AddHintDirectory(string path)
+            {
+                IAssemblyResolverManager resolverManager = RuntimeProvider.GetRuntime().Resolve<IAssemblyResolverManager>();
+                resolverManager.AddHintDirectory(path);
             }
 
             public void Initialize(IRunContext runContext)
@@ -127,9 +181,9 @@ namespace Gallio.MSTestRunner
                 {
                     GallioTestElement gallioTestElement = testElement as GallioTestElement;
                     if (gallioTestElement != null
-                        && !testPackageConfig.AssemblyFiles.Contains(gallioTestElement.Storage))
+                        && !testPackageConfig.AssemblyFiles.Contains(gallioTestElement.AssemblyPath))
                     {
-                        testPackageConfig.AssemblyFiles.Add(gallioTestElement.Storage);
+                        testPackageConfig.AssemblyFiles.Add(gallioTestElement.AssemblyPath);
                     }
                 }
 

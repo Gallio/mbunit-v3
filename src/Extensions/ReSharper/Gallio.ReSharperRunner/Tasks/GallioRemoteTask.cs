@@ -29,7 +29,7 @@ namespace Gallio.ReSharperRunner.Tasks
     {
         static GallioRemoteTask()
         {
-            GallioAssemblyResolver.Install(typeof(GallioTestProvider).Assembly);
+            GallioLoader.Initialize(typeof(GallioTestProvider).Assembly);
         }
 
         protected GallioRemoteTask()

@@ -51,7 +51,7 @@ namespace Gallio.MSTestRunner
                     GallioTestElement gallioTestElement = GetTestElement(e.Test);
                     if (gallioTestElement != null)
                     {
-                        GallioTestResult result = new GallioTestResult(e.TestStepRun, runContext.RunConfig.TestRun.Id, gallioTestElement);
+                        GallioTestResult result = GallioTestResultFactory.CreateTestResult(e.TestStepRun, runContext.RunConfig.TestRun.Id, gallioTestElement);
                         runContext.ResultSink.AddResult(result);
                     }
                 }

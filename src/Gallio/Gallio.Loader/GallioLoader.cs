@@ -22,8 +22,8 @@ namespace Gallio.Loader
 {
     /// <summary>
     /// <para>
-    /// The Gallio assembly resolver provides access to installed
-    /// Gallio assemblies so that we can reference them even if they are not copied locally.
+    /// The Gallio loader provides access to installed Gallio assemblies so that we can reference
+    /// them even if they are not copied locally.
     /// </para>
     /// <para>
     /// We must avoid copying these assemblies because it is possible for multiple copies
@@ -84,38 +84,83 @@ namespace Gallio.Loader
     /// contract assembly someday.
     /// </para>
     /// </remarks>
-    public static class GallioAssemblyResolver
+    public class GallioLoader
     {
         private static readonly object syncRoot = new object();
-        private static string installationPath;
+        private static GallioLoader instance;
+        
+        private readonly string installationPath;
+
+        private GallioLoader(string installationPath)
+        {
+            this.installationPath = installationPath;
+        }
 
         /// <summary>
-        /// Install an assembly resolver for the Gallio assembly.
+        /// Initializes the Gallio loader (if not already initialized) and returns
+        /// its singleton reference.
         /// </summary>
         /// <param name="assembly">The primary assembly whose configuration file
-        /// will contain the Gallio installation path</param>
-        public static void Install(Assembly assembly)
+        /// contains the Gallio installation path</param>
+        /// <returns>The loader</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the loader could not be initialized due to missing
+        /// configuration information</exception>
+        public static GallioLoader Initialize(Assembly assembly)
         {
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
+
             lock (syncRoot)
             {
-                if (installationPath != null)
-                    return;
+                if (instance == null)
+                {
+                    string installationPath = GetInstallationPath(assembly);
+                    GallioLoader loader = new GallioLoader(installationPath);
+                    loader.InstallAssemblyResolver();
 
-                installationPath = GetInstallationPath(assembly);
-                if (installationPath.Length != 0)
-                    AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
+                    instance = loader;
+                }
+
+                return instance;
             }
+        }
+
+        /// <summary>
+        /// Gets the Gallio installation path.
+        /// </summary>
+        public string InstallationPath
+        {
+            get { return installationPath; }
         }
 
         private static string GetInstallationPath(Assembly assembly)
         {
+            string installationPath;
             string configFilePath = new Uri(assembly.CodeBase).LocalPath + ".config";
-            XPathDocument doc = new XPathDocument(configFilePath);
-            XPathNavigator navigator = doc.CreateNavigator().SelectSingleNode("//gallio/installation/path");
-            return navigator.Value ?? "";
+            try
+            {
+                XPathDocument doc = new XPathDocument(configFilePath);
+                XPathNavigator navigator = doc.CreateNavigator().SelectSingleNode("//gallio/installation/path");
+                installationPath = navigator.Value;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(String.Format("Could not load Gallio configuration from file: '{0}'.", configFilePath), ex);
+            }
+
+            if (string.IsNullOrEmpty(installationPath))
+                throw new InvalidOperationException(String.Format("Missing Gallio installation path parameter in configuration file: '{0}'.", configFilePath));
+
+            return installationPath;
         }
 
-        private static Assembly AssemblyResolve(object sender, ResolveEventArgs args)
+        private void InstallAssemblyResolver()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
+        }
+
+        private Assembly AssemblyResolve(object sender, ResolveEventArgs args)
         {
             String[] splitName = args.Name.Split(',');
             String displayName = splitName[0];

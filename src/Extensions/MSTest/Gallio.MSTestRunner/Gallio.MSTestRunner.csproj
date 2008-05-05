@@ -89,6 +89,7 @@
     <Compile Include="GallioTestElement.cs" />
     <Compile Include="GallioTestElementFactory.cs" />
     <Compile Include="GallioTestResult.cs" />
+    <Compile Include="GallioTestResultFactory.cs" />
     <Compile Include="GallioTip.cs" />
     <Compile Include="GallioTuip.cs" />
     <Compile Include="Guids.cs" />

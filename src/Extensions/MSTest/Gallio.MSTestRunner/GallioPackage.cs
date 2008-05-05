@@ -18,6 +18,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using EnvDTE;
 using EnvDTE80;
 using Gallio.MSTestRunner;
@@ -50,10 +51,11 @@ namespace Gallio.MSTestRunner
         private static GallioPackage instance;
         private ServiceProvider services;
         private BuildEvents buildEvents;
+        private SolutionEvents solutionEvents;
 
         static GallioPackage()
         {
-            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
+            GallioLoader.Initialize(typeof(GallioPackage).Assembly);
         }
 
         public GallioPackage()
@@ -81,9 +83,12 @@ namespace Gallio.MSTestRunner
             if (dte != null)
             {
                 buildEvents = dte.Events.BuildEvents;
-
                 buildEvents.OnBuildProjConfigBegin += OnBuildProjConfigBegin;
                 buildEvents.OnBuildProjConfigDone += OnBuildProjConfigDone;
+
+                solutionEvents = dte.Events.SolutionEvents;
+                solutionEvents.Opened += OnSolutionOpened;
+                solutionEvents.ProjectAdded += OnProjectAdded;
             }
         }
 
@@ -99,6 +104,12 @@ namespace Gallio.MSTestRunner
                     {
                         buildEvents.OnBuildProjConfigBegin -= OnBuildProjConfigBegin;
                         buildEvents.OnBuildProjConfigDone -= OnBuildProjConfigDone;
+                    }
+
+                    if (solutionEvents != null)
+                    {
+                        solutionEvents.Opened -= OnSolutionOpened;
+                        solutionEvents.ProjectAdded -= OnProjectAdded;
                     }
                 }
             }
@@ -118,7 +129,7 @@ namespace Gallio.MSTestRunner
 
         int IVsInstalledProduct.OfficialName(out string pbstrName)
         {
-            pbstrName = "Gallio Visual Studio Team Test Runner";
+            pbstrName = "Gallio Visual Studio Team System Extension";
             return VSConstants.S_OK;
         }
 
@@ -130,7 +141,7 @@ namespace Gallio.MSTestRunner
 
         int IVsInstalledProduct.ProductDetails(out string pbstrProductDetails)
         {
-            pbstrProductDetails = "Gallio integration for Visual Studio Team Test";
+            pbstrProductDetails = "Gallio integration for Visual Studio Team System";
             return VSConstants.S_OK;
         }
 
@@ -142,13 +153,42 @@ namespace Gallio.MSTestRunner
 
         private void OnBuildProjConfigBegin(string project, string projectConfig, string platform, string solutionConfig)
         {
-            RemoveGallioTests(project);
         }
 
         private void OnBuildProjConfigDone(string project, string projectConfig, string platform, string solutionConfig, bool success)
         {
             if (success)
-                PopulateGallioTests(project);
+                RefreshTests(project);
+        }
+
+        private void OnSolutionOpened()
+        {
+            /* FIXME: Hangs
+            foreach (Project project in Services.DTE.Solution.Projects)
+            {
+                RefreshTests(project.UniqueName);
+            }
+             */
+        }
+
+        private void OnProjectAdded(Project project)
+        {
+            /* FIXME: Probably not a great idea...
+            RefreshTests(project.UniqueName);
+             */
+        }
+
+        private void RefreshTests(string projectUniqueName)
+        {
+            try
+            {
+                RemoveGallioTests(projectUniqueName);
+                PopulateGallioTests(projectUniqueName);
+            }
+            catch (Exception ex)
+            {
+                UnhandledExceptionPolicy.Report("An exception occurred while refreshing Gallio tests.", ex);
+            }
         }
 
         private void RemoveGallioTests(string projectUniqueName)
@@ -171,19 +211,6 @@ namespace Gallio.MSTestRunner
             catch (Exception ex)
             {
                 UnhandledExceptionPolicy.Report("An exception occurred while removing Gallio tests.", ex);
-            }
-        }
-
-        private void RefreshTests()
-        {
-            try
-            {
-                RemoveGallioTests(null);
-                PopulateGallioTests(null);
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report("An exception occurred while refreshing Gallio tests.", ex);
             }
         }
 

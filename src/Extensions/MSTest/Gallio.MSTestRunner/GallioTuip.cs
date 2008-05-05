@@ -24,7 +24,7 @@ namespace Gallio.MSTestRunner
     {
         static GallioTuip()
         {
-            GallioAssemblyResolver.Install(typeof(GallioPackage).Assembly);
+            GallioLoader.Initialize(typeof(GallioPackage).Assembly);
         }
 
         public GallioTuip(IServiceProvider serviceProvider)
