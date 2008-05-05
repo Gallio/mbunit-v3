@@ -42,7 +42,7 @@ namespace Gallio.TypeMockIntegration.Tests
 
             using (IHost host = factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
 
                 bool isTypeMockRunning = host.GetHostService().Do<object, bool>(IsTypeMockRunning, null);
                 Assert.IsTrue(isTypeMockRunning, "TypeMock should be attached to the host process.");

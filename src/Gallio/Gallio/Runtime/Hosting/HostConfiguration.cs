@@ -319,7 +319,7 @@ namespace Gallio.Runtime.Hosting
         {
             StringBuilder builder = new StringBuilder();
             foreach (byte b in bytes)
-                builder.Append(Convert.ToString(b, 16));
+                builder.Append(Convert.ToString(b, 16).PadLeft(2, '0'));
             return builder.ToString();
         }
 

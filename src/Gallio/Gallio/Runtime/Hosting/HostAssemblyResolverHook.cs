@@ -16,16 +16,14 @@
 using System;
 using System.Reflection;
 using System.Threading;
+using Gallio.Runtime.Loader;
 using Gallio.Runtime.Remoting;
 using Gallio.Reflection;
 
 namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// Attaches to a <see cref="IHost" /> to provide assembly
-    /// resolution services.  Installs an <see cref="AppDomain.AssemblyResolve" /> hook
-    /// that delegates to the creating <see cref="AppDomain" />'s assembly resolver
-    /// to locate assemblies whenever the host is unable to find them.
+    /// Attaches to a <see cref="IHost" /> to provide assembly resolution services.
     /// </summary>
     public static class HostAssemblyResolverHook
     {
@@ -42,48 +40,75 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// Installs the assembly resolver hook in the specified host.
+        /// <para>
+        /// Installs an assembly resolver that provides access to the installation path
+        /// using the <see cref="AssemblyResolverBootstrap" />.
+        /// </para>
+        /// <para>
+        /// Does nothing if the host is local.
+        /// </para>
         /// </summary>
         /// <remarks>
-        /// Does nothing if the host is local.
+        /// This hook is recommended for newly created domains.
         /// </remarks>
         /// <param name="host">The host</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> is null</exception>
-        public static void Install(IHost host)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> or
+        /// <param name="installationPath" /> is null</exception>
+        public static void Bootstrap(IHost host, string installationPath)
         {
+            if (host == null)
+                throw new ArgumentNullException("host");
+            if (installationPath == null)
+                throw new ArgumentNullException("installationPath");
+
             if (!host.IsLocal)
             {
                 Resolver remoteResolver = HostUtils.CreateInstance<Resolver>(host);
-                remoteResolver.Initialize(LocalResolver);
+                remoteResolver.Bootstrap(installationPath);
             }
         }
 
-        /// <exludedoc />
         /// <summary>
-        /// This class is intended for internal use only.
+        /// <para>
+        /// Installs an assembly resolver that delegates to the creating <see cref="AppDomain" />'s
+        /// assembly resolver to locate assemblies whenever the host is unable to find them.
+        /// </para>
+        /// <para>
+        /// Does nothing if the host is local.
+        /// </para>
         /// </summary>
-        public interface IResolver
+        /// <remarks>
+        /// This hook is useful for testing but should not be used in production code.
+        /// </remarks>
+        /// <param name="host">The host</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> is null</exception>
+        public static void InstallCallback(IHost host)
         {
-            /// <excludedoc />
-            /// <summary>
-            /// This method is intended for internal use only.
-            /// </summary>
+            if (host == null)
+                throw new ArgumentNullException("host");
+
+            if (!host.IsLocal)
+            {
+                Resolver remoteResolver = HostUtils.CreateInstance<Resolver>(host);
+                remoteResolver.InstallCallback(LocalResolver);
+            }
+        }
+
+        private interface IResolver
+        {
             string ResolveAssemblyLocalPath(string assemblyName, bool reflectionOnly);
         }
 
-        /// <exludedoc />
-        /// <summary>
-        /// This class is intended for internal use only.
-        /// </summary>
-        public sealed class Resolver : LongLivedMarshalByRefObject, IResolver
+        private sealed class Resolver : LongLivedMarshalByRefObject, IResolver
         {
             private IResolver masterResolver;
 
-            /// <excludedoc />
-            /// <summary>
-            /// This method is intended for internal use only.
-            /// </summary>
-            public void Initialize(IResolver masterResolver)
+            public void Bootstrap(string installationPath)
+            {
+                AssemblyResolverBootstrap.Initialize(installationPath);
+            }
+
+            public void InstallCallback(IResolver masterResolver)
             {
                 this.masterResolver = masterResolver;
 
@@ -91,10 +116,6 @@ namespace Gallio.Runtime.Hosting
                 AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ReflectionOnlyAssemblyResolve;
             }
 
-            /// <excludedoc />
-            /// <summary>
-            /// This method is intended for internal use only.
-            /// </summary>
             public string ResolveAssemblyLocalPath(string assemblyName, bool reflectionOnly)
             {
                 try

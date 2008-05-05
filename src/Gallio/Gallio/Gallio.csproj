@@ -156,6 +156,7 @@
     <Compile Include="Runtime\Hosting\LocalHostFactory.cs" />
     <Compile Include="Runtime\Loader\DefaultLoader.cs" />
     <Compile Include="Runtime\Loader\ILoader.cs" />
+    <Compile Include="Runtime\Loader\AssemblyResolverBootstrap.cs" />
     <Compile Include="Runtime\Logging\BaseLogger.cs" />
     <Compile Include="Runtime\Logging\FilteredLogger.cs" />
     <Compile Include="Runtime\Logging\ILogger.cs" />

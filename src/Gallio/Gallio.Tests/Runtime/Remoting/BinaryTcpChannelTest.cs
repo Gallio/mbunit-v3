@@ -48,7 +48,7 @@ namespace Gallio.Tests.Runtime.Remoting
         {
             using (IHost host = new IsolatedAppDomainHostFactory().CreateHost(new HostSetup(), new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
 
                 host.GetHostService().Do<object, object>(RemoteCallback, null);
 

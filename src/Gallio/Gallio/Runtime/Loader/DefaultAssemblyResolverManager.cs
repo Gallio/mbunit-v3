@@ -26,6 +26,8 @@ namespace Gallio.Runtime.Loader
     /// </summary>
     public class DefaultAssemblyResolverManager : IAssemblyResolverManager
     {
+        private static readonly string[] extensions = new string[] { ".dll", ".exe" };
+
         private List<string> hintDirectories;
         private List<IAssemblyResolver> assemblyResolvers;
 
@@ -100,19 +102,21 @@ namespace Gallio.Runtime.Loader
 
         private Assembly RecursiveAssemblyResolve(ResolveEventArgs args, bool reflectionOnly)
         {
-            String[] splitName = args.Name.Split(',');
-            String displayName = splitName[0];
+            // Note: The name passed into the resolve event has already had assembly binding policy applied
+            //       to it.  So if there was a partial qualification or binding redirect then it will
+            //       already be applied (no need to call AppDomain.ApplyPolicy).
+            AssemblyName assemblyName = new AssemblyName(args.Name);
             Assembly assembly;
 
             // Try with current directory
-            assembly = ResolveAssembly(Directory.GetCurrentDirectory(), displayName, reflectionOnly);
+            assembly = ResolveAssembly(assemblyName, Directory.GetCurrentDirectory(), reflectionOnly);
             if (assembly != null)
                 return assembly;
 
             // Try with hint directories
             foreach (String directory in hintDirectories)
             {
-                assembly = ResolveAssembly(directory, displayName, reflectionOnly);
+                assembly = ResolveAssembly(assemblyName, directory, reflectionOnly);
                 if (assembly != null)
                     return assembly;
             }
@@ -120,18 +124,25 @@ namespace Gallio.Runtime.Loader
             return null;
         }
 
-        private static Assembly ResolveAssembly(string directory, string file, bool reflectionOnly)
+        private static Assembly ResolveAssembly(AssemblyName assemblyName, string directory, bool reflectionOnly)
         {
-            string assemblyName = Path.GetFullPath(Path.Combine(directory, file));
+            foreach (string extension in extensions)
+            {
+                string file = assemblyName.Name + extension;
+                string assemblyPath = Path.GetFullPath(Path.Combine(directory, file));
 
-            if (File.Exists(assemblyName))
-                return LoadFrom(assemblyName, reflectionOnly);
+                if (File.Exists(assemblyPath))
+                {
+                    if (assemblyName.FullName != assemblyName.Name)
+                    {
+                        AssemblyName actualAssemblyName = AssemblyName.GetAssemblyName(assemblyPath);
+                        if (assemblyName.FullName != actualAssemblyName.FullName)
+                            continue;
+                    }
 
-            if (File.Exists(assemblyName + @".dll"))
-                return LoadFrom(assemblyName + @".dll", reflectionOnly);
-
-            if (File.Exists(assemblyName + @".exe"))
-                return LoadFrom(assemblyName + @".exe", reflectionOnly);
+                    return LoadFrom(assemblyPath, reflectionOnly);
+                }
+            }
 
             return null;
         }

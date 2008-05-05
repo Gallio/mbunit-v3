@@ -43,7 +43,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
                 host.GetHostService().Do<object, object>(ThrowUnhandledExceptionCallback, null);
 
                 // Ping the host a few times to ensure that the process does not terminate abruptly.

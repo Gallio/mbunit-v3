@@ -39,6 +39,7 @@ namespace Gallio.Runner
     {
         private readonly IHostFactory hostFactory;
         private readonly ITestFramework[] frameworks;
+        private readonly string installationPath;
 
         private readonly TestRunnerEventDispatcher eventDispatcher;
         private readonly object syncRoot;
@@ -68,17 +69,21 @@ namespace Gallio.Runner
         /// </summary>
         /// <param name="hostFactory">The host factory</param>
         /// <param name="frameworks">The test frameworks</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>
-        /// or <paramref name="frameworks"/> is null</exception>
-        public HostedTestRunner(IHostFactory hostFactory, ITestFramework[] frameworks)
+        /// <param name="installationPath">The installation path</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
+        /// <paramref name="frameworks"/> or <paramref name="installationPath"/> is null</exception>
+        public HostedTestRunner(IHostFactory hostFactory, ITestFramework[] frameworks, string installationPath)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
             if (frameworks == null)
                 throw new ArgumentNullException("frameworks");
+            if (installationPath == null)
+                throw new ArgumentNullException("installationPath");
 
             this.hostFactory = hostFactory;
             this.frameworks = frameworks;
+            this.installationPath = installationPath;
 
             eventDispatcher = new TestRunnerEventDispatcher();
             syncRoot = new object();
@@ -408,7 +413,7 @@ namespace Gallio.Runner
             hostSetup.ShadowCopy = packageHostSetup.ShadowCopy;
 
             host = hostFactory.CreateHost(hostSetup, logger);
-            testDriver = new MultiDomainTestDriver(frameworks, host);
+            testDriver = new MultiDomainTestDriver(frameworks, host, installationPath);
             testDriver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(), logger);
 
             progressMonitor.Worked(totalWork);

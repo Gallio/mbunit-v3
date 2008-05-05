@@ -44,7 +44,7 @@ namespace Gallio.Tests.Runtime
         {
             using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath).CreateHost(new HostSetup(), new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
                 host.GetHostService().Do<object, object>(PolicyPerformsCorrelationThenReportingCallback, null);
             }
         }
@@ -54,7 +54,7 @@ namespace Gallio.Tests.Runtime
         {
             using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath).CreateHost(new HostSetup(), new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
                 host.GetHostService().Do<object, object>(PolicyHandlesUnhandledExceptionsAndRecursionCallback, null);
             }
         }

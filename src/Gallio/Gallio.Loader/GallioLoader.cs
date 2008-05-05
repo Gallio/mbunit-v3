@@ -86,6 +86,9 @@ namespace Gallio.Loader
     /// </remarks>
     public class GallioLoader
     {
+        private const string AssemblyResolverBootstrapTypeFullName = "Gallio.Runtime.Loader.AssemblyResolverBootstrap";
+        private const string AssemblyResolverBootstrapInitializeMethodName = "Initialize";
+
         private static readonly object syncRoot = new object();
         private static GallioLoader instance;
         
@@ -157,19 +160,11 @@ namespace Gallio.Loader
 
         private void InstallAssemblyResolver()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
-        }
+            Assembly gallioAssembly = Assembly.LoadFrom(Path.Combine(installationPath, "Gallio.dll"));
+            Type assemblyResolverBootstrap = gallioAssembly.GetType(AssemblyResolverBootstrapTypeFullName);
+            MethodInfo initialize = assemblyResolverBootstrap.GetMethod(AssemblyResolverBootstrapInitializeMethodName);
 
-        private Assembly AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            String[] splitName = args.Name.Split(',');
-            String displayName = splitName[0];
-
-            string assemblyFile = Path.GetFullPath(Path.Combine(installationPath, displayName)) + ".dll";
-            if (File.Exists(assemblyFile))
-                return Assembly.LoadFrom(assemblyFile);
-
-            return null;
+            initialize.Invoke(null, new object[] { installationPath });
         }
     }
 }

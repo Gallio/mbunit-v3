@@ -39,7 +39,7 @@ namespace Gallio.Tests.Runtime.Hosting
         {
             using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
 
                 Assert.AreEqual(0, callbackCounter);
 
@@ -68,7 +68,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
                 Assert.IsTrue(host.GetHostService().Do<object, bool>(IsShadowCopyFilesEnabled, null));
             }
         }
@@ -85,7 +85,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
                 AssertArePathsEqualIgnoringFinalBackslash(Path.GetTempPath(), host.GetHostService().Do<object, string>(GetApplicationBaseDirectory, null));
             }
         }
@@ -107,7 +107,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
                 string setting = host.GetHostService().Do<object, string>(GetTestSetting, null);
                 Assert.AreEqual("TestValue", setting);
             }
@@ -125,7 +125,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
                 Assert.IsTrue(host.GetHostService().Do<object, bool>(GetAssertUiEnabledFlag, null));
             }
 
@@ -133,7 +133,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
                 Assert.IsFalse(host.GetHostService().Do<object, bool>(GetAssertUiEnabledFlag, null));
             }
         }

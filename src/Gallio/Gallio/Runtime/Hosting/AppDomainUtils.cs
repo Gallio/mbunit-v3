@@ -41,7 +41,13 @@ namespace Gallio.Runtime.Hosting
             appDomainSetup.ApplicationBase = applicationBaseDirectory ?? AppDomain.CurrentDomain.BaseDirectory;
 
             if (configurationFile != null)
+            {
+                // NOTE: We can also use AppDomainSetup.SetConfigurationBytes but it only applies to
+                //       CLR-internal configuration settings such as the assembly binding policy.
+                //       In order for other configuration mechanisms to operate correctly, we must
+                //       use a real configuration file on disk instead.
                 appDomainSetup.ConfigurationFile = configurationFile;
+            }
 
             if (enableShadowCopy)
             {

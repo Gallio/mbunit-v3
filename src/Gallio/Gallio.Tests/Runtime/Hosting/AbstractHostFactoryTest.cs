@@ -91,7 +91,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             using (IHost host = Factory.CreateHost(hostSetup, new LogStreamLogger()))
             {
-                HostAssemblyResolverHook.Install(host);
+                HostAssemblyResolverHook.InstallCallback(host);
                 string remoteWorkingDirectory = host.GetHostService().Do<object, string>(GetWorkingDirectory, null);
                 AssertArePathsEqualIgnoringFinalBackslash(Path.GetTempPath(), remoteWorkingDirectory);
             }
