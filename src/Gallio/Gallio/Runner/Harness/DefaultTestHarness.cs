@@ -46,6 +46,7 @@ namespace Gallio.Runner.Harness
         private List<ITestFramework> frameworks;
         private List<ITestEnvironment> environments;
 
+        private string workingDirectory;
         private TestPackage package;
         private TestModel model;
 
@@ -142,17 +143,22 @@ namespace Gallio.Runner.Harness
                 progressMonitor.BeginTask("Loading test package.", 10);
                 progressMonitor.SetStatus("Performing pre-processing.");
 
-                package = new TestPackage(packageConfig, Reflector.NativeReflectionPolicy, loader);
+                workingDirectory = packageConfig.HostSetup.WorkingDirectory;
 
-                foreach (string path in packageConfig.HintDirectories)
-                    loader.AssemblyResolverManager.AddHintDirectory(path);
+                using (SwitchWorkingDirectory())
+                {
+                    package = new TestPackage(packageConfig, Reflector.NativeReflectionPolicy, loader);
 
-                foreach (string assemblyFile in packageConfig.AssemblyFiles)
-                    loader.AssemblyResolverManager.AddHintDirectory(FileUtils.GetFullPathOfParentDirectory(assemblyFile));
+                    foreach (string path in packageConfig.HintDirectories)
+                        loader.AssemblyResolverManager.AddHintDirectory(path);
 
-                progressMonitor.Worked(1);
+                    foreach (string assemblyFile in packageConfig.AssemblyFiles)
+                        loader.AssemblyResolverManager.AddHintDirectory(FileUtils.GetFullPathOfParentDirectory(assemblyFile));
 
-                LoadAssemblies(progressMonitor.CreateSubProgressMonitor(8), packageConfig.AssemblyFiles);
+                    progressMonitor.Worked(1);
+
+                    LoadAssemblies(progressMonitor.CreateSubProgressMonitor(8), packageConfig.AssemblyFiles);
+                }
             }
         }
 
@@ -210,16 +216,19 @@ namespace Gallio.Runner.Harness
             {
                 progressMonitor.BeginTask("Building test model.", 10);
 
-                model = new TestModel(package);
+                using (SwitchWorkingDirectory())
+                {
+                    model = new TestModel(package);
 
-                AggregateTestExplorer explorer = new AggregateTestExplorer(model);
-                foreach (ITestFramework framework in frameworks)
-                    explorer.AddTestExplorer(framework.CreateTestExplorer(model));
+                    AggregateTestExplorer explorer = new AggregateTestExplorer(model);
+                    foreach (ITestFramework framework in frameworks)
+                        explorer.AddTestExplorer(framework.CreateTestExplorer(model));
 
-                foreach (IAssemblyInfo assembly in package.Assemblies)
-                    explorer.ExploreAssembly(assembly, null);
+                    foreach (IAssemblyInfo assembly in package.Assemblies)
+                        explorer.ExploreAssembly(assembly, null);
 
-                explorer.FinishModel();
+                    explorer.FinishModel();
+                }
             }
         }
 
@@ -242,29 +251,32 @@ namespace Gallio.Runner.Harness
             {
                 progressMonitor.BeginTask("Running tests.", 100);
 
-                List<IDisposable> environmentStates = new List<IDisposable>();
-                try
+                using (SwitchWorkingDirectory())
                 {
-                    progressMonitor.SetStatus("Setting up the test environment.");
-                    foreach (ITestEnvironment environment in environments)
-                        environmentStates.Add(environment.SetUp());
-                    progressMonitor.Worked(5);
+                    List<IDisposable> environmentStates = new List<IDisposable>();
+                    try
+                    {
+                        progressMonitor.SetStatus("Setting up the test environment.");
+                        foreach (ITestEnvironment environment in environments)
+                            environmentStates.Add(environment.SetUp());
+                        progressMonitor.Worked(5);
 
-                    progressMonitor.SetStatus("Sorting tests.");
-                    ObservableTestContextManager contextManager = new ObservableTestContextManager(contextTracker, listener);
-                    ITestCommand rootTestCommand = TestCommandFactory.BuildCommands(model, options.Filter, contextManager);
-                    progressMonitor.Worked(5);
-                    progressMonitor.SetStatus(@"");
+                        progressMonitor.SetStatus("Sorting tests.");
+                        ObservableTestContextManager contextManager = new ObservableTestContextManager(contextTracker, listener);
+                        ITestCommand rootTestCommand = TestCommandFactory.BuildCommands(model, options.Filter, contextManager);
+                        progressMonitor.Worked(5);
+                        progressMonitor.SetStatus(@"");
 
-                    RunAllTestCommands(rootTestCommand, options, progressMonitor.CreateSubProgressMonitor(85));
-                }
-                finally
-                {
-                    progressMonitor.SetStatus("Tearing down the test environment.");
-                    foreach (IDisposable environmentState in environmentStates)
-                        environmentState.Dispose();
-                    progressMonitor.Worked(5);
-                    progressMonitor.SetStatus(@"");
+                        RunAllTestCommands(rootTestCommand, options, progressMonitor.CreateSubProgressMonitor(85));
+                    }
+                    finally
+                    {
+                        progressMonitor.SetStatus("Tearing down the test environment.");
+                        foreach (IDisposable environmentState in environmentStates)
+                            environmentState.Dispose();
+                        progressMonitor.Worked(5);
+                        progressMonitor.SetStatus(@"");
+                    }
                 }
             }
         }
@@ -319,9 +331,17 @@ namespace Gallio.Runner.Harness
             {
                 progressMonitor.BeginTask("Unloading tests.", 1);
 
+                workingDirectory = null;
                 package = null;
                 model = null;
             }
+        }
+
+        private CurrentDirectorySwitcher SwitchWorkingDirectory()
+        {
+            if (String.IsNullOrEmpty(workingDirectory))
+                return null;
+            return new CurrentDirectorySwitcher(workingDirectory);
         }
     }
 }

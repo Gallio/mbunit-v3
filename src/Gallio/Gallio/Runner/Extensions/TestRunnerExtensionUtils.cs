@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Reflection;
 
 namespace Gallio.Runner.Extensions
@@ -105,9 +106,26 @@ namespace Gallio.Runner.Extensions
             return false;
         }
 
-        private static Assembly LoadAssembly(string assemblyName)
+        private static Assembly LoadAssembly(string assemblyNameOrPath)
         {
-            return Assembly.Load(assemblyName);
+            if (assemblyNameOrPath.EndsWith(".dll") || assemblyNameOrPath.EndsWith(".exe"))
+            {
+                // Looks like a path.  First try to resolve the assembly by partial name instead.
+                // It could be that the extension was just overspecified such as when referring
+                // to Gallio.dll instead of just Gallio, or referring to an extension that is
+                // distributed with a plugin.
+                try
+                {
+                    string partialName = Path.GetFileNameWithoutExtension(assemblyNameOrPath);
+                    return Assembly.Load(partialName);
+                }
+                catch (Exception)
+                {
+                    return Assembly.LoadFrom(assemblyNameOrPath);
+                }
+            }
+
+            return Assembly.Load(assemblyNameOrPath);
         }
 
         private static Type GetTypeByName(Assembly assembly, string typeName)

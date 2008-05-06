@@ -16,6 +16,8 @@
 using System;
 using Gallio.Runner;
 using Gallio.Runner.Extensions;
+using Gallio.Runtime;
+using Gallio.Utilities;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Runner.Extensions
@@ -50,10 +52,13 @@ namespace Gallio.Tests.Runner.Extensions
         public void CreateTestRunnerExtension(string extensionSpecification, Type expectedExtensionType,
             string expectedParameters)
         {
-            ITestRunnerExtension extension = TestRunnerExtensionUtils.CreateExtensionFromSpecification(extensionSpecification);
-            Assert.IsNotNull(extension);
-            Assert.IsInstanceOfType(expectedExtensionType, extension);
-            Assert.AreEqual(expectedParameters, extension.Parameters);
+            using (new CurrentDirectorySwitcher(RuntimeAccessor.InstallationPath))
+            {
+                ITestRunnerExtension extension = TestRunnerExtensionUtils.CreateExtensionFromSpecification(extensionSpecification);
+                Assert.IsNotNull(extension);
+                Assert.IsInstanceOfType(expectedExtensionType, extension);
+                Assert.AreEqual(expectedParameters, extension.Parameters);
+            }
         }
     }
 }
