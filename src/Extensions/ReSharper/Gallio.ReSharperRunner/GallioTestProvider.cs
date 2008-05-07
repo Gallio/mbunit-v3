@@ -82,7 +82,7 @@ namespace Gallio.ReSharperRunner
 
         public void Present(UnitTestElement element, IPresentableItem item, TreeModelNode node, PresentationState state)
         {
-            Present(element, item, node, state);
+            shim.Present(element, item, node, state);
         }
 
         public RemoteTaskRunnerInfo GetTaskRunnerInfo()

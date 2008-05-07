@@ -23,7 +23,7 @@ using MbUnit.Samples.Properties;
 namespace MbUnit.Samples
 {
     /// <summary>
-    /// Generates  an execution log with all sorts of rich content.
+    /// Generates an execution log with all sorts of rich content.
     /// </summary>
     [TestFixture]
     [Description("Demonstrate the rich execution log features.")]

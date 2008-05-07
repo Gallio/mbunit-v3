@@ -139,23 +139,23 @@ namespace Gallio.Loader
 
         private static string GetInstallationPath(Assembly assembly)
         {
-            string installationPath;
             string configFilePath = new Uri(assembly.CodeBase).LocalPath + ".config";
+            XPathNavigator navigator;
             try
             {
                 XPathDocument doc = new XPathDocument(configFilePath);
-                XPathNavigator navigator = doc.CreateNavigator().SelectSingleNode("//gallio/installation/path");
-                installationPath = navigator.Value;
+                navigator = doc.CreateNavigator().SelectSingleNode("//gallio/installation/path");
             }
             catch (Exception ex)
             {
                 throw new InvalidOperationException(String.Format("Could not load Gallio configuration from file: '{0}'.", configFilePath), ex);
             }
 
-            if (string.IsNullOrEmpty(installationPath))
-                throw new InvalidOperationException(String.Format("Missing Gallio installation path parameter in configuration file: '{0}'.", configFilePath));
+            // If the installation path is not set then assume it is colocated with the loader.
+            if (navigator == null || string.IsNullOrEmpty(navigator.Value))
+                return Path.GetDirectoryName(configFilePath);
 
-            return installationPath;
+            return navigator.Value;
         }
 
         private void InstallAssemblyResolver()
