@@ -208,17 +208,24 @@ namespace Gallio.ReSharperRunner.Tasks
                 {
                     server.TaskProgress(testTask, "");
 
-                    foreach (ExecutionLogStream stream in e.TestStepRun.ExecutionLog.Streams)
-                        SubmitLogStreamContents(testTask, stream);
+                    TestStepRun run = e.TestStepRun;
+
+                    TaskResult result = GetTaskResultForOutcome(run.Result.Outcome);
+
+                    foreach (ExecutionLogStream stream in run.ExecutionLog.Streams)
+                        SubmitLogStreamContents(testTask, stream, result);
 
                     SubmitTestResult(testTask, e.TestStepRun.Result);
                 }
             }
 
-            private void SubmitLogStreamContents(GallioTestItemTask testTask, ExecutionLogStream stream)
+            private void SubmitLogStreamContents(GallioTestItemTask testTask, ExecutionLogStream stream, TaskResult result)
             {
                 string contents = string.Concat("*** ", stream.Name, " ***\n", stream.ToString(), "\n");
 
+                // ReSharper formats the TaskExplain contents only when the task result is of a particular value.
+                // It will render it in a colored box based on the result code.
+                // Unfortunately it can't really capture the richness of Gallio outcomes right now.
                 switch (stream.Name)
                 {
                     case LogStreamNames.ConsoleOutput:
@@ -235,13 +242,17 @@ namespace Gallio.ReSharperRunner.Tasks
                         break;
 
                     case LogStreamNames.Warnings:
-                        //server.TaskExplain(testTask, stream.ToString());
-                        server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
+                        if (result != TaskResult.Skipped)
+                            server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
+                        else
+                            server.TaskExplain(testTask, contents);
                         break;
 
                     case LogStreamNames.Failures:
-                        //server.TaskError(testTask, stream.ToString());
-                        server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
+                        if (result != TaskResult.Error && result != TaskResult.Exception)
+                            server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
+                        else
+                            server.TaskExplain(testTask, contents);
                         break;
                 }
             }
@@ -258,10 +269,8 @@ namespace Gallio.ReSharperRunner.Tasks
                     case TestStatus.Passed:
                         return TaskResult.Success;
                     case TestStatus.Failed:
+                        return TaskResult.Error;
                     case TestStatus.Inconclusive: // FIXME: not very accurate
-                        if (outcome.Category == "error")
-                            return TaskResult.Error;
-                        return TaskResult.Exception;
                     case TestStatus.Skipped:
                         return TaskResult.Skipped;
                     default:
