@@ -430,9 +430,16 @@ Section "ReSharper v3.1 Runner" ReSharperRunnerSection
 SectionEnd
 !endif
 
+!macro InstallTDNetApplication
+	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Icarus" "Application" "$INSTDIR\bin\Gallio.Icarus.exe"
+!macroend
+
+!macro UninstallTDNetApplication
+	DeleteRegKey SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Icarus"
+!macroend
+
 !macro InstallTDNetRunner Key Framework Priority
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "" "${Priority}"
-	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "Application" "$INSTDIR\bin\Gallio.Icarus.exe"
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "AssemblyPath" "$INSTDIR\bin\Gallio.TDNetRunner.dll"
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "TypeName" "Gallio.TDNetRunner.GallioTestRunner"
 	WriteRegStr SHCTX "SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\${Key}" "TargetFrameworkAssemblyName" "${Framework}"
@@ -451,6 +458,8 @@ Section "TestDriven.Net Runner" TDNetAddInSection
 	File "${TARGETDIR}\bin\Gallio.TDNetRunner.dll"
 
 	; Registry Keys
+	!insertmacro InstallTDNetApplication
+
 	SectionGetFlags ${MbUnit3Section} $0
 	IntOp $0 $0 & ${SF_SELECTED}
 	IntCmp $0 0 NoMbUnit
@@ -666,6 +675,7 @@ Section Uninstall
 
 	; Uninstall from TD.Net
 	DetailPrint "Uninstalling TestDriven.Net runner."
+	!insertmacro UninstallTDNetApplication
 	!insertmacro UninstallTDNetRunner "Gallio_MbUnit"
 	!insertmacro UninstallTDNetRunner "Gallio_MbUnit2"
 	!insertmacro UninstallTDNetRunner "Gallio_MSTest"

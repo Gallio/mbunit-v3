@@ -16,6 +16,7 @@ set TDKEY=HKLM\Software\MutantDesign\TestDriven.Net\TestRunners
 echo Installing the locally compiled Gallio test runner for TestDriven.Net.
 echo.
 
+"%REG%" ADD %TDKEY%\Gallio_Icarus /V Application /D %ICARUS_EXE% /F >nul
 call :AddRunner MbUnit MbUnit
 call :AddRunner MbUnit2 MbUnit.Framework
 call :AddRunner MSTest Microsoft.VisualStudio.QualityTools.UnitTestFramework
@@ -36,7 +37,6 @@ if /I not "%Answer%"=="N" goto :RETRY_PROMPT
 :DONE_PROMPT
 
 "%REG%" ADD %KEY% /VE /D %PRIORITY% /F >nul
-"%REG%" ADD %KEY% /V Application /D %ICARUS_EXE% /F >nul
 "%REG%" ADD %KEY% /V AssemblyPath /D %TDNETRUNNER_DLL% /F >nul
 "%REG%" ADD %KEY% /V TargetFrameworkAssemblyName /D %FRAMEWORK% /F >nul
 "%REG%" ADD %KEY% /V TypeName /D Gallio.TDNetRunner.GallioTestRunner /F >nul
