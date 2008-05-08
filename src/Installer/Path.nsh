@@ -45,8 +45,12 @@ Function AddPath
 
 	ClearErrors
 	!insertmacro GetPath $2 $1
-	IfErrors AddPathFailed
+	IfErrors AddPathNewVariable
 		StrCpy $2 "$2;$0"
+		Goto AddPathSetVariable
+	AddPathNewVariable:
+		StrCpy $2 "$0"
+	AddPathSetVariable:
 		!insertmacro SetPath $1 $2
 		IfErrors AddPathFailed AddPathDone
 
@@ -79,7 +83,7 @@ Function un.RemovePath
 
 	ClearErrors
 	!insertmacro GetPath $2 $1
-	IfErrors RemovePathFailed
+	IfErrors RemovePathDone
 		${un.StrReplace} $2 ";$0" "" $2  ; With leading semi-colon
 		${un.StrReplace} $2 "$0" "" $2   ; Without leading semi-colon
 		!insertmacro SetPath $1 $2
