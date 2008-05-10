@@ -148,8 +148,12 @@ namespace Gallio.Reports
 
             string reportPath = reportWriter.ReportContainer.ReportName + @"." + extension;
 
-            using (StreamWriter writer = new StreamWriter(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, Encoding.UTF8), Encoding.UTF8))
-                Transform.Transform(document, arguments, writer);
+            XslCompiledTransform transform = Transform;
+            XmlWriterSettings settings = transform.OutputSettings.Clone();
+            settings.CheckCharacters = false;
+            settings.Encoding = Encoding.UTF8;
+            using (XmlWriter writer = XmlWriter.Create(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, Encoding.UTF8), settings))
+                transform.Transform(document, arguments, writer);
 
             reportWriter.AddReportDocumentPath(reportPath);
         }
@@ -192,7 +196,6 @@ namespace Gallio.Reports
             using (XmlReader reader = XmlReader.Create(resolvedXsltPath, settings))
                 transform.Load(reader);
 
-            transform.OutputSettings.CheckCharacters = false;
             return transform;
         }
 
