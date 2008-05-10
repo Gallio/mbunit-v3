@@ -108,14 +108,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public Assembly Resolve()
         {
-            try
-            {
-                return Assembly.Load(FullName);
-            }
-            catch (Exception ex)
-            {
-                throw new CodeElementResolveException(this, ex);
-            }
+            return ReflectorResolveUtils.ResolveAssembly(this, true);
         }
 
         /// <inheritdoc />

@@ -107,13 +107,8 @@ namespace Gallio.MbUnit2Adapter.Model
             IMethodInfo setUpMethod = GetMethodWithAttribute<SetUpAttribute2>(type);
             IMethodInfo tearDownMethod = GetMethodWithAttribute<TearDownAttribute2>(type);
 
-            string namePrefix = type.Name + @".";
-            string nameSuffix = @"";
-
-            if (setUpMethod != null)
-                namePrefix += setUpMethod.Name + @".";
-            if (tearDownMethod != null)
-                nameSuffix += @"." + tearDownMethod.Name;
+            string namePrefix = setUpMethod != null ? setUpMethod.Name + @"." : string.Empty;
+            string nameSuffix = tearDownMethod != null ? @"." + tearDownMethod.Name : string.Empty;
 
             foreach (IMethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public))
             {

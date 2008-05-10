@@ -184,6 +184,7 @@ namespace Gallio.Reports
         protected virtual XslCompiledTransform LoadTransform(string resolvedXsltPath)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
+            settings.CheckCharacters = false;
             settings.ValidationType = ValidationType.None;
             settings.XmlResolver = GetContentResolver();
 
@@ -191,6 +192,7 @@ namespace Gallio.Reports
             using (XmlReader reader = XmlReader.Create(resolvedXsltPath, settings))
                 transform.Load(reader);
 
+            transform.OutputSettings.CheckCharacters = false;
             return transform;
         }
 

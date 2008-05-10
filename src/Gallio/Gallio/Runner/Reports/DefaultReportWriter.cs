@@ -162,6 +162,7 @@ namespace Gallio.Runner.Reports
                 progressMonitor.BeginTask("Saving report.", attachmentCount + 1);
 
                 XmlWriterSettings settings = new XmlWriterSettings();
+                settings.CheckCharacters = false;
                 settings.Indent = true;
                 settings.Encoding = Encoding.UTF8;
 

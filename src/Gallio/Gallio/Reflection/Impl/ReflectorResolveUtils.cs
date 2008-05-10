@@ -36,6 +36,49 @@ namespace Gallio.Reflection.Impl
     public class ReflectorResolveUtils
     {
         /// <summary>
+        /// Resolves a reflected assembly to its native <see cref="Assembly" /> object.
+        /// </summary>
+        /// <param name="assembly">The reflected assembly</param>
+        /// <param name="fallbackOnPartialName">If true, allows the assembly to be resolved
+        /// by partial name if no match could be found by fullname</param>
+        /// <returns>The resolved <see cref="Assembly" />.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/>
+        /// is null</exception>
+        /// <exception cref="CodeElementResolveException">Thrown if <paramref name="assembly"/>
+        /// could not be resolved</exception>
+        public static Assembly ResolveAssembly(IAssemblyInfo assembly, bool fallbackOnPartialName)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
+
+            string fullName = assembly.FullName;
+            try
+            {
+                return Assembly.Load(fullName);
+            }
+            catch (Exception ex)
+            {
+                if (fallbackOnPartialName)
+                {
+                    string partialName = assembly.Name;
+                    if (fullName != partialName)
+                    {
+                        try
+                        {
+                            return Assembly.Load(partialName);
+                        }
+                        catch (Exception)
+                        {
+                            // Ignore it.
+                        }
+                    }
+                }
+
+                throw new CodeElementResolveException(assembly, ex);
+            }
+        }
+
+        /// <summary>
         /// Resolves a reflected type to its native <see cref="Type" /> object.
         /// </summary>
         /// <param name="type">The reflected type</param>
