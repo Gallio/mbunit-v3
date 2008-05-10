@@ -22,7 +22,7 @@ namespace Gallio.ReSharperRunner.Runtime
 {
     internal class ReSharperLogger : BaseLogger
     {
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             string fullMessage = message;
             if (exception != null)

@@ -63,7 +63,7 @@ namespace Gallio.Framework.Data.Binders
         }
 
         /// <inheritdoc />
-        protected override IDataBindingAccessor RegisterInternal(DataBindingContext context, IDataSourceResolver resolver)
+        protected override IDataBindingAccessor RegisterImpl(DataBindingContext context, IDataSourceResolver resolver)
         {
             List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors = new List<KeyValuePair<ISlotInfo,IDataBindingAccessor>>(slotBinders.Count);
 
@@ -90,7 +90,7 @@ namespace Gallio.Framework.Data.Binders
                 this.converter = converter;
             }
 
-            protected override object GetValueInternal(DataBindingItem item)
+            protected override object GetValueImpl(DataBindingItem item)
             {
                 KeyValuePair<ISlotInfo, object>[] slotValues = GenericUtils.ConvertAllToArray<
                     KeyValuePair<ISlotInfo, IDataBindingAccessor>, KeyValuePair<ISlotInfo, object>>(slotAccessors,

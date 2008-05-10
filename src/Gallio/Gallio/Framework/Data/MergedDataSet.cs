@@ -60,7 +60,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override bool CanBindInternal(DataBinding binding)
+        protected override bool CanBindImpl(DataBinding binding)
         {
             foreach (IDataSet dataSet in DataSets)
             {
@@ -72,7 +72,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
             IDataProvider[] providers = GenericUtils.ToArray(DataSets);
             return strategy.Merge(providers, bindings, includeDynamicRows);

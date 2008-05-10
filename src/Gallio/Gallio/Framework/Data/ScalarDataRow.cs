@@ -43,7 +43,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override object GetValueInternal(DataBinding binding)
+        protected override object GetValueImpl(DataBinding binding)
         {
             if (binding.Index.GetValueOrDefault(-1) == 0)
                 return value;

@@ -30,8 +30,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public void RunTests(ITestCommand rootTestCommand, ITestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor)
+        public TestOutcome RunTests(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             if (rootTestCommand == null)
                 throw new ArgumentNullException("rootTestCommand");
@@ -40,7 +39,7 @@ namespace Gallio.Model.Execution
             if (options == null)
                 throw new ArgumentNullException("options");
 
-            RunTestsInternal(rootTestCommand, parentTestStep, options, progressMonitor);
+            return RunTestsImpl(rootTestCommand, parentTestStep, options, progressMonitor);
         }
 
         /// <summary>
@@ -50,8 +49,8 @@ namespace Gallio.Model.Execution
         /// <param name="parentTestStep">The parent test step, or null if none</param>
         /// <param name="options">The test execution options, not null</param>
         /// <param name="progressMonitor">The progress monitor, not null</param>
-        protected abstract void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor);
+        /// <returns>The combined outcome of the root test command</returns>
+        protected abstract TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Recursively generates single test steps for each <see cref="ITestCommand" /> and

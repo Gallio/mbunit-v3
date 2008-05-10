@@ -69,16 +69,16 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override bool CanBindInternal(DataBinding binding)
+        protected override bool CanBindImpl(DataBinding binding)
         {
             if (indexAliases != null)
                 binding = TranslateBinding(binding);
 
-            return base.CanBindInternal(binding);
+            return base.CanBindImpl(binding);
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings,
+        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings,
             bool includeDynamicRows)
         {
             if (indexAliases != null)
@@ -90,7 +90,7 @@ namespace Gallio.Framework.Data
         private IEnumerable<IDataRow> GetRowsInternalBase(ICollection<DataBinding> bindings,
             bool includeDynamicRows)
         {
-            return base.GetRowsInternal(bindings, includeDynamicRows);
+            return base.GetRowsImpl(bindings, includeDynamicRows);
         }
 
         private IEnumerable<IDataRow> GetRowsInternalTranslated(ICollection<DataBinding> bindings,

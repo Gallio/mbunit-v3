@@ -33,9 +33,9 @@ namespace Gallio.Model.Execution
         /// <param name="parentTestStep">The parent test step, or null if starting a root step</param>
         /// <param name="options">The test execution options</param>
         /// <param name="progressMonitor">The progress monitor</param>
+        /// <returns>The combined outcome of the root test command</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTestCommand"/>
         /// <paramref name="progressMonitor"/>, or <paramref name="options"/> is null</exception>
-        void RunTests(ITestCommand rootTestCommand, ITestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor);
+        TestOutcome RunTests(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor);
     }
 }

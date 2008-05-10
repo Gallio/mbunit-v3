@@ -70,7 +70,7 @@ namespace Gallio.MSTestRunner
             }
 
             foreach (Annotation annotation in explorer.TestModel.Annotations)
-                new AnnotationData(annotation).Log(logger);
+                new AnnotationData(annotation).Log(logger, true);
 
             return tests;
         }

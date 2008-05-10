@@ -36,7 +36,7 @@ namespace Gallio.Runtime.Logging
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            LogInternal(severity, message, exception);
+            LogImpl(severity, message, exception);
         }
 
         /// <summary>
@@ -45,6 +45,6 @@ namespace Gallio.Runtime.Logging
         /// <param name="severity">The log message severity</param>
         /// <param name="message">The log message, not null</param>
         /// <param name="exception">The associated exception, or null if none</param>
-        protected abstract void LogInternal(LogSeverity severity, string message, Exception exception);
+        protected abstract void LogImpl(LogSeverity severity, string message, Exception exception);
     }
 }

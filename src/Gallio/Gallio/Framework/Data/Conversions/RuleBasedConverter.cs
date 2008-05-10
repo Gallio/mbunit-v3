@@ -44,7 +44,7 @@ namespace Gallio.Framework.Data.Conversions
         }
 
         /// <inheritdoc />
-        protected override ConversionCost GetConversionCostInternal(Type sourceType, Type targetType)
+        protected override ConversionCost GetConversionCostImpl(Type sourceType, Type targetType)
         {
             sourceType = GetUnderlyingTypeOfNullableIfPresent(sourceType);
             targetType = GetUnderlyingTypeOfNullableIfPresent(targetType);
@@ -57,7 +57,7 @@ namespace Gallio.Framework.Data.Conversions
         }
 
         /// <inheritdoc />
-        protected override object ConvertInternal(object sourceValue, Type targetType)
+        protected override object ConvertImpl(object sourceValue, Type targetType)
         {
             if (sourceValue == null)
                 return ConvertNull(targetType);

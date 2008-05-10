@@ -62,8 +62,7 @@ namespace Gallio.MSTestAdapter.Model
         }
 
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor)
             {
@@ -71,21 +70,23 @@ namespace Gallio.MSTestAdapter.Model
                 if (options.SkipTestExecution)
                 {
                     SkipAll(rootTestCommand, parentTestStep);
+                    return TestOutcome.Skipped;
                 }
                 else
                 {
-                    RunTest(rootTestCommand, parentTestStep, progressMonitor);
+                    return RunTest(rootTestCommand, parentTestStep, progressMonitor);
                 }
             }
         }
 
-        private static void RunTest(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
+        private static TestOutcome RunTest(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             ITest test = testCommand.Test;
             progressMonitor.SetStatus(test.Name);
 
             // The first test should be an assembly test
             MSTestAssembly assemblyTest = testCommand.Test as MSTestAssembly;
+            TestOutcome outcome;
             if (assemblyTest != null)
             {
                 ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
@@ -96,16 +97,21 @@ namespace Gallio.MSTestAdapter.Model
                     GenerateTestList(assemblyTest, allCommands);
                     ExecuteTests(context, assemblyTest);
                     bool passed = ProcessTestResults(context, testCommand, allCommands);
-                    context.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
+                    outcome = passed ? TestOutcome.Passed : TestOutcome.Failed;
                 }
                 catch (Exception ex)
                 {
                     TestLogWriterUtils.WriteException(context.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
-                    context.FinishStep(TestOutcome.Failed, null);
+                    outcome = TestOutcome.Error;
                 }
+            }
+            else
+            {
+                outcome = TestOutcome.Skipped;
             }
 
             progressMonitor.Worked(1);
+            return outcome;
         }
 
         private static void DeleteOutputFilesIfExist(MSTestAssembly assemblyTest)

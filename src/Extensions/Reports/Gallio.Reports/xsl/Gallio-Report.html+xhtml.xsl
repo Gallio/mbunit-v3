@@ -37,7 +37,7 @@
 html
 {
 	overflow: auto;
-}          
+}
         </style>
       </head>
       <body class="gallio-report">
@@ -227,7 +227,7 @@ html
 
   <xsl:template match="g:testPackageRun" mode="summary">
     <div id="Summary" class="section">
-      <h2>Summary</h2>
+      <h2>Summary<xsl:if test="$condensed"> (Condensed)</xsl:if></h2>
       <div class="section-content">
         <xsl:choose>
           <xsl:when test="g:testStepRun/g:children/g:testStepRun">
@@ -246,7 +246,7 @@ html
   <xsl:template match="g:testStepRun" mode="summary">
     <xsl:variable name="id" select="g:testStep/@id" />
     
-    <xsl:if test="g:testStep/@isTestCase='false'">
+    <xsl:if test="g:testStep/@isTestCase='false' and (not($condensed) or g:result/g:outcome/@status!='passed')">
       <xsl:variable name="statisticsRaw">
         <xsl:call-template name="aggregate-statistics">
           <xsl:with-param name="testStepRun" select="." />
@@ -301,7 +301,7 @@ html
 
   <xsl:template match="g:testPackageRun" mode="details">
     <div id="Details" class="section">
-      <h2>Details</h2>
+      <h2>Details<xsl:if test="$condensed"> (Condensed)</xsl:if></h2>
       <div class="section-content">
         <xsl:choose>
           <xsl:when test="g:testStepRun/g:children/g:testStepRun">
@@ -318,100 +318,102 @@ html
   </xsl:template>
 
   <xsl:template match="g:testStepRun" mode="details">
-    <xsl:variable name="id" select="g:testStep/@id" />
-    <xsl:variable name="testId" select="g:testStep/@testId" />
-    <xsl:variable name="test" select="ancestor::g:report/g:testModel/descendant::g:test[@id = $testId]" />
-    
-    <xsl:variable name="metadataEntriesFromTest" select="$test/g:metadata/g:entry" />
-    <xsl:variable name="metadataEntriesFromTestStep" select="g:testStep/g:metadata/g:entry" />
-    
-    <xsl:variable name="kind" select="$metadataEntriesFromTest[@key='TestKind']/g:value" />    
-    <xsl:variable name="nestingLevel" select="count(ancestor::g:testStepRun)" />
-    
-    <xsl:variable name="statisticsRaw">
-      <xsl:call-template name="aggregate-statistics">
-        <xsl:with-param name="testStepRun" select="." />
-      </xsl:call-template>
-    </xsl:variable>
-    <xsl:variable name="statistics" select="msxsl:node-set($statisticsRaw)/g:statistics" />
-
-    <li id="testStepRun-{$id}">
-      <span class="testStepRunHeading testStepRunHeading-Level{$nestingLevel}">
-        <xsl:call-template name="toggle">
-          <xsl:with-param name="href">detailPanel-<xsl:value-of select="$id"/></xsl:with-param>
+    <xsl:if test="not($condensed) or g:result/g:outcome/@status!='passed'">
+      <xsl:variable name="id" select="g:testStep/@id" />
+      <xsl:variable name="testId" select="g:testStep/@testId" />
+      <xsl:variable name="test" select="ancestor::g:report/g:testModel/descendant::g:test[@id = $testId]" />
+      
+      <xsl:variable name="metadataEntriesFromTest" select="$test/g:metadata/g:entry" />
+      <xsl:variable name="metadataEntriesFromTestStep" select="g:testStep/g:metadata/g:entry" />
+      
+      <xsl:variable name="kind" select="$metadataEntriesFromTest[@key='TestKind']/g:value" />    
+      <xsl:variable name="nestingLevel" select="count(ancestor::g:testStepRun)" />
+      
+      <xsl:variable name="statisticsRaw">
+        <xsl:call-template name="aggregate-statistics">
+          <xsl:with-param name="testStepRun" select="." />
         </xsl:call-template>
-        <!--
-        <xsl:call-template name="icon">
-          <xsl:with-param name="kind" select="$kind" />
-        </xsl:call-template>
-        -->
+      </xsl:variable>
+      <xsl:variable name="statistics" select="msxsl:node-set($statisticsRaw)/g:statistics" />
 
-        <xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="g:testStep/@name" /></xsl:call-template>
+      <li id="testStepRun-{$id}">
+        <span class="testStepRunHeading testStepRunHeading-Level{$nestingLevel}">
+          <xsl:call-template name="toggle">
+            <xsl:with-param name="href">detailPanel-<xsl:value-of select="$id"/></xsl:with-param>
+          </xsl:call-template>
+          <!--
+          <xsl:call-template name="icon">
+            <xsl:with-param name="kind" select="$kind" />
+          </xsl:call-template>
+          -->
 
-        <xsl:call-template name="outcome-bar">
-          <xsl:with-param name="statistics" select="$statistics" />
-          <xsl:with-param name="condensed" select="not(g:children/g:testStepRun)" />
-        </xsl:call-template>
-      </span>
+          <xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="g:testStep/@name" /></xsl:call-template>
 
-      <div id="detailPanel-{$id}" class="panel">
-        <xsl:choose>
-          <xsl:when test="$kind = 'Assembly' or $kind = 'Framework'">
-            <table class="statistics-table">
-              <tr class="alternate-row">
-                <td class="statistics-label-cell">Results:</td>
-                <td><xsl:call-template name="format-statistics"><xsl:with-param name="statistics" select="$statistics" /></xsl:call-template></td>
-              </tr>
-              <tr>
-                <td class="statistics-label-cell">Duration:</td>
-                <td><xsl:value-of select="format-number($statistics/@duration, '0.00')" />s</td>
-              </tr>
-              <tr class="alternate-row">
-                <td class="statistics-label-cell">Assertions:</td>
-                <td><xsl:value-of select="$statistics/@assertCount" /></td>
-              </tr>
-            </table>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>Duration: </xsl:text>
-            <xsl:value-of select="format-number($statistics/@duration, '0.00')" />
-            <xsl:text>s, Assertions: </xsl:text>
-            <xsl:value-of select="$statistics/@assertCount"/>
-            <xsl:text>.</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
+          <xsl:call-template name="outcome-bar">
+            <xsl:with-param name="statistics" select="$statistics" />
+            <xsl:with-param name="small" select="not(g:children/g:testStepRun)" />
+          </xsl:call-template>
+        </span>
 
-        <xsl:choose>
-          <xsl:when test="g:testStep/@isPrimary='true'">
-            <xsl:call-template name="print-metadata-entries">
-              <xsl:with-param name="entries" select="$metadataEntriesFromTest|$metadataEntriesFromTestStep" />
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:call-template name="print-metadata-entries">
-              <xsl:with-param name="entries" select="$metadataEntriesFromTestStep" />
-            </xsl:call-template>
-          </xsl:otherwise>
-        </xsl:choose>
+        <div id="detailPanel-{$id}" class="panel">
+          <xsl:choose>
+            <xsl:when test="$kind = 'Assembly' or $kind = 'Framework'">
+              <table class="statistics-table">
+                <tr class="alternate-row">
+                  <td class="statistics-label-cell">Results:</td>
+                  <td><xsl:call-template name="format-statistics"><xsl:with-param name="statistics" select="$statistics" /></xsl:call-template></td>
+                </tr>
+                <tr>
+                  <td class="statistics-label-cell">Duration:</td>
+                  <td><xsl:value-of select="format-number($statistics/@duration, '0.00')" />s</td>
+                </tr>
+                <tr class="alternate-row">
+                  <td class="statistics-label-cell">Assertions:</td>
+                  <td><xsl:value-of select="$statistics/@assertCount" /></td>
+                </tr>
+              </table>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>Duration: </xsl:text>
+              <xsl:value-of select="format-number($statistics/@duration, '0.00')" />
+              <xsl:text>s, Assertions: </xsl:text>
+              <xsl:value-of select="$statistics/@assertCount"/>
+              <xsl:text>.</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
 
-        <div id="testStepRun-{g:testStepRun/g:testStep/@id}" class="testStepRun">
-          <xsl:apply-templates select="." mode="details-content" />
+          <xsl:choose>
+            <xsl:when test="g:testStep/@isPrimary='true'">
+              <xsl:call-template name="print-metadata-entries">
+                <xsl:with-param name="entries" select="$metadataEntriesFromTest|$metadataEntriesFromTestStep" />
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:call-template name="print-metadata-entries">
+                <xsl:with-param name="entries" select="$metadataEntriesFromTestStep" />
+              </xsl:call-template>
+            </xsl:otherwise>
+          </xsl:choose>
+
+          <div id="testStepRun-{g:testStepRun/g:testStep/@id}" class="testStepRun">
+            <xsl:apply-templates select="." mode="details-content" />
+          </div>
+
+          <xsl:choose>
+            <xsl:when test="g:children/g:testStepRun">
+              <ul class="testStepRunContainer">
+                <xsl:apply-templates select="g:children/g:testStepRun" mode="details" />
+              </ul>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:call-template name="toggle-autoclose">
+                <xsl:with-param name="href">detailPanel-<xsl:value-of select="$id"/></xsl:with-param>
+              </xsl:call-template>
+            </xsl:otherwise>
+          </xsl:choose>
         </div>
-
-        <xsl:choose>
-          <xsl:when test="g:children/g:testStepRun">
-            <ul class="testStepRunContainer">
-              <xsl:apply-templates select="g:children/g:testStepRun" mode="details" />
-            </ul>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:call-template name="toggle-autoclose">
-              <xsl:with-param name="href">detailPanel-<xsl:value-of select="$id"/></xsl:with-param>
-            </xsl:call-template>
-          </xsl:otherwise>
-        </xsl:choose>
-      </div>
-    </li>
+      </li>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="g:testStepRun" mode="details-content">
@@ -628,14 +630,14 @@ html
   <!-- Displays visual statistics using a status bar and outcome icons -->
   <xsl:template name="outcome-bar">
     <xsl:param name="statistics"/>
-    <xsl:param name="condensed" select="0" />
+    <xsl:param name="small" select="0" />
 
     <table class="outcome-bar">
       <tr>
         <td>
           <div>
             <xsl:choose>
-              <xsl:when test="$useProportionalOutcomeBars and not($condensed)">
+              <xsl:when test="$useProportionalOutcomeBars and not($small)">
                 <xsl:variable name="total" select="$statistics/@passedCount + $statistics/@failedCount + $statistics/@inconclusiveCount + $statistics/@skippedCount" />
                 <xsl:attribute name="class">outcome-bar</xsl:attribute>
                 <xsl:if test="$statistics/@passedCount > 0">
@@ -652,7 +654,7 @@ html
                 </xsl:if>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:attribute name="class">outcome-bar <xsl:call-template name="status-from-statistics"><xsl:with-param name="statistics" select="$statistics" /></xsl:call-template><xsl:if test="$condensed"> condensed</xsl:if></xsl:attribute>
+                <xsl:attribute name="class">outcome-bar <xsl:call-template name="status-from-statistics"><xsl:with-param name="statistics" select="$statistics" /></xsl:call-template><xsl:if test="$small"> condensed</xsl:if></xsl:attribute>
               </xsl:otherwise>
             </xsl:choose>
           </div>
@@ -660,7 +662,7 @@ html
       </tr>
     </table>
     
-    <xsl:if test="not($condensed)">
+    <xsl:if test="not($small)">
       <span class="outcome-icons">
         <img src="{$imgDir}Passed.gif" alt="Passed"/>
         <xsl:value-of select="$statistics/@passedCount"/>

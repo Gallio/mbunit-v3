@@ -41,7 +41,7 @@ namespace Gallio.Runtime.Logging
         }
 
         /// <inheritdoc />
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             forwarder.Log(severity, message, exception);
         }

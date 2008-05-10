@@ -51,14 +51,14 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override bool CanBindInternal(DataBinding binding)
+        protected override bool CanBindImpl(DataBinding binding)
         {
             int bindingIndex = binding.Index.GetValueOrDefault(int.MaxValue);
             return bindingIndex >= 0 && bindingIndex < columnCount;
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
             if (includeDynamicRows)
                 return rows;

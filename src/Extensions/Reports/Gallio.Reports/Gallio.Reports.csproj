@@ -97,6 +97,9 @@
     <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="xsl\Gallio-Report.xhtml-condensed.xsl" />
+    <Content Include="xsl\Gallio-Report.html-condensed.xsl" />
+    <Content Include="xsl\Gallio-Report.ccnet-details-condensed.xsl" />
     <Content Include="xsl\Gallio-Report.common.xsl" />
     <Content Include="Gallio.Reports.plugin" />
     <Content Include="img\Failed.gif" />

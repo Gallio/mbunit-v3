@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CAB7735-05DA-480D-9A04-50615B00F886}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -440,7 +440,6 @@
     <Compile Include="Model\BaseTestExplorer.cs" />
     <Compile Include="Model\BaseTestParameter.cs" />
     <Compile Include="Model\Execution\BaseTestController.cs" />
-    <Compile Include="Model\Execution\ErrorTestController.cs" />
     <Compile Include="Model\Filters\FilterFormatter.cs" />
     <Compile Include="Model\Filters\IFilterVisitor.cs" />
     <Compile Include="Reflection\CodeElementKind.cs" />

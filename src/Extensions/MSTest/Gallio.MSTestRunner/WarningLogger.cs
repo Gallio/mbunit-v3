@@ -29,7 +29,7 @@ namespace Gallio.MSTestRunner
             this.warningHandler = warningHandler;
         }
 
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             if (severity >= LogSeverity.Warning)
             {

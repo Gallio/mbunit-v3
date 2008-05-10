@@ -29,7 +29,7 @@ namespace Gallio.Framework.Data.Binders
             if (item == null)
                 throw new ArgumentNullException("item");
 
-            return GetValueInternal(item);
+            return GetValueImpl(item);
         }
 
         /// <summary>
@@ -38,6 +38,6 @@ namespace Gallio.Framework.Data.Binders
         /// </summary>
         /// <param name="item">The data binding item, not null</param>
         /// <returns>The value</returns>
-        protected abstract object GetValueInternal(DataBindingItem item);
+        protected abstract object GetValueImpl(DataBindingItem item);
     }
 }

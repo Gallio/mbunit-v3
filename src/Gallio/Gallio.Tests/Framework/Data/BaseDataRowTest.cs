@@ -63,7 +63,7 @@ namespace Gallio.Tests.Framework.Data
             {
             }
 
-            protected override object GetValueInternal(DataBinding binding)
+            protected override object GetValueImpl(DataBinding binding)
             {
                 throw new NotImplementedException();
             }

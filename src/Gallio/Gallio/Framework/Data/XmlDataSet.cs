@@ -76,7 +76,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override bool CanBindInternal(DataBinding binding)
+        protected override bool CanBindImpl(DataBinding binding)
         {
             string bindingPath = binding.Path;
             if (bindingPath == null)
@@ -96,7 +96,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
             if (!isDynamic || includeDynamicRows)
             {
@@ -117,7 +117,7 @@ namespace Gallio.Framework.Data
                 this.row = row;
             }
 
-            protected override object GetValueInternal(DataBinding binding)
+            protected override object GetValueImpl(DataBinding binding)
             {
                 if (binding.Path == null)
                     throw new DataBindingException("A valid XPath expression is required as the binding path.");

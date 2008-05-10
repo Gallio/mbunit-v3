@@ -41,7 +41,7 @@ namespace Gallio.Runtime.ConsoleSupport
         }
 
         /// <inheritdoc />
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             lock (console.SyncRoot)
             {

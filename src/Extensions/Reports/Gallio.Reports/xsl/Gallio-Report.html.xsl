@@ -10,6 +10,7 @@
   <xsl:variable name="jsDir"><xsl:if test="$resourceRoot != ''"><xsl:value-of select="$resourceRoot"/>/</xsl:if>js/</xsl:variable>
   <xsl:variable name="imgDir"><xsl:if test="$resourceRoot != ''"><xsl:value-of select="$resourceRoot"/>/</xsl:if>img/</xsl:variable>
   <xsl:variable name="attachmentBrokerUrl"></xsl:variable>
+  <xsl:variable name="condensed" select="0" />
 
   <xsl:template match="/">
     <xsl:apply-templates select="/g:report" mode="html-document" />

@@ -50,13 +50,16 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor)
             {
                 progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount);
 
+                // Note: We do not check options.SkipTestExecution here because we want to build up
+                // the tree of data-driven test steps.  So we actually check it later on in the
+                // PatternTestExecutor.  This is different from framework adapters
+                // at this time (because they do not generally support dynamically generated data-driven tests).
                 Sandbox sandbox = new Sandbox();
                 EventHandler canceledHandler = delegate { sandbox.Abort(TestOutcome.Canceled, "The user canceled the test run."); };
                 try
@@ -64,7 +67,7 @@ namespace Gallio.Framework.Pattern
                     progressMonitor.Canceled += canceledHandler;
 
                     PatternTestExecutor executor = new PatternTestExecutor(options, progressMonitor, formatter, converter);
-                    executor.RunTest(rootTestCommand, parentTestStep, sandbox, null);
+                    return executor.RunTest(rootTestCommand, parentTestStep, sandbox, null);
                 }
                 finally
                 {

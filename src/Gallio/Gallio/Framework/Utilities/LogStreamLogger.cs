@@ -49,7 +49,7 @@ namespace Gallio.Framework.Utilities
         }
 
         /// <inheritdoc />
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             message = String.Format("[{0}] {1}", severity.ToString().ToLowerInvariant(), message);
 

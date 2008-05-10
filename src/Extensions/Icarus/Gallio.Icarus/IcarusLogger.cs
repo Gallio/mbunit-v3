@@ -31,7 +31,7 @@ namespace Gallio.Icarus
         }
 
         /// <inheritdoc />
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             projectAdapterView.WriteToLog(severity, message, exception);
         }

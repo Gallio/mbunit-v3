@@ -49,8 +49,7 @@ namespace Gallio.NUnitAdapter.Model
         }
 
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
 
@@ -60,17 +59,18 @@ namespace Gallio.NUnitAdapter.Model
 
                 progressMonitor.BeginTask(Resources.NUnitTestController_RunningNUnitTests, testCommands.Count);
                 if (progressMonitor.IsCanceled)
-                    return;
+                    return TestOutcome.Canceled;
 
                 if (options.SkipTestExecution)
                 {
                     SkipAll(rootTestCommand, parentTestStep);
+                    return TestOutcome.Skipped;
                 }
                 else
                 {
                     using (RunMonitor monitor = new RunMonitor(runner, testCommands, parentTestStep, progressMonitor))
                     {
-                        monitor.Run();
+                        return monitor.Run();
                     }
                 }
             }
@@ -108,7 +108,7 @@ namespace Gallio.NUnitAdapter.Model
                 progressMonitor.Canceled -= HandleCanceled;
             }
 
-            public void Run()
+            public TestOutcome Run()
             {
                 try
                 {
@@ -123,6 +123,8 @@ namespace Gallio.NUnitAdapter.Model
                     if (progressMonitor.IsCanceled)
                         Thread.ResetAbort();
                 }
+
+                return CreateOutcomeFromResult(runner.TestResult);
             }
 
             private void Initialize()

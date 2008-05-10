@@ -46,7 +46,7 @@ namespace Gallio.PowerShellCommands
         /// <param name="severity">The log message severity.</param>
         /// <param name="message">The message to log.</param>
         /// <param name="exception">The exception to log (it can be null).</param>
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             // The PowerShell logging methods may throw InvalidOperationException
             // or NotImplementedException if the PowerShell host is not connected

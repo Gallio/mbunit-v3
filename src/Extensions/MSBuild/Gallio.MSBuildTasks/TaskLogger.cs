@@ -36,7 +36,7 @@ namespace Gallio.MSBuildTasks
             this.taskLoggingHelper = taskLoggingHelper;
         }
 
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             if (exception != null)
                 message += "\n" + exception;

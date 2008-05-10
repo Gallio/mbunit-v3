@@ -44,8 +44,7 @@ namespace Gallio.XunitAdapter.Model
         private const string XunitTestNameKey = "Xunit:TestName";
 
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor)
             {
@@ -54,10 +53,12 @@ namespace Gallio.XunitAdapter.Model
                 if (options.SkipTestExecution)
                 {
                     SkipAll(rootTestCommand, parentTestStep);
+                    return TestOutcome.Skipped;
                 }
                 else
                 {
-                    RunTest(rootTestCommand, parentTestStep, progressMonitor);
+                    bool success = RunTest(rootTestCommand, parentTestStep, progressMonitor);
+                    return success ? TestOutcome.Passed : TestOutcome.Failed;
                 }
             }
         }

@@ -120,14 +120,14 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override bool CanBindInternal(DataBinding binding)
+        protected override bool CanBindImpl(DataBinding binding)
         {
             ResolvedBinding resolvedBinding = ResolveBinding(binding);
             return resolvedBinding != null && DataSets[resolvedBinding.DataSetInfo.DataSetIndex].CanBind(resolvedBinding.Inner);
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
             IDataProvider[] providers = GenericUtils.ToArray(DataSets);
             int providerCount = providers.Length;

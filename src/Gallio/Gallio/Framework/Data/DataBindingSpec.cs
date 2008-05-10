@@ -120,7 +120,7 @@ namespace Gallio.Framework.Data
             if (formatter == null)
                 throw new ArgumentNullException("formatter");
 
-            return FormatInternal(entity, formatter);
+            return FormatImpl(entity, formatter);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Gallio.Framework.Data
         /// <param name="entity">The entity that is qualified by the specification such as the name of a type or method</param>
         /// <param name="formatter">The formatter, not null</param>
         /// <returns>The formatted specification</returns>
-        protected abstract string FormatInternal(string entity, IFormatter formatter);
+        protected abstract string FormatImpl(string entity, IFormatter formatter);
 
         /// <summary>
         /// Appends formatted generic arguments within angle brackets, if any.

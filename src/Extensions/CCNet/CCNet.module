@@ -32,6 +32,9 @@
     <Extra Include="$(ReportResourcesDir)\xsl\Gallio-Report.ccnet-details.xsl">
       <Folder>CCNet\webdashboard\gallio\xsl</Folder>
     </Extra>
+    <Extra Include="$(ReportResourcesDir)\xsl\Gallio-Report.ccnet-details-condensed.xsl">
+      <Folder>CCNet\webdashboard\gallio\xsl</Folder>
+    </Extra>
     <Extra Include="$(ReportResourcesDir)\xsl\Gallio-Report.html+xhtml.xsl">
       <Folder>CCNet\webdashboard\gallio\xsl</Folder>
     </Extra>

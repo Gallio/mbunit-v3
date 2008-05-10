@@ -105,14 +105,14 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override bool CanBindInternal(DataBinding binding)
+        protected override bool CanBindImpl(DataBinding binding)
         {
             // TODO: compute from the document
             return true;
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsInternal(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
         {
             if (!isDynamic || includeDynamicRows)
             {
@@ -153,7 +153,7 @@ namespace Gallio.Framework.Data
                 this.header = header;
             }
 
-            protected override object GetValueInternal(DataBinding binding)
+            protected override object GetValueImpl(DataBinding binding)
             {
                 int index = GetIndex(binding);
                 if (index >= 0 && index < record.Length)

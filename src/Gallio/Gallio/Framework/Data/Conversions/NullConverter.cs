@@ -30,13 +30,13 @@ namespace Gallio.Framework.Data.Conversions
         public readonly static NullConverter Instance = new NullConverter();
 
         /// <inheritdoc />
-        protected override ConversionCost GetConversionCostInternal(Type sourceType, Type targetType)
+        protected override ConversionCost GetConversionCostImpl(Type sourceType, Type targetType)
         {
             return sourceType.Equals(targetType) ? ConversionCost.Zero : ConversionCost.Invalid;
         }
 
         /// <inheritdoc />
-        protected override object ConvertInternal(object sourceValue, Type targetType)
+        protected override object ConvertImpl(object sourceValue, Type targetType)
         {
             if (sourceValue == null || targetType.IsInstanceOfType(sourceValue))
                 return sourceValue;

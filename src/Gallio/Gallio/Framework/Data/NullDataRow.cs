@@ -34,7 +34,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override object GetValueInternal(DataBinding binding)
+        protected override object GetValueImpl(DataBinding binding)
         {
             return null;
         }

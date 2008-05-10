@@ -135,13 +135,23 @@ namespace Gallio.Model.Serialization
         /// Writes the annotation to a logger for presentation.
         /// </summary>
         /// <param name="logger">The logger</param>
+        /// <param name="includePrefix">If true, includes an identifying prefix to describe
+        /// the annotation type, otherwise we assume that the logger will do its own
+        /// thing based on the log severity</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
-        public void Log(ILogger logger)
+        public void Log(ILogger logger, bool includePrefix)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
 
             StringBuilder message = new StringBuilder();
+            if (includePrefix)
+            {
+                message.Append('[');
+                message.Append(GetPrefixForAnnotation(Type));
+                message.Append("] ");
+            }
+
             message.Append(Message);
 
             if (CodeLocation != CodeLocation.Unknown)
@@ -178,6 +188,24 @@ namespace Gallio.Model.Serialization
 
                 case AnnotationType.Info:
                     return LogSeverity.Info;
+
+                default:
+                    throw new ArgumentException("type");
+            }
+        }
+
+        private static string GetPrefixForAnnotation(AnnotationType type)
+        {
+            switch (type)
+            {
+                case AnnotationType.Error:
+                    return "error";
+
+                case AnnotationType.Warning:
+                    return "warning";
+
+                case AnnotationType.Info:
+                    return "info";
 
                 default:
                     throw new ArgumentException("type");

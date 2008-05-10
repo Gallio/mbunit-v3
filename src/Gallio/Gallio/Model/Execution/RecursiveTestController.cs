@@ -27,18 +27,17 @@ namespace Gallio.Model.Execution
     public class RecursiveTestController : BaseTestController
     {
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             using (progressMonitor)
             {
                 progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount);
 
-                RunNonMasterTest(rootTestCommand, parentTestStep, options, progressMonitor);
+                return RunNonMasterTest(rootTestCommand, parentTestStep, options, progressMonitor);
             }
         }
 
-        private static void RunTest(ITestCommand testCommand, ITestStep parentTestStep,
+        private static TestOutcome RunTest(ITestCommand testCommand, ITestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             Func<ITestController> factory = testCommand.Test.TestControllerFactory;
@@ -48,34 +47,50 @@ namespace Gallio.Model.Execution
                 // Delegate to the associated controller, if present.
                 using (ITestController controller = factory())
                 {
-                    controller.RunTests(testCommand, parentTestStep,
-                        options, progressMonitor.CreateSubProgressMonitor(testCommand.TestCount));
+                    try
+                    {
+                        return controller.RunTests(testCommand, parentTestStep,
+                            options, progressMonitor.CreateSubProgressMonitor(testCommand.TestCount));
+                    }
+                    catch (Exception ex)
+                    {
+                        ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
+                        TestLogWriterUtils.WriteException(context.LogWriter, LogStreamNames.Failures, ex, "Fatal Exception in Test Controller");
+                        context.FinishStep(TestOutcome.Error, null);
+                        return TestOutcome.Error;
+                    }
                 }
             }
             else
             {
-                RunNonMasterTest(testCommand, parentTestStep, options, progressMonitor);
+                return RunNonMasterTest(testCommand, parentTestStep, options, progressMonitor);
             }
         }
 
-        private static void RunNonMasterTest(ITestCommand testCommand, ITestStep parentTestStep,
+        private static TestOutcome RunNonMasterTest(ITestCommand testCommand, ITestStep parentTestStep,
             TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             // Enter the scope of the test and recurse until we find a controller.
             progressMonitor.SetStatus(testCommand.Test.FullName);
 
             ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
-            try
-            {
-                foreach (ITestCommand monitor in testCommand.Children)
-                    RunTest(monitor, testContext.TestStep, options, progressMonitor);
-            }
-            finally
-            {
-                testContext.FinishStep(TestOutcome.Passed, null);
+            TestOutcome outcome = TestOutcome.Passed;
 
-                progressMonitor.Worked(1);
+            foreach (ITestCommand monitor in testCommand.Children)
+            {
+                if (progressMonitor.IsCanceled)
+                    break;
+
+                outcome = outcome.CombineWith(RunTest(monitor, testContext.TestStep, options, progressMonitor));
             }
+
+            if (progressMonitor.IsCanceled)
+                outcome = TestOutcome.Canceled;
+
+            testContext.FinishStep(outcome, null);
+
+            progressMonitor.Worked(1);
+            return outcome;
         }
     }
 }

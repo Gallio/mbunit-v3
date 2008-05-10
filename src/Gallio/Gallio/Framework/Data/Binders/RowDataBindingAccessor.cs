@@ -40,7 +40,7 @@ namespace Gallio.Framework.Data.Binders
         }
 
         /// <inheritdoc />
-        protected override object GetValueInternal(DataBindingItem item)
+        protected override object GetValueImpl(DataBindingItem item)
         {
             object value = item.GetRow().GetValue(binding);
             return value;

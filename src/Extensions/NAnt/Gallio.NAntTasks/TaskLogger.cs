@@ -35,7 +35,7 @@ namespace Gallio.NAntTasks
             this.task = task;
         }
 
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             if (exception != null)
                 message += "\n" + exception;

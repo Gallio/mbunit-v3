@@ -46,7 +46,7 @@
                    type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
           <parameters>
             <name>Html</name>
-            <description>Generates HTML reports with linked attachment files.</description>
+            <description>Generates HTML reports.</description>
             <extension>html</extension>
             <contentType>text/html</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
@@ -62,17 +62,17 @@
           </parameters>
         </component>
 
-        <component id="ReportFormatter.Html-Inline"
+        <component id="ReportFormatter.Html-Condensed"
                    service="Gallio.Runner.Reports.IReportFormatter, Gallio"
                    type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
           <parameters>
-            <name>Html-Inline</name>
-            <description>Generates HTML reports with inline encoded attachments (images only).</description>
+            <name>Html-Condensed</name>
+            <description>Generates HTML reports that omit passing tests.</description>
             <extension>html</extension>
             <contentType>text/html</contentType>
-            <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
+            <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
             <contentUri>plugin://Gallio.Reports/</contentUri>
-            <xsltPath>xsl/Gallio-Report.html.xsl</xsltPath>
+            <xsltPath>xsl/Gallio-Report.html-condensed.xsl</xsltPath>
             <resourcePaths>
               <array>
                 <item>css</item>
@@ -88,7 +88,7 @@
                    type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
           <parameters>
             <name>XHtml</name>
-            <description>Generates XHTML reports with linked attachment files.</description>
+            <description>Generates XHTML reports.</description>
             <extension>xhtml</extension>
             <contentType>text/xhtml+xml</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
@@ -103,18 +103,18 @@
             </resourcePaths>
           </parameters>
         </component>
-        
-        <component id="ReportFormatter.XHtml-Inline"
+
+        <component id="ReportFormatter.XHtml-Condensed"
                    service="Gallio.Runner.Reports.IReportFormatter, Gallio"
                    type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
           <parameters>
-            <name>XHtml-Inline</name>
-            <description>Generates XHTML reports with inline encoded attachments (images only).</description>
+            <name>XHtml-Condensed</name>
+            <description>Generates XHTML reports that omit passing tests.</description>
             <extension>xhtml</extension>
             <contentType>text/xhtml+xml</contentType>
-            <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
+            <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
             <contentUri>plugin://Gallio.Reports/</contentUri>
-            <xsltPath>xsl/Gallio-Report.xhtml.xsl</xsltPath>
+            <xsltPath>xsl/Gallio-Report.xhtml-condensed.xsl</xsltPath>
             <resourcePaths>
               <array>
                 <item>css</item>
@@ -123,15 +123,25 @@
               </array>
             </resourcePaths>
           </parameters>
-        </component>      
+        </component>
         
         <component id="ReportFormatter.MHtml"
                    service="Gallio.Runner.Reports.IReportFormatter, Gallio"
                    type="Gallio.Reports.MHtmlReportFormatter, Gallio.Reports">
           <parameters>
             <name>MHtml</name>
-            <description>Generates MHTML reports with embedded attachments.</description>
+            <description>Generates MHTML reports.</description>
             <htmlReportFormatter>${ReportFormatter.Html}</htmlReportFormatter>
+          </parameters>
+        </component>
+        
+        <component id="ReportFormatter.MHtml-Condensed"
+                   service="Gallio.Runner.Reports.IReportFormatter, Gallio"
+                   type="Gallio.Reports.MHtmlReportFormatter, Gallio.Reports">
+          <parameters>
+            <name>MHtml-Condensed</name>
+            <description>Generates MHTML reports that omit passing tests.</description>
+            <htmlReportFormatter>${ReportFormatter.Html-Condensed}</htmlReportFormatter>
           </parameters>
         </component>
       </components>

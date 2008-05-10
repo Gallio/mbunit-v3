@@ -40,7 +40,7 @@ namespace Gallio.TDNetRunner
         }
 
         /// <inheritdoc />
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             switch (severity)
             {

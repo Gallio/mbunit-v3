@@ -47,7 +47,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override object GetValueInternal(DataBinding binding)
+        protected override object GetValueImpl(DataBinding binding)
         {
             int? index = binding.Index;
             if (index.HasValue && index.Value >= 0 && index.Value < values.Count)

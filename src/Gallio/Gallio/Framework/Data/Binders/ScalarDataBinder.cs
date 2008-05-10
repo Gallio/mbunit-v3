@@ -44,7 +44,7 @@ namespace Gallio.Framework.Data.Binders
         }
 
         /// <inheritdoc />
-        protected override IDataBindingAccessor RegisterInternal(DataBindingContext context, IDataSourceResolver resolver)
+        protected override IDataBindingAccessor RegisterImpl(DataBindingContext context, IDataSourceResolver resolver)
         {
             IDataSet dataSet = resolver.ResolveDataSource(sourceName);
             if (dataSet == null)

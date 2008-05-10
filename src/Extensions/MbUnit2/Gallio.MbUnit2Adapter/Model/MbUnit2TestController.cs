@@ -52,8 +52,7 @@ namespace Gallio.MbUnit2Adapter.Model
         }
 
         /// <inheritdoc />
-        protected override void RunTestsInternal(ITestCommand rootTestCommand, ITestStep parentTestStep,
-            TestExecutionOptions options, IProgressMonitor progressMonitor)
+        protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
             ThrowIfDisposed();
 
@@ -62,11 +61,12 @@ namespace Gallio.MbUnit2Adapter.Model
                 progressMonitor.BeginTask(Resources.MbUnit2TestController_RunningMbUnitTests, 1);
 
                 if (progressMonitor.IsCanceled)
-                    return;
+                    return TestOutcome.Canceled;
 
                 if (options.SkipTestExecution)
                 {
                     SkipAll(rootTestCommand, parentTestStep);
+                    return TestOutcome.Skipped;
                 }
                 else
                 {
@@ -75,7 +75,7 @@ namespace Gallio.MbUnit2Adapter.Model
                     using (InstrumentedFixtureRunner fixtureRunner = new InstrumentedFixtureRunner(fixtureExplorer,
                         testCommands, progressMonitor, parentTestStep))
                     {
-                        fixtureRunner.Run();
+                        return fixtureRunner.Run();
                     }
                 }
             }
@@ -96,6 +96,7 @@ namespace Gallio.MbUnit2Adapter.Model
 
             private HashSet<Type> includedFixtureTypes;
 
+            private TestOutcome assemblyTestOutcome;
             private ITestCommand assemblyTestCommand;
             private Dictionary<Fixture, ITestCommand> fixtureTestCommands;
             private Dictionary<RunPipe, ITestCommand> runPipeTestCommands;
@@ -177,8 +178,10 @@ namespace Gallio.MbUnit2Adapter.Model
                 progressMonitor.Worked(workUnit);
             }
 
-            public void Run()
+            public TestOutcome Run()
             {
+                assemblyTestOutcome = TestOutcome.Skipped;
+
                 if (assemblyTestCommand != null)
                 {
                     ReportListener reportListener = new ReportListener();
@@ -186,6 +189,8 @@ namespace Gallio.MbUnit2Adapter.Model
 
                     // TODO: Do we need to do anyhing with the result in the report listener?
                 }
+
+                return assemblyTestOutcome;
             }
 
             #region Overrides to track assembly and fixture lifecycle
@@ -377,6 +382,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 activeTestContexts.Remove(assemblyTestCommand);
 
                 assemblyTestContext.FinishStep(outcome, null);
+                assemblyTestOutcome = outcome;
             }
 
             private void HandleFixtureStart(Fixture fixture)
@@ -515,24 +521,28 @@ namespace Gallio.MbUnit2Adapter.Model
 
             private static void FinishStepWithReportRunResult(ITestContext testContext, ReportRunResult reportRunResult)
             {
+                testContext.FinishStep(GetOutcomeFromReportRunResult(reportRunResult), null);
+            }
+
+            private static TestOutcome GetOutcomeFromReportRunResult(ReportRunResult reportRunResult)
+            {
                 switch (reportRunResult)
                 {
                     case ReportRunResult.NotRun:
                     case ReportRunResult.Skip:
-                        testContext.FinishStep(TestOutcome.Skipped, null);
-                        break;
+                        return TestOutcome.Skipped;
 
                     case ReportRunResult.Ignore:
-                        testContext.FinishStep(TestOutcome.Ignored, null);
-                        break;
+                        return TestOutcome.Ignored;
 
                     case ReportRunResult.Success:
-                        testContext.FinishStep(TestOutcome.Passed, null);
-                        break;
+                        return TestOutcome.Passed;
 
                     case ReportRunResult.Failure:
-                        testContext.FinishStep(TestOutcome.Failed, null);
-                        break;
+                        return TestOutcome.Failed;
+
+                    default:
+                        throw new ArgumentException("Unsupported report run result.", "reportRunResult");
                 }
             }
         }

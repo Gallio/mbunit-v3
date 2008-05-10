@@ -57,7 +57,7 @@ namespace Gallio.Framework.Data
             if (binding == null)
                 throw new ArgumentNullException("binding");
 
-            return GetValueInternal(binding);
+            return GetValueImpl(binding);
         }
 
         /// <summary>
@@ -65,6 +65,6 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="binding">The binding, never null</param>
         /// <returns>The associated value</returns>
-        protected abstract object GetValueInternal(DataBinding binding);
+        protected abstract object GetValueImpl(DataBinding binding);
     }
 }

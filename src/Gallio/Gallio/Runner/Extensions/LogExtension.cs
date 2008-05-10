@@ -62,7 +62,7 @@ namespace Gallio.Runner.Extensions
         /// <param name="annotation">The annotation to log</param>
         protected virtual void LogAnnotation(AnnotationData annotation)
         {
-            annotation.Log(Logger);
+            annotation.Log(Logger, true);
         }
 
         /// <summary>

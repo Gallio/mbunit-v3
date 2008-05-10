@@ -41,7 +41,7 @@ namespace Gallio.Runtime.Logging
         }
 
         /// <inheritdoc />
-        protected override void LogInternal(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
             if (severity >= minSeverity)
                 logger.Log(severity, message, exception);

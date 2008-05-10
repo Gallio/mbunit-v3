@@ -31,7 +31,7 @@ namespace Gallio.Framework.Data.Binders
             if (resolver == null)
                 throw new ArgumentNullException("resolver");
 
-            return RegisterInternal(context, resolver);
+            return RegisterImpl(context, resolver);
         }
 
         /// <summary>
@@ -40,6 +40,6 @@ namespace Gallio.Framework.Data.Binders
         /// <param name="context">The data binding context, not null</param>
         /// <param name="resolver">The data source resolver, not null</param>
         /// <returns>The data binding accessor</returns>
-        protected abstract IDataBindingAccessor RegisterInternal(DataBindingContext context, IDataSourceResolver resolver);
+        protected abstract IDataBindingAccessor RegisterImpl(DataBindingContext context, IDataSourceResolver resolver);
     }
 }
