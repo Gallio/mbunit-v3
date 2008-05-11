@@ -152,6 +152,7 @@ namespace Gallio.Reports
             XmlWriterSettings settings = transform.OutputSettings.Clone();
             settings.CheckCharacters = false;
             settings.Encoding = Encoding.UTF8;
+            settings.CloseOutput = true;
             using (XmlWriter writer = XmlWriter.Create(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, Encoding.UTF8), settings))
                 transform.Transform(document, arguments, writer);
 
@@ -190,6 +191,7 @@ namespace Gallio.Reports
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.CheckCharacters = false;
             settings.ValidationType = ValidationType.None;
+            settings.CloseInput = true;
             settings.XmlResolver = GetContentResolver();
 
             XslCompiledTransform transform = new XslCompiledTransform();
@@ -215,6 +217,7 @@ namespace Gallio.Reports
             XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
             xmlReaderSettings.CheckCharacters = false;
             xmlReaderSettings.ValidationType = ValidationType.None;
+            xmlReaderSettings.CloseInput = true;
 
             stream.Position = 0;
             XmlReader xmlReader = XmlReader.Create(stream, xmlReaderSettings);

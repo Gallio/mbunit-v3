@@ -165,6 +165,7 @@ namespace Gallio.Runner.Reports
                 settings.CheckCharacters = false;
                 settings.Indent = true;
                 settings.Encoding = Encoding.UTF8;
+                settings.CloseOutput = true;
 
                 string reportPath = reportContainer.ReportName + @".xml";
 

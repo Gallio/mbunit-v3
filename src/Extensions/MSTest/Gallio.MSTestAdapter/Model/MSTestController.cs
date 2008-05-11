@@ -132,6 +132,7 @@ namespace Gallio.MSTestAdapter.Model
             string parentListId = "8c43106b-9dc1-4907-a29f-aa66a61bf5b6";
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
+            settings.CloseOutput = true;
             using (XmlWriter xmlWriter = XmlWriter.Create(assemblyTest.FullTestMetadataFileName, settings))
             {
                 xmlWriter.WriteStartDocument();
@@ -286,6 +287,7 @@ namespace Gallio.MSTestAdapter.Model
                 settings.IgnoreComments = true;
                 settings.IgnoreProcessingInstructions = true;
                 settings.IgnoreWhitespace = true;
+                settings.CloseInput = true;
                 using (XmlReader reader = XmlReader.Create(assemblyTest.FullResultsFileName, settings))
                 {
                     while (reader.ReadToFollowing("UnitTestResult"))

@@ -37,12 +37,6 @@ namespace Gallio.XunitAdapter.Model
     /// </summary>
     internal class XunitTestController : BaseTestController
     {
-        /// <summary>
-        /// The metadata key used for recording Xunit's internal test name with a step
-        /// when it differs from what the adapter derived by itself.
-        /// </summary>
-        private const string XunitTestNameKey = "Xunit:TestName";
-
         /// <inheritdoc />
         protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
@@ -200,7 +194,11 @@ namespace Gallio.XunitAdapter.Model
             bool passed = true;
             foreach (XunitTestCommand xunitTestCommand in xunitTestCommands)
             {
-                ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
+                BaseTestStep testStep = new BaseTestStep(testCommand.Test, parentTestStep);
+                if (xunitTestCommand.Name != null)
+                    testStep.Name = xunitTestCommand.Name;
+
+                ITestContext testContext = testCommand.StartStep(testStep);
                 passed &= RunTestCommandAndFinishStep(testContext, testClassCommand, xunitTestCommand);
             }
 
@@ -228,13 +226,7 @@ namespace Gallio.XunitAdapter.Model
 
         private static bool LogMethodResultAndFinishStep(ITestContext testContext, XunitMethodResult result, bool useXunitTime)
         {
-            TimeSpan? testTime = useXunitTime ? (TimeSpan?)TimeSpan.FromSeconds(result.TestTime) : null;
-
-            // Record the method name as metadata if it's not at all present in the step name.
-            // That can happen with data-driven tests.
-            string xunitTestName = result.MethodName;
-            if (xunitTestName != testContext.TestStep.Name)
-                testContext.AddMetadata(XunitTestNameKey, xunitTestName);
+            TimeSpan? testTime = useXunitTime ? (TimeSpan?)TimeSpan.FromSeconds(result.ExecutionTime) : null;
 
             if (result is XunitPassedResult)
             {

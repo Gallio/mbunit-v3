@@ -99,12 +99,13 @@ namespace Gallio.Reflection.Impl
                 CachedDocument document = new CachedDocument();
 
                 XmlReaderSettings settings = new XmlReaderSettings();
-                settings.IgnoreWhitespace = false; // needed for normalization to work
+                settings.IgnoreWhitespace = false; // needed for whitespace normalization to work within comments
                 settings.IgnoreProcessingInstructions = true;
                 settings.IgnoreComments = true;
                 settings.ValidationType = ValidationType.None;
                 settings.ProhibitDtd = true;
                 settings.CheckCharacters = false;
+                settings.CloseInput = true;
 
                 using (XmlReader reader = XmlReader.Create(documentPath, settings))
                 {

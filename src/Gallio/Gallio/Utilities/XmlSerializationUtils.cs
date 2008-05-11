@@ -40,6 +40,7 @@ namespace Gallio.Utilities
 
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
+            settings.CloseOutput = true;
 
             using (XmlWriter writer = XmlWriter.Create(filename, settings))
                 serializer.Serialize(writer, root);
