@@ -69,7 +69,7 @@ we must update the dashboard configuration file to include the new test report p
                                 actionName="GallioTestReport"
                                 xslFileName="gallio\xsl\Gallio-Report.ccnet-details.xsl" />
           <xslReportBuildPlugin description="Gallio Test Report (Condensed)"
-                                actionName="GallioTestReport"
+                                actionName="GallioTestReportCondensed"
                                 xslFileName="gallio\xsl\Gallio-Report.ccnet-details-condensed.xsl" />
           <gallioAttachmentBuildPlugin />
 
