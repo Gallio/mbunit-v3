@@ -21,10 +21,6 @@
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 xmlns:g="http://www.gallio.org/"
                 xmlns="http://www.w3.org/1999/xhtml">
-  <!-- This parameter configures whether outcome bars show a proportional division
-       of color bars by status code or to show a single solid color -->
-  <xsl:variable name="useProportionalOutcomeBars" select="0" />
-  
   <xsl:template match="g:report" mode="xhtml-document">
     <html xml:lang="en" lang="en" dir="ltr">
       <head>
@@ -291,6 +287,7 @@ html
           </a>
 
           <xsl:call-template name="outcome-bar">
+            <xsl:with-param name="outcome" select="g:result/g:outcome" />
             <xsl:with-param name="statistics" select="$statistics" />
           </xsl:call-template>
         </span>
@@ -364,6 +361,7 @@ html
           <xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="g:testStep/@name" /></xsl:call-template>
 
           <xsl:call-template name="outcome-bar">
+            <xsl:with-param name="outcome" select="g:result/g:outcome" />
             <xsl:with-param name="statistics" select="$statistics" />
             <xsl:with-param name="small" select="not(g:children/g:testStepRun)" />
           </xsl:call-template>
@@ -643,6 +641,7 @@ html
   
   <!-- Displays visual statistics using a status bar and outcome icons -->
   <xsl:template name="outcome-bar">
+    <xsl:param name="outcome" />
     <xsl:param name="statistics"/>
     <xsl:param name="small" select="0" />
 
@@ -650,27 +649,13 @@ html
       <tr>
         <td>
           <div>
-            <xsl:choose>
-              <xsl:when test="$useProportionalOutcomeBars and not($small)">
-                <xsl:variable name="total" select="$statistics/@passedCount + $statistics/@failedCount + $statistics/@inconclusiveCount + $statistics/@skippedCount" />
-                <xsl:attribute name="class">outcome-bar</xsl:attribute>
-                <xsl:if test="$statistics/@passedCount > 0">
-                  <div class="status-passed" style="width:{100.0 * $statistics/@passedCount div $total}%" />
-                </xsl:if>
-                <xsl:if test="$statistics/@failedCount > 0">
-                  <div class="status-failed" style="width:{100.0 * $statistics/@failedCount div $total}%" />
-                </xsl:if>
-                <xsl:if test="$statistics/@inconclusiveCount > 0">
-                  <div class="status-inconclusive" style="width:{100.0 * $statistics/@inconclusiveCount div $total}%" />
-                </xsl:if>
-                <xsl:if test="$statistics/@skippedCount > 0">
-                  <div class="status-skipped" style="width:{100.0 * $statistics/@skippedCount div $total}%" />
-                </xsl:if>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:attribute name="class">outcome-bar <xsl:call-template name="status-from-statistics"><xsl:with-param name="statistics" select="$statistics" /></xsl:call-template><xsl:if test="$small"> condensed</xsl:if></xsl:attribute>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:attribute name="class">outcome-bar status-<xsl:value-of select="$outcome/@status"/><xsl:if test="$small"> condensed</xsl:if></xsl:attribute>
+            <xsl:attribute name="title">
+              <xsl:choose>
+                <xsl:when test="$outcome/@category"><xsl:value-of select="$outcome/@category"/></xsl:when>
+                <xsl:otherwise><xsl:value-of select="$outcome/@status"/></xsl:otherwise>
+              </xsl:choose>
+            </xsl:attribute>
           </div>
         </td>
       </tr>

@@ -198,12 +198,6 @@ div.gallio-report div.navigator
 	width: 20px;
 }
 
-.gallio-report div.outcome-bar div
-{
-	height:100%;
-	float:left;
-}
-
 
 /* Outcome statistics */
 .gallio-report span.outcome-icons
