@@ -114,6 +114,8 @@ namespace Gallio.Framework.Pattern
                         PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep, test.Name, test.CodeElement, true);
                         PatternTestState testState = new PatternTestState(primaryTestStep, testHandler, converter, formatter, testCommand.IsExplicit);
 
+                        bool invisible = true;
+
                         outcome = outcome.CombineWith(DoBeforeTest(sandbox, testState));
                         if (outcome.Status == TestStatus.Passed)
                         {
@@ -121,6 +123,7 @@ namespace Gallio.Framework.Pattern
                             if (!reusePrimaryTestStep)
                                 primaryTestStep.IsTestCase = false;
 
+                            invisible = false;
                             Context context = Context.PrepareContext(testCommand.StartStep(primaryTestStep), sandbox);
                             outcome = outcome.CombineWith(DoInitializeTest(context, testState));
 
@@ -133,6 +136,9 @@ namespace Gallio.Framework.Pattern
                         }
 
                         outcome = outcome.CombineWith(DoAfterTest(sandbox, testState));
+
+                        if (invisible)
+                            PublishOutcomeFromInvisibleTest(testCommand, primaryTestStep, ref outcome);
                     }
                 });
             });
@@ -173,10 +179,13 @@ namespace Gallio.Framework.Pattern
                     TestOutcome outcome = DoDecorateTestInstance(primaryContext.Sandbox, testState, decoratedTestInstanceActions);
                     if (outcome.Status == TestStatus.Passed)
                     {
+                        bool invisible = true;
+
                         PatternTestStep testStep;
                         if (reusePrimaryTestStep)
                         {
                             testStep = testState.PrimaryTestStep;
+                            invisible = false;
                         }
                         else
                         {
@@ -195,6 +204,7 @@ namespace Gallio.Framework.Pattern
                             Context context = reusePrimaryTestStep
                                 ? primaryContext
                                 : Context.PrepareContext(testCommand.StartStep(testStep), primaryContext.Sandbox.CreateChild());
+                            invisible = false;
 
                             outcome = outcome.CombineWith(RunTestInstanceWithContext(testCommand, context, testInstanceState));
 
@@ -205,6 +215,9 @@ namespace Gallio.Framework.Pattern
                         }
 
                         outcome = outcome.CombineWith(DoAfterTestInstance(primaryContext.Sandbox, testInstanceState));
+
+                        if (invisible)
+                            PublishOutcomeFromInvisibleTest(testCommand, testStep, ref outcome);
                     }
 
                     return outcome;
@@ -294,6 +307,28 @@ namespace Gallio.Framework.Pattern
         {
             outcome = outcome.CombineWith(newOutcome);
             context.SetInterimOutcome(outcome);
+        }
+
+        private static void PublishOutcomeFromInvisibleTest(ITestCommand testCommand, ITestStep testStep, ref TestOutcome outcome)
+        {
+            switch (outcome.Status)
+            {
+                case TestStatus.Skipped:
+                case TestStatus.Passed:
+                    // Either nothing interesting happened or the test was silently skipped during Before/After.
+                    outcome = TestOutcome.Passed;
+                    break;
+
+                case TestStatus.Failed:
+                case TestStatus.Inconclusive:
+                default:
+                    // Something bad happened during Before/After that prevented the test from running.
+                    ITestContext context = testCommand.StartStep(testStep);
+                    context.LogWriter.Write(LogStreamNames.Failures, "The test did not run.  Consult the parent test log for more details.");
+                    context.FinishStep(outcome, null);
+                    outcome = outcome.Generalize();
+                    break;
+            }
         }
 
         #region Actions
