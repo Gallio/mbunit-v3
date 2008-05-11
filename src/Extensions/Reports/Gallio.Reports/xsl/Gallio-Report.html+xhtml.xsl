@@ -231,9 +231,16 @@ html
       <div class="section-content">
         <xsl:choose>
           <xsl:when test="g:testStepRun/g:children/g:testStepRun">
-            <ul>
-              <xsl:apply-templates select="g:testStepRun/g:children/g:testStepRun" mode="summary" />
-            </ul>
+            <xsl:choose>
+              <xsl:when test="not($condensed) or g:testStepRun/g:result/g:outcome/@status!='passed'">
+                <ul>
+                  <xsl:apply-templates select="g:testStepRun/g:children/g:testStepRun" mode="summary" />
+                </ul>
+              </xsl:when>
+              <xsl:otherwise>
+                <em>All tests passed.</em>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:otherwise>
             <em>This report does not contain any test runs.</em>
@@ -305,9 +312,16 @@ html
       <div class="section-content">
         <xsl:choose>
           <xsl:when test="g:testStepRun/g:children/g:testStepRun">
-            <ul class="testStepRunContainer">
-              <xsl:apply-templates select="g:testStepRun/g:children/g:testStepRun" mode="details" />
-            </ul>
+            <xsl:choose>
+              <xsl:when test="not($condensed) or g:testStepRun/g:result/g:outcome/@status!='passed'">
+                <ul class="testStepRunContainer">
+                  <xsl:apply-templates select="g:testStepRun/g:children/g:testStepRun" mode="details" />
+                </ul>
+              </xsl:when>
+              <xsl:otherwise>
+                <em>All tests passed.</em>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:otherwise>
             <em>This report does not contain any test runs.</em>
