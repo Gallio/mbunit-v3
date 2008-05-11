@@ -1,5 +1,5 @@
 ﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
-// Portions Copyright 2000-2004 Jonathan De Halleux, Jamie Cansdale
+// Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
