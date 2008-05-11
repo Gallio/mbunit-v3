@@ -136,6 +136,15 @@ namespace Gallio.Model
         }
 
         /// <summary>
+        /// Produces an outcome with the same status but omitting the category information.
+        /// </summary>
+        /// <returns>The generalized outcome</returns>
+        public TestOutcome Generalize()
+        {
+            return new TestOutcome(status);
+        }
+
+        /// <summary>
         /// Returns the <see cref="DisplayName" /> of the outcome.
         /// </summary>
         /// <returns>The display name</returns>

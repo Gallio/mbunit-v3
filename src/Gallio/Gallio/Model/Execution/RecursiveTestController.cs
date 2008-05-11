@@ -81,7 +81,7 @@ namespace Gallio.Model.Execution
                 if (progressMonitor.IsCanceled)
                     break;
 
-                outcome = outcome.CombineWith(RunTest(monitor, testContext.TestStep, options, progressMonitor));
+                outcome = outcome.CombineWith(RunTest(monitor, testContext.TestStep, options, progressMonitor)).Generalize();
             }
 
             if (progressMonitor.IsCanceled)

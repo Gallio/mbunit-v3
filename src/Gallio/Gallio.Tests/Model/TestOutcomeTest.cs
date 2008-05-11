@@ -75,6 +75,13 @@ namespace Gallio.Tests.Model
         }
 
         [Test]
+        public void GeneralizeOmitsCategory()
+        {
+            Assert.AreEqual(TestOutcome.Failed, TestOutcome.Failed.Generalize());
+            Assert.AreEqual(TestOutcome.Failed, TestOutcome.Error.Generalize());
+        }
+
+        [Test]
         [Row("Passed", TestStatus.Passed, null)]
         [Row("Failed", TestStatus.Failed, null)]
         [Row("Error", TestStatus.Failed, "error")]

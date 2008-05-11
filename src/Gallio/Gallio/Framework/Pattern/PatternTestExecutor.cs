@@ -151,7 +151,7 @@ namespace Gallio.Framework.Pattern
                     outcome = outcome.CombineWith(RunTestInstance(testCommand, primaryContext, testState, item, reusePrimaryTestStep));
                 }
 
-                return reusePrimaryTestStep ? outcome : GeneralizeInheritedOutcome(outcome);
+                return reusePrimaryTestStep ? outcome : outcome.Generalize();
             }
             catch (Exception ex)
             {
@@ -287,7 +287,7 @@ namespace Gallio.Framework.Pattern
                 outcome = outcome.CombineWith(RunTest(childTestCommand, testInstanceState.TestStep, sandbox, testHandlerDecorator));
             }
 
-            return GeneralizeInheritedOutcome(outcome);
+            return outcome.Generalize();
         }
 
         private static void UpdateInterimOutcome(Context context, ref TestOutcome outcome, TestOutcome newOutcome)
@@ -463,20 +463,6 @@ namespace Gallio.Framework.Pattern
             Log.Failures.WriteException(ex, message);
             context.FinishStep(TestOutcome.Error, null);
             return TestOutcome.Error;
-        }
-
-        private static TestOutcome GeneralizeInheritedOutcome(TestOutcome combinedInheritedOutcome)
-        {
-            switch (combinedInheritedOutcome.Status)
-            {
-                case TestStatus.Skipped:
-                case TestStatus.Passed:
-                    return TestOutcome.Passed;
-                case TestStatus.Failed:
-                    return TestOutcome.Failed;
-                default:
-                    return TestOutcome.Inconclusive;
-            }
         }
 
         private static void DoWithTimeout(Sandbox sandbox, TimeSpan? timeout, Action action)
