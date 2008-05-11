@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Model;
@@ -321,13 +320,13 @@ namespace Gallio.Framework
 
         private static void LogMessage(string actionDescription, TestOutcome outcome, string message, Exception ex)
         {
-            if (message == null && ex == null)
+            if (string.IsNullOrEmpty(message) && ex == null)
                 return;
 
             LogStreamWriter stream = GetLogStreamWriterForOutcome(outcome);
             using (actionDescription != null ? stream.BeginSection(actionDescription) : null)
             {
-                if (message != null)
+                if (! string.IsNullOrEmpty(message))
                     stream.WriteLine(message);
 
                 if (ex != null)

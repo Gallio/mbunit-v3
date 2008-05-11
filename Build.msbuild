@@ -15,7 +15,7 @@
     <Coverage Condition="'$(Coverage)'==''">true</Coverage>
     
     <ShowReports Condition="'$(ShowReports)'==''">true</ShowReports>
-    <ReportTypes Condition="'$(ReportTypes)'==''">Html</ReportTypes>
+    <ReportTypes Condition="'$(ReportTypes)'==''">Html-Condensed</ReportTypes>
     <IgnoreFailures Condition="'$(IgnoreFailures)'==''">false</IgnoreFailures>
 
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>

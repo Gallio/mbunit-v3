@@ -82,13 +82,7 @@ namespace MbUnit.Framework
             scope.Test.TestActions.BeforeTestChain.Before(delegate(PatternTestState state)
             {
                 if (!state.IsExplicit)
-                {
-                    string message = "The test will not run unless explicitly selected.";
-                    if (reason.Length != 0)
-                        message += "\nReason: " + reason;
-
-                    throw new SilentTestException(TestOutcome.Explicit, message);
-                }
+                    throw new SilentTestException(TestOutcome.Explicit);
             });
         }
     }
