@@ -6,26 +6,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Binary Include="*.sln">
+    <Extra Include="*.sln">
         <Folder>Samples</Folder>
-    </Binary>
-    <Binary Include="*.vsmdi">
+    </Extra>
+    <Extra Include="*.vsmdi">
         <Folder>Samples</Folder>
-    </Binary>
-    <Binary Include="*.testrunconfig">
+    </Extra>
+    <Extra Include="*.testrunconfig">
         <Folder>Samples</Folder>
-    </Binary>
-    <Binary Include="**\*.cs" Exclude="**\AdditionalAssemblyInfo.cs">
+    </Extra>
+    <Extra Include="**\*.cs" Exclude="**\AdditionalAssemblyInfo.cs">
         <Folder>Samples</Folder>
-    </Binary>
-    <Binary Include="**\*.resx">
+    </Extra>
+    <Extra Include="**\*.resx">
         <Folder>Samples</Folder>
-    </Binary>
-    <Binary Include="**\*.png">
+    </Extra>
+    <Extra Include="**\*.png">
         <Folder>Samples</Folder>
-    </Binary>
-    <Binary Include="**\*.csproj">
+    </Extra>
+    <Extra Include="**\*.csproj">
         <Folder>Samples</Folder>
-    </Binary>
+    </Extra>
   </ItemGroup>
 </Project>

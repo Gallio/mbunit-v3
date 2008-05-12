@@ -86,22 +86,22 @@
     </CreateItem>
 
     <CreateItem Include="@(Binary->'%(FullPath)')"
-                AdditionalMetadata="ItemName=Binary">
+                AdditionalMetadata="ItemName=Binary;Folder=%(Binary.Folder)\%(Binary.RecursiveDir)">
       <Output TaskParameter="Include" ItemName="ModuleItem" />
     </CreateItem>
 
     <CreateItem Include="@(Document->'%(FullPath)')"
-                AdditionalMetadata="ItemName=Document">
+                AdditionalMetadata="ItemName=Document;Folder=%(Document.Folder)\%(Document.RecursiveDir)">
       <Output TaskParameter="Include" ItemName="ModuleItem" />
     </CreateItem>
 
     <CreateItem Include="@(Extra->'%(FullPath)')"
-                AdditionalMetadata="ItemName=Extra">
+                AdditionalMetadata="ItemName=Extra;Folder=%(Extra.Folder)\%(Extra.RecursiveDir)">
       <Output TaskParameter="Include" ItemName="ModuleItem" />
     </CreateItem>
 
     <CreateItem Include="@(File->'%(FullPath)')"
-                AdditionalMetadata="ItemName=File">
+                AdditionalMetadata="ItemName=File;Folder=%(File.Folder)\%(File.RecursiveDir)">
       <Output TaskParameter="Include" ItemName="ModuleItem" />
     </CreateItem>
   </Target>

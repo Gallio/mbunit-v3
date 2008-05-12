@@ -569,6 +569,15 @@ Section "CruiseControl.Net extensions" CCNetSection
 	File /r "${TARGETDIR}\extras\CCNet"
 SectionEnd
 
+Section "Samples" SamplesSection
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR\extras"
+	File /r "${TARGETDIR}\extras\Samples"
+SectionEnd
+
 SectionGroupEnd
 
 !ifndef MISSING_MSTEST_RUNNER
@@ -791,6 +800,7 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${TypeMockSection} "Provides integration with the TypeMock.Net mock object framework."
 
 	!insertmacro MUI_DESCRIPTION_TEXT ${CCNetSection} "Installs additional resources to assist with CruiseControl.Net integration."
+	!insertmacro MUI_DESCRIPTION_TEXT ${SamplesSection} "Installs code samples."
 
 	!ifndef MISSING_CHM_HELP
 		!insertmacro MUI_DESCRIPTION_TEXT ${CHMHelpSection} "Installs the standalone help documentation CHM file."
@@ -847,6 +857,7 @@ Function .onInit
 	SectionSetInstTypes ${TypeMockSection} 3
 
 	SectionSetInstTypes ${CCNetSection} 3
+	SectionSetInstTypes ${SamplesSection} 3
 	!ifndef MISSING_CHM_HELP
 		SectionSetInstTypes ${CHMHelpSection} 3
 	!endif
