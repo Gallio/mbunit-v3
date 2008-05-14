@@ -352,7 +352,7 @@ namespace Gallio.Reflection.Impl
         /// Gets the namespace that contains a type.
         /// </summary>
         /// <param name="type">The type, not null</param>
-        /// <returns>The type's namespace</returns>
+        /// <returns>The type's namespace, or an empty string if it has none</returns>
         protected internal abstract string GetTypeNamespace(StaticDeclaredTypeWrapper type);
 
         /// <summary>

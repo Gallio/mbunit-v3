@@ -286,7 +286,6 @@
     <Compile Include="Framework\Pattern\IPatternTestComponent.cs" />
     <Compile Include="Framework\Pattern\PatternTestDataContext.cs" />
     <Compile Include="Framework\Pattern\PatternUsageErrorException.cs" />
-    <Compile Include="Framework\Pattern\RecursiveTypePattern.cs" />
     <Compile Include="Framework\Pattern\TestDependencyPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\IPattern.cs" />
     <Compile Include="Framework\Pattern\IPatternResolver.cs" />

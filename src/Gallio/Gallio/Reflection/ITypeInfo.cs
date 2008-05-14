@@ -40,7 +40,20 @@ namespace Gallio.Reflection
         /// <summary>
         /// Gets the namespace in which the type is declared.
         /// </summary>
+        /// <remarks>
+        /// If the type does not have a namespace, returns an object whose name is an empty string.
+        /// This is different from the behavior of <see cref="Type.Namespace" /> which would ordinarily return null.
+        /// </remarks>
         INamespaceInfo Namespace { get; }
+
+        /// <summary>
+        /// Gets the name of the namespace in which the type is declared.
+        /// </summary>
+        /// <remarks>
+        /// If the type does not have a namespace, returns an empty string.
+        /// This is different from the behavior of <see cref="Type.Namespace" /> which would ordinarily return null.
+        /// </remarks>
+        string NamespaceName { get; }
 
         /// <summary>
         /// Gets the base type of the type, or null if none.

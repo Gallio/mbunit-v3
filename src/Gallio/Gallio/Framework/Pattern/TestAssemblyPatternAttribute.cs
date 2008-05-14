@@ -150,11 +150,11 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to types that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns <see cref="RecursiveTypePattern.Instance"/>.
+        /// The default implementation returns <see cref="TestTypePatternAttribute.AutomaticInstance"/>.
         /// </remarks>
         protected virtual IPattern DefaultTypePattern
         {
-            get { return RecursiveTypePattern.Instance; }
+            get { return TestTypePatternAttribute.AutomaticInstance; }
         }
 
         private sealed class DefaultImpl : TestAssemblyPatternAttribute

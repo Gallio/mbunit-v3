@@ -499,6 +499,7 @@ namespace Gallio.Tests.Reflection
         [Test]
         [Row(typeof(ReflectionPolicySample.TortureTest<string>))]
         [Row(typeof(ReflectionPolicySample.TortureTest2<string>))]
+        [Row(typeof(ReflectionPolicySampleInGlobalNamespace))]
         public void TortureTest(Type target)
         {
             ITypeInfo info = GetType(target);
@@ -513,6 +514,15 @@ namespace Gallio.Tests.Reflection
             IAssemblyInfo info = GetAssembly(assembly);
 
             WrapperAssert.AreEquivalent(assembly, info, true);
+        }
+
+        [Test]
+        public void NamespaceOfGlobalTypeIsEmpty()
+        {
+            ITypeInfo info = GetType(typeof(ReflectionPolicySampleInGlobalNamespace));
+            Assert.IsNotNull(info.Namespace);
+            Assert.AreEqual("", info.Namespace.Name);
+            Assert.AreEqual("", info.NamespaceName);
         }
 
         protected static void VerifyEqualityAndHashcodeContracts<TTarget, TWrapper>(

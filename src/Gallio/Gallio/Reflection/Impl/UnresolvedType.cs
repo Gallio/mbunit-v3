@@ -147,7 +147,11 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override string Namespace
         {
-            get { return adapter.Namespace.Name; }
+            get
+            {
+                string namespaceName = adapter.NamespaceName;
+                return namespaceName.Length == 0 ? null : namespaceName;
+            }
         }
 
         /// <inheritdoc />

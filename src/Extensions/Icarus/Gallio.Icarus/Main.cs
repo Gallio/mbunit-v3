@@ -960,11 +960,17 @@ namespace Gallio.Icarus
             if (e.Exception is ThreadAbortException || e.IsRecursive)
                 return;
 
-            Sync.Invoke(this, delegate
-            {
-                // FIXME: Should be replaced by a dialog.
-                MessageBox.Show(this, e.GetDescription(), e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            });
+            // We already print the errors to the log and most of them are harmless.
+            // Ideally we should display errors more unobtrusively.  Say by flashing
+            // a little icon in the status area to indicate that some new error has been
+            // logged.  I really don't like the fact that Icarus is using Thread Aborts all
+            // over the place.  That's the cause of most of these errors anyways.
+            // Better if we introduced a real abstraction for background task management
+            // and displayed progress monitor dialogs for long-running operations. -- Jeff.
+            //Sync.Invoke(this, delegate
+            //{
+            //    MessageBox.Show(this, e.GetDescription(), e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //});
         }
     }
 }

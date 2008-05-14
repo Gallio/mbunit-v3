@@ -259,3 +259,10 @@ namespace MbUnit.TestResources.Reflection
         }
     }
 }
+
+/// <summary>
+/// A test type in the global namespace.
+/// </summary>
+internal class ReflectionPolicySampleInGlobalNamespace
+{
+}

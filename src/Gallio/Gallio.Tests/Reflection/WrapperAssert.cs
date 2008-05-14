@@ -177,6 +177,12 @@ namespace Gallio.Tests.Reflection
 
         public void AreEquivalent(string namespaceName, INamespaceInfo info)
         {
+            if (namespaceName == null)
+            {
+                Assert.IsNull(info);
+                return;
+            }
+
             MemoizeEquivalence(namespaceName, info, delegate
             {
                 Assert.AreEqual(CodeElementKind.Namespace, info.Kind);
@@ -516,7 +522,8 @@ namespace Gallio.Tests.Reflection
 
                 Assert.AreEqual(target.Attributes & TypeAttributesMask, info.TypeAttributes & TypeAttributesMask, target.ToString());
                 Assert.AreEqual(target.Assembly, info.Assembly.Resolve(), target.ToString());
-                Assert.AreEqual(target.Namespace, info.Namespace.Name, target.ToString());
+                Assert.AreEqual(target.Namespace ?? "", info.Namespace.Name, target.ToString());
+                Assert.AreEqual(target.Namespace ?? "", info.NamespaceName, target.ToString());
                 AreEqualWhenResolved(target.BaseType, info.BaseType);
                 Assert.AreEqual(target.AssemblyQualifiedName, info.AssemblyQualifiedName, target.ToString());
                 Assert.AreEqual(target.FullName, info.FullName, target.ToString());

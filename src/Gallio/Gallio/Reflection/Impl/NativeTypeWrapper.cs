@@ -45,7 +45,12 @@ namespace Gallio.Reflection.Impl
 
         public INamespaceInfo Namespace
         {
-            get { return Reflector.WrapNamespace(Target.Namespace); }
+            get { return Reflector.WrapNamespace(NamespaceName); }
+        }
+
+        public string NamespaceName
+        {
+            get { return Target.Namespace ?? ""; }
         }
 
         public ITypeInfo BaseType

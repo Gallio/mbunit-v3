@@ -81,9 +81,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override INamespaceInfo Namespace
+        public override string NamespaceName
         {
-            get { return Reflector.WrapNamespace(Policy.GetTypeNamespace(this)); }
+            get { return Policy.GetTypeNamespace(this); }
         }
 
         /// <summary>
@@ -528,7 +528,7 @@ namespace Gallio.Reflection.Impl
                     }
                     else
                     {
-                        string namespaceName = Namespace.Name;
+                        string namespaceName = NamespaceName;
                         if (namespaceName.Length != 0)
                             fullName.Append(namespaceName).Append('.');
                     }
@@ -572,7 +572,7 @@ namespace Gallio.Reflection.Impl
                 }
                 else
                 {
-                    string namespaceName = Namespace.Name;
+                    string namespaceName = NamespaceName;
                     if (namespaceName.Length != 0)
                         sig.Append(namespaceName).Append('.');
                 }

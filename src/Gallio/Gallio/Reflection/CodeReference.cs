@@ -172,7 +172,7 @@ namespace Gallio.Reflection
 
             MemberInfo member = parameter.Member;
             Type type = member.ReflectedType;
-            return new CodeReference(type.Assembly.FullName, type.Namespace, type.FullName ?? type.Name, member.Name, parameter.Name);
+            return new CodeReference(type.Assembly.FullName, type.Namespace ?? "", type.FullName ?? type.Name, member.Name, parameter.Name);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace Gallio.Reflection
                 return CreateFromType(type);
 
             type = member.ReflectedType;
-            return new CodeReference(type.Assembly.FullName, type.Namespace, type.FullName ?? type.Name, member.Name, null);
+            return new CodeReference(type.Assembly.FullName, type.Namespace ?? "", type.FullName ?? type.Name, member.Name, null);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace Gallio.Reflection
             if (type == null)
                 throw new ArgumentNullException(@"type");
 
-            return new CodeReference(type.Assembly.FullName, type.Namespace, type.FullName ?? type.Name, null, null);
+            return new CodeReference(type.Assembly.FullName, type.Namespace ?? "", type.FullName ?? type.Name, null, null);
         }
 
         /// <summary>

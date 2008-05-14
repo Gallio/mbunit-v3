@@ -57,9 +57,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public override INamespaceInfo Namespace
+        public override string NamespaceName
         {
-            get { return ElementType.Namespace; }
+            get { return ElementType.NamespaceName; }
         }
 
         /// <inheritdoc />

@@ -206,9 +206,22 @@ namespace Gallio.Framework.Utilities
         }
 
         /// <summary>
+        /// Explores the tests but does not run them.
+        /// </summary>
+        public void Explore()
+        {
+            Launch(true);
+        }
+
+        /// <summary>
         /// Runs the tests.
         /// </summary>
         public void Run()
+        {
+            Launch(false);
+        }
+
+        private void Launch(bool doNoRun)
         {
             LogStreamWriter logStreamWriter = Log.Default;
 
@@ -223,6 +236,8 @@ namespace Gallio.Framework.Utilities
             launcher.ReportNameFormat = "SampleRunnerReport";
             launcher.ReportFormatOptions.Add(@"SaveAttachmentContents", @"false");
             launcher.ReportFormats.Add(@"Text");
+
+            launcher.DoNotRun = doNoRun;
 
             using (logStreamWriter.BeginSection("Log Output"))
                 result = launcher.Run();

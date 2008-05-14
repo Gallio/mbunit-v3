@@ -38,6 +38,15 @@ namespace Gallio.Framework.Pattern
     {
         private static readonly Key<ObjectCreationSpec> FixtureObjectCreationSpecKey = new Key<ObjectCreationSpec>("FixtureObjectCreationSpec");
 
+        /// <summary>
+        /// Gets an instance of the test type pattern attribute to use when no
+        /// other pattern consumes the type.  If the type has non-primary pattern attributes
+        /// or if any of its methods have pattern attributes, then the pattern will behave as if
+        /// the type had a test type pattern attribute applied to it.
+        /// Otherwise it will simply recurse into nested types.
+        /// </summary>
+        public static readonly TestTypePatternAttribute AutomaticInstance = new AutomaticImpl();
+
         /// <inheritdoc />
         public override bool IsPrimary
         {
@@ -120,7 +129,7 @@ namespace Gallio.Framework.Pattern
                     typeScope.Consume(parameter, false, DefaultGenericParameterPattern);
             }
 
-            BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public;
+            BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
             if (! type.IsAbstract)
                 bindingFlags |= BindingFlags.Instance;
 
@@ -154,8 +163,18 @@ namespace Gallio.Framework.Pattern
                 }
             }
 
+            ConsumeNestedTypes(typeScope, type);
+        }
+
+        /// <summary>
+        /// Consumes nested types.
+        /// </summary>
+        /// <param name="type">The type whose nested types are to be consumed</param>
+        /// <param name="scope">The scope to be used as the containing scope for nested types</param>
+        protected void ConsumeNestedTypes(PatternEvaluationScope scope, ITypeInfo type)
+        {
             foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
-                typeScope.Consume(nestedType, false, DefaultNestedTypePattern);
+                scope.Consume(nestedType, false, DefaultNestedTypePattern);
         }
 
         /// <summary>
@@ -312,11 +331,47 @@ namespace Gallio.Framework.Pattern
         /// Gets the default pattern to apply to nested types that do not have a primary pattern, or null if none.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns <see cref="RecursiveTypePattern.Instance"/>.
+        /// The default implementation returns <see cref="TestTypePatternAttribute.AutomaticInstance"/>.
         /// </remarks>
         protected virtual IPattern DefaultNestedTypePattern
         {
-            get { return RecursiveTypePattern.Instance; }
+            get { return AutomaticInstance; }
+        }
+
+        private sealed class AutomaticImpl : TestTypePatternAttribute
+        {
+            public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+            {
+                ITypeInfo type = codeElement as ITypeInfo;
+                if (type == null)
+                    return;
+
+                if (TypeHasNonPrimaryPatterns(type, containingScope.Evaluator)
+                    || TypeHasMethodsWithPatterns(type, containingScope.Evaluator))
+                {
+                    base.Consume(containingScope, codeElement, skipChildren);
+                }
+                else
+                {
+                    ConsumeNestedTypes(containingScope, type);
+                }
+            }
+
+            private static bool TypeHasNonPrimaryPatterns(ITypeInfo type, PatternEvaluator evaluator)
+            {
+                return evaluator.HasPatterns(type);
+            }
+
+            private static bool TypeHasMethodsWithPatterns(ITypeInfo type, PatternEvaluator evaluator)
+            {
+                foreach (IMethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy))
+                {
+                    if (evaluator.HasPatterns(method))
+                        return true;
+                }
+
+                return false;
+            }
         }
     }
 }

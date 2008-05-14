@@ -243,7 +243,7 @@ namespace Gallio.Reflection.Impl
             else
             {
                 string @namespace = type.Namespace;
-                if (@namespace.Length != 0)
+                if (! string.IsNullOrEmpty(@namespace))
                 {
                     str.Append(type.Namespace);
                     str.Append('.');
