@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
 using Gallio.Framework.Data;
@@ -40,11 +41,11 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Gets an instance of the test type pattern attribute to use when no
-        /// other pattern consumes the type.  If the type has non-primary pattern attributes
-        /// or if any of its methods have pattern attributes, then the pattern will behave as if
-        /// the type had a test type pattern attribute applied to it.
-        /// Otherwise it will simply recurse into nested types.
+        /// other pattern consumes the type.  If the type can be inferred to be a
+        /// test type then the pattern will behave as if the type has a test type pattern attribute
+        /// applied to it.  Otherwise it will simply recurse into nested types.
         /// </summary>
+        /// <seealso cref="InferTestType"/>
         public static readonly TestTypePatternAttribute AutomaticInstance = new AutomaticImpl();
 
         /// <inheritdoc />
@@ -129,9 +130,7 @@ namespace Gallio.Framework.Pattern
                     typeScope.Consume(parameter, false, DefaultGenericParameterPattern);
             }
 
-            BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
-            if (! type.IsAbstract)
-                bindingFlags |= BindingFlags.Instance;
+            BindingFlags bindingFlags = GetMemberBindingFlags(type);
 
             // TODO: We should probably process groups of members in sorted order working outwards
             //       from the base type, like an onion.
@@ -338,39 +337,69 @@ namespace Gallio.Framework.Pattern
             get { return AutomaticInstance; }
         }
 
+        /// <summary>
+        /// Gets the binding flags that should be used to enumerate non-nested type members
+        /// of the type for determining their contribution to the test fixture.  Instance members are
+        /// only included if the type is not abstract.
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <returns>The binding flags for enumerating members</returns>
+        protected virtual BindingFlags GetMemberBindingFlags(ITypeInfo type)
+        {
+            BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+            if (!type.IsAbstract)
+                bindingFlags |= BindingFlags.Instance;
+            return bindingFlags;
+        }
+
+        /// <summary>
+        /// Infers whether the type is a test type based on its structure.
+        /// Returns true if the type any associated patterns, if it has
+        /// non-nested type members (subject to <see cref="GetMemberBindingFlags" />)
+        /// with patterns, or if it has generic parameters with patterns.
+        /// </summary>
+        /// <param name="evaluator">The pattern evaluator</param>
+        /// <param name="type">The type</param>
+        /// <returns>True if the type is likely a test type</returns>
+        protected virtual bool InferTestType(PatternEvaluator evaluator, ITypeInfo type)
+        {
+            if (evaluator.HasPatterns(type))
+                return true;
+
+            BindingFlags bindingFlags = GetMemberBindingFlags(type);
+            return HasCodeElementWithPattern(evaluator, type.GetMethods(bindingFlags))
+                || HasCodeElementWithPattern(evaluator, type.GetProperties(bindingFlags))
+                || HasCodeElementWithPattern(evaluator, type.GetFields(bindingFlags))
+                || HasCodeElementWithPattern(evaluator, type.GetConstructors(bindingFlags))
+                || HasCodeElementWithPattern(evaluator, type.GetEvents(bindingFlags))
+                || (type.IsGenericTypeDefinition && HasCodeElementWithPattern(evaluator, type.GenericArguments));
+        }
+
+        private static bool HasCodeElementWithPattern<T>(PatternEvaluator evaluator, IEnumerable<T> elements)
+            where T : ICodeElementInfo
+        {
+            foreach (T element in elements)
+                if (evaluator.HasPatterns(element))
+                    return true;
+            return false;
+        }
+
         private sealed class AutomaticImpl : TestTypePatternAttribute
         {
             public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
             {
                 ITypeInfo type = codeElement as ITypeInfo;
-                if (type == null)
-                    return;
-
-                if (TypeHasNonPrimaryPatterns(type, containingScope.Evaluator)
-                    || TypeHasMethodsWithPatterns(type, containingScope.Evaluator))
+                if (type != null)
                 {
-                    base.Consume(containingScope, codeElement, skipChildren);
+                    if (InferTestType(containingScope.Evaluator, type))
+                    {
+                        base.Consume(containingScope, codeElement, skipChildren);
+                    }
+                    else
+                    {
+                        ConsumeNestedTypes(containingScope, type);
+                    }
                 }
-                else
-                {
-                    ConsumeNestedTypes(containingScope, type);
-                }
-            }
-
-            private static bool TypeHasNonPrimaryPatterns(ITypeInfo type, PatternEvaluator evaluator)
-            {
-                return evaluator.HasPatterns(type);
-            }
-
-            private static bool TypeHasMethodsWithPatterns(ITypeInfo type, PatternEvaluator evaluator)
-            {
-                foreach (IMethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy))
-                {
-                    if (evaluator.HasPatterns(method))
-                        return true;
-                }
-
-                return false;
             }
         }
     }

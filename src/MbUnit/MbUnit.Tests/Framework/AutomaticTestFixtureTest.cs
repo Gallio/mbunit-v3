@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using Gallio.Framework.Pattern;
+using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Tests.Integration;
@@ -51,27 +53,39 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void ShouldInferTestFixtureIfTypeHasNoPatternsButHasMethodsWithPatterns()
+        [Row(typeof(AutomaticTestFixtureSampleInferredFromMethod))]
+        [Row(typeof(AutomaticTestFixtureSampleInferredFromProperty))]
+        [Row(typeof(AutomaticTestFixtureSampleInferredFromField))]
+        [Row(typeof(AutomaticTestFixtureSampleInferredFromConstructor))]
+        [Row(typeof(AutomaticTestFixtureSampleInferredFromGenericParameter<>))]
+        [Row(typeof(AutomaticTestFixtureSampleInferredFromStaticMethodOnAbstractClass))]
+        public void ShouldInferTestFixtureIfTypeHasMemberOrGenericParameterWithPatterns(Type sampleType)
         {
-            TestData fixture = Runner.GetTestData(CodeReference.CreateFromType(typeof(AutomaticTestFixtureSampleWithTests)));
+            TestData fixture = Runner.GetTestData(CodeReference.CreateFromType(sampleType));
             Assert.IsNotNull(fixture);
 
-            TestData test = Runner.GetTestData(CodeReference.CreateFromMember(typeof(AutomaticTestFixtureSampleWithTests).GetMethod("Test")));
-            Assert.IsNotNull(test);
-            CollectionAssert.Contains(fixture.Children, test);
+            MethodInfo testMethod = sampleType.GetMethod("Test");
+            if (testMethod != null)
+            {
+                TestData test = Runner.GetTestData(CodeReference.CreateFromMember(testMethod));
+                Assert.IsNotNull(test);
+                CollectionAssert.Contains(fixture.Children, test);
+            }
 
-            TestData nestedFixture = Runner.GetTestData(CodeReference.CreateFromType(typeof(AutomaticTestFixtureSampleWithTests.NestedFixture)));
+            TestData nestedFixture = Runner.GetTestData(CodeReference.CreateFromType(sampleType.GetNestedType("NestedFixture")));
             Assert.IsNotNull(nestedFixture);
             CollectionAssert.Contains(fixture.Children, nestedFixture);
         }
 
         [Test]
-        public void ShouldNotInferTestFixtureIfTypeHasNoPatternsOrMethodsWithPatterns()
+        [Row(typeof(AutomaticTestFixtureSampleNotInferred))]
+        [Row(typeof(AutomaticTestFixtureSampleNotInferredFromInstanceMethodOnAbstractClass))]
+        public void ShouldNotInferTestFixtureIfTypeHasNoPatternsOrMembersWithPatterns(Type sampleType)
         {
-            TestData fixture = Runner.GetTestData(CodeReference.CreateFromType(typeof(AutomaticTestFixtureSampleWithNoTests)));
+            TestData fixture = Runner.GetTestData(CodeReference.CreateFromType(sampleType));
             Assert.IsNull(fixture);
 
-            TestData nestedFixture = Runner.GetTestData(CodeReference.CreateFromType(typeof(AutomaticTestFixtureSampleWithNoTests.NestedFixture)));
+            TestData nestedFixture = Runner.GetTestData(CodeReference.CreateFromType(sampleType.GetNestedType("NestedFixture")));
             Assert.IsNotNull(nestedFixture);
         }
 
@@ -92,7 +106,7 @@ namespace MbUnit.Tests.Framework
         /// This is a sample test fixture that has no [TestFixture] attribute and no
         /// other non-primary pattern attributes and no test methods either.
         /// </summary>
-        internal class AutomaticTestFixtureSampleWithNoTests
+        internal class AutomaticTestFixtureSampleNotInferred
         {
             public void NonTestMethod()
             {
@@ -108,10 +122,95 @@ namespace MbUnit.Tests.Framework
         /// This is a sample test fixture that has no [TestFixture] attribute and no
         /// other non-primary pattern attributes but has test methods.
         /// </summary>
-        internal class AutomaticTestFixtureSampleWithTests
+        internal class AutomaticTestFixtureSampleInferredFromMethod
         {
             [Test]
             public void Test()
+            {
+            }
+
+            [TestFixture]
+            public class NestedFixture
+            {
+            }
+        }
+
+        internal class AutomaticTestFixtureSampleInferredFromField
+        {
+            [Parameter]
+            public int Field = 0;
+
+            [TestFixture]
+            public class NestedFixture
+            {
+            }
+        }
+
+        internal class AutomaticTestFixtureSampleInferredFromProperty
+        {
+            [Parameter]
+            public int Property { get { return 0; } set { } }
+
+            [TestFixture]
+            public class NestedFixture
+            {
+            }
+        }
+
+        internal class AutomaticTestFixtureSampleInferredFromEvent
+        {
+            [Annotation(AnnotationType.Info, "Foo")]
+            public event EventHandler Event;
+
+            public void Notify()
+            {
+                Event(null, null);
+            }
+
+            [TestFixture]
+            public class NestedFixture
+            {
+            }
+        }
+
+        internal class AutomaticTestFixtureSampleInferredFromConstructor
+        {
+            [Annotation(AnnotationType.Info, "Foo")]
+            public AutomaticTestFixtureSampleInferredFromConstructor()
+            {
+            }
+
+            [TestFixture]
+            public class NestedFixture
+            {
+            }
+        }
+
+        internal class AutomaticTestFixtureSampleInferredFromGenericParameter<[Parameter] T>
+        {
+            [TestFixture]
+            public class NestedFixture
+            {
+            }
+        }
+
+        internal abstract class AutomaticTestFixtureSampleNotInferredFromInstanceMethodOnAbstractClass
+        {
+            [Test]
+            public void Test()
+            {
+            }
+
+            [TestFixture]
+            public class NestedFixture
+            {
+            }
+        }
+
+        internal abstract class AutomaticTestFixtureSampleInferredFromStaticMethodOnAbstractClass
+        {
+            [Test]
+            public static void Test()
             {
             }
 

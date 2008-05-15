@@ -141,6 +141,10 @@ namespace Gallio.Framework.Pattern
                 topLevelTest.Kind = TestKinds.Framework;
                 topLevelTest.BaselineLocalId = id;
 
+                // Define the anonymous data source on the top-level test as a backstop
+                // for data bindings without associated data sources.
+                topLevelTest.DataContext.DefineDataSource("");
+
                 frameworkScope = evaluator.AddTest(topLevelTest);
                 frameworkScopes.Add(id, frameworkScope);
             }
