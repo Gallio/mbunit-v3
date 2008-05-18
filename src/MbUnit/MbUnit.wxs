@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLDIR">
+            <Component Id="MbUnit.Website" Guid="{6F174992-5128-4c86-BEB3-7CD07C684DC1}">
+                <File Id="MbUnit.Website.url" Name="MbUnit Website.url" Source="$(var.TargetDir)\MbUnit Website.url" KeyPath="yes">
+                    <Shortcut Id="MbUnit.Website.lnk" Name="MbUnit Website" Directory="GallioMenuFolder" Advertise="yes"/>
+                </File>
+                <RemoveFolder Id="GallioMenuFolder.Remove_MbUnitWebsite" Directory="GallioMenuFolder" On="uninstall"/>
+            </Component>
+        </DirectoryRef>
+
+        <DirectoryRef Id="binFolder">
+            <Component Id="MbUnit.v3" Guid="{2f25f1f8-46ea-40f5-a850-16bac64cad1b}">
+                <File Id="MbUnit.dll" Source="$(var.TargetDir)\bin\MbUnit.dll" KeyPath="yes"/>
+                <File Id="MbUnit.plugin" Source="$(var.TargetDir)\bin\MbUnit.plugin"/>
+                <File Id="MbUnit.pdb" Source="$(var.TargetDir)\bin\MbUnit.pdb"/>
+                <File Id="MbUnit.xml" Source="$(var.TargetDir)\bin\MbUnit.xml"/>
+            </Component>
+        </DirectoryRef>
+
+        <Feature Id="feat_MbUnit3" Title="MbUnit v3 Framework" Level="1"
+                 Description="Installs the MbUnit v3 framework components.">
+            <ComponentRef Id='MbUnit.v3'/>
+            <ComponentRef Id='MbUnit.Website'/>
+        </Feature>
+    </Fragment>
+</Wix>

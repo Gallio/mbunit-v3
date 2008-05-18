@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="binFolder">
+            <Directory Id="NUnitAdapter" Name="NUnit">
+                <Component Id="Gallio.NUnitAdapter.dll" Guid="d0bb56ff-3015-447c-9329-50e09c5f3a38">
+                    <File Id="Gallio.NUnitAdapter.dll" Name="Gallio.Plugin.NUnitAdapter.dll" Source="$(var.TargetDir)\bin\NUnit\Gallio.NUnitAdapter.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="Gallio.NUnitAdapter.plugin" Guid="4b532291-2cac-41cd-9c6e-b92038a88847">
+                    <File Id="Gallio.NUnitAdapter.plugin" Name="Gallio.NUnitAdapter.plugin" Source="$(var.TargetDir)\bin\NUnit\Gallio.NUnitAdapter.plugin" KeyPath="yes" />
+                </Component>
+                <Component Id="license.txt" Guid="3b70ec89-1545-40ef-9ad2-dfc9fb95e49c">
+                    <File Id="license.txt" Name="license.txt" Source="$(var.TargetDir)\bin\NUnit\license.txt" KeyPath="yes" />
+                </Component>
+                <Component Id="nunit.core.dll" Guid="a9395fdf-0199-4895-b13b-ca986032527b">
+                    <File Id="nunit.core.dll" Name="nunit.core.dll" Source="$(var.TargetDir)\bin\NUnit\nunit.core.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="nunit.core.extensions.dll" Guid="683ad161-2f79-4b06-a62d-2ec0fca72846">
+                    <File Id="nunit.core.extensions.dll" Name="nunit.core.extensions.dll" Source="$(var.TargetDir)\bin\NUnit\nunit.core.extensions.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="nunit.core.interfaces.dll" Guid="87ca996f-731d-464c-992e-2f633ce4aff6">
+                    <File Id="nunit.core.interfaces.dll" Name="nunit.core.interfaces.dll" Source="$(var.TargetDir)\bin\NUnit\nunit.core.interfaces.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="nunit.framework.dll" Guid="902b466b-fe42-4fcc-93fe-7230b7973cdb">
+                    <File Id="nunit.framework.dll" Name="nunit.framework.dll" Source="$(var.TargetDir)\bin\NUnit\nunit.framework.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="nunit.framework.extensions.dll" Guid="6ff33a75-1cd2-4292-bd7d-e33cbb6db0d6">
+                    <File Id="nunit.framework.extensions.dll" Name="nunit.framework.extensions.dll" Source="$(var.TargetDir)\bin\NUnit\nunit.framework.extensions.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="NUnit.Readme.txt" Guid="63e415aa-7a79-4b50-8bb9-f21f5ef867f1">
+                    <File Id="NUnit.Readme.txt" Name="Readme.txt" Source="$(var.TargetDir)\bin\NUnit\Readme.txt" KeyPath="yes" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+
+        <Feature Id='feat_NUnitAdapter' Title='NUnit' Level='1'
+            Description='Installs the NUnit adapter.  Enables Gallio to run NUnit tests.'>
+            <ComponentRef Id="Gallio.NUnitAdapter.dll"/>
+            <ComponentRef Id="Gallio.NUnitAdapter.plugin"/>
+            <ComponentRef Id="NUnit.Readme.txt"/>
+            <ComponentRef Id="license.txt"/>
+            <ComponentRef Id="nunit.core.dll"/>
+            <ComponentRef Id="nunit.core.extensions.dll"/>
+            <ComponentRef Id="nunit.core.interfaces.dll"/>
+            <ComponentRef Id="nunit.framework.dll"/>
+            <ComponentRef Id="nunit.framework.extensions.dll"/>
+        </Feature>
+    </Fragment>
+</Wix>

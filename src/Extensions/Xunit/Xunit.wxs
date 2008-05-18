@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="binFolder">
+            <Directory Id="XunitAdapter" Name="Xunit">
+                <Component Id="Gallio.XunitAdapter.dll" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8">
+                    <File Id="Gallio.XunitAdapter.dll" Name="Gallio.XunitAdapter.dll" Source="$(var.TargetDir)\bin\Xunit\Gallio.XunitAdapter.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="Gallio.XunitAdapter.plugin" Guid="70438af5-abed-405a-9073-0aaecb9459c6">
+                    <File Id="Gallio.XunitAdapter.plugin" Name="Gallio.XunitAdapter.plugin" Source="$(var.TargetDir)\bin\Xunit\Gallio.XunitAdapter.plugin" KeyPath="yes" />
+                </Component>
+                <Component Id="EULA.txt" Guid="687ecebb-3738-4890-992f-6d97e45dac2d">
+                    <File Id="EULA.txt" Name="EULA.txt" Source="$(var.TargetDir)\bin\Xunit\EULA.txt" KeyPath="yes" />
+                </Component>
+                <Component Id="xUnit.Readme.txt" Guid="1b5e487f-4393-4613-9ab8-222f46464ba9">
+                    <File Id="xUnit.Readme.txt" Name="Readme.txt" Source="$(var.TargetDir)\bin\Xunit\Readme.txt" KeyPath="yes" />
+                </Component>
+                <Component Id="xunit.dll" Guid="52dbfb41-73ae-419d-8db0-54ab1c89bbb8">
+                    <File Id="xunit.dll" Name="xunit.dll" Source="$(var.TargetDir)\bin\Xunit\xunit.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="xunit.xml" Guid="42b6b4c8-df7e-43af-aeeb-c20cffa63592">
+                    <File Id="xunit.xml" Name="xunit.xml" Source="$(var.TargetDir)\bin\Xunit\xunit.xml" KeyPath="yes" />
+                </Component>
+                <Component Id="xunitext.dll" Guid="4a78a038-ef65-43c2-b44f-b39948ef5ef6">
+                    <File Id="xunitext.dll" Name="xunitext.dll" Source="$(var.TargetDir)\bin\Xunit\xunitext.dll" KeyPath="yes" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+
+        <Feature Id='feat_XunitAdapter' Title='Xunit Adapter' Level='1'
+            Description='Installs the Xunit plugin.  Enables Gallio to run Xunit tests.'>
+            <ComponentRef Id="Gallio.XunitAdapter.dll"/>
+            <ComponentRef Id="Gallio.XunitAdapter.plugin"/>
+            <ComponentRef Id="xUnit.Readme.txt"/>
+            <ComponentRef Id="EULA.txt"/>
+            <ComponentRef Id="xunit.dll"/>
+            <ComponentRef Id="xunit.xml"/>
+            <ComponentRef Id="xunitext.dll"/>
+        </Feature>
+    </Fragment>
+</Wix>

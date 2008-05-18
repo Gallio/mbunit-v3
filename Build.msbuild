@@ -13,7 +13,7 @@
   <PropertyGroup>
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
     <Coverage Condition="'$(Coverage)'==''">true</Coverage>
-    
+
     <ShowReports Condition="'$(ShowReports)'==''">true</ShowReports>
     <ReportTypes Condition="'$(ReportTypes)'==''">Html-Condensed</ReportTypes>
     <IgnoreFailures Condition="'$(IgnoreFailures)'==''">false</IgnoreFailures>
@@ -24,7 +24,7 @@
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
 
     <SatisfactoryCoverage>70</SatisfactoryCoverage>
-    
+
     <CSharpProperties>
       Configuration=Release;
       Version=$(Version);
@@ -175,7 +175,7 @@
            Condition="! Exists('$(VS2005SDKHelpPath)')" />
 
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
-          Condition="Exists('$(VS2005SDKHelpPath)')" />
+          Condition="Exists('$(VS2005SDKHelpPath)')" /> 
     <RemoveDir Directories="$(TargetDocsDir)\vs\ndoc_htmlhelp2_temp" />
   </Target>
 
@@ -186,6 +186,31 @@
 
     <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) /DROOTDIR=&quot;$(RootDir)&quot; &quot;$(SourceDir)\Installer\GallioBundle.nsi&quot;"
           Condition="Exists('$(NSISPath)')" />
+  </Target>
+
+  <PropertyGroup>
+    <InstallerWixProperties>
+      Configuration=Release;
+      Version=$(Version);
+      TargetDir=$(TargetDir);
+      ReleaseDir=$(BuildReleaseDir);
+      WixTargetsPath=$(LibsDir)\Wix\Microsoft\WiX\v3.0\Wix.targets;
+      WixToolPath=$(LibsDir)\Wix\bin;
+      WixExtDir=$(LibsDir)\Wix\bin;
+      DefineSolutionProperties=false;
+    </InstallerWixProperties>
+  </PropertyGroup>
+
+  <Target Name="BuildInstallerWix"
+          DependsOnTargets="CreateBuildDir">
+    <MSBuild Projects="$(RootDir)\src\Installer.Wix\GallioBundle.wixproj"
+             Targets="Build"
+             Properties="$(InstallerWixProperties)" />
+  </Target>
+  <Target Name="CleanInstallerWix">
+    <MSBuild Projects="$(RootDir)\src\Installer.Wix\GallioBundle.wixproj"
+             Targets="Clean"
+             Properties="$(InstallerWixProperties)" />
   </Target>
 
   <Target Name="BuildZip"

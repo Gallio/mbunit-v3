@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" 
+     xmlns:ps="http://schemas.microsoft.com/wix/PSExtension">
+    <Fragment>
+        <DirectoryRef Id="binFolder">
+            <Component Id="Gallio.PowerShellCommands.dll" Guid="82469f8a-b09b-4fb1-80c6-e3882fd54ffd">
+                <File Id="Gallio.PowerShellCommands.dll" Source="$(var.TargetDir)\bin\Gallio.PowerShellCommands.dll" KeyPath="yes"
+                      Assembly=".net"  AssemblyApplication="Gallio.PowerShellCommands.dll" >
+                    <ps:SnapIn Id="Gallio" Vendor="Gallio" Description="Gallio Commands." />
+                </File>
+            </Component>
+            <Component Id="Gallio.PowerShellCommands.xml" Guid="5e084486-4f09-4799-be57-9816b1c125e3">
+                <File Id="Gallio.PowerShellCommands.xml" Source="$(var.TargetDir)\bin\Gallio.PowerShellCommands.xml" />
+            </Component>
+            <Component Id="Gallio.PowerShellCommands.dll.Help.xml" Guid="5b184436-4f09-4799-be57-9816b12123f6">
+                <File Id="Gallio.PowerShellCommands.dll.Help.xml" Source="$(var.TargetDir)\bin\Gallio.PowerShellCommands.dll-Help.xml" />
+            </Component>
+        </DirectoryRef>
+
+        <Feature Id="feat_Gallio.PowerShellCommands" Title="PowerShell Commands" Level="1" Description="Installs the PowerShell commands.">
+            <ComponentRef Id="Gallio.PowerShellCommands.dll" />
+            <ComponentRef Id="Gallio.PowerShellCommands.xml" />
+            <ComponentRef Id="Gallio.PowerShellCommands.dll.Help.xml" />
+        </Feature>
+    </Fragment>
+</Wix>

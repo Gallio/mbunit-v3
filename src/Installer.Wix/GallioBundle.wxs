@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product
+        Id="7e22a90e-48db-4f13-9f21-733f83ac9af2"
+        Name="Gallio"
+        UpgradeCode="faaf3c4b-8757-437a-a3d6-9d882de7d088"
+        Version="$(var.Version)"
+        Manufacturer="www.gallio.org"
+        Language="1033">
+        <Package
+            Comments="Gallio Bundle"
+            Manufacturer="www.gallio.org"
+            InstallerVersion="301"
+            Languages="1033"
+            Compressed="yes"
+            />
+        <!-- The files are all packaged in a single cab file inside the msi file -->
+        <Media Id="1" EmbedCab="yes" Cabinet="Gallio.cab" />
+
+        <!-- Define the file that gets used as the EULA during install -->
+        <WixVariable Id="WixUILicenseRtf" Value="Gallio.License.rtf" />
+
+        <!-- Define which type of Wix UI we are going to use -->
+        <UIRef Id="WixUI_Gallio" />
+
+        <!-- Define all directories used in the install -->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id='ProgramFilesFolder' Name='PFiles'>
+                <Directory Id='INSTALLDIR' Name='Gallio'>
+                    <Directory Id='binFolder' Name='bin'/>
+                    <Directory Id='docsFolder' Name='docs'/>
+                    <Directory Id='extraFolder' Name='extra'/>
+                    <Directory Id='samplesFolder' Name='samples'/>
+                </Directory>
+            </Directory>
+
+            <!-- Desktop Folder Directory for our Desktop Shortcut -->
+            <Directory Id="DesktopFolder" Name="Desktop" />
+
+            <!-- Program Menu Folder and our subfolders for Shortcuts -->
+            <Directory Id="ProgramMenuFolder" Name=".">
+                <Directory Id="GallioMenuFolder" Name="Gallio"/>
+            </Directory>
+        </Directory>
+
+        <!-- Define the features in the bundle -->
+        <FeatureRef Id='feat_Gallio'>
+            <FeatureRef Id='feat_Gallio.Reports'/>
+        </FeatureRef>
+
+        <FeatureRef Id='feat_MbUnit3'>
+            <FeatureRef Id='feat_PexAdapter'/>
+            <FeatureRef Id='feat_MbUnit3.Templates.VS2005'/>
+            <FeatureRef Id='feat_MbUnit3.Templates.VS2008'/>
+        </FeatureRef>
+
+        <Feature Id='feat_Plugins' Title='Plugins' Level="1">
+            <FeatureRef Id='feat_MbUnit2Adapter'/>
+            <FeatureRef Id='feat_MSTestAdapter'/>
+            <FeatureRef Id='feat_NUnitAdapter'/>
+            <FeatureRef Id='feat_XunitAdapter'/>
+        </Feature>
+
+        <Feature Id='feat_Runners' Title='Runners' Level="1">
+            <FeatureRef Id='feat_Gallio.Echo'/>
+            <FeatureRef Id='feat_Gallio.Icarus'/>
+            <FeatureRef Id='feat_Gallio.MsBuildTasks'/>
+            <FeatureRef Id='feat_Gallio.NAntTasks'/>
+            <FeatureRef Id='feat_Gallio.PowerShellCommands'/>
+            <FeatureRef Id='feat_Gallio.ReSharper'/>
+            <FeatureRef Id='feat_Gallio.TDNet'/>
+            <FeatureRef Id='feat_MSTestRunner'/>
+        </Feature>
+
+        <Feature Id='feat_ToolIntegration' Title='Tool Integration' Level="1">
+            <FeatureRef Id='feat_NCoverIntegration'/>
+            <FeatureRef Id='feat_TypeMockIntegration'/>
+        </Feature>
+
+        <Feature Id='feat_Docs' Title='Documentation' Level="1">
+            <FeatureRef Id='feat_Gallio.Help'/>
+            <FeatureRef Id='feat_Gallio.VSHelp'/>
+        </Feature>
+
+        <Feature Id='feat_Extras' Title='Extras' Level="1">
+            <FeatureRef Id='feat_CCNetExtensions'/>
+            <FeatureRef Id='feat_MbUnit3.Samples'/>
+        </Feature>
+
+        <!-- Define extra information used by MSI -->
+        <Property Id='ARPHELPLINK'>http://www.gallio.org/</Property>
+        <Property Id='ARPURLUPDATEINFO'>http://www.gallio.org/</Property>
+        <Property Id='ARPURLINFOABOUT'>http://www.gallio.org/</Property>
+        <!-- In Control Panel > Add or Remove Programs, applications can have various
+             entries like phone number and Internet contact information under the
+             "Click here for support information" entry. To specify those, add any of
+             the following properties to your source file:
+        <Property Id='ARPCONTACT'>contact info</Property>
+        <Property Id='ARPHELPTELEPHONE'>http://www.gallio.org/</Property>
+        <Property Id='ARPCOMMENTS'>any comments</Property>
+        <Property Id='ARPREADME'>path</Property>
+        <Property Id='ARPSIZE'>app size in kilobytes</Property>
+        -->
+    </Product>
+</Wix>

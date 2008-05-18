@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        
+        <!-- TODO: Still some work left to do. Not tested yet. -->
+        
+        <DirectoryRef Id="binFolder">
+            <Component Id="Gallio.TDNetRunner.dll" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8">
+                <File Id="Gallio.TDNetRunner.dll" Name="Gallio.TDNetRunner.dll" Source="$(var.TargetDir)\bin\Gallio.TDNetRunner.dll" KeyPath="yes" />
+                <RegistryKey Action="createAndRemoveOnUninstall"
+                    Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MbUnit'>
+                    <RegistryValue Type='string' Value='10'/>
+                    <RegistryValue Type='string' Name='Application' Value='[#Gallio.Icarus.exe]'/>
+                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit'/>
+                </RegistryKey>
+            </Component>
+            <Component Id="TDNetRunner.MbUnit_v2" Guid="5be9bc6d-2852-443a-8d10-a390c313b107">
+                <RegistryKey Action="createAndRemoveOnUninstall"
+                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MbUnit2">
+                    <RegistryValue Type='string' Value='5'/>
+                    <RegistryValue Type='string' Name='Application' Value='[#Gallio.Icarus.exe]'/>
+                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit.Framework'/>
+                </RegistryKey>
+            </Component>
+            <Component Id="TDNetRunner.NUnit" Guid="3765c084-ef3f-46bb-b47a-b4cb9d1afaf5">
+                <RegistryKey Action="createAndRemoveOnUninstall"
+                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_NUnit">
+                    <RegistryValue Type='string' Value='5'/>
+                    <RegistryValue Type='string' Name='Application' Value='[#Gallio.Icarus.exe]'/>
+                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='nunit.framework'/>
+                </RegistryKey>
+            </Component>
+            <Component Id="TDNetRunner.Xunit" Guid="648ce21a-3f03-48c4-a7c1-1591fd76258e">
+                <RegistryKey Action="createAndRemoveOnUninstall"
+                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_Xunit">
+                    <RegistryValue Type='string' Value='5'/>
+                    <RegistryValue Type='string' Name='Application' Value='[#Gallio.Icarus.exe]'/>
+                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='xunit'/>
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
+
+        <Feature Id='feat_Gallio.TDNet' Title='TestDriven.Net Runner' Level='1'
+                 Description='Installs the TestDriven.Net add-in.'>
+            <ComponentRef Id='Gallio.TDNetRunner.dll'/>
+            <ComponentRef Id='TDNetRunner.MbUnit_v2'/>
+            <ComponentRef Id='TDNetRunner.NUnit'/>
+            <ComponentRef Id='TDNetRunner.Xunit'/>
+        </Feature>
+    </Fragment>
+</Wix>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="binFolder">
+            <Component Id="Gallio.Echo" Guid="8f28f164-fa85-4a2f-bfa3-b75c8bea2031">
+                <File Id="Gallio.Echo.exe" Source="$(var.TargetDir)\bin\Gallio.Echo.exe" KeyPath="yes" />
+                <File Id="Gallio.Echo.exe.config" Source="$(var.TargetDir)\bin\Gallio.Echo.exe.config" />
+            </Component>
+        </DirectoryRef>
+        <Feature Id="feat_Gallio.Echo" Title="Echo (CLI Test Runner)" Level="1" Description="Installs the Gallio command-line test runner.">
+            <ComponentRef Id="Gallio.Echo" />
+        </Feature>
+    </Fragment>
+</Wix>

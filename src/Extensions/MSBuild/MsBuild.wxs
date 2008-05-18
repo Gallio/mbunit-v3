@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <!-- TODO: What if we install to the default MsBuild Extention path? 
+            C:\Program Files\MSBuild\Gallio\v3.0\Gallio.targets
+            C:\Program Files\MSBuild\Gallio\v3.0\Gallio.MsBuildTasks.dll         
+            Need to write a Gallio.targets file for this to be useful. 
+         -->
+
+        <DirectoryRef Id="binFolder">
+            <Component Id="Gallio.MsBuildTasks" Guid="d5e560bd-3a27-431b-84a0-df0663e2f3e6">
+                <File Id="Gallio.MsBuildTasks.dll" Source="$(var.TargetDir)\bin\Gallio.MSBuildTasks.dll" KeyPath="yes" />
+                <File Id="Gallio.MsBuildTasks.xml" Source="$(var.TargetDir)\bin\Gallio.MSBuildTasks.xml" />
+            </Component>
+        </DirectoryRef>
+        <Feature Id="feat_Gallio.MsBuildTasks" Title="MSBuild Tasks"  Level="1"
+                 Description="Installs the MSBuild tasks.">
+            <ComponentRef Id="Gallio.MsBuildTasks"/>
+        </Feature>
+    </Fragment>
+</Wix>

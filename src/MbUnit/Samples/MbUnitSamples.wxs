@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:VS="http://schemas.microsoft.com/wix/VSExtension" >
+    <Fragment>
+        <DirectoryRef Id="samplesFolder">
+            <Directory Id="MbUnit3.Samples" Name="MbUnit.Samples">
+                <Directory Id="MbUnit3.Samples.Properties" Name="Properties">
+                    <Component Id="MbUnit3.Samples.AssemblyInfo.cs" Guid="{0EF95DCA-1432-4bfd-B5C8-8D7F7419BB8E}">
+                        <File Id="AssemblyInfo.cs" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples\Properties\AssemblyInfo.cs" KeyPath="yes" />
+                    </Component>
+                    <Component Id="MbUnit3.Samples.Resources.resx" Guid="{9541383E-59EC-4a31-8B4D-BF8EB7786ACC}">
+                        <File Id="Resources.resx" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples\Properties\Resources.resx" KeyPath="yes" />
+                    </Component>
+                    <Component Id="MbUnit3.Samples.Resources.Designer.cs" Guid="{1EDC4132-3320-42be-8537-9350CE6E0B2F}">
+                        <File Id="Resources.Designer.cs" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples\Properties\Resources.Designer.cs" KeyPath="yes" />
+                    </Component>
+                </Directory>
+                <Directory Id="MbUnit3.Samples.Resources" Name="Resources">
+                    <Component Id="MbUnit3.Samples.MbUnitLogo.png" Guid="{049F58D5-7AB5-4537-A559-F8D9E62FE0D6}">
+                        <File Id="MbUnitLogo.png" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples\Resources\MbUnitLogo.png" KeyPath="yes" />
+                    </Component>
+                </Directory>
+                <Component Id="MbUnit3.Samples.csproj" Guid="{89A17A8E-6EB6-4847-B1D6-1C5039A7AF03}">
+                    <File Id="MbUnit.Samples.csproj" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples\MbUnit.Samples.csproj" KeyPath="yes" />
+                </Component>
+                <Component Id="RichExecutionLogDemo.cs" Guid="{89001F29-14BC-4415-A026-6212C64052FB}">
+                    <File Id="RichExecutionLogDemo.cs" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples\RichExecutionLogDemo.cs" KeyPath="yes" />
+                </Component>
+                <Component Id="WatiNDemo.cs" Guid="{77F37799-7761-4571-A451-A20E0A766E51}">
+                    <File Id="WatiNDemo.cs" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples\WatiNDemo.cs" KeyPath="yes" />
+                </Component>
+            </Directory>
+            <Directory Id="MbUnit3.Samples.VSTSIntegration">
+                <Directory Id="MbUnit3.Samples.VSTSIntegration.Properties" Name="Properties">
+                    <Component Id="MbUnit3.Samples.VSTSIntegration.AssemblyInfo.cs" Guid="{00C5F43A-EC13-4a10-8580-FAC65B0446F3}">
+                        <File Id="VSTSIntegration.AssemblyInfo.cs" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples.VSTSIntegration\Properties\AssemblyInfo.cs" KeyPath="yes" />
+                    </Component>
+                </Directory>
+                <Component Id="MbUnit3.Samples.VSTSIntegration.csproj" Guid="{2D1B0C9A-2ED2-4850-BEE7-AD7AD6A4DC04}">
+                    <File Id="MbUnit.Samples.VSTSIntegration.csproj" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration.csproj" KeyPath="yes" />
+                </Component>
+                <Component Id="MbUnitTestFixture.cs" Guid="{194631AE-9D53-4d07-958A-2DC8224B74FB}">
+                    <File Id="MbUnitTestFixture.cs" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples.VSTSIntegration\MbUnitTestFixture.cs" KeyPath="yes" />
+                </Component>
+                <Component Id="MSTestTestFixture.cs" Guid="{174CC373-F7C4-4ed9-B3FA-C2D76D615073}">
+                    <File Id="MSTestTestFixture.cs" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples.VSTSIntegration\MSTestTestFixture.cs" KeyPath="yes" />
+                </Component>
+            </Directory>
+            <Component Id="MbUnit3.Samples.sln" Guid="{846FC9A2-7740-4525-98EF-F52DB44B9A6A}">
+                <File Id="MbUnit.Samples.sln" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples.sln" KeyPath="yes" />
+            </Component>
+            <Component Id="MbUnit3.Samples.vs2008.sln" Guid="{4276EF47-AF73-4ebe-BB80-E2F9358750AC}">
+                <File Id="MbUnit.Samples.vs2008.sln" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples.vs2008.sln" KeyPath="yes" />
+            </Component>
+            <Component Id="MbUnit3.Samples.vs2008.vsmdi" Guid="{1C8B521A-9B43-4f13-97F1-05FE9FC113A9}">
+                <File Id="MbUnit.Samples.vs2008.vsmdi" Source="$(var.TargetDir)\extras\Samples\MbUnit.Samples.vs2008.vsmdi" KeyPath="yes" />
+            </Component>
+            <Component Id="LocalTestRun.testrunconfig" Guid="{19B437EF-6148-4d7a-BA5D-BCF73FD248ED}">
+                <File Id="LocalTestRun.testrunconfig" Source="$(var.TargetDir)\extras\Samples\LocalTestRun.testrunconfig" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
+        <Feature Id="feat_MbUnit3.Samples" Title="Samples" Level="1"
+                 Description="Installs code samples.">
+            <ComponentRef Id="MbUnit3.Samples.AssemblyInfo.cs" />
+            <ComponentRef Id="MbUnit3.Samples.Resources.resx" />
+            <ComponentRef Id="MbUnit3.Samples.Resources.Designer.cs" />
+            <ComponentRef Id="MbUnit3.Samples.MbUnitLogo.png" />
+            <ComponentRef Id="MbUnit3.Samples.csproj" />
+            <ComponentRef Id="RichExecutionLogDemo.cs" />
+            <ComponentRef Id="WatiNDemo.cs" />
+            <ComponentRef Id="MbUnit3.Samples.VSTSIntegration.AssemblyInfo.cs" />
+            <ComponentRef Id="MbUnit3.Samples.VSTSIntegration.csproj" />
+            <ComponentRef Id="MbUnitTestFixture.cs" />
+            <ComponentRef Id="MSTestTestFixture.cs" />
+            <ComponentRef Id="MbUnit3.Samples.sln" />
+            <ComponentRef Id="MbUnit3.Samples.vs2008.sln" />
+            <ComponentRef Id="MbUnit3.Samples.vs2008.vsmdi" />
+            <ComponentRef Id="LocalTestRun.testrunconfig" />
+        </Feature>
+    </Fragment>
+</Wix>

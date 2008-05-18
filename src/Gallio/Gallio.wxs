@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" 
+     xmlns:vs="http://schemas.microsoft.com/wix/VSExtension">
+
+    <!-- TODO: There is still work to be done here. VSHelp files -->
+
+    <Fragment>
+        <DirectoryRef Id="INSTALLDIR">
+            <Component Id="Apache.License" Guid="{66f9f954-992a-44ce-8696-082b3807d845}">
+                <File Id="Apache.License.txt" Name="ASL - Apache Software Foundation License.txt" Source="$(var.TargetDir)\ASL - Apache Software Foundation License.txt" KeyPath="yes" />
+            </Component>
+            <Component Id="Gallio.License" Guid="{80dcc954-656f-45de-9bf2-bec6ff1d7c58}">
+                <File Id="Gallio.License.txt" Name="Gallio License.txt" Source="$(var.TargetDir)\Gallio License.txt" KeyPath="yes" />
+            </Component>
+            <Component Id="Release.Notes" Guid="{34a7d5f7-2391-46cd-8714-ba3c0ef290a9}">
+                <File Id="Release.Notes.txt" Name="Release Notes.txt" Source="$(var.TargetDir)\Release Notes.txt" KeyPath="yes" />
+            </Component>
+            <Component Id="Gallio.Website" Guid="{32DF17D3-27D2-4b7a-8094-37A559F2B234}">
+                <File Id="Gallio.Website.url" Name="Gallio Website.url" Source="$(var.TargetDir)\Gallio Website.url" KeyPath="yes">
+                    <Shortcut Id="Gallio.Website.lnk" Name="Gallio Website" Directory="GallioMenuFolder" Advertise="yes" />
+                </File>
+                <RemoveFolder Id="GallioMenuFolder.Remove_GallioWebsite" Directory="GallioMenuFolder" On="uninstall" />
+            </Component>
+            <Component Id="Gallio.Registry" Guid="{1AE1AC98-1FF2-4913-9ACA-EB8018E40508}">
+                <RegistryKey Id="Gallio.RegistryKey" Action="createAndRemoveOnUninstall"
+                             Root="HKLM" Key="Software\Gallio.org\Gallio\3.0">
+                    <RegistryValue Type="string" Name="InstallDir" Value="[INSTALLDIR]"/>
+                    <RegistryValue Type="string" Name="Version" Value="[ProductVersion]"/>
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
+
+        <DirectoryRef Id="binFolder">
+            <Component Id="Gallio" Guid="{1f25f1f8-46ea-40f5-a850-16bac64cad0a}">
+                <File Id="Gallio.dll" Source="$(var.TargetDir)\bin\Gallio.dll" KeyPath="yes" />
+                <File Id="Gallio.plugin" Source="$(var.TargetDir)\bin\Gallio.plugin" />
+                <File Id="Gallio.xml" Source="$(var.TargetDir)\bin\Gallio.xml" />
+                <File Id="Gallio.pdb" Source="$(var.TargetDir)\bin\Gallio.pdb" />
+            </Component>
+            <Component Id="Gallio.XmlSerializers" Guid="{1F8F8C04-E8CF-478c-AD16-9D90921C71A5}">
+                <File Id="Gallio.XmlSerializers.dll" Source="$(var.TargetDir)\bin\Gallio.XmlSerializers.dll" KeyPath="yes" />
+            </Component>
+            <Component Id="Gallio.Host" Guid="{182CEF37-6885-4954-8411-CB57DA11357B}">
+                <File Id="Gallio.Host.exe" Source="$(var.TargetDir)\bin\Gallio.Host.exe" KeyPath="yes" />
+                <File Id="Gallio.Host.exe.config" Source="$(var.TargetDir)\bin\Gallio.Host.exe.config" />
+            </Component>
+            <Component Id="Gallio.Loader" Guid="{1b752f49-373c-4a57-8f72-eb97287d0d35}">
+                <File Id="Gallio.Loader.dll" Source="$(var.TargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
+        <DirectoryRef Id="docsFolder">
+            <Component Id="Gallio.chm" Guid="{37BEC1CB-8141-4793-8CFF-986AC4849EB9}">
+                <File Id="Gallio.chm" Source="$(var.TargetDir)\docs\Gallio.chm" KeyPath="yes">
+                    <Shortcut Id="Gallio.Offline.Documentation.lnk" Name="Offline Documentation" Icon="Gallio.icon.exe" IconIndex="0" Directory="GallioMenuFolder" WorkingDirectory="docsFolder" Advertise="yes" Show="normal" />
+                </File>
+            </Component>
+            <Directory Id="docsVsFolder" Name="vs">
+                <Component Id="Gallio.Help.vs" Guid="37360bcd-0c85-4132-822e-5810371b59fa">
+                    <File Id="Gallio.HxS" Source="$(var.TargetDir)\docs\vs\Gallio.HxS">
+                        <vs:HelpFile Id="GallioVsHelp" Name="Gallio" Language="1033" />
+                    </File>
+                    <File Id="GallioCollection.HxC" Source="$(var.TargetDir)\docs\vs\GallioCollection.HxC">
+                        <vs:HelpCollection Id="GallioVsHelp.Collection" Name="GallioCollection" Description="Gallio API Documentation" />
+                    </File>
+                    <File Id="GallioCollection.HxT" Source="$(var.TargetDir)\docs\vs\GallioCollection.HxT" />
+                    <File Id="GallioCollection_A.HxK" Source="$(var.TargetDir)\docs\vs\GallioCollection_A.HxK" />
+                    <File Id="GallioCollection_F.HxK" Source="$(var.TargetDir)\docs\vs\GallioCollection_F.HxK" />
+                    <File Id="GallioCollection_K.HxK" Source="$(var.TargetDir)\docs\vs\GallioCollection_K.HxK" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+
+        <!-- <vs:HelpFilter Id="GallioCollection" Name="GallioCollection" FilterDefinition="("DocSet"="Gallio")" /> -->
+
+        <Feature Id="feat_Gallio" Title="Gallio" Level="1" InstallDefault="local" TypicalDefault="install" Absent="disallow" Description="Installs the Gallio test automation platform.">
+            <ComponentRef Id="Gallio" />
+            <ComponentRef Id="Gallio.XmlSerializers" />
+            <ComponentRef Id="Gallio.Host" />
+            <ComponentRef Id="Gallio.Loader" />
+            <ComponentRef Id="Gallio.License" />
+            <ComponentRef Id="Gallio.Website" />
+            <ComponentRef Id="Gallio.Registry" />
+            <ComponentRef Id="Release.Notes" />
+            <ComponentRef Id="Apache.License" />
+        </Feature>
+
+        <Feature Id="feat_Gallio.Help" Title="Standalone Help Docs" Level="1" Description="Installs the standalone help documentation CHM file.">
+            <ComponentRef Id="Gallio.chm" />
+        </Feature>
+
+        <Feature Id="feat_Gallio.VSHelp" Title="Visual Studio Help Docs" Level="1" Description="Installs the integrated documentation for Visual Studio 2005 or Visual Studio 2008 access with F1 Help.">
+            <ComponentRef Id="Gallio.Help.vs" />
+        </Feature>
+
+    </Fragment>
+</Wix>
+
+<!--
+	; Set Section properties
+	SetOverwrite on
+
+	; Set Section Files and Shortcuts
+	SetOutPath "$INSTDIR\docs\vs"
+	File "${TARGETDIR}\docs\vs\Gallio.Hx?"
+	File "${TARGETDIR}\docs\vs\GallioCollection.*"
+
+	SetOutPath "$INSTDIR\extras\H2Reg"
+	File "${TARGETDIR}\extras\H2Reg\*"
+
+	; Merge the collection
+	ExecWait '"$INSTDIR\extras\H2Reg\H2Reg.exe" -r CmdFile="$INSTDIR\docs\vs\GallioCollection.h2reg.ini"'
+-->
