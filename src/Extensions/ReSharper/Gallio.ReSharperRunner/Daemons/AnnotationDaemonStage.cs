@@ -27,9 +27,9 @@ namespace Gallio.ReSharperRunner.Daemons
     /// the test exploration process.
     /// </summary>
     [DaemonStage(StagesBefore=new Type[] { typeof(UnitTestDaemonStage)})]
-    public class GallioAnnotationDaemonStage : IDaemonStage
+    public class AnnotationDaemonStage : IDaemonStage
     {
-        static GallioAnnotationDaemonStage()
+        static AnnotationDaemonStage()
         {
             GallioLoader.Initialize(typeof(GallioTestProvider).Assembly);
         }
@@ -37,7 +37,7 @@ namespace Gallio.ReSharperRunner.Daemons
         public IDaemonStageProcess CreateProcess(IDaemonProcess process)
         {
             RuntimeProvider.Initialize();
-            return new GallioAnnotationDaemonStageProcess(process);
+            return new AnnotationDaemonStageProcess(process);
         }
 
         public ErrorStripeRequest NeedsErrorStripe(IProjectFile projectFile)

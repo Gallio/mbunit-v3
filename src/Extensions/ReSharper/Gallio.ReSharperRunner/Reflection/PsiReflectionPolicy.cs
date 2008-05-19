@@ -20,7 +20,6 @@ using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Build;
-using JetBrains.ReSharper.Editor;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using Gallio.Collections;
@@ -28,7 +27,14 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Impl.Special;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
+
+#if RESHARPER_31
+using JetBrains.ReSharper.Editor;
 using ReSharperDocumentRange = JetBrains.ReSharper.Editor.DocumentRange;
+#else
+using JetBrains.DocumentModel;
+using ReSharperDocumentRange = JetBrains.DocumentModel.DocumentRange;
+#endif
 
 namespace Gallio.ReSharperRunner.Reflection
 {
@@ -402,11 +408,11 @@ namespace Gallio.ReSharperRunner.Reflection
             List<ConstantValue> values = new List<ConstantValue>();
             for (int i = 0; ; i++)
             {
-                ConstantValue2 rawValue = GetAttributePositionParameterHack(attributeHandle, i);
-                if (rawValue.IsBadValue())
+                ConstantValue? value = GetAttributePositionParameter(attributeHandle, i);
+                if (value.HasValue)
+                    values.Add(value.Value);
+                else
                     break;
-
-                values.Add(ConvertConstantValue(rawValue.Value));
             }
 
             int lastParameterIndex = parameters.Count - 1;
@@ -437,10 +443,9 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 if (ReflectorAttributeUtils.IsAttributeField(field))
                 {
-                    IField fieldHandle = (IField)field.Handle;
-                    ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, fieldHandle);
-                    if (!value.IsBadValue())
-                        yield return new KeyValuePair<StaticFieldWrapper, ConstantValue>(field, ConvertConstantValue(value.Value));
+                    ConstantValue? value = GetAttributeNamedParameter(attributeHandle, (IField)field.Handle);
+                    if (value.HasValue)
+                        yield return new KeyValuePair<StaticFieldWrapper, ConstantValue>(field, value.Value);
                 }
             }
         }
@@ -452,18 +457,56 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 if (ReflectorAttributeUtils.IsAttributeProperty(property))
                 {
-                    IProperty propertyHandle = (IProperty)property.Handle;
-                    ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, propertyHandle);
-                    if (!value.IsBadValue())
-                        yield return new KeyValuePair<StaticPropertyWrapper, ConstantValue>(property, ConvertConstantValue(value.Value));
+                    ConstantValue? value = GetAttributeNamedParameter(attributeHandle, (IProperty) property.Handle);
+                    if (value.HasValue)
+                        yield return new KeyValuePair<StaticPropertyWrapper, ConstantValue>(property, value.Value);
                 }
             }
         }
 
+        private ConstantValue? GetAttributeNamedParameter(IAttributeInstance attributeHandle, ITypeMember memberHandle)
+        {
+#if RESHARPER_31
+            ConstantValue2 rawValue = GetAttributeNamedParameterHack(attributeHandle, memberHandle);
+            return rawValue.IsBadValue() ? (ConstantValue?)null : ConvertConstantValue(rawValue.Value);
+#else
+            AttributeValue rawValue = attributeHandle.NamedParameter(memberHandle);
+            return rawValue.IsBadValue ? (ConstantValue?) null : ConvertConstantValue(rawValue);
+#endif
+        }
+
+        private ConstantValue? GetAttributePositionParameter(IAttributeInstance attributeHandle, int index)
+        {
+#if RESHARPER_31
+            ConstantValue2 rawValue = GetAttributePositionParameterHack(attributeHandle, index);
+            return rawValue.IsBadValue() ? (ConstantValue?)null : ConvertConstantValue(rawValue.Value);
+#else
+            AttributeValue rawValue = attributeHandle.PositionParameter(index);
+            return rawValue.IsBadValue ? (ConstantValue?) null : ConvertConstantValue(rawValue);
+#endif
+        }
+
+#if RESHARPER_31
         private ConstantValue ConvertConstantValue(object value)
         {
             return ConvertConstantValue<IType>(value, delegate(IType type) { return MakeType(type); });
         }
+#else
+        private ConstantValue ConvertConstantValue(AttributeValue value)
+        {
+            if (value.IsConstant)
+                return new ConstantValue(MakeType(value.ConstantValue.Type), value.ConstantValue.Value);
+
+            if (value.IsType)
+                return new ConstantValue(Reflector.Wrap(typeof(Type)), MakeType(value.TypeValue));
+
+            if (value.IsArray)
+                return new ConstantValue(MakeType(value.ArrayType),
+                    GenericUtils.ConvertAllToArray<AttributeValue, ConstantValue>(value.ArrayValue, ConvertConstantValue));
+
+            throw new NotSupportedException("Unsupported attribute value type.");
+        }
+#endif
         #endregion
 
         #region Members
@@ -493,8 +536,8 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
         {
             IDeclaredElement memberHandle = (IDeclaredElement)member.Handle;
-            IDeclaration[] decl = memberHandle.GetDeclarations();
-            if (decl.Length == 0)
+            IList<IDeclaration> decl = memberHandle.GetDeclarations();
+            if (decl.Count == 0)
                 return CodeLocation.Unknown;
 
             ReSharperDocumentRange range = decl[0].GetDocumentRange();
@@ -647,12 +690,21 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Abstract, functionHandle.IsAbstract);
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Final, isVirtual && ! functionHandle.CanBeOverriden);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Final, isVirtual && ! CanBeOverriden(functionHandle));
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Static, functionHandle.IsStatic);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.Virtual, isVirtual);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.NewSlot, isVirtual && !functionHandle.IsOverride);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, MethodAttributes.HideBySig, true); //FIXME unreliable: functionHandle.HidePolicy == MemberHidePolicy.HIDE_BY_SIGNATURE);
             return flags;
+        }
+
+        private static bool CanBeOverriden(IFunction functionHandle)
+        {
+#if RESHARPER_31
+            return functionHandle.CanBeOverriden;
+#else
+            return functionHandle.CanBeOverriden();
+#endif
         }
 
         protected override CallingConventions GetFunctionCallingConvention(StaticFunctionWrapper function)
@@ -796,6 +848,8 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override string GetTypeNamespace(StaticDeclaredTypeWrapper type)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            if (!typeHandle.IsValid())
+                return "";
             return typeHandle.GetContainingNamespace().QualifiedName;
         }
 
@@ -1108,6 +1162,7 @@ namespace Gallio.ReSharperRunner.Reflection
         #endregion
 
         #region HACKS
+#if RESHARPER_31
         private static FieldInfo CSharpAttributeInstanceMyAttributeField;
 
         private ConstantValue2 GetAttributePositionParameterHack(IAttributeInstance attributeInstance, int index)
@@ -1227,6 +1282,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
             return expression.ConstantCalculator.ToTypeImplicit(expression.CompileTimeConstantValue(), type);
         }
+#endif
         #endregion
     }
 }

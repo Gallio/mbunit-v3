@@ -1,0 +1,27 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ReSharper40Path Condition="'$(ReSharper40Path)'=='' and '$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs9.0\@InstallDir)\Bin</ReSharper40Path>
+
+    <ReSharper40Installed>false</ReSharper40Installed>
+    <ReSharper40Installed Condition="'$(ReSharper40Path)'!=''">true</ReSharper40Installed>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="$(ReSharper40Installed)">
+      <PropertyGroup>
+        <AssemblySearchPaths>$(ReSharper40Path);$(AssemblySearchPaths)</AssemblySearchPaths>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <BuildDependsOn>MissingReSharper</BuildDependsOn>
+        <RebuildDependsOn>MissingReSharper</RebuildDependsOn>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Target Name="MissingReSharper">
+    <Warning Text="Skipped build for configuration.  ReSharper $(ReSharper40Version) is not installed or could not be located." />
+  </Target>
+</Project>
+

@@ -81,7 +81,8 @@ Var UserContext
 !system 'if not exist "${TARGETDIR}\docs\Gallio.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\docs\vs\Gallio.HxS" echo !define MISSING_VS_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\bin\MbUnit.Pex.dll" echo !define MISSING_MBUNIT_PEX_PACKAGE >> "${DETECT_TEMP}"'
-!system 'if not exist "${TARGETDIR}\bin\ReSharper\Gallio.ReSharperRunner.dll" echo !define MISSING_RESHARPER_RUNNER >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\bin\ReSharper\v3.1\Gallio.ReSharperRunner.dll" echo !define MISSING_RESHARPER_RUNNER_31 >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\bin\ReSharper\v4.0\Gallio.ReSharperRunner.dll" echo !define MISSING_RESHARPER_RUNNER_40 >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll" echo !define MISSING_MSTEST_RUNNER >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\bin\MSTest\Gallio.MSTestAdapter.dll" echo !define MISSING_MSTEST_ADAPTER >> "${DETECT_TEMP}"'
 !include "${DETECT_TEMP}"
@@ -100,8 +101,12 @@ Var UserContext
 	!warning "Missing MbUnit Pex package."
 !endif
 
-!ifdef MISSING_RESHARPER_RUNNER
-	!warning "Missing ReSharper runner."
+!ifdef MISSING_RESHARPER_RUNNER_31
+	!warning "Missing ReSharper v3.1 runner."
+!endif
+
+!ifdef MISSING_RESHARPER_RUNNER_40
+	!warning "Missing ReSharper v4.0 runner."
 !endif
 
 !ifdef MISSING_MSTEST_RUNNER
@@ -361,7 +366,6 @@ Section "PowerShell Commands" PowerShellCommandsSection
 	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "Version" "${VERSION}"
 SectionEnd
 
-!ifndef MISSING_RESHARPER_RUNNER
 Var ReSharperInstallDir
 Var ReSharperPluginDir
 !macro GetReSharperPluginDir RSVersion VSVersion
@@ -388,45 +392,58 @@ Function un.UninstallReSharperRunner
 	Exch $0 ; VSVersion
 	Exch 1
 	Exch $1 ; RSVersion
+	Exch 2
+	Exch $2 ; RSRunnerSuffix
 
 	!insertmacro GetReSharperPluginDir "$1" "$0"
 
 	StrCmp "" "$ReSharperPluginDir" Done
 		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.Loader.dll"
-		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll"
-		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner.dll.config"
+		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner$2.dll"
+		${un.SafeDelete} "$ReSharperPluginDir\Gallio\Gallio.ReSharperRunner$2.dll.config"
 		${un.SafeRMDir} "$ReSharperPluginDir\Gallio"
 
 	Done:
 
+	Pop $2
 	Pop $1
 	Pop $0
 FunctionEnd
 
-!macro InstallReSharperRunner RSVersion VSVersion SourcePath
+!macro InstallReSharperRunner RSRunnerSuffix RSVersion VSVersion SourcePath
 	!insertmacro GetReSharperPluginDir "${RSVersion}" "${VSVersion}"
 
 	StrCmp "" "$ReSharperPluginDir" +8
 		SetOutPath "$ReSharperPluginDir\Gallio"
 		File "${SourcePath}\Gallio.Loader.dll"
-		File "${SourcePath}\ReSharper\Gallio.ReSharperRunner.dll"
-		File "/oname=Gallio.ReSharperRunner.dll.config.orig" "${SourcePath}\ReSharper\Gallio.ReSharperRunner.dll.config"
-		${PatchConfigFile} "Gallio.ReSharperRunner.dll.config.orig" "Gallio.ReSharperRunner.dll.config"
+		File "${SourcePath}\ReSharper\${RSVersion}\Gallio.ReSharperRunner${RSRunnerSuffix}.dll"
+		File "/oname=Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config.orig" "${SourcePath}\ReSharper\Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config"
+		${PatchConfigFile} "Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config.orig" "Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config"
 !macroend
 
-!macro UninstallReSharperRunner RSVersion VSVersion
+!macro UninstallReSharperRunner RSRunnerSuffix RSVersion VSVersion
+	Push "${RSRunnerSuffix}"
 	Push "${RSVersion}"
 	Push "${VSVersion}"
 	Call un.UninstallReSharperRunner
 !macroend
 
-Section "ReSharper v3.1 Runner" ReSharperRunnerSection
+Section "ReSharper v3.1 Runner" ReSharperRunner31Section
 	; Set Section properties
 	SetOverwrite on
 	
 	; Set Section Files and Shortcuts
-	!insertmacro InstallReSharperRunner "v3.1" "vs8.0" "${TARGETDIR}\bin"
-	!insertmacro InstallReSharperRunner "v3.1" "vs9.0" "${TARGETDIR}\bin"
+	!insertmacro InstallReSharperRunner "31" "v3.1" "vs8.0" "${TARGETDIR}\bin"
+	!insertmacro InstallReSharperRunner "31" "v3.1" "vs9.0" "${TARGETDIR}\bin"
+SectionEnd
+
+Section "ReSharper v4.0 Runner" ReSharperRunner40Section
+	; Set Section properties
+	SetOverwrite on
+	
+	; Set Section Files and Shortcuts
+	!insertmacro InstallReSharperRunner "40" "v4.0" "vs8.0" "${TARGETDIR}\bin"
+	!insertmacro InstallReSharperRunner "40" "v4.0" "vs9.0" "${TARGETDIR}\bin"
 SectionEnd
 !endif
 
@@ -692,10 +709,15 @@ Section Uninstall
 	!insertmacro UninstallTDNetRunner "Gallio_Xunit"
 
 	; Uninstall from ReSharper
-	!ifndef MISSING_RESHARPER_RUNNER
-		DetailPrint "Uninstalling ReSharper runner."
-		!insertmacro UninstallReSharperRunner "v3.1" "vs8.0"
-		!insertmacro UninstallReSharperRunner "v3.1" "vs9.0"
+	!ifndef MISSING_RESHARPER_RUNNER_31
+		DetailPrint "Uninstalling ReSharper v3.1 runner."
+		!insertmacro UninstallReSharperRunner "31" "v3.1" "vs8.0"
+		!insertmacro UninstallReSharperRunner "31" "v3.1" "vs9.0"
+	!endif
+	!ifndef MISSING_RESHARPER_RUNNER_40
+		DetailPrint "Uninstalling ReSharper v4.0 runner."
+		!insertmacro UninstallReSharperRunner "40" "v4.0" "vs8.0"
+		!insertmacro UninstallReSharperRunner "40" "v4.0" "vs9.0"
 	!endif
 
 	; Uninstall from Visual Studio
@@ -788,8 +810,11 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${MSBuildTasksSection} "Installs the MSBuild tasks."
 	!insertmacro MUI_DESCRIPTION_TEXT ${NAntTasksSection} "Installs the NAnt tasks."
 	!insertmacro MUI_DESCRIPTION_TEXT ${PowerShellCommandsSection} "Installs the PowerShell commands."
-	!ifndef MISSING_RESHARPER_RUNNER
-		!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunnerSection} "Installs the ReSharper v3.1 plug-in."
+	!ifndef MISSING_RESHARPER_RUNNER_31
+		!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunner31Section} "Installs the ReSharper v3.1 plug-in."
+	!endif
+	!ifndef MISSING_RESHARPER_RUNNER_40
+		!insertmacro MUI_DESCRIPTION_TEXT ${ReSharperRunner40Section} "Installs the ReSharper v4.0 plug-in."
 	!endif
 	!ifndef MISSING_MSTEST_RUNNER
 		!insertmacro MUI_DESCRIPTION_TEXT ${MSTestRunnerSection} "Installs the Gallio extension for Visual Studio Team System in Visual Studio 2008."
@@ -845,8 +870,11 @@ Function .onInit
 	SectionSetInstTypes ${MSBuildTasksSection} 3
 	SectionSetInstTypes ${NAntTasksSection} 3
 	SectionSetInstTypes ${PowerShellCommandsSection} 3
-	!ifndef MISSING_RESHARPER_RUNNER
-		SectionSetInstTypes ${ReSharperRunnerSection} 3
+	!ifndef MISSING_RESHARPER_RUNNER_31
+		SectionSetInstTypes ${ReSharperRunner31Section} 3
+	!endif
+	!ifndef MISSING_RESHARPER_RUNNER_40
+		SectionSetInstTypes ${ReSharperRunner40Section} 3
 	!endif
 	!ifndef MISSING_MSTEST_RUNNER
 		SectionSetInstTypes ${MSTestRunnerSection} 0

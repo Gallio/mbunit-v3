@@ -1,0 +1,21 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  <Import Project="ReSharper31.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner31.csproj" />
+    <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner31.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(ReSharper31Installed)">
+    <Binary Include="Gallio.ReSharperRunner\bin\v3.1\Gallio.ReSharperRunner31.dll">
+      <Folder>ReSharper\v3.1</Folder>
+    </Binary>
+    <Binary Include="Gallio.ReSharperRunner\bin\v3.1\Gallio.ReSharperRunner31.dll.config">
+      <Folder>ReSharper\v3.1</Folder>
+    </Binary>
+
+    <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v3.1\Gallio.ReSharperRunner31.Tests.dll" />
+  </ItemGroup>
+</Project>
+

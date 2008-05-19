@@ -16,10 +16,16 @@
 using System.Drawing;
 using Gallio.Model;
 using JetBrains.CommonControls;
-using JetBrains.ReSharper.TreeModelBrowser;
 using JetBrains.ReSharper.UnitTestExplorer;
 using JetBrains.UI.TreeView;
+
+#if RESHARPER_31
+using JetBrains.ReSharper.TreeModelBrowser;
 using JetBrains.Util.DataStructures.TreeModel;
+#else
+using JetBrains.TreeModels;
+using JetBrains.ReSharper.CodeView.TreePsiBrowser;
+#endif
 
 namespace Gallio.ReSharperRunner
 {

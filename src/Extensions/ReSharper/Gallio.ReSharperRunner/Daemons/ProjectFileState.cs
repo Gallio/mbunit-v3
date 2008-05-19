@@ -23,20 +23,20 @@ using JetBrains.Util;
 namespace Gallio.ReSharperRunner.Daemons
 {
     /// <summary>
-    /// Provides state information to the <see cref="GallioAnnotationDaemonStageProcess" />
+    /// Provides state information to the <see cref="AnnotationDaemonStageProcess" />
     /// when associated with a <see cref="IProjectFile" />.  This allows the <see cref="GallioTestProvider" />
     /// to feed annotations and other information to the daemons for use in generating custom highlights.
     /// </summary>
-    internal class GallioProjectFileState
+    internal class ProjectFileState
     {
-        private static readonly Key<GallioProjectFileState> key = new Key<GallioProjectFileState>(typeof(GallioProjectFileState).Name);
+        private static readonly Key<ProjectFileState> key = new Key<ProjectFileState>(typeof(ProjectFileState).Name);
         private readonly IList<Annotation> annotations;
 
         /// <summary>
         /// Creates a state object with the specified annotations. 
         /// </summary>
         /// <param name="annotations">The annotations</param>
-        public GallioProjectFileState(IList<Annotation> annotations)
+        public ProjectFileState(IList<Annotation> annotations)
         {
             this.annotations = new ReadOnlyCollection<Annotation>(annotations);
         }
@@ -46,7 +46,7 @@ namespace Gallio.ReSharperRunner.Daemons
         /// </summary>
         /// <param name="file">The file</param>
         /// <param name="state">The associated state, or null if none</param>
-        public static void SetFileState(IProjectFile file, GallioProjectFileState state)
+        public static void SetFileState(IProjectFile file, ProjectFileState state)
         {
             file.PutData(key, state);
         }
@@ -56,7 +56,7 @@ namespace Gallio.ReSharperRunner.Daemons
         /// </summary>
         /// <param name="file">The file</param>
         /// <returns>The associated state, or null if none</returns>
-        public static GallioProjectFileState GetFileState(IProjectFile file)
+        public static ProjectFileState GetFileState(IProjectFile file)
         {
             return file.GetData(key);
         }

@@ -27,6 +27,7 @@ using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using JetBrains.ReSharper.TaskRunnerFramework;
+using HashSetOfString = Gallio.Collections.HashSet<string>;
 
 namespace Gallio.ReSharperRunner.Tasks
 {
@@ -93,17 +94,19 @@ namespace Gallio.ReSharperRunner.Tasks
         private sealed class Runner
         {
             private readonly IRemoteTaskServer server;
-            private readonly HashSet<string> assemblyLocations;
+            private readonly HashSetOfString assemblyLocations;
             private readonly Dictionary<string, GallioTestItemTask> testTasks;
-            private readonly HashSet<string> explicitTestIds;
+            private readonly Dictionary<string, TestMonitor> testMonitors;
+            private readonly HashSetOfString explicitTestIds;
 
             public Runner(IRemoteTaskServer server)
             {
                 this.server = server;
 
-                assemblyLocations = new HashSet<string>();
+                assemblyLocations = new HashSetOfString();
                 testTasks = new Dictionary<string, GallioTestItemTask>();
-                explicitTestIds = new HashSet<string>();
+                testMonitors = new Dictionary<string, TestMonitor>();
+                explicitTestIds = new HashSetOfString();
             }
 
             public void Run(TaskExecutionNode node)
@@ -185,41 +188,133 @@ namespace Gallio.ReSharperRunner.Tasks
 
             private void TestStepStarted(object sender, TestStepStartedEventArgs e)
             {
-                GallioTestItemTask testTask;
-                if (testTasks.TryGetValue(e.Test.Id, out testTask))
-                {
-                    server.TaskStarting(testTask);
-                }
+                TestMonitor testMonitor = GetTestMonitor(e.Test.Id);
+                if (testMonitor != null)
+                    testMonitor.TestStepStarted(e);
             }
 
             private void TestStepLifecyclePhaseChanged(object sender, TestStepLifecyclePhaseChangedEventArgs e)
             {
-                GallioTestItemTask testTask;
-                if (testTasks.TryGetValue(e.Test.Id, out testTask))
-                {
-                    server.TaskProgress(testTask, e.LifecyclePhase);
-                }
+                TestMonitor testMonitor = GetTestMonitor(e.Test.Id);
+                if (testMonitor != null)
+                    testMonitor.TestStepLifecyclePhaseChanged(e);
             }
 
             private void TestStepFinished(object sender, TestStepFinishedEventArgs e)
             {
-                GallioTestItemTask testTask;
-                if (testTasks.TryGetValue(e.Test.Id, out testTask))
+                TestMonitor testMonitor = GetTestMonitor(e.Test.Id);
+                if (testMonitor != null)
+                    testMonitor.TestStepFinished(e);
+            }
+
+            private TestMonitor GetTestMonitor(string testId)
+            {
+                TestMonitor testMonitor;
+                lock (testMonitors)
                 {
-                    server.TaskProgress(testTask, "");
+                    if (!testMonitors.TryGetValue(testId, out testMonitor))
+                    {
+                        GallioTestItemTask testTask;
+                        if (testTasks.TryGetValue(testId, out testTask))
+                        {
+                            testMonitor = new TestMonitor(server, testTask);
+                            testMonitors.Add(testId, testMonitor);
+                        }
+                    }
+                }
 
-                    TestStepRun run = e.TestStepRun;
+                return testMonitor;
+            }
 
-                    TaskResult result = GetTaskResultForOutcome(run.Result.Outcome);
+            private static IProgressMonitor CreateProgressMonitor()
+            {
+                return NullProgressMonitor.CreateInstance();
+            }
+        }
 
-                    foreach (ExecutionLogStream stream in run.ExecutionLog.Streams)
-                        SubmitLogStreamContents(testTask, stream, result);
+        private sealed class TestMonitor
+        {
+            private readonly IRemoteTaskServer server;
+            private readonly GallioTestItemTask testTask;
 
-                    SubmitTestResult(testTask, e.TestStepRun.Result);
+            private int stepCount;
+            private int nestingCount;
+
+            private readonly List<KeyValuePair<TaskOutputType, string>> combinedOutput;
+            private TestOutcome combinedOutcome;
+            private string pendingWarnings;
+            private string pendingFailures;
+            private string pendingBanner;
+
+            public TestMonitor(IRemoteTaskServer server, GallioTestItemTask testTask)
+            {
+                this.server = server;
+                this.testTask = testTask;
+
+                combinedOutcome = TestOutcome.Passed;
+                combinedOutput = new List<KeyValuePair<TaskOutputType,string>>();
+            }
+
+            public void TestStepStarted(TestStepStartedEventArgs e)
+            {
+                lock (this)
+                {
+                    nestingCount += 1;
+                    server.TaskStarting(testTask);
                 }
             }
 
-            private void SubmitLogStreamContents(GallioTestItemTask testTask, ExecutionLogStream stream, TaskResult result)
+            public void TestStepLifecyclePhaseChanged(TestStepLifecyclePhaseChangedEventArgs e)
+            {
+                lock (this)
+                {
+                    string message = e.LifecyclePhase;
+                    if (!e.TestStepRun.Step.IsPrimary)
+                        message += " - " + e.TestStepRun.Step.Name;
+
+                    server.TaskProgress(testTask, message);
+                }
+            }
+
+            public void TestStepFinished(TestStepFinishedEventArgs e)
+            {
+                lock (this)
+                {
+                    server.TaskProgress(testTask, "");
+
+                    nestingCount -= 1;
+                    stepCount += 1;
+
+                    if (pendingBanner != null)
+                    {
+                        combinedOutput.Insert(0, new KeyValuePair<TaskOutputType, string>(TaskOutputType.STDOUT, pendingBanner));
+                        pendingBanner = null;
+                    }
+
+                    // We cannot report pending warnings/failures from prior steps using TaskExplain.
+                    OutputPendingWarnings();
+                    OutputPendingFailures(); 
+
+                    TestStepRun run = e.TestStepRun;
+
+                    if (run.Step.IsPrimary)
+                        combinedOutcome = combinedOutcome.CombineWith(run.Result.Outcome);
+
+                    string banner = String.Format("### Step {0}: {1} ###\n\n", run.Step.Name, run.Result.Outcome.DisplayName);
+                    if (stepCount != 1)
+                        Output(TaskOutputType.STDOUT, banner);
+                    else
+                        pendingBanner = banner;
+
+                    foreach (ExecutionLogStream stream in run.ExecutionLog.Streams)
+                        OutputLogStreamContents(stream);
+
+                    if (nestingCount == 0)
+                        SubmitCombinedResult();
+                }
+            }
+
+            private void OutputLogStreamContents(ExecutionLogStream stream)
             {
                 string contents = string.Concat("*** ", stream.Name, " ***\n", stream.ToString(), "\n");
 
@@ -230,36 +325,68 @@ namespace Gallio.ReSharperRunner.Tasks
                 {
                     case LogStreamNames.ConsoleOutput:
                     default:
-                        server.TaskOutput(testTask, contents, TaskOutputType.STDOUT);
+                        Output(TaskOutputType.STDOUT, contents);
                         break;
 
                     case LogStreamNames.ConsoleError:
-                        server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
+                        Output(TaskOutputType.STDERR, contents);
                         break;
 
                     case LogStreamNames.DebugTrace:
-                        server.TaskOutput(testTask, contents, TaskOutputType.DEBUGTRACE);
+                        Output(TaskOutputType.DEBUGTRACE, contents);
                         break;
 
                     case LogStreamNames.Warnings:
-                        if (result != TaskResult.Skipped)
-                            server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
-                        else
-                            server.TaskExplain(testTask, contents);
+                        pendingWarnings = contents;
                         break;
 
                     case LogStreamNames.Failures:
-                        if (result != TaskResult.Error && result != TaskResult.Exception)
-                            server.TaskOutput(testTask, contents, TaskOutputType.STDERR);
-                        else
-                            server.TaskExplain(testTask, contents);
+                        pendingFailures = contents;
                         break;
                 }
             }
 
-            private void SubmitTestResult(GallioTestItemTask testTask, TestResult result)
+            private void Output(TaskOutputType outputType, string text)
             {
-                server.TaskFinished(testTask, result.Outcome.DisplayName, GetTaskResultForOutcome(result.Outcome));
+                combinedOutput.Add(new KeyValuePair<TaskOutputType, string>(outputType, text));
+            }
+
+            private void OutputPendingWarnings()
+            {
+                if (pendingWarnings != null)
+                {
+                    Output(TaskOutputType.STDERR, pendingWarnings);
+                    pendingWarnings = null;
+                }
+            }
+
+            private void OutputPendingFailures()
+            {
+                if (pendingFailures != null)
+                {
+                    Output(TaskOutputType.STDERR, pendingFailures);
+                    pendingFailures = null;
+                }
+            }
+
+            private void SubmitCombinedResult()
+            {
+                foreach (KeyValuePair<TaskOutputType, string> message in combinedOutput)
+                    server.TaskOutput(testTask, message.Value, message.Key);
+
+                TaskResult taskResult = GetTaskResultForOutcome(combinedOutcome);
+
+                if (stepCount != 1 || taskResult != TaskResult.Skipped)
+                    OutputPendingWarnings();
+                else if (pendingWarnings != null)
+                    server.TaskExplain(testTask, pendingWarnings);
+
+                if (stepCount != 1 || taskResult != TaskResult.Error && taskResult != TaskResult.Exception)
+                    OutputPendingFailures();
+                else if (pendingFailures != null)
+                    server.TaskExplain(testTask, pendingFailures);
+
+                server.TaskFinished(testTask, combinedOutcome.DisplayName, taskResult);
             }
 
             private static TaskResult GetTaskResultForOutcome(TestOutcome outcome)
@@ -276,11 +403,6 @@ namespace Gallio.ReSharperRunner.Tasks
                     default:
                         throw new ArgumentException("outcome");
                 }
-            }
-
-            private static IProgressMonitor CreateProgressMonitor()
-            {
-                return NullProgressMonitor.CreateInstance();
             }
         }
     }

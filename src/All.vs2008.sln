@@ -75,9 +75,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnit2Adapter.TestR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReSharper", "ReSharper", "{92151574-F6C9-40C8-9AD8-66D34BED4C99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner", "Extensions\ReSharper\Gallio.ReSharperRunner\Gallio.ReSharperRunner.csproj", "{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner31", "Extensions\ReSharper\Gallio.ReSharperRunner\Gallio.ReSharperRunner31.csproj", "{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner.Tests", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner.Tests.csproj", "{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner31.Tests", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner31.Tests.csproj", "{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TDNet", "TDNet", "{8DCD768B-DE02-418E-B593-EC55B6BC8005}"
 EndProject
@@ -151,6 +151,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestRunner.Tests", "Extensions\MSTest\Gallio.MSTestRunner.Tests\Gallio.MSTestRunner.Tests.csproj", "{24224B3E-6593-4B4F-BAF0-3B31D3612633}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Loader", "Gallio\Gallio.Loader\Gallio.Loader.csproj", "{67FB2969-E6BF-4754-91AA-B6075F8E67EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner40", "Extensions\ReSharper\Gallio.ReSharperRunner\Gallio.ReSharperRunner40.csproj", "{48880439-9299-4D32-8D31-47F56D83D7A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner40.Tests", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner40.Tests.csproj", "{76031E03-3807-4F76-A93C-6056D669AAEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -346,6 +350,14 @@ Global
 		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67FB2969-E6BF-4754-91AA-B6075F8E67EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48880439-9299-4D32-8D31-47F56D83D7A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48880439-9299-4D32-8D31-47F56D83D7A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48880439-9299-4D32-8D31-47F56D83D7A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48880439-9299-4D32-8D31-47F56D83D7A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76031E03-3807-4F76-A93C-6056D669AAEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76031E03-3807-4F76-A93C-6056D669AAEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76031E03-3807-4F76-A93C-6056D669AAEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76031E03-3807-4F76-A93C-6056D669AAEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -396,6 +408,8 @@ Global
 		{886B1BB9-AB7A-45EC-B38B-DE36CABCE505} = {046D3E80-13AA-4CAE-9BF8-880077BDDE5E}
 		{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4} = {92151574-F6C9-40C8-9AD8-66D34BED4C99}
 		{56CC7030-DFF6-4FED-991B-641CFC5CFDCC} = {92151574-F6C9-40C8-9AD8-66D34BED4C99}
+		{48880439-9299-4D32-8D31-47F56D83D7A8} = {92151574-F6C9-40C8-9AD8-66D34BED4C99}
+		{76031E03-3807-4F76-A93C-6056D669AAEC} = {92151574-F6C9-40C8-9AD8-66D34BED4C99}
 		{00C93D01-6A43-4AAA-9E6E-5936B985B497} = {8DCD768B-DE02-418E-B593-EC55B6BC8005}
 		{EBB6130D-3D29-4313-BAA9-1076BB8572AB} = {8DCD768B-DE02-418E-B593-EC55B6BC8005}
 		{B3601484-0AB7-424F-BA81-A8CC809AB41A} = {C8B72F29-32A8-4179-80C8-818C10E584B5}
@@ -418,4 +432,3 @@ Global
 		{4915D007-1BD1-4E57-A719-50B2716B2A1B} = {713A3BC9-5234-476A-ACA6-5EC53C69AFC4}
 	EndGlobalSection
 EndGlobal
-

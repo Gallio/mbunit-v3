@@ -83,6 +83,7 @@ namespace Gallio.ReSharperRunner
             return ReSharperReflectionPolicy.GetProject(test.CodeElement);
         }
 
+#if RESHARPER_31
         public override IList<IProjectItem> GetProjectItems()
         {
             IDeclaredElement declaredElement = GetDeclaredElement();
@@ -92,6 +93,17 @@ namespace Gallio.ReSharperRunner
 
             return EmptyArrays.ProjectItems;
         }
+#else
+        public override IList<IProjectFile> GetProjectFiles()
+        {
+            IDeclaredElement declaredElement = GetDeclaredElement();
+
+            if (declaredElement != null && declaredElement.IsValid())
+                return declaredElement.GetProjectFiles();
+
+            return EmptyArrays.ProjectFiles;
+        }
+#endif
 
         public override UnitTestElementDisposition GetDisposition()
         {
@@ -108,7 +120,12 @@ namespace Gallio.ReSharperRunner
                 if (file != null)
                 {
                     locations.Add(new UnitTestElementLocation(
-                        file.ProjectItem, declaration.GetNameRange(), declaration.GetDocumentRange().TextRange));
+#if RESHARPER_31
+                        file.ProjectItem,
+#else
+                        file.ProjectFile,
+#endif
+                        declaration.GetNameRange(), declaration.GetDocumentRange().TextRange));
                 }
             }
 

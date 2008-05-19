@@ -25,11 +25,11 @@ using JetBrains.ReSharper.Psi.Tree;
 
 namespace Gallio.ReSharperRunner.Daemons
 {
-    internal class GallioAnnotationDaemonStageProcess : IDaemonStageProcess
+    internal class AnnotationDaemonStageProcess : IDaemonStageProcess
     {
         private readonly IDaemonProcess process;
 
-        public GallioAnnotationDaemonStageProcess(IDaemonProcess process)
+        public AnnotationDaemonStageProcess(IDaemonProcess process)
         {
             this.process = process;
         }
@@ -40,7 +40,7 @@ namespace Gallio.ReSharperRunner.Daemons
             result.FullyRehighlighted = true;
 
             IProjectFile projectFile = process.ProjectFile;
-            GallioProjectFileState state = GallioProjectFileState.GetFileState(projectFile);
+            ProjectFileState state = ProjectFileState.GetFileState(projectFile);
             if (state != null)
             {
                 List<HighlightingInfo> highlightings = new List<HighlightingInfo>();
@@ -53,7 +53,7 @@ namespace Gallio.ReSharperRunner.Daemons
                         foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(projectFile))
                         {
                             highlightings.Add(new HighlightingInfo(declaration.GetNameDocumentRange(),
-                                new GallioAnnotationHighlighting(annotation)));
+                                AnnotationHighlighting.CreateHighlighting(annotation)));
                         }
                     }
                 }

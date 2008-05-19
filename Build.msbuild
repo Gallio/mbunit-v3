@@ -175,7 +175,7 @@
            Condition="! Exists('$(VS2005SDKHelpPath)')" />
 
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
-          Condition="Exists('$(VS2005SDKHelpPath)')" /> 
+          Condition="Exists('$(VS2005SDKHelpPath)')" />
     <RemoveDir Directories="$(TargetDocsDir)\vs\ndoc_htmlhelp2_temp" />
   </Target>
 

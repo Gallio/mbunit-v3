@@ -29,10 +29,17 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.TaskRunnerFramework;
 using JetBrains.ReSharper.UnitTestExplorer;
+using JetBrains.UI.TreeView;
+
+#if RESHARPER_31
 using JetBrains.Shell;
 using JetBrains.Shell.Progress;
-using JetBrains.UI.TreeView;
 using JetBrains.Util.DataStructures.TreeModel;
+#else
+using JetBrains.Application;
+using JetBrains.Application.Progress;
+using JetBrains.TreeModels;
+#endif
 
 namespace Gallio.ReSharperRunner
 {
@@ -217,10 +224,10 @@ namespace Gallio.ReSharperRunner
 
                 // Note: We don't call FinishModel because we know the model will be incomplete.
 
-                GallioProjectFileState state = explorer.TestModel.Annotations.Count != 0
-                    ? new GallioProjectFileState(explorer.TestModel.Annotations)
+                ProjectFileState state = explorer.TestModel.Annotations.Count != 0
+                    ? new ProjectFileState(explorer.TestModel.Annotations)
                     : null;
-                GallioProjectFileState.SetFileState(psiFile.GetProjectFile(), state);
+                ProjectFileState.SetFileState(psiFile.GetProjectFile(), state);
             }
 
             private static void ExploreTypeDeclaration(PsiReflectionPolicy reflectionPolicy, ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)

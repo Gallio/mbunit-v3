@@ -18,11 +18,18 @@ using System.Reflection;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Tests;
 using JetBrains.ProjectModel;
+using JetBrains.Util;
+using MbUnit.Framework;
+
+#if RESHARPER_31
 using JetBrains.Shell;
 using JetBrains.Shell.Progress;
 using JetBrains.Shell.Test;
-using JetBrains.Util;
-using MbUnit.Framework;
+#else
+using JetBrains.Application;
+using JetBrains.Application.Progress;
+using JetBrains.Application.Test;
+#endif
 
 namespace Gallio.ReSharperRunner.Tests
 {
@@ -37,12 +44,19 @@ namespace Gallio.ReSharperRunner.Tests
         private static readonly Assembly testAssembly = typeof(ReSharperTestHarness).Assembly;
         private static bool isTestSolutionLoaded;
 
+        private static readonly string VersionSuffix = typeof(ReSharperTestHarness).Assembly.GetName().Name.Substring(22, 2);
+
         [FixtureSetUp]
         public static void SetUp()
         {
             if (Shell.Instance == null)
             {
-                new TestShell(testAssembly, testAssembly.GetName().Name + ".TestAssemblies.xml");
+                string configName = typeof(ReSharperTestHarness).Namespace + ".TestAssemblies" + VersionSuffix + ".xml";
+#if RESHARPER_31
+                new TestShell(testAssembly, configName);
+#else
+                new TestShell(testAssembly, testAssembly, configName);
+#endif
             }
         }
 
@@ -68,7 +82,7 @@ namespace Gallio.ReSharperRunner.Tests
                 return;
 
             FileSystemPath testSolutionPath = new FileSystemPath(
-                Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(testAssembly)), @"..\TestSolution.sln"));
+                Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(testAssembly)), @"..\..\TestSolution" + VersionSuffix + ".sln"));
             SolutionManager.Instance.OpenSolution(testSolutionPath, new SimpleTaskExecutor());
 
             isTestSolutionLoaded = true;

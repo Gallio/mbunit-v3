@@ -1,13 +1,13 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <MSTestVSIPPath Condition="'$(MSTestVSIPPath)'=='' and Exists('$(ProgramFiles)\Microsoft Visual Studio 2008 SDK\VisualStudioIntegration\Common\Assemblies\Microsoft.VisualStudio.QualityTools.Common.dll')">$(ProgramFiles)\Microsoft Visual Studio 2008 SDK\VisualStudioIntegration\Common\Assemblies</MSTestVSIPPath>
+    <MSTestVSIPPath Condition="'$(MSTestVSIPPath)'=='' and '$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)\VisualStudioIntegration\Common\Assemblies</MSTestVSIPPath>
 
     <MSTestVSIPInstalled>false</MSTestVSIPInstalled>
     <MSTestVSIPInstalled Condition="'$(MSTestVSIPPath)'!=''">true</MSTestVSIPInstalled>
 
 
     <MSTestFrameworkPath Condition="'$(MSTestFrameworkPath)'==''">$(MSTestVSIPPath)</MSTestFrameworkPath>
-    <MSTestFrameworkPath Condition="'$(MSTestFrameworkPath)'=='' and Exists('$(ProgramFiles)\Microsoft Visual Studio 9.0\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.QualityTools.Common.dll')">$(ProgramFiles)\Microsoft Visual Studio 9.0\Common7\IDE\PrivateAssemblies</MSTestFrameworkPath>
+    <MSTestFrameworkPath Condition="'$(MSTestFrameworkPath)'=='' and '$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0\@InstallDir)\PrivateAssemblies</MSTestFrameworkPath>
 
     <MSTestFrameworkInstalled>false</MSTestFrameworkInstalled>
     <MSTestFrameworkInstalled Condition="'$(MSTestFrameworkPath)'!=''">true</MSTestFrameworkInstalled>

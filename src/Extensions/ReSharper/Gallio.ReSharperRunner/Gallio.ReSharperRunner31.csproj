@@ -3,13 +3,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.ReSharperRunner</RootNamespace>
-    <AssemblyName>Gallio.ReSharperRunner</AssemblyName>
+    <AssemblyName>Gallio.ReSharperRunner31</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,24 +17,24 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\v3.1\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;RESHARPER_31</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.ReSharperRunner.XML</DocumentationFile>
+    <DocumentationFile>bin\v3.1\Gallio.ReSharperRunner31.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\v3.1\</OutputPath>
+    <DefineConstants>TRACE;RESHARPER_31</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.ReSharperRunner.XML</DocumentationFile>
+    <DocumentationFile>bin\v3.1\Gallio.ReSharperRunner31.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
@@ -88,10 +88,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Daemons\GallioAnnotationHighlighting.cs" />
-    <Compile Include="Daemons\GallioAnnotationDaemonStage.cs" />
-    <Compile Include="Daemons\GallioAnnotationDaemonStageProcess.cs" />
-    <Compile Include="Daemons\GallioProjectFileState.cs" />
+    <Compile Include="Daemons\AnnotationHighlighting.cs" />
+    <Compile Include="Daemons\InfoAnnotationHighlighting.cs" />
+    <Compile Include="Daemons\WarningAnnotationHighlighting.cs" />
+    <Compile Include="Daemons\ErrorAnnotationHighlighting.cs" />
+    <Compile Include="Daemons\AnnotationDaemonStage.cs" />
+    <Compile Include="Daemons\AnnotationDaemonStageProcess.cs" />
+    <Compile Include="Daemons\ProjectFileState.cs" />
     <Compile Include="GallioTestElement.cs" />
     <Compile Include="GallioTestPresenter.cs" />
     <Compile Include="Runtime\ReSharperLogger.cs" />
@@ -131,8 +134,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Gallio.ReSharperRunner.dll.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Include="Gallio.ReSharperRunner31.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -140,7 +143,7 @@
     <None Include="Reflection\Known Limitations and Workarounds.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\ReSharper.targets" />
+  <Import Project="..\ReSharper31.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -8,7 +8,7 @@ set ROOTDIR=%SRCDIR%..\
 set LIBSDIR=%ROOTDIR%libs\
 
 set REG=%LIBSDIR%Tools\reg.exe
-set ICARUS_EXE=%SRCDIR%\Gallio\Runners\Gallio.Icarus\bin\Gallio.Icarus.exe
+set ICARUS_EXE=%SRCDIR%\Extensions\Icarus\bin\Gallio.Icarus.exe
 
 set TDNETRUNNER_DLL=%LOCALDIR%\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll
 set TDKEY=HKLM\Software\MutantDesign\TestDriven.Net\TestRunners
@@ -16,7 +16,7 @@ set TDKEY=HKLM\Software\MutantDesign\TestDriven.Net\TestRunners
 echo Installing the locally compiled Gallio test runner for TestDriven.Net.
 echo.
 
-"%REG%" ADD %TDKEY%\Gallio_Icarus /V Application /D %ICARUS_EXE% /F >nul
+"%REG%" ADD %TDKEY%\Gallio_Icarus /V Application /D "%ICARUS_EXE%" /F >nul
 call :AddRunner MbUnit MbUnit
 call :AddRunner MbUnit2 MbUnit.Framework
 call :AddRunner MSTest Microsoft.VisualStudio.QualityTools.UnitTestFramework

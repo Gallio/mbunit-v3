@@ -1,0 +1,20 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  <Import Project="ReSharper40.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner40.csproj" />
+    <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner40.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(ReSharper40Installed)">
+    <Binary Include="Gallio.ReSharperRunner\bin\v4.0\Gallio.ReSharperRunner40.dll">
+      <Folder>ReSharper\v4.0</Folder>
+    </Binary>
+    <Binary Include="Gallio.ReSharperRunner\bin\v4.0\Gallio.ReSharperRunner40.dll.config">
+      <Folder>ReSharper\v4.0</Folder>
+    </Binary>
+
+    <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v4.0\Gallio.ReSharperRunner40.Tests.dll" />
+  </ItemGroup>
+</Project>

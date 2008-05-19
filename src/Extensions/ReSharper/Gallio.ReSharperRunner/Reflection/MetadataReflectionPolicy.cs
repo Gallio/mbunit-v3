@@ -24,8 +24,13 @@ using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
-using JetBrains.Shell;
 using System.IO;
+
+#if RESHARPER_31
+using JetBrains.Shell;
+#else
+using JetBrains.Application;
+#endif
 
 namespace Gallio.ReSharperRunner.Reflection
 {

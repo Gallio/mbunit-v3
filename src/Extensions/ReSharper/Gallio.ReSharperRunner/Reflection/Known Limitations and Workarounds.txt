@@ -1,3 +1,11 @@
+RESHARPER 4.0
+=============
+
+
+
+RESHARPER 3.1
+=============
+
 Metadata API:
 
 1. Need a way to get the MetadataLoader.
@@ -148,3 +156,4 @@ Recommendation:
   
 Workaround:
   Not supporting it.
+  

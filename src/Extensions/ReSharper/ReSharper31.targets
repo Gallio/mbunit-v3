@@ -1,0 +1,27 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ReSharper31Path Condition="'$(ReSharper31Path)'=='' and '$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs9.0\@InstallDir)\Bin</ReSharper31Path>
+    <ReSharper31Path Condition="'$(ReSharper31Path)'=='' and '$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs8.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs8.0\@InstallDir)\Bin</ReSharper31Path>
+
+    <ReSharper31Installed>false</ReSharper31Installed>
+    <ReSharper31Installed Condition="'$(ReSharper31Path)'!=''">true</ReSharper31Installed>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="$(ReSharper31Installed)">
+      <PropertyGroup>
+        <AssemblySearchPaths>$(ReSharper31Path);$(AssemblySearchPaths)</AssemblySearchPaths>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <BuildDependsOn>MissingReSharper</BuildDependsOn>
+        <RebuildDependsOn>MissingReSharper</RebuildDependsOn>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Target Name="MissingReSharper">
+    <Warning Text="Skipped build for configuration.  ReSharper v3.1 is not installed or could not be located." />
+  </Target>
+</Project>

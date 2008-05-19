@@ -3,7 +3,8 @@
 
 1. Configure the Gallio.ReSharperRunner project debugging options as follows:
    * Start External Program: devenv.exe
-   * Command Line Arguments: /ReSharper.Internal /ReSharper.Plugin "Gallio.ReSharperRunner.dll"
+   * Command Line Arguments: /ReSharper.Internal /ReSharper.Plugin "Gallio.ReSharperRunnerXX.dll"
+       where XX is 31 or 40.
 
 2. Compile the solution in Debug mode.  Note that if you just ran a build from
    the command-line, you may have Release mode binaries in the project bin folders.
