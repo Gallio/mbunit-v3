@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using Gallio.Loader;
 using Gallio.ReSharperRunner.Runtime;
 using Gallio.Runtime;
@@ -46,6 +47,7 @@ namespace Gallio.ReSharperRunner.Tasks
 
         public override void ConfigureAppDomain(TaskAppDomainConfiguration configuration)
         {
+            configuration.ApartmentState = ApartmentState.STA;
         }
 
         public override TaskResult Start(TaskExecutionNode node)

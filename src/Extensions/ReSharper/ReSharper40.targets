@@ -1,6 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ReSharper40Path Condition="'$(ReSharper40Path)'=='' and '$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs9.0\@InstallDir)\Bin</ReSharper40Path>
+    <ReSharper40Path Condition="'$(ReSharper40Path)'=='' and '$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs8.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs8.0\@InstallDir)\Bin</ReSharper40Path>
 
     <ReSharper40Installed>false</ReSharper40Installed>
     <ReSharper40Installed Condition="'$(ReSharper40Path)'!=''">true</ReSharper40Installed>
