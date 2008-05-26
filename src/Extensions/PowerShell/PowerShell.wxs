@@ -2,6 +2,8 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" 
      xmlns:ps="http://schemas.microsoft.com/wix/PSExtension">
     <Fragment>
+        <PropertyRef Id="POWERSHELL1.0" />
+                  
         <DirectoryRef Id="binFolder">
             <Component Id="Gallio.PowerShellCommands.dll" Guid="82469f8a-b09b-4fb1-80c6-e3882fd54ffd">
                 <File Id="Gallio.PowerShellCommands.dll" Source="$(var.TargetDir)\bin\Gallio.PowerShellCommands.dll" KeyPath="yes"
@@ -17,7 +19,8 @@
             </Component>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.PowerShellCommands" Title="PowerShell Commands" Level="1" Description="Installs the PowerShell commands.">
+        <Feature Id="feat_Gallio.PowerShellCommands" Title="PowerShell Commands" Level="2" Description="Installs the PowerShell commands.">
+            <Condition Level="1">POWERSHELL1.0</Condition>
             <ComponentRef Id="Gallio.PowerShellCommands.dll" />
             <ComponentRef Id="Gallio.PowerShellCommands.xml" />
             <ComponentRef Id="Gallio.PowerShellCommands.dll.Help.xml" />

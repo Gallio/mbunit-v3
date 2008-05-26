@@ -1,40 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
-        <!-- TODO: Still stuff to do here, see below -->
-
-        <Property Id="PEX_INSTALLED" Value="0"/>
+        <!-- indicates wheter Pex was installed -->
+        <Property Id="PEX_INSTALLDIR" Secure="yes">
+            <RegistrySearch Id="PexConsoleSearch" Root="HKLM" Key="Software\Microsoft\Pex\CurrentVersion" Name="InstallPath" Type="raw" />
+        </Property>
 
         <DirectoryRef Id="binFolder">
-<!--
             <Component Id="MbUnit.Pex.dll" Guid="bfc40e70-ddcd-4d3a-b823-d81a5731b8a8">
-                <Condition>PEX_INSTALLED</Condition>
                 <File Id="MbUnit.Pex.dll" Name="MbUnit.Pex.dll" Source="$(var.TargetDir)\bin\MbUnit.Pex.dll" KeyPath="yes" />
             </Component>
--->
         </DirectoryRef>
 
-        <Feature Id='feat_PexAdapter' Title='MbUnit v3 Pex' Level='1'
+        <Feature Id='feat_PexAdapter' Title='MbUnit v3 Pex' Level='2'
             Description='Installs the MbUnit v3 Pex package.'>
-<!--
+            <Condition Level="1">PEX_INSTALLDIR</Condition>
             <ComponentRef Id="MbUnit.Pex.dll"/>
--->
-            <FeatureRef Id='feat_MbUnit3.Templates.VS2005' IgnoreParent='yes'/>
-            <FeatureRef Id='feat_MbUnit3.Templates.VS2008' IgnoreParent='yes'/>
         </Feature>
-
-        <!-- ==================================================================== -->
-
     </Fragment>
 </Wix>
-
-<!--  ??? Don't know what this does yet.
-
-Function .onSelChange
-    !ifndef MISSING_MBUNIT_PEX_PACKAGE
-        !insertmacro EnforceSelectionDependency ${MbUnit3PexSection} ${MbUnit3Section}
-    !endif
-    !insertmacro EnforceSelectionDependency ${MbUnit3VS2005TemplatesSection} ${MbUnit3Section}
-    !insertmacro EnforceSelectionDependency ${MbUnit3VS2008TemplatesSection} ${MbUnit3Section}
-FunctionEnd
--->

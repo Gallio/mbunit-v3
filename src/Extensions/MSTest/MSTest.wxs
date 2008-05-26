@@ -3,23 +3,22 @@
      xmlns:vs="http://schemas.microsoft.com/wix/VSExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <Fragment>
+        <PropertyRef Id='VS90DEVENV'/>
         <PropertyRef Id='VS90_ROOT_FOLDER'/>
-        
-        <!-- TODO: I don't quite understand how this CA is supposed to work. 
-                   Need to investigate it further.
-        <CustomActionRef Id="VC90Setup" />
-        -->
-        
+
+        <!-- TODO: Add support for VS2005 -->
+
         <DirectoryRef Id="TARGETDIR">
-            <Directory Id='VS90_ROOT_FOLDER' Name='[VS90_ROOT_FOLDER]'>
-                <Directory Id='VS90_COMMON7_FOLDER' Name="Common7">
-                    <Directory Id="VS90_IDE_FOLDER" Name="IDE">
+            <Directory Id='VS90_ROOT_FOLDER' Name='VS90_Root_Folder'>
+                <Directory Id='VS90_Common7_Folder' Name="Common7">
+                    <Directory Id="VS90_IDE_Folder" Name="IDE">
                         <Directory Id="VS90_PrivateAssemblies" Name="PrivateAssemblies">
                             <Component Id="Gallio.Loader.VS90.dll" Guid="{5DB28D6D-775E-41fb-86E6-F304E7B70AB8}">
                                 <File Id="Gallio.Loader.VS90.dll" Source="$(var.TargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
                             </Component>
                             <Component Id="Gallio.MSTestRunner.dll" Guid="9A21CBC4-4189-41e2-90F6-4241BA2A634D">
-                                <File Id="Gallio.MSTestRunner.dll" Source="$(var.TargetDir)\bin\MSTest\Gallio.MSTestRunner.dll" KeyPath="yes" />
+                                <File Id="Gallio.MSTestRunner.dll" Source="$(var.TargetDir)\bin\MSTest\Gallio.MSTestRunner.dll" KeyPath="yes"
+                                      Assembly=".net" AssemblyApplication="Gallio.MSTestRunner.dll" />
                                 <File Id="Gallio.MSTestRunner.dll.config" Source="$(var.TargetDir)\bin\MSTest\Gallio.MSTestRunner.dll.config" />
                                 <util:XmlFile Id="FixXmlSettings.MSTestRunner" File="[#Gallio.MSTestRunner.dll.config]" Action="setValue" 
                                               ElementPath="//configuration/gallio/installation/path" Value="[binFolder]" />
@@ -37,8 +36,8 @@
                     <!-- Register the package -->
                     <RegistryKey Id="Gallio.MSTestRunner.VS90.Registry2" Action="createAndRemoveOnUninstall"
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}">
-                        <RegistryValue Type="string" Value="Gallio.MSTestRunner.GallioPackage, Gallio.MSTestRunner"/>
-                        <RegistryValue Type="string" Name="InprocServer32" Value="$WINDIR\system32\mscoree.dll"/>
+                        <RegistryValue Type="string" Value="Gallio.MSTestRunner.GallioPackage, !(bind.assemblyFullName.Gallio.MSTestRunner.dll)"/>
+                        <RegistryValue Type="string" Name="InprocServer32" Value="[SystemFolder]mscoree.dll"/>
                         <RegistryValue Type="string" Name="Class" Value="Gallio.MSTestRunner.GallioPackage"/>
                         <RegistryValue Type="string" Name="Assembly" Value="Gallio.MSTestRunner"/>
                         <RegistryValue Type="integer" Name="ID" Value="1"/>
@@ -55,8 +54,8 @@
                     <RegistryKey Id="Gallio.MSTestRunner.VS90.Registry4" Action="createAndRemoveOnUninstall"
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}">
                         <RegistryValue Type="string" Name="NameId" Value="#100"/>
-                        <RegistryValue Type="string" Name="TipProvider" Value="Gallio.MSTestRunner.GallioTip, Gallio.MSTestRunner"/>
-                        <RegistryValue Type="string" Name="ServiceType" Value="Gallio.MSTestRunner.SGallioTestService, Gallio.MSTestRunner"/>
+                        <RegistryValue Type="string" Name="TipProvider" Value="Gallio.MSTestRunner.GallioTip, !(bind.assemblyFullName.Gallio.MSTestRunner.dll)"/>
+                        <RegistryValue Type="string" Name="ServiceType" Value="Gallio.MSTestRunner.SGallioTestService, !(bind.assemblyFullName.Gallio.MSTestRunner.dll)"/>
                         <RegistryKey Key="Extensions">
                             <RegistryValue Type="integer" Name=".dll" Value="101"/>
                             <RegistryValue Type="integer" Name=".exe" Value="101"/>
@@ -67,11 +66,19 @@
         </DirectoryRef>
 
         <Feature Id="feat_MSTestRunner" Title="MSTest Runner" Level="2" Description="Visual Studio Team System Extension (Experimental!)">
-            <Condition Level="1">VS90_INSTALLDIR</Condition>
+            <Condition Level="1">VS90DEVENV</Condition>
             <ComponentRef Id="Gallio.Loader.VS90.dll"/>
             <ComponentRef Id="Gallio.MSTestRunner.dll"/>
             <ComponentRef Id="Gallio.MSTestRunner.VS90.Registry"/>
         </Feature>
+
+        <CustomActionRef Id="VS90Setup" />
+
+        <InstallExecuteSequence>
+            <Custom Action="VS90Setup" Before="InstallFinalize">&amp;feat_MSTestRunner&gt;1 AND VS90DEVENV&lt;&gt;&quot;&quot;</Custom>
+        </InstallExecuteSequence>
+        
+        <!-- ============================================================== -->
 
         <DirectoryRef Id="binFolder">
             <Directory Id="MSTestAdapter" Name="MSTest">
@@ -86,7 +93,7 @@
         </DirectoryRef>
 
         <Feature Id="feat_MSTestAdapter" Title="MSTest Adapter" Level="2" Description="Visual Studio Team System Extension (Experimental!)">
-            <Condition Level="1">VS90_INSTALLDIR</Condition>
+            <Condition Level="1">VS90DEVENV</Condition>
             <ComponentRef Id="Gallio.MSTestAdapter.dll" />
             <ComponentRef Id="MSTest.Readme.txt" />
         </Feature>

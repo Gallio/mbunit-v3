@@ -55,8 +55,8 @@
     <Compile Include="..\Extensions\PowerShell\PowerShell.wxs">
       <Link>PowerShell.wxs</Link>
     </Compile>
-    <Compile Include="..\Extensions\ReSharper\ReSharper.wxs">
-      <Link>ReSharper.wxs</Link>
+    <Compile Include="..\Extensions\ReSharper\ReSharper31.wxs">
+      <Link>ReSharper31.wxs</Link>
     </Compile>
     <Compile Include="..\Extensions\TDNet\TDNet.wxs">
       <Link>TDNet.wxs</Link>
@@ -115,8 +115,8 @@
     <Target Name="AfterBuild">
     </Target>
     -->
-    <Target Name="CheckWxs">
-        <!-- Run WixCop on all the source files to check for issues. -->
-        <Exec Command="&quot;$(WixToolPath)\WixCop.exe&quot; @(Compile, ' ')" ContinueOnError="true" />
-    </Target>
+  <Target Name="CheckWxs">
+    <!-- Run WixCop on all the source files to check for issues. -->
+    <Exec Command="&quot;$(WixToolPath)\WixCop.exe&quot; @(Compile, ' ')" ContinueOnError="true" />
+  </Target>
 </Project>

@@ -67,7 +67,7 @@
             <FeatureRef Id='feat_Gallio.MsBuildTasks'/>
             <FeatureRef Id='feat_Gallio.NAntTasks'/>
             <FeatureRef Id='feat_Gallio.PowerShellCommands'/>
-            <FeatureRef Id='feat_Gallio.ReSharper'/>
+            <FeatureRef Id='feat_Gallio.ReSharper.V31'/>
             <FeatureRef Id='feat_Gallio.TDNet'/>
             <FeatureRef Id='feat_MSTestRunner'/>
         </Feature>
@@ -87,19 +87,22 @@
             <FeatureRef Id='feat_MbUnit3.Samples'/>
         </Feature>
 
-        <!-- Define extra information used by MSI -->
+        <!-- -->
+        <!-- Properties used by 'Add or Remove Programs' in Control Panel. -->
+        <!-- -->
+        
+        <!-- URL for technical support. -->
         <Property Id='ARPHELPLINK'>http://www.gallio.org/</Property>
+
+        <!-- URL for application update information. -->
         <Property Id='ARPURLUPDATEINFO'>http://www.gallio.org/</Property>
+
+        <!-- URL for the home page of the application. -->
         <Property Id='ARPURLINFOABOUT'>http://www.gallio.org/</Property>
-        <!-- In Control Panel > Add or Remove Programs, applications can have various
-             entries like phone number and Internet contact information under the
-             "Click here for support information" entry. To specify those, add any of
-             the following properties to your source file:
-        <Property Id='ARPCONTACT'>contact info</Property>
-        <Property Id='ARPHELPTELEPHONE'>http://www.gallio.org/</Property>
-        <Property Id='ARPCOMMENTS'>any comments</Property>
-        <Property Id='ARPREADME'>path</Property>
-        <Property Id='ARPSIZE'>app size in kilobytes</Property>
-        -->
+
+        <!-- Specifies the primary icon for the installation package. -->
+        <Property Id="ARPPRODUCTICON" Value="GallioIcon" />
+        <Icon Id="GallioIcon" SourceFile="Gallio.ico" />
+
     </Product>
 </Wix>
