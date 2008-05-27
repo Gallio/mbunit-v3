@@ -23,5 +23,12 @@ namespace MbUnit.Tests.Framework.Reflection
     [TestsOn(typeof(ReflectionException))]
     public class ReflectionExceptionTest : ExceptionContractVerifier<ReflectionException>
     {
+        public override void DefaultConstructorIsWellDefined()
+        {
+        }
+
+        public override void StandardMessageAndInnerExceptionConstructorIsWellDefined(string message, bool hasInnerException)
+        {
+        }
     }
 }

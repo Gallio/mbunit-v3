@@ -74,17 +74,12 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Gets the message text, or null if none.
+        /// Returns true if the test exception has a non-default message
+        /// (the message parameter was not null in the constructor arguments).
         /// </summary>
-        public override string Message
+        public bool HaveNonDefaultMessage
         {
-            get
-            {
-                // We override this method because the base Exception type will return a non-null
-                // default message constructed from the class name otherwise.  Here we really want
-                // to be able to distinguish the lack of a message from the presence of a default one.
-                return haveMessage ? base.Message : null;
-            }
+            get { return haveMessage; }
         }
 
         /// <summary>
