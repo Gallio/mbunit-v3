@@ -71,8 +71,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Override to disable this test.
         /// </remarks>
         [Test]
-        [DependsOn("HasSerializableAttribute")]
-        [DependsOn("HasSerializationConstructor")]
         public virtual void DefaultConstructorIsWellDefined()
         {
             T instance = CreateInstanceUsingDefaultConstructor();
@@ -91,8 +89,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Override to disable this test.
         /// </remarks>
         [Test]
-        [DependsOn("HasSerializableAttribute")]
-        [DependsOn("HasSerializationConstructor")]
         public virtual void StandardMessageConstructorIsWellDefined(
             [Column(null, "", "A message.")] string message)
         {
@@ -116,8 +112,6 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Override to disable this test.
         /// </remarks>
         [Test]
-        [DependsOn("HasSerializableAttribute")]
-        [DependsOn("HasSerializationConstructor")]
         public virtual void StandardMessageAndInnerExceptionConstructorIsWellDefined(
             [Column(null, "", "A message.")] string message,
             [Column(false, true)] bool hasInnerException)
