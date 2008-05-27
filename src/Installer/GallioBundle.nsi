@@ -128,7 +128,6 @@ Section "!Gallio" GallioSection
 	SetOutPath "$INSTDIR"
 	File "${TARGETDIR}\ASL - Apache Software Foundation License.txt"
 	File "${TARGETDIR}\Gallio License.txt"
-	File "${TARGETDIR}\Release Notes.txt"
 	File "${TARGETDIR}\Gallio Website.url"
 
 	SetOutPath "$INSTDIR\bin"

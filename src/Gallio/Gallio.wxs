@@ -16,9 +16,6 @@
             <Component Id="Gallio.License" Guid="{80dcc954-656f-45de-9bf2-bec6ff1d7c58}">
                 <File Id="Gallio.License.txt" Name="Gallio License.txt" Source="$(var.TargetDir)\Gallio License.txt" KeyPath="yes" />
             </Component>
-            <Component Id="Release.Notes" Guid="{34a7d5f7-2391-46cd-8714-ba3c0ef290a9}">
-                <File Id="Release.Notes.txt" Name="Release Notes.txt" Source="$(var.TargetDir)\Release Notes.txt" KeyPath="yes" />
-            </Component>
             <Component Id="Gallio.Website" Guid="{32DF17D3-27D2-4b7a-8094-37A559F2B234}">
                 <File Id="Gallio.Website.url" Name="Gallio Website.url" Source="$(var.TargetDir)\Gallio Website.url" KeyPath="yes">
                     <Shortcut Id="Gallio.Website.lnk" Name="Gallio Website" Directory="GallioMenuFolder" Advertise="yes" /> <!-- TODO: Add icon -->
@@ -99,7 +96,6 @@
             <ComponentRef Id="Gallio.License" />
             <ComponentRef Id="Gallio.Website" />
             <ComponentRef Id="Gallio.Registry" />
-            <ComponentRef Id="Release.Notes" />
             <ComponentRef Id="Apache.License" />
         </Feature>
         

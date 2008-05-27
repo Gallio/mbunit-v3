@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <File Include="Gallio License.txt" />
-    <File Include="Release Notes.txt" />
     <File Include="ASL - Apache Software Foundation License.txt" />
 
     <Extra Include="$(LibsDir)\H2Reg\H2Reg.*">
