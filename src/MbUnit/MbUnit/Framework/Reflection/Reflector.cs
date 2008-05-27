@@ -508,8 +508,8 @@ namespace MbUnit.Framework.Reflection
         #region Private Helpers
         private static void IsMember(object obj, object member, string memberName, MemberType type)
         {
-            if (member == null)
-                throw new ReflectionException(memberName, type, obj);
+            Assert.IsNotNull(member,
+                "Fail to find {0} {1} in {2}.", memberName, Enum.GetName(typeof(MemberType), type) , obj);
         }
 
         private static void CheckObject(object obj)

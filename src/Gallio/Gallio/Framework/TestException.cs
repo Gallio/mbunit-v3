@@ -32,8 +32,8 @@ namespace Gallio.Framework
     [Serializable]
     public abstract class TestException : Exception
     {
-        private const string HaveMessageKey = "HaveMessage";
-        private readonly bool haveMessage;
+        private const string HasNonDefaultMessageKey = "HasNonDefaultMessage";
+        private readonly bool hasNonDefaultMessageKey;
 
         /// <summary>
         /// Creates an exception.
@@ -59,7 +59,7 @@ namespace Gallio.Framework
         protected TestException(string message, Exception innerException)
             : base(message, innerException)
         {
-            haveMessage = !string.IsNullOrEmpty(message);
+            hasNonDefaultMessageKey = !string.IsNullOrEmpty(message);
         }
 
         /// <summary>
@@ -70,16 +70,16 @@ namespace Gallio.Framework
         protected TestException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            haveMessage = info.GetBoolean(HaveMessageKey);
+            hasNonDefaultMessageKey = info.GetBoolean(HasNonDefaultMessageKey);
         }
 
         /// <summary>
         /// Returns true if the test exception has a non-default message
         /// (the message parameter was not null in the constructor arguments).
         /// </summary>
-        public bool HaveNonDefaultMessage
+        public bool HasNonDefaultMessage
         {
-            get { return haveMessage; }
+            get { return hasNonDefaultMessageKey; }
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Gallio.Framework
         {
             base.GetObjectData(info, context);
 
-            info.AddValue(HaveMessageKey, haveMessage);
+            info.AddValue(HasNonDefaultMessageKey, hasNonDefaultMessageKey);
         }
     }
 }

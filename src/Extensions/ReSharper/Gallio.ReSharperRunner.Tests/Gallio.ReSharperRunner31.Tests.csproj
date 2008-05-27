@@ -102,6 +102,7 @@
     <Compile Include="Reflection\MetadataReflectionPolicyTest.cs" />
     <Compile Include="Reflection\PsiReflectionPolicyTest.cs" />
     <Compile Include="ReSharperTestHarness.cs" />
+    <Compile Include="RunWithGuardedReadLockAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">

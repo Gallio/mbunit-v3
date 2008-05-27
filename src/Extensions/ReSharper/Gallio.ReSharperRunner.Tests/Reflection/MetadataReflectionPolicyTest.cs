@@ -24,6 +24,9 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(MetadataReflectionPolicy))]
+#if !RESHARPER_31
+    [RunWithGuardedReadLock]
+#endif
     public class MetadataReflectionPolicyTest : BaseReflectionPolicyTest
     {
         private MetadataLoader loader;

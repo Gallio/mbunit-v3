@@ -13,14 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-using Gallio.Runtime.Logging;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.Tests.Reflection;
 using JetBrains.ProjectModel;
-using JetBrains.ProjectModel.Impl;
 using JetBrains.ReSharper.Psi;
 using MbUnit.Framework;
 using System.Reflection;
@@ -30,9 +27,11 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(PsiReflectionPolicy))]
+#if !RESHARPER_31
+    [RunWithGuardedReadLock]
+#endif
     public class PsiReflectionPolicyTest : BaseReflectionPolicyTest
     {
-        private SolutionImpl solution;
         private PsiReflectionPolicy reflectionPolicy;
 
         [FixtureSetUp]
@@ -56,17 +55,6 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             PsiManager manager = PsiManager.GetInstance(SolutionManager.Instance.CurrentSolution);
 
             reflectionPolicy = new PsiReflectionPolicy(manager);
-        }
-
-        public override void TearDown()
-        {
-            if (solution != null)
-            {
-                solution.Dispose();
-                solution = null;
-            }
-
-            base.TearDown();
         }
 
         protected override IReflectionPolicy ReflectionPolicy

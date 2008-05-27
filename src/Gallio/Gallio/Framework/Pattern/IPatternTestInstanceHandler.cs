@@ -35,7 +35,7 @@ namespace Gallio.Framework.Pattern
     /// <item><see cref="InitializeTestInstance" /></item>
     /// <item><see cref="SetUpTestInstance" /></item>
     /// <item><see cref="ExecuteTestInstance" /></item>
-    /// <item><see cref="DecorateChildTest" /> for each child test</item>
+    /// <item><see cref="DecorateChildTest" /> before each child test</item>
     /// <item><see cref="TearDownTestInstance" /></item>
     /// <item><see cref="DisposeTestInstance" /></item>
     /// <item><see cref="AfterTestInstance" /></item>

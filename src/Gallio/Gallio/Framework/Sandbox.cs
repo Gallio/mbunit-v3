@@ -287,7 +287,7 @@ namespace Gallio.Framework
                     outcome = testException.Outcome;
 
                     if (testException.ExcludeStackTrace)
-                        LogMessage(description, outcome, testException.HaveNonDefaultMessage ? testException.Message : null, null);
+                        LogMessage(description, outcome, testException.HasNonDefaultMessage ? testException.Message : null, null);
                     else
                         LogMessage(description, outcome, null, testException);
                 }

@@ -96,7 +96,6 @@
     <Compile Include="Framework\ReflectionAssert.cs" />
     <Compile Include="Framework\Reflection\AccessModifier.cs" />
     <Compile Include="Framework\Reflection\MemberType.cs" />
-    <Compile Include="Framework\Reflection\ReflectionException.cs" />
     <Compile Include="Framework\Reflection\Reflector.cs" />
     <Compile Include="Framework\SecurityAssert.cs" />
     <Compile Include="Framework\SequentialJoinAttribute.cs" />

@@ -25,7 +25,7 @@ namespace MbUnit.Framework
     /// <summary>
     /// <para>
     /// A test decorator applies actions to be performed around the initialization, setup,
-    /// execution, teardown and disposal lifecycle of a test.
+    /// execution, teardown and disposal lifecycle of a test (in that order).
     /// </para>
     /// <para>
     /// This abstract class provides a convenient way to implement new test decorators
