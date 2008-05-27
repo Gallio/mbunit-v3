@@ -55,7 +55,7 @@ namespace Gallio.MSTestRunner
 
         static GallioPackage()
         {
-            GallioLoader.Initialize(typeof(GallioPackage).Assembly);
+            GallioInitializer.Initialize();
         }
 
         public GallioPackage()

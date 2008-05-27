@@ -91,11 +91,11 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [Test]
-        [Row(null, ExpectedException = typeof(FilterRecognitionException))]
-        [Row("", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(" ", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("\t", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("\n \n", ExpectedException = typeof(FilterRecognitionException))]
+        [Row(null, ExpectedException = typeof(FilterParseException))]
+        [Row("", ExpectedException = typeof(FilterParseException))]
+        [Row(" ", ExpectedException = typeof(FilterParseException))]
+        [Row("\t", ExpectedException = typeof(FilterParseException))]
+        [Row("\n \n", ExpectedException = typeof(FilterParseException))]
         public void AnyFilterIsReturnedForEmptyFilterExpressions(string filter)
         {
             FilterUtils.ParseTestFilter(filter);
@@ -282,25 +282,25 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [Test]
-        [Row("foo''", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(@"foo\", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(@"foo\\", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("foo\'blah", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(@"\", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(@"'", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("\"", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("/", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("~'Fixture1'", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("Type:\"", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(@"Type:'", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(@"Type:/", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(@"Type:foo\", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(@"Type:\", ExpectedException = typeof(FilterRecognitionException))]
-        [Row(@"Type:'\", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("Type:\"\\", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("(Author:me", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("(Author:", ExpectedException = typeof(FilterRecognitionException))]
-        [Row("(Author::", ExpectedException = typeof(FilterRecognitionException))]
+        [Row("foo''", ExpectedException = typeof(FilterParseException))]
+        [Row(@"foo\", ExpectedException = typeof(FilterParseException))]
+        [Row(@"foo\\", ExpectedException = typeof(FilterParseException))]
+        [Row("foo\'blah", ExpectedException = typeof(FilterParseException))]
+        [Row(@"\", ExpectedException = typeof(FilterParseException))]
+        [Row(@"'", ExpectedException = typeof(FilterParseException))]
+        [Row("\"", ExpectedException = typeof(FilterParseException))]
+        [Row("/", ExpectedException = typeof(FilterParseException))]
+        [Row("~'Fixture1'", ExpectedException = typeof(FilterParseException))]
+        [Row("Type:\"", ExpectedException = typeof(FilterParseException))]
+        [Row(@"Type:'", ExpectedException = typeof(FilterParseException))]
+        [Row(@"Type:/", ExpectedException = typeof(FilterParseException))]
+        [Row(@"Type:foo\", ExpectedException = typeof(FilterParseException))]
+        [Row(@"Type:\", ExpectedException = typeof(FilterParseException))]
+        [Row(@"Type:'\", ExpectedException = typeof(FilterParseException))]
+        [Row("Type:\"\\", ExpectedException = typeof(FilterParseException))]
+        [Row("(Author:me", ExpectedException = typeof(FilterParseException))]
+        [Row("(Author:", ExpectedException = typeof(FilterParseException))]
+        [Row("(Author::", ExpectedException = typeof(FilterParseException))]
         public void InvalidFilter(string filter)
         {
             FilterUtils.ParseTestFilter(filter);

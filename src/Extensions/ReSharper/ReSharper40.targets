@@ -1,7 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <ReSharper40Path Condition="'$(ReSharper40Path)'=='' and '$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs9.0\@InstallDir)\Bin</ReSharper40Path>
-    <ReSharper40Path Condition="'$(ReSharper40Path)'=='' and '$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs8.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs8.0\@InstallDir)\Bin</ReSharper40Path>
+    <ReSharper40VS80InstallDir>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs8.0\@InstallDir)</ReSharper40VS80InstallDir>
+    <ReSharper40VS90InstallDir>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.0\vs9.0\@InstallDir)</ReSharper40VS90InstallDir>
+
+    <ReSharper40Path Condition="'$(ReSharper40Path)'=='' and '$(ReSharper40VS90InstallDir)'!='' and Exists('$(ReSharper40VS90InstallDir)\JetBrains.Platform.ReSharper.Shell.dll')">$(ReSharper40VS90InstallDir)</ReSharper40Path>
+    <ReSharper40Path Condition="'$(ReSharper40Path)'=='' and '$(ReSharper40VS80InstallDir)'!='' and Exists('$(ReSharper40VS80InstallDir)\JetBrains.Platform.ReSharper.Shell.dll')">$(ReSharper40VS80InstallDir)</ReSharper40Path>
 
     <ReSharper40Installed>false</ReSharper40Installed>
     <ReSharper40Installed Condition="'$(ReSharper40Path)'!=''">true</ReSharper40Installed>
@@ -22,7 +25,7 @@
   </Choose>
 
   <Target Name="MissingReSharper">
-    <Warning Text="Skipped build for configuration.  ReSharper $(ReSharper40Version) is not installed or could not be located." />
+    <Warning Text="Skipped build for configuration.  ReSharper v4.0 is not installed or could not be located." />
   </Target>
 </Project>
 

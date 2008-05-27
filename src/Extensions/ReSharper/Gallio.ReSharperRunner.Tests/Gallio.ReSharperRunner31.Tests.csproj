@@ -74,7 +74,9 @@
     <Reference Include="JetBrains.ReSharper.TaskRunnerFramework, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="JetBrains.ReSharper.TextControl, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="JetBrains.ReSharper.TextControl, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="JetBrains.ReSharper.TreeModelBrowser, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>

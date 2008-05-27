@@ -86,6 +86,7 @@
     <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
     <Compile Include="Model\Execution\RemoteTestListener.cs" />
+    <Compile Include="Model\Filters\FilterParseException.cs" />
     <Compile Include="Model\ITestPackageExplorerFactory.cs" />
     <Compile Include="Model\TestDomainSetup.cs">
       <SubType>Code</SubType>
@@ -94,6 +95,12 @@
     <Compile Include="Reflection\Impl\BaseReflectionPolicy.cs" />
     <Compile Include="Reflection\Impl\CecilReflectionPolicy.cs" />
     <Compile Include="Reflection\ReflectionOnlyAssemblyLoader.cs" />
+    <Compile Include="Runner\Caching\IDiskCacheGroup.cs" />
+    <Compile Include="Runner\Caching\IDiskCacheGroupCollection.cs" />
+    <Compile Include="Runner\Caching\IDiskCache.cs" />
+    <Compile Include="Runner\Caching\DiskCacheException.cs" />
+    <Compile Include="Runner\Caching\SimpleDiskCache.cs" />
+    <Compile Include="Runner\Caching\TemporaryDiskCache.cs" />
     <Compile Include="Runner\Drivers\AggregateTestDriver.cs" />
     <Compile Include="Runner\Drivers\BaseTestDriver.cs" />
     <Compile Include="Runner\Drivers\LocalTestDriver.cs" />
@@ -135,6 +142,9 @@
     <Compile Include="Runner\Events\TestStepStartedEventArgs.cs" />
     <Compile Include="Runner\Events\UnloadFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\UnloadStartedEventArgs.cs" />
+    <Compile Include="Runner\Workspaces\ResourcePath.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentAttribute.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentFlags.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentParser.cs" />

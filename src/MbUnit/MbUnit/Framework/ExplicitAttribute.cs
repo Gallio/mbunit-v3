@@ -24,8 +24,8 @@ namespace MbUnit.Framework
     /// <summary>
     /// <para>
     /// Indicates that a test should only be run explicitly.
-    /// The test will still appear in the test results but it will not run unless it is explicitly
-    /// selected for execution.
+    /// The test will still appear in the test tree but it will not run and it will not appear
+    /// in the test results unless it is explicitly selected for execution.
     /// </para>
     /// <para>
     /// A test is considered to be explicitly selected when the filter used to run the tests

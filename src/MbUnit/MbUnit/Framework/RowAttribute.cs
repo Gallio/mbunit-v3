@@ -84,6 +84,7 @@ namespace MbUnit.Framework
         /// </code>
         /// </remarks>
         /// <param name="values">The array of values in the row</param>
+        [CLSCompliant(false)]
         public RowAttribute(params object[] values)
         {
             this.values = values ?? new object[] { null };

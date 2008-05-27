@@ -1,6 +1,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <PexPath Condition="'$(PexPath)'=='' and '$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\Pex\CurrentVersion\@InstallPath)'!=''">$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\Pex\CurrentVersion\@InstallPath)</PexPath>
+    <PexInstallDir>$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\Pex\CurrentVersion\@InstallPath)</PexInstallDir>
+
+    <PexPath Condition="'$(PexPath)'=='' and '$(PexInstallDir)'!='' and Exists('$(PexInstallDir)\bin\Microsoft.Pex.Framework.dll')">$(PexInstallDir)\bin</PexPath>
 
     <PexInstalled>false</PexInstalled>
     <PexInstalled Condition="'$(PexPath)'!=''">true</PexInstalled>

@@ -56,6 +56,10 @@
     <Compile Include="Framework\BindAttribute.cs" />
     <Compile Include="Framework\ColumnAttribute.cs" />
     <Compile Include="Framework\CombinatorialJoinAttribute.cs" />
+    <Compile Include="Framework\ContractVerifiers\ContractVerifier.cs" />
+    <Compile Include="Framework\ContractVerifiers\EqualityContractVerifier.cs" />
+    <Compile Include="Framework\ContractVerifiers\ExceptionContractVerifier.cs" />
+    <Compile Include="Framework\ContractVerifiers\IDistinctInstanceProvider.cs" />
     <Compile Include="Framework\CsvDataAttribute.cs" />
     <Compile Include="Framework\DataAttribute.cs" />
     <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />

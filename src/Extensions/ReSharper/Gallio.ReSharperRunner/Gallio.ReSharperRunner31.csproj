@@ -39,6 +39,9 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.ActionManagement, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="JetBrains.Metadata, Version=3.0.517.8, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -49,6 +52,9 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="JetBrains.ReSharper.DocumentModel, Version=3.0.517.8, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.IDECore, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="JetBrains.ReSharper.ProjectModel, Version=3.0.517.8, Culture=neutral, processorArchitecture=MSIL">
@@ -81,6 +87,15 @@
     <Reference Include="JetBrains.Util, Version=3.0.517.8, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="JetBrains.VSIntegration, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -88,27 +103,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Daemons\AnnotationHighlighting.cs" />
-    <Compile Include="Daemons\InfoAnnotationHighlighting.cs" />
-    <Compile Include="Daemons\WarningAnnotationHighlighting.cs" />
-    <Compile Include="Daemons\ErrorAnnotationHighlighting.cs" />
-    <Compile Include="Daemons\AnnotationDaemonStage.cs" />
-    <Compile Include="Daemons\AnnotationDaemonStageProcess.cs" />
-    <Compile Include="Daemons\ProjectFileState.cs" />
-    <Compile Include="GallioTestElement.cs" />
-    <Compile Include="GallioTestPresenter.cs" />
+    <Compile Include="Provider\Actions\GallioAction.cs" />
+    <Compile Include="Provider\Actions\ShowReportAction.cs" />
+    <Compile Include="Provider\Daemons\AnnotationHighlighting.cs" />
+    <Compile Include="Provider\Daemons\InfoAnnotationHighlighting.cs" />
+    <Compile Include="Provider\Daemons\WarningAnnotationHighlighting.cs" />
+    <Compile Include="Provider\Daemons\ErrorAnnotationHighlighting.cs" />
+    <Compile Include="Provider\Daemons\AnnotationDaemonStage.cs" />
+    <Compile Include="Provider\Daemons\AnnotationDaemonStageProcess.cs" />
+    <Compile Include="Provider\ProjectFileState.cs" />
+    <Compile Include="Provider\GallioTestElement.cs" />
+    <Compile Include="Provider\GallioTestPresenter.cs" />
+    <Compile Include="Provider\SessionCache.cs" />
+    <Compile Include="Runtime\GallioInitializer.cs" />
     <Compile Include="Runtime\ReSharperLogger.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicy.cs" />
     <Compile Include="Reflection\PsiReflectionPolicy.cs" />
     <Compile Include="Reflection\ReSharperReflectionPolicy.cs" />
     <Compile Include="Runtime\RuntimeProvider.cs" />
-    <Compile Include="Tasks\GallioRemoteTaskRunner.cs" />
-    <Compile Include="Tasks\GallioRemoteTask.cs" />
-    <Compile Include="Tasks\GallioTestAssemblyTask.cs" />
-    <Compile Include="Tasks\GallioTestExplicitTask.cs" />
-    <Compile Include="Tasks\GallioTestRunTask.cs" />
-    <Compile Include="Tasks\GallioTestItemTask.cs" />
-    <Compile Include="GallioTestProvider.cs" />
+    <Compile Include="Provider\Tasks\GallioRemoteTaskRunner.cs" />
+    <Compile Include="Provider\Tasks\GallioRemoteTask.cs" />
+    <Compile Include="Provider\Tasks\GallioTestAssemblyTask.cs" />
+    <Compile Include="Provider\Tasks\GallioTestExplicitTask.cs" />
+    <Compile Include="Provider\Tasks\GallioTestRunTask.cs" />
+    <Compile Include="Provider\Tasks\GallioTestItemTask.cs" />
+    <Compile Include="Provider\GallioTestProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -140,6 +159,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme - Debugging.txt" />
+    <EmbeddedResource Include="Resources\Report.png" />
+    <EmbeddedResource Include="Resources\Actions.xml" />
     <None Include="Reflection\Known Limitations and Workarounds.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

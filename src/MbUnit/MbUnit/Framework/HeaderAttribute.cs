@@ -59,6 +59,7 @@ namespace MbUnit.Framework
         /// <param name="columnNames">The names of the columns in the data source in order by index</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="columnNames"/> or
         /// if one of the values it contains is null</exception>
+        [CLSCompliant(false)]
         public HeaderAttribute(params string[] columnNames)
         {
             if (columnNames == null || Array.IndexOf(columnNames, null) != -1)

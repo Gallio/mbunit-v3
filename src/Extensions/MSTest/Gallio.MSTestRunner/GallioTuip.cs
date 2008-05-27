@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Loader;
+using Gallio.MSTestRunner.Runtime;
 using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.Vsip;
 
@@ -24,7 +25,7 @@ namespace Gallio.MSTestRunner
     {
         static GallioTuip()
         {
-            GallioLoader.Initialize(typeof(GallioPackage).Assembly);
+            GallioInitializer.Initialize();
         }
 
         public GallioTuip(IServiceProvider serviceProvider)

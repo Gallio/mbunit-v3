@@ -22,24 +22,23 @@ using MbUnit.Framework;
 using MbUnit.Pex;
 using Microsoft.ExtendedReflection.Collections;
 using Microsoft.ExtendedReflection.Emit;
+using Microsoft.ExtendedReflection.Logging;
 using Microsoft.ExtendedReflection.Metadata;
 using Microsoft.ExtendedReflection.Metadata.Builders;
+using Microsoft.ExtendedReflection.Metadata.Interfaces;
 using Microsoft.ExtendedReflection.Metadata.Names;
 using Microsoft.ExtendedReflection.Symbols;
 using Microsoft.Pex.Engine;
 using Microsoft.Pex.Engine.ComponentModel;
-using Microsoft.Pex.Engine.Symbols;
 using Microsoft.Pex.Engine.TestFrameworks;
 using Microsoft.Pex.Framework.Instrumentation;
-using Microsoft.Pex.Framework.Security;
 using Microsoft.Pex.Framework.Suppression;
 
 [assembly: PexInstrumentAssembly(typeof(Assert))]
 [assembly: PexInstrumentAssembly(typeof(PatternTestFramework))]
-
-[assembly: PexFullTrustAssembly(typeof(Assert))]
-[assembly: PexFullTrustAssembly(typeof(PatternTestFramework))]
-
+[assembly: PexSuppressStackFrameFromNamespace("Gallio")]
+[assembly: PexSuppressStackFrameFromNamespace("MbUnit")]
+[assembly: PexSuppressUninstrumentedMethodFromNamespace("Gallio", "MbUnit")]
 [assembly: MbUnitTestFramework(SetAsDefault = true)]
 
 namespace MbUnit.Pex
@@ -66,8 +65,7 @@ namespace MbUnit.Pex
         private static readonly Method TestAttributeConstructor = Metadata<TestAttribute>.Type.DefaultConstructor;
         private static readonly Method IgnoreAttributeConstructorWithReason = Metadata<IgnoreAttribute>.Type.GetMethod(".ctor", Metadata<string>.Type);
         private static readonly Method ExpectedExceptionAttributeConstructorWithType = Metadata<ExpectedExceptionAttribute>.Type.GetMethod(".ctor", Metadata<Type>.Type);
-
-        private static readonly string[] FilteredNamespaces = new string[] { "Gallio", "MbUnit" };
+        private static readonly Method AssertInconclusiveMethod = MetadataFromReflection.GetType(typeof(InterimAssert)).GetMethod("Inconclusive", new TypeEx[] { SystemTypes.String });
 
         public MbUnitTestFramework(IPexComponent host)
             : base(host)
@@ -143,6 +141,12 @@ namespace MbUnit.Pex
         {
             method.CustomAttributes.Add(new CustomAttributeBuilder(ExpectedExceptionAttributeConstructorWithType,
                 MetadataExpression.TypeOf(exceptionType)));
+        }
+
+        public override void MakeInconclusive(MethodDefinitionBuilder method, string message)
+        {
+            method.MethodBodyBuilder.Push(message);
+            method.MethodBodyBuilder.Callstatic(AssertInconclusiveMethod, new IType[0]);
         }
 
         public override bool IsFixture(TypeDefinition target)
@@ -252,23 +256,6 @@ namespace MbUnit.Pex
             fixtureTeardown = InstantiateMethodIfNotNull(GetAnnotatedMethod(type.Definition, Metadata<FixtureTearDownAttribute>.Type), type);
             testSetup = InstantiateMethodIfNotNull(GetAnnotatedMethod(type.Definition, Metadata<SetUpAttribute>.Type), type);
             testTeardown = InstantiateMethodIfNotNull(GetAnnotatedMethod(type.Definition, Metadata<TearDownAttribute>.Type), type);
-            return true;
-        }
-
-        public override bool TryGetStackFrameFilter(out IStackFrameFilter filter)
-        {
-            MultiStackFrameFilter result = new MultiStackFrameFilter();
-
-            foreach (string @namespace in FilteredNamespaces)
-                result.Filters.Add(new MethodFrameFilter(@namespace + @"."));
-
-            filter = result;
-            return true;
-        }
-
-        public override bool TryGetUninstrumentedCallFilter(out IPexUninstrumentedCallFilter filter)
-        {
-            filter = new PexSuppressUninstrumentedCallFromNamespaceAttribute(FilteredNamespaces);
             return true;
         }
 

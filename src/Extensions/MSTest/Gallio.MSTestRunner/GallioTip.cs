@@ -36,7 +36,7 @@ namespace Gallio.MSTestRunner
 
         static GallioTip()
         {
-            GallioLoader.Initialize(typeof(GallioPackage).Assembly);
+            GallioInitializer.Initialize();
         }
 
         public GallioTip(ITmi tmi)

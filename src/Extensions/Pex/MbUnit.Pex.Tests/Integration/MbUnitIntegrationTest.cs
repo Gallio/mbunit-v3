@@ -50,7 +50,7 @@ namespace MbUnit.Pex.Tests.Integration
 
             ProcessTask task = Tasks.StartProcessTask(pexConsole, arguments, Environment.CurrentDirectory);
             Tasks.WatchTask(task);
-            Tasks.JoinAndVerify(new TimeSpan(0, 1, 0));
+            Tasks.JoinAndVerify(new TimeSpan(0, 2, 0));
 
             Log.WriteLine(PexExitCodes.Describe(task.ExitCode));
             Assert.AreEqual(PexExitCodes.Success, task.ExitCode);

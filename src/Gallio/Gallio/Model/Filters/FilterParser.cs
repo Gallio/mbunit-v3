@@ -63,7 +63,7 @@ namespace Gallio.Model.Filters
         private Filter<T> MatchFilter(FilterLexer lexer)
         {
             if (lexer.Tokens.Count == 0)
-                throw new FilterRecognitionException(Resources.FilterParser_EmptyFilterError);
+                throw new FilterParseException(Resources.FilterParser_EmptyFilterError);
             
             return MatchOrFilter(lexer);
         }
@@ -160,7 +160,7 @@ namespace Gallio.Model.Filters
             {
                 // Should never happen because we call this method when we know a word
                 // token is next
-                throw new FilterRecognitionException(Resources.FilterParser_StringLiteralExpected);
+                throw new FilterParseException(Resources.FilterParser_StringLiteralExpected);
             }
             GetNextToken(lexer);
 
@@ -172,7 +172,7 @@ namespace Gallio.Model.Filters
             FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken == null || nextToken.Type != FilterTokenType.Colon)
             {
-                throw new FilterRecognitionException(Resources.FilterParser_ColonExpected);
+                throw new FilterParseException(Resources.FilterParser_ColonExpected);
             }
             GetNextToken(lexer);
         }
@@ -220,7 +220,7 @@ namespace Gallio.Model.Filters
                 }
             }
 
-            throw new FilterRecognitionException(Resources.FilterParser_ValueExpected);
+            throw new FilterParseException(Resources.FilterParser_ValueExpected);
         }
 
         private static void MatchRightBracket(FilterLexer lexer)
@@ -228,7 +228,7 @@ namespace Gallio.Model.Filters
             FilterToken nextToken = LookAhead(lexer, 1);
             if (nextToken == null || nextToken.Type != FilterTokenType.RightBracket)
             {
-                throw new FilterRecognitionException(Resources.FilterParser_RightBracketExpected);
+                throw new FilterParseException(Resources.FilterParser_RightBracketExpected);
             }
             GetNextToken(lexer);
         }
@@ -240,7 +240,7 @@ namespace Gallio.Model.Filters
             {
                 // Should never happen because we call this method when we know a comma
                 // token is next
-                throw new FilterRecognitionException(Resources.FilterParser_CommaExpected);
+                throw new FilterParseException(Resources.FilterParser_CommaExpected);
             }
             GetNextToken(lexer);
         }
@@ -265,17 +265,9 @@ namespace Gallio.Model.Filters
             FilterToken token = lexer.LookAhead(index);
             if (token != null && token.Type == FilterTokenType.Error)
             {
-                throw new FilterRecognitionException(token.Text);
+                throw new FilterParseException(token.Text);
             }
             return token;
-        }
-    }
-
-    internal class FilterRecognitionException : Exception
-    {
-        internal FilterRecognitionException(string message)
-            : base(message)
-        {
         }
     }
 }

@@ -42,21 +42,51 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Platform.CommonServices, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.ActionManagement, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.ActivityTracking, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.DocumentManager, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.DocumentModel, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.IDE, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.Interop.WinApi, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.Metadata, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.ProjectModel, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.Shell, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.TextControl, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.UI, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.Util, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.Platform.ReSharper.VSIntegration, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
-    <Reference Include="JetBrains.ReSharper.CodeView, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL" />
+    <Reference Include="JetBrains.Platform.CommonServices, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.ActionManagement, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.ActivityTracking, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.DocumentManager, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.DocumentModel, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.IDE, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.Interop.WinApi, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.Metadata, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.ProjectModel, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.Shell, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.TextControl, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.UI, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.Util, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.VSIntegration, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.CodeView, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="JetBrains.ReSharper.IDECore, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>

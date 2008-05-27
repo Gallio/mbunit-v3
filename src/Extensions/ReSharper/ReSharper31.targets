@@ -1,7 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ReSharper31Path Condition="'$(ReSharper31Path)'=='' and '$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs9.0\@InstallDir)\Bin</ReSharper31Path>
-    <ReSharper31Path Condition="'$(ReSharper31Path)'=='' and '$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs8.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs8.0\@InstallDir)\Bin</ReSharper31Path>
+    <ReSharper31VS80InstallDir>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs8.0\@InstallDir)</ReSharper31VS80InstallDir>
+    <ReSharper31VS90InstallDir>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v3.1\vs9.0\@InstallDir)</ReSharper31VS90InstallDir>
+
+    <ReSharper31Path Condition="'$(ReSharper31Path)'=='' and '$(ReSharper31VS90InstallDir)'!='' and Exists('$(ReSharper31VS90InstallDir)\JetBrains.Shell.dll')">$(ReSharper31VS90InstallDir)</ReSharper31Path>
+    <ReSharper31Path Condition="'$(ReSharper31Path)'=='' and '$(ReSharper31VS80InstallDir)'!='' and Exists('$(ReSharper31VS80InstallDir)\JetBrains.Shell.dll')">$(ReSharper31VS80InstallDir)</ReSharper31Path>
 
     <ReSharper31Installed>false</ReSharper31Installed>
     <ReSharper31Installed Condition="'$(ReSharper31Path)'!=''">true</ReSharper31Installed>

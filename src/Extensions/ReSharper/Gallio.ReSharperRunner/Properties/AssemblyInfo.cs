@@ -18,6 +18,8 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using JetBrains.ActionManagement;
+using JetBrains.UI;
 using JetBrains.UI.Shell.PluginSupport;
 
 // General Information about an assembly is controlled through the following 
@@ -47,9 +49,13 @@ using JetBrains.UI.Shell.PluginSupport;
 // Telling the system that this is the case yields a small performance improvement during startup.
 [assembly: NeutralResourcesLanguage("en-US")]
 
+[assembly: InternalsVisibleTo("Gallio.ReSharperRunner.Tests")]
+
 // ReSharper plugin attributes.
 [assembly: PluginTitle("Gallio Test Runner")]
 [assembly: PluginDescription("Gallio test runner for ReSharper.")]
 [assembly: PluginVendor("Gallio")]
 
-[assembly: InternalsVisibleTo("Gallio.ReSharperRunner.Tests")]
+// ReSharper resources
+[assembly: ActionsXml("Gallio.ReSharperRunner.Resources.Actions.xml")]
+[assembly: ImagesBase("Gallio.ReSharperRunner.Resources")]

@@ -322,9 +322,14 @@ namespace MbUnit.Framework
             }
         }
 
+        public static void Inconclusive(string message)
+        {
+            throw new TestInconclusiveException(message);
+        }
+
         public static void Inconclusive(string messageFormat, params object[] messageArgs)
         {
-            throw new TestInconclusiveException(String.Format(messageFormat, messageArgs));
+            Inconclusive(String.Format(messageFormat, messageArgs));
         }
     }
 }

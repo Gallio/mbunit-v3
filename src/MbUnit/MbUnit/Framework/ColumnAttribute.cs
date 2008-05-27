@@ -90,6 +90,7 @@ namespace MbUnit.Framework
         /// </code>
         /// </remarks>
         /// <param name="values">The array of values in the column</param>
+        [CLSCompliant(false)]
         public ColumnAttribute(params object[] values)
         {
             this.values = values ?? new object[] { null };

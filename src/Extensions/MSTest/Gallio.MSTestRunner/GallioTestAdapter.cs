@@ -121,7 +121,7 @@ namespace Gallio.MSTestRunner
                 if (runnerAppDomain != null)
                     return;
 
-                string installationPath = GallioLoader.Initialize(typeof(GallioTestAdapter).Assembly).InstallationPath;
+                string installationPath = GallioInitializer.Initialize().InstallationPath;
                 AppDomainSetup appDomainSetup = new AppDomainSetup();
                 appDomainSetup.ApplicationName = "Gallio";
                 appDomainSetup.ApplicationBase = installationPath;
