@@ -276,7 +276,7 @@ namespace MbUnit.Framework.Reflection
         {
             CheckObject(obj);
             FieldInfo fi = GetField(access, obj.GetType(), fieldName, lookInBase);
-            IsMember(obj, fi, fieldName, MemberType.Field);
+            EnsureMemberExists(obj, fi, fieldName, MemberType.Field);
             return fi.GetValue(obj);
         }
 
@@ -326,7 +326,7 @@ namespace MbUnit.Framework.Reflection
         {
             CheckObject(obj);
             FieldInfo fi = GetField(access, obj.GetType(), fieldName, lookInBase);
-            IsMember(obj, fi, fieldName, MemberType.Field);
+            EnsureMemberExists(obj, fi, fieldName, MemberType.Field);
             fi.SetValue(obj, fieldValue);
         }
         #endregion
@@ -371,7 +371,7 @@ namespace MbUnit.Framework.Reflection
         {
             CheckObject(obj);
             PropertyInfo pi = GetProperty(access, obj.GetType(), propertyName, lookInBase);
-            IsMember(obj, pi, propertyName, MemberType.Property);
+            EnsureMemberExists(obj, pi, propertyName, MemberType.Property);
             return pi.GetValue(obj, null);
         }
 
@@ -421,7 +421,7 @@ namespace MbUnit.Framework.Reflection
         {
             CheckObject(obj);
             PropertyInfo pi = GetProperty(access, obj.GetType(), propertyName, lookInBase);
-            IsMember(obj, pi, propertyName, MemberType.Property);
+            EnsureMemberExists(obj, pi, propertyName, MemberType.Property);
             pi.SetValue(obj, propertyValue, null);
         }
         #endregion
@@ -478,7 +478,7 @@ namespace MbUnit.Framework.Reflection
         {
             CheckObject(obj);
             MethodInfo mi = GetMethod(access, obj.GetType(), methodName, lookInBase, methodParams);
-            IsMember(obj, mi, methodName, MemberType.Method);
+            EnsureMemberExists(obj, mi, methodName, MemberType.Method);
             return mi.Invoke(obj, methodParams);
         }
 
@@ -506,10 +506,10 @@ namespace MbUnit.Framework.Reflection
         #endregion
 
         #region Private Helpers
-        private static void IsMember(object obj, object member, string memberName, MemberType type)
+        private static void EnsureMemberExists(object obj, object member, string memberName, MemberType type)
         {
-            Assert.IsNotNull(member,
-                "Fail to find {0} {1} in {2}.", memberName, Enum.GetName(typeof(MemberType), type) , obj);
+            if (member == null)
+                throw new ReflectionException(String.Format("Fail to find {0} {1} in {2}.", memberName, Enum.GetName(typeof(MemberType), type) , obj));
         }
 
         private static void CheckObject(object obj)
