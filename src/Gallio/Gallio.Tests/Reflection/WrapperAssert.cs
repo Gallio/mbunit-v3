@@ -268,7 +268,7 @@ namespace Gallio.Tests.Reflection
                     Assert.IsTrue(privateTypes.Contains(type), "Should appear in private types: {0}", type);
                 }
 
-                Assert.AreEqual(target, info.Resolve());
+                Assert.AreEqual(target, info.Resolve(true));
 
                 AreAttributeProvidersEquivalent(target, info);
             });
@@ -521,7 +521,7 @@ namespace Gallio.Tests.Reflection
                 AreEqual(target, info.Resolve(true));
 
                 Assert.AreEqual(target.Attributes & TypeAttributesMask, info.TypeAttributes & TypeAttributesMask, target.ToString());
-                Assert.AreEqual(target.Assembly, info.Assembly.Resolve(), target.ToString());
+                Assert.AreEqual(target.Assembly, info.Assembly.Resolve(true), target.ToString());
                 Assert.AreEqual(target.Namespace ?? "", info.Namespace.Name, target.ToString());
                 Assert.AreEqual(target.Namespace ?? "", info.NamespaceName, target.ToString());
                 AreEqualWhenResolved(target.BaseType, info.BaseType);

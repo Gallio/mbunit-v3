@@ -106,9 +106,9 @@ namespace Gallio.Reflection.Impl
         }
 
         /// <inheritdoc />
-        public Assembly Resolve()
+        public Assembly Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveAssembly(this, true);
+            return ReflectorResolveUtils.ResolveAssembly(this, true, throwOnError);
         }
 
         /// <inheritdoc />

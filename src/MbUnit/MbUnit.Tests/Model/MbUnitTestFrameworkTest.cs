@@ -68,7 +68,7 @@ namespace MbUnit.Tests.Model
             Assert.AreSame(frameworkTest, assemblyTest.Parent);
             Assert.AreEqual(TestKinds.Assembly, assemblyTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeElement.CodeReference);
-            Assert.AreEqual(sampleAssembly, ((IAssemblyInfo) assemblyTest.CodeElement).Resolve());
+            Assert.AreEqual(sampleAssembly, ((IAssemblyInfo) assemblyTest.CodeElement).Resolve(true));
             Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
 
             PatternTest typeTest = (PatternTest)GetDescendantByName(assemblyTest, "SimpleTest");

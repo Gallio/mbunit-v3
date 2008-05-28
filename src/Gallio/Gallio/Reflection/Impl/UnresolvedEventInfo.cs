@@ -23,7 +23,7 @@ namespace Gallio.Reflection.Impl
     /// Represents a <see cref="EventInfo" /> whose native definition could not be resolved
     /// so we fall back on the <see cref="IEventInfo"/> wrapper.
     /// </summary>
-    public partial class UnresolvedEventInfo : EventInfo
+    public sealed partial class UnresolvedEventInfo : EventInfo, IUnresolvedCodeElement
     {
         private readonly IEventInfo adapter;
 
@@ -44,6 +44,11 @@ namespace Gallio.Reflection.Impl
         /// Gets the underlying reflection adapter.
         /// </summary>
         public IEventInfo Adapter
+        {
+            get { return adapter; }
+        }
+
+        ICodeElementInfo IUnresolvedCodeElement.Adapter
         {
             get { return adapter; }
         }

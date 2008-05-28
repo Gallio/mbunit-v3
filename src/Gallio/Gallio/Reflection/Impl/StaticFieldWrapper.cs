@@ -24,7 +24,7 @@ namespace Gallio.Reflection.Impl
     /// <summary>
     /// A <see cref="StaticReflectionPolicy"/> field wrapper.
     /// </summary>
-    public class StaticFieldWrapper : StaticReflectedMemberWrapper, IFieldInfo
+    public sealed class StaticFieldWrapper : StaticReflectedMemberWrapper, IFieldInfo
     {
         private readonly Memoizer<FieldAttributes> fieldAttributesMemoizer = new Memoizer<FieldAttributes>();
 

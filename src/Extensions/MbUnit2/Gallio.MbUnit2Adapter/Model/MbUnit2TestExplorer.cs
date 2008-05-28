@@ -123,15 +123,7 @@ namespace Gallio.MbUnit2Adapter.Model
 
             try
             {
-                Assembly loadedAssembly;
-                try
-                {
-                    loadedAssembly = assembly.Resolve();
-                }
-                catch (CodeElementResolveException)
-                {
-                    loadedAssembly = null;
-                }
+                Assembly loadedAssembly = assembly.Resolve(false);
 
                 if (loadedAssembly != null)
                     assemblyTest = MbUnit2NativeTestExplorer.BuildAssemblyTest(loadedAssembly, unresolvedDependencies);

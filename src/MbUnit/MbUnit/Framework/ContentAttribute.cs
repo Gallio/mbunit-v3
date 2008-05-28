@@ -209,7 +209,7 @@ namespace MbUnit.Framework
                 if (assembly != null)
                 {
                     INamespaceInfo @namespace = ReflectionUtils.GetNamespace(codeElement);
-                    scopeAssembly = assembly.Resolve();
+                    scopeAssembly = assembly.Resolve(true);
                     scopeNamespace = @namespace != null ? @namespace.Name : "";
                     return;
                 }

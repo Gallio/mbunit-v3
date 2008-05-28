@@ -24,7 +24,7 @@ namespace Gallio.Reflection.Impl
     /// Represents a <see cref="FieldInfo" /> whose native definition could not be resolved
     /// so we fall back on the <see cref="IFieldInfo"/> wrapper.
     /// </summary>
-    public partial class UnresolvedFieldInfo : FieldInfo
+    public sealed partial class UnresolvedFieldInfo : FieldInfo, IUnresolvedCodeElement
     {
         private readonly IFieldInfo adapter;
 
@@ -45,6 +45,11 @@ namespace Gallio.Reflection.Impl
         /// Gets the underlying reflection adapter.
         /// </summary>
         public IFieldInfo Adapter
+        {
+            get { return adapter; }
+        }
+
+        ICodeElementInfo IUnresolvedCodeElement.Adapter
         {
             get { return adapter; }
         }

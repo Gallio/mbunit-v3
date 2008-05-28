@@ -156,7 +156,7 @@ namespace Gallio.Reflection
                 ConstantValue[] arrayValues = (ConstantValue[]) value;
                 Type arrayType = type.Resolve(throwOnError);
                 Type elementType = arrayType.GetElementType();
-                if (elementType is UnresolvedType)
+                if (Reflector.IsUnresolved(elementType))
                     elementType = typeof(object);
 
                 int length = arrayValues.Length;
@@ -171,7 +171,7 @@ namespace Gallio.Reflection
             if (IsEnum)
             {
                 Type enumType = type.Resolve(throwOnError);
-                if (! (enumType is UnresolvedType))
+                if (! Reflector.IsUnresolved(enumType))
                     return Enum.ToObject(enumType, underlyingValue);
             }
 

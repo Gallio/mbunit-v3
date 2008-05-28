@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using Gallio.Reflection;
+using Gallio.Reflection.Impl;
 using Gallio.Utilities;
 using MbUnit.Framework;
 
@@ -25,7 +26,7 @@ namespace Gallio.Tests.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(Reflector))]
-    public class ReflectorTest
+    public class ReflectorTest : BaseUnitTest
     {
         [Test]
         public void Resolve_Unknown_ReturnsNull()
@@ -101,6 +102,48 @@ namespace Gallio.Tests.Reflection
         {
             CodeLocation location = Reflector.GetExecutingFunction().GetCodeLocation();
             StringAssert.EndsWith(location.Path, GetType().Name + ".cs");
+        }
+
+        [Test]
+        [Row(typeof(UnresolvedConstructorInfo), typeof(IConstructorInfo))]
+        [Row(typeof(UnresolvedEventInfo), typeof(IEventInfo))]
+        [Row(typeof(UnresolvedFieldInfo), typeof(IFieldInfo))]
+        [Row(typeof(UnresolvedMethodInfo), typeof(IMethodInfo))]
+        [Row(typeof(UnresolvedPropertyInfo), typeof(IPropertyInfo))]
+        [Row(typeof(UnresolvedType), typeof(ITypeInfo))]
+        public void IsUnresolved_ReturnsTrueForUnresolvedMembersTypes<S, T>()
+            where S : MemberInfo
+        {
+            S member = (S) typeof(S).GetConstructors()[0].Invoke(new object[] { Mocks.Stub<T>() });
+            Assert.IsTrue(Reflector.IsUnresolved(member));
+        }
+
+        [Test]
+        [Row(typeof(ConstructorInfo))]
+        [Row(typeof(EventInfo))]
+        [Row(typeof(FieldInfo))]
+        [Row(typeof(MethodInfo))]
+        [Row(typeof(PropertyInfo))]
+        [Row(typeof(Type))]
+        public void IsUnresolved_ReturnsFalseForResolvedMembersTypes<T>()
+            where T : MemberInfo
+        {
+            T member = Mocks.Stub<T>();
+            Assert.IsFalse(Reflector.IsUnresolved(member));
+        }
+
+        [Test]
+        public void IsUnresolved_ReturnsTrueForUnresolvedParameterInfo()
+        {
+            UnresolvedParameterInfo p = new UnresolvedParameterInfo(Mocks.Stub<IParameterInfo>());
+            Assert.IsTrue(Reflector.IsUnresolved(p));
+        }
+
+        [Test]
+        public void IsUnresolved_ReturnsFalseForResolvedParameterInfo()
+        {
+            ParameterInfo p = Mocks.Stub<ParameterInfo>();
+            Assert.IsFalse(Reflector.IsUnresolved(p));
         }
     }
 }

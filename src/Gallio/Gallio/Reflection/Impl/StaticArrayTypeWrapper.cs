@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Gallio.Reflection.Impl
@@ -22,7 +21,7 @@ namespace Gallio.Reflection.Impl
     /// <summary>
     /// A <see cref="StaticReflectionPolicy"/> array type wrapper.
     /// </summary>
-    public class StaticArrayTypeWrapper : StaticConstructedTypeWrapper
+    public sealed class StaticArrayTypeWrapper : StaticConstructedTypeWrapper
     {
         private readonly int arrayRank;
 

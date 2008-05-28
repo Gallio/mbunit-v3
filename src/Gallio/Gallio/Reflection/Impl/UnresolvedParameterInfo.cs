@@ -23,7 +23,7 @@ namespace Gallio.Reflection.Impl
     /// Represents a <see cref="ParameterInfo" /> whose native definition could not be resolved
     /// so we fall back on the <see cref="IParameterInfo"/> wrapper.
     /// </summary>
-    public partial class UnresolvedParameterInfo : ParameterInfo
+    public sealed partial class UnresolvedParameterInfo : ParameterInfo, IUnresolvedCodeElement
     {
         private readonly IParameterInfo adapter;
 
@@ -44,6 +44,11 @@ namespace Gallio.Reflection.Impl
         /// Gets the underlying reflection adapter.
         /// </summary>
         public IParameterInfo Adapter
+        {
+            get { return adapter; }
+        }
+
+        ICodeElementInfo IUnresolvedCodeElement.Adapter
         {
             get { return adapter; }
         }

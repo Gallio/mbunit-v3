@@ -375,5 +375,29 @@ namespace Gallio.Reflection
             StackFrame stackFrame = stackTrace.GetFrame(0);
             return Wrap(stackFrame.GetMethod());
         }
+
+        /// <summary>
+        /// Returns true if the target represents an unresolved member with
+        /// limited support for reflection.
+        /// </summary>
+        /// <seealso cref="IUnresolvedCodeElement"/>
+        /// <param name="target">The member, or null if none</param>
+        /// <returns>True if the target is unresolved</returns>
+        public static bool IsUnresolved(MemberInfo target)
+        {
+            return target is IUnresolvedCodeElement;
+        }
+
+        /// <summary>
+        /// Returns true if the target represents an unresolved parameter with
+        /// limited support for reflection.
+        /// </summary>
+        /// <seealso cref="IUnresolvedCodeElement"/>
+        /// <param name="target">The parameter, or null if none</param>
+        /// <returns>True if the target is unresolved</returns>
+        public static bool IsUnresolved(ParameterInfo target)
+        {
+            return target is UnresolvedParameterInfo;
+        }
     }
 }

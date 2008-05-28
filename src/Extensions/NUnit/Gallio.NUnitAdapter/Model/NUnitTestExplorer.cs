@@ -111,7 +111,7 @@ namespace Gallio.NUnitAdapter.Model
             string location;
             try
             {
-                location = assembly.Resolve().Location;
+                location = assembly.Resolve(true).Location;
             }
             catch (Exception ex)
             {

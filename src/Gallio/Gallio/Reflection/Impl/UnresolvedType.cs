@@ -29,7 +29,7 @@ namespace Gallio.Reflection.Impl
     /// FIXME: Several of these methods are not implemented because they have not yet
     /// been required for operation.
     /// </todo>
-    public partial class UnresolvedType : Type
+    public sealed partial class UnresolvedType : Type, IUnresolvedCodeElement
     {
         private readonly ITypeInfo adapter;
 
@@ -54,10 +54,15 @@ namespace Gallio.Reflection.Impl
             get { return adapter; }
         }
 
+        ICodeElementInfo IUnresolvedCodeElement.Adapter
+        {
+            get { return adapter; }
+        }
+
         /// <inheritdoc />
         public override Assembly Assembly
         {
-            get { return adapter.Assembly.Resolve(); }
+            get { return adapter.Assembly.Resolve(true); }
         }
 
         /// <inheritdoc />

@@ -23,7 +23,7 @@ namespace Gallio.Reflection.Impl
     /// Represents a <see cref="ConstructorInfo" /> whose native definition could not be resolved
     /// so we fall back on the <see cref="IConstructorInfo"/> wrapper.
     /// </summary>
-    public partial class UnresolvedConstructorInfo : ConstructorInfo
+    public sealed partial class UnresolvedConstructorInfo : ConstructorInfo, IUnresolvedCodeElement
     {
         private readonly IConstructorInfo adapter;
 
@@ -44,6 +44,11 @@ namespace Gallio.Reflection.Impl
         /// Gets the underlying reflection adapter.
         /// </summary>
         public IConstructorInfo Adapter
+        {
+            get { return adapter; }
+        }
+
+        ICodeElementInfo IUnresolvedCodeElement.Adapter
         {
             get { return adapter; }
         }

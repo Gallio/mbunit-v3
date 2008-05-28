@@ -78,7 +78,7 @@ namespace Gallio.Reflection.Impl
             return Reflector.Wrap(Target.GetType(typeName));
         }
 
-        public Assembly Resolve()
+        public Assembly Resolve(bool throwOnError)
         {
             return Target;
         }

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Gallio.Collections;
 using Gallio.Reflection;
@@ -35,47 +36,78 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public class ReflectorResolveUtils
     {
+        private static readonly LazyCache<string, Assembly> resolvedAssemblyCache
+            = new LazyCache<string, Assembly>(PopulateResolvedAssembly);
+        private static readonly LazyCache<string, Assembly> resolvedAssemblyCacheWithFallbackOnPartialName
+            = new LazyCache<string, Assembly>(PopulateResolvedAssemblyWithFallbackOnPartialName);
+
         /// <summary>
         /// Resolves a reflected assembly to its native <see cref="Assembly" /> object.
         /// </summary>
         /// <param name="assembly">The reflected assembly</param>
         /// <param name="fallbackOnPartialName">If true, allows the assembly to be resolved
         /// by partial name if no match could be found by fullname</param>
+        /// <param name="throwOnError">If true, throws an exception if resolution fails,
+        /// otherwise returns null</param>
         /// <returns>The resolved <see cref="Assembly" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/>
         /// is null</exception>
         /// <exception cref="CodeElementResolveException">Thrown if <paramref name="assembly"/>
         /// could not be resolved</exception>
-        public static Assembly ResolveAssembly(IAssemblyInfo assembly, bool fallbackOnPartialName)
+        public static Assembly ResolveAssembly(IAssemblyInfo assembly, bool fallbackOnPartialName, bool throwOnError)
         {
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
 
             string fullName = assembly.FullName;
+            Assembly resolvedAssembly = fallbackOnPartialName
+                ? resolvedAssemblyCacheWithFallbackOnPartialName[fullName]
+                : resolvedAssemblyCache[fullName];
+
+            if (throwOnError && resolvedAssembly == null)
+                throw new CodeElementResolveException(assembly);
+
+            return resolvedAssembly;
+        }
+
+        private static Assembly PopulateResolvedAssembly(string fullName)
+        {
             try
             {
                 return Assembly.Load(fullName);
             }
-            catch (Exception ex)
+            catch (FileNotFoundException)
             {
-                if (fallbackOnPartialName)
+            }
+            catch (BadImageFormatException)
+            {
+            }
+
+            return null;
+        }
+
+        private static Assembly PopulateResolvedAssemblyWithFallbackOnPartialName(string fullName)
+        {
+            Assembly resolvedAssembly = resolvedAssemblyCache[fullName];
+            if (resolvedAssembly == null)
+            {
+                string partialName = new AssemblyName(fullName).Name;
+                if (fullName != partialName)
                 {
-                    string partialName = assembly.Name;
-                    if (fullName != partialName)
+                    try
                     {
-                        try
-                        {
-                            return Assembly.Load(partialName);
-                        }
-                        catch (Exception)
-                        {
-                            // Ignore it.
-                        }
+                        resolvedAssembly = Assembly.Load(partialName);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                    }
+                    catch (BadImageFormatException)
+                    {
                     }
                 }
-
-                throw new CodeElementResolveException(assembly, ex);
             }
+
+            return resolvedAssembly;
         }
 
         /// <summary>
@@ -132,18 +164,20 @@ namespace Gallio.Reflection.Impl
                 {
                     ITypeInfo simpleType = type.GenericTypeDefinition ?? type;
 
-                    Assembly resolvedAssembly = simpleType.Assembly.Resolve();
-                    Type resolvedType = resolvedAssembly.GetType(simpleType.FullName);
-
-                    if (resolvedType != null)
+                    Assembly resolvedAssembly = simpleType.Assembly.Resolve(throwOnError);
+                    if (resolvedAssembly != null)
                     {
-                        if (type.IsGenericType && !type.IsGenericTypeDefinition)
+                        Type resolvedType = resolvedAssembly.GetType(simpleType.FullName);
+                        if (resolvedType != null)
                         {
-                            Type[] resolvedTypeArguments = ResolveTypesWithMethodContext(type.GenericArguments, methodContext);
-                            resolvedType = resolvedType.MakeGenericType(resolvedTypeArguments);
-                        }
+                            if (type.IsGenericType && !type.IsGenericTypeDefinition)
+                            {
+                                Type[] resolvedTypeArguments = ResolveTypesWithMethodContext(type.GenericArguments, methodContext);
+                                resolvedType = resolvedType.MakeGenericType(resolvedTypeArguments);
+                            }
 
-                        return resolvedType;
+                            return resolvedType;
+                        }
                     }
                 }
             }
@@ -191,12 +225,15 @@ namespace Gallio.Reflection.Impl
 
             try
             {
-                Type resolvedType = field.DeclaringType.Resolve(true);
-                FieldInfo resolvedField = resolvedType.GetField(field.Name, BindingFlags.Public | BindingFlags.NonPublic
-                    | BindingFlags.Instance | BindingFlags.Static);
+                Type resolvedType = field.DeclaringType.Resolve(throwOnError);
+                if (!(resolvedType is UnresolvedType))
+                {
+                    FieldInfo resolvedField = resolvedType.GetField(field.Name, BindingFlags.Public | BindingFlags.NonPublic
+                        | BindingFlags.Instance | BindingFlags.Static);
 
-                if (resolvedField != null)
-                    return resolvedField;
+                    if (resolvedField != null)
+                        return resolvedField;
+                }
             }
             catch (Exception ex)
             {
@@ -228,16 +265,19 @@ namespace Gallio.Reflection.Impl
 
             try
             {
-                Type returnType = property.ValueType.Resolve(true);
-                Type[] parameterTypes = ResolveParameterTypes(property.IndexParameters);
+                Type resolvedType = property.DeclaringType.Resolve(throwOnError);
+                if (!(resolvedType is UnresolvedType))
+                {
+                    Type returnType = property.ValueType.Resolve(true);
+                    Type[] parameterTypes = ResolveParameterTypes(property.IndexParameters);
 
-                Type resolvedType = property.DeclaringType.Resolve(true);
-                PropertyInfo resolvedProperty =
-                    resolvedType.GetProperty(property.Name, BindingFlags.Public | BindingFlags.NonPublic
-                        | BindingFlags.Instance | BindingFlags.Static, null, returnType, parameterTypes, null);
+                    PropertyInfo resolvedProperty =
+                        resolvedType.GetProperty(property.Name, BindingFlags.Public | BindingFlags.NonPublic
+                            | BindingFlags.Instance | BindingFlags.Static, null, returnType, parameterTypes, null);
 
-                if (resolvedProperty != null)
-                    return resolvedProperty;
+                    if (resolvedProperty != null)
+                        return resolvedProperty;
+                }
             }
             catch (Exception ex)
             {
@@ -269,13 +309,16 @@ namespace Gallio.Reflection.Impl
 
             try
             {
-                Type resolvedType = @event.DeclaringType.Resolve(true);
-                EventInfo resolvedEvent =
-                    resolvedType.GetEvent(@event.Name, BindingFlags.Public | BindingFlags.NonPublic
-                        | BindingFlags.Instance | BindingFlags.Static);
+                Type resolvedType = @event.DeclaringType.Resolve(throwOnError);
+                if (!(resolvedType is UnresolvedType))
+                {
+                    EventInfo resolvedEvent =
+                        resolvedType.GetEvent(@event.Name, BindingFlags.Public | BindingFlags.NonPublic
+                            | BindingFlags.Instance | BindingFlags.Static);
 
-                if (resolvedEvent != null)
-                    return resolvedEvent;
+                    if (resolvedEvent != null)
+                        return resolvedEvent;
+                }
             }
             catch (Exception ex)
             {
@@ -307,18 +350,20 @@ namespace Gallio.Reflection.Impl
 
             try
             {
-                Type resolvedType = constructor.DeclaringType.Resolve(true);
+                Type resolvedType = constructor.DeclaringType.Resolve(throwOnError);
+                if (!(resolvedType is UnresolvedType))
+                {
+                    BindingFlags bindingFlags =
+                        (constructor.IsPublic ? BindingFlags.Public : BindingFlags.NonPublic)
+                        | (constructor.IsStatic ? BindingFlags.Static : BindingFlags.Instance);
 
-                BindingFlags bindingFlags =
-                    (constructor.IsPublic ? BindingFlags.Public : BindingFlags.NonPublic)
-                    | (constructor.IsStatic ? BindingFlags.Static : BindingFlags.Instance);
+                    Type[] resolvedParameterTypes = ResolveParameterTypes(constructor.Parameters);
+                    ConstructorInfo resolvedConstructor = resolvedType.GetConstructor(
+                        bindingFlags, null, resolvedParameterTypes, null);
 
-                Type[] resolvedParameterTypes = ResolveParameterTypes(constructor.Parameters);
-                ConstructorInfo resolvedConstructor = resolvedType.GetConstructor(
-                    bindingFlags, null, resolvedParameterTypes, null);
-
-                if (resolvedConstructor != null)
-                    return resolvedConstructor;
+                    if (resolvedConstructor != null)
+                        return resolvedConstructor;
+                }
             }
             catch (Exception ex)
             {
@@ -350,20 +395,22 @@ namespace Gallio.Reflection.Impl
 
             try
             {
-                Type resolvedType = method.DeclaringType.Resolve(true);
+                Type resolvedType = method.DeclaringType.Resolve(throwOnError);
+                if (!(resolvedType is UnresolvedType))
+                {
+                    BindingFlags bindingFlags = BindingFlags.DeclaredOnly
+                        | (method.IsPublic ? BindingFlags.Public : BindingFlags.NonPublic)
+                        | (method.IsStatic ? BindingFlags.Static : BindingFlags.Instance);
 
-                BindingFlags bindingFlags = BindingFlags.DeclaredOnly
-                    | (method.IsPublic ? BindingFlags.Public : BindingFlags.NonPublic)
-                    | (method.IsStatic ? BindingFlags.Static : BindingFlags.Instance);
+                    string methodName = method.Name;
 
-                string methodName = method.Name;
+                    MethodInfo resolvedMethod = method.IsGenericMethod
+                        ? ResolveGenericMethod(resolvedType, methodName, bindingFlags, method.GenericMethodDefinition.Parameters, method.GenericArguments)
+                        : ResolveNonGenericMethod(resolvedType, methodName, bindingFlags, method.Parameters);
 
-                MethodInfo resolvedMethod = method.IsGenericMethod
-                    ? ResolveGenericMethod(resolvedType, methodName, bindingFlags, method.GenericMethodDefinition.Parameters, method.GenericArguments)
-                    : ResolveNonGenericMethod(resolvedType, methodName, bindingFlags, method.Parameters);
-
-                if (resolvedMethod != null)
-                    return resolvedMethod;
+                    if (resolvedMethod != null)
+                        return resolvedMethod;
+                }
             }
             catch (Exception ex)
             {
@@ -446,27 +493,29 @@ namespace Gallio.Reflection.Impl
 
             try
             {
-                MemberInfo resolvedMember = parameter.Member.Resolve(true);
-
-                int parameterIndex = parameter.Position;
-                ParameterInfo[] resolvedParameters;
-
-                MethodBase resolvedMethod = resolvedMember as MethodBase;
-                if (resolvedMethod != null)
+                MemberInfo resolvedMember = parameter.Member.Resolve(throwOnError);
+                if (!(resolvedMember is IUnresolvedCodeElement))
                 {
-                    if (parameterIndex == -1)
-                        return ((MethodInfo)resolvedMethod).ReturnParameter;
+                    int parameterIndex = parameter.Position;
+                    ParameterInfo[] resolvedParameters;
 
-                    resolvedParameters = resolvedMethod.GetParameters();
-                }
-                else
-                {
-                    PropertyInfo resolvedProperty = (PropertyInfo)resolvedMember;
-                    resolvedParameters = resolvedProperty.GetIndexParameters();
-                }
+                    MethodBase resolvedMethod = resolvedMember as MethodBase;
+                    if (resolvedMethod != null)
+                    {
+                        if (parameterIndex == -1)
+                            return ((MethodInfo)resolvedMethod).ReturnParameter;
 
-                if (parameterIndex < resolvedParameters.Length)
-                    return resolvedParameters[parameterIndex];
+                        resolvedParameters = resolvedMethod.GetParameters();
+                    }
+                    else
+                    {
+                        PropertyInfo resolvedProperty = (PropertyInfo)resolvedMember;
+                        resolvedParameters = resolvedProperty.GetIndexParameters();
+                    }
+
+                    if (parameterIndex < resolvedParameters.Length)
+                        return resolvedParameters[parameterIndex];
+                }
             }
             catch (Exception ex)
             {

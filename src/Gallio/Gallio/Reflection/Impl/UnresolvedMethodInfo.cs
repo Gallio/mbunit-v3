@@ -22,7 +22,7 @@ namespace Gallio.Reflection.Impl
     /// Represents a <see cref="MethodInfo" /> whose native definition could not be resolved
     /// so we fall back on the <see cref="IMethodInfo"/> wrapper.
     /// </summary>
-    public partial class UnresolvedMethodInfo : MethodInfo
+    public sealed partial class UnresolvedMethodInfo : MethodInfo, IUnresolvedCodeElement
     {
         private readonly IMethodInfo adapter;
 
@@ -43,6 +43,11 @@ namespace Gallio.Reflection.Impl
         /// Gets the underlying reflection adapter.
         /// </summary>
         public IMethodInfo Adapter
+        {
+            get { return adapter; }
+        }
+
+        ICodeElementInfo IUnresolvedCodeElement.Adapter
         {
             get { return adapter; }
         }

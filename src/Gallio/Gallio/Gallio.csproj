@@ -91,9 +91,11 @@
     <Compile Include="Model\TestDomainSetup.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Pair.cs" />
     <Compile Include="Reflection\ConstantValue.cs" />
     <Compile Include="Reflection\Impl\BaseReflectionPolicy.cs" />
     <Compile Include="Reflection\Impl\CecilReflectionPolicy.cs" />
+    <Compile Include="Reflection\Impl\IUnresolvedCodeElement.cs" />
     <Compile Include="Reflection\ReflectionOnlyAssemblyLoader.cs" />
     <Compile Include="Runner\Caching\IDiskCacheGroup.cs" />
     <Compile Include="Runner\Caching\IDiskCacheGroupCollection.cs" />
@@ -434,8 +436,10 @@
     <Compile Include="Runtime\RuntimeBootstrap.cs" />
     <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
     <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
+    <Compile Include="Triple.cs" />
     <Compile Include="Utilities\CurrentDirectorySwitcher.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
+    <Compile Include="Collections\LazyCache.cs" />
     <Compile Include="Utilities\Memoizer.cs" />
     <Compile Include="Runtime\UnhandledExceptionPolicy.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />

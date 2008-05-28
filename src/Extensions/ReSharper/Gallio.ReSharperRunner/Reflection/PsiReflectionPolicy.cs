@@ -267,7 +267,7 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             // FIXME! Don't know how to handle referenced assemblies for modules.
-            return assembly.Resolve().GetReferencedAssemblies();
+            return assembly.Resolve(true).GetReferencedAssemblies();
         }
 
         protected override IList<StaticDeclaredTypeWrapper> GetAssemblyExportedTypes(StaticAssemblyWrapper assembly)
