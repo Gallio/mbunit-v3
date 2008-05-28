@@ -81,8 +81,8 @@ Var UserContext
 !system 'if not exist "${TARGETDIR}\docs\Gallio.chm" echo !define MISSING_CHM_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\docs\vs\Gallio.HxS" echo !define MISSING_VS_HELP >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\bin\MbUnit.Pex.dll" echo !define MISSING_MBUNIT_PEX_PACKAGE >> "${DETECT_TEMP}"'
-!system 'if not exist "${TARGETDIR}\bin\ReSharper\v3.1\Gallio.ReSharperRunner.dll" echo !define MISSING_RESHARPER_RUNNER_31 >> "${DETECT_TEMP}"'
-!system 'if not exist "${TARGETDIR}\bin\ReSharper\v4.0\Gallio.ReSharperRunner.dll" echo !define MISSING_RESHARPER_RUNNER_40 >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\bin\ReSharper\v3.1\Gallio.ReSharperRunner31.dll" echo !define MISSING_RESHARPER_RUNNER_31 >> "${DETECT_TEMP}"'
+!system 'if not exist "${TARGETDIR}\bin\ReSharper\v4.0\Gallio.ReSharperRunner40.dll" echo !define MISSING_RESHARPER_RUNNER_40 >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\bin\MSTest\Gallio.MSTestRunner.dll" echo !define MISSING_MSTEST_RUNNER >> "${DETECT_TEMP}"'
 !system 'if not exist "${TARGETDIR}\bin\MSTest\Gallio.MSTestAdapter.dll" echo !define MISSING_MSTEST_ADAPTER >> "${DETECT_TEMP}"'
 !include "${DETECT_TEMP}"
@@ -107,6 +107,12 @@ Var UserContext
 
 !ifdef MISSING_RESHARPER_RUNNER_40
 	!warning "Missing ReSharper v4.0 runner."
+!endif
+
+!ifdef MISSING_RESHARPER_RUNNER_31
+!ifdef MISSING_RESHARPER_RUNNER_40
+!define MISSING_RESHARPER_RUNNER
+!endif
 !endif
 
 !ifdef MISSING_MSTEST_RUNNER
@@ -365,6 +371,7 @@ Section "PowerShell Commands" PowerShellCommandsSection
 	WriteRegStr SHCTX "SOFTWARE\Microsoft\PowerShell\1\PowerShellSnapIns\Gallio" "Version" "${VERSION}"
 SectionEnd
 
+!ifndef MISSING_RESHARPER_RUNNER
 Var ReSharperInstallDir
 Var ReSharperPluginDir
 !macro GetReSharperPluginDir RSVersion VSVersion
@@ -416,7 +423,7 @@ FunctionEnd
 		SetOutPath "$ReSharperPluginDir\Gallio"
 		File "${SourcePath}\Gallio.Loader.dll"
 		File "${SourcePath}\ReSharper\${RSVersion}\Gallio.ReSharperRunner${RSRunnerSuffix}.dll"
-		File "/oname=Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config.orig" "${SourcePath}\ReSharper\Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config"
+		File "/oname=Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config.orig" "${SourcePath}\ReSharper\${RSVersion}\Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config"
 		${PatchConfigFile} "Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config.orig" "Gallio.ReSharperRunner${RSRunnerSuffix}.dll.config"
 !macroend
 
@@ -427,6 +434,7 @@ FunctionEnd
 	Call un.UninstallReSharperRunner
 !macroend
 
+!ifndef MISSING_RESHARPER_RUNNER_31
 Section "ReSharper v3.1 Runner" ReSharperRunner31Section
 	; Set Section properties
 	SetOverwrite on
@@ -435,7 +443,9 @@ Section "ReSharper v3.1 Runner" ReSharperRunner31Section
 	!insertmacro InstallReSharperRunner "31" "v3.1" "vs8.0" "${TARGETDIR}\bin"
 	!insertmacro InstallReSharperRunner "31" "v3.1" "vs9.0" "${TARGETDIR}\bin"
 SectionEnd
+!endif
 
+!ifndef MISSING_RESHARPER_RUNNER_40
 Section "ReSharper v4.0 Runner" ReSharperRunner40Section
 	; Set Section properties
 	SetOverwrite on
@@ -444,6 +454,7 @@ Section "ReSharper v4.0 Runner" ReSharperRunner40Section
 	!insertmacro InstallReSharperRunner "40" "v4.0" "vs8.0" "${TARGETDIR}\bin"
 	!insertmacro InstallReSharperRunner "40" "v4.0" "vs9.0" "${TARGETDIR}\bin"
 SectionEnd
+!endif
 !endif
 
 !macro InstallTDNetApplication
