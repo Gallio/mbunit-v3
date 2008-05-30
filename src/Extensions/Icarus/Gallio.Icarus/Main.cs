@@ -58,6 +58,16 @@ namespace Gallio.Icarus
         private ExecutionLogWindow executionLogWindow;
         private AnnotationsWindow annotationsWindow;
         
+        // progress monitoring
+        private ProgressMonitor progressMonitor;
+        private System.Timers.Timer progressMonitorTimer;
+        private bool showProgressMonitor = true;
+
+        public bool ShowProgressMonitor
+        {
+            set { showProgressMonitor = value; }
+        }
+
         public ITreeModel TreeModel
         {
             set
@@ -98,6 +108,7 @@ namespace Gallio.Icarus
                 Sync.Invoke(this, delegate
                 {
                     toolStripStatusLabel.Text = value;
+                    progressMonitor.StatusText = value;
                 });
             }
         }
@@ -109,6 +120,13 @@ namespace Gallio.Icarus
                 Sync.Invoke(this, delegate
                 {
                     toolStripProgressBar.Maximum = value;
+                    progressMonitor.TotalWorkUnits = value;
+                    if (value == 0)
+                    {
+                        showProgressMonitor = true;
+                        progressMonitor.Hide();
+                        Cursor = Cursors.Default;
+                    }
                 });
             }
         }
@@ -120,6 +138,10 @@ namespace Gallio.Icarus
                 Sync.Invoke(this, delegate
                 {
                     toolStripProgressBar.Value = value;
+                    progressMonitor.CompletedWorkUnits = value;
+                    if (value > 0 && !progressMonitor.Visible && showProgressMonitor)
+                        progressMonitorTimer.Enabled = true;
+                    Cursor = Cursors.WaitCursor;
                 });
             }
         }
@@ -321,7 +343,7 @@ namespace Gallio.Icarus
         public event EventHandler<SingleEventArgs<string>> RemoveAssembly;
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> GenerateReport;
-        public event EventHandler<EventArgs> StopTests;
+        public event EventHandler<EventArgs> CancelOperation;
         public event EventHandler<SingleEventArgs<string>> SaveFilter;
         public event EventHandler<SingleEventArgs<string>> ApplyFilter;
         public event EventHandler<SingleEventArgs<string>> DeleteFilter;
@@ -357,8 +379,14 @@ namespace Gallio.Icarus
             filtersWindow = new FiltersWindow(this);
             executionLogWindow = new ExecutionLogWindow();
             annotationsWindow = new AnnotationsWindow(this);
+            progressMonitor = new ProgressMonitor();
 
             deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
+
+            progressMonitorTimer = new System.Timers.Timer();
+            progressMonitorTimer.Interval = 300;
+            progressMonitorTimer.AutoReset = false;
+            progressMonitorTimer.Elapsed += delegate { Sync.Invoke(this, delegate { progressMonitor.Show(this); }); };
         }
 
         private IDockContent GetContentFromPersistString(string persistString)
@@ -391,20 +419,16 @@ namespace Gallio.Icarus
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Text = String.Format(Text, appVersion.Major, appVersion.Minor);
 
-            // Set default docking first.  If the file load fails or if a new
-            // view is added then it will get a default view.
-            assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
-            testResults.Show(dockPanel, DockState.Document);
-            executionLogWindow.Show(dockPanel, DockState.Document);
-            runtimeLogWindow.DockPanel = dockPanel;
-            annotationsWindow.Show(dockPanel, DockState.Document);
-            testExplorer.Show(dockPanel, DockState.DockLeft);
-            assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
-            reportWindow.DockPanel = dockPanel;
-            propertiesWindow.DockPanel = dockPanel;
-            filtersWindow.DockPanel = dockPanel;
-
-            LoadDockState();
+            // try to load the dock state, if the file does not exist
+            // or loading fails then use defaults.
+            try
+            {
+                dockPanel.LoadFromXml(Paths.DockConfigFile, deserializeDockContent);
+            }
+            catch
+            {
+                DefaultDockState();
+            }
 
             primaryTaskManager.StartTask(delegate
             {
@@ -419,17 +443,18 @@ namespace Gallio.Icarus
             });
         }
 
-        private void LoadDockState()
+        private void DefaultDockState()
         {
-            if (File.Exists(Paths.DockConfigFile))
-            {
-                try
-                {
-                    dockPanel.LoadFromXml(Paths.DockConfigFile, deserializeDockContent);
-                }
-                catch
-                { }
-            }
+            assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
+            testResults.Show(dockPanel, DockState.Document);
+            executionLogWindow.Show(dockPanel, DockState.Document);
+            runtimeLogWindow.DockPanel = dockPanel;
+            annotationsWindow.Show(dockPanel, DockState.Document);
+            testExplorer.Show(dockPanel, DockState.DockLeft);
+            assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
+            reportWindow.DockPanel = dockPanel;
+            propertiesWindow.DockPanel = dockPanel;
+            filtersWindow.DockPanel = dockPanel;
         }
 
         private void fileExit_Click(object sender, EventArgs e)
@@ -633,18 +658,17 @@ namespace Gallio.Icarus
 
         private void CancelTests()
         {
-            primaryTaskManager.StartTask(delegate
-            {
-                if (StopTests != null)
-                    StopTests(this, new EventArgs());
+            CancelRunningOperation();
 
-                // enable/disable buttons
-                toolStripContainer.Invoke((MethodInvoker)delegate()
-                {
-                    stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
-                    startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
-                });
-            });
+            // reset buttons
+            stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
+            startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+        }
+
+        public void CancelRunningOperation()
+        {
+            if (CancelOperation != null)
+                CancelOperation(this, new EventArgs());
         }
 
         public void ThreadedRemoveAssembly(string assembly)

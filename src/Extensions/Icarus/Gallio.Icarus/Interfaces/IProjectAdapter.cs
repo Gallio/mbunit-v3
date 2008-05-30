@@ -29,13 +29,14 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<GetTestTreeEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
         event EventHandler<EventArgs> GenerateReport;
-        event EventHandler<EventArgs> StopTests;
+        event EventHandler<EventArgs> CancelOperation;
         event EventHandler<SetFilterEventArgs> SetFilter;
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<EventArgs> GetTestFrameworks;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
         event EventHandler<SingleEventArgs<string>> GetExecutionLog;
         event EventHandler<EventArgs> UnloadTestPackage;
+
         TestModelData TestModelData { get; set; }
         Project Project { get; set; }
         string StatusText { set; }
@@ -45,6 +46,7 @@ namespace Gallio.Icarus.Interfaces
         Stream ExecutionLog { set; }
         int CompletedWorkUnits { set; }
         int TotalWorkUnits { set; }
+        
         void Update(TestData testData, TestStepRun testStepRun);
         void DataBind();
     }

@@ -39,6 +39,6 @@ namespace Gallio.Icarus.Core.Interfaces
         string GenerateReport();
         void SaveReportAs(string fileName, string format);
         void SetFilter(Filter<ITest> filter);
-        void StopTests();
+        void CancelOperation();
     }
 }

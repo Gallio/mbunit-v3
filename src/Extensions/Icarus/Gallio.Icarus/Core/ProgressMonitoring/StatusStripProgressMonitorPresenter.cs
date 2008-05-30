@@ -37,6 +37,7 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
 
         private void HandleTaskStarting(object sender, EventArgs e)
         {
+            presenter.CompletedWorkUnits = 0;
             presenter.TotalWorkUnits = Convert.ToInt32(ProgressMonitor.TotalWorkUnits);
         }
 
@@ -46,11 +47,13 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
             if (ProgressMonitor.IsCanceled)
             {
                 presenter.CompletedWorkUnits = 0;
-                presenter.StatusText = "Tests cancelled";
+                presenter.TotalWorkUnits = 0;
+                presenter.StatusText = "Operation cancelled";
             }
             else if (ProgressMonitor.IsDone)
             {
                 presenter.CompletedWorkUnits = 0;
+                presenter.TotalWorkUnits = 0;
                 presenter.StatusText = "";
             }
             else
@@ -67,10 +70,9 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
                     sb.Append(currentSubTaskName);
                 }
 
-                //sb.Append(String.Format(" ({0:P})", (ProgressMonitor.CompletedWorkUnits / ProgressMonitor.TotalWorkUnits) * 100));
+                sb.Append(String.Format(" ({0:P})", (ProgressMonitor.CompletedWorkUnits / ProgressMonitor.TotalWorkUnits)));
                 presenter.StatusText = sb.ToString();
             }
-
         }
     }
 }

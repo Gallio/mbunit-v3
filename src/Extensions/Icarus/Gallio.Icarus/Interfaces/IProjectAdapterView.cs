@@ -40,7 +40,7 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<GetTestTreeEventArgs> GetTestTree;
         event EventHandler<EventArgs> RunTests;
         event EventHandler<EventArgs> GenerateReport;
-        event EventHandler<EventArgs> StopTests;
+        event EventHandler<EventArgs> CancelOperation;
         event EventHandler<SingleEventArgs<string>> SaveFilter;
         event EventHandler<SingleEventArgs<string>> ApplyFilter;
         event EventHandler<SingleEventArgs<string>> DeleteFilter;
@@ -58,6 +58,8 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> ResetTestStatus;
         event EventHandler<SingleEventArgs<string>> GetExecutionLog;
         event EventHandler<EventArgs> UnloadTestPackage;
+
+        bool ShowProgressMonitor { set; }
         ITreeModel TreeModel { set; }
         ListViewItem[] Assemblies { set; }
         string StatusText { set; }
@@ -76,6 +78,7 @@ namespace Gallio.Icarus.Interfaces
         int TotalTests { set; }
         CodeLocation SourceCodeLocation { set; }
         Settings Settings { get; set; }
+        
         void ThreadedRemoveAssembly(string assembly);
         void ReloadTree();
         void SaveReport(string fileName, string reportType);
@@ -95,5 +98,6 @@ namespace Gallio.Icarus.Interfaces
         void OnDeleteFilter(string filter);
         void LoadComplete();
         void OnGetExecutionLog(string testId);
+        void CancelRunningOperation();
     }
 }

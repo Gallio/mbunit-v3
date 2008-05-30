@@ -119,7 +119,7 @@ namespace Gallio.Icarus.Adapter
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> GenerateReport;
-        public event EventHandler<EventArgs> StopTests;
+        public event EventHandler<EventArgs> CancelOperation;
         public event EventHandler<SetFilterEventArgs> SetFilter;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<EventArgs> GetTestFrameworks;
@@ -142,7 +142,7 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.GetTestTree += GetTestTreeEventHandler;
             projectAdapterView.RunTests += RunTestsEventHandler;
             projectAdapterView.GenerateReport += OnGenerateReport;
-            projectAdapterView.StopTests += StopTestsEventHandler;
+            projectAdapterView.CancelOperation += CancelOperationEventHandler;
             projectAdapterView.SaveFilter += SaveFilterEventHandler;
             projectAdapterView.DeleteFilter += DeleteFilterEventHandler;
             projectAdapterView.GetReportTypes += GetReportTypesEventHandler;
@@ -247,10 +247,10 @@ namespace Gallio.Icarus.Adapter
                 GenerateReport(this, e);
         }
 
-        private void StopTestsEventHandler(object sender, EventArgs e)
+        private void CancelOperationEventHandler(object sender, EventArgs e)
         {
-            if (StopTests != null)
-                StopTests(this, e);
+            if (CancelOperation != null)
+                CancelOperation(this, e);
         }
 
         private void SaveFilterEventHandler(object sender, SingleEventArgs<string> e)

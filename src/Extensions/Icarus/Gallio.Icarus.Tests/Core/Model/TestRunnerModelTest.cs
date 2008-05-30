@@ -152,6 +152,7 @@ namespace Gallio.Icarus.Core.Model.Tests
         {
             IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
             Expect.Call(projectPresenter.CompletedWorkUnits = 0).Repeat.AtLeastOnce();
+            projectPresenter.TotalWorkUnits = 0;
             projectPresenter.StatusText = string.Empty;
             testRunner.Run(null, null);
             LastCall.IgnoreArguments();
@@ -202,11 +203,11 @@ namespace Gallio.Icarus.Core.Model.Tests
         }
 
         [Test]
-        public void StopTests_Test()
+        public void CancelOperation_Test()
         {
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
-            testRunnerModel.StopTests();
+            testRunnerModel.CancelOperation();
         }
 
         [Test]
@@ -220,6 +221,26 @@ namespace Gallio.Icarus.Core.Model.Tests
 
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             testRunnerModel.Unload();
+        }
+
+        [Test]
+        public void Dispose_Test()
+        {
+            testRunner.Dispose(null);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            testRunnerModel.Dispose();
+        }
+
+        [Test]
+        public void Initialize_Test()
+        {
+            testRunner.Initialize(null, null, null);
+            LastCall.IgnoreArguments();
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            testRunnerModel.Initialize();
         }
     }
 }

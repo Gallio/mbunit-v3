@@ -194,9 +194,8 @@ namespace Gallio.Icarus.Controls
         /// </summary>
         public void UpdateStateOfRelatedNodes()
         {
-
-            // If want to cascade checkbox state changes to child nodes of this node and
-            // if the current state is not intermediate, update the state of child nodes.
+            // If you want to cascade checkbox state changes to children of this node and
+            // the current state is not indeterminate, then update the state of child nodes.
             if (CheckState != CheckState.Indeterminate)
                 UpdateChildNodeState();
 

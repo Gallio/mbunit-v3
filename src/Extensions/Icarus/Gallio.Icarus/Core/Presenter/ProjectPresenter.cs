@@ -48,11 +48,6 @@ namespace Gallio.Icarus.Core.Presenter
             set { projectAdapter.TotalWorkUnits = value; }
         }
 
-        public bool TestPackageLoaded
-        {
-            get { return testPackageLoaded; }
-        }
-
         public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)
         {
             projectAdapter = view;
@@ -63,7 +58,7 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.GetTestTree += GetTestTree;
             projectAdapter.RunTests += RunTests;
             projectAdapter.GenerateReport += OnGenerateReport;
-            projectAdapter.StopTests += StopTests;
+            projectAdapter.CancelOperation += CancelOperation;
             projectAdapter.SetFilter += SetFilter;
             projectAdapter.GetReportTypes += GetReportTypes;
             projectAdapter.SaveReportAs += SaveReportAs;
@@ -102,9 +97,9 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.ReportPath = testRunnerModel.GenerateReport();
         }
 
-        public void StopTests(object sender, EventArgs e)
+        public void CancelOperation(object sender, EventArgs e)
         {
-            testRunnerModel.StopTests();
+            testRunnerModel.CancelOperation();
         }
 
         public void SetFilter(object sender, SetFilterEventArgs e)

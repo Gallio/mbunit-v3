@@ -51,7 +51,7 @@ namespace Gallio.Icarus.Adapter.Tests
         private IEventRaiser getTestTreeEvent;
         private IEventRaiser runTestsEvent;
         private IEventRaiser generateReportEvent;
-        private IEventRaiser stopTestsEvent;
+        private IEventRaiser cancelOperationEvent;
         private IEventRaiser saveFilterEvent;
         private IEventRaiser deleteFilterEvent;
         private IEventRaiser getReportTypesEvent;
@@ -102,9 +102,9 @@ namespace Gallio.Icarus.Adapter.Tests
             LastCall.IgnoreArguments();
             generateReportEvent = LastCall.GetEventRaiser();
 
-            mockView.StopTests += null;
+            mockView.CancelOperation += null;
             LastCall.IgnoreArguments();
-            stopTestsEvent = LastCall.GetEventRaiser();
+            cancelOperationEvent = LastCall.GetEventRaiser();
 
             mockView.SaveFilter += null;
             LastCall.IgnoreArguments();
@@ -285,15 +285,15 @@ namespace Gallio.Icarus.Adapter.Tests
         }
 
         [Test]
-        public void StopTestsEventHandler_Test()
+        public void CancelOperationEventHandler_Test()
         {
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
-            mockPresenter.StopTests(projectAdapter, EventArgs.Empty);
+            mockPresenter.CancelOperation(projectAdapter, EventArgs.Empty);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.StopTests += new EventHandler<EventArgs>(mockPresenter.StopTests);
-            stopTestsEvent.Raise(mockView, EventArgs.Empty);
+            projectAdapter.CancelOperation += new EventHandler<EventArgs>(mockPresenter.CancelOperation);
+            cancelOperationEvent.Raise(mockView, EventArgs.Empty);
         }
 
         [Test]
@@ -519,8 +519,8 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void Update_Test()
         {
-            TestData testData = new TestData("test1", "test1", "test1");
-            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "test1"));
+            TestData testData = new TestData("test", "test", "test");
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "test"));
             mockModel.Update(testData, testStepRun);
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);

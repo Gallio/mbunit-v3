@@ -30,7 +30,7 @@ namespace Gallio.Icarus.Core.Interfaces
         void GetTestTree(object sender, GetTestTreeEventArgs e);
         void RunTests(object sender, EventArgs e);
         void OnGenerateReport(object sender, EventArgs e);
-        void StopTests(object sender, EventArgs e);
+        void CancelOperation(object sender, EventArgs e);
         void SetFilter(object sender, SetFilterEventArgs e);
         void GetReportTypes(object sender, EventArgs e);
         void SaveReportAs(object sender, SaveReportAsEventArgs e);

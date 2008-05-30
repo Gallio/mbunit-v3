@@ -59,6 +59,7 @@
     <Compile Include="Adapter\ProjectAdapterTest.cs" />
     <Compile Include="AboutTest.cs" />
     <Compile Include="AssemblyListTest.cs" />
+    <Compile Include="Controls\TestTreeModelTest.cs" />
     <Compile Include="Controls\TaskButtonTest.cs" />
     <Compile Include="Controls\TestResultsListTest.cs" />
     <Compile Include="Controls\TestStatusBarTest.cs">

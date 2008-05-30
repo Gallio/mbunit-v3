@@ -47,7 +47,7 @@ namespace Gallio.Icarus.Core.Model
         private IProjectPresenter projectPresenter;
 
         private IProgressMonitorProvider progressMonitorProvider = NullProgressMonitorProvider.Instance;
-        private IProgressMonitor runTestsProgressMonitor;
+        private IProgressMonitor activeProgressMonitor;
 
         private string reportNameFormat = "test-report-{0}-{1}";
         private string reportFolder;
@@ -97,6 +97,7 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
+                activeProgressMonitor = progressMonitor;
                 TestRunnerOptions options = new TestRunnerOptions();
                 ILogger logger = RuntimeAccessor.Logger;
                 testRunner.Initialize(options, logger, progressMonitor);
@@ -107,6 +108,7 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
+                activeProgressMonitor = progressMonitor;
                 testRunner.Dispose(progressMonitor);
             });
         }
@@ -118,6 +120,7 @@ namespace Gallio.Icarus.Core.Model
 
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
+                activeProgressMonitor = progressMonitor;
                 testRunner.Load(testPackageConfig, progressMonitor);
             });
         }
@@ -126,6 +129,7 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
+                activeProgressMonitor = progressMonitor;
                 testRunner.Explore(testExplorationOptions, progressMonitor);
             });
 
@@ -139,16 +143,15 @@ namespace Gallio.Icarus.Core.Model
             // run tests
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                runTestsProgressMonitor = progressMonitor;
-
+                activeProgressMonitor = progressMonitor;
                 testRunner.Run(testExecutionOptions, progressMonitor);
             });
         }
 
-        public void StopTests()
+        public void CancelOperation()
         {
-            if (runTestsProgressMonitor != null)
-                runTestsProgressMonitor.Cancel();
+            if (activeProgressMonitor != null)
+                activeProgressMonitor.Cancel();
         }
 
         public string GenerateReport()
@@ -156,6 +159,8 @@ namespace Gallio.Icarus.Core.Model
             string reportPath = string.Empty;
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
+                activeProgressMonitor = progressMonitor;
+
                 IReportContainer reportContainer = CreateReportContainer(Report);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(Report, reportContainer);
 
@@ -228,6 +233,7 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
+                activeProgressMonitor = progressMonitor;
                 progressMonitor.BeginTask("Generating report.", 100);
 
                 IReportContainer reportContainer = new FileSystemReportContainer(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
@@ -263,6 +269,7 @@ namespace Gallio.Icarus.Core.Model
 
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
+                activeProgressMonitor = progressMonitor;
                 testRunner.Unload(progressMonitor);
             });
         }

@@ -41,7 +41,7 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         private IEventRaiser getTestTreeEvent;
         private IEventRaiser runTestsEvent;
         private IEventRaiser generateReportEvent;
-        private IEventRaiser stopTestsEvent;
+        private IEventRaiser cancelOperationEvent;
         private IEventRaiser setFilterEvent;
         private IEventRaiser getReportTypesEvent;
         private IEventRaiser saveReportAsEvent;
@@ -72,9 +72,9 @@ namespace Gallio.Icarus.Tests.Core.Presenter
             LastCall.IgnoreArguments();
             generateReportEvent = LastCall.GetEventRaiser();
 
-            mockAdapter.StopTests += null;
+            mockAdapter.CancelOperation += null;
             LastCall.IgnoreArguments();
-            stopTestsEvent = LastCall.GetEventRaiser();
+            cancelOperationEvent = LastCall.GetEventRaiser();
 
             mockAdapter.SetFilter += null;
             LastCall.IgnoreArguments();
@@ -200,12 +200,12 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         }
 
         [Test]
-        public void StopTests_Test()
+        public void CancelOperation_Test()
         {
-            mockModel.StopTests();
+            mockModel.CancelOperation();
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            stopTestsEvent.Raise(mockAdapter, EventArgs.Empty);
+            cancelOperationEvent.Raise(mockAdapter, EventArgs.Empty);
         }
 
         [Test]
@@ -296,7 +296,7 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         [Test]
         public void Update_Test()
         {
-            TestData testData = new TestData("test1", "test1", "test1");
+            TestData testData = new TestData("test", "test", "test");
             TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "test1"));
             mockAdapter.Update(testData, testStepRun);
             mocks.ReplayAll();

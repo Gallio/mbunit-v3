@@ -13,12 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Icarus.Core.Interfaces;
-using Gallio.Icarus.Core.ProgressMonitoring;
+using Gallio.Icarus.Tests;
+using Gallio.Runtime.ProgressMonitoring;
 
 using MbUnit.Framework;
-using Gallio.Icarus.Tests;
+
+using Rhino.Mocks;
 
 namespace Gallio.Icarus.Core.ProgressMonitoring.Tests
 {
@@ -29,14 +30,28 @@ namespace Gallio.Icarus.Core.ProgressMonitoring.Tests
         public void Canceled_Test()
         {
             IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
-            projectPresenter.StatusText = "Tests cancelled";
+            projectPresenter.StatusText = "Operation cancelled";
             projectPresenter.CompletedWorkUnits = 0;
+            projectPresenter.TotalWorkUnits = 0;
             mocks.ReplayAll();
-
             StatusStripProgressMonitorPresenter statusStripProgressMonitorPresenter = new StatusStripProgressMonitorPresenter(projectPresenter);
             ObservableProgressMonitor observableProgressMonitor = new ObservableProgressMonitor();
             statusStripProgressMonitorPresenter.Present(observableProgressMonitor);
             observableProgressMonitor.Cancel();
+        }
+
+        [Test]
+        public void HandleChanged_Test()
+        {
+            IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
+            projectPresenter.TotalWorkUnits = 10;
+            Expect.Call(projectPresenter.CompletedWorkUnits = 0).Repeat.Twice();
+            projectPresenter.StatusText = "taskName (0.00 %)";
+            mocks.ReplayAll();
+            StatusStripProgressMonitorPresenter statusStripProgressMonitorPresenter = new StatusStripProgressMonitorPresenter(projectPresenter);
+            ObservableProgressMonitor observableProgressMonitor = new ObservableProgressMonitor();
+            statusStripProgressMonitorPresenter.Present(observableProgressMonitor);
+            observableProgressMonitor.BeginTask("taskName", 10);
         }
     }
 }

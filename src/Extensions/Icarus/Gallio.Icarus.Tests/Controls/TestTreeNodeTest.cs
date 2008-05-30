@@ -13,58 +13,90 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Forms;
-
 using Gallio.Icarus.Controls;
 
 using MbUnit.Framework;
+using Gallio.Model;
 
 namespace Gallio.Icarus.Controls.Tests
 {
     [TestFixture]
     public class TestTreeNodeTest
     {
-        //private TestTreeNode parent;
-        //private TestTreeNode testTreeNode;
-        //private TestTreeNode child1;
-        //private TestTreeNode child2;
-        //private TestTreeNode child3;
+        private TestTreeNode testTreeNode;
 
-        //[SetUp]
-        //public void SetUp()
+        [SetUp]
+        public void SetUp()
+        {
+            testTreeNode = new TestTreeNode("text", "name", TestKinds.Test);
+        }
+
+        [Test]
+        public void Name_Test()
+        {
+            Assert.AreEqual("name", testTreeNode.Name);
+        }
+
+        [Test]
+        public void NodeType_Test()
+        {
+            Assert.AreEqual(TestKinds.Test, testTreeNode.NodeType);
+        }
+
+        [Test]
+        public void TestStatus_Test()
+        {
+            Assert.AreEqual(TestStatus.Skipped, testTreeNode.TestStatus);
+            testTreeNode.TestStatus = TestStatus.Passed;
+            Assert.AreEqual(TestStatus.Passed, testTreeNode.TestStatus);
+        }
+
+        [Test]
+        public void SourceCodeAvailable_Test()
+        {
+            Assert.IsFalse(testTreeNode.SourceCodeAvailable);
+            testTreeNode.SourceCodeAvailable = true;
+            Assert.IsTrue(testTreeNode.SourceCodeAvailable);
+        }
+
+        [Test]
+        public void IsTest_Test()
+        {
+            Assert.IsFalse(testTreeNode.IsTest);
+            testTreeNode.IsTest = true;
+            Assert.IsTrue(testTreeNode.IsTest);
+        }
+
+        //[Test]
+        //public void NodeTypeIcon_Test()
         //{
-        //    TestTreeView treeView = new TestTreeView();
-        //    treeView.CheckBoxes = true;
-        //    parent = new TestTreeNode("parent", "parent", 0);
-        //    testTreeNode = new TestTreeNode("test", "test", 0);
-        //    parent.Nodes.Add(testTreeNode);
-        //    child1 = new TestTreeNode("child1", "child1", 0);
-        //    child2 = new TestTreeNode("child2", "child2", 0);
-        //    testTreeNode.Nodes.AddRange(new TreeNode[] { child1, child2 });
-        //    child3 = new TestTreeNode("child3", "child3", 0);
-        //    child1.Nodes.Add(child3);
-        //    treeView.Nodes.Add(parent);
+        //    Assert.AreEqual(global::Gallio.Icarus.Properties.Resources.Test, testTreeNode.NodeTypeIcon);
         //}
 
         //[Test]
-        //public void Toggle_Test()
+        //public void TestStatusIcon_Test()
         //{
-        //    Assert.AreEqual(CheckBoxStates.Checked, testTreeNode.CheckState);
-        //    child1.Toggle();
-        //    Assert.AreEqual(CheckBoxStates.Indeterminate, testTreeNode.CheckState);
-        //    child2.Toggle();
-        //    Assert.AreEqual(CheckBoxStates.Unchecked, testTreeNode.CheckState);
-        //    parent.Toggle();
-        //    Assert.AreEqual(CheckBoxStates.Checked, testTreeNode.CheckState);
+        //    Assert.IsNull(testTreeNode.TestStatusIcon);
+        //    testTreeNode.TestStatus = TestStatus.Passed;
+        //    Assert.AreEqual(global::Gallio.Icarus.Properties.Resources.tick, testTreeNode.TestStatusIcon);
         //}
 
-        //[Test]
-        //public void TestState_Test()
-        //{
-        //    child3.TestState = TestStates.Success;
-        //    Assert.AreEqual(TestStates.Success, parent.TestState);
-        //    child2.TestState = TestStates.Failed;
-        //    Assert.AreEqual(TestStates.Failed, parent.TestState);
-        //}
+        [Test]
+        public void Find_Test()
+        {
+            TestTreeNode child1 = new TestTreeNode("child1", "child1", "child1");
+            testTreeNode.Nodes.Add(child1);
+            TestTreeNode child2 = new TestTreeNode("child2", "child2", "child2");
+            child1.Nodes.Add(child2);
+            Assert.AreEqual(1, testTreeNode.Find("child2", true).Count);
+        }
+
+        [Test]
+        public void UpdateStateOfRelatedNodes_Test()
+        {
+            TestTreeNode child = new TestTreeNode("child", "child", "child");
+            testTreeNode.Nodes.Add(child);
+            child.UpdateStateOfRelatedNodes();
+        }
     }
 }
