@@ -460,12 +460,21 @@ namespace Gallio.Icarus.Adapter.Tests
         }
 
         [Test]
-        public void StatusText_Test()
+        public void TaskName_Test()
         {
-            mockView.StatusText = "blah blah";
+            mockView.TaskName = "taskName";
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel);
-            projectAdapter.StatusText = "blah blah";
+            projectAdapter.TaskName = "taskName";
+        }
+
+        [Test]
+        public void SubTaskName_Test()
+        {
+            mockView.SubTaskName = "subTaskName";
+            mocks.ReplayAll();
+            projectAdapter = new ProjectAdapter(mockView, mockModel);
+            projectAdapter.SubTaskName = "subTaskName";
         }
 
         [Test]

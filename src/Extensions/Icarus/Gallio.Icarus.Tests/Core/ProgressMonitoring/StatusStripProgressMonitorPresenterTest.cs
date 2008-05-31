@@ -20,6 +20,7 @@ using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 
 using Rhino.Mocks;
+using System;
 
 namespace Gallio.Icarus.Core.ProgressMonitoring.Tests
 {
@@ -30,7 +31,8 @@ namespace Gallio.Icarus.Core.ProgressMonitoring.Tests
         public void Canceled_Test()
         {
             IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
-            projectPresenter.StatusText = "Operation cancelled";
+            projectPresenter.TaskName = "Operation cancelled";
+            projectPresenter.SubTaskName = String.Empty;
             projectPresenter.CompletedWorkUnits = 0;
             projectPresenter.TotalWorkUnits = 0;
             mocks.ReplayAll();
@@ -46,7 +48,8 @@ namespace Gallio.Icarus.Core.ProgressMonitoring.Tests
             IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
             projectPresenter.TotalWorkUnits = 10;
             Expect.Call(projectPresenter.CompletedWorkUnits = 0).Repeat.Twice();
-            projectPresenter.StatusText = "taskName (0.00 %)";
+            projectPresenter.TaskName = "taskName";
+            projectPresenter.SubTaskName = String.Empty;
             mocks.ReplayAll();
             StatusStripProgressMonitorPresenter statusStripProgressMonitorPresenter = new StatusStripProgressMonitorPresenter(projectPresenter);
             ObservableProgressMonitor observableProgressMonitor = new ObservableProgressMonitor();

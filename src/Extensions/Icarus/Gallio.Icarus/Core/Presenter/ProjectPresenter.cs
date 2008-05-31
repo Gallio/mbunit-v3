@@ -33,17 +33,22 @@ namespace Gallio.Icarus.Core.Presenter
         private bool testPackageLoaded;
         private TestModelData testModelData;
 
-        public string StatusText
+        public string TaskName
         {
-            set { projectAdapter.StatusText = value; }
+            set { projectAdapter.TaskName = value; }
         }
 
-        public int CompletedWorkUnits
+        public string SubTaskName
+        {
+            set { projectAdapter.SubTaskName = value; }
+        }
+
+        public double CompletedWorkUnits
         {
             set { projectAdapter.CompletedWorkUnits = value; }
         }
 
-        public int TotalWorkUnits
+        public double TotalWorkUnits
         {
             set { projectAdapter.TotalWorkUnits = value; }
         }

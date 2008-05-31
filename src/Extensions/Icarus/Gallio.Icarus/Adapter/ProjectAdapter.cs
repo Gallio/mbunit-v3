@@ -81,17 +81,22 @@ namespace Gallio.Icarus.Adapter
             assemblyFiles.AddRange(existingAndNonDuplicatedAssemblies);
         }
 
-        public string StatusText
+        public string TaskName
         {
-            set { projectAdapterView.StatusText = value; }
+            set { projectAdapterView.TaskName = value; }
         }
 
-        public int CompletedWorkUnits
+        public string SubTaskName
+        {
+            set { projectAdapterView.SubTaskName = value; }
+        }
+
+        public double CompletedWorkUnits
         {
             set { projectAdapterView.CompletedWorkUnits = value; }
         }
 
-        public int TotalWorkUnits
+        public double TotalWorkUnits
         {
             set { projectAdapterView.TotalWorkUnits = value; }
         }

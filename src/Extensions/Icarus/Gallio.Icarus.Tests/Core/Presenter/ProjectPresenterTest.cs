@@ -102,12 +102,21 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         }
 
         [Test]
-        public void StatusText_Test()
+        public void TaskName_Test()
         {
-            mockAdapter.StatusText = "blah blah";
+            mockAdapter.TaskName = "taskName";
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.StatusText = "blah blah";
+            projectPresenter.TaskName = "taskName";
+        }
+
+        [Test]
+        public void SubTaskName_Test()
+        {
+            mockAdapter.SubTaskName = "subTaskName";
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            projectPresenter.SubTaskName = "subTaskName";
         }
 
         [Test, Category("ProjectPresenter"), Category("AnotherCategory"), Author("Graham Hay")]

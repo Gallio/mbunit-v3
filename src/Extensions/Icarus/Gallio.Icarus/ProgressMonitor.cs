@@ -11,30 +11,29 @@ namespace Gallio.Icarus
 {
     public partial class ProgressMonitor : Form
     {
-        private bool showDetails = false;
-
         public ProgressMonitor()
         {
             InitializeComponent();
         }
 
-        public string StatusText
+        public string TaskName
         {
-            set
-            {
-                statusTextLabel.Text = value;
-                detailsTextBox.AppendText(value + Environment.NewLine);
-            }
+            set { Text = value; }
+        }
+
+        public string SubTaskName
+        {
+            set { subTaskNameLabel.Text = value; }
+        }
+
+        public string Progress
+        {
+            set { progressLabel.Text = value; }
         }
 
         public int TotalWorkUnits
         {
-            set
-            {
-                progressBar.Maximum = value;
-                if (value == 0)
-                    detailsTextBox.Clear();
-            }
+            set { progressBar.Maximum = value; }
         }
 
         public int CompletedWorkUnits
@@ -51,21 +50,6 @@ namespace Gallio.Icarus
         {
             ((IProjectAdapterView)Owner).ShowProgressMonitor = false;
             Hide();
-        }
-
-        private void detailsButton_Click(object sender, EventArgs e)
-        {
-            showDetails = !showDetails;
-            if (showDetails)
-            {
-                Height = 445;
-                detailsButton.Text = "Details <<";
-            }
-            else
-            {
-                Height = 165;
-                detailsButton.Text = "Details >>";
-            }
         }
     }
 }

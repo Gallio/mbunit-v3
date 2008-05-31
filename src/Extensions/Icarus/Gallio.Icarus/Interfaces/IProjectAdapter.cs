@@ -39,13 +39,14 @@ namespace Gallio.Icarus.Interfaces
 
         TestModelData TestModelData { get; set; }
         Project Project { get; set; }
-        string StatusText { set; }
+        string TaskName { set; }
+        string SubTaskName { set; }
         string ReportPath { set; }
         IList<string> ReportTypes { set; }
         IList<string> TestFrameworks { set; }
         Stream ExecutionLog { set; }
-        int CompletedWorkUnits { set; }
-        int TotalWorkUnits { set; }
+        double CompletedWorkUnits { set; }
+        double TotalWorkUnits { set; }
         
         void Update(TestData testData, TestStepRun testStepRun);
         void DataBind();

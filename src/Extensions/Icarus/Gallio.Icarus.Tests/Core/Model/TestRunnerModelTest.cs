@@ -153,7 +153,8 @@ namespace Gallio.Icarus.Core.Model.Tests
             IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
             Expect.Call(projectPresenter.CompletedWorkUnits = 0).Repeat.AtLeastOnce();
             projectPresenter.TotalWorkUnits = 0;
-            projectPresenter.StatusText = string.Empty;
+            projectPresenter.TaskName = string.Empty;
+            projectPresenter.SubTaskName = string.Empty;
             testRunner.Run(null, null);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();

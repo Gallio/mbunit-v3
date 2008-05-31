@@ -62,7 +62,8 @@ namespace Gallio.Icarus.Interfaces
         bool ShowProgressMonitor { set; }
         ITreeModel TreeModel { set; }
         ListViewItem[] Assemblies { set; }
-        string StatusText { set; }
+        string TaskName { set; }
+        string SubTaskName { set; }
         string ReportPath { set; }
         IList<string> TestFilters { set; }
         IList<string> ReportTypes { set; }
@@ -73,8 +74,8 @@ namespace Gallio.Icarus.Interfaces
         bool ShadowCopy { set; }
         List<AnnotationData> Annotations { set; }
         Stream ExecutionLog { set; }
-        int CompletedWorkUnits { set; }
-        int TotalWorkUnits { set; }
+        double CompletedWorkUnits { set; }
+        double TotalWorkUnits { set; }
         int TotalTests { set; }
         CodeLocation SourceCodeLocation { set; }
         Settings Settings { get; set; }

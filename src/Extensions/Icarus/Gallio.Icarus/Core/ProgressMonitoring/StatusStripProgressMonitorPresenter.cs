@@ -38,7 +38,7 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         private void HandleTaskStarting(object sender, EventArgs e)
         {
             presenter.CompletedWorkUnits = 0;
-            presenter.TotalWorkUnits = Convert.ToInt32(ProgressMonitor.TotalWorkUnits);
+            presenter.TotalWorkUnits = ProgressMonitor.TotalWorkUnits;
         }
 
         /// <inheritdoc />
@@ -48,30 +48,21 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
             {
                 presenter.CompletedWorkUnits = 0;
                 presenter.TotalWorkUnits = 0;
-                presenter.StatusText = "Operation cancelled";
+                presenter.TaskName = "Operation cancelled";
+                presenter.SubTaskName = String.Empty;
             }
             else if (ProgressMonitor.IsDone)
             {
                 presenter.CompletedWorkUnits = 0;
                 presenter.TotalWorkUnits = 0;
-                presenter.StatusText = "";
+                presenter.TaskName = String.Empty;
+                presenter.SubTaskName = String.Empty;
             }
             else
             {
-                presenter.CompletedWorkUnits = Convert.ToInt32(ProgressMonitor.CompletedWorkUnits);
-
-                StringBuilder sb = new StringBuilder();
-                sb.Append(ProgressMonitor.TaskName);
-
-                string currentSubTaskName = ProgressMonitor.LeafSubTaskName;
-                if (currentSubTaskName != "")
-                {
-                    sb.Append(" - ");
-                    sb.Append(currentSubTaskName);
-                }
-
-                sb.Append(String.Format(" ({0:P})", (ProgressMonitor.CompletedWorkUnits / ProgressMonitor.TotalWorkUnits)));
-                presenter.StatusText = sb.ToString();
+                presenter.CompletedWorkUnits = ProgressMonitor.CompletedWorkUnits;
+                presenter.TaskName = ProgressMonitor.TaskName;
+                presenter.SubTaskName = ProgressMonitor.LeafSubTaskName;
             }
         }
     }

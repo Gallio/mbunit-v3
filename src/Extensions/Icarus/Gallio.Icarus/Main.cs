@@ -18,22 +18,23 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
 using Aga.Controls.Tree;
+
 using Gallio.Concurrency;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
-
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
+using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Utilities;
 
 using WeifenLuo.WinFormsUI.Docking;
-using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus
 {
@@ -62,6 +63,8 @@ namespace Gallio.Icarus
         private ProgressMonitor progressMonitor;
         private System.Timers.Timer progressMonitorTimer;
         private bool showProgressMonitor = true;
+        private string taskName, subTaskName;
+        private double totalWorkUnits, completedWorkUnits;
 
         public bool ShowProgressMonitor
         {
@@ -101,44 +104,58 @@ namespace Gallio.Icarus
             }
         }
 
-        public string StatusText
+        public string TaskName
         {
             set
             {
+                taskName = value;
                 Sync.Invoke(this, delegate
                 {
-                    toolStripStatusLabel.Text = value;
-                    progressMonitor.StatusText = value;
+                    UpdateProgress();
                 });
             }
         }
 
-        public int TotalWorkUnits
+        public string SubTaskName
         {
             set
             {
+                subTaskName = value;
                 Sync.Invoke(this, delegate
                 {
-                    toolStripProgressBar.Maximum = value;
-                    progressMonitor.TotalWorkUnits = value;
+                    UpdateProgress();
+                });
+            }
+        }
+
+        public double TotalWorkUnits
+        {
+            set
+            {
+                totalWorkUnits = value;
+                Sync.Invoke(this, delegate
+                {
+                    UpdateProgress();
                     if (value == 0)
                     {
-                        showProgressMonitor = true;
+                        // task is complete, hide progress monitor
+                        progressMonitorTimer.Enabled = false;
                         progressMonitor.Hide();
                         Cursor = Cursors.Default;
+                        showProgressMonitor = true;
                     }
                 });
             }
         }
 
-        public int CompletedWorkUnits
+        public double CompletedWorkUnits
         {
             set
             {
+                completedWorkUnits = value;
                 Sync.Invoke(this, delegate
                 {
-                    toolStripProgressBar.Value = value;
-                    progressMonitor.CompletedWorkUnits = value;
+                    UpdateProgress();
                     if (value > 0 && !progressMonitor.Visible && showProgressMonitor)
                         progressMonitorTimer.Enabled = true;
                     Cursor = Cursors.WaitCursor;
@@ -995,6 +1012,33 @@ namespace Gallio.Icarus
             //{
             //    MessageBox.Show(this, e.GetDescription(), e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
             //});
+        }
+
+        private void UpdateProgress()
+        {
+            toolStripProgressBar.Maximum = Convert.ToInt32(totalWorkUnits);
+            toolStripProgressBar.Value = Convert.ToInt32(completedWorkUnits);
+
+            progressMonitor.TotalWorkUnits = Convert.ToInt32(totalWorkUnits);
+            progressMonitor.CompletedWorkUnits = Convert.ToInt32(completedWorkUnits);
+
+            progressMonitor.TaskName = taskName;
+            progressMonitor.SubTaskName = subTaskName;
+            if (totalWorkUnits > 0)
+                progressMonitor.Progress = String.Format("{0:P}", (completedWorkUnits / totalWorkUnits));
+            else
+                progressMonitor.Progress = String.Empty;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(taskName);
+            if (subTaskName != String.Empty)
+            {
+                sb.Append(" - ");
+                sb.Append(subTaskName);
+            }
+            if (totalWorkUnits > 0)
+                sb.Append(String.Format(" ({0:P})", (completedWorkUnits / totalWorkUnits)));
+            toolStripStatusLabel.Text = sb.ToString();
         }
     }
 }

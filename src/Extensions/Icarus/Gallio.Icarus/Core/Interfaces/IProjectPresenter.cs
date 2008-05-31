@@ -24,9 +24,10 @@ namespace Gallio.Icarus.Core.Interfaces
 {
     public interface IProjectPresenter
     {
-        string StatusText { set; }
-        int CompletedWorkUnits { set; }
-        int TotalWorkUnits { set; }
+        string TaskName { set; }
+        string SubTaskName { set; }
+        double CompletedWorkUnits { set; }
+        double TotalWorkUnits { set; }
         void GetTestTree(object sender, GetTestTreeEventArgs e);
         void RunTests(object sender, EventArgs e);
         void OnGenerateReport(object sender, EventArgs e);
