@@ -78,16 +78,10 @@ namespace Gallio.Icarus
                 Sync.Invoke(this, delegate
                 {
                     testExplorer.TreeModel = value;
+                    testResults.TreeModel = value;
                     ((TestTreeModel)value).TestCountChanged += delegate
                     {
                         TotalTests = ((TestTreeModel)value).TestCount;
-                    };
-                    ((TestTreeModel)value).TestResult += delegate(object sender, TestResultEventArgs e)
-                    {
-                        Sync.Invoke(this, delegate
-                        {
-                            testResults.UpdateTestResults(e.TestData, e.TestStepRun);
-                        });
                     };
                 });
             }
@@ -987,13 +981,17 @@ namespace Gallio.Icarus
             });
         }
 
-        public void OnGetExecutionLog(string testId)
+        public void UpdateSelectedNode(string testId)
         {
-            executionLogTaskManager.StartTask(delegate
+            if (testId != string.Empty)
             {
-                if (GetExecutionLog != null)
-                    GetExecutionLog(this, new SingleEventArgs<string>(testId));
-            });
+                executionLogTaskManager.StartTask(delegate
+                {
+                    if (GetExecutionLog != null)
+                        GetExecutionLog(this, new SingleEventArgs<string>(testId));
+                });
+            }
+            testResults.SelectedNodeId = testId;
         }
 
         private void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)

@@ -60,7 +60,7 @@ namespace Gallio.Icarus.Controls
             Sort();
         }
 
-        public void UpdateTestResults(TestData testData, TestStepRun testStepRun)
+        public void AddTestStepRun(string testKind, TestStepRun testStepRun)
         {
             int imgIndex = -1;
             switch (testStepRun.Result.Outcome.Status)
@@ -76,9 +76,8 @@ namespace Gallio.Icarus.Controls
                     break;
             }
             ListViewItem lvi = new ListViewItem(string.Empty, imgIndex);
-            lvi.SubItems.AddRange(new string[] { testStepRun.Step.Name, testData.Metadata.GetValue(MetadataKeys.TestKind), 
-                testStepRun.Result.Duration.ToString("0.000"), testStepRun.Result.AssertCount.ToString(), testStepRun.Step.CodeReference.TypeName, 
-                testStepRun.Step.CodeReference.AssemblyName });
+            lvi.SubItems.AddRange(new string[] { testStepRun.Step.Name, testKind, testStepRun.Result.Duration.ToString("0.000"), 
+                testStepRun.Result.AssertCount.ToString(), testStepRun.Step.CodeReference.TypeName, testStepRun.Step.CodeReference.AssemblyName });
             Items.Add(lvi);
         }
 

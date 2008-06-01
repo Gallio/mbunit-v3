@@ -101,7 +101,7 @@ namespace Gallio.Icarus.Controls
 
         private void ResetTestStatus(Node node)
         {
-            ((TestTreeNode)node).TestStatus = TestStatus.Skipped;
+            ((TestTreeNode)node).ClearTestStepRuns();
             foreach (Node n in node.Nodes)
                 ResetTestStatus(n);
         }
@@ -111,12 +111,8 @@ namespace Gallio.Icarus.Controls
             List<TestTreeNode> nodes = Root.Find(testData.Id, true);
             foreach (TestTreeNode node in nodes)
             {
-                // combine test status
-                if (testStepRun.Result.Outcome.Status > node.TestStatus || testStepRun.Step.IsPrimary)
-                {
-                    node.TestStatus = testStepRun.Result.Outcome.Status;
-                    Filter(node);
-                }
+                node.AddTestStepRun(testStepRun);
+                Filter(node);
             }
             if (TestResult != null)
                 TestResult(this, new TestResultEventArgs(testData, testStepRun));

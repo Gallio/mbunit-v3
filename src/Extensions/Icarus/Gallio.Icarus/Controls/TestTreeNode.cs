@@ -13,13 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
 using Aga.Controls.Tree;
 
 using Gallio.Model;
-using System.Collections.Generic;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Controls
 {
@@ -29,6 +30,7 @@ namespace Gallio.Icarus.Controls
         private bool sourceCodeAvailable, isTest;
         private string name, nodeType;
         protected Image nodeTypeIcon, testStatusIcon;
+        private List<TestStepRun> testStepRuns;
 
         public string Name
         {
@@ -125,12 +127,18 @@ namespace Gallio.Icarus.Controls
             get { return testStatusIcon; }
         }
 
+        public List<TestStepRun> TestStepRuns
+        {
+            get { return testStepRuns; }
+        }
+
         public TestTreeNode(string text, string name, string nodeType)
             : base(text)
         {
             this.name = name;
             this.nodeType = nodeType;
             CheckState = CheckState.Checked;
+            testStepRuns = new List<TestStepRun>();
 
             switch (nodeType)
             {
@@ -263,7 +271,7 @@ namespace Gallio.Icarus.Controls
 
         private Image GetTestStatusIcon(TestStatus testStatus)
         {
-            switch (testStatus)
+            switch (TestStatus)
             {
                 case TestStatus.Failed:
                     return global::Gallio.Icarus.Properties.Resources.cross;
@@ -275,6 +283,20 @@ namespace Gallio.Icarus.Controls
                 default:
                     return null;
             }
+        }
+
+        public void AddTestStepRun(TestStepRun testStepRun)
+        {
+            testStepRuns.Add(testStepRun);
+            // combine test status
+            if (testStepRun.Result.Outcome.Status > TestStatus || testStepRun.Step.IsPrimary)
+                TestStatus = testStepRun.Result.Outcome.Status;
+        }
+
+        public void ClearTestStepRuns()
+        {
+            TestStatus = TestStatus.Skipped;
+            testStepRuns.Clear();
         }
     }
 }

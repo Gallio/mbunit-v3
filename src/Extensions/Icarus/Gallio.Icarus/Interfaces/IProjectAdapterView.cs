@@ -98,7 +98,7 @@ namespace Gallio.Icarus.Interfaces
         void OnSaveFilter(string filter);
         void OnDeleteFilter(string filter);
         void LoadComplete();
-        void OnGetExecutionLog(string testId);
+        void UpdateSelectedNode(string testId);
         void CancelRunningOperation();
     }
 }

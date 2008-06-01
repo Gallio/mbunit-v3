@@ -196,7 +196,13 @@ namespace Gallio.Icarus
             {
                 removeAssemblyToolStripMenuItem.Enabled = (((TestTreeNode)testTree.SelectedNode.Tag).NodeType == TestKinds.Assembly);
                 viewSourceCodeToolStripMenuItem.Enabled = ((TestTreeNode)testTree.SelectedNode.Tag).SourceCodeAvailable;
-                projectAdapterView.OnGetExecutionLog(((TestTreeNode)testTree.SelectedNode.Tag).Name);
+                projectAdapterView.UpdateSelectedNode(((TestTreeNode)testTree.SelectedNode.Tag).Name);
+            }
+            else
+            {
+                removeAssemblyToolStripMenuItem.Enabled = false;
+                viewSourceCodeToolStripMenuItem.Enabled = false;
+                projectAdapterView.UpdateSelectedNode(string.Empty);
             }
         }
     }

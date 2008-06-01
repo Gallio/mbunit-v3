@@ -20,11 +20,38 @@ using System.Windows.Forms;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
+using Gallio.Icarus.Controls.Interfaces;
+using Aga.Controls.Tree;
+using Gallio.Icarus.Controls;
+using Gallio.Icarus.Core.CustomEventArgs;
+using System.Collections.Generic;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
     public partial class TestResults : DockWindow
     {
+        private string selectedNodeId = string.Empty;
+        private ITreeModel treeModel;
+
+        public string SelectedNodeId
+        {
+            set
+            {
+                selectedNodeId = value;
+                UpdateTestResults();
+            }
+        }
+
+        public ITreeModel TreeModel
+        {
+            set
+            {
+                treeModel = value;
+                ((TestTreeModel)treeModel).TestResult += new EventHandler<TestResultEventArgs>(TestResults_TestResult);
+            }
+        }
+
         public int TotalTests
         {
             set { testProgressStatusBar.Total = value; }
@@ -35,13 +62,55 @@ namespace Gallio.Icarus
             InitializeComponent();
         }
 
+        private void TestResults_TestResult(object sender, TestResultEventArgs e)
+        {
+            Sync.Invoke(this, delegate
+            {
+                UpdateProgress(e.TestStepRun);
+                UpdateTestResults();
+            });
+        }
+
+        private void UpdateTestResults()
+        {
+            testResultsList.BeginUpdate();
+            testResultsList.Items.Clear();
+
+            List<TestTreeNode> nodes = new List<TestTreeNode>();
+            if (selectedNodeId != string.Empty)
+                nodes = ((TestTreeModel)treeModel).Root.Find(selectedNodeId, true);
+            else
+                nodes.Add(((TestTreeModel)treeModel).Root);
+
+            foreach (TestTreeNode node in nodes)
+            {
+                UpdateTestResults(node);
+            }
+
+            testResultsList.EndUpdate();
+        }
+
+        private void UpdateTestResults(TestTreeNode node)
+        {
+            foreach (TestStepRun tsr in node.TestStepRuns)
+            {
+                testResultsList.AddTestStepRun(node.NodeType, tsr);
+            }
+
+            foreach (Node n in node.Nodes)
+            {
+                if (n is TestTreeNode)
+                    UpdateTestResults((TestTreeNode)n);
+            }
+        }
+
         public void Reset()
         {
             testProgressStatusBar.Clear();
             testResultsList.Items.Clear();
         }
 
-        public void UpdateTestResults(TestData testData, TestStepRun testStepRun)
+        private void UpdateProgress(TestStepRun testStepRun)
         {
             if (testStepRun.Step.IsPrimary && testStepRun.Step.IsTestCase)
             {
@@ -61,7 +130,6 @@ namespace Gallio.Icarus
                         break;
                 }
             }
-            testResultsList.UpdateTestResults(testData, testStepRun);
         }
     }
 }
