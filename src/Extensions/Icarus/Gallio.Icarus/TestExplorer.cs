@@ -122,7 +122,7 @@ namespace Gallio.Icarus
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
         {
-            ((TestTreeModel)testTree.Model).ResetTestStatus();
+            projectAdapterView.ResetTests();
         }
 
         private void expandAllMenuItem_Click(object sender, EventArgs e)
@@ -142,7 +142,14 @@ namespace Gallio.Icarus
 
         private void sortTree_Click(object sender, EventArgs e)
         {
-            //testTree.Sorted = sortTree.Checked;
+            // can only sort up OR down!
+            if (sortToolStripButton.Checked && sortUpToolStripButton.Checked)
+                sortUpToolStripButton.Checked = false;
+
+            if (sortToolStripButton.Checked)
+                ((TestTreeModel)testTree.Model).SortOrder = SortOrder.Ascending;
+            else
+                ((TestTreeModel)testTree.Model).SortOrder = SortOrder.None;
         }
 
         private void viewSourceCodeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -204,6 +211,18 @@ namespace Gallio.Icarus
                 viewSourceCodeToolStripMenuItem.Enabled = false;
                 projectAdapterView.UpdateSelectedNode(string.Empty);
             }
+        }
+
+        private void sortUpToolStripButton_Click(object sender, EventArgs e)
+        {
+            // can only sort up OR down!
+            if (sortUpToolStripButton.Checked && sortToolStripButton.Checked)
+                sortToolStripButton.Checked = false;
+
+            if (sortUpToolStripButton.Checked)
+                ((TestTreeModel)testTree.Model).SortOrder = SortOrder.Descending;
+            else
+                ((TestTreeModel)testTree.Model).SortOrder = SortOrder.None;
         }
     }
 }

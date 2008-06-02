@@ -42,5 +42,25 @@ namespace Gallio.Icarus.Controls.Tests
             node1.Nodes.Add(node2);
             Assert.AreEqual(1, testTreeModel.TestCount);
         }
+
+        [Test]
+        public void ResetTestStatus_Test()
+        {
+            TestTreeNode node1 = new TestTreeNode("node1", "node1", "node1");
+            node1.TestStatus = TestStatus.Passed;
+            testTreeModel.Nodes.Add(node1);
+            TestTreeNode node2 = new TestTreeNode("node2", "node2", "node2");
+            node2.TestStatus = TestStatus.Passed;
+            node1.Nodes.Add(node2);
+            testTreeModel.ResetTestStatus();
+            Assert.AreEqual(TestStatus.Skipped, node1.TestStatus);
+            Assert.AreEqual(TestStatus.Skipped, node2.TestStatus);
+        }
+
+        [Test]
+        public void UpdateTestStatus_Test()
+        {
+
+        }
     }
 }

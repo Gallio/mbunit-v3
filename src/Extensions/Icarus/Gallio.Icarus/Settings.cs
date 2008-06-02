@@ -28,7 +28,7 @@ namespace Gallio.Icarus
     {
         private string testRunnerFactory = StandardTestRunnerFactoryNames.IsolatedProcess;
         // Switch above & below to step into tests
-        //private string testRunnerFactory = StandardTestRunnerFactoryNames.LocalAppDomain;
+        //private string testRunnerFactory = StandardTestRunnerFactoryNames.Local;
         private bool restorePreviousSettings = true;
         private List<string> pluginDirectories;
 

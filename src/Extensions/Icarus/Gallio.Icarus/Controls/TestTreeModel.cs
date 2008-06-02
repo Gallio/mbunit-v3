@@ -14,8 +14,12 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Forms;
+
 using Aga.Controls.Tree;
+
 using Gallio.Icarus.Controls.Interfaces;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Model;
@@ -27,6 +31,7 @@ namespace Gallio.Icarus.Controls
     public class TestTreeModel : TreeModel, ITestTreeModel
     {
         private bool filterPassed, filterFailed, filterSkipped;
+        private TestTreeSorter testTreeSorter = new TestTreeSorter();
 
         public event EventHandler<EventArgs> TestCountChanged;
         public event EventHandler<TestResultEventArgs> TestResult;
@@ -64,6 +69,16 @@ namespace Gallio.Icarus.Controls
                     FilterTree();
                 else
                     ClearFilter(TestStatus.Skipped);
+            }
+        }
+
+        public SortOrder SortOrder
+        {
+            get { return testTreeSorter.SortOrder; }
+            set
+            {
+                testTreeSorter.SortOrder = value;
+                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
             }
         }
 
@@ -205,6 +220,76 @@ namespace Gallio.Icarus.Controls
         {
             if (TestCountChanged != null)
                 TestCountChanged(this, e);
+        }
+
+        public new IEnumerable GetChildren(TreePath treePath)
+        {
+            if (testTreeSorter.SortOrder != SortOrder.None)
+            {
+                ArrayList list = new ArrayList();
+                IEnumerable res = base.GetChildren(treePath);
+                if (res != null)
+                {
+                    foreach (object obj in res)
+                        list.Add(obj);
+                    list.Sort(testTreeSorter);
+                    return list;
+                }
+                else
+                    return null;
+            }
+            else
+                return base.GetChildren(treePath);
+        }
+
+        private class TestTreeSorter : IComparer
+        {
+            /// <summary>
+            /// Specifies the order in which to sort (i.e. 'Ascending').
+            /// </summary>
+            private SortOrder sortOrder = SortOrder.None;
+            /// <summary>
+            /// Case insensitive comparer object
+            /// </summary>
+            private CaseInsensitiveComparer caseInsensitiveComparer = new CaseInsensitiveComparer();
+
+            /// <summary>
+            /// Gets or sets the order of sorting to apply (for example, 'Ascending' or 'Descending').
+            /// </summary>
+            public SortOrder SortOrder
+            {
+                get { return sortOrder; }
+                set { sortOrder = value; }
+            }
+
+            public int Compare(object x, object y)
+            {
+                int compareResult;
+
+                // Cast the objects to be compared to ListViewItem objects
+                TestTreeNode X = (TestTreeNode)x;
+                TestTreeNode Y = (TestTreeNode)y;
+
+                // standard text sort (ci)
+                compareResult = caseInsensitiveComparer.Compare(X.Text, Y.Text);
+
+                // Calculate correct return value based on object comparison
+                if (SortOrder == SortOrder.Ascending)
+                {
+                    // Ascending sort is selected, return normal result of compare operation
+                    return compareResult;
+                }
+                else if (SortOrder == SortOrder.Descending)
+                {
+                    // Descending sort is selected, return negative result of compare operation
+                    return (-compareResult);
+                }
+                else
+                {
+                    // Return '0' to indicate they are equal
+                    return 0;
+                }
+            }
         }
     }
 }
