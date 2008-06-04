@@ -48,13 +48,6 @@ namespace Gallio.Icarus
             this.resultsFilterPanel = new System.Windows.Forms.Panel();
             this.testProgressStatusBar = new Gallio.Icarus.Controls.TestStatusBar();
             this.testResultsList = new Gallio.Icarus.Controls.TestResultsList();
-            this.Status = new System.Windows.Forms.ColumnHeader();
-            this.StepName = new System.Windows.Forms.ColumnHeader();
-            this.TestKind = new System.Windows.Forms.ColumnHeader();
-            this.Duration = new System.Windows.Forms.ColumnHeader();
-            this.Asserts = new System.Windows.Forms.ColumnHeader();
-            this.CodeReference = new System.Windows.Forms.ColumnHeader();
-            this.Assembly = new System.Windows.Forms.ColumnHeader();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.resultsFilterPanel.SuspendLayout();
             this.SuspendLayout();
@@ -92,57 +85,13 @@ namespace Gallio.Icarus
             // 
             // testResultsList
             // 
-            this.testResultsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Status,
-            this.StepName,
-            this.TestKind,
-            this.Duration,
-            this.Asserts,
-            this.CodeReference,
-            this.Assembly});
             this.testResultsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.testResultsList.FullRowSelect = true;
             this.testResultsList.Location = new System.Drawing.Point(0, 58);
             this.testResultsList.Name = "testResultsList";
             this.testResultsList.Size = new System.Drawing.Size(555, 215);
             this.testResultsList.SmallImageList = this.imageList1;
             this.testResultsList.TabIndex = 3;
             this.testResultsList.UseCompatibleStateImageBehavior = false;
-            this.testResultsList.View = System.Windows.Forms.View.Details;
-            // 
-            // Status
-            // 
-            this.Status.Text = "";
-            this.Status.Width = 25;
-            // 
-            // StepName
-            // 
-            this.StepName.Text = "Step name";
-            this.StepName.Width = 200;
-            // 
-            // TestKind
-            // 
-            this.TestKind.Text = "Test kind";
-            // 
-            // Duration
-            // 
-            this.Duration.Text = "Duration (s)";
-            this.Duration.Width = 70;
-            // 
-            // Asserts
-            // 
-            this.Asserts.Text = "Asserts";
-            this.Asserts.Width = 50;
-            // 
-            // CodeReference
-            // 
-            this.CodeReference.Text = "Code reference";
-            this.CodeReference.Width = 200;
-            // 
-            // Assembly
-            // 
-            this.Assembly.Text = "Assembly";
-            this.Assembly.Width = 200;
             // 
             // imageList1
             // 
@@ -171,14 +120,7 @@ namespace Gallio.Icarus
 
         private System.Windows.Forms.Panel resultsFilterPanel;
         private Gallio.Icarus.Controls.TestResultsList testResultsList;
-        private System.Windows.Forms.ColumnHeader StepName;
-        private System.Windows.Forms.ColumnHeader Duration;
-        private System.Windows.Forms.ColumnHeader CodeReference;
-        private System.Windows.Forms.ColumnHeader Assembly;
         private Gallio.Icarus.Controls.TestStatusBar testProgressStatusBar;
         private System.Windows.Forms.ImageList imageList1;
-        private System.Windows.Forms.ColumnHeader Status;
-        private System.Windows.Forms.ColumnHeader TestKind;
-        private System.Windows.Forms.ColumnHeader Asserts;
     }
 }

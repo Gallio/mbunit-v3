@@ -34,6 +34,27 @@ namespace Gallio.Icarus.Controls
         {
             columnSorter = new TestResultsListColumnSorter();
             ListViewItemSorter = columnSorter;
+
+            ColumnHeader StepName = new ColumnHeader();
+            ColumnHeader Duration = new ColumnHeader();
+            ColumnHeader CodeReference = new ColumnHeader();
+            ColumnHeader Assembly = new ColumnHeader();
+            ColumnHeader TestKind = new ColumnHeader();
+            ColumnHeader Asserts = new ColumnHeader();
+            StepName.Text = "Step name";
+            StepName.Width = 200;
+            TestKind.Text = "Test kind";
+            Duration.Text = "Duration (s)";
+            Duration.Width = 70;
+            Asserts.Text = "Asserts";
+            Asserts.Width = 50;
+            CodeReference.Text = "Code reference";
+            CodeReference.Width = 200;
+            Assembly.Text = "Assembly";
+            Assembly.Width = 200;
+            Columns.AddRange(new ColumnHeader[] { StepName, TestKind, Duration, Asserts, CodeReference, Assembly});
+            FullRowSelect = true;
+            View = View.Details;
         }
 
         protected override void OnColumnClick(ColumnClickEventArgs e)
@@ -75,8 +96,8 @@ namespace Gallio.Icarus.Controls
                     imgIndex = 0;
                     break;
             }
-            ListViewItem lvi = new ListViewItem(string.Empty, imgIndex);
-            lvi.SubItems.AddRange(new string[] { testStepRun.Step.Name, testKind, testStepRun.Result.Duration.ToString("0.000"), 
+            ListViewItem lvi = new ListViewItem(testStepRun.Step.Name, imgIndex);
+            lvi.SubItems.AddRange(new string[] { testKind, testStepRun.Result.Duration.ToString("0.000"), 
                 testStepRun.Result.AssertCount.ToString(), testStepRun.Step.CodeReference.TypeName, testStepRun.Step.CodeReference.AssemblyName });
             if (columnSorter.SortColumn == 0)
                 lvi.IndentCount = indentCount;

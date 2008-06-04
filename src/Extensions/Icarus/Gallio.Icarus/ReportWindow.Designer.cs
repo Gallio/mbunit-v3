@@ -106,6 +106,7 @@ namespace Gallio.Icarus
             this.reportTypes.Name = "reportTypes";
             this.reportTypes.Size = new System.Drawing.Size(121, 21);
             this.reportTypes.TabIndex = 5;
+            this.reportTypes.SelectedIndexChanged += new System.EventHandler(this.reportTypes_SelectedIndexChanged);
             // 
             // btnSaveReportAs
             // 
@@ -117,6 +118,7 @@ namespace Gallio.Icarus
             this.btnSaveReportAs.TabIndex = 4;
             this.btnSaveReportAs.Text = "Save...";
             this.btnSaveReportAs.UseVisualStyleBackColor = true;
+            this.btnSaveReportAs.Click += new System.EventHandler(this.btnSaveReportAs_Click);
             // 
             // lblReportType
             // 

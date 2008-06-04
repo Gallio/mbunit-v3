@@ -51,13 +51,12 @@ namespace Gallio.Icarus.Controls.Tests
             Assert.AreEqual(1, testResultsList.Items.Count);
             ListViewItem lvi = testResultsList.Items[0];
             Assert.AreEqual(0, lvi.ImageIndex);
-            Assert.AreEqual(string.Empty, lvi.Text);
-            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[1].Text);
-            Assert.AreEqual(testKind, lvi.SubItems[2].Text);
-            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[3].Text);
-            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[4].Text);
-            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[5].Text);
-            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[6].Text);
+            Assert.AreEqual(testStepRun.Step.Name, lvi.Text);
+            Assert.AreEqual(testKind, lvi.SubItems[1].Text);
+            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[2].Text);
+            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[3].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[4].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[5].Text);
             Assert.AreEqual(0, lvi.IndentCount);
         }
 
@@ -74,13 +73,12 @@ namespace Gallio.Icarus.Controls.Tests
             Assert.AreEqual(1, testResultsList.Items.Count);
             ListViewItem lvi = testResultsList.Items[0];
             Assert.AreEqual(1, lvi.ImageIndex);
-            Assert.AreEqual(string.Empty, lvi.Text);
-            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[1].Text);
-            Assert.AreEqual(testKind, lvi.SubItems[2].Text);
-            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[3].Text);
-            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[4].Text);
-            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[5].Text);
-            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[6].Text);
+            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[0].Text);
+            Assert.AreEqual(testKind, lvi.SubItems[1].Text);
+            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[2].Text);
+            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[3].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[4].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[5].Text);
             Assert.AreEqual(0, lvi.IndentCount);
         }
 
@@ -97,13 +95,12 @@ namespace Gallio.Icarus.Controls.Tests
             Assert.AreEqual(1, testResultsList.Items.Count);
             ListViewItem lvi = testResultsList.Items[0];
             Assert.AreEqual(2, lvi.ImageIndex);
-            Assert.AreEqual(string.Empty, lvi.Text);
-            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[1].Text);
-            Assert.AreEqual(testKind, lvi.SubItems[2].Text);
-            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[3].Text);
-            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[4].Text);
-            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[5].Text);
-            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[6].Text);
+            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[0].Text);
+            Assert.AreEqual(testKind, lvi.SubItems[1].Text);
+            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[2].Text);
+            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[3].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[4].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[5].Text);
             Assert.AreEqual(0, lvi.IndentCount);
         }
 
@@ -120,13 +117,12 @@ namespace Gallio.Icarus.Controls.Tests
             Assert.AreEqual(1, testResultsList.Items.Count);
             ListViewItem lvi = testResultsList.Items[0];
             Assert.AreEqual(-1, lvi.ImageIndex);
-            Assert.AreEqual(string.Empty, lvi.Text);
-            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[1].Text);
-            Assert.AreEqual(testKind, lvi.SubItems[2].Text);
-            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[3].Text);
-            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[4].Text);
-            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[5].Text);
-            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[6].Text);
+            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[0].Text);
+            Assert.AreEqual(testKind, lvi.SubItems[1].Text);
+            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[2].Text);
+            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[3].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[4].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[5].Text);
             Assert.AreEqual(0, lvi.IndentCount);
         }
 

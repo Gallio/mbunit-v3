@@ -62,22 +62,26 @@ namespace Gallio.Icarus
                     break;
                 case "Html":
                 case "Html-Inline":
+                case "Html-Condensed":
                     ext = "HTML files (*.html)|*.html";
                     break;
                 case "Xhtml":
                 case "Xhtml-Inline":
+                case "XHtml-Condensed":
                     ext = "XHTML files (*.xhtml)|*.xhtml";
                     break;
                 case "Text":
                     ext = "Text files (*.txt)|*.txt";
                     break;
+                case "MHtml":
+                case "MHtml-Condensed":
+                    ext = "MHTML files (*.mht)|*.mht";
+                    break;
             }
             saveFile.DefaultExt = ext;
             saveFile.Filter = ext;
             if (saveFile.ShowDialog() == DialogResult.OK)
-            {
-
-            }
+                projectAdapterView.SaveReport(saveFile.FileName, reportTypes.SelectedItem.ToString());
         }
 
         private void reportTypes_SelectedIndexChanged(object sender, EventArgs e)
