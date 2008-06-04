@@ -117,6 +117,10 @@
     <Compile Include="AnnotationsWindow.Designer.cs">
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\CustomEventArgs\ProgressUpdateEventArgs.cs" />
+    <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ProgressMonitor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,7 +156,6 @@
     <Compile Include="Core\Interfaces\ITestRunnerModel.cs" />
     <Compile Include="Core\Model\TestRunnerModel.cs" />
     <Compile Include="Core\Presenter\ProjectPresenter.cs" />
-    <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorProvider.cs" />
     <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenter.cs" />
     <Compile Include="Core\Remoting\AssemblyWatcher.cs" />
     <Compile Include="DockWindow.cs">

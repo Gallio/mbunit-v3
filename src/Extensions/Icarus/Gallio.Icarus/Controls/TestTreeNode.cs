@@ -171,6 +171,9 @@ namespace Gallio.Icarus.Controls
         {
             List<TestTreeNode> nodes = new List<TestTreeNode>();
 
+            if (Name == key)
+                nodes.Add(this);
+
             // always search one level deep...
             foreach (Node n in Nodes)
                 nodes.AddRange(Find(key, searchChildren, n));

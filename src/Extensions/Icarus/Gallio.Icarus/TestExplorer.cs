@@ -48,6 +48,11 @@ namespace Gallio.Icarus
             }
         }
 
+        public bool EditEnabled
+        {
+            set { testTree.EditEnabled = value; }
+        }
+
         public TestExplorer(IProjectAdapterView projectAdapterView)
         {
             if (projectAdapterView == null)

@@ -39,8 +39,101 @@ namespace Gallio.Icarus.Controls.Tests
         }
 
         [Test]
+        public void AddTestStepRun_Passed_Test()
+        {
+            TestStepData testStepData = new TestStepData("id", "name", "fullName", "testId");
+            testStepData.CodeReference = new CodeReference("assemblyName", "namespaceName", "typeName", "memberName", "parameterName");
+            TestStepRun testStepRun = new TestStepRun(testStepData);
+            testStepRun.Result.Outcome = new TestOutcome(TestStatus.Passed);
+            Assert.AreEqual(0, testResultsList.Items.Count);
+            string testKind = "testKind";
+            testResultsList.AddTestStepRun(testKind, testStepRun, 0);
+            Assert.AreEqual(1, testResultsList.Items.Count);
+            ListViewItem lvi = testResultsList.Items[0];
+            Assert.AreEqual(0, lvi.ImageIndex);
+            Assert.AreEqual(string.Empty, lvi.Text);
+            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[1].Text);
+            Assert.AreEqual(testKind, lvi.SubItems[2].Text);
+            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[3].Text);
+            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[4].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[5].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[6].Text);
+            Assert.AreEqual(0, lvi.IndentCount);
+        }
+
+        [Test]
+        public void AddTestStepRun_Failed_Test()
+        {
+            TestStepData testStepData = new TestStepData("id", "name", "fullName", "testId");
+            testStepData.CodeReference = new CodeReference("assemblyName", "namespaceName", "typeName", "memberName", "parameterName");
+            TestStepRun testStepRun = new TestStepRun(testStepData);
+            testStepRun.Result.Outcome = new TestOutcome(TestStatus.Failed);
+            Assert.AreEqual(0, testResultsList.Items.Count);
+            string testKind = "testKind";
+            testResultsList.AddTestStepRun(testKind, testStepRun, 0);
+            Assert.AreEqual(1, testResultsList.Items.Count);
+            ListViewItem lvi = testResultsList.Items[0];
+            Assert.AreEqual(1, lvi.ImageIndex);
+            Assert.AreEqual(string.Empty, lvi.Text);
+            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[1].Text);
+            Assert.AreEqual(testKind, lvi.SubItems[2].Text);
+            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[3].Text);
+            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[4].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[5].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[6].Text);
+            Assert.AreEqual(0, lvi.IndentCount);
+        }
+
+        [Test]
+        public void AddTestStepRun_Inconclusive_Test()
+        {
+            TestStepData testStepData = new TestStepData("id", "name", "fullName", "testId");
+            testStepData.CodeReference = new CodeReference("assemblyName", "namespaceName", "typeName", "memberName", "parameterName");
+            TestStepRun testStepRun = new TestStepRun(testStepData);
+            testStepRun.Result.Outcome = new TestOutcome(TestStatus.Inconclusive);
+            Assert.AreEqual(0, testResultsList.Items.Count);
+            string testKind = "testKind";
+            testResultsList.AddTestStepRun(testKind, testStepRun, 0);
+            Assert.AreEqual(1, testResultsList.Items.Count);
+            ListViewItem lvi = testResultsList.Items[0];
+            Assert.AreEqual(2, lvi.ImageIndex);
+            Assert.AreEqual(string.Empty, lvi.Text);
+            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[1].Text);
+            Assert.AreEqual(testKind, lvi.SubItems[2].Text);
+            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[3].Text);
+            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[4].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[5].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[6].Text);
+            Assert.AreEqual(0, lvi.IndentCount);
+        }
+
+        [Test]
+        public void AddTestStepRun_Skipped_Test()
+        {
+            TestStepData testStepData = new TestStepData("id", "name", "fullName", "testId");
+            testStepData.CodeReference = new CodeReference("assemblyName", "namespaceName", "typeName", "memberName", "parameterName");
+            TestStepRun testStepRun = new TestStepRun(testStepData);
+            testStepRun.Result.Outcome = new TestOutcome(TestStatus.Skipped);
+            Assert.AreEqual(0, testResultsList.Items.Count);
+            string testKind = "testKind";
+            testResultsList.AddTestStepRun(testKind, testStepRun, 0);
+            Assert.AreEqual(1, testResultsList.Items.Count);
+            ListViewItem lvi = testResultsList.Items[0];
+            Assert.AreEqual(-1, lvi.ImageIndex);
+            Assert.AreEqual(string.Empty, lvi.Text);
+            Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[1].Text);
+            Assert.AreEqual(testKind, lvi.SubItems[2].Text);
+            Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[3].Text);
+            Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[4].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[5].Text);
+            Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[6].Text);
+            Assert.AreEqual(0, lvi.IndentCount);
+        }
+
+        [Test]
         public void Clear_Test()
         {
+            Assert.AreEqual(0, testResultsList.Items.Count);
             testResultsList.Items.Add("test");
             Assert.AreEqual(1, testResultsList.Items.Count);
             testResultsList.Clear();

@@ -54,15 +54,18 @@ namespace Gallio.Icarus.Controls.Tests
             Assert.AreEqual(0, testStatusBar.Passed);
             Assert.AreEqual(0, testStatusBar.Failed);
             Assert.AreEqual(0, testStatusBar.Skipped);
+            Assert.AreEqual(0, testStatusBar.Inconclusive);
             Assert.AreEqual(0, testStatusBar.ElapsedTime);
             testStatusBar.Passed = 5;
             testStatusBar.Failed = 3;
             testStatusBar.Skipped = 15;
+            testStatusBar.Inconclusive = 5;
             testStatusBar.ElapsedTime = 12;
             testStatusBar.Clear();
             Assert.AreEqual(0, testStatusBar.Passed);
             Assert.AreEqual(0, testStatusBar.Failed);
             Assert.AreEqual(0, testStatusBar.Skipped);
+            Assert.AreEqual(0, testStatusBar.Inconclusive);
             Assert.AreEqual(0, testStatusBar.ElapsedTime);
         }
 
@@ -75,11 +78,19 @@ namespace Gallio.Icarus.Controls.Tests
         }
 
         [Test]
-        public void InconclusiveColor_Test()
+        public void SkippedColor_Test()
         {
             Assert.AreEqual(Color.SlateGray, testStatusBar.SkippedColor);
             testStatusBar.SkippedColor = Color.Black;
             Assert.AreEqual(Color.Black, testStatusBar.SkippedColor);
+        }
+
+        [Test]
+        public void InconclusiveColor_Test()
+        {
+            Assert.AreEqual(Color.Gold, testStatusBar.InconclusiveColor);
+            testStatusBar.InconclusiveColor = Color.Black;
+            Assert.AreEqual(Color.Black, testStatusBar.InconclusiveColor);
         }
 
         [Test]

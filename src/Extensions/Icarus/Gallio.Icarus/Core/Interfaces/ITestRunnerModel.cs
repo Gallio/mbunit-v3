@@ -20,12 +20,15 @@ using System.IO;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Icarus.Core.CustomEventArgs;
+using Gallio.Runner.Events;
 
 namespace Gallio.Icarus.Core.Interfaces
 {
     public interface ITestRunnerModel : IDisposable
     {
-        IProjectPresenter ProjectPresenter { set; }
+        event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
+        event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
 
         void Initialize();
         void Load(TestPackageConfig testpackage);

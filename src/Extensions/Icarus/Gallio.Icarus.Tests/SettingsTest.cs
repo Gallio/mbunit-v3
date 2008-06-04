@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 
 using MbUnit.Framework;
+using Gallio.Runner;
 
 namespace Gallio.Icarus.Tests
 {
@@ -73,6 +74,14 @@ namespace Gallio.Icarus.Tests
             settings.RestorePreviousSettings = true;
             Assert.IsTrue(settings.RestorePreviousSettings);
             Assert.IsFalse(clonedSettings.RestorePreviousSettings);
+        }
+
+        [Test]
+        public void TestRunnerFactory_Test()
+        {
+            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, settings.TestRunnerFactory);
+            settings.TestRunnerFactory = StandardTestRunnerFactoryNames.Local;
+            Assert.AreEqual(StandardTestRunnerFactoryNames.Local, settings.TestRunnerFactory);
         }
     }
 }

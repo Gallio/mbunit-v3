@@ -348,6 +348,11 @@ namespace Gallio.Icarus
             }
         }
 
+        public bool EditEnabled
+        {
+            set { testExplorer.EditEnabled = value; }
+        }
+
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<SingleEventArgs<IList<string>>> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;

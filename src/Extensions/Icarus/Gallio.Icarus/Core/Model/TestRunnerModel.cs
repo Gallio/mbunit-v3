@@ -34,6 +34,7 @@ using Gallio.Model.Filters;
 using System.Globalization;
 using System.Reflection;
 using Gallio.Utilities;
+using Gallio.Icarus.Core.CustomEventArgs;
 
 namespace Gallio.Icarus.Core.Model
 {
@@ -44,27 +45,15 @@ namespace Gallio.Icarus.Core.Model
         private readonly TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
         private readonly TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
 
-        private IProjectPresenter projectPresenter;
-
-        private IProgressMonitorProvider progressMonitorProvider = NullProgressMonitorProvider.Instance;
-        private IProgressMonitor activeProgressMonitor;
+        private StatusStripProgressMonitorProvider progressMonitorProvider = new StatusStripProgressMonitorProvider();
 
         private string reportNameFormat = "test-report-{0}-{1}";
         private string reportFolder;
         private string executionLogFolder;
         private Report previousReportFromUnloadedPackage;
 
-        public IProjectPresenter ProjectPresenter
-        {
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(@"value");
-
-                projectPresenter = value;
-                progressMonitorProvider = new StatusStripProgressMonitorProvider(projectPresenter);
-            }
-        }
+        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
+        public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
 
         public string ReportFolder
         {
@@ -84,9 +73,12 @@ namespace Gallio.Icarus.Core.Model
         public TestRunnerModel(ITestRunner testRunner, IReportManager reportManager)
         {
             this.testRunner = testRunner;
+            this.testRunner.Events.TestStepFinished += HandleTestStepFinished;
             this.reportManager = reportManager;
 
-            testRunner.Events.TestStepFinished += HandleTestStepFinished;
+            // hook up status strip
+            ((StatusStripProgressMonitorProvider)progressMonitorProvider).ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e) {
+                if (ProgressUpdate != null) ProgressUpdate(this, e); };
 
             // set up reports
             executionLogFolder = Path.Combine(Paths.IcarusAppDataFolder, @"ExecutionLog");
@@ -97,7 +89,6 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                activeProgressMonitor = progressMonitor;
                 TestRunnerOptions options = new TestRunnerOptions();
                 ILogger logger = RuntimeAccessor.Logger;
                 testRunner.Initialize(options, logger, progressMonitor);
@@ -108,7 +99,6 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                activeProgressMonitor = progressMonitor;
                 testRunner.Dispose(progressMonitor);
             });
         }
@@ -120,7 +110,6 @@ namespace Gallio.Icarus.Core.Model
 
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                activeProgressMonitor = progressMonitor;
                 testRunner.Load(testPackageConfig, progressMonitor);
             });
         }
@@ -129,7 +118,6 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                activeProgressMonitor = progressMonitor;
                 testRunner.Explore(testExplorationOptions, progressMonitor);
             });
 
@@ -143,15 +131,14 @@ namespace Gallio.Icarus.Core.Model
             // run tests
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                activeProgressMonitor = progressMonitor;
                 testRunner.Run(testExecutionOptions, progressMonitor);
             });
         }
 
         public void CancelOperation()
         {
-            if (activeProgressMonitor != null)
-                activeProgressMonitor.Cancel();
+            if (progressMonitorProvider.ProgressMonitor != null)
+                progressMonitorProvider.ProgressMonitor.Cancel();
         }
 
         public string GenerateReport()
@@ -159,8 +146,6 @@ namespace Gallio.Icarus.Core.Model
             string reportPath = string.Empty;
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                activeProgressMonitor = progressMonitor;
-
                 IReportContainer reportContainer = CreateReportContainer(Report);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(Report, reportContainer);
 
@@ -233,7 +218,6 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                activeProgressMonitor = progressMonitor;
                 progressMonitor.BeginTask("Generating report.", 100);
 
                 IReportContainer reportContainer = new FileSystemReportContainer(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
@@ -269,14 +253,15 @@ namespace Gallio.Icarus.Core.Model
 
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                activeProgressMonitor = progressMonitor;
                 testRunner.Unload(progressMonitor);
             });
         }
 
         private void HandleTestStepFinished(object sender, TestStepFinishedEventArgs e)
         {
-            projectPresenter.Update(e.Test, e.TestStepRun);
+            // bubble event up to presenter
+            if (TestStepFinished != null)
+                TestStepFinished(this, e);
 
             // store attachments as we go along for the execution log viewer!
             string attachmentDirectory = string.Empty;

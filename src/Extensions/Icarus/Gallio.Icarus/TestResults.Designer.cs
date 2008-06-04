@@ -101,6 +101,7 @@ namespace Gallio.Icarus
             this.CodeReference,
             this.Assembly});
             this.testResultsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testResultsList.FullRowSelect = true;
             this.testResultsList.Location = new System.Drawing.Point(0, 58);
             this.testResultsList.Name = "testResultsList";
             this.testResultsList.Size = new System.Drawing.Size(555, 215);

@@ -79,6 +79,7 @@ namespace Gallio.Icarus.Interfaces
         int TotalTests { set; }
         CodeLocation SourceCodeLocation { set; }
         Settings Settings { get; set; }
+        bool EditEnabled { set; }
         
         void ThreadedRemoveAssembly(string assembly);
         void ReloadTree();

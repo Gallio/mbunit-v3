@@ -50,5 +50,6 @@ namespace Gallio.Icarus.Interfaces
         
         void Update(TestData testData, TestStepRun testStepRun);
         void DataBind();
+        void assemblyWatcher_AssemblyChangedEvent(string fullPath);
     }
 }

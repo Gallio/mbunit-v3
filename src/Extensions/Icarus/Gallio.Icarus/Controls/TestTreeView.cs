@@ -26,9 +26,17 @@ namespace Gallio.Icarus.Controls
 {
     public class TestTreeView : TreeViewAdv
     {
+        private NodeCheckBox nodeCheckBox;
+
+        public bool EditEnabled
+        {
+            get { return nodeCheckBox.EditEnabled; }
+            set { nodeCheckBox.EditEnabled = value; }
+        }
+
         public TestTreeView()
         {
-            NodeCheckBox nodeCheckBox = new NodeCheckBox();
+            nodeCheckBox = new NodeCheckBox();
             nodeCheckBox.DataPropertyName = "CheckState";
             nodeCheckBox.LeftMargin = 0;
             nodeCheckBox.ParentColumn = null;

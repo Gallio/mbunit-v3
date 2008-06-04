@@ -21,40 +21,41 @@ using MbUnit.Framework;
 
 using Rhino.Mocks;
 using System;
+using Gallio.Icarus.Core.CustomEventArgs;
 
 namespace Gallio.Icarus.Core.ProgressMonitoring.Tests
 {
     [TestFixture]
-    public class StatusStripProgressMonitorPresenterTest : MockTest
+    public class StatusStripProgressMonitorPresenterTest
     {
         [Test]
         public void Canceled_Test()
         {
-            IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
-            projectPresenter.TaskName = "Operation cancelled";
-            projectPresenter.SubTaskName = String.Empty;
-            projectPresenter.CompletedWorkUnits = 0;
-            projectPresenter.TotalWorkUnits = 0;
-            mocks.ReplayAll();
-            StatusStripProgressMonitorPresenter statusStripProgressMonitorPresenter = new StatusStripProgressMonitorPresenter(projectPresenter);
+            ProgressUpdateEventArgs progressUpdateEventArgs = null;
+            StatusStripProgressMonitorPresenter statusStripProgressMonitorPresenter = new StatusStripProgressMonitorPresenter();
+            statusStripProgressMonitorPresenter.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e) { progressUpdateEventArgs = e; };
             ObservableProgressMonitor observableProgressMonitor = new ObservableProgressMonitor();
             statusStripProgressMonitorPresenter.Present(observableProgressMonitor);
             observableProgressMonitor.Cancel();
+            Assert.AreEqual("Operation cancelled", progressUpdateEventArgs.TaskName);
+            Assert.AreEqual(string.Empty, progressUpdateEventArgs.SubTaskName);
+            Assert.AreEqual(0, progressUpdateEventArgs.CompletedWorkUnits);
+            Assert.AreEqual(0, progressUpdateEventArgs.TotalWorkUnits);
         }
 
         [Test]
         public void HandleChanged_Test()
         {
-            IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
-            projectPresenter.TotalWorkUnits = 10;
-            Expect.Call(projectPresenter.CompletedWorkUnits = 0).Repeat.Twice();
-            projectPresenter.TaskName = "taskName";
-            projectPresenter.SubTaskName = String.Empty;
-            mocks.ReplayAll();
-            StatusStripProgressMonitorPresenter statusStripProgressMonitorPresenter = new StatusStripProgressMonitorPresenter(projectPresenter);
+            ProgressUpdateEventArgs progressUpdateEventArgs = null;
+            StatusStripProgressMonitorPresenter statusStripProgressMonitorPresenter = new StatusStripProgressMonitorPresenter();
+            statusStripProgressMonitorPresenter.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e) { progressUpdateEventArgs = e; };
             ObservableProgressMonitor observableProgressMonitor = new ObservableProgressMonitor();
             statusStripProgressMonitorPresenter.Present(observableProgressMonitor);
             observableProgressMonitor.BeginTask("taskName", 10);
+            Assert.AreEqual("taskName", progressUpdateEventArgs.TaskName);
+            Assert.AreEqual(string.Empty, progressUpdateEventArgs.SubTaskName);
+            Assert.AreEqual(0, progressUpdateEventArgs.CompletedWorkUnits);
+            Assert.AreEqual(10, progressUpdateEventArgs.TotalWorkUnits);
         }
     }
 }

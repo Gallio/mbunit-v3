@@ -17,6 +17,9 @@ using Gallio.Icarus.Controls;
 
 using MbUnit.Framework;
 using Gallio.Model;
+using Gallio.Runner.Reports;
+using Gallio.Model.Serialization;
+using System.Windows.Forms;
 
 namespace Gallio.Icarus.Controls.Tests
 {
@@ -49,6 +52,10 @@ namespace Gallio.Icarus.Controls.Tests
             Assert.AreEqual(TestStatus.Skipped, testTreeNode.TestStatus);
             testTreeNode.TestStatus = TestStatus.Passed;
             Assert.AreEqual(TestStatus.Passed, testTreeNode.TestStatus);
+            testTreeNode.TestStatus = TestStatus.Failed;
+            Assert.AreEqual(TestStatus.Failed, testTreeNode.TestStatus);
+            testTreeNode.TestStatus = TestStatus.Inconclusive;
+            Assert.AreEqual(TestStatus.Inconclusive, testTreeNode.TestStatus);
         }
 
         [Test]
@@ -67,19 +74,19 @@ namespace Gallio.Icarus.Controls.Tests
             Assert.IsTrue(testTreeNode.IsTest);
         }
 
-        //[Test]
-        //public void NodeTypeIcon_Test()
-        //{
-        //    Assert.AreEqual(global::Gallio.Icarus.Properties.Resources.Test, testTreeNode.NodeTypeIcon);
-        //}
+        [Test, Ignore("Image comparison fails.")]
+        public void NodeTypeIcon_Test()
+        {
+            Assert.AreEqual(global::Gallio.Icarus.Properties.Resources.Test, testTreeNode.NodeTypeIcon);
+        }
 
-        //[Test]
-        //public void TestStatusIcon_Test()
-        //{
-        //    Assert.IsNull(testTreeNode.TestStatusIcon);
-        //    testTreeNode.TestStatus = TestStatus.Passed;
-        //    Assert.AreEqual(global::Gallio.Icarus.Properties.Resources.tick, testTreeNode.TestStatusIcon);
-        //}
+        [Test, Ignore("Image comparison fails.")]
+        public void TestStatusIcon_Test()
+        {
+            Assert.IsNull(testTreeNode.TestStatusIcon);
+            testTreeNode.TestStatus = TestStatus.Passed;
+            Assert.AreEqual(global::Gallio.Icarus.Properties.Resources.tick, testTreeNode.TestStatusIcon);
+        }
 
         [Test]
         public void Find_Test()
@@ -94,9 +101,69 @@ namespace Gallio.Icarus.Controls.Tests
         [Test]
         public void UpdateStateOfRelatedNodes_Test()
         {
-            TestTreeNode child = new TestTreeNode("child", "child", "child");
-            testTreeNode.Nodes.Add(child);
-            child.UpdateStateOfRelatedNodes();
+            TestTreeNode child1 = new TestTreeNode("child1", "child1", "child1");
+            testTreeNode.Nodes.Add(child1);
+            TestTreeNode child2 = new TestTreeNode("child2", "child2", "child2");
+            child1.Nodes.Add(child2);
+            child2.CheckState = CheckState.Unchecked;
+            TestTreeNode child3 = new TestTreeNode("child3", "child3", "child3");
+            child1.Nodes.Add(child3);
+            child3.CheckState = CheckState.Unchecked;
+            Assert.AreEqual(CheckState.Checked, testTreeNode.CheckState);
+            child3.UpdateStateOfRelatedNodes();
+            Assert.AreEqual(CheckState.Unchecked, testTreeNode.CheckState);
+            Assert.AreEqual(CheckState.Unchecked, child1.CheckState);
+        }
+
+        [Test]
+        public void AddTestStepRun_Test()
+        {
+            Assert.AreEqual(0, testTreeNode.TestStepRuns.Count);
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testId"));
+            testTreeNode.AddTestStepRun(testStepRun);
+            Assert.AreEqual(1, testTreeNode.TestStepRuns.Count);
+            Assert.AreEqual(testStepRun, testTreeNode.TestStepRuns[0]);
+        }
+
+        [Test]
+        public void ClearTestStepRuns_Test()
+        {
+            Assert.AreEqual(0, testTreeNode.TestStepRuns.Count);
+            testTreeNode.AddTestStepRun(new TestStepRun(new TestStepData("id", "name", "fullName", "testId")));
+            Assert.AreEqual(1, testTreeNode.TestStepRuns.Count);
+            testTreeNode.ClearTestStepRuns();
+            Assert.AreEqual(0, testTreeNode.TestStepRuns.Count);
+        }
+
+        [Test]
+        public void SiblingTestStatus_Test()
+        {
+            TestTreeNode child1 = new TestTreeNode("child1", "child1", "child1");
+            testTreeNode.Nodes.Add(child1);
+            TestTreeNode child2 = new TestTreeNode("child2", "child2", "child2");
+            testTreeNode.Nodes.Add(child2);
+            TestTreeNode child3 = new TestTreeNode("child3", "child3", "child3");
+            testTreeNode.Nodes.Add(child3);
+            child1.TestStatus = TestStatus.Passed;
+            Assert.AreEqual(TestStatus.Passed, child1.TestStatus);
+            Assert.AreEqual(TestStatus.Skipped, child2.TestStatus);
+            Assert.AreEqual(TestStatus.Skipped, child3.TestStatus);
+            Assert.AreEqual(TestStatus.Passed, testTreeNode.TestStatus);
+            child2.TestStatus = TestStatus.Inconclusive;
+            Assert.AreEqual(TestStatus.Passed, child1.TestStatus);
+            Assert.AreEqual(TestStatus.Inconclusive, child2.TestStatus);
+            Assert.AreEqual(TestStatus.Skipped, child3.TestStatus);
+            Assert.AreEqual(TestStatus.Inconclusive, testTreeNode.TestStatus);
+            child3.TestStatus = TestStatus.Failed;
+            Assert.AreEqual(TestStatus.Passed, child1.TestStatus);
+            Assert.AreEqual(TestStatus.Inconclusive, child2.TestStatus);
+            Assert.AreEqual(TestStatus.Failed, child3.TestStatus);
+            Assert.AreEqual(TestStatus.Failed, testTreeNode.TestStatus);
+            child2.TestStatus = TestStatus.Passed;
+            Assert.AreEqual(TestStatus.Passed, child1.TestStatus);
+            Assert.AreEqual(TestStatus.Passed, child2.TestStatus);
+            Assert.AreEqual(TestStatus.Failed, child3.TestStatus);
+            Assert.AreEqual(TestStatus.Failed, testTreeNode.TestStatus);
         }
     }
 }

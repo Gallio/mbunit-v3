@@ -14,9 +14,14 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controls;
+using Gallio.Model;
+using Gallio.Runner.Reports;
+using Gallio.Model.Serialization;
 
 using MbUnit.Framework;
-using Gallio.Model;
+using Gallio.Icarus.Core.CustomEventArgs;
+using System.Windows.Forms;
+using Aga.Controls.Tree;
 
 namespace Gallio.Icarus.Controls.Tests
 {
@@ -60,7 +65,28 @@ namespace Gallio.Icarus.Controls.Tests
         [Test]
         public void UpdateTestStatus_Test()
         {
+            TestTreeNode node1 = new TestTreeNode("node1", "node1", "node1");
+            testTreeModel.Nodes.Add(node1);
+            TestData testData = new TestData("node1", "name", "fullName");
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testId"));
+            testTreeModel.TestResult += delegate(object sender, TestResultEventArgs e)
+            {
+                Assert.AreEqual(testData, e.TestData);
+                Assert.AreEqual(testStepRun, e.TestStepRun);
+            };
+            Assert.AreEqual(0, node1.TestStepRuns.Count);
+            testTreeModel.UpdateTestStatus(testData, testStepRun);
+            Assert.AreEqual(1, node1.TestStepRuns.Count);
+            Assert.AreEqual(testStepRun, node1.TestStepRuns[0]);
+        }
 
+        [Test]
+        public void SortOrder_Test()
+        {
+            Assert.AreEqual(SortOrder.None, testTreeModel.SortOrder);
+            testTreeModel.StructureChanged += delegate(object sender, TreePathEventArgs e) { Assert.AreEqual(TreePath.Empty, e.Path); };
+            testTreeModel.SortOrder = SortOrder.Ascending;
+            Assert.AreEqual(SortOrder.Ascending, testTreeModel.SortOrder);
         }
     }
 }

@@ -58,14 +58,6 @@ namespace Gallio.Icarus.Core.Model.Tests
             reportManager = mocks.CreateMock<IReportManager>();
         }
 
-        [Test, ExpectedArgumentNullException("projectPresenter")]
-        public void SetProjectPresenterNull_Test()
-        {
-            mocks.ReplayAll();
-            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
-            testRunnerModel.ProjectPresenter = null;
-        }
-
         [Test]
         public void Explore_Test()
         {
@@ -151,15 +143,10 @@ namespace Gallio.Icarus.Core.Model.Tests
         public void RunTests_Test()
         {
             IProjectPresenter projectPresenter = mocks.CreateMock<IProjectPresenter>();
-            Expect.Call(projectPresenter.CompletedWorkUnits = 0).Repeat.AtLeastOnce();
-            projectPresenter.TotalWorkUnits = 0;
-            projectPresenter.TaskName = string.Empty;
-            projectPresenter.SubTaskName = string.Empty;
             testRunner.Run(null, null);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
-            testRunnerModel.ProjectPresenter = projectPresenter;
             testRunnerModel.Run();
         }
 

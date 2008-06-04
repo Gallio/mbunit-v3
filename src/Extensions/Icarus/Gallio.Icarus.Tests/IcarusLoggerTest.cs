@@ -13,11 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
-using Gallio.Runtime.Logging;
-
 using Gallio.Icarus.Interfaces;
+using Gallio.Runtime.Logging;
 
 using MbUnit.Framework;
 
@@ -26,5 +23,14 @@ namespace Gallio.Icarus.Tests
     [TestFixture]
     public class IcarusLoggerTest : MockTest
     {
+        [Test]
+        public void LogImpl_Test()
+        {
+            IProjectAdapterView projectAdapterView = mocks.CreateMock<IProjectAdapterView>();
+            projectAdapterView.WriteToLog(LogSeverity.Error, "message", null);
+            mocks.ReplayAll();
+            IcarusLogger icarusLogger = new IcarusLogger(projectAdapterView);
+            icarusLogger.Log(LogSeverity.Error, "message");
+        }
     }
 }

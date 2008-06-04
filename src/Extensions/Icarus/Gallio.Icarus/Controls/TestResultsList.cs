@@ -60,7 +60,7 @@ namespace Gallio.Icarus.Controls
             Sort();
         }
 
-        public void AddTestStepRun(string testKind, TestStepRun testStepRun)
+        public void AddTestStepRun(string testKind, TestStepRun testStepRun, int indentCount)
         {
             int imgIndex = -1;
             switch (testStepRun.Result.Outcome.Status)
@@ -78,6 +78,8 @@ namespace Gallio.Icarus.Controls
             ListViewItem lvi = new ListViewItem(string.Empty, imgIndex);
             lvi.SubItems.AddRange(new string[] { testStepRun.Step.Name, testKind, testStepRun.Result.Duration.ToString("0.000"), 
                 testStepRun.Result.AssertCount.ToString(), testStepRun.Step.CodeReference.TypeName, testStepRun.Step.CodeReference.AssemblyName });
+            if (columnSorter.SortColumn == 0)
+                lvi.IndentCount = indentCount;
             Items.Add(lvi);
         }
 

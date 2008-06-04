@@ -83,24 +83,21 @@ namespace Gallio.Icarus
                 nodes.Add(((TestTreeModel)treeModel).Root);
 
             foreach (TestTreeNode node in nodes)
-            {
-                UpdateTestResults(node);
-            }
+                UpdateTestResults(node, 0);
 
+            testResultsList.Columns[0].Width = -1;
             testResultsList.EndUpdate();
         }
 
-        private void UpdateTestResults(TestTreeNode node)
+        private void UpdateTestResults(TestTreeNode node, int indentCount)
         {
             foreach (TestStepRun tsr in node.TestStepRuns)
-            {
-                testResultsList.AddTestStepRun(node.NodeType, tsr);
-            }
+                testResultsList.AddTestStepRun(node.NodeType, tsr, indentCount);
 
             foreach (Node n in node.Nodes)
             {
                 if (n is TestTreeNode)
-                    UpdateTestResults((TestTreeNode)n);
+                    UpdateTestResults((TestTreeNode)n, (indentCount + 1));
             }
         }
 

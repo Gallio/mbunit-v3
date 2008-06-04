@@ -28,6 +28,7 @@ using MbUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using System.IO;
+using Gallio.Runner.Events;
 
 namespace Gallio.Icarus.Tests.Core.Presenter
 {
@@ -48,6 +49,8 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         private IEventRaiser getTestFrameworksEvent;
         private IEventRaiser getExecutionLogEvent;
         private IEventRaiser unloadTestPackageEvent;
+        private IEventRaiser progressUpdateEvent;
+        private IEventRaiser testStepFinishedEvent;
 
         [SetUp]
         public void SetUp()
@@ -56,9 +59,6 @@ namespace Gallio.Icarus.Tests.Core.Presenter
 
             mockAdapter = mocks.CreateMock<IProjectAdapter>();
             mockModel = mocks.CreateMock<ITestRunnerModel>();
-
-            mockModel.ProjectPresenter = null;
-            LastCall.IgnoreArguments();
 
             mockAdapter.GetTestTree += null;
             LastCall.IgnoreArguments();
@@ -99,42 +99,14 @@ namespace Gallio.Icarus.Tests.Core.Presenter
             mockAdapter.UnloadTestPackage += null;
             LastCall.IgnoreArguments();
             unloadTestPackageEvent = LastCall.GetEventRaiser();
-        }
 
-        [Test]
-        public void TaskName_Test()
-        {
-            mockAdapter.TaskName = "taskName";
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.TaskName = "taskName";
-        }
+            mockModel.ProgressUpdate += null;
+            LastCall.IgnoreArguments();
+            progressUpdateEvent = LastCall.GetEventRaiser();
 
-        [Test]
-        public void SubTaskName_Test()
-        {
-            mockAdapter.SubTaskName = "subTaskName";
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.SubTaskName = "subTaskName";
-        }
-
-        [Test, Category("ProjectPresenter"), Category("AnotherCategory"), Author("Graham Hay")]
-        public void CompletedWorkUnits_Test()
-        {
-            mockAdapter.CompletedWorkUnits = 2;
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.CompletedWorkUnits = 2;
-        }
-
-        [Test]
-        public void TotalWorkUnits_Test()
-        {
-            mockAdapter.TotalWorkUnits = 5;
-            mocks.ReplayAll();
-            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.TotalWorkUnits = 5;
+            mockModel.TestStepFinished += null;
+            LastCall.IgnoreArguments();
+            testStepFinishedEvent = LastCall.GetEventRaiser();
         }
 
         [Test]
@@ -303,14 +275,28 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         }
 
         [Test]
-        public void Update_Test()
+        public void ProgressUpdate_Test()
         {
-            TestData testData = new TestData("test", "test", "test");
-            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "test1"));
+            ProgressUpdateEventArgs e = new ProgressUpdateEventArgs("taskName", "subTaskName", 0, 0);
+            mockAdapter.TaskName = e.TaskName;
+            mockAdapter.SubTaskName = e.SubTaskName;
+            mockAdapter.CompletedWorkUnits = e.CompletedWorkUnits;
+            mockAdapter.TotalWorkUnits = e.TotalWorkUnits;
+            mocks.ReplayAll();
+            projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
+            progressUpdateEvent.Raise(mockAdapter, e);
+        }
+
+        [Test]
+        public void TestStepFinished_Test()
+        {
+            TestData testData =  new TestData("id", "name", "fullName");
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testId"));
+            TestStepFinishedEventArgs e = new TestStepFinishedEventArgs(new Report(), testData, testStepRun);
             mockAdapter.Update(testData, testStepRun);
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            projectPresenter.Update(testData, testStepRun);
+            testStepFinishedEvent.Raise(mockAdapter, e);
         }
     }
 }

@@ -45,6 +45,7 @@ namespace Gallio.Icarus.Controls
                     FilterTree();
                 else
                     ClearFilter(TestStatus.Passed);
+                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
             }
         }
 
@@ -57,6 +58,7 @@ namespace Gallio.Icarus.Controls
                     FilterTree();
                 else
                     ClearFilter(TestStatus.Failed);
+                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
             }
         }
 
@@ -69,6 +71,7 @@ namespace Gallio.Icarus.Controls
                     FilterTree();
                 else
                     ClearFilter(TestStatus.Skipped);
+                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
             }
         }
 

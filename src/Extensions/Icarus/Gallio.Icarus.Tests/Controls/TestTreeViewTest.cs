@@ -13,109 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Forms;
-
-using Gallio.Icarus.Controls;
-
 using MbUnit.Framework;
 
 namespace Gallio.Icarus.Controls.Tests
 {
-    [TestFixture]
     public class TestTreeViewTest
     {
-        //private TestTreeView testTreeView;
-        //private TestTreeNode node1;
-        //private TestTreeNode node2;
-        //private TestTreeNode node3;
-        //private TestTreeNode node4;
-        //private TestTreeNode node5;
-        //private TestTreeNode node6;
-
-        //[SetUp]
-        //public void SetUp()
-        //{
-        //    testTreeView = new TestTreeView();
-        //    node1 = new TestTreeNode("node1", "node1", 0);
-        //    testTreeView.Nodes.Add(node1);
-        //    node2 = new TestTreeNode("node2", "node2", 0);
-        //    node1.Nodes.Add(node2);
-        //    node3 = new TestTreeNode("node3", "node3", 0);
-        //    node3.IsTest = true;
-        //    node4 = new TestTreeNode("node4", "node4", 0);
-        //    node4.IsTest = true;
-        //    node5 = new TestTreeNode("node5", "node5", 0);
-        //    node5.IsTest = true;
-        //    node6 = new TestTreeNode("node6", "node6", 0);
-        //    node6.IsTest = true;
-        //    node2.Nodes.AddRange(new TreeNode[] { node3, node4, node5, node6 });
-        //}
-
-        //[Test]
-        //public void UpdateTestState_Test()
-        //{
-        //    Assert.AreEqual(TestStates.Undefined, node1.TestState);
-        //    testTreeView.UpdateTestState("node4", TestStates.Success);
-        //    Assert.AreEqual(TestStates.Success, node1.TestState);
-        //}
-
-        //[Test]
-        //public void TestStateImageList_Test()
-        //{
-        //    ImageList imageList = new ImageList();
-        //    testTreeView.TestStateImageList = imageList;
-        //    Assert.AreEqual(imageList, testTreeView.TestStateImageList);
-        //}
-
-        //[Test]
-        //public void Reset_Test()
-        //{
-        //    Assert.AreEqual(TestStates.Undefined, node1.TestState);
-        //    node4.TestState = TestStates.Success;
-        //    Assert.AreEqual(TestStates.Success, node1.TestState);
-        //    testTreeView.Reset();
-        //    Assert.AreEqual(TestStates.Undefined, node1.TestState);
-        //}
-
-        //[Test]
-        //public void CountTests_Test()
-        //{
-        //    Assert.AreEqual(4, testTreeView.CountTests());
-        //    node4.Checked = false;
-        //    Assert.AreEqual(3, testTreeView.CountTests());
-        //}
-
-        //[Test]
-        //public void Filter_Test()
-        //{
-        //    node3.TestState = TestStates.Success;
-        //    node4.TestState = TestStates.Success;
-        //    node5.TestState = TestStates.Inconclusive;
-        //    node6.TestState = TestStates.Failed;
-        //    testTreeView.FilterPassed = true;
-        //    TreeNode[] filterNodes = testTreeView.Nodes.Find(TestStates.Success.ToString(), true);
-        //    Assert.AreEqual(1, filterNodes.Length);
-        //    TestTreeNode node = (TestTreeNode)filterNodes[0];
-        //    Assert.AreEqual(2, node.Nodes.Count);
-        //    testTreeView.FilterFailed = true;
-        //    filterNodes = testTreeView.Nodes.Find(TestStates.Failed.ToString(), true);
-        //    Assert.AreEqual(1, filterNodes.Length);
-        //    node = (TestTreeNode)filterNodes[0];
-        //    Assert.AreEqual(1, node.Nodes.Count);
-        //    testTreeView.FilterInconclusive = true;
-        //    filterNodes = testTreeView.Nodes.Find(TestStates.Inconclusive.ToString(), true);
-        //    Assert.AreEqual(1, filterNodes.Length);
-        //    node = (TestTreeNode)filterNodes[0];
-        //    Assert.AreEqual(1, node.Nodes.Count);
-        //    testTreeView.FilterPassed = false;
-        //    filterNodes = testTreeView.Nodes.Find(TestStates.Success.ToString(), true);
-        //    Assert.AreEqual(0, filterNodes.Length);
-        //    testTreeView.FilterFailed = false;
-        //    filterNodes = testTreeView.Nodes.Find(TestStates.Failed.ToString(), true);
-        //    Assert.AreEqual(0, filterNodes.Length);
-        //    testTreeView.FilterInconclusive = false;
-        //    filterNodes = testTreeView.Nodes.Find(TestStates.Inconclusive.ToString(), true);
-        //    Assert.AreEqual(0, filterNodes.Length);
-        //}
+        [Test]
+        public void EditEnabled_Test()
+        {
+            TestTreeView testTreeView = new TestTreeView();
+            Assert.IsTrue(testTreeView.EditEnabled);
+            testTreeView.EditEnabled = false;
+            Assert.IsFalse(testTreeView.EditEnabled);
+        }
     }
 }

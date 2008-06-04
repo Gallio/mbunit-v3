@@ -19,25 +19,24 @@ using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Events;
 
 namespace Gallio.Icarus.Core.Interfaces
 {
     public interface IProjectPresenter
     {
-        string TaskName { set; }
-        string SubTaskName { set; }
-        double CompletedWorkUnits { set; }
-        double TotalWorkUnits { set; }
-        void GetTestTree(object sender, GetTestTreeEventArgs e);
-        void RunTests(object sender, EventArgs e);
-        void OnGenerateReport(object sender, EventArgs e);
-        void CancelOperation(object sender, EventArgs e);
-        void SetFilter(object sender, SetFilterEventArgs e);
-        void GetReportTypes(object sender, EventArgs e);
-        void SaveReportAs(object sender, SaveReportAsEventArgs e);
-        void Update(TestData testData, TestStepRun testStepRun);
-        void OnGetTestFrameworks(object sender, EventArgs e);
-        void OnGetExecutionLog(object sender, SingleEventArgs<string> e);
-        void OnUnload(object sender, EventArgs e);
+        void projectAdapter_GetTestTree(object sender, GetTestTreeEventArgs e);
+        void projectAdapter_RunTests(object sender, EventArgs e);
+        void projectAdapter_GenerateReport(object sender, EventArgs e);
+        void projectAdapter_CancelOperation(object sender, EventArgs e);
+        void projectAdapter_SetFilter(object sender, SetFilterEventArgs e);
+        void projectAdapter_GetReportTypes(object sender, EventArgs e);
+        void projectAdapter_SaveReportAs(object sender, SaveReportAsEventArgs e);
+        void projectAdapter_GetTestFrameworks(object sender, EventArgs e);
+        void projectAdapter_GetExecutionLog(object sender, SingleEventArgs<string> e);
+        void projectAdapter_UnloadTestPackage(object sender, EventArgs e);
+
+        void testRunnerModel_TestStepFinished(object sender, TestStepFinishedEventArgs e);
+        void testRunnerModel_ProgressUpdate(object sender, ProgressUpdateEventArgs e);
     }
 }

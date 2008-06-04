@@ -17,17 +17,13 @@ using System;
 using System.Text;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Icarus.Core.CustomEventArgs;
 
 namespace Gallio.Icarus.Core.ProgressMonitoring
 {
     public class StatusStripProgressMonitorPresenter : BaseProgressMonitorPresenter
     {
-        private readonly IProjectPresenter presenter;
-
-        public StatusStripProgressMonitorPresenter(IProjectPresenter presenter)
-        {
-            this.presenter = presenter;
-        }
+        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
 
         protected override void Initialize()
         {
@@ -37,8 +33,8 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
 
         private void HandleTaskStarting(object sender, EventArgs e)
         {
-            presenter.CompletedWorkUnits = 0;
-            presenter.TotalWorkUnits = ProgressMonitor.TotalWorkUnits;
+            if (ProgressUpdate != null)
+                ProgressUpdate(this, new ProgressUpdateEventArgs(string.Empty, string.Empty, 0, ProgressMonitor.TotalWorkUnits));
         }
 
         /// <inheritdoc />
@@ -46,23 +42,19 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         {
             if (ProgressMonitor.IsCanceled)
             {
-                presenter.CompletedWorkUnits = 0;
-                presenter.TotalWorkUnits = 0;
-                presenter.TaskName = "Operation cancelled";
-                presenter.SubTaskName = String.Empty;
+                if (ProgressUpdate != null)
+                    ProgressUpdate(this, new ProgressUpdateEventArgs("Operation cancelled", string.Empty, 0, 0));
             }
             else if (ProgressMonitor.IsDone)
             {
-                presenter.CompletedWorkUnits = 0;
-                presenter.TotalWorkUnits = 0;
-                presenter.TaskName = String.Empty;
-                presenter.SubTaskName = String.Empty;
+                if (ProgressUpdate != null)
+                    ProgressUpdate(this, new ProgressUpdateEventArgs(string.Empty, string.Empty, 0, 0));
             }
             else
             {
-                presenter.CompletedWorkUnits = ProgressMonitor.CompletedWorkUnits;
-                presenter.TaskName = ProgressMonitor.TaskName;
-                presenter.SubTaskName = ProgressMonitor.LeafSubTaskName;
+                if (ProgressUpdate != null)
+                    ProgressUpdate(this, new ProgressUpdateEventArgs(ProgressMonitor.TaskName, ProgressMonitor.LeafSubTaskName, 
+                        ProgressMonitor.CompletedWorkUnits, ProgressMonitor.TotalWorkUnits));
             }
         }
     }

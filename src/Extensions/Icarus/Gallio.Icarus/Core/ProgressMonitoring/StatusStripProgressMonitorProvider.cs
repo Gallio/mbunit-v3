@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Icarus.Core.CustomEventArgs;
 
 namespace Gallio.Icarus.Core.ProgressMonitoring
 {
@@ -26,25 +27,40 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
     /// </summary>
     public class StatusStripProgressMonitorProvider : BaseProgressMonitorProvider
     {
-        private readonly IProjectPresenter presenter;
+        private ObservableProgressMonitor progressMonitor;
 
-        /// <summary>
-        /// Creates a status strip progress monitor provider.
-        /// </summary>
-        /// <param name="presenter">The presenter to which messages should be written</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="presenter"/> is null</exception>
-        public StatusStripProgressMonitorProvider(IProjectPresenter presenter)
+        public IProgressMonitor ProgressMonitor
         {
-            if (presenter == null)
-                throw new ArgumentNullException(@"presenter");
+            get { return progressMonitor; }
+        }
 
-            this.presenter = presenter;
+        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
+
+        /// <inheritdoc />
+        public override void Run(TaskWithProgress task)
+        {
+            IProgressMonitorPresenter presenter = GetPresenter();
+            try
+            {
+                progressMonitor = new ObservableProgressMonitor();
+                presenter.Present(progressMonitor);
+
+                progressMonitor.ThrowIfCanceled();
+                task(progressMonitor);
+                progressMonitor.ThrowIfCanceled();
+            }
+            finally
+            {
+                ((IProgressMonitor)progressMonitor).Dispose();
+            }
         }
 
         /// <inheritdoc />
         protected override IProgressMonitorPresenter GetPresenter()
         {
-            return new StatusStripProgressMonitorPresenter(presenter);
+            StatusStripProgressMonitorPresenter presenter = new StatusStripProgressMonitorPresenter();
+            presenter.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e) { if (ProgressUpdate != null) ProgressUpdate(this, e); };
+            return presenter;
         }
     }
 }

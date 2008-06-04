@@ -194,7 +194,7 @@ namespace Gallio.Icarus.Adapter
             project.TestPackageConfig.HostSetup.ShadowCopy = e.Arg;
         }
 
-        private void assemblyWatcher_AssemblyChangedEvent(string fullPath)
+        public void assemblyWatcher_AssemblyChangedEvent(string fullPath)
         {
             projectAdapterView.AssemblyChanged(fullPath);
         }
@@ -352,6 +352,8 @@ namespace Gallio.Icarus.Adapter
 
         private void ApplyFilter(string filterName)
         {
+            projectAdapterView.EditEnabled = false;
+
             // set filter (when available)
             foreach (FilterInfo filterInfo in project.TestFilters)
             {
@@ -361,9 +363,11 @@ namespace Gallio.Icarus.Adapter
                     projectAdapterModel.ApplyFilter(filter);
                     if (SetFilter != null)
                         SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, filter));
-                    return;
+                    break;
                 }
             }
+            
+            projectAdapterView.EditEnabled = true;
         }
 
         private void NewProjectEventHandler(object sender, EventArgs e)

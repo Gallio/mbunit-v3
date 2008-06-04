@@ -20,6 +20,7 @@ using Gallio.Icarus.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
+using Gallio.Runner.Events;
 
 namespace Gallio.Icarus.Core.Presenter
 {
@@ -33,46 +34,41 @@ namespace Gallio.Icarus.Core.Presenter
         private bool testPackageLoaded;
         private TestModelData testModelData;
 
-        public string TaskName
+        public ProjectPresenter(IProjectAdapter projectAdapter, ITestRunnerModel testRunnerModel)
         {
-            set { projectAdapter.TaskName = value; }
-        }
-
-        public string SubTaskName
-        {
-            set { projectAdapter.SubTaskName = value; }
-        }
-
-        public double CompletedWorkUnits
-        {
-            set { projectAdapter.CompletedWorkUnits = value; }
-        }
-
-        public double TotalWorkUnits
-        {
-            set { projectAdapter.TotalWorkUnits = value; }
-        }
-
-        public ProjectPresenter(IProjectAdapter view, ITestRunnerModel testrunnermodel)
-        {
-            projectAdapter = view;
-            testRunnerModel = testrunnermodel;
-            testRunnerModel.ProjectPresenter = this;
+            this.projectAdapter = projectAdapter;
+            this.testRunnerModel = testRunnerModel;
 
             // wire up events
-            projectAdapter.GetTestTree += GetTestTree;
-            projectAdapter.RunTests += RunTests;
-            projectAdapter.GenerateReport += OnGenerateReport;
-            projectAdapter.CancelOperation += CancelOperation;
-            projectAdapter.SetFilter += SetFilter;
-            projectAdapter.GetReportTypes += GetReportTypes;
-            projectAdapter.SaveReportAs += SaveReportAs;
-            projectAdapter.GetTestFrameworks += OnGetTestFrameworks;
-            projectAdapter.GetExecutionLog += OnGetExecutionLog;
-            projectAdapter.UnloadTestPackage += OnUnload;
+            projectAdapter.GetTestTree += projectAdapter_GetTestTree;
+            projectAdapter.RunTests += projectAdapter_RunTests;
+            projectAdapter.GenerateReport += projectAdapter_GenerateReport;
+            projectAdapter.CancelOperation += projectAdapter_CancelOperation;
+            projectAdapter.SetFilter += projectAdapter_SetFilter;
+            projectAdapter.GetReportTypes += projectAdapter_GetReportTypes;
+            projectAdapter.SaveReportAs += projectAdapter_SaveReportAs;
+            projectAdapter.GetTestFrameworks += projectAdapter_GetTestFrameworks;
+            projectAdapter.GetExecutionLog += projectAdapter_GetExecutionLog;
+            projectAdapter.UnloadTestPackage += projectAdapter_UnloadTestPackage;
+
+            testRunnerModel.ProgressUpdate += new EventHandler<ProgressUpdateEventArgs>(testRunnerModel_ProgressUpdate);
+            testRunnerModel.TestStepFinished += new EventHandler<TestStepFinishedEventArgs>(testRunnerModel_TestStepFinished);
         }
 
-        public void GetTestTree(object sender, GetTestTreeEventArgs e)
+        public void testRunnerModel_TestStepFinished(object sender, TestStepFinishedEventArgs e)
+        {
+            projectAdapter.Update(e.Test, e.TestStepRun);
+        }
+
+        public void testRunnerModel_ProgressUpdate(object sender, ProgressUpdateEventArgs e)
+        {
+            projectAdapter.TaskName = e.TaskName;
+            projectAdapter.SubTaskName = e.SubTaskName;
+            projectAdapter.CompletedWorkUnits = e.CompletedWorkUnits;
+            projectAdapter.TotalWorkUnits = e.TotalWorkUnits;
+        }
+
+        public void projectAdapter_GetTestTree(object sender, GetTestTreeEventArgs e)
         {
             Unload();
 
@@ -86,7 +82,7 @@ namespace Gallio.Icarus.Core.Presenter
                 Unload();
         }
 
-        public void RunTests(object sender, EventArgs e)
+        public void projectAdapter_RunTests(object sender, EventArgs e)
         {
             if (Explore() != null)
             {
@@ -97,47 +93,42 @@ namespace Gallio.Icarus.Core.Presenter
                 Unload();
         }
 
-        public void OnGenerateReport(object sender, EventArgs e)
+        public void projectAdapter_GenerateReport(object sender, EventArgs e)
         {
             projectAdapter.ReportPath = testRunnerModel.GenerateReport();
         }
 
-        public void CancelOperation(object sender, EventArgs e)
+        public void projectAdapter_CancelOperation(object sender, EventArgs e)
         {
             testRunnerModel.CancelOperation();
         }
 
-        public void SetFilter(object sender, SetFilterEventArgs e)
+        public void projectAdapter_SetFilter(object sender, SetFilterEventArgs e)
         {
             testRunnerModel.SetFilter(e.Filter);
         }
 
-        public void GetReportTypes(object sender, EventArgs e)
+        public void projectAdapter_GetReportTypes(object sender, EventArgs e)
         {
             projectAdapter.ReportTypes = testRunnerModel.GetReportTypes();
         }
 
-        public void SaveReportAs(object sender, SaveReportAsEventArgs e)
+        public void projectAdapter_SaveReportAs(object sender, SaveReportAsEventArgs e)
         {
             testRunnerModel.SaveReportAs(e.FileName, e.Format);
         }
 
-        public void Update(TestData testData, TestStepRun testStepRun)
-        {
-            projectAdapter.Update(testData, testStepRun);
-        }
-
-        public void OnGetTestFrameworks(object sender, EventArgs e)
+        public void projectAdapter_GetTestFrameworks(object sender, EventArgs e)
         {
             projectAdapter.TestFrameworks = testRunnerModel.GetTestFrameworks();
         }
 
-        public void OnGetExecutionLog(object sender, SingleEventArgs<string> e)
+        public void projectAdapter_GetExecutionLog(object sender, SingleEventArgs<string> e)
         {
             projectAdapter.ExecutionLog = testRunnerModel.GetExecutionLog(e.Arg, projectAdapter.TestModelData);
         }
 
-        public void OnUnload(object sender, EventArgs e)
+        public void projectAdapter_UnloadTestPackage(object sender, EventArgs e)
         {
             Unload();
         }
