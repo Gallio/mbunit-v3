@@ -46,6 +46,7 @@ namespace Gallio.Framework.Data
 
         private char fieldDelimiter = ',';
         private char commentPrefix = '#';
+        private int lineNumber;
 
         /// <summary>
         /// Creates a CSV reader. 
@@ -117,6 +118,7 @@ namespace Gallio.Framework.Data
                 if (line == null)
                     return null;
 
+                lineNumber += 1;
                 if (line.Length != 0 && commentPrefix != '\0' && line[0] == commentPrefix)
                     continue;
 
@@ -130,6 +132,15 @@ namespace Gallio.Framework.Data
                     fieldBuffer.Clear();
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the 1-based line number of the previously returned record,
+        /// or 0 if no lines have been read yet.
+        /// </summary>
+        public int PreviousRecordLineNumber
+        {
+            get { return lineNumber; }
         }
 
         private void ParseLineIntoFieldBuffer(string line)
@@ -146,7 +157,7 @@ namespace Gallio.Framework.Data
 
                 if (inQuotes)
                 {
-                    if (c == '"' && i < length && line[i] != '"')
+                    if (c == '"' && (i == length || line[i] != '"'))
                     {
                         inQuotes = false;
                     }

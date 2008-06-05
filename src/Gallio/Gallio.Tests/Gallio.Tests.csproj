@@ -77,8 +77,10 @@
     <Compile Include="Framework\Data\Conversions\XPathNavigatorToXmlSerializableTypeConversionRuleTest.cs" />
     <Compile Include="Framework\Data\CsvDataSetTest.cs" />
     <Compile Include="Framework\Data\CsvReaderTest.cs" />
+    <Compile Include="Framework\Data\DataRowTest.cs" />
     <Compile Include="Framework\Data\DataSourceTableTest.cs" />
     <Compile Include="Framework\Data\DataSourceTest.cs" />
+    <Compile Include="Framework\Data\FactoryDataSetTest.cs" />
     <Compile Include="Framework\Data\Formatters\BaseFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\BooleanFormattingRuleTest.cs" />
     <Compile Include="Framework\Data\Formatters\ByteFormattingRuleTest.cs" />
@@ -114,6 +116,7 @@
     <Compile Include="Framework\Data\SequentialJoinStrategyTest.cs" />
     <Compile Include="Framework\Data\SimpleDataBindingTest.cs" />
     <Compile Include="Framework\Data\DataBindingExceptionTest.cs" />
+    <Compile Include="Framework\Data\StoredDataRowTest.cs" />
     <Compile Include="Framework\Data\UnionMergeStrategyTest.cs" />
     <Compile Include="Framework\Data\XmlDataSetTest.cs" />
     <Compile Include="Framework\Pattern\PatternUsageErrorExceptionTest.cs" />

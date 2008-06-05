@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.XPath;
+using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
@@ -107,7 +108,7 @@ namespace Gallio.Framework.Data
             }
         }
 
-        private sealed class XmlDataRow : BaseDataRow
+        private sealed class XmlDataRow : StoredDataRow
         {
             private readonly XPathNavigator row;
 

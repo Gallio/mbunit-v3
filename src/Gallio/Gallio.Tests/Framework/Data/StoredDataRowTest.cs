@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+using System;
 using System.Collections.Generic;
 using Gallio.Framework.Data;
 using Gallio.Model;
@@ -22,54 +22,52 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
-    [TestsOn(typeof(ScalarDataRow<>))]
+    [TestsOn(typeof(StoredDataRow))]
     [DependsOn(typeof(BaseDataRowTest))]
-    public class ScalarDataRowTest
+    public class StoredDataRowTest
     {
         [Test]
         [Row(true)]
         [Row(false)]
         public void IsDynamicReturnsSameValueAsWasSpecifiedInTheConstructor(bool isDynamic)
         {
-            ScalarDataRow<object> row = new ScalarDataRow<object>(null, null, isDynamic);
+            StoredDataRow row = new StubDataRow(null, isDynamic);
             Assert.AreEqual(isDynamic, row.IsDynamic);
         }
 
         [Test]
-        public void HasNoMetadataIfNullSpecifiedInConstructor()
+        public void GetMetadataReturnsAnEmptyArrayIfConstructorArgumentWasNull()
         {
-            ScalarDataRow<object> row = new ScalarDataRow<object>(null, null, false);
-            MetadataMap metadata = row.GetMetadata();
-            Assert.AreEqual(0, metadata.Count);
+            StoredDataRow row = new StubDataRow(null, false);
+
+            MetadataMap map = row.GetMetadata();
+            Assert.AreEqual(0, map.Count);
         }
 
         [Test]
-        public void ContainSameMetadataAsSpecifiedInConstructor()
+        public void GetMetadataReturnsSameEnumerationAsWasSpecifiedInConstructor()
         {
             List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
-            metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
-            ScalarDataRow<object> row = new ScalarDataRow<object>("abc", metadataPairs, false);
+            metadataPairs.Add(new KeyValuePair<string,string>("Foo", "Bar"));
+            BaseDataRow row = new StubDataRow(metadataPairs, false);
 
             MetadataMap map = row.GetMetadata();
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }
 
-        [Test]
-        [Row(null, null, ExpectedException=typeof(DataBindingException))]
-        [Row(null, 1, ExpectedException=typeof(DataBindingException))]
-        [Row(null, -1, ExpectedException=typeof(DataBindingException))]
-        [Row("abc", null, ExpectedException=typeof(DataBindingException))]
-        [Row("abc", 1, ExpectedException=typeof(DataBindingException))]
-        [Row("abc", -1, ExpectedException=typeof(DataBindingException))]
-        [Row(null, 0)]
-        [Row("abc", 0)]
-        public void GetValueReturnsValueOnlyIfTheBindingIndexIsZero(string path, object index)
+        private class StubDataRow : StoredDataRow
         {
-            ScalarDataRow<object> row = new ScalarDataRow<object>(42, null, false);
-            object value = row.GetValue(new SimpleDataBinding((int?)index, path));
+            public StubDataRow(IEnumerable<KeyValuePair<string, string>> metadataPairs,
+                bool isDynamic)
+                : base(metadataPairs, isDynamic)
+            {
+            }
 
-            Assert.AreEqual(42, value);
+            protected override object GetValueImpl(DataBinding binding)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

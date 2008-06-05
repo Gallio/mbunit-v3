@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Framework.Data;
+using Gallio.Model;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -113,7 +114,9 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void GetRowsAppliesNoTranslationIfNoAliasesAreDefined()
         {
-            List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>();
+            List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
+            metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
+
             IDataSet dataSet = Mocks.CreateMock<IDataSet>();
 
             using (Mocks.Record())
@@ -125,7 +128,7 @@ namespace Gallio.Tests.Framework.Data
                 {
                     Assert.IsTrue(includeDynamicRows);
                     List<IDataRow> rows = new List<IDataRow>();
-                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadata, false));
+                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadataPairs, false));
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
@@ -148,7 +151,9 @@ namespace Gallio.Tests.Framework.Data
                 List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings, true));
                 Assert.AreEqual(1, rows.Count);
 
-                Assert.AreSame(metadata, rows[0].GetMetadata());
+                MetadataMap map = rows[0].GetMetadata();
+                Assert.AreEqual(1, map.Count);
+                Assert.AreEqual("Bar", map.GetValue("Foo"));
                 Assert.AreEqual("def", rows[0].GetValue(bindings[0]));
             }
         }
@@ -156,7 +161,8 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void GetRowsAppliesIndexAliasTranslation()
         {
-            List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>();
+            List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
+            metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
             IDataSet dataSet = Mocks.CreateMock<IDataSet>();
 
             using (Mocks.Record())
@@ -169,7 +175,7 @@ namespace Gallio.Tests.Framework.Data
                     Assert.IsTrue(includeDynamicRows);
 
                     List<IDataRow> rows = new List<IDataRow>();
-                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadata, true));
+                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadataPairs, true));
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
@@ -197,7 +203,9 @@ namespace Gallio.Tests.Framework.Data
                 List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings, true));
                 Assert.AreEqual(1, rows.Count);
 
-                Assert.AreSame(metadata, rows[0].GetMetadata());
+                MetadataMap map = rows[0].GetMetadata();
+                Assert.AreEqual(1, map.Count);
+                Assert.AreEqual("Bar", map.GetValue("Foo"));
 
                 InterimAssert.Throws<ArgumentNullException>(delegate { rows[0].GetValue(null); });
                 Assert.AreEqual("ghi", rows[0].GetValue(bindings[0]));

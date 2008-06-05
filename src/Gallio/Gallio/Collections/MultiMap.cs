@@ -63,6 +63,17 @@ namespace Gallio.Collections
             get { return entries.Values; }
         }
 
+        /// <inheritdoc />
+        public IEnumerable<KeyValuePair<TKey, TValue>> Pairs
+        {
+            get
+            {
+                foreach (KeyValuePair<TKey, IList<TValue>> entry in entries)
+                    foreach (TValue value in entry.Value)
+                        yield return new KeyValuePair<TKey, TValue>(entry.Key, value);
+            }
+        }
+
         /// <summary>
         /// Gets or sets the list of values associated with the specified key.
         /// Returns an empty list if there are none.
@@ -133,18 +144,24 @@ namespace Gallio.Collections
                 Add(key, value);
         }
 
-        /// <summary>
-        /// Adds all of the values from the specified map.
-        /// </summary>
-        /// <param name="map">The map</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null</exception>
-        public void AddAll(IMultiMap<TKey, TValue> map)
+        /// <inheritdoc />
+        public void AddAll(IEnumerable<KeyValuePair<TKey, IList<TValue>>> map)
         {
             if (map == null)
                 throw new ArgumentNullException(@"map");
 
             foreach (KeyValuePair<TKey, IList<TValue>> entry in map)
                 Add(entry);
+        }
+
+        /// <inheritdoc />
+        public void AddAll(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        {
+            if (pairs == null)
+                throw new ArgumentNullException("pairs");
+
+            foreach (KeyValuePair<TKey, TValue> entry in pairs)
+                Add(entry.Key, entry.Value);
         }
 
         /// <inheritdoc />

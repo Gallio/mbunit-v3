@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Data;
+using Gallio.Model;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -250,12 +251,11 @@ namespace Gallio.Tests.Framework.Data
                 Assert.AreEqual(2, rows[0].GetValue(bindings[4]));
                 Assert.AreEqual(5, rows[0].GetValue(bindings[5]));
 
-                CollectionAssert.AreElementsEqual(new KeyValuePair<string, string>[]
-                {
-                    new KeyValuePair<string, string>("abc", "123"),
-                    new KeyValuePair<string, string>("def", "456"),
-                    new KeyValuePair<string, string>("ghi", "789")
-                }, rows[0].GetMetadata());
+                MetadataMap map = rows[0].GetMetadata();
+                Assert.AreEqual(3, map.Count);
+                Assert.AreEqual("123", map.GetValue("abc"));
+                Assert.AreEqual("456", map.GetValue("def"));
+                Assert.AreEqual("789", map.GetValue("ghi"));
 
                 Assert.IsFalse(rows[0].IsDynamic);
 
@@ -266,10 +266,9 @@ namespace Gallio.Tests.Framework.Data
                 Assert.AreEqual(-2, rows[1].GetValue(bindings[4]));
                 Assert.AreEqual(-5, rows[1].GetValue(bindings[5]));
 
-                CollectionAssert.AreElementsEqual(new KeyValuePair<string, string>[]
-                {
-                    new KeyValuePair<string, string>("ghi", "789")
-                }, rows[1].GetMetadata());
+                map = rows[1].GetMetadata();
+                Assert.AreEqual(1, map.Count);
+                Assert.AreEqual("789", map.GetValue("ghi"));
 
                 Assert.IsTrue(rows[1].IsDynamic);
             }

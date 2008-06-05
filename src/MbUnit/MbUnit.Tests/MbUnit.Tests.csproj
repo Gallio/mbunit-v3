@@ -54,6 +54,7 @@
     <Compile Include="Framework\AutomaticTestFixtureTest.cs" />
     <Compile Include="Framework\ExplicitTest.cs" />
     <Compile Include="Framework\CsvDataTest.cs" />
+    <Compile Include="Framework\FactoryTest.cs" />
     <Compile Include="Framework\FileAssertTest.cs" />
     <Compile Include="Framework\GenericAssertTest.cs" />
     <Compile Include="Framework\DataBindingTest.cs" />

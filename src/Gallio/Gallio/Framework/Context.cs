@@ -15,7 +15,6 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using System.Security.Permissions;
 using System.Threading;
 using Gallio;
 using Gallio.Collections;

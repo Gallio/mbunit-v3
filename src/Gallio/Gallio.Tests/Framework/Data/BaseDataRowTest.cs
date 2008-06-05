@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Data;
+using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
@@ -25,45 +26,33 @@ namespace Gallio.Tests.Framework.Data
     [TestsOn(typeof(BaseDataRow))]
     public class BaseDataRowTest
     {
-        [Test]
-        [Row(true)]
-        [Row(false)]
-        public void IsDynamicReturnsSameValueAsWasSpecifiedInTheConstructor(bool isDynamic)
-        {
-            BaseDataRow row = new StubDataRow(null, isDynamic);
-            Assert.AreEqual(isDynamic, row.IsDynamic);
-        }
-
-        [Test]
-        public void GetMetadataReturnsAnEmptyArrayIfConstructorArgumentWasNull()
-        {
-            BaseDataRow row = new StubDataRow(null, false);
-            Assert.AreEqual(0, new List<KeyValuePair<string, string>>(row.GetMetadata()).Count);
-        }
-
-        [Test]
-        public void GetMetadataReturnsSameEnumerationAsWasSpecifiedInConstructor()
-        {
-            List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>();
-            BaseDataRow row = new StubDataRow(metadata, false);
-            Assert.AreSame(metadata, row.GetMetadata());
-        }
-
         [Test, ExpectedArgumentNullException]
         public void GetValueThrowsIfBindingIsNull()
         {
-            BaseDataRow row = new StubDataRow(EmptyArray<KeyValuePair<string, string>>.Instance, false);
+            BaseDataRow row = new StubDataRow();
             row.GetValue(null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void PopulateMetadataThrowsIfMapIsNull()
+        {
+            BaseDataRow row = new StubDataRow();
+            row.PopulateMetadata(null);
         }
 
         private class StubDataRow : BaseDataRow
         {
-            public StubDataRow(IEnumerable<KeyValuePair<string, string>> metadata, bool isDynamic)
-                : base(metadata, isDynamic)
+            public override bool IsDynamic
             {
+                get { return true; }
             }
 
             protected override object GetValueImpl(DataBinding binding)
+            {
+                throw new NotImplementedException();
+            }
+
+            protected override void PopulateMetadataImpl(MetadataMap map)
             {
                 throw new NotImplementedException();
             }

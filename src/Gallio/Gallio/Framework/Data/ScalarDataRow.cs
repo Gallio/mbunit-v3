@@ -26,7 +26,7 @@ namespace Gallio.Framework.Data
     /// </para>
     /// </summary>
     /// <typeparam name="T">The value type</typeparam>
-    public sealed class ScalarDataRow<T> : BaseDataRow
+    public sealed class ScalarDataRow<T> : StoredDataRow
     {
         private readonly T value;
 
@@ -34,10 +34,10 @@ namespace Gallio.Framework.Data
         /// Creates a scalar data row with optional metadata.
         /// </summary>
         /// <param name="value">The value to hold</param>
-        /// <param name="metadata">The metadata enumeration, or null if none</param>
+        /// <param name="metadataPairs">The metadata key/value pairs, or null if none</param>
         /// <param name="isDynamic">True if the row contains dynamic data</param>
-        public ScalarDataRow(T value, IEnumerable<KeyValuePair<string, string>> metadata, bool isDynamic)
-            : base(metadata, isDynamic)
+        public ScalarDataRow(T value, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
+            : base(metadataPairs, isDynamic)
         {
             this.value = value;
         }

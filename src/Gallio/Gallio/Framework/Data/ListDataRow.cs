@@ -26,7 +26,7 @@ namespace Gallio.Framework.Data
     /// </para>
     /// </summary>
     /// <typeparam name="T">The value type</typeparam>
-    public sealed class ListDataRow<T> : BaseDataRow
+    public sealed class ListDataRow<T> : StoredDataRow
     {
         private readonly IList<T> values;
 
@@ -34,11 +34,11 @@ namespace Gallio.Framework.Data
         /// Creates a list data row with optional metadata.
         /// </summary>
         /// <param name="values">The list of values</param>
-        /// <param name="metadata">The metadata enumeration, or null if none</param>
+        /// <param name="metadataPairs">The metadata key/value pairs, or null if none</param>
         /// <param name="isDynamic">True if the row contains dynamic data</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null</exception>
-        public ListDataRow(IList<T> values, IEnumerable<KeyValuePair<string, string>> metadata, bool isDynamic)
-            : base(metadata, isDynamic)
+        public ListDataRow(IList<T> values, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
+            : base(metadataPairs, isDynamic)
         {
             if (values == null)
                 throw new ArgumentNullException("values");

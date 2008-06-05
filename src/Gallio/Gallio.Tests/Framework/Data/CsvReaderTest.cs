@@ -71,6 +71,9 @@ namespace Gallio.Tests.Framework.Data
         [Row("\"   quoted   \",\"escaped\"\"quote\"", ',', '#',
             new object[] { new string[] { "   quoted   ", "escaped\"quote" } },
             Description = "Quoted fields.")]
+        [Row("\"terminal quote\"", ',', '#',
+            new object[] { new string[] { "terminal quote" } },
+            Description = "Quoted fields at end of record.")]
         public void ReadRecords(string document, char fieldDelimiter, char commentPrefix, object[] expectedRecords)
         {
             StringReader documentReader = new StringReader(document);
@@ -94,6 +97,21 @@ namespace Gallio.Tests.Framework.Data
                     ArrayAssert.AreEqual((string[])expectedRecord, actualRecord);
                 });
             });
+        }
+
+        [Test]
+        public void UpdatesTheLineNumber()
+        {
+            StringReader documentReader = new StringReader("abc\n#123\ndef");
+            CsvReader reader = new CsvReader(documentReader);
+
+            Assert.AreEqual(0, reader.PreviousRecordLineNumber);
+            ArrayAssert.AreEqual(new string[] { "abc" }, reader.ReadRecord());
+            Assert.AreEqual(1, reader.PreviousRecordLineNumber);
+            ArrayAssert.AreEqual(new string[] { "def" }, reader.ReadRecord());
+            Assert.AreEqual(3, reader.PreviousRecordLineNumber);
+            Assert.IsNull(reader.ReadRecord());
+            Assert.AreEqual(3, reader.PreviousRecordLineNumber);
         }
 
         [Test]

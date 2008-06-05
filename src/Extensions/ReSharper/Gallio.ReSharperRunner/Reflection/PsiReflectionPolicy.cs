@@ -638,13 +638,25 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticMethodWrapper GetPropertyGetMethod(StaticPropertyWrapper property)
         {
             IProperty propertyHandle = (IProperty)property.Handle;
-            return WrapAccessor(propertyHandle.Getter(false), property);
+            return WrapAccessor(
+#if RESHARPER_31
+                propertyHandle.Getter(false),
+#else
+                propertyHandle.Getter,
+#endif
+                property);
         }
 
         protected override StaticMethodWrapper GetPropertySetMethod(StaticPropertyWrapper property)
         {
             IProperty propertyHandle = (IProperty)property.Handle;
-            return WrapAccessor(propertyHandle.Setter(false), property);
+            return WrapAccessor(
+#if RESHARPER_31
+                propertyHandle.Setter(false),
+#else
+                propertyHandle.Setter,
+#endif
+                property);
         }
         #endregion
 

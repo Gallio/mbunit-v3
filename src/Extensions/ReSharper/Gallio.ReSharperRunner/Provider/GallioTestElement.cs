@@ -137,6 +137,7 @@ namespace Gallio.ReSharperRunner.Provider
             return ReSharperReflectionPolicy.GetDeclaredElement(test.CodeElement);
         }
 
+#if RESHARPER_31
         public override bool Matches(string filter)
         {
             if (test.Name.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0)
@@ -145,6 +146,7 @@ namespace Gallio.ReSharperRunner.Provider
             GallioTestElement parent = Parent as GallioTestElement;
             return parent != null && parent.Matches(filter);
         }
+#endif
 
         public bool Equals(GallioTestElement other)
         {

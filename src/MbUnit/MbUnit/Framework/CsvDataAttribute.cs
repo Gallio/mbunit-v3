@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Framework.Data;
+using Gallio.Framework.Pattern;
 using Gallio.Reflection;
 
 namespace MbUnit.Framework
@@ -23,7 +24,13 @@ namespace MbUnit.Framework
     /// <para>
     /// Provides data from Comma Separated Values contents.
     /// </para>
+    /// <para>
+    /// If the CSV document has a header, then it is interpreted as the names of the
+    /// columns.  Columns with names in brackets, such as "[ExpectedException]",
+    /// are interpreted as containing metadata values associated with the named key.
+    /// </para>
     /// </summary>
+    /// <seealso cref="CsvDataSet"/>
     public class CsvDataAttribute : ContentAttribute
     {
         private char fieldDelimiter = ',';
@@ -76,9 +83,10 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void PopulateDataSource(DataSource dataSource, ICodeElementInfo codeElement)
+        protected override void PopulateDataSource(PatternEvaluationScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
             CsvDataSet dataSet = new CsvDataSet(delegate { return OpenTextReader(codeElement); }, IsDynamic);
+            dataSet.DataLocationName = GetDataLocationName();
             dataSet.FieldDelimiter = fieldDelimiter;
             dataSet.CommentPrefix = commentPrefix;
             dataSet.HasHeader = hasHeader;

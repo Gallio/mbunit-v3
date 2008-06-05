@@ -85,7 +85,7 @@ namespace Gallio.Framework.Pattern
 
             scope.AddDecorator(Order, delegate
             {
-                PopulateDataSource(scope.TestDataContext.DefineDataSource(sourceName), codeElement);
+                PopulateDataSource(scope, scope.TestDataContext.DefineDataSource(sourceName), codeElement);
             });
         }
 
@@ -102,9 +102,10 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Populates the data source with the contributions of this attribute.
         /// </summary>
+        /// <param name="scope">The scope</param>
         /// <param name="dataSource">The data source</param>
         /// <param name="codeElement">The code element</param>
-        protected virtual void PopulateDataSource(DataSource dataSource, ICodeElementInfo codeElement)
+        protected virtual void PopulateDataSource(PatternEvaluationScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
         }
     }

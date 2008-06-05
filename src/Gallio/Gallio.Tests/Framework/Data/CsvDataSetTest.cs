@@ -19,6 +19,7 @@ using System.IO;
 using System.Text;
 using Gallio.Collections;
 using Gallio.Framework.Data;
+using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
@@ -124,6 +125,32 @@ namespace Gallio.Tests.Framework.Data
             {
                 ArrayAssert.AreEqual(expectedValues, actualValues);
             });
+        }
+
+        [Test]
+        public void ProducesMetadata()
+        {
+            string document = "value,[Metadata]\n123,abc\n456,def";
+            Func<TextReader> documentReaderProvider = delegate { return new StringReader(document); };
+            CsvDataSet dataSet = new CsvDataSet(documentReaderProvider, false);
+
+            dataSet.HasHeader = true;
+            dataSet.DataLocationName = "<inline>";
+            Assert.AreEqual("<inline>", dataSet.DataLocationName);
+
+            DataBinding binding = new SimpleDataBinding(0, null);
+            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(new DataBinding[] { binding }, true));
+
+            Assert.AreEqual("123", rows[0].GetValue(binding));
+            MetadataMap map = rows[0].GetMetadata();
+            Assert.AreEqual("<inline>(2)", map.GetValue(MetadataKeys.DataLocation));
+            Assert.AreEqual("abc", map.GetValue("Metadata"));
+
+            Assert.AreEqual("456", rows[1].GetValue(binding));
+            map = new MetadataMap();
+            rows[1].PopulateMetadata(map);
+            Assert.AreEqual("<inline>(3)", map.GetValue(MetadataKeys.DataLocation));
+            Assert.AreEqual("def", map.GetValue("Metadata"));
         }
 
         [Test]

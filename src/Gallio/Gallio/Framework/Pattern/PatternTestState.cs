@@ -46,6 +46,8 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     public class PatternTestState
     {
+        private static readonly Key<PatternTestState> ContextKey = new Key<PatternTestState>("Gallio.PatternTestState");
+
         private readonly PatternTestStep primaryTestStep;
         private readonly IPatternTestHandler testHandler;
         private readonly IConverter converter;
@@ -88,6 +90,25 @@ namespace Gallio.Framework.Pattern
             bindingContext = new DataBindingContext(converter);
             slotBindingAccessors = new Dictionary<ISlotInfo, IDataBindingAccessor>();
             data = new UserDataCollection();
+        }
+
+        /// <summary>
+        /// Gets the pattern test state from the specified context.
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <returns>The pattern test state, or null if none</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null</exception>
+        public static PatternTestState FromContext(Context context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            return context.Data.GetValueOrDefault(ContextKey, null);
+        }
+
+        internal void SetInContext(Context context)
+        {
+            context.Data.SetValue(ContextKey, this);
         }
 
         /// <summary>

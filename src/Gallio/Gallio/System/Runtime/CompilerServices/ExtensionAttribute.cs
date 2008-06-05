@@ -13,29 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using Gallio.Framework.Data;
-using Gallio.Model;
-using MbUnit.Framework;
+using System;
 
-namespace Gallio.Tests.Framework.Data
+namespace System.Runtime.CompilerServices
 {
-    [TestFixture]
-    [TestsOn(typeof(NullDataRow))]
-    [DependsOn(typeof(BaseDataRowTest))]
-    public class NullDataRowTest
+    /// <summary>
+    /// Internal implementation of the .Net 3.5 ExtensionAttribute.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Assembly)]
+    public sealed class ExtensionAttribute : Attribute
     {
-        [Test]
-        public void HasNoMetadata()
-        {
-            MetadataMap metadata = NullDataRow.Instance.GetMetadata();
-            Assert.AreEqual(0, metadata.Count);
-        }
-
-        [Test]
-        public void GetValueReturnsNull()
-        {
-            Assert.AreEqual(null, NullDataRow.Instance.GetValue(new SimpleDataBinding(0, null)));
-        }
     }
 }

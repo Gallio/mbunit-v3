@@ -90,6 +90,15 @@ namespace Gallio.Model
         public const string Copyright = "Copyright";
 
         /// <summary>
+        /// The metadata key for specifying the origin of data used by a test.
+        /// </summary>
+        /// <remarks>
+        /// May be the file name and line number of a record in a file, the ID
+        /// of a database record or some other identifying characteristic.
+        /// </remarks>
+        public const string DataLocation = "DataLocation";
+
+        /// <summary>
         /// The metadata key for the description of a test component.
         /// </summary>
         /// <remarks>

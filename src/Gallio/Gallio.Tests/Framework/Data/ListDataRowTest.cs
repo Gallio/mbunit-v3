@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Data;
+using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
@@ -45,17 +46,21 @@ namespace Gallio.Tests.Framework.Data
         public void HasNoMetadataIfNullSpecifiedInConstructor()
         {
             ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, null, false);
-            List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>(row.GetMetadata());
+            MetadataMap metadata = row.GetMetadata();
             Assert.AreEqual(0, metadata.Count);
         }
 
         [Test]
         public void ContainSameMetadataAsSpecifiedInConstructor()
         {
-            List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>();
-            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, metadata, false);
+            List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
+            metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
 
-            Assert.AreSame(metadata, row.GetMetadata());
+            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, metadataPairs, false);
+
+            MetadataMap map = row.GetMetadata();
+            Assert.AreEqual(1, map.Count);
+            Assert.AreEqual("Bar", map.GetValue("Foo"));
         }
 
         [Test]

@@ -17,17 +17,21 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Gallio.Model;
+using Gallio.Reflection;
 
 namespace Gallio.Framework.Data
 {
     /// <summary>
     /// <para>
-    /// An CSV data set retrieves fields from a CSV document as strings.
+    /// A CSV data set retrieves fields from a CSV document as strings.
+    /// </para>
+    /// <para>
+    /// If the CSV document has a header, then it is interpreted as the names of the
+    /// columns.  Columns with names in brackets, such as "[ExpectedException]",
+    /// are interpreted as containing metadata values associated with the named key.
     /// </para>
     /// </summary>
-    /// <todo author="jeff">
-    /// Support reading metadata using specially named columns in the document.
-    /// </todo>
     public class CsvDataSet : BaseDataSet
     {
         private readonly Func<TextReader> documentReaderProvider;
@@ -35,6 +39,7 @@ namespace Gallio.Framework.Data
 
         private char fieldDelimiter = ',';
         private char commentPrefix = '#';
+        private string dataLocationName;
         private bool hasHeader;
 
         /// <summary>
@@ -50,6 +55,24 @@ namespace Gallio.Framework.Data
 
             this.documentReaderProvider = documentReaderProvider;
             this.isDynamic = isDynamic;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the name of the location that is providing the data, or null if none.
+        /// </para>
+        /// <para>
+        /// The data location name and line number are exposed as
+        /// <see cref="MetadataKeys.DataLocation" /> metadata when provided.
+        /// </para>
+        /// </summary>
+        /// <value>
+        /// The default value is null.
+        /// </value>
+        public string DataLocationName
+        {
+            get { return dataLocationName; }
+            set { dataLocationName = value; }
         }
 
         /// <summary>
@@ -122,11 +145,20 @@ namespace Gallio.Framework.Data
                     reader.CommentPrefix = commentPrefix;
 
                     string[] header = null;
+                    Dictionary<string, int> metadataColumns = null;
                     if (hasHeader)
                     {
                         header = reader.ReadRecord();
                         if (header == null)
                             yield break;
+
+                        metadataColumns = new Dictionary<string, int>();
+                        for (int i = 0; i < header.Length; i++)
+                        {
+                            string columnName = header[i];
+                            if (columnName.StartsWith("[") && columnName.EndsWith("]"))
+                                metadataColumns[columnName.Substring(1, columnName.Length - 2)] = i;
+                        }
                     }
 
                     for (; ; )
@@ -134,20 +166,37 @@ namespace Gallio.Framework.Data
                         string[] record = reader.ReadRecord();
                         if (record == null)
                             yield break;
-
-                        yield return new CsvDataRow(record, header, isDynamic);
+                        
+                        CodeLocation dataLocation = dataLocationName != null
+                            ? new CodeLocation(dataLocationName, reader.PreviousRecordLineNumber, 0)
+                            : CodeLocation.Unknown;
+                        yield return new CsvDataRow(record, header,
+                            GetMetadata(dataLocation, record, metadataColumns), isDynamic);
                     }
                 }
             }
         }
 
-        private sealed class CsvDataRow : BaseDataRow
+        private static IEnumerable<KeyValuePair<string, string>> GetMetadata(CodeLocation dataLocation, string[] record, Dictionary<string, int> metadataColumns)
+        {
+            if (dataLocation != CodeLocation.Unknown)
+                yield return new KeyValuePair<string, string>(MetadataKeys.DataLocation, dataLocation.ToString());
+
+            if (metadataColumns != null)
+            {
+                foreach (KeyValuePair<string, int> metadataColumn in metadataColumns)
+                    yield return new KeyValuePair<string, string>(metadataColumn.Key, record[metadataColumn.Value]);
+            }
+        }
+
+        private sealed class CsvDataRow : StoredDataRow
         {
             private readonly string[] record;
             private readonly string[] header;
 
-            public CsvDataRow(string[] record, string[] header, bool isDynamic)
-                : base(null, isDynamic)
+            public CsvDataRow(string[] record, string[] header,
+                IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
+                : base(metadataPairs, isDynamic)
             {
                 this.record = record;
                 this.header = header;

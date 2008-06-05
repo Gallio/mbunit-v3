@@ -25,23 +25,23 @@ namespace Gallio.Framework.Data
     public sealed class ColumnSequenceDataSet : BaseDataSet
     {
         private readonly IEnumerable values;
-        private readonly IEnumerable<KeyValuePair<string, string>> metadata;
+        private readonly IEnumerable<KeyValuePair<string, string>> metadataPairs;
         private readonly bool isDynamic;
 
         /// <summary>
         /// Creates a column sequence data set with optional metadata.
         /// </summary>
         /// <param name="values">The sequence of column values, each generating a row</param>
-        /// <param name="metadata">The metadata enumeration, or null if none</param>
+        /// <param name="metadataPairs">The metadata key/value pair enumeration, or null if none</param>
         /// <param name="isDynamic">True if the sequence is dynamic</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null</exception>
-        public ColumnSequenceDataSet(IEnumerable values, IEnumerable<KeyValuePair<string, string>> metadata, bool isDynamic)
+        public ColumnSequenceDataSet(IEnumerable values, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
         {
             if (values == null)
                 throw new ArgumentNullException("values");
 
             this.values = values;
-            this.metadata = metadata;
+            this.metadataPairs = metadataPairs;
             this.isDynamic = isDynamic;
         }
 
@@ -63,7 +63,7 @@ namespace Gallio.Framework.Data
             if (!isDynamic || includeDynamicRows)
             {
                 foreach (object value in values)
-                    yield return new ScalarDataRow<object>(value, metadata, isDynamic);
+                    yield return new ScalarDataRow<object>(value, metadataPairs, isDynamic);
             }
         }
     }

@@ -14,41 +14,25 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using Gallio.Collections;
+using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// Base class for data rows with static metadata.
+    /// Abstract base class for data rows.
     /// </summary>
     public abstract class BaseDataRow : IDataRow
     {
-        private readonly IEnumerable<KeyValuePair<string, string>> metadata;
-        private readonly bool isDynamic;
-
-        /// <summary>
-        /// Creates a data row with optional metadata.
-        /// </summary>
-        /// <param name="metadata">The metadata enumeration, or null if none</param>
-        /// <param name="isDynamic">True if the row contains dynamic data</param>
-        public BaseDataRow(IEnumerable<KeyValuePair<string, string>> metadata,
-            bool isDynamic)
-        {
-            this.metadata = metadata ?? EmptyArray<KeyValuePair<string, string>>.Instance;
-            this.isDynamic = isDynamic;
-        }
+        /// <inheritdoc />
+        public abstract bool IsDynamic { get; }
 
         /// <inheritdoc />
-        public bool IsDynamic
+        public void PopulateMetadata(MetadataMap map)
         {
-            get { return isDynamic; }
-        }
+            if (map == null)
+                throw new ArgumentNullException("map");
 
-        /// <inheritdoc />
-        public IEnumerable<KeyValuePair<string, string>> GetMetadata()
-        {
-            return metadata;
+            PopulateMetadataImpl(map);
         }
 
         /// <inheritdoc />
@@ -66,5 +50,12 @@ namespace Gallio.Framework.Data
         /// <param name="binding">The binding, never null</param>
         /// <returns>The associated value</returns>
         protected abstract object GetValueImpl(DataBinding binding);
+
+        /// <summary>
+        /// Implements <see cref="PopulateMetadata" />.
+        /// </summary>
+        /// <param name="map">The metadata map to populate, never null</param>
+        protected abstract void PopulateMetadataImpl(MetadataMap map);
+
     }
 }

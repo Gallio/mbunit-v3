@@ -67,6 +67,12 @@ namespace Gallio.Collections
         }
 
         /// <inheritdoc />
+        public IEnumerable<KeyValuePair<TKey, TValue>> Pairs
+        {
+            get { return map.Pairs; }
+        }
+
+        /// <inheritdoc />
         public IList<TValue> this[TKey key]
         {
             get { return map[key]; }
@@ -135,7 +141,12 @@ namespace Gallio.Collections
             ThrowReadOnlyException();
         }
 
-        void IMultiMap<TKey, TValue>.AddAll(IMultiMap<TKey, TValue> map)
+        void IMultiMap<TKey, TValue>.AddAll(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        {
+            ThrowReadOnlyException();
+        }
+
+        void IMultiMap<TKey, TValue>.AddAll(IEnumerable<KeyValuePair<TKey, IList<TValue>>> map)
         {
             ThrowReadOnlyException();
         }

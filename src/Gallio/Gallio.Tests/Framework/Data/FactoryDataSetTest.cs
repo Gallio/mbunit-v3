@@ -15,27 +15,14 @@
 
 using System.Collections.Generic;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
 {
-    [TestFixture]
-    [TestsOn(typeof(NullDataRow))]
-    [DependsOn(typeof(BaseDataRowTest))]
-    public class NullDataRowTest
+    [TestFixture, Pending("Not fully tested yet.")]
+    [TestsOn(typeof(FactoryDataSet))]
+    public class FactoryDataSetTest
     {
-        [Test]
-        public void HasNoMetadata()
-        {
-            MetadataMap metadata = NullDataRow.Instance.GetMetadata();
-            Assert.AreEqual(0, metadata.Count);
-        }
 
-        [Test]
-        public void GetValueReturnsNull()
-        {
-            Assert.AreEqual(null, NullDataRow.Instance.GetValue(new SimpleDataBinding(0, null)));
-        }
     }
 }

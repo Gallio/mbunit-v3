@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Framework.Data;
+using Gallio.Framework.Pattern;
 using Gallio.Reflection;
 
 namespace MbUnit.Framework
@@ -99,7 +100,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void PopulateDataSource(DataSource dataSource, ICodeElementInfo codeElement)
+        protected override void PopulateDataSource(PatternEvaluationScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
             dataSource.AddDataSet(new RowSequenceDataSet(new IDataRow[] { new ListDataRow<object>(values, GetMetadata(), false) }, values.Length));
         }

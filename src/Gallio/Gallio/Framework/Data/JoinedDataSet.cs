@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
+using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
@@ -216,11 +217,10 @@ namespace Gallio.Framework.Data
                 get { return GenericUtils.Find(rowList, delegate(IDataRow row) { return row.IsDynamic; }) != null; }
             }
 
-            public IEnumerable<KeyValuePair<string, string>> GetMetadata()
+            public void PopulateMetadata(MetadataMap map)
             {
                 foreach (IDataRow row in rowList)
-                    foreach (KeyValuePair<string, string> entry in row.GetMetadata())
-                        yield return entry;
+                    row.PopulateMetadata(map);
             }
 
             public object GetValue(DataBinding binding)

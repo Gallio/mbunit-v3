@@ -16,7 +16,7 @@
 using System;
 using System.IO;
 using Gallio.Framework;
-using Gallio.Model.Execution;
+using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests.Integration;
@@ -53,7 +53,26 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(output.Length, run.Children.Count, "Different number of runs than expected.");
 
             for (int i = 0; i < output.Length; i++)
+            {
                 AssertLogOutputContains(run.Children[i], output[i]);
+                Assert.IsNotNull(run.Children[i].Step.Metadata.GetValue(MetadataKeys.DataLocation));
+            }
+        }
+
+        [Test]
+        public void Metadata()
+        {
+            TestStepRun run = Runner.GetPrimaryTestStepRun(
+                CodeReference.CreateFromMember(typeof(CsvDataSample).GetMethod("FileWithHeader")));
+
+            Assert.AreEqual(@"..\Framework\CsvDataTest.csv(2)", run.Children[0].Step.Metadata.GetValue(MetadataKeys.DataLocation));
+            Assert.AreEqual(@"Worm", run.Children[0].Step.Metadata.GetValue("ConsumedBy"));
+
+            Assert.AreEqual(@"..\Framework\CsvDataTest.csv(3)", run.Children[1].Step.Metadata.GetValue(MetadataKeys.DataLocation));
+            Assert.AreEqual(@"Monkey", run.Children[1].Step.Metadata.GetValue("ConsumedBy"));
+
+            Assert.AreEqual(@"..\Framework\CsvDataTest.csv(4)", run.Children[2].Step.Metadata.GetValue(MetadataKeys.DataLocation));
+            Assert.AreEqual(@"Cookie Monster", run.Children[2].Step.Metadata.GetValue("ConsumedBy"));
         }
     }
 

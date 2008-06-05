@@ -75,6 +75,19 @@ namespace Gallio.Collections
         }
 
         /// <summary>
+        /// Gets a value from the collection or a default value if none found.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <param name="defaultValue">The default value</param>
+        /// <returns>The associated value, or the default value</returns>
+        /// <typeparam name="T">The value type</typeparam>
+        public T GetValueOrDefault<T>(Key<T> key, T defaultValue)
+        {
+            T value;
+            return TryGetValue(key, out value) ? value : defaultValue;
+        }
+
+        /// <summary>
         /// Determines whether a key has an associated value in the collection.
         /// </summary>
         /// <param name="key">The key</param>

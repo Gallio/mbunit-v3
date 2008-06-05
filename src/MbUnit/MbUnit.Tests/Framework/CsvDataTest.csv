@@ -1,4 +1,4 @@
-﻿Item, Price
-Apples, 1.00
-Bananas, 1.50
-Cookies, 2.00
+﻿Item, Price, [ConsumedBy]
+Apples, 1.00, Worm
+Bananas, 1.50, Monkey
+Cookies, 2.00, "Cookie Monster"

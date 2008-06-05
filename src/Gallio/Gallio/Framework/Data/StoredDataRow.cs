@@ -13,40 +13,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// A null data row simply returns a null value on each request.
-    /// It has no metadata and it ignores disposal.
+    /// An implementation of <see cref="IDataRow" /> that stores the dynamic flag
+    /// and metadata.
     /// </summary>
-    public sealed class NullDataRow : BaseDataRow
+    public abstract class StoredDataRow : BaseDataRow
     {
+        private readonly IEnumerable<KeyValuePair<string, string>> metadataPairs;
+        private readonly bool isDynamic;
+
         /// <summary>
-        /// Gets the singleton null data row instance.
+        /// Creates a data row.
         /// </summary>
-        public static readonly NullDataRow Instance = new NullDataRow();
-
-        private NullDataRow()
+        /// <param name="metadataPairs">The metadata key/value pairs for the row, or null if none</param>
+        /// <param name="isDynamic">True if the row is dynamic</param>
+        public StoredDataRow(IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
         {
-        }
-
-        /// <inheritdoc />
-        protected override object GetValueImpl(DataBinding binding)
-        {
-            return null;
-        }
-
-        /// <inheritdoc />
-        protected override void PopulateMetadataImpl(MetadataMap map)
-        {
+            this.metadataPairs = metadataPairs;
+            this.isDynamic = isDynamic;
         }
 
         /// <inheritdoc />
         public override bool IsDynamic
         {
-            get { return false; }
+            get { return isDynamic; }
+        }
+
+        /// <inheritdoc />
+        protected override void PopulateMetadataImpl(MetadataMap map)
+        {
+            if (metadataPairs != null)
+                map.AddAll(metadataPairs);
         }
     }
 }

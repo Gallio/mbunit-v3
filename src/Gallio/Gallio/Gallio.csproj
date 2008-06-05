@@ -83,6 +83,11 @@
     <Compile Include="Concurrency\TaskResult.cs" />
     <Compile Include="Concurrency\ThreadAbortScope.cs" />
     <Compile Include="Concurrency\ThreadTask.cs" />
+    <Compile Include="Framework\Data\DataRow.cs" />
+    <Compile Include="Framework\Data\DataRowExtensions.cs" />
+    <Compile Include="Framework\Data\FactoryDataSet.cs" />
+    <Compile Include="Framework\Data\FactoryKind.cs" />
+    <Compile Include="Framework\Data\StoredDataRow.cs" />
     <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
     <Compile Include="Model\Execution\RemoteTestListener.cs" />
@@ -436,6 +441,7 @@
     <Compile Include="Runtime\RuntimeBootstrap.cs" />
     <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
     <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
+    <Compile Include="System\Runtime\CompilerServices\ExtensionAttribute.cs" />
     <Compile Include="Triple.cs" />
     <Compile Include="Utilities\CurrentDirectorySwitcher.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />

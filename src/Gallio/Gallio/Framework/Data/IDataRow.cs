@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
@@ -42,7 +43,8 @@ namespace Gallio.Framework.Data
 
         /// <summary>
         /// <para>
-        /// Gets the metadata key/value pairs associated with the data row, if any.
+        /// Populates the specified metadata map with key/value pairs associated with
+        /// the data row, if any.
         /// </para>
         /// <para>
         /// For example, the metadata may contain a description that serves
@@ -52,7 +54,8 @@ namespace Gallio.Framework.Data
         /// the contents of this data row.
         /// </para>
         /// </summary>
-        IEnumerable<KeyValuePair<string, string>> GetMetadata();
+        /// <param name="map">The metadata map</param>
+        void PopulateMetadata(MetadataMap map);
 
         /// <summary>
         /// Gets the value of the specified binding.

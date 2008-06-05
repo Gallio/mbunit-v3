@@ -59,18 +59,22 @@ namespace Gallio.Tests.Framework.Data
             ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(new object[] { "a" }, null, false);
             List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
 
-            Assert.IsNotNull(rows[0].GetMetadata());
-            Assert.IsFalse(rows[0].GetMetadata().GetEnumerator().MoveNext());
+            MetadataMap map = rows[0].GetMetadata();
+            Assert.AreEqual(0, map.Count);
         }
 
         [Test]
         public void RowsContainSameMetadataAsSpecifiedInConstructor()
         {
-            List<KeyValuePair<string, string>> metadata = new List<KeyValuePair<string, string>>();
-            ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(new object[] { "a" }, metadata, false);
+            List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
+            metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
+
+            ColumnSequenceDataSet dataSet = new ColumnSequenceDataSet(new object[] { "a" }, metadataPairs, false);
             List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
 
-            Assert.AreSame(metadata, rows[0].GetMetadata());
+            MetadataMap map = rows[0].GetMetadata();
+            Assert.AreEqual(1, map.Count);
+            Assert.AreEqual("Bar", map.GetValue("Foo"));
         }
 
         [Test]

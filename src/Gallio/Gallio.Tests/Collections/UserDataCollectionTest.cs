@@ -33,6 +33,7 @@ namespace Gallio.Tests.Collections
             Assert.IsFalse(collection.TryGetValue(new Key<int>("key"), out value));
             Assert.AreEqual(0, value);
             InterimAssert.Throws<KeyNotFoundException>(delegate { collection.GetValue(new Key<int>("key"));});
+            Assert.AreEqual(42, collection.GetValueOrDefault(new Key<int>("key"), 42));
         }
 
         [Test]
@@ -50,6 +51,7 @@ namespace Gallio.Tests.Collections
             collection.SetValue(new Key<int>("key"), 123);
             Assert.IsTrue(collection.HasValue(new Key<int>("key")));
             Assert.AreEqual(123, collection.GetValue(new Key<int>("key")));
+            Assert.AreEqual(123, collection.GetValueOrDefault(new Key<int>("key"), 0));
             int value;
             Assert.IsTrue(collection.TryGetValue(new Key<int>("key"), out value));
             Assert.AreEqual(123, value);

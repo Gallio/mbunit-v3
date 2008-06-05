@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Gallio.Concurrency;
+using Gallio.Framework.Data;
 using Gallio.Framework.Data.Binders;
 using Gallio.Framework.Data.Conversions;
 using Gallio.Framework.Data.Formatters;
@@ -125,6 +126,8 @@ namespace Gallio.Framework.Pattern
 
                             invisible = false;
                             Context context = Context.PrepareContext(testCommand.StartStep(primaryTestStep), sandbox);
+                            testState.SetInContext(context);
+
                             outcome = outcome.CombineWith(DoInitializeTest(context, testState));
 
                             if (outcome.Status == TestStatus.Passed)
@@ -186,12 +189,20 @@ namespace Gallio.Framework.Pattern
                         {
                             testStep = testState.PrimaryTestStep;
                             invisible = false;
+
+                            IDataRow row = bindingItem.GetRow();
+                            MetadataMap map = row.GetMetadata();
+                            foreach (KeyValuePair<string, string> entry in map.Pairs)
+                                primaryContext.AddMetadata(entry.Key, entry.Value);
                         }
                         else
                         {
                             testStep = new PatternTestStep(testState.Test, testState.PrimaryTestStep,
                                 testState.Test.Name, testState.Test.CodeElement, false);
-                            testStep.IsDynamic = bindingItem.GetRow().IsDynamic;
+
+                            IDataRow row = bindingItem.GetRow();
+                            testStep.IsDynamic = row.IsDynamic;
+                            row.PopulateMetadata(testStep.Metadata);
                         }
 
                         PatternTestInstanceState testInstanceState = new PatternTestInstanceState(testStep, decoratedTestInstanceActions, testState, bindingItem);
@@ -204,6 +215,8 @@ namespace Gallio.Framework.Pattern
                             Context context = reusePrimaryTestStep
                                 ? primaryContext
                                 : Context.PrepareContext(testCommand.StartStep(testStep), primaryContext.Sandbox.CreateChild());
+                            testState.SetInContext(context);
+                            testInstanceState.SetInContext(context);
                             invisible = false;
 
                             outcome = outcome.CombineWith(RunTestInstanceWithContext(testCommand, context, testInstanceState));
@@ -390,9 +403,6 @@ namespace Gallio.Framework.Pattern
 
         private static TestOutcome DoBeforeTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
         {
-            foreach (KeyValuePair<string, string> entry in testInstanceState.BindingItem.GetRow().GetMetadata())
-                testInstanceState.TestStep.Metadata.Add(entry.Key, entry.Value);
-
             if (testInstanceState.TestState.SlotBindingAccessors.Count != 0)
             {
                 foreach (KeyValuePair<ISlotInfo, IDataBindingAccessor> entry in testInstanceState.TestState.SlotBindingAccessors)

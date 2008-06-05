@@ -30,6 +30,11 @@ namespace Gallio.Collections
     public interface IMultiMap<TKey, TValue> : IDictionary<TKey, IList<TValue>>
     {
         /// <summary>
+        /// Gets the contents of the multi-map as an enumeration of pairs.
+        /// </summary>
+        IEnumerable<KeyValuePair<TKey, TValue>> Pairs { get; }
+
+        /// <summary>
         /// Adds a value to the list of those associated with a key.
         /// </summary>
         /// <param name="key">The key</param>
@@ -41,7 +46,14 @@ namespace Gallio.Collections
         /// </summary>
         /// <param name="map">The map</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/> is null</exception>
-        void AddAll(IMultiMap<TKey, TValue> map);
+        void AddAll(IEnumerable<KeyValuePair<TKey, IList<TValue>>> map);
+
+        /// <summary>
+        /// Adds all of the values from the specified enumeration of key-value pairs.
+        /// </summary>
+        /// <param name="pairs">The key-value pairs</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pairs"/> is null</exception>
+        void AddAll(IEnumerable<KeyValuePair<TKey, TValue>> pairs);
 
         /// <summary>
         /// Returns true if the map contains an entry with the specified key and value.

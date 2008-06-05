@@ -54,7 +54,11 @@ namespace Gallio.ReSharperRunner.Provider.Actions
 
         private static void ShowHtmlDocument(Uri url)
         {
+#if RESHARPER_31
             IVsUIShellOpenDocument openDocument = (IVsUIShellOpenDocument) VSShell.Instance.GetService(typeof(SVsUIShellOpenDocument), typeof(IVsUIShellOpenDocument));
+#else
+            IVsUIShellOpenDocument openDocument = VSShell.Instance.GetVsService<SVsUIShellOpenDocument, IVsUIShellOpenDocument>();
+#endif
             if (openDocument != null)
             {
                 openDocument.OpenStandardPreviewer((uint) __VSOSPFLAGS.OSP_LaunchNewBrowser, url.ToString(), VSPREVIEWRESOLUTION.PR_Default, 0);

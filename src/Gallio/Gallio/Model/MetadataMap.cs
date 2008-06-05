@@ -50,6 +50,17 @@ namespace Gallio.Model
         }
 
         /// <summary>
+        /// Creates an metadata map by pairs from another map.
+        /// </summary>
+        /// <param name="pairs">The pairs to add</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pairs"/> is null</exception>
+        public MetadataMap(IEnumerable<KeyValuePair<string, string>> pairs)
+            : this(new MultiMap<string, string>())
+        {
+            contents.AddAll(pairs);
+        }
+
+        /// <summary>
         /// Creates a copy of the metadata map.
         /// </summary>
         /// <returns>The copy</returns>
@@ -138,9 +149,15 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public void AddAll(IMultiMap<string, string> map)
+        public void AddAll(IEnumerable<KeyValuePair<string, IList<string>>> map)
         {
             contents.AddAll(map);
+        }
+
+        /// <inheritdoc />
+        public void AddAll(IEnumerable<KeyValuePair<string, string>> pairs)
+        {
+            contents.AddAll(pairs);
         }
 
         /// <inheritdoc />
@@ -196,6 +213,12 @@ namespace Gallio.Model
         public ICollection<IList<string>> Values
         {
             get { return contents.Values; }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<KeyValuePair<string, string>> Pairs
+        {
+            get { return contents.Pairs; }
         }
 
         /// <inheritdoc />

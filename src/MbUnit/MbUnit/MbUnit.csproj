@@ -66,6 +66,7 @@
     <Compile Include="Framework\DependsOnAttribute.cs" />
     <Compile Include="Framework\ExplicitAttribute.cs" />
     <Compile Include="Framework\ContentAttribute.cs" />
+    <Compile Include="Framework\FactoryAttribute.cs" />
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\FixtureInitializerAttribute.cs" />
     <Compile Include="Framework\JoinAttribute.cs" />

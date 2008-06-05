@@ -13,29 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using Gallio.Framework.Data;
+using System;
 using Gallio.Model;
-using MbUnit.Framework;
 
-namespace Gallio.Tests.Framework.Data
+namespace Gallio.Framework.Data
 {
-    [TestFixture]
-    [TestsOn(typeof(NullDataRow))]
-    [DependsOn(typeof(BaseDataRowTest))]
-    public class NullDataRowTest
+    /// <summary>
+    /// Extension methods for <see cref="IDataRow" />.
+    /// </summary>
+    public static class DataRowExtensions
     {
-        [Test]
-        public void HasNoMetadata()
+        /// <summary>
+        /// Gets the metadata associated with a data row.
+        /// </summary>
+        /// <param name="dataRow">The data row</param>
+        /// <returns>The associated metadata</returns>
+        public static MetadataMap GetMetadata(this IDataRow dataRow)
         {
-            MetadataMap metadata = NullDataRow.Instance.GetMetadata();
-            Assert.AreEqual(0, metadata.Count);
-        }
-
-        [Test]
-        public void GetValueReturnsNull()
-        {
-            Assert.AreEqual(null, NullDataRow.Instance.GetValue(new SimpleDataBinding(0, null)));
+            MetadataMap map = new MetadataMap();
+            dataRow.PopulateMetadata(map);
+            return map;
         }
     }
 }

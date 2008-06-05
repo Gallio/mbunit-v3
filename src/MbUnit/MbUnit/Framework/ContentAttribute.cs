@@ -123,6 +123,27 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// <para>
+        /// Gets the name of the location that is providing the data, or null if none.
+        /// </para>
+        /// <para>
+        /// The name will be the filename or resource path if specified, or a special
+        /// locale-aware string (such as "&lt;inline&gt;") if the contents were specified
+        /// inline via the <see cref="Contents"/> property.
+        /// </para>
+        /// </summary>
+        protected virtual string GetDataLocationName()
+        {
+            if (contents != null)
+                return "<inline>";
+
+            if (filePath != null)
+                return filePath;
+
+            return resourcePath;
+        }
+
+        /// <summary>
         /// Opens the contents as a stream.
         /// </summary>
         /// <param name="codeElement">The code element to which the attribute was applied</param>
@@ -134,9 +155,6 @@ namespace MbUnit.Framework
 
             if (filePath != null)
                 return File.OpenRead(filePath);
-
-            if (resourcePath == null)
-                ThrowUsageErrorException("At least one source property must be specified.");
 
             return OpenResourceStream(codeElement);
         }
@@ -164,6 +182,15 @@ namespace MbUnit.Framework
             {
                 return filePath != null;
             }
+        }
+
+        /// <inheritdoc />
+        protected override void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        {
+            base.Validate(scope, codeElement);
+
+            if (contents == null && filePath == null && resourcePath == null)
+                ThrowUsageErrorException("At least one source property must be specified.");
         }
 
         private Stream OpenResourceStream(ICodeElementInfo codeElement)
