@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\IMSTestProcess.cs" />
+    <Compile Include="Model\MSTestProcess.cs" />
     <Compile Include="Model\MSTestMetadataKeys.cs" />
     <Compile Include="Model\MSTest.cs" />
     <Compile Include="Model\MSTestAssembly.cs" />

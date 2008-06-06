@@ -35,6 +35,10 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Rhino.Mocks, Version=3.3.0.906, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -44,6 +48,7 @@
     <Compile Include="Model\MSTestExplorerTest.cs" />
     <Compile Include="Model\MSTestFrameworkTest.cs" />
     <Compile Include="Model\MSTestTest.cs" />
+    <Compile Include="Model\StubbedMSTestController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +72,9 @@
       <Project>{8FC20489-148C-4220-AA3B-0BA8B6BC2AC7}</Project>
       <Name>Gallio.MSTestAdapter</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Integration\" />

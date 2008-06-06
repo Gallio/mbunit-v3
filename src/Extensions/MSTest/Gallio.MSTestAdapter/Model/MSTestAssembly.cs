@@ -18,7 +18,7 @@ using Gallio.Reflection;
 
 namespace Gallio.MSTestAdapter.Model
 {
-    internal class MSTestAssembly : MSTest
+    public class MSTestAssembly : MSTest
     {
         private readonly string directoryName;
         private readonly string resultsFileName;
@@ -35,9 +35,12 @@ namespace Gallio.MSTestAdapter.Model
         {
             directoryName = System.IO.Path.GetDirectoryName(((IAssemblyInfo)codeElement).Path) + "/";
             string pathWithoutExtension = codeElement.Name;
-            pathWithoutExtension = pathWithoutExtension.Replace(".exe", "");
-            resultsFileName = pathWithoutExtension + ".trx";
-            testMetadataFileName = pathWithoutExtension + ".vsmdi";
+            if (pathWithoutExtension != null)
+            {
+                pathWithoutExtension = pathWithoutExtension.Replace(".exe", "");
+                resultsFileName = pathWithoutExtension + ".trx";
+                testMetadataFileName = pathWithoutExtension + ".vsmdi";
+            }
         }
 
         internal string ResultsFileName

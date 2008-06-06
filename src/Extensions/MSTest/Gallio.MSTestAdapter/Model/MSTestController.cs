@@ -17,48 +17,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using Gallio.MSTestAdapter.Properties;
+using Gallio.Concurrency;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.MSTestAdapter.Properties;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Concurrency;
-using Microsoft.Win32;
 
 namespace Gallio.MSTestAdapter.Model
 {
     internal class MSTestController : BaseTestController
     {
-        private readonly static string msTestPath;
+        private IMSTestProcess msTestProcess;
 
-        static MSTestController()
+        internal MSTestController(IMSTestProcess msTestProcess)
         {
-            msTestPath = FindMSTestPath("9.0");
-            if (String.IsNullOrEmpty(msTestPath))
-            {
-                msTestPath = FindMSTestPath("8.0");
-            }
-        }
-
-        private static string FindMSTestPath(string visualStudioVersion)
-        {
-            using (RegistryKey key =
-                Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio\" + visualStudioVersion))
-            {
-                if (key != null)
-                {
-                    string visualStudioInstallDir = (string)key.GetValue("InstallDir");
-                    if (visualStudioInstallDir != null)
-                    {
-                        string msTestExecutablePath = Path.Combine(visualStudioInstallDir, "MSTest.exe");
-                        if (File.Exists(msTestExecutablePath))
-                        {
-                            return msTestExecutablePath;
-                        }
-                    }
-                }
-            }
-
-            return null;
+            if (msTestProcess == null)
+                throw new ArgumentNullException("msTestProcess");
+            this.msTestProcess = msTestProcess;
         }
 
         /// <inheritdoc />
@@ -79,7 +54,7 @@ namespace Gallio.MSTestAdapter.Model
             }
         }
 
-        private static TestOutcome RunTest(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
+        private TestOutcome RunTest(ITestCommand testCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
         {
             ITest test = testCommand.Test;
             progressMonitor.SetStatus(test.Name);
@@ -92,10 +67,13 @@ namespace Gallio.MSTestAdapter.Model
                 ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
                 try
                 {
-                    IList<ITestCommand> allCommands = testCommand.GetAllCommands();
+                    IList<ITestCommand> allCommands = testCommand.GetAllCommands();                    
                     DeleteOutputFilesIfExist(assemblyTest);
+                    progressMonitor.SetStatus("Generating tests list");
                     GenerateTestList(assemblyTest, allCommands);
+                    progressMonitor.SetStatus("Executing tests");
                     ExecuteTests(context, assemblyTest);
+                    progressMonitor.SetStatus("Processing results");
                     bool passed = ProcessTestResults(context, testCommand, allCommands);
                     outcome = passed ? TestOutcome.Passed : TestOutcome.Failed;
                 }
@@ -104,6 +82,7 @@ namespace Gallio.MSTestAdapter.Model
                     TestLogWriterUtils.WriteException(context.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
                     outcome = TestOutcome.Error;
                 }
+                context.FinishStep(outcome, null);
             }
             else
             {
@@ -171,26 +150,13 @@ namespace Gallio.MSTestAdapter.Model
             }
         }
 
-        private static void ExecuteTests(ITestContext assemblyContext, MSTestAssembly assemblyTest)
+        private void ExecuteTests(ITestContext assemblyContext, MSTestAssembly assemblyTest)
         {
-            if (String.IsNullOrEmpty(msTestPath))
+            if (!msTestProcess.Run(assemblyTest))
             {
                 assemblyContext.LogWriter.Write(LogStreamNames.Warnings,
-                    Resources.MSTestController_MSTestExecutableNotFound);
-                return;
+                   Resources.MSTestController_MSTestExecutableNotFound);
             }
-
-            ProcessTask MSTestProcess = new ProcessTask(
-                msTestPath,
-                @" /nologo"
-                + " /resultsfile:"
-                + QuoteFilename(assemblyTest.ResultsFileName)
-                + " /testlist:"
-                + assemblyTest.TestListName
-                + " /testmetadata:"
-                + QuoteFilename(assemblyTest.TestMetadataFileName),
-                assemblyTest.DirectoryName);
-            MSTestProcess.Run(null);
         }
 
         private static bool ProcessTestResults(ITestContext assemblyContext, ITestCommand assemblyCommand, IEnumerable<ITestCommand> allCommands)
@@ -276,7 +242,7 @@ namespace Gallio.MSTestAdapter.Model
                 testContext.FinishStep(TestOutcome.Error, null);
                 throw;
             }
-        }        
+        }
 
         private static Dictionary<string, MSTestExecutionInfo> ExtractExecutedTestsInformation(MSTestAssembly assemblyTest)
         {
@@ -328,7 +294,11 @@ namespace Gallio.MSTestAdapter.Model
                         MSTestExecutionInfo testExecutionInfo = new MSTestExecutionInfo();
                         testExecutionInfo.Guid = test.Guid;
                         testExecutionInfo.Outcome = TestOutcome.Ignored;
-                        testCommandsByTestGuid.Add(testExecutionInfo.Guid, testExecutionInfo);
+                        if (!testCommandsByTestGuid.ContainsKey(testExecutionInfo.Guid))
+                        {
+                            testCommandsByTestGuid.Add(testExecutionInfo.Guid, testExecutionInfo);
+                        }
+                        //testCommandsByTestGuid.Add(testExecutionInfo.Guid, testExecutionInfo);
                     }
                 }
             }
@@ -419,11 +389,6 @@ namespace Gallio.MSTestAdapter.Model
         private static TimeSpan GetDuration(string duration)
         {
             return TimeSpan.Parse(duration);
-        }
-
-        private static string QuoteFilename(string filename)
-        {
-            return "\"" + filename + "\"";
         }
 
         private class MSTestExecutionInfo

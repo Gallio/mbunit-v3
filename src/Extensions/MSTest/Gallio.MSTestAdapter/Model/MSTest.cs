@@ -22,7 +22,7 @@ using Gallio.Model.Execution;
 
 namespace Gallio.MSTestAdapter.Model
 {
-    internal class MSTest : BaseTest
+    public class MSTest : BaseTest
     {
         private string testName;
         private static readonly SHA1CryptoServiceProvider provider = new SHA1CryptoServiceProvider();
@@ -49,7 +49,7 @@ namespace Gallio.MSTestAdapter.Model
 
         private static ITestController CreateTestController()
         {
-            return new MSTestController();
+            return new MSTestController(MSTestProcess.Instance);
         }
 
         internal string TestName
