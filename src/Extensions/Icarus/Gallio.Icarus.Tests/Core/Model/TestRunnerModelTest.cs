@@ -96,7 +96,8 @@ namespace Gallio.Icarus.Core.Model.Tests
             Expect.Call(testRunner.Report).Return(new Report());
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
-            Assert.IsNull(testRunnerModel.GetExecutionLog("test", new TestModelData(new TestData("test", "test", "test"))));
+            Assert.IsNull(testRunnerModel.GetExecutionLog(new List<string>() { "test" }, 
+                new TestModelData(new TestData("test", "test", "test"))));
         }
 
         [Test]
@@ -229,6 +230,21 @@ namespace Gallio.Icarus.Core.Model.Tests
             mocks.ReplayAll();
             testRunnerModel = new TestRunnerModel(testRunner, reportManager);
             testRunnerModel.Initialize();
+        }
+
+        [Test]
+        public void HandleTestStepFinished_Test()
+        {
+            testRunnerEvents.TestStepFinished += null;
+            LastCall.IgnoreArguments();
+            IEventRaiser testStepFinished = LastCall.GetEventRaiser();
+            mocks.ReplayAll();
+            testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+            bool flag = false;
+            testRunnerModel.TestStepFinished += delegate { flag = true; };
+            testStepFinished.Raise(null, new TestStepFinishedEventArgs(new Report(), new TestData("id", "name", "fullName"), 
+                new TestStepRun(new TestStepData("id", "name", "fullName", "testId"))));
+            Assert.IsTrue(flag);
         }
     }
 }

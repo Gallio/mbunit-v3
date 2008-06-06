@@ -21,6 +21,8 @@ using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
+using Gallio.Model.Filters;
+using Gallio.Model;
 
 namespace Gallio.Icarus.Interfaces
 {
@@ -30,15 +32,15 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<EventArgs> RunTests;
         event EventHandler<EventArgs> GenerateReport;
         event EventHandler<EventArgs> CancelOperation;
-        event EventHandler<SetFilterEventArgs> SetFilter;
+        event EventHandler<SingleEventArgs<Filter<ITest>>> SetFilter;
         event EventHandler<EventArgs> GetReportTypes;
         event EventHandler<EventArgs> GetTestFrameworks;
         event EventHandler<SaveReportAsEventArgs> SaveReportAs;
-        event EventHandler<SingleEventArgs<string>> GetExecutionLog;
+        event EventHandler<SingleEventArgs<IList<string>>> GetExecutionLog;
         event EventHandler<EventArgs> UnloadTestPackage;
 
         TestModelData TestModelData { get; set; }
-        Project Project { get; set; }
+        Project Project { get; }
         string TaskName { set; }
         string SubTaskName { set; }
         string ReportPath { set; }

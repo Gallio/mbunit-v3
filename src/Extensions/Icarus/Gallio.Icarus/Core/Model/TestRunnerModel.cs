@@ -14,27 +14,28 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Specialized;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
-using Gallio.Model.Execution;
-using Gallio.Runner.Events;
-using Gallio.Runtime.Logging;
-using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Runtime;
+using System.Xml;
+using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.ProgressMonitoring;
-using Gallio.Model;
-using Gallio.Model.Serialization;
-using Gallio.Runner.Reports;
 using Gallio.Icarus.Core.Reports;
-using Gallio.Runner;
+using Gallio.Model;
+using Gallio.Model.Execution;
 using Gallio.Model.Filters;
-using System.Globalization;
-using System.Reflection;
+using Gallio.Model.Serialization;
+using Gallio.Runner;
+using Gallio.Runner.Events;
+using Gallio.Runner.Reports;
+using Gallio.Runtime;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
-using Gallio.Icarus.Core.CustomEventArgs;
 
 namespace Gallio.Icarus.Core.Model
 {
@@ -171,17 +172,21 @@ namespace Gallio.Icarus.Core.Model
                 reportTime.ToString(@"HHmmss"));
         }
 
-        public Stream GetExecutionLog(string testId, TestModelData testModelData)
+        public Stream GetExecutionLog(IList<string> testIds, TestModelData testModelData)
         {
             if (Report.TestPackageRun != null)
             {
+                MemoryStream memoryStream = new MemoryStream();
+                XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
+                TestStepReportWriter.RenderReportHeader(xmlTextWriter, executionLogFolder);
                 foreach (TestStepRun testStepRun in Report.TestPackageRun.AllTestStepRuns)
                 {
-                    if (testStepRun.Step.TestId == testId)
-                        return TestStepReportWriter.OutputReport(testStepRun, testModelData, executionLogFolder);
+                    if (testIds.Contains(testStepRun.Step.TestId))
+                        TestStepReportWriter.RenderTestStepRun(xmlTextWriter, testStepRun, testModelData);
                 }
+                memoryStream.Position = 0;
+                return memoryStream;
             }
-
             return null;
         }
 

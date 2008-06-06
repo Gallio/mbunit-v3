@@ -18,23 +18,20 @@ using System.IO;
 using System.Windows.Forms;
 using Gallio.Icarus.Adapter;
 using Gallio.Icarus.AdapterModel;
+using Gallio.Icarus.Controls;
+using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Model;
 using Gallio.Icarus.Core.Presenter;
+using Gallio.Icarus.Interfaces;
 using Gallio.Reflection;
 using Gallio.Runner;
-using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
-using Gallio.Runtime.ConsoleSupport;
-using Gallio.Icarus.Interfaces;
-using Gallio.Icarus.Core.Interfaces;
 
 namespace Gallio.Icarus
 {
     static class Program
     {
-        private static Main main;
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -45,32 +42,22 @@ namespace Gallio.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            main = new Main();
+            Main projectAdapterView = new Main();
+            projectAdapterView.Args = args;
 
             RuntimeSetup runtimeSetup = new RuntimeSetup();
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
             runtimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Program).Assembly));
-            runtimeSetup.PluginDirectories.AddRange(main.Settings.PluginDirectories);
-            using (RuntimeBootstrap.Initialize(runtimeSetup, new IcarusLogger(main)))
+            runtimeSetup.PluginDirectories.AddRange(projectAdapterView.Settings.PluginDirectories);
+            using (RuntimeBootstrap.Initialize(runtimeSetup, new IcarusLogger(projectAdapterView)))
             {
                 // wire up model
-                IProjectAdapter projectAdapter = new ProjectAdapter(main, new ProjectAdapterModel());
-                if (args.Length > 0)
-                {
-                    Project project = ParseArguments(args);
-                    if (project != null)
-                        projectAdapter.Project = project;
-                }
-                else
-                {
-                    if (main.Settings.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
-                        main.ProjectFileName = Paths.DefaultProject;
-                }
+                IProjectAdapter projectAdapter = new ProjectAdapter(projectAdapterView, new ProjectAdapterModel(), new ProjectTreeModel());
 
                 ITestRunner testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(
-                    main.Settings.TestRunnerFactory);
+                    projectAdapterView.Settings.TestRunnerFactory);
 
                 IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
                 ITestRunnerModel testRunnerModel = new TestRunnerModel(testRunner, reportManager);
@@ -78,39 +65,12 @@ namespace Gallio.Icarus
                 IProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, testRunnerModel);
 
                 testRunnerModel.Initialize();
-                main.CleanUp += delegate { testRunnerModel.Dispose(); };
+                projectAdapterView.CleanUp += delegate { testRunnerModel.Dispose(); };
 
-                Application.Run(main);
+                Application.Run(projectAdapterView);
 
                 GC.KeepAlive(projectPresenter);
             }
-        }
-
-        private static Project ParseArguments(string[] args)
-        {
-            // parse command line arguments
-            CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
-            Arguments arguments = new Arguments();
-            Project project = new Project();
-            project.TestPackageConfig.HostSetup.ShadowCopy = true;
-
-            if (argumentParser.Parse(args, arguments, delegate { }))
-            {
-                foreach (string file in arguments.Assemblies)
-                {
-                    if (File.Exists(file))
-                    {
-                        if (file.EndsWith(".gallio"))
-                        {
-                            main.ProjectFileName = file;
-                            return null;
-                        }
-                        else
-                            project.TestPackageConfig.AssemblyFiles.Add(file);
-                    }
-                }
-            }
-            return project;
         }
     }
 }

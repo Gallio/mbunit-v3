@@ -13,33 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Windows.Forms;
+using Aga.Controls.Tree;
+using Gallio.Runner.Projects;
 
-using Gallio.Model;
-using Gallio.Model.Filters;
-
-namespace Gallio.Icarus.Core.CustomEventArgs 
+namespace Gallio.Icarus.Controls.Interfaces
 {
-    public class SetFilterEventArgs : EventArgs
+    public interface IProjectTreeModel : ITreeModel
     {
-        private readonly string filterName;
-        private readonly Filter<ITest> filter;
+        Project Project { get; }
 
-        public SetFilterEventArgs(string filterName, Filter<ITest> filter)
-        {
-            this.filterName = filterName;
-            this.filter = filter;
-        }
-
-        public string FilterName
-        {
-            get { return filterName; }
-        }
-
-        public Filter<ITest> Filter
-        {
-            get { return filter; }
-        }
+        void SaveProject(string fileName);
+        void LoadProject(string fileName);
+        void NewProject();
     }
 }

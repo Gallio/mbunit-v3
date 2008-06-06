@@ -16,9 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+using Gallio.Icarus.Controls.Interfaces;
 using Gallio.Icarus.Core.CustomEventArgs;
-using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Remoting;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model;
@@ -26,7 +25,6 @@ using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Adapter
 {
@@ -34,8 +32,8 @@ namespace Gallio.Icarus.Adapter
     {
         private readonly IProjectAdapterView projectAdapterView;
         private readonly IProjectAdapterModel projectAdapterModel;
+        private readonly IProjectTreeModel projectTreeModel;
         private TestModelData testModelData;
-        private Project project;
         private AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
         private string mode;
 
@@ -47,38 +45,7 @@ namespace Gallio.Icarus.Adapter
 
         public Project Project
         {
-            get { return project; }
-            set
-            {
-                project = value;
-                
-                CheckProject();
-
-                // set project options
-                projectAdapterView.HintDirectories = project.TestPackageConfig.HintDirectories;
-                projectAdapterView.ApplicationBaseDirectory = project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
-                projectAdapterView.WorkingDirectory = project.TestPackageConfig.HostSetup.WorkingDirectory;
-                projectAdapterView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy;
-
-                // show available filters
-                projectAdapterView.TestFilters = UpdateTestFilters(project.TestFilters);
-                
-                // attach assembly watcher
-                assemblyWatcher.Add(value.TestPackageConfig.AssemblyFiles);
-            }
-        }
-
-        private void CheckProject()
-        {
-            List<string> assemblyFiles = project.TestPackageConfig.AssemblyFiles;
-            List<string> existingAndNonDuplicatedAssemblies = new List<string>();
-            foreach (string file in assemblyFiles)
-            {
-                if (File.Exists(file) && !existingAndNonDuplicatedAssemblies.Contains(file))
-                    existingAndNonDuplicatedAssemblies.Add(file);
-            }
-            assemblyFiles.Clear();
-            assemblyFiles.AddRange(existingAndNonDuplicatedAssemblies);
+            get { return projectTreeModel.Project; }
         }
 
         public string TaskName
@@ -125,20 +92,23 @@ namespace Gallio.Icarus.Adapter
         public event EventHandler<EventArgs> RunTests;
         public event EventHandler<EventArgs> GenerateReport;
         public event EventHandler<EventArgs> CancelOperation;
-        public event EventHandler<SetFilterEventArgs> SetFilter;
+        public event EventHandler<SingleEventArgs<Filter<ITest>>> SetFilter;
         public event EventHandler<EventArgs> GetReportTypes;
         public event EventHandler<EventArgs> GetTestFrameworks;
         public event EventHandler<SaveReportAsEventArgs> SaveReportAs;
-        public event EventHandler<SingleEventArgs<string>> GetExecutionLog;
+        public event EventHandler<SingleEventArgs<IList<string>>> GetExecutionLog;
         public event EventHandler<EventArgs> UnloadTestPackage;
 
-        public ProjectAdapter(IProjectAdapterView view, IProjectAdapterModel model)
+        public ProjectAdapter(IProjectAdapterView projectAdapterView, IProjectAdapterModel projectAdapterModel, 
+            IProjectTreeModel projectTreeModel)
         {
-            projectAdapterView = view;
-            projectAdapterModel = model;
+            this.projectAdapterView = projectAdapterView;
+            this.projectAdapterModel = projectAdapterModel;
+            this.projectTreeModel = projectTreeModel;
 
-            project = new Project();
-            projectAdapterView.ShadowCopy = project.TestPackageConfig.HostSetup.ShadowCopy = true;
+            // set up project
+            projectAdapterView.ProjectTreeModel = projectTreeModel;
+            projectAdapterView.ShadowCopy = Project.TestPackageConfig.HostSetup.ShadowCopy = true;
 
             // Wire up event handlers
             projectAdapterView.AddAssemblies += AddAssembliesEventHandler;
@@ -167,7 +137,7 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.UnloadTestPackage += OnUnloadTestPackage;
 
             // wire up tree model
-            projectAdapterView.TreeModel = projectAdapterModel.TreeModel;
+            projectAdapterView.TestTreeModel = projectAdapterModel.TreeModel;
 
             // assembly watcher
             assemblyWatcher.AssemblyChangedEvent += new AssemblyWatcher.AssemblyChangedHandler(assemblyWatcher_AssemblyChangedEvent);
@@ -175,23 +145,23 @@ namespace Gallio.Icarus.Adapter
 
         private void OnUpdateHintDirectoriesEvent(object sender, SingleEventArgs<IList<string>> e)
         {
-            project.TestPackageConfig.HintDirectories.Clear();
-            project.TestPackageConfig.HintDirectories.AddRange(e.Arg);
+            Project.TestPackageConfig.HintDirectories.Clear();
+            Project.TestPackageConfig.HintDirectories.AddRange(e.Arg);
         }
 
         private void OnUpdateApplicationBaseDirectoryEvent(object sender, SingleEventArgs<string> e)
         {
-            project.TestPackageConfig.HostSetup.ApplicationBaseDirectory = e.Arg;
+            Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory = e.Arg;
         }
 
         private void UpdateWorkingDirectoryEventHandler(object sender, SingleEventArgs<string> e)
         {
-            project.TestPackageConfig.HostSetup.WorkingDirectory = e.Arg;
+            Project.TestPackageConfig.HostSetup.WorkingDirectory = e.Arg;
         }
 
         private void UpdateShadowCopyEventHandler(object sender, SingleEventArgs<bool> e)
         {
-            project.TestPackageConfig.HostSetup.ShadowCopy = e.Arg;
+            Project.TestPackageConfig.HostSetup.ShadowCopy = e.Arg;
         }
 
         public void assemblyWatcher_AssemblyChangedEvent(string fullPath)
@@ -201,14 +171,14 @@ namespace Gallio.Icarus.Adapter
 
         private void AddAssembliesEventHandler(object sender, SingleEventArgs<IList<string>> e)
         {
-            project.TestPackageConfig.AssemblyFiles.AddRange(e.Arg);
+            Project.TestPackageConfig.AssemblyFiles.AddRange(e.Arg);
             foreach (string assembly in e.Arg)
                 assemblyWatcher.Add(assembly);
         }
 
         private void RemoveAssembliesEventHandler(object sender, EventArgs e)
         {
-            project.TestPackageConfig.AssemblyFiles.Clear();
+            Project.TestPackageConfig.AssemblyFiles.Clear();
             assemblyWatcher.Clear();
         }
 
@@ -223,7 +193,7 @@ namespace Gallio.Icarus.Adapter
             
             // remove assembly
             assemblyWatcher.Remove(fileName);
-            project.TestPackageConfig.AssemblyFiles.Remove(fileName);
+            Project.TestPackageConfig.AssemblyFiles.Remove(fileName);
         }
 
         private void GetTestTreeEventHandler(object sender, GetTestTreeEventArgs e)
@@ -232,8 +202,8 @@ namespace Gallio.Icarus.Adapter
             if (e.ReloadTestModelData)
             {
                 if (GetTestTree != null)
-                    GetTestTree(this, new GetTestTreeEventArgs(project.TestPackageConfig.HostSetup.ShadowCopy, 
-                        project.TestPackageConfig));
+                    GetTestTree(this, new GetTestTreeEventArgs(Project.TestPackageConfig.HostSetup.ShadowCopy, 
+                        Project.TestPackageConfig));
             }
             else
                 DataBind();
@@ -263,21 +233,21 @@ namespace Gallio.Icarus.Adapter
             Filter<ITest> filter = projectAdapterModel.CreateFilter();
             UpdateProjectFilter(e.Arg, filter);
             if (SetFilter != null)
-                SetFilter(this, new SetFilterEventArgs(e.Arg, filter));
-            projectAdapterView.TestFilters = UpdateTestFilters(project.TestFilters);
+                SetFilter(this, new SingleEventArgs<Filter<ITest>>(filter));
+            projectAdapterView.TestFilters = UpdateTestFilters(Project.TestFilters);
         }
 
         private void DeleteFilterEventHandler(object sender, SingleEventArgs<string> e)
         {
-            foreach (FilterInfo filterInfo in project.TestFilters)
+            foreach (FilterInfo filterInfo in Project.TestFilters)
             {
                 if (filterInfo.FilterName == e.Arg)
                 {
-                    project.TestFilters.Remove(filterInfo);
+                    Project.TestFilters.Remove(filterInfo);
                     break;
                 }
             }
-            projectAdapterView.TestFilters = UpdateTestFilters(project.TestFilters);
+            projectAdapterView.TestFilters = UpdateTestFilters(Project.TestFilters);
         }
 
         private List<string> UpdateTestFilters(List<FilterInfo> filters)
@@ -290,7 +260,7 @@ namespace Gallio.Icarus.Adapter
 
         public void UpdateProjectFilter(string filterName, Filter<ITest> filter)
         {
-            foreach (FilterInfo filterInfo in project.TestFilters)
+            foreach (FilterInfo filterInfo in Project.TestFilters)
             {
                 if (filterInfo.FilterName == filterName)
                 {
@@ -298,7 +268,7 @@ namespace Gallio.Icarus.Adapter
                     return;
                 }
             }
-            project.TestFilters.Add(new FilterInfo(filterName, filter.ToFilterExpr()));
+            Project.TestFilters.Add(new FilterInfo(filterName, filter.ToFilterExpr()));
         }
 
         private void GetReportTypesEventHandler(object sender, EventArgs e)
@@ -321,31 +291,20 @@ namespace Gallio.Icarus.Adapter
 
         private void SaveProjectEventHandler(object sender, SingleEventArgs<string> e)
         {
-            string projectFileName = e.Arg;
-            if (projectFileName == string.Empty)
-            {
-                // create folder (if necessary)
-                if (!Directory.Exists(Paths.IcarusAppDataFolder))
-                    Directory.CreateDirectory(Paths.IcarusAppDataFolder);
-                projectFileName = Paths.DefaultProject;
-            }
-            XmlSerializationUtils.SaveToXml(project, projectFileName);
+            projectTreeModel.SaveProject(e.Arg);
         }
 
         private void OpenProjectEventHandler(object sender, OpenProjectEventArgs e)
         {
-            // fail fast
-            if (!File.Exists(e.FileName))
-                throw new ArgumentException(String.Format("Project file {0} does not exist.", e.FileName));
-
-            // deserialize project
-            Project = XmlSerializationUtils.LoadFromXml<Project>(e.FileName);
+            projectTreeModel.LoadProject(e.FileName);
+            CheckProject();
+            UpdateProject();
 
             // load test model data
             mode = e.Mode;
             if (GetTestTree != null)
-                GetTestTree(this, new GetTestTreeEventArgs(project.TestPackageConfig.HostSetup.ShadowCopy, 
-                    project.TestPackageConfig));
+                GetTestTree(this, new GetTestTreeEventArgs(Project.TestPackageConfig.HostSetup.ShadowCopy, 
+                    Project.TestPackageConfig));
 
             ApplyFilter("AutoSave");
         }
@@ -355,14 +314,14 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.EditEnabled = false;
 
             // set filter (when available)
-            foreach (FilterInfo filterInfo in project.TestFilters)
+            foreach (FilterInfo filterInfo in Project.TestFilters)
             {
                 if (filterInfo.FilterName == filterName)
                 {
                     Filter<ITest> filter = FilterUtils.ParseTestFilter(filterInfo.Filter);
                     projectAdapterModel.ApplyFilter(filter);
                     if (SetFilter != null)
-                        SetFilter(this, new SetFilterEventArgs(filterInfo.FilterName, filter));
+                        SetFilter(this, new SingleEventArgs<Filter<ITest>>(filter));
                     break;
                 }
             }
@@ -372,7 +331,8 @@ namespace Gallio.Icarus.Adapter
 
         private void NewProjectEventHandler(object sender, EventArgs e)
         {
-            project = new Project();
+            projectTreeModel.NewProject();
+            UpdateProject();
         }
 
         private void OnGetSourceLocation(object sender, SingleEventArgs<string> e)
@@ -389,7 +349,6 @@ namespace Gallio.Icarus.Adapter
 
         public void DataBind()
         {
-            projectAdapterView.Assemblies = projectAdapterModel.BuildAssemblyList(project.TestPackageConfig.AssemblyFiles);
             projectAdapterModel.BuildTestTree(testModelData, mode);
             projectAdapterView.Annotations = testModelData.Annotations;
             projectAdapterView.LoadComplete();
@@ -405,7 +364,7 @@ namespace Gallio.Icarus.Adapter
             projectAdapterModel.ResetTestStatus();
         }
 
-        public void OnGetExecutionLog(object sender, SingleEventArgs<string> e)
+        public void OnGetExecutionLog(object sender, SingleEventArgs<IList<string>> e)
         {
             if (GetExecutionLog != null)
                 GetExecutionLog(this, e);
@@ -415,6 +374,34 @@ namespace Gallio.Icarus.Adapter
         {
             if (UnloadTestPackage != null)
                 UnloadTestPackage(this, e);
+        }
+
+        private void CheckProject()
+        {
+            List<string> assemblyFiles = Project.TestPackageConfig.AssemblyFiles;
+            List<string> existingAndNonDuplicatedAssemblies = new List<string>();
+            foreach (string file in assemblyFiles)
+            {
+                if (File.Exists(file) && !existingAndNonDuplicatedAssemblies.Contains(file))
+                    existingAndNonDuplicatedAssemblies.Add(file);
+            }
+            assemblyFiles.Clear();
+            assemblyFiles.AddRange(existingAndNonDuplicatedAssemblies);
+        }
+
+        private void UpdateProject()
+        {
+            // set project options
+            projectAdapterView.HintDirectories = Project.TestPackageConfig.HintDirectories;
+            projectAdapterView.ApplicationBaseDirectory = Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory;
+            projectAdapterView.WorkingDirectory = Project.TestPackageConfig.HostSetup.WorkingDirectory;
+            projectAdapterView.ShadowCopy = Project.TestPackageConfig.HostSetup.ShadowCopy;
+
+            // show available filters
+            projectAdapterView.TestFilters = UpdateTestFilters(Project.TestFilters);
+
+            // attach assembly watcher
+            assemblyWatcher.Add(Project.TestPackageConfig.AssemblyFiles);
         }
     }
 }

@@ -44,6 +44,7 @@ namespace Gallio.Icarus.Controls
             StepName.Text = "Step name";
             StepName.Width = 200;
             TestKind.Text = "Test kind";
+            TestKind.Width = 65;
             Duration.Text = "Duration (s)";
             Duration.Width = 70;
             Asserts.Text = "Asserts";

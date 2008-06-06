@@ -56,12 +56,12 @@ namespace Gallio.Icarus.Interfaces
         event EventHandler<SingleEventArgs<string>> UpdateWorkingDirectoryEvent;
         event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
         event EventHandler<EventArgs> ResetTestStatus;
-        event EventHandler<SingleEventArgs<string>> GetExecutionLog;
+        event EventHandler<SingleEventArgs<IList<string>>> GetExecutionLog;
         event EventHandler<EventArgs> UnloadTestPackage;
 
         bool ShowProgressMonitor { set; }
-        ITreeModel TreeModel { set; }
-        ListViewItem[] Assemblies { set; }
+        ITreeModel TestTreeModel { set; }
+        ITreeModel ProjectTreeModel { set; }
         string TaskName { set; }
         string SubTaskName { set; }
         string ReportPath { set; }
@@ -80,6 +80,7 @@ namespace Gallio.Icarus.Interfaces
         CodeLocation SourceCodeLocation { set; }
         Settings Settings { get; set; }
         bool EditEnabled { set; }
+        string[] Args { set; }
         
         void ThreadedRemoveAssembly(string assembly);
         void ReloadTree();
@@ -99,7 +100,7 @@ namespace Gallio.Icarus.Interfaces
         void OnSaveFilter(string filter);
         void OnDeleteFilter(string filter);
         void LoadComplete();
-        void UpdateSelectedNode(string testId);
+        void UpdateSelectedNode(IList<string> testIds);
         void CancelRunningOperation();
     }
 }

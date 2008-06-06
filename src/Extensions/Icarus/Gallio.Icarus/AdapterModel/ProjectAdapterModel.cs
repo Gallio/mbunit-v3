@@ -185,20 +185,6 @@ namespace Gallio.Icarus.AdapterModel
             }
         }
 
-        public ListViewItem[] BuildAssemblyList(List<string> assemblyList)
-        {
-            ListViewItem[] assemblies = new ListViewItem[assemblyList.Count];
-            for (int i = 0; i < assemblyList.Count; i++)
-            {
-                string assemblyPath = assemblyList[i];
-                string assemblyName = Path.GetFileName(assemblyPath);
-                string assemblyVersion = FileVersionInfo.GetVersionInfo(assemblyPath).FileVersion;
-                string[] assemblyInfo = new string[] { assemblyName, assemblyVersion, assemblyPath };
-                assemblies[i] = new ListViewItem(assemblyInfo);
-            }
-            return assemblies;
-        }
-
         public void Update(TestData testData, TestStepRun testStepRun)
         {
             // update tree model

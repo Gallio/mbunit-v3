@@ -106,6 +106,7 @@ namespace Gallio.Icarus
             this.testTree.DefaultToolTipProvider = null;
             this.testTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.testTree.DragDropMarkColor = System.Drawing.Color.Black;
+            this.testTree.EditEnabled = true;
             this.testTree.LineColor = System.Drawing.SystemColors.ControlDark;
             this.testTree.Location = new System.Drawing.Point(0, 0);
             this.testTree.Model = null;
@@ -295,6 +296,7 @@ namespace Gallio.Icarus
             // 
             // treeViewComboBox
             // 
+            this.treeViewComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.treeViewComboBox.Items.AddRange(new object[] {
             "Namespaces",
             "Authors",

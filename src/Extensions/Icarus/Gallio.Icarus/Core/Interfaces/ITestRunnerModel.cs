@@ -36,7 +36,7 @@ namespace Gallio.Icarus.Core.Interfaces
         void Run();
         void Unload();
 
-        Stream GetExecutionLog(string testId, TestModelData testModelData);
+        Stream GetExecutionLog(IList<string> testIds, TestModelData testModelData);
         IList<string> GetReportTypes();
         IList<string> GetTestFrameworks();
         string GenerateReport();

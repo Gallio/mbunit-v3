@@ -20,6 +20,8 @@ using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
 using Gallio.Runner.Events;
+using Gallio.Model.Filters;
+using System.Collections.Generic;
 
 namespace Gallio.Icarus.Core.Interfaces
 {
@@ -29,11 +31,11 @@ namespace Gallio.Icarus.Core.Interfaces
         void projectAdapter_RunTests(object sender, EventArgs e);
         void projectAdapter_GenerateReport(object sender, EventArgs e);
         void projectAdapter_CancelOperation(object sender, EventArgs e);
-        void projectAdapter_SetFilter(object sender, SetFilterEventArgs e);
+        void projectAdapter_SetFilter(object sender, SingleEventArgs<Filter<ITest>> e);
         void projectAdapter_GetReportTypes(object sender, EventArgs e);
         void projectAdapter_SaveReportAs(object sender, SaveReportAsEventArgs e);
         void projectAdapter_GetTestFrameworks(object sender, EventArgs e);
-        void projectAdapter_GetExecutionLog(object sender, SingleEventArgs<string> e);
+        void projectAdapter_GetExecutionLog(object sender, SingleEventArgs<IList<string>> e);
         void projectAdapter_UnloadTestPackage(object sender, EventArgs e);
 
         void testRunnerModel_TestStepFinished(object sender, TestStepFinishedEventArgs e);

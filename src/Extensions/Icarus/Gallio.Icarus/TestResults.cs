@@ -31,14 +31,14 @@ namespace Gallio.Icarus
 {
     public partial class TestResults : DockWindow
     {
-        private string selectedNodeId = string.Empty;
+        private IList<string> selectedNodeIds;
         private ITreeModel treeModel;
 
-        public string SelectedNodeId
+        public IList<string> SelectedNodeIds
         {
             set
             {
-                selectedNodeId = value;
+                selectedNodeIds = value;
                 UpdateTestResults();
             }
         }
@@ -59,6 +59,7 @@ namespace Gallio.Icarus
 
         public TestResults()
         {
+            selectedNodeIds = new List<string>();
             InitializeComponent();
         }
 
@@ -77,10 +78,8 @@ namespace Gallio.Icarus
             testResultsList.Items.Clear();
 
             List<TestTreeNode> nodes = new List<TestTreeNode>();
-            if (selectedNodeId != string.Empty)
-                nodes = ((TestTreeModel)treeModel).Root.Find(selectedNodeId, true);
-            else
-                nodes.Add(((TestTreeModel)treeModel).Root);
+            foreach (string nodeId in selectedNodeIds)
+                nodes.AddRange(((TestTreeModel)treeModel).Root.Find(nodeId, true));
 
             foreach (TestTreeNode node in nodes)
                 UpdateTestResults(node, 0);

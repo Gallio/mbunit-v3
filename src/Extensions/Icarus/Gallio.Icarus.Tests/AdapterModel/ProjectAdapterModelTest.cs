@@ -30,7 +30,6 @@ using Rhino.Mocks;
 
 namespace Gallio.Icarus.AdapterModel.Tests
 {
-    [TestFixture]
     public class ProjectAdapterModelTest : MockTest
     {
         private ProjectAdapterModel projectAdapterModel;
@@ -150,15 +149,6 @@ namespace Gallio.Icarus.AdapterModel.Tests
                 Assert.AreEqual("Test1", node.Name);
                 Assert.AreEqual(0, node.Nodes.Count);
             }
-        }
-
-        [Test]
-        public void BuildAssemblyList_Test()
-        {
-            ListViewItem[] listViewItems = projectAdapterModel.BuildAssemblyList(new List<string>(new string[] { 
-                Assembly.GetExecutingAssembly().Location }));
-            Assert.AreEqual(1, listViewItems.Length);
-            Assert.AreEqual(3, listViewItems[0].SubItems.Count);
         }
 
         private TestModelData CreateTestModel()

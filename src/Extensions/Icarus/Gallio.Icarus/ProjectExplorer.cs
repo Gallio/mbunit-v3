@@ -13,24 +13,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
+using System;
 using System.Windows.Forms;
-using Gallio.Icarus.Controls;
-using Gallio.Model;
-using Gallio.Model.Filters;
-using Gallio.Model.Serialization;
-using Gallio.Runner.Reports;
-using Gallio.Icarus.Controls.Interfaces;
 
-namespace Gallio.Icarus.Interfaces
+using Aga.Controls.Tree;
+
+using Gallio.Icarus.Controls;
+using Gallio.Icarus.Interfaces;
+using Gallio.Model;
+using Gallio.Utilities;
+
+namespace Gallio.Icarus
 {
-    public interface IProjectAdapterModel
+    public partial class ProjectExplorer : DockWindow
     {
-        ITestTreeModel TreeModel { get; set; }
-        void BuildTestTree(TestModelData testModelData, string mode);
-        void Update(TestData testData, TestStepRun testStepRun);
-        Filter<ITest> CreateFilter();
-        void ApplyFilter(Filter<ITest> filter);
-        void ResetTestStatus();
+        private IProjectAdapterView projectAdapterView;
+
+        public ITreeModel TreeModel
+        {
+            set
+            {
+                projectTree.Model = value;
+            }
+        }
+
+        public ProjectExplorer(IProjectAdapterView projectAdapterView)
+        {
+            if (projectAdapterView == null)
+                throw new ArgumentNullException("projectAdapterView");
+
+            this.projectAdapterView = projectAdapterView;
+            InitializeComponent();
+        }
     }
 }

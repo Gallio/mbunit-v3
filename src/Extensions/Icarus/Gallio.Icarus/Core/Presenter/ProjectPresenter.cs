@@ -14,12 +14,13 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
-using Gallio.Runner.Reports;
 using Gallio.Runner.Events;
 
 namespace Gallio.Icarus.Core.Presenter
@@ -103,9 +104,9 @@ namespace Gallio.Icarus.Core.Presenter
             testRunnerModel.CancelOperation();
         }
 
-        public void projectAdapter_SetFilter(object sender, SetFilterEventArgs e)
+        public void projectAdapter_SetFilter(object sender, SingleEventArgs<Filter<ITest>> e)
         {
-            testRunnerModel.SetFilter(e.Filter);
+            testRunnerModel.SetFilter(e.Arg);
         }
 
         public void projectAdapter_GetReportTypes(object sender, EventArgs e)
@@ -123,7 +124,7 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.TestFrameworks = testRunnerModel.GetTestFrameworks();
         }
 
-        public void projectAdapter_GetExecutionLog(object sender, SingleEventArgs<string> e)
+        public void projectAdapter_GetExecutionLog(object sender, SingleEventArgs<IList<string>> e)
         {
             projectAdapter.ExecutionLog = testRunnerModel.GetExecutionLog(e.Arg, projectAdapter.TestModelData);
         }

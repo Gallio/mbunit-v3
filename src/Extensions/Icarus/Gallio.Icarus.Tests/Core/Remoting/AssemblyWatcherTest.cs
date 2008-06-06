@@ -19,6 +19,7 @@ using System.Threading;
 using Gallio.Icarus.Core.Remoting;
 
 using MbUnit.Framework;
+using System.Collections.Generic;
 
 namespace Gallio.Icarus.Core.Remoting.Tests
 {
@@ -38,11 +39,8 @@ namespace Gallio.Icarus.Core.Remoting.Tests
         {
             bool flag = false;
             string file = Path.GetTempFileName();
-            assemblyWatcher.Add(file);
-            assemblyWatcher.AssemblyChangedEvent += delegate
-            {
-                flag = true;
-            };
+            assemblyWatcher.Add(new List<string>(new string[] { file }));
+            assemblyWatcher.AssemblyChangedEvent += delegate { flag = true; };
             StreamWriter sw = null;
             try
             {

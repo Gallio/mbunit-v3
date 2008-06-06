@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 using Aga.Controls.Tree;
@@ -206,15 +207,24 @@ namespace Gallio.Icarus
         {
             if (testTree.SelectedNode != null)
             {
-                removeAssemblyToolStripMenuItem.Enabled = (((TestTreeNode)testTree.SelectedNode.Tag).NodeType == TestKinds.Assembly);
-                viewSourceCodeToolStripMenuItem.Enabled = ((TestTreeNode)testTree.SelectedNode.Tag).SourceCodeAvailable;
-                projectAdapterView.UpdateSelectedNode(((TestTreeNode)testTree.SelectedNode.Tag).Name);
+                TestTreeNode testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
+                removeAssemblyToolStripMenuItem.Enabled = testTreeNode.NodeType == TestKinds.Assembly;
+                viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
+                List<string> testIds = new List<string>();
+                if (testTreeNode.NodeType == TestKinds.Namespace)
+                {
+                    foreach (Node n in testTreeNode.Nodes)
+                        testIds.Add(((TestTreeNode)n).Name);
+                }
+                else
+                    testIds.Add(testTreeNode.Name);
+                projectAdapterView.UpdateSelectedNode(testIds);
             }
             else
             {
                 removeAssemblyToolStripMenuItem.Enabled = false;
                 viewSourceCodeToolStripMenuItem.Enabled = false;
-                projectAdapterView.UpdateSelectedNode(string.Empty);
+                projectAdapterView.UpdateSelectedNode(new List<string>());
             }
         }
 

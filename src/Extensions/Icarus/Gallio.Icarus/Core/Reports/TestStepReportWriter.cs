@@ -16,17 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml;
-
-using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Runner.Reports;
-using System.Xml.Serialization;
-using Gallio.Model.Serialization;
-using System.Xml.XPath;
-using System.Xml.Xsl;
-using System.Reflection;
 using Gallio.Model;
+using Gallio.Model.Serialization;
+using Gallio.Runner.Reports;
 using Gallio.Utilities;
 
 namespace Gallio.Icarus.Core.Reports
@@ -35,24 +28,23 @@ namespace Gallio.Icarus.Core.Reports
     {
         private static string reportFolder;
 
-        public static Stream OutputReport(TestStepRun testStepRun, TestModelData testModelData, string reportFolder)
+        public static void RenderReportHeader(XmlTextWriter xmlTextWriter, string reportFolder)
         {
             TestStepReportWriter.reportFolder = reportFolder;
-            MemoryStream memoryStream = new MemoryStream();
-            XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
             xmlTextWriter.WriteStartDocument();
             xmlTextWriter.WriteRaw("<html xml:lang=\"en\" lang=\"en\" dir=\"ltr\"><head>");
             xmlTextWriter.WriteRaw(String.Format("<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\\ExecutionLog.css\" />", reportFolder));
             xmlTextWriter.WriteRaw("<style type=\"text/css\">html{overflow:auto;}</style></head><body class=\"gallio-report\">");
             xmlTextWriter.WriteRaw("<div id=\"Content\" class=\"content\"><div id=\"Details\" class=\"section\"><div class=\"section-content\"><ul>");
-            RenderTestStepRun(xmlTextWriter, testStepRun, testModelData);
-            xmlTextWriter.WriteRaw("</ul></div></div></div></body></html>");
-            xmlTextWriter.Flush();
-            memoryStream.Position = 0;
-            return memoryStream;
         }
 
-        private static void RenderTestStepRun(XmlTextWriter xmlTextWriter, TestStepRun testStepRun, TestModelData testModelData)
+        public static void RenderReportFooter(XmlTextWriter xmlTextWriter)
+        {
+            xmlTextWriter.WriteRaw("</ul></div></div></div></body></html>");
+            xmlTextWriter.Flush();
+        }
+
+        public static void RenderTestStepRun(XmlTextWriter xmlTextWriter, TestStepRun testStepRun, TestModelData testModelData)
         {
             TestData testData = testModelData.GetTestById(testStepRun.Step.TestId);
             if (testData == null)

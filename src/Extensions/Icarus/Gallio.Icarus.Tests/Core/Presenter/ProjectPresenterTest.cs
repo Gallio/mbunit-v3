@@ -192,12 +192,11 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         [Test]
         public void SetFilter_Test()
         {
-            string filterName = "test";
             Filter<ITest> filter = new NoneFilter<ITest>();
             mockModel.SetFilter(filter);
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            setFilterEvent.Raise(mockAdapter, new SetFilterEventArgs(filterName, filter));
+            setFilterEvent.Raise(mockAdapter, new SingleEventArgs<Filter<ITest>>(filter));
         }
 
         [Test]
@@ -236,15 +235,15 @@ namespace Gallio.Icarus.Tests.Core.Presenter
         [Test]
         public void GetExecutionLog_Test()
         {
-            string testId = "test";
+            List<string> testIds = new List<string>() { "test" };
             TestModelData testModelData = new TestModelData(new TestData("test", "test", "test"));
             MemoryStream memoryStream = new MemoryStream();
             Expect.Call(mockAdapter.TestModelData).Return(testModelData);
-            Expect.Call(mockModel.GetExecutionLog(testId, testModelData)).Return(memoryStream);
+            Expect.Call(mockModel.GetExecutionLog(testIds, testModelData)).Return(memoryStream);
             mockAdapter.ExecutionLog = memoryStream;
             mocks.ReplayAll();
             projectPresenter = new ProjectPresenter(mockAdapter, mockModel);
-            getExecutionLogEvent.Raise(mockAdapter, new SingleEventArgs<string>(testId));
+            getExecutionLogEvent.Raise(mockAdapter, new SingleEventArgs<IList<string>>(testIds));
         }
 
         [Test]

@@ -24,16 +24,15 @@ using System.Windows.Forms;
 
 using Aga.Controls.Tree;
 
-using Gallio.Concurrency;
-using Gallio.Runtime;
-using Gallio.Runtime.Logging;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
+using Gallio.Runtime;
+using Gallio.Runtime.ConsoleSupport;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
-
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
@@ -45,11 +44,12 @@ namespace Gallio.Icarus
 
         private string projectFileName = String.Empty;
         private Settings settings;
+        private Arguments arguments;
         
         // dock panel windows
         private DeserializeDockContent deserializeDockContent;
         private TestExplorer testExplorer;
-        private AssemblyList assemblyList;
+        private ProjectExplorer projectExplorer;
         private TestResults testResults;
         private ReportWindow reportWindow;
         private RuntimeLogWindow runtimeLogWindow;
@@ -71,7 +71,7 @@ namespace Gallio.Icarus
             set { showProgressMonitor = value; }
         }
 
-        public ITreeModel TreeModel
+        public ITreeModel TestTreeModel
         {
             set
             {
@@ -79,23 +79,14 @@ namespace Gallio.Icarus
                 {
                     testExplorer.TreeModel = value;
                     testResults.TreeModel = value;
-                    ((TestTreeModel)value).TestCountChanged += delegate
-                    {
-                        TotalTests = ((TestTreeModel)value).TestCount;
-                    };
+                    ((TestTreeModel)value).TestCountChanged += delegate { TotalTests = ((TestTreeModel)value).TestCount; };
                 });
             }
         }
 
-        public ListViewItem[] Assemblies
+        public ITreeModel ProjectTreeModel
         {
-            set
-            {
-                Sync.Invoke(this, delegate
-                {
-                    assemblyList.DataBind(value);
-                });
-            }
+            set { Sync.Invoke(this, delegate { projectExplorer.TreeModel = value; }); }
         }
 
         public string TaskName
@@ -312,7 +303,7 @@ namespace Gallio.Icarus
             }
         }
 
-        public string ProjectFileName
+        private string ProjectFileName
         {
             set
             {
@@ -353,6 +344,15 @@ namespace Gallio.Icarus
             set { testExplorer.EditEnabled = value; }
         }
 
+        public string[] Args
+        {
+            set
+            {
+                if (value.Length > 0)
+                    arguments = ParseArguments(value);
+            }
+        }
+
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<SingleEventArgs<IList<string>>> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
@@ -375,7 +375,7 @@ namespace Gallio.Icarus
         public event EventHandler<SingleEventArgs<string>> UpdateWorkingDirectoryEvent;
         public event EventHandler<SingleEventArgs<bool>> UpdateShadowCopyEvent;
         public event EventHandler<EventArgs> ResetTestStatus;
-        public event EventHandler<SingleEventArgs<string>> GetExecutionLog;
+        public event EventHandler<SingleEventArgs<IList<string>>> GetExecutionLog;
         public event EventHandler<EventArgs> UnloadTestPackage;
         public event EventHandler<EventArgs> CleanUp;
 
@@ -386,7 +386,7 @@ namespace Gallio.Icarus
             UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
 
             testExplorer = new TestExplorer(this);
-            assemblyList = new AssemblyList(this);
+            projectExplorer = new ProjectExplorer(this);
             testResults = new TestResults();
             reportWindow = new ReportWindow(this);
             runtimeLogWindow = new RuntimeLogWindow();
@@ -405,12 +405,21 @@ namespace Gallio.Icarus
             progressMonitorTimer.Elapsed += delegate { Sync.Invoke(this, delegate { progressMonitor.Show(this); }); };
         }
 
+        private Arguments ParseArguments(string[] args)
+        {
+            // parse command line arguments
+            CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
+            Arguments arguments = new Arguments();
+            argumentParser.Parse(args, arguments, delegate { });
+            return arguments;
+        }
+
         private IDockContent GetContentFromPersistString(string persistString)
         {
             if (persistString == typeof(TestExplorer).ToString())
                 return testExplorer;
-            else if (persistString == typeof(AssemblyList).ToString())
-                return assemblyList;
+            if (persistString == typeof(ProjectExplorer).ToString())
+                return projectExplorer;
             else if (persistString == typeof(TestResults).ToString())
                 return testResults;
             else if (persistString == typeof(ReportWindow).ToString())
@@ -446,6 +455,26 @@ namespace Gallio.Icarus
                 DefaultDockState();
             }
 
+            List<string> assemblyFiles = new List<string>();
+            if (arguments != null)
+            {
+                foreach (string file in arguments.Assemblies)
+                {
+                    if (File.Exists(file))
+                    {
+                        if (Path.GetExtension(file) == ".gallio")
+                        {
+                            ProjectFileName = file;
+                            break;
+                        }
+                        else
+                            assemblyFiles.Add(file);
+                    }
+                }
+            }
+            else if (Settings.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
+                ProjectFileName = Paths.DefaultProject;
+
             primaryTaskManager.StartTask(delegate
             {
                 if (GetReportTypes != null)
@@ -453,21 +482,24 @@ namespace Gallio.Icarus
                 if (GetTestFrameworks != null)
                     GetTestFrameworks(this, EventArgs.Empty);
                 if (projectFileName != string.Empty)
-                    OpenProjectFromFile(projectFileName);
+                    OpenProjectFromFile();
                 else
+                {
+                    if (assemblyFiles.Count > 0 && AddAssemblies != null)
+                        AddAssemblies(this, new SingleEventArgs<IList<string>>(assemblyFiles));
                     ThreadedReloadTree(true);
+                }
             });
         }
 
         private void DefaultDockState()
         {
-            assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
             testResults.Show(dockPanel, DockState.Document);
             executionLogWindow.Show(dockPanel, DockState.Document);
             runtimeLogWindow.DockPanel = dockPanel;
             annotationsWindow.Show(dockPanel, DockState.Document);
             testExplorer.Show(dockPanel, DockState.DockLeft);
-            assemblyList.Show(dockPanel, DockState.DockLeftAutoHide);
+            projectExplorer.Show(dockPanel, DockState.DockLeftAutoHide);
             reportWindow.DockPanel = dockPanel;
             propertiesWindow.DockPanel = dockPanel;
             filtersWindow.DockPanel = dockPanel;
@@ -499,6 +531,9 @@ namespace Gallio.Icarus
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
 
+                // disable checkboxes (filter) on test tree
+                testExplorer.EditEnabled = false;
+
                 primaryTaskManager.StartTask(delegate
                 {
                     // save test filter
@@ -517,6 +552,7 @@ namespace Gallio.Icarus
                     {
                         stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                         startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                        testExplorer.EditEnabled = true;
                     });
                 });
             }
@@ -540,19 +576,20 @@ namespace Gallio.Icarus
             openFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
             if (openFile.ShowDialog() == DialogResult.OK)
             {
+                ProjectFileName = openFile.FileName;
                 primaryTaskManager.StartTask(delegate
                 {
-                    OpenProjectFromFile(openFile.FileName);
+                    OpenProjectFromFile();
                 });
             }
         }
 
-        private void OpenProjectFromFile(string fileName)
+        private void OpenProjectFromFile()
         {
             try
             {
                 if (OpenProject != null)
-                    OpenProject(this, new OpenProjectEventArgs(fileName, testExplorer.TreeFilter));
+                    OpenProject(this, new OpenProjectEventArgs(projectFileName, testExplorer.TreeFilter));
             }
             catch (Exception ex)
             {
@@ -562,7 +599,7 @@ namespace Gallio.Icarus
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            projectFileName = string.Empty;
+            ProjectFileName = string.Empty;
             SaveProjectToFile();
         }
 
@@ -882,8 +919,8 @@ namespace Gallio.Icarus
                 case "testResultsToolStripMenuItem":
                     testResults.Show(dockPanel);
                     break;
-                case "assemblyListToolStripMenuItem":
-                    assemblyList.Show(dockPanel);
+                case "projectExplorerToolStripMenuItem":
+                    projectExplorer.Show(dockPanel);
                     break;
                 case "testExplorerToolStripMenuItem":
                     testExplorer.Show(dockPanel);
@@ -986,17 +1023,17 @@ namespace Gallio.Icarus
             });
         }
 
-        public void UpdateSelectedNode(string testId)
+        public void UpdateSelectedNode(IList<string> testIds)
         {
-            if (testId != string.Empty)
+            if (testIds.Count > 0)
             {
                 executionLogTaskManager.StartTask(delegate
                 {
                     if (GetExecutionLog != null)
-                        GetExecutionLog(this, new SingleEventArgs<string>(testId));
+                        GetExecutionLog(this, new SingleEventArgs<IList<string>>(testIds));
                 });
             }
-            testResults.SelectedNodeId = testId;
+            testResults.SelectedNodeIds = testIds;
         }
 
         private void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)

@@ -123,6 +123,13 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        internal static System.Drawing.Icon Report {
+            get {
+                object obj = ResourceManager.GetObject("Report", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Test {
             get {
                 object obj = ResourceManager.GetObject("Test", resourceCulture);
@@ -134,6 +141,13 @@ namespace Gallio.Icarus.Properties {
             get {
                 object obj = ResourceManager.GetObject("tick", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon XmlFile {
+            get {
+                object obj = ResourceManager.GetObject("XmlFile", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

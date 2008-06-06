@@ -55,7 +55,6 @@ namespace Gallio.Icarus
             this.fileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.assemblyListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -92,6 +91,7 @@ namespace Gallio.Icarus
             this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -184,7 +184,7 @@ namespace Gallio.Icarus
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.testExplorerToolStripMenuItem,
-            this.assemblyListToolStripMenuItem,
+            this.projectExplorerToolStripMenuItem,
             this.reportToolStripMenuItem,
             this.testResultsToolStripMenuItem,
             this.propertiesToolStripMenuItem,
@@ -199,29 +199,22 @@ namespace Gallio.Icarus
             // testExplorerToolStripMenuItem
             // 
             this.testExplorerToolStripMenuItem.Name = "testExplorerToolStripMenuItem";
-            this.testExplorerToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.testExplorerToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.testExplorerToolStripMenuItem.Text = "Test explorer";
             this.testExplorerToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
-            // 
-            // assemblyListToolStripMenuItem
-            // 
-            this.assemblyListToolStripMenuItem.Name = "assemblyListToolStripMenuItem";
-            this.assemblyListToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.assemblyListToolStripMenuItem.Text = "Modules";
-            this.assemblyListToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // reportToolStripMenuItem
             // 
             this.reportToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("reportToolStripMenuItem.Image")));
             this.reportToolStripMenuItem.Name = "reportToolStripMenuItem";
-            this.reportToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.reportToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.reportToolStripMenuItem.Text = "Report";
             this.reportToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // testResultsToolStripMenuItem
             // 
             this.testResultsToolStripMenuItem.Name = "testResultsToolStripMenuItem";
-            this.testResultsToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.testResultsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.testResultsToolStripMenuItem.Text = "Test results";
             this.testResultsToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
@@ -229,35 +222,35 @@ namespace Gallio.Icarus
             // 
             this.propertiesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("propertiesToolStripMenuItem.Image")));
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.propertiesToolStripMenuItem.Text = "Properties";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // testFiltersToolStripMenuItem
             // 
             this.testFiltersToolStripMenuItem.Name = "testFiltersToolStripMenuItem";
-            this.testFiltersToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.testFiltersToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.testFiltersToolStripMenuItem.Text = "Test filters";
             this.testFiltersToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // executionLogToolStripMenuItem
             // 
             this.executionLogToolStripMenuItem.Name = "executionLogToolStripMenuItem";
-            this.executionLogToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.executionLogToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.executionLogToolStripMenuItem.Text = "Execution log";
             this.executionLogToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // runtimeLogToolStripMenuItem
             // 
             this.runtimeLogToolStripMenuItem.Name = "runtimeLogToolStripMenuItem";
-            this.runtimeLogToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.runtimeLogToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.runtimeLogToolStripMenuItem.Text = "Runtime log";
             this.runtimeLogToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
             // annotationsToolStripMenuItem
             // 
             this.annotationsToolStripMenuItem.Name = "annotationsToolStripMenuItem";
-            this.annotationsToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.annotationsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.annotationsToolStripMenuItem.Text = "Annotations";
             this.annotationsToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
             // 
@@ -530,6 +523,13 @@ namespace Gallio.Icarus
             this.dockPanel.Size = new System.Drawing.Size(1003, 636);
             this.dockPanel.TabIndex = 8;
             // 
+            // projectExplorerToolStripMenuItem
+            // 
+            this.projectExplorerToolStripMenuItem.Name = "projectExplorerToolStripMenuItem";
+            this.projectExplorerToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.projectExplorerToolStripMenuItem.Text = "Project explorer";
+            this.projectExplorerToolStripMenuItem.Click += new System.EventHandler(this.showWindowToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -602,7 +602,6 @@ namespace Gallio.Icarus
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testExplorerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem assemblyListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testResultsToolStripMenuItem;
@@ -611,6 +610,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem executionLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runtimeLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem annotationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem projectExplorerToolStripMenuItem;
     }
 }
 
