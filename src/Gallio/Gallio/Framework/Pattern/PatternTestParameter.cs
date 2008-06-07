@@ -15,7 +15,6 @@
 
 using System;
 using Gallio.Framework.Data;
-using Gallio.Framework.Data.Binders;
 using Gallio.Model;
 using Gallio.Reflection;
 

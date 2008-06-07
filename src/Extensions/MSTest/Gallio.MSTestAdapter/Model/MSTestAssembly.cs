@@ -18,14 +18,10 @@ using Gallio.Reflection;
 
 namespace Gallio.MSTestAdapter.Model
 {
-    public class MSTestAssembly : MSTest
+    internal class MSTestAssembly : MSTest
     {
-        private readonly string directoryName;
-        private readonly string resultsFileName;
-        private readonly string testMetadataFileName;
-
         /// <summary>
-        /// 
+        /// Creates an object to represent an MSTest assembly.
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeElement">The point of definition, or null if none</param>
@@ -33,44 +29,14 @@ namespace Gallio.MSTestAdapter.Model
         public MSTestAssembly(string name, ICodeElementInfo codeElement) 
             : base(name, codeElement)
         {
-            directoryName = System.IO.Path.GetDirectoryName(((IAssemblyInfo)codeElement).Path) + "/";
-            string pathWithoutExtension = codeElement.Name;
-            if (pathWithoutExtension != null)
-            {
-                pathWithoutExtension = pathWithoutExtension.Replace(".exe", "");
-                resultsFileName = pathWithoutExtension + ".trx";
-                testMetadataFileName = pathWithoutExtension + ".vsmdi";
-            }
         }
 
-        internal string ResultsFileName
+        /// <summary>
+        /// Gets the path of the assembly.
+        /// </summary>
+        public string AssemblyFilePath
         {
-            get { return resultsFileName; }
-        }
-
-        internal string FullResultsFileName
-        {
-            get { return DirectoryName + @"/" + resultsFileName; }
-        }
-
-        internal string FullPath
-        {
-            get { return ((IAssemblyInfo) CodeElement).Path;  }
-        }
-
-        internal string DirectoryName
-        {
-            get { return directoryName; }
-        }
-
-        internal string TestMetadataFileName
-        {
-            get { return testMetadataFileName; }
-        }
-
-        internal string FullTestMetadataFileName
-        {
-            get { return DirectoryName + testMetadataFileName; }
+            get { return ((IAssemblyInfo)CodeElement).Path; }
         }
     }
 }

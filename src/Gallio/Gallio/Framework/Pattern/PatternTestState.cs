@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
-using Gallio.Framework.Data.Binders;
-using Gallio.Framework.Data.Conversions;
-using Gallio.Framework.Data.Formatters;
+using Gallio.Framework.Data;
+using Gallio.Framework.Conversions;
+using Gallio.Framework.Formatting;
 using Gallio.Reflection;
 
 namespace Gallio.Framework.Pattern

@@ -22,10 +22,10 @@ using Gallio.Model.Execution;
 
 namespace Gallio.MSTestAdapter.Model
 {
-    public class MSTest : BaseTest
+    internal class MSTest : BaseTest
     {
-        private string testName;
         private static readonly SHA1CryptoServiceProvider provider = new SHA1CryptoServiceProvider();
+        private string testName;
         private string guid;
 
         /// <summary>
@@ -37,37 +37,33 @@ namespace Gallio.MSTestAdapter.Model
         public MSTest(string name, ICodeElementInfo codeElement)
             : base(name, codeElement)
         {
-            GetTestName();
-            GetGuid();
+            PopulateTestName();
+            PopulateGuid();
         }
 
         /// <inheritdoc />
         public override Func<ITestController> TestControllerFactory
         {
-            get { return CreateTestController; }
+            get { return MSTestController.CreateController; }
         }
 
-        private static ITestController CreateTestController()
-        {
-            return new MSTestController(MSTestProcess.Instance);
-        }
-
+        /// <summary>
+        /// Gets the name MSTest uses to refer to the test.
+        /// </summary>
         internal string TestName
         {
             get { return testName; }
         }
 
-        internal string TestListName
-        {
-            get { return Name; }
-        }
-
+        /// <summary>
+        /// Gets the GUID MSTest uses to refer to the test.
+        /// </summary>
         internal string Guid
         {
             get { return guid; }
         }
 
-        private void GetTestName()
+        private void PopulateTestName()
         {
             CodeReference codeReference = CodeElement.CodeReference;
             testName = String.Empty;
@@ -76,7 +72,7 @@ namespace Gallio.MSTestAdapter.Model
             testName += codeReference.TypeName + "." + codeReference.MemberName;
         }
 
-        private void GetGuid()
+        private void PopulateGuid()
         {
             guid = GuidFromString(testName).ToString();
         }

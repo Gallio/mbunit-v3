@@ -25,6 +25,7 @@ namespace Gallio.Runner.Harness
     /// A contextual log text writer messages to a named log stream in the log associated
     /// with the test execution context that is active at the time each message is written.
     /// </summary>
+    [Serializable]
     public sealed class ContextualLogTextWriter : TextWriter
     {
         private readonly string streamName;

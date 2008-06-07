@@ -19,8 +19,8 @@ using System.Reflection;
 using Gallio.Collections;
 using Gallio.Runtime;
 using Gallio.Framework.Data;
-using Gallio.Framework.Data.Conversions;
-using Gallio.Framework.Data.Formatters;
+using Gallio.Framework.Conversions;
+using Gallio.Framework.Formatting;
 using Gallio.Reflection;
 using MbUnit.Framework;
 

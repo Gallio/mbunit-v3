@@ -1,14 +1,16 @@
 ﻿using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.MSTestAdapter.Model;
+using Gallio.MSTestAdapter.Wrapper;
+using Gallio.Runner.Caching;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.MSTestAdapter.Tests.Model
 {
-    class StubbedMSTestController : MSTestController
+    internal class StubbedMSTestController : MSTestController
     {
-        public StubbedMSTestController(IMSTestProcess msTestProcess)
-            : base(msTestProcess)
+        public StubbedMSTestController(IMSTestCommand msTestCommand, IDiskCache cache)
+            : base(msTestCommand, cache)
         {
         }
 

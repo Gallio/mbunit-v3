@@ -20,7 +20,7 @@ using System.Text;
 using Gallio;
 using Gallio.Runtime;
 using Gallio.Framework;
-using Gallio.Framework.Data.Formatters;
+using Gallio.Framework.Formatting;
 
 #pragma warning disable 1591
 

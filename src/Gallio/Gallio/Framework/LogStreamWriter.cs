@@ -29,9 +29,16 @@ namespace Gallio.Framework
     /// may be further subdivided into sections.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The operations on this interface are thread-safe.
+    /// </para>
+    /// <para>
+    /// The object extends <see cref="MarshalByRefObject" /> so instances may be
+    /// accessed by remote clients if required.
+    /// </para>
     /// </remarks>
     /// <seealso cref="LogWriter"/>
+    [Serializable]
     public abstract class LogStreamWriter : TextWriter
     {
         private readonly string streamName;

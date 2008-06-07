@@ -210,7 +210,7 @@ namespace Gallio.Concurrency
         }
 
         /// <summary>
-        /// The event fired when new output is received on the console output stream.
+        /// The event fired when each line of new output is received on the console output stream.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -218,14 +218,14 @@ namespace Gallio.Concurrency
         /// no data is lost.
         /// </para>
         /// <para>
-        /// Please node that the <see cref="DataReceivedEventArgs.Data" /> property
+        /// Please note that the <see cref="DataReceivedEventArgs.Data" /> property
         /// will be null when the redirected stream is closed after the process exits.
         /// </para>
         /// </remarks>
         public event EventHandler<DataReceivedEventArgs> ConsoleOutputDataReceived;
 
         /// <summary>
-        /// The event fired when new output is received on the console error stream.
+        /// The event fired when each line of new output is received on the console error stream.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -233,7 +233,7 @@ namespace Gallio.Concurrency
         /// no data is lost.
         /// </para>
         /// <para>
-        /// Please node that the <see cref="DataReceivedEventArgs.Data" /> property
+        /// Please note that the <see cref="DataReceivedEventArgs.Data" /> property
         /// will be null when the redirected stream is closed after the process exits.
         /// </para>
         /// </remarks>

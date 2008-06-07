@@ -15,25 +15,46 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
-using Gallio.Concurrency;
+using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.MSTestAdapter.Properties;
+using Gallio.MSTestAdapter.Wrapper;
+using Gallio.Runner.Caching;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.MSTestAdapter.Model
 {
     internal class MSTestController : BaseTestController
     {
-        private IMSTestProcess msTestProcess;
+        private static readonly Guid RootTestListGuid = new Guid("8c43106b-9dc1-4907-a29f-aa66a61bf5b6");
+        private static readonly Guid SelectedTestListGuid = new Guid("05EF261C-0065-4c5f-9DE3-3D068277A643");
+        private const string SelectedTestListName = "SelectedTests";
 
-        internal MSTestController(IMSTestProcess msTestProcess)
+        private readonly IMSTestCommand mstestCommand;
+        private readonly IDiskCache diskCache;
+
+        internal MSTestController(IMSTestCommand mstestCommand, IDiskCache diskCache)
         {
-            if (msTestProcess == null)
-                throw new ArgumentNullException("msTestProcess");
-            this.msTestProcess = msTestProcess;
+            if (mstestCommand == null)
+                throw new ArgumentNullException("mstestCommand");
+            if (diskCache == null)
+                throw new ArgumentNullException("diskCache");
+
+            this.mstestCommand = mstestCommand;
+            this.diskCache = diskCache;
+        }
+
+        public static MSTestController CreateController()
+        {
+            var command = Debugger.IsAttached 
+                ? (IMSTestCommand) DebugMSTestCommand.Instance
+                : StandaloneMSTestCommand.Instance;
+
+            return new MSTestController(command, new TemporaryDiskCache());
         }
 
         /// <inheritdoc />
@@ -64,25 +85,19 @@ namespace Gallio.MSTestAdapter.Model
             TestOutcome outcome;
             if (assemblyTest != null)
             {
-                ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
+                ITestContext assemblyContext = testCommand.StartPrimaryChildStep(parentTestStep);
                 try
                 {
-                    IList<ITestCommand> allCommands = testCommand.GetAllCommands();                    
-                    DeleteOutputFilesIfExist(assemblyTest);
-                    progressMonitor.SetStatus("Generating tests list");
-                    GenerateTestList(assemblyTest, allCommands);
-                    progressMonitor.SetStatus("Executing tests");
-                    ExecuteTests(context, assemblyTest);
-                    progressMonitor.SetStatus("Processing results");
-                    bool passed = ProcessTestResults(context, testCommand, allCommands);
-                    outcome = passed ? TestOutcome.Passed : TestOutcome.Failed;
+                    outcome = RunSession(assemblyContext, assemblyTest,
+                        testCommand, parentTestStep, progressMonitor);
                 }
                 catch (Exception ex)
                 {
-                    TestLogWriterUtils.WriteException(context.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
+                    TestLogWriterUtils.WriteException(assemblyContext.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
                     outcome = TestOutcome.Error;
                 }
-                context.FinishStep(outcome, null);
+
+                assemblyContext.FinishStep(outcome, null);
             }
             else
             {
@@ -93,26 +108,44 @@ namespace Gallio.MSTestAdapter.Model
             return outcome;
         }
 
-        private static void DeleteOutputFilesIfExist(MSTestAssembly assemblyTest)
+        private TestOutcome RunSession(ITestContext assemblyContext, MSTestAssembly assemblyTest,
+            ITestCommand assemblyTestCommand, ITestStep parentTestStep, IProgressMonitor progressMonitor)
         {
-            //TODO: Should we wrap the potential exceptions that can occur here?
-            if (File.Exists(assemblyTest.FullResultsFileName))
+            IDiskCacheGroup cacheGroup = diskCache.Groups["MSTestAdapter:" + Guid.NewGuid().ToString()];
+            try
             {
-                File.Delete(assemblyTest.FullResultsFileName);
+                cacheGroup.Create();
+
+                string testMetadataPath = cacheGroup.GetFileInfo("tests.vsmdi").FullName;
+                string testResultsPath = cacheGroup.GetFileInfo("tests.trx").FullName;
+                string workingDirectory = Environment.CurrentDirectory;
+
+                progressMonitor.SetStatus("Generating tests list");
+                GenerateTestList(assemblyTestCommand.PreOrderTraversal, assemblyTest, testMetadataPath);
+
+                progressMonitor.SetStatus("Executing tests");
+                TestOutcome outcome = ExecuteTests(assemblyContext, workingDirectory,
+                    testMetadataPath, testResultsPath);
+
+                progressMonitor.SetStatus("Processing results");
+                if (!ProcessTestResults(assemblyContext, assemblyTestCommand, testResultsPath))
+                    outcome = outcome.CombineWith(TestOutcome.Failed);
+
+                return outcome;
             }
-            if (File.Exists(assemblyTest.FullTestMetadataFileName))
+            finally
             {
-                File.Delete(assemblyTest.FullTestMetadataFileName);
+                cacheGroup.Delete();
             }
         }
 
-        private static void GenerateTestList(MSTestAssembly assemblyTest, IEnumerable<ITestCommand> testCommands)
+        private static void GenerateTestList(IEnumerable<ITestCommand> testCommands,
+            MSTestAssembly assemblyTest, string testMetadataFilePath)
         {
-            string parentListId = "8c43106b-9dc1-4907-a29f-aa66a61bf5b6";
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.CloseOutput = true;
-            using (XmlWriter xmlWriter = XmlWriter.Create(assemblyTest.FullTestMetadataFileName, settings))
+            using (XmlWriter xmlWriter = XmlWriter.Create(testMetadataFilePath, settings))
             {
                 xmlWriter.WriteStartDocument();
 
@@ -120,14 +153,14 @@ namespace Gallio.MSTestAdapter.Model
 
                 xmlWriter.WriteStartElement("TestList");
                 xmlWriter.WriteAttributeString("name", "Lists of Tests");
-                xmlWriter.WriteAttributeString("id", parentListId);
+                xmlWriter.WriteAttributeString("id", RootTestListGuid.ToString());
 
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteStartElement("TestList");
-                xmlWriter.WriteAttributeString("id", assemblyTest.Guid);
-                xmlWriter.WriteAttributeString("name", assemblyTest.TestListName);
-                xmlWriter.WriteAttributeString("parentListId", parentListId);
+                xmlWriter.WriteAttributeString("id", SelectedTestListGuid.ToString());
+                xmlWriter.WriteAttributeString("name", SelectedTestListName);
+                xmlWriter.WriteAttributeString("parentListId", RootTestListGuid.ToString());
                 xmlWriter.WriteStartElement("TestLinks");
 
                 foreach (ITestCommand command in testCommands)
@@ -137,9 +170,9 @@ namespace Gallio.MSTestAdapter.Model
                         xmlWriter.WriteStartElement("TestLink");
                         xmlWriter.WriteAttributeString("id", ((MSTest)command.Test).Guid);
                         xmlWriter.WriteAttributeString("name", ((MSTest)command.Test).TestName);
-                        xmlWriter.WriteAttributeString("storage", assemblyTest.FullPath);
+                        xmlWriter.WriteAttributeString("storage", assemblyTest.AssemblyFilePath);
                         xmlWriter.WriteAttributeString("type",
-                            "Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a");
+                            "Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, PublicKeyToken=b03f5f7f11d50a3a");
                         xmlWriter.WriteEndElement();
                     }
                 }
@@ -150,29 +183,58 @@ namespace Gallio.MSTestAdapter.Model
             }
         }
 
-        private void ExecuteTests(ITestContext assemblyContext, MSTestAssembly assemblyTest)
+        private TestOutcome ExecuteTests(ITestContext context, string workingDirectory,
+            string testMetadataPath, string testResultsPath)
         {
-            if (!msTestProcess.Run(assemblyTest))
+            MSTestCommandArguments args = new MSTestCommandArguments();
+            args.NoLogo = true;
+            args.TestMetadata = testMetadataPath;
+            args.ResultsFile = testResultsPath;
+            args.TestList = SelectedTestListName;
+
+            TextWriter writer = new TestLogStreamWriter(context.LogWriter, "MSTest Output");
+            int exitCode = mstestCommand.Run(workingDirectory, args, writer, writer);
+
+            if (exitCode == -1)
             {
-                assemblyContext.LogWriter.Write(LogStreamNames.Warnings,
+                context.LogWriter.Write(LogStreamNames.Failures,
                    Resources.MSTestController_MSTestExecutableNotFound);
+                return TestOutcome.Error;
             }
+
+            if (exitCode != 0)
+            {
+                context.LogWriter.Write(LogStreamNames.Warnings,
+                    String.Format("MSTest returned an exit code of {0}.", exitCode));
+            }
+
+            return TestOutcome.Passed;
         }
 
-        private static bool ProcessTestResults(ITestContext assemblyContext, ITestCommand assemblyCommand, IEnumerable<ITestCommand> allCommands)
+        private static bool ProcessTestResults(ITestContext assemblyContext,
+            ITestCommand assemblyCommand, string resultsFilePath)
         {
-            MSTestAssembly assemblyTest = (MSTestAssembly)assemblyCommand.Test;
+            Dictionary<string, MSTestExecutionInfo> testExecutionInfos = new Dictionary<string,MSTestExecutionInfo>();
 
-            // Erros in the class or assembly setup/teardown methods are put in a general error
-            // section by MSTest, so we log them at the assembly level.
-            ProcessGeneralErrorMessages(assemblyContext, assemblyTest);
+            if (File.Exists(resultsFilePath))
+            {
+                using (XmlReader reader = OpenTestResultsFile(resultsFilePath))
+                {
+                    // Errors in the class or assembly setup/teardown methods are put in a general error
+                    // section by MSTest, so we log them at the assembly level.
+                    ProcessGeneralErrorMessages(assemblyContext, reader);
+                }
 
-            Dictionary<string, MSTestExecutionInfo> testExecutionInfos = ExtractExecutedTestsInformation(assemblyTest);
+                using (XmlReader reader = OpenTestResultsFile(resultsFilePath))
+                {
+                    ExtractExecutedTestsInformation(testExecutionInfos, reader);
+                }
+            }
 
             // The ignored tests won't be run by MSTest. In the case where all the selected tests
             // have been ignored, we won't even have a results file, so we need to process them
             // here.
-            ProcessIgnoredTests(testExecutionInfos, allCommands);
+            ProcessIgnoredTests(testExecutionInfos, assemblyCommand.PreOrderTraversal);
 
             bool passed = true;
             foreach (ITestCommand command in assemblyCommand.Children)
@@ -183,18 +245,23 @@ namespace Gallio.MSTestAdapter.Model
             return passed;
         }
 
-        private static void ProcessGeneralErrorMessages(ITestContext assemblyContext, MSTestAssembly assemblyTest)
+        private static XmlReader OpenTestResultsFile(string path)
         {
-            if (File.Exists(assemblyTest.FullResultsFileName))
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+            settings.CloseInput = true;
+            return XmlReader.Create(path, settings);
+        }
+
+        private static void ProcessGeneralErrorMessages(ITestContext assemblyContext,
+            XmlReader reader)
+        {
+            while (reader.ReadToFollowing("RunInfo"))
             {
-                using (XmlReader reader = XmlReader.Create(assemblyTest.FullResultsFileName))
-                {
-                    while (reader.ReadToFollowing("RunInfo"))
-                    {
-                        reader.ReadToFollowing("Text");
-                        LogError(assemblyContext, reader.ReadString());
-                    }
-                }
+                reader.ReadToFollowing("Text");
+                LogError(assemblyContext, reader.ReadString());
             }
         }
 
@@ -218,16 +285,17 @@ namespace Gallio.MSTestAdapter.Model
                         testContext.FinishStep(testExecutionInfo.Outcome, testExecutionInfo.Duration);
                         return (testExecutionInfo.Outcome != TestOutcome.Error && testExecutionInfo.Outcome != TestOutcome.Failed);
                     }
-                    testContext.FinishStep(TestOutcome.Passed, null);
+
+                    testContext.LogWriter.Write(LogStreamNames.Warnings, "No test results available!");
+                    testContext.FinishStep(TestOutcome.Skipped, null);
                     return true;
                 }
                 else if (command.Children.Count > 0)
                 {
                     bool passed = true;
                     foreach (ITestCommand child in command.Children)
-                    {
                         passed &= ProcessTestCommand(child, testContext.TestStep, testExecutionInfos);
-                    }
+
                     testContext.FinishStep(passed ? TestOutcome.Passed : TestOutcome.Failed, null);
                     return passed;
                 }
@@ -244,41 +312,30 @@ namespace Gallio.MSTestAdapter.Model
             }
         }
 
-        private static Dictionary<string, MSTestExecutionInfo> ExtractExecutedTestsInformation(MSTestAssembly assemblyTest)
+        private static void ExtractExecutedTestsInformation(
+            Dictionary<string, MSTestExecutionInfo> testExecutionInfos,
+            XmlReader reader)
         {
-            Dictionary<string, MSTestExecutionInfo> testsExecutionInfo = new Dictionary<string, MSTestExecutionInfo>();
-            if (File.Exists(assemblyTest.FullResultsFileName))
+            while (reader.ReadToFollowing("UnitTestResult"))
             {
-                XmlReaderSettings settings = new XmlReaderSettings();
-                settings.IgnoreComments = true;
-                settings.IgnoreProcessingInstructions = true;
-                settings.IgnoreWhitespace = true;
-                settings.CloseInput = true;
-                using (XmlReader reader = XmlReader.Create(assemblyTest.FullResultsFileName, settings))
+                MSTestExecutionInfo testExecutionInfo = new MSTestExecutionInfo();
+                testExecutionInfo.Guid = reader.GetAttribute("testId");
+                testExecutionInfo.Duration = GetDuration(reader.GetAttribute("duration"));
+                testExecutionInfo.Outcome = GetTestOutcome(reader.GetAttribute("outcome"));
+                reader.ReadToFollowing("Output");
+                reader.Read();
+                if (reader.Name == "StdOut")
                 {
-                    while (reader.ReadToFollowing("UnitTestResult"))
-                    {
-                        MSTestExecutionInfo testExecutionInfo = new MSTestExecutionInfo();
-                        testExecutionInfo.Guid = reader.GetAttribute("testId");
-                        testExecutionInfo.Duration = GetDuration(reader.GetAttribute("duration"));
-                        testExecutionInfo.Outcome = GetTestOutcome(reader.GetAttribute("outcome"));
-                        reader.ReadToFollowing("Output");
-                        reader.Read();
-                        if (reader.Name == "StdOut")
-                        {
-                            testExecutionInfo.StdOut = reader.ReadString();
-                            reader.Read();
-                        }
-                        if (reader.Name == "ErrorInfo")
-                        {
-                            testExecutionInfo.Errors = ReadErrors(reader);
-                        }
-                        testsExecutionInfo.Add(testExecutionInfo.Guid, testExecutionInfo);
-                    }
+                    testExecutionInfo.StdOut = reader.ReadString();
+                    reader.Read();
                 }
-            }
+                if (reader.Name == "ErrorInfo")
+                {
+                    testExecutionInfo.Errors = ReadErrors(reader);
+                }
 
-            return testsExecutionInfo;
+                testExecutionInfos.Add(testExecutionInfo.Guid, testExecutionInfo);
+            }
         }
 
         private static void ProcessIgnoredTests(Dictionary<string, MSTestExecutionInfo> testCommandsByTestGuid, IEnumerable<ITestCommand> allCommands)
@@ -391,7 +448,7 @@ namespace Gallio.MSTestAdapter.Model
             return TimeSpan.Parse(duration);
         }
 
-        private class MSTestExecutionInfo
+        private sealed class MSTestExecutionInfo
         {
             public string Guid;
             public TimeSpan? Duration;

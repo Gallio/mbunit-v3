@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Gallio.Collections;
-using Gallio.Framework.Data.Conversions;
-using Gallio.Framework.Data.Formatters;
+using Gallio.Framework.Conversions;
+using Gallio.Framework.Formatting;
 using Gallio.Reflection;
 
 namespace Gallio.Framework.Data

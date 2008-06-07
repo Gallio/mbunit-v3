@@ -65,7 +65,7 @@ namespace Gallio.Framework
 
             this.inner = inner;
             this.sandbox = sandbox;
-            logWriter = new InternalLogWriter(inner.LogWriter);
+            logWriter = new TestLogWriter(inner.LogWriter);
         }
 
         private static ITestContextTracker ContextTracker

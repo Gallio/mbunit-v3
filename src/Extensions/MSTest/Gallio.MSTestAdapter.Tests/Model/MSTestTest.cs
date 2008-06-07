@@ -20,6 +20,7 @@ namespace Gallio.MSTestAdapter.Tests.Model
 {
     [TestsOn(typeof(MSTest))]
     [Author("Julian", "julian.hidalgo@gallio.com")]
+    [Pending("Needs implementation.")]
     public class MSTestTest
     {
     }
