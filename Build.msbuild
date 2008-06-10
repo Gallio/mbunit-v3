@@ -203,12 +203,12 @@
 
   <Target Name="BuildInstallerWix"
           DependsOnTargets="CreateBuildDir">
-    <MSBuild Projects="$(RootDir)\src\Installer.Wix\GallioBundle.wixproj"
+    <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Build"
              Properties="$(InstallerWixProperties)" />
   </Target>
   <Target Name="CleanInstallerWix">
-    <MSBuild Projects="$(RootDir)\src\Installer.Wix\GallioBundle.wixproj"
+    <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Clean"
              Properties="$(InstallerWixProperties)" />
   </Target>

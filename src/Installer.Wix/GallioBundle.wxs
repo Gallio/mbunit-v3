@@ -68,6 +68,7 @@
             <FeatureRef Id='feat_Gallio.NAntTasks'/>
             <FeatureRef Id='feat_Gallio.PowerShellCommands'/>
             <FeatureRef Id='feat_Gallio.ReSharper.V31'/>
+            <FeatureRef Id='feat_Gallio.ReSharper.V40'/>
             <FeatureRef Id='feat_Gallio.TDNet'/>
             <FeatureRef Id='feat_MSTestRunner'/>
         </Feature>
@@ -90,7 +91,7 @@
         <!-- -->
         <!-- Properties used by 'Add or Remove Programs' in Control Panel. -->
         <!-- -->
-        
+
         <!-- URL for technical support. -->
         <Property Id='ARPHELPLINK'>http://www.gallio.org/</Property>
 

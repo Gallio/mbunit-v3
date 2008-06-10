@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" 
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:vs="http://schemas.microsoft.com/wix/VSExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <Fragment>
@@ -8,7 +8,7 @@
         <!-- TODO: Need to support VS2005 Help as well. -->
 
         <Property Id="GALLIO_HOMEPAGE" Value="http://www.gallio.org/" />
-                
+
         <DirectoryRef Id="INSTALLDIR">
             <Component Id="Apache.License" Guid="{66f9f954-992a-44ce-8696-082b3807d845}">
                 <File Id="Apache.License.txt" Name="ASL - Apache Software Foundation License.txt" Source="$(var.TargetDir)\ASL - Apache Software Foundation License.txt" KeyPath="yes" />
@@ -25,7 +25,7 @@
                 <util:InternetShortcut Id="Gallio.Website" Name="Gallio Website" Directory="GallioMenuFolder"
                     Target="http://www.gallio.org/" />
                   -->
-            </Component>            
+            </Component>
             <Component Id="Gallio.Registry" Guid="{1AE1AC98-1FF2-4913-9ACA-EB8018E40508}">
                 <RegistryKey Id="Gallio.RegistryKey1" Action="createAndRemoveOnUninstall"
                              Root="HKLM" Key="Software\Gallio.org\Gallio\3.0">
@@ -47,7 +47,7 @@
                 <File Id="Gallio.dll" Source="$(var.TargetDir)\bin\Gallio.dll" KeyPath="yes" />
                 <File Id="Gallio.plugin" Source="$(var.TargetDir)\bin\Gallio.plugin" />
                 <File Id="Gallio.xml" Source="$(var.TargetDir)\bin\Gallio.xml" />
-                <File Id="Gallio.pdb" Source="$(var.TargetDir)\bin\Gallio.pdb" />                
+                <File Id="Gallio.pdb" Source="$(var.TargetDir)\bin\Gallio.pdb" />
             </Component>
             <Component Id="Gallio.XmlSerializers" Guid="{1F8F8C04-E8CF-478c-AD16-9D90921C71A5}">
                 <File Id="Gallio.XmlSerializers.dll" Source="$(var.TargetDir)\bin\Gallio.XmlSerializers.dll" KeyPath="yes" />
@@ -74,19 +74,29 @@
                     </File>
                     <File Id="GallioCollection.HxC" Source="$(var.TargetDir)\docs\vs\GallioCollection.HxC">
                         <!-- <vs:HelpCollection Id="GallioVsHelp.Collection" Name="GallioCollection" Description="Gallio API Documentation" /> -->
-                        <!-- <vs:PlugCollectionInto ... /> -->                        
+                        <!-- <vs:PlugCollectionInto ... /> -->
                     </File>
                     <File Id="GallioCollection.HxT" Source="$(var.TargetDir)\docs\vs\GallioCollection.HxT" />
                     <File Id="GallioCollection_A.HxK" Source="$(var.TargetDir)\docs\vs\GallioCollection_A.HxK" />
                     <File Id="GallioCollection_F.HxK" Source="$(var.TargetDir)\docs\vs\GallioCollection_F.HxK" />
                     <File Id="GallioCollection_K.HxK" Source="$(var.TargetDir)\docs\vs\GallioCollection_K.HxK" />
                 </Component>
-                <Component Id="h2reg.ini" Guid="7bb0227e-0dc9-4385-b97c-1b9aff6504fd">
-                    <File Id="h2reg.ini" Source="$(var.TargetDir)\docs\vs\GallioCollection.h2reg.ini" />
+                <Component Id="Gallio.H2Reg.ini" Guid="7bb0227e-0dc9-4385-b97c-1b9aff6504fd">
+                    <File Id="Gallio.H2Reg.ini" Source="$(var.TargetDir)\docs\vs\GallioCollection.h2reg.ini" />
                 </Component>
             </Directory>
         </DirectoryRef>
         <!-- <vs:HelpFilter Id="GallioCollection" Name="GallioCollection" FilterDefinition="("DocSet"="Gallio")" /> -->
+
+        <DirectoryRef Id="extraFolder">
+            <Directory Id='H2RegDir' Name='H2Reg'>
+                <Component Id="H2Reg.exe" Guid="779c47b3-56ba-4efc-ab52-3b809c2f2c3b">
+                    <File Id="H2Reg.exe" Source="$(sys.SOURCEFILEDIR)..\..\libs\H2Reg\H2Reg.exe" KeyPath="yes" />
+                    <File Id="H2Reg.ini" Source="$(sys.SOURCEFILEDIR)..\..\libs\H2Reg\H2Reg.ini" />
+                    <RemoveFile Id="H2Reg_Log.txt" Name="H2Reg_Log.txt" On="uninstall" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
 
         <Feature Id="feat_Gallio" Title="Gallio" Level="1" InstallDefault="local" TypicalDefault="install" Absent="disallow" Description="Installs the Gallio test automation platform." ConfigurableDirectory="INSTALLDIR">
             <ComponentRef Id="Gallio" />
@@ -98,7 +108,7 @@
             <ComponentRef Id="Gallio.Registry" />
             <ComponentRef Id="Apache.License" />
         </Feature>
-        
+
         <Feature Id="feat_Gallio.Help" Title="Standalone Help Docs" Level="1" Description="Installs the standalone help documentation CHM file.">
             <ComponentRef Id="Gallio.chm" />
         </Feature>
@@ -108,17 +118,16 @@
         <Feature Id="feat_Gallio.VSHelp" Title="Visual Studio Help Docs" Level="2" Description="Installs the integrated documentation for Visual Studio 2005 or Visual Studio 2008 access with F1 Help.">
             <Condition Level="1">VS90DEVENV</Condition>
             <ComponentRef Id="Gallio.Help.vs" />
-            <ComponentRef Id="h2reg.ini" />
+            <ComponentRef Id="Gallio.H2Reg.ini" />
+            <ComponentRef Id="H2Reg.exe" />
         </Feature>
 
-        <Binary Id="h2reg" SourceFile="$(sys.SOURCEFILEDIR)..\..\libs\H2Reg\h2reg.exe" />
-
-        <CustomAction Id="h2reg.Install"   BinaryKey="h2reg" ExeCommand='-r -q CmdFile="[#h2reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
-        <CustomAction Id="h2reg.Uninstall" BinaryKey="h2reg" ExeCommand='-u -q CmdFile="[#h2reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
+        <CustomAction Id="H2Reg.Install"   FileKey="H2Reg.exe" ExeCommand='-r CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
+        <CustomAction Id="H2Reg.Uninstall" FileKey="H2Reg.exe" ExeCommand='-u CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
 
         <InstallExecuteSequence>
-            <Custom Action='h2reg.Install' After="InstallFiles"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
-            <Custom Action="h2reg.Uninstall" Before="RemoveFiles"><![CDATA[(&feat_Gallio.VSHelp = 2) AND (!feat_Gallio.VSHelp = 3)]]></Custom>
+            <Custom Action='H2Reg.Install' After="InstallFiles"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
+            <Custom Action="H2Reg.Uninstall" Before="RemoveFiles"><![CDATA[(&feat_Gallio.VSHelp = 2) AND (!feat_Gallio.VSHelp = 3)]]></Custom>
         </InstallExecuteSequence>
     </Fragment>
 </Wix>
