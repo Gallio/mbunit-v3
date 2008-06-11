@@ -23,6 +23,8 @@
     </Binary>
 
     <TestAssembly Include="Gallio.MSTestAdapter.Tests\bin\Gallio.MSTestAdapter.Tests.dll" />
+
+    <Feature Include="FEATURE_MSTEST_ADAPTER" />
   </ItemGroup>
 
   <ItemGroup Condition="$(MSTestVSIPInstalled)">
@@ -34,5 +36,7 @@
     </Binary>
 
     <TestAssembly Include="Gallio.MSTestRunner.Tests\bin\Gallio.MSTestRunner.Tests.dll" />
+
+    <Feature Include="FEATURE_MSTEST_RUNNER" />
   </ItemGroup>
 </Project>

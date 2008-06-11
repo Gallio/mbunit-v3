@@ -84,7 +84,7 @@
             ApplicationBaseDirectory="$(BuildDir)"
             ReportDirectory="$(BuildReportsDir)"
             ReportTypes="$(ReportTypes)"
-	    RunnerType="$(RunnerType)"
+            RunnerType="$(RunnerType)"
             ShowReports="$(ShowReports)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
@@ -92,11 +92,11 @@
     <NCoverExplorer Condition="$(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')"
                     Exclusions="Assembly=*.Tests;Assembly=*.TestResources;Assembly=JetBrains.*"
                     XmlReportName="CoverageSummary.xml"
-		    ReportType="ModuleClassFunctionSummary"
-		    ToolPath="$(NCoverExplorerPath)"
+                    ReportType="ModuleClassFunctionSummary"
+                    ToolPath="$(NCoverExplorerPath)"
                     OutputDir="$(BuildReportsDir)"
-		    CoverageFiles="$(BuildTempDir)\Coverage.xml"
-		    SatisfactoryCoverage="$(SatisfactoryCoverage)" />
+                    CoverageFiles="$(BuildTempDir)\Coverage.xml"
+                    SatisfactoryCoverage="$(SatisfactoryCoverage)" />
 
     <Exec Command="cscript $(RootDir)\Run.vbs //nologo &quot;&quot;$(NCoverExplorerPath)\NCoverExplorer.exe&quot; &quot;$(BuildTempDir)\Coverage.xml&quot;&quot;"
           Condition="$(ShowReports) and $(Coverage) and Exists('$(BuildTempDir)\Coverage.xml')" />
@@ -169,6 +169,9 @@
           Condition="Exists('$(HTMLHelpCompilerPath)')" />
     <RemoveDir Directories="$(TargetDocsDir)\ndoc_msdn_temp" />
   </Target>
+  <ItemGroup Condition="Exists('$(HTMLHelpCompilerPath)')">
+    <Feature Include="FEATURE_CHM_HELP" />
+  </ItemGroup>
 
   <Target Name="BuildHxSDocs">
     <Warning Text="Visual Studio 2005 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the Visual Studio 2005 SDK installer."
@@ -178,6 +181,9 @@
           Condition="Exists('$(VS2005SDKHelpPath)')" />
     <RemoveDir Directories="$(TargetDocsDir)\vs\ndoc_htmlhelp2_temp" />
   </Target>
+  <ItemGroup Condition="Exists('$(VS2005SDKHelpPath)')">
+    <Feature Include="FEATURE_VS_HELP" />
+  </ItemGroup>
 
   <Target Name="BuildInstaller"
           DependsOnTargets="CreateBuildDir">
@@ -199,10 +205,20 @@
       WixExtDir=$(LibsDir)\Wix\bin;
       DefineSolutionProperties=false;
     </InstallerWixProperties>
+    <InstallerFeatureFile>$(SourceDir)\Installer.Wix\Features.wxi</InstallerFeatureFile>
   </PropertyGroup>
 
   <Target Name="BuildInstallerWix"
           DependsOnTargets="CreateBuildDir">
+    <WriteLinesToFile File="$(InstallerFeatureFile)"
+                      Lines="&lt;Include&gt;"
+                      Overwrite="true" />
+    <WriteLinesToFile File="$(InstallerFeatureFile)"
+                      Lines="@(Feature -> '&lt;?define %(Identity)=&quot;true&quot; ?&gt;')"
+                      Overwrite="false" />
+    <WriteLinesToFile File="$(InstallerFeatureFile)"
+                      Lines="&lt;/Include&gt;"
+                      Overwrite="false" />
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Build"
              Properties="$(InstallerWixProperties)" />

@@ -18,7 +18,7 @@
             </Component>
             <Component Id="Gallio.Website" Guid="{32DF17D3-27D2-4b7a-8094-37A559F2B234}">
                 <File Id="Gallio.Website.url" Name="Gallio Website.url" Source="$(var.TargetDir)\Gallio Website.url" KeyPath="yes">
-                    <Shortcut Id="Gallio.Website.lnk" Name="Gallio Website" Directory="GallioMenuFolder" Advertise="yes" /> <!-- TODO: Add icon -->
+                    <Shortcut Id="Gallio.Website.lnk" Name="Gallio Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
                 <RemoveFolder Id="GallioMenuFolder.Remove_GallioWebsite" Directory="GallioMenuFolder" On="uninstall" />
                 <!-- TODO: Need to find a way to put an icon on this link.

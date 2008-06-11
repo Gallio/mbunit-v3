@@ -4,7 +4,7 @@
         <DirectoryRef Id="INSTALLDIR">
             <Component Id="MbUnit.Website" Guid="{6F174992-5128-4c86-BEB3-7CD07C684DC1}">
                 <File Id="MbUnit.Website.url" Name="MbUnit Website.url" Source="$(var.TargetDir)\MbUnit Website.url" KeyPath="yes">
-                    <Shortcut Id="MbUnit.Website.lnk" Name="MbUnit Website" Directory="GallioMenuFolder" Advertise="yes"/>
+                    <Shortcut Id="MbUnit.Website.lnk" Name="MbUnit Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes"/>
                 </File>
                 <RemoveFolder Id="GallioMenuFolder.Remove_MbUnitWebsite" Directory="GallioMenuFolder" On="uninstall"/>
             </Component>

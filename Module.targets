@@ -16,6 +16,8 @@
        - Extra: Path of a file to copy into the build\target\extras dir.
        - File: Path of a file to copy into the build\target dir.
 
+       - Feature: Indicates whether a conditional feature has been compiled.
+
        (Binary, Document and File may have optional Folder metadata
         to specify a relative destination path within the respective dir.)
 
@@ -56,8 +58,8 @@
   <Target Name="_RecurseIntoNestedModules">
     <MSBuild Projects="@(NestedModule)"
              Targets="GetModuleItems"
-	     Properties="RootDir=$(RootDir)"
-	     Condition="'@(NestedModule)'!=''">
+             Properties="RootDir=$(RootDir)"
+             Condition="'@(NestedModule)'!=''">
       <Output TaskParameter="TargetOutputs" ItemName="NestedModuleItem" />
     </MSBuild>
   </Target>
@@ -104,6 +106,11 @@
                 AdditionalMetadata="ItemName=File;Folder=%(File.Folder)\%(File.RecursiveDir)">
       <Output TaskParameter="Include" ItemName="ModuleItem" />
     </CreateItem>
+
+    <CreateItem Include="@(Feature)"
+                AdditionalMetadata="ItemName=Feature">
+      <Output TaskParameter="Include" ItemName="ModuleItem" />
+    </CreateItem>
   </Target>
 
   <Target Name="RecursiveBeforeBuild" DependsOnTargets="BeforeBuild;_NestedRecursiveBeforeBuild"/>
@@ -112,15 +119,15 @@
   <Target Name="_NestedRecursiveBeforeBuild">
     <MSBuild Projects="@(NestedModule)"
              Targets="RecursiveBeforeBuild"
-	     Properties="RootDir=$(RootDir)"
-	     Condition="'@(NestedModule)'!=''" />
+             Properties="RootDir=$(RootDir)"
+             Condition="'@(NestedModule)'!=''" />
   </Target>
 
   <Target Name="_NestedRecursiveAfterBuild">
     <MSBuild Projects="@(NestedModule)"
              Targets="RecursiveAfterBuild"
-	     Properties="RootDir=$(RootDir)"
-	     Condition="'@(NestedModule)'!=''" />
+             Properties="RootDir=$(RootDir)"
+             Condition="'@(NestedModule)'!=''" />
   </Target>
 
   <!-- Override this target to add custom before build actions -->

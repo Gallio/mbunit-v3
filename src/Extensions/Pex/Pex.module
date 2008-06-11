@@ -9,15 +9,11 @@
     <CSharpProject Include="MbUnit.Pex.Tests\MbUnit.Pex.Tests.csproj" />
   </ItemGroup>
 
-  <Choose>
-    <When Condition="$(PexInstalled)">
-      <ItemGroup>
-        <Binary Include="MbUnit.Pex\bin\MbUnit.Pex.dll" />
-      </ItemGroup>
+  <ItemGroup Condition="$(PexInstalled)">
+    <Binary Include="MbUnit.Pex\bin\MbUnit.Pex.dll" />
 
-      <ItemGroup>
-        <TestAssembly Include="MbUnit.Pex.Tests\bin\MbUnit.Pex.Tests.dll" />
-      </ItemGroup>
-    </When>
-  </Choose>
+    <TestAssembly Include="MbUnit.Pex.Tests\bin\MbUnit.Pex.Tests.dll" />
+
+    <Feature Include="FEATURE_MBUNIT_PEX" />
+  </ItemGroup>
 </Project>

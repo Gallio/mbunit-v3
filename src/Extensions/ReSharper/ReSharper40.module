@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(RootDir)\Module.targets" />
   <Import Project="ReSharper40.targets" />
-  
+
   <ItemGroup>
     <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner40.csproj" />
     <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner40.Tests.csproj" />
@@ -16,5 +16,7 @@
     </Binary>
 
     <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v4.0\Gallio.ReSharperRunner40.Tests.dll" />
+
+    <Feature Include="FEATURE_RESHARPER_RUNNER_40" />
   </ItemGroup>
 </Project>
