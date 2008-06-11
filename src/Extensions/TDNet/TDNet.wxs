@@ -16,7 +16,6 @@
             </Component>
 
             <Component Id="TDNetApp.Icarus" Guid="0ebd2ab6-3341-4d25-a249-0af80fa32913">
-                <Condition><![CDATA[&feat_Gallio.Icarus > 1]]></Condition>
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Icarus">
                     <RegistryValue Type='string' Name='Application' Value='[#Gallio.Icarus.exe]'/>
@@ -65,7 +64,7 @@
 
             <Component Id="TDNetRunner.Xunit" Guid="648ce21a-3f03-48c4-a7c1-1591fd76258e">
                 <RegistryKey Action="createAndRemoveOnUninstall"
-                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\MbUnit.Gallio_Xunit">
+                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Xunit">
                     <RegistryValue Type='string' Value='5'/>
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
