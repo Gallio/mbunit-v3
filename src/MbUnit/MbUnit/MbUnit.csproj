@@ -111,6 +111,7 @@
     <Compile Include="Framework\FixtureTearDownAttribute.cs" />
     <Compile Include="Framework\Importance.cs" />
     <Compile Include="Framework\TestsOnAttribute.cs" />
+    <Compile Include="Framework\ThreadedRepeatAttribute.cs" />
     <Compile Include="Framework\TimeoutAttribute.cs" />
     <Compile Include="Framework\Xml\XmlSerializationAssert.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

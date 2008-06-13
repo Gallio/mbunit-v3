@@ -60,6 +60,7 @@
     <Compile Include="Framework\DataBindingTest.cs" />
     <Compile Include="Framework\AssertionExceptionTest.cs" />
     <Compile Include="Framework\Reflection\ReflectionExceptionTest.cs" />
+    <Compile Include="Framework\ThreadedRepeatAttributeTest.cs" />
     <Compile Include="Integration\ContextOutcomeTest.cs" />
     <Compile Include="Integration\FixtureInheritanceTest.cs" />
     <Compile Include="Model\MbUnitTestExplorerTest.cs" />
