@@ -13,33 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region Using Directives
-
 using System;
-using System.Collections.Generic;
-using System.Threading;
+using Gallio.Concurrency;
+using Gallio.Framework;
 using Gallio.Framework.Pattern;
-
-#endregion
+using Gallio.Model;
+using Gallio.Reflection;
 
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>This attribute defines a test method that will be invoked in the specified
-    /// number of concurrent threads.
+    /// <para>
+    /// This attribute decorates a test method and causes it to be invoked repeatedly
+    /// on multiple concurrent threads.
     /// </para>
     /// </summary>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
-    public class ThreadedRepeatAttribute : TestDecoratorAttribute
+    public class ThreadedRepeatAttribute : TestDecoratorPatternAttribute
     {
-        #region Private Members
-
-        private readonly int _count;
-        private readonly object _lock = new object();
-
-        #endregion
-
-        #region Construction
+        private readonly int numThreads;
 
         /// <summary>
         /// Executes the test method on the specified number of concurrent threads.
@@ -56,157 +48,82 @@ namespace MbUnit.Framework
         /// </code>
         /// </para>
         /// </remarks>
-        /// <param name="count">The number of threads to execute the test on</param>
-        public ThreadedRepeatAttribute(int count)
+        /// <param name="numThreads">The number of threads to execute the test on</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="numThreads"/>
+        /// is less than 1</exception>
+        public ThreadedRepeatAttribute(int numThreads)
         {
-            _count = count;
+            if (numThreads < 1)
+                throw new ArgumentOutOfRangeException("numThreads", "The number of concurrent threads must be at least 1.");
+
+            this.numThreads = numThreads;
         }
 
-        #endregion
-
-        #region Overridden and Protected Methods
-
-        /// <summary>
-        /// Executes the test.
-        /// </summary>
-        /// <param name="testInstanceState">The test instance state, not null</param>
-        /// <seealso cref="IPatternTestInstanceHandler.ExecuteTestInstance"/>
-        protected override void Execute(PatternTestInstanceState testInstanceState)
+        /// <inheritdoc />
+        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            lock (_lock)
+            scope.Test.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState state, Action<PatternTestInstanceState> inner)
             {
-                Exception lastException = null;
-
-                // Launch the test in threads
-                List<ThreadedRepeatRunner> children = new List<ThreadedRepeatRunner>(_count);
-                for (int i = 0; i < _count; i++)
-                {
-                    ThreadedRepeatRunner runner = new ThreadedRepeatRunner(this, testInstanceState);
-                    children.Add(runner);
-                    runner.Start();
-                }
-
-                // Wait for our children to finish
-                while( children.Count > 0 )
-                {
-                    Monitor.Wait(_lock);
-                    List<ThreadedRepeatRunner> finished = new List<ThreadedRepeatRunner>();
-
-                    // Check to see which children have finished
-                    foreach( ThreadedRepeatRunner runner in children )
-                    {
-                        if( runner.Finished )
-                        {
-                            finished.Add(runner);
-                            if( runner.HasThrown )
-                            {
-                                lastException = runner.Exception;
-                            }
-                        }
-                    }
-
-                    // Remove finished children from the list
-                    foreach (ThreadedRepeatRunner runner in finished)
-                    {
-                        children.Remove(runner);
-                    }
-                }
-
-                // If any of our children threw an exception, then rethrow the last exception we found
-                if( lastException != null )
-                {
-                    // TODO: This will change the callstack, how do we rethrow without doing that?
-                    throw lastException;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Calls the Execute method on the base class. This is so the ThreadedRepeatRunner can call to
-        /// the base in its thread.
-        /// </summary>
-        /// <param name="testInstanceState"></param>
-        private void BaseExecute(PatternTestInstanceState testInstanceState)
-        {
-            base.Execute(testInstanceState);
-        } 
-
-        #endregion
-
-        /// <summary>
-        /// This class is used to run a test method on a thread.
-        /// </summary>
-        private class ThreadedRepeatRunner
-        {
-            #region Private Members
-
-            private readonly ThreadedRepeatAttribute _parent;
-            private readonly PatternTestInstanceState _testInstanceState;
-            private Exception _exception; 
-
-            #endregion
-
-            #region Construction
-
-            public ThreadedRepeatRunner(ThreadedRepeatAttribute parent, PatternTestInstanceState testInstanceState)
-            {
-                _parent = parent;
-                _testInstanceState = testInstanceState;
-            } 
-
-            #endregion
-
-            #region Public Properties
-
-            /// <summary>
-            /// Returns true if an exception was thrown while running the test
-            /// </summary>
-            public bool HasThrown { get { return _exception != null; } }
-
-            /// <summary>
-            /// Returns any exception that has been thrown while running the test
-            /// </summary>
-            public Exception Exception { get { return _exception; } }
-
-            /// <summary>
-            /// Has this thread finished running the test?
-            /// </summary>
-            public bool Finished { get; private set; }
-
-            #endregion
-
-            #region Public Methods
-
-            public void Start()
-            {
-                new Thread(Run).Start();
-            } 
-
-            #endregion
-
-            #region Private Methods
-
-            private void Run()
-            {
-                _exception = null;
+                TaskContainer container = new TaskContainer();
                 try
                 {
-                    _parent.BaseExecute(_testInstanceState);
-                }
-                catch (Exception ex)
-                {
-                    _exception = ex;
-                }
+                    TestOutcome[] threadOutcomes = new TestOutcome[numThreads];
+                    Context context = Context.CurrentContext;
 
-                // Let our parent know we are finished
-                lock( _parent._lock )
-                {
-                    Finished = true;
-                    Monitor.PulseAll(_parent._lock);
-                }
-            } 
+                    for (int i = 0; i < numThreads; i++)
+                    {
+                        int index = i;
 
-            #endregion
+                        string name = String.Format("Threaded Repetition #{0}", index);
+                        ThreadTask task = new ThreadTask(name, delegate
+                        {
+                            Context threadContext = Step.RunStep(name, delegate
+                            {
+                                inner(state);
+                            });
+
+                            threadOutcomes[index] = threadContext.Outcome;
+                        });
+
+                        task.Terminated += delegate
+                        {
+                            Exception ex = task.Result.Exception;
+                            if (ex != null)
+                            {
+                                threadOutcomes[index] = TestOutcome.Error;
+                                context.LogWriter.Default.WriteException(ex,
+                                    String.Format("An exception occurred while starting Threaded Repetition #{0}.",
+                                        index));
+                            }
+                        };
+
+                        container.Watch(task);
+                        task.Start();
+                    }
+
+                    container.JoinAll(null);
+
+                    TestOutcome outcome = TestOutcome.Passed;
+                    int passedCount = 0;
+                    foreach (TestOutcome threadOutcome in threadOutcomes)
+                    {
+                        outcome = outcome.CombineWith(threadOutcome);
+                        if (threadOutcome.Status == TestStatus.Passed)
+                            passedCount += 1;
+                    }
+
+                    context.LogWriter.Default.WriteLine(String.Format("{0} of {1} threaded repetitions passed.",
+                        passedCount, numThreads));
+
+                    if (outcome.Status == TestStatus.Passed)
+                        throw new SilentTestException(outcome);
+                }
+                finally
+                {
+                    container.AbortAll();
+                    container.JoinAll(null);
+                }
+            });
         }
     }
 }

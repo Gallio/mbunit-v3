@@ -13,38 +13,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region Using Directives
-
 using System;
 using System.Threading;
 using MbUnit.Framework;
 
-#endregion
-
 namespace MbUnit.Tests.Framework
 {
-    /// <summary>
-    /// Test fixture of the <see cref="ThreadedRepeatAttribute" />
-    /// </summary>
     [TestFixture]
     [TestsOn(typeof(ThreadedRepeatAttribute))]
     public class ThreadedRepeatAttributeTest
     {
-        private volatile int _entranceCount;
+        private int entranceCount;
         private readonly Random _random = new Random();
-        private readonly object _lock = new object();
         private const int _slowRunningMaxTime = 2000;   // in milliseconds
 
         [SetUp]
         public void Setup()
         {
-            _entranceCount = 0;
+            entranceCount = 0;
         }
 
         [TearDown]
         public void TearDown()
         {
-            Assert.AreEqual(10, _entranceCount, "The tests did not run in the expected number of threads.");
+            Assert.AreEqual(10, entranceCount, "The tests did not run in the expected number of threads.");
         }
 
         /// <summary>
@@ -55,10 +47,8 @@ namespace MbUnit.Tests.Framework
         [ExpectedException(typeof(AssertionException), "This test failed.")]
         public void FastRunningThreadWithExpectedExceptionTest()
         {
-            lock (_lock)
-            {
-                _entranceCount++;
-            }
+            Interlocked.Increment(ref entranceCount);
+
             Assert.Fail("This test failed.");
         }
 
@@ -70,10 +60,8 @@ namespace MbUnit.Tests.Framework
         [ExpectedException(typeof(AssertionException), "This test failed.")]
         public void SlowRunningThreadWithExpectedExceptionTest()
         {
-            lock (_lock)
-            {
-                _entranceCount++;
-            }
+            Interlocked.Increment(ref entranceCount);
+
             Thread.Sleep(_random.Next(_slowRunningMaxTime));
             Assert.Fail("This test failed.");
         }
@@ -85,10 +73,7 @@ namespace MbUnit.Tests.Framework
         [ThreadedRepeat(10)]
         public void FastRunningThreadTest()
         {
-            lock (_lock)
-            {
-                _entranceCount++;
-            }
+            Interlocked.Increment(ref entranceCount);
         }
 
         /// <summary>
@@ -98,10 +83,8 @@ namespace MbUnit.Tests.Framework
         [ThreadedRepeat(10)]
         public void SlowRunningThreadTest()
         {
-            lock (_lock)
-            {
-                _entranceCount++;
-            }
+            Interlocked.Increment(ref entranceCount);
+
             Thread.Sleep(_random.Next(_slowRunningMaxTime));
         }
 
@@ -115,10 +98,8 @@ namespace MbUnit.Tests.Framework
         [ThreadedRepeat(10)]
         public void ThreadedRepeatRowTest(int x, int y, int expected)
         {
-            lock (_lock)
-            {
-                _entranceCount++;
-            }
+            Interlocked.Increment(ref entranceCount);
+
             Assert.AreEqual(expected, x + y);
         }
 
@@ -133,10 +114,8 @@ namespace MbUnit.Tests.Framework
         [ExpectedException(typeof(AssertionException))]
         public void ThreadedRepeatRowWithExpectedExceptionTest(int x, int y, int expected)
         {
-            lock (_lock)
-            {
-                _entranceCount++;
-            }
+            Interlocked.Increment(ref entranceCount);
+
             Assert.AreEqual(expected, x + y);
         }
     }
