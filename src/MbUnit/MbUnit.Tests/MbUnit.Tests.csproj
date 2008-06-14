@@ -52,6 +52,7 @@
     <Compile Include="Framework\CollectionAssertTest.cs" />
     <Compile Include="Framework\ConfigurationFileTest.cs" />
     <Compile Include="Framework\AutomaticTestFixtureTest.cs" />
+    <Compile Include="Framework\RepeatTest.cs" />
     <Compile Include="Framework\ExplicitTest.cs" />
     <Compile Include="Framework\CsvDataTest.cs" />
     <Compile Include="Framework\FactoryTest.cs" />
@@ -60,7 +61,8 @@
     <Compile Include="Framework\DataBindingTest.cs" />
     <Compile Include="Framework\AssertionExceptionTest.cs" />
     <Compile Include="Framework\Reflection\ReflectionExceptionTest.cs" />
-    <Compile Include="Framework\ThreadedRepeatAttributeTest.cs" />
+    <Compile Include="Framework\ThreadedRepeatTest.cs" />
+    <Compile Include="Framework\ThreadedRepeatAdditionalUseCasesTest.cs" />
     <Compile Include="Integration\ContextOutcomeTest.cs" />
     <Compile Include="Integration\FixtureInheritanceTest.cs" />
     <Compile Include="Model\MbUnitTestExplorerTest.cs" />

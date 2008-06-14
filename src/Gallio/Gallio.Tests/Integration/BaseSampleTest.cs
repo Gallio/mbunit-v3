@@ -61,9 +61,14 @@ namespace Gallio.Tests.Integration
             runner.Run();
         }
 
-        protected static void AssertLogOutputContains(TestStepRun run, string expectedOutput)
+        protected static void AssertLogContains(TestStepRun run, string expectedOutput)
         {
-            Assert.Contains(run.ExecutionLog.GetStream(LogStreamNames.Default).ToString(), expectedOutput);
+            AssertLogContains(run, expectedOutput, LogStreamNames.Default);
+        }
+
+        protected static void AssertLogContains(TestStepRun run, string expectedOutput, string streamName)
+        {
+            Assert.Contains(run.ExecutionLog.GetStream(streamName).ToString(), expectedOutput);
         }
     }
 }

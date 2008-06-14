@@ -43,7 +43,7 @@ namespace MbUnit.Tests.Framework
                 CodeReference.CreateFromMember(typeof(ConfigurationFileSample).GetMethod("AppSettingsAreAccessible")));
 
             Assert.AreEqual(TestOutcome.Passed, run.Result.Outcome);
-            AssertLogOutputContains(run, "TestConfigurationValue");
+            AssertLogContains(run, "TestConfigurationValue");
         }
     }
 

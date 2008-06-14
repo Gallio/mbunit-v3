@@ -25,6 +25,33 @@ namespace Gallio.Tests.Collections
     public class UserDataCollectionTest
     {
         [Test]
+        public void CanCopyAnEmptyCollection()
+        {
+            UserDataCollection source = new UserDataCollection();
+
+            UserDataCollection copy = source.Copy();
+            Assert.IsFalse(copy.HasValue(new Key<int>("key")));
+
+            copy.SetValue(new Key<int>("key"), 33);
+            Assert.AreEqual(33, copy.GetValue(new Key<int>("key")));
+            Assert.IsFalse(source.HasValue(new Key<int>("key")));
+        }
+
+        [Test]
+        public void CanCopyANonEmptyCollection()
+        {
+            UserDataCollection source = new UserDataCollection();
+            source.SetValue(new Key<int>("key"), 42);
+
+            UserDataCollection copy = source.Copy();
+            Assert.AreEqual(42, copy.GetValue(new Key<int>("key")));
+
+            copy.SetValue(new Key<int>("key"), 33);
+            Assert.AreEqual(33, copy.GetValue(new Key<int>("key")));
+            Assert.AreEqual(42, source.GetValue(new Key<int>("key")));
+        }
+
+        [Test]
         public void NonExistantValuesCannotBeRetrieved()
         {
             UserDataCollection collection = new UserDataCollection();

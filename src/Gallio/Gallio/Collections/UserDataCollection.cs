@@ -34,6 +34,30 @@ namespace Gallio.Collections
         private Dictionary<string, object> items;
 
         /// <summary>
+        /// Creates an empty collection.
+        /// </summary>
+        public UserDataCollection()
+        {
+        }
+
+        /// <summary>
+        /// Creates a copy of the collection.
+        /// </summary>
+        /// <returns>The copy</returns>
+        public UserDataCollection Copy()
+        {
+            UserDataCollection copy = new UserDataCollection();
+
+            lock (this)
+            {
+                if (items != null && items.Count != 0)
+                    copy.items = new Dictionary<string, object>(items);
+            }
+
+            return copy;
+        }
+
+        /// <summary>
         /// Tries to get a value from the collection.
         /// </summary>
         /// <param name="key">The key</param>

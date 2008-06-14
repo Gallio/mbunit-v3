@@ -70,6 +70,11 @@ namespace Gallio.Model.Execution
             this.parent = parent;
 
             logWriter = new ObservableTestLogWriter(Listener, testStep.Id);
+
+            if (parent == null)
+                data = new UserDataCollection();
+            else
+                data = parent.Data.Copy();
         }
 
         /// <inheritdoc />
@@ -122,12 +127,7 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         public UserDataCollection Data
         {
-            get
-            {
-                if (data == null)
-                    Interlocked.CompareExchange(ref data, new UserDataCollection(), null);
-                return data;
-            }
+            get { return data; }
         }
 
         /// <inheritdoc />

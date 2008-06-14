@@ -54,7 +54,7 @@ namespace MbUnit.Tests.Framework
 
             for (int i = 0; i < output.Length; i++)
             {
-                AssertLogOutputContains(run.Children[i], output[i]);
+                AssertLogContains(run.Children[i], output[i]);
                 Assert.IsNotNull(run.Children[i].Step.Metadata.GetValue(MetadataKeys.DataLocation));
             }
         }

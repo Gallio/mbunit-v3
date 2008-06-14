@@ -42,7 +42,7 @@ namespace MbUnit.Tests.Framework
                 CodeReference.CreateFromMember(typeof(ExplicitSample).GetMethod("SelectedExplicitTest")));
 
             Assert.AreEqual(TestOutcome.Passed, run.Result.Outcome);
-            AssertLogOutputContains(run, "Got here");
+            AssertLogContains(run, "Got here");
         }
 
         [Test]

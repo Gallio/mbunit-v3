@@ -25,7 +25,6 @@ namespace MbUnit.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(FactoryAttribute))]
-    [Ignore("Broken.  Requires some refactoring to fix.  FIX ME BEFORE RELEASE!")]
     public class FactoryTest : BaseSampleTest
     {
         [Test]
@@ -74,7 +73,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(output.Length, runs.Count, "Different number of runs than expected.");
 
             for (int i = 0; i < output.Length; i++)
-                AssertLogOutputContains(runs[i], output[i]);
+                AssertLogContains(runs[i], output[i]);
         }
 
         [Explicit("Sample")]

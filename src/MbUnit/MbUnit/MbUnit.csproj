@@ -74,6 +74,7 @@
     <Compile Include="Framework\PairwiseJoinAttribute.cs" />
     <Compile Include="Framework\PendingAttribute.cs" />
     <Compile Include="Framework\Reflection\ReflectionException.cs" />
+    <Compile Include="Framework\RepeatAttribute.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />
     <Compile Include="Framework\ArrayAssert.cs" />

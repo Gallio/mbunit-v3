@@ -28,6 +28,7 @@ namespace MbUnit.Framework
     /// on multiple concurrent threads.
     /// </para>
     /// </summary>
+    /// <seealso cref="RepeatAttribute"/>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public class ThreadedRepeatAttribute : TestDecoratorPatternAttribute
     {
@@ -74,7 +75,7 @@ namespace MbUnit.Framework
                     {
                         int index = i;
 
-                        string name = String.Format("Threaded Repetition #{0}", index);
+                        string name = String.Format("Threaded Repetition #{0}", index + 1);
                         ThreadTask task = new ThreadTask(name, delegate
                         {
                             Context threadContext = Step.RunStep(name, delegate
@@ -115,7 +116,7 @@ namespace MbUnit.Framework
                     context.LogWriter.Default.WriteLine(String.Format("{0} of {1} threaded repetitions passed.",
                         passedCount, numThreads));
 
-                    if (outcome.Status == TestStatus.Passed)
+                    if (outcome.Status != TestStatus.Passed)
                         throw new SilentTestException(outcome);
                 }
                 finally

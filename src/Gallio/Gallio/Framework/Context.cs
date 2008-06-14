@@ -259,8 +259,13 @@ namespace Gallio.Framework
         }
 
         /// <summary>
+        /// <para>
         /// Gets the user data collection associated with the context.  It may be used
         /// to associate arbitrary key/value pairs with the context.
+        /// </para>
+        /// <para>
+        /// When a new child context is created, it inherits a copy of its parent's data.
+        /// </para>
         /// </summary>
         public UserDataCollection Data
         {
