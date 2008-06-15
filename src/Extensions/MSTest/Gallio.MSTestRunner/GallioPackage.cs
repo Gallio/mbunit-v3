@@ -18,7 +18,6 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
 using EnvDTE;
 using EnvDTE80;
 using Gallio.MSTestRunner;
@@ -30,12 +29,12 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.Vsip;
 using Microsoft.VisualStudio;
-using Gallio.Loader;
+using System.Collections.Generic;
 
 namespace Gallio.MSTestRunner
 {
-    [PackageRegistration(UseManagedResourcesOnly = true, RegisterUsing=RegistrationMethod.Assembly)]
-        // Note: can't register by CodeBase because the Tip loader assumes the assembly can be resolved by name.
+    [PackageRegistration(UseManagedResourcesOnly = true, RegisterUsing = RegistrationMethod.Assembly)]
+    // Note: can't register by CodeBase because the Tip loader assumes the assembly can be resolved by name.
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\9.0")]
     [InstalledProductRegistration(true, null, null, null)]
     [ProvideLoadKey("Standard", "3.0", "Gallio.MSTestRunner", "Gallio Project", VSPackageResourceIds.ProductLoadKeyId)]
@@ -158,32 +157,32 @@ namespace Gallio.MSTestRunner
         private void OnBuildProjConfigDone(string project, string projectConfig, string platform, string solutionConfig, bool success)
         {
             if (success)
-                RefreshTests(project);
+                RefreshTests(FindProject(project));
         }
 
         private void OnSolutionOpened()
         {
-            /* FIXME: Hangs
-            foreach (Project project in Services.DTE.Solution.Projects)
-            {
-                RefreshTests(project.UniqueName);
-            }
+            /*
+             * This code hangs indefinitely for me.
+             * May be some interactions with R# or other plugins.  -- Jeff.
+            IEnumerable<Project> projects = FindAllProjects();
+
+            foreach (Project project in projects)
+                RefreshTests(project);
              */
         }
 
         private void OnProjectAdded(Project project)
         {
-            /* FIXME: Probably not a great idea...
-            RefreshTests(project.UniqueName);
-             */
+            RefreshTests(project);
         }
 
-        private void RefreshTests(string projectUniqueName)
+        private void RefreshTests(Project project)
         {
             try
             {
-                RemoveGallioTests(projectUniqueName);
-                PopulateGallioTests(projectUniqueName);
+                RemoveGallioTests(project);
+                PopulateGallioTests(project);
             }
             catch (Exception ex)
             {
@@ -191,7 +190,7 @@ namespace Gallio.MSTestRunner
             }
         }
 
-        private void RemoveGallioTests(string projectUniqueName)
+        private void RemoveGallioTests(Project project)
         {
             try
             {
@@ -201,7 +200,7 @@ namespace Gallio.MSTestRunner
                     ArrayList testsToRemove = new ArrayList();
                     foreach (ITestElement testElement in tmi.GetTests())
                         if (testElement is GallioTestElement
-                            && (projectUniqueName == null || testElement.ProjectData.ProjectRelativePath == projectUniqueName))
+                            && (project.UniqueName == null || testElement.ProjectData.ProjectRelativePath == project.UniqueName))
                             testsToRemove.Add(testElement);
 
                     if (testsToRemove.Count != 0)
@@ -214,43 +213,104 @@ namespace Gallio.MSTestRunner
             }
         }
 
-        private void PopulateGallioTests(string projectUniqueName)
+        private void PopulateGallioTests(Project project)
         {
             try
             {
                 Solution solution = Services.DTE.Solution;
                 ITmi tmi = Services.Tmi;
-                if (solution != null && tmi != null)
+                if (solution != null && tmi != null && project != null)
                 {
-                    foreach (Project project in solution.Projects)
+                    try
                     {
-                        try
-                        {
-                            if (projectUniqueName == null || project.UniqueName == projectUniqueName)
-                            {
-                                Guid projectId = GetProjectId(project);
-                                string solutionName = GetSolutionName();
-                                ProjectData projectData = new ProjectData(projectId, solutionName, project.Name, project.UniqueName);
+                        Guid projectId = GetProjectId(project);
+                        string solutionName = GetSolutionName();
+                        ProjectData projectData = new ProjectData(projectId, solutionName, project.Name, project.UniqueName);
 
-                                string targetPath = GetProjectTargetPath(project);
-                                if (targetPath != null)
-                                {
-                                    string targetExtension = Path.GetExtension(targetPath);
-                                    if (targetExtension == ".dll" || targetExtension == ".exe")
-                                        UpdateTests(tmi, targetPath, projectData);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
+                        string targetPath = GetProjectTargetPath(project);
+                        if (targetPath != null)
                         {
-                            UnhandledExceptionPolicy.Report("An exception occurred while populating Gallio tests.", ex);
+                            string targetExtension = Path.GetExtension(targetPath);
+                            if (targetExtension == @".dll" || targetExtension == @".exe")
+                                UpdateTests(tmi, targetPath, projectData);
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        UnhandledExceptionPolicy.Report("An exception occurred while populating Gallio tests.", ex);
                     }
                 }
             }
             catch (Exception ex)
             {
                 UnhandledExceptionPolicy.Report("An exception occurred while populating Gallio tests.", ex);
+            }
+        }
+
+        private Project FindProject(string projectUniqueName)
+        {
+            Solution solution = Services.DTE.Solution;
+            foreach (Project project in solution.Projects)
+            {
+                if (projectUniqueName == null
+                    || project.UniqueName == projectUniqueName)
+                    return project;
+
+                Project subProject = FindProject(projectUniqueName, project.ProjectItems);
+                if (subProject != null)
+                    return subProject;
+            }
+
+            return null;
+        }
+
+        private Project FindProject(string projectUniqueName, ProjectItems parent)
+        {
+            foreach (ProjectItem projectItem in parent)
+            {
+                if (projectItem.SubProject != null)
+                {
+                    if (projectUniqueName == null
+                        || projectItem.SubProject.UniqueName == projectUniqueName)
+                        return projectItem.SubProject;
+
+                    Project subProject = FindProject(projectUniqueName, projectItem.SubProject.ProjectItems);
+                    if (subProject != null)
+                        return subProject;
+                }
+            }
+
+            return null;
+        }
+
+        private IEnumerable<Project> FindAllProjects()
+        {
+            List<Project> projects = new List<Project>();
+
+            Solution solution = Services.DTE.Solution;
+            foreach (Project project in solution.Projects)
+            {
+                if (project.Kind != EnvDTE.Constants.vsProjectItemKindSolutionItems)
+                    projects.Add(project);
+
+                FindAllProjects(projects, project.ProjectItems);
+
+            }
+            return projects;
+        }
+
+        private void FindAllProjects(IList<Project> projects, ProjectItems parent)
+        {
+            foreach (ProjectItem projectItem in parent)
+            {
+                Project project = projectItem.SubProject;
+                if (project != null)
+                {
+                    if (project.Kind != EnvDTE.Constants.vsProjectItemKindSolutionItems)
+                        projects.Add(project);
+
+                    FindAllProjects(projects, project.ProjectItems);
+                }
             }
         }
 
@@ -282,7 +342,7 @@ namespace Gallio.MSTestRunner
         {
             IVsSolution solution = Services.GetService<IVsSolution>(typeof(SVsSolution));
             object solutionNameObj;
-            solution.GetProperty((int) __VSPROPID.VSPROPID_SolutionBaseName, out solutionNameObj);
+            solution.GetProperty((int)__VSPROPID.VSPROPID_SolutionBaseName, out solutionNameObj);
             return (string)solutionNameObj;
         }
 
@@ -295,7 +355,7 @@ namespace Gallio.MSTestRunner
 
         private string GetProjectTargetPath(Project project)
         {
-            try 
+            try
             {
                 Configuration configuration = project.ConfigurationManager.ActiveConfiguration;
                 if (configuration != null)
