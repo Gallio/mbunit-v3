@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -198,6 +199,25 @@ namespace Gallio.Runtime.Hosting
         /// <returns>The combined Xml configuration</returns>
         public override string ToString()
         {
+            using (StringWriter configurationString = new StringWriter())
+            {
+                WriteTo(configurationString);
+                return configurationString.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Overlays the <see cref="ConfigurationXml" /> with the additional configuration
+        /// entries necessary to enable the features described by this instance and writes
+        /// the combined Xml configuration.
+        /// </summary>
+        /// <param name="textWriter">The TextWriter where the Xml configuration will be written to.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="textWriter"/> is null.</exception>
+        public void WriteTo(TextWriter textWriter)
+        {
+            if (textWriter == null)
+                throw new ArgumentNullException("textWriter");
+
             XmlDocument document = new XmlDocument();
             document.LoadXml(configurationXml ?? @"<configuration/>");
 
@@ -208,7 +228,17 @@ namespace Gallio.Runtime.Hosting
             ConfigureAssemblyBindings(rootElement);
             ConfigureSupportedRuntimes(rootElement);
 
-            return document.InnerXml;
+            XmlWriterSettings settings = new XmlWriterSettings();
+            // This setting is important! For some reason, if the user settings section
+            // is not indented and it contains more than one setting, the CLR won't parse
+            // them correctly and will throw a System.Configuration.ConfigurationErrorsException
+            // with the following message: "Unrecognized element 'setting'"
+            settings.Indent = true;
+            settings.CloseOutput = false;
+            using (XmlWriter writer = XmlWriter.Create(textWriter, settings))
+            {
+                document.WriteContentTo(writer);
+            }
         }
 
         /// <summary>

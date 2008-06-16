@@ -101,10 +101,11 @@ namespace Gallio.Runtime.Hosting
             HostConfiguration configuration = HostSetup.Configuration.Copy();
             configuration.AddAssemblyBinding(typeof(IsolatedAppDomainHost).Assembly, false);
 
-            string configurationXml = configuration.ToString();
-
             temporaryConfigurationFilePath = Path.GetTempFileName();
-            File.WriteAllText(temporaryConfigurationFilePath, configurationXml);
+            using (StreamWriter writer = new StreamWriter(temporaryConfigurationFilePath))
+            {
+                configuration.WriteTo(writer);
+            }
         }
 
         private void CreateAppDomain()

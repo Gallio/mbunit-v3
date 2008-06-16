@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Gallio.NUnitAdapter.TestResources.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SampleUserSetting" Type="System.String" Scope="User">
+      <Value Profile="(Default)">This is a user-level setting</Value>
+    </Setting>
+    <Setting Name="SampleUserSetting2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">This is another user-level setting</Value>
+    </Setting>
+    <Setting Name="SampleApplicationSetting" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">This is an application-level setting</Value>
+    </Setting>
+    <Setting Name="SampleApplicationSetting2" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">This is another application-level setting</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
