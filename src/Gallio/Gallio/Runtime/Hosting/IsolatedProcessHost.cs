@@ -168,15 +168,16 @@ namespace Gallio.Runtime.Hosting
             HostConfiguration editedHostConfiguration = HostSetup.Configuration.Copy();
             editedHostConfiguration.AddAssemblyBinding(typeof(IsolatedProcessHost).Assembly, false);
 
-            string configurationFile = Path.GetTempFileName();
-            File.WriteAllText(configurationFile, editedHostConfiguration.ToString());
+            string temporaryConfigurationFilePath = Path.GetTempFileName();
+            using (StreamWriter writer = new StreamWriter(temporaryConfigurationFilePath, false, Encoding.UTF8))
+                editedHostConfiguration.WriteTo(writer);
 
             StringBuilder hostArguments = new StringBuilder();
             hostArguments.Append(hostConnectionArguments);
             hostArguments.Append(@" /timeout:").Append((int)WatchdogTimeout.TotalSeconds);
             hostArguments.Append(@" /owner-process:").Append(Process.GetCurrentProcess().Id);
             hostArguments.Append(@" ""/application-base-directory:").Append(FileUtils.StripTrailingBackslash(HostSetup.ApplicationBaseDirectory)).Append('"');
-            hostArguments.Append(@" ""/configuration-file:").Append(configurationFile).Append('"');
+            hostArguments.Append(@" ""/configuration-file:").Append(temporaryConfigurationFilePath).Append('"');
             if (HostSetup.ShadowCopy)
                 hostArguments.Append(@" /shadow-copy");
 

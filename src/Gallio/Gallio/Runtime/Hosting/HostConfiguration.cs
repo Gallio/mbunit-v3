@@ -199,11 +199,8 @@ namespace Gallio.Runtime.Hosting
         /// <returns>The combined Xml configuration</returns>
         public override string ToString()
         {
-            using (StringWriter configurationString = new StringWriter())
-            {
-                WriteTo(configurationString);
-                return configurationString.ToString();
-            }
+            XmlDocument document = GenerateXmlDocument();
+            return document.InnerXml;
         }
 
         /// <summary>
@@ -218,15 +215,7 @@ namespace Gallio.Runtime.Hosting
             if (textWriter == null)
                 throw new ArgumentNullException("textWriter");
 
-            XmlDocument document = new XmlDocument();
-            document.LoadXml(configurationXml ?? @"<configuration/>");
-
-            XmlElement rootElement = document.DocumentElement;
-            ConfigureLegacyUnhandledExceptionPolicy(rootElement);
-            ConfigureAssertUi(rootElement);
-            ConfigureRemotingCustomErrors(rootElement);
-            ConfigureAssemblyBindings(rootElement);
-            ConfigureSupportedRuntimes(rootElement);
+            XmlDocument document = GenerateXmlDocument();
 
             XmlWriterSettings settings = new XmlWriterSettings();
             // This setting is important! For some reason, if the user settings section
@@ -235,10 +224,10 @@ namespace Gallio.Runtime.Hosting
             // with the following message: "Unrecognized element 'setting'"
             settings.Indent = true;
             settings.CloseOutput = false;
+            settings.CheckCharacters = false;
+            settings.Encoding = textWriter.Encoding;
             using (XmlWriter writer = XmlWriter.Create(textWriter, settings))
-            {
                 document.WriteContentTo(writer);
-            }
         }
 
         /// <summary>
@@ -289,6 +278,20 @@ namespace Gallio.Runtime.Hosting
                 ^ assertUiEnabled.GetHashCode()
                 ^ remotingCustomErrorsEnabled.GetHashCode()
                 ^ (configurationXml != null ? configurationXml.GetHashCode() : 0);
+        }
+
+        private XmlDocument GenerateXmlDocument()
+        {
+            XmlDocument document = new XmlDocument();
+            document.LoadXml(configurationXml ?? @"<configuration/>");
+
+            XmlElement rootElement = document.DocumentElement;
+            ConfigureLegacyUnhandledExceptionPolicy(rootElement);
+            ConfigureAssertUi(rootElement);
+            ConfigureRemotingCustomErrors(rootElement);
+            ConfigureAssemblyBindings(rootElement);
+            ConfigureSupportedRuntimes(rootElement);
+            return document;
         }
 
         private void ConfigureLegacyUnhandledExceptionPolicy(XmlElement rootElement)

@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Reflection;
@@ -102,10 +103,8 @@ namespace Gallio.Runtime.Hosting
             configuration.AddAssemblyBinding(typeof(IsolatedAppDomainHost).Assembly, false);
 
             temporaryConfigurationFilePath = Path.GetTempFileName();
-            using (StreamWriter writer = new StreamWriter(temporaryConfigurationFilePath))
-            {
+            using (StreamWriter writer = new StreamWriter(temporaryConfigurationFilePath, false, Encoding.UTF8))
                 configuration.WriteTo(writer);
-            }
         }
 
         private void CreateAppDomain()
