@@ -201,6 +201,7 @@
       TargetDir=$(TargetDir);
       ReleaseDir=$(BuildReleaseDir);
       WixTargetsPath=$(LibsDir)\Wix\Microsoft\WiX\v3.0\Wix.targets;
+      WixTasksPath=$(LibsDir)\Wix\Microsoft\WiX\v3.0\WixTasks.dll;
       WixToolPath=$(LibsDir)\Wix\bin;
       WixExtDir=$(LibsDir)\Wix\bin;
       DefineSolutionProperties=false;
@@ -227,6 +228,7 @@
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Clean"
              Properties="$(InstallerWixProperties)" />
+    <Delete Files="$(InstallerFeatureFile)" />
   </Target>
 
   <Target Name="BuildZip"
