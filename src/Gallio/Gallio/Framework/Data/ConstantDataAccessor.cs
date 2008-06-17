@@ -13,40 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Model;
-
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// A null data row simply returns a null value on each request.
-    /// It has no metadata and it ignores disposal.
+    /// An implementation of <see cref="IDataAccessor" /> that
+    /// returns a constant value, ignoring the data item it is passed.
     /// </summary>
-    public sealed class NullDataRow : BaseDataRow
+    public sealed class ConstantDataAccessor : BaseDataAccessor
     {
+        private readonly object value;
+
         /// <summary>
-        /// Gets the singleton null data row instance.
+        /// Creates a data accessor that returns a specified constant value.
         /// </summary>
-        public static readonly NullDataRow Instance = new NullDataRow();
-
-        private NullDataRow()
+        /// <param name="value">The constant value to be returned by <see cref="IDataAccessor.GetValue" /></param>
+        public ConstantDataAccessor(object value)
         {
+            this.value = value;
         }
 
         /// <inheritdoc />
-        protected override object GetValueImpl(DataBinding binding)
+        protected override object GetValueImpl(IDataItem item)
         {
-            return null;
-        }
-
-        /// <inheritdoc />
-        protected override void PopulateMetadataImpl(MetadataMap map)
-        {
-        }
-
-        /// <inheritdoc />
-        public override bool IsDynamic
-        {
-            get { return false; }
+            return value;
         }
     }
 }

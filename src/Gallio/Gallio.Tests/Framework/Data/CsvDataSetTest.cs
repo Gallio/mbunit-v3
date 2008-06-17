@@ -113,12 +113,12 @@ namespace Gallio.Tests.Framework.Data
             dataSet.HasHeader = hasHeader;
             Assert.AreEqual(hasHeader, dataSet.HasHeader);
 
-            DataBinding binding = new SimpleDataBinding(bindingIndex, bindingPath);
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(new DataBinding[] { binding }, true));
+            DataBinding binding = new DataBinding(bindingIndex, bindingPath);
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(new DataBinding[] { binding }, true));
 
-            string[] actualValues = GenericUtils.ConvertAllToArray<IDataRow, string>(rows, delegate(IDataRow row)
+            string[] actualValues = GenericUtils.ConvertAllToArray<IDataItem, string>(items, delegate(IDataItem item)
             {
-                return (string) row.GetValue(binding);
+                return (string) item.GetValue(binding);
             });
 
             InterimAssert.With("Expected", expectedValues, "Actual", actualValues, delegate
@@ -138,27 +138,27 @@ namespace Gallio.Tests.Framework.Data
             dataSet.DataLocationName = "<inline>";
             Assert.AreEqual("<inline>", dataSet.DataLocationName);
 
-            DataBinding binding = new SimpleDataBinding(0, null);
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(new DataBinding[] { binding }, true));
+            DataBinding binding = new DataBinding(0, null);
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(new DataBinding[] { binding }, true));
 
-            Assert.AreEqual("123", rows[0].GetValue(binding));
-            MetadataMap map = rows[0].GetMetadata();
+            Assert.AreEqual("123", items[0].GetValue(binding));
+            MetadataMap map = items[0].GetMetadata();
             Assert.AreEqual("<inline>(2)", map.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual("abc", map.GetValue("Metadata"));
 
-            Assert.AreEqual("456", rows[1].GetValue(binding));
+            Assert.AreEqual("456", items[1].GetValue(binding));
             map = new MetadataMap();
-            rows[1].PopulateMetadata(map);
+            items[1].PopulateMetadata(map);
             Assert.AreEqual("<inline>(3)", map.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual("def", map.GetValue("Metadata"));
         }
 
         [Test]
-        public void GetRowsReturnsNothingIfIsDynamicAndNotIncludingDynamicRows()
+        public void GetItemsReturnsNothingIfIsDynamicAndNotIncludingDynamicRows()
         {
             CsvDataSet dataSet = new CsvDataSet(delegate { return new StringReader(""); }, true);
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, false));
-            Assert.AreEqual(0, rows.Count);
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, false));
+            Assert.AreEqual(0, items.Count);
         }
     }
 }

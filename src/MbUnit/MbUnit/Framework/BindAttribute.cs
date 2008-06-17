@@ -88,7 +88,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateTestParameter(PatternEvaluationScope slotScope, ISlotInfo slot)
         {
-            DataBinding binding = new SimpleDataBinding(index, path);
+            DataBinding binding = new DataBinding(index, path);
             slotScope.TestParameter.Binder = new ScalarDataBinder(binding, source ?? @"");
         }
     }

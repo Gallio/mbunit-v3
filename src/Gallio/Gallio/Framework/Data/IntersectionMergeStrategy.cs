@@ -20,14 +20,14 @@ namespace Gallio.Framework.Data
 {
     /// <summary>
     /// <para>
-    /// The intersection merge strategy combines the rows from multiple providers
-    /// by discarding rows whose values do not appear in the rows of all other
-    /// providers.  If the same row appears more than once within any given provider,
+    /// The intersection merge strategy combines the items from multiple providers
+    /// by discarding items whose values do not appear in the items of all other
+    /// providers.  If the same item appears more than once within any given provider,
     /// when it will be enumerated only as often as the least number of repetitions
-    /// of that row that appear in other providers.
+    /// of that item that appear in other providers.
     /// </para>
     /// <para>
-    /// Uniqueness is determined by the natural equality of each bound value in the row.
+    /// Uniqueness is determined by the natural equality of each bound value in the item.
     /// </para>
     /// </summary>
     public sealed class IntersectionMergeStrategy : IMergeStrategy
@@ -42,33 +42,33 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
-            bool includeDynamicRows)
+        public IEnumerable<IDataItem> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicItems)
         {
             int providerCount = providers.Count;
 
             if (providerCount == 0)
-                return EmptyArray<IDataRow>.Instance;
+                return EmptyArray<IDataItem>.Instance;
 
             if (providerCount == 1)
-                return providers[0].GetRows(bindings, includeDynamicRows);
+                return providers[0].GetItems(bindings, includeDynamicItems);
 
             Dictionary<object[], int> tally = null;
             for (int i = 0; i < providerCount - 1; i++)
-                tally = UpdateTally(tally, providers[i], bindings, includeDynamicRows);
+                tally = UpdateTally(tally, providers[i], bindings, includeDynamicItems);
 
-            return GetRowsAccordingToTally(tally, providers[providerCount - 1], bindings, includeDynamicRows);
+            return GetItemsAccordingToTally(tally, providers[providerCount - 1], bindings, includeDynamicItems);
         }
 
         private static Dictionary<object[], int> UpdateTally(Dictionary<object[], int> oldTally, IDataProvider provider, ICollection<DataBinding> bindings,
-            bool includeDynamicRows)
+            bool includeDynamicItems)
         {
             Dictionary<object[], int> tally = new Dictionary<object[], int>(ArrayEqualityComparer<object>.Default);
             int maxCount = int.MaxValue;
 
-            foreach (IDataRow row in provider.GetRows(bindings, includeDynamicRows))
+            foreach (IDataItem item in provider.GetItems(bindings, includeDynamicItems))
             {
-                object[] values = GetValues(row, bindings);
+                object[] values = GetValues(item, bindings);
 
                 if (values != null)
                 {
@@ -89,17 +89,17 @@ namespace Gallio.Framework.Data
             return tally;
         }
 
-        private static IEnumerable<IDataRow> GetRowsAccordingToTally(Dictionary<object[], int> tally, IDataProvider provider, ICollection<DataBinding> bindings,
-            bool includeDynamicRows)
+        private static IEnumerable<IDataItem> GetItemsAccordingToTally(Dictionary<object[], int> tally, IDataProvider provider, ICollection<DataBinding> bindings,
+            bool includeDynamicItems)
         {
-            foreach (IDataRow row in provider.GetRows(bindings, includeDynamicRows))
+            foreach (IDataItem item in provider.GetItems(bindings, includeDynamicItems))
             {
-                object[] values = GetValues(row, bindings);
+                object[] values = GetValues(item, bindings);
 
                 int count;
                 if (values != null && tally.TryGetValue(values, out count))
                 {
-                    yield return row;
+                    yield return item;
 
                     count -= 1;
                     if (count == 0)
@@ -110,13 +110,13 @@ namespace Gallio.Framework.Data
             }
         }
 
-        private static object[] GetValues(IDataRow row, ICollection<DataBinding> bindings)
+        private static object[] GetValues(IDataItem item, ICollection<DataBinding> bindings)
         {
             try
             {
                 return GenericUtils.ConvertAllToArray<DataBinding, object>(bindings, delegate(DataBinding binding)
                 {
-                    return row.GetValue(binding);
+                    return item.GetValue(binding);
                 });
             }
             catch

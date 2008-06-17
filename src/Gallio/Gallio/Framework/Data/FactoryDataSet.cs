@@ -22,7 +22,7 @@ namespace Gallio.Framework.Data
 {
     /// <summary>
     /// <para>
-    /// A factory data set generates data rows by invoking a factory delegate
+    /// A factory data set generates data items by invoking a factory delegate
     /// and interpreting its output in accordance with the factory kind.
     /// </para>
     /// <para>
@@ -41,7 +41,7 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="factory">The factory delegate</param>
         /// <param name="factoryKind">The kind of factory</param>
-        /// <param name="columnCount">The number of columns in the data rows produced
+        /// <param name="columnCount">The number of columns in the data items produced
         /// by the factory or 0 if unknown</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="factory"/> is null</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="factoryKind"/>
@@ -73,23 +73,23 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
-            if (!includeDynamicRows)
+            if (!includeDynamicItems)
                 yield break;
 
             IEnumerable enumeration = factory();
             foreach (object element in enumeration)
-                foreach (IDataRow dataRow in ProcessElement(element, bindings, factoryKind))
-                    yield return dataRow;
+                foreach (IDataItem item in ProcessElement(element, bindings, factoryKind))
+                    yield return item;
         }
 
-        private static IEnumerable<IDataRow> ProcessElement(object element, ICollection<DataBinding> bindings, FactoryKind factoryKind)
+        private static IEnumerable<IDataItem> ProcessElement(object element, ICollection<DataBinding> bindings, FactoryKind factoryKind)
         {
             switch (factoryKind)
             {
-                case FactoryKind.DataRow:
-                    return ProcessDataRow(element);
+                case FactoryKind.DataItem:
+                    return ProcessDataItem(element);
 
                 case FactoryKind.DataSet:
                     return ProcessDataSet(element, bindings);
@@ -108,47 +108,47 @@ namespace Gallio.Framework.Data
             }
         }
 
-        private static IEnumerable<IDataRow> ProcessDataRow(object value)
+        private static IEnumerable<IDataItem> ProcessDataItem(object value)
         {
-            IDataRow dataRow = value as IDataRow;
-            if (dataRow == null)
-                throw new DataBindingException("Expected the factory to produce a data row.");
+            IDataItem dataItem = value as IDataItem;
+            if (dataItem == null)
+                throw new DataBindingException("Expected the factory to produce a data item.");
 
-            return new IDataRow[] { dataRow };
+            return new IDataItem[] { dataItem };
         }
 
-        private static IEnumerable<IDataRow> ProcessDataSet(object value, ICollection<DataBinding> bindings)
+        private static IEnumerable<IDataItem> ProcessDataSet(object value, ICollection<DataBinding> bindings)
         {
             IDataSet dataSet = value as IDataSet;
             if (dataSet == null)
                 throw new DataBindingException("Expected the factory to produce a data set.");
 
-            return dataSet.GetRows(bindings, true);
+            return dataSet.GetItems(bindings, true);
         }
 
-        private static IEnumerable<IDataRow> ProcessObjectArray(object value)
+        private static IEnumerable<IDataItem> ProcessObjectArray(object value)
         {
             object[] objectArray = value as object[];
             if (objectArray == null)
                 throw new DataBindingException("Expected the factory to produce an object array.");
 
-            return new IDataRow[] { new ListDataRow<object>(objectArray, null, true) };
+            return new IDataItem[] { new ListDataItem<object>(objectArray, null, true) };
         }
 
-        private static IEnumerable<IDataRow> ProcessObject(object value)
+        private static IEnumerable<IDataItem> ProcessObject(object value)
         {
-            return new IDataRow[] { new ScalarDataRow<object>(value, null, true) };
+            return new IDataItem[] { new ScalarDataItem<object>(value, null, true) };
         }
 
-        private static IEnumerable<IDataRow> ProcessAuto(object value, ICollection<DataBinding> bindings)
+        private static IEnumerable<IDataItem> ProcessAuto(object value, ICollection<DataBinding> bindings)
         {
             if (value != null)
             {
                 if (value is IDataSet)
                     return ProcessDataSet(value, bindings);
 
-                if (value is IDataRow)
-                    return ProcessDataRow(value);
+                if (value is IDataItem)
+                    return ProcessDataItem(value);
 
                 if (value is object[])
                     return ProcessObjectArray(value);

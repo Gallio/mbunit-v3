@@ -19,38 +19,38 @@ namespace Gallio.Framework.Data
 {
     /// <summary>
     /// <para>
-    /// A join strategy combines rows from multiple providers into products
+    /// A join strategy combines items from multiple providers into products
     /// according to some algorithm.
     /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
     /// A join strategy performs much the same purpose as a "JOIN" in
-    /// query languages.  It specifies how rows from multiple providers are to
-    /// be correlated to create a sequence of aggregate rows.
+    /// query languages.  It specifies how items from multiple providers are to
+    /// be correlated to create a sequence of aggregate items.
     /// </para>
     /// </remarks>
     /// <seealso cref="JoinedDataSet"/>
     public interface IJoinStrategy
     {
         /// <summary>
-        /// Joins the rows from each provider into a sequence of aggregate rows.
+        /// Joins the items from each provider into a sequence of aggregate items.
         /// </summary>
         /// <remarks>
-        /// The number of rows in each row-list must equal the number
+        /// The number of elements in each item-list must equal the number
         /// of providers in the <paramref name="providers"/> list because
-        /// each row-list should contain exactly one row taken from each
+        /// each item-list should contain exactly one item taken from each
         /// provider.
         /// </remarks>
         /// <param name="providers">The list of providers</param>
         /// <param name="bindingsPerProvider">The list of bindings per provider</param>
-        /// <returns>An enumeration of row-lists consisting of exactly one row from
-        /// each provider and indexed in the same order as the <paramref name="providers"/>
-        /// <param name="includeDynamicRows">If true, includes rows that may be dynamically
-        /// generated in the result set.  Otherwise excludes such rows and only returns
+        /// <param name="includeDynamicItems">If true, includes items that may be dynamically
+        /// generated in the result set.  Otherwise excludes such items and only returns
         /// those that are statically known a priori.</param>
+        /// <returns>An enumeration of item-lists consisting of exactly one item from
+        /// each provider and indexed in the same order as the <paramref name="providers"/>
         /// collection</returns>
-        IEnumerable<IList<IDataRow>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
-            bool includeDynamicRows);
+        IEnumerable<IList<IDataItem>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
+            bool includeDynamicItems);
     }
 }

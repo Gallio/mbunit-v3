@@ -102,7 +102,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void PopulateDataSource(PatternEvaluationScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-            dataSource.AddDataSet(new RowSequenceDataSet(new IDataRow[] { new ListDataRow<object>(values, GetMetadata(), false) }, values.Length));
+            dataSource.AddDataSet(new ItemSequenceDataSet(new IDataItem[] { new ListDataItem<object>(values, GetMetadata(), false) }, values.Length));
         }
     }
 }

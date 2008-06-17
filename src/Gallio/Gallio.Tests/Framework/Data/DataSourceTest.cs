@@ -28,7 +28,7 @@ namespace Gallio.Tests.Framework.Data
     public class DataSourceTest : BaseUnitTest
     {
         private delegate bool CanBindDelegate(DataBinding binding);
-        private delegate IEnumerable<IDataRow> GetRowsDelegate(ICollection<DataBinding> bindings, bool includeDynamicRows);
+        private delegate IEnumerable<IDataItem> GetItemsDelegate(ICollection<DataBinding> bindings, bool includeDynamicItems);
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfNameIsNull()
@@ -72,7 +72,7 @@ namespace Gallio.Tests.Framework.Data
                 DataSource source = new DataSource("theName");
                 source.AddDataSet(dataSet);
 
-                Assert.IsFalse(source.CanBind(new SimpleDataBinding(5, "untranslatedPath")));
+                Assert.IsFalse(source.CanBind(new DataBinding(5, "untranslatedPath")));
             }
         }
 
@@ -106,13 +106,13 @@ namespace Gallio.Tests.Framework.Data
                 source.AddIndexAlias("translatedPath", 2);
                 source.AddDataSet(dataSet);
 
-                Assert.IsTrue(source.CanBind(new SimpleDataBinding(5, "translatedPath")));
-                Assert.IsFalse(source.CanBind(new SimpleDataBinding(5, "untranslatedPath")));
+                Assert.IsTrue(source.CanBind(new DataBinding(5, "translatedPath")));
+                Assert.IsFalse(source.CanBind(new DataBinding(5, "untranslatedPath")));
             }
         }
 
         [Test]
-        public void GetRowsAppliesNoTranslationIfNoAliasesAreDefined()
+        public void GetItemsAppliesNoTranslationIfNoAliasesAreDefined()
         {
             List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
             metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
@@ -123,19 +123,19 @@ namespace Gallio.Tests.Framework.Data
             {
                 SetupResult.For(dataSet.ColumnCount).Return(2);
 
-                Expect.Call(dataSet.GetRows(null, true)).IgnoreArguments().Do((GetRowsDelegate)delegate(ICollection<DataBinding> bindings,
-                    bool includeDynamicRows)
+                Expect.Call(dataSet.GetItems(null, true)).IgnoreArguments().Do((GetItemsDelegate)delegate(ICollection<DataBinding> bindings,
+                    bool includeDynamicItems)
                 {
-                    Assert.IsTrue(includeDynamicRows);
-                    List<IDataRow> rows = new List<IDataRow>();
-                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadataPairs, false));
+                    Assert.IsTrue(includeDynamicItems);
+                    List<IDataItem> items = new List<IDataItem>();
+                    items.Add(new ListDataItem<object>(new object[] { "abc", "def", "ghi" }, metadataPairs, false));
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
                     Assert.AreEqual("untranslatedPath", bindingList[0].Path);
                     Assert.AreEqual(1, bindingList[0].Index);
 
-                    return rows;
+                    return items;
                 });
             }
 
@@ -145,21 +145,21 @@ namespace Gallio.Tests.Framework.Data
                 source.AddDataSet(dataSet);
 
                 DataBinding[] bindings = new DataBinding[] {
-                    new SimpleDataBinding(1, "untranslatedPath")
+                    new DataBinding(1, "untranslatedPath")
                 };
 
-                List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings, true));
-                Assert.AreEqual(1, rows.Count);
+                List<IDataItem> items = new List<IDataItem>(source.GetItems(bindings, true));
+                Assert.AreEqual(1, items.Count);
 
-                MetadataMap map = rows[0].GetMetadata();
+                MetadataMap map = items[0].GetMetadata();
                 Assert.AreEqual(1, map.Count);
                 Assert.AreEqual("Bar", map.GetValue("Foo"));
-                Assert.AreEqual("def", rows[0].GetValue(bindings[0]));
+                Assert.AreEqual("def", items[0].GetValue(bindings[0]));
             }
         }
 
         [Test]
-        public void GetRowsAppliesIndexAliasTranslation()
+        public void GetItemsAppliesIndexAliasTranslation()
         {
             List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
             metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
@@ -169,13 +169,13 @@ namespace Gallio.Tests.Framework.Data
             {
                 SetupResult.For(dataSet.ColumnCount).Return(3);
 
-                Expect.Call(dataSet.GetRows(null, true)).IgnoreArguments().Do((GetRowsDelegate)delegate(ICollection<DataBinding> bindings,
-                    bool includeDynamicRows)
+                Expect.Call(dataSet.GetItems(null, true)).IgnoreArguments().Do((GetItemsDelegate)delegate(ICollection<DataBinding> bindings,
+                    bool includeDynamicItems)
                 {
-                    Assert.IsTrue(includeDynamicRows);
+                    Assert.IsTrue(includeDynamicItems);
 
-                    List<IDataRow> rows = new List<IDataRow>();
-                    rows.Add(new ListDataRow<object>(new object[] { "abc", "def", "ghi" }, metadataPairs, true));
+                    List<IDataItem> items = new List<IDataItem>();
+                    items.Add(new ListDataItem<object>(new object[] { "abc", "def", "ghi" }, metadataPairs, true));
 
                     List<DataBinding> bindingList = new List<DataBinding>(bindings);
 
@@ -185,7 +185,7 @@ namespace Gallio.Tests.Framework.Data
                     Assert.AreEqual("untranslatedPath", bindingList[1].Path);
                     Assert.AreEqual(1, bindingList[1].Index);
 
-                    return rows;
+                    return items;
                 });
             }
 
@@ -196,25 +196,25 @@ namespace Gallio.Tests.Framework.Data
                 source.AddDataSet(dataSet);
 
                 DataBinding[] bindings = new DataBinding[] {
-                    new SimpleDataBinding(5, "translatedPath"),
-                    new SimpleDataBinding(1, "untranslatedPath")
+                    new DataBinding(5, "translatedPath"),
+                    new DataBinding(1, "untranslatedPath")
                 };
 
-                List<IDataRow> rows = new List<IDataRow>(source.GetRows(bindings, true));
-                Assert.AreEqual(1, rows.Count);
+                List<IDataItem> items = new List<IDataItem>(source.GetItems(bindings, true));
+                Assert.AreEqual(1, items.Count);
 
-                MetadataMap map = rows[0].GetMetadata();
+                MetadataMap map = items[0].GetMetadata();
                 Assert.AreEqual(1, map.Count);
                 Assert.AreEqual("Bar", map.GetValue("Foo"));
 
-                InterimAssert.Throws<ArgumentNullException>(delegate { rows[0].GetValue(null); });
-                Assert.AreEqual("ghi", rows[0].GetValue(bindings[0]));
-                Assert.AreEqual("def", rows[0].GetValue(bindings[1]));
+                InterimAssert.Throws<ArgumentNullException>(delegate { items[0].GetValue(null); });
+                Assert.AreEqual("ghi", items[0].GetValue(bindings[0]));
+                Assert.AreEqual("def", items[0].GetValue(bindings[1]));
 
                 // Should throw ArgumentNullException when binding list is null.
                 MbUnit.Framework.InterimAssert.Throws<ArgumentNullException>(delegate
                 {
-                    rows[0].GetValue(null);
+                    items[0].GetValue(null);
                 });
             }
         }

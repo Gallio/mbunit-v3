@@ -21,19 +21,19 @@ using Rhino.Mocks;
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
-    [TestsOn(typeof(RowDataBindingAccessor))]
-    public class RowDataBindingAccessorTest : BaseUnitTest
+    [TestsOn(typeof(BoundDataAccessor))]
+    public class BoundDataAccessorTest : BaseUnitTest
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfDataBindingIsNull()
         {
-            new RowDataBindingAccessor(null);
+            new BoundDataAccessor(null);
         }
 
         [Test]
         public void GetValueThrowsIfItemIsNull()
         {
-            RowDataBindingAccessor accessor = new RowDataBindingAccessor(new SimpleDataBinding(0, null));
+            BoundDataAccessor accessor = new BoundDataAccessor(new DataBinding(0, null));
 
             InterimAssert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
         }
@@ -41,19 +41,18 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void GetValueCallsRowsGetValueWithTheBinding()
         {
-            IDataRow row = Mocks.CreateMock<IDataRow>();
+            IDataItem item = Mocks.CreateMock<IDataItem>();
 
-            DataBinding binding = new SimpleDataBinding(0, null);
-            DataBindingItem item = new DataBindingItem(row);
+            DataBinding binding = new DataBinding(0, null);
 
             using (Mocks.Record())
             {
-                Expect.Call(row.GetValue(binding)).Return(42);
+                Expect.Call(item.GetValue(binding)).Return(42);
             }
 
             using (Mocks.Playback())
             {
-                RowDataBindingAccessor accessor = new RowDataBindingAccessor(binding);
+                BoundDataAccessor accessor = new BoundDataAccessor(binding);
                 Assert.AreEqual(42, accessor.GetValue(item));
             }
         }

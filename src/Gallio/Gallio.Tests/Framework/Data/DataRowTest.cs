@@ -36,16 +36,16 @@ namespace Gallio.Tests.Framework.Data
         public void ShouldAssumeASingleNullValueWasIntendedIfConstructorArgumentIsNull()
         {
             DataRow row = new DataRow(null);
-            Assert.IsNull(row.GetValue(new SimpleDataBinding(0, null)));
+            Assert.IsNull(row.GetValue(new DataBinding(0, null)));
         }
 
         [Test]
         public void ShouldAcceptMultipleValues()
         {
             DataRow row = new DataRow("abc", 123, 3.4);
-            Assert.AreEqual("abc", row.GetValue(new SimpleDataBinding(0, null)));
-            Assert.AreEqual(123, row.GetValue(new SimpleDataBinding(1, null)));
-            Assert.AreEqual(3.4, row.GetValue(new SimpleDataBinding(2, null)));
+            Assert.AreEqual("abc", row.GetValue(new DataBinding(0, null)));
+            Assert.AreEqual(123, row.GetValue(new DataBinding(1, null)));
+            Assert.AreEqual(3.4, row.GetValue(new DataBinding(2, null)));
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace Gallio.Tests.Framework.Data
                 .WithMetadata("Description", "Frumious")
                 .WithMetadata("Name", "Bandersnatch")
                 .WithMetadata(extraMetadata);
-            Assert.AreEqual("abc", row.GetValue(new SimpleDataBinding(0, null)));
+            Assert.AreEqual("abc", row.GetValue(new DataBinding(0, null)));
 
             MetadataMap map = row.GetMetadata();
             Assert.AreEqual(4, map.Count);

@@ -19,20 +19,20 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// A data provider generates an enumeration of <see cref="IDataRow" />s
+    /// A data provider generates an enumeration of <see cref="IDataItem" />s
     /// given a collection of <see cref="DataBinding"/>s to satisfy.
     /// </summary>
     public interface IDataProvider
     {
         /// <summary>
-        /// Gets an enumeration of data rows that can supply values for a given collection of bindings.
+        /// Gets an enumeration of data items that can supply values for a given collection of bindings.
         /// </summary>
         /// <param name="bindings">The bindings that are requested</param>
-        /// <param name="includeDynamicRows">If true, includes rows that may be dynamically
-        /// generated in the result set.  Otherwise excludes such rows and only returns
+        /// <param name="includeDynamicItems">If true, includes items that may be dynamically
+        /// generated in the result set.  Otherwise excludes such items and only returns
         /// those that are statically known a priori.</param>
-        /// <returns>The enumeration of data rows</returns>
+        /// <returns>The enumeration of data items</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="bindings"/> is null</exception>
-        IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings, bool includeDynamicRows);
+        IEnumerable<IDataItem> GetItems(ICollection<DataBinding> bindings, bool includeDynamicItems);
     }
 }

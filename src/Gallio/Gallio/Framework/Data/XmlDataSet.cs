@@ -29,15 +29,15 @@ namespace Gallio.Framework.Data
     /// Two XPath expressions are used.
     /// <list type="bullet">
     /// <item>
-    /// <term>Row Path</term>
+    /// <term>Item Path</term>
     /// <description>An XPath expression that selects a set of nodes that are used to
-    /// uniquely identify records.  For example, the row path might be used to select
+    /// uniquely identify records.  For example, the item path might be used to select
     /// the containing element of each Book element in an XML document of Books.
-    /// The row path is specified in the constructor.</description>
+    /// The item path is specified in the constructor.</description>
     /// </item>
     /// <item>
     /// <term>Binding Path</term>
-    /// <description>An XPath expression that selects a node relative to the row path
+    /// <description>An XPath expression that selects a node relative to the item path
     /// that contains a particular data value of interest.  For example, the binding path
     /// might be used to select the Author attribute of a Book element in an XML document of Books.
     /// The binding path is specified by the <see cref="DataBinding" />.</description>
@@ -48,25 +48,25 @@ namespace Gallio.Framework.Data
     public class XmlDataSet : BaseDataSet
     {
         private readonly Func<IXPathNavigable> documentProvider;
-        private readonly string rowPath;
+        private readonly string itemPath;
         private readonly bool isDynamic;
 
         /// <summary>
         /// Creates an XML data set.
         /// </summary>
         /// <param name="documentProvider">A delegate that produces the XML document on demand</param>
-        /// <param name="rowPath">The XPath expression used to select rows within the document</param>
+        /// <param name="itemPath">The XPath expression used to select items within the document</param>
         /// <param name="isDynamic">True if the data set should be considered dynamic</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="documentProvider"/> or <paramref name="rowPath"/> is null</exception>
-        public XmlDataSet(Func<IXPathNavigable> documentProvider, string rowPath, bool isDynamic)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="documentProvider"/> or <paramref name="itemPath"/> is null</exception>
+        public XmlDataSet(Func<IXPathNavigable> documentProvider, string itemPath, bool isDynamic)
         {
             if (documentProvider == null)
                 throw new ArgumentNullException("documentProvider");
-            if (rowPath == null)
-                throw new ArgumentNullException("rowPath");
+            if (itemPath == null)
+                throw new ArgumentNullException("itemPath");
 
             this.documentProvider = documentProvider;
-            this.rowPath = rowPath;
+            this.itemPath = itemPath;
             this.isDynamic = isDynamic;
         }
 
@@ -83,7 +83,7 @@ namespace Gallio.Framework.Data
             if (bindingPath == null)
                 return false;
 
-            string fullPath = rowPath + "/" + bindingPath;
+            string fullPath = itemPath + "/" + bindingPath;
             try
             {
                 IXPathNavigable document = documentProvider();
@@ -97,25 +97,25 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
-            if (!isDynamic || includeDynamicRows)
+            if (!isDynamic || includeDynamicItems)
             {
                 IXPathNavigable document = documentProvider();
 
-                foreach (XPathNavigator row in document.CreateNavigator().Select(rowPath))
-                    yield return new XmlDataRow(row, isDynamic);
+                foreach (XPathNavigator navigator in document.CreateNavigator().Select(itemPath))
+                    yield return new Item(navigator, isDynamic);
             }
         }
 
-        private sealed class XmlDataRow : StoredDataRow
+        private sealed class Item : SimpleDataItem
         {
-            private readonly XPathNavigator row;
+            private readonly XPathNavigator navigator;
 
-            public XmlDataRow(XPathNavigator row, bool isDynamic)
+            public Item(XPathNavigator navigator, bool isDynamic)
                 : base(null, isDynamic)
             {
-                this.row = row;
+                this.navigator = navigator;
             }
 
             protected override object GetValueImpl(DataBinding binding)
@@ -125,7 +125,7 @@ namespace Gallio.Framework.Data
 
                 try
                 {
-                    return row.SelectSingleNode(binding.Path);
+                    return navigator.SelectSingleNode(binding.Path);
                 }
                 catch (XPathException ex)
                 {

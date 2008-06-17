@@ -20,20 +20,20 @@ using Gallio.Model;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// An implementation of <see cref="IDataRow" /> that stores the dynamic flag
+    /// An implementation of <see cref="IDataItem" /> that stores the dynamic flag
     /// and metadata.
     /// </summary>
-    public abstract class StoredDataRow : BaseDataRow
+    public abstract class SimpleDataItem : BaseDataItem
     {
         private readonly IEnumerable<KeyValuePair<string, string>> metadataPairs;
         private readonly bool isDynamic;
 
         /// <summary>
-        /// Creates a data row.
+        /// Creates a data item.
         /// </summary>
-        /// <param name="metadataPairs">The metadata key/value pairs for the row, or null if none</param>
-        /// <param name="isDynamic">True if the row is dynamic</param>
-        public StoredDataRow(IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
+        /// <param name="metadataPairs">The metadata key/value pairs for the item, or null if none</param>
+        /// <param name="isDynamic">True if the item is dynamic</param>
+        public SimpleDataItem(IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
         {
             this.metadataPairs = metadataPairs;
             this.isDynamic = isDynamic;

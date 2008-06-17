@@ -19,13 +19,13 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
-    [TestsOn(typeof(SimpleDataBinding))]
-    public class SimpleDataBindingTest
+    [TestsOn(typeof(DataBinding))]
+    public class DataBindingTest
     {
         [Test]
         public void ConstructorWithPathAndIndex()
         {
-            SimpleDataBinding binding = new SimpleDataBinding(42, "path");
+            DataBinding binding = new DataBinding(42, "path");
 
             Assert.AreEqual("path", binding.Path);
             Assert.AreEqual(42, binding.Index);
@@ -34,7 +34,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void ReplaceIndexCreatesANewInstanceWithTheNewIndex()
         {
-            SimpleDataBinding oldBinding = new SimpleDataBinding(42, "path");
+            DataBinding oldBinding = new DataBinding(42, "path");
             DataBinding newBinding = oldBinding.ReplaceIndex(23);
 
             Assert.AreNotSame(oldBinding, newBinding);
@@ -47,33 +47,33 @@ namespace Gallio.Tests.Framework.Data
         new public void ToString()
         {
             Assert.AreEqual("Binding Index: <null>, Path: <null>",
-                new SimpleDataBinding(null, null).ToString());
+                new DataBinding(null, null).ToString());
             Assert.AreEqual("Binding Index: 42, Path: 'foo'",
-                new SimpleDataBinding(42, "foo").ToString());
+                new DataBinding(42, "foo").ToString());
         }
 
         [Test]
         public void EqualsAndHashCodeAreEqualForEqualBindings()
         {
             Assert.AreEqual(
-                new SimpleDataBinding(1, "path"),
-                new SimpleDataBinding(1, "path"));
+                new DataBinding(1, "path"),
+                new DataBinding(1, "path"));
             Assert.AreEqual(
-                new SimpleDataBinding(1, "path").GetHashCode(),
-                new SimpleDataBinding(1, "path").GetHashCode());
+                new DataBinding(1, "path").GetHashCode(),
+                new DataBinding(1, "path").GetHashCode());
         }
 
         [Test]
         public void EqualsAndHashCodeAreDistinctForDifferentBindings()
         {
             InterimAssert.AreDistinct(
-                new SimpleDataBinding(null, null),
-                new SimpleDataBinding(0, null),
-                new SimpleDataBinding(1, null),
-                new SimpleDataBinding(null, "path"),
-                new SimpleDataBinding(null, "path2"),
-                new SimpleDataBinding(0, "path"),
-                new SimpleDataBinding(1, "path2"),
+                new DataBinding(null, null),
+                new DataBinding(0, null),
+                new DataBinding(1, null),
+                new DataBinding(null, "path"),
+                new DataBinding(null, "path2"),
+                new DataBinding(0, "path"),
+                new DataBinding(1, "path2"),
                 null
             );
         }

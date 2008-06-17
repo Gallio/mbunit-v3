@@ -30,17 +30,17 @@ namespace Gallio.Tests.Framework.Data
             DataBinding[][] bindingsPerProvider = new DataBinding[0][];
             IDataProvider[] providers = new IDataProvider[0];
 
-            List<IList<IDataRow>> rows = new List<IList<IDataRow>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-            Assert.AreEqual(0, rows.Count);
+            List<IList<IDataItem>> items = new List<IList<IDataItem>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
+            Assert.AreEqual(0, items.Count);
         }
 
         [Test]
-        public void JoinsRowsCombinatorially()
+        public void JoinsItemsCombinatorially()
         {
             DataBinding[][] bindingsPerProvider = new DataBinding[][] {
-                new DataBinding[] { new SimpleDataBinding(0, null) },
+                new DataBinding[] { new DataBinding(0, null) },
                 new DataBinding[] { },
-                new DataBinding[] { new SimpleDataBinding(0, null) },
+                new DataBinding[] { new DataBinding(0, null) },
             };
 
             IDataProvider[] providers = new IDataProvider[] {
@@ -49,44 +49,44 @@ namespace Gallio.Tests.Framework.Data
                 Mocks.CreateMock<IDataProvider>()
             };
 
-            IDataRow[][] rowsPerProvider = new IDataRow[][] {
-                new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(2, null, true)
+            IDataItem[][] itemsPerProvider = new IDataItem[][] {
+                new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(2, null, true)
                 },
-                new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(2, null, false),
-                    new ScalarDataRow<int>(3, null, false)
+                new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(2, null, false),
+                    new ScalarDataItem<int>(3, null, false)
                 },
-                new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(2, null, true)
+                new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(2, null, true)
                 }
             };
 
             using (Mocks.Record())
             {
-                Expect.Call(providers[0].GetRows(bindingsPerProvider[0], true)).Return(rowsPerProvider[0]);
-                Expect.Call(providers[1].GetRows(bindingsPerProvider[1], true)).Return(rowsPerProvider[1]);
-                Expect.Call(providers[2].GetRows(bindingsPerProvider[2], true)).Return(rowsPerProvider[2]);
+                Expect.Call(providers[0].GetItems(bindingsPerProvider[0], true)).Return(itemsPerProvider[0]);
+                Expect.Call(providers[1].GetItems(bindingsPerProvider[1], true)).Return(itemsPerProvider[1]);
+                Expect.Call(providers[2].GetItems(bindingsPerProvider[2], true)).Return(itemsPerProvider[2]);
             }
 
             using (Mocks.Playback())
             {
-                List<IList<IDataRow>> rows = new List<IList<IDataRow>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-                Assert.AreEqual(12, rows.Count);
+                List<IList<IDataItem>> items = new List<IList<IDataItem>>(CombinatorialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
+                Assert.AreEqual(12, items.Count);
 
                 int index = 0;
-                for (int i = 0; i < rowsPerProvider[0].Length; i++)
+                for (int i = 0; i < itemsPerProvider[0].Length; i++)
                 {
-                    for (int j = 0; j < rowsPerProvider[1].Length; j++)
+                    for (int j = 0; j < itemsPerProvider[1].Length; j++)
                     {
-                        for (int k = 0; k < rowsPerProvider[2].Length; k++)
+                        for (int k = 0; k < itemsPerProvider[2].Length; k++)
                         {
-                            Assert.AreSame(rowsPerProvider[0][i], rows[index][0]);
-                            Assert.AreSame(rowsPerProvider[1][j], rows[index][1]);
-                            Assert.AreSame(rowsPerProvider[2][k], rows[index][2]);
+                            Assert.AreSame(itemsPerProvider[0][i], items[index][0]);
+                            Assert.AreSame(itemsPerProvider[1][j], items[index][1]);
+                            Assert.AreSame(itemsPerProvider[2][k], items[index][2]);
 
                             index += 1;
                         }

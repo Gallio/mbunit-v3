@@ -135,9 +135,9 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
-            if (!isDynamic || includeDynamicRows)
+            if (!isDynamic || includeDynamicItems)
             {
                 using (CsvReader reader = new CsvReader(documentReaderProvider()))
                 {
@@ -170,7 +170,7 @@ namespace Gallio.Framework.Data
                         CodeLocation dataLocation = dataLocationName != null
                             ? new CodeLocation(dataLocationName, reader.PreviousRecordLineNumber, 0)
                             : CodeLocation.Unknown;
-                        yield return new CsvDataRow(record, header,
+                        yield return new Item(record, header,
                             GetMetadata(dataLocation, record, metadataColumns), isDynamic);
                     }
                 }
@@ -189,12 +189,12 @@ namespace Gallio.Framework.Data
             }
         }
 
-        private sealed class CsvDataRow : StoredDataRow
+        private sealed class Item : SimpleDataItem
         {
             private readonly string[] record;
             private readonly string[] header;
 
-            public CsvDataRow(string[] record, string[] header,
+            public Item(string[] record, string[] header,
                 IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
                 : base(metadataPairs, isDynamic)
             {

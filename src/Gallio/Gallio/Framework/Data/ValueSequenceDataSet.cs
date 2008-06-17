@@ -20,9 +20,9 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// A data set constructed from an enumerated sequence of column values.
+    /// A data set constructed from an enumerated sequence of values.
     /// </summary>
-    public sealed class ColumnSequenceDataSet : BaseDataSet
+    public sealed class ValueSequenceDataSet : BaseDataSet
     {
         private readonly IEnumerable values;
         private readonly IEnumerable<KeyValuePair<string, string>> metadataPairs;
@@ -31,11 +31,11 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Creates a column sequence data set with optional metadata.
         /// </summary>
-        /// <param name="values">The sequence of column values, each generating a row</param>
+        /// <param name="values">The sequence of column values, each generating an item</param>
         /// <param name="metadataPairs">The metadata key/value pair enumeration, or null if none</param>
         /// <param name="isDynamic">True if the sequence is dynamic</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null</exception>
-        public ColumnSequenceDataSet(IEnumerable values, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
+        public ValueSequenceDataSet(IEnumerable values, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
         {
             if (values == null)
                 throw new ArgumentNullException("values");
@@ -58,12 +58,12 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
-            if (!isDynamic || includeDynamicRows)
+            if (!isDynamic || includeDynamicItems)
             {
                 foreach (object value in values)
-                    yield return new ScalarDataRow<object>(value, metadataPairs, isDynamic);
+                    yield return new ScalarDataItem<object>(value, metadataPairs, isDynamic);
             }
         }
     }

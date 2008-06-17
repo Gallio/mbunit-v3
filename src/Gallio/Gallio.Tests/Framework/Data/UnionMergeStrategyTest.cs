@@ -27,10 +27,10 @@ namespace Gallio.Tests.Framework.Data
     public class UnionMergeStrategyTest : BaseUnitTest
     {
         [Test]
-        public void EliminatesDuplicatesAndIncludesBadRows()
+        public void EliminatesDuplicatesAndIncludesBadItems()
         {
             DataBinding[] bindings = new DataBinding[] {
-                new SimpleDataBinding(0, null)
+                new DataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[] {
                 Mocks.CreateMock<IDataProvider>(),
@@ -40,36 +40,36 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Record())
             {
-                IDataRow badRow = Mocks.CreateMock<IDataRow>();
-                Expect.Call(badRow.GetValue(bindings[0])).Repeat.Twice().Throw(new InvalidOperationException("Test exception"));
+                IDataItem badItem = Mocks.CreateMock<IDataItem>();
+                Expect.Call(badItem.GetValue(bindings[0])).Repeat.Twice().Throw(new InvalidOperationException("Test exception"));
 
-                Expect.Call(providers[0].GetRows(bindings, true)).Return(new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, true),
-                    new ScalarDataRow<int>(1, null, true),
-                    new ScalarDataRow<int>(2, null, false),
+                Expect.Call(providers[0].GetItems(bindings, true)).Return(new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, true),
+                    new ScalarDataItem<int>(1, null, true),
+                    new ScalarDataItem<int>(2, null, false),
                 });
 
-                Expect.Call(providers[1].GetRows(bindings, true)).Return(EmptyArray<IDataRow>.Instance);
+                Expect.Call(providers[1].GetItems(bindings, true)).Return(EmptyArray<IDataItem>.Instance);
 
-                Expect.Call(providers[2].GetRows(bindings, true)).Return(new IDataRow[] {
-                    badRow,
-                    new ScalarDataRow<int>(3, null, true),
-                    new ScalarDataRow<int>(2, null, true)
+                Expect.Call(providers[2].GetItems(bindings, true)).Return(new IDataItem[] {
+                    badItem,
+                    new ScalarDataItem<int>(3, null, true),
+                    new ScalarDataItem<int>(2, null, true)
                 });
             }
 
             using (Mocks.Playback())
             {
-                List<IDataRow> rows = new List<IDataRow>(UnionMergeStrategy.Instance.Merge(providers, bindings, true));
-                Assert.AreEqual(4, rows.Count);
+                List<IDataItem> items = new List<IDataItem>(UnionMergeStrategy.Instance.Merge(providers, bindings, true));
+                Assert.AreEqual(4, items.Count);
 
-                Assert.AreEqual(1, rows[0].GetValue(bindings[0]));
-                Assert.IsTrue(rows[0].IsDynamic);
-                Assert.AreEqual(2, rows[1].GetValue(bindings[0]));
-                Assert.IsFalse(rows[1].IsDynamic);
-                InterimAssert.Throws<InvalidOperationException>(delegate { rows[2].GetValue(bindings[0]); });
-                Assert.AreEqual(3, rows[3].GetValue(bindings[0]));
-                Assert.IsTrue(rows[3].IsDynamic);
+                Assert.AreEqual(1, items[0].GetValue(bindings[0]));
+                Assert.IsTrue(items[0].IsDynamic);
+                Assert.AreEqual(2, items[1].GetValue(bindings[0]));
+                Assert.IsFalse(items[1].IsDynamic);
+                InterimAssert.Throws<InvalidOperationException>(delegate { items[2].GetValue(bindings[0]); });
+                Assert.AreEqual(3, items[3].GetValue(bindings[0]));
+                Assert.IsTrue(items[3].IsDynamic);
             }
         }
     }

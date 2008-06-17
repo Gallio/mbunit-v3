@@ -31,8 +31,8 @@ namespace Gallio.Framework.Data
     /// and a <see cref="IDataSourceResolver" /> for resolving data sources.</item>
     /// <item>Then the client calls <see cref="DataBindingContext.GetItems" /> and
     /// begins enumerating over the items.</item>
-    /// <item>For each item, the client calls <see cref="IDataBindingAccessor.GetValue" />
-    /// using the <see cref="IDataBindingAccessor" /> produced by the <see cref="IDataBinder" />s
+    /// <item>For each item, the client calls <see cref="IDataAccessor.GetValue" />
+    /// using the <see cref="IDataAccessor" /> produced by the <see cref="IDataBinder" />s
     /// to obtain the bound values.</item>
     /// <item>When finished with an item, the client disposes it.</item>
     /// </list>
@@ -48,12 +48,12 @@ namespace Gallio.Framework.Data
     /// </item>
     /// <item>
     /// <term>Binding</term>
-    /// <description>The <see cref="IDataBindingAccessor.GetValue" /> method is called to obtain
-    /// bound values from a <see cref="DataBindingItem" />.</description>
+    /// <description>The <see cref="IDataAccessor.GetValue" /> method is called to obtain
+    /// bound values from a <see cref="IDataItem" />.</description>
     /// </item>
     /// <item>
     /// <term>Unbinding</term>
-    /// <description>The <see cref="DataBindingItem" />'s <see cref="IDisposable.Dispose" /> method
+    /// <description>The <see cref="IDataItem" />'s <see cref="IDisposable.Dispose" /> method
     /// is called to release resources used by the bound values.</description>
     /// </item>
     /// </list>
@@ -80,8 +80,8 @@ namespace Gallio.Framework.Data
         /// <param name="context">The data binding context</param>
         /// <param name="resolver">The data source resolver</param>
         /// <returns>The data binding accessor to use for obtaining bound values
-        /// from <see cref="DataBindingItem"/>s produced by the <see cref="DataBindingContext" />.</returns>
+        /// from <see cref="IDataItem"/>s produced by the <see cref="DataBindingContext" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> or <paramref name="resolver"/> is null</exception>
-        IDataBindingAccessor Register(DataBindingContext context, IDataSourceResolver resolver);
+        IDataAccessor Register(DataBindingContext context, IDataSourceResolver resolver);
     }
 }

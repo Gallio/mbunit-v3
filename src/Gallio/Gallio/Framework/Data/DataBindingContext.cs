@@ -22,7 +22,7 @@ namespace Gallio.Framework.Data
     /// <summary>
     /// <para>
     /// A <see cref="DataBindingContext" /> tracks a list of <see cref="IDataSet"/>s and
-    /// <see cref="DataBinding"/>s that are used to produce <see cref="DataBindingItem"/>s.
+    /// <see cref="DataBinding"/>s that are used to produce <see cref="IDataItem"/>s.
     /// </para>
     /// </summary>
     /// <remarks>
@@ -30,10 +30,10 @@ namespace Gallio.Framework.Data
     /// In typical usage, a <see cref="IDataBinder" /> registers interest in obtaining
     /// data from a particular <see cref="IDataSet" /> by providing a corresponding <see cref="DataBinding" />.
     /// The <see cref="DataBindingContext" /> then adds the requested <see cref="IDataSet" />
-    /// to its <see cref="DataSets" /> list and returns a <see cref="IDataBindingAccessor" />.
+    /// to its <see cref="DataSets" /> list and returns a <see cref="IDataAccessor" />.
     /// When <see cref="GetItems" /> is called, the <see cref="DataBindingContext" /> produces
-    /// an enumeration of <see cref="DataBindingItem" />.  Data-bound values can then
-    /// be obtained from the <see cref="DataBindingItem" /> via the <see cref="IDataBindingAccessor.GetValue" />
+    /// an enumeration of <see cref="IDataItem" />.  Data-bound values can then
+    /// be obtained from the <see cref="IDataItem" /> via the <see cref="IDataAccessor.GetValue" />
     /// method of each accessor.
     /// </para>
     /// </remarks>
@@ -81,10 +81,9 @@ namespace Gallio.Framework.Data
         /// <para>
         /// If the context contains no data bindings then by definition it also contains
         /// no data sets.  In the absence of bindings, <see cref="GetItems"/> will produce
-        /// exactly one <see cref="DataBindingItem" /> (containing a
-        /// <see cref="NullDataRow"/>) and no data binding work will actually
-        /// need to be performed by the client.  Consequently a client may choose
-        /// to treat this situation as a special case and may adopt a different
+        /// exactly one <see cref="IDataItem" /> (a <see cref="NullDataItem"/>) and no data
+        /// binding work will actually need to be performed by the client.  Consequently a
+        /// client may choose to treat this situation as a special case and may adopt a different
         /// (possibly simpler) algorithm in response.
         /// </para>
         /// </remarks>
@@ -122,7 +121,7 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// Registers a data binding for a given data set and adds the data set
         /// to the list of data sets to be enumerated during data binding.
-        /// Returns a <see cref="IDataBindingAccessor" /> that may be used to 
+        /// Returns a <see cref="IDataAccessor" /> that may be used to 
         /// retrieve the values associated with the binding.
         /// </summary>
         /// <remarks>
@@ -134,7 +133,7 @@ namespace Gallio.Framework.Data
         /// <param name="dataSet">The data set</param>
         /// <param name="binding">The data binding</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataSet"/> or <paramref name="binding"/> is null</exception>
-        public IDataBindingAccessor RegisterBinding(IDataSet dataSet, DataBinding binding)
+        public IDataAccessor RegisterBinding(IDataSet dataSet, DataBinding binding)
         {
             if (dataSet == null)
                 throw new ArgumentNullException("dataSet");
@@ -147,25 +146,25 @@ namespace Gallio.Framework.Data
             DataBinding translatedBinding = joinedDataSet.TranslateBinding(dataSet, binding);
             translatedBindings.Add(translatedBinding);
 
-            return new RowDataBindingAccessor(translatedBinding);
+            return new BoundDataAccessor(translatedBinding);
         }
 
         /// <summary>
         /// <para>
-        /// Gets an enumeration of <see cref="DataBindingItem"/>s.
+        /// Gets an enumeration of <see cref="IDataItem"/>s.
         /// </para>
         /// <para>
-        /// The contents of each item may be inspected using a <see cref="IDataBindingAccessor" />
+        /// The contents of each item may be inspected using a <see cref="IDataAccessor" />
         /// as returned by <see cref="RegisterBinding" />.  When the client is finished with
         /// an item, it should dispose it by calling the <see cref="IDisposable.Dispose" />
-        /// method of the <see cref="DataBindingItem" />.
+        /// method of the <see cref="IDataItem" />.
         /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
         /// A client typically registers its <see cref="IDataBinder"/>s with the
         /// <see cref="DataBindingContext"/> then enters a loop to enumerate the items.
-        /// For each item, the client will call <see cref="IDataBindingAccessor.GetValue" />
+        /// For each item, the client will call <see cref="IDataAccessor.GetValue" />
         /// to retrieve the values of interest.  When it is finished with an item, it
         /// disposes it and proceeds on to the next one or stops.  In this manner, a
         /// client may apply multiple <see cref="IDataBinder"/>s within the same
@@ -173,23 +172,23 @@ namespace Gallio.Framework.Data
         /// </para>
         /// <para>
         /// If no data bindings have been registered (<see cref="HasBindings"/> is false),
-        /// this method returns exactly one data item consisting of a <see cref="NullDataRow" />.
+        /// this method returns exactly one data item consisting of a <see cref="NullDataItem" />.
         /// </para>
         /// </remarks>
-        /// <param name="includeDynamicRows">If true, includes rows that may be dynamically
-        /// generated in the result set.  Otherwise excludes such rows and only returns
+        /// <param name="includeDynamicItems">If true, includes items that may be dynamically
+        /// generated in the result set.  Otherwise excludes such items and only returns
         /// those that are statically known a priori.</param>
-        /// <returns>The enumeration of data binding items</returns>
-        public IEnumerable<DataBindingItem> GetItems(bool includeDynamicRows)
+        /// <returns>The enumeration of data items</returns>
+        public IEnumerable<IDataItem> GetItems(bool includeDynamicItems)
         {
             if (! HasBindings)
             {
-                yield return new DataBindingItem(NullDataRow.Instance);
+                yield return NullDataItem.Instance;
             }
             else
             {
-                foreach (IDataRow row in joinedDataSet.GetRows(translatedBindings, includeDynamicRows))
-                    yield return new DataBindingItem(row);
+                foreach (IDataItem item in joinedDataSet.GetItems(translatedBindings, includeDynamicItems))
+                    yield return item;
             }
         }
     }

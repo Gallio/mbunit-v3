@@ -23,13 +23,26 @@ namespace Gallio.Framework.Data
     /// </para>
     /// <para>
     /// This class provides support for optional path-based and index-based lookup.  Subclasses
-    /// may define define custom lookup rules for a bound value that are recognized by
-    /// data sets.
+    /// may provide additional properties that are recognized by special kinds of data sets
+    /// to modify how a bound value is resolved.
     /// </para>
     /// </summary>
-    /// <seealso cref="SimpleDataBinding"/>
-    public abstract class DataBinding
+    public class DataBinding
     {
+        private readonly int? index;
+        private readonly string path;
+
+        /// <summary>
+        /// Creates a new data binding with an optional index and path.
+        /// </summary>
+        /// <param name="index">The binding index or null if none.  <seealso cref="Index"/></param>
+        /// <param name="path">The binding path or null if none.  <seealso cref="Path"/></param>
+        public DataBinding(int? index, string path)
+        {
+            this.path = path;
+            this.index = index;
+        }
+
         /// <summary>
         /// Gets an optional binding index that describes how to locate the bound value
         /// in a data set that is structured as an ordered tuple, such as the ordinal index
@@ -40,7 +53,10 @@ namespace Gallio.Framework.Data
         /// in the parameter array.  A data set can take advantage of this convention by
         /// treating the binding index 
         /// </remarks>
-        public abstract int? Index { get; }
+        public virtual int? Index
+        {
+            get { return index; }
+        }
 
         /// <summary>
         /// Gets an optional binding path that describes how to locate the bound value
@@ -51,14 +67,20 @@ namespace Gallio.Framework.Data
         /// A data set can take advantage of this convention by treating the binding path as a
         /// case-insensitive name where appropriate.
         /// </remarks>
-        public abstract string Path { get; }
+        public virtual string Path
+        {
+            get { return path; }
+        }
 
         /// <summary>
         /// Creates a clone of the data binding with a different index.
         /// </summary>
         /// <param name="index">The new index</param>
         /// <returns>The cloned binding</returns>
-        public abstract DataBinding ReplaceIndex(int? index);
+        public virtual DataBinding ReplaceIndex(int? index)
+        {
+            return new DataBinding(index, path);
+        }
 
         /// <inheritdoc />
         public override bool Equals(object obj)

@@ -13,18 +13,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// A data binding accessor extracts a value from a <see cref="DataBindingItem" />.
+    /// A base implementation of <see cref="IDataAccessor" /> that
+    /// performs argument validation.
     /// </summary>
-    public interface IDataBindingAccessor
+    public abstract class BaseDataAccessor : IDataAccessor
     {
+        /// <inheritdoc />
+        public object GetValue(IDataItem item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+
+            return GetValueImpl(item);
+        }
+
         /// <summary>
-        /// Gets a value derived from the <see cref="DataBindingItem" />.
+        /// Internal implementation of <see cref="GetValue" /> after argument
+        /// validation has been performed.
         /// </summary>
-        /// <param name="item">The data binding item</param>
+        /// <param name="item">The data item, not null</param>
         /// <returns>The value</returns>
-        object GetValue(DataBindingItem item);
+        protected abstract object GetValueImpl(IDataItem item);
     }
 }

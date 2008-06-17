@@ -79,28 +79,28 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings,
-            bool includeDynamicRows)
+        protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings,
+            bool includeDynamicItems)
         {
             if (indexAliases != null)
-                return GetRowsInternalTranslated(bindings, includeDynamicRows);
+                return GetItemsImplTranslated(bindings, includeDynamicItems);
             else
-                return GetRowsInternalBase(bindings, includeDynamicRows);
+                return GetItemsImplBase(bindings, includeDynamicItems);
         }
 
-        private IEnumerable<IDataRow> GetRowsInternalBase(ICollection<DataBinding> bindings,
-            bool includeDynamicRows)
+        private IEnumerable<IDataItem> GetItemsImplBase(ICollection<DataBinding> bindings,
+            bool includeDynamicItems)
         {
-            return base.GetRowsImpl(bindings, includeDynamicRows);
+            return base.GetItemsImpl(bindings, includeDynamicItems);
         }
 
-        private IEnumerable<IDataRow> GetRowsInternalTranslated(ICollection<DataBinding> bindings,
-            bool includeDynamicRows)
+        private IEnumerable<IDataItem> GetItemsImplTranslated(ICollection<DataBinding> bindings,
+            bool includeDynamicItems)
         {
             DataBinding[] translatedBindings = GenericUtils.ConvertAllToArray<DataBinding, DataBinding>(bindings, TranslateBinding);
 
-            foreach (IDataRow row in GetRowsInternalBase(translatedBindings, includeDynamicRows))
-                yield return new TranslatedDataRow(this, row);
+            foreach (IDataItem item in GetItemsImplBase(translatedBindings, includeDynamicItems))
+                yield return new TranslatedDataItem(this, item);
         }
 
         private DataBinding TranslateBinding(DataBinding binding)
@@ -114,25 +114,25 @@ namespace Gallio.Framework.Data
             return binding;
         }
 
-        private sealed class TranslatedDataRow : IDataRow
+        private sealed class TranslatedDataItem : IDataItem
         {
             private readonly DataSource source;
-            private readonly IDataRow row;
+            private readonly IDataItem item;
 
-            public TranslatedDataRow(DataSource source, IDataRow row)
+            public TranslatedDataItem(DataSource source, IDataItem item)
             {
                 this.source = source;
-                this.row = row;
+                this.item = item;
             }
 
             public bool IsDynamic
             {
-                get { return row.IsDynamic; }
+                get { return item.IsDynamic; }
             }
 
             public void PopulateMetadata(MetadataMap map)
             {
-                row.PopulateMetadata(map);
+                item.PopulateMetadata(map);
             }
 
             public object GetValue(DataBinding binding)
@@ -140,7 +140,7 @@ namespace Gallio.Framework.Data
                 if (binding == null)
                     throw new ArgumentNullException("binding");
 
-                return row.GetValue(source.TranslateBinding(binding));
+                return item.GetValue(source.TranslateBinding(binding));
             }
         }
     }

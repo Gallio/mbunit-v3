@@ -18,8 +18,8 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// The concatenation merge strategy combines the rows from multiple providers
-    /// by simply concatenating the rows in the order in which they
+    /// The concatenation merge strategy combines the items from multiple providers
+    /// by simply concatenating the items in the order in which they
     /// appear and proceeding from one provider to the next until all providers
     /// have been fully processed.
     /// </summary>
@@ -35,12 +35,12 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
-            bool includeDynamicRows)
+        public IEnumerable<IDataItem> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicItems)
         {
             foreach (IDataProvider provider in providers)
-                foreach (IDataRow row in provider.GetRows(bindings, includeDynamicRows))
-                    yield return row;
+                foreach (IDataItem item in provider.GetItems(bindings, includeDynamicItems))
+                    yield return item;
         }
     }
 }

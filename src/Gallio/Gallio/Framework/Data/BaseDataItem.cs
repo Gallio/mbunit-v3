@@ -19,9 +19,9 @@ using Gallio.Model;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// Abstract base class for data rows.
+    /// Abstract base class for data items.
     /// </summary>
-    public abstract class BaseDataRow : IDataRow
+    public abstract class BaseDataItem : IDataItem
     {
         /// <inheritdoc />
         public abstract bool IsDynamic { get; }
@@ -56,6 +56,5 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="map">The metadata map to populate, never null</param>
         protected abstract void PopulateMetadataImpl(MetadataMap map);
-
     }
 }

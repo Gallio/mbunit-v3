@@ -21,21 +21,21 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
-    [TestsOn(typeof(NullDataRow))]
-    [DependsOn(typeof(BaseDataRowTest))]
-    public class NullDataRowTest
+    [TestsOn(typeof(NullDataItem))]
+    [DependsOn(typeof(BaseDataItemTest))]
+    public class NullDataItemTest
     {
         [Test]
         public void HasNoMetadata()
         {
-            MetadataMap metadata = NullDataRow.Instance.GetMetadata();
+            MetadataMap metadata = NullDataItem.Instance.GetMetadata();
             Assert.AreEqual(0, metadata.Count);
         }
 
         [Test]
         public void GetValueReturnsNull()
         {
-            Assert.AreEqual(null, NullDataRow.Instance.GetValue(new SimpleDataBinding(0, null)));
+            Assert.AreEqual(null, NullDataItem.Instance.GetValue(new DataBinding(0, null)));
         }
     }
 }

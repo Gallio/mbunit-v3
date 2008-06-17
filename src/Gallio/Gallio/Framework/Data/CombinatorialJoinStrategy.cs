@@ -18,8 +18,8 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// The combinatorial join strategy combines rows by constructing the cartesian
-    /// product of the rows of each provider.
+    /// The combinatorial join strategy combines items by constructing the cartesian
+    /// product of the items of each provider.
     /// </summary>
     /// <seealso cref="PairwiseJoinStrategy"/>
     public sealed class CombinatorialJoinStrategy : IJoinStrategy
@@ -34,24 +34,24 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IList<IDataRow>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
-            bool includeDynamicRows)
+        public IEnumerable<IList<IDataItem>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
+            bool includeDynamicItems)
         {
             int providerCount = providers.Count;
             if (providerCount == 0)
                 yield break;
 
-            IEnumerable<IDataRow>[] sequences = new IEnumerable<IDataRow>[providers.Count];
+            IEnumerable<IDataItem>[] sequences = new IEnumerable<IDataItem>[providers.Count];
             for (int i = 0; i < providers.Count; i++)
-                sequences[i] = providers[i].GetRows(bindingsPerProvider[i], includeDynamicRows);
+                sequences[i] = providers[i].GetItems(bindingsPerProvider[i], includeDynamicItems);
 
-            IEnumerator<IDataRow>[] enumerators = new IEnumerator<IDataRow>[providerCount];
+            IEnumerator<IDataItem>[] enumerators = new IEnumerator<IDataItem>[providerCount];
             enumerators[0] = sequences[0].GetEnumerator();
 
             int enumeratorCount = 1;
             for (; ; )
             {
-                IEnumerator<IDataRow> top = enumerators[enumeratorCount - 1];
+                IEnumerator<IDataItem> top = enumerators[enumeratorCount - 1];
 
                 if (top.MoveNext())
                 {
@@ -62,11 +62,11 @@ namespace Gallio.Framework.Data
                     }
                     else
                     {
-                        IDataRow[] rowList = new IDataRow[providerCount];
+                        IDataItem[] itemList = new IDataItem[providerCount];
                         for (int i = 0; i < providerCount; i++)
-                            rowList[i] = enumerators[i].Current;
+                            itemList[i] = enumerators[i].Current;
 
-                        yield return rowList;
+                        yield return itemList;
                     }
                 }
                 else

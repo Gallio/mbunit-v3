@@ -14,25 +14,35 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// Extension methods for <see cref="IDataRow" />.
+    /// A <see cref="IDataAccessor" /> that simply accesses a value contained
+    /// by a data item using a particular <see cref="DataBinding" />.
     /// </summary>
-    public static class DataRowExtensions
+    public sealed class BoundDataAccessor : BaseDataAccessor
     {
+        private readonly DataBinding binding;
+
         /// <summary>
-        /// Gets the metadata associated with a data row.
+        /// Creates a bound data accessor.
         /// </summary>
-        /// <param name="dataRow">The data row</param>
-        /// <returns>The associated metadata</returns>
-        public static MetadataMap GetMetadata(this IDataRow dataRow)
+        /// <param name="binding">The binding to query</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="binding"/> is null</exception>
+        public BoundDataAccessor(DataBinding binding)
         {
-            MetadataMap map = new MetadataMap();
-            dataRow.PopulateMetadata(map);
-            return map;
+            if (binding == null)
+                throw new ArgumentNullException("binding");
+
+            this.binding = binding;
+        }
+
+        /// <inheritdoc />
+        protected override object GetValueImpl(IDataItem item)
+        {
+            object value = item.GetValue(binding);
+            return value;
         }
     }
 }

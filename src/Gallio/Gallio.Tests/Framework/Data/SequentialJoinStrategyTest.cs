@@ -26,12 +26,12 @@ namespace Gallio.Tests.Framework.Data
     public class SequentialJoinStrategyTest : BaseUnitTest
     {
         [Test]
-        public void JoinsRowsSequentiallyAndPadsWithNullsUntilExhausted()
+        public void JoinsItemsSequentiallyAndPadsWithNullsUntilExhausted()
         {
             DataBinding[][] bindingsPerProvider = new DataBinding[][] {
-                new DataBinding[] { new SimpleDataBinding(0, null) },
+                new DataBinding[] { new DataBinding(0, null) },
                 new DataBinding[] { },
-                new DataBinding[] { new SimpleDataBinding(0, null) },
+                new DataBinding[] { new DataBinding(0, null) },
             };
 
             IDataProvider[] providers = new IDataProvider[] {
@@ -40,42 +40,42 @@ namespace Gallio.Tests.Framework.Data
                 Mocks.CreateMock<IDataProvider>()
             };
 
-            IDataRow[][] rowsPerProvider = new IDataRow[][] {
-                new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, true),
-                    new ScalarDataRow<int>(2, null, false)
+            IDataItem[][] itemsPerProvider = new IDataItem[][] {
+                new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, true),
+                    new ScalarDataItem<int>(2, null, false)
                 },
-                new IDataRow[] { },
-                new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(2, null, false),
-                    new ScalarDataRow<int>(3, null, false)
+                new IDataItem[] { },
+                new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(2, null, false),
+                    new ScalarDataItem<int>(3, null, false)
                 }
             };
 
             using (Mocks.Record())
             {
-                Expect.Call(providers[0].GetRows(bindingsPerProvider[0], true)).Return(rowsPerProvider[0]);
-                Expect.Call(providers[1].GetRows(bindingsPerProvider[1], true)).Return(rowsPerProvider[1]);
-                Expect.Call(providers[2].GetRows(bindingsPerProvider[2], true)).Return(rowsPerProvider[2]);
+                Expect.Call(providers[0].GetItems(bindingsPerProvider[0], true)).Return(itemsPerProvider[0]);
+                Expect.Call(providers[1].GetItems(bindingsPerProvider[1], true)).Return(itemsPerProvider[1]);
+                Expect.Call(providers[2].GetItems(bindingsPerProvider[2], true)).Return(itemsPerProvider[2]);
             }
 
             using (Mocks.Playback())
             {
-                List<IList<IDataRow>> rows = new List<IList<IDataRow>>(SequentialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-                Assert.AreEqual(3, rows.Count);
+                List<IList<IDataItem>> items = new List<IList<IDataItem>>(SequentialJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
+                Assert.AreEqual(3, items.Count);
 
-                Assert.AreSame(rowsPerProvider[0][0], rows[0][0]);
-                Assert.AreSame(NullDataRow.Instance, rows[0][1]);
-                Assert.AreSame(rowsPerProvider[2][0], rows[0][2]);
+                Assert.AreSame(itemsPerProvider[0][0], items[0][0]);
+                Assert.AreSame(NullDataItem.Instance, items[0][1]);
+                Assert.AreSame(itemsPerProvider[2][0], items[0][2]);
 
-                Assert.AreSame(rowsPerProvider[0][1], rows[1][0]);
-                Assert.AreSame(NullDataRow.Instance, rows[1][1]);
-                Assert.AreSame(rowsPerProvider[2][1], rows[1][2]);
+                Assert.AreSame(itemsPerProvider[0][1], items[1][0]);
+                Assert.AreSame(NullDataItem.Instance, items[1][1]);
+                Assert.AreSame(itemsPerProvider[2][1], items[1][2]);
 
-                Assert.AreSame(NullDataRow.Instance, rows[2][0]);
-                Assert.AreSame(NullDataRow.Instance, rows[2][1]);
-                Assert.AreSame(rowsPerProvider[2][2], rows[2][2]);
+                Assert.AreSame(NullDataItem.Instance, items[2][0]);
+                Assert.AreSame(NullDataItem.Instance, items[2][1]);
+                Assert.AreSame(itemsPerProvider[2][2], items[2][2]);
             }
         }
     }

@@ -36,13 +36,13 @@ namespace Gallio.Tests.Framework.Data
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfSourceNameIsNull()
         {
-            new ScalarDataBinder(new SimpleDataBinding(0, null), null);
+            new ScalarDataBinder(new DataBinding(0, null), null);
         }
 
         [Test]
         public void RegisterThrowsIfTheDataSourceCannotBeResolvedByName()
         {
-            ScalarDataBinder binder = new ScalarDataBinder( new SimpleDataBinding(0, null), "name");
+            ScalarDataBinder binder = new ScalarDataBinder( new DataBinding(0, null), "name");
 
             IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();
 
@@ -61,17 +61,17 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void AccessorObtainsAValueFromTheRow()
         {
-            DataBinding binding = new SimpleDataBinding(0, null);
+            DataBinding binding = new DataBinding(0, null);
             ScalarDataBinder binder = new ScalarDataBinder(binding, "name");
 
             IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();
             DataBindingContext context = new DataBindingContext(new NullConverter());
 
             DataSource source = new DataSource("name");
-            source.AddDataSet(new RowSequenceDataSet(new IDataRow[]
+            source.AddDataSet(new ItemSequenceDataSet(new IDataItem[]
             {
-                new ScalarDataRow<int>(42, null, false),
-                new ScalarDataRow<string>("42", null, false)
+                new ScalarDataItem<int>(42, null, false),
+                new ScalarDataItem<string>("42", null, false)
             }, 1));
 
             using (Mocks.Record())
@@ -81,10 +81,10 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Playback())
             {
-                IDataBindingAccessor accessor = binder.Register(context, resolver);
+                IDataAccessor accessor = binder.Register(context, resolver);
                 Assert.IsTrue(context.DataSets.Contains(source), "The data sets list should contain the source that was resolved during binder registration.");
 
-                List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems(true));
+                List<IDataItem> items = new List<IDataItem>(context.GetItems(true));
                 Assert.AreEqual(2, items.Count);
 
                 Assert.AreEqual(42, accessor.GetValue(items[0]));

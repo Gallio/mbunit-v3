@@ -36,7 +36,7 @@ namespace Gallio.Framework.Pattern
     /// associated with the test.</item>
     /// <item>The controller calls <see cref="IPatternTestHandler.BeforeTest" /> to give test extensions
     /// the opportunity to modify the test state.</item>
-    /// <item>The controller begins iterating over the <see cref="DataBindingItem"/>s produced by the
+    /// <item>The controller begins iterating over the <see cref="IDataItem"/>s produced by the
     /// state's <see cref="BindingContext" />.  For each item it constructs a <see cref="PatternTestInstanceState" />
     /// and executes the test instance.</item>
     /// <item>The controller calls <see cref="IPatternTestHandler.AfterTest" /> to give test extensions
@@ -55,7 +55,7 @@ namespace Gallio.Framework.Pattern
         private readonly bool isExplicit;
 
         private readonly DataBindingContext bindingContext;
-        private readonly Dictionary<ISlotInfo, IDataBindingAccessor> slotBindingAccessors;
+        private readonly Dictionary<ISlotInfo, IDataAccessor> slotBindingAccessors;
         private readonly UserDataCollection data;
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Gallio.Framework.Pattern
             this.isExplicit = isExplicit;
 
             bindingContext = new DataBindingContext(converter);
-            slotBindingAccessors = new Dictionary<ISlotInfo, IDataBindingAccessor>();
+            slotBindingAccessors = new Dictionary<ISlotInfo, IDataAccessor>();
             data = new UserDataCollection();
         }
 
@@ -191,7 +191,7 @@ namespace Gallio.Framework.Pattern
         /// <para>
         /// The dictionary maps slots to accessors that will provide values for those
         /// slots when building test instances.  The accessor will be applied to
-        /// <see cref="DataBindingItem"/>s produced iteratively by the
+        /// <see cref="IDataItem"/>s produced iteratively by the
         /// <see cref="BindingContext" /> of this test state.
         /// </para>
         /// </summary>
@@ -204,10 +204,10 @@ namespace Gallio.Framework.Pattern
         /// method.  Other novel kinds of tests might additional capabilities.
         /// </para>
         /// <para>
-        /// A <see cref="IDataBindingAccessor" /> must not be null.
+        /// A <see cref="IDataAccessor" /> must not be null.
         /// </para>
         /// </remarks>
-        public IDictionary<ISlotInfo, IDataBindingAccessor> SlotBindingAccessors
+        public IDictionary<ISlotInfo, IDataAccessor> SlotBindingAccessors
         {
             get { return slotBindingAccessors; }
         }

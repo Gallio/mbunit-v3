@@ -19,30 +19,30 @@ namespace Gallio.Framework.Data
 {
     /// <summary>
     /// <para>
-    /// A merge strategy combines rows from multiple providers into a sequence
+    /// A merge strategy combines items from multiple providers into a sequence
     /// according to some algorithm.
     /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
     /// A merge strategy performs much the same purpose as a "UNION" or other
-    /// combinator in query languages.  It specifies how to select rows among
-    /// multiple providers to create an aggregate sequence of rows.
+    /// combinator in query languages.  It specifies how to select items among
+    /// multiple providers to create an aggregate sequence of items.
     /// </para>
     /// </remarks>
     /// <seealso cref="MergedDataSet"/>
     public interface IMergeStrategy
     {
         /// <summary>
-        /// Merges the rows from each provider into a new sequence.
+        /// Merges the items from each provider into a new sequence.
         /// </summary>
         /// <param name="providers">The list of providers</param>
         /// <param name="bindings">The bindings</param>
-        /// <param name="includeDynamicRows">If true, includes rows that may be dynamically
-        /// generated in the result set.  Otherwise excludes such rows and only returns
+        /// <param name="includeDynamicItems">If true, includes items that may be dynamically
+        /// generated in the result set.  Otherwise excludes such items and only returns
         /// those that are statically known a priori.</param>
-        /// <returns>The merged sequence of rows</returns>
-        IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
-            bool includeDynamicRows);
+        /// <returns>The merged sequence of items</returns>
+        IEnumerable<IDataItem> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicItems);
     }
 }

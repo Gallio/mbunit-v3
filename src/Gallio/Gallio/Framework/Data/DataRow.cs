@@ -24,13 +24,13 @@ namespace Gallio.Framework.Data
     /// A data row is a simple immutable value type that encpasulates an
     /// array of values along with associated metadata for use in data binding expressions.
     /// It presents a fluent interface that users may find more convenient than
-    /// other row implementations.
+    /// other <see cref="IDataItem" /> implementations.
     /// </para>
     /// <para>
     /// The data in a <see cref="DataRow" /> is always considered dynamic.
     /// </para>
     /// </summary>
-    public class DataRow : BaseDataRow
+    public class DataRow : BaseDataItem
     {
         private readonly object[] values;
         private readonly MetadataNode metadata;

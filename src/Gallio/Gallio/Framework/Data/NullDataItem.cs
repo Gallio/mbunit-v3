@@ -13,29 +13,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Model;
+
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// An implementation of <see cref="IDataBindingAccessor" /> that
-    /// returns a constant value.
+    /// A null data item simply returns a null value on each request.
+    /// It has no metadata.
     /// </summary>
-    public sealed class ConstantDataBindingAccessor : BaseDataBindingAccessor
+    public sealed class NullDataItem : BaseDataItem
     {
-        private readonly object value;
-
         /// <summary>
-        /// Creates a data binding accessor for a constant value.
+        /// Gets the singleton null data item instance.
         /// </summary>
-        /// <param name="value">The constant value to be returned by <see cref="IDataBindingAccessor.GetValue" /></param>
-        public ConstantDataBindingAccessor(object value)
+        public static readonly NullDataItem Instance = new NullDataItem();
+
+        private NullDataItem()
         {
-            this.value = value;
         }
 
         /// <inheritdoc />
-        protected override object GetValueImpl(DataBindingItem item)
+        protected override object GetValueImpl(DataBinding binding)
         {
-            return value;
+            return null;
+        }
+
+        /// <inheritdoc />
+        protected override void PopulateMetadataImpl(MetadataMap map)
+        {
+        }
+
+        /// <inheritdoc />
+        public override bool IsDynamic
+        {
+            get { return false; }
         }
     }
 }

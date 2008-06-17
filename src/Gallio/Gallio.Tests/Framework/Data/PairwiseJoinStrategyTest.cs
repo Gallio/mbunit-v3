@@ -32,40 +32,40 @@ namespace Gallio.Tests.Framework.Data
             DataBinding[][] bindingsPerProvider = new DataBinding[0][];
             IDataProvider[] providers = new IDataProvider[0];
 
-            List<IList<IDataRow>> rows = new List<IList<IDataRow>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-            Assert.AreEqual(0, rows.Count);
+            List<IList<IDataItem>> items = new List<IList<IDataItem>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
+            Assert.AreEqual(0, items.Count);
         }
 
         [Test]
         public void HandlesDegenerateCaseWithOneProvider()
         {
             DataBinding[][] bindingsPerProvider = new DataBinding[][] {
-                new DataBinding[] { new SimpleDataBinding(0, null) },
+                new DataBinding[] { new DataBinding(0, null) },
             };
 
             IDataProvider[] providers = new IDataProvider[] {
                 Mocks.CreateMock<IDataProvider>()
             };
 
-            IDataRow[][] rowsPerProvider = new IDataRow[][] {
-                new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, true),
-                    new ScalarDataRow<int>(2, null, false)
+            IDataItem[][] itemsPerProvider = new IDataItem[][] {
+                new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, true),
+                    new ScalarDataItem<int>(2, null, false)
                 },
             };
 
             using (Mocks.Record())
             {
-                SetupResult.For(providers[0].GetRows(bindingsPerProvider[0], true)).Return(rowsPerProvider[0]);
+                SetupResult.For(providers[0].GetItems(bindingsPerProvider[0], true)).Return(itemsPerProvider[0]);
             }
 
             using (Mocks.Playback())
             {
-                List<IList<IDataRow>> rows = new List<IList<IDataRow>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-                Assert.AreEqual(2, rows.Count);
+                List<IList<IDataItem>> items = new List<IList<IDataItem>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
+                Assert.AreEqual(2, items.Count);
 
-                Assert.AreSame(rowsPerProvider[0][0], rows[0][0]);
-                Assert.AreSame(rowsPerProvider[0][1], rows[1][0]);
+                Assert.AreSame(itemsPerProvider[0][0], items[0][0]);
+                Assert.AreSame(itemsPerProvider[0][1], items[1][0]);
             }
         }
 
@@ -73,8 +73,8 @@ namespace Gallio.Tests.Framework.Data
         public void HandlesDegenerateCaseWithMoreThanOneProviderButOneIsEmpty()
         {
             DataBinding[][] bindingsPerProvider = new DataBinding[][] {
-                new DataBinding[] { new SimpleDataBinding(0, null) },
-                new DataBinding[] { new SimpleDataBinding(0, null) },
+                new DataBinding[] { new DataBinding(0, null) },
+                new DataBinding[] { new DataBinding(0, null) },
             };
 
             IDataProvider[] providers = new IDataProvider[] {
@@ -82,24 +82,24 @@ namespace Gallio.Tests.Framework.Data
                 Mocks.CreateMock<IDataProvider>()
             };
 
-            IDataRow[][] rowsPerProvider = new IDataRow[][] {
-                new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, true),
-                    new ScalarDataRow<int>(2, null, false)
+            IDataItem[][] itemsPerProvider = new IDataItem[][] {
+                new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, true),
+                    new ScalarDataItem<int>(2, null, false)
                 },
-                new IDataRow[0]
+                new IDataItem[0]
             };
 
             using (Mocks.Record())
             {
-                SetupResult.For(providers[0].GetRows(bindingsPerProvider[0], true)).Return(rowsPerProvider[0]);
-                SetupResult.For(providers[1].GetRows(bindingsPerProvider[1], true)).Return(rowsPerProvider[1]);
+                SetupResult.For(providers[0].GetItems(bindingsPerProvider[0], true)).Return(itemsPerProvider[0]);
+                SetupResult.For(providers[1].GetItems(bindingsPerProvider[1], true)).Return(itemsPerProvider[1]);
             }
 
             using (Mocks.Playback())
             {
-                List<IList<IDataRow>> rows = new List<IList<IDataRow>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
-                Assert.AreEqual(0, rows.Count);
+                List<IList<IDataItem>> items = new List<IList<IDataItem>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
+                Assert.AreEqual(0, items.Count);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Gallio.Tests.Framework.Data
         {
             int dimensions = counts.Length;
 
-            DataBinding binding = new SimpleDataBinding(0, null);
+            DataBinding binding = new DataBinding(0, null);
             IDataProvider[] providers = new IDataProvider[dimensions];
             DataBinding[][] bindingsPerProvider = new DataBinding[dimensions][];
             for (int i = 0; i < dimensions; i++)
@@ -123,29 +123,29 @@ namespace Gallio.Tests.Framework.Data
                 providers[i] = Mocks.CreateMock<IDataProvider>();
                 bindingsPerProvider[i] = new DataBinding[] { binding };
 
-                IDataRow[] providerRows = new IDataRow[counts[i]];
+                IDataItem[] providerItems = new IDataItem[counts[i]];
                 for (int j = 0; j < counts[i]; j++)
-                    providerRows[j] = new ScalarDataRow<int>(j, null, false);
+                    providerItems[j] = new ScalarDataItem<int>(j, null, false);
 
-                Expect.Call(providers[i].GetRows(bindingsPerProvider[i], true)).Return(providerRows);
+                Expect.Call(providers[i].GetItems(bindingsPerProvider[i], true)).Return(providerItems);
             }
 
             Mocks.ReplayAll();
 
-            List<IList<IDataRow>> rowLists = new List<IList<IDataRow>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
+            List<IList<IDataItem>> itemLists = new List<IList<IDataItem>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
 
-            int[][] values = new int[rowLists.Count][];
-            using (Log.BeginSection(String.Format("{0} combinations.", rowLists.Count)))
+            int[][] values = new int[itemLists.Count][];
+            using (Log.BeginSection(String.Format("{0} combinations.", itemLists.Count)))
             {
-                for (int i = 0; i < rowLists.Count; i++)
+                for (int i = 0; i < itemLists.Count; i++)
                 {
-                    IList<IDataRow> rowList = rowLists[i];
-                    Assert.AreEqual(dimensions, rowList.Count);
+                    IList<IDataItem> itemList = itemLists[i];
+                    Assert.AreEqual(dimensions, itemList.Count);
 
                     values[i] = new int[dimensions];
-                    for (int j = 0; j < rowList.Count; j++)
+                    for (int j = 0; j < itemList.Count; j++)
                     {
-                        int value = (int)rowList[j].GetValue(binding);
+                        int value = (int)itemList[j].GetValue(binding);
                         values[i][j] = value;
 
                         if (j != 0)

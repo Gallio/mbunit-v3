@@ -23,7 +23,7 @@ namespace Gallio.Framework.Data
     /// </para>
     /// <para>
     /// Each kind of factory expresses its contents by returning enumerations of data sets,
-    /// data rows, object arrays and single objects.
+    /// data items, object arrays and single objects.
     /// </para>
     /// <para>
     /// The kind of a factory may be automatically determined or it may be explicitly
@@ -41,12 +41,12 @@ namespace Gallio.Framework.Data
         /// <list type="bullet">
         /// <item>If the element is a <see cref="IDataSet" /> then it is processed in the
         /// same manner as <see cref="FactoryKind.DataSet" />.</item>
-        /// <item>If the element is a <see cref="IDataRow" /> (such as <see cref="ScalarDataRow{T}" />,
-        /// <see cref="ObjectArray" /> or <see cref="FactoryKind" />) then it is 
-        /// processed in the same manner as <see cref="Object" />.</item>
+        /// <item>If the element is a <see cref="IDataItem" /> (such as <see cref="DataItem" />,
+        /// <see cref="ScalarDataItem{T}" /> or <see cref="ListDataItem{T}" />) then it is 
+        /// processed in the same manner as <see cref="DataItem" />.</item>
         /// <item>If the element is an array then it is processed in the same manner as
-        /// <see cref="Data.DataRow" />.</item>
-        /// <item>Otherwise the element is process in the same manner as <see cref="Gallio.Framework" />.</item>
+        /// <see cref="FactoryKind.ObjectArray" />.</item>
+        /// <item>Otherwise the element is process in the same manner as <see cref="FactoryKind.Object" />.</item>
         /// </list>
         /// </para>
         /// <para>
@@ -58,7 +58,7 @@ namespace Gallio.Framework.Data
         /// <summary>
         /// <para>
         /// Specifies that the factory returns an enumeration <see cref="IDataSet" />s
-        /// whose rows are to be consumed.
+        /// whose items are to be consumed.
         /// </para>
         /// </summary>
         /// <example>
@@ -72,7 +72,7 @@ namespace Gallio.Framework.Data
         ///     }
         /// }
         /// 
-        /// [Test, Factory("MyFactory", Kind=FactoryKind.DataSetEnumeration)]
+        /// [Test, Factory("MyFactory", Kind=FactoryKind.DataSet)]
         /// public void MyTest(object value)
         /// {
         ///     // test logic...
@@ -83,13 +83,13 @@ namespace Gallio.Framework.Data
 
         /// <summary>
         /// <para>
-        /// Specifies that the factory returns an enumeration of <see cref="IDataRow" />s
-        /// (such as <see cref="ScalarDataRow{T}" />, <see cref="Gallio.Framework" /> or <see cref="Gallio" />).
+        /// Specifies that the factory returns an enumeration of <see cref="IDataItem" />s
+        /// (such as <see cref="DataRow" />, <see cref="ScalarDataItem{T}" />, or <see cref="ListDataItem{T}" />).
         /// </para>
         /// </summary>
         /// <example>
         /// <code><![CDATA[
-        /// public IEnumerable<IDataRow> MyFactory
+        /// public IEnumerable<IDataItem> MyFactory
         /// {
         ///     get
         ///     {
@@ -99,19 +99,19 @@ namespace Gallio.Framework.Data
         ///     }
         /// }
         /// 
-        /// [Test, Factory("MyFactory", Kind=FactoryKind.DataRowEnumeration)]
+        /// [Test, Factory("MyFactory", Kind=FactoryKind.DataItem)]
         /// public void MyTest(int value)
         /// {
         ///     // test logic...
         /// }
         /// ]]></code>
         /// </example>
-        DataRow,
+        DataItem,
 
         /// <summary>
         /// <para>
         /// Specifies that the factory returns an enumeration of object arrays
-        /// that describe successive rows.
+        /// that describe successive items.
         /// </para>
         /// </summary>
         /// <example>
@@ -125,7 +125,7 @@ namespace Gallio.Framework.Data
         ///     }
         /// }
         /// 
-        /// [Test, Factory("MyFactory", Kind=FactoryKind.ObjectArrayEnumeration)]
+        /// [Test, Factory("MyFactory", Kind=FactoryKind.ObjectArray)]
         /// public void MyTest(string value, int count)
         /// {
         ///     // test logic...
@@ -150,7 +150,7 @@ namespace Gallio.Framework.Data
         ///     }
         /// }
         /// 
-        /// [Test, Factory("MyFactory", Kind=FactoryKind.ObjectEnumeration)]
+        /// [Test, Factory("MyFactory", Kind=FactoryKind.Object)]
         /// public void MyTest(string value)
         /// {
         ///     // test logic...

@@ -35,7 +35,7 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test, ExpectedArgumentNullException]
-        public void ConstructorThrowsWhenRowPathIsNull()
+        public void ConstructorThrowsWhenItemPathIsNull()
         {
             new XmlDataSet(delegate { return new XmlDocument(); }, null, false);
         }
@@ -49,20 +49,20 @@ namespace Gallio.Tests.Framework.Data
             document.LoadXml("<root><rows><row a=\"42\"/></rows></root>");
 
             XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", isDynamic);
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
-            Assert.AreEqual(1, rows.Count);
-            Assert.AreEqual(isDynamic, rows[0].IsDynamic);
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
+            Assert.AreEqual(1, items.Count);
+            Assert.AreEqual(isDynamic, items[0].IsDynamic);
         }
 
         [Test]
-        public void GetRowsReturnsNothingIfIsDynamicAndNotIncludingDynamicRows()
+        public void GetItemsReturnsNothingIfIsDynamicAndNotIncludingDynamicRows()
         {
             XmlDocument document = new XmlDocument();
             document.LoadXml("<root><rows><row a=\"42\"/></rows></root>");
 
             XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", true);
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, false));
-            Assert.AreEqual(0, rows.Count);
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, false));
+            Assert.AreEqual(0, items.Count);
         }
 
         [Test]
@@ -80,18 +80,18 @@ namespace Gallio.Tests.Framework.Data
 
             XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", false);
 
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(null, null)),
+            Assert.IsFalse(dataSet.CanBind(new DataBinding(null, null)),
                 "CanBind should return false if there is no binding path.");
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(null, "not valid xpath")),
+            Assert.IsFalse(dataSet.CanBind(new DataBinding(null, "not valid xpath")),
                 "CanBind should return false if the binding path is an invalid XPath expression.");
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(null, "@b")),
+            Assert.IsFalse(dataSet.CanBind(new DataBinding(null, "@b")),
                 "CanBind should return false if the binding path cannot be resolved in the rows.");
-            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(null, "@a")),
+            Assert.IsTrue(dataSet.CanBind(new DataBinding(null, "@a")),
                 "CanBind should return true if the binding path can be resolved in the rows.");
         }
 
         [Test]
-        public void GetRowsReturnsXPathNavigatorsForAllSelectedValues()
+        public void GetItemsReturnsXPathNavigatorsForAllSelectedValues()
         {
             XmlDocument document = new XmlDocument();
             document.LoadXml("<root><rows><row a=\"42\" b=\"x\"/><row a=\"53\" b=\"y\"/></rows></root>");
@@ -100,19 +100,19 @@ namespace Gallio.Tests.Framework.Data
 
             DataBinding[] bindings = new DataBinding[]
             {
-                new SimpleDataBinding(null, "@a"),
-                new SimpleDataBinding(null, "@b")
+                new DataBinding(null, "@a"),
+                new DataBinding(null, "@b")
             };
 
-            List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(bindings, true));
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(bindings, true));
 
-            Assert.AreEqual("42", ((XPathNavigator)rows[0].GetValue(bindings[0])).Value);
-            Assert.AreEqual("x", ((XPathNavigator)rows[0].GetValue(bindings[1])).Value);
-            Assert.AreEqual("53", ((XPathNavigator)rows[1].GetValue(bindings[0])).Value);
-            Assert.AreEqual("y", ((XPathNavigator)rows[1].GetValue(bindings[1])).Value);
+            Assert.AreEqual("42", ((XPathNavigator)items[0].GetValue(bindings[0])).Value);
+            Assert.AreEqual("x", ((XPathNavigator)items[0].GetValue(bindings[1])).Value);
+            Assert.AreEqual("53", ((XPathNavigator)items[1].GetValue(bindings[0])).Value);
+            Assert.AreEqual("y", ((XPathNavigator)items[1].GetValue(bindings[1])).Value);
 
-            InterimAssert.Throws<DataBindingException>(delegate { rows[0].GetValue(new SimpleDataBinding(0, null)); });
-            InterimAssert.Throws<DataBindingException>(delegate { rows[0].GetValue(new SimpleDataBinding(null, "not valid xpath")); });
+            InterimAssert.Throws<DataBindingException>(delegate { items[0].GetValue(new DataBinding(0, null)); });
+            InterimAssert.Throws<DataBindingException>(delegate { items[0].GetValue(new DataBinding(null, "not valid xpath")); });
         }
     }
 }

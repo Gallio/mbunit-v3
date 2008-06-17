@@ -22,49 +22,49 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
-    [TestsOn(typeof(RowSequenceDataSet))]
+    [TestsOn(typeof(ItemSequenceDataSet))]
     [DependsOn(typeof(BaseDataSetTest))]
-    public class RowSequenceDataSetTest
+    public class ItemSequenceDataSetTest
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsWhenRowEnumerationIsNull()
         {
-            new RowSequenceDataSet(null, 0);
+            new ItemSequenceDataSet(null, 0);
         }
 
         [Test, ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ConstructorThrowsWhenColumnCountIsNegative()
         {
-            new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, -1);
+            new ItemSequenceDataSet(EmptyArray<IDataItem>.Instance, -1);
         }
 
         [Test]
         public void ColumnCountIsSameAsSpecifiedInConstructor()
         {
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 5);
+            ItemSequenceDataSet dataSet = new ItemSequenceDataSet(EmptyArray<IDataItem>.Instance, 5);
             Assert.AreEqual(5, dataSet.ColumnCount);
         }
 
         [Test]
         public void RowEnumerationIsSameAsSpecifiedInConstructorWhenIncludingDynamicRows()
         {
-            List<IDataRow> rows = new List<IDataRow>();
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(rows, 5);
-            Assert.AreSame(rows, dataSet.GetRows(EmptyArray<DataBinding>.Instance, true));
+            List<IDataItem> items = new List<IDataItem>();
+            ItemSequenceDataSet dataSet = new ItemSequenceDataSet(items, 5);
+            Assert.AreSame(items, dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
         }
 
         [Test]
         public void RowEnumerationIsFilteredWhenNotIncludingDynamicRows()
         {
-            List<IDataRow> rows = new List<IDataRow>();
-            rows.Add(new ScalarDataRow<int>(42, null, true));
-            rows.Add(new ScalarDataRow<int>(53, null, false));
+            List<IDataItem> items = new List<IDataItem>();
+            items.Add(new ScalarDataItem<int>(42, null, true));
+            items.Add(new ScalarDataItem<int>(53, null, false));
 
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(rows, 5);
+            ItemSequenceDataSet dataSet = new ItemSequenceDataSet(items, 5);
 
-            List<IDataRow> result = new List<IDataRow>(dataSet.GetRows(EmptyArray<DataBinding>.Instance, false));
+            List<IDataItem> result = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, false));
             Assert.AreEqual(1, result.Count);
-            Assert.AreSame(rows[1], result[0]);
+            Assert.AreSame(items[1], result[0]);
         }
 
         [Test]
@@ -80,8 +80,8 @@ namespace Gallio.Tests.Framework.Data
         [Row(true, "abc", 2)]
         public void CanBindReturnsTrueOnlyIfTheBindingIndexIsBetweenZeroAndColumnCount(bool expectedResult, string path, object index)
         {
-            RowSequenceDataSet dataSet = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3);
-            Assert.AreEqual(expectedResult, dataSet.CanBind(new SimpleDataBinding((int?)index, path)));
+            ItemSequenceDataSet dataSet = new ItemSequenceDataSet(EmptyArray<IDataItem>.Instance, 3);
+            Assert.AreEqual(expectedResult, dataSet.CanBind(new DataBinding((int?)index, path)));
         }
     }
 }

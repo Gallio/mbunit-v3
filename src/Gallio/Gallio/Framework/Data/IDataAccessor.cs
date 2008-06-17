@@ -13,27 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Framework.Data;
-using MbUnit.Framework;
-
-namespace Gallio.Tests.Framework.Data
+namespace Gallio.Framework.Data
 {
-    [TestFixture]
-    [TestsOn(typeof(BaseDataSet))]
-    public class BaseDataSetTest : BaseUnitTest
+    /// <summary>
+    /// A data accessor extracts a value from a <see cref="IDataItem" />.
+    /// </summary>
+    public interface IDataAccessor
     {
-        [Test, ExpectedArgumentNullException]
-        public void CanBindThrowsIfBindingIsNull()
-        {
-            BaseDataSet dataSet = Mocks.PartialMock<BaseDataSet>();
-            dataSet.CanBind(null);
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void GetItemsThrowsIfBindingListIsNull()
-        {
-            BaseDataSet dataSet = Mocks.PartialMock<BaseDataSet>();
-            dataSet.GetItems(null, false);
-        }
+        /// <summary>
+        /// Gets a value derived from the <see cref="IDataItem" />.
+        /// </summary>
+        /// <param name="item">The data item</param>
+        /// <returns>The value</returns>
+        object GetValue(IDataItem item);
     }
 }

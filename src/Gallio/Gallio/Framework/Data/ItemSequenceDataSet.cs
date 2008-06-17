@@ -19,28 +19,28 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// A data set constructed from a sequence of rows.
+    /// A data set constructed from a sequence of data items.
     /// </summary>
-    public sealed class RowSequenceDataSet : BaseDataSet
+    public sealed class ItemSequenceDataSet : BaseDataSet
     {
-        private readonly IEnumerable<IDataRow> rows;
+        private readonly IEnumerable<IDataItem> items;
         private readonly int columnCount;
 
         /// <summary>
         /// Creates a row data set.
         /// </summary>
-        /// <param name="rows">The sequence of rows</param>
+        /// <param name="items">The sequence of items</param>
         /// <param name="columnCount">The column count</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rows"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="items"/> is null</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="columnCount"/> is negative</exception>
-        public RowSequenceDataSet(IEnumerable<IDataRow> rows, int columnCount)
+        public ItemSequenceDataSet(IEnumerable<IDataItem> items, int columnCount)
         {
-            if (rows == null)
-                throw new ArgumentNullException("rows");
+            if (items == null)
+                throw new ArgumentNullException("items");
             if (columnCount < 0)
                 throw new ArgumentOutOfRangeException("columnCount", columnCount, "Column count must not be negative.");
 
-            this.rows = rows;
+            this.items = items;
             this.columnCount = columnCount;
         }
 
@@ -58,19 +58,19 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
-            if (includeDynamicRows)
-                return rows;
+            if (includeDynamicItems)
+                return items;
 
-            return GetStaticRows();
+            return GetStaticItems();
         }
 
-        private IEnumerable<IDataRow> GetStaticRows()
+        private IEnumerable<IDataItem> GetStaticItems()
         {
-            foreach (IDataRow row in rows)
-                if (!row.IsDynamic)
-                    yield return row;
+            foreach (IDataItem item in items)
+                if (!item.IsDynamic)
+                    yield return item;
         }
     }
 }

@@ -14,30 +14,25 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// A base implementation of <see cref="IDataBindingAccessor" /> that
-    /// performs argument validation.
+    /// Extension methods for <see cref="IDataItem" />.
     /// </summary>
-    public abstract class BaseDataBindingAccessor : IDataBindingAccessor
+    public static class DataItemExtensions
     {
-        /// <inheritdoc />
-        public object GetValue(DataBindingItem item)
-        {
-            if (item == null)
-                throw new ArgumentNullException("item");
-
-            return GetValueImpl(item);
-        }
-
         /// <summary>
-        /// Internal implementation of <see cref="GetValue" /> after argument
-        /// validation has been performed.
+        /// Gets the metadata associated with a data item.
         /// </summary>
-        /// <param name="item">The data binding item, not null</param>
-        /// <returns>The value</returns>
-        protected abstract object GetValueImpl(DataBindingItem item);
+        /// <param name="dataItem">The data item</param>
+        /// <returns>The associated metadata</returns>
+        public static MetadataMap GetMetadata(this IDataItem dataItem)
+        {
+            MetadataMap map = new MetadataMap();
+            dataItem.PopulateMetadata(map);
+            return map;
+        }
     }
 }

@@ -20,33 +20,38 @@ namespace Gallio.Framework.Data
 {
     /// <summary>
     /// <para>
-    /// A scalar data row represents a single static data values combined with
-    /// optional metadata for the row.  Data binding occurs whenever the binding
-    /// index is 0.
+    /// A list data item contains a list of static data values combined with
+    /// optional metadata for the item.  Data binding occurs based on the binding
+    /// index alone.
     /// </para>
     /// </summary>
     /// <typeparam name="T">The value type</typeparam>
-    public sealed class ScalarDataRow<T> : StoredDataRow
+    public sealed class ListDataItem<T> : SimpleDataItem
     {
-        private readonly T value;
+        private readonly IList<T> values;
 
         /// <summary>
-        /// Creates a scalar data row with optional metadata.
+        /// Creates a list data item with optional metadata.
         /// </summary>
-        /// <param name="value">The value to hold</param>
+        /// <param name="values">The list of values</param>
         /// <param name="metadataPairs">The metadata key/value pairs, or null if none</param>
-        /// <param name="isDynamic">True if the row contains dynamic data</param>
-        public ScalarDataRow(T value, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
+        /// <param name="isDynamic">True if the item contains dynamic data</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="values"/> is null</exception>
+        public ListDataItem(IList<T> values, IEnumerable<KeyValuePair<string, string>> metadataPairs, bool isDynamic)
             : base(metadataPairs, isDynamic)
         {
-            this.value = value;
+            if (values == null)
+                throw new ArgumentNullException("values");
+
+            this.values = values;
         }
 
         /// <inheritdoc />
         protected override object GetValueImpl(DataBinding binding)
         {
-            if (binding.Index.GetValueOrDefault(-1) == 0)
-                return value;
+            int? index = binding.Index;
+            if (index.HasValue && index.Value >= 0 && index.Value < values.Count)
+                return values[index.Value];
 
             throw new DataBindingException("Binding index not available or out of range.");
         }

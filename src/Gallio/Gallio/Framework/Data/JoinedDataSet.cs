@@ -22,7 +22,7 @@ namespace Gallio.Framework.Data
 {
     /// <summary>
     /// <para>
-    /// A joined data set is an aggregate data set that joins rows from each of zero or more
+    /// A joined data set is an aggregate data set that joins items from each of zero or more
     /// other data sets according to a <see cref="IJoinStrategy"/>.
     /// </para>
     /// <para>
@@ -30,10 +30,10 @@ namespace Gallio.Framework.Data
     /// <list type="bullet">
     /// <item>A translated binding produced by <see cref="TranslateBinding" /> is scoped
     /// to a particular <see cref="IDataSet" />.  When a query occurs using a translated
-    /// binding, only that <see cref="IDataSet" /> and its <see cref="IDataRow" />
+    /// binding, only that <see cref="IDataSet" /> and its <see cref="IDataItem" />
     /// components are consulted.</item>
-    /// <item>Any other binding is treated as if it referred to the joined <see cref="IDataRow" />
-    /// including all of the contributions of all data sets.  The joined <see cref="IDataRow" />
+    /// <item>Any other binding is treated as if it referred to the joined <see cref="IDataItem" />
+    /// including all of the contributions of all data sets.  The joined <see cref="IDataItem" />
     /// is conceptually laid out such that the columns of first <see cref="IDataSet"/> appear
     /// first followed by those of successive <see cref="IDataSet"/>s in order.  To maintain
     /// this illustion, the <see cref="DataBinding.Index" /> component of the binding is adjusted
@@ -90,7 +90,7 @@ namespace Gallio.Framework.Data
         /// <para>
         /// If the binding contains an index parameter, the translated binding will contain
         /// an index that is offset based on the position of the contents of the data set
-        /// within the rows of the joined aggregate.
+        /// within the items of the joined aggregate.
         /// </para>
         /// </summary>
         /// <remarks>
@@ -128,7 +128,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
             IDataProvider[] providers = GenericUtils.ToArray(DataSets);
             int providerCount = providers.Length;
@@ -144,8 +144,8 @@ namespace Gallio.Framework.Data
                     bindingsPerProvider[resolvedBinding.DataSetInfo.DataSetIndex].Add(resolvedBinding.Inner);
             }
 
-            foreach (IList<IDataRow> rowList in strategy.Join(providers, bindingsPerProvider, includeDynamicRows))
-                yield return new JoinedDataRow(this, rowList);
+            foreach (IList<IDataItem> itemList in strategy.Join(providers, bindingsPerProvider, includeDynamicItems))
+                yield return new JoinedDataItem(this, itemList);
         }
 
         private ResolvedBinding ResolveBinding(DataBinding binding)
@@ -201,26 +201,26 @@ namespace Gallio.Framework.Data
             return null;
         }
 
-        private sealed class JoinedDataRow : IDataRow
+        private sealed class JoinedDataItem : IDataItem
         {
             private readonly JoinedDataSet owner;
-            private readonly IList<IDataRow> rowList;
+            private readonly IList<IDataItem> items;
 
-            public JoinedDataRow(JoinedDataSet owner, IList<IDataRow> rowList)
+            public JoinedDataItem(JoinedDataSet owner, IList<IDataItem> items)
             {
                 this.owner = owner;
-                this.rowList = rowList;
+                this.items = items;
             }
 
             public bool IsDynamic
             {
-                get { return GenericUtils.Find(rowList, delegate(IDataRow row) { return row.IsDynamic; }) != null; }
+                get { return GenericUtils.Find(items, delegate(IDataItem item) { return item.IsDynamic; }) != null; }
             }
 
             public void PopulateMetadata(MetadataMap map)
             {
-                foreach (IDataRow row in rowList)
-                    row.PopulateMetadata(map);
+                foreach (IDataItem item in items)
+                    item.PopulateMetadata(map);
             }
 
             public object GetValue(DataBinding binding)
@@ -232,7 +232,7 @@ namespace Gallio.Framework.Data
                 if (resolvedBinding == null)
                     throw new DataBindingException("Could not determine the underlying data set that supports the binding.");
 
-                return rowList[resolvedBinding.DataSetInfo.DataSetIndex].GetValue(resolvedBinding.Inner);
+                return items[resolvedBinding.DataSetInfo.DataSetIndex].GetValue(resolvedBinding.Inner);
             }
         }
 
@@ -269,13 +269,12 @@ namespace Gallio.Framework.Data
         {
             private readonly DataSetInfo dataSetInfo;
             private readonly DataBinding inner;
-            private readonly int? externalIndex;
 
             public ResolvedBinding(DataSetInfo dataSetInfo, DataBinding inner, int? externalIndex)
+                : base(externalIndex, inner.Path)
             {
                 this.dataSetInfo = dataSetInfo;
                 this.inner = inner;
-                this.externalIndex = externalIndex;
             }
 
             public DataSetInfo DataSetInfo
@@ -286,16 +285,6 @@ namespace Gallio.Framework.Data
             public DataBinding Inner
             {
                 get { return inner; }
-            }
-
-            public override string Path
-            {
-                get { return inner.Path; }
-            }
-
-            public override int? Index
-            {
-                get { return externalIndex; }
             }
 
             public override DataBinding ReplaceIndex(int? index)

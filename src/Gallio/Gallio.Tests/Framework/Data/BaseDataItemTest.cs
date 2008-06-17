@@ -23,24 +23,24 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
-    [TestsOn(typeof(BaseDataRow))]
-    public class BaseDataRowTest
+    [TestsOn(typeof(BaseDataItem))]
+    public class BaseDataItemTest
     {
         [Test, ExpectedArgumentNullException]
         public void GetValueThrowsIfBindingIsNull()
         {
-            BaseDataRow row = new StubDataRow();
-            row.GetValue(null);
+            BaseDataItem item = new StubDataItem();
+            item.GetValue(null);
         }
 
         [Test, ExpectedArgumentNullException]
         public void PopulateMetadataThrowsIfMapIsNull()
         {
-            BaseDataRow row = new StubDataRow();
-            row.PopulateMetadata(null);
+            BaseDataItem item = new StubDataItem();
+            item.PopulateMetadata(null);
         }
 
-        private class StubDataRow : BaseDataRow
+        private class StubDataItem : BaseDataItem
         {
             public override bool IsDynamic
             {

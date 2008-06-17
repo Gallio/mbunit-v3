@@ -28,10 +28,10 @@ namespace Gallio.Tests.Framework.Data
     public class ConcatenationMergeStrategyTest : BaseUnitTest
     {
         [Test]
-        public void CombinesRowsIntoASingleSequence()
+        public void CombinesItemsIntoASingleSequence()
         {
             DataBinding[] bindings = new DataBinding[] {
-                new SimpleDataBinding(0, null)
+                new DataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[] {
                 Mocks.CreateMock<IDataProvider>(),
@@ -41,31 +41,31 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Record())
             {
-                Expect.Call(providers[0].GetRows(bindings, true)).Return(new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(2, null, false),
+                Expect.Call(providers[0].GetItems(bindings, true)).Return(new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(2, null, false),
                 });
 
-                Expect.Call(providers[1].GetRows(bindings, true)).Return(EmptyArray<IDataRow>.Instance);
+                Expect.Call(providers[1].GetItems(bindings, true)).Return(EmptyArray<IDataItem>.Instance);
 
-                Expect.Call(providers[2].GetRows(bindings, true)).Return(new IDataRow[] {
-                    new ScalarDataRow<int>(3, null, true),
+                Expect.Call(providers[2].GetItems(bindings, true)).Return(new IDataItem[] {
+                    new ScalarDataItem<int>(3, null, true),
                 });
             }
 
             using (Mocks.Playback())
             {
-                List<IDataRow> rows = new List<IDataRow>(ConcatenationMergeStrategy.Instance.Merge(providers, bindings, true));
-                Assert.AreEqual(3, rows.Count);
+                List<IDataItem> items = new List<IDataItem>(ConcatenationMergeStrategy.Instance.Merge(providers, bindings, true));
+                Assert.AreEqual(3, items.Count);
 
-                Assert.AreEqual(1, rows[0].GetValue(bindings[0]));
-                Assert.IsFalse(rows[0].IsDynamic);
+                Assert.AreEqual(1, items[0].GetValue(bindings[0]));
+                Assert.IsFalse(items[0].IsDynamic);
 
-                Assert.AreEqual(2, rows[1].GetValue(bindings[0]));
-                Assert.IsFalse(rows[1].IsDynamic);
+                Assert.AreEqual(2, items[1].GetValue(bindings[0]));
+                Assert.IsFalse(items[1].IsDynamic);
 
-                Assert.AreEqual(3, rows[2].GetValue(bindings[0]));
-                Assert.IsTrue(rows[2].IsDynamic);
+                Assert.AreEqual(3, items[2].GetValue(bindings[0]));
+                Assert.IsTrue(items[2].IsDynamic);
             }
         }
     }

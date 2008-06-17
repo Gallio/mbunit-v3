@@ -154,7 +154,7 @@ namespace Gallio.Framework.Pattern
             try
             {
                 TestOutcome outcome = TestOutcome.Passed;
-                foreach (DataBindingItem item in testState.BindingContext.GetItems(! options.SkipDynamicTests))
+                foreach (IDataItem item in testState.BindingContext.GetItems(!options.SkipDynamicTests))
                 {
                     outcome = outcome.CombineWith(RunTestInstance(testCommand, primaryContext, testState, item, reusePrimaryTestStep));
                 }
@@ -169,71 +169,66 @@ namespace Gallio.Framework.Pattern
         }
 
         private TestOutcome RunTestInstance(ITestCommand testCommand, Context primaryContext,
-            PatternTestState testState, DataBindingItem bindingItem, bool reusePrimaryTestStep)
+            PatternTestState testState, IDataItem bindingItem, bool reusePrimaryTestStep)
         {
             try
             {
-                using (bindingItem)
+                PatternTestInstanceActions decoratedTestInstanceActions =
+                    PatternTestInstanceActions.CreateDecorator(testState.TestHandler.TestInstanceHandler);
+
+                TestOutcome outcome = DoDecorateTestInstance(primaryContext.Sandbox, testState, decoratedTestInstanceActions);
+                if (outcome.Status == TestStatus.Passed)
                 {
-                    PatternTestInstanceActions decoratedTestInstanceActions =
-                        PatternTestInstanceActions.CreateDecorator(testState.TestHandler.TestInstanceHandler);
+                    bool invisible = true;
 
-                    TestOutcome outcome = DoDecorateTestInstance(primaryContext.Sandbox, testState, decoratedTestInstanceActions);
-                    if (outcome.Status == TestStatus.Passed)
+                    PatternTestStep testStep;
+                    if (reusePrimaryTestStep)
                     {
-                        bool invisible = true;
+                        testStep = testState.PrimaryTestStep;
+                        invisible = false;
 
-                        PatternTestStep testStep;
-                        if (reusePrimaryTestStep)
-                        {
-                            testStep = testState.PrimaryTestStep;
-                            invisible = false;
+                        MetadataMap map = bindingItem.GetMetadata();
+                        foreach (KeyValuePair<string, string> entry in map.Pairs)
+                            primaryContext.AddMetadata(entry.Key, entry.Value);
+                    }
+                    else
+                    {
+                        testStep = new PatternTestStep(testState.Test, testState.PrimaryTestStep,
+                            testState.Test.Name, testState.Test.CodeElement, false);
 
-                            IDataRow row = bindingItem.GetRow();
-                            MetadataMap map = row.GetMetadata();
-                            foreach (KeyValuePair<string, string> entry in map.Pairs)
-                                primaryContext.AddMetadata(entry.Key, entry.Value);
-                        }
-                        else
-                        {
-                            testStep = new PatternTestStep(testState.Test, testState.PrimaryTestStep,
-                                testState.Test.Name, testState.Test.CodeElement, false);
-
-                            IDataRow row = bindingItem.GetRow();
-                            testStep.IsDynamic = row.IsDynamic;
-                            row.PopulateMetadata(testStep.Metadata);
-                        }
-
-                        PatternTestInstanceState testInstanceState = new PatternTestInstanceState(testStep, decoratedTestInstanceActions, testState, bindingItem);
-
-                        outcome = outcome.CombineWith(DoBeforeTestInstance(primaryContext.Sandbox, testInstanceState));
-                        if (outcome.Status == TestStatus.Passed)
-                        {
-                            progressMonitor.SetStatus(testStep.Name);
-
-                            Context context = reusePrimaryTestStep
-                                ? primaryContext
-                                : Context.PrepareContext(testCommand.StartStep(testStep), primaryContext.Sandbox.CreateChild());
-                            testState.SetInContext(context);
-                            testInstanceState.SetInContext(context);
-                            invisible = false;
-
-                            outcome = outcome.CombineWith(RunTestInstanceWithContext(testCommand, context, testInstanceState));
-
-                            if (!reusePrimaryTestStep)
-                                context.FinishStep(outcome);
-
-                            progressMonitor.SetStatus("");
-                        }
-
-                        outcome = outcome.CombineWith(DoAfterTestInstance(primaryContext.Sandbox, testInstanceState));
-
-                        if (invisible)
-                            PublishOutcomeFromInvisibleTest(testCommand, testStep, ref outcome);
+                        testStep.IsDynamic = bindingItem.IsDynamic;
+                        bindingItem.PopulateMetadata(testStep.Metadata);
                     }
 
-                    return outcome;
+                    PatternTestInstanceState testInstanceState = new PatternTestInstanceState(testStep, decoratedTestInstanceActions, testState, bindingItem);
+
+                    outcome = outcome.CombineWith(DoBeforeTestInstance(primaryContext.Sandbox, testInstanceState));
+                    if (outcome.Status == TestStatus.Passed)
+                    {
+                        progressMonitor.SetStatus(testStep.Name);
+
+                        Context context = reusePrimaryTestStep
+                            ? primaryContext
+                            : Context.PrepareContext(testCommand.StartStep(testStep), primaryContext.Sandbox.CreateChild());
+                        testState.SetInContext(context);
+                        testInstanceState.SetInContext(context);
+                        invisible = false;
+
+                        outcome = outcome.CombineWith(RunTestInstanceWithContext(testCommand, context, testInstanceState));
+
+                        if (!reusePrimaryTestStep)
+                            context.FinishStep(outcome);
+
+                        progressMonitor.SetStatus("");
+                    }
+
+                    outcome = outcome.CombineWith(DoAfterTestInstance(primaryContext.Sandbox, testInstanceState));
+
+                    if (invisible)
+                        PublishOutcomeFromInvisibleTest(testCommand, testStep, ref outcome);
                 }
+
+                return outcome;
             }
             catch (Exception ex)
             {
@@ -348,8 +343,8 @@ namespace Gallio.Framework.Pattern
         {
             foreach (PatternTestParameter parameter in testState.Test.Parameters)
             {
-                IDataBindingAccessor bindingAccessor = parameter.Binder.Register(testState.BindingContext, parameter.DataContext);
-                testState.SlotBindingAccessors.Add(new KeyValuePair<ISlotInfo, IDataBindingAccessor>(parameter.Slot, bindingAccessor));
+                IDataAccessor accessor = parameter.Binder.Register(testState.BindingContext, parameter.DataContext);
+                testState.SlotBindingAccessors.Add(new KeyValuePair<ISlotInfo, IDataAccessor>(parameter.Slot, accessor));
             }
 
             return sandbox.Run(delegate
@@ -404,7 +399,7 @@ namespace Gallio.Framework.Pattern
         {
             if (testInstanceState.TestState.SlotBindingAccessors.Count != 0)
             {
-                foreach (KeyValuePair<ISlotInfo, IDataBindingAccessor> entry in testInstanceState.TestState.SlotBindingAccessors)
+                foreach (KeyValuePair<ISlotInfo, IDataAccessor> entry in testInstanceState.TestState.SlotBindingAccessors)
                     testInstanceState.SlotValues.Add(entry.Key, entry.Value.GetValue(testInstanceState.BindingItem));
             }
 

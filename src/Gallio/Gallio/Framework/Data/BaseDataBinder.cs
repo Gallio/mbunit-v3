@@ -24,7 +24,7 @@ namespace Gallio.Framework.Data
     public abstract class BaseDataBinder : IDataBinder
     {
         /// <inheritdoc />
-        public IDataBindingAccessor Register(DataBindingContext context, IDataSourceResolver resolver)
+        public IDataAccessor Register(DataBindingContext context, IDataSourceResolver resolver)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -40,6 +40,6 @@ namespace Gallio.Framework.Data
         /// <param name="context">The data binding context, not null</param>
         /// <param name="resolver">The data source resolver, not null</param>
         /// <returns>The data binding accessor</returns>
-        protected abstract IDataBindingAccessor RegisterImpl(DataBindingContext context, IDataSourceResolver resolver);
+        protected abstract IDataAccessor RegisterImpl(DataBindingContext context, IDataSourceResolver resolver);
     }
 }

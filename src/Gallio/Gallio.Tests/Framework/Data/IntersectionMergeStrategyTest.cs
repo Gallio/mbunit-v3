@@ -30,19 +30,19 @@ namespace Gallio.Tests.Framework.Data
         public void HandlesDegenerateCaseWithZeroProviders()
         {
             DataBinding[] bindings = new DataBinding[] {
-                new SimpleDataBinding(0, null)
+                new DataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[0];
 
-            List<IDataRow> rows = new List<IDataRow>(IntersectionMergeStrategy.Instance.Merge(providers, bindings, true));
-            Assert.AreEqual(0, rows.Count);
+            List<IDataItem> items = new List<IDataItem>(IntersectionMergeStrategy.Instance.Merge(providers, bindings, true));
+            Assert.AreEqual(0, items.Count);
         }
 
         [Test]
         public void HandlesDegenerateCaseWithOneProvider()
         {
             DataBinding[] bindings = new DataBinding[] {
-                new SimpleDataBinding(0, null)
+                new DataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[] {
                 Mocks.CreateMock<IDataProvider>()
@@ -50,34 +50,34 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Record())
             {
-                Expect.Call(providers[0].GetRows(bindings, true)).Return(new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, true),
-                    new ScalarDataRow<int>(2, null, false),
-                    new ScalarDataRow<int>(3, null, true)
+                Expect.Call(providers[0].GetItems(bindings, true)).Return(new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, true),
+                    new ScalarDataItem<int>(2, null, false),
+                    new ScalarDataItem<int>(3, null, true)
                 });
             }
 
             using (Mocks.Playback())
             {
-                List<IDataRow> rows = new List<IDataRow>(IntersectionMergeStrategy.Instance.Merge(providers, bindings, true));
-                Assert.AreEqual(3, rows.Count);
+                List<IDataItem> items = new List<IDataItem>(IntersectionMergeStrategy.Instance.Merge(providers, bindings, true));
+                Assert.AreEqual(3, items.Count);
 
-                Assert.AreEqual(1, rows[0].GetValue(bindings[0]));
-                Assert.IsTrue(rows[0].IsDynamic);
+                Assert.AreEqual(1, items[0].GetValue(bindings[0]));
+                Assert.IsTrue(items[0].IsDynamic);
 
-                Assert.AreEqual(2, rows[1].GetValue(bindings[0]));
-                Assert.IsFalse(rows[1].IsDynamic);
+                Assert.AreEqual(2, items[1].GetValue(bindings[0]));
+                Assert.IsFalse(items[1].IsDynamic);
 
-                Assert.AreEqual(3, rows[2].GetValue(bindings[0]));
-                Assert.IsTrue(rows[2].IsDynamic);
+                Assert.AreEqual(3, items[2].GetValue(bindings[0]));
+                Assert.IsTrue(items[2].IsDynamic);
             }
         }
 
         [Test]
-        public void KeepsOnlyIntersectionIncludingRightNumberOfDuplicatesAndExcludesBadRows()
+        public void KeepsOnlyIntersectionIncludingRightNumberOfDuplicatesAndExcludesBadItems()
         {
             DataBinding[] bindings = new DataBinding[] {
-                new SimpleDataBinding(0, null)
+                new DataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[] {
                 Mocks.CreateMock<IDataProvider>(),
@@ -87,49 +87,49 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Record())
             {
-                IDataRow badRow = Mocks.CreateMock<IDataRow>();
-                Expect.Call(badRow.GetValue(bindings[0])).Throw(new InvalidOperationException("Test exception"));
+                IDataItem badItem = Mocks.CreateMock<IDataItem>();
+                Expect.Call(badItem.GetValue(bindings[0])).Throw(new InvalidOperationException("Test exception"));
 
-                Expect.Call(providers[0].GetRows(bindings, true)).Return(new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(2, null, true),
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(3, null, false),
-                    new ScalarDataRow<int>(6, null, false),
+                Expect.Call(providers[0].GetItems(bindings, true)).Return(new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(2, null, true),
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(3, null, false),
+                    new ScalarDataItem<int>(6, null, false),
                 });
 
-                Expect.Call(providers[1].GetRows(bindings, true)).Return(new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(1, null, false),
-                    badRow,
-                    new ScalarDataRow<int>(2, null, true),
-                    new ScalarDataRow<int>(6, null, false),
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(4, null, false),
+                Expect.Call(providers[1].GetItems(bindings, true)).Return(new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(1, null, false),
+                    badItem,
+                    new ScalarDataItem<int>(2, null, true),
+                    new ScalarDataItem<int>(6, null, false),
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(4, null, false),
                 });
 
-                Expect.Call(providers[2].GetRows(bindings, true)).Return(new IDataRow[] {
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(1, null, false),
-                    new ScalarDataRow<int>(5, null, false),
-                    new ScalarDataRow<int>(3, null, false),
-                    new ScalarDataRow<int>(2, null, true)
+                Expect.Call(providers[2].GetItems(bindings, true)).Return(new IDataItem[] {
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(1, null, false),
+                    new ScalarDataItem<int>(5, null, false),
+                    new ScalarDataItem<int>(3, null, false),
+                    new ScalarDataItem<int>(2, null, true)
                 });
             }
 
             using (Mocks.Playback())
             {
-                List<IDataRow> rows = new List<IDataRow>(IntersectionMergeStrategy.Instance.Merge(providers, bindings, true));
-                Assert.AreEqual(3, rows.Count);
+                List<IDataItem> items = new List<IDataItem>(IntersectionMergeStrategy.Instance.Merge(providers, bindings, true));
+                Assert.AreEqual(3, items.Count);
 
-                Assert.AreEqual(1, rows[0].GetValue(bindings[0]));
-                Assert.IsFalse(rows[0].IsDynamic);
+                Assert.AreEqual(1, items[0].GetValue(bindings[0]));
+                Assert.IsFalse(items[0].IsDynamic);
 
-                Assert.AreEqual(1, rows[1].GetValue(bindings[0]));
-                Assert.IsFalse(rows[1].IsDynamic);
+                Assert.AreEqual(1, items[1].GetValue(bindings[0]));
+                Assert.IsFalse(items[1].IsDynamic);
 
-                Assert.AreEqual(2, rows[2].GetValue(bindings[0]));
-                Assert.IsTrue(rows[2].IsDynamic);
+                Assert.AreEqual(2, items[2].GetValue(bindings[0]));
+                Assert.IsTrue(items[2].IsDynamic);
             }
         }
     }

@@ -28,8 +28,8 @@ namespace Gallio.Tests.Framework.Data
     [DependsOn(typeof(BaseDataSetTest))]
     public class JoinedDataSetTest : BaseUnitTest
     {
-        private delegate IEnumerable<IList<IDataRow>> JoinDelegate(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
-            bool includeDynamicRows);
+        private delegate IEnumerable<IList<IDataItem>> JoinDelegate(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
+            bool includeDynamicItems);
 
         [Test]
         public void DefaultStrategyIsCombinatorial()
@@ -108,7 +108,7 @@ namespace Gallio.Tests.Framework.Data
         public void CanBindReturnsFalseIfThereAreNoDataSets()
         {
             JoinedDataSet dataSet = new JoinedDataSet();
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(0, null)),
+            Assert.IsFalse(dataSet.CanBind(new DataBinding(0, null)),
                 "Cannot bind because there are no data sets.");
         }
 
@@ -119,21 +119,21 @@ namespace Gallio.Tests.Framework.Data
 
             DataSource dataSet1 = new DataSource("");
             dataSet1.AddIndexAlias("path", 1);
-            dataSet1.AddDataSet(new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3));
-            IDataSet dataSet2 = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 2);
+            dataSet1.AddDataSet(new ItemSequenceDataSet(EmptyArray<IDataItem>.Instance, 3));
+            IDataSet dataSet2 = new ItemSequenceDataSet(EmptyArray<IDataItem>.Instance, 2);
 
             dataSet.AddDataSet(dataSet1);
             dataSet.AddDataSet(dataSet2);
 
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(null, null)),
+            Assert.IsFalse(dataSet.CanBind(new DataBinding(null, null)),
                 "Cannot bind because there is no path or index.");
-            Assert.IsFalse(dataSet.CanBind(new SimpleDataBinding(5, null)),
+            Assert.IsFalse(dataSet.CanBind(new DataBinding(5, null)),
                 "Cannot bind because index 5 is beyond the range of columns in the joined data set.");
-            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(4, null)),
+            Assert.IsTrue(dataSet.CanBind(new DataBinding(4, null)),
                 "Can bind because index 4 is within the range of columns in the joined data set.");
-            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(0, null)),
+            Assert.IsTrue(dataSet.CanBind(new DataBinding(0, null)),
                 "Can bind because index 0 is within the range of columns in the joined data set.");
-            Assert.IsTrue(dataSet.CanBind(new SimpleDataBinding(null, "path")),
+            Assert.IsTrue(dataSet.CanBind(new DataBinding(null, "path")),
                 "Can bind because path is supported by one of the data sets.");
         }
 
@@ -144,28 +144,28 @@ namespace Gallio.Tests.Framework.Data
 
             DataSource dataSet1 = new DataSource("");
             dataSet1.AddIndexAlias("path", 1);
-            dataSet1.AddDataSet(new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 3));
-            IDataSet dataSet2 = new RowSequenceDataSet(EmptyArray<IDataRow>.Instance, 2);
+            dataSet1.AddDataSet(new ItemSequenceDataSet(EmptyArray<IDataItem>.Instance, 3));
+            IDataSet dataSet2 = new ItemSequenceDataSet(EmptyArray<IDataItem>.Instance, 2);
 
             dataSet.AddDataSet(dataSet1);
             dataSet.AddDataSet(dataSet2);
 
-            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(null, null))),
+            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new DataBinding(null, null))),
                 "Cannot bind because there is no path or index in the translated binding.");
-            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(3, null))),
+            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new DataBinding(3, null))),
                 "Cannot bind because index 3 is beyond the range of columns in the scoped data set.");
-            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new SimpleDataBinding(2, null))),
+            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new DataBinding(2, null))),
                 "Cannot bind because index 2 is beyond the range of columns in the scoped data set.");
-            Assert.IsTrue(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new SimpleDataBinding(1, null))),
+            Assert.IsTrue(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new DataBinding(1, null))),
                 "Can bind because index 1 is within the range of columns in the scoped data set.");
-            Assert.IsTrue(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new SimpleDataBinding(null, "path"))),
+            Assert.IsTrue(dataSet.CanBind(dataSet.TranslateBinding(dataSet1, new DataBinding(null, "path"))),
                 "Can bind because path is supported by one of the scoped data set.");
-            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new SimpleDataBinding(null, "path"))),
+            Assert.IsFalse(dataSet.CanBind(dataSet.TranslateBinding(dataSet2, new DataBinding(null, "path"))),
                 "Cannot bind because path is supported by one of the scoped data set.");
         }
 
         [Test]
-        public void GetRowsDelegatesToTheStrategy()
+        public void GetItemsDelegatesToTheStrategy()
         {
             JoinedDataSet dataSet = new JoinedDataSet();
 
@@ -181,38 +181,38 @@ namespace Gallio.Tests.Framework.Data
 
             DataSource dataSet1 = new DataSource("");
             dataSet1.AddIndexAlias("path", 1);
-            dataSet1.AddDataSet(new RowSequenceDataSet(new IDataRow[]
+            dataSet1.AddDataSet(new ItemSequenceDataSet(new IDataItem[]
             {
-                new ListDataRow<int>(new int[] { 1, 2, 3 }, metadata1, false),
-                new ListDataRow<int>(new int[] { -1, -2, -3 }, metadata2, false)
+                new ListDataItem<int>(new int[] { 1, 2, 3 }, metadata1, false),
+                new ListDataItem<int>(new int[] { -1, -2, -3 }, metadata2, false)
             }, 3));
             dataSet.AddDataSet(dataSet1);
 
-            IDataSet dataSet2 = new RowSequenceDataSet(new IDataRow[]
+            IDataSet dataSet2 = new ItemSequenceDataSet(new IDataItem[]
             {
-                new ListDataRow<int>(new int[] { 4, 5 }, metadata2, false),
-                new ListDataRow<int>(new int[] { -4, -5 }, null, true)
+                new ListDataItem<int>(new int[] { 4, 5 }, metadata2, false),
+                new ListDataItem<int>(new int[] { -4, -5 }, null, true)
             }, 2);
             dataSet.AddDataSet(dataSet2);
 
-            List<IDataRow> dataSet1Rows = new List<IDataRow>(dataSet1.GetRows(EmptyArray<DataBinding>.Instance, true));
-            List<IDataRow> dataSet2Rows = new List<IDataRow>(dataSet2.GetRows(EmptyArray<DataBinding>.Instance, true));
+            List<IDataItem> dataSet1Items = new List<IDataItem>(dataSet1.GetItems(EmptyArray<DataBinding>.Instance, true));
+            List<IDataItem> dataSet2Items = new List<IDataItem>(dataSet2.GetItems(EmptyArray<DataBinding>.Instance, true));
 
-            List<IList<IDataRow>> results = new List<IList<IDataRow>>();
-            results.Add(new IDataRow[] { dataSet1Rows[0], dataSet2Rows[0] });
-            results.Add(new IDataRow[] { dataSet1Rows[1], dataSet2Rows[1] });
+            List<IList<IDataItem>> results = new List<IList<IDataItem>>();
+            results.Add(new IDataItem[] { dataSet1Items[0], dataSet2Items[0] });
+            results.Add(new IDataItem[] { dataSet1Items[1], dataSet2Items[1] });
 
             IJoinStrategy strategy = Mocks.CreateMock<IJoinStrategy>();
             dataSet.Strategy = strategy;
 
-            DataBinding pathBinding = new SimpleDataBinding(null, "path");
-            DataBinding indexZeroBinding = new SimpleDataBinding(0, null);
-            DataBinding indexOneBinding = new SimpleDataBinding(1, null);
-            DataBinding indexThreeBinding = new SimpleDataBinding(3, null);
+            DataBinding pathBinding = new DataBinding(null, "path");
+            DataBinding indexZeroBinding = new DataBinding(0, null);
+            DataBinding indexOneBinding = new DataBinding(1, null);
+            DataBinding indexThreeBinding = new DataBinding(3, null);
 
             DataBinding[] bindings = new DataBinding[]
             {
-                new SimpleDataBinding(null, null), // unresolvable binding because no data sets can claim it
+                new DataBinding(null, null), // unresolvable binding because no data sets can claim it
                 pathBinding, // claimed by dataSet1
                 indexZeroBinding, // claimed by dataSet1
                 indexThreeBinding, // claimed by dataSet2
@@ -223,9 +223,9 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Record())
             {
                 Expect.Call(strategy.Join(null, null, true)).IgnoreArguments().Do((JoinDelegate)delegate(IList<IDataProvider> joinProviders, IList<ICollection<DataBinding>> joinBindingsPerProvider,
-                    bool includeDynamicRows)
+                    bool includeDynamicItems)
                 {
-                    Assert.IsTrue(includeDynamicRows);
+                    Assert.IsTrue(includeDynamicItems);
                     CollectionAssert.AreElementsEqual(new IDataProvider[] { dataSet1, dataSet2 }, joinProviders);
 
                     Assert.AreEqual(2, joinBindingsPerProvider.Count);
@@ -239,38 +239,38 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Playback())
             {
-                List<IDataRow> rows = new List<IDataRow>(dataSet.GetRows(bindings, true));
-                Assert.AreEqual(rows.Count, 2);
+                List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(bindings, true));
+                Assert.AreEqual(items.Count, 2);
 
-                InterimAssert.Throws<ArgumentNullException>(delegate { rows[0].GetValue(null); });
+                InterimAssert.Throws<ArgumentNullException>(delegate { items[0].GetValue(null); });
 
-                InterimAssert.Throws<DataBindingException>(delegate { rows[0].GetValue(bindings[0]); });
-                Assert.AreEqual(2, rows[0].GetValue(bindings[1]));
-                Assert.AreEqual(1, rows[0].GetValue(bindings[2]));
-                Assert.AreEqual(4, rows[0].GetValue(bindings[3]));
-                Assert.AreEqual(2, rows[0].GetValue(bindings[4]));
-                Assert.AreEqual(5, rows[0].GetValue(bindings[5]));
+                InterimAssert.Throws<DataBindingException>(delegate { items[0].GetValue(bindings[0]); });
+                Assert.AreEqual(2, items[0].GetValue(bindings[1]));
+                Assert.AreEqual(1, items[0].GetValue(bindings[2]));
+                Assert.AreEqual(4, items[0].GetValue(bindings[3]));
+                Assert.AreEqual(2, items[0].GetValue(bindings[4]));
+                Assert.AreEqual(5, items[0].GetValue(bindings[5]));
 
-                MetadataMap map = rows[0].GetMetadata();
+                MetadataMap map = items[0].GetMetadata();
                 Assert.AreEqual(3, map.Count);
                 Assert.AreEqual("123", map.GetValue("abc"));
                 Assert.AreEqual("456", map.GetValue("def"));
                 Assert.AreEqual("789", map.GetValue("ghi"));
 
-                Assert.IsFalse(rows[0].IsDynamic);
+                Assert.IsFalse(items[0].IsDynamic);
 
-                InterimAssert.Throws<DataBindingException>(delegate { rows[1].GetValue(bindings[0]); });
-                Assert.AreEqual(-2, rows[1].GetValue(bindings[1]));
-                Assert.AreEqual(-1, rows[1].GetValue(bindings[2]));
-                Assert.AreEqual(-4, rows[1].GetValue(bindings[3]));
-                Assert.AreEqual(-2, rows[1].GetValue(bindings[4]));
-                Assert.AreEqual(-5, rows[1].GetValue(bindings[5]));
+                InterimAssert.Throws<DataBindingException>(delegate { items[1].GetValue(bindings[0]); });
+                Assert.AreEqual(-2, items[1].GetValue(bindings[1]));
+                Assert.AreEqual(-1, items[1].GetValue(bindings[2]));
+                Assert.AreEqual(-4, items[1].GetValue(bindings[3]));
+                Assert.AreEqual(-2, items[1].GetValue(bindings[4]));
+                Assert.AreEqual(-5, items[1].GetValue(bindings[5]));
 
-                map = rows[1].GetMetadata();
+                map = items[1].GetMetadata();
                 Assert.AreEqual(1, map.Count);
                 Assert.AreEqual("789", map.GetValue("ghi"));
 
-                Assert.IsTrue(rows[1].IsDynamic);
+                Assert.IsTrue(items[1].IsDynamic);
             }
         }
 
@@ -294,8 +294,8 @@ namespace Gallio.Tests.Framework.Data
                 dataSet.AddDataSet(dataSetWithTwoColumns);
                 dataSet.AddDataSet(dataSetWithThreeColumns);
 
-                DataBinding bindingWithNoIndex = new SimpleDataBinding(null, null);
-                DataBinding bindingWithIndex = new SimpleDataBinding(1, null);
+                DataBinding bindingWithNoIndex = new DataBinding(null, null);
+                DataBinding bindingWithIndex = new DataBinding(1, null);
 
                 AssertTranslateReplacedIndex(dataSet, dataSetWithTwoColumns, bindingWithNoIndex, null,
                     "No binding index in original so none should be present when translated.");
@@ -320,7 +320,7 @@ namespace Gallio.Tests.Framework.Data
         public void TranslateBindingThrowsIfDataSetIsNull()
         {
             JoinedDataSet dataSet = new JoinedDataSet();
-            dataSet.TranslateBinding(null, new SimpleDataBinding(0, null));
+            dataSet.TranslateBinding(null, new DataBinding(0, null));
         }
 
         [Test, ExpectedArgumentNullException]
@@ -334,7 +334,7 @@ namespace Gallio.Tests.Framework.Data
         public void TranslateBindingThrowsIfDataSetNotAMember()
         {
             JoinedDataSet dataSet = new JoinedDataSet();
-            dataSet.TranslateBinding(Mocks.Stub<IDataSet>(), new SimpleDataBinding(0, null));
+            dataSet.TranslateBinding(Mocks.Stub<IDataSet>(), new DataBinding(0, null));
         }
 
         [Test]
@@ -344,7 +344,7 @@ namespace Gallio.Tests.Framework.Data
             DataSource source = new DataSource("dummy");
             dataSet.AddDataSet(source);
 
-            DataBinding dataBinding = dataSet.TranslateBinding(source, new SimpleDataBinding(null, "path"));
+            DataBinding dataBinding = dataSet.TranslateBinding(source, new DataBinding(null, "path"));
             Assert.IsNull(dataBinding.Index);
             Assert.AreEqual("path", dataBinding.Path);
 

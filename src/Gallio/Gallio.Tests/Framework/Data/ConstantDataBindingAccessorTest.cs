@@ -20,20 +20,20 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
-    [TestsOn(typeof(ConstantDataBindingAccessor))]
+    [TestsOn(typeof(ConstantDataAccessor))]
     public class ConstantDataBindingAccessorTest : BaseUnitTest
     {
         [Test, ExpectedArgumentNullException]
         public void GetValueThrowsIfItemIsNull()
         {
-            new ConstantDataBindingAccessor(42).GetValue(null);
+            new ConstantDataAccessor(42).GetValue(null);
         }
 
         [Test]
         public void GetValueReturnsSameConstantAndSuppliedInTheConstructor()
         {
-            DataBindingItem item = new DataBindingItem(Mocks.Stub<IDataRow>());
-            Assert.AreEqual(42, new ConstantDataBindingAccessor(42).GetValue(item));
+            IDataItem item = Mocks.Stub<IDataItem>();
+            Assert.AreEqual(42, new ConstantDataAccessor(42).GetValue(item));
         }
     }
 }

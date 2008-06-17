@@ -18,10 +18,10 @@ using System.Collections.Generic;
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// The sequential join strategy combines rows from each data provider sequentially.
-    /// If one provider contains fewer rows than the others, the sequential join strategy
-    /// will insert a <see cref="NullDataRow"/> in its place until all other providers have been exhausted.
-    /// This is similar to performing an "outer join" of multiple sources by row index.
+    /// The sequential join strategy combines items from each data provider sequentially.
+    /// If one provider contains fewer items than the others, the sequential join strategy
+    /// will insert a <see cref="NullDataItem"/> in its place until all other providers have been exhausted.
+    /// This is similar to performing an "outer join" of multiple sources by ordinal index.
     /// </summary>
     public sealed class SequentialJoinStrategy : IJoinStrategy
     {
@@ -35,36 +35,36 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IList<IDataRow>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
-            bool includeDynamicRows)
+        public IEnumerable<IList<IDataItem>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
+            bool includeDynamicItems)
         {
-            IEnumerator<IDataRow>[] enumerators = new IEnumerator<IDataRow>[providers.Count];
+            IEnumerator<IDataItem>[] enumerators = new IEnumerator<IDataItem>[providers.Count];
             for (int i = 0; i < providers.Count; i++)
-                enumerators[i] = providers[i].GetRows(bindingsPerProvider[i], includeDynamicRows).GetEnumerator();
+                enumerators[i] = providers[i].GetItems(bindingsPerProvider[i], includeDynamicItems).GetEnumerator();
 
             int providerCount = providers.Count;
             for (;;)
             {
-                IDataRow[] rowList = new IDataRow[providerCount];
+                IDataItem[] itemList = new IDataItem[providerCount];
                 bool gotOne = false;
 
                 for (int i = 0; i < providerCount; i++)
                 {
                     if (enumerators[i].MoveNext())
                     {
-                        rowList[i] = enumerators[i].Current;
+                        itemList[i] = enumerators[i].Current;
                         gotOne = true;
                     }
                     else
                     {
-                        rowList[i] = NullDataRow.Instance;
+                        itemList[i] = NullDataItem.Instance;
                     }
                 }
 
                 if (! gotOne)
                     break;
 
-                yield return rowList;
+                yield return itemList;
             }
         }
     }

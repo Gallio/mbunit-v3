@@ -21,7 +21,7 @@ namespace Gallio.Framework.Data
 {
     /// <summary>
     /// <para>
-    /// A merged data set is an aggregate data set that selects rows from each of zero or more
+    /// A merged data set is an aggregate data set that selects items from each of zero or more
     /// other data sets according to a <see cref="IMergeStrategy"/>.
     /// </para>
     /// </summary>
@@ -72,10 +72,10 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        protected override IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
             IDataProvider[] providers = GenericUtils.ToArray(DataSets);
-            return strategy.Merge(providers, bindings, includeDynamicRows);
+            return strategy.Merge(providers, bindings, includeDynamicItems);
         }
     }
 }

@@ -22,25 +22,25 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
-    [TestsOn(typeof(StoredDataRow))]
-    [DependsOn(typeof(BaseDataRowTest))]
-    public class StoredDataRowTest
+    [TestsOn(typeof(SimpleDataItem))]
+    [DependsOn(typeof(BaseDataItemTest))]
+    public class SimpleDataItemTest
     {
         [Test]
         [Row(true)]
         [Row(false)]
         public void IsDynamicReturnsSameValueAsWasSpecifiedInTheConstructor(bool isDynamic)
         {
-            StoredDataRow row = new StubDataRow(null, isDynamic);
-            Assert.AreEqual(isDynamic, row.IsDynamic);
+            SimpleDataItem item = new StubDataItem(null, isDynamic);
+            Assert.AreEqual(isDynamic, item.IsDynamic);
         }
 
         [Test]
         public void GetMetadataReturnsAnEmptyArrayIfConstructorArgumentWasNull()
         {
-            StoredDataRow row = new StubDataRow(null, false);
+            SimpleDataItem item = new StubDataItem(null, false);
 
-            MetadataMap map = row.GetMetadata();
+            MetadataMap map = item.GetMetadata();
             Assert.AreEqual(0, map.Count);
         }
 
@@ -49,16 +49,16 @@ namespace Gallio.Tests.Framework.Data
         {
             List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
             metadataPairs.Add(new KeyValuePair<string,string>("Foo", "Bar"));
-            BaseDataRow row = new StubDataRow(metadataPairs, false);
+            BaseDataItem item = new StubDataItem(metadataPairs, false);
 
-            MetadataMap map = row.GetMetadata();
+            MetadataMap map = item.GetMetadata();
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }
 
-        private class StubDataRow : StoredDataRow
+        private class StubDataItem : SimpleDataItem
         {
-            public StubDataRow(IEnumerable<KeyValuePair<string, string>> metadataPairs,
+            public StubDataItem(IEnumerable<KeyValuePair<string, string>> metadataPairs,
                 bool isDynamic)
                 : base(metadataPairs, isDynamic)
             {

@@ -20,12 +20,12 @@ namespace Gallio.Framework.Data
 {
     /// <summary>
     /// <para>
-    /// The union merge strategy combines the rows from multiple providers by
-    /// discarding all rows whose values duplicate those of other rows that
+    /// The union merge strategy combines the items from multiple providers by
+    /// discarding all items whose values duplicate those of other items that
     /// have already been enumerated.
     /// </para>
     /// <para>
-    /// Uniqueness is determined by the natural equality of each bound value in the row.
+    /// Uniqueness is determined by the natural equality of each bound value in the item.
     /// </para>
     /// </summary>
     public sealed class UnionMergeStrategy : IMergeStrategy
@@ -40,20 +40,20 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
-            bool includeDynamicRows)
+        public IEnumerable<IDataItem> Merge(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicItems)
         {
             HashSet<object[]> previousValues = new HashSet<object[]>(new ArrayEqualityComparer<object>());
 
             foreach (IDataProvider provider in providers)
             {
-                foreach (IDataRow row in provider.GetRows(bindings, includeDynamicRows))
+                foreach (IDataItem item in provider.GetItems(bindings, includeDynamicItems))
                 {
                     try
                     {
                         object[] values = GenericUtils.ConvertAllToArray<DataBinding, object>(bindings, delegate(DataBinding binding)
                         {
-                            return row.GetValue(binding);
+                            return item.GetValue(binding);
                         });
 
                         if (previousValues.Contains(values))
@@ -63,10 +63,10 @@ namespace Gallio.Framework.Data
                     }
                     catch
                     {
-                        // Always consider rows whose bindings cannot be evaluated correctly as distinct.
+                        // Always consider items whose bindings cannot be evaluated correctly as distinct.
                     }
 
-                    yield return row;
+                    yield return item;
                 }
             }
         }

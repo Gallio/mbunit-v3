@@ -63,26 +63,26 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override IDataBindingAccessor RegisterImpl(DataBindingContext context, IDataSourceResolver resolver)
+        protected override IDataAccessor RegisterImpl(DataBindingContext context, IDataSourceResolver resolver)
         {
-            List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors = new List<KeyValuePair<ISlotInfo,IDataBindingAccessor>>(slotBinders.Count);
+            List<KeyValuePair<ISlotInfo, IDataAccessor>> slotAccessors = new List<KeyValuePair<ISlotInfo,IDataAccessor>>(slotBinders.Count);
 
             foreach (KeyValuePair<ISlotInfo, IDataBinder> slotBinder in slotBinders)
             {
-                IDataBindingAccessor accessor = slotBinder.Value.Register(context, resolver);
-                slotAccessors.Add(new KeyValuePair<ISlotInfo, IDataBindingAccessor>(slotBinder.Key, accessor));
+                IDataAccessor accessor = slotBinder.Value.Register(context, resolver);
+                slotAccessors.Add(new KeyValuePair<ISlotInfo, IDataAccessor>(slotBinder.Key, accessor));
             }
 
             return new Accessor(type, slotAccessors, context.Converter);
         }
 
-        private sealed class Accessor : BaseDataBindingAccessor
+        private sealed class Accessor : BaseDataAccessor
         {
             private readonly ITypeInfo type;
-            private readonly List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors;
+            private readonly List<KeyValuePair<ISlotInfo, IDataAccessor>> slotAccessors;
             private readonly IConverter converter;
 
-            public Accessor(ITypeInfo type, List<KeyValuePair<ISlotInfo, IDataBindingAccessor>> slotAccessors,
+            public Accessor(ITypeInfo type, List<KeyValuePair<ISlotInfo, IDataAccessor>> slotAccessors,
                 IConverter converter)
             {
                 this.type = type;
@@ -90,11 +90,11 @@ namespace Gallio.Framework.Data
                 this.converter = converter;
             }
 
-            protected override object GetValueImpl(DataBindingItem item)
+            protected override object GetValueImpl(IDataItem item)
             {
                 KeyValuePair<ISlotInfo, object>[] slotValues = GenericUtils.ConvertAllToArray<
-                    KeyValuePair<ISlotInfo, IDataBindingAccessor>, KeyValuePair<ISlotInfo, object>>(slotAccessors,
-                    delegate(KeyValuePair<ISlotInfo, IDataBindingAccessor> slotAccessor)
+                    KeyValuePair<ISlotInfo, IDataAccessor>, KeyValuePair<ISlotInfo, object>>(slotAccessors,
+                    delegate(KeyValuePair<ISlotInfo, IDataAccessor> slotAccessor)
                     {
                         object value = slotAccessor.Value.GetValue(item);
                         return new KeyValuePair<ISlotInfo, object>(slotAccessor.Key, value);

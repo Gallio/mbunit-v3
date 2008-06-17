@@ -28,8 +28,8 @@ namespace Gallio.Tests.Framework.Data
     [DependsOn(typeof(BaseDataSetTest))]
     public class MergedDataSetTest : BaseUnitTest
     {
-        private delegate IEnumerable<IDataRow> MergeDelegate(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
-            bool includeDynamicRows);
+        private delegate IEnumerable<IDataItem> MergeDelegate(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
+            bool includeDynamicItems);
 
         [Test]
         public void DefaultStrategyIsConcatenation()
@@ -108,7 +108,7 @@ namespace Gallio.Tests.Framework.Data
         public void CanBindReturnsTrueOnlyIfAllDataSetsCanSatisfyTheBinding()
         {
             MergedDataSet dataSet = new MergedDataSet();
-            DataBinding binding = new SimpleDataBinding(0, null);
+            DataBinding binding = new DataBinding(0, null);
 
             IDataSet dataSetWithTwoColumns = Mocks.CreateMock<IDataSet>();
             IDataSet dataSetWithThreeColumns = Mocks.CreateMock<IDataSet>();
@@ -135,7 +135,7 @@ namespace Gallio.Tests.Framework.Data
         }
 
         [Test]
-        public void GetRowsDelegatesToTheStrategy()
+        public void GetItemsDelegatesToTheStrategy()
         {
             MergedDataSet dataSet = new MergedDataSet();
 
@@ -145,15 +145,15 @@ namespace Gallio.Tests.Framework.Data
             IMergeStrategy strategy = Mocks.CreateMock<IMergeStrategy>();
             dataSet.Strategy = strategy;
 
-            IEnumerable<IDataRow> results = Mocks.Stub<IEnumerable<IDataRow>>();
+            IEnumerable<IDataItem> results = Mocks.Stub<IEnumerable<IDataItem>>();
             DataBinding[] bindings = new DataBinding[0];
 
             using (Mocks.Record())
             {
                 Expect.Call(strategy.Merge(null, null, false)).IgnoreArguments().Do((MergeDelegate)delegate(IList<IDataProvider> mergeProviders, ICollection<DataBinding> mergeBindings,
-                    bool includeDynamicRows)
+                    bool includeDynamicItems)
                 {
-                    Assert.IsTrue(includeDynamicRows);
+                    Assert.IsTrue(includeDynamicItems);
 
                     CollectionAssert.AreElementsEqual(new IDataProvider[] { provider }, mergeProviders);
                     Assert.AreSame(bindings, mergeBindings);
@@ -163,7 +163,7 @@ namespace Gallio.Tests.Framework.Data
 
             using (Mocks.Playback())
             {
-                Assert.AreSame(results, dataSet.GetRows(bindings, true));
+                Assert.AreSame(results, dataSet.GetItems(bindings, true));
             }
         }
     }

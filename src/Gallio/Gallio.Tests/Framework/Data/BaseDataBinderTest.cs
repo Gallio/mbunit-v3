@@ -27,14 +27,14 @@ namespace Gallio.Tests.Framework.Data
         [Test, ExpectedArgumentNullException]
         public void RegisterThrowsIfContextIsNull()
         {
-            ScalarDataBinder binder = new ScalarDataBinder(new SimpleDataBinding(0, null), "");
+            ScalarDataBinder binder = new ScalarDataBinder(new DataBinding(0, null), "");
             binder.Register(null, Mocks.Stub<IDataSourceResolver>());
         }
 
         [Test, ExpectedArgumentNullException]
         public void RegisterThrowsIfResolverIsNull()
         {
-            ScalarDataBinder binder = new ScalarDataBinder(new SimpleDataBinding(0, null), "");
+            ScalarDataBinder binder = new ScalarDataBinder(new DataBinding(0, null), "");
             binder.Register(new DataBindingContext(Mocks.Stub<IConverter>()), null);
         }
     }

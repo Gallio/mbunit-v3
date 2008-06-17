@@ -37,12 +37,12 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IDataRow> GetRows(ICollection<DataBinding> bindings, bool includeDynamicRows)
+        public IEnumerable<IDataItem> GetItems(ICollection<DataBinding> bindings, bool includeDynamicItems)
         {
             if (bindings == null)
                 throw new ArgumentNullException("bindings");
 
-            return GetRowsImpl(bindings, includeDynamicRows);
+            return GetItemsImpl(bindings, includeDynamicItems);
         }
 
         /// <summary>
@@ -53,11 +53,11 @@ namespace Gallio.Framework.Data
         protected abstract bool CanBindImpl(DataBinding binding);
 
         /// <summary>
-        /// Enumerates the rows in the data set.
+        /// Enumerates the data items in the data set.
         /// </summary>
         /// <param name="bindings">The data bindings, not null</param>
-        /// <param name="includeDynamicRows">If true, includes dynamic rows</param>
-        /// <returns>The enumeration of rows in the combined data set</returns>
-        protected abstract IEnumerable<IDataRow> GetRowsImpl(ICollection<DataBinding> bindings, bool includeDynamicRows);
+        /// <param name="includeDynamicItems">If true, includes dynamic items</param>
+        /// <returns>The enumeration of data items in the combined data set</returns>
+        protected abstract IEnumerable<IDataItem> GetItemsImpl(ICollection<DataBinding> bindings, bool includeDynamicItems);
     }
 }

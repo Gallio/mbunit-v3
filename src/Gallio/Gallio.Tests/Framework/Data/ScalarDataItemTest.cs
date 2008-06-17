@@ -15,7 +15,6 @@
 
 
 using System.Collections.Generic;
-using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Model;
 using MbUnit.Framework;
@@ -23,30 +22,24 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
-    [TestsOn(typeof(ListDataRow<>))]
-    [DependsOn(typeof(BaseDataRowTest))]
-    public class ListDataRowTest
+    [TestsOn(typeof(ScalarDataItem<>))]
+    [DependsOn(typeof(BaseDataItemTest))]
+    public class ScalarDataItemTest
     {
-        [Test, ExpectedArgumentNullException]
-        public void ConstructorThrowsIfListIsNull()
-        {
-            new ListDataRow<object>(null, EmptyArray<KeyValuePair<string, string>>.Instance, false);
-        }
-
         [Test]
         [Row(true)]
         [Row(false)]
         public void IsDynamicReturnsSameValueAsWasSpecifiedInTheConstructor(bool isDynamic)
         {
-            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, null, isDynamic);
-            Assert.AreEqual(isDynamic, row.IsDynamic);
+            ScalarDataItem<object> item = new ScalarDataItem<object>(null, null, isDynamic);
+            Assert.AreEqual(isDynamic, item.IsDynamic);
         }
 
         [Test]
         public void HasNoMetadataIfNullSpecifiedInConstructor()
         {
-            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, null, false);
-            MetadataMap metadata = row.GetMetadata();
+            ScalarDataItem<object> item = new ScalarDataItem<object>(null, null, false);
+            MetadataMap metadata = item.GetMetadata();
             Assert.AreEqual(0, metadata.Count);
         }
 
@@ -55,32 +48,28 @@ namespace Gallio.Tests.Framework.Data
         {
             List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
             metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
+            ScalarDataItem<object> item = new ScalarDataItem<object>("abc", metadataPairs, false);
 
-            ListDataRow<object> row = new ListDataRow<object>(EmptyArray<object>.Instance, metadataPairs, false);
-
-            MetadataMap map = row.GetMetadata();
+            MetadataMap map = item.GetMetadata();
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }
 
         [Test]
         [Row(null, null, ExpectedException=typeof(DataBindingException))]
-        [Row(null, 3, ExpectedException=typeof(DataBindingException))]
+        [Row(null, 1, ExpectedException=typeof(DataBindingException))]
         [Row(null, -1, ExpectedException=typeof(DataBindingException))]
         [Row("abc", null, ExpectedException=typeof(DataBindingException))]
-        [Row("abc", 3, ExpectedException=typeof(DataBindingException))]
+        [Row("abc", 1, ExpectedException=typeof(DataBindingException))]
         [Row("abc", -1, ExpectedException=typeof(DataBindingException))]
         [Row(null, 0)]
         [Row("abc", 0)]
-        [Row(null, 1)]
-        [Row(null, 2)]
-        public void GetValueReturnsValueOnlyIfTheBindingIndexIsWithinTheListCount(string path, object index)
+        public void GetValueReturnsValueOnlyIfTheBindingIndexIsZero(string path, object index)
         {
-            object[] values = new object[] { "abc", "def", 42 };
-            ListDataRow<object> row = new ListDataRow<object>(values, null, false);
-            object value = row.GetValue(new SimpleDataBinding((int?)index, path));
+            ScalarDataItem<object> item = new ScalarDataItem<object>(42, null, false);
+            object value = item.GetValue(new DataBinding((int?)index, path));
 
-            Assert.AreEqual(values[(int)index], value);
+            Assert.AreEqual(42, value);
         }
     }
 }

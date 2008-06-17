@@ -54,7 +54,7 @@ namespace Gallio.Tests.Framework.Data
         public void AccessorThrowsIfItemIsNull()
         {
             ObjectDataBinder binder = new ObjectDataBinder(Mocks.Stub<ITypeInfo>());
-            IDataBindingAccessor accessor = binder.Register(new DataBindingContext(Mocks.Stub<IConverter>()), Mocks.Stub<IDataSourceResolver>());
+            IDataAccessor accessor = binder.Register(new DataBindingContext(Mocks.Stub<IConverter>()), Mocks.Stub<IDataSourceResolver>());
 
             InterimAssert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
         }
@@ -64,7 +64,7 @@ namespace Gallio.Tests.Framework.Data
         public void AccessorCreatesNewObjectsThroughSlotBinding()
         {
             DataSource source = new DataSource("data");
-            source.AddDataSet(new RowSequenceDataSet(new IDataRow[] { new ListDataRow<object>(new object[] { 42, typeof(int) }, null, false) }, 2));
+            source.AddDataSet(new ItemSequenceDataSet(new IDataItem[] { new ListDataItem<object>(new object[] { 42, typeof(int) }, null, false) }, 2));
 
             IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();
             
@@ -83,11 +83,11 @@ namespace Gallio.Tests.Framework.Data
                 DataBindingContext context = new DataBindingContext(new NullConverter());
 
                 ObjectDataBinder binder = new ObjectDataBinder(type);
-                binder.SetSlotBinder(valueSlot, new ScalarDataBinder(new SimpleDataBinding(0, null), "data"));
-                binder.SetSlotBinder(typeSlot, new ScalarDataBinder(new SimpleDataBinding(1, null), "data"));
+                binder.SetSlotBinder(valueSlot, new ScalarDataBinder(new DataBinding(0, null), "data"));
+                binder.SetSlotBinder(typeSlot, new ScalarDataBinder(new DataBinding(1, null), "data"));
 
-                IDataBindingAccessor accessor = binder.Register(context, resolver);
-                List<DataBindingItem> items = new List<DataBindingItem>(context.GetItems(true));
+                IDataAccessor accessor = binder.Register(context, resolver);
+                List<IDataItem> items = new List<IDataItem>(context.GetItems(true));
                 Assert.AreEqual(1, items.Count);
 
                 Holder<int> holder = (Holder<int>)accessor.GetValue(items[0]);

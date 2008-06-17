@@ -22,7 +22,7 @@ namespace Gallio.Framework.Data
     /// <summary>
     /// <para>
     /// The pairwise strategy constructs a limited number of combinations of the
-    /// rows within the data providers such that they cover all possible pairs
+    /// items within the data providers such that they cover all possible pairs
     /// of values from each data source.
     /// </para>
     /// <para>
@@ -71,41 +71,41 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        public IEnumerable<IList<IDataRow>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
-            bool includeDynamicRows)
+        public IEnumerable<IList<IDataItem>> Join(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
+            bool includeDynamicItems)
         {
             // Handle degenerate cases.
             int providerCount = providers.Count;
             if (providerCount <= 1)
-                return SequentialJoinStrategy.Instance.Join(providers, bindingsPerProvider, includeDynamicRows);
+                return SequentialJoinStrategy.Instance.Join(providers, bindingsPerProvider, includeDynamicItems);
 
-            // Get all rows from all providers.
-            List<IDataRow>[] rowLists = new List<IDataRow>[providerCount];
+            // Get all items from all providers.
+            List<IDataItem>[] itemLists = new List<IDataItem>[providerCount];
             int[] counts = new int[providerCount];
             for (int i = 0; i < providerCount; i++)
             {
-                List<IDataRow> rows = new List<IDataRow>(providers[i].GetRows(bindingsPerProvider[i], includeDynamicRows));
-                int count = rows.Count;
+                List<IDataItem> items = new List<IDataItem>(providers[i].GetItems(bindingsPerProvider[i], includeDynamicItems));
+                int count = items.Count;
                 if (count == 0)
-                    return EmptyArray<IList<IDataRow>>.Instance; // there must be at least one value from each provider
+                    return EmptyArray<IList<IDataItem>>.Instance; // there must be at least one value from each provider
 
-                rowLists[i] = rows;
+                itemLists[i] = items;
                 counts[i] = count;
             }
 
             PairwiseGenerator generator = new PairwiseGenerator(counts);
-            return GenerateCombinations(generator, rowLists);
+            return GenerateCombinations(generator, itemLists);
         }
 
-        private static IEnumerable<IList<IDataRow>> GenerateCombinations(PairwiseGenerator generator, List<IDataRow>[] rowLists)
+        private static IEnumerable<IList<IDataItem>> GenerateCombinations(PairwiseGenerator generator, List<IDataItem>[] itemLists)
         {
-            int providerCount = rowLists.Length;
+            int providerCount = itemLists.Length;
             int[] indices = new int[providerCount];
             while (generator.Next(indices))
             {
-                IDataRow[] combination = new IDataRow[providerCount];
+                IDataItem[] combination = new IDataItem[providerCount];
                 for (int i = 0; i < providerCount; i++)
-                    combination[i] = rowLists[i][indices[i]];
+                    combination[i] = itemLists[i][indices[i]];
 
                 yield return combination;
             }
