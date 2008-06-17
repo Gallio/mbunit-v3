@@ -356,6 +356,13 @@
             </summary>
             <param name="userMessage">The user message to be displayed</param>
         </member>
+        <member name="M:Xunit.AssertException.#ctor(System.String,System.Exception)">
+            <summary>
+            Creates a new instance of the <see cref="T:Xunit.AssertException"/> class.
+            </summary>
+            <param name="userMessage">The user message to be displayed</param>
+            <param name="innerException">The inner exception</param>
+        </member>
         <member name="M:Xunit.AssertException.FilterStackTrace(System.String)">
             <summary>
             Filters the stack trace to remove all lines that occur within the testing framework.
@@ -550,6 +557,12 @@
             Gets the display name of the test method.
             </summary>
         </member>
+        <member name="P:Xunit.Sdk.ITestCommand.ShouldCreateInstance">
+            <summary>
+            Determines if the test runner infrastructure should create a new instance of the
+            test class before running the test.
+            </summary>
+        </member>
         <member name="M:Xunit.Sdk.DelegatingTestCommand.#ctor(Xunit.Sdk.ITestCommand)">
             <summary>
             Creates a new instance of the <see cref="T:Xunit.Sdk.DelegatingTestCommand"/> class.
@@ -557,21 +570,16 @@
             <param name="innerCommand">The inner command to delegate to.</param>
         </member>
         <member name="M:Xunit.Sdk.DelegatingTestCommand.Execute(System.Object)">
-            <summary>
-            Executes the test method.
-            </summary>
-            <param name="testClass">The instance of the test class</param>
-            <returns>Returns information about the test run</returns>
+            <inheritdoc/>
         </member>
         <member name="P:Xunit.Sdk.DelegatingTestCommand.InnerCommand">
-            <summary>
-            Gets the inner command.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Xunit.Sdk.DelegatingTestCommand.Name">
-            <summary>
-            Gets the fully-qualified name of the test method.
-            </summary>
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.DelegatingTestCommand.ShouldCreateInstance">
+            <inheritdoc/>
         </member>
         <member name="M:Xunit.Sdk.BeforeAfterCommand.#ctor(Xunit.Sdk.ITestCommand,System.Reflection.MethodInfo)">
             <summary>
@@ -1282,16 +1290,13 @@
             type name is used.</param>
         </member>
         <member name="M:Xunit.Sdk.SkipCommand.Execute(System.Object)">
-            <summary>
-            Returns a <see cref="T:Xunit.Sdk.SkipResult"/>.
-            </summary>
-            <param name="testClass">The test class instance</param>
-            <returns>Returns a <see cref="T:Xunit.Sdk.SkipResult"/></returns>
+            <inheritdoc/>
         </member>
         <member name="P:Xunit.Sdk.SkipCommand.Name">
-            <summary>
-            Gets the fully-qualified name of the test method.
-            </summary>
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.SkipCommand.ShouldCreateInstance">
+            <inheritdoc/>
         </member>
         <member name="T:Xunit.Sdk.TestCommand">
             <summary>
@@ -1310,15 +1315,13 @@
             <param name="method">The method under test</param>
         </member>
         <member name="M:Xunit.Sdk.TestCommand.Execute(System.Object)">
-            <summary>
-            Executes the test method.
-            </summary>
-            <returns>Returns information about the test run</returns>
+            <inheritdoc/>
         </member>
         <member name="P:Xunit.Sdk.TestCommand.Name">
-            <summary>
-            Gets the display name of the test method.
-            </summary>
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestCommand.ShouldCreateInstance">
+            <inheritdoc/>
         </member>
         <member name="T:Xunit.Sdk.TestCommandFactory">
             <summary>
@@ -1820,6 +1823,11 @@
             Gets a value indicating whether the type is abstract.
             </summary>
         </member>
+        <member name="P:Xunit.Sdk.ITypeInfo.IsSealed">
+            <summary>
+            Gets a value indicating whether the type is sealed.
+            </summary>
+        </member>
         <member name="P:Xunit.Sdk.ITypeInfo.Type">
             <summary>
             Gets the underlying <see cref="P:Xunit.Sdk.ITypeInfo.Type"/> object, if available.
@@ -1953,6 +1961,24 @@
             </summary>
             <param name="type">The type to be inspected</param>
             <returns>True if the type implements <see cref="T:Xunit.Sdk.ITestClassCommand"/>; false, otherwise</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.IsAbstract(Xunit.Sdk.ITypeInfo)">
+            <summary>
+            Determines whether the specified type is abstract.
+            </summary>
+            <param name="type">The type.</param>
+            <returns>
+            	<c>true</c> if the specified type is abstract; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.IsStatic(Xunit.Sdk.ITypeInfo)">
+            <summary>
+            Determines whether the specified type is static.
+            </summary>
+            <param name="type">The type.</param>
+            <returns>
+            	<c>true</c> if the specified type is static; otherwise, <c>false</c>.
+            </returns>
         </member>
         <member name="M:Xunit.Sdk.TypeUtility.IsTestClass(Xunit.Sdk.ITypeInfo)">
             <summary>
