@@ -74,7 +74,12 @@ namespace Gallio.XunitAdapter.Model
 
         public bool IsAbstract
         {
-            get { return (target.TypeAttributes & TypeAttributes.Abstract) != 0; }
+            get { return target.IsAbstract; }
+        }
+
+        public bool IsSealed
+        {
+            get { return target.IsSealed; }
         }
 
         public Type Type
