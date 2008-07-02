@@ -124,6 +124,7 @@
     <Compile Include="Framework\SilentTestExceptionTest.cs" />
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />
+    <Compile Include="Framework\Utilities\StackTraceFilterTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
     <Compile Include="Model\BaseTestExplorerTest.cs" />
     <Compile Include="Model\Filters\FilterParseExceptionTest.cs" />
@@ -150,7 +151,7 @@
     <Compile Include="Runtime\Hosting\RemoteHostFactoryTest.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineArgumentParserTests.cs" />
     <Compile Include="Runtime\ConsoleSupport\CommandLineOutputTests.cs" />
-    <Compile Include="Framework\ContextTest.cs" />
+    <Compile Include="Framework\TestContextTest.cs" />
     <Compile Include="Runtime\Hosting\IsolatedAppDomainHostTest.cs" />
     <Compile Include="Runtime\Hosting\BaseHostFactoryTest.cs" />
     <Compile Include="Runtime\Hosting\IsolatedProcessHostTest.cs">

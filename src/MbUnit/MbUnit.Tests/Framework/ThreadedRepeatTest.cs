@@ -68,7 +68,7 @@ namespace MbUnit.Tests.Framework
             [Test, ThreadedRepeat(10)]
             public void Test()
             {
-                string name = Context.CurrentContext.TestStep.Name;
+                string name = TestContext.CurrentContext.TestStep.Name;
 
                 Log.WriteLine("Run: {0}", name);
                 if (name == "Threaded Repetition #2")

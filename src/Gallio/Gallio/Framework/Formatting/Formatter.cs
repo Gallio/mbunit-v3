@@ -13,19 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Framework;
-using MbUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Gallio.Runtime;
 
-namespace Gallio.Tests.Framework
+namespace Gallio.Framework.Formatting
 {
-    [TestFixture]
-    [TestsOn(typeof(Context))]
-    public class ContextTest
+    /// <summary>
+    /// Service locator for <see cref="IFormatter" />.
+    /// </summary>
+    public static class Formatter
     {
-        [Test]
-        public void CurrentTestHasCorrectTestName()
+        /// <summary>
+        /// Gets the global formatter singleton.
+        /// </summary>
+        public static IFormatter Instance
         {
-            Assert.AreEqual("CurrentTestHasCorrectTestName", Context.CurrentContext.Test.Name);
+            get { return RuntimeAccessor.Instance.Resolve<IFormatter>(); }
         }
     }
 }

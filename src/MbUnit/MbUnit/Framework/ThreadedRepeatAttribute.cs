@@ -69,7 +69,7 @@ namespace MbUnit.Framework
                 try
                 {
                     TestOutcome[] threadOutcomes = new TestOutcome[numThreads];
-                    Context context = Context.CurrentContext;
+                    TestContext context = TestContext.CurrentContext;
 
                     for (int i = 0; i < numThreads; i++)
                     {
@@ -78,7 +78,7 @@ namespace MbUnit.Framework
                         string name = String.Format("Threaded Repetition #{0}", index + 1);
                         ThreadTask task = new ThreadTask(name, delegate
                         {
-                            Context threadContext = Step.RunStep(name, delegate
+                            TestContext threadContext = Step.RunStep(name, delegate
                             {
                                 inner(state);
                             });

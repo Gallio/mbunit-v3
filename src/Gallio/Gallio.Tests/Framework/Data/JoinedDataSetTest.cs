@@ -251,7 +251,7 @@ namespace Gallio.Tests.Framework.Data
                 Assert.AreEqual(2, items[0].GetValue(bindings[4]));
                 Assert.AreEqual(5, items[0].GetValue(bindings[5]));
 
-                MetadataMap map = items[0].GetMetadata();
+                MetadataMap map = DataItemUtils.GetMetadata(items[0]);
                 Assert.AreEqual(3, map.Count);
                 Assert.AreEqual("123", map.GetValue("abc"));
                 Assert.AreEqual("456", map.GetValue("def"));
@@ -266,7 +266,7 @@ namespace Gallio.Tests.Framework.Data
                 Assert.AreEqual(-2, items[1].GetValue(bindings[4]));
                 Assert.AreEqual(-5, items[1].GetValue(bindings[5]));
 
-                map = items[1].GetMetadata();
+                map = DataItemUtils.GetMetadata(items[1]);
                 Assert.AreEqual(1, map.Count);
                 Assert.AreEqual("789", map.GetValue("ghi"));
 

@@ -142,7 +142,7 @@ namespace Gallio.Tests.Framework.Data
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(new DataBinding[] { binding }, true));
 
             Assert.AreEqual("123", items[0].GetValue(binding));
-            MetadataMap map = items[0].GetMetadata();
+            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
             Assert.AreEqual("<inline>(2)", map.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual("abc", map.GetValue("Metadata"));
 

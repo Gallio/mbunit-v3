@@ -87,6 +87,7 @@
     <Compile Include="Framework\Conversions\BaseConverter.cs" />
     <Compile Include="Framework\Conversions\ConversionCost.cs" />
     <Compile Include="Framework\Conversions\ConvertibleToConvertibleConversionRule.cs" />
+    <Compile Include="Framework\Conversions\Formatter.cs" />
     <Compile Include="Framework\Conversions\IConversionRule.cs" />
     <Compile Include="Framework\Conversions\IConverter.cs" />
     <Compile Include="Framework\Conversions\NullConverter.cs" />
@@ -101,7 +102,7 @@
     <Compile Include="Framework\Data\ConstantDataAccessor.cs" />
     <Compile Include="Framework\Data\DataBindingContext.cs" />
     <Compile Include="Framework\Data\DataRow.cs" />
-    <Compile Include="Framework\Data\DataItemExtensions.cs" />
+    <Compile Include="Framework\Data\DataItemUtils.cs" />
     <Compile Include="Framework\Data\FactoryDataSet.cs" />
     <Compile Include="Framework\Data\FactoryKind.cs" />
     <Compile Include="Framework\Data\IDataBinder.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Framework\Formatting\DictionaryEntryFormattingRule.cs" />
     <Compile Include="Framework\Formatting\DoubleFormattingRule.cs" />
     <Compile Include="Framework\Formatting\EnumerableFormattingRule.cs" />
+    <Compile Include="Framework\Formatting\Formatter.cs" />
     <Compile Include="Framework\Formatting\FormattingRulePriority.cs" />
     <Compile Include="Framework\Formatting\IFormatter.cs" />
     <Compile Include="Framework\Formatting\IFormattingRule.cs" />
@@ -131,6 +133,9 @@
     <Compile Include="Framework\Formatting\StringFormattingRule.cs" />
     <Compile Include="Framework\Formatting\TypeFormattingRule.cs" />
     <Compile Include="Framework\Formatting\XPathNavigableFormattingRule.cs" />
+    <Compile Include="Framework\Utilities\TestFrameworkInternalAttribute.cs" />
+    <Compile Include="Framework\Utilities\StackTraceFilter.cs" />
+    <Compile Include="Framework\Utilities\TestEntryPointAttribute.cs" />
     <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
     <Compile Include="Model\Execution\RemoteTestListener.cs" />
@@ -437,7 +442,6 @@
     <Compile Include="Runtime\RuntimeBootstrap.cs" />
     <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
     <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
-    <Compile Include="System\Runtime\CompilerServices\ExtensionAttribute.cs" />
     <Compile Include="Triple.cs" />
     <Compile Include="Utilities\CurrentDirectorySwitcher.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
@@ -591,8 +595,8 @@
     <Compile Include="Collections\TreeUtils.cs" />
     <Compile Include="Utilities\Hash64.cs" />
     <Compile Include="Runtime\Remoting\LongLivedMarshalByRefObject.cs" />
-    <Compile Include="Framework\Context.cs" />
-    <Compile Include="Framework\ContextCookie.cs" />
+    <Compile Include="Framework\TestContext.cs" />
+    <Compile Include="Framework\TestContextCookie.cs" />
     <Compile Include="Runtime\Loader\IAssemblyResolver.cs" />
     <Compile Include="ActionChain.cs" />
     <Compile Include="ActionDecorator.cs" />
@@ -672,9 +676,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.plugin" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Framework\Constraints\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

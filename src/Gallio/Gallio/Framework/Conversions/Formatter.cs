@@ -14,25 +14,21 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
+using Gallio.Runtime;
 
-namespace Gallio.Framework.Data
+namespace Gallio.Framework.Conversions
 {
     /// <summary>
-    /// Extension methods for <see cref="IDataItem" />.
+    /// Service locator for <see cref="IConverter" />.
     /// </summary>
-    public static class DataItemExtensions
+    public static class Converter
     {
         /// <summary>
-        /// Gets the metadata associated with a data item.
+        /// Gets the global conveter singleton.
         /// </summary>
-        /// <param name="dataItem">The data item</param>
-        /// <returns>The associated metadata</returns>
-        public static MetadataMap GetMetadata(this IDataItem dataItem)
+        public static IConverter Instance
         {
-            MetadataMap map = new MetadataMap();
-            dataItem.PopulateMetadata(map);
-            return map;
+            get { return RuntimeAccessor.Instance.Resolve<IConverter>(); }
         }
     }
 }

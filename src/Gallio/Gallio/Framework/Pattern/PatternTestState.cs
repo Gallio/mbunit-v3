@@ -98,7 +98,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="context">The context</param>
         /// <returns>The pattern test state, or null if none</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null</exception>
-        public static PatternTestState FromContext(Context context)
+        public static PatternTestState FromContext(TestContext context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -106,7 +106,7 @@ namespace Gallio.Framework.Pattern
             return context.Data.GetValueOrDefault(ContextKey, null);
         }
 
-        internal void SetInContext(Context context)
+        internal void SetInContext(TestContext context)
         {
             context.Data.SetValue(ContextKey, this);
         }

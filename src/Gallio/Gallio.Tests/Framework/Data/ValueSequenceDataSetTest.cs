@@ -59,7 +59,7 @@ namespace Gallio.Tests.Framework.Data
             ValueSequenceDataSet dataSet = new ValueSequenceDataSet(new object[] { "a" }, null, false);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
 
-            MetadataMap map = items[0].GetMetadata();
+            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
             Assert.AreEqual(0, map.Count);
         }
 
@@ -72,7 +72,7 @@ namespace Gallio.Tests.Framework.Data
             ValueSequenceDataSet dataSet = new ValueSequenceDataSet(new object[] { "a" }, metadataPairs, false);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
 
-            MetadataMap map = items[0].GetMetadata();
+            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }

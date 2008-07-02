@@ -56,7 +56,7 @@ namespace Gallio.Framework
         {
             get
             {
-                Context context = Context.CurrentContext;
+                TestContext context = TestContext.CurrentContext;
                 if (context == null)
                     throw new InvalidOperationException("There is no test context currently available.  Consequently there is no current log writer.");
                 return context.LogWriter;

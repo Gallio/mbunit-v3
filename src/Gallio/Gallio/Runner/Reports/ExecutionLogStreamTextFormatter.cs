@@ -14,20 +14,25 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Gallio.Runner.Reports
 {
     /// <summary>
-    /// Formats <see cref="ExecutionLogStreamTag" /> instances to plain text by recursively
-    /// concatenating the text of all contained <see cref="ExecutionLogStreamTextTag" />
-    /// elements.  Sections and embedded attachments introduce line-breaks within the
-    /// text but are otherwise ignored.
+    /// <para>
+    /// Formats <see cref="ExecutionLogStreamTag" /> instances to plain text.
+    /// </para>
+    /// <para>
+    /// Text tags are written as-is.  Sections introduce paragraph breaks with
+    /// the header written out as the first line.  Embedded attachments are
+    /// described by name.
+    /// </para>
     /// </summary>
     public sealed class ExecutionLogStreamTextFormatter : IExecutionLogStreamTagVisitor
     {
         private readonly StringBuilder textBuilder = new StringBuilder();
+        private int pendingSpacing;
+        private int actualSpacing;
 
         /// <summary>
         /// Gets the text that has been built.
@@ -40,35 +45,70 @@ namespace Gallio.Runner.Reports
         /// <inheritdoc />
         public void VisitBodyTag(ExecutionLogStreamBodyTag tag)
         {
-            InsertLineBreakIfNeeded();
+            RequestMinimumSpacing(2);
             tag.AcceptContents(this);
-            InsertLineBreakIfNeeded();
+            RequestMinimumSpacing(2);
         }
 
         /// <inheritdoc />
         public void VisitSectionTag(ExecutionLogStreamSectionTag tag)
         {
-            InsertLineBreakIfNeeded();
+            RequestMinimumSpacing(2);
+            Append(tag.Name);
+            RequestMinimumSpacing(1);
             tag.AcceptContents(this);
-            InsertLineBreakIfNeeded();
+            RequestMinimumSpacing(2);
         }
 
         /// <inheritdoc />
         public void VisitEmbedTag(ExecutionLogStreamEmbedTag tag)
         {
-            InsertLineBreakIfNeeded();
+            RequestMinimumSpacing(1);
+            Append(String.Format("[Attachment: {0}]", tag.AttachmentName));
+            RequestMinimumSpacing(1);
         }
 
         /// <inheritdoc />
         public void VisitTextTag(ExecutionLogStreamTextTag tag)
         {
-            textBuilder.Append(tag.Text);
+            Append(tag.Text);
         }
 
-        private void InsertLineBreakIfNeeded()
+        private void RequestMinimumSpacing(int spacing)
         {
-            if (textBuilder.Length != 0 && textBuilder[textBuilder.Length - 1] != '\n')
-                textBuilder.Append('\n');
+            pendingSpacing = Math.Max(pendingSpacing, spacing);
+        }
+
+        private void Append(string text)
+        {
+            int length = text.Length;
+            if (length == 0)
+                return;
+
+            if (pendingSpacing != 0)
+            {
+                if (textBuilder.Length != 0 && pendingSpacing > actualSpacing)
+                    textBuilder.Append('\n', pendingSpacing - actualSpacing);
+
+                pendingSpacing = 0;
+            }
+
+            textBuilder.EnsureCapacity(textBuilder.Length + length);
+
+            for (int i = 0; i < length; i++)
+            {
+                char c = text[i];
+
+                if (c == '\r')
+                    continue;
+
+                if (c == '\n')
+                    actualSpacing += 1;
+                else
+                    actualSpacing = 0;
+
+                textBuilder.Append(c);
+            }
         }
     }
 }

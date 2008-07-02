@@ -51,7 +51,7 @@ namespace Gallio.Tests
         [TearDown]
         public virtual void TearDown()
         {
-            if (mocks != null && Context.CurrentContext.Outcome.Status == TestStatus.Passed)
+            if (mocks != null && TestContext.CurrentContext.Outcome.Status == TestStatus.Passed)
             {
                 try
                 {

@@ -24,25 +24,25 @@ namespace MbUnit.TestResources.Fixtures
     [TestFixture]
     public class ContextOutcomePassingTestSample
     {
-        private Context previousContext;
+        private TestContext previousContext;
 
         [SetUp]
         public void SetUp()
         {
-            previousContext = Context.CurrentContext;
-            Log.WriteLine(Context.CurrentContext.Outcome);
+            previousContext = TestContext.CurrentContext;
+            Log.WriteLine(TestContext.CurrentContext.Outcome);
         }
 
         [Test]
         public void Test()
         {
-            Log.WriteLine(Context.CurrentContext.Outcome);
+            Log.WriteLine(TestContext.CurrentContext.Outcome);
         }
 
         [TearDown]
         public void TearDown()
         {
-            Log.WriteLine(Context.CurrentContext.Outcome);
+            Log.WriteLine(TestContext.CurrentContext.Outcome);
         }
 
         [FixtureTearDown]

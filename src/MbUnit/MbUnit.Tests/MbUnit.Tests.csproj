@@ -81,6 +81,10 @@
       <Project>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</Project>
       <Name>Gallio.Tests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Gallio\Gallio35\Gallio35.csproj">
+      <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
+      <Name>Gallio35</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>

@@ -49,7 +49,7 @@ namespace Gallio.Framework.Pattern
         /// Prepares a newly created test instance state before its use.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the <see cref="PatternTestState.PrimaryTestStep" />
+        /// This method runs in the <see cref="TestContext" /> of the <see cref="PatternTestState.PrimaryTestStep" />
         /// because the test step for this instance (if different from the primary step) has not yet started.
         /// </para>
         /// <para>
@@ -88,7 +88,7 @@ namespace Gallio.Framework.Pattern
         /// Initializes a test instance that has just started running.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the test instance
+        /// This method runs in the <see cref="TestContext" /> of the test instance
         /// in the <see cref="LifecyclePhases.Initialize" /> lifecycle phase.
         /// </para>
         /// <para>
@@ -118,7 +118,7 @@ namespace Gallio.Framework.Pattern
         /// Sets up a test instance prior to execution.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the test instance
+        /// This method runs in the <see cref="TestContext" /> of the test instance
         /// in the <see cref="LifecyclePhases.SetUp" /> lifecycle phase.
         /// </para>
         /// <para>
@@ -146,7 +146,7 @@ namespace Gallio.Framework.Pattern
         /// Executes the test instance.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the test instance
+        /// This method runs in the <see cref="TestContext" /> of the test instance
         /// in the <see cref="LifecyclePhases.Execute" /> lifecycle phase.
         /// </para>
         /// <para>
@@ -174,7 +174,7 @@ namespace Gallio.Framework.Pattern
         /// Tears down a test instance following execution.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the test instance
+        /// This method runs in the <see cref="TestContext" /> of the test instance
         /// in the <see cref="LifecyclePhases.TearDown" /> lifecycle phase.
         /// </para>
         /// <para>
@@ -202,7 +202,7 @@ namespace Gallio.Framework.Pattern
         /// Disposes a test instance that is about to terminate.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the test instance
+        /// This method runs in the <see cref="TestContext" /> of the test instance
         /// in the <see cref="LifecyclePhases.Dispose" /> lifecycle phase.
         /// </para>
         /// <para>
@@ -232,7 +232,7 @@ namespace Gallio.Framework.Pattern
         /// Cleans up a completed test instance after its use.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the <see cref="PatternTestState.PrimaryTestStep" />
+        /// This method runs in the <see cref="TestContext" /> of the <see cref="PatternTestState.PrimaryTestStep" />
         /// because the test step for this instance (if different from the primary step) has terminated.
         /// </para>
         /// <para>
@@ -261,7 +261,7 @@ namespace Gallio.Framework.Pattern
         /// <see cref="IPatternTestHandler.BeforeTest" /> actions have a chance to run.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the test instance
+        /// This method runs in the <see cref="TestContext" /> of the test instance
         /// in the <see cref="LifecyclePhases.Execute" /> lifecycle phase.
         /// </para>
         /// <para>

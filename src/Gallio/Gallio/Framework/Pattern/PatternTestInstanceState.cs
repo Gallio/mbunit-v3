@@ -20,6 +20,7 @@ using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Framework.Conversions;
 using Gallio.Framework.Formatting;
+using Gallio.Framework.Utilities;
 using Gallio.Reflection;
 using Gallio.Utilities;
 
@@ -102,7 +103,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="context">The context</param>
         /// <returns>The pattern test instance state, or null if none</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null</exception>
-        public static PatternTestInstanceState FromContext(Context context)
+        public static PatternTestInstanceState FromContext(TestContext context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -110,7 +111,7 @@ namespace Gallio.Framework.Pattern
             return context.Data.GetValueOrDefault(ContextKey, null);
         }
 
-        internal void SetInContext(Context context)
+        internal void SetInContext(TestContext context)
         {
             context.Data.SetValue(ContextKey, this);
         }
@@ -334,6 +335,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="InvalidOperationException">Thrown if <see cref="FixtureType" /> is null</exception>
         /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
         /// <seealso cref="MethodInvocationSpec"/>
+        [TestEntryPoint]
         public object InvokeFixtureMethod(IMethodInfo method, IEnumerable<KeyValuePair<ISlotInfo, object>> slotValues)
         {
             if (method == null)
@@ -355,6 +357,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <returns>The method return value, or null if there was none</returns>
         /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
+        [TestEntryPoint]
         public object InvokeTestMethod()
         {
             if (testMethod != null && testArguments != null)

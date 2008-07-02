@@ -33,7 +33,7 @@ namespace Gallio.Framework
     public abstract class TestException : Exception
     {
         private const string HasNonDefaultMessageKey = "HasNonDefaultMessage";
-        private readonly bool hasNonDefaultMessageKey;
+        private bool hasNonDefaultMessageKey;
 
         /// <summary>
         /// Creates an exception.
@@ -80,6 +80,7 @@ namespace Gallio.Framework
         public bool HasNonDefaultMessage
         {
             get { return hasNonDefaultMessageKey; }
+            protected set { hasNonDefaultMessageKey = value; }
         }
 
         /// <summary>

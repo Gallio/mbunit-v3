@@ -28,7 +28,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void HasNoMetadata()
         {
-            MetadataMap metadata = NullDataItem.Instance.GetMetadata();
+            MetadataMap metadata = DataItemUtils.GetMetadata(NullDataItem.Instance);
             Assert.AreEqual(0, metadata.Count);
         }
 

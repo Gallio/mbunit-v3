@@ -24,7 +24,7 @@ namespace Gallio.Framework
     /// to its previous state prior to a context having been entered.
     /// </para>
     /// </summary>
-    public struct ContextCookie : IDisposable
+    public struct TestContextCookie : IDisposable
     {
         private IDisposable inner;
 
@@ -32,7 +32,7 @@ namespace Gallio.Framework
         /// Creates a context cookie with a given dispose action.
         /// </summary>
         /// <param name="inner">The inner disposable object</param>
-        internal ContextCookie(IDisposable inner)
+        internal TestContextCookie(IDisposable inner)
         {
             this.inner = inner;
         }

@@ -69,7 +69,7 @@ namespace MbUnit.Framework
                 for (int i = 0; i < numRepetitions; i++)
                 {
                     string name = String.Format("Repetition #{0}", i + 1);
-                    Context context = Step.RunStep(name, delegate
+                    TestContext context = Step.RunStep(name, delegate
                     {
                         inner(state);
                     });

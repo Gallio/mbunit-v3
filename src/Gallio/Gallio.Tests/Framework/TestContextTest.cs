@@ -13,15 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Gallio.Framework;
+using MbUnit.Framework;
 
-namespace System.Runtime.CompilerServices
+namespace Gallio.Tests.Framework
 {
-    /// <summary>
-    /// Internal implementation of the .Net 3.5 ExtensionAttribute.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Assembly)]
-    public sealed class ExtensionAttribute : Attribute
+    [TestFixture]
+    [TestsOn(typeof(TestContext))]
+    public class TestContextTest
     {
+        [Test]
+        public void CurrentTestHasCorrectTestName()
+        {
+            Assert.AreEqual("CurrentTestHasCorrectTestName", TestContext.CurrentContext.Test.Name);
+        }
     }
 }

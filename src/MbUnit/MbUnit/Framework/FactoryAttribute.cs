@@ -199,7 +199,7 @@ namespace MbUnit.Framework
             if (isStatic)
                 return null;
 
-            PatternTestInstanceState state = PatternTestInstanceState.FromContext(Context.CurrentContext);
+            PatternTestInstanceState state = PatternTestInstanceState.FromContext(TestContext.CurrentContext);
             if (state == null || state.FixtureInstance == null)
                 throw new InvalidOperationException(String.Format("Cannot invoke factory '{0}' because it is non-static and there is no fixture instance available for this test.", memberName));
 

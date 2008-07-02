@@ -15,6 +15,8 @@
 
 using System;
 using System.Runtime.Serialization;
+using Gallio.Framework;
+using Gallio.Model;
 
 namespace MbUnit.Framework
 {
@@ -22,7 +24,7 @@ namespace MbUnit.Framework
     /// The exception type used to signal MbUnit assertion failures.
     /// </summary>
     [Serializable]
-    public class AssertionException : Exception
+    public class AssertionException : TestException
     {
         /// <summary>
         /// Creates an exception.
@@ -58,6 +60,12 @@ namespace MbUnit.Framework
         protected AssertionException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+        }
+
+        /// <inheritdoc />
+        public override TestOutcome Outcome
+        {
+            get { return TestOutcome.Failed; }
         }
     }
 }

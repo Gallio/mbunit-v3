@@ -127,9 +127,9 @@ namespace Gallio.Tests.Framework.Data
 
             if (hasMetadata)
             {
-                Assert.AreEqual("1a", items[0].GetMetadata().GetValue("Id"));
-                Assert.AreEqual("2b", items[1].GetMetadata().GetValue("Id"));
-                Assert.AreEqual("3c", items[2].GetMetadata().GetValue("Id"));
+                Assert.AreEqual("1a", DataItemUtils.GetMetadata(items[0]).GetValue("Id"));
+                Assert.AreEqual("2b", DataItemUtils.GetMetadata(items[1]).GetValue("Id"));
+                Assert.AreEqual("3c", DataItemUtils.GetMetadata(items[2]).GetValue("Id"));
             }
         }
     }

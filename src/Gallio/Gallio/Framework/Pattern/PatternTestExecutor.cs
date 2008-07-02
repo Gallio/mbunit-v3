@@ -124,7 +124,7 @@ namespace Gallio.Framework.Pattern
                                 primaryTestStep.IsTestCase = false;
 
                             invisible = false;
-                            Context context = Context.PrepareContext(testCommand.StartStep(primaryTestStep), sandbox);
+                            TestContext context = TestContext.PrepareContext(testCommand.StartStep(primaryTestStep), sandbox);
                             testState.SetInContext(context);
 
                             outcome = outcome.CombineWith(DoInitializeTest(context, testState));
@@ -148,7 +148,7 @@ namespace Gallio.Framework.Pattern
             return outcome;
         }
 
-        private TestOutcome RunTestInstances(ITestCommand testCommand, Context primaryContext,
+        private TestOutcome RunTestInstances(ITestCommand testCommand, TestContext primaryContext,
             PatternTestState testState, bool reusePrimaryTestStep)
         {
             try
@@ -168,7 +168,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private TestOutcome RunTestInstance(ITestCommand testCommand, Context primaryContext,
+        private TestOutcome RunTestInstance(ITestCommand testCommand, TestContext primaryContext,
             PatternTestState testState, IDataItem bindingItem, bool reusePrimaryTestStep)
         {
             try
@@ -187,7 +187,7 @@ namespace Gallio.Framework.Pattern
                         testStep = testState.PrimaryTestStep;
                         invisible = false;
 
-                        MetadataMap map = bindingItem.GetMetadata();
+                        MetadataMap map = DataItemUtils.GetMetadata(bindingItem);
                         foreach (KeyValuePair<string, string> entry in map.Pairs)
                             primaryContext.AddMetadata(entry.Key, entry.Value);
                     }
@@ -207,9 +207,9 @@ namespace Gallio.Framework.Pattern
                     {
                         progressMonitor.SetStatus(testStep.Name);
 
-                        Context context = reusePrimaryTestStep
+                        TestContext context = reusePrimaryTestStep
                             ? primaryContext
-                            : Context.PrepareContext(testCommand.StartStep(testStep), primaryContext.Sandbox.CreateChild());
+                            : TestContext.PrepareContext(testCommand.StartStep(testStep), primaryContext.Sandbox.CreateChild());
                         testState.SetInContext(context);
                         testInstanceState.SetInContext(context);
                         invisible = false;
@@ -246,7 +246,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private TestOutcome RunTestInstanceWithContext(ITestCommand testCommand, Context context,
+        private TestOutcome RunTestInstanceWithContext(ITestCommand testCommand, TestContext context,
             PatternTestInstanceState testInstanceState)
         {
             try
@@ -310,7 +310,7 @@ namespace Gallio.Framework.Pattern
             return outcome.Generalize();
         }
 
-        private static void UpdateInterimOutcome(Context context, ref TestOutcome outcome, TestOutcome newOutcome)
+        private static void UpdateInterimOutcome(TestContext context, ref TestOutcome outcome, TestOutcome newOutcome)
         {
             outcome = outcome.CombineWith(newOutcome);
             context.SetInterimOutcome(outcome);
@@ -353,7 +353,7 @@ namespace Gallio.Framework.Pattern
             }, "Before Test");
         }
 
-        private static TestOutcome DoInitializeTest(Context context, PatternTestState testState)
+        private static TestOutcome DoInitializeTest(TestContext context, PatternTestState testState)
         {
             using (context.Enter())
             {
@@ -366,7 +366,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static TestOutcome DoDisposeTest(Context context, PatternTestState testState)
+        private static TestOutcome DoDisposeTest(TestContext context, PatternTestState testState)
         {
             using (context.Enter())
             {
@@ -409,7 +409,7 @@ namespace Gallio.Framework.Pattern
             }, "Before Test Instance");
         }
 
-        private static TestOutcome DoInitializeTestInstance(Context context, PatternTestInstanceState testInstanceState)
+        private static TestOutcome DoInitializeTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
             {
@@ -422,7 +422,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static TestOutcome DoSetUpTestInstance(Context context, PatternTestInstanceState testInstanceState)
+        private static TestOutcome DoSetUpTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
             {
@@ -435,7 +435,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static TestOutcome DoExecuteTestInstance(Context context, PatternTestInstanceState testInstanceState)
+        private static TestOutcome DoExecuteTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
             {
@@ -448,7 +448,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static TestOutcome DoTearDownTestInstance(Context context, PatternTestInstanceState testInstanceState)
+        private static TestOutcome DoTearDownTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
             {
@@ -461,7 +461,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static TestOutcome DoDisposeTestInstance(Context context, PatternTestInstanceState testInstanceState)
+        private static TestOutcome DoDisposeTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
             {

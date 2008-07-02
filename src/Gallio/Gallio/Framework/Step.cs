@@ -106,7 +106,7 @@ namespace Gallio.Framework
         /// </summary>
         public static TestStepInfo CurrentStep
         {
-            get { return Context.CurrentContext.TestStep; }
+            get { return TestContext.CurrentContext.TestStep; }
         }
 
         /// <summary>
@@ -131,9 +131,9 @@ namespace Gallio.Framework
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the action</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static Context RunStep(string name, Action action)
+        public static TestContext RunStep(string name, Action action)
         {
-            return Context.CurrentContext.RunStep(name, Reflector.GetCallingFunction(), action);
+            return TestContext.CurrentContext.RunStep(name, Reflector.GetCallingFunction(), action);
         }
 
         /// <summary>
@@ -158,14 +158,14 @@ namespace Gallio.Framework
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the action</exception>
-        public static Context RunStep(string name, ICodeElementInfo codeElement, Action action)
+        public static TestContext RunStep(string name, ICodeElementInfo codeElement, Action action)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            return Context.CurrentContext.RunStep(name, codeElement, action);
+            return TestContext.CurrentContext.RunStep(name, codeElement, action);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Gallio.Framework
         /// or <paramref name="metadataValue"/> is null</exception>
         public static void AddMetadata(string metadataKey, string metadataValue)
         {
-            Context.CurrentContext.AddMetadata(metadataKey, metadataValue);
+            TestContext.CurrentContext.AddMetadata(metadataKey, metadataValue);
         }
     }
 }

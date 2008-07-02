@@ -56,7 +56,7 @@ namespace Gallio.Framework.Pattern
         /// Prepares a newly created test state before its use.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of its containing test
+        /// This method runs in the <see cref="TestContext" /> of its containing test
         /// step because the test has not yet been started.
         /// </para>
         /// <para>
@@ -84,7 +84,7 @@ namespace Gallio.Framework.Pattern
         /// Initializes a test prior to the execution of its instances.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the <see cref="PatternTestState.PrimaryTestStep" />.
+        /// This method runs in the <see cref="TestContext" /> of the <see cref="PatternTestState.PrimaryTestStep" />.
         /// </para>
         /// <para>
         /// The following actions are typically performed during this phase:
@@ -111,7 +111,7 @@ namespace Gallio.Framework.Pattern
         /// Cleans up a test following the execution of its instances.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of the <see cref="PatternTestState.PrimaryTestStep" />.
+        /// This method runs in the <see cref="TestContext" /> of the <see cref="PatternTestState.PrimaryTestStep" />.
         /// </para>
         /// <para>
         /// The following actions are typically performed during this phase:
@@ -137,7 +137,7 @@ namespace Gallio.Framework.Pattern
         /// Cleans up a completed test state after its use.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of its containing test
+        /// This method runs in the <see cref="TestContext" /> of its containing test
         /// step because the test has terminated.
         /// </para>
         /// <para>
@@ -164,7 +164,7 @@ namespace Gallio.Framework.Pattern
         /// <see cref="IPatternTestInstanceHandler.BeforeTestInstance" /> actions have a chance to run.
         /// </para>
         /// <para>
-        /// This method runs in the <see cref="Context" /> of its containing test
+        /// This method runs in the <see cref="TestContext" /> of its containing test
         /// instance because the test has not yet been started.
         /// </para>
         /// <para>

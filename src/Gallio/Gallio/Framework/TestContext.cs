@@ -28,25 +28,25 @@ namespace Gallio.Framework
 {
     /// <summary>
     /// <para>
-    /// The context provides information about the environment in which
+    /// The test context provides information about the environment in which
     /// a test is executing.  A new context is created each time a test or
     /// test step begins execution.
     /// </para>
     /// <para>
-    /// Contexts are arranged in a hierarchy that corresponds to the order in which
+    /// Test contexts are arranged in a hierarchy that corresponds to the order in which
     /// the contexts were entered.  Thus the context for a test likely has as
     /// its parent the context for its containing test fixture.
     /// </para>
     /// <para>
-    /// Arbitrary user data can be associated with a context.  Furthermore, client
+    /// Arbitrary user data can be associated with a test context.  Furthermore, client
     /// code may attach <see cref="Finishing" /> event handlers to perform resource
     /// reclamation just prior to marking the test step as finished.
     /// </para>
     /// </summary>
     /// <seealso cref="Step"/>
-    public sealed class Context
+    public sealed class TestContext
     {
-        private static readonly Key<Context> GallioFrameworkContextKey = new Key<Context>("Gallio.Framework.Context");
+        private static readonly Key<TestContext> GallioFrameworkContextKey = new Key<TestContext>("Gallio.Framework.Context");
         private readonly ITestContext inner;
         private readonly Sandbox sandbox;
         private readonly LogWriter logWriter;
@@ -58,7 +58,7 @@ namespace Gallio.Framework
         /// <param name="inner">The context to wrap</param>
         /// <param name="sandbox">The sandbox to use, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
-        private Context(ITestContext inner, Sandbox sandbox)
+        private TestContext(ITestContext inner, Sandbox sandbox)
         {
             if (inner == null)
                 throw new ArgumentNullException("inner");
@@ -77,7 +77,7 @@ namespace Gallio.Framework
         /// Gets the context of the current thread, or null if there is no
         /// current context.
         /// </summary>
-        public static Context CurrentContext
+        public static TestContext CurrentContext
         {
             get { return WrapContext(ContextTracker.CurrentContext); }
         }
@@ -86,7 +86,7 @@ namespace Gallio.Framework
         /// Gets the global context of the environment, or null if there is no
         /// such context.
         /// </summary>
-        public static Context GlobalContext
+        public static TestContext GlobalContext
         {
             get { return WrapContext(ContextTracker.GlobalContext); }
         }
@@ -112,7 +112,7 @@ namespace Gallio.Framework
         /// <param name="context">The context to associate with the thread, or null to reset the
         /// thread's default context to inherit the <see cref="GlobalContext" /> once again</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
-        public static void SetThreadDefaultContext(Thread thread, Context context)
+        public static void SetThreadDefaultContext(Thread thread, TestContext context)
         {
             ContextTracker.SetThreadDefaultContext(thread, context.inner);
         }
@@ -137,7 +137,7 @@ namespace Gallio.Framework
         /// <param name="thread">The thread</param>
         /// <returns>The default context</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="thread"/> is null</exception>
-        public static Context GetThreadDefaultContext(Thread thread)
+        public static TestContext GetThreadDefaultContext(Thread thread)
         {
             return WrapContext(ContextTracker.GetThreadDefaultContext(thread));
         }
@@ -153,16 +153,16 @@ namespace Gallio.Framework
         /// <param name="context">The context to enter, or null to enter a scope
         /// without a context</param>
         /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
-        /// <seealso cref="ContextCookie"/>
-        public static ContextCookie EnterContext(Context context)
+        /// <seealso cref="TestContextCookie"/>
+        public static TestContextCookie EnterContext(TestContext context)
         {
-            return new ContextCookie(ContextTracker.EnterContext(context.inner));
+            return new TestContextCookie(ContextTracker.EnterContext(context.inner));
         }
 
         /// <summary>
         /// Gets the parent context or null if this context has no parent.
         /// </summary>
-        public Context Parent
+        public TestContext Parent
         {
             get { return WrapContext(inner.Parent); }
         }
@@ -315,7 +315,7 @@ namespace Gallio.Framework
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the action</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public Context RunStep(string name, Action action)
+        public TestContext RunStep(string name, Action action)
         {
             return RunStep(name, Reflector.GetCallingFunction(), action);
         }
@@ -342,14 +342,14 @@ namespace Gallio.Framework
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the action</exception>
-        public Context RunStep(string name, ICodeElementInfo codeElement, Action action)
+        public TestContext RunStep(string name, ICodeElementInfo codeElement, Action action)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            Context childContext = StartChildStep(name, codeElement);
+            TestContext childContext = StartChildStep(name, codeElement);
 
             childContext.LifecyclePhase = LifecyclePhases.Execute;
             TestOutcome outcome = childContext.Sandbox.Run(action, null);
@@ -399,8 +399,8 @@ namespace Gallio.Framework
         /// to restore the current thread's context to its previous value.
         /// </remarks>
         /// <returns>A cookie that can be used to restore the current thread's context to its previous value</returns>
-        /// <seealso cref="ContextCookie"/>
-        public ContextCookie Enter()
+        /// <seealso cref="TestContextCookie"/>
+        public TestContextCookie Enter()
         {
             return EnterContext(this);
         }
@@ -429,7 +429,7 @@ namespace Gallio.Framework
         /// <param name="codeElement">The code element, or null if none</param>
         /// <returns>The context of the child step</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        internal Context StartChildStep(string name, ICodeElementInfo codeElement)
+        internal TestContext StartChildStep(string name, ICodeElementInfo codeElement)
         {
             return PrepareContext(inner.StartChildStep(name, codeElement), Sandbox.CreateChild());
         }
@@ -444,16 +444,16 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Prepares a <see cref="Context" /> wrapper for the given inner context.
+        /// Prepares a <see cref="TestContext" /> wrapper for the given inner context.
         /// The wrapper is cached for the duration of the lifetime of the inner context.
         /// </summary>
         /// <param name="inner">The new inner context</param>
         /// <param name="sandbox">The sandbox to use, or null if none</param>
         /// <returns>The wrapper context</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner"/> is null</exception>
-        internal static Context PrepareContext(ITestContext inner, Sandbox sandbox)
+        internal static TestContext PrepareContext(ITestContext inner, Sandbox sandbox)
         {
-            Context context = new Context(inner, sandbox);
+            TestContext context = new TestContext(inner, sandbox);
             inner.Data.SetValue(GallioFrameworkContextKey, context);
             inner.Finishing += context.NotifyFinishing;
             return context;
@@ -465,7 +465,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <param name="inner">The context to wrap, or null if none</param>
         /// <returns>The wrapped context, or null if none</returns>
-        internal static Context WrapContext(ITestContext inner)
+        internal static TestContext WrapContext(ITestContext inner)
         {
             if (inner == null)
                 return null;
@@ -473,7 +473,7 @@ namespace Gallio.Framework
             UserDataCollection data = inner.Data;
             lock (data)
             {
-                Context context;
+                TestContext context;
                 if (! inner.Data.TryGetValue(GallioFrameworkContextKey, out context))
                     context = PrepareContext(inner, null);
 

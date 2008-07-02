@@ -61,7 +61,7 @@ namespace Gallio.Tests.Framework.Data
                 .WithMetadata(extraMetadata);
             Assert.AreEqual("abc", row.GetValue(new DataBinding(0, null)));
 
-            MetadataMap map = row.GetMetadata();
+            MetadataMap map = DataItemUtils.GetMetadata(row);
             Assert.AreEqual(4, map.Count);
             Assert.AreEqual("Frumious", map.GetValue("Description"));
             Assert.AreEqual("Bandersnatch", map.GetValue("Name"));

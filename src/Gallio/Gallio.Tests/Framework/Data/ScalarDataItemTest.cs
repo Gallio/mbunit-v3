@@ -39,7 +39,7 @@ namespace Gallio.Tests.Framework.Data
         public void HasNoMetadataIfNullSpecifiedInConstructor()
         {
             ScalarDataItem<object> item = new ScalarDataItem<object>(null, null, false);
-            MetadataMap metadata = item.GetMetadata();
+            MetadataMap metadata = DataItemUtils.GetMetadata(item);
             Assert.AreEqual(0, metadata.Count);
         }
 
@@ -50,7 +50,7 @@ namespace Gallio.Tests.Framework.Data
             metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
             ScalarDataItem<object> item = new ScalarDataItem<object>("abc", metadataPairs, false);
 
-            MetadataMap map = item.GetMetadata();
+            MetadataMap map = DataItemUtils.GetMetadata(item);
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }

@@ -40,7 +40,7 @@ namespace Gallio.Framework
         private static readonly TimeSpan DisposeTimeout = new TimeSpan(0, 0, 5);
 
         /// <summary>
-        /// Gets the task container for the current <see cref="Context" />.
+        /// Gets the task container for the current <see cref="TestContext" />.
         /// </summary>
         public static TaskContainer TaskContainer
         {
@@ -224,7 +224,7 @@ namespace Gallio.Framework
 
         private static TaskContainer GetTaskContainer()
         {
-            Context context = Context.CurrentContext;
+            TestContext context = TestContext.CurrentContext;
             if (context == null || context.IsFinished)
                 throw new InvalidOperationException("This operation cannot be performed because there is no current context.");
 
@@ -241,7 +241,7 @@ namespace Gallio.Framework
             }
         }
 
-        private static TaskContainer CreateContainer(Context context)
+        private static TaskContainer CreateContainer(TestContext context)
         {
             TaskContainer container = new TaskContainer();
 
@@ -251,7 +251,7 @@ namespace Gallio.Framework
             return container;
         }
 
-        private static void ReapTasks(Context context, TaskContainer container)
+        private static void ReapTasks(TestContext context, TaskContainer container)
         {
             container.AbortAll();
 
@@ -261,7 +261,7 @@ namespace Gallio.Framework
             }
         }
 
-        private static void RecordTaskResult(Context context, Task task)
+        private static void RecordTaskResult(TestContext context, Task task)
         {
             if (task.Result != null && task.Result.Exception != null)
             {
@@ -277,13 +277,13 @@ namespace Gallio.Framework
 
         private static bool FailureFlag
         {
-            get { return Context.CurrentContext.Data.HasValue(FailureFlagKey); }
+            get { return TestContext.CurrentContext.Data.HasValue(FailureFlagKey); }
             set
             {
                 if (value)
-                    Context.CurrentContext.Data.SetValue(FailureFlagKey, null);
+                    TestContext.CurrentContext.Data.SetValue(FailureFlagKey, null);
                 else
-                    Context.CurrentContext.Data.RemoveValue(FailureFlagKey);
+                    TestContext.CurrentContext.Data.RemoveValue(FailureFlagKey);
             }
         }
     }

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Gallio.Concurrency;
+using Gallio.Framework.Utilities;
 using Gallio.Model;
 using Gallio.Utilities;
 
@@ -330,7 +331,7 @@ namespace Gallio.Framework
                     stream.WriteLine(message);
 
                 if (ex != null)
-                    stream.WriteLine(ExceptionUtils.SafeToString(ex));
+                    stream.WriteLine(StackTraceFilter.FilterExceptionToString(ex));
             }
         }
 

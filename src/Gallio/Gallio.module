@@ -3,6 +3,7 @@
 
   <ItemGroup>
     <CSharpProject Include="Gallio\Gallio.csproj" />
+    <CSharpProject Include="Gallio35\Gallio35.csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host.csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests.csproj" />
     <CSharpProject Include="Gallio.Loader\Gallio.Loader.csproj" />
@@ -10,6 +11,7 @@
 
   <ItemGroup>
     <DocumentedAssembly Include="Gallio\bin\Gallio.dll" />
+    <DocumentedAssembly Include="Gallio35\bin\Gallio35.dll" />
     <DocumentedAssembly Include="Gallio.Loader\bin\Gallio.Loader.dll" />
   </ItemGroup>
 
@@ -24,6 +26,9 @@
 
     <Binary Include="Gallio.Loader\bin\Gallio.Loader.dll" />
     <Binary Include="Gallio.Loader\bin\Gallio.Loader.pdb" />
+    
+    <Binary Include="Gallio35\bin\Gallio35.dll" />
+    <Binary Include="Gallio35\bin\Gallio35.pdb" />
   </ItemGroup>
 
   <ItemGroup>

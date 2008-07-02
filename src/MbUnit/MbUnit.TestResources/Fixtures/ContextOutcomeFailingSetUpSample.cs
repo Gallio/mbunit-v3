@@ -25,13 +25,13 @@ namespace MbUnit.TestResources.Fixtures
     [TestFixture]
     public class ContextOutcomeFailingSetUpSample
     {
-        private Context previousContext;
+        private TestContext previousContext;
 
         [SetUp]
         public void SetUp()
         {
-            previousContext = Context.CurrentContext;
-            Log.WriteLine(Context.CurrentContext.Outcome);
+            previousContext = TestContext.CurrentContext;
+            Log.WriteLine(TestContext.CurrentContext.Outcome);
             Assert.Fail("Boom");
         }
 
@@ -44,7 +44,7 @@ namespace MbUnit.TestResources.Fixtures
         [TearDown]
         public void TearDown()
         {
-            Log.WriteLine(Context.CurrentContext.Outcome);
+            Log.WriteLine(TestContext.CurrentContext.Outcome);
         }
 
         [FixtureTearDown]
