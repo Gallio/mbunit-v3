@@ -143,7 +143,7 @@ Section "!Gallio" GallioSection
 	File "${TARGETDIR}\bin\Gallio.XmlSerializers.dll"
 	File "${TARGETDIR}\bin\Gallio35.dll"
 	File "${TARGETDIR}\bin\Gallio35.pdb"
-	File "${TARGETDIR}\bin\Gallio35.xml"
+	File /nonfatal "${TARGETDIR}\bin\Gallio35.xml"
 	File "${TARGETDIR}\bin\Gallio.plugin"
 	File "${TARGETDIR}\bin\Gallio.Host.exe"
 	File "${TARGETDIR}\bin\Gallio.Host.exe.config"
@@ -182,7 +182,7 @@ Section "!MbUnit v3 Framework" MbUnit3Section
 	File "${TARGETDIR}\bin\MbUnit.xml"
 	File "${TARGETDIR}\bin\MbUnit35.dll"
 	File "${TARGETDIR}\bin\MbUnit35.pdb"
-	File "${TARGETDIR}\bin\MbUnit35.xml"
+	File /nonfatal "${TARGETDIR}\bin\MbUnit35.xml"
 
 	; Create Shortcuts
 	SetOutPath "$SMPROGRAMS\${APPNAME}"
