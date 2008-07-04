@@ -18,8 +18,10 @@ using System;
 namespace MbUnit.Framework
 {
     /// <summary>
+    /// <para>
     /// Specifies the behavior that should take place when a <see cref="AssertionFailure" />
     /// is submitted to the <see cref="AssertionContext"/>.
+    /// </para>
     /// </summary>
     public enum AssertionFailureBehavior
     {

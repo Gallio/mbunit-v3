@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Gallio.Framework;
 
 namespace MbUnit.Framework
@@ -32,7 +31,7 @@ namespace MbUnit.Framework
     /// </para>
     /// </summary>
     [Serializable]
-    public sealed class AssertionFailure
+    public class AssertionFailure
     {
         private readonly string description;
         private readonly string message;
@@ -40,7 +39,10 @@ namespace MbUnit.Framework
         private readonly KeyValuePair<string, string>[] labeledValues;
         private readonly string[] exceptions;
 
-        internal AssertionFailure(string description, string message, string stackTrace,
+        /// <summary>
+        /// Creates an assertion failure object.
+        /// </summary>
+        protected internal AssertionFailure(string description, string message, string stackTrace,
             KeyValuePair<string, string>[] labeledValues, string[] exceptions)
         {
             this.description = description;
@@ -95,8 +97,12 @@ namespace MbUnit.Framework
         /// Logs the assertion failure.
         /// </summary>
         /// <param name="logWriter">The log writer</param>
-        public void Log(LogWriter logWriter)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logWriter"/> is null</exception>
+        public virtual void Log(LogWriter logWriter)
         {
+            if (logWriter == null)
+                throw new ArgumentNullException("logWriter");
+
             using (logWriter.Failures.BeginSection(description))
             {
                 WriteDetails(logWriter.Failures);
@@ -115,7 +121,11 @@ namespace MbUnit.Framework
             return writer.ToString();
         }
 
-        private void WriteDetails(TextWriter writer)
+        /// <summary>
+        /// Writes the details about the assertion failure to the text writer.
+        /// </summary>
+        /// <param name="writer">The text writer</param>
+        protected virtual void WriteDetails(TextWriter writer)
         {
             if (!string.IsNullOrEmpty(message))
                 writer.WriteLine(message);

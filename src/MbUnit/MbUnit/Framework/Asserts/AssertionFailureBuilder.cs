@@ -15,11 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Gallio.Collections;
 using Gallio.Framework.Formatting;
 using Gallio.Framework.Utilities;
-using Gallio.Utilities;
 
 namespace MbUnit.Framework
 {

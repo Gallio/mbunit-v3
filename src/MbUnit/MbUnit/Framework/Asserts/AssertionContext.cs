@@ -193,13 +193,12 @@ namespace MbUnit.Framework
                 }
                 catch (Exception ex)
                 {
-                    if (captureExceptionAsAssertionFailure)
-                    {
-                        SubmitFailure(
-                            new AssertionFailureBuilder("An exception occurred.")
-                                .AddException(ex)
-                                .ToAssertionFailure(), true);
-                    }
+                    if (!captureExceptionAsAssertionFailure)
+                        throw;
+
+                    SubmitFailure(new AssertionFailureBuilder("An exception occurred.")
+                        .AddException(ex)
+                        .ToAssertionFailure(), true);
                 }
 
                 return GetSavedFailuresAsArray();

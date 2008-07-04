@@ -9,6 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MbUnit.Tests</RootNamespace>
     <AssemblyName>MbUnit.Tests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,12 +43,16 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\ApartmentStateTest.cs" />
     <Compile Include="Framework\ArrayAssertTest.cs" />
+    <Compile Include="Framework\Asserts\AssertionContextTest.cs" />
     <Compile Include="Framework\AssertTest.cs" />
     <Compile Include="Framework\AssertWithReflectionTest.cs" />
     <Compile Include="Framework\AssertWithTypeTest.cs" />
@@ -96,6 +103,10 @@
     <ProjectReference Include="..\MbUnit.Compatibility\MbUnit.Compatibility.csproj">
       <Project>{F588B51F-786A-48E2-950E-636062F9C302}</Project>
       <Name>MbUnit.Compatibility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit35\MbUnit35.csproj">
+      <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
+      <Name>MbUnit35</Name>
     </ProjectReference>
     <ProjectReference Include="..\MbUnit\MbUnit.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
