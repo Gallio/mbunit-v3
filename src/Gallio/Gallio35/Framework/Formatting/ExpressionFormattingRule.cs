@@ -38,6 +38,7 @@ namespace Gallio.Framework.Formatting
     /// <list type="bullet">
     /// <item>Power operator: **, as in a ** b</item>
     /// <item>Quote expression: `...`, as in `a + b`</item>
+    /// <item>Constants: formatted recursively using other formatters, which may yield unusual syntax</item>
     /// </list>
     /// </para>
     /// </summary>
@@ -100,6 +101,13 @@ namespace Gallio.Framework.Formatting
                 result = new StringBuilder();
                 modeStack = new Stack<Pair<Precedence, CheckingMode>>();
                 modeStack.Push(new Pair<Precedence, CheckingMode>(Precedence.Lambda, CheckingMode.Reset));
+            }
+
+            public void VisitAndQuoteExpression(Expression expr)
+            {
+                result.Append('`');
+                Visit(expr);
+                result.Append('`');
             }
 
             public override string ToString()
@@ -242,9 +250,7 @@ namespace Gallio.Framework.Formatting
             {
                 BeginExpression(Precedence.Lambda, CheckingMode.Reset);
 
-                result.Append('`');
-                Visit(expr.Operand);
-                result.Append('`');
+                VisitAndQuoteExpression(expr.Operand);
 
                 EndExpression();
                 return Unit.Value;
@@ -293,14 +299,19 @@ namespace Gallio.Framework.Formatting
             {
                 BeginExpression(Precedence.Primary, CheckingMode.Inherit);
 
-                bool isType = expr.Value is Type;
-                if (isType)
-                    result.Append("typeof(");
-
-                result.Append(formatter.Format(expr.Value));
-
-                if (isType)
-                    result.Append(')');
+                if (expr.Value is Expression)
+                {
+                    VisitAndQuoteExpression((Expression)expr.Value);
+                }
+                else
+                {
+                    bool isType = expr.Value is Type;
+                    if (isType)
+                        result.Append("typeof(");
+                    result.Append(formatter.Format(expr.Value));
+                    if (isType)
+                        result.Append(')');
+                }
 
                 EndExpression();
                 return Unit.Value;

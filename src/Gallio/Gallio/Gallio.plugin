@@ -198,6 +198,12 @@
         <component id="Core.XPathNavigableFormattingRule"
                    service="Gallio.Framework.Formatting.IFormattingRule, Gallio"
                    type="Gallio.Framework.Formatting.XPathNavigableFormattingRule, Gallio" />
+        
+        <?if NET35?>
+          <component id="Core.ExpressionFormattingRule"
+                     service="Gallio.Framework.Formatting.IFormattingRule, Gallio"
+                     type="Gallio.Framework.Formatting.ExpressionFormattingRule, Gallio35" />
+        <?end?>
       </components>
     </runtime>
   </gallio>

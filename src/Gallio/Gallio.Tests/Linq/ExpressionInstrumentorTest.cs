@@ -202,7 +202,7 @@ namespace Gallio.Tests.Linq
             protected override T Intercept<T>(Expression expr, System.Func<T> continuation)
             {
                 T value = base.Intercept<T>(expr, continuation);
-                Log.WriteLine("{0}: {1}", new ExpressionFormattingRule().Format(expr, Formatter.Instance), Formatter.Instance.Format(value));
+                Log.WriteLine("{0}: {1}", Formatter.Instance.Format(expr), Formatter.Instance.Format(value));
 
                 trace.Add(expr.NodeType.ToString());
                 return value;

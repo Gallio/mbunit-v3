@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Framework.Asserts
+namespace MbUnit.Tests.Framework
 {
     [TestsOn(typeof(AssertEx))]
     public class AssertExTest
@@ -32,6 +32,8 @@ namespace MbUnit.Tests.Framework.Asserts
                 AssertEx.That(() => false);
                 int x = 4;
                 AssertEx.That(() => x == 5);
+                AssertEx.That(() => ! (x == 4));
+                AssertEx.That(() => !! (x == 5));
                 AssertEx.That(() => new StringBuilder("abc").ToString() == "abcd");
             });
         }

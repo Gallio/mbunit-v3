@@ -418,7 +418,7 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(type.GetProperties(PublicInstance)[0], 3);
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("Foo<System.Int32>(1): fieldValue=2, Property=3", spec.Format("Foo", RuntimeAccessor.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo<int>(1): fieldValue=2, Property=3", spec.Format("Foo", RuntimeAccessor.Instance.Resolve<IFormatter>()));
         }
 
         [Test]

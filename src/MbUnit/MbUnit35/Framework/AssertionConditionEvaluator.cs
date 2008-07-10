@@ -122,28 +122,29 @@ namespace MbUnit.Framework
                 while (IsTrivialExpression(trace.Expression) && trace.Children.Count == 1 && trace.Exception == null)
                     trace = trace.Children[0];
 
+                string expectedResultString = expectedResult ? "true" : "false";
+
                 AssertionFailureBuilder failureBuilder;
                 if (trace.Exception != null)
                 {
                     failureBuilder = new AssertionFailureBuilder(
-                        String.Format("Expected the condition to evaluate to {0} but it threw an exception.", expectedResult))
+                        String.Format("Expected the condition to evaluate to {0} but it threw an exception.", expectedResultString))
                         .AddException(trace.Exception);
                 }
                 else
                 {
                     failureBuilder = new AssertionFailureBuilder(
-                        String.Format("Expected the condition to evaluate to {0}.", expectedResult));
+                        String.Format("Expected the condition to evaluate to {0}.", expectedResultString));
                 }
 
                 failureBuilder.SetMessage(messageFormat, messageArgs);
-                failureBuilder.SetLabeledValue("Condition", FormatExpression(condition.Body));
+                failureBuilder.SetLabeledValue("Condition", condition.Body);
 
                 foreach (Trace child in trace.Children)
                 {
                     if (! (child.Expression is ConstantExpression))
                     {
-                        failureBuilder.SetLabeledValue(FormatExpression(child.Expression),
-                            Formatter.Instance.Format(child.Result));
+                        failureBuilder.SetLabeledValue(Formatter.Instance.Format(child.Expression), child.Result);
                     }
                 }
 
@@ -153,15 +154,6 @@ namespace MbUnit.Framework
             private static bool IsTrivialExpression(Expression expr)
             {
                 return expr == null || expr.NodeType == ExpressionType.Not;
-            }
-
-            private static string FormatExpression(Expression expr)
-            {
-                // FIXME: Should pull from the formatter but we need a new plugin
-                //        engine that can handle plugins with runtime prerequisites (for .Net 3.5)
-                //        -- Jeff.
-                //return Formatter.Instance.Format(expr);
-                return new ExpressionFormattingRule().Format(expr, Formatter.Instance);
             }
         }
 

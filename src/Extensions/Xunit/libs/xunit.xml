@@ -1890,8 +1890,7 @@
         <member name="M:Xunit.Sdk.MethodUtility.IsTest(Xunit.Sdk.IMethodInfo)">
             <summary>
             Determines whether a method is a test method. A test method must be decorated
-            with the <see cref="T:Xunit.FactAttribute"/> (or derived class), must not be static,
-            must not be abstract, and must not return a value.
+            with the <see cref="T:Xunit.FactAttribute"/> (or derived class) and must not be abstract.
             </summary>
             <param name="method">The method to be inspected</param>
             <returns>True if the method is a test method; false, otherwise</returns>

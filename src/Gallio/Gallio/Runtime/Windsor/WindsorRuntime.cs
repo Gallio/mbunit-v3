@@ -19,6 +19,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Xml;
 using Castle.Core.Resource;
 using Castle.Windsor;
@@ -49,6 +50,7 @@ namespace Gallio.Runtime.Windsor
         private readonly Dictionary<string, string> pluginPaths;
 
         private WindsorContainer container;
+        private string environmentFlag;
 
         /// <summary>
         /// Initializes the runtime.
@@ -268,7 +270,8 @@ namespace Gallio.Runtime.Windsor
             XmlElement rootElement;
             try
             {
-                XmlProcessor xmlProcessor = new XmlProcessor();
+                XmlProcessor xmlProcessor = new XmlProcessor(GetEnvironmentFlag());
+
                 rootElement = xmlProcessor.Process(resource) as XmlElement;
             }
             catch (Exception ex)
@@ -303,6 +306,24 @@ namespace Gallio.Runtime.Windsor
         private void RunContainerInstaller()
         {
             container.Installer.SetUp(container, container.Kernel.ConfigurationStore);
+        }
+
+        private string GetEnvironmentFlag()
+        {
+            if (environmentFlag == null)
+            {
+                try
+                {
+                    Assembly.Load("System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+                    environmentFlag = "NET35";
+                }
+                catch (FileNotFoundException)
+                {
+                    environmentFlag = "NET20";
+                }
+            }
+
+            return environmentFlag;
         }
 
         /// <summary>
