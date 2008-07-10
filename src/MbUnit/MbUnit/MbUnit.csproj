@@ -75,6 +75,7 @@
     <Compile Include="Framework\HeaderAttribute.cs" />
     <Compile Include="Framework\FixtureInitializerAttribute.cs" />
     <Compile Include="Framework\JoinAttribute.cs" />
+    <Compile Include="Framework\MultipleAssertsAttribute.cs" />
     <Compile Include="Framework\NameAttribute.cs" />
     <Compile Include="Framework\Asserts\AssertionContext.cs" />
     <Compile Include="Framework\Asserts\NewAssert.cs" />

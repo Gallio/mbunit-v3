@@ -130,12 +130,10 @@ namespace MbUnit.Framework
             if (!string.IsNullOrEmpty(message))
                 writer.WriteLine(message);
 
-            int maxLabelLength = ComputeMaxLabelLength();
             foreach (KeyValuePair<string, string> pair in labeledValues)
             {
                 writer.Write("* ");
                 writer.Write(pair.Key);
-                WriteSpaces(writer, maxLabelLength - pair.Key.Length);
                 writer.Write(": ");
                 writer.WriteLine(pair.Value);
             }
@@ -162,20 +160,6 @@ namespace MbUnit.Framework
 
             if (!stackTrace.EndsWith("\n"))
                 writer.WriteLine();
-        }
-
-        private int ComputeMaxLabelLength()
-        {
-            int maxLabelLength = 0;
-            foreach (KeyValuePair<string, string> pair in labeledValues)
-                maxLabelLength = Math.Max(maxLabelLength, pair.Key.Length);
-            return maxLabelLength;
-        }
-
-        private static void WriteSpaces(TextWriter writer, int count)
-        {
-            while (count-- > 0)
-                writer.Write(' ');
         }
     }
 }

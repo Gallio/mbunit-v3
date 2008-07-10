@@ -21,6 +21,7 @@ using Gallio.Framework.Data;
 using Gallio.Framework.Conversions;
 using Gallio.Framework.Formatting;
 using Gallio.Framework;
+using Gallio.Framework.Utilities;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
@@ -339,6 +340,7 @@ namespace Gallio.Framework.Pattern
         }
 
         #region Actions
+        [TestEntryPoint]
         private static TestOutcome DoBeforeTest(Sandbox sandbox, PatternTestState testState)
         {
             foreach (PatternTestParameter parameter in testState.Test.Parameters)
@@ -353,6 +355,7 @@ namespace Gallio.Framework.Pattern
             }, "Before Test");
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoInitializeTest(TestContext context, PatternTestState testState)
         {
             using (context.Enter())
@@ -366,6 +369,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoDisposeTest(TestContext context, PatternTestState testState)
         {
             using (context.Enter())
@@ -379,6 +383,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoAfterTest(Sandbox sandbox, PatternTestState testState)
         {
             return sandbox.Run(delegate
@@ -387,6 +392,7 @@ namespace Gallio.Framework.Pattern
             }, "After Test");
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoDecorateTestInstance(Sandbox sandbox, PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
         {
             return sandbox.Run(delegate
@@ -395,6 +401,7 @@ namespace Gallio.Framework.Pattern
             }, "Decorate Child Test");
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoBeforeTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
         {
             if (testInstanceState.TestState.SlotBindingAccessors.Count != 0)
@@ -409,6 +416,7 @@ namespace Gallio.Framework.Pattern
             }, "Before Test Instance");
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoInitializeTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -422,6 +430,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoSetUpTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -435,6 +444,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoExecuteTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -448,6 +458,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoTearDownTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -461,6 +472,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoDisposeTestInstance(TestContext context, PatternTestInstanceState testInstanceState)
         {
             using (context.Enter())
@@ -474,6 +486,7 @@ namespace Gallio.Framework.Pattern
             }
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoAfterTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
         {
             return sandbox.Run(delegate
@@ -482,6 +495,7 @@ namespace Gallio.Framework.Pattern
             }, "After Test Instance");
         }
 
+        [TestEntryPoint]
         private static TestOutcome DoDecorateChildTest(Sandbox sandbox, PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
         {
             return sandbox.Run(delegate

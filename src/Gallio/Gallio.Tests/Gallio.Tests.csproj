@@ -128,6 +128,7 @@
     <Compile Include="Framework\SilentTestExceptionTest.cs" />
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />
+    <Compile Include="Linq\ExpressionInstrumentorTest.cs" />
     <Compile Include="Framework\Utilities\StackTraceFilterTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
     <Compile Include="Model\BaseTestExplorerTest.cs" />

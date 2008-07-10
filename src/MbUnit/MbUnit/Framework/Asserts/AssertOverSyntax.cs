@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Gallio;
+using Gallio.Framework.Utilities;
 
 namespace MbUnit.Framework
 {
@@ -24,6 +25,7 @@ namespace MbUnit.Framework
     /// Defines methods used with the <see cref="NewAssert.Over" /> syntax for mapping
     /// assertions over complex data structures.
     /// </summary>
+    [TestFrameworkInternal]
     public sealed class AssertOverSyntax
     {
         internal static readonly AssertOverSyntax Instance = new AssertOverSyntax();
@@ -110,7 +112,7 @@ namespace MbUnit.Framework
                 if (actualEnumerator.MoveNext())
                 {
                     return new AssertionFailureBuilder(String.Format("The expected value sequence has {0} elements but the actual value sequence has {1}.",
-                        index, index + CountRemainingElements(actualEnumerator)))
+                        index, index + CountRemainingElements(actualEnumerator) + 1))
                         .SetMessage(messageFormat, messageArgs)
                         .SetExpectedValue(expectedValues)
                         .SetActualValue(actualValues)

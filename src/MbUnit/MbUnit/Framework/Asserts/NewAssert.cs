@@ -65,7 +65,7 @@ namespace MbUnit.Framework
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue)
         {
             AreEqual<T>(expectedValue, actualValue, (string) null, null);
@@ -79,7 +79,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, string messageFormat, params object[] messageArgs)
         {
             AreEqual<T>(expectedValue, actualValue, (Func<T, T, bool>) null, messageFormat, messageArgs);
@@ -92,7 +92,7 @@ namespace MbUnit.Framework
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, IEqualityComparer<T> comparer)
         {
             AreEqual<T>(expectedValue, actualValue, comparer, null, null);
@@ -107,7 +107,7 @@ namespace MbUnit.Framework
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AreEqual<T>(expectedValue, actualValue, comparer != null ? comparer.Equals : (Func<T, T, bool>) null, messageFormat, messageArgs);
@@ -120,7 +120,7 @@ namespace MbUnit.Framework
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, Func<T, T, bool> comparer)
         {
             AreEqual<T>(expectedValue, actualValue, comparer, null, null);
@@ -135,7 +135,7 @@ namespace MbUnit.Framework
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertHelper.Verify(delegate
@@ -162,7 +162,7 @@ namespace MbUnit.Framework
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotEqual<T>(T expectedValue, T actualValue)
         {
             AreNotEqual<T>(expectedValue, actualValue, (string)null, null);
@@ -176,7 +176,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotEqual<T>(T expectedValue, T actualValue, string messageFormat, params object[] messageArgs)
         {
             AreNotEqual<T>(expectedValue, actualValue, (Func<T, T, bool>)null, messageFormat, messageArgs);
@@ -189,7 +189,7 @@ namespace MbUnit.Framework
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotEqual<T>(T expectedValue, T actualValue, IEqualityComparer<T> comparer)
         {
             AreNotEqual<T>(expectedValue, actualValue, comparer, null, null);
@@ -204,7 +204,7 @@ namespace MbUnit.Framework
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotEqual<T>(T expectedValue, T actualValue, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AreNotEqual<T>(expectedValue, actualValue, comparer != null ? comparer.Equals : (Func<T, T, bool>)null, messageFormat, messageArgs);
@@ -217,7 +217,7 @@ namespace MbUnit.Framework
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotEqual<T>(T expectedValue, T actualValue, Func<T, T, bool> comparer)
         {
             AreNotEqual<T>(expectedValue, actualValue, comparer, null, null);
@@ -232,7 +232,7 @@ namespace MbUnit.Framework
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotEqual<T>(T expectedValue, T actualValue, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertHelper.Verify(delegate
@@ -259,7 +259,7 @@ namespace MbUnit.Framework
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreSame<T>(T expectedValue, T actualValue)
             where T : class
         {
@@ -274,7 +274,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreSame<T>(T expectedValue, T actualValue, string messageFormat, params object[] messageArgs)
             where T : class
         {
@@ -299,7 +299,7 @@ namespace MbUnit.Framework
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotSame<T>(T expectedValue, T actualValue)
             where T : class
         {
@@ -314,7 +314,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotSame<T>(T expectedValue, T actualValue, string messageFormat, params object[] messageArgs)
             where T : class
         {
@@ -337,7 +337,7 @@ namespace MbUnit.Framework
         /// Verifies that an actual value is true.
         /// </summary>
         /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsTrue(bool actualValue)
         {
             IsTrue(actualValue, null, null);
@@ -349,7 +349,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsTrue(bool actualValue, string messageFormat, params object[] messageArgs)
         {
             AssertHelper.Verify(delegate
@@ -370,7 +370,7 @@ namespace MbUnit.Framework
         /// Verifies that an actual value is false.
         /// </summary>
         /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsFalse(bool actualValue)
         {
             IsFalse(actualValue, null, null);
@@ -382,7 +382,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsFalse(bool actualValue, string messageFormat, params object[] messageArgs)
         {
             AssertHelper.Verify(delegate
@@ -403,7 +403,7 @@ namespace MbUnit.Framework
         /// Verifies that an actual value is null.
         /// </summary>
         /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsNull(object actualValue)
         {
             IsNull(actualValue, null, null);
@@ -415,7 +415,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsNull(object actualValue, string messageFormat, params object[] messageArgs)
         {
             AssertHelper.Verify(delegate
@@ -436,7 +436,7 @@ namespace MbUnit.Framework
         /// Verifies that an actual value is not null.
         /// </summary>
         /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsNotNull(object actualValue)
         {
             IsNotNull(actualValue, null, null);
@@ -448,7 +448,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsNotNull(object actualValue, string messageFormat, params object[] messageArgs)
         {
             AssertHelper.Verify(delegate
@@ -472,7 +472,7 @@ namespace MbUnit.Framework
         /// <param name="action">The action delegate to evaluate</param>
         /// <returns>The exception that was thrown</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static TExpectedException Throws<TExpectedException>(Action action)
             where TExpectedException : Exception
         {
@@ -488,7 +488,7 @@ namespace MbUnit.Framework
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <returns>The exception that was thrown</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static TExpectedException Throws<TExpectedException>(Action action, string messageFormat, params object[] messageArgs)
             where TExpectedException : Exception
         {
@@ -502,7 +502,7 @@ namespace MbUnit.Framework
         /// <param name="action">The action delegate to evaluate</param>
         /// <returns>The exception that was thrown</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static Exception Throws(Type expectedExceptionType, Action action)
         {
             return Throws(expectedExceptionType, action);
@@ -517,7 +517,7 @@ namespace MbUnit.Framework
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <returns>The exception that was thrown</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static Exception Throws(Type expectedExceptionType, Action action, string messageFormat, params object[] messageArgs)
         {
             Exception result = null;
@@ -557,7 +557,7 @@ namespace MbUnit.Framework
         /// </summary>
         /// <param name="action">The action delegate to evaluate</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void DoesNotThrow(Action action)
         {
             DoesNotThrow(action, null, null);
@@ -570,7 +570,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void DoesNotThrow(Action action, string messageFormat, params object[] messageArgs)
         {
             AssertHelper.Verify(delegate
@@ -590,68 +590,6 @@ namespace MbUnit.Framework
             });
         }
         #endregion
-
-#if false
-        #region That
-        /// <summary>
-        /// Verifies that a particular condition holds true.
-        /// </summary>
-        /// <param name="condition">The condition to assert</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="condition"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
-        public static void That(AssertionCondition condition)
-        {
-            That(condition, (string)null, null);
-        }
-
-        /// <summary>
-        /// Verifies that a particular condition holds true.
-        /// </summary>
-        /// <param name="condition">The condition to assert</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="condition"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
-        public static void That(AssertionCondition condition, string messageFormat, params object[] messageArgs)
-        {
-            if (condition == null)
-                throw new ArgumentNullException("condition");
-
-            XXX
-        }
-
-        /// <summary>
-        /// Verifies that an actual value satisfies a particular constraint.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="constraint">The constraint to evaluate</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="constraint"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
-        public static void That<T>(T actualValue, AssertionConstraint<T> constraint)
-        {
-            That(actualValue, constraint, null, null);
-        }
-
-        /// <summary>
-        /// Verifies that an actual value satisfies a particular constraint.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="constraint">The constraint to evaluate</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="constraint"/> is null</exception>
-        /// <exception cref="AssertionException">Thrown if the verification failed</exception>
-        public static void That<T>(T actualValue, AssertionConstraint<T> constraint, string messageFormat, params object[] messageArgs)
-        {
-            if (constraint == null)
-                throw new ArgumentNullException("constraint");
-
-            That(new ConstraintCondition<T>(actualValue, constraint), messageFormat, messageArgs);
-        }
-        #endregion
-#endif
 
         #region Multiple
         /// <summary>
