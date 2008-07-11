@@ -45,7 +45,7 @@ namespace Gallio.Framework.Utilities
     /// </summary>
     public static class StackTraceFilter
     {
-        private static readonly Regex StackFrameRegex = new Regex(@" (?<type>[^ ]+)\.(?<method>[^ .]+)\((?<params>[^)]*)\)",
+        private static readonly Regex StackFrameRegex = new Regex(@" (?<typeFullName>[^ ]+)\.(?<methodName>[^ .[(]+)(?<genericParams>(?:\[[^(]*\])?)\((?<methodParams>[^)]*)\)",
             RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
         /// <summary>
@@ -130,7 +130,8 @@ namespace Gallio.Framework.Utilities
                 Match match = StackFrameRegex.Match(line);
                 MethodBase method;
                 if (match.Success)
-                    method = FindMethod(match.Groups["type"].Value, match.Groups["method"].Value, match.Groups["params"].Value);
+                    method = FindMethod(match.Groups["typeFullName"].Value, match.Groups["methodName"].Value,
+                        match.Groups["genericParams"].Value, match.Groups["methodParams"].Value);
                 else
                     method = null;
 
@@ -184,7 +185,7 @@ namespace Gallio.Framework.Utilities
         }
 
         [ReflectionPermission(SecurityAction.Assert, MemberAccess=true)]
-        private static MethodBase FindMethod(string typeFullName, string methodName, string methodParams)
+        private static MethodBase FindMethod(string typeFullName, string methodName, string genericParams, string methodParams)
         {
             // Look for a probable match for the method in each loaded assembly.
             // TODO: Consider overloads.  (Shouldn't matter much for most filtering purposes

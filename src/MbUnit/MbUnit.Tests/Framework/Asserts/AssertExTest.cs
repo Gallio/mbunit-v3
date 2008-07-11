@@ -35,6 +35,13 @@ namespace MbUnit.Tests.Framework
                 AssertEx.That(() => ! (x == 4));
                 AssertEx.That(() => !! (x == 5));
                 AssertEx.That(() => new StringBuilder("abc").ToString() == "abcd");
+
+                int[] vals = new int[] { 0, 1, 1, 2, 3, 5, 8, 12, 20 };
+                for (int i = 2; i < vals.Length; i++)
+                    AssertEx.That(() => vals[i] == vals[i - 1] + vals[i - 2]);
+
+                for (int i = 0; i < 15; i++)
+                    AssertEx.That(() => vals[i] > 0);
             });
         }
     }

@@ -138,12 +138,6 @@ namespace MbUnit.Framework
                 writer.WriteLine(pair.Value);
             }
 
-            if (!string.IsNullOrEmpty(stackTrace))
-            {
-                writer.WriteLine();
-                WriteWithNoExcessNewLine(writer, stackTrace);
-            }
-
             if (exceptions.Length != 0)
             {
                 foreach (string exception in exceptions)
@@ -151,6 +145,12 @@ namespace MbUnit.Framework
                     writer.WriteLine();
                     WriteWithNoExcessNewLine(writer, exception);
                 }
+            }
+
+            if (!string.IsNullOrEmpty(stackTrace))
+            {
+                writer.WriteLine();
+                WriteWithNoExcessNewLine(writer, stackTrace);
             }
         }
 

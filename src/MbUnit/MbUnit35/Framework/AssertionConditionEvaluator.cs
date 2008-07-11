@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Gallio.Collections;
@@ -87,6 +88,7 @@ namespace MbUnit.Framework
                 }
             }
 
+            [DebuggerHidden, DebuggerStepThrough]
             protected override T Intercept<T>(Expression expr, System.Func<T> continuation)
             {
                 Trace parentTrace = currentTrace;
@@ -140,15 +142,30 @@ namespace MbUnit.Framework
                 failureBuilder.SetMessage(messageFormat, messageArgs);
                 failureBuilder.SetLabeledValue("Condition", condition.Body);
 
-                foreach (Trace child in trace.Children)
-                {
-                    if (! (child.Expression is ConstantExpression))
-                    {
-                        failureBuilder.SetLabeledValue(Formatter.Instance.Format(child.Expression), child.Result);
-                    }
-                }
+                var labeledTraces = new List<Trace>();
+                AddLabeledTraces(labeledTraces, trace, true);
+                foreach (Trace labeledTrace in labeledTraces)
+                    failureBuilder.SetLabeledValue(Formatter.Instance.Format(labeledTrace.Expression), labeledTrace.Result);
 
                 return failureBuilder.ToAssertionFailure();
+            }
+
+            private static void AddLabeledTraces(List<Trace> labeledTraces, Trace parent, bool root)
+            {
+                foreach (Trace child in parent.Children)
+                {
+                    Expression expr = child.Expression;
+                    if (!(expr is ConstantExpression))
+                    {
+                        if (root || expr.IsCapturedVariableOrParameter())
+                        {
+                            if (! labeledTraces.Contains(child))
+                                labeledTraces.Add(child);
+                        }
+                    }
+
+                    AddLabeledTraces(labeledTraces, child, false);
+                }
             }
 
             private static bool IsTrivialExpression(Expression expr)

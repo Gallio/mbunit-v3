@@ -125,6 +125,25 @@ namespace Gallio.Tests.Framework.Utilities
                 Assert.IsFalse(trace.Contains("ThrowInternal"));
             }
 
+            [Test]
+            public void OmitsInternalGenericMethods()
+            {
+                string trace = null;
+                try
+                {
+                    ThrowInternalGeneric<int>();
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    trace = StackTraceFilter.FilterExceptionToString(ex);
+                    Log.WriteLine(trace);
+                }
+
+                Assert.Contains(trace, "OmitsInternalGenericMethods");
+                Assert.IsFalse(trace.Contains("ThrowInternalGeneric"));
+            }
+
             [Test, TestEntryPoint]
             public void CutsOffAtTestEntryPoint()
             {
@@ -161,6 +180,13 @@ namespace Gallio.Tests.Framework.Utilities
             [MethodImpl(MethodImplOptions.NoInlining)]
             [TestFrameworkInternal]
             private void ThrowInternal()
+            {
+                throw new InvalidOperationException("Boom");
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            [TestFrameworkInternal]
+            private void ThrowInternalGeneric<T>()
             {
                 throw new InvalidOperationException("Boom");
             }

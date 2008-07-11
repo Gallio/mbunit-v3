@@ -108,6 +108,7 @@
     <Compile Include="Framework\Formatting\ByteFormattingRuleTest.cs" />
     <Compile Include="Framework\Formatting\CharFormattingRuleTest.cs" />
     <Compile Include="Framework\Formatting\ConvertToStringFormattingRuleTest.cs" />
+    <Compile Include="Framework\Formatting\ExpressionFormattingRuleTest.cs" />
     <Compile Include="Framework\Formatting\DateTimeFormattingRuleTest.cs" />
     <Compile Include="Framework\Formatting\DBNullFormattingRuleTest.cs" />
     <Compile Include="Framework\Formatting\DecimalFormattingRuleTest.cs" />

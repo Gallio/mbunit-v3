@@ -356,7 +356,7 @@ namespace Gallio.Framework.Formatting
             {
                 BeginExpression(Precedence.Primary, CheckingMode.Inherit);
 
-                if (! IsCapturedVariable(expr))
+                if (! expr.IsCapturedVariable())
                     AppendMemberAccess(expr.Expression, expr.Member);
                 else
                     result.Append(expr.Member.Name);
@@ -587,12 +587,6 @@ namespace Gallio.Framework.Formatting
             private static bool AreParenthesesNeeded(Precedence outerPrecedence, Precedence innerPrecedence)
             {
                 return innerPrecedence > outerPrecedence;
-            }
-
-            private static bool IsCapturedVariable(MemberExpression expr)
-            {
-                return expr.Expression is ConstantExpression
-                    && expr.Member.DeclaringType.Name.StartsWith("<");
             }
         }
     }

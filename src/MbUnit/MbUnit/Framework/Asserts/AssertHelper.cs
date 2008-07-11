@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using Gallio;
 using Gallio.Framework;
@@ -25,6 +24,7 @@ namespace MbUnit.Framework
     /// <summary>
     /// Provides utilities to assist with the implementation of new asserts.
     /// </summary>
+    [TestFrameworkInternal]
     public abstract class AssertHelper
     {
         /// <summary>
@@ -53,7 +53,6 @@ namespace MbUnit.Framework
         /// </remarks>
         /// <param name="assertionFunc">The assertion function to evaluate</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assertionFunc"/> is null</exception>
-        [TestFrameworkInternal]
         public static void Verify(Func<AssertionFailure> assertionFunc)
         {
             if (assertionFunc == null)
@@ -82,21 +81,46 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// <para>
         /// Performs an action and returns an array containing the assertion failures
         /// that were observed within the block.  If the block throws an exception, it
         /// is reified as an assertion failure.
+        /// </para>
+        /// <para>
+        /// This method is useful for composing assertions.
+        /// </para>
+        /// <para>
+        /// The assertion failure behavior while the action runs is <see cref="AssertionFailureBehavior.LogAndThrow" />.
+        /// </para>
         /// </summary>
         /// <param name="action">The action to invoke</param>
         /// <returns>The array of failures, may be empty if none</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        [TestFrameworkInternal]
         public static AssertionFailure[] Eval(Action action)
+        {
+            return Eval(action, AssertionFailureBehavior.LogAndThrow);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Performs an action and returns an array containing the assertion failures
+        /// that were observed within the block.  If the block throws an exception, it
+        /// is reified as an assertion failure.
+        /// </para>
+        /// <para>
+        /// This method is useful for composing assertions.
+        /// </para>
+        /// </summary>
+        /// <param name="action">The action to invoke</param>
+        /// <param name="assertionFailureBehavior">The assertion failure behavior to use while the action runs</param>
+        /// <returns>The array of failures, may be empty if none</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        public static AssertionFailure[] Eval(Action action, AssertionFailureBehavior assertionFailureBehavior)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            AssertionFailureBehavior behavior = AssertionContext.CurrentContext.AssertionFailureBehavior;
-            return AssertionContext.CurrentContext.CaptureFailures(action, behavior, true);
+            return AssertionContext.CurrentContext.CaptureFailures(action, assertionFailureBehavior, true);
         }
     }
 }

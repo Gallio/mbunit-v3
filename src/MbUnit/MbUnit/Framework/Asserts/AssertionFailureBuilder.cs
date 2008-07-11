@@ -188,6 +188,8 @@ namespace MbUnit.Framework
                     labeledValues.RemoveAt(i);
                     break;
                 }
+
+                i += 1;
             }
 
             labeledValues.Add(sortOrder, new KeyValuePair<string,string>(label, formattedValue));

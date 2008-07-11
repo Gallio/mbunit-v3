@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\Formatting\ExpressionFormattingRule.cs" />
+    <Compile Include="Framework\Formatting\FormatterExtensions.cs" />
     <Compile Include="Linq\ActionExtensions.cs" />
     <Compile Include="Linq\ExpressionExtensions.cs" />
     <Compile Include="Linq\ExpressionInstrumentor.cs" />

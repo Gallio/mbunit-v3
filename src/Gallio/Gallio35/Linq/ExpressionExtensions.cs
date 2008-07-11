@@ -52,5 +52,37 @@ namespace Gallio.Linq
             return Expression.Lambda<System.Func<TResult>>(
                 Expression.Invoke(expr, Expression.Constant(arg1), Expression.Constant(arg2)));
         }
+
+        /// <summary>
+        /// Returns true if the expression represents a captured variable within a closure.
+        /// </summary>
+        /// <param name="expr">The expression</param>
+        /// <returns>True if the expression represents a captured variable</returns>
+        public static bool IsCapturedVariable(this Expression expr)
+        {
+            MemberExpression memberExpr = expr as MemberExpression;
+            return memberExpr != null && IsCapturedVariable(memberExpr);
+        }
+
+        /// <summary>
+        /// Returns true if the expression represents a captured variable within a closure.
+        /// </summary>
+        /// <param name="expr">The expression</param>
+        /// <returns>True if the expression represents a captured variable</returns>
+        public static bool IsCapturedVariable(this MemberExpression expr)
+        {
+            return expr.Expression is ConstantExpression
+                && expr.Member.DeclaringType.Name.StartsWith("<");
+        }
+
+        /// <summary>
+        /// Returns true if the expression represents a captured variable or a parameter.
+        /// </summary>
+        /// <param name="expr">The expression</param>
+        /// <returns>True if the expression represents a captured variable or a parameter</returns>
+        public static bool IsCapturedVariableOrParameter(this Expression expr)
+        {
+            return expr is ParameterExpression || IsCapturedVariable(expr);
+        }
     }
 }

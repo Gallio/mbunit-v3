@@ -28,6 +28,12 @@ namespace Gallio.Tests.Linq
     [TestsOn(typeof(ExpressionInstrumentor))]
     public class ExpressionInstrumentorTest
     {
+        [Test, ExpectedArgumentNullException]
+        public void RewriteThrowsIfArgumentIsNull()
+        {
+            new ExpressionTracer().Rewrite<Expression<Func<int>>>(null);
+        }
+
         [Test]
         public void AllExpressionTypes()
         {
@@ -104,8 +110,12 @@ namespace Gallio.Tests.Linq
                     new[] { "Constant", "Constant", "Constant", "ListInit", "MemberAccess" });
 
                 // member init
-                AssertTrace(() => new MemberInitType { Bar = 42 }.Bar, 42,
-                    new[] { "Constant", "MemberInit", "MemberAccess" });
+                AssertTrace(() => new MemberInitType { Bar = 42, List = { 1, 2, 3 }, Aggregate = { Foo = 42 } }.Bar, 42,
+                    new[] { "Constant", "Constant", "Constant", "Constant", "Constant", "MemberInit", "MemberAccess" });
+                AssertTrace(() => new MemberInitType { Bar = 42, List = { 1, 2, 3 }, Aggregate = { Foo = 42 } }.List.Count, 3,
+                    new[] { "Constant", "Constant", "Constant", "Constant", "Constant", "MemberInit", "MemberAccess", "MemberAccess" });
+                AssertTrace(() => new MemberInitType { Bar = 42, List = { 1, 2, 3 }, Aggregate = { Foo = 42 } }.Aggregate.Foo, 42,
+                    new[] { "Constant", "Constant", "Constant", "Constant", "Constant", "MemberInit", "MemberAccess", "MemberAccess" });
                 
                 // member access (done elsewhere)
 
@@ -173,12 +183,17 @@ namespace Gallio.Tests.Linq
         private static void AssertTrace<T>(Expression<System.Func<T>> expr,
             T expectedValue, string[] expectedTrace)
         {
-            var tracer = new ExpressionTracer();
-            T actualValue = tracer.Compile(expr)();
+            using (Log.BeginSection(expr.Format()))
+            {
+                var tracer = new ExpressionTracer();
 
-            NewAssert.AreEqual(expectedValue, actualValue, "Expression result should be equal.");
-            NewAssert.Over.Sequence(expectedTrace, tracer.Trace, NewAssert.AreEqual,
-                "Expression trace should be equal.");
+                Log.WriteLine("Rewritten expression: {0}", tracer.Rewrite(expr).Format());
+                T actualValue = tracer.Compile(expr)();
+
+                NewAssert.AreEqual(expectedValue, actualValue, "Expression result should be equal.");
+                NewAssert.Over.Sequence(expectedTrace, tracer.Trace, NewAssert.AreEqual,
+                    "Expression trace should be equal.");
+            }
         }
 
         private static void AssertTrace(Expression<System.Action> expr, string[] expectedTrace)
@@ -220,6 +235,13 @@ namespace Gallio.Tests.Linq
         private class MemberInitType
         {
             public int Bar = 0;
+            public AggregateType Aggregate = new AggregateType();
+            public List<int> List = new List<int>();
+        }
+
+        private class AggregateType
+        {
+            public int Foo = 0;
         }
     }
 }
