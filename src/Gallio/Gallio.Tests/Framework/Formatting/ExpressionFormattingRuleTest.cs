@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gallio.Framework.Formatting;
+using Gallio.Framework.Utilities;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Formatting
@@ -24,9 +26,10 @@ namespace Gallio.Tests.Framework.Formatting
     [TestsOn(typeof(ExpressionFormattingRule))]
     public class ExpressionFormattingRuleTest : BaseFormattingRuleTest<ExpressionFormattingRule>
     {
-#if false 
+        // Note: The formatting of constants in the expressions depends on other formatters.
+        //       Since they are not registered here, they appear as bracketed object values, eg. {5}.
         [Test]
-        public void AllExpressionTypes()
+        public void SimpleExpressions()
         {
             NewAssert.Multiple(() =>
             {
@@ -35,138 +38,116 @@ namespace Gallio.Tests.Framework.Formatting
                 UnaryPlusType z = new UnaryPlusType();
 
                 // binary operators
-                AssertTrace(() => x + y, 7,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "Add"});
-                AssertTrace(() => checked(x + y), 7,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "AddChecked"});
-                AssertTrace(() => x & y, 0,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "And"});
-                AssertTrace(() => true && x == 5, true,
-                    new[] {"Constant", "Constant", "MemberAccess", "Constant", "Equal", "AndAlso"});
-                AssertTrace(() => arr[0], 0,
-                    new[] {"Constant", "MemberAccess", "Constant", "ArrayIndex"});
-                AssertTrace(() => arr ?? arr, arr,
-                    new[] {"Constant", "MemberAccess", "Coalesce"});
-                AssertTrace(() => x/y, 2,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "Divide"});
-                AssertTrace(() => x == y, false,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "Equal"});
-                AssertTrace(() => x ^ y, 7,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "ExclusiveOr"});
-                AssertTrace(() => x > y, true,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "GreaterThan"});
-                AssertTrace(() => x >= y, true,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "GreaterThanOrEqual"});
-                AssertTrace(() => ((Func<int>) (() => 5))(), 5,
-                    new[] {"Lambda", "Convert", "Invoke"});
-                AssertTrace(() => x << y, 20,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "LeftShift"});
-                AssertTrace(() => x < y, false,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "LessThan"});
-                AssertTrace(() => x <= y, false,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "LessThanOrEqual"});
-                AssertTrace(() => x%y, 1,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "Modulo"});
-                AssertTrace(() => x*y, 10,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "Multiply"});
-                AssertTrace(() => checked(x*y), 10,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "MultiplyChecked"});
-                AssertTrace(() => x != y, true,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "NotEqual"});
-                AssertTrace(() => x | y, 7,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "Or"});
-                AssertTrace(() => false || x == 5, true,
-                    new[] {"Constant", "Constant", "MemberAccess", "Constant", "Equal", "OrElse"});
-                AssertTrace(
-                    Expression.Lambda<System.Func<double>>(Expression.Power(Expression.Constant(3.0),
-                        Expression.Constant(4.0))), 81.0,
-                    new[] {"Constant", "Constant", "Power"});
-                AssertTrace(() => x >> y, 1,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "RightShift"});
-                AssertTrace(() => x - y, 3,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "Subtract"});
-                AssertTrace(() => checked(x - y), 3,
-                    new[] {"Constant", "MemberAccess", "Constant", "MemberAccess", "SubtractChecked"});
+                AssertFormat(() => x + y, "() => x + y");
+                AssertFormat(() => checked(x + y), "() => checked(x + y)");
+                AssertFormat(() => x & y, "() => x & y");
+                AssertFormat(() => true && x == 5, "() => {True} && x == {5}");
+                AssertFormat(() => arr[0], "() => arr[{0}]");
+                AssertFormat(() => arr ?? arr, "() => arr ?? arr");
+                AssertFormat(() => x / y, "() => x / y");
+                AssertFormat(() => x == y, "() => x == y");
+                AssertFormat(() => x ^ y, "() => x ^ y");
+                AssertFormat(() => x > y, "() => x > y");
+                AssertFormat(() => x >= y, "() => x >= y");
+                AssertFormat(() => ((Func<int>) (() => 5))(), "() => (({Gallio.Func`1[System.Int32]}) (() => {5}))()");
+                AssertFormat(() => x << y, "() => x << y");
+                AssertFormat(() => x < y, "() => x < y");
+                AssertFormat(() => x <= y, "() => x <= y");
+                AssertFormat(() => x % y, "() => x % y");
+                AssertFormat(() => x * y, "() => x * y");
+                AssertFormat(() => checked(x * y), "() => checked(x * y)");
+                AssertFormat(() => x != y, "() => x != y");
+                AssertFormat(() => x | y, "() => x | y");
+                AssertFormat(() => false || x == 5, "() => {False} || x == {5}");
+                AssertFormat(Expression.Lambda<System.Func<double>>(Expression.Power(Expression.Constant(3.0),
+                        Expression.Constant(4.0))), "() => {3} ** {4}");
+                AssertFormat(() => x >> y, "() => x >> y");
+                AssertFormat(() => x - y, "() => x - y");
+                AssertFormat(() => checked(x - y), "() => checked(x - y)");
 
                 // call
-                AssertTrace(() => arr.ToString(), arr.ToString(),
-                    new[] {"Constant", "MemberAccess", "Call"});
+                AssertFormat(() => arr.ToString(), "() => arr.ToString()");
 
                 // conditional
-                AssertTrace(() => x == 3 ? 1 : 2, 2,
-                    new[] {"Constant", "MemberAccess", "Constant", "Equal", "Constant", "Conditional"});
+                AssertFormat(() => x == 3 ? 1 : 2, "() => x == {3} ? {1} : {2}");
 
                 // lambda (done elsewhere)
 
                 // list init
-                AssertTrace(() => new List<int> {1, 2, 3}.Count, 3,
-                    new[] {"Constant", "Constant", "Constant", "ListInit", "MemberAccess"});
+                AssertFormat(() => new List<int> {1, 2, 3}, "() => new List`1() { {1}, {2}, {3} }");
 
                 // member init
-                AssertTrace(() => new MemberInitType {Bar = 42, List = {1, 2, 3}, Aggregate = {Foo = 42}}.Bar, 42,
-                    new[] {"Constant", "Constant", "Constant", "Constant", "Constant", "MemberInit", "MemberAccess"});
-                AssertTrace(() => new MemberInitType {Bar = 42, List = {1, 2, 3}, Aggregate = {Foo = 42}}.List.Count, 3,
-                    new[]
-                        {
-                            "Constant", "Constant", "Constant", "Constant", "Constant", "MemberInit", "MemberAccess",
-                            "MemberAccess"
-                        });
-                AssertTrace(
-                    () => new MemberInitType {Bar = 42, List = {1, 2, 3}, Aggregate = {Foo = 42}}.Aggregate.Foo, 42,
-                    new[]
-                        {
-                            "Constant", "Constant", "Constant", "Constant", "Constant", "MemberInit", "MemberAccess",
-                            "MemberAccess"
-                        });
+                AssertFormat(() => new MemberInitType {Bar = 42, List = {1, 2, 3}, Aggregate = {Foo = 42}},
+                    "() => new MemberInitType() { Bar = {42}, List = { {1}, {2}, {3} }, Aggregate = { Foo = {42} } }");
 
                 // member access (done elsewhere)
 
                 // new
-                AssertTrace(() => new MemberInitType().Bar, 0,
-                    new[] {"New", "MemberAccess"});
+                AssertFormat(() => new MemberInitType(), "() => new MemberInitType()");
 
                 // new array bounds
-                AssertTrace(() => new int[3].Length, 3,
-                    new[] {"Constant", "NewArrayBounds", "ArrayLength"});
+                AssertFormat(() => new int[3], "() => new {System.Int32}[{3}]");
 
                 // new array init
-                AssertTrace(() => new int[] {1, 2, 3}.Length, 3,
-                    new[] {"Constant", "Constant", "Constant", "NewArrayInit", "ArrayLength"});
+                AssertFormat(() => new int[] {1, 2, 3}, "() => new {System.Int32}[] { {1}, {2}, {3} }");
 
                 // parameter
-                AssertTrace(i => i == 2, 2, true,
-                    new[] {"Parameter", "Constant", "Equal"});
+                AssertFormat((int i) => i == 2, "i => i == {2}");
 
                 // quote
-                AssertTrace(
-                    () => AssertTrace(() => x == 5, true, new[] {"Constant", "MemberAccess", "Constant", "Equal"}),
-                    new[] {"Quote", "Constant", "Constant", "Constant", "Constant", "Constant", "NewArrayInit", "Call"});
+                AssertFormat(() => AssertFormat(() => x == 5, "() => x == {5}"),
+                    "() => {Gallio.Tests.Framework.Formatting.ExpressionFormattingRuleTest}.AssertFormat((() => x == {5}), {() => x == {5}})");
 
                 // type binary
-                AssertTrace(() => ((object) x) is int, true,
-                    new[] {"Constant", "MemberAccess", "Convert", "TypeIs"});
+                AssertFormat(() => (object) x is int, "() => ({System.Object}) x is {System.Int32}");
 
                 // unary
-                AssertTrace(() => arr.Length, 1,
-                    new[] {"Constant", "MemberAccess", "ArrayLength"});
-                AssertTrace(() => (double) x, x,
-                    new[] {"Constant", "MemberAccess", "Convert"});
-                AssertTrace(() => checked((double) x), x,
-                    new[] {"Constant", "MemberAccess", "ConvertChecked"});
-                AssertTrace(() => -x, -x,
-                    new[] {"Constant", "MemberAccess", "Negate"});
-                AssertTrace(() => checked(-x), -x,
-                    new[] {"Constant", "MemberAccess", "NegateChecked"});
-                AssertTrace(() => ~x, ~x,
-                    new[] {"Constant", "MemberAccess", "Not"});
-                AssertTrace(() => x as object, x,
-                    new[] {"Constant", "MemberAccess", "TypeAs"});
-                AssertTrace(() => +z, z,
-                    new[] {"Constant", "MemberAccess", "UnaryPlus"});
+                AssertFormat(() => arr.Length, "() => arr.Length");
+                AssertFormat(() => (double) x, "() => ({System.Double}) x");
+                AssertFormat(() => checked((double)x), "() => checked(({System.Double}) x)");
+                AssertFormat(() => -x, "() => - x");
+                AssertFormat(() => checked(-x), "() => checked(- x)");
+                AssertFormat(() => ~x, "() => ~ x");
+                AssertFormat(() => x as object, "() => x as {System.Object}");
+                AssertFormat(() => +z, "() => + z");
             });
         }
 
-        private static void AssertFormat<T>(Expression<System.Func<T>> expr, string expectedFormat)
+        [Test]
+        public void Precedence()
+        {
+            int x = 5, y = 2;
+            AssertFormat(() => x + y * x, "() => x + y * x");
+            AssertFormat(() => (x + y) * x, "() => (x + y) * x");
+            AssertFormat(() => y * x + y, "() => y * x + y");
+            AssertFormat(() => y * (x + y), "() => y * (x + y)");
+        }
+
+        [Test]
+        public void CheckedAndUnchecked()
+        {
+            int x = 5, y = 2;
+            AssertFormat(() => checked(x + y + x), "() => checked(x + y + x)");
+            AssertFormat(() => checked(x + unchecked(y + x)), "() => checked(x + unchecked(y + x))");
+            AssertFormat(() => checked(x + unchecked(y + x) * x), "() => checked(x + unchecked(y + x) * x)");
+            AssertFormat(() => checked(x + unchecked(y + x) * x) + y, "() => checked(x + unchecked(y + x) * x) + y");
+            AssertFormat(() => checked(x + unchecked(y + checked(x * x)) * x) + y, "() => checked(x + unchecked(y + checked(x * x)) * x) + y");
+        }
+
+        [TestFrameworkInternal]
+        private void AssertFormat(Expression<System.Action> expr, string expectedFormat)
+        {
+            NewAssert.AreEqual(expectedFormat, Formatter.Format(expr));
+        }
+
+        [TestFrameworkInternal]
+        private void AssertFormat<T>(Expression<System.Func<T>> expr, string expectedFormat)
+        {
+            NewAssert.AreEqual(expectedFormat, Formatter.Format(expr));
+        }
+
+        [TestFrameworkInternal]
+        private void AssertFormat<TArg, TResult>(Expression<System.Func<TArg, TResult>> expr, string expectedFormat)
         {
             NewAssert.AreEqual(expectedFormat, Formatter.Format(expr));
         }
@@ -179,6 +160,25 @@ namespace Gallio.Tests.Framework.Formatting
         {
             Assert.AreEqual(expectedPriority, FormattingRule.GetPriority(type));
         }
-#endif
+
+        private struct UnaryPlusType
+        {
+            public static UnaryPlusType operator +(UnaryPlusType x)
+            {
+                return x;
+            }
+        }
+
+        private class MemberInitType
+        {
+            public int Bar = 0;
+            public AggregateType Aggregate = new AggregateType();
+            public List<int> List = new List<int>();
+        }
+
+        private class AggregateType
+        {
+            public int Foo = 0;
+        }
     }
 }

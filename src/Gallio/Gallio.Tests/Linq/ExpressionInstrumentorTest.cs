@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Gallio.Framework;
 using Gallio.Framework.Formatting;
+using Gallio.Framework.Utilities;
 using Gallio.Linq;
 using MbUnit.Framework;
 
@@ -169,6 +170,7 @@ namespace Gallio.Tests.Linq
             AssertTrace(() => Log.WriteLine("Foo"), new[] { "Constant", "Call" });
         }
 
+        [TestFrameworkInternal]
         private static void AssertTrace<TArg, T>(Expression<System.Func<TArg, T>> expr, TArg arg,
             T expectedValue, string[] expectedTrace)
         {
@@ -180,6 +182,7 @@ namespace Gallio.Tests.Linq
                 "Expression trace should be equal.");
         }
 
+        [TestFrameworkInternal]
         private static void AssertTrace<T>(Expression<System.Func<T>> expr,
             T expectedValue, string[] expectedTrace)
         {
@@ -196,6 +199,7 @@ namespace Gallio.Tests.Linq
             }
         }
 
+        [TestFrameworkInternal]
         private static void AssertTrace(Expression<System.Action> expr, string[] expectedTrace)
         {
             var tracer = new ExpressionTracer();

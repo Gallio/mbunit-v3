@@ -103,11 +103,15 @@ namespace Gallio.Framework.Formatting
                 modeStack.Push(new Pair<Precedence, CheckingMode>(Precedence.Lambda, CheckingMode.Reset));
             }
 
-            public void VisitAndQuoteExpression(Expression expr)
+            public void VisitAndQuoteExpressionIfNeeded(Expression expr)
             {
-                result.Append('`');
+                if (!(expr is LambdaExpression))
+                    result.Append('`');
+
                 Visit(expr);
-                result.Append('`');
+
+                if (!(expr is LambdaExpression))
+                    result.Append('`');
             }
 
             public override string ToString()
@@ -250,7 +254,7 @@ namespace Gallio.Framework.Formatting
             {
                 BeginExpression(Precedence.Lambda, CheckingMode.Reset);
 
-                VisitAndQuoteExpression(expr.Operand);
+                VisitAndQuoteExpressionIfNeeded(expr.Operand);
 
                 EndExpression();
                 return Unit.Value;
@@ -276,8 +280,8 @@ namespace Gallio.Framework.Formatting
                 result.Append('.');
                 result.Append(expr.Method.Name);
                 AppendArguments(expr.Arguments);
-                EndExpression();
 
+                EndExpression();
                 return Unit.Value;
             }
 
@@ -301,7 +305,7 @@ namespace Gallio.Framework.Formatting
 
                 if (expr.Value is Expression)
                 {
-                    VisitAndQuoteExpression((Expression)expr.Value);
+                    VisitAndQuoteExpressionIfNeeded((Expression)expr.Value);
                 }
                 else
                 {
@@ -323,7 +327,6 @@ namespace Gallio.Framework.Formatting
 
                 Visit(expr.Expression);
                 AppendArguments(expr.Arguments);
-                result.Append(')');
 
                 EndExpression();
                 return Unit.Value;
@@ -346,6 +349,7 @@ namespace Gallio.Framework.Formatting
                 BeginExpression(Precedence.Primary, CheckingMode.Inherit);
 
                 Visit(expr.NewExpression);
+                result.Append(' ');
                 AppendListInitializer(expr.Initializers);
 
                 EndExpression();
@@ -511,7 +515,7 @@ namespace Gallio.Framework.Formatting
 
             private void AppendObjectInitializer(ReadOnlyCollection<MemberBinding> bindings)
             {
-                result.Append(" {");
+                result.Append('{');
                 if (bindings.Count != 0)
                 {
                     result.Append(' ');
@@ -548,7 +552,7 @@ namespace Gallio.Framework.Formatting
 
             private void AppendListInitializer(ReadOnlyCollection<ElementInit> inits)
             {
-                result.Append(" {");
+                result.Append('{');
                 if (inits.Count != 0)
                 {
                     result.Append(' ');
