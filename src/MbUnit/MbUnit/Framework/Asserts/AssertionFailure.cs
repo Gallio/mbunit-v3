@@ -138,7 +138,7 @@ namespace MbUnit.Framework
                 writer.Write("* ");
                 writer.Write(pair.Key);
                 WritePaddingSpaces(writer, paddedLength - pair.Key.Length);
-                writer.Write(": ");
+                writer.Write(" : ");
                 writer.WriteLine(pair.Value);
             }
 

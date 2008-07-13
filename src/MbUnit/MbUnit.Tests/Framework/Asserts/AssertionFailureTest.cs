@@ -57,7 +57,7 @@ namespace MbUnit.Tests.Framework
                 .AddException(new Exception("Boom"))
                 .AddException(new Exception("Kaput"))
                 .ToAssertionFailure();
-            NewAssert.AreEqual("Description\nMessage goes here\n* Expected Value: \"Expected value\"\n* Actual Value  : \"Actual value\"\n* Very Long Label That Will Not Be Padded: \"\"\n* x             : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n", failure.ToString());
+            NewAssert.AreEqual("Description\nMessage goes here\n* Expected Value : \"Expected value\"\n* Actual Value   : \"Actual value\"\n* Very Long Label That Will Not Be Padded : \"\"\n* x              : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n", failure.ToString());
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace MbUnit.Tests.Framework
             StubLogWriter writer = new StubLogWriter();
             failure.Log(new TestLogWriter(writer));
 
-            NewAssert.AreEqual(">>> Description\nMessage goes here\n* Expected Value: \"Expected value\"\n* Actual Value  : \"Actual value\"\n* Very Long Label That Will Not Be Padded: \"\"\n* x             : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n<<<\n", writer.Output.ToString());
+            NewAssert.AreEqual(">>> Description\nMessage goes here\n* Expected Value : \"Expected value\"\n* Actual Value   : \"Actual value\"\n* Very Long Label That Will Not Be Padded : \"\"\n* x              : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n<<<\n", writer.Output.ToString());
         }
 
         private sealed class StubLogWriter : ITestLogWriter
