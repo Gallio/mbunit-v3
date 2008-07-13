@@ -158,7 +158,10 @@ namespace Gallio.NCoverIntegration
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("An exception occurred while waiting for the NCover profiler to exit.", ex);
+                UnhandledExceptionPolicy.Report("An exception occurred while waiting for the NCover profiler to exit.\n"
+                   + "If the exception is an EndOfStreamException or similar notice then we have encountered a "
+                   + "known bug in NCover v1.5.8 that occurs when the profiling trace is too large.  Unfortunately there is "
+                   + "no workaround at this time except to upgrade to NCover v2+ or use a different profiler.", ex);
             }
         }
 
