@@ -42,6 +42,9 @@ namespace MbUnit.Tests.Framework
 
                 for (int i = 0; i < 15; i++)
                     AssertEx.That(() => vals[i] > 0);
+
+                vals = null;
+                AssertEx.That(() => vals[0] > 0);
             });
         }
     }

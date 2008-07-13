@@ -85,6 +85,12 @@ namespace Gallio.Framework
         }
 
         /// <inheritdoc />
+        public override void Write(char value)
+        {
+            WriteImpl(new string(value, 1));
+        }
+
+        /// <inheritdoc />
         public sealed override void Write(string value)
         {
             if (value != null)

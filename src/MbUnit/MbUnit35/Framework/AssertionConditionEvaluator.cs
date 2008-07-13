@@ -143,29 +143,41 @@ namespace MbUnit.Framework
                 failureBuilder.SetLabeledValue("Condition", condition.Body);
 
                 var labeledTraces = new List<Trace>();
-                AddLabeledTraces(labeledTraces, trace, true);
+                AddLabeledTraces(labeledTraces, trace, 0);
                 foreach (Trace labeledTrace in labeledTraces)
                     failureBuilder.SetLabeledValue(Formatter.Instance.Format(labeledTrace.Expression), labeledTrace.Result);
 
                 return failureBuilder.ToAssertionFailure();
             }
 
-            private static void AddLabeledTraces(List<Trace> labeledTraces, Trace parent, bool root)
+            private static void AddLabeledTraces(List<Trace> labeledTraces, Trace trace, int depth)
             {
-                foreach (Trace child in parent.Children)
+                if (trace.Exception == null)
                 {
-                    Expression expr = child.Expression;
+                    Expression expr = trace.Expression;
                     if (!(expr is ConstantExpression))
                     {
-                        if (root || expr.IsCapturedVariableOrParameter())
+                        // We print the expressions at depth 1 but not the one at depth 0 because
+                        // at depth 0.  We know that the value was not equal to what we expected
+                        // so printing the value at depth 0 tells us nothing of interest.
+                        // To help determine the cause of this effect, we print the value of the
+                        // sub-expressions at depth 1.
+                        //
+                        // The exception to this rule is when the expression is a captured
+                        // variable or parameter.  We always print these values because they are
+                        // most instructive about the context in which the expression was being
+                        // evaluated.  For example, they may describe the value of a loop iteration
+                        // variable and other terms.
+                        if (depth == 1 || expr.IsCapturedVariableOrParameter())
                         {
-                            if (! labeledTraces.Contains(child))
-                                labeledTraces.Add(child);
+                            if (!labeledTraces.Contains(trace))
+                                labeledTraces.Add(trace);
                         }
                     }
-
-                    AddLabeledTraces(labeledTraces, child, false);
                 }
+
+                foreach (Trace child in trace.Children)
+                    AddLabeledTraces(labeledTraces, child, depth + 1);
             }
 
             private static bool IsTrivialExpression(Expression expr)
@@ -174,7 +186,7 @@ namespace MbUnit.Framework
             }
         }
 
-        private class Trace
+        private sealed class Trace
         {
             private List<Trace> children;
 
@@ -203,7 +215,7 @@ namespace MbUnit.Framework
         }
 
         [Serializable]
-        private class AbruptTerminationException : Exception
+        private sealed class AbruptTerminationException : Exception
         {
             public AbruptTerminationException(Trace trace)
             {

@@ -33,6 +33,7 @@ namespace MbUnit.Framework
     [Serializable]
     public class AssertionFailure
     {
+        private const int MaxPaddedLabelLength = 16;
         private readonly string description;
         private readonly string message;
         private readonly string stackTrace;
@@ -116,6 +117,7 @@ namespace MbUnit.Framework
         public override string ToString()
         {
             StringWriter writer = new StringWriter();
+            writer.NewLine = "\n";
             writer.WriteLine(description);
             WriteDetails(writer);
             return writer.ToString();
@@ -130,10 +132,12 @@ namespace MbUnit.Framework
             if (!string.IsNullOrEmpty(message))
                 writer.WriteLine(message);
 
+            int paddedLength = ComputePaddedLabelLength();
             foreach (KeyValuePair<string, string> pair in labeledValues)
             {
                 writer.Write("* ");
                 writer.Write(pair.Key);
+                WritePaddingSpaces(writer, paddedLength - pair.Key.Length);
                 writer.Write(": ");
                 writer.WriteLine(pair.Value);
             }
@@ -160,6 +164,21 @@ namespace MbUnit.Framework
 
             if (!stackTrace.EndsWith("\n"))
                 writer.WriteLine();
+        }
+
+        private int ComputePaddedLabelLength()
+        {
+            int maxLabelLength = 0;
+            foreach (KeyValuePair<string, string> pair in labeledValues)
+                if (pair.Key.Length <= MaxPaddedLabelLength)
+                    maxLabelLength = Math.Max(maxLabelLength, pair.Key.Length);
+            return maxLabelLength;
+        }
+
+        private static void WritePaddingSpaces(TextWriter writer, int count)
+        {
+            while (count-- > 0)
+                writer.Write(' ');
         }
     }
 }

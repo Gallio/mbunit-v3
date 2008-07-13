@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio;
@@ -326,6 +327,78 @@ namespace MbUnit.Framework
                 return new AssertionFailureBuilder("Expected values to be referentially different.")
                     .SetMessage(messageFormat, messageArgs)
                     .SetExpectedValue(expectedValue)
+                    .SetActualValue(actualValue)
+                    .ToAssertionFailure();
+            });
+        }
+        #endregion
+
+        #region Contains
+        /// <summary>
+        /// Verifies that a string contains some expected value.
+        /// </summary>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedSubstring">The expected substring</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void Contains(string actualValue, string expectedSubstring)
+        {
+            Contains(actualValue, expectedSubstring, null);
+        }
+
+        /// <summary>
+        /// Verifies that a string contains some expected value.
+        /// </summary>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedSubstring">The expected substring</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void Contains(string actualValue, string expectedSubstring, string messageFormat, params object[] messageArgs)
+        {
+            AssertHelper.Verify(delegate
+            {
+                if (actualValue.Contains(expectedSubstring))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected string to contain a particular substring.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .SetLabeledValue("Expected Substring", expectedSubstring)
+                    .SetActualValue(actualValue)
+                    .ToAssertionFailure();
+            });
+        }
+        #endregion
+
+        #region DoesNotContain
+        /// <summary>
+        /// Verifies that a string does not contain some expected value.
+        /// </summary>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedSubstring">The expected substring</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void DoesNotContain(string actualValue, string expectedSubstring)
+        {
+            DoesNotContain(actualValue, expectedSubstring, null);
+        }
+
+        /// <summary>
+        /// Verifies that a string does not contain some expected value.
+        /// </summary>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedSubstring">The expected substring</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void DoesNotContain(string actualValue, string expectedSubstring, string messageFormat, params object[] messageArgs)
+        {
+            AssertHelper.Verify(delegate
+            {
+                if (! actualValue.Contains(expectedSubstring))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected string to not contain a particular substring.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .SetLabeledValue("Expected Substring", expectedSubstring)
                     .SetActualValue(actualValue)
                     .ToAssertionFailure();
             });
@@ -664,13 +737,40 @@ namespace MbUnit.Framework
         }
         #endregion
 
+        // TODO: Make this extensible.
         private static bool DefaultEqualityComparer<T>(T expectedValue, T actualValue)
         {
             if (Object.ReferenceEquals(expectedValue, actualValue))
                 return true;
+
             if (expectedValue == null || actualValue == null)
                 return false;
+
+            var expectedEnumerable = expectedValue as IEnumerable;
+            var actualEnumerable = actualValue as IEnumerable;
+            if (expectedEnumerable != null && actualEnumerable != null)
+                return CompareEnumerables(expectedEnumerable, actualEnumerable);
+
             return expectedValue.Equals(actualValue);
+        }
+
+        private static bool CompareEnumerables(IEnumerable expectedEnumerable, IEnumerable actualEnumerable)
+        {
+            IEnumerator expectedEnumerator = expectedEnumerable.GetEnumerator();
+            IEnumerator actualEnumerator = actualEnumerable.GetEnumerator();
+            while (expectedEnumerator.MoveNext())
+            {
+                if (!actualEnumerator.MoveNext())
+                    return false;
+
+                if (! DefaultEqualityComparer(expectedEnumerator.Current, actualEnumerator.Current))
+                    return false;
+            }
+
+            if (actualEnumerator.MoveNext())
+                return false;
+
+            return true;
         }
     }
 }

@@ -28,20 +28,15 @@ namespace MbUnit.Framework
     /// the expected and actual value, as well as additional labeled values and exceptions.
     /// </para>
     /// </summary>
-    public sealed class AssertionFailureBuilder
+    public class AssertionFailureBuilder
     {
-        private const int ExpectedValueOrder = 0;
-        private const int ActualValueOrder = 1;
-        private const int FirstLabelOrder = 100;
-
         private readonly string description;
 
         private string message;
         private string stackTrace;
         private bool isStackTraceSet;
-        private SortedList<int, KeyValuePair<string, string>> labeledValues;
+        private List<KeyValuePair<string, string>> labeledValues;
         private List<string> exceptions;
-        private int nextLabelOrder = FirstLabelOrder;
 
         /// <summary>
         /// Creates an assertion failure builder.
@@ -77,9 +72,9 @@ namespace MbUnit.Framework
         /// <returns>The builder, to allow for fluent method chaining</returns>
         public AssertionFailureBuilder SetMessage(string messageFormat, params object[] messageArgs)
         {
-            message = messageFormat != null
+            message = messageFormat != null && messageArgs != null
                 ? String.Format(messageFormat, messageArgs)
-                : null;
+                : messageFormat;
             return this;
         }
 
@@ -98,26 +93,36 @@ namespace MbUnit.Framework
         /// <summary>
         /// <para>
         /// Sets the expected value.
+        /// This is a convenience method for setting a labeled value called "Expected Value".
+        /// </para>
+        /// <para>
+        /// The order in which this method is called determines the order in which this
+        /// value will appear relative to other labeled values.
         /// </para>
         /// </summary>
         /// <param name="value">The expected value</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
         public AssertionFailureBuilder SetExpectedValue(object value)
         {
-            SetLabeledValue("Expected Value", value, ExpectedValueOrder);
+            SetLabeledValueImpl("Expected Value", value);
             return this;
         }
 
         /// <summary>
         /// <para>
         /// Sets the actual value.
+        /// This is a convenience method for setting a labeled value called "Actual Value".
+        /// </para>
+        /// <para>
+        /// The order in which this method is called determines the order in which this
+        /// value will appear relative to other labeled values.
         /// </para>
         /// </summary>
         /// <param name="value">The actual value</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
         public AssertionFailureBuilder SetActualValue(object value)
         {
-            SetLabeledValue("Actual Value", value, ActualValueOrder);
+            SetLabeledValueImpl("Actual Value", value);
             return this;
         }
 
@@ -126,7 +131,12 @@ namespace MbUnit.Framework
         /// Sets a labeled value.
         /// </para>
         /// <para>
-        /// If a value is already associated with the specified label, replaces it.
+        /// The order in which this method is called determines the order in which this
+        /// value will appear relative to other labeled values.
+        /// </para>
+        /// <para>
+        /// If a value is already associated with the specified label, replaces and
+        /// repositions it at the end of the list.
         /// </para>
         /// </summary>
         /// <param name="label">The label</param>
@@ -136,7 +146,7 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
         public AssertionFailureBuilder SetLabeledValue(string label, object value)
         {
-            SetLabeledValue(label, value, nextLabelOrder++);
+            SetLabeledValueImpl(label, value);
             return this;
         }
 
@@ -164,11 +174,25 @@ namespace MbUnit.Framework
         [TestFrameworkInternal]
         public AssertionFailure ToAssertionFailure()
         {
-            return new AssertionFailure(description, message, GetStackTraceOrDefault(),
+            return CreateAssertionFailure(description, message, GetStackTraceOrDefault(),
                 GetLabeledValuesAsArray(), GetExceptionsAsArray());
         }
 
-        private void SetLabeledValue(string label, object value, int sortOrder)
+        /// <summary>
+        /// Creates an assertion failure object.
+        /// </summary>
+        /// <remarks>
+        /// Subclasses may override this method to define custom extended assertion
+        /// failure objects.
+        /// </remarks>
+        protected virtual AssertionFailure CreateAssertionFailure(string description,
+            string message, string stackTrace, KeyValuePair<string, string>[] labeledValues,
+            string[] exceptions)
+        {
+            return new AssertionFailure(description, message, stackTrace, labeledValues, exceptions);
+        }
+
+        private void SetLabeledValueImpl(string label, object value)
         {
             if (label == null)
                 throw new ArgumentNullException("label");
@@ -176,28 +200,25 @@ namespace MbUnit.Framework
                 throw new ArgumentException("The label must not be empty.", "label");
 
             if (labeledValues == null)
-                labeledValues = new SortedList<int, KeyValuePair<string, string>>();
+                labeledValues = new List<KeyValuePair<string, string>>();
 
             string formattedValue = Formatter.Instance.Format(value);
 
-            int i = 0;
-            foreach (KeyValuePair<string, string> pair in labeledValues.Values)
+            for (int i = 0; i < labeledValues.Count; i++)
             {
-                if (pair.Key == label)
+                if (labeledValues[i].Key == label)
                 {
                     labeledValues.RemoveAt(i);
                     break;
                 }
-
-                i += 1;
             }
 
-            labeledValues.Add(sortOrder, new KeyValuePair<string,string>(label, formattedValue));
+            labeledValues.Add(new KeyValuePair<string,string>(label, formattedValue));
         }
 
         private KeyValuePair<string, string>[] GetLabeledValuesAsArray()
         {
-            return labeledValues != null ? GenericUtils.ToArray(labeledValues.Values) : EmptyArray<KeyValuePair<string, string>>.Instance;
+            return labeledValues != null ? labeledValues.ToArray() : EmptyArray<KeyValuePair<string, string>>.Instance;
         }
 
         private string[] GetExceptionsAsArray()

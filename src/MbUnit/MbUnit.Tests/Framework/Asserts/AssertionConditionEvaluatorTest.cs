@@ -17,13 +17,92 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Framework;
+using Gallio.Framework.Formatting;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
 {
     [TestsOn(typeof(AssertionConditionEvaluator))]
-    [Pending]
     public class AssertionConditionEvaluatorTest
     {
+        [Test, ExpectedArgumentNullException]
+        public void EvalThrowsIfConditionIsNull()
+        {
+            AssertionConditionEvaluator.Eval(null, true, "abc");
+        }
+
+        [Test]
+        [Row(true), Row(false)]
+        public void ReturnsNullIfTheConditionEvaluatesAsExpected(bool expectedResult)
+        {
+            NewAssert.IsNull(AssertionConditionEvaluator.Eval(() => expectedResult, expectedResult, null));
+        }
+
+        [Test]
+        [Row(true), Row(false), MultipleAsserts]
+        public void FailureDescribesExpectedResultAndConditionAndParameters(bool expectedResult)
+        {
+            AssertionFailure failure = AssertionConditionEvaluator.Eval(() => !expectedResult, expectedResult, null);
+            NewAssert.IsNotNull(failure);
+            NewAssert.AreEqual(String.Format("Expected the condition to evaluate to {0}.", expectedResult.ToString().ToLowerInvariant()), failure.Description);
+            NewAssert.AreEqual(new[] {
+                new KeyValuePair<string, string>("Condition", "! expectedResult"),
+                new KeyValuePair<string, string>("expectedResult", Formatter.Instance.Format(expectedResult)),
+            }, failure.LabeledValues);
+        }
+
+        [Test]
+        public void FailureDescribesException()
+        {
+            object x = null;
+            AssertionFailure failure = AssertionConditionEvaluator.Eval(() => x.Equals(null), true, null);
+            NewAssert.IsNotNull(failure);
+            NewAssert.AreEqual("Expected the condition to evaluate to true but it threw an exception.", failure.Description);
+            NewAssert.AreEqual(new[] {
+                new KeyValuePair<string, string>("Condition", "x.Equals(null)"),
+                new KeyValuePair<string, string>("x", "null"),
+            }, failure.LabeledValues);
+            NewAssert.AreEqual(1, failure.Exceptions.Count);
+            NewAssert.Contains(failure.Exceptions[0], "NullReferenceException");
+        }
+
+        [Test]
+        public void FailureIncludesStackTrace()
+        {
+            AssertionFailure failure = AssertionConditionEvaluator.Eval(() => true, false, null);
+            NewAssert.IsNotNull(failure);
+            NewAssert.Contains(failure.StackTrace, "FailureIncludesStackTrace");
+        }
+
+        [Test]
+        public void FailureIncludesOptionalMessageWhenProvided()
+        {
+            AssertionFailure failure = AssertionConditionEvaluator.Eval(() => true, false, "Expected {0}", "true");
+            NewAssert.IsNotNull(failure);
+            NewAssert.AreEqual("Expected true", failure.Message);
+        }
+
+        [Test]
+        public void FailureExcludesOptionalMessageWhenOmitted()
+        {
+            AssertionFailure failure = AssertionConditionEvaluator.Eval(() => true, false, null);
+            NewAssert.IsNotNull(failure);
+            NewAssert.IsNull(failure.Message);
+        }
+
+        [Test]
+        public void FailureMessageIgnoresValueOfTopLevelNotExpression()
+        {
+            int x = 42;
+            AssertionFailure failure = AssertionConditionEvaluator.Eval(() => ! (x.ToString() == "42"), true, null);
+            NewAssert.IsNotNull(failure);
+
+            NewAssert.AreEqual(new[] {
+                new KeyValuePair<string, string>("Condition", "! (x.ToString() == \"42\")"),
+                new KeyValuePair<string, string>("x.ToString()", "\"42\""),
+                new KeyValuePair<string, string>("x", "42"),
+            }, failure.LabeledValues);
+        }
     }
 }
