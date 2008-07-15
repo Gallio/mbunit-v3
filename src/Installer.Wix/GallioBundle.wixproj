@@ -88,6 +88,9 @@
     <Compile Include="..\Extensions\NCover\NCover.wxs">
       <Link>NCover.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\NCover\NCover2.wxs">
+      <Link>NCover2.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\TypeMock\TypeMock.wxs">
       <Link>TypeMock.wxs</Link>
     </Compile>

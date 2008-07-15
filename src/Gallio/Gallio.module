@@ -29,6 +29,7 @@
     
     <Binary Include="Gallio35\bin\Gallio35.dll" />
     <Binary Include="Gallio35\bin\Gallio35.pdb" />
+    <Binary Include="Gallio35\Gallio35.plugin" />
   </ItemGroup>
 
   <ItemGroup>

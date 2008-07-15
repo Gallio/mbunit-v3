@@ -39,7 +39,7 @@
   <ItemGroup>
     <Reference Include="NCover.Framework, Version=1.5.8.0, Culture=neutral, PublicKeyToken=f4018786f4b01bc6, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\NCover.Framework.dll</HintPath>
+      <HintPath>..\libs\v1.5.8\NCover.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -59,16 +59,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.NCoverIntegration.plugin" />
-    <Content Include="..\libs\CoverLib.dll">
+    <Content Include="..\libs\v1.5.8\CoverLib.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\libs\MSVCP80.dll">
+    <Content Include="..\libs\v1.5.8\MSVCP80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\libs\MSVCR80.dll">
+    <Content Include="..\libs\v1.5.8\MSVCR80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\libs\Microsoft.VC80.CRT.manifest">
+    <Content Include="..\libs\v1.5.8\Microsoft.VC80.CRT.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

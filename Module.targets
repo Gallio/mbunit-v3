@@ -1,4 +1,4 @@
-<Project InitialTargets="GetModuleItems" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project InitialTargets="GetModuleItems" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <!-- A module is a special MSBuild project file that describes
        a group of related resources that are to be build.
 

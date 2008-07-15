@@ -13,7 +13,7 @@
           <parameters>
             <hostFactory>${NCoverIntegration.NCoverHostFactory}</hostFactory>
             <name>NCover</name>
-            <description>Runs tests in an external process with NCover.  The NCover report is written to the current directory as a file named 'Coverage.xml'.  NCover does not need to be installed separately.</description>
+            <description>Runs tests in an external process with NCover v1.5.8.  The NCover report is written to the current directory as a file named 'Coverage.xml'.  NCover v1.5.8 is included and does not need to be installed separately.</description>
           </parameters>
         </component>
       </components>

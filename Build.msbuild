@@ -1,4 +1,4 @@
-<Project DefaultTargets="Clean;Build;Test" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Clean;Build;Test" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <!-- Configure the modules. -->
   <PropertyGroup>
     <RootDir>$(MSBuildProjectDirectory)</RootDir>
@@ -19,7 +19,8 @@
     <IgnoreFailures Condition="'$(IgnoreFailures)'==''">false</IgnoreFailures>
 
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
-    <VS2005SDKHelpPath>$(ProgramFiles)\Visual Studio 2005 SDK\HelpIntegrationWizard\MSHelp2</VS2005SDKHelpPath>
+    <VSIPSDKHelpPath>$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
+    <VSIPSDKHelpPath Condition="'$(VSIPSDKHelpPath)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\8.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
     <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
 
@@ -49,12 +50,13 @@
     </RebuildDependsOn>
     <CleanDependsOn>
       CleanCSharpProjects;
+      CleanInstallerWix;
       RemoveBuildDir;
     </CleanDependsOn>
   </PropertyGroup>
 
   <Target Name="Release"
-          DependsOnTargets="Clean;Build;Test;BuildSourceServerIndex;BuildDocs;BuildInstaller;BuildZip" />
+          DependsOnTargets="Clean;Build;Test;BuildSourceServerIndex;BuildDocs;BuildInstallerWix;BuildZip" />
 
   <Target Name="Build"
           DependsOnTargets="$(BuildDependsOn)" />
@@ -174,14 +176,16 @@
   </ItemGroup>
 
   <Target Name="BuildHxSDocs">
-    <Warning Text="Visual Studio 2005 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio 2005 help system.  Check Microsoft's site for the Visual Studio 2005 SDK installer."
-           Condition="! Exists('$(VS2005SDKHelpPath)')" />
+    <Message Text="$(VSIPSDKHelpPath)" Importance="High" />
+
+    <Warning Text="Visual Studio 2005 or 2008 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio help system.  Check Microsoft's site for the Visual Studio SDK installer."
+           Condition="! Exists('$(VSIPSDKHelpPath)')" />
 
     <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
-          Condition="Exists('$(VS2005SDKHelpPath)')" />
+          Condition="Exists('$(VSIPSDKHelpPath)')" />
     <RemoveDir Directories="$(TargetDocsDir)\vs\ndoc_htmlhelp2_temp" />
   </Target>
-  <ItemGroup Condition="Exists('$(VS2005SDKHelpPath)')">
+  <ItemGroup Condition="Exists('$(VSIPSDKHelpPath)')">
     <Feature Include="FEATURE_VS_HELP" />
   </ItemGroup>
 
@@ -211,6 +215,7 @@
 
   <Target Name="BuildInstallerWix"
           DependsOnTargets="CreateBuildDir">
+    <Message Text="Building installer..." Importance="High" />
     <WriteLinesToFile File="$(InstallerFeatureFile)"
                       Lines="&lt;Include&gt;"
                       Overwrite="true" />

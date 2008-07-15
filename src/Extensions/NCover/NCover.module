@@ -8,38 +8,38 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Binary Include="libs\Coverage.xsl">
-        <Folder>NCover</Folder>
+    <Binary Include="libs\v1.5.8\Coverage.xsl">
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="libs\CoverLib.dll">
-        <Folder>NCover</Folder>
+    <Binary Include="libs\v1.5.8\CoverLib.dll">
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="libs\Microsoft.VC80.CRT.manifest">
-        <Folder>NCover</Folder>
+    <Binary Include="libs\v1.5.8\Microsoft.VC80.CRT.manifest">
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="libs\MSVCP80.dll">
-        <Folder>NCover</Folder>
+    <Binary Include="libs\v1.5.8\MSVCP80.dll">
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="libs\MSVCR80.dll">
-        <Folder>NCover</Folder>
+    <Binary Include="libs\v1.5.8\MSVCR80.dll">
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="libs\NCover.Console.exe">
-        <Folder>NCover</Folder>
+    <Binary Include="libs\v1.5.8\NCover.Console.exe">
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="libs\NCover.Console.exe.config">
-        <Folder>NCover</Folder>
+    <Binary Include="libs\v1.5.8\NCover.Console.exe.config">
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="libs\NCover.Framework.dll">
-        <Folder>NCover</Folder>
+    <Binary Include="libs\v1.5.8\NCover.Framework.dll">
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="libs\NCoverFAQ.html">
-        <Folder>NCover</Folder>
+    <Binary Include="libs\v1.5.8\NCoverFAQ.html">
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
     <Binary Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.dll">
-        <Folder>NCover</Folder>
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
     <Binary Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.plugin">
-        <Folder>NCover</Folder>
+        <Folder>NCover\v1.5.8</Folder>
     </Binary>
   </ItemGroup>
 

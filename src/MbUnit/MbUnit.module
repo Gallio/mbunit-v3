@@ -27,6 +27,7 @@
     
     <Binary Include="MbUnit35\bin\MbUnit35.dll" />
     <Binary Include="MbUnit35\bin\MbUnit35.pdb" />
+    <Binary Include="MbUnit35\MbUnit35.plugin" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  <Import Project="NCover2.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration2.csproj" />
+
+    <CSharpProject Include="Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration2.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration2.dll">
+        <Folder>NCover\v2</Folder>
+    </Binary>
+    <Binary Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration2.plugin">
+        <Folder>NCover\v2</Folder>
+    </Binary>
+    
+    <Feature Include="FEATURE_NCOVER_INTEGRATION_2" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(NCover2Installed)">
+    <TestAssembly Include="Gallio.NCoverIntegration.Tests\bin\Gallio.NCoverIntegration2.Tests.dll" />
+  </ItemGroup>
+</Project>

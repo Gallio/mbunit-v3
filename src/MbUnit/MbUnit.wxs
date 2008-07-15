@@ -16,7 +16,8 @@
                 <File Id="MbUnit.plugin" Source="$(var.TargetDir)\bin\MbUnit.plugin"/>
                 <File Id="MbUnit.pdb" Source="$(var.TargetDir)\bin\MbUnit.pdb"/>
                 <File Id="MbUnit.xml" Source="$(var.TargetDir)\bin\MbUnit.xml"/>
-                <File Id="MbUnit35.dll" Source="$(var.TargetDir)\bin\MbUnit35.dll" KeyPath="yes"/>
+                <File Id="MbUni35.dll" Source="$(var.TargetDir)\bin\MbUnit35.dll"/>
+                <File Id="MbUnit35.plugin" Source="$(var.TargetDir)\bin\MbUnit35.plugin"/>
                 <File Id="MbUnit35.pdb" Source="$(var.TargetDir)\bin\MbUnit35.pdb"/>
                 <File Id="MbUnit35.xml" Source="$(var.TargetDir)\bin\MbUnit35.xml"/>
             </Component>

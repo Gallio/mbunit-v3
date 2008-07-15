@@ -87,6 +87,9 @@
 
         <Feature Id='feat_ToolIntegration' Title='Tool Integration' Level="1">
             <FeatureRef Id='feat_NCoverIntegration'/>
+<?ifdef FEATURE_NCOVER_INTEGRATION_2 ?>
+            <FeatureRef Id='feat_NCoverIntegration2'/>
+<?endif?>
             <FeatureRef Id='feat_TypeMockIntegration'/>
         </Feature>
 

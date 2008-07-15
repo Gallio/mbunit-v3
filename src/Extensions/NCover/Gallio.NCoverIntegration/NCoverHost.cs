@@ -42,7 +42,11 @@ namespace Gallio.NCoverIntegration
         /// <inheritdoc />
         protected override ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
+#if NCOVER2
+            return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory);
+#else
             return new NCoverProcessTask(executablePath, arguments, workingDirectory, Logger);
+#endif
         }
     }
 }

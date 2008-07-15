@@ -48,7 +48,8 @@
                 <File Id="Gallio.plugin" Source="$(var.TargetDir)\bin\Gallio.plugin" />
                 <File Id="Gallio.xml" Source="$(var.TargetDir)\bin\Gallio.xml" />
                 <File Id="Gallio.pdb" Source="$(var.TargetDir)\bin\Gallio.pdb" />
-                <File Id="Gallio35.dll" Source="$(var.TargetDir)\bin\Gallio35.dll" KeyPath="yes" />
+                <File Id="Gallio35.plugin" Source="$(var.TargetDir)\bin\Gallio35.plugin" />
+                <File Id="Gallio35.dll" Source="$(var.TargetDir)\bin\Gallio35.dll" />
                 <File Id="Gallio35.xml" Source="$(var.TargetDir)\bin\Gallio35.xml" />
                 <File Id="Gallio35.pdb" Source="$(var.TargetDir)\bin\Gallio35.pdb" />
             </Component>

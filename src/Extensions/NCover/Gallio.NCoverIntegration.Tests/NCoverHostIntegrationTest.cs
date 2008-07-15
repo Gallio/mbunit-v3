@@ -15,6 +15,8 @@
 
 using System;
 using System.IO;
+using Gallio.Framework;
+using Gallio.Framework.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Reflection;
@@ -27,10 +29,18 @@ namespace Gallio.NCoverIntegration.Tests
     [TestFixture]
     [TestsOn(typeof(NCoverHost))]
     [TestsOn(typeof(NCoverHostFactory))]
+#if NCOVER2
+    [TestsOn(typeof(NCoverTool))]
+#else
     [TestsOn(typeof(NCoverProcessTask))]
+#endif
     public class NCoverHostIntegrationTest
     {
+#if NCOVER2
+        private const string NCoverTestRunnerFactoryName = "NCover2";
+#else
         private const string NCoverTestRunnerFactoryName = "NCover";
+#endif
         private const string TestCoverageXmlFileName = "Coverage.xml";
 
         [Test]
@@ -45,6 +55,7 @@ namespace Gallio.NCoverIntegration.Tests
             Type simpleTestType = typeof(SimpleTest);
 
             TestLauncher launcher = new TestLauncher();
+            launcher.Logger = new LogStreamLogger(Log.Default);
             launcher.TestPackageConfig.AssemblyFiles.Add(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly));
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = tempPath;
             launcher.TestRunnerFactoryName = NCoverTestRunnerFactoryName;
