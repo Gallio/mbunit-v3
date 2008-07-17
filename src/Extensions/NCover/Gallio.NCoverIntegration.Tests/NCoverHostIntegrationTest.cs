@@ -31,6 +31,11 @@ namespace Gallio.NCoverIntegration.Tests
     [TestsOn(typeof(NCoverHostFactory))]
 #if NCOVER2
     [TestsOn(typeof(NCoverTool))]
+    [Ignore(@"Broken due to a fatal exception in NCover:
+-- Top-level exception (System.InvalidOperationException)
+Could not merge modules, there is a sequence-point mismatch between multiple loads of method [.cctor..cctor() : void [static]]
+-- Stack Trace
+at NCover.Framework.CoverageData._MergeMethod(MethodData leftSide, MethodData rightSide)")]
 #else
     [TestsOn(typeof(NCoverProcessTask))]
 #endif

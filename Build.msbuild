@@ -12,7 +12,7 @@
   <!-- Configure other properties. -->
   <PropertyGroup>
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
-    <Coverage Condition="'$(Coverage)'==''">true</Coverage>
+    <Coverage Condition="'$(Coverage)'==''">false</Coverage>
 
     <ShowReports Condition="'$(ShowReports)'==''">true</ShowReports>
     <ReportTypes Condition="'$(ReportTypes)'==''">Html-Condensed</ReportTypes>
@@ -77,7 +77,7 @@
   <UsingTask AssemblyFile="$(TargetBinDir)\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
 
   <PropertyGroup>
-    <RunnerType Condition="$(Coverage)">NCover</RunnerType>
+    <RunnerType Condition="$(Coverage)">NCover2</RunnerType>
     <RunnerType Condition="! $(Coverage)">IsolatedProcess</RunnerType>
   </PropertyGroup>
   <Target Name="Test">
