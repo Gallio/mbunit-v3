@@ -11,7 +11,7 @@
 
         <DirectoryRef Id="binFolder">
             <Component Id="Gallio.TDNetRunner.dll" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8">
-                <File Id="Gallio.TDNetRunner.dll" Name="Gallio.TDNetRunner.dll" Source="$(var.TargetDir)\bin\Gallio.TDNetRunner.dll" KeyPath="yes"
+                <File Id="Gallio.TDNetRunner.dll" Source="$(var.GallioTargetDir)\bin\Gallio.TDNetRunner.dll" KeyPath="yes"
                       Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.dll" />
             </Component>
 

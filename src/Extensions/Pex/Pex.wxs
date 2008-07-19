@@ -8,7 +8,7 @@
 
         <DirectoryRef Id="binFolder">
             <Component Id="MbUnit.Pex.dll" Guid="bfc40e70-ddcd-4d3a-b823-d81a5731b8a8">
-                <File Id="MbUnit.Pex.dll" Name="MbUnit.Pex.dll" Source="$(var.TargetDir)\bin\MbUnit.Pex.dll" KeyPath="yes" />
+                <File Id="MbUnit.Pex.dll" Source="$(var.GallioTargetDir)\bin\MbUnit.Pex.dll" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 

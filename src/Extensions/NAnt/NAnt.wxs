@@ -3,8 +3,8 @@
     <Fragment>
         <DirectoryRef Id="binFolder">
             <Component Id="Gallio.NAntTasks" Guid="521559b4-9925-4420-be87-5142705be635">
-                <File Id="Gallio.NAntTasks.dll" Source="$(var.TargetDir)\bin\Gallio.NAntTasks.dll" KeyPath="yes" />
-                <File Id="Gallio.NAntTasks.xml" Source="$(var.TargetDir)\bin\Gallio.NAntTasks.xml" />
+                <File Id="Gallio.NAntTasks.dll" Source="$(var.GallioTargetDir)\bin\Gallio.NAntTasks.dll" KeyPath="yes" />
+                <File Id="Gallio.NAntTasks.xml" Source="$(var.GallioTargetDir)\bin\Gallio.NAntTasks.xml" />
             </Component>
         </DirectoryRef>
         <Feature Id="feat_Gallio.NAntTasks" Title="NAnt Tasks" Level="1"

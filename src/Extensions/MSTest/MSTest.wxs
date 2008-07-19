@@ -7,19 +7,19 @@
         <PropertyRef Id='VS90_ROOT_FOLDER'/>
 
         <!-- TODO: Add support for VS2005 -->
-
+        
         <DirectoryRef Id="TARGETDIR">
             <Directory Id='VS90_ROOT_FOLDER' Name='VS90_Root_Folder'>
                 <Directory Id='VS90_Common7_Folder' Name="Common7">
                     <Directory Id="VS90_IDE_Folder" Name="IDE">
                         <Directory Id="VS90_PrivateAssemblies" Name="PrivateAssemblies">
                             <Component Id="Gallio.Loader.VS90.dll" Guid="{5DB28D6D-775E-41fb-86E6-F304E7B70AB8}">
-                                <File Id="Gallio.Loader.VS90.dll" Source="$(var.TargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
+                                <File Id="Gallio.Loader.VS90.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
                             </Component>
                             <Component Id="Gallio.MSTestRunner.dll" Guid="9A21CBC4-4189-41e2-90F6-4241BA2A634D">
-                                <File Id="Gallio.MSTestRunner.dll" Source="$(var.TargetDir)\bin\MSTest\Gallio.MSTestRunner.dll" KeyPath="yes"
+                                <File Id="Gallio.MSTestRunner.dll" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestRunner.dll" KeyPath="yes"
                                       Assembly=".net" AssemblyApplication="Gallio.MSTestRunner.dll" />
-                                <File Id="Gallio.MSTestRunner.dll.config" Source="$(var.TargetDir)\bin\MSTest\Gallio.MSTestRunner.dll.config" />
+                                <File Id="Gallio.MSTestRunner.dll.config" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestRunner.dll.config" />
                                 <util:XmlFile Id="FixXmlSettings.MSTestRunner" File="[#Gallio.MSTestRunner.dll.config]" Action="setValue" 
                                               ElementPath="//configuration/gallio/installation/path" Value="[binFolder]" />
                             </Component>
@@ -77,17 +77,21 @@
         <InstallExecuteSequence>
             <Custom Action="VS90Setup" Before="InstallFinalize">&amp;feat_MSTestRunner&gt;1 AND VS90DEVENV&lt;&gt;&quot;&quot;</Custom>
         </InstallExecuteSequence>
-        
+
+        <UI>
+            <ProgressText Action="VS90Setup" Template="[1]">Updating Visual Studio 2008 registration</ProgressText>
+        </UI>
+
         <!-- ============================================================== -->
 
         <DirectoryRef Id="binFolder">
             <Directory Id="MSTestAdapter" Name="MSTest">
                 <Component Id="Gallio.MSTestAdapter.dll" Guid="30F50762-6829-4020-8CC3-11D2151EF058">
-                    <File Id="Gallio.MSTestAdapter.dll" Source="$(var.TargetDir)\bin\MSTest\Gallio.MSTestAdapter.dll" KeyPath="yes" />
-                    <File Id="Gallio.MSTestAdapter.plugin" Source="$(var.TargetDir)\bin\MSTest\Gallio.MSTestAdapter.plugin" />
+                    <File Id="Gallio.MSTestAdapter.dll" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestAdapter.dll" KeyPath="yes" />
+                    <File Id="Gallio.MSTestAdapter.plugin" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestAdapter.plugin" />
                 </Component>
                 <Component Id="MSTest.Readme.txt" Guid="3F8743D7-476E-4074-A8AF-FD36E440EC29">
-                    <File Id="MSTest.Readme.txt" Source="$(var.TargetDir)\bin\MSTest\Readme.txt" KeyPath="yes" />
+                    <File Id="MSTest.Readme.txt" Source="$(var.GallioTargetDir)\bin\MSTest\Readme.txt" KeyPath="yes" />
                 </Component>
             </Directory>
         </DirectoryRef>

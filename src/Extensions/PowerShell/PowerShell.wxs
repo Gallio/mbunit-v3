@@ -6,16 +6,16 @@
                   
         <DirectoryRef Id="binFolder">
             <Component Id="Gallio.PowerShellCommands.dll" Guid="82469f8a-b09b-4fb1-80c6-e3882fd54ffd">
-                <File Id="Gallio.PowerShellCommands.dll" Source="$(var.TargetDir)\bin\Gallio.PowerShellCommands.dll" KeyPath="yes"
+                <File Id="Gallio.PowerShellCommands.dll" Source="$(var.GallioTargetDir)\bin\Gallio.PowerShellCommands.dll" KeyPath="yes"
                       Assembly=".net"  AssemblyApplication="Gallio.PowerShellCommands.dll" >
                     <ps:SnapIn Id="Gallio" Vendor="Gallio" Description="Gallio Commands." />
                 </File>
             </Component>
             <Component Id="Gallio.PowerShellCommands.xml" Guid="5e084486-4f09-4799-be57-9816b1c125e3">
-                <File Id="Gallio.PowerShellCommands.xml" Source="$(var.TargetDir)\bin\Gallio.PowerShellCommands.xml" />
+                <File Id="Gallio.PowerShellCommands.xml" Source="$(var.GallioTargetDir)\bin\Gallio.PowerShellCommands.xml" />
             </Component>
             <Component Id="Gallio.PowerShellCommands.dll.Help.xml" Guid="5b184436-4f09-4799-be57-9816b12123f6">
-                <File Id="Gallio.PowerShellCommands.dll.Help.xml" Source="$(var.TargetDir)\bin\Gallio.PowerShellCommands.dll-Help.xml" />
+                <File Id="Gallio.PowerShellCommands.dll.Help.xml" Source="$(var.GallioTargetDir)\bin\Gallio.PowerShellCommands.dll-Help.xml" />
             </Component>
         </DirectoryRef>
 

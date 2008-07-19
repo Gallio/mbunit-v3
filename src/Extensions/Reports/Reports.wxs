@@ -12,92 +12,92 @@
 
         <DirectoryRef Id="ReportsFolder">
             <Component Id="Gallio.Reports.dll" Guid="9e17b959-1768-4a2b-b750-99821b01dd53">
-                <File Id="Gallio.Reports.dll" Name="Gallio.Reports.dll" Source="$(var.TargetDir)\bin\Reports\Gallio.Reports.dll" KeyPath="yes" />
-                <File Id="Gallio.Reports.plugin" Name="Gallio.Reports.plugin" Source="$(var.TargetDir)\bin\Reports\Gallio.Reports.plugin" />
+                <File Id="Gallio.Reports.dll" Source="$(var.GallioTargetDir)\bin\Reports\Gallio.Reports.dll" KeyPath="yes" />
+                <File Id="Gallio.Reports.plugin" Source="$(var.GallioTargetDir)\bin\Reports\Gallio.Reports.plugin" />
             </Component>
             <Component Id="Reports.Readme.txt" Guid="0377a725-f578-491b-a00c-ee67fae46fee">
-                <File Id="Reports.Readme.txt" Name="Readme.txt" Source="$(var.TargetDir)\bin\Reports\Readme.txt" KeyPath="yes" />
+                <File Id="Reports.Readme.txt" Source="$(var.GallioTargetDir)\bin\Reports\Readme.txt" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="css">
             <Component Id="Gallio.Report.css" Guid="65dc0971-e579-4226-b78a-1588d9f6977d">
-                <File Id="Gallio.Report.css" Name="Gallio-Report.css" Source="$(var.TargetDir)\bin\Reports\css\Gallio-Report.css" KeyPath="yes" />
+                <File Id="Gallio.Report.css" Source="$(var.GallioTargetDir)\bin\Reports\css\Gallio-Report.css" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="js">
             <Component Id="Gallio.Report.js" Guid="09db9a62-2734-4624-9d6c-8ce1688d21ce">
-                <File Id="Gallio.Report.js" Name="Gallio-Report.js" Source="$(var.TargetDir)\bin\Reports\js\Gallio-Report.js" KeyPath="yes" />
+                <File Id="Gallio.Report.js" Source="$(var.GallioTargetDir)\bin\Reports\js\Gallio-Report.js" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="xsl">
             <Component Id="Gallio.Report.common.xsl" Guid="1AE4D4DD-DE35-4887-8953-9079E1BE2447">
-                <File Id="Gallio.Report.common.xsl" Name="Gallio-Report.common.xsl" Source="$(var.TargetDir)\bin\Reports\xsl\Gallio-Report.common.xsl" KeyPath="yes" />
+                <File Id="Gallio.Report.common.xsl" Source="$(var.GallioTargetDir)\bin\Reports\xsl\Gallio-Report.common.xsl" KeyPath="yes" />
             </Component>
             <Component Id="Gallio.Report.txt.xsl" Guid="8b1860f4-71d9-43f7-8ee9-2657ed2977b2">
-                <File Id="Gallio.Report.txt.xsl" Name="Gallio-Report.txt.xsl" Source="$(var.TargetDir)\bin\Reports\xsl\Gallio-Report.txt.xsl" KeyPath="yes" />
+                <File Id="Gallio.Report.txt.xsl" Source="$(var.GallioTargetDir)\bin\Reports\xsl\Gallio-Report.txt.xsl" KeyPath="yes" />
             </Component>
             <Component Id="Gallio.Report.html.xsl" Guid="971c081f-fd9f-4682-bf10-59b655de647e">
-                <File Id="Gallio.Report.html.xsl" Name="Gallio-Report.html.xsl" Source="$(var.TargetDir)\bin\Reports\xsl\Gallio-Report.html.xsl" KeyPath="yes" />
+                <File Id="Gallio.Report.html.xsl" Source="$(var.GallioTargetDir)\bin\Reports\xsl\Gallio-Report.html.xsl" KeyPath="yes" />
             </Component>
             <Component Id="Gallio.Report.html.condensed.xsl" Guid="271c082f-fd9f-4522-bf10-59b355de64e5">
-                <File Id="Gallio.Report.html.condensed.xsl" Name="Gallio-Report.html-condensed.xsl" Source="$(var.TargetDir)\bin\Reports\xsl\Gallio-Report.html-condensed.xsl" KeyPath="yes" />
+                <File Id="Gallio.Report.html.condensed.xsl" Source="$(var.GallioTargetDir)\bin\Reports\xsl\Gallio-Report.html-condensed.xsl" KeyPath="yes" />
             </Component>
             <Component Id="Gallio.Report.xhtml.xsl" Guid="5EF5556F-7443-4112-A2DD-F0E85A14CFD5">
-                <File Id="Gallio.Report.xhtml.xsl" Name="Gallio-Report.xhtml.xsl" Source="$(var.TargetDir)\bin\Reports\xsl\Gallio-Report.xhtml.xsl" KeyPath="yes" />
+                <File Id="Gallio.Report.xhtml.xsl" Source="$(var.GallioTargetDir)\bin\Reports\xsl\Gallio-Report.xhtml.xsl" KeyPath="yes" />
             </Component>
             <Component Id="Gallio.Report.xhtml.condensed.xsl" Guid="4C558DAE-9159-4b20-82F9-B14B487319E4">
-                <File Id="Gallio.Report.xhtml.condensed.xsl" Name="Gallio-Report.xhtml-condensed.xsl" Source="$(var.TargetDir)\bin\Reports\xsl\Gallio-Report.xhtml-condensed.xsl" KeyPath="yes" />
+                <File Id="Gallio.Report.xhtml.condensed.xsl" Source="$(var.GallioTargetDir)\bin\Reports\xsl\Gallio-Report.xhtml-condensed.xsl" KeyPath="yes" />
             </Component>
             <Component Id="Gallio.Report.htmlxhtml.xsl" Guid="983bbd35-c150-47f6-91c0-74a288a28e5e">
-                <File Id="Gallio.Report.htmlxhtml.xsl" Name="Gallio-Report.html+xhtml.xsl" Source="$(var.TargetDir)\bin\Reports\xsl\Gallio-Report.html+xhtml.xsl" KeyPath="yes" />
+                <File Id="Gallio.Report.htmlxhtml.xsl" Source="$(var.GallioTargetDir)\bin\Reports\xsl\Gallio-Report.html+xhtml.xsl" KeyPath="yes" />
             </Component>
             <Component Id="Gallio.Report.ccnet.details.xsl" Guid="51e847dd-2e18-410f-b2af-1659e1e222ad">
-                <File Id="Gallio.Report.ccnet.details.xsl" Name="Gallio-Report.ccnet-details.xsl" Source="$(var.TargetDir)\bin\Reports\xsl\Gallio-Report.ccnet-details.xsl" KeyPath="yes" />
+                <File Id="Gallio.Report.ccnet.details.xsl" Source="$(var.GallioTargetDir)\bin\Reports\xsl\Gallio-Report.ccnet-details.xsl" KeyPath="yes" />
             </Component>
             <Component Id="Gallio.Report.ccnet.details.condensed.xsl" Guid="46DCDA98-A69E-4037-9577-3285C751D68B">
-                <File Id="Gallio.Report.ccnet.details.condensed.xsl" Name="Gallio-Report.ccnet-details-condensed.xsl" Source="$(var.TargetDir)\bin\Reports\xsl\Gallio-Report.ccnet-details-condensed.xsl" KeyPath="yes" />
+                <File Id="Gallio.Report.ccnet.details.condensed.xsl" Source="$(var.GallioTargetDir)\bin\Reports\xsl\Gallio-Report.ccnet-details-condensed.xsl" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
         <DirectoryRef Id="img">
             <Component Id="Container.png" Guid="76196919-6e89-486f-b095-5bc28787d954">
-                <File Id="Container.png" Source="$(var.TargetDir)\bin\Reports\img\Container.png" KeyPath="yes" />
+                <File Id="Container.png" Source="$(var.GallioTargetDir)\bin\Reports\img\Container.png" KeyPath="yes" />
             </Component>
             <Component Id="Failed.gif" Guid="63cb7f6f-8515-4db4-aecd-4a2b757c0171">
-                <File Id="Failed.gif" Source="$(var.TargetDir)\bin\Reports\img\Failed.gif" KeyPath="yes" />
+                <File Id="Failed.gif" Source="$(var.GallioTargetDir)\bin\Reports\img\Failed.gif" KeyPath="yes" />
             </Component>
             <Component Id="Fixture.png" Guid="708907f8-f2b6-4f7b-ae3b-00f2d031e54b">
-                <File Id="Fixture.png" Source="$(var.TargetDir)\bin\Reports\img\Fixture.png" KeyPath="yes" />
+                <File Id="Fixture.png" Source="$(var.GallioTargetDir)\bin\Reports\img\Fixture.png" KeyPath="yes" />
             </Component>
             <Component Id="FullStop.gif" Guid="89FD2012-5B71-4412-8AE9-65476C5E60EF">
-                <File Id="FullStop.gif" Source="$(var.TargetDir)\bin\Reports\img\FullStop.gif" KeyPath="yes" />
+                <File Id="FullStop.gif" Source="$(var.GallioTargetDir)\bin\Reports\img\FullStop.gif" KeyPath="yes" />
             </Component>
             <Component Id="GallioTestReportHeader.png" Guid="0dc8470b-2b37-46ed-a57d-c6d924aa4c26">
-                <File Id="GallioTestReportHeader.png" Source="$(var.TargetDir)\bin\Reports\img\GallioTestReportHeader.png" KeyPath="yes" />
+                <File Id="GallioTestReportHeader.png" Source="$(var.GallioTargetDir)\bin\Reports\img\GallioTestReportHeader.png" KeyPath="yes" />
             </Component>
             <Component Id="header.background.gif" Guid="3cab49d6-ea40-43af-b5e1-17f7d7914fce">
-                <File Id="header.background.gif" Name="header-background.gif" Source="$(var.TargetDir)\bin\Reports\img\header-background.gif" KeyPath="yes" />
+                <File Id="header.background.gif" Source="$(var.GallioTargetDir)\bin\Reports\img\header-background.gif" KeyPath="yes" />
             </Component>
             <Component Id="Ignored.gif" Guid="39DDC89E-0C54-4164-B13F-BB86E9ADD864">
-                <File Id="Ignored.gif" Source="$(var.TargetDir)\bin\Reports\img\Ignored.gif" KeyPath="yes" />
+                <File Id="Ignored.gif" Source="$(var.GallioTargetDir)\bin\Reports\img\Ignored.gif" KeyPath="yes" />
             </Component>
             <Component Id="Logo.png" Guid="2987ABDA-F0D0-475f-90D2-97F89C588002">
-                <File Id="Logo.png" Name="Logo.png" Source="$(var.TargetDir)\bin\Reports\img\Logo.png" KeyPath="yes" />
+                <File Id="Logo.png" Source="$(var.GallioTargetDir)\bin\Reports\img\Logo.png" KeyPath="yes" />
             </Component>
             <Component Id="Minus.gif" Guid="8F75BF51-8884-41b2-AFD8-1AD48D7ECE38">
-                <File Id="Minus.gif" Name="Minus.gif" Source="$(var.TargetDir)\bin\Reports\img\Minus.gif" KeyPath="yes" />
+                <File Id="Minus.gif" Source="$(var.GallioTargetDir)\bin\Reports\img\Minus.gif" KeyPath="yes" />
             </Component>
             <Component Id="Passed.gif" Guid="70FB3482-9197-469d-AFDA-A5B07E085693">
-                <File Id="Passed.gif" Source="$(var.TargetDir)\bin\Reports\img\Passed.gif" KeyPath="yes" />
+                <File Id="Passed.gif" Source="$(var.GallioTargetDir)\bin\Reports\img\Passed.gif" KeyPath="yes" />
             </Component>
             <Component Id="Plus.gif" Guid="16298049-ead7-49c7-bd22-aa3730468ff6">
-                <File Id="Plus.gif" Name="Plus.gif" Source="$(var.TargetDir)\bin\Reports\img\Plus.gif" KeyPath="yes" />
+                <File Id="Plus.gif" Source="$(var.GallioTargetDir)\bin\Reports\img\Plus.gif" KeyPath="yes" />
             </Component>
             <Component Id="Test.png" Guid="34568772-2867-44c9-81BE-F90F818686B1">
-                <File Id="Test.png" Name="Test.png" Source="$(var.TargetDir)\bin\Reports\img\Test.png" KeyPath="yes" />
+                <File Id="Test.png" Source="$(var.GallioTargetDir)\bin\Reports\img\Test.png" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 

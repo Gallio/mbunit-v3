@@ -3,7 +3,7 @@
     <Fragment>
         <DirectoryRef Id="INSTALLDIR">
             <Component Id="MbUnit.Website" Guid="{6F174992-5128-4c86-BEB3-7CD07C684DC1}">
-                <File Id="MbUnit.Website.url" Name="MbUnit Website.url" Source="$(var.TargetDir)\MbUnit Website.url" KeyPath="yes">
+                <File Id="MbUnit.Website.url" Source="$(var.GallioTargetDir)\MbUnit Website.url" KeyPath="yes">
                     <Shortcut Id="MbUnit.Website.lnk" Name="MbUnit Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes"/>
                 </File>
                 <RemoveFolder Id="GallioMenuFolder.Remove_MbUnitWebsite" Directory="GallioMenuFolder" On="uninstall"/>
@@ -12,20 +12,23 @@
 
         <DirectoryRef Id="binFolder">
             <Component Id="MbUnit.v3" Guid="{2f25f1f8-46ea-40f5-a850-16bac64cad1b}">
-                <File Id="MbUnit.dll" Source="$(var.TargetDir)\bin\MbUnit.dll" KeyPath="yes"/>
-                <File Id="MbUnit.plugin" Source="$(var.TargetDir)\bin\MbUnit.plugin"/>
-                <File Id="MbUnit.pdb" Source="$(var.TargetDir)\bin\MbUnit.pdb"/>
-                <File Id="MbUnit.xml" Source="$(var.TargetDir)\bin\MbUnit.xml"/>
-                <File Id="MbUni35.dll" Source="$(var.TargetDir)\bin\MbUnit35.dll"/>
-                <File Id="MbUnit35.plugin" Source="$(var.TargetDir)\bin\MbUnit35.plugin"/>
-                <File Id="MbUnit35.pdb" Source="$(var.TargetDir)\bin\MbUnit35.pdb"/>
-                <File Id="MbUnit35.xml" Source="$(var.TargetDir)\bin\MbUnit35.xml"/>
+                <File Id="MbUnit.dll" Source="$(var.GallioTargetDir)\bin\MbUnit.dll" KeyPath="yes"/>
+                <File Id="MbUnit.plugin" Source="$(var.GallioTargetDir)\bin\MbUnit.plugin"/>
+                <File Id="MbUnit.pdb" Source="$(var.GallioTargetDir)\bin\MbUnit.pdb"/>
+                <File Id="MbUnit.xml" Source="$(var.GallioTargetDir)\bin\MbUnit.xml"/>
+            </Component>
+            <Component Id="MbUnit35.v3" Guid="{7fa829c3-df5c-4e41-865b-54084c65c0b0}">
+                <File Id="MbUni35.dll" Source="$(var.GallioTargetDir)\bin\MbUnit35.dll"/>
+                <File Id="MbUnit35.plugin" Source="$(var.GallioTargetDir)\bin\MbUnit35.plugin"/>
+                <File Id="MbUnit35.pdb" Source="$(var.GallioTargetDir)\bin\MbUnit35.pdb"/>
+                <File Id="MbUnit35.xml" Source="$(var.GallioTargetDir)\bin\MbUnit35.xml"/>
             </Component>
         </DirectoryRef>
 
         <Feature Id="feat_MbUnit3" Title="MbUnit v3 Framework" Level="1"
                  Description="Installs the MbUnit v3 framework components.">
             <ComponentRef Id='MbUnit.v3'/>
+            <ComponentRef Id='MbUnit35.v3'/>
             <ComponentRef Id='MbUnit.Website'/>
         </Feature>
     </Fragment>

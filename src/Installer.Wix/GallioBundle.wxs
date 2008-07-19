@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product
-        Id="7e22a90e-48db-4f13-9f21-733f83ac9af2"
-        Name="Gallio"
-        UpgradeCode="faaf3c4b-8757-437a-a3d6-9d882de7d088"
+        Id="*"
+        Name="Gallio $(var.Version)"
         Version="$(var.Version)"
         Manufacturer="www.gallio.org"
+        UpgradeCode="{FAAF3C4B-8757-437A-A3D6-9D882DE7D088}"
         Language="1033">
         <Package
             Comments="Gallio Bundle"
@@ -14,6 +14,19 @@
             Languages="1033"
             Compressed="yes"
             />
+
+        <!-- Major upgrade -->
+        <Upgrade Id="{FAAF3C4B-8757-437A-A3D6-9D882DE7D088}">
+            <UpgradeVersion Minimum="$(var.Version)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
+            <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
+        </Upgrade>
+        <Condition Message="A later version of [ProductName] is already installed.">
+            NOT NEWERVERSIONDETECTED
+        </Condition>
+        <Condition Message="An administrator must approve or install [ProductName].">
+            Privileged
+        </Condition>
+
         <!-- The files are all packaged in a single cab file inside the msi file -->
         <Media Id="1" EmbedCab="yes" Cabinet="Gallio.cab" />
 
@@ -31,7 +44,7 @@
                     <Directory Id='docsFolder' Name='docs'/>
                     <Directory Id='extraFolder' Name='extra'/>
                     <Directory Id='samplesFolder' Name='samples'/>
-                </Directory>
+                </Directory>                
             </Directory>
 
             <!-- Desktop Folder Directory for our Desktop Shortcut -->
@@ -42,6 +55,16 @@
                 <Directory Id="GallioMenuFolder" Name="Gallio"/>
             </Directory>
         </Directory>
+
+        <!-- Install Sequences -->
+        <InstallExecuteSequence>
+            <FindRelatedProducts Before="LaunchConditions" />
+            <RemoveExistingProducts After="InstallValidate" />
+        </InstallExecuteSequence>
+
+        <InstallUISequence>
+            <FindRelatedProducts Before="LaunchConditions" />
+        </InstallUISequence>
 
         <?include Features.wxi ?>
 

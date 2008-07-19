@@ -5,30 +5,30 @@
             <Directory Id="NCover" Name="NCover">
                 <Directory Id="NCoverIntegration" Name="v1.5.8">
                     <Component Id="Gallio.NCoverIntegration.dll" Guid="5C614361-C7FF-4283-A51E-D7DC2A5B8826">
-                        <File Id="Gallio.NCoverIntegration.dll" Name="Gallio.NCoverIntegration.dll" Source="$(var.TargetDir)\bin\NCover\v1.5.8\Gallio.NCoverIntegration.dll" KeyPath="yes" />
-                        <File Id="Gallio.NCoverIntegration.plugin" Name="Gallio.NCoverIntegration.plugin" Source="$(var.TargetDir)\bin\NCover\v1.5.8\Gallio.NCoverIntegration.plugin" />
+                        <File Id="Gallio.NCoverIntegration.dll" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\Gallio.NCoverIntegration.dll" KeyPath="yes" />
+                        <File Id="Gallio.NCoverIntegration.plugin" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\Gallio.NCoverIntegration.plugin" />
                     </Component>
                     <Component Id="NCover.Framework.dll" Guid="12098944-9C89-48a4-BA54-0D39540AEEAE">
-                        <File Id="NCover.Framework.dll" Name="NCover.Framework.dll" Source="$(var.TargetDir)\bin\NCover\v1.5.8\NCover.Framework.dll" KeyPath="yes" />
+                        <File Id="NCover.Framework.dll" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\NCover.Framework.dll" KeyPath="yes" />
                     </Component>
                     <Component Id="CoverLib.dll" Guid="29840C8E-9EB6-407d-B331-87332748EAF9">
-                        <File Id="CoverLib.dll" Name="CoverLib.dll" Source="$(var.TargetDir)\bin\NCover\v1.5.8\CoverLib.dll" KeyPath="yes" />
+                        <File Id="CoverLib.dll" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\CoverLib.dll" KeyPath="yes" />
                     </Component>
                     <Component Id="NCover.Console.exe" Guid="68F2DD30-B40D-4ca8-9110-6A7950D643E4">
-                        <File Id="NCover.Console.exe" Name="NCover.Console.exe" Source="$(var.TargetDir)\bin\NCover\v1.5.8\NCover.Console.exe" KeyPath="yes" />
-                        <File Id="NCover.Console.exe.config" Name="NCover.Console.exe.config" Source="$(var.TargetDir)\bin\NCover\v1.5.8\NCover.Console.exe.config" />
+                        <File Id="NCover.Console.exe" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\NCover.Console.exe" KeyPath="yes" />
+                        <File Id="NCover.Console.exe.config" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\NCover.Console.exe.config" />
                     </Component>
                     <Component Id="Microsoft.VC80.CRT" Guid="16432CC8-30A7-4335-8866-3F852755D6FC">
-                        <File Id="Microsoft.VC80.CRT.manifest" Name="Microsoft.VC80.CRT.manifest" Source="$(var.TargetDir)\bin\NCover\v1.5.8\Microsoft.VC80.CRT.manifest" KeyPath="yes" />
-                        <File Id="msvcr80.dll" Name="msvcr80.dll" Source="$(var.TargetDir)\bin\NCover\v1.5.8\msvcr80.dll" />
-                        <File Id="msvcp80.dll" Name="msvcp80.dll" Source="$(var.TargetDir)\bin\NCover\v1.5.8\msvcp80.dll" />
-                        <!-- FIXME: see manifest <File Id="msvcm80.dll" Name="msvcm80.dll" Source="$(var.TargetDir)\bin\NCover\msvcm80.dll" /> -->
+                        <File Id="Microsoft.VC80.CRT.manifest" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\Microsoft.VC80.CRT.manifest" KeyPath="yes" />
+                        <File Id="msvcr80.dll" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\msvcr80.dll" />
+                        <File Id="msvcp80.dll" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\msvcp80.dll" />
+                        <!-- FIXME: see manifest <File Id="msvcm80.dll" Source="$(var.GallioTargetDir)\bin\NCover\msvcm80.dll" /> -->
                     </Component>
                     <Component Id="Coverage.xsl" Guid="0F97CB44-EDC3-40e2-9187-1ADA56305F2A">
-                        <File Id="Coverage.xsl" Name="Coverage.xsl" Source="$(var.TargetDir)\bin\NCover\v1.5.8\Coverage.xsl" KeyPath="yes" />
+                        <File Id="Coverage.xsl" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\Coverage.xsl" KeyPath="yes" />
                     </Component>
                     <Component Id="NCoverFAQ.html" Guid="7CD117E9-4AEF-49ed-BBC7-22EE5B665104">
-                        <File Id="NCoverFAQ.html" Name="NCoverFAQ.html" Source="$(var.TargetDir)\bin\NCover\v1.5.8\NCoverFAQ.html" KeyPath="yes" />
+                        <File Id="NCoverFAQ.html" Source="$(var.GallioTargetDir)\bin\NCover\v1.5.8\NCoverFAQ.html" KeyPath="yes" />
                     </Component>
                 </Directory>
             </Directory>
