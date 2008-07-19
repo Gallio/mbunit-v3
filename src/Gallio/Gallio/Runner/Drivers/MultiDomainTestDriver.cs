@@ -74,6 +74,12 @@ namespace Gallio.Runner.Drivers
                 testDomain.TestPackageConfig.AssemblyFiles.Clear();
                 testDomain.TestPackageConfig.AssemblyFiles.Add(assemblyFile);
 
+                string assemblyDir = Path.GetDirectoryName(assemblyFile);
+                if (testDomain.TestPackageConfig.HostSetup.ApplicationBaseDirectory == null)
+                    testDomain.TestPackageConfig.HostSetup.ApplicationBaseDirectory = assemblyDir;
+                if (testDomain.TestPackageConfig.HostSetup.WorkingDirectory == null)
+                    testDomain.TestPackageConfig.HostSetup.WorkingDirectory = assemblyDir;
+
                 string assemblyConfigFile = assemblyFile + @".config";
                 if (File.Exists(assemblyConfigFile))
                     testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml = File.ReadAllText(assemblyConfigFile);

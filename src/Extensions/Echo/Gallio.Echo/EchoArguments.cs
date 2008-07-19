@@ -53,19 +53,19 @@ namespace Gallio.Echo
             CommandLineArgumentFlags.AtMostOnce,
             ShortName = "abd",
             LongName = "application-base-directory",
-            Description = "The application base directory to set during test execution.",
+            Description = "The application base directory to use during test execution instead of the default.",
             ValueLabel = "dir"
             )]
-        public string ApplicationBaseDirectory = "";
+        public string ApplicationBaseDirectory;
 
         [CommandLineArgument(
             CommandLineArgumentFlags.AtMostOnce,
             ShortName = "wd",
             LongName = "working-directory",
-            Description = "The working directory to set during test execution.",
+            Description = "The working directory to use during test execution instead of the default.",
             ValueLabel = "dir"
             )]
-        public string WorkingDirectory = "";
+        public string WorkingDirectory;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,

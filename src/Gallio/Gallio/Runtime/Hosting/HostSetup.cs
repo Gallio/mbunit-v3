@@ -28,8 +28,8 @@ namespace Gallio.Runtime.Hosting
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class HostSetup : IEquatable<HostSetup>
     {
-        private string applicationBaseDirectory = @"";
-        private string workingDirectory = @"";
+        private string applicationBaseDirectory;
+        private string workingDirectory;
         private bool shadowCopy;
         private HostConfiguration configuration;
 
@@ -42,46 +42,50 @@ namespace Gallio.Runtime.Hosting
 
         /// <summary>
         /// <para>
-        /// Gets or sets the relative or absolute path of the application base directory.
+        /// Gets or sets the relative or absolute path of the application base directory,
+        /// or null to use a default value selected by the consumer.
         /// </para>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <remarks>
+        /// Relative paths should be canonicalized as soon as possible.
+        /// See <see cref="Canonicalize" />.
+        /// </remarks>
+        /// <value>
+        /// The application base directory.  Default is <c>null</c>.
+        /// </value>
         [XmlAttribute("applicationBaseDirectory")]
         public string ApplicationBaseDirectory
         {
             get { return applicationBaseDirectory; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                applicationBaseDirectory = value;
-            }
+            set { applicationBaseDirectory = value; }
         }
 
         /// <summary>
         /// <para>
-        /// Gets or sets the relative or absolute path of the working directory.
+        /// Gets or sets the relative or absolute path of the working directory
+        /// or null to use a default value selected by the consumer.
         /// </para>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
         /// </para>
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <remarks>
+        /// Relative paths should be canonicalized as soon as possible.
+        /// See <see cref="Canonicalize" />.
+        /// </remarks>
+        /// <value>
+        /// The working directory.  Default is <c>null</c>.
+        /// </value>
         [XmlAttribute("workingDirectory")]
         public string WorkingDirectory
         {
             get { return workingDirectory; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                workingDirectory = value;
-            }
+            set { workingDirectory = value; }
         }
 
         /// <summary>
@@ -162,8 +166,8 @@ namespace Gallio.Runtime.Hosting
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return applicationBaseDirectory.GetHashCode()
-                ^ workingDirectory.GetHashCode()
+            return (applicationBaseDirectory != null ? applicationBaseDirectory.GetHashCode() : 0)
+                ^ (workingDirectory != null ? workingDirectory.GetHashCode() : 0)
                 ^ Configuration.GetHashCode()
                 ^ shadowCopy.GetHashCode();
         }

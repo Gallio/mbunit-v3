@@ -22,7 +22,7 @@ using Gallio.Runner.Reports;
 using Gallio.Tests.Integration;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Framework
+namespace MbUnit.Tests.Integration
 {
     /// <summary>
     /// Tests the test assembly configuration file integration.

@@ -176,12 +176,13 @@ namespace Gallio.Runtime.Hosting
             hostArguments.Append(hostConnectionArguments);
             hostArguments.Append(@" /timeout:").Append((int)WatchdogTimeout.TotalSeconds);
             hostArguments.Append(@" /owner-process:").Append(Process.GetCurrentProcess().Id);
-            hostArguments.Append(@" ""/application-base-directory:").Append(FileUtils.StripTrailingBackslash(HostSetup.ApplicationBaseDirectory)).Append('"');
+            if (HostSetup.ApplicationBaseDirectory != null)
+                hostArguments.Append(@" ""/application-base-directory:").Append(FileUtils.StripTrailingBackslash(HostSetup.ApplicationBaseDirectory)).Append('"');
             hostArguments.Append(@" ""/configuration-file:").Append(temporaryConfigurationFilePath).Append('"');
             if (HostSetup.ShadowCopy)
                 hostArguments.Append(@" /shadow-copy");
 
-            processTask = CreateProcessTask(GetInstalledHostProcessPath(), hostArguments.ToString(), HostSetup.WorkingDirectory);
+            processTask = CreateProcessTask(GetInstalledHostProcessPath(), hostArguments.ToString(), HostSetup.WorkingDirectory ?? Environment.CurrentDirectory);
             processTask.CaptureConsoleOutput = true;
             processTask.CaptureConsoleError = true;
             processTask.ConsoleOutputDataReceived += LogConsoleOutput;

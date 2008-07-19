@@ -22,6 +22,7 @@ namespace Gallio.NCoverIntegration
             ncoverArguments.Append(' ').Append(arguments);
             ncoverArguments.Append(" //w \"").Append(RemoveTrailingBackslash(workingDirectory)).Append('"');
             ncoverArguments.Append(" //x \"").Append(Path.Combine(workingDirectory, "Coverage.xml")).Append('"');
+            //ncoverArguments.Append(" //l \"C:\\Temp\\Coverage.log\"");
 
             return new ProcessTask(ncoverConsolePath, ncoverArguments.ToString(), workingDirectory);
         }

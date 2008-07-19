@@ -46,6 +46,7 @@ namespace Gallio.Tests.Runtime.Hosting
             StubHostFactory factory = new StubHostFactory();
 
             HostSetup originalHostSetup = new HostSetup();
+            originalHostSetup.WorkingDirectory = "";
             ILogger logger = new LogStreamLogger();
             Assert.IsNotNull(factory.CreateHost(originalHostSetup, logger));
 

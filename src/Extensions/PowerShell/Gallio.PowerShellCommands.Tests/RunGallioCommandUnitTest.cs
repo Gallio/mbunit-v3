@@ -59,9 +59,9 @@ namespace Gallio.PowerShellCommands.Tests
                 CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.AssemblyFiles);
                 CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
 
-                Assert.AreEqual("", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
+                Assert.IsNull(launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
-                Assert.AreEqual("", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+                Assert.IsNull(launcher.TestPackageConfig.HostSetup.WorkingDirectory);
 
                 return new TestLauncherResult(new Report());
             });

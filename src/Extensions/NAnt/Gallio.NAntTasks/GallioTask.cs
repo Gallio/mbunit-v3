@@ -92,8 +92,8 @@ namespace Gallio.NAntTasks
         private DirSet[] pluginDirectories;
         private DirSet[] hintDirectories;
 
-        private string applicationBaseDirectory = "";
-        private string workingDirectory = "";
+        private string applicationBaseDirectory;
+        private string workingDirectory;
         private bool shadowCopy;
 
         private string filter = "*";
@@ -180,14 +180,15 @@ namespace Gallio.NAntTasks
 
         /// <summary>
         /// <para>
-        /// The relative or absolute path of the application base directory.
+        /// Gets or sets the relative or absolute path of the application base directory,
+        /// or null to use a default value selected by the consumer.
         /// </para>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
         /// </para>
         /// <para>
-        /// The default is "".
+        /// The default is null.
         /// </para>
         /// </summary>
         [TaskAttribute("application-base-directory")]
@@ -198,14 +199,15 @@ namespace Gallio.NAntTasks
 
         /// <summary>
         /// <para>
-        /// The relative or absolute path of the working directory.
+        /// Gets or sets the relative or absolute path of the working directory
+        /// or null to use a default value selected by the consumer.
         /// </para>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
         /// </para>
         /// <para>
-        /// The default is "".
+        /// The default is null.
         /// </para>
         /// </summary>
         [TaskAttribute("working-directory")]

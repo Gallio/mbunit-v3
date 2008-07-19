@@ -52,8 +52,8 @@ namespace Gallio.PowerShellCommands
         private string[] pluginDirectories;
         private string[] hintDirectories;
 
-        private string applicationBaseDirectory = "";
-        private string workingDirectory = "";
+        private string applicationBaseDirectory;
+        private string workingDirectory;
         private SwitchParameter shadowCopy;
 
         private string[] reportTypes = EmptyArray<string>.Instance;
@@ -153,14 +153,15 @@ namespace Gallio.PowerShellCommands
 
         /// <summary>
         /// <para>
-        /// The relative or absolute path of the application base directory.
+        /// Gets or sets the relative or absolute path of the application base directory,
+        /// or null to use a default value selected by the consumer.
         /// </para>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
         /// </para>
         /// <para>
-        /// The default is "".
+        /// The default is null.
         /// </para>
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true)]
@@ -172,14 +173,15 @@ namespace Gallio.PowerShellCommands
 
         /// <summary>
         /// <para>
-        /// The relative or absolute path of the working directory.
+        /// Gets or sets the relative or absolute path of the working directory
+        /// or null to use a default value selected by the consumer.
         /// </para>
         /// <para>
         /// If relative, the path is based on the current working directory,
         /// so a value of "" causes the current working directory to be used.
         /// </para>
         /// <para>
-        /// The default is "".
+        /// The default is null.
         /// </para>
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true)]

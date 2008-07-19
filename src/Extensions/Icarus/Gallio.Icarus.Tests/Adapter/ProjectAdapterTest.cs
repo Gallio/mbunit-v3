@@ -398,7 +398,7 @@ namespace Gallio.Icarus.Adapter.Tests
             string applicationBaseDirectory = "test";
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            Assert.AreEqual(string.Empty, projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
+            Assert.IsNull(projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
             updateApplicationBaseDirectoryEvent.Raise(mockView, new SingleEventArgs<string>(applicationBaseDirectory));
             Assert.AreEqual(applicationBaseDirectory, projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
         }
@@ -409,7 +409,7 @@ namespace Gallio.Icarus.Adapter.Tests
             string workingDirectory = "test";
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            Assert.AreEqual(string.Empty, projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory);
+            Assert.IsNull(projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory);
             updateWorkingDirectoryEvent.Raise(mockView, new SingleEventArgs<string>(workingDirectory));
             Assert.AreEqual(workingDirectory, projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory);
         }

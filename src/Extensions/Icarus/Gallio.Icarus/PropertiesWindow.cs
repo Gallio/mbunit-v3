@@ -38,12 +38,12 @@ namespace Gallio.Icarus
 
         public string ApplicationBaseDirectory
         {
-            set { applicationBaseDirectoryTextBox.Text = value; }
+            set { applicationBaseDirectoryTextBox.Text = value ?? ""; }
         }
 
         public string WorkingDirectory
         {
-            set { workingDirectoryTextBox.Text = value; }
+            set { workingDirectoryTextBox.Text = value ?? ""; }
         }
 
         public bool ShadowCopy
@@ -110,7 +110,7 @@ namespace Gallio.Icarus
 
         private void applicationBaseDirectoryTextBox_TextChanged(object sender, EventArgs e)
         {
-            projectAdapterView.UpdateApplicationBaseDirectory(applicationBaseDirectoryTextBox.Text);
+            projectAdapterView.UpdateApplicationBaseDirectory(applicationBaseDirectoryTextBox.Text.Length == 0 ? null : applicationBaseDirectoryTextBox.Text);
         }
 
         private void findWorkingDirectoryButton_Click(object sender, EventArgs e)
@@ -122,7 +122,7 @@ namespace Gallio.Icarus
 
         private void workingDirectoryTextBox_TextChanged(object sender, EventArgs e)
         {
-            projectAdapterView.UpdateWorkingDirectory(workingDirectoryTextBox.Text);
+            projectAdapterView.UpdateWorkingDirectory(workingDirectoryTextBox.Text.Length == 0 ? null : workingDirectoryTextBox.Text);
         }
 
         private void shadowCopyCheckBox_CheckedChanged(object sender, EventArgs e)

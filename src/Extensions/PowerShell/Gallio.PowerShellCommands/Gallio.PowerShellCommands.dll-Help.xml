@@ -67,7 +67,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
           <maml:name>ApplicationBaseDirectory</maml:name>
           <maml:description>
-            <maml:para>The relative or absolute path of the application base directory.</maml:para>
+            <maml:para>The relative or absolute path of the application base directory to use during test execution instead of the default.</maml:para>
           </maml:description>
           <dev:defaultValue>String.Empty</dev:defaultValue>
         </command:parameter>
@@ -172,7 +172,7 @@
           <maml:name>WorkingDirectory</maml:name>
           <maml:description>
             <maml:para>
-              The relative or absolute path of the working directory. If relative, the path is based on the current working directory, so a value of "" (an empty string) causes the current working directory to be used.
+              The relative or absolute path of the working directory to use during test execution instead of the default.
             </maml:para>
           </maml:description>
           <dev:defaultValue>String.Empty</dev:defaultValue>

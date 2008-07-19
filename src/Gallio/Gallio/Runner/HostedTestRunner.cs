@@ -406,7 +406,6 @@ namespace Gallio.Runner
             progressMonitor.SetStatus("Initializing the host environment.");
 
             // Configure the host's primary parameters.
-            // FIXME: The division of labor between hosts and domains is unclear currently.
             HostSetup hostSetup = new HostSetup();
             hostSetup.ApplicationBaseDirectory = RuntimeAccessor.InstallationPath;
             hostSetup.WorkingDirectory = packageHostSetup.WorkingDirectory;

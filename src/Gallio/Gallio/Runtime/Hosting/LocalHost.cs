@@ -39,7 +39,7 @@ namespace Gallio.Runtime.Hosting
         public LocalHost(HostSetup hostSetup, ILogger logger)
             : base(hostSetup, logger)
         {
-            if (hostSetup.WorkingDirectory.Length != 0)
+            if (! string.IsNullOrEmpty(hostSetup.WorkingDirectory))
                 currentDirectorySwitcher = new CurrentDirectorySwitcher(hostSetup.WorkingDirectory);
         }
 

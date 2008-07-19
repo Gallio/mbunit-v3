@@ -94,7 +94,8 @@ namespace Gallio.Runtime.Hosting
 
         private void SetWorkingDirectory()
         {
-            currentDirectorySwitcher = new CurrentDirectorySwitcher(HostSetup.WorkingDirectory);
+            if (! string.IsNullOrEmpty(HostSetup.WorkingDirectory))
+                currentDirectorySwitcher = new CurrentDirectorySwitcher(HostSetup.WorkingDirectory);
         }
 
         private void CreateTemporaryConfigurationFile()
@@ -111,7 +112,8 @@ namespace Gallio.Runtime.Hosting
         {
             try
             {
-                appDomain = AppDomainUtils.CreateAppDomain(@"IsolatedAppDomainHost", HostSetup.ApplicationBaseDirectory, temporaryConfigurationFilePath, HostSetup.ShadowCopy);
+                appDomain = AppDomainUtils.CreateAppDomain(@"IsolatedAppDomainHost",
+                    HostSetup.ApplicationBaseDirectory, temporaryConfigurationFilePath, HostSetup.ShadowCopy);
             }
             catch (Exception ex)
             {

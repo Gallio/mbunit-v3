@@ -143,7 +143,7 @@ namespace Gallio.Runner.Harness
                 progressMonitor.BeginTask("Loading test package.", 10);
                 progressMonitor.SetStatus("Performing pre-processing.");
 
-                workingDirectory = packageConfig.HostSetup.WorkingDirectory;
+                workingDirectory = packageConfig.HostSetup.WorkingDirectory ?? Environment.CurrentDirectory;
 
                 using (SwitchWorkingDirectory())
                 {
