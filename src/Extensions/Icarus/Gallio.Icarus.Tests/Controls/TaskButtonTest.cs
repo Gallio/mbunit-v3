@@ -25,7 +25,7 @@ using Rhino.Mocks.Interfaces;
 
 namespace Gallio.Icarus.Controls.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("Controls")]
     public class TaskButtonTest
     {
         private TaskButton taskButton;

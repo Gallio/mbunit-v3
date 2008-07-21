@@ -21,7 +21,7 @@ using Gallio.Runner;
 
 namespace Gallio.Icarus.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("Settings")]
     public class SettingsTest
     {
         private Settings settings;

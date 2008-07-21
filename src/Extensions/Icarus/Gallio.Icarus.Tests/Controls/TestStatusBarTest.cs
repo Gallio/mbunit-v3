@@ -23,7 +23,7 @@ using MbUnit.Framework;
 
 namespace Gallio.Icarus.Controls.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("Controls")]
     public class TestStatusBarTest
     {
         private TestStatusBar testStatusBar;

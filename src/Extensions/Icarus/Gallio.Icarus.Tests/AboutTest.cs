@@ -24,7 +24,7 @@ using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("User interface")]
     public class AboutTest
     {
         [Test]

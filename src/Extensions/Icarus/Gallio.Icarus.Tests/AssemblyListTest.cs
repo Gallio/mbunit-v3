@@ -24,7 +24,7 @@ using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("User interface")]
     public class AssemblyListTest : MockTest
     {
         private AssemblyList assemblyList;

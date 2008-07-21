@@ -20,7 +20,7 @@ using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("Logging")]
     public class IcarusLoggerTest : MockTest
     {
         [Test]

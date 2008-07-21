@@ -231,7 +231,7 @@ namespace Gallio.Icarus.AdapterModel.Tests
         }
 
         [Test]
-        public void CreateFilter_Test_AnyFilter()
+        public void Create_AnyFilter_Test()
         {
             ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
             testTreeModel.Nodes.Add(new TestTreeNode("test", "test", "test"));
@@ -240,7 +240,7 @@ namespace Gallio.Icarus.AdapterModel.Tests
         }
 
         [Test]
-        public void CreateFilter_Test_NoneFilter()
+        public void Create_NoneFilter_Test()
         {
             ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
             TestTreeNode test = new TestTreeNode("test", "test", "test");
@@ -251,24 +251,22 @@ namespace Gallio.Icarus.AdapterModel.Tests
         }
 
         [Test]
-        public void CreateFilter_Test()
+        public void Create_IdFilter_Test()
         {
             ITestTreeModel testTreeModel = projectAdapterModel.TreeModel;
-            TestTreeNode root = new TestTreeNode("root", "root", "root");
+            TestTreeNode root = new TestTreeNode("root", "root", TestKinds.Root);
             root.CheckState = CheckState.Indeterminate;
-            TestTreeNode ns = new TestTreeNode("ns", "ns", TestKinds.Namespace);
-            root.Nodes.Add(ns);
-            TestTreeNode child = new TestTreeNode("child", "child", "child");
-            ns.Nodes.Add(child);
             testTreeModel.Nodes.Add(root);
+            TestTreeNode ns = new TestTreeNode("namespace", "namespace", TestKinds.Namespace);
+            ns.CheckState = CheckState.Indeterminate;
+            root.Nodes.Add(ns);
+            TestTreeNode fixture = new TestTreeNode("fixture", "fixture", TestKinds.Fixture);
+            fixture.CheckState = CheckState.Indeterminate;
+            ns.Nodes.Add(fixture);
+            TestTreeNode test = new TestTreeNode("test", "test", TestKinds.Test);
+            fixture.Nodes.Add(test);
             Filter<ITest> filter = projectAdapterModel.CreateFilter();
-            Assert.AreEqual(1, ((OrFilter<ITest>)filter).Filters.Length);
-            filter = ((OrFilter<ITest>)filter).Filters[0];
-            Assert.AreEqual(1, ((OrFilter<ITest>)filter).Filters.Length);
-            filter = ((OrFilter<ITest>)filter).Filters[0];
-            Assert.AreEqual(1, ((OrFilter<ITest>)filter).Filters.Length);
-            filter = ((OrFilter<ITest>)filter).Filters[0];
-            Assert.AreEqual("child", ((EqualityFilter<string>)((IdFilter<ITest>)filter).ValueFilter).Comparand);
+            Assert.AreEqual("test", ((EqualityFilter<string>)((IdFilter<ITest>)filter).ValueFilter).Comparand);
         }
 
         [Test]

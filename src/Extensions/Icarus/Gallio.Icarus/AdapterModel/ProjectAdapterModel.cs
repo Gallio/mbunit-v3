@@ -156,9 +156,10 @@ namespace Gallio.Icarus.AdapterModel
                                     metadataNode = nodes[0] as TestTreeNode;
                                 else
                                 {
-                                    metadataNode = new TestTreeNode(m, m, m);
+                                    metadataNode = new TestTreeNode(m, m, key);
                                     testTreeModel.Root.Nodes.Add(metadataNode);
                                 }
+
                                 // add node in the appropriate place
                                 if (componentKind == TestKinds.Fixture)
                                 {
@@ -168,6 +169,7 @@ namespace Gallio.Icarus.AdapterModel
                                 }
                                 else
                                 {
+                                    // test
                                     TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
                                     ttnode.SourceCodeAvailable = (td.CodeLocation != null);
                                     ttnode.IsTest = td.IsTestCase;
@@ -212,13 +214,28 @@ namespace Gallio.Icarus.AdapterModel
                     {
                         case CheckState.Checked:
                             {
-                                if (node.NodeType != TestKinds.Namespace)
-                                    filters.Add(new IdFilter<ITest>(new EqualityFilter<string>(node.Name)));
-                                else
+                                EqualityFilter<string> equalityFilter = new EqualityFilter<string>(node.Name);
+                                switch (node.NodeType)
                                 {
-                                    Filter<ITest> childFilters = CreateFilter(node.Nodes);
-                                    if (childFilters != null)
-                                        filters.Add(childFilters);
+                                    case TestKinds.Namespace:
+                                        filters.Add(new NamespaceFilter<ITest>(equalityFilter));
+                                        break;
+
+                                    case TestKinds.Fixture:
+                                    case TestKinds.Test:
+                                        filters.Add(new IdFilter<ITest>(equalityFilter));
+                                        break;
+                                    
+                                    default:
+                                        if (typeof(MetadataKeys).GetField(node.NodeType) != null && node.Name != "None")
+                                            filters.Add(new MetadataFilter<ITest>(node.NodeType, equalityFilter));
+                                        else
+                                        {
+                                            Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                                            if (childFilters != null)
+                                                filters.Add(childFilters);
+                                        }
+                                        break;
                                 }
                                 break;
                             }
@@ -232,7 +249,10 @@ namespace Gallio.Icarus.AdapterModel
                     }
                 }
             }
-            return new OrFilter<ITest>(filters.ToArray());
+            if (filters.Count > 1)
+                return new OrFilter<ITest>(filters.ToArray());
+            else
+                return filters[0];
         }
 
         public void ApplyFilter(Filter<ITest> filter)

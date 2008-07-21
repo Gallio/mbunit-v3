@@ -27,7 +27,7 @@ using Gallio.Reflection;
 
 namespace Gallio.Icarus.Controls.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("Controls")]
     public class TestResultsListTest
     {
         private TestResultsList testResultsList;

@@ -37,7 +37,7 @@ using Gallio.Icarus.Controls.Interfaces;
 
 namespace Gallio.Icarus.Adapter.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("Adapter")]
     public class ProjectAdapterTest : MockTest
     {
         private IProjectAdapterView mockView;
