@@ -56,15 +56,24 @@
             </Directory>
         </Directory>
 
-        <!-- Install Sequences -->
+        <CustomActionRef Id="VS2005Setup" />
+        <CustomActionRef Id="VS90Setup" />
+
         <InstallExecuteSequence>
             <FindRelatedProducts Before="LaunchConditions" />
             <RemoveExistingProducts After="InstallValidate" />
+            <Custom Action="VS2005Setup" Before="InstallFinalize"><![CDATA[(&feat_MSTestRunner > 1 OR &feat_MbUnit3.Templates.VS2005 > 1) AND VS2005DEVENV <> ""]]></Custom>
+            <Custom Action="VS90Setup" Before="InstallFinalize"><![CDATA[(&feat_MSTestRunner > 1 OR &feat_MbUnit3.Templates.VS2008 > 1) AND VS90DEVENV <> ""]]></Custom>
         </InstallExecuteSequence>
 
         <InstallUISequence>
             <FindRelatedProducts Before="LaunchConditions" />
         </InstallUISequence>
+
+        <UI>
+            <ProgressText Action="VS2005Setup" Template="[1]">Updating Visual Studio 2005 registration ...</ProgressText>
+            <ProgressText Action="VS90Setup" Template="[1]">Updating Visual Studio 2008 registration ...</ProgressText>
+        </UI>
 
         <?include Features.wxi ?>
 
@@ -146,6 +155,22 @@
         <!-- Specifies the primary icon for the installation package. -->
         <Property Id="ARPPRODUCTICON" Value="GallioIcon" />
         <Icon Id="GallioIcon" SourceFile="Gallio.ico" />
+               
+        <!-- Detect presence of old pre-WiX Gallio installation. -->
+        <Property Id="OLD_GALLIO_UNINSTALL" Secure="yes">
+            <RegistrySearch Id="OldGallioInstallerSearch.LM" Type="raw"
+                Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\Gallio" Name="UninstallString" />
+            <RegistrySearch Id="OldGallioInstallerSearch.CU" Type="raw"
+                Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\Gallio" Name="UninstallString" />
+        </Property>
+        <!-- MSI has difficulty executing arbitary commands picked from the registry. 
+             An alternative is to prompt the users to first uninstall the previous version
+             before they can continue. This should only happen once. After that, the MSI
+             will auto-upgrade versions. This should not be needed once reach late beta stage.
+          -->
+        <Condition Message="A previous version of Gallio is installed. Please uninstall it and try again.">
+            NOT OLD_GALLIO_UNINSTALL
+        </Condition>
 
     </Product>
 </Wix>

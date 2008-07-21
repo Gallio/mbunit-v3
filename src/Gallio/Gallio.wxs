@@ -5,7 +5,6 @@
     <Fragment>
 
         <!-- TODO: Replace H2Reg.exe with the recommended way of registering help. -->
-        <!-- TODO: Need to support VS2005 Help as well. -->
 
         <Property Id="GALLIO_HOMEPAGE" Value="http://www.gallio.org/" />
 
@@ -120,17 +119,18 @@
             <ComponentRef Id="Gallio.chm" />
         </Feature>
 
+        <PropertyRef Id='VS2005DEVENV'/>
         <PropertyRef Id='VS90DEVENV'/>
 
-        <Feature Id="feat_Gallio.VSHelp" Title="Visual Studio Help Docs" Level="2" Description="Installs the integrated documentation for Visual Studio 2005 or Visual Studio 2008 access with F1 Help.">
-            <Condition Level="1">VS90DEVENV</Condition>
+        <Feature Id="feat_Gallio.VSHelp" Title="Visual Studio Help Docs" Level="2" Description="Installs the integrated documentation for Visual Studio 2005 and/or Visual Studio 2008. Access with F1 Help.">
+            <Condition Level="1">VS2005DEVENV OR VS90DEVENV</Condition>
             <ComponentRef Id="Gallio.Help.vs" />
             <ComponentRef Id="Gallio.H2Reg.ini" />
             <ComponentRef Id="H2Reg.exe" />
         </Feature>
 
-        <CustomAction Id="H2Reg.Install"   FileKey="H2Reg.exe" ExeCommand='-r CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
-        <CustomAction Id="H2Reg.Uninstall" FileKey="H2Reg.exe" ExeCommand='-u CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
+        <CustomAction Id="H2Reg.Install"   FileKey="H2Reg.exe" ExeCommand='-r -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="check" Impersonate="no"/>
+        <CustomAction Id="H2Reg.Uninstall" FileKey="H2Reg.exe" ExeCommand='-u -q CmdFile="[#Gallio.H2Reg.ini]"' Execute="deferred" Return="ignore" Impersonate="no"/>
 
         <InstallExecuteSequence>
             <Custom Action="H2Reg.Install" After="InstallFiles"><![CDATA[(&feat_Gallio.VSHelp = 3) AND NOT(!feat_Gallio.VSHelp = 3)]]></Custom>
@@ -138,8 +138,8 @@
         </InstallExecuteSequence>
 
         <UI>
-            <ProgressText Action="H2Reg.Install" Template="[1]">Installing help files into Visual Studio</ProgressText>
-            <ProgressText Action="H2Reg.Uninstall" Template="[1]">Uninstalling help files from Visual Studio</ProgressText>
+            <ProgressText Action="H2Reg.Install" Template="[1]">Installing help files into Visual Studio ...</ProgressText>
+            <ProgressText Action="H2Reg.Uninstall" Template="[1]">Uninstalling help files from Visual Studio ...</ProgressText>
         </UI>
     </Fragment>
 </Wix>

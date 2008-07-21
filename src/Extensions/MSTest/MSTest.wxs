@@ -3,11 +3,10 @@
      xmlns:vs="http://schemas.microsoft.com/wix/VSExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <Fragment>
+        <PropertyRef Id='VS2005DEVENV'/>
         <PropertyRef Id='VS90DEVENV'/>
         <PropertyRef Id='VS90_ROOT_FOLDER'/>
 
-        <!-- TODO: Add support for VS2005 -->
-        
         <DirectoryRef Id="TARGETDIR">
             <Directory Id='VS90_ROOT_FOLDER' Name='VS90_Root_Folder'>
                 <Directory Id='VS90_Common7_Folder' Name="Common7">
@@ -72,16 +71,6 @@
             <ComponentRef Id="Gallio.MSTestRunner.VS90.Registry"/>
         </Feature>
 
-        <CustomActionRef Id="VS90Setup" />
-
-        <InstallExecuteSequence>
-            <Custom Action="VS90Setup" Before="InstallFinalize">&amp;feat_MSTestRunner&gt;1 AND VS90DEVENV&lt;&gt;&quot;&quot;</Custom>
-        </InstallExecuteSequence>
-
-        <UI>
-            <ProgressText Action="VS90Setup" Template="[1]">Updating Visual Studio 2008 registration</ProgressText>
-        </UI>
-
         <!-- ============================================================== -->
 
         <DirectoryRef Id="binFolder">
@@ -97,7 +86,7 @@
         </DirectoryRef>
 
         <Feature Id="feat_MSTestAdapter" Title="MSTest Adapter" Level="2" Description="Visual Studio Team System Extension (Experimental!)">
-            <Condition Level="1">VS90DEVENV</Condition>
+            <Condition Level="1">VS2005DEVENV OR VS90DEVENV</Condition>
             <ComponentRef Id="Gallio.MSTestAdapter.dll" />
             <ComponentRef Id="MSTest.Readme.txt" />
         </Feature>
