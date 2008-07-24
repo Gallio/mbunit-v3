@@ -122,5 +122,21 @@ namespace MbUnit.Framework
 
             return AssertionContext.CurrentContext.CaptureFailures(action, assertionFailureBehavior, true);
         }
+
+        /// <summary>
+        /// Append user's message to assert one.
+        /// </summary>
+        /// <param name="assertMessage">Assert message</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <returns>Assert message with custom message</returns>
+        internal static string AppendCustomMessage(string assertMessage, string messageFormat, params object[] messageArgs)
+        {
+            if (String.IsNullOrEmpty(messageFormat))
+                return assertMessage;
+            return messageArgs != null 
+                ? String.Format("{0}\n{1}", assertMessage, String.Format(messageFormat, messageArgs)) 
+                : String.Format("{0}\n{1}", assertMessage, messageFormat);
+        }
     }
 }

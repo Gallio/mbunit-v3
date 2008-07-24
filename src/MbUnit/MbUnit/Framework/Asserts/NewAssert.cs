@@ -625,7 +625,10 @@ namespace MbUnit.Framework
             AssertHelper.Verify(delegate
             {
                 if (comparer == null)
+                {
+                    IsNotNull(left, AssertHelper.AppendCustomMessage("left value cannot be null.", messageFormat, messageArgs));
                     comparer = CompareGreaterThan;
+                }
 
                 if (comparer(left, right) > 0)
                     return null;
@@ -878,7 +881,6 @@ namespace MbUnit.Framework
         private static int CompareGreaterThan<T>(T left, T right)
             where T: IComparable<T>
         {
-            IsNotNull(left, "left value cannot be null.");
             return left.CompareTo(right);
         }
     }

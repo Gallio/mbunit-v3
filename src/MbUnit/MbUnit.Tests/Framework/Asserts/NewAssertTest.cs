@@ -27,6 +27,38 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
+        public void GreaterThan_fails_when_left_value_is_not_greater_than_right()
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThan(5, 5));
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("Expected left to be greater than right.", failures[0].Description);
+        }
+
+        [Test]
+        public void GreaterThan_fail_when_left_value_is_null()
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThan(null, "abc"));
+            NewAssert.AreEqual(2, failures.Length);
+            NewAssert.AreEqual("left value cannot be null.", failures[0].Message);
+        }
+
+        [Test]
+        public void GreaterThan_fail_when_left_value_is_null_with_custom_message()
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThan(null, "abc", "custom message."));
+            NewAssert.AreEqual(2, failures.Length);
+            NewAssert.AreEqual("left value cannot be null.\ncustom message.", failures[0].Message);
+        }
+
+        [Test]
+        public void GreaterThan_fail_when_left_value_is_null_with_custom_message_and_argument()
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThan(null, "abc", "{0} message.", "MbUnit"));
+            NewAssert.AreEqual(2, failures.Length);
+            NewAssert.AreEqual("left value cannot be null.\nMbUnit message.", failures[0].Message);
+        }
+
+        [Test]
         public void GreaterThan_double_test()
         {
             NewAssert.GreaterThan(0.001, 0.0001);
