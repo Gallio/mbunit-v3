@@ -17,7 +17,7 @@ using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
 {
-    [TestsOn(typeof(AssertionConditionEvaluator))]
+    [TestsOn(typeof(NewAssert))]
     public class NewAssertTest
     {
         [Test]
