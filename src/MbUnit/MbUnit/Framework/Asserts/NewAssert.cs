@@ -588,7 +588,7 @@ namespace MbUnit.Framework
         /// <param name="right">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThan<T>(T left, T right, Func<T, T, bool> comparer)
+        public static void GreaterThan<T>(T left, T right, Func<T, T, int> comparer)
             where T : IComparable<T>
         {
             GreaterThan(left, right, comparer, null, null);
@@ -603,7 +603,7 @@ namespace MbUnit.Framework
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThan<T>(T left, T right, Func<T, T, bool> comparer, string messageFormat)
+        public static void GreaterThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat)
             where T : IComparable<T>
         {
             GreaterThan(left, right, comparer, messageFormat, null);
@@ -619,7 +619,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThan<T>(T left, T right, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        public static void GreaterThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
             where T : IComparable<T>
         {
             AssertHelper.Verify(delegate
@@ -627,7 +627,7 @@ namespace MbUnit.Framework
                 if (comparer == null)
                     comparer = CompareGreaterThan;
 
-                if (comparer(left, right))
+                if (comparer(left, right) > 0)
                     return null;
 
                 return new AssertionFailureBuilder("Expected left to be greater than right.")
@@ -875,11 +875,11 @@ namespace MbUnit.Framework
             return true;
         }
 
-        private static bool CompareGreaterThan<T>(T left, T right)
+        private static int CompareGreaterThan<T>(T left, T right)
             where T: IComparable<T>
         {
             IsNotNull(left, "left value cannot be null.");
-            return left.CompareTo(right) > 0;
+            return left.CompareTo(right);
         }
     }
 }

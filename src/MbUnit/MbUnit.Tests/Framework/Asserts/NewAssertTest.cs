@@ -43,7 +43,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void GreaterThan_with_delegate_test()
         {
-            NewAssert.GreaterThan(4, 3, (left, right) => left > 0 && right > 0);
+            NewAssert.GreaterThan(4, 3, (left, right) => left.CompareTo(0) + right.CompareTo(0));
         }
     }
 }
