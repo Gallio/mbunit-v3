@@ -57,6 +57,7 @@
     <Compile Include="Framework\Asserts\AssertionConditionEvaluatorTest.cs" />
     <Compile Include="Framework\Asserts\AssertionFailureTest.cs" />
     <Compile Include="Framework\Asserts\AssertionFailureBuilderTest.cs" />
+    <Compile Include="Framework\Asserts\NewAssertTest.cs" />
     <Compile Include="Framework\AssertTest.cs" />
     <Compile Include="Framework\AssertWithReflectionTest.cs" />
     <Compile Include="Framework\AssertWithTypeTest.cs" />
