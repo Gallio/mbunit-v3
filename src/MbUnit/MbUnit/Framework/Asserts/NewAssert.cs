@@ -622,23 +622,290 @@ namespace MbUnit.Framework
         public static void GreaterThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
             where T : IComparable<T>
         {
-            AssertHelper.Verify(delegate
-            {
-                if (comparer == null)
-                {
-                    IsNotNull(left, AssertHelper.AppendCustomMessage("left value cannot be null.", messageFormat, messageArgs));
-                    comparer = CompareGreaterThan;
-                }
+            AssertHelper.Verify(
+                () => VerifyComparable(left, right, comparer
+                    , "Expected left to be greater than right."
+                    , compareResult => compareResult > 0
+                    , messageFormat, messageArgs));
+        }
+        #endregion
 
-                if (comparer(left, right) > 0)
-                    return null;
+        #region GreaterEqualThan
+        /// <summary>
+        /// Verifies that an left value is greater or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        public static void GreaterEqualThan<T>(T left, T right)
+            where T : IComparable<T>
+        {
+            GreaterEqualThan(left, right, (string)null, null);
+        }
 
-                return new AssertionFailureBuilder("Expected left to be greater than right.")
-                    .SetMessage(messageFormat, messageArgs)
-                    .SetExpectedValue(left)
-                    .SetActualValue(right)
-                    .ToAssertionFailure();
-            });
+        /// <summary>
+        /// Verifies that an left value is greater or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void GreaterEqualThan<T>(T left, T right, string messageFormat)
+            where T : IComparable<T>
+        {
+            GreaterEqualThan(left, right, messageFormat, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is greater or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void GreaterEqualThan<T>(T left, T right, string messageFormat, params object[] messageArgs)
+            where T : IComparable<T>
+        {
+            GreaterEqualThan(left, right, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is greater or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void GreaterEqualThan<T>(T left, T right, Func<T, T, int> comparer)
+            where T : IComparable<T>
+        {
+            GreaterEqualThan(left, right, comparer, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is greater or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void GreaterEqualThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat)
+            where T : IComparable<T>
+        {
+            GreaterEqualThan(left, right, comparer, messageFormat, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is greater or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void GreaterEqualThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
+            where T : IComparable<T>
+        {
+            AssertHelper.Verify(
+                () => VerifyComparable(left, right, comparer
+                    , "Expected left to be greater or equal than right."
+                    , compareResult => compareResult >= 0
+                    , messageFormat, messageArgs));
+        }
+
+        #endregion
+
+        #region LowerThan
+
+        /// <summary>
+        /// Verifies that an left value is less than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        public static void LowerThan<T>(T left, T right)
+            where T : IComparable<T>
+        {
+            LowerThan(left, right, (string)null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerThan<T>(T left, T right, string messageFormat)
+            where T : IComparable<T>
+        {
+            LowerThan(left, right, messageFormat, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerThan<T>(T left, T right, string messageFormat, params object[] messageArgs)
+            where T : IComparable<T>
+        {
+            LowerThan(left, right, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerThan<T>(T left, T right, Func<T, T, int> comparer)
+            where T : IComparable<T>
+        {
+            LowerThan(left, right, comparer, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat)
+            where T : IComparable<T>
+        {
+            LowerThan(left, right, comparer, messageFormat, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
+            where T : IComparable<T>
+        {
+            AssertHelper.Verify(
+                () => VerifyComparable(left, right, comparer
+                    , "Expected left to be less than right."
+                    , compareResult => compareResult < 0
+                    , messageFormat, messageArgs));
+        }
+        #endregion
+
+        #region LowerEqualThan
+
+        /// <summary>
+        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        public static void LowerEqualThan<T>(T left, T right)
+            where T : IComparable<T>
+        {
+            LowerEqualThan(left, right, (string)null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerEqualThan<T>(T left, T right, string messageFormat)
+            where T : IComparable<T>
+        {
+            LowerEqualThan(left, right, messageFormat, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerEqualThan<T>(T left, T right, string messageFormat, params object[] messageArgs)
+            where T : IComparable<T>
+        {
+            LowerEqualThan(left, right, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerEqualThan<T>(T left, T right, Func<T, T, int> comparer)
+            where T : IComparable<T>
+        {
+            LowerEqualThan(left, right, comparer, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerEqualThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat)
+            where T : IComparable<T>
+        {
+            LowerEqualThan(left, right, comparer, messageFormat, null);
+        }
+
+        /// <summary>
+        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void LowerEqualThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
+            where T : IComparable<T>
+        {
+            AssertHelper.Verify(
+                () => VerifyComparable(left, right, comparer
+                    , "Expected left to be less or equal than right."
+                    , compareResult => compareResult <= 0
+                    , messageFormat, messageArgs));
         }
         #endregion
 
@@ -878,10 +1145,30 @@ namespace MbUnit.Framework
             return true;
         }
 
-        private static int CompareGreaterThan<T>(T left, T right)
+        private static int ComparableCompare<T>(T left, T right)
             where T: IComparable<T>
         {
             return left.CompareTo(right);
+        }
+
+        private static AssertionFailure VerifyComparable<T>(T left, T right, Func<T, T, int> comparer, string exceptionMessage, Func<int, bool> isCompareSuccesfull, string messageFormat, params object[] messageArgs)
+            where T : IComparable<T>
+        {
+            if (comparer == null)
+            {
+                IsNotNull(left, AssertHelper.AppendCustomMessage("left value cannot be null.", messageFormat, messageArgs));
+                comparer = ComparableCompare;
+            }
+
+            if (isCompareSuccesfull(comparer(left, right)))
+                return null;
+
+            return new AssertionFailureBuilder(exceptionMessage)
+                .SetMessage(messageFormat, messageArgs)
+                .SetExpectedValue(left)
+                .SetActualValue(right)
+                .ToAssertionFailure();
+
         }
     }
 }
