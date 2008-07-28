@@ -117,26 +117,26 @@ namespace MbUnit.Tests.Framework
 
         #endregion
 
-        #region GreaterOrEqualThan
+        #region GreaterThanOrEqual
         [Test]
         [Row(5, 4), Row(5, 5)]
-        public void GreaterOrEqualThan_int_test(int left, int right)
+        public void GreaterThanOrEqual_int_test(int left, int right)
         {
-            NewAssert.GreaterOrEqualThan(left, right);
+            NewAssert.GreaterThanOrEqual(left, right);
         }
 
         [Test]
-        public void GreaterOrEqualThan_fails_when_left_value_is_not_greater_or_equal_than_right()
+        public void GreaterThanOrEqual_fails_when_left_value_is_not_greater_or_equal_than_right()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterOrEqualThan(5, 6));
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThanOrEqual(5, 6));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("Expected left to be greater or equal than right.", failures[0].Description);
         }
 
         [Test]
-        public void GreaterOrEqualThan_fail_when_left_value_is_null()
+        public void GreaterThanOrEqual_fail_when_left_value_is_null()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterOrEqualThan(null, "abc"));
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThanOrEqual(null, "abc"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("Left Value", failures[0].LabeledValues[0].Key);
             NewAssert.AreEqual("Right Value", failures[0].LabeledValues[1].Key);
@@ -145,59 +145,59 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void GreaterOrEqualThan_fail_when_left_value_is_null_with_custom_message()
+        public void GreaterThanOrEqual_fail_when_left_value_is_null_with_custom_message()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterOrEqualThan(null, "abc", "custom message."));
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThanOrEqual(null, "abc", "custom message."));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("custom message.", failures[0].Message);
         }
 
         [Test]
-        public void GreaterOrEqualThan_fail_when_left_value_is_null_with_custom_message_and_argument()
+        public void GreaterThanOrEqual_fail_when_left_value_is_null_with_custom_message_and_argument()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterOrEqualThan(null, "abc", "{0} message.", "MbUnit"));
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThanOrEqual(null, "abc", "{0} message.", "MbUnit"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("MbUnit message.", failures[0].Message);
         }
 
         [Test]
-        public void GreaterOrEqualThan_double_test()
+        public void GreaterThanOrEqual_double_test()
         {
-            NewAssert.GreaterOrEqualThan(0.001, 0.0001);
+            NewAssert.GreaterThanOrEqual(0.001, 0.0001);
         }
 
         [Test]
         [Row("abc", "ab")]
         [Row("abc", null)]
-        public void GreaterOrEqualThan_string_test(string left, string right)
+        public void GreaterThanOrEqual_string_test(string left, string right)
         {
-            NewAssert.GreaterOrEqualThan(left, right);
+            NewAssert.GreaterThanOrEqual(left, right);
         }
 
         [Test]
-        public void GreaterOrEqualThan_with_delegate_test()
+        public void GreaterThanOrEqual_with_delegate_test()
         {
-            NewAssert.GreaterOrEqualThan(4, 4, (left, right) => left.CompareTo(0) + right.CompareTo(0));
+            NewAssert.GreaterThanOrEqual(4, 4, (left, right) => left.CompareTo(0) + right.CompareTo(0));
         }
 
         [Test]
-        public void GreaterOrEqualThan_with_delegate_and_message_test()
+        public void GreaterThanOrEqual_with_delegate_and_message_test()
         {
-            NewAssert.GreaterOrEqualThan(0, 0, (left, right) => left.CompareTo(0) + right.CompareTo(0), "custom compare");
+            NewAssert.GreaterThanOrEqual(0, 0, (left, right) => left.CompareTo(0) + right.CompareTo(0), "custom compare");
         }
 
         [Test]
-        public void GreaterOrEqualThan_with_both_values_null()
+        public void GreaterThanOrEqual_with_both_values_null()
         {
             const string s1 = null;
             const string s2 = null;
-            NewAssert.GreaterOrEqualThan(s1, s2);
+            NewAssert.GreaterThanOrEqual(s1, s2);
         }
 
         [Test]
-        public void GreaterOrEqualThan_with_message()
+        public void GreaterThanOrEqual_with_message()
         {
-            NewAssert.GreaterOrEqualThan("two", "one", "custom message");
+            NewAssert.GreaterThanOrEqual("two", "one", "custom message");
         }
 
         #endregion
@@ -282,75 +282,75 @@ namespace MbUnit.Tests.Framework
         }
         #endregion
 
-        #region LessOrEqualThan
+        #region LessThanOrEqual
 
         [Test]
         [Row(3, 4), Row(-2, -2)]
-        public void LessOrEqualThan_int_test(int left, int right)
+        public void LessThanOrEqual_int_test(int left, int right)
         {
-            NewAssert.LessOrEqualThan(left, right);
+            NewAssert.LessThanOrEqual(left, right);
         }
 
         [Test]
-        public void LessOrEqualThan_fails_when_left_value_is_not_less_or_equal_than_right()
+        public void LessThanOrEqual_fails_when_left_value_is_not_less_or_equal_than_right()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessOrEqualThan("ms", "mb"));
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThanOrEqual("ms", "mb"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("Expected left to be less or equal than right.", failures[0].Description);
         }
 
         [Test]
-        public void LessOrEqualThan_fail_when_left_value_is_null()
+        public void LessThanOrEqual_fail_when_left_value_is_null()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessOrEqualThan("abc", null));
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThanOrEqual("abc", null));
             NewAssert.AreEqual(1, failures.Length);
         }
 
         [Test]
-        public void LowerEqualThan_fail_when_left_value_is_null_with_custom_message()
+        public void LessThanOrEqual_fail_when_left_value_is_null_with_custom_message()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessOrEqualThan("abc", null, "custom message."));
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThanOrEqual("abc", null, "custom message."));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("custom message.", failures[0].Message);
         }
 
         [Test]
-        public void LowerEqualThan_fail_when_left_value_is_null_with_custom_message_and_argument()
+        public void LessThanOrEqual_fail_when_left_value_is_null_with_custom_message_and_argument()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessOrEqualThan("k", "abc", "{0} message.", "MbUnit"));
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThanOrEqual("k", "abc", "{0} message.", "MbUnit"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("MbUnit message.", failures[0].Message);
         }
 
         [Test]
-        public void LowerEqualThan_double_test()
+        public void LessThanOrEqual_double_test()
         {
-            NewAssert.LessOrEqualThan(0.0001, 0.001);
+            NewAssert.LessThanOrEqual(0.0001, 0.001);
         }
 
         [Test]
         [Row("ab", "abc")]
-        public void LowerEqualThan_string_test(string left, string right)
+        public void LessThanOrEqual_string_test(string left, string right)
         {
-            NewAssert.LessOrEqualThan(left, right);
+            NewAssert.LessThanOrEqual(left, right);
         }
 
         [Test]
-        public void LowerEqualThan_with_delegate_test()
+        public void LessThanOrEqual_with_delegate_test()
         {
-            NewAssert.LessOrEqualThan(3, 4, (left, right) => left - right);
+            NewAssert.LessThanOrEqual(3, 4, (left, right) => left - right);
         }
 
         [Test]
-        public void LowerEqualThan_with_delegate_and_message()
+        public void LessThanOrEqual_with_delegate_and_message()
         {
-            NewAssert.LessOrEqualThan(-6, 6, "custom message");
+            NewAssert.LessThanOrEqual(-6, 6, "custom message");
         }
 
         [Test]
-        public void LowerEqualThan_with_delegate_and_message_test()
+        public void LessThanOrEqual_with_delegate_and_message_test()
         {
-            NewAssert.LessOrEqualThan(3, 4, (left, right) => left - right, "custom message");
+            NewAssert.LessThanOrEqual(3, 4, (left, right) => left - right, "custom message");
         }
         #endregion
 
