@@ -89,7 +89,8 @@ namespace Gallio.Framework.Pattern
             else
             {
                 ITestController controller = testCommand.Test.TestControllerFactory();
-                controller.RunTests(testCommand, parentTestStep, options, progressMonitor.CreateSubProgressMonitor(1));
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    controller.RunTests(testCommand, parentTestStep, options, subProgressMonitor);
                 return testCommand.RootStepFailureCount == 0 ? TestOutcome.Passed : TestOutcome.Failed;
             }
         }

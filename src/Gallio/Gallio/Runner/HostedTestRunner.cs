@@ -161,12 +161,9 @@ namespace Gallio.Runner
             this.options = options;
             this.logger = logger;
 
-            using (progressMonitor)
+            int extensionCount = extensions.Count;
+            using (progressMonitor.BeginTask("Initalizing the test runner.", 10 + extensionCount))
             {
-
-                int extensionCount = extensions.Count;
-                progressMonitor.BeginTask("Initalizing the test runner.", 10 + extensionCount);
-
                 foreach (ITestRunnerExtension extension in extensions)
                 {
                     string extensionName = extension.GetType().Name; // TODO: improve me
@@ -216,10 +213,8 @@ namespace Gallio.Runner
             testPackageConfig = testPackageConfig.Copy();
             testPackageConfig.Canonicalize(null);
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Loading the test package.", 10))
             {
-                progressMonitor.BeginTask("Loading the test package.", 10);
-
                 try
                 {
                     eventDispatcher.NotifyLoadStarted(new LoadStartedEventArgs(testPackageConfig));
@@ -251,10 +246,8 @@ namespace Gallio.Runner
 
             options = options.Copy();
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Exploring the tests.", 10))
             {
-                progressMonitor.BeginTask("Exploring the tests.", 10);
-
                 try
                 {
                     eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(options));
@@ -286,10 +279,8 @@ namespace Gallio.Runner
 
             options = options.Copy();
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Running the tests.", 10))
             {
-                progressMonitor.BeginTask("Running the tests.", 10);
-
                 try
                 {
                     eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(options));
@@ -319,10 +310,8 @@ namespace Gallio.Runner
             if (state < State.Loaded)
                 return;
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Unloading the test package.", 10))
             {
-                progressMonitor.BeginTask("Unloading the test package.", 10);
-
                 try
                 {
                     eventDispatcher.NotifyUnloadStarted(new UnloadStartedEventArgs());
@@ -348,10 +337,8 @@ namespace Gallio.Runner
             if (state == State.Disposed)
                 return;
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Disposing the test runner.", 10))
             {
-                progressMonitor.BeginTask("Disposing the test runner.", 10);
-
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(9))
                 {
                     if (state == State.Loaded || state == State.Explored || state == State.RunFinished)
@@ -422,7 +409,8 @@ namespace Gallio.Runner
         {
             progressMonitor.SetStatus("Loading tests.");
 
-            testDriver.Load(testPackageConfig, progressMonitor.CreateSubProgressMonitor(totalWork));
+            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
+                testDriver.Load(testPackageConfig, subProgressMonitor);
         }
 
         private void DoExplore(TestExplorationOptions options, IProgressMonitor progressMonitor)
@@ -438,7 +426,8 @@ namespace Gallio.Runner
         {
             progressMonitor.SetStatus("Exploring tests.");
 
-            report.TestModel = testDriver.Explore(options, progressMonitor.CreateSubProgressMonitor(totalWork));
+            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
+                report.TestModel = testDriver.Explore(options, subProgressMonitor);
         }
 
         private void DoRun(TestExecutionOptions options, IProgressMonitor progressMonitor)
@@ -470,7 +459,8 @@ namespace Gallio.Runner
         {
             progressMonitor.SetStatus("Running tests.");
 
-            testDriver.Run(options, listener, progressMonitor.CreateSubProgressMonitor(totalWork));
+            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
+                testDriver.Run(options, listener, subProgressMonitor);
         }
 
         private void DoUnload(IProgressMonitor progressMonitor)
@@ -491,7 +481,8 @@ namespace Gallio.Runner
         {
             progressMonitor.SetStatus("Unloading tests.");
 
-            testDriver.Unload(progressMonitor.CreateSubProgressMonitor(totalWork));
+            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
+                testDriver.Unload(subProgressMonitor);
         }
 
         private void DisposeHost(IProgressMonitor progressMonitor, double totalWork)

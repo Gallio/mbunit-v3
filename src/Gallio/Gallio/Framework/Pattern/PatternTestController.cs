@@ -52,10 +52,8 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount))
             {
-                progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount);
-
                 // Note: We do not check options.SkipTestExecution here because we want to build up
                 // the tree of data-driven test steps.  So we actually check it later on in the
                 // PatternTestExecutor.  This is different from framework adapters

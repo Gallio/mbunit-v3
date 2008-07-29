@@ -34,10 +34,8 @@ namespace Gallio.Runner.Drivers
         /// <inheritdoc />
         protected override void LoadImpl(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Loading tests.", 2))
             {
-                progressMonitor.BeginTask("Loading tests.", 2);
-
                 DisposeDrivers();
 
                 partitions.AddRange(CreatePartitions(testPackageConfig));
@@ -48,7 +46,8 @@ namespace Gallio.Runner.Drivers
                     double workPerPartition = 1.0 / partitions.Count;
                     foreach (Partition partition in partitions)
                     {
-                        partition.TestDriver.Load(partition.TestPackageConfig, progressMonitor.CreateSubProgressMonitor(workPerPartition));
+                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workPerPartition))
+                            partition.TestDriver.Load(partition.TestPackageConfig, subProgressMonitor);
                     }
                 }
             }
@@ -57,17 +56,16 @@ namespace Gallio.Runner.Drivers
         /// <inheritdoc />
         protected override TestModelData ExploreImpl(TestExplorationOptions options, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Exploring tests.", 1))
             {
-                progressMonitor.BeginTask("Exploring tests.", 1);
-
                 TestModelData model = new TestModelData(new TestData(new RootTest()));
                 if (partitions.Count != 0)
                 {
                     double workPerPartition = 1.0 / partitions.Count;
                     foreach (Partition partition in partitions)
                     {
-                        model.MergeFrom(partition.TestDriver.Explore(options, progressMonitor.CreateSubProgressMonitor(workPerPartition)));
+                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workPerPartition))
+                            model.MergeFrom(partition.TestDriver.Explore(options, subProgressMonitor));
                     }
                 }
 
@@ -78,10 +76,8 @@ namespace Gallio.Runner.Drivers
         /// <inheritdoc />
         protected override void RunImpl(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Running tests.", 1))
             {
-                progressMonitor.BeginTask("Running tests.", 1);
-
                 MergeRootTestListener mergeListener = new MergeRootTestListener(listener);
                 mergeListener.StartRootTestStep();
                 try
@@ -91,8 +87,8 @@ namespace Gallio.Runner.Drivers
                         double workPerPartition = 1.0 / partitions.Count;
                         foreach (Partition partition in partitions)
                         {
-                            partition.TestDriver.Run(options, mergeListener,
-                                progressMonitor.CreateSubProgressMonitor(workPerPartition));
+                            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workPerPartition))
+                                partition.TestDriver.Run(options, mergeListener, subProgressMonitor);
                         }
                     }
                 }
@@ -106,10 +102,8 @@ namespace Gallio.Runner.Drivers
         /// <inheritdoc />
         protected override void UnloadImpl(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Unloading tests.", 1))
             {
-                progressMonitor.BeginTask("Unloading tests.", 1);
-
                 if (partitions.Count != 0)
                 {
                     try
@@ -117,7 +111,8 @@ namespace Gallio.Runner.Drivers
                         double workPerPartition = 1.0 / partitions.Count;
                         foreach (Partition partition in partitions)
                         {
-                            partition.TestDriver.Unload(progressMonitor.CreateSubProgressMonitor(workPerPartition));
+                            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workPerPartition))
+                                partition.TestDriver.Unload(subProgressMonitor);
                         }
                     }
                     finally

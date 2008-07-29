@@ -100,10 +100,8 @@ namespace Gallio.Reports
         {
             ExecutionLogAttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10))
             {
-                progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10);
-
                 progressMonitor.SetStatus("Applying XSL transform.");
                 ApplyTransform(reportWriter, attachmentContentDisposition, options);
                 progressMonitor.Worked(3);
@@ -116,7 +114,8 @@ namespace Gallio.Reports
 
                 if (attachmentContentDisposition == ExecutionLogAttachmentContentDisposition.Link)
                 {
-                    reportWriter.SaveReportAttachments(progressMonitor.CreateSubProgressMonitor(5));
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                        reportWriter.SaveReportAttachments(subProgressMonitor);
                 }
             }
         }

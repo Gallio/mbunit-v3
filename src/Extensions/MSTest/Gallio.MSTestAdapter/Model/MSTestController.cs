@@ -60,9 +60,8 @@ namespace Gallio.MSTestAdapter.Model
         /// <inheritdoc />
         protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            using (progressMonitor.BeginTask(Resources.MSTestController_RunningMSTestTests, rootTestCommand.TestCount))
             {
-                progressMonitor.BeginTask(Resources.MSTestController_RunningMSTestTests, rootTestCommand.TestCount);
                 if (options.SkipTestExecution)
                 {
                     SkipAll(rootTestCommand, parentTestStep);

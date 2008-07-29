@@ -244,6 +244,7 @@
     <Compile Include="Runtime\ProgressMonitoring\RichConsoleProgressMonitorProvider.cs" />
     <Compile Include="Runtime\ProgressMonitoring\SubProgressMonitorCreatedEventArgs.cs" />
     <Compile Include="Runtime\ProgressMonitoring\TaskWithProgress.cs" />
+    <Compile Include="Runtime\ProgressMonitoring\ProgressMonitorTaskCookie.cs" />
     <Compile Include="Runtime\Remoting\BaseChannel.cs" />
     <Compile Include="Runtime\Remoting\BaseClientChannel.cs" />
     <Compile Include="Runtime\Remoting\BaseServerChannel.cs" />

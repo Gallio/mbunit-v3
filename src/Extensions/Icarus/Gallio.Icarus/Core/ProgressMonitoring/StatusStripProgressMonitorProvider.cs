@@ -40,18 +40,13 @@ namespace Gallio.Icarus.Core.ProgressMonitoring
         public override void Run(TaskWithProgress task)
         {
             IProgressMonitorPresenter presenter = GetPresenter();
-            try
+            using (progressMonitor = new ObservableProgressMonitor())
             {
-                progressMonitor = new ObservableProgressMonitor();
                 presenter.Present(progressMonitor);
 
                 progressMonitor.ThrowIfCanceled();
                 task(progressMonitor);
                 progressMonitor.ThrowIfCanceled();
-            }
-            finally
-            {
-                ((IProgressMonitor)progressMonitor).Dispose();
             }
         }
 

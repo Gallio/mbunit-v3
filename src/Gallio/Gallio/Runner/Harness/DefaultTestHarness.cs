@@ -138,9 +138,8 @@ namespace Gallio.Runner.Harness
             if (package != null)
                 throw new InvalidOperationException("A package has already been loaded.");
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Loading test package.", 10))
             {
-                progressMonitor.BeginTask("Loading test package.", 10);
                 progressMonitor.SetStatus("Performing pre-processing.");
 
                 workingDirectory = packageConfig.HostSetup.WorkingDirectory ?? Environment.CurrentDirectory;
@@ -157,27 +156,26 @@ namespace Gallio.Runner.Harness
 
                     progressMonitor.Worked(1);
 
-                    LoadAssemblies(progressMonitor.CreateSubProgressMonitor(8), packageConfig.AssemblyFiles);
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(8))
+                        LoadAssemblies(packageConfig.AssemblyFiles, subProgressMonitor);
                 }
             }
         }
 
-        private void LoadAssemblies(IProgressMonitor progressMonitor, ICollection<string> assemblyFiles)
+        private void LoadAssemblies(ICollection<string> assemblyFiles, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            if (assemblyFiles.Count == 0)
+                return;
+
+            using (progressMonitor.BeginTask("Loading test assemblies.", assemblyFiles.Count))
             {
-                if (assemblyFiles.Count != 0)
+                foreach (string assemblyFile in package.Config.AssemblyFiles)
                 {
-                    progressMonitor.BeginTask("Loading test assemblies.", assemblyFiles.Count);
+                    progressMonitor.SetStatus("Loading: " + assemblyFile + ".");
 
-                    foreach (string assemblyFile in package.Config.AssemblyFiles)
-                    {
-                        progressMonitor.SetStatus("Loading: " + assemblyFile + ".");
+                    LoadAssemblyFrom(assemblyFile);
 
-                        LoadAssemblyFrom(assemblyFile);
-
-                        progressMonitor.Worked(1);
-                    }
+                    progressMonitor.Worked(1);
                 }
             }
         }
@@ -212,10 +210,8 @@ namespace Gallio.Runner.Harness
             if (package == null)
                 throw new InvalidOperationException("No test package has been loaded.");
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Building test model.", 10))
             {
-                progressMonitor.BeginTask("Building test model.", 10);
-
                 using (SwitchWorkingDirectory())
                 {
                     model = new TestModel(package);
@@ -247,10 +243,8 @@ namespace Gallio.Runner.Harness
             if (model == null)
                 throw new InvalidOperationException("The test model has not been built.");
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Running tests.", 100))
             {
-                progressMonitor.BeginTask("Running tests.", 100);
-
                 using (SwitchWorkingDirectory())
                 {
                     List<IDisposable> environmentStates = new List<IDisposable>();
@@ -267,7 +261,8 @@ namespace Gallio.Runner.Harness
                         progressMonitor.Worked(5);
                         progressMonitor.SetStatus(@"");
 
-                        RunAllTestCommands(rootTestCommand, options, progressMonitor.CreateSubProgressMonitor(85));
+                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
+                            RunAllTestCommands(rootTestCommand, options, subProgressMonitor);
                     }
                     finally
                     {
@@ -285,19 +280,16 @@ namespace Gallio.Runner.Harness
         {
             ThreadTask task = new ThreadTask("Test Runner", delegate
             {
-                using (progressMonitor)
+                if (rootTestCommand != null)
                 {
-                    if (rootTestCommand != null)
+                    using (contextTracker.EnterContext(null))
                     {
-                        using (contextTracker.EnterContext(null))
-                        {
-                            Func<ITestController> rootTestControllerFactory = rootTestCommand.Test.TestControllerFactory;
+                        Func<ITestController> rootTestControllerFactory = rootTestCommand.Test.TestControllerFactory;
 
-                            if (rootTestControllerFactory != null)
-                            {
-                                using (ITestController controller = rootTestControllerFactory())
-                                    controller.RunTests(rootTestCommand, null, options, progressMonitor);
-                            }
+                        if (rootTestControllerFactory != null)
+                        {
+                            using (ITestController controller = rootTestControllerFactory())
+                                controller.RunTests(rootTestCommand, null, options, progressMonitor);
                         }
                     }
                 }
@@ -327,10 +319,8 @@ namespace Gallio.Runner.Harness
 
             ThrowIfDisposed();
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Unloading tests.", 1))
             {
-                progressMonitor.BeginTask("Unloading tests.", 1);
-
                 workingDirectory = null;
                 package = null;
                 model = null;

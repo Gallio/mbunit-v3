@@ -59,9 +59,10 @@ namespace Gallio.Runtime.ProgressMonitoring
         }
 
         /// <inheritdoc />
-        public override void BeginTask(string taskName, double totalWorkUnits)
+        public override ProgressMonitorTaskCookie BeginTask(string taskName, double totalWorkUnits)
         {
             forwarder.BeginTask(taskName, totalWorkUnits);
+            return new ProgressMonitorTaskCookie(this);
         }
 
         /// <inheritdoc />
@@ -92,6 +93,13 @@ namespace Gallio.Runtime.ProgressMonitoring
         protected override void OnCancel()
         {
             forwarder.Cancel();
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                forwarder.Dispose();
         }
 
         private void RemotelyRegisterDispatcher()
@@ -143,6 +151,11 @@ namespace Gallio.Runtime.ProgressMonitoring
             public void Done()
             {
                 progressMonitor.Done();
+            }
+
+            public void Dispose()
+            {
+                progressMonitor.Dispose();
             }
 
             public IProgressMonitor CreateSubProgressMonitor(double parentWorkUnits)

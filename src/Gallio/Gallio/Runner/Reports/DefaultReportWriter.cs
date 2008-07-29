@@ -153,14 +153,12 @@ namespace Gallio.Runner.Reports
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
 
-            using (progressMonitor)
+            if (reportSaved)
+                return;
+
+            int attachmentCount = CountAttachments(report);
+            using (progressMonitor.BeginTask("Saving report.", attachmentCount + 1))
             {
-                if (reportSaved)
-                    return;
-
-                int attachmentCount = CountAttachments(report);
-                progressMonitor.BeginTask("Saving report.", attachmentCount + 1);
-
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.CheckCharacters = false;
                 settings.Indent = true;
@@ -184,7 +182,8 @@ namespace Gallio.Runner.Reports
                 if (attachmentContentDisposition == ExecutionLogAttachmentContentDisposition.Link && attachmentCount != 0)
                 {
                     progressMonitor.ThrowIfCanceled();
-                    SaveReportAttachments(progressMonitor.CreateSubProgressMonitor(attachmentCount));
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(attachmentCount))
+                        SaveReportAttachments(subProgressMonitor);
                 }
 
                 AddReportDocumentPath(reportPath);
@@ -198,17 +197,15 @@ namespace Gallio.Runner.Reports
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
 
-            using (progressMonitor)
+            if (reportAttachmentsSaved)
+                return;
+
+            int attachmentCount = CountAttachments(report);
+            if (attachmentCount == 0)
+                return;
+
+            using (progressMonitor.BeginTask("Saving report attachments.", attachmentCount))
             {
-                if (reportAttachmentsSaved)
-                    return;
-
-                int attachmentCount = CountAttachments(report);
-                if (attachmentCount == 0)
-                    return;
-
-                progressMonitor.BeginTask("Saving report attachments.", attachmentCount);
-
                 foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
                 {
                     foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)

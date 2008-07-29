@@ -73,9 +73,18 @@ namespace Gallio.Runtime.ProgressMonitoring
             if (isCanceled)
                 throw new OperationCanceledException("The user canceled the operation.");
         }
+        
+        /// <summary>
+        /// Disposes the progress monitor, including cleaning up an marking as <see cref="Done"/>
+        /// the current task, if any.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         /// <inheritdoc />
-        public abstract void BeginTask(string taskName, double totalWorkUnits);
+        public abstract ProgressMonitorTaskCookie BeginTask(string taskName, double totalWorkUnits);
 
         /// <inheritdoc />
         public abstract void SetStatus(string status);
@@ -134,9 +143,15 @@ namespace Gallio.Runtime.ProgressMonitoring
         {
         }
 
-        void IDisposable.Dispose()
+        /// <summary>
+        /// Disposes the progress monitor, including cleaning up an marking as <see cref="Done"/>
+        /// the current task, if any.
+        /// </summary>
+        /// <param name="disposing">True if <see cref="Dispose()" /> was called</param>
+        protected virtual void Dispose(bool disposing)
         {
-            Done();
+            if (disposing)
+                Done();
         }
     }
 }

@@ -56,10 +56,8 @@ namespace Gallio.MbUnit2Adapter.Model
         {
             ThrowIfDisposed();
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask(Resources.MbUnit2TestController_RunningMbUnitTests, 1))
             {
-                progressMonitor.BeginTask(Resources.MbUnit2TestController_RunningMbUnitTests, 1);
-
                 if (progressMonitor.IsCanceled)
                     return TestOutcome.Canceled;
 

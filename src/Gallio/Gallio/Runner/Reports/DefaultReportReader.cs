@@ -56,10 +56,8 @@ namespace Gallio.Runner.Reports
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
 
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Loading report.", 10))
             {
-                progressMonitor.BeginTask("Loading report.", 10);
-
                 string reportPath = reportContainer.ReportName + @".xml";
 
                 progressMonitor.ThrowIfCanceled();
@@ -82,7 +80,8 @@ namespace Gallio.Runner.Reports
                 if (loadAttachmentContents)
                 {
                     progressMonitor.ThrowIfCanceled();
-                    LoadReportAttachments(report, progressMonitor.CreateSubProgressMonitor(9));
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(9))
+                        LoadReportAttachments(report, subProgressMonitor);
                 }
 
                 return report;
@@ -110,26 +109,24 @@ namespace Gallio.Runner.Reports
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
 
-            using (progressMonitor)
+            if (report.TestPackageRun == null)
+                return;
+
+            List<ExecutionLogAttachment> attachmentsToLoad = new List<ExecutionLogAttachment>();
+            foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
             {
-                if (report.TestPackageRun == null)
-                    return;
-
-                List<ExecutionLogAttachment> attachmentsToLoad = new List<ExecutionLogAttachment>();
-                foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
+                foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
                 {
-                    foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
-                    {
-                        if (attachment.ContentPath != null)
-                            attachmentsToLoad.Add(attachment);
-                    }
+                    if (attachment.ContentPath != null)
+                        attachmentsToLoad.Add(attachment);
                 }
+            }
 
-                if (attachmentsToLoad.Count == 0)
-                    return;
+            if (attachmentsToLoad.Count == 0)
+                return;
 
-                progressMonitor.BeginTask("Loading report attachments.", attachmentsToLoad.Count);
-
+            using (progressMonitor.BeginTask("Loading report attachments.", attachmentsToLoad.Count))
+            {
                 foreach (ExecutionLogAttachment attachment in attachmentsToLoad)
                 {
                     progressMonitor.ThrowIfCanceled();

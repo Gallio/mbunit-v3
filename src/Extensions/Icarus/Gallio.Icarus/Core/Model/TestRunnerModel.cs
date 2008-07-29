@@ -223,19 +223,21 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                progressMonitor.BeginTask("Generating report.", 100);
+                using (progressMonitor.BeginTask("Generating report.", 100))
+                {
+                    IReportContainer reportContainer = new FileSystemReportContainer(Path.GetDirectoryName(fileName),
+                        Path.GetFileNameWithoutExtension(fileName));
+                    IReportWriter reportWriter = reportManager.CreateReportWriter(Report, reportContainer);
 
-                IReportContainer reportContainer = new FileSystemReportContainer(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
-                IReportWriter reportWriter = reportManager.CreateReportWriter(Report, reportContainer);
+                    // Delete the report if it exists already.
+                    reportContainer.DeleteReport();
 
-                // Delete the report if it exists already.
-                reportContainer.DeleteReport();
+                    // Format the report in all of the desired ways.
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(100))
+                        reportManager.Format(reportWriter, format, new NameValueCollection(), subProgressMonitor);
 
-                // Format the report in all of the desired ways.
-                reportManager.Format(reportWriter, format, new NameValueCollection(),
-                    progressMonitor.CreateSubProgressMonitor(100));
-
-                progressMonitor.SetStatus("Report saved.");
+                    progressMonitor.SetStatus("Report saved.");
+                }
             });
         }
 

@@ -185,7 +185,7 @@ namespace Gallio.Runtime.ProgressMonitoring
         }
 
         /// <inheritdoc />
-        public override void BeginTask(string taskName, double totalWorkUnits)
+        public override ProgressMonitorTaskCookie BeginTask(string taskName, double totalWorkUnits)
         {
             if (taskName == null)
                 throw new ArgumentNullException("taskName");
@@ -203,6 +203,7 @@ namespace Gallio.Runtime.ProgressMonitoring
             this.taskName = taskName;
 
             OnBeginTask(taskName, totalWorkUnits);
+            return new ProgressMonitorTaskCookie(this);
         }
 
         /// <inheritdoc />

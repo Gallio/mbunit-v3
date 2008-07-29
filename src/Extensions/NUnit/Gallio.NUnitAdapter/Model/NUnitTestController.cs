@@ -53,11 +53,9 @@ namespace Gallio.NUnitAdapter.Model
         {
             ThrowIfDisposed();
 
-            using (progressMonitor)
+            IList<ITestCommand> testCommands = rootTestCommand.GetAllCommands();
+            using (progressMonitor.BeginTask(Resources.NUnitTestController_RunningNUnitTests, testCommands.Count))
             {
-                IList<ITestCommand> testCommands = rootTestCommand.GetAllCommands();
-
-                progressMonitor.BeginTask(Resources.NUnitTestController_RunningNUnitTests, testCommands.Count);
                 if (progressMonitor.IsCanceled)
                     return TestOutcome.Canceled;
 

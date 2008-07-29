@@ -35,9 +35,10 @@ namespace Gallio.Runtime.ProgressMonitoring
     /// of the cancelation event.
     /// </para>
     /// <para>
-    /// <see cref="IDisposable" /> is implemented as a convenience for use
-    /// with the C# "using" statement.  Calling <see cref="IDisposable.Dispose" />
-    /// is precisely equivalent to calling <see cref="Done" />.
+    /// The <see cref="BeginTask" /> method returns a <see cref="ProgressMonitorTaskCookie" />
+    /// which implements <see cref="IDisposable"/> as a convenience for use
+    /// with the C# "using" statement.  Disposing the cookie is precisely equivalent to
+    /// calling the <see cref="Done"/> method of the progress monitor.
     /// </para>
     /// </remarks>
     /// <example>
@@ -48,10 +49,9 @@ namespace Gallio.Runtime.ProgressMonitoring
     /// const int CostOfCopyingFile = 1;
     /// const int CostOfRunningExpensiveTask = 10;
     /// 
-    /// using (IProgressMonitor progressMonitor = progressMonitorDialog.GetProgressMonitor())
-    /// {
-    ///     progressMonitor.BeginTask("Copy files", files.Length * CostOfCopyingFile + CostOfRunningExpensiveTask);
-    /// 
+    /// IProgressMonitor progressMonitor = progressMonitorDialog.GetProgressMonitor())
+    /// using (progressMonitor.BeginTask("Copy files", files.Length * CostOfCopyingFile + CostOfRunningExpensiveTask))
+    /// { 
     ///     foreach (FileInfo file in files)
     ///     {
     ///         if (progressMonitor.IsCancelled)
@@ -119,10 +119,11 @@ namespace Gallio.Runtime.ProgressMonitoring
         /// <param name="totalWorkUnits">The total number of work units to perform.  Must
         /// be greater than 0, or <see cref="double.NaN" /> if an indeterminate amount
         /// of work is to be performed.</param>
+        /// <returns>An object that calls <see cref="Done"/> when disposed</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="taskName" /> is null</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="totalWorkUnits" /> is not valid</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="BeginTask" /> or <see cref="Done" /> have already been called</exception>
-        void BeginTask(string taskName, double totalWorkUnits);
+        ProgressMonitorTaskCookie BeginTask(string taskName, double totalWorkUnits);
 
         /// <summary>
         /// Sets detailed status information for the current task or subtask.

@@ -53,10 +53,8 @@ namespace Gallio.Reports
         /// <inheritdoc />
         public override void Format(IReportWriter reportWriter, NameValueCollection formatterOptions, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            using (progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10))
             {
-                progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10);
-
                 using (MultipartMimeReportContainer archiveContainer = new MultipartMimeReportContainer(reportWriter.ReportContainer))
                 {
                     string archivePath = archiveContainer.ReportName + ".mht";
@@ -66,7 +64,8 @@ namespace Gallio.Reports
                     progressMonitor.Worked(0.5);
 
                     DefaultReportWriter archiveWriter = new DefaultReportWriter(reportWriter.Report, archiveContainer);
-                    htmlReportFormatter.Format(archiveWriter, formatterOptions, progressMonitor.CreateSubProgressMonitor(9));
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(9))
+                        htmlReportFormatter.Format(archiveWriter, formatterOptions, subProgressMonitor);
 
                     archiveContainer.CloseArchive();
                     progressMonitor.Worked(0.5);

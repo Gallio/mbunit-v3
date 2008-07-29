@@ -29,10 +29,8 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor)
+            using (progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount))
             {
-                progressMonitor.BeginTask("Running tests.", rootTestCommand.TestCount);
-
                 return RunNonMasterTest(rootTestCommand, parentTestStep, options, progressMonitor);
             }
         }
@@ -49,8 +47,10 @@ namespace Gallio.Model.Execution
                 {
                     try
                     {
-                        return controller.RunTests(testCommand, parentTestStep,
-                            options, progressMonitor.CreateSubProgressMonitor(testCommand.TestCount));
+                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(testCommand.TestCount))
+                        {
+                            return controller.RunTests(testCommand, parentTestStep, options, subProgressMonitor);
+                        }
                     }
                     catch (Exception ex)
                     {
