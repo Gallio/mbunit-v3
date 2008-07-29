@@ -133,6 +133,7 @@
     <Compile Include="Provider\GallioTestPresenter.cs" />
     <Compile Include="Provider\GallioTestProvider.cs" />
     <Compile Include="Provider\ProjectFileState.cs" />
+    <Compile Include="Provider\ReSharperExceptionDialogSuppressor.cs" />
     <Compile Include="Provider\SessionCache.cs" />
     <Compile Include="Provider\Tasks\GallioRemoteTask.cs" />
     <Compile Include="Provider\Tasks\GallioRemoteTaskRunner.cs" />

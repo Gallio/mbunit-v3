@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
+using Gallio.ReSharperRunner.Provider;
 using JetBrains.Metadata.Access;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
@@ -28,6 +29,8 @@ using System.IO;
 
 #if RESHARPER_31
 using JetBrains.Shell;
+using JetBrains.Util;
+
 #else
 using JetBrains.Application;
 #endif
@@ -262,8 +265,13 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private IEnumerable<StaticAttributeWrapper> EnumerateAttributesForEntity(IMetadataEntity entityHandle)
         {
-            foreach (IMetadataCustomAttribute attributeHandle in entityHandle.CustomAttributes)
-                if (attributeHandle.UsedConstructor != null) // Note: Can be null occasionally and R# itself will ignore it, why?
+            IMetadataCustomAttribute[] attribs = null;
+            ReSharperExceptionDialogSuppressor.Suppress("Gallio was unable to read an attribute due to ReSharper bug RSRP-76078 which affects boxed custom attribute values of type SzArray.",
+                () => attribs = entityHandle.CustomAttributes);
+
+            foreach (IMetadataCustomAttribute attributeHandle in attribs)
+                if (attributeHandle.UsedConstructor != null)
+                    // Note: Can be null occasionally and R# itself will ignore it, why?
                     yield return new StaticAttributeWrapper(this, attributeHandle);
         }
         #endregion
@@ -647,7 +655,7 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private StaticDeclaredTypeWrapper MakeDeclaredTypeWithoutSubstitution(IMetadataTypeInfo typeHandle)
         {
-            return MakeDeclaredType(typeHandle, EmptyArray<IMetadataType>.Instance);
+            return MakeDeclaredType(typeHandle, Collections.EmptyArray<IMetadataType>.Instance);
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(IMetadataClassType typeHandle)
@@ -663,7 +671,7 @@ namespace Gallio.ReSharperRunner.Reflection
             StaticDeclaredTypeWrapper type;
             if (declaringTypeInfoHandle != null)
             {
-                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(declaringTypeInfoHandle, EmptyArray<IMetadataType>.Instance);
+                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(declaringTypeInfoHandle, Collections.EmptyArray<IMetadataType>.Instance);
                 type = new StaticDeclaredTypeWrapper(this, typeInfoHandle, declaringType, declaringType.Substitution);
             }
             else
