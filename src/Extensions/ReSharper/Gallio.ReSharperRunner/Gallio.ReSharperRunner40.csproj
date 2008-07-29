@@ -121,6 +121,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Provider\Actions\ShowFullReportAction.cs" />
+    <Compile Include="Provider\Actions\ShowCondensedReportAction.cs" />
     <Compile Include="Provider\Actions\GallioAction.cs" />
     <Compile Include="Provider\Actions\ShowReportAction.cs" />
     <Compile Include="Provider\Daemons\AnnotationDaemonStage.cs" />

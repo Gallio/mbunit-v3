@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <actions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:shemas-jetbrains-com:actions-xml">
   <insert group-id="UnitTestSession.ActionBar" position="last">
-    <action id="GallioTestSession.ShowReport" text="Open Gallio Test Report" image="Report" vsid="1000" />
+    <action-group id="GallioTestSession.ShowReport" text="Open Test Report" image="Report">
+      <action id="GallioTestSession.ShowCondensedReport" text="Open Condensed Test Report" vsid="1000" />
+      <action id="GallioTestSession.ShowFullReport" text="Open Full Test Report" vsid="1001" />
+    </action-group>
   </insert>
 </actions>

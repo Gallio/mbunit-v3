@@ -39,21 +39,24 @@ namespace Gallio.ReSharperRunner.Provider
             return diskCache.Groups["Gallio.ReSharperRunner.Report:Session-" + sessionId];
         }
 
-        public static FileInfo GetHtmlFormattedReport(string sessionId)
+        public static FileInfo GetHtmlFormattedReport(string sessionId, bool condensed)
         {
             IDiskCacheGroup group = GetReportCacheGroup(sessionId);
-            FileInfo htmlReportFile = group.GetFileInfo(HtmlReportFileName);
+            string directory = condensed ? "Condensed" : "Full";
+
+            FileInfo htmlReportFile = group.GetFileInfo(Path.Combine(directory, HtmlReportFileName));
             if (!htmlReportFile.Exists)
             {
                 Report report = LoadSerializedReport(sessionId);
                 if (report == null)
                     return null;
 
+                group.CreateSubdirectory(directory);
                 IReportManager reportManager = RuntimeProvider.GetRuntime().Resolve<IReportManager>();
                 FileSystemReportContainer reportContainer = new FileSystemReportContainer(htmlReportFile.DirectoryName, ReportBaseName);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
                 NameValueCollection options = new NameValueCollection();
-                reportManager.Format(reportWriter, "Html", options, NullProgressMonitor.CreateInstance());
+                reportManager.Format(reportWriter, condensed ? "Html-Condensed" : "Html", options, NullProgressMonitor.CreateInstance());
             }
 
             return htmlReportFile;

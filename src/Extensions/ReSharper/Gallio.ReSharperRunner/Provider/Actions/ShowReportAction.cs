@@ -27,8 +27,7 @@ using JetBrains.VSIntegration.Shell;
 
 namespace Gallio.ReSharperRunner.Provider.Actions
 {
-    [ActionHandler(new string[] { "GallioTestSession.ShowReport" })]
-    public class ShowReportAction : GallioAction
+    public abstract class ShowReportAction : GallioAction
     {
         public override void Execute(IDataContext context, DelegateExecute nextExecute)
         {
@@ -36,7 +35,7 @@ namespace Gallio.ReSharperRunner.Provider.Actions
             if (session == null)
                 return;
 
-            FileInfo formattedReport = SessionCache.GetHtmlFormattedReport(session.ID);
+            FileInfo formattedReport = SessionCache.GetHtmlFormattedReport(session.ID, IsCondensed);
             if (formattedReport == null)
                 return;
 
@@ -51,6 +50,8 @@ namespace Gallio.ReSharperRunner.Provider.Actions
 
             return SessionCache.HasSerializedReport(session.ID);
         }
+
+        protected abstract bool IsCondensed { get; }
 
         private static void ShowHtmlDocument(Uri url)
         {
