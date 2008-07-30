@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.NUnitAdapter.Properties;
@@ -181,17 +182,17 @@ namespace Gallio.NUnitAdapter.Model
                 {
                     default:
                     case TestOutputType.Out:
-                        streamName = LogStreamNames.ConsoleOutput;
+                        streamName = TestLogStreamNames.ConsoleOutput;
                         break;
                     case TestOutputType.Error:
-                        streamName = LogStreamNames.ConsoleError;
+                        streamName = TestLogStreamNames.ConsoleError;
                         break;
                     case TestOutputType.Trace:
-                        streamName = LogStreamNames.DebugTrace;
+                        streamName = TestLogStreamNames.DebugTrace;
                         break;
                 }
 
-                testContext.LogWriter.Write(streamName, testOutput.Text);
+                testContext.LogWriter[streamName].Write(testOutput.Text);
             }
 
             void EventListener.SuiteStarted(TestName testName)
@@ -216,7 +217,7 @@ namespace Gallio.NUnitAdapter.Model
 
                 ITestContext testContext = testContextStack.Peek();
 
-                TestLogWriterUtils.WriteException(testContext.LogWriter, LogStreamNames.Failures, exception, Resources.NUnitTestController_UnhandledExceptionSectionName);
+                testContext.LogWriter.Failures.WriteException(exception, Resources.NUnitTestController_UnhandledExceptionSectionName);
             }
 
             private void HandleTestOrSuiteStarted(TestName testName)
@@ -248,20 +249,19 @@ namespace Gallio.NUnitAdapter.Model
 
                 progressMonitor.Worked(1);
 
-                string logStreamName = nunitResult.ResultState == ResultState.Success ? LogStreamNames.Warnings : LogStreamNames.Failures;
+                string logStreamName = nunitResult.ResultState == ResultState.Success ? TestLogStreamNames.Warnings : TestLogStreamNames.Failures;
 
-                ITestLogWriter logWriter = testContext.LogWriter;
+                TestLogWriter logWriter = testContext.LogWriter;
                 if (nunitResult.Message != null)
                 {
-                    logWriter.BeginSection(logStreamName, Resources.NUnitTestController_ResultMessageSectionName);
-                    logWriter.Write(logStreamName, nunitResult.Message);
-                    logWriter.EndSection(logStreamName);
+                    using (logWriter[logStreamName].BeginSection(Resources.NUnitTestController_ResultMessageSectionName))
+                        logWriter[logStreamName].Write(nunitResult.Message);
                 }
                 if (nunitResult.StackTrace != null)
                 {
-                    logWriter.BeginSection(logStreamName, Resources.NUnitTestController_ResultStackTraceSectionName);
-                    logWriter.Write(logStreamName, nunitResult.StackTrace);
-                    logWriter.EndSection(logStreamName);
+                    using (logWriter[logStreamName].BeginSection(Resources.NUnitTestController_ResultStackTraceSectionName))
+                        using (logWriter[logStreamName].BeginMarker(MarkerClasses.StackTrace))
+                            logWriter[logStreamName].Write(nunitResult.StackTrace);
                 }
 
                 testContext.AddAssertCount(nunitResult.AssertCount);

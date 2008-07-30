@@ -36,7 +36,7 @@ namespace Gallio.Runner.Reports
         private DateTime startTime;
         private DateTime endTime;
         private TestResult result;
-        private ExecutionLog executionLog;
+        private TestLog testLog;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -128,23 +128,23 @@ namespace Gallio.Runner.Reports
         }
 
         /// <summary>
-        /// Gets or sets the execution log.
+        /// Gets or sets the test log.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("executionLog", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        public ExecutionLog ExecutionLog
+        [XmlElement("testLog", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        public TestLog TestLog
         {
             get
             {
-                if (executionLog == null)
-                    executionLog = new ExecutionLog();
-                return executionLog;
+                if (testLog == null)
+                    testLog = new TestLog();
+                return testLog;
             }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
-                executionLog = value;
+                testLog = value;
             }
         }
 

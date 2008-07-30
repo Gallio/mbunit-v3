@@ -18,7 +18,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
 using Gallio.Framework;
-using Gallio.Utilities;
+using Gallio.Model.Diagnostics;
+using Gallio.Model.Logging;
 
 namespace Gallio.Framework
 {
@@ -52,7 +53,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <returns>The execution log, never null</returns>
         /// <exception cref="InvalidOperationException">Thrown if there is no current log writer</exception>
-        public static LogWriter Writer
+        public static TestLogWriter Writer
         {
             get
             {
@@ -69,7 +70,7 @@ namespace Gallio.Framework
         /// Gets the current stream writer for the built-in log stream where the <see cref="Console.In" />
         /// stream for the test is recorded.
         /// </summary>
-        public static LogStreamWriter ConsoleInput
+        public static TestLogStreamWriter ConsoleInput
         {
             get { return Writer.ConsoleInput; }
         }
@@ -78,7 +79,7 @@ namespace Gallio.Framework
         /// Gets the current stream writer for the built-in log stream where the <see cref="Console.Out" />
         /// stream for the test is recorded.
         /// </summary>
-        public static LogStreamWriter ConsoleOutput
+        public static TestLogStreamWriter ConsoleOutput
         {
             get { return Writer.ConsoleOutput; }
         }
@@ -87,7 +88,7 @@ namespace Gallio.Framework
         /// Gets the current stream writer for the built-in log stream where the <see cref="Console.Error" />
         /// stream for the test is recorded.
         /// </summary>
-        public static LogStreamWriter ConsoleError
+        public static TestLogStreamWriter ConsoleError
         {
             get { return Writer.ConsoleError; }
         }
@@ -96,7 +97,7 @@ namespace Gallio.Framework
         /// Gets the current stream writer for the built-in log stream where diagnostic <see cref="Debug" />
         /// and <see cref="Trace" /> information is recorded.
         /// </summary>
-        public static LogStreamWriter DebugTrace
+        public static TestLogStreamWriter DebugTrace
         {
             get { return Writer.DebugTrace; }
         }
@@ -105,7 +106,7 @@ namespace Gallio.Framework
         /// Gets the current stream writer for the built-in log stream where assertion failures,
         /// exceptions and other failure data are recorded.
         /// </summary>
-        public static LogStreamWriter Failures
+        public static TestLogStreamWriter Failures
         {
             get { return Writer.Failures; }
         }
@@ -113,7 +114,7 @@ namespace Gallio.Framework
         /// <summary>
         /// Gets the current stream writer for the built-in log stream where warnings are recorded.
         /// </summary>
-        public static LogStreamWriter Warnings
+        public static TestLogStreamWriter Warnings
         {
             get { return Writer.Warnings; }
         }
@@ -122,7 +123,7 @@ namespace Gallio.Framework
         /// Gets the current stream writer for the built-in log stream where the output from the convenience methods
         /// of the <see cref="Log" /> class is recorded.
         /// </summary>
-        public static LogStreamWriter Default
+        public static TestLogStreamWriter Default
         {
             get { return Writer.Default; }
         }
@@ -138,7 +139,7 @@ namespace Gallio.Framework
         /// </summary>
         /// <param name="attachment">The attachment to include</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogStreamWriter.Embed"/>
+        /// <seealso cref="TestLogStreamWriter.Embed"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -159,7 +160,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="text">The text to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogStreamWriter.EmbedPlainText"/>
+        /// <seealso cref="TestLogStreamWriter.EmbedPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -180,7 +181,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="html">The HTML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogStreamWriter.EmbedHtml"/>
+        /// <seealso cref="TestLogStreamWriter.EmbedHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -201,7 +202,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="xhtml">The XHTML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogStreamWriter.EmbedXHtml"/>
+        /// <seealso cref="TestLogStreamWriter.EmbedXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -222,7 +223,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="xml">The XML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogStreamWriter.EmbedXml"/>
+        /// <seealso cref="TestLogStreamWriter.EmbedXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -243,7 +244,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="image">The image to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogStreamWriter.EmbedImage"/>
+        /// <seealso cref="TestLogStreamWriter.EmbedImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -265,7 +266,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(string, object)"/>
+        /// <seealso cref="TestLogStreamWriter.EmbedObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -289,7 +290,7 @@ namespace Gallio.Framework
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
         /// for the object's type</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogStreamWriter.EmbedObjectAsXml(string, object, XmlSerializer)"/>
+        /// <seealso cref="TestLogStreamWriter.EmbedObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -466,7 +467,7 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Writes an exception to the log within its own section with the name "Exception".
+        /// Writes an exception to the log.
         /// </summary>
         /// <param name="exception">The exception to write</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
@@ -476,10 +477,10 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Writes an exception to the log within its own section with the specified name.
+        /// Writes an exception to the log within its own section.
         /// </summary>
         /// <param name="exception">The exception to write</param>
-        /// <param name="sectionName">The section name</param>
+        /// <param name="sectionName">The section name, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>,
         /// or <paramref name="sectionName"/> is null</exception>
         public static void WriteException(Exception exception, string sectionName)
@@ -488,22 +489,33 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// Writes an exception to the log within its own section with the specified name.
+        /// Writes an exception to the log.
         /// </summary>
-        /// <param name="exception">The exception to write</param>
-        /// <param name="sectionNameFormat">The section name format string</param>
-        /// <param name="sectionNameArgs">The section name arguments</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/>,
-        /// <paramref name="sectionNameFormat"/> or <paramref name="sectionNameArgs"/> is null</exception>
-        public static void WriteException(Exception exception, string sectionNameFormat, params object[] sectionNameArgs)
+        /// <param name="exception">The exception data to write</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
+        public static void WriteException(ExceptionData exception)
         {
-            Default.WriteException(exception, sectionNameFormat, sectionNameArgs);
+            Default.WriteException(exception);
+        }
+
+        /// <summary>
+        /// Writes an exception to the log within its own section.
+        /// </summary>
+        /// <param name="exception">The exception data to write</param>
+        /// <param name="sectionName">The section name, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
+        public static void WriteException(ExceptionData exception, string sectionName)
+        {
+            Default.WriteException(exception, sectionName);
         }
 
         /// <summary>
         /// <para>
-        /// Begins a section with the specified name.
-        /// Execution log sections may be nested.
+        /// Begins a section with the specified name.  Maybe be nested.
+        /// </para>
+        /// <para>
+        /// A section groups together related content in the test log to make it
+        /// easier to distinguish.  The section name is used as a heading.
         /// </para>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
@@ -519,8 +531,8 @@ namespace Gallio.Framework
         /// </code>
         /// </example>
         /// <param name="sectionName">The name of the section</param>
-        /// <returns>A Disposable object that calls <see cref="EndSection" /> when disposed.  This
-        /// is a convenience for using the C# "using" statement to contain log stream sections.</returns>
+        /// <returns>A Disposable object that calls <see cref="End" /> when disposed.  This
+        /// is a convenience for use with the C# "using" statement.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="sectionName"/> is null</exception>
         public static IDisposable BeginSection(string sectionName)
         {
@@ -529,7 +541,39 @@ namespace Gallio.Framework
 
         /// <summary>
         /// <para>
-        /// Ends the current section.
+        /// Begins a marked region of the specified class.  Maybe be nested.
+        /// </para>
+        /// <para>
+        /// A marker is a hidden tag that labels its contents with a semantic class.
+        /// It is roughly equivalent in operation to an HTML "span" tag.  Various tools
+        /// may inspect the markers and modify the presentation accordingly.
+        /// </para>
+        /// <para>
+        /// This is a convenience method that forwards the request to the current default
+        /// log stream writer as returned by the <see cref="Default" /> property.
+        /// </para>
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using (Log.BeginMarker("exception"))
+        /// {
+        ///     Log.WriteLine(someException);
+        /// }
+        /// </code>
+        /// </example>
+        /// <param name="class">The marker class identifier that describes its semantics</param>
+        /// <returns>A Disposable object that calls <see cref="End" /> when disposed.  This
+        /// is a convenience for use with the C# "using" statement.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="MarkerClasses.Validate"/></exception>
+        public static IDisposable BeginMarker(string @class)
+        {
+            return Default.BeginMarker(@class);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Ends the region most recently started with one of the Begin* methods.
         /// </para>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
@@ -537,9 +581,9 @@ namespace Gallio.Framework
         /// </para>
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if there is no current section</exception>
-        public static void EndSection()
+        public static void End()
         {
-            Default.EndSection();
+            Default.End();
         }
 
         /// <summary>
@@ -551,14 +595,14 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// Only one copy of an attachment instance is saved with an execution log even if
-        /// <see cref="LogWriter.Attach" /> or <see cref="LogStreamWriter.Embed" /> are
+        /// <see cref="TestLogWriter.Attach" /> or <see cref="TestLogStreamWriter.Embed" /> are
         /// called multiple times with the same instance.  However, an attachment instance
         /// can be embedded multiple times into multiple execution log streams since each
         /// embedded copy is represented as a link to the same common attachment instance.
         /// </remarks>
         /// <param name="attachment">The attachment to embed</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogWriter.Attach"/>
+        /// <seealso cref="TestLogWriter.Attach"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -581,14 +625,14 @@ namespace Gallio.Framework
         /// </summary>
         /// <remarks>
         /// Only one copy of an attachment instance is saved with an execution log even if
-        /// <see cref="LogWriter.Attach" /> or <see cref="LogStreamWriter.Embed" /> are
+        /// <see cref="TestLogWriter.Attach" /> or <see cref="TestLogStreamWriter.Embed" /> are
         /// called multiple times with the same instance.  However, an attachment instance
         /// can be embedded multiple times into multiple execution log streams since each
         /// embedded copy is represented as a link to the same common attachment instance.
         /// </remarks>
         /// <param name="attachmentName">The name of the existing attachment to embed</param>
-        /// <seealso cref="LogWriter.Attach"/>
-        /// <seealso cref="LogStreamWriter.Embed"/>
+        /// <seealso cref="TestLogWriter.Attach"/>
+        /// <seealso cref="TestLogStreamWriter.Embed"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachmentName"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if no attachment with the specified
         /// name has been attached to the log</exception>
@@ -609,7 +653,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="text">The text to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogWriter.AttachPlainText"/>
+        /// <seealso cref="TestLogWriter.AttachPlainText"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -630,7 +674,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="html">The HTML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogWriter.AttachHtml"/>
+        /// <seealso cref="TestLogWriter.AttachHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="html"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -651,7 +695,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="xhtml">The XHTML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogWriter.AttachXHtml"/>
+        /// <seealso cref="TestLogWriter.AttachXHtml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xhtml"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -672,7 +716,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="xml">The XML to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogWriter.AttachXml"/>
+        /// <seealso cref="TestLogWriter.AttachXml"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xml"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -693,7 +737,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="image">The image to attach</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogWriter.AttachImage"/>
+        /// <seealso cref="TestLogWriter.AttachImage"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="image"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -715,7 +759,7 @@ namespace Gallio.Framework
         /// currently executing test step.</param>
         /// <param name="obj">The object to serialize and embed, must not be null</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogWriter.AttachObjectAsXml(string, object)"/>
+        /// <seealso cref="TestLogWriter.AttachObjectAsXml(string, object)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>
@@ -739,7 +783,7 @@ namespace Gallio.Framework
         /// <param name="xmlSerializer">The <see cref="XmlSerializer" /> to use, or null to use the default <see cref="XmlSerializer" />
         /// for the object's type</param>
         /// <returns>The attachment</returns>
-        /// <seealso cref="LogWriter.AttachObjectAsXml(string, object, XmlSerializer)"/>
+        /// <seealso cref="TestLogWriter.AttachObjectAsXml(string, object, XmlSerializer)"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is already an attachment
         /// with the same name</exception>

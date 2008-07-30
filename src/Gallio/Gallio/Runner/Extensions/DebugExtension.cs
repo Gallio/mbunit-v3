@@ -119,49 +119,57 @@ namespace Gallio.Runner.Extensions
                     e.MetadataValue);
             };
 
-            Events.TestStepLogBinaryAttachmentAdded += delegate(object sender, TestStepLogBinaryAttachmentAddedEventArgs e)
+            Events.TestStepLogAttachBytes += delegate(object sender, TestStepLogBinaryAttachBytesEventArgs e)
             {
-                LogDebugFormat("[TestStepLogBinaryAttachmentAdded({0})]\n\tName: {1}\n\tContentType: {2}",
+                LogDebugFormat("[TestStepLogAttachBytes({0})]\n\tName: {1}\n\tContentType: {2}",
                     e.TestStepRun.Step.FullName,
                     e.AttachmentName,
                     e.ContentType);
             };
 
-            Events.TestStepLogTextAttachmentAdded += delegate(object sender, TestStepLogTextAttachmentAddedEventArgs e)
+            Events.TestStepLogAttachText += delegate(object sender, TestStepLogAttachTextEventArgs e)
             {
-                LogDebugFormat("[TestStepLogTextAttachmentAdded({0})]\n\tName: {1}\n\tContentType: {2}",
+                LogDebugFormat("[TestStepLogAttachText({0})]\n\tName: {1}\n\tContentType: {2}",
                     e.TestStepRun.Step.FullName,
                     e.AttachmentName,
                     e.ContentType);
             };
 
-            Events.TestStepLogStreamTextWritten += delegate(object sender, TestStepLogStreamTextWrittenEventArgs e)
+            Events.TestStepLogStreamWrite += delegate(object sender, TestStepLogStreamWriteEventArgs e)
             {
-                LogDebugFormat("[TestStepLogStreamTextWritten({0})]\n\tStream: {1}\n\tText: {2}",
+                LogDebugFormat("[TestStepLogStreamWrite({0})]\n\tStream: {1}\n\tText: {2}",
                     e.TestStepRun.Step.FullName,
                     e.LogStreamName,
                     e.Text);
             };
 
-            Events.TestStepLogStreamAttachmentEmbedded += delegate(object sender, TestStepLogStreamAttachmentEmbeddedEventArgs e)
+            Events.TestStepLogStreamEmbed += delegate(object sender, TestStepLogStreamEmbedEventArgs e)
             {
-                LogDebugFormat("[TestStepLogStreamAttachmentEmbedded({0})]\n\tStream: {1}\n\tAttachmentName: {2}",
+                LogDebugFormat("[TestStepLogStreamEmbed({0})]\n\tStream: {1}\n\tAttachmentName: {2}",
                     e.TestStepRun.Step.FullName,
                     e.LogStreamName,
                     e.AttachmentName);
             };
 
-            Events.TestStepLogStreamSectionStarted += delegate(object sender, TestStepLogStreamSectionStartedEventArgs e)
+            Events.TestStepLogStreamBeginSection += delegate(object sender, TestStepLogStreamBeginSectionEventArgs e)
             {
-                LogDebugFormat("[TestStepLogStreamSectionStarted({0})]\n\tStream: {1}\n\tSection Name: {2}",
+                LogDebugFormat("[TestStepLogStreamBeginSection({0})]\n\tStream: {1}\n\tSection Name: {2}",
                     e.TestStepRun.Step.FullName,
                     e.LogStreamName,
                     e.SectionName);
             };
 
-            Events.TestStepLogStreamSectionFinished += delegate(object sender, TestStepLogStreamSectionFinishedEventArgs e)
+            Events.TestStepLogStreamBeginMarker += delegate(object sender, TestStepLogStreamBeginMarkerEventArgs e)
             {
-                LogDebugFormat("[TestStepLogStreamSectionStarted({0})]\n\tStream: {1}",
+                LogDebugFormat("[TestStepLogStreamBeginMarker({0})]\n\tStream: {1}\n\tClass: {2}",
+                    e.TestStepRun.Step.FullName,
+                    e.LogStreamName,
+                    e.Class);
+            };
+
+            Events.TestStepLogStreamEnd += delegate(object sender, TestStepLogStreamEndEventArgs e)
+            {
+                LogDebugFormat("[TestStepLogStreamEnd({0})]\n\tStream: {1}",
                     e.TestStepRun.Step.FullName,
                     e.LogStreamName);
             };

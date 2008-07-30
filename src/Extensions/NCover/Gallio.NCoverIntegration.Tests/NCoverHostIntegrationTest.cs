@@ -16,9 +16,9 @@
 using System;
 using System.IO;
 using Gallio.Framework;
-using Gallio.Framework.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner;
 using MbUnit.Framework;
@@ -60,7 +60,7 @@ at NCover.Framework.CoverageData._MergeMethod(MethodData leftSide, MethodData ri
             Type simpleTestType = typeof(SimpleTest);
 
             TestLauncher launcher = new TestLauncher();
-            launcher.Logger = new LogStreamLogger(Log.Default);
+            launcher.Logger = new TestLogStreamLogger(Log.Default);
             launcher.TestPackageConfig.AssemblyFiles.Add(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly));
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = tempPath;
             launcher.TestRunnerFactoryName = NCoverTestRunnerFactoryName;

@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework;
+using Gallio.Model.Diagnostics;
+using Gallio.Model.Logging;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
@@ -72,8 +74,8 @@ namespace MbUnit.Tests.Framework
                 }, AssertionFailureBehavior.LogAndThrow, false);
 
                 ArrayAssert.AreEqual(new[] { failure1 }, failures);
-                Assert.IsTrue(failure1.WasLogCalled);
-                Assert.IsFalse(failure2.WasLogCalled);
+                Assert.IsTrue(failure1.WasWriteToCalled);
+                Assert.IsFalse(failure2.WasWriteToCalled);
                 Assert.IsFalse(completed);
             }
 
@@ -88,7 +90,7 @@ namespace MbUnit.Tests.Framework
                 Assert.AreEqual(1, failures.Length);
                 Assert.AreEqual("An exception occurred.", failures[0].Description);
                 Assert.AreEqual(1, failures[0].Exceptions.Count);
-                Assert.Contains(failures[0].Exceptions[0], "Boom");
+                Assert.Contains(failures[0].Exceptions[0].ToString(), "Boom");
             }
 
             [Test]
@@ -121,8 +123,8 @@ namespace MbUnit.Tests.Framework
                 }, AssertionFailureBehavior.Log, false);
 
                 ArrayAssert.AreEqual(new[] { failure1, failure2 }, failures);
-                Assert.IsTrue(failure1.WasLogCalled);
-                Assert.IsTrue(failure2.WasLogCalled);
+                Assert.IsTrue(failure1.WasWriteToCalled);
+                Assert.IsTrue(failure2.WasWriteToCalled);
                 Assert.IsTrue(completed);
             }
         }
@@ -144,8 +146,8 @@ namespace MbUnit.Tests.Framework
                 }, AssertionFailureBehavior.Defer, false);
 
                 ArrayAssert.AreEqual(new[] { failure1, failure2 }, failures);
-                Assert.IsFalse(failure1.WasLogCalled);
-                Assert.IsFalse(failure2.WasLogCalled);
+                Assert.IsFalse(failure1.WasWriteToCalled);
+                Assert.IsFalse(failure2.WasWriteToCalled);
                 Assert.IsTrue(completed);
             }
         }
@@ -167,31 +169,31 @@ namespace MbUnit.Tests.Framework
                 }, AssertionFailureBehavior.Ignore, false);
 
                 Assert.IsEmpty(failures);
-                Assert.IsFalse(failure1.WasLogCalled);
-                Assert.IsFalse(failure2.WasLogCalled);
+                Assert.IsFalse(failure1.WasWriteToCalled);
+                Assert.IsFalse(failure2.WasWriteToCalled);
                 Assert.IsTrue(completed);
             }
         }
 
         private sealed class StubAssertionFailure : AssertionFailure
         {
-            private bool wasLogCalled;
+            private bool wasWriteToCalled;
 
             public StubAssertionFailure() :
                 base("Description", "Message", "Stack", EmptyArray<KeyValuePair<string, string>>.Instance,
-                EmptyArray<string>.Instance)
+                EmptyArray<ExceptionData>.Instance)
             {
             }
 
-            public bool WasLogCalled
+            public bool WasWriteToCalled
             {
-                get { return wasLogCalled; }
+                get { return wasWriteToCalled; }
             }
 
-            public override void Log(LogWriter logWriter)
+            public override void WriteTo(TestLogStreamWriter writer)
             {
-                wasLogCalled = true;
-                base.Log(logWriter);
+                wasWriteToCalled = true;
+                base.WriteTo(writer);
             }
         }
     }

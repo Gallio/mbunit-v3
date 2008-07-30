@@ -75,22 +75,25 @@ namespace Gallio.Runner
         public event EventHandler<TestStepMetadataAddedEventArgs> TestStepMetadataAdded;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogTextAttachmentAddedEventArgs> TestStepLogTextAttachmentAdded;
+        public event EventHandler<TestStepLogAttachTextEventArgs> TestStepLogAttachText;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogBinaryAttachmentAddedEventArgs> TestStepLogBinaryAttachmentAdded;
+        public event EventHandler<TestStepLogBinaryAttachBytesEventArgs> TestStepLogAttachBytes;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogStreamTextWrittenEventArgs> TestStepLogStreamTextWritten;
+        public event EventHandler<TestStepLogStreamWriteEventArgs> TestStepLogStreamWrite;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogStreamAttachmentEmbeddedEventArgs> TestStepLogStreamAttachmentEmbedded;
+        public event EventHandler<TestStepLogStreamEmbedEventArgs> TestStepLogStreamEmbed;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogStreamSectionStartedEventArgs> TestStepLogStreamSectionStarted;
+        public event EventHandler<TestStepLogStreamBeginSectionEventArgs> TestStepLogStreamBeginSection;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogStreamSectionFinishedEventArgs> TestStepLogStreamSectionFinished;
+        public event EventHandler<TestStepLogStreamBeginMarkerEventArgs> TestStepLogStreamBeginMarker;
+
+        /// <inheritdoc/>
+        public event EventHandler<TestStepLogStreamEndEventArgs> TestStepLogStreamEnd;
 
         /// <summary>
         /// Dispatches the <see cref="InitializeStarted" /> event.
@@ -237,57 +240,66 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogTextAttachmentAdded" /> event.
+        /// Dispatches the <see cref="TestStepLogAttachText" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        public void NotifyTestStepLogTextAttachmentAdded(TestStepLogTextAttachmentAddedEventArgs e)
+        public void NotifyTestStepLogAttachText(TestStepLogAttachTextEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogTextAttachmentAdded, this, e);
+            EventHandlerUtils.SafeInvoke(TestStepLogAttachText, this, e);
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogBinaryAttachmentAdded" /> event.
+        /// Dispatches the <see cref="TestStepLogAttachBytes" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        public void NotifyTestStepLogBinaryAttachmentAdded(TestStepLogBinaryAttachmentAddedEventArgs e)
+        public void NotifyTestStepLogAttachBytes(TestStepLogBinaryAttachBytesEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogBinaryAttachmentAdded, this, e);
+            EventHandlerUtils.SafeInvoke(TestStepLogAttachBytes, this, e);
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogStreamTextWritten" /> event.
+        /// Dispatches the <see cref="TestStepLogStreamWrite" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        public void NotifyTestStepLogStreamTextWritten(TestStepLogStreamTextWrittenEventArgs e)
+        public void NotifyTestStepLogStreamWrite(TestStepLogStreamWriteEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogStreamTextWritten, this, e);
+            EventHandlerUtils.SafeInvoke(TestStepLogStreamWrite, this, e);
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogStreamAttachmentEmbedded" /> event.
+        /// Dispatches the <see cref="TestStepLogStreamEmbed" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        public void NotifyTestStepLogStreamAttachmentEmbedded(TestStepLogStreamAttachmentEmbeddedEventArgs e)
+        public void NotifyTestStepLogStreamEmbed(TestStepLogStreamEmbedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogStreamAttachmentEmbedded, this, e);
+            EventHandlerUtils.SafeInvoke(TestStepLogStreamEmbed, this, e);
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogStreamSectionStarted" /> event.
+        /// Dispatches the <see cref="TestStepLogStreamBeginSection" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        public void NotifyTestStepLogStreamSectionStarted(TestStepLogStreamSectionStartedEventArgs e)
+        public void NotifyTestStepLogStreamBeginSection(TestStepLogStreamBeginSectionEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogStreamSectionStarted, this, e);
+            EventHandlerUtils.SafeInvoke(TestStepLogStreamBeginSection, this, e);
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogStreamSectionFinished" /> event.
+        /// Dispatches the <see cref="TestStepLogStreamBeginMarker" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        public void NotifyTestStepLogStreamSectionFinished(TestStepLogStreamSectionFinishedEventArgs e)
+        public void NotifyTestStepLogStreamBeginMarker(TestStepLogStreamBeginMarkerEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogStreamSectionFinished, this, e);
+            EventHandlerUtils.SafeInvoke(TestStepLogStreamBeginMarker, this, e);
+        }
+
+        /// <summary>
+        /// Dispatches the <see cref="TestStepLogStreamEnd" /> event.
+        /// </summary>
+        /// <param name="e">The event arguments</param>
+        public void NotifyTestStepLogStreamEnd(TestStepLogStreamEndEventArgs e)
+        {
+            EventHandlerUtils.SafeInvoke(TestStepLogStreamEnd, this, e);
         }
     }
 }

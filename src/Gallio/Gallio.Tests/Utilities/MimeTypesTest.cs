@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Utilities;
+using Gallio.Model.Logging;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Utilities

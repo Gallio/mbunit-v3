@@ -21,6 +21,7 @@ using Gallio.Collections;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Utilities;
 
@@ -49,7 +50,6 @@ namespace Gallio.Framework
         private static readonly Key<TestContext> GallioFrameworkContextKey = new Key<TestContext>("Gallio.Framework.Context");
         private readonly ITestContext inner;
         private readonly Sandbox sandbox;
-        private readonly LogWriter logWriter;
         private EventHandler finishingHandlers;
 
         /// <summary>
@@ -65,7 +65,6 @@ namespace Gallio.Framework
 
             this.inner = inner;
             this.sandbox = sandbox;
-            logWriter = new TestLogWriter(inner.LogWriter);
         }
 
         private static ITestContextTracker ContextTracker
@@ -193,9 +192,9 @@ namespace Gallio.Framework
         /// particular to the step represented by this test context.
         /// </para>
         /// </summary>
-        public LogWriter LogWriter
+        public TestLogWriter LogWriter
         {
-            get { return logWriter; }
+            get { return inner.LogWriter; }
         }
 
         /// <summary>
@@ -489,7 +488,7 @@ namespace Gallio.Framework
             }
             catch (Exception ex)
             {
-                logWriter.Failures.WriteException(ex, "An exception during Finishing event processing.");
+                LogWriter.Failures.WriteException(ex, "An exception during Finishing event processing.");
             }
         }
     }

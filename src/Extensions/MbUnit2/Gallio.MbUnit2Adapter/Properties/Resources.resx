@@ -126,9 +126,6 @@
   <data name="MbUnit2TestController_InitializingMbUnitTestRunner" xml:space="preserve">
     <value>Initializing MbUnit v2 test runner.</value>
   </data>
-  <data name="MbUnit2TestController_EndOfInnerExceptionStackTrace" xml:space="preserve">
-    <value>End of inner exception stack trace</value>
-  </data>
   <data name="MbUnit2TestFramework_FrameworkName" xml:space="preserve">
     <value>MbUnit v2</value>
   </data>

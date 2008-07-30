@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 xmlns:g="http://www.gallio.org/">
   <xsl:param name="resourceRoot" select="''" />
   
@@ -121,13 +122,13 @@
     <xsl:text>] </xsl:text>
     <xsl:value-of select="g:testStep/@fullName" />
     <xsl:text>&#xA;</xsl:text>
-    <xsl:apply-templates select="g:executionLog" />
+    <xsl:apply-templates select="g:testLog" />
     <xsl:text>&#xA;</xsl:text>
 
     <xsl:apply-templates select="g:children/g:testStepRun" />
   </xsl:template>
 
-  <xsl:template match="g:executionLog">
+  <xsl:template match="g:testLog">
     <xsl:apply-templates select="g:streams" />
   </xsl:template>
 
@@ -159,19 +160,32 @@
 
   <xsl:template match="g:contents">
     <xsl:param name="prefix" select="''"  />
-    
-    <xsl:apply-templates select="child::node()[self::g:text or self::g:section or self::g:embed]">
+
+    <xsl:apply-templates select="child::node()[self::g:text or self::g:section or self::g:embed or self::g:marker]">
       <xsl:with-param name="prefix" select="$prefix" />
     </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="g:text">
     <xsl:param name="prefix" select="''"  />
-    
+
     <xsl:call-template name="indent">
       <xsl:with-param name="text" select="text()" />
-      <xsl:with-param name="prefix" select="$prefix" />
+      <xsl:with-param name="firstLinePrefix">
+        <!-- omit prefix when we have a preceding text node with no intervening block tags -->
+        <xsl:if test="not(preceding::node()[self::g:body or self::g:text or self::g:section or self::g:embed][1][self::g:text])">
+          <xsl:value-of select="$prefix"/>
+        </xsl:if>
+      </xsl:with-param>
+      <xsl:with-param name="secondLinePrefix" select="$prefix" />
+      <xsl:with-param name="lastLineSuffix">
+        <!-- omit suffix when we have a following text node with no intervening block tags -->
+        <xsl:if test="not(following::node()[self::g:body or self::g:text or self::g:section or self::g:embed][1][self::g:text])">
+          <xsl:value-of select="'&#xA;'"/>
+        </xsl:if>
+      </xsl:with-param>
     </xsl:call-template>
+
   </xsl:template>
 
   <xsl:template match="g:section">
@@ -186,6 +200,14 @@
     </xsl:apply-templates>
     <xsl:value-of select="$prefix"/>
     <xsl:text>&lt;End Section&gt;&#xA;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="g:marker">
+    <xsl:param name="prefix" select="''"  />
+
+    <xsl:apply-templates select="g:contents">
+      <xsl:with-param name="prefix" select="$prefix" />
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="g:embed">

@@ -59,7 +59,7 @@ namespace Gallio.Reports
         /// <inheritdoc />
         public override void Format(IReportWriter reportWriter, NameValueCollection options, IProgressMonitor progressMonitor)
         {
-            ExecutionLogAttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
+            TestLogAttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 
             reportWriter.SaveReport(attachmentContentDisposition, progressMonitor);
         }

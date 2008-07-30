@@ -19,6 +19,7 @@ using Gallio;
 using Gallio.Collections;
 using Gallio.Concurrency;
 using Gallio.Framework;
+using Gallio.Model.Logging;
 
 namespace Gallio.Framework
 {
@@ -137,12 +138,13 @@ namespace Gallio.Framework
             return task;
         }
 
-        private static void ConfigureProcessTaskForLogging(ProcessTask task, LogStreamWriter writer)
+        private static void ConfigureProcessTaskForLogging(ProcessTask task, TestLogStreamWriter writer)
         {
             task.Started += delegate
             {
                 writer.BeginSection(String.Format("Run Process: {0} {1}", task.ExecutablePath, task.Arguments));
                 writer.WriteLine("Working Directory: {0}", task.WorkingDirectory);
+                writer.BeginMarker(MarkerClasses.Console);
             };
 
             task.ConsoleOutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
@@ -165,8 +167,9 @@ namespace Gallio.Framework
 
             task.Terminated += delegate
             {
+                writer.End();
                 writer.WriteLine("Exit Code: {0}", task.ExitCode);
-                writer.EndSection();
+                writer.End();
             };
         }
 
@@ -265,7 +268,8 @@ namespace Gallio.Framework
         {
             if (task.Result != null && task.Result.Exception != null)
             {
-                context.LogWriter.Warnings.WriteException(task.Result.Exception, "Task '{0}' failed.", task.Name);
+                context.LogWriter.Warnings.WriteException(task.Result.Exception,
+                    String.Format("Task '{0}' failed.", task.Name));
                 FailureFlag = true;
             }
         }

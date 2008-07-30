@@ -55,8 +55,8 @@ namespace Gallio.Runner.Reports
         /// Loads referenced report attachments from the container.
         /// </para>
         /// <para>
-        /// This method has the effect of populating the contents of all <see cref="ExecutionLogAttachment" />
-        /// nodes in the report that have non-null <see cref="ExecutionLogAttachment.ContentPath" />.
+        /// This method has the effect of populating the contents of all <see cref="TestLogAttachment" />
+        /// nodes in the report that have non-null <see cref="TestLogAttachment.ContentPath" />.
         /// </para>
         /// </summary>
         /// <param name="report">The report whose attachments are to be loaded</param>

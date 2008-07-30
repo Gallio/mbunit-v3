@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Gallio.Collections;
+using Gallio.Model.Logging;
 using Gallio.Runtime;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
@@ -90,7 +91,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public ITestLogWriter LogWriter
+        public TestLogWriter LogWriter
         {
             get { return logWriter; }
         }
@@ -295,7 +296,7 @@ namespace Gallio.Model.Execution
                     EventHandlerUtils.SafeInvoke(cachedFinishingHandlers, this, EventArgs.Empty);
 
                 if (isDisposing)
-                    logWriter.Write(LogStreamNames.Failures, "The test step was orphaned by the test runner!\n");
+                    logWriter.Write(TestLogStreamNames.Failures, "The test step was orphaned by the test runner!\n");
 
                 logWriter.Close();
 

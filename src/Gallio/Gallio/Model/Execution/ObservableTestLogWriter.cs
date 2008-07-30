@@ -14,13 +14,14 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Logging;
 
 namespace Gallio.Model.Execution
 {
     /// <summary>
     /// A log writer that sends messages to a <see cref="ITestListener" />.
     /// </summary>
-    public class ObservableTestLogWriter : BaseTestLogWriter
+    public class ObservableTestLogWriter : UnifiedTestLogWriter
     {
         private ITestListener listener;
         private readonly string stepId;
@@ -52,37 +53,43 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         protected override void AttachTextImpl(string attachmentName, string contentType, string text)
         {
-            listener.NotifyTestStepLogTextAttachmentAdded(stepId, attachmentName, contentType, text);
+            listener.NotifyTestStepLogAttachText(stepId, attachmentName, contentType, text);
         }
 
         /// <inheritdoc />
         protected override void AttachBytesImpl(string attachmentName, string contentType, byte[] bytes)
         {
-            listener.NotifyTestStepLogBinaryAttachmentAdded(stepId, attachmentName, contentType, bytes);
+            listener.NotifyTestStepLogAttachBytes(stepId, attachmentName, contentType, bytes);
         }
 
         /// <inheritdoc />
         protected override void WriteImpl(string streamName, string text)
         {
-            listener.NotifyTestStepLogStreamTextWritten(stepId, streamName, text);
+            listener.NotifyTestStepLogStreamWrite(stepId, streamName, text);
         }
 
         /// <inheritdoc />
         protected override void EmbedImpl(string streamName, string attachmentName)
         {
-            listener.NotifyTestStepLogStreamAttachmentEmbedded(stepId, streamName, attachmentName);
+            listener.NotifyTestStepLogStreamEmbed(stepId, streamName, attachmentName);
         }
 
         /// <inheritdoc />
         protected override void BeginSectionImpl(string streamName, string sectionName)
         {
-            listener.NotifyTestStepLogStreamSectionStarted(stepId, streamName, sectionName);
+            listener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
         }
 
         /// <inheritdoc />
-        protected override void EndSectionImpl(string streamName)
+        protected override void BeginMarkerImpl(string streamName, string @class)
         {
-            listener.NotifyTestStepLogStreamSectionFinished(stepId, streamName);
+            listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, @class);
+        }
+
+        /// <inheritdoc />
+        protected override void EndImpl(string streamName)
+        {
+            listener.NotifyTestStepLogStreamEnd(stepId, streamName);
         }
     }
 }

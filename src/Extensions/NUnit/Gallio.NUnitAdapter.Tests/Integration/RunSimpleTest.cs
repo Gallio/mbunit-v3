@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
@@ -45,7 +45,7 @@ namespace Gallio.NUnitAdapter.Tests.Integration
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
             Assert.AreEqual(TestStatus.Failed, run.Result.Outcome.Status);
-            StringAssert.Contains(run.ExecutionLog.GetStream(LogStreamNames.Failures).ToString(), "Boom");
+            StringAssert.Contains(run.TestLog.GetStream(TestLogStreamNames.Failures).ToString(), "Boom");
         }
     }
 }

@@ -19,9 +19,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model.Serialization;
-using Gallio.Utilities;
 
 namespace Gallio.Runner.Reports
 {
@@ -83,13 +83,13 @@ namespace Gallio.Runner.Reports
         }
 
         /// <inheritdoc />
-        public void SerializeReport(XmlWriter xmlWriter, ExecutionLogAttachmentContentDisposition attachmentContentDisposition)
+        public void SerializeReport(XmlWriter xmlWriter, TestLogAttachmentContentDisposition attachmentContentDisposition)
         {
             if (xmlWriter == null)
                 throw new ArgumentNullException(@"xmlWriter");
 
-            Dictionary<ExecutionLogAttachment, KeyValuePair<ExecutionLogAttachmentContentDisposition, string>>
-                originalAttachmentData = new Dictionary<ExecutionLogAttachment, KeyValuePair<ExecutionLogAttachmentContentDisposition, string>>();
+            Dictionary<TestLogAttachment, KeyValuePair<TestLogAttachmentContentDisposition, string>>
+                originalAttachmentData = new Dictionary<TestLogAttachment, KeyValuePair<TestLogAttachmentContentDisposition, string>>();
             try
             {
                 XmlAttributes ignoreAttributes = new XmlAttributes();
@@ -100,17 +100,17 @@ namespace Gallio.Runner.Reports
                 overrides.Add(typeof(TestStepData), @"ParentId", ignoreAttributes);
 
                 // Only include content path when linking.
-                if (attachmentContentDisposition != ExecutionLogAttachmentContentDisposition.Link)
+                if (attachmentContentDisposition != TestLogAttachmentContentDisposition.Link)
                 {
-                    overrides.Add(typeof(ExecutionLogAttachment), @"ContentPath", ignoreAttributes);
+                    overrides.Add(typeof(TestLogAttachment), @"ContentPath", ignoreAttributes);
                 }
 
                 // Only include content data when inline.
-                if (attachmentContentDisposition != ExecutionLogAttachmentContentDisposition.Inline)
+                if (attachmentContentDisposition != TestLogAttachmentContentDisposition.Inline)
                 {
-                    overrides.Add(typeof(ExecutionLogAttachment), @"InnerText", ignoreAttributes);
-                    overrides.Add(typeof(ExecutionLogAttachment), @"InnerXml", ignoreAttributes);
-                    overrides.Add(typeof(ExecutionLogAttachment), @"Encoding", ignoreAttributes);
+                    overrides.Add(typeof(TestLogAttachment), @"InnerText", ignoreAttributes);
+                    overrides.Add(typeof(TestLogAttachment), @"InnerXml", ignoreAttributes);
+                    overrides.Add(typeof(TestLogAttachment), @"Encoding", ignoreAttributes);
                 }
 
                 // Munge the content paths and content disposition.
@@ -118,9 +118,9 @@ namespace Gallio.Runner.Reports
                 {
                     foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
                     {
-                        foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
+                        foreach (TestLogAttachment attachment in testStepRun.TestLog.Attachments)
                         {
-                            originalAttachmentData.Add(attachment, new KeyValuePair<ExecutionLogAttachmentContentDisposition, string>(
+                            originalAttachmentData.Add(attachment, new KeyValuePair<TestLogAttachmentContentDisposition, string>(
                                 attachment.ContentDisposition, attachment.ContentPath));
 
                             string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
@@ -137,8 +137,8 @@ namespace Gallio.Runner.Reports
             finally
             {
                 // Restore content disposition and path in the XML document to the original values.
-                foreach (KeyValuePair<ExecutionLogAttachment,
-                    KeyValuePair<ExecutionLogAttachmentContentDisposition, string>> pair in originalAttachmentData)
+                foreach (KeyValuePair<TestLogAttachment,
+                    KeyValuePair<TestLogAttachmentContentDisposition, string>> pair in originalAttachmentData)
                 {
                     pair.Key.ContentDisposition = pair.Value.Key;
                     pair.Key.ContentPath = pair.Value.Value;
@@ -147,7 +147,7 @@ namespace Gallio.Runner.Reports
         }
 
         /// <inheritdoc />
-        public void SaveReport(ExecutionLogAttachmentContentDisposition attachmentContentDisposition,
+        public void SaveReport(TestLogAttachmentContentDisposition attachmentContentDisposition,
             IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
@@ -179,7 +179,7 @@ namespace Gallio.Runner.Reports
                 progressMonitor.Worked(1);
                 progressMonitor.SetStatus(@"");
 
-                if (attachmentContentDisposition == ExecutionLogAttachmentContentDisposition.Link && attachmentCount != 0)
+                if (attachmentContentDisposition == TestLogAttachmentContentDisposition.Link && attachmentCount != 0)
                 {
                     progressMonitor.ThrowIfCanceled();
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(attachmentCount))
@@ -208,7 +208,7 @@ namespace Gallio.Runner.Reports
             {
                 foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
                 {
-                    foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
+                    foreach (TestLogAttachment attachment in testStepRun.TestLog.Attachments)
                     {
                         string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
 
@@ -225,7 +225,7 @@ namespace Gallio.Runner.Reports
             }
         }
 
-        private void SaveAttachmentContents(ExecutionLogAttachment attachment, string attachmentPath)
+        private void SaveAttachmentContents(TestLogAttachment attachment, string attachmentPath)
         {
             using (Stream attachmentStream = reportContainer.OpenWrite(attachmentPath, attachment.ContentType, Encoding.UTF8))
                 attachment.SaveContents(attachmentStream, Encoding.UTF8);
@@ -247,7 +247,7 @@ namespace Gallio.Runner.Reports
             {
                 foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
                 {
-                    count += testStepRun.ExecutionLog.Attachments.Count;
+                    count += testStepRun.TestLog.Attachments.Count;
                 }
             }
 

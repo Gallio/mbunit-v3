@@ -17,8 +17,8 @@ using System;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
+using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
-using Gallio.Utilities;
 
 namespace MbUnit.Framework
 {
@@ -87,7 +87,7 @@ namespace MbUnit.Framework
                             using (Log.Failures.BeginSection("Expected Exception"))
                             {
                                 Log.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
-                                Log.Failures.WriteLine(ExceptionUtils.SafeToString(ex));
+                                Log.Failures.WriteException(ex);
                             }
 
                             throw new SilentTestException(TestOutcome.Failed);

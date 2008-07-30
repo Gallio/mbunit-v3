@@ -15,6 +15,7 @@
 
 using System.Text.RegularExpressions;
 using Gallio.Framework;
+using Gallio.Model.Logging;
 using MbUnit.Framework;
 using Gallio.Model;
 using WatiN.Core;
@@ -101,7 +102,7 @@ namespace MbUnit.Samples
             Snapshot(caption, Log.Default);
         }
 
-        private void Snapshot(string caption, LogStreamWriter logStreamWriter)
+        private void Snapshot(string caption, TestLogStreamWriter logStreamWriter)
         {
             using (logStreamWriter.BeginSection(caption))
             {

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Framework.Utilities;
+using Gallio.Model.Logging;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Remoting;
 using MbUnit.Framework;
@@ -46,7 +46,7 @@ namespace Gallio.Tests.Runtime.Remoting
         [Test]
         public void RegisteredServiceCanBeAccessedWithGetService()
         {
-            using (IHost host = new IsolatedAppDomainHostFactory().CreateHost(new HostSetup(), new LogStreamLogger()))
+            using (IHost host = new IsolatedAppDomainHostFactory().CreateHost(new HostSetup(), new TestLogStreamLogger()))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
 

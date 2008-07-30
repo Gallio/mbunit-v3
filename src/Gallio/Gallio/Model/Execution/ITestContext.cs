@@ -16,6 +16,7 @@
 using System;
 using Gallio.Collections;
 using Gallio.Model;
+using Gallio.Model.Logging;
 using Gallio.Reflection;
 
 namespace Gallio.Model.Execution
@@ -65,7 +66,7 @@ namespace Gallio.Model.Execution
         /// particular to the step represented by this test context.
         /// </para>
         /// </summary>
-        ITestLogWriter LogWriter { get; }
+        TestLogWriter LogWriter { get; }
 
         /// <summary>
         /// Gets or sets the lifecycle phase the context is in.

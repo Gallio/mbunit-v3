@@ -18,13 +18,13 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using System.Xml;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Framework;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
-using Gallio.Utilities;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
@@ -35,7 +35,7 @@ namespace Gallio.Reports.Tests
     [TestsOn(typeof(XsltReportFormatter))]
     public class XsltReportFormatterTest : BaseUnitTest
     {
-        private delegate void SerializeReportDelegate(XmlWriter writer, ExecutionLogAttachmentContentDisposition contentDisposition);
+        private delegate void SerializeReportDelegate(XmlWriter writer, TestLogAttachmentContentDisposition contentDisposition);
 
         [Test, ExpectedArgumentNullException]
         public void RuntimeCannotBeNull()
@@ -109,7 +109,7 @@ namespace Gallio.Reports.Tests
         public void TheDefaultAttachmentContentDispositionIsAbsent()
         {
             XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { "res1", "res2" });
-            Assert.AreEqual(ExecutionLogAttachmentContentDisposition.Absent, formatter.DefaultAttachmentContentDisposition);
+            Assert.AreEqual(TestLogAttachmentContentDisposition.Absent, formatter.DefaultAttachmentContentDisposition);
         }
 
         [Test]
@@ -117,8 +117,8 @@ namespace Gallio.Reports.Tests
         {
             XsltReportFormatter formatter = new XsltReportFormatter(Mocks.Stub<IRuntime>(), "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "xslt", new string[] { "res1", "res2" });
 
-            formatter.DefaultAttachmentContentDisposition = ExecutionLogAttachmentContentDisposition.Inline;
-            Assert.AreEqual(ExecutionLogAttachmentContentDisposition.Inline, formatter.DefaultAttachmentContentDisposition);
+            formatter.DefaultAttachmentContentDisposition = TestLogAttachmentContentDisposition.Inline;
+            Assert.AreEqual(TestLogAttachmentContentDisposition.Inline, formatter.DefaultAttachmentContentDisposition);
         }
 
         [Test]
@@ -142,9 +142,9 @@ namespace Gallio.Reports.Tests
                         .Constraints(Is.Equal(new Uri("file://content")))
                         .Return(resourcePath);
 
-                    reportWriter.SerializeReport(null, ExecutionLogAttachmentContentDisposition.Link);
-                    LastCall.Constraints(Is.NotNull(), Is.Equal(ExecutionLogAttachmentContentDisposition.Link))
-                        .Do((SerializeReportDelegate)delegate(XmlWriter writer, ExecutionLogAttachmentContentDisposition contentDisposition)
+                    reportWriter.SerializeReport(null, TestLogAttachmentContentDisposition.Link);
+                    LastCall.Constraints(Is.NotNull(), Is.Equal(TestLogAttachmentContentDisposition.Link))
+                        .Do((SerializeReportDelegate)delegate(XmlWriter writer, TestLogAttachmentContentDisposition contentDisposition)
                         {
                             XmlDocument doc = new XmlDocument();
                             doc.InnerXml = "<report>The report.</report>";
@@ -166,7 +166,7 @@ namespace Gallio.Reports.Tests
                 {
                     XsltReportFormatter formatter = new XsltReportFormatter(runtime, "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "Diagnostic.xslt", new string[] { "MbUnitLogo.png" });
                     NameValueCollection options = new NameValueCollection();
-                    options.Add(XsltReportFormatter.AttachmentContentDispositionOption, ExecutionLogAttachmentContentDisposition.Link.ToString());
+                    options.Add(XsltReportFormatter.AttachmentContentDispositionOption, TestLogAttachmentContentDisposition.Link.ToString());
 
                     formatter.Format(reportWriter, options, progressMonitor);
 

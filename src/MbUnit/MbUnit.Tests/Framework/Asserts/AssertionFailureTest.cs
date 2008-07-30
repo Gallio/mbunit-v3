@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using Gallio.Framework;
 using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
@@ -29,10 +30,10 @@ namespace MbUnit.Tests.Framework
     public class AssertionFailureTest
     {
         [Test]
-        public void LogThrowsIfArgumentIsNull()
+        public void WriteToThrowsIfArgumentIsNull()
         {
             AssertionFailure failure = new AssertionFailureBuilder("Description").ToAssertionFailure();
-            NewAssert.Throws<ArgumentNullException>(() => failure.Log(null));
+            NewAssert.Throws<ArgumentNullException>(() => failure.WriteTo(null));
         }
 
         [Test]
@@ -66,14 +67,14 @@ namespace MbUnit.Tests.Framework
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetStackTrace(null)
                 .ToAssertionFailure();
-            StubLogWriter writer = new StubLogWriter();
-            failure.Log(new TestLogWriter(writer));
+            StringTestLogWriter writer = new StringTestLogWriter(true);
+            failure.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual(">>> Description\n<<<\n", writer.Output.ToString());
+            NewAssert.AreEqual("[Marker 'assertionFailure']\n[Section 'Description']\n[End]\n[End]\n", writer.ToString());
         }
 
         [Test]
-        public void LogBareEverything()
+        public void LogEverything()
         {
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetMessage("Message goes here")
@@ -85,60 +86,10 @@ namespace MbUnit.Tests.Framework
                 .AddException(new Exception("Boom"))
                 .AddException(new Exception("Kaput"))
                 .ToAssertionFailure();
-            StubLogWriter writer = new StubLogWriter();
-            failure.Log(new TestLogWriter(writer));
+            StringTestLogWriter writer = new StringTestLogWriter(true);
+            failure.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual(">>> Description\nMessage goes here\n* Expected Value : \"Expected value\"\n* Actual Value   : \"Actual value\"\n* Very Long Label That Will Not Be Padded : \"\"\n* x              : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n<<<\n", writer.Output.ToString());
-        }
-
-        private sealed class StubLogWriter : ITestLogWriter
-        {
-            public StubLogWriter()
-            {
-                Output = new StringWriter();
-                Output.NewLine = "\n";
-            }
-
-            public StringWriter Output { get; private set; }
-
-            public void Close()
-            {
-                throw new System.NotImplementedException();
-            }
-
-            public void AttachText(string attachmentName, string contentType, string text)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            public void AttachBytes(string attachmentName, string contentType, byte[] bytes)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            public void Write(string streamName, string text)
-            {
-                NewAssert.AreEqual(LogStreamNames.Failures, streamName);
-                Output.Write(text);
-            }
-
-            public void Embed(string streamName, string attachmentName)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            public void BeginSection(string streamName, string sectionName)
-            {
-                NewAssert.AreEqual(LogStreamNames.Failures, streamName);
-                Output.Write(">>> ");
-                Output.WriteLine(sectionName);
-            }
-
-            public void EndSection(string streamName)
-            {
-                NewAssert.AreEqual(LogStreamNames.Failures, streamName);
-                Output.WriteLine("<<<");
-            }
+            NewAssert.AreEqual("[Marker 'assertionFailure']\n[Section 'Description']\nMessage goes here\n* Expected Value : \"Expected value\"\n* Actual Value   : \"Actual value\"\n* Very Long Label That Will Not Be Padded : \"\"\n* x              : 42\n\n[Marker 'exception']\n[Marker 'exceptionType']\nSystem.Exception\n[End]\n: \n[Marker 'exceptionMessage']\nBoom[End]\n[End]\n\n[Marker 'exception']\n[Marker 'exceptionType']\nSystem.Exception\n[End]\n: [Marker 'exceptionMessage']Kaput\n[End]\n[End]\n\n[Marker 'stackTrace']\nStack goes here\n[End]\n[End]\n", writer.ToString());
         }
     }
 }

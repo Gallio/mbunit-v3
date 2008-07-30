@@ -55,7 +55,7 @@ namespace Gallio.Reports.Tests
         public void TheDefaultAttachmentContentDispositionIsAbsent()
         {
             XmlReportFormatter formatter = new XmlReportFormatter("Xml", "description");
-            Assert.AreEqual(ExecutionLogAttachmentContentDisposition.Absent, formatter.DefaultAttachmentContentDisposition);
+            Assert.AreEqual(TestLogAttachmentContentDisposition.Absent, formatter.DefaultAttachmentContentDisposition);
         }
 
         [Test]
@@ -63,8 +63,8 @@ namespace Gallio.Reports.Tests
         {
             XmlReportFormatter formatter = new XmlReportFormatter("Xml", "description");
 
-            formatter.DefaultAttachmentContentDisposition = ExecutionLogAttachmentContentDisposition.Inline;
-            Assert.AreEqual(ExecutionLogAttachmentContentDisposition.Inline, formatter.DefaultAttachmentContentDisposition);
+            formatter.DefaultAttachmentContentDisposition = TestLogAttachmentContentDisposition.Inline;
+            Assert.AreEqual(TestLogAttachmentContentDisposition.Inline, formatter.DefaultAttachmentContentDisposition);
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace Gallio.Reports.Tests
 
             using (Mocks.Record())
             {
-                writer.SaveReport(ExecutionLogAttachmentContentDisposition.Absent, progressMonitor);
+                writer.SaveReport(TestLogAttachmentContentDisposition.Absent, progressMonitor);
             }
 
             using (Mocks.Playback())
@@ -95,14 +95,14 @@ namespace Gallio.Reports.Tests
 
             using (Mocks.Record())
             {
-                writer.SaveReport(ExecutionLogAttachmentContentDisposition.Link, progressMonitor);
+                writer.SaveReport(TestLogAttachmentContentDisposition.Link, progressMonitor);
             }
 
             using (Mocks.Playback())
             {
                 XmlReportFormatter formatter = new XmlReportFormatter("Xml", "description");
                 NameValueCollection options = new NameValueCollection();
-                options.Add(XmlReportFormatter.AttachmentContentDispositionOption, ExecutionLogAttachmentContentDisposition.Link.ToString());
+                options.Add(XmlReportFormatter.AttachmentContentDispositionOption, TestLogAttachmentContentDisposition.Link.ToString());
 
                 formatter.Format(writer, options, progressMonitor);
             }

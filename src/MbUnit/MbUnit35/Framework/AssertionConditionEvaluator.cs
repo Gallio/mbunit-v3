@@ -20,8 +20,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using Gallio.Collections;
 using Gallio.Framework.Formatting;
-using Gallio.Framework.Utilities;
 using Gallio.Linq;
+using Gallio.Model.Diagnostics;
 
 namespace MbUnit.Framework
 {

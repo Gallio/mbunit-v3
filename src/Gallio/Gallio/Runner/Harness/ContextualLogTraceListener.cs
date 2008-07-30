@@ -51,7 +51,7 @@ namespace Gallio.Runner.Harness
                 if (context == null)
                     return;
 
-                context.LogWriter.Write(streamName, message);
+                context.LogWriter[streamName].Write(message);
             }
             catch (Exception ex)
             {

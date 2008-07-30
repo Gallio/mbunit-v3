@@ -64,7 +64,7 @@ namespace MbUnit.Tests.Framework
                 new KeyValuePair<string, string>("x", "null"),
             }, failure.LabeledValues);
             NewAssert.AreEqual(1, failure.Exceptions.Count);
-            NewAssert.Contains(failure.Exceptions[0], "NullReferenceException");
+            NewAssert.Contains(failure.Exceptions[0].ToString(), "NullReferenceException");
         }
 
         [Test]

@@ -186,12 +186,14 @@
     <xsl:param name="text" />
     <xsl:param name="firstLinePrefix" select="'  '" />
     <xsl:param name="otherLinePrefix" select="'  '" />
+    <xsl:param name="lastLineSuffix" select="'&#xA;'" />
 
     <xsl:if test="$text!=''">
       <xsl:call-template name="indent-recursive">
         <xsl:with-param name="text" select="translate($text, '&#9;&#xA;&#xD;', ' &#xA;')" />
         <xsl:with-param name="firstLinePrefix" select="$firstLinePrefix" />
         <xsl:with-param name="otherLinePrefix" select="$otherLinePrefix" />
+        <xsl:with-param name="lastLineSuffix" select="$lastLineSuffix" />
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
@@ -200,23 +202,24 @@
     <xsl:param name="text" />
     <xsl:param name="firstLinePrefix" />
     <xsl:param name="otherLinePrefix" />
+    <xsl:param name="lastLineSuffix" />
 
-    <xsl:variable name="line" select="substring-before($text, '&#xA;')" />
     <xsl:choose>
-      <xsl:when test="$line!=''">
+      <xsl:when test="contains($text, '&#xA;')">
         <xsl:value-of select="$firstLinePrefix"/>
-        <xsl:value-of select="$line"/>
+        <xsl:value-of select="substring-before($text, '&#xA;')"/>
         <xsl:text>&#xA;</xsl:text>
         <xsl:call-template name="indent-recursive">
           <xsl:with-param name="text" select="substring-after($text, '&#xA;')" />
           <xsl:with-param name="firstLinePrefix" select="$otherLinePrefix" />
-        <xsl:with-param name="otherLinePrefix" select="$otherLinePrefix" />
+          <xsl:with-param name="otherLinePrefix" select="$otherLinePrefix" />
+          <xsl:with-param name="lastLineSuffix" select="$lastLineSuffix" />
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$firstLinePrefix"/>
         <xsl:value-of select="$text"/>
-        <xsl:text>&#xA;</xsl:text>
+        <xsl:value-of select="$lastLineSuffix"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

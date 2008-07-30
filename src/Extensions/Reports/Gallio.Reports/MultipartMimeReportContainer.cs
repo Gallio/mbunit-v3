@@ -16,8 +16,8 @@
 using System;
 using System.IO;
 using System.Text;
+using Gallio.Model.Logging;
 using Gallio.Runner.Reports;
-using Gallio.Utilities;
 
 namespace Gallio.Reports
 {

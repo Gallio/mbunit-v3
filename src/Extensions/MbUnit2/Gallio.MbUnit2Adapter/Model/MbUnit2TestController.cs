@@ -19,9 +19,11 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Collections;
 using Gallio.MbUnit2Adapter.Properties;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using MbUnit2::MbUnit.Core;
 using MbUnit2::MbUnit.Core.Remoting;
 using MbUnit2::MbUnit.Core.Filters;
@@ -210,7 +212,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 //       so we need to make sure we finish things up ourselves.
                 if (!success)
                 {
-                    assemblyTestContext.LogWriter.Write(LogStreamNames.Failures, "The test assembly setup failed.\n");
+                    assemblyTestContext.LogWriter.Failures.Write("The test assembly setup failed.\n");
                     HandleAssemblyFinish(TestOutcome.Failed);
                 }
                 else
@@ -238,7 +240,7 @@ namespace Gallio.MbUnit2Adapter.Model
                 }
                 else
                 {
-                    assemblyTestContext.LogWriter.Write(LogStreamNames.Failures, "The test assembly teardown failed.\n");
+                    assemblyTestContext.LogWriter.Failures.Write("The test assembly teardown failed.\n");
                     HandleAssemblyFinish(TestOutcome.Failed);
                 }
 
@@ -440,23 +442,21 @@ namespace Gallio.MbUnit2Adapter.Model
                     // Note: ReportRun.Asserts is not actually populated by MbUnit so we ignore it.
                     if (reportRun.ConsoleOut.Length != 0)
                     {
-                        testContext.LogWriter.Write(LogStreamNames.ConsoleOutput, reportRun.ConsoleOut);
+                        testContext.LogWriter.ConsoleOutput.Write(reportRun.ConsoleOut);
                     }
                     if (reportRun.ConsoleError.Length != 0)
                     {
-                        testContext.LogWriter.Write(LogStreamNames.ConsoleError, reportRun.ConsoleError);
+                        testContext.LogWriter.ConsoleError.Write(reportRun.ConsoleError);
                     }
                     foreach (ReportWarning warning in reportRun.Warnings)
                     {
-                        testContext.LogWriter.BeginSection(LogStreamNames.Warnings, "Warning");
-                        testContext.LogWriter.Write(LogStreamNames.Warnings, warning.Text);
-                        testContext.LogWriter.EndSection(LogStreamNames.Warnings);
+                        testContext.LogWriter.Warnings.WriteLine(warning.Text);
                     }
                     if (reportRun.Exception != null)
                     {
-                        testContext.LogWriter.BeginSection(LogStreamNames.Failures, "Exception");
-                        testContext.LogWriter.Write(LogStreamNames.Failures, FormatReportException(reportRun.Exception));
-                        testContext.LogWriter.EndSection(LogStreamNames.Failures);
+                        ReportException ex = reportRun.Exception;
+                        testContext.LogWriter.Failures.WriteException(
+                            new ExceptionData(ex.Type ?? "", ex.Message ?? "", ex.StackTrace ?? "", null), "Exception");
                     }
 
                     // Finish up...
@@ -482,39 +482,6 @@ namespace Gallio.MbUnit2Adapter.Model
             {
                 if (progressMonitor.IsCanceled)
                     Abort();
-            }
-
-            /// <summary>
-            /// Formats an MbUnit v2 report exception in the same manner as the system's
-            /// Exception.ToString() method. 
-            /// </summary>
-            /// <param name="ex">The exception to format</param>
-            /// <returns>The formatted result</returns>
-            private static string FormatReportException(ReportException ex)
-            {
-                StringBuilder result = new StringBuilder();
-
-                result.Append(ex.Type);
-
-                if (ex.Message.Length != 0)
-                    result.Append(@": ").Append(ex.Message);
-
-                if (ex.Exception != null)
-                {
-                    result.Append(@" ---> ")
-                        .Append(FormatReportException(ex.Exception))
-                        .Append(Environment.NewLine)
-                        .Append(@"   --- ")
-                        .Append(Resources.MbUnit2TestController_EndOfInnerExceptionStackTrace)
-                        .Append(@" ---");
-                }
-
-                if (! String.IsNullOrEmpty(ex.StackTrace))
-                {
-                    result.Append(Environment.NewLine).Append(ex.StackTrace);
-                }
-
-                return result.ToString();
             }
 
             private static void FinishStepWithReportRunResult(ITestContext testContext, ReportRunResult reportRunResult)

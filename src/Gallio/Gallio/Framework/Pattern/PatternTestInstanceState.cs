@@ -20,7 +20,7 @@ using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Framework.Conversions;
 using Gallio.Framework.Formatting;
-using Gallio.Framework.Utilities;
+using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
 using Gallio.Utilities;
 

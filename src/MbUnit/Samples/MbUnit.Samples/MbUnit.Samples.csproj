@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{12850856-0A27-4E50-9116-5A3B19C7D779}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -59,7 +59,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RichExecutionLogDemo.cs" />
+    <Compile Include="RichTestLogDemo.cs" />
     <Compile Include="WatiNDemo.cs" />
   </ItemGroup>
   <ItemGroup>

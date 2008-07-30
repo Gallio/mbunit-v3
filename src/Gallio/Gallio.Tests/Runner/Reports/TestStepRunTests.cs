@@ -91,23 +91,23 @@ namespace Gallio.Tests.Runner.Reports
         }
 
         [Test]
-        public void ExecutionLogSetTest()
+        public void TestLogSetTest()
         {
-            testStepRun.ExecutionLog = new ExecutionLog();
-            Assert.IsNotNull(testStepRun.ExecutionLog);
+            testStepRun.TestLog = new TestLog();
+            Assert.IsNotNull(testStepRun.TestLog);
         }
 
         [Test]
         [ExpectedArgumentNullException]
-        public void ExecutionLogSetExceptionTest()
+        public void TestLogSetExceptionTest()
         {
-            testStepRun.ExecutionLog = null;
+            testStepRun.TestLog = null;
         }
 
         [Test]
-        public void ExecutionLogGetTest()
+        public void TestLogGetTest()
         {
-            Assert.IsNotNull(testStepRun.ExecutionLog);
+            Assert.IsNotNull(testStepRun.TestLog);
         }
     }
 }

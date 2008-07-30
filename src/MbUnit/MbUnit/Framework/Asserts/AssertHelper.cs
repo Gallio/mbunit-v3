@@ -17,7 +17,7 @@ using System;
 using System.Threading;
 using Gallio;
 using Gallio.Framework;
-using Gallio.Framework.Utilities;
+using Gallio.Model.Diagnostics;
 
 namespace MbUnit.Framework
 {

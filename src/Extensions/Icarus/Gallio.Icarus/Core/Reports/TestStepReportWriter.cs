@@ -78,7 +78,7 @@ namespace Gallio.Icarus.Core.Reports
 
             // execution logs
             xmlTextWriter.WriteRaw("<div class=\"testStepRun\">");
-            if (testStepRun.ExecutionLog.Streams.Count > 0)
+            if (testStepRun.TestLog.Streams.Count > 0)
                 RenderExecutionLogStreams(xmlTextWriter, testStepRun);
             xmlTextWriter.WriteRaw("</div>");
 
@@ -126,42 +126,42 @@ namespace Gallio.Icarus.Core.Reports
         private static void RenderExecutionLogStreams(XmlTextWriter xmlTextWriter, TestStepRun testStepRun)
         {
             xmlTextWriter.WriteRaw(String.Format("<div id=\"log-{0}\" class=\"log\">", testStepRun.Step.Id));
-            foreach (ExecutionLogStream executionLogStream in testStepRun.ExecutionLog.Streams)
+            foreach (TestLogStream executionLogStream in testStepRun.TestLog.Streams)
             {
                 xmlTextWriter.WriteRaw(String.Format("<div class=\"logStream logStream-{0}\">", executionLogStream.Name));
                 xmlTextWriter.WriteRaw(String.Format("<span class=\"logStreamHeading\"><xsl:value-of select=\"{0}\" /></span>", 
                     executionLogStream.Name));
                 xmlTextWriter.WriteRaw("<div class=\"logStreamBody\">");
-                foreach (ExecutionLogStreamTag executionLogStreamTag in executionLogStream.Body.Contents)
+                foreach (TestLogStreamTag executionLogStreamTag in executionLogStream.Body.Contents)
                     RenderExecutionLogStreamContents(xmlTextWriter, testStepRun, executionLogStreamTag);
                 xmlTextWriter.WriteRaw("</div></div>");
             }
-            if (testStepRun.ExecutionLog.Attachments.Count > 0)
+            if (testStepRun.TestLog.Attachments.Count > 0)
                 RenderExecutionLogAttachmentList(xmlTextWriter, testStepRun);
             xmlTextWriter.WriteRaw("</div>");
         }
 
-        private static void RenderExecutionLogStreamContents(XmlTextWriter xmlTextWriter, TestStepRun testStepRun, ExecutionLogStreamTag executionLogStreamTag)
+        private static void RenderExecutionLogStreamContents(XmlTextWriter xmlTextWriter, TestStepRun testStepRun, TestLogStreamTag testLogStreamTag)
         {
-            if (executionLogStreamTag is ExecutionLogStreamTextTag)
+            if (testLogStreamTag is TestLogStreamTextTag)
             {
                 // write text block
-                ExecutionLogStreamTextTag textTag = ((ExecutionLogStreamTextTag)executionLogStreamTag);
+                TestLogStreamTextTag textTag = ((TestLogStreamTextTag)testLogStreamTag);
                 xmlTextWriter.WriteRaw(String.Format("<div>{0}</div>", textTag.Text));
             }
-            else if (executionLogStreamTag is ExecutionLogStreamSectionTag)
+            else if (testLogStreamTag is TestLogStreamSectionTag)
             {
-                ExecutionLogStreamSectionTag sectionTag = (ExecutionLogStreamSectionTag)executionLogStreamTag;
+                TestLogStreamSectionTag sectionTag = (TestLogStreamSectionTag)testLogStreamTag;
                 xmlTextWriter.WriteRaw(String.Format("<div class=\"logStreamSection\"><span class=\"logStreamSectionHeading\">{0}</span><div>", 
                     sectionTag.Name));
-                foreach (ExecutionLogStreamTag elst in sectionTag.Contents)
+                foreach (TestLogStreamTag elst in sectionTag.Contents)
                     RenderExecutionLogStreamContents(xmlTextWriter, testStepRun, elst);
                 xmlTextWriter.WriteRaw("</div></div>");
             }
-            else if (executionLogStreamTag is ExecutionLogStreamEmbedTag)
+            else if (testLogStreamTag is TestLogStreamEmbedTag)
             {
-                ExecutionLogStreamEmbedTag embedTag = (ExecutionLogStreamEmbedTag)executionLogStreamTag;
-                foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
+                TestLogStreamEmbedTag embedTag = (TestLogStreamEmbedTag)testLogStreamTag;
+                foreach (TestLogAttachment attachment in testStepRun.TestLog.Attachments)
                 {
                     if (attachment.Name == embedTag.AttachmentName)
                     {
@@ -175,17 +175,23 @@ namespace Gallio.Icarus.Core.Reports
                     }
                 }
             }
+            else if (testLogStreamTag is TestLogStreamMarkerTag)
+            {
+                TestLogStreamMarkerTag markerTag = (TestLogStreamMarkerTag)testLogStreamTag;
+                foreach (TestLogStreamTag elst in markerTag.Contents)
+                    RenderExecutionLogStreamContents(xmlTextWriter, testStepRun, elst);
+            }
         }
 
         private static void RenderExecutionLogAttachmentList(XmlTextWriter xmlTextWriter, TestStepRun testStepRun)
         {
             xmlTextWriter.WriteRaw("<div class=\"logAttachmentList\">Attachments: ");
-            for (int i = 0; i < testStepRun.ExecutionLog.Attachments.Count; i++)
+            for (int i = 0; i < testStepRun.TestLog.Attachments.Count; i++)
             {
-                ExecutionLogAttachment attachment = testStepRun.ExecutionLog.Attachments[i];
+                TestLogAttachment attachment = testStepRun.TestLog.Attachments[i];
                 string src = Path.Combine(Path.Combine(reportFolder, FileUtils.EncodeFileName(testStepRun.Step.Id)), attachment.Name);
                 xmlTextWriter.WriteRaw(String.Format("<a href=\"{0}\">{1}</a>", src, attachment.Name));
-                if (i < (testStepRun.ExecutionLog.Attachments.Count - 1))
+                if (i < (testStepRun.TestLog.Attachments.Count - 1))
                     xmlTextWriter.WriteRaw(", ");
             }
             xmlTextWriter.WriteRaw("</div>");

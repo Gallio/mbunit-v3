@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 
@@ -55,7 +56,7 @@ namespace Gallio.Model.Execution
                     catch (Exception ex)
                     {
                         ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
-                        TestLogWriterUtils.WriteException(context.LogWriter, LogStreamNames.Failures, ex, "Fatal Exception in Test Controller");
+                        context.LogWriter.Failures.WriteException(ex, "Fatal Exception in Test Controller");
                         context.FinishStep(TestOutcome.Error, null);
                         return TestOutcome.Error;
                     }

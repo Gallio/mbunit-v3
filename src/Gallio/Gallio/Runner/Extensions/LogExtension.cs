@@ -15,10 +15,10 @@
 
 using System;
 using System.Text;
+using Gallio.Model.Logging;
 using Gallio.Runner.Events;
 using Gallio.Runtime.Logging;
 using Gallio.Model;
-using Gallio.Model.Execution;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
@@ -82,8 +82,8 @@ namespace Gallio.Runner.Extensions
         {
             TestOutcome outcome = e.TestStepRun.Result.Outcome;
             LogSeverity severity = GetLogSeverityForOutcome(outcome);
-            string warnings = FormatStream(e.TestStepRun, LogStreamNames.Warnings);
-            string failures = FormatStream(e.TestStepRun, LogStreamNames.Failures);
+            string warnings = FormatStream(e.TestStepRun, TestLogStreamNames.Warnings);
+            string failures = FormatStream(e.TestStepRun, TestLogStreamNames.Failures);
 
             StringBuilder messageBuilder = new StringBuilder();
             messageBuilder.AppendFormat("[{0}] {1} {2}", outcome.DisplayName, e.GetStepKind(), e.TestStepRun.Step.FullName);
@@ -113,7 +113,7 @@ namespace Gallio.Runner.Extensions
 
         private static string FormatStream(TestStepRun testStepRun, string streamName)
         {
-            ExecutionLogStream stream = testStepRun.ExecutionLog.GetStream(streamName);
+            TestLogStream stream = testStepRun.TestLog.GetStream(streamName);
             return stream != null ? stream.ToString() : @"";
         }
 

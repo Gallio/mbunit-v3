@@ -21,9 +21,10 @@ using Gallio.Framework.Data;
 using Gallio.Framework.Conversions;
 using Gallio.Framework.Formatting;
 using Gallio.Framework;
-using Gallio.Framework.Utilities;
 using Gallio.Model;
+using Gallio.Model.Diagnostics;
 using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -283,7 +284,8 @@ namespace Gallio.Framework.Pattern
             }
             catch (Exception ex)
             {
-                Log.Failures.WriteException(ex, "An exception occurred while running test instance '{0}'.", testInstanceState.TestStep.Name);
+                Log.Failures.WriteException(ex,
+                    String.Format("An exception occurred while running test instance '{0}'.", testInstanceState.TestStep.Name));
                 return TestOutcome.Error;
             }
         }
@@ -333,7 +335,7 @@ namespace Gallio.Framework.Pattern
                 default:
                     // Something bad happened during Before/After that prevented the test from running.
                     ITestContext context = testCommand.StartStep(testStep);
-                    context.LogWriter.Write(LogStreamNames.Failures, "The test did not run.  Consult the parent test log for more details.");
+                    context.LogWriter.Failures.Write("The test did not run.  Consult the parent test log for more details.");
                     context.FinishStep(outcome, null);
                     outcome = outcome.Generalize();
                     break;

@@ -16,7 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gallio.Framework;
+using Gallio;
+using Gallio.Model.Diagnostics;
+using Gallio.Model.Logging;
 
 namespace MbUnit.Framework
 {
@@ -38,13 +40,13 @@ namespace MbUnit.Framework
         private readonly string message;
         private readonly string stackTrace;
         private readonly KeyValuePair<string, string>[] labeledValues;
-        private readonly string[] exceptions;
+        private readonly ExceptionData[] exceptions;
 
         /// <summary>
         /// Creates an assertion failure object.
         /// </summary>
         protected internal AssertionFailure(string description, string message, string stackTrace,
-            KeyValuePair<string, string>[] labeledValues, string[] exceptions)
+            KeyValuePair<string, string>[] labeledValues, ExceptionData[] exceptions)
         {
             this.description = description;
             this.message = message;
@@ -87,26 +89,29 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Gets formatted representations of exceptions.
+        /// Gets information about the exceptions.
         /// </summary>
-        public IList<string> Exceptions
+        public IList<ExceptionData> Exceptions
         {
             get { return Array.AsReadOnly(exceptions); }
         }
 
         /// <summary>
-        /// Logs the assertion failure.
+        /// Writes the assertion failure to a log stream writer.
         /// </summary>
-        /// <param name="logWriter">The log writer</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logWriter"/> is null</exception>
-        public virtual void Log(LogWriter logWriter)
+        /// <param name="writer">The log stream writer</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        public virtual void WriteTo(TestLogStreamWriter writer)
         {
-            if (logWriter == null)
-                throw new ArgumentNullException("logWriter");
+            if (writer == null)
+                throw new ArgumentNullException("writer");
 
-            using (logWriter.Failures.BeginSection(description))
+            using (writer.BeginMarker(MarkerClasses.AssertionFailure))
             {
-                WriteDetails(logWriter.Failures);
+                using (writer.BeginSection(description))
+                {
+                    WriteDetails(writer);
+                }
             }
         }
 
@@ -116,18 +121,16 @@ namespace MbUnit.Framework
         /// <returns>The formatted string</returns>
         public override string ToString()
         {
-            StringWriter writer = new StringWriter();
-            writer.NewLine = "\n";
-            writer.WriteLine(description);
-            WriteDetails(writer);
+            StringTestLogWriter writer = new StringTestLogWriter(false);
+            WriteTo(writer.Default);
             return writer.ToString();
         }
 
         /// <summary>
-        /// Writes the details about the assertion failure to the text writer.
+        /// Writes the details about the assertion failure to the log stream writer.
         /// </summary>
-        /// <param name="writer">The text writer</param>
-        protected virtual void WriteDetails(TextWriter writer)
+        /// <param name="writer">The log stream writer, not null</param>
+        protected virtual void WriteDetails(TestLogStreamWriter writer)
         {
             if (!string.IsNullOrEmpty(message))
                 writer.WriteLine(message);
@@ -144,25 +147,27 @@ namespace MbUnit.Framework
 
             if (exceptions.Length != 0)
             {
-                foreach (string exception in exceptions)
+                foreach (ExceptionData exception in exceptions)
                 {
                     writer.WriteLine();
-                    WriteWithNoExcessNewLine(writer, exception);
+                    writer.WriteException(exception);
                 }
             }
 
             if (!string.IsNullOrEmpty(stackTrace))
             {
                 writer.WriteLine();
-                WriteWithNoExcessNewLine(writer, stackTrace);
+
+                using (writer.BeginMarker(MarkerClasses.StackTrace))
+                    WriteWithNoExcessNewLine(writer, stackTrace);
             }
         }
 
-        private void WriteWithNoExcessNewLine(TextWriter writer, string text)
+        private static void WriteWithNoExcessNewLine(TextWriter writer, string text)
         {
             writer.Write(text);
 
-            if (!stackTrace.EndsWith("\n"))
+            if (!text.EndsWith("\n"))
                 writer.WriteLine();
         }
 

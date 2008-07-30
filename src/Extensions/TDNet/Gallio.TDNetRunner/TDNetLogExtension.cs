@@ -15,7 +15,7 @@
 
 using System;
 using System.Text;
-using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Events;
@@ -105,11 +105,11 @@ namespace Gallio.TDNetRunner
 
             // It's important to set the stack trace here so the user can double-click in the
             // output window to go the faulting line
-            ExecutionLogStream failureStream = e.TestStepRun.ExecutionLog.GetStream(LogStreamNames.Failures);
+            TestLogStream failureStream = e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Failures);
             if (failureStream != null)
                 result.StackTrace = failureStream.ToString();
 
-            ExecutionLogStream warningStream = e.TestStepRun.ExecutionLog.GetStream(LogStreamNames.Warnings);
+            TestLogStream warningStream = e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Warnings);
             if (warningStream != null)
                 result.Message = warningStream.ToString();
 

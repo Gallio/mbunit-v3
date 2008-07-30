@@ -15,7 +15,7 @@
 
 using System;
 using Gallio.Model;
-using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using Gallio.Runner.Reports;
 using Microsoft.VisualStudio.TestTools.Common;
 using GallioTestOutcome = Gallio.Model.TestOutcome;
@@ -31,17 +31,17 @@ namespace Gallio.MSTestRunner
             result.TestName = run.Step.FullName;
             result.Outcome = GetOutcome(run.Result.Outcome);
 
-            foreach (ExecutionLogStream stream in run.ExecutionLog.Streams)
+            foreach (TestLogStream stream in run.TestLog.Streams)
             {
                 string contents = stream.ToString();
 
-                if (stream.Name == LogStreamNames.DebugTrace)
+                if (stream.Name == TestLogStreamNames.DebugTrace)
                     result.DebugTrace += contents;
-                else if (stream.Name == LogStreamNames.ConsoleOutput)
+                else if (stream.Name == TestLogStreamNames.ConsoleOutput)
                     result.StdOut += contents;
-                else if (stream.Name == LogStreamNames.ConsoleError)
+                else if (stream.Name == TestLogStreamNames.ConsoleError)
                     result.StdErr += contents;
-                else if (stream.Name == LogStreamNames.Failures || stream.Name == LogStreamNames.Warnings)
+                else if (stream.Name == TestLogStreamNames.Failures || stream.Name == TestLogStreamNames.Warnings)
                     result.ErrorMessage += contents;
                 else
                     result.DebugTrace += contents;

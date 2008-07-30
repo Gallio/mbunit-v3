@@ -16,8 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Gallio.Model.Logging;
 using Gallio.Runtime;
-using Gallio.Framework.Utilities;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
 
@@ -42,7 +42,7 @@ namespace Gallio.Tests.Runtime
         [Test]
         public void PolicyPerformsCorrelationThenReporting()
         {
-            using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath).CreateHost(new HostSetup(), new LogStreamLogger()))
+            using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath).CreateHost(new HostSetup(), new TestLogStreamLogger()))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 host.GetHostService().Do<object, object>(PolicyPerformsCorrelationThenReportingCallback, null);
@@ -52,7 +52,7 @@ namespace Gallio.Tests.Runtime
         [Test]
         public void PolicyHandlesUnhandledExceptionsAndRecursion()
         {
-            using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath).CreateHost(new HostSetup(), new LogStreamLogger()))
+            using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath).CreateHost(new HostSetup(), new TestLogStreamLogger()))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 host.GetHostService().Do<object, object>(PolicyHandlesUnhandledExceptionsAndRecursionCallback, null);

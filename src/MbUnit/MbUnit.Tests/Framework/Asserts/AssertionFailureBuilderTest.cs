@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Model.Diagnostics;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
@@ -138,7 +139,14 @@ namespace MbUnit.Tests.Framework
         public void AddExceptionThrowsIfArgumentIsNull()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            NewAssert.Throws<ArgumentNullException>(() => builder.AddException(null));
+            NewAssert.Throws<ArgumentNullException>(() => builder.AddException((Exception) null));
+        }
+
+        [Test]
+        public void AddExceptionDataThrowsIfArgumentIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            NewAssert.Throws<ArgumentNullException>(() => builder.AddException((ExceptionData)null));
         }
 
         [Test]
@@ -149,7 +157,7 @@ namespace MbUnit.Tests.Framework
             builder.AddException(new InvalidOperationException("Boom 2"));
 
             NewAssert.Over.Sequence(new[] { "Boom 1", "Boom 2" }, builder.ToAssertionFailure().Exceptions,
-                (expectedSubstring, actual) => NewAssert.Contains(actual, expectedSubstring));
+                (expectedSubstring, actual) => NewAssert.Contains(actual.ToString(), expectedSubstring));
         }
     }
 }

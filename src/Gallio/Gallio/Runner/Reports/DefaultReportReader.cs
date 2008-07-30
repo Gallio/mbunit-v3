@@ -112,10 +112,10 @@ namespace Gallio.Runner.Reports
             if (report.TestPackageRun == null)
                 return;
 
-            List<ExecutionLogAttachment> attachmentsToLoad = new List<ExecutionLogAttachment>();
+            List<TestLogAttachment> attachmentsToLoad = new List<TestLogAttachment>();
             foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
             {
-                foreach (ExecutionLogAttachment attachment in testStepRun.ExecutionLog.Attachments)
+                foreach (TestLogAttachment attachment in testStepRun.TestLog.Attachments)
                 {
                     if (attachment.ContentPath != null)
                         attachmentsToLoad.Add(attachment);
@@ -127,11 +127,11 @@ namespace Gallio.Runner.Reports
 
             using (progressMonitor.BeginTask("Loading report attachments.", attachmentsToLoad.Count))
             {
-                foreach (ExecutionLogAttachment attachment in attachmentsToLoad)
+                foreach (TestLogAttachment attachment in attachmentsToLoad)
                 {
                     progressMonitor.ThrowIfCanceled();
 
-                    if (attachment.ContentDisposition != ExecutionLogAttachmentContentDisposition.Link
+                    if (attachment.ContentDisposition != TestLogAttachmentContentDisposition.Link
                         || attachment.ContentPath == null)
                         continue;
 
@@ -143,7 +143,7 @@ namespace Gallio.Runner.Reports
             }
         }
 
-        private void LoadAttachmentContents(ExecutionLogAttachment attachment, string attachmentPath)
+        private void LoadAttachmentContents(TestLogAttachment attachment, string attachmentPath)
         {
             using (Stream attachmentStream = reportContainer.OpenRead(attachmentPath))
             {

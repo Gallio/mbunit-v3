@@ -105,31 +105,36 @@ namespace Gallio.Runner.Events
         /// <summary>
         /// The event raised to indicate that a text attachment has been added to a test step log.
         /// </summary>
-        event EventHandler<TestStepLogTextAttachmentAddedEventArgs> TestStepLogTextAttachmentAdded;
+        event EventHandler<TestStepLogAttachTextEventArgs> TestStepLogAttachText;
 
         /// <summary>
         /// The event raised to indicate that a binary attachment has been added to a test step log.
         /// </summary>
-        event EventHandler<TestStepLogBinaryAttachmentAddedEventArgs> TestStepLogBinaryAttachmentAdded;
+        event EventHandler<TestStepLogBinaryAttachBytesEventArgs> TestStepLogAttachBytes;
 
         /// <summary>
         /// The event raised to indicate that text has been written to a test step log stream.
         /// </summary>
-        event EventHandler<TestStepLogStreamTextWrittenEventArgs> TestStepLogStreamTextWritten;
+        event EventHandler<TestStepLogStreamWriteEventArgs> TestStepLogStreamWrite;
 
         /// <summary>
         /// The event raised to indicate that an attachment has been embedded into a test step log stream.
         /// </summary>
-        event EventHandler<TestStepLogStreamAttachmentEmbeddedEventArgs> TestStepLogStreamAttachmentEmbedded;
+        event EventHandler<TestStepLogStreamEmbedEventArgs> TestStepLogStreamEmbed;
 
         /// <summary>
         /// The event raised to indicate that a section has been started within a test step log stream.
         /// </summary>
-        event EventHandler<TestStepLogStreamSectionStartedEventArgs> TestStepLogStreamSectionStarted;
+        event EventHandler<TestStepLogStreamBeginSectionEventArgs> TestStepLogStreamBeginSection;
+
+        /// <summary>
+        /// The event raised to indicate that a marker has been started within a test step log stream.
+        /// </summary>
+        event EventHandler<TestStepLogStreamBeginMarkerEventArgs> TestStepLogStreamBeginMarker;
 
         /// <summary>
         /// The event raised to indicate that a section has finished within a test step log stream.
         /// </summary>
-        event EventHandler<TestStepLogStreamSectionFinishedEventArgs> TestStepLogStreamSectionFinished;
+        event EventHandler<TestStepLogStreamEndEventArgs> TestStepLogStreamEnd;
     }
 }

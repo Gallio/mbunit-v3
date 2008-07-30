@@ -17,7 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Gallio;
-using Gallio.Framework.Utilities;
+using Gallio.Model.Diagnostics;
 
 namespace MbUnit.Framework
 {

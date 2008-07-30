@@ -280,41 +280,47 @@ namespace Gallio.Runner.Drivers
                 }
             }
 
-            public void NotifyTestStepLogTextAttachmentAdded(string stepId, string attachmentName, string contentType, string text)
+            public void NotifyTestStepLogAttachText(string stepId, string attachmentName, string contentType, string text)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogTextAttachmentAdded(stepId, attachmentName, contentType, text);
+                listener.NotifyTestStepLogAttachText(stepId, attachmentName, contentType, text);
             }
 
-            public void NotifyTestStepLogBinaryAttachmentAdded(string stepId, string attachmentName, string contentType, byte[] bytes)
+            public void NotifyTestStepLogAttachBytes(string stepId, string attachmentName, string contentType, byte[] bytes)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogBinaryAttachmentAdded(stepId, attachmentName, contentType, bytes);
+                listener.NotifyTestStepLogAttachBytes(stepId, attachmentName, contentType, bytes);
             }
 
-            public void NotifyTestStepLogStreamTextWritten(string stepId, string streamName, string text)
+            public void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamTextWritten(stepId, streamName, text);
+                listener.NotifyTestStepLogStreamWrite(stepId, streamName, text);
             }
 
-            public void NotifyTestStepLogStreamAttachmentEmbedded(string stepId, string streamName,
+            public void NotifyTestStepLogStreamEmbed(string stepId, string streamName,
                 string attachmentName)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamAttachmentEmbedded(stepId, streamName, attachmentName);
+                listener.NotifyTestStepLogStreamEmbed(stepId, streamName, attachmentName);
             }
 
-            public void NotifyTestStepLogStreamSectionStarted(string stepId, string streamName, string sectionName)
+            public void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamSectionStarted(stepId, streamName, sectionName);
+                listener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
             }
 
-            public void NotifyTestStepLogStreamSectionFinished(string stepId, string streamName)
+            public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, string @class)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamSectionFinished(stepId, streamName);
+                listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, @class);
+            }
+
+            public void NotifyTestStepLogStreamEnd(string stepId, string streamName)
+            {
+                stepId = Redirect(stepId);
+                listener.NotifyTestStepLogStreamEnd(stepId, streamName);
             }
 
             private string Redirect(string id)

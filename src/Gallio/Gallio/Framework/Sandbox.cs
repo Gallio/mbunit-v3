@@ -17,8 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Gallio.Concurrency;
-using Gallio.Framework.Utilities;
 using Gallio.Model;
+using Gallio.Model.Diagnostics;
+using Gallio.Model.Logging;
 using Gallio.Utilities;
 
 namespace Gallio.Framework
@@ -324,18 +325,18 @@ namespace Gallio.Framework
             if (string.IsNullOrEmpty(message) && ex == null)
                 return;
 
-            LogStreamWriter stream = GetLogStreamWriterForOutcome(outcome);
+            TestLogStreamWriter stream = GetLogStreamWriterForOutcome(outcome);
             using (actionDescription != null ? stream.BeginSection(actionDescription) : null)
             {
                 if (! string.IsNullOrEmpty(message))
                     stream.WriteLine(message);
 
                 if (ex != null)
-                    stream.WriteLine(StackTraceFilter.FilterExceptionToString(ex));
+                    stream.WriteException(StackTraceFilter.FilterException(ex));
             }
         }
 
-        private static LogStreamWriter GetLogStreamWriterForOutcome(TestOutcome outcome)
+        private static TestLogStreamWriter GetLogStreamWriterForOutcome(TestOutcome outcome)
         {
             switch (outcome.Status)
             {

@@ -35,7 +35,7 @@ namespace MbUnit.Tests.Framework
                 NewAssert.GreaterThan(new Exception(), new Exception()));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("System.InvalidOperationException: No ordering comparison defined on type System.Exception.\r\n"
-                , failures[0].Exceptions[0]);
+                , failures[0].Exceptions[0].ToString());
         }
 
         [Test]

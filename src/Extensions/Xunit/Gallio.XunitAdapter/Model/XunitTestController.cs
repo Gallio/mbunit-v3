@@ -16,9 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using Gallio.XunitAdapter.Properties;
 using XunitMethodInfo = Xunit.Sdk.IMethodInfo;
 using XunitMethodResult = Xunit.Sdk.MethodResult;
@@ -100,7 +102,7 @@ namespace Gallio.XunitAdapter.Model
             catch (Exception ex)
             {
                 // Xunit can throw exceptions when making commands if the test is malformed.
-                TestLogWriterUtils.WriteException(testContext.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
+                testContext.LogWriter.Failures.WriteException(ex, "Internal Error");
                 testContext.FinishStep(TestOutcome.Failed, null);
                 return false;
             }
@@ -155,7 +157,7 @@ namespace Gallio.XunitAdapter.Model
 
                 if (ex != null)
                 {
-                    TestLogWriterUtils.WriteException(testContext.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
+                    testContext.LogWriter.Failures.WriteException(ex, "Internal Error");
                     passed = false;
                 }
 
@@ -166,7 +168,7 @@ namespace Gallio.XunitAdapter.Model
             {
                 // Xunit probably shouldn't throw an exception in a test command.
                 // But just in case...
-                TestLogWriterUtils.WriteException(testContext.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
+                testContext.LogWriter.Failures.WriteException(ex, "Internal Error");
                 testContext.FinishStep(TestOutcome.Failed, null);
                 return false;
             }
@@ -184,7 +186,7 @@ namespace Gallio.XunitAdapter.Model
             {
                 // Xunit can throw exceptions when making commands if the test is malformed.
                 ITestContext testContext = testCommand.StartPrimaryChildStep(parentTestStep);
-                TestLogWriterUtils.WriteException(testContext.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
+                testContext.LogWriter.Failures.WriteException(ex, "Internal Error");
                 testContext.FinishStep(TestOutcome.Failed, null);
                 return false;
             }
@@ -216,7 +218,7 @@ namespace Gallio.XunitAdapter.Model
             {
                 // Xunit probably shouldn't throw an exception in a test command.
                 // But just in case...
-                TestLogWriterUtils.WriteException(testContext.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
+                testContext.LogWriter.Failures.WriteException(ex, "Internal Error");
                 testContext.FinishStep(TestOutcome.Failed, null);
                 return false;
             }
@@ -236,14 +238,8 @@ namespace Gallio.XunitAdapter.Model
             if (failedResult != null)
             {
                 // Report the failure exception.
-                testContext.LogWriter.BeginSection(LogStreamNames.Failures, "Exception");
-
-                if (failedResult.Message != null)
-                    testContext.LogWriter.Write(LogStreamNames.Failures, failedResult.Message + "\n");
-                if (failedResult.StackTrace != null)
-                    testContext.LogWriter.Write(LogStreamNames.Failures, failedResult.StackTrace);
-
-                testContext.LogWriter.EndSection(LogStreamNames.Failures);
+                testContext.LogWriter.Failures.WriteException(
+                    new ExceptionData(failedResult.ExceptionType ?? "", failedResult.Message ?? "", failedResult.StackTrace ?? "", null), "Exception");
 
                 testContext.FinishStep(TestOutcome.Failed, testTime);
                 return false;
@@ -252,8 +248,8 @@ namespace Gallio.XunitAdapter.Model
             XunitSkipResult skipResult = result as XunitSkipResult;
             if (skipResult != null)
             {
-                testContext.LogWriter.Write(LogStreamNames.Warnings, String.Format("The test was skipped.  Reason: {0}\n",
-                    string.IsNullOrEmpty(skipResult.Reason) ? "<unspecified>" : skipResult.Reason));
+                testContext.LogWriter.Warnings.Write("The test was skipped.  Reason: {0}\n",
+                    string.IsNullOrEmpty(skipResult.Reason) ? "<unspecified>" : skipResult.Reason);
                 testContext.FinishStep(TestOutcome.Skipped, testTime);
                 return true;
             }

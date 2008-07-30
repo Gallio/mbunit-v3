@@ -166,8 +166,8 @@
     <Compile Include="Runtime\RuntimeAccessorTest.cs" />
     <Compile Include="Runtime\RuntimeRegisteredComponentResolverTest.cs" />
     <Compile Include="Integration\StubContextTest.cs" />
-    <Compile Include="Framework\LogTest.cs" />
-    <Compile Include="Model\Execution\StubTestLogWriterTest.cs" />
+    <Compile Include="Model\Logging\LogTest.cs" />
+    <Compile Include="Model\Logging\TextualTestLogWriterTest.cs" />
     <Compile Include="Model\Execution\TestCommandFactoryTest.cs" />
     <Compile Include="Model\Filters\NameFilterTest.cs" />
     <Compile Include="Model\Filters\EqualityFilterTest.cs" />

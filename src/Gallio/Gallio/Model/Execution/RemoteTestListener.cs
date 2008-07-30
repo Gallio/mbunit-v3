@@ -63,41 +63,47 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public void NotifyTestStepLogTextAttachmentAdded(string stepId, string attachmentName, string contentType,
+        public void NotifyTestStepLogAttachText(string stepId, string attachmentName, string contentType,
             string text)
         {
-            listener.NotifyTestStepLogTextAttachmentAdded(stepId, attachmentName, contentType, text);
+            listener.NotifyTestStepLogAttachText(stepId, attachmentName, contentType, text);
         }
 
         /// <inheritdoc />
-        public void NotifyTestStepLogBinaryAttachmentAdded(string stepId, string attachmentName, string contentType,
+        public void NotifyTestStepLogAttachBytes(string stepId, string attachmentName, string contentType,
             byte[] bytes)
         {
-            listener.NotifyTestStepLogBinaryAttachmentAdded(stepId, attachmentName, contentType, bytes);
+            listener.NotifyTestStepLogAttachBytes(stepId, attachmentName, contentType, bytes);
         }
 
         /// <inheritdoc />
-        public void NotifyTestStepLogStreamTextWritten(string stepId, string streamName, string text)
+        public void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text)
         {
-            listener.NotifyTestStepLogStreamTextWritten(stepId, streamName, text);
+            listener.NotifyTestStepLogStreamWrite(stepId, streamName, text);
         }
 
         /// <inheritdoc />
-        public void NotifyTestStepLogStreamAttachmentEmbedded(string stepId, string streamName, string attachmentName)
+        public void NotifyTestStepLogStreamEmbed(string stepId, string streamName, string attachmentName)
         {
-            listener.NotifyTestStepLogStreamAttachmentEmbedded(stepId, streamName, attachmentName);
+            listener.NotifyTestStepLogStreamEmbed(stepId, streamName, attachmentName);
         }
 
         /// <inheritdoc />
-        public void NotifyTestStepLogStreamSectionStarted(string stepId, string streamName, string sectionName)
+        public void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName)
         {
-            listener.NotifyTestStepLogStreamSectionStarted(stepId, streamName, sectionName);
+            listener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
         }
 
         /// <inheritdoc />
-        public void NotifyTestStepLogStreamSectionFinished(string stepId, string streamName)
+        public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, string sectionName)
         {
-            listener.NotifyTestStepLogStreamSectionFinished(stepId, streamName);
+            listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, sectionName);
+        }
+
+        /// <inheritdoc />
+        public void NotifyTestStepLogStreamEnd(string stepId, string streamName)
+        {
+            listener.NotifyTestStepLogStreamEnd(stepId, streamName);
         }
     }
 }

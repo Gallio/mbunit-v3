@@ -429,7 +429,7 @@ html
   </xsl:template>
 
   <xsl:template match="g:testStepRun" mode="details-content">
-    <xsl:apply-templates select="g:executionLog">
+    <xsl:apply-templates select="g:testLog">
       <xsl:with-param name="stepId" select="g:testStep/@id" />
     </xsl:apply-templates>
   </xsl:template>
@@ -458,7 +458,7 @@ html
     <li><xsl:value-of select="@key" />: <xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="g:value" /></xsl:call-template></li>
   </xsl:template>
 
-  <xsl:template match="g:executionLog">
+  <xsl:template match="g:testLog">
     <xsl:param name="stepId" />
 
     <xsl:if test="g:streams/g:stream">
@@ -517,10 +517,20 @@ html
     </div>
   </xsl:template>
 
+  <xsl:template match="g:marker" mode="stream">
+    <xsl:param name="attachments" />
+
+    <span class="logStreamMarker-{@class}">
+      <xsl:apply-templates select="g:contents" mode="stream">
+        <xsl:with-param name="attachments" select="$attachments" />
+      </xsl:apply-templates>
+    </span>
+  </xsl:template>
+
   <xsl:template match="g:contents" mode="stream">
     <xsl:param name="attachments" />
 
-    <xsl:apply-templates select="child::node()[self::g:text or self::g:section or self::g:embed]" mode="stream">
+    <xsl:apply-templates select="child::node()[self::g:text or self::g:section or self::g:embed or self::g:marker]" mode="stream">
       <xsl:with-param name="attachments" select="$attachments" />
     </xsl:apply-templates>
   </xsl:template>
@@ -528,11 +538,9 @@ html
   <xsl:template match="g:text" mode="stream">
     <xsl:param name="attachments" />
 
-    <div>
-      <xsl:call-template name="print-text-with-breaks">
-        <xsl:with-param name="text" select="text()" />
-      </xsl:call-template>
-    </div>
+    <xsl:call-template name="print-text-with-breaks">
+      <xsl:with-param name="text" select="text()" />
+    </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="g:embed" mode="stream">

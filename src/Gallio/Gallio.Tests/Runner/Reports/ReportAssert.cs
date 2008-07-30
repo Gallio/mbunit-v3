@@ -98,12 +98,12 @@ namespace Gallio.Tests.Runner.Reports
             Assert.AreEqual(expected.StartTime, actual.StartTime);
             Assert.AreEqual(expected.EndTime, actual.EndTime);
             ModelAssert.AreEqual(expected.Result, actual.Result);
-            AreEqual(expected.ExecutionLog, actual.ExecutionLog);
+            AreEqual(expected.TestLog, actual.TestLog);
 
             MbUnit.Framework.InterimAssert.WithPairs(expected.Children, actual.Children, AreEqual);
         }
 
-        public static void AreEqual(ExecutionLog expected, ExecutionLog actual)
+        public static void AreEqual(TestLog expected, TestLog actual)
         {
             if (expected == null)
             {
@@ -115,7 +115,7 @@ namespace Gallio.Tests.Runner.Reports
             InterimAssert.WithPairs(expected.Streams, actual.Streams, AreEqual);
         }
 
-        public static void AreEqual(ExecutionLogStream expected, ExecutionLogStream actual)
+        public static void AreEqual(TestLogStream expected, TestLogStream actual)
         {
             if (expected == null)
             {
@@ -129,7 +129,7 @@ namespace Gallio.Tests.Runner.Reports
             // FIXME: not precise
         }
 
-        public static void AreEqual(ExecutionLogAttachment expected, ExecutionLogAttachment actual)
+        public static void AreEqual(TestLogAttachment expected, TestLogAttachment actual)
         {
             if (expected == null)
             {

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Framework.Utilities;
+using Gallio.Model.Logging;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
 
@@ -33,7 +33,7 @@ namespace Gallio.Tests.Runtime.Hosting
         [Test]
         public void IsLocalFlagShouldBeTrue()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup(), new LogStreamLogger()))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger()))
                 Assert.IsTrue(host.IsLocal);
         }
     }

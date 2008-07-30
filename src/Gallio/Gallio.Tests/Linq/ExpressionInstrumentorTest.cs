@@ -20,8 +20,8 @@ using System.Linq.Expressions;
 using System.Text;
 using Gallio.Framework;
 using Gallio.Framework.Formatting;
-using Gallio.Framework.Utilities;
 using Gallio.Linq;
+using Gallio.Model.Diagnostics;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Linq

@@ -65,6 +65,49 @@ namespace Gallio.Utilities
         }
 
         /// <summary>
+        /// Safely obtains the <see cref="Exception.Message"/> component of an exception.
+        /// </summary>
+        /// <returns>The message</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null</exception>
+        /// <seealso cref="SafeToString"/>
+        public static string SafeGetMessage(Exception ex)
+        {
+            if (ex == null)
+                throw new ArgumentNullException("ex");
+
+            try
+            {
+                return ex.Message ?? "";
+            }
+            catch (Exception ex2)
+            {
+                return String.Format("An exception of type '{0}' occurred.  Details are not available because a second exception of type '{1}' occurred in Exception.ToString().",
+                    ex.GetType().FullName, ex2.GetType().FullName);
+            }
+        }
+
+        /// <summary>
+        /// Safely obtains the <see cref="Exception.StackTrace"/> component of an exception.
+        /// </summary>
+        /// <returns>The stack trace</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null</exception>
+        /// <seealso cref="SafeToString"/>
+        public static string SafeGetStackTrace(Exception ex)
+        {
+            if (ex == null)
+                throw new ArgumentNullException("ex");
+
+            try
+            {
+                return ex.StackTrace ?? "";
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        /// <summary>
         /// Rethrows an exception without discarding its stack trace.
         /// This enables the inner exception of <see cref="TargetInvocationException" />
         /// to be unwrapped.

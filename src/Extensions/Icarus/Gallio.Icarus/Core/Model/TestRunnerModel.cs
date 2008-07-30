@@ -272,14 +272,14 @@ namespace Gallio.Icarus.Core.Model
 
             // store attachments as we go along for the execution log viewer!
             string attachmentDirectory = string.Empty;
-            if (e.TestStepRun.ExecutionLog.Attachments.Count > 0)
+            if (e.TestStepRun.TestLog.Attachments.Count > 0)
             {
                 attachmentDirectory = Path.Combine(reportFolder, FileUtils.EncodeFileName(e.TestStepRun.Step.Id));
                 if (!Directory.Exists(attachmentDirectory))
                     Directory.CreateDirectory(attachmentDirectory);
             }
 
-            foreach (ExecutionLogAttachment ela in e.TestStepRun.ExecutionLog.Attachments)
+            foreach (TestLogAttachment ela in e.TestStepRun.TestLog.Attachments)
             {
                 string fileName = Path.Combine(attachmentDirectory, FileUtils.EncodeFileName(ela.Name));
                 using (FileStream fs = File.Open(fileName, FileMode.Create, FileAccess.Write))

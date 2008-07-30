@@ -58,7 +58,7 @@ namespace Gallio.Model.Execution
         /// <param name="attachmentName">The attachment name, not null</param>
         /// <param name="contentType">The content type, not null</param>
         /// <param name="text">The text contents, not null</param>
-        void NotifyTestStepLogTextAttachmentAdded(string stepId, string attachmentName, string contentType, string text);
+        void NotifyTestStepLogAttachText(string stepId, string attachmentName, string contentType, string text);
 
         /// <summary>
         /// Notifies the listener that a binary attachment has been added to a test step log.
@@ -67,7 +67,7 @@ namespace Gallio.Model.Execution
         /// <param name="attachmentName">The attachment name, not null</param>
         /// <param name="contentType">The content type, not null</param>
         /// <param name="bytes">The binary contents, not null</param>
-        void NotifyTestStepLogBinaryAttachmentAdded(string stepId, string attachmentName, string contentType, byte[] bytes);
+        void NotifyTestStepLogAttachBytes(string stepId, string attachmentName, string contentType, byte[] bytes);
 
         /// <summary>
         /// Notifies the listener that text has been written to a test step log stream.
@@ -75,7 +75,7 @@ namespace Gallio.Model.Execution
         /// <param name="stepId">The id of the test step, not null</param>
         /// <param name="streamName">The stream name, not null</param>
         /// <param name="text">The text, not null</param>
-        void NotifyTestStepLogStreamTextWritten(string stepId, string streamName, string text);
+        void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text);
 
         /// <summary>
         /// Notifies the listener that an attachment has been embedded into a test step log stream.
@@ -83,21 +83,29 @@ namespace Gallio.Model.Execution
         /// <param name="stepId">The id of the test step, not null</param>
         /// <param name="streamName">The stream name, not null</param>
         /// <param name="attachmentName">The attachment name, not null</param>
-        void NotifyTestStepLogStreamAttachmentEmbedded(string stepId, string streamName, string attachmentName);
+        void NotifyTestStepLogStreamEmbed(string stepId, string streamName, string attachmentName);
 
         /// <summary>
-        /// Notifies the listener that a section has been started within a test step log stream.
+        /// Notifies the listener that a section region has been started within a test step log stream.
         /// </summary>
         /// <param name="stepId">The id of the test step, not null</param>
         /// <param name="streamName">The stream name, not null</param>
         /// <param name="sectionName">The section name, not null</param>
-        void NotifyTestStepLogStreamSectionStarted(string stepId, string streamName, string sectionName);
+        void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName);
 
         /// <summary>
-        /// Notifies the listener that a section has finished within a test step log stream.
+        /// Notifies the listener that a marker region has been started within a test step log stream.
         /// </summary>
         /// <param name="stepId">The id of the test step, not null</param>
         /// <param name="streamName">The stream name, not null</param>
-        void NotifyTestStepLogStreamSectionFinished(string stepId, string streamName);
+        /// <param name="class">The marker class, not null</param>
+        void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, string @class);
+
+        /// <summary>
+        /// Notifies the listener that a region started with Begin* has finished within a test step log stream.
+        /// </summary>
+        /// <param name="stepId">The id of the test step, not null</param>
+        /// <param name="streamName">The stream name, not null</param>
+        void NotifyTestStepLogStreamEnd(string stepId, string streamName);
     }
 }

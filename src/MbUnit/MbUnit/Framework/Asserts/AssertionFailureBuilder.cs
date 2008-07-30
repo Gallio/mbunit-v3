@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Formatting;
-using Gallio.Framework.Utilities;
+using Gallio.Model.Diagnostics;
 
 namespace MbUnit.Framework
 {
@@ -36,7 +36,7 @@ namespace MbUnit.Framework
         private string stackTrace;
         private bool isStackTraceSet;
         private List<KeyValuePair<string, string>> labeledValues;
-        private List<string> exceptions;
+        private List<ExceptionData> exceptions;
 
         /// <summary>
         /// Creates an assertion failure builder.
@@ -161,9 +161,23 @@ namespace MbUnit.Framework
             if (ex == null)
                 throw new ArgumentNullException("ex");
 
+            return AddException(new ExceptionData(ex));
+        }
+
+        /// <summary>
+        /// Adds an exception to the assertion failure.
+        /// </summary>
+        /// <param name="ex">The exception data to add</param>
+        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null</exception>
+        public AssertionFailureBuilder AddException(ExceptionData ex)
+        {
+            if (ex == null)
+                throw new ArgumentNullException("ex");
+
             if (exceptions == null)
-                exceptions = new List<string>();
-            exceptions.Add(StackTraceFilter.FilterExceptionToString(ex));
+                exceptions = new List<ExceptionData>();
+            exceptions.Add(StackTraceFilter.FilterException(ex));
             return this;
         }
 
@@ -187,7 +201,7 @@ namespace MbUnit.Framework
         /// </remarks>
         protected virtual AssertionFailure CreateAssertionFailure(string description,
             string message, string stackTrace, KeyValuePair<string, string>[] labeledValues,
-            string[] exceptions)
+            ExceptionData[] exceptions)
         {
             return new AssertionFailure(description, message, stackTrace, labeledValues, exceptions);
         }
@@ -221,9 +235,9 @@ namespace MbUnit.Framework
             return labeledValues != null ? labeledValues.ToArray() : EmptyArray<KeyValuePair<string, string>>.Instance;
         }
 
-        private string[] GetExceptionsAsArray()
+        private ExceptionData[] GetExceptionsAsArray()
         {
-            return exceptions != null ? exceptions.ToArray() : EmptyArray<string>.Instance;
+            return exceptions != null ? exceptions.ToArray() : EmptyArray<ExceptionData>.Instance;
         }
 
         [TestFrameworkInternal]

@@ -21,6 +21,7 @@ using System.Xml;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using Gallio.MSTestAdapter.Properties;
 using Gallio.MSTestAdapter.Wrapper;
 using Gallio.Runner.Caching;
@@ -92,7 +93,7 @@ namespace Gallio.MSTestAdapter.Model
                 }
                 catch (Exception ex)
                 {
-                    TestLogWriterUtils.WriteException(assemblyContext.LogWriter, LogStreamNames.Failures, ex, "Internal Error");
+                    assemblyContext.LogWriter.Failures.WriteException(ex, "Internal Error");
                     outcome = TestOutcome.Error;
                 }
 
@@ -191,20 +192,18 @@ namespace Gallio.MSTestAdapter.Model
             args.ResultsFile = testResultsPath;
             args.TestList = SelectedTestListName;
 
-            TextWriter writer = new TestLogStreamWriter(context.LogWriter, "MSTest Output");
+            TextWriter writer = context.LogWriter["MSTest Output"];
             int exitCode = mstestCommand.Run(workingDirectory, args, writer, writer);
 
             if (exitCode == -1)
             {
-                context.LogWriter.Write(LogStreamNames.Failures,
-                   Resources.MSTestController_MSTestExecutableNotFound);
+                context.LogWriter.Failures.Write(Resources.MSTestController_MSTestExecutableNotFound);
                 return TestOutcome.Error;
             }
 
             if (exitCode != 0)
             {
-                context.LogWriter.Write(LogStreamNames.Warnings,
-                    String.Format("MSTest returned an exit code of {0}.", exitCode));
+                context.LogWriter.Failures.Write("MSTest returned an exit code of {0}.", exitCode);
             }
 
             return TestOutcome.Passed;
@@ -285,7 +284,7 @@ namespace Gallio.MSTestAdapter.Model
                         return (testExecutionInfo.Outcome != TestOutcome.Error && testExecutionInfo.Outcome != TestOutcome.Failed);
                     }
 
-                    testContext.LogWriter.Write(LogStreamNames.Warnings, "No test results available!");
+                    testContext.LogWriter.Warnings.Write("No test results available!");
                     testContext.FinishStep(TestOutcome.Skipped, null);
                     return true;
                 }
@@ -371,12 +370,12 @@ namespace Gallio.MSTestAdapter.Model
 
         private static void LogStdOut(ITestContext context, string message)
         {
-            context.LogWriter.Write(LogStreamNames.ConsoleOutput, message);
+            context.LogWriter.ConsoleOutput.Write(message);
         }
 
         private static void LogError(ITestContext context, string message)
         {
-            context.LogWriter.Write(LogStreamNames.Failures, message);
+            context.LogWriter.Failures.Write(message);
         }
 
         private static TestOutcome GetTestOutcome(string outcome)

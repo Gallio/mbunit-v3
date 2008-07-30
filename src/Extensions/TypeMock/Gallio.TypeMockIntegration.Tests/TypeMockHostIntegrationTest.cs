@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System.Diagnostics;
-using Gallio.Framework.Utilities;
+using Gallio.Model.Logging;
 using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
@@ -40,7 +40,7 @@ namespace Gallio.TypeMockIntegration.Tests
         {
             TypeMockHostFactory factory = new TypeMockHostFactory(RuntimeAccessor.InstallationPath);
 
-            using (IHost host = factory.CreateHost(new HostSetup(), new LogStreamLogger()))
+            using (IHost host = factory.CreateHost(new HostSetup(), new TestLogStreamLogger()))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
 

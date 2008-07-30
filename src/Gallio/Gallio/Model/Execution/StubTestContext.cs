@@ -16,21 +16,22 @@
 using System;
 using Gallio.Collections;
 using Gallio.Model;
+using Gallio.Model.Logging;
 using Gallio.Reflection;
 
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// A stub implementation of <see cref="ITestContext" /> using a <see cref="StubTestLogWriter" />.
+    /// A stub implementation of <see cref="ITestContext" /> using a <see cref="TextualTestLogWriter" />.
     /// Does not fully support nested test steps or other dynamic features.
     /// </summary>
     /// <seealso cref="StubTestContextTracker" />
-    /// <seealso cref="StubTestLogWriter"/>
+    /// <seealso cref="TextualTestLogWriter"/>
     public class StubTestContext : ITestContext
     {
         private readonly UserDataCollection data;
         private readonly ITestStep testStep;
-        private readonly StubTestLogWriter logWriter;
+        private readonly TextualTestLogWriter logWriter;
 
         /// <summary>
         /// Creates a stub context.
@@ -39,7 +40,7 @@ namespace Gallio.Model.Execution
         {
             data = new UserDataCollection();
             testStep = new TestStepInfo(new BaseTestStep(new RootTest(), null));
-            logWriter = new StubTestLogWriter();
+            logWriter = new TextualTestLogWriter(Console.Out, false);
         }
 
         /// <inheritdoc />
@@ -55,7 +56,7 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public ITestLogWriter LogWriter
+        public TestLogWriter LogWriter
         {
             get { return logWriter; }
         }

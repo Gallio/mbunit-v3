@@ -250,7 +250,7 @@ div.gallio-report div.navigator
 	font-size: 9pt;
 }
 
-/* Execution logs */
+/* Test logs */
 .gallio-report .log
 {
 	margin: 5px 0px 5px 0px;
@@ -306,7 +306,7 @@ div.gallio-report div.navigator
 	text-decoration: underline;
 }
 
-/* Execution log streams */
+/* Test log streams */
 .gallio-report .logStream-Failures
 {
 	background-color: #ffd8d8;
@@ -317,6 +317,26 @@ div.gallio-report div.navigator
 {
 	background-color: #ffffc8;
 	border: dotted 1px #909050;
+}
+
+/* Test log stream markers */
+.gallio-report .logStreamMarker-assertionFailure
+{
+}
+
+.gallio-report .logStreamMarker-exception
+{
+	font-style: italic;
+}
+
+.gallio-report .logStreamMarker-stackTrace
+{
+	font-style: italic;
+}
+
+.gallio-report .logStreamMarker-console
+{
+	font-family: Consolas, Courier New, Courier;
 }
 
 

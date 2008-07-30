@@ -104,6 +104,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Provider\Actions\GallioAction.cs" />
+    <Compile Include="Provider\Actions\ShowCondensedReportAction.cs" />
+    <Compile Include="Provider\Actions\ShowFullReportAction.cs" />
     <Compile Include="Provider\Actions\ShowReportAction.cs" />
     <Compile Include="Provider\Daemons\AnnotationHighlighting.cs" />
     <Compile Include="Provider\Daemons\InfoAnnotationHighlighting.cs" />
@@ -116,6 +118,7 @@
     <Compile Include="Provider\GallioTestPresenter.cs" />
     <Compile Include="Provider\ReSharperExceptionDialogSuppressor.cs" />
     <Compile Include="Provider\SessionCache.cs" />
+    <Compile Include="Provider\Tasks\TaskExceptionFactory.cs" />
     <Compile Include="Runtime\GallioInitializer.cs" />
     <Compile Include="Runtime\ReSharperLogger.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicy.cs" />

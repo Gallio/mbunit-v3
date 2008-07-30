@@ -15,7 +15,7 @@
 
 using System;
 using System.Diagnostics;
-using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 
 namespace Gallio.Runner.Harness
 {
@@ -37,7 +37,7 @@ namespace Gallio.Runner.Harness
             public State()
             {
                 // Inject a trace listener for debug or trace messages.
-                debugTraceListener = new ContextualLogTraceListener(LogStreamNames.DebugTrace);
+                debugTraceListener = new ContextualLogTraceListener(TestLogStreamNames.DebugTrace);
                 Trace.Listeners.Add(debugTraceListener);
                 Trace.AutoFlush = true;
             }

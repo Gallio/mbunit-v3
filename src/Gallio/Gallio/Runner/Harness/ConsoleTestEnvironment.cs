@@ -15,7 +15,7 @@
 
 using System;
 using System.IO;
-using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 
 namespace Gallio.Runner.Harness
 {
@@ -45,8 +45,8 @@ namespace Gallio.Runner.Harness
 
                 // Inject console streams.
                 Console.SetIn(TextReader.Null);
-                Console.SetOut(new ContextualLogTextWriter(LogStreamNames.ConsoleOutput));
-                Console.SetError(new ContextualLogTextWriter(LogStreamNames.ConsoleError));
+                Console.SetOut(new ContextualLogTextWriter(TestLogStreamNames.ConsoleOutput));
+                Console.SetError(new ContextualLogTextWriter(TestLogStreamNames.ConsoleError));
             }
 
             public void Dispose()

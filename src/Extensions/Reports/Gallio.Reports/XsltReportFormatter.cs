@@ -98,7 +98,7 @@ namespace Gallio.Reports
         /// <inheritdoc />
         public override void Format(IReportWriter reportWriter, NameValueCollection options, IProgressMonitor progressMonitor)
         {
-            ExecutionLogAttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
+            TestLogAttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 
             using (progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10))
             {
@@ -112,7 +112,7 @@ namespace Gallio.Reports
 
                 progressMonitor.SetStatus(@"");
 
-                if (attachmentContentDisposition == ExecutionLogAttachmentContentDisposition.Link)
+                if (attachmentContentDisposition == TestLogAttachmentContentDisposition.Link)
                 {
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                         reportWriter.SaveReportAttachments(subProgressMonitor);
@@ -137,7 +137,7 @@ namespace Gallio.Reports
         /// <summary>
         /// Applies the transform to produce a report.
         /// </summary>
-        protected virtual void ApplyTransform(IReportWriter reportWriter, ExecutionLogAttachmentContentDisposition attachmentContentDisposition,
+        protected virtual void ApplyTransform(IReportWriter reportWriter, TestLogAttachmentContentDisposition attachmentContentDisposition,
             NameValueCollection options)
         {
             XsltArgumentList arguments = new XsltArgumentList();
@@ -201,7 +201,7 @@ namespace Gallio.Reports
         }
 
         private static XPathDocument SerializeReportToXPathDocument(IReportWriter reportWriter,
-            ExecutionLogAttachmentContentDisposition attachmentContentDisposition)
+            TestLogAttachmentContentDisposition attachmentContentDisposition)
         {
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
             xmlWriterSettings.CheckCharacters = false;

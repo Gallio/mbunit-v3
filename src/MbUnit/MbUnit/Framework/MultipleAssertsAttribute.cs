@@ -15,8 +15,8 @@
 
 using System;
 using Gallio.Framework.Pattern;
-using Gallio.Framework.Utilities;
 using Gallio.Model;
+using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
 using Gallio;
 

@@ -114,94 +114,108 @@ namespace Gallio.Runner
                 state.TestStepRun.Result = result;
                 report.TestPackageRun.Statistics.MergeStepStatistics(state.TestStepRun);
 
-                state.ExecutionLogWriter.Close();
+                state.testLogWriter.Close();
 
                 eventDispatcher.NotifyTestStepFinished(
                     new TestStepFinishedEventArgs(report, state.TestData, state.TestStepRun));
             }
         }
 
-        public void NotifyTestStepLogTextAttachmentAdded(string stepId, string attachmentName, string contentType, string text)
+        public void NotifyTestStepLogAttachText(string stepId, string attachmentName, string contentType, string text)
         {
             lock (syncRoot)
             {
                 ThrowIfDisposed();
 
                 TestStepState state = GetTestStepState(stepId);
-                state.ExecutionLogWriter.AttachText(attachmentName, contentType, text);
+                state.testLogWriter.AttachText(attachmentName, contentType, text);
 
-                eventDispatcher.NotifyTestStepLogTextAttachmentAdded(
-                    new TestStepLogTextAttachmentAddedEventArgs(report, state.TestData, state.TestStepRun, attachmentName, contentType, text));
+                eventDispatcher.NotifyTestStepLogAttachText(
+                    new TestStepLogAttachTextEventArgs(report, state.TestData, state.TestStepRun, attachmentName, contentType, text));
             }
         }
 
-        public void NotifyTestStepLogBinaryAttachmentAdded(string stepId, string attachmentName, string contentType, byte[] bytes)
+        public void NotifyTestStepLogAttachBytes(string stepId, string attachmentName, string contentType, byte[] bytes)
         {
             lock (syncRoot)
             {
                 ThrowIfDisposed();
 
                 TestStepState state = GetTestStepState(stepId);
-                state.ExecutionLogWriter.AttachBytes(attachmentName, contentType, bytes);
+                state.testLogWriter.AttachBytes(attachmentName, contentType, bytes);
 
-                eventDispatcher.NotifyTestStepLogBinaryAttachmentAdded(
-                    new TestStepLogBinaryAttachmentAddedEventArgs(report, state.TestData, state.TestStepRun, attachmentName, contentType, bytes));
+                eventDispatcher.NotifyTestStepLogAttachBytes(
+                    new TestStepLogBinaryAttachBytesEventArgs(report, state.TestData, state.TestStepRun, attachmentName, contentType, bytes));
             }
         }
 
-        public void NotifyTestStepLogStreamTextWritten(string stepId, string streamName, string text)
+        public void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text)
         {
             lock (syncRoot)
             {
                 ThrowIfDisposed();
 
                 TestStepState state = GetTestStepState(stepId);
-                state.ExecutionLogWriter.Write(streamName, text);
+                state.testLogWriter.Write(streamName, text);
 
-                eventDispatcher.NotifyTestStepLogStreamTextWritten(
-                    new TestStepLogStreamTextWrittenEventArgs(report, state.TestData, state.TestStepRun, streamName, text));
+                eventDispatcher.NotifyTestStepLogStreamWrite(
+                    new TestStepLogStreamWriteEventArgs(report, state.TestData, state.TestStepRun, streamName, text));
             }
         }
 
-        public void NotifyTestStepLogStreamAttachmentEmbedded(string stepId, string streamName, string attachmentName)
+        public void NotifyTestStepLogStreamEmbed(string stepId, string streamName, string attachmentName)
         {
             lock (syncRoot)
             {
                 ThrowIfDisposed();
 
                 TestStepState state = GetTestStepState(stepId);
-                state.ExecutionLogWriter.Embed(streamName, attachmentName);
+                state.testLogWriter.Embed(streamName, attachmentName);
 
-                eventDispatcher.NotifyTestStepLogStreamAttachmentEmbedded(
-                    new TestStepLogStreamAttachmentEmbeddedEventArgs(report, state.TestData, state.TestStepRun, streamName, attachmentName));
+                eventDispatcher.NotifyTestStepLogStreamEmbed(
+                    new TestStepLogStreamEmbedEventArgs(report, state.TestData, state.TestStepRun, streamName, attachmentName));
             }
         }
 
-        public void NotifyTestStepLogStreamSectionStarted(string stepId, string streamName, string sectionName)
+        public void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName)
         {
             lock (syncRoot)
             {
                 ThrowIfDisposed();
 
                 TestStepState state = GetTestStepState(stepId);
-                state.ExecutionLogWriter.BeginSection(streamName, sectionName);
+                state.testLogWriter.BeginSection(streamName, sectionName);
 
-                eventDispatcher.NotifyTestStepLogStreamSectionStarted(
-                    new TestStepLogStreamSectionStartedEventArgs(report, state.TestData, state.TestStepRun, streamName, sectionName));
+                eventDispatcher.NotifyTestStepLogStreamBeginSection(
+                    new TestStepLogStreamBeginSectionEventArgs(report, state.TestData, state.TestStepRun, streamName, sectionName));
             }
         }
 
-        public void NotifyTestStepLogStreamSectionFinished(string stepId, string streamName)
+        public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, string @class)
         {
             lock (syncRoot)
             {
                 ThrowIfDisposed();
 
                 TestStepState state = GetTestStepState(stepId);
-                state.ExecutionLogWriter.EndSection(streamName);
+                state.testLogWriter.BeginMarker(streamName, @class);
 
-                eventDispatcher.NotifyTestStepLogStreamSectionFinished(
-                    new TestStepLogStreamSectionFinishedEventArgs(report, state.TestData, state.TestStepRun, streamName));
+                eventDispatcher.NotifyTestStepLogStreamBeginMarker(
+                    new TestStepLogStreamBeginMarkerEventArgs(report, state.TestData, state.TestStepRun, streamName, @class));
+            }
+        }
+
+        public void NotifyTestStepLogStreamEnd(string stepId, string streamName)
+        {
+            lock (syncRoot)
+            {
+                ThrowIfDisposed();
+
+                TestStepState state = GetTestStepState(stepId);
+                state.testLogWriter.End(streamName);
+
+                eventDispatcher.NotifyTestStepLogStreamEnd(
+                    new TestStepLogStreamEndEventArgs(report, state.TestData, state.TestStepRun, streamName));
             }
         }
 
@@ -231,15 +245,15 @@ namespace Gallio.Runner
         {
             public readonly TestData TestData;
             public readonly TestStepRun TestStepRun;
-            public readonly ExecutionLogWriter ExecutionLogWriter;
+            public readonly TestLogWriter testLogWriter;
 
             public TestStepState(TestData testData, TestStepRun testStepRun)
             {
                 TestData = testData;
                 TestStepRun = testStepRun;
 
-                ExecutionLogWriter = new ExecutionLogWriter();
-                testStepRun.ExecutionLog = ExecutionLogWriter.ExecutionLog;
+                testLogWriter = new TestLogWriter();
+                testStepRun.TestLog = testLogWriter.TestLog;
             }
         }
     }

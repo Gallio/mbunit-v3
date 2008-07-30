@@ -19,7 +19,7 @@ using System.Threading;
 using Gallio;
 using Gallio.Collections;
 using Gallio.Framework;
-using Gallio.Framework.Utilities;
+using Gallio.Model.Diagnostics;
 
 namespace MbUnit.Framework
 {
@@ -235,7 +235,7 @@ namespace MbUnit.Framework
 
             private void LogFailure(AssertionFailure failure)
             {
-                failure.Log(context.testContext.LogWriter);
+                failure.WriteTo(context.testContext.LogWriter.Failures);
             }
 
             private void LogFailureAccordingToBehavior(AssertionFailure failure)

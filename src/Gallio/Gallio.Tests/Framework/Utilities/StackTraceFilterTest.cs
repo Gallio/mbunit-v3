@@ -17,7 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Gallio.Framework;
-using Gallio.Framework.Utilities;
+using Gallio.Model.Diagnostics;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Utilities
@@ -26,9 +26,27 @@ namespace Gallio.Tests.Framework.Utilities
     public class StackTraceFilterTest
     {
         [Test, ExpectedArgumentNullException]
+        public void FilterStackTraceThrowsIfNull()
+        {
+            StackTraceFilter.FilterStackTrace(null);
+        }
+
+        [Test, ExpectedArgumentNullException]
         public void FilterStackTraceToStringThrowsIfNull()
         {
             StackTraceFilter.FilterStackTraceToString(null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void FilterExceptionThrowsIfNull()
+        {
+            StackTraceFilter.FilterException((Exception) null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void FilterExceptionDataThrowsIfNull()
+        {
+            StackTraceFilter.FilterException((ExceptionData)null);
         }
 
         public class WhenStackTracesIsFiltered
@@ -98,7 +116,7 @@ namespace Gallio.Tests.Framework.Utilities
                 }
                 catch (InvalidOperationException ex)
                 {
-                    trace = StackTraceFilter.FilterExceptionToString(ex);
+                    trace = StackTraceFilter.FilterException(ex).ToString();
                     Log.WriteLine(trace);
                 }
 
@@ -117,7 +135,7 @@ namespace Gallio.Tests.Framework.Utilities
                 }
                 catch (InvalidOperationException ex)
                 {
-                    trace = StackTraceFilter.FilterExceptionToString(ex);
+                    trace = StackTraceFilter.FilterException(ex).ToString();
                     Log.WriteLine(trace);
                 }
 
@@ -136,7 +154,7 @@ namespace Gallio.Tests.Framework.Utilities
                 }
                 catch (InvalidOperationException ex)
                 {
-                    trace = StackTraceFilter.FilterExceptionToString(ex);
+                    trace = StackTraceFilter.FilterException(ex).ToString();
                     Log.WriteLine(trace);
                 }
 
@@ -155,7 +173,7 @@ namespace Gallio.Tests.Framework.Utilities
                 }
                 catch (InvalidOperationException ex)
                 {
-                    trace = StackTraceFilter.FilterExceptionToString(ex);
+                    trace = StackTraceFilter.FilterException(ex).ToString();
                     Log.WriteLine(trace);
                 }
 

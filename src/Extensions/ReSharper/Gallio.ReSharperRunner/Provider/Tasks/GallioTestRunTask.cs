@@ -21,6 +21,7 @@ using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
+using Gallio.Model.Logging;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
@@ -330,7 +331,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     else
                         pendingBanner = banner;
 
-                    foreach (ExecutionLogStream stream in run.ExecutionLog.Streams)
+                    foreach (TestLogStream stream in run.TestLog.Streams)
                         OutputLogStreamContents(stream);
 
                     if (nestingCount == 0)
@@ -338,7 +339,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 }
             }
 
-            private void OutputLogStreamContents(ExecutionLogStream stream)
+            private void OutputLogStreamContents(TestLogStream stream)
             {
                 string contents = string.Concat("*** ", stream.Name, " ***\n", stream.ToString(), "\n");
 
@@ -347,24 +348,24 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 // Unfortunately it can't really capture the richness of Gallio outcomes right now.
                 switch (stream.Name)
                 {
-                    case LogStreamNames.ConsoleOutput:
+                    case TestLogStreamNames.ConsoleOutput:
                     default:
                         Output(TaskOutputType.STDOUT, contents);
                         break;
 
-                    case LogStreamNames.ConsoleError:
+                    case TestLogStreamNames.ConsoleError:
                         Output(TaskOutputType.STDERR, contents);
                         break;
 
-                    case LogStreamNames.DebugTrace:
+                    case TestLogStreamNames.DebugTrace:
                         Output(TaskOutputType.DEBUGTRACE, contents);
                         break;
 
-                    case LogStreamNames.Warnings:
+                    case TestLogStreamNames.Warnings:
                         pendingWarnings = contents;
                         break;
 
-                    case LogStreamNames.Failures:
+                    case TestLogStreamNames.Failures:
                         pendingFailures = contents;
                         break;
                 }

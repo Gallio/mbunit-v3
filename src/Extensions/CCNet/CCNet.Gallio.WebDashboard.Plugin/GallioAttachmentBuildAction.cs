@@ -81,7 +81,7 @@ namespace CCNet.Gallio.WebDashboard.Plugin
 
         private static XPathNavigator FindAttachmentNode(XPathNavigator testStepNavigator, IXmlNamespaceResolver resolver, string attachmentName)
         {
-            foreach (XPathNavigator attachmentNavigator in testStepNavigator.Select(@"../g:executionLog/g:attachments/g:attachment", resolver))
+            foreach (XPathNavigator attachmentNavigator in testStepNavigator.Select(@"../g:testLog/g:attachments/g:attachment", resolver))
             {
                 if (attachmentNavigator.GetAttribute(@"name", "") == attachmentName)
                     return attachmentNavigator;
