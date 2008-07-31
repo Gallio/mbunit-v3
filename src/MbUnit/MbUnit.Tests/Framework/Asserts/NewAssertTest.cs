@@ -354,6 +354,26 @@ namespace MbUnit.Tests.Framework
         }
         #endregion
 
+        #region Between
+        [Test]
+        public void Between_int_test()
+        {
+            NewAssert.Between(2, 1, 3);
+        }
+
+        [Test]
+        public void Between_fails_when_test_value_is_left_of_the_range()
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.Between(0, 1, 3));
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("The test value is not in the range.", failures[0].Description);
+            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
+            NewAssert.AreEqual("0", failures[0].LabeledValues[0].Value);
+            NewAssert.AreEqual("Range", failures[0].LabeledValues[1].Key);
+            NewAssert.AreEqual("\"(1 - 3)\"", failures[0].LabeledValues[1].Value);
+        }
+        #endregion
+
         class NonGenericCompare : IComparable
         {
             public int CompareTo(object obj)
