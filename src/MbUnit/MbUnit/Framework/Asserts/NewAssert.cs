@@ -884,7 +884,7 @@ namespace MbUnit.Framework
         #region Between
 
         /// <summary>
-        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="test">The test value</param>
@@ -896,7 +896,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="test">The test value</param>
@@ -910,7 +910,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="test">The test value</param>
@@ -925,7 +925,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="test">The test value</param>
@@ -939,7 +939,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="test">The test value</param>
@@ -954,7 +954,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that an left value is less or equal than right value according to a particular comparer.
+        /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="test">The test value</param>
@@ -982,6 +982,109 @@ namespace MbUnit.Framework
             });
         }
         #endregion
+
+        #region NotBetween
+
+        /// <summary>
+        /// Verifies that a test value is not between left and right values according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="test">The test value</param>
+        /// <param name="left">Left limit</param>
+        /// <param name="right">Right limit</param>
+        public static void NotBetween<T>(T test, T left, T right)
+        {
+            NotBetween(test, left, right, (string)null, null);
+        }
+
+        /// <summary>
+        /// Verifies that a test value is not between left and right values according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="test">The test value</param>
+        /// <param name="left">Left limit</param>
+        /// <param name="right">Right limit</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void NotBetween<T>(T test, T left, T right, string messageFormat)
+        {
+            NotBetween(test, left, right, messageFormat, null);
+        }
+
+        /// <summary>
+        /// Verifies that a test value is not between left and right values according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="test">The test value</param>
+        /// <param name="left">Left limit</param>
+        /// <param name="right">Right limit</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void NotBetween<T>(T test, T left, T right, string messageFormat, params object[] messageArgs)
+        {
+            NotBetween(test, left, right, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that a test value is not between left and right values according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="test">The test value</param>
+        /// <param name="left">Left limit</param>
+        /// <param name="right">Right limit</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void NotBetween<T>(T test, T left, T right, Func<T, T, T, int> comparer)
+        {
+            NotBetween(test, left, right, comparer, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that a test value is not between left and right values according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="test">The test value</param>
+        /// <param name="left">Left limit</param>
+        /// <param name="right">Right limit</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void NotBetween<T>(T test, T left, T right, Func<T, T, T, int> comparer, string messageFormat)
+        {
+            NotBetween(test, left, right, comparer, messageFormat, null);
+        }
+
+        /// <summary>
+        /// Verifies that a test value is not between left and right values according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="test">The test value</param>
+        /// <param name="left">Left limit</param>
+        /// <param name="right">Right limit</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void NotBetween<T>(T test, T left, T right, Func<T, T, T, int> comparer, string messageFormat, params object[] messageArgs)
+        {
+            AssertHelper.Verify(delegate
+            {
+                if (comparer == null)
+                    comparer = BetweenCompare;
+
+                if (comparer(test, left, right) != 0)
+                    return null;
+
+                return new AssertionFailureBuilder("The test value is in the range.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .SetLabeledValue("Test Value", test)
+                    .SetLabeledValue("Range", String.Format("({0} - {1})", left, right))
+                    .ToAssertionFailure();
+            });
+        }
+        #endregion
+
         #region Throws
         /// <summary>
         /// Evaluates an action delegate and verifies that it throws an exception of a particular type.

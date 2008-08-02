@@ -34,7 +34,7 @@ namespace MbUnit.Tests.Framework
             AssertionFailure[] failures = AssertHelper.Eval(() => 
                 NewAssert.GreaterThan(new Exception(), new Exception()));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("System.InvalidOperationException: No ordering comparison defined on type System.Exception.\r\n"
+            NewAssert.AreEqual("System.InvalidOperationException: No ordering comparison defined on type System.Exception."
                 , failures[0].Exceptions[0].ToString());
         }
 
@@ -356,10 +356,22 @@ namespace MbUnit.Tests.Framework
 
         #region Between
         [Test]
-        public void Between_int_test()
+        [Row(2, 1, 3)]
+        [Row(-1, -1, 3)]
+        [Row(3, 1, 3)]
+        public void Between_int_test(int test, int left, int right)
         {
-            NewAssert.Between(2, 1, 3);
+            NewAssert.Between(test, left, right);
         }
+
+        [Test]
+        public void Between_nullable_int_test()
+        {
+            int? test = null;
+            int? left = null;
+            NewAssert.Between(test, left, 6);
+        }
+
 
         [Test]
         public void Between_fails_when_test_value_is_left_of_the_range()
@@ -369,6 +381,28 @@ namespace MbUnit.Tests.Framework
             NewAssert.AreEqual("The test value is not in the range.", failures[0].Description);
             NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
             NewAssert.AreEqual("0", failures[0].LabeledValues[0].Value);
+            NewAssert.AreEqual("Range", failures[0].LabeledValues[1].Key);
+            NewAssert.AreEqual("\"(1 - 3)\"", failures[0].LabeledValues[1].Value);
+        }
+        #endregion
+
+        #region NotBetween
+        [Test]
+        [Row(-2, 1, 3)]
+        [Row(5, -1, 3)]
+        public void NotBetween_int_test(int test, int left, int right)
+        {
+            NewAssert.NotBetween(test, left, right);
+        }
+
+        [Test]
+        public void NotBetween_fails_when_test_value_is_left_of_the_range()
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.NotBetween(1, 1, 3));
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("The test value is in the range.", failures[0].Description);
+            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
+            NewAssert.AreEqual("1", failures[0].LabeledValues[0].Value);
             NewAssert.AreEqual("Range", failures[0].LabeledValues[1].Key);
             NewAssert.AreEqual("\"(1 - 3)\"", failures[0].LabeledValues[1].Value);
         }
