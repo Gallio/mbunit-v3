@@ -408,6 +408,37 @@ namespace MbUnit.Tests.Framework
         }
         #endregion
 
+        #region Fail
+
+        [Test]
+        public void Fail_without_parameters()
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(NewAssert.Fail);
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("Custom failure.", failures[0].Description);
+            NewAssert.AreEqual("", failures[0].Message);
+        }
+
+        [Test]
+        public void Fail_with_message()
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.Fail("Message"));
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("Custom failure.", failures[0].Description);
+            NewAssert.AreEqual("Message", failures[0].Message);
+        }
+
+        [Test]
+        public void Fail_with_message_and_arguments()
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.Fail("{0} {1}.", "MbUnit", "message"));
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("Custom failure.", failures[0].Description);
+            NewAssert.AreEqual("MbUnit message.", failures[0].Message);
+        }
+
+        #endregion
+
         class NonGenericCompare : IComparable
         {
             public int CompareTo(object obj)

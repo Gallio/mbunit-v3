@@ -76,6 +76,15 @@ namespace MbUnit.Framework
                     .ToAssertionFailure();
             }
 
+            Fail(failure);
+        }
+
+        /// <summary>
+        /// Submit failure if there's a failure.
+        /// </summary>
+        /// <param name="failure">Failure to be submited.</param>
+        public static void Fail(AssertionFailure failure)
+        {
             if (failure != null)
                 AssertionContext.CurrentContext.SubmitFailure(failure);
         }

@@ -1085,6 +1085,49 @@ namespace MbUnit.Framework
         }
         #endregion
 
+        #region Fail
+        /// <summary>
+        /// Throws an <see cref="AssertionException"/> with the message that is
+        /// passed in. This is used by the other Assert functions.
+        /// </summary>
+        /// <param name="messageFormat">
+        /// The format of the message to initialize the <see cref="AssertionException"/> with.
+        /// </param>
+        /// <param name="messageArgs">
+        /// An <see cref="Object"/> array containing zero or more objects to format.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// The error message is formatted using <see cref="String.Format(string, object[])"/>.
+        /// </para>
+        /// </remarks>
+        static public void Fail(string messageFormat, params object[] messageArgs)
+        {
+            AssertHelper.Fail(new AssertionFailureBuilder("Custom failure.")
+                .SetMessage(messageFormat, messageArgs)
+                .ToAssertionFailure());
+        }
+
+        /// <summary>
+        /// Throws an <see cref="AssertionException"/> with the message that is
+        /// passed in. This is used by the other Assert functions.
+        /// </summary>
+        /// <param name="message">The message to initialize the <see cref="AssertionException"/> with.</param>
+        static public void Fail(string message)
+        {
+           Fail(message, null);
+        }
+
+        /// <summary>
+        /// Throws an <see cref="AssertionException"/> with the message that is
+        /// passed in. This is used by the other Assert functions.
+        /// </summary>
+        static public void Fail()
+        {
+            Fail(string.Empty);
+        }
+        #endregion
+
         #region Throws
         /// <summary>
         /// Evaluates an action delegate and verifies that it throws an exception of a particular type.
