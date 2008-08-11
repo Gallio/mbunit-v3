@@ -35,6 +35,7 @@
 
         <!-- Define which type of Wix UI we are going to use -->
         <UIRef Id="WixUI_Gallio" />
+        <UIRef Id="WixUI_ErrorProgressText" />
 
         <!-- Define all directories used in the install -->
         <Directory Id="TARGETDIR" Name="SourceDir">
