@@ -23,8 +23,8 @@
                 <Component Id="MbUnit3.Samples.csproj" Guid="{89A17A8E-6EB6-4847-B1D6-1C5039A7AF03}">
                     <File Id="MbUnit.Samples.csproj" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\MbUnit.Samples.csproj" KeyPath="yes" />
                 </Component>
-                <Component Id="RichExecutionLogDemo.cs" Guid="{89001F29-14BC-4415-A026-6212C64052FB}">
-                    <File Id="RichExecutionLogDemo.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\RichExecutionLogDemo.cs" KeyPath="yes" />
+                <Component Id="RichTestLogDemo.cs" Guid="{89001F29-14BC-4415-A026-6212C64052FB}">
+                    <File Id="RichTestLogDemo.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\RichTestLogDemo.cs" KeyPath="yes" />
                 </Component>
                 <Component Id="WatiNDemo.cs" Guid="{77F37799-7761-4571-A451-A20E0A766E51}">
                     <File Id="WatiNDemo.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\WatiNDemo.cs" KeyPath="yes" />
@@ -67,7 +67,7 @@
             <ComponentRef Id="MbUnit3.Samples.Resources.Designer.cs" />
             <ComponentRef Id="MbUnit3.Samples.MbUnitLogo.png" />
             <ComponentRef Id="MbUnit3.Samples.csproj" />
-            <ComponentRef Id="RichExecutionLogDemo.cs" />
+            <ComponentRef Id="RichTestLogDemo.cs" />
             <ComponentRef Id="WatiNDemo.cs" />
             <ComponentRef Id="MbUnit3.Samples.VSTSIntegration.AssemblyInfo.cs" />
             <ComponentRef Id="MbUnit3.Samples.VSTSIntegration.csproj" />
