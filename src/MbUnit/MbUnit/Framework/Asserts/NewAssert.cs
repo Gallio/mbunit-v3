@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using Gallio;
 using Gallio.Model.Diagnostics;
 
@@ -69,7 +70,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue)
         {
-            AreEqual<T>(expectedValue, actualValue, (string) null, null);
+            AreEqual<T>(expectedValue, actualValue, (string)null, null);
         }
 
         /// <summary>
@@ -83,7 +84,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, string messageFormat, params object[] messageArgs)
         {
-            AreEqual<T>(expectedValue, actualValue, (Func<T, T, bool>) null, messageFormat, messageArgs);
+            AreEqual<T>(expectedValue, actualValue, (Func<T, T, bool>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -111,7 +112,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
-            AreEqual<T>(expectedValue, actualValue, comparer != null ? comparer.Equals : (Func<T, T, bool>) null, messageFormat, messageArgs);
+            AreEqual<T>(expectedValue, actualValue, comparer != null ? comparer.Equals : (Func<T, T, bool>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -241,7 +242,7 @@ namespace MbUnit.Framework
                 if (comparer == null)
                     comparer = DefaultEqualityComparer;
 
-                if (! comparer(expectedValue, actualValue))
+                if (!comparer(expectedValue, actualValue))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be non-equal.")
@@ -321,7 +322,7 @@ namespace MbUnit.Framework
         {
             AssertHelper.Verify(delegate
             {
-                if (! Object.ReferenceEquals(expectedValue, actualValue))
+                if (!Object.ReferenceEquals(expectedValue, actualValue))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be referentially different.")
@@ -393,7 +394,7 @@ namespace MbUnit.Framework
         {
             AssertHelper.Verify(delegate
             {
-                if (! actualValue.Contains(expectedSubstring))
+                if (!actualValue.Contains(expectedSubstring))
                     return null;
 
                 return new AssertionFailureBuilder("Expected string to not contain a particular substring.")
@@ -460,7 +461,7 @@ namespace MbUnit.Framework
         {
             AssertHelper.Verify(delegate
             {
-                if (! actualValue)
+                if (!actualValue)
                     return null;
 
                 return new AssertionFailureBuilder("Expected value to be false.")
@@ -701,10 +702,10 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void GreaterThanOrEqual<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
         {
-               AssertOrder(left, right, comparer
-                    , "Expected left to be greater or equal than right."
-                    , compareResult => compareResult >= 0
-                    , messageFormat, messageArgs);
+            AssertOrder(left, right, comparer
+                 , "Expected left to be greater or equal than right."
+                 , compareResult => compareResult >= 0
+                 , messageFormat, messageArgs);
         }
 
         #endregion
@@ -1115,7 +1116,7 @@ namespace MbUnit.Framework
         /// <param name="message">The message to initialize the <see cref="AssertionException"/> with.</param>
         static public void Fail(string message)
         {
-           Fail(message, null);
+            Fail(message, null);
         }
 
         /// <summary>
@@ -1126,6 +1127,84 @@ namespace MbUnit.Framework
         {
             Fail(string.Empty);
         }
+        #endregion
+
+        #region In
+
+        /// <summary>
+        /// Asserts that <paramref name="test"/> is in the list <paramref name="list"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="test">The test value expected to be found in the list.</param>
+        /// <param name="list">list of items.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        static public void In<T>(T test, IList<T> list)
+        {
+            In(test, list, null);
+        }
+
+        /// <summary>
+        /// Asserts that <paramref name="test"/> is in the list <paramref name="list"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="test">The test value expected to be found in the list.</param>
+        /// <param name="list">list of items.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        static public void In<T>(T test, IList<T> list, string messageFormat, params object[] messageArgs)
+        {
+            AssertHelper.Verify(delegate
+            {
+                if (list.Contains(test))
+                    return null;
+
+                return new AssertionFailureBuilder("The test value is not in the IList collection.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .SetLabeledValue("Test Value", test)
+                    .SetLabeledValue("List Values", OutputCollectionValues(list))
+                    .ToAssertionFailure();
+            });
+        }
+
+        /// <summary>
+        /// Asserts that <paramref name="test"/> is in the dictionary <paramref name="dictionary"/>.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key</typeparam>
+        /// <typeparam name="TValue">The type of value</typeparam>
+        /// <param name="test">The test value expected to be found in the list.</param>
+        /// <param name="dictionary">list of items.</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        static public void In<TKey, TValue>(TKey test, IDictionary<TKey, TValue> dictionary)
+        {
+            In(test, dictionary, null);
+        }
+
+        /// <summary>
+        /// Asserts that <paramref name="test"/> is in the dictionary <paramref name="dictionary"/>.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key</typeparam>
+        /// <typeparam name="TValue">The type of value</typeparam>
+        /// <param name="test">The test value expected to be found in the list.</param>
+        /// <param name="dictionary">list of items.</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        static public void In<TKey, TValue>(TKey test, IDictionary<TKey, TValue> dictionary, string messageFormat, params object[] messageArgs)
+        {
+            AssertHelper.Verify(delegate
+            {
+                if (dictionary.ContainsKey(test))
+                    return null;
+
+                return new AssertionFailureBuilder("The test value is not in the IDictionary collection.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .SetLabeledValue("Test Value", test)
+                    .SetLabeledValue("List of keys", OutputCollectionValues(dictionary))
+                    .ToAssertionFailure();
+            });
+        }
+
         #endregion
 
         #region Throws
@@ -1354,7 +1433,7 @@ namespace MbUnit.Framework
                 if (!actualEnumerator.MoveNext())
                     return false;
 
-                if (! DefaultEqualityComparer(expectedEnumerator.Current, actualEnumerator.Current))
+                if (!DefaultEqualityComparer(expectedEnumerator.Current, actualEnumerator.Current))
                     return false;
             }
 
@@ -1409,6 +1488,30 @@ namespace MbUnit.Framework
                     .SetLabeledValue("Right Value", right)
                     .ToAssertionFailure();
             });
+        }
+
+        private static string OutputCollectionValues<T>(IList<T> list)
+        {
+            var output = new StringBuilder("{");
+            var moreThan3 = list.Count > 3;
+            var displayItems = moreThan3 ? 3 : list.Count;
+            for (var ndx = 0; ndx < displayItems; ndx++)
+            {
+                output.Append(list[ndx]);
+                if (moreThan3 || ndx < displayItems - 1)
+                    output.Append(", ");
+            }
+            if (moreThan3)
+                output.Append("...");
+            return output.Append("}").ToString();
+        }
+
+        private static string OutputCollectionValues<TKey, TValue>(IDictionary<TKey, TValue> dictionary)
+        {
+            IList<TKey> list = new List<TKey>();
+            foreach (TKey key in dictionary.Keys)
+                list.Add(key);
+            return OutputCollectionValues(list);
         }
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
@@ -437,6 +438,102 @@ namespace MbUnit.Tests.Framework
             NewAssert.AreEqual("MbUnit message.", failures[0].Message);
         }
 
+        #endregion
+
+        #region In
+
+        [Test]
+        public void In_list_int_test()
+        {
+            NewAssert.In(2, new List<int>(new[] { 1, 2, 3 }));
+        }
+
+        [Test]
+        [Row("2", new[] { "1", "2", "3" })]
+        [Row(null, new[] { "1", "2", null, "3" })]
+        public void In_list_string_test(string testValue, string[] list)
+        {
+            NewAssert.In(testValue, new List<string>(list));
+        }
+
+        [Test]
+        [Row(new[] { 1, 2, 3 }, "\"{1, 2, 3}\"")]
+        [Row(new[] { 1, 2 }, "\"{1, 2}\"")]
+        [Row(new[] { 1, 2, 3, 5 }, "\"{1, 2, 3, ...}\"")]
+        public void In_fails_when_test_value_is_not_in_the_list(int[] listItems, string expectedCollection)
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() =>
+                NewAssert.In(4, new List<int>(listItems)));
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("The test value is not in the IList collection.", failures[0].Description);
+            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
+            NewAssert.AreEqual("4", failures[0].LabeledValues[0].Value);
+            NewAssert.AreEqual("List Values", failures[0].LabeledValues[1].Key);
+            NewAssert.AreEqual(expectedCollection, failures[0].LabeledValues[1].Value);
+        }
+
+        [Test]
+        [Row("test", new[] { "1", "2", "3" }, "\"test\"", "\"{1, 2, 3}\"")]
+        [Row(null, new[] { "1", "2", "3" }, "null", "\"{1, 2, 3}\"")]
+        public void In_fails_when_test_value_is_not_in_the_string_list(string testValue, string[] listItems, string expectedLabledValue, string expectedCollection)
+        {
+            AssertionFailure[] failures = AssertHelper.Eval(() =>
+                NewAssert.In(testValue, new List<string>(listItems)));
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("The test value is not in the IList collection.", failures[0].Description);
+            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
+            NewAssert.AreEqual(expectedLabledValue, failures[0].LabeledValues[0].Value);
+            NewAssert.AreEqual("List Values", failures[0].LabeledValues[1].Key);
+            NewAssert.AreEqual(expectedCollection, failures[0].LabeledValues[1].Value);
+        }
+
+        [Test]
+        public void In_dictionary_int_test()
+        {
+
+            NewAssert.In(2, new Dictionary<int, int>
+                                {
+                                {1, 1},
+                                {2, 2}
+                            });
+        }
+
+        [Test]
+        public void In_fails_when_test_value_is_not_in_the_dictionary()
+        {
+            var dictionary = new Dictionary<int, string>
+                                 {
+                { 1, "1" },
+                { 2, "2`" },
+            };
+            AssertionFailure[] failures = AssertHelper.Eval(() =>
+                NewAssert.In(0, dictionary));
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("The test value is not in the IDictionary collection.", failures[0].Description);
+            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
+            NewAssert.AreEqual("0", failures[0].LabeledValues[0].Value);
+            NewAssert.AreEqual("List of keys", failures[0].LabeledValues[1].Key);
+            NewAssert.AreEqual("\"{1, 2}\"", failures[0].LabeledValues[1].Value);
+        }
+
+        [Test]
+        public void In_fails_when_test_value_is_not_in_the_dictionary_key_is_reference_type()
+        {
+            var dictionary = new Dictionary<List<int>, string>
+                                 {
+                { new List<int>(new[] {1, 2}), "1" },
+                { new List<int>(new[] {3, 4}), "2`" },
+            };
+            AssertionFailure[] failures = AssertHelper.Eval(() =>
+                NewAssert.In(new List<int>(new[] { 5 }), dictionary, "{0} message.", "custom"));
+            NewAssert.AreEqual(1, failures.Length);
+            NewAssert.AreEqual("The test value is not in the IDictionary collection.", failures[0].Description);
+            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
+            NewAssert.AreEqual("[5]", failures[0].LabeledValues[0].Value);
+            NewAssert.AreEqual("List of keys", failures[0].LabeledValues[1].Key);
+            NewAssert.AreEqual("\"{System.Collections.Generic.List`1[System.Int32], System.Collections.Generic.List`1[System.Int32]}\"", failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("custom message.", failures[0].Message);
+        }
         #endregion
 
         class NonGenericCompare : IComparable
