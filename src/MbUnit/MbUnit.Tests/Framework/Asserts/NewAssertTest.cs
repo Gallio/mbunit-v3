@@ -443,7 +443,7 @@ namespace MbUnit.Tests.Framework
         #region In
 
         [Test]
-        public void In_list_int_test()
+        public void In_generic_ICollection_int_test()
         {
             NewAssert.In(2, new List<int>(new[] { 1, 2, 3 }));
         }

@@ -1132,27 +1132,27 @@ namespace MbUnit.Framework
         #region In
 
         /// <summary>
-        /// Asserts that <paramref name="test"/> is in the list <paramref name="list"/>.
+        /// Asserts that <paramref name="test"/> is in the collection <paramref name="list"/>.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value expected to be found in the list.</param>
+        /// <param name="test">The test value expected to be found in the collection.</param>
         /// <param name="list">list of items.</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        static public void In<T>(T test, IList<T> list)
+        static public void In<T>(T test, ICollection<T> list)
         {
             In(test, list, null);
         }
 
         /// <summary>
-        /// Asserts that <paramref name="test"/> is in the list <paramref name="list"/>.
+        /// Asserts that <paramref name="test"/> is in the collection <paramref name="list"/>.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value expected to be found in the list.</param>
+        /// <param name="test">The test value expected to be found in the collection.</param>
         /// <param name="list">list of items.</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        static public void In<T>(T test, IList<T> list, string messageFormat, params object[] messageArgs)
+        static public void In<T>(T test, ICollection<T> list, string messageFormat, params object[] messageArgs)
         {
             AssertHelper.Verify(delegate
             {
@@ -1490,19 +1490,22 @@ namespace MbUnit.Framework
             });
         }
 
-        private static string OutputCollectionValues<T>(IList<T> list)
+        private static string OutputCollectionValues<T>(IEnumerable<T> list)
         {
             var output = new StringBuilder("{");
-            var moreThan3 = list.Count > 3;
-            var displayItems = moreThan3 ? 3 : list.Count;
-            for (var ndx = 0; ndx < displayItems; ndx++)
+            var count = 0;
+            foreach (var item in list)
             {
-                output.Append(list[ndx]);
-                if (moreThan3 || ndx < displayItems - 1)
-                    output.Append(", ");
+                if (++count > 3)
+                {
+                    output.Append("...");
+                    break;
+                }
+                output.Append(item.ToString());
+                output.Append(", ");
             }
-            if (moreThan3)
-                output.Append("...");
+            if (output[output.Length - 1].Equals(' '))
+                output.Remove(output.Length - 2, 2);
             return output.Append("}").ToString();
         }
 
