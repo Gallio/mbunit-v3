@@ -18,6 +18,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using Gallio.Collections;
+using Gallio.Framework;
 using Gallio.Model.Logging;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
@@ -30,14 +31,14 @@ namespace Gallio.Tests.Runtime.Hosting
         [Test]
         public void IsLocalFlagShouldBeFalse()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger(Log.Default)))
                 Assert.IsFalse(host.IsLocal);
         }
 
         [Test]
         public void DoCallbackHasRemoteSideEffects()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger(Log.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
 
@@ -66,7 +67,7 @@ namespace Gallio.Tests.Runtime.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.ShadowCopy = true;
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(Log.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 Assert.IsTrue(host.GetHostService().Do<object, bool>(IsShadowCopyFilesEnabled, null));
@@ -83,7 +84,7 @@ namespace Gallio.Tests.Runtime.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.ApplicationBaseDirectory = Path.GetTempPath();
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(Log.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 AssertArePathsEqualIgnoringFinalBackslash(Path.GetTempPath(), host.GetHostService().Do<object, string>(GetApplicationBaseDirectory, null));
@@ -105,7 +106,7 @@ namespace Gallio.Tests.Runtime.Hosting
                 + "  </appSettings>"
                 + "</configuration>";
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(Log.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 string setting = host.GetHostService().Do<object, string>(GetTestSetting, null);
@@ -123,7 +124,7 @@ namespace Gallio.Tests.Runtime.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.Configuration.AssertUiEnabled = true;
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(Log.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 Assert.IsTrue(host.GetHostService().Do<object, bool>(GetAssertUiEnabledFlag, null));
@@ -131,7 +132,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             hostSetup.Configuration.AssertUiEnabled = false;
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(Log.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 Assert.IsFalse(host.GetHostService().Do<object, bool>(GetAssertUiEnabledFlag, null));

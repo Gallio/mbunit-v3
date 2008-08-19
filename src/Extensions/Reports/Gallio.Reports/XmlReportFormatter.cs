@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Specialized;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runner.Reports;
 
@@ -59,7 +60,7 @@ namespace Gallio.Reports
         /// <inheritdoc />
         public override void Format(IReportWriter reportWriter, NameValueCollection options, IProgressMonitor progressMonitor)
         {
-            TestLogAttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
+            AttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 
             reportWriter.SaveReport(attachmentContentDisposition, progressMonitor);
         }

@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Runtime.Remoting;
+using Gallio.Framework;
 using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runtime.Hosting;
@@ -31,7 +32,7 @@ namespace Gallio.Tests.Runtime.Hosting
         [Test, ExpectedArgumentNullException]
         public void CreateHostThrowsIfHostSetupIsNull()
         {
-            Factory.CreateHost(null, new TestLogStreamLogger());
+            Factory.CreateHost(null, new TestLogStreamLogger(Log.Default));
         }
 
         [Test, ExpectedArgumentNullException]
@@ -45,7 +46,7 @@ namespace Gallio.Tests.Runtime.Hosting
         {
             IHost host;
             IHostService hostService;
-            using (host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger()))
+            using (host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger(Log.Default)))
             {
                 // Should work fine.
                 hostService = host.GetHostService();
@@ -59,7 +60,7 @@ namespace Gallio.Tests.Runtime.Hosting
         [Test]
         public void CreateInstanceCreatesAValidObjectHandle()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger(Log.Default)))
             {
                 Type remoteType = typeof(ArrayList);
                 ObjectHandle handle = host.GetHostService().CreateInstance(remoteType.Assembly.FullName, remoteType.FullName);
@@ -71,7 +72,7 @@ namespace Gallio.Tests.Runtime.Hosting
         [Test]
         public void CreateInstanceFromCreatesAValidObjectHandle()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger(Log.Default)))
             {
                 Type serviceType = typeof(RemoteHostFactoryTest.TestService);
                 RemoteHostFactoryTest.TestService serviceProxy = (RemoteHostFactoryTest.TestService)host.GetHostService().CreateInstanceFrom(
@@ -89,7 +90,7 @@ namespace Gallio.Tests.Runtime.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.WorkingDirectory = Path.GetTempPath();
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger()))
+            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(Log.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 string remoteWorkingDirectory = host.GetHostService().Do<object, string>(GetWorkingDirectory, null);

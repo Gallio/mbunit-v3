@@ -14,13 +14,14 @@
 // limitations under the License.
 
 using System.Xml.Serialization;
+using Gallio.Model.Logging;
 
-namespace Gallio.Runner.Reports
+namespace Gallio.Model.Logging
 {
     /// <summary>
     /// Specifies how attachments are stored in Xml.
     /// </summary>
-    public enum TestLogAttachmentContentDisposition
+    public enum AttachmentContentDisposition
     {
         /// <summary>
         /// The attachment content is not present.
@@ -29,14 +30,14 @@ namespace Gallio.Runner.Reports
         Absent = 0,
 
         /// <summary>
-        /// The attachment content is saved to a linked file indicated by <see cref="TestLogAttachment.ContentPath" />.
+        /// The attachment content is saved to a linked file indicated by <see cref="AttachmentData.ContentPath" />.
         /// </summary>
         [XmlEnum("link")]
         Link,
 
         /// <summary>
-        /// The attachment content is included inline as <see cref="TestLogAttachment.SerializedContents" />
-        /// with a given <see cref="TestLogAttachment.Encoding" />.
+        /// The attachment content is included inline as <see cref="AttachmentData.SerializedContents" />
+        /// with a given <see cref="AttachmentData.Encoding" />.
         /// </summary>
         [XmlEnum("inline")]
         Inline

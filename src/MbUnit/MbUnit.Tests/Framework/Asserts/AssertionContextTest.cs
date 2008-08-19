@@ -180,7 +180,7 @@ namespace MbUnit.Tests.Framework
             private bool wasWriteToCalled;
 
             public StubAssertionFailure() :
-                base("Description", "Message", "Stack", EmptyArray<KeyValuePair<string, string>>.Instance,
+                base("Description", "Message", "Stack", EmptyArray<LabeledValue>.Instance,
                 EmptyArray<ExceptionData>.Instance)
             {
             }

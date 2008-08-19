@@ -113,7 +113,7 @@ namespace Gallio.Runner.Extensions
 
         private static string FormatStream(TestStepRun testStepRun, string streamName)
         {
-            TestLogStream stream = testStepRun.TestLog.GetStream(streamName);
+            StructuredTestLogStream stream = testStepRun.TestLog.GetStream(streamName);
             return stream != null ? stream.ToString() : @"";
         }
 

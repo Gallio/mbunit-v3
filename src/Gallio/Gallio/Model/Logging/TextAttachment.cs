@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Execution;
 using Gallio.Model.Logging;
 
 namespace Gallio.Model.Logging
@@ -49,6 +48,12 @@ namespace Gallio.Model.Logging
         public string Text
         {
             get { return text; }
+        }
+
+        /// <inheritdoc />
+        public override AttachmentData ToAttachmentData()
+        {
+            return new AttachmentData(Name, ContentType, AttachmentEncoding.Text, text, null);
         }
     }
 }

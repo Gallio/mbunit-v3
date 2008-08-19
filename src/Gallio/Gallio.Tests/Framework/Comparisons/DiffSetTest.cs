@@ -14,27 +14,17 @@
 // limitations under the License.
 
 using System;
-using System.Xml.Serialization;
-using Gallio.Utilities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Gallio.Framework.Comparisons;
+using MbUnit.Framework;
 
-namespace Gallio.Runner.Reports
+namespace Gallio.Tests.Framework.Comparisons
 {
-    /// <summary>
-    /// Specifies the Xml-encoding of an embedded execution log attachment.
-    /// </summary>
-    [XmlType("encoding", Namespace=XmlSerializationUtils.GallioNamespace)]
-    public enum TestLogAttachmentEncoding
+    [TestsOn(typeof(DiffSet))]
+    [Pending]
+    public class DiffSetTest
     {
-        /// <summary>
-        /// The attachment is encoded as a text string.
-        /// </summary>
-        [XmlEnum("text")]
-        Text,
-
-        /// <summary>
-        /// The attachment is encoded as base 64 text string.
-        /// </summary>
-        [XmlEnum("base64")]
-        Base64
     }
 }

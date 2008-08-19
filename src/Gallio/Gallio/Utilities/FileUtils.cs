@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Gallio.Utilities;
 
 namespace Gallio.Utilities
 {

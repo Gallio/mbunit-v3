@@ -260,7 +260,7 @@ namespace Gallio.NUnitAdapter.Model
                 if (nunitResult.StackTrace != null)
                 {
                     using (logWriter[logStreamName].BeginSection(Resources.NUnitTestController_ResultStackTraceSectionName))
-                        using (logWriter[logStreamName].BeginMarker(MarkerClasses.StackTrace))
+                        using (logWriter[logStreamName].BeginMarker(Marker.StackTrace))
                             logWriter[logStreamName].Write(nunitResult.StackTrace);
                 }
 

@@ -26,6 +26,7 @@ using Gallio.Runner.Reports;
 using Gallio.Runner;
 using Gallio.Framework;
 using Gallio.Model.Filters;
+using TestLogStreamWriter=Gallio.Model.Logging.TestLogStreamWriter;
 
 namespace Gallio.Framework.Utilities
 {

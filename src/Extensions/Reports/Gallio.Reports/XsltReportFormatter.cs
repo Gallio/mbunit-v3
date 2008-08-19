@@ -20,6 +20,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Runner.Reports;
@@ -98,7 +99,7 @@ namespace Gallio.Reports
         /// <inheritdoc />
         public override void Format(IReportWriter reportWriter, NameValueCollection options, IProgressMonitor progressMonitor)
         {
-            TestLogAttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
+            AttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 
             using (progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10))
             {
@@ -112,7 +113,7 @@ namespace Gallio.Reports
 
                 progressMonitor.SetStatus(@"");
 
-                if (attachmentContentDisposition == TestLogAttachmentContentDisposition.Link)
+                if (attachmentContentDisposition == AttachmentContentDisposition.Link)
                 {
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                         reportWriter.SaveReportAttachments(subProgressMonitor);
@@ -137,7 +138,7 @@ namespace Gallio.Reports
         /// <summary>
         /// Applies the transform to produce a report.
         /// </summary>
-        protected virtual void ApplyTransform(IReportWriter reportWriter, TestLogAttachmentContentDisposition attachmentContentDisposition,
+        protected virtual void ApplyTransform(IReportWriter reportWriter, AttachmentContentDisposition attachmentContentDisposition,
             NameValueCollection options)
         {
             XsltArgumentList arguments = new XsltArgumentList();
@@ -201,7 +202,7 @@ namespace Gallio.Reports
         }
 
         private static XPathDocument SerializeReportToXPathDocument(IReportWriter reportWriter,
-            TestLogAttachmentContentDisposition attachmentContentDisposition)
+            AttachmentContentDisposition attachmentContentDisposition)
         {
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
             xmlWriterSettings.CheckCharacters = false;

@@ -18,28 +18,31 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Model.Logging;
 
-namespace Gallio.Runner.Reports
+namespace Gallio.Model.Logging
 {
     /// <summary>
-    /// Writes test logs to an in-memory Xml-serializable format.
+    /// Writes a <see cref="Logging.StructuredTestLog" /> in memory.
     /// </summary>
-    public sealed class TestLogWriter : UnifiedTestLogWriter
+    public class StructuredTestLogWriter : TestLogWriter
     {
-        private readonly TestLog testLog;
-        private Dictionary<string, TestLogStreamWriter> streamWriters;
+        private readonly StructuredTestLog testLog;
+        private Dictionary<string, StreamState> streamWriters;
 
         /// <summary>
-        /// Creates an test log writer that builds a new test log.
+        /// Creates an log writer that builds a new <see cref="Logging.StructuredTestLog" />.
         /// </summary>
-        public TestLogWriter()
+        public StructuredTestLogWriter()
         {
-            testLog = new TestLog();
+            testLog = new StructuredTestLog();
         }
 
         /// <summary>
         /// Gets the test log under construction.
         /// </summary>
-        public TestLog TestLog
+        /// <remarks>
+        /// The contents of the test log will change as more text is written.
+        /// </remarks>
+        public StructuredTestLog TestLog
         {
             get { return testLog; }
         }
@@ -49,7 +52,7 @@ namespace Gallio.Runner.Reports
         {
             if (streamWriters != null)
             {
-                foreach (TestLogStreamWriter writer in streamWriters.Values)
+                foreach (StreamState writer in streamWriters.Values)
                     writer.Flush();
 
                 streamWriters = null;
@@ -57,93 +60,96 @@ namespace Gallio.Runner.Reports
         }
 
         /// <inheritdoc />
-        protected override void AttachTextImpl(string attachmentName, string contentType, string text)
+        protected override void AttachImpl(Attachment attachment)
         {
-            testLog.Attachments.Add(TestLogAttachment.CreateTextAttachment(attachmentName, contentType, text));
+            testLog.Attachments.Add(attachment.ToAttachmentData());
         }
 
         /// <inheritdoc />
-        protected override void AttachBytesImpl(string attachmentName, string contentType, byte[] bytes)
-        {
-            testLog.Attachments.Add(TestLogAttachment.CreateBinaryAttachment(attachmentName, contentType, bytes));
-        }
-
-        /// <inheritdoc />
-        protected override void WriteImpl(string streamName, string text)
+        protected override void StreamWriteImpl(string streamName, string text)
         {
             GetLogStreamWriter(streamName).Write(text);
         }
 
         /// <inheritdoc />
-        protected override void EmbedImpl(string streamName, string attachmentName)
+        protected override void StreamEmbedImpl(string streamName, string attachmentName)
         {
             GetLogStreamWriter(streamName).Embed(attachmentName);
         }
 
         /// <inheritdoc />
-        protected override void BeginSectionImpl(string streamName, string sectionName)
+        protected override void StreamBeginSectionImpl(string streamName, string sectionName)
         {
             GetLogStreamWriter(streamName).BeginSection(sectionName);
         }
 
         /// <inheritdoc />
-        protected override void BeginMarkerImpl(string streamName, string @class)
+        protected override void StreamBeginMarkerImpl(string streamName, Marker marker)
         {
-            GetLogStreamWriter(streamName).BeginMarker(@class);
+            GetLogStreamWriter(streamName).BeginMarker(marker);
         }
 
         /// <inheritdoc />
-        protected override void EndImpl(string streamName)
+        protected override void StreamEndImpl(string streamName)
         {
             GetLogStreamWriter(streamName).End();
         }
 
         /// <inheritdoc />
-        private TestLogStreamWriter GetLogStreamWriter(string streamName)
+        protected override void StreamFlushImpl(string streamName)
         {
-            TestLogStreamWriter streamWriter;
+            GetLogStreamWriter(streamName).Flush();
+        }
+
+        /// <inheritdoc />
+        private StreamState GetLogStreamWriter(string streamName)
+        {
+            StreamState streamState;
             if (streamWriters != null)
             {
-                if (streamWriters.TryGetValue(streamName, out streamWriter))
-                    return streamWriter;
+                if (streamWriters.TryGetValue(streamName, out streamState))
+                    return streamState;
             }
             else
             {
-                streamWriters = new Dictionary<string, TestLogStreamWriter>();
+                streamWriters = new Dictionary<string, StreamState>();
             }
 
-            streamWriter = new TestLogStreamWriter(streamName);
-            streamWriters.Add(streamName, streamWriter);
+            streamState = new StreamState(streamName);
+            streamWriters.Add(streamName, streamState);
 
-            testLog.Streams.Add(streamWriter.TestLogStream);
-            return streamWriter;
+            testLog.Streams.Add(streamState.TestLogStream);
+            return streamState;
         }
 
-        private sealed class TestLogStreamWriter
+        private sealed class StreamState
         {
-            private readonly TestLogStream testLogStream;
-            private readonly Stack<TestLogStreamContainerTag> containerStack;
+            private readonly StructuredTestLogStream testLogStream;
+            private readonly Stack<StructuredTestLogStream.ContainerTag> containerStack;
             private readonly StringBuilder textBuilder;
 
-            public TestLogStreamWriter(string streamName)
+            public StreamState(string streamName)
             {
-                testLogStream = new TestLogStream(streamName);
-                containerStack = new Stack<TestLogStreamContainerTag>();
+                testLogStream = new StructuredTestLogStream(streamName);
+                containerStack = new Stack<StructuredTestLogStream.ContainerTag>();
                 textBuilder = new StringBuilder();
 
                 containerStack.Push(testLogStream.Body);
             }
 
-            public TestLogStream TestLogStream
+            public StructuredTestLogStream TestLogStream
             {
                 get { return testLogStream; }
             }
 
             public void Flush()
             {
+                // Normalize newlines before writing out the tags.
+                textBuilder.Replace("\r", "");
+
                 if (textBuilder.Length != 0)
                 {
-                    containerStack.Peek().Contents.Add(new TestLogStreamTextTag(textBuilder.ToString()));
+                    containerStack.Peek().Contents.Add(new StructuredTestLogStream.TextTag(textBuilder.ToString()));
                     textBuilder.Length = 0;
                 }
             }
@@ -155,15 +161,15 @@ namespace Gallio.Runner.Reports
 
             public void BeginSection(string sectionName)
             {
-                Begin(new TestLogStreamSectionTag(sectionName));
+                Begin(new StructuredTestLogStream.SectionTag(sectionName));
             }
 
-            public void BeginMarker(string @class)
+            public void BeginMarker(Marker marker)
             {
-                Begin(new TestLogStreamMarkerTag(@class));
+                Begin(new StructuredTestLogStream.MarkerTag(marker));
             }
 
-            private void Begin(TestLogStreamContainerTag tag)
+            private void Begin(StructuredTestLogStream.ContainerTag tag)
             {
                 Flush();
 
@@ -183,7 +189,7 @@ namespace Gallio.Runner.Reports
             public void Embed(string attachmentName)
             {
                 Flush();
-                containerStack.Peek().Contents.Add(new TestLogStreamEmbedTag(attachmentName));
+                containerStack.Peek().Contents.Add(new StructuredTestLogStream.EmbedTag(attachmentName));
             }
         }
     }

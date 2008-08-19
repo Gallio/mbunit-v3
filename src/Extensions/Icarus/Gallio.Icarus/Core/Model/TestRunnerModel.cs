@@ -28,6 +28,7 @@ using Gallio.Icarus.Core.Reports;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
+using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Runner.Events;
@@ -279,7 +280,7 @@ namespace Gallio.Icarus.Core.Model
                     Directory.CreateDirectory(attachmentDirectory);
             }
 
-            foreach (TestLogAttachment ela in e.TestStepRun.TestLog.Attachments)
+            foreach (AttachmentData ela in e.TestStepRun.TestLog.Attachments)
             {
                 string fileName = Path.Combine(attachmentDirectory, FileUtils.EncodeFileName(ela.Name));
                 using (FileStream fs = File.Open(fileName, FileMode.Create, FileAccess.Write))

@@ -14,12 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Gallio.Framework;
-using Gallio.Model.Execution;
 using Gallio.Model.Logging;
 using MbUnit.Framework;
 
@@ -51,10 +45,10 @@ namespace MbUnit.Tests.Framework
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetMessage("Message goes here")
                 .SetStackTrace("Stack goes here")
-                .SetExpectedValue("Expected value")
-                .SetActualValue("Actual value")
-                .SetLabeledValue("Very Long Label That Will Not Be Padded", "")
-                .SetLabeledValue("x", 42)
+                .SetRawExpectedValue("Expected value")
+                .SetRawActualValue("Actual value")
+                .SetRawLabeledValue("Very Long Label That Will Not Be Padded", "")
+                .SetRawLabeledValue("x", 42)
                 .AddException(new Exception("Boom"))
                 .AddException(new Exception("Kaput"))
                 .ToAssertionFailure();
@@ -62,7 +56,7 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void LogBareBones()
+        public void WriteToBareBones()
         {
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetStackTrace(null)
@@ -70,26 +64,26 @@ namespace MbUnit.Tests.Framework
             StringTestLogWriter writer = new StringTestLogWriter(true);
             failure.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker 'assertionFailure']\n[Section 'Description']\n[End]\n[End]\n", writer.ToString());
+            NewAssert.AreEqual("[Marker 'assertionFailure'][Section 'Description']\n[End]\n[End]", writer.ToString());
         }
 
         [Test]
-        public void LogEverything()
+        public void WriteToEverything()
         {
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetMessage("Message goes here")
                 .SetStackTrace("Stack goes here")
-                .SetExpectedValue("Expected value")
-                .SetActualValue("Actual value")
-                .SetLabeledValue("Very Long Label That Will Not Be Padded", "")
-                .SetLabeledValue("x", 42)
+                .SetRawExpectedValue("Expected value")
+                .SetRawActualValue("Actual value")
+                .SetRawLabeledValue("Very Long Label That Will Not Be Padded", "")
+                .SetRawLabeledValue("x", 42)
                 .AddException(new Exception("Boom"))
                 .AddException(new Exception("Kaput"))
                 .ToAssertionFailure();
             StringTestLogWriter writer = new StringTestLogWriter(true);
             failure.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker 'assertionFailure']\n[Section 'Description']\nMessage goes here\n* Expected Value : \"Expected value\"\n* Actual Value   : \"Actual value\"\n* Very Long Label That Will Not Be Padded : \"\"\n* x              : 42\n\n[Marker 'exception']\n[Marker 'exceptionType']\nSystem.Exception\n[End]\n: \n[Marker 'exceptionMessage']\nBoom[End]\n[End]\n\n[Marker 'exception']\n[Marker 'exceptionType']\nSystem.Exception\n[End]\n: [Marker 'exceptionMessage']Kaput\n[End]\n[End]\n\n[Marker 'stackTrace']\nStack goes here\n[End]\n[End]\n", writer.ToString());
+            NewAssert.AreEqual("[Marker 'assertionFailure'][Section 'Description']\nMessage goes here\n* Expected Value : \"Expected value\"\n* Actual Value   : \"Actual value\"\n* Very Long Label That Will Not Be Padded : \"\"\n* x              : 42\n\n[Marker 'exception'][Marker 'exceptionType']System.Exception[End]: [Marker 'exceptionMessage']Boom[End][End]\n\n[Marker 'exception'][Marker 'exceptionType']System.Exception[End]: [Marker 'exceptionMessage']Kaput[End][End]\n\n[Marker 'stackTrace']Stack goes here\n[End][End]\n[End]", writer.ToString());
         }
     }
 }

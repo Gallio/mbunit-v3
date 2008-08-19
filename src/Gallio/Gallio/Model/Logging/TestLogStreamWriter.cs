@@ -1,16 +1,31 @@
-﻿using System;
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
 using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 using Gallio.Model.Diagnostics;
-using Gallio.Model.Logging;
 
 namespace Gallio.Model.Logging
 {
     /// <summary>
-    /// A log stream writer provides methods for writing rich text with embedded attachments,
-    /// nested sections and hidden semantic markers to a particular stream within a log writer.
+    /// A log stream writer provides methods for writing rich structured text with embedded
+    /// attachments, nested sections and hidden semantic markers to a particular stream within
+    /// a log writer.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -21,23 +36,38 @@ namespace Gallio.Model.Logging
     /// accessed by remote clients if required.
     /// </para>
     /// </remarks>
-    [Serializable]
-    public abstract class TestLogStreamWriter : TextWriter
+    /// <seealso cref="TestLogWriter"/>
+    public class TestLogStreamWriter : TextWriter
     {
+        private readonly TestLogWriter container;
         private readonly string streamName;
 
         /// <summary>
         /// Creates a log stream writer.
         /// </summary>
+        /// <param name="container">The containing log writer</param>
         /// <param name="streamName">The stream name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="streamName"/> is null</exception>
-        protected TestLogStreamWriter(string streamName)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="container"/>
+        /// or <paramref name="streamName"/> is null</exception>
+        public TestLogStreamWriter(TestLogWriter container, string streamName)
         {
+            if (container == null)
+                throw new ArgumentNullException("container");
             if (streamName == null)
                 throw new ArgumentNullException(@"streamName");
 
+            this.container = container;
             this.streamName = streamName;
+
             NewLine = "\n";
+        }
+
+        /// <summary>
+        /// Gets the containing log writer.
+        /// </summary>
+        public TestLogWriter Container
+        {
+            get { return container; }
         }
 
         /// <summary>
@@ -64,31 +94,50 @@ namespace Gallio.Model.Logging
         /// <inheritdoc />
         public sealed override void Flush()
         {
-            FlushImpl();
+            container.StreamFlush(streamName);
         }
 
         /// <inheritdoc />
         public override void Write(char value)
         {
-            WriteImpl(new string(value, 1));
+            container.StreamWrite(streamName, new string(value, 1));
         }
 
         /// <inheritdoc />
         public sealed override void Write(string value)
         {
             if (value != null)
-                WriteImpl(value);
+                container.StreamWrite(streamName, value);
         }
 
         /// <inheritdoc />
         public sealed override void Write(char[] buffer, int index, int count)
         {
-            WriteImpl(new String(buffer, index, count));
+            container.StreamWrite(streamName, new String(buffer, index, count));
         }
 
         /// <summary>
-        /// Writes an exception to the log.
+        /// <para>
+        /// Writes structured text.
+        /// </para>
         /// </summary>
+        /// <param name="structuredText">The structured text to write, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="structuredText"/> is null</exception>
+        public void WriteStructuredText(StructuredText structuredText)
+        {
+            if (structuredText == null)
+                throw new ArgumentNullException("structuredText");
+            structuredText.WriteTo(this);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Writes an exception.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// The exception will not be terminated by a new line.
+        /// </remarks>
         /// <param name="exception">The exception to write</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
         public void WriteException(Exception exception)
@@ -97,8 +146,13 @@ namespace Gallio.Model.Logging
         }
 
         /// <summary>
-        /// Writes an exception to the log within its own section.
+        /// <para>
+        /// Writes an exception within its own section.
+        /// </para>
         /// </summary>
+        /// <remarks>
+        /// The exception will not be terminated by a new line.
+        /// </remarks>
         /// <param name="exception">The exception to write</param>
         /// <param name="sectionName">The section name, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
@@ -111,8 +165,13 @@ namespace Gallio.Model.Logging
         }
 
         /// <summary>
-        /// Writes an exception to the log.
+        /// <para>
+        /// Writes an exception.
+        /// </para>
         /// </summary>
+        /// <remarks>
+        /// The exception will not be terminated by a new line.
+        /// </remarks>
         /// <param name="exception">The exception data to write</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
         public void WriteException(ExceptionData exception)
@@ -121,8 +180,13 @@ namespace Gallio.Model.Logging
         }
 
         /// <summary>
-        /// Writes an exception to the log within its own section.
+        /// <para>
+        /// Writes an exception within its own section which provides additional cues for interpretation.
+        /// </para>
         /// </summary>
+        /// <remarks>
+        /// The exception will not be terminated by a new line.
+        /// </remarks>
         /// <param name="exception">The exception data to write</param>
         /// <param name="sectionName">The section name, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is null</exception>
@@ -131,13 +195,26 @@ namespace Gallio.Model.Logging
             if (exception == null)
                 throw new ArgumentNullException(@"exception");
 
-            if (sectionName != null)
-                BeginSectionImpl(sectionName);
+            using (sectionName != null ? BeginSection(sectionName) : null)
+                StackTraceFilter.FilterException(exception).WriteTo(this);
+        }
 
-            StackTraceFilter.FilterException(exception).WriteTo(this);
-
-            if (sectionName != null)
-                EndImpl();
+        /// <summary>
+        /// <para>
+        /// Writes highlighted text.  Highlights can be used to
+        /// emphasize important information such differences between similar expected
+        /// and actual values.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// This is a convenience method that simply encapsulates the highlighted text within a
+        /// marked region of type <see cref="Marker.Highlight" />.
+        /// </remarks>
+        /// <param name="text">The text to write, or null if none</param>
+        public void WriteHighlighted(string text)
+        {
+            using (BeginMarker(Marker.Highlight))
+                Write(text);
         }
 
         /// <summary>
@@ -166,14 +243,14 @@ namespace Gallio.Model.Logging
             if (sectionName == null)
                 throw new ArgumentNullException(@"sectionName");
 
-            BeginSectionImpl(sectionName);
+            container.StreamBeginSection(streamName, sectionName);
 
             return new RegionCookie(this);
         }
 
         /// <summary>
         /// <para>
-        /// Begins a marked region of the specified class.  Maybe be nested.
+        /// Begins a marked region.  Maybe be nested.
         /// </para>
         /// <para>
         /// A marker is a hidden tag that labels its contents with a semantic class.
@@ -183,22 +260,18 @@ namespace Gallio.Model.Logging
         /// </summary>
         /// <example>
         /// <code>
-        /// using (Log.Default.BeginMarker("exception"))
+        /// using (Log.BeginMarker(Marker.Monospace))
         /// {
-        ///     Log.Default.WriteLine(someException);
+        ///     Log.WriteLine(contents);
         /// }
         /// </code>
         /// </example>
-        /// <param name="class">The marker class identifier that describes its semantics</param>
+        /// <param name="marker">The marker</param>
         /// <returns>A Disposable object that calls <see cref="End" /> when disposed.  This
         /// is a convenience for use with the C# "using" statement.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="MarkerClasses.Validate"/></exception>
-        public IDisposable BeginMarker(string @class)
+        public IDisposable BeginMarker(Marker marker)
         {
-            MarkerClasses.Validate(@class);
-
-            BeginMarkerImpl(@class);
+            container.StreamBeginMarker(streamName, marker);
 
             return new RegionCookie(this);
         }
@@ -208,21 +281,18 @@ namespace Gallio.Model.Logging
         /// Ends the region most recently started with one of the Begin* methods.
         /// </para>
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if there is no current section</exception>
+        /// <exception cref="InvalidOperationException">Thrown if there is no current nested region</exception>
         public void End()
         {
-            EndImpl();
+            container.StreamEnd(streamName);
         }
 
         /// <summary>
-        /// Embeds an attachment into the stream.
+        /// Embeds an attachment.
         /// </summary>
         /// <remarks>
-        /// Only one copy of an attachment instance is saved with an execution log even if
-        /// <see cref="TestLogWriter.Attach" /> or <see cref="TestLogStreamWriter.Embed" /> are
-        /// called multiple times with the same instance.  However, an attachment instance
-        /// can be embedded multiple times into multiple execution log streams since each
-        /// embedded copy is represented as a link to the same common attachment instance.
+        /// An attachment instance can be embedded multiple times efficiently since each
+        /// embedded copy is typically represented as a link to the same common attachment instance.
         /// </remarks>
         /// <param name="attachment">The attachment to embed</param>
         /// <returns>The attachment</returns>
@@ -232,12 +302,16 @@ namespace Gallio.Model.Logging
         /// with the same name</exception>
         public Attachment Embed(Attachment attachment)
         {
-            EmbedImpl(attachment);
+            if (attachment == null)
+                throw new ArgumentNullException("attachment");
+
+            container.Attach(attachment);
+            container.StreamEmbed(streamName, attachment.Name);
             return attachment;
         }
 
         /// <summary>
-        /// Embeds an existing attachment into the stream.  This method can be used to
+        /// Embeds another copy of an existing attachment.  This method can be used to
         /// repeatedly embed an existing attachment at multiple points in multiple
         /// streams without needing to keep the <see cref="Attachment" /> instance
         /// itself around.  This can help to reduce memory footprint since the
@@ -245,21 +319,21 @@ namespace Gallio.Model.Logging
         /// after it is first attached.
         /// </summary>
         /// <remarks>
-        /// Only one copy of an attachment instance is saved with an execution log even if
-        /// <see cref="TestLogWriter.Attach" /> or <see cref="TestLogStreamWriter.Embed" /> are
-        /// called multiple times with the same instance.  However, an attachment instance
-        /// can be embedded multiple times into multiple execution log streams since each
-        /// embedded copy is represented as a link to the same common attachment instance.
+        /// An attachment instance can be embedded multiple times efficiently since each
+        /// embedded copy is typically represented as a link to the same common attachment instance.
         /// </remarks>
         /// <param name="attachmentName">The name of the existing attachment to embed</param>
         /// <seealso cref="TestLogWriter.Attach"/>
-        /// <seealso cref="TestLogStreamWriter.Embed"/>
+        /// <seealso cref="Embed"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachmentName"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if no attachment with the specified
-        /// name has been attached to the log</exception>
+        /// name has been previously attached</exception>
         public void EmbedExisting(string attachmentName)
         {
-            EmbedExistingImpl(attachmentName);
+            if (attachmentName == null)
+                throw new ArgumentNullException("attachmentName");
+
+            container.StreamEmbed(streamName, attachmentName);
         }
 
         /// <summary>
@@ -384,67 +458,6 @@ namespace Gallio.Model.Logging
         {
             return (TextAttachment)Embed(Attachment.CreateObjectAsXmlAttachment(attachmentName, obj, xmlSerializer));
         }
-
-        #region Implementation template methods
-        /// <summary>
-        /// Writes a text string to the execution log.
-        /// </summary>
-        /// <param name="text">The text to write, never null</param>
-        protected abstract void WriteImpl(string text);
-
-        /// <summary>
-        /// Adds an attachment to the execution log and embeds it in this stream
-        /// at the current location.
-        /// </summary>
-        /// <remarks>
-        /// The implementation should allow the same attachment instance to be attached
-        /// multiple times and optimize this case by representing embedded attachments
-        /// as links.
-        /// </remarks>
-        /// <param name="attachment">The attachment to write, never null</param>
-        /// <exception cref="InvalidOperationException">Thrown if a different attachment instance
-        /// with the same name was already written</exception>
-        protected abstract void EmbedImpl(Attachment attachment);
-
-        /// <summary>
-        /// Adds previously attached attachment to the execution log and embeds it in
-        /// this stream at the current location.
-        /// </summary>
-        /// <remarks>
-        /// The implementation should allow the same attachment instance to be attached
-        /// multiple times and optimize this case by representing embedded attachments
-        /// as links.
-        /// </remarks>
-        /// <param name="attachmentName">The name of the attachment to write, never null</param>
-        /// <exception cref="InvalidOperationException">Thrown if no attachment with the specified
-        /// name has been attached to the log</exception>
-        protected abstract void EmbedExistingImpl(string attachmentName);
-
-        /// <summary>
-        /// Begins a section.
-        /// </summary>
-        /// <param name="sectionName">The name of the section to begin, never null</param>
-        protected abstract void BeginSectionImpl(string sectionName);
-
-        /// <summary>
-        /// Begins a marked region.
-        /// </summary>
-        /// <param name="class">The marker identifier, already validated</param>
-        protected abstract void BeginMarkerImpl(string @class);
-
-        /// <summary>
-        /// Ends the current region started with one of the Begin* methods.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if there is no current nested region</exception>
-        protected abstract void EndImpl();
-
-        /// <summary>
-        /// Flushes the stream.
-        /// </summary>
-        protected virtual void FlushImpl()
-        {
-        }
-        #endregion
 
         #region Overrides to hide irrelevant TextWriter behavior
         /// <summary>

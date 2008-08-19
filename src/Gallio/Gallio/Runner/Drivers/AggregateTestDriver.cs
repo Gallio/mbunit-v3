@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
@@ -280,16 +281,10 @@ namespace Gallio.Runner.Drivers
                 }
             }
 
-            public void NotifyTestStepLogAttachText(string stepId, string attachmentName, string contentType, string text)
+            public void NotifyTestStepLogAttach(string stepId, Attachment attachment)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogAttachText(stepId, attachmentName, contentType, text);
-            }
-
-            public void NotifyTestStepLogAttachBytes(string stepId, string attachmentName, string contentType, byte[] bytes)
-            {
-                stepId = Redirect(stepId);
-                listener.NotifyTestStepLogAttachBytes(stepId, attachmentName, contentType, bytes);
+                listener.NotifyTestStepLogAttach(stepId, attachment);
             }
 
             public void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text)
@@ -311,10 +306,10 @@ namespace Gallio.Runner.Drivers
                 listener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
             }
 
-            public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, string @class)
+            public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, Marker marker)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, @class);
+                listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, marker);
             }
 
             public void NotifyTestStepLogStreamEnd(string stepId, string streamName)

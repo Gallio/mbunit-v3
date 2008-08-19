@@ -20,6 +20,7 @@ using Gallio.Collections;
 using Gallio.Concurrency;
 using Gallio.Framework;
 using Gallio.Model.Logging;
+using TestLogStreamWriter=Gallio.Model.Logging.TestLogStreamWriter;
 
 namespace Gallio.Framework
 {
@@ -144,7 +145,7 @@ namespace Gallio.Framework
             {
                 writer.BeginSection(String.Format("Run Process: {0} {1}", task.ExecutablePath, task.Arguments));
                 writer.WriteLine("Working Directory: {0}", task.WorkingDirectory);
-                writer.BeginMarker(MarkerClasses.Console);
+                writer.BeginMarker(Marker.Monospace);
             };
 
             task.ConsoleOutputDataReceived += delegate(object sender, DataReceivedEventArgs e)

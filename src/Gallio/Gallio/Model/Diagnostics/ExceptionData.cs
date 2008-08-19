@@ -1,7 +1,23 @@
-﻿using System;
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
 using System.IO;
 using Gallio.Model.Logging;
 using Gallio.Utilities;
+using TestLogStreamWriter=Gallio.Model.Logging.TestLogStreamWriter;
 
 namespace Gallio.Model.Diagnostics
 {
@@ -93,6 +109,9 @@ namespace Gallio.Model.Diagnostics
         /// Formats the exception to a string similar to the one that the .Net framework
         /// would ordinarily construct.
         /// </summary>
+        /// <remarks>
+        /// The exception will not be terminated by a new line.
+        /// </remarks>
         /// <returns>The formatted exception</returns>
         public override string ToString()
         {
@@ -102,21 +121,27 @@ namespace Gallio.Model.Diagnostics
         }
 
         /// <summary>
-        /// Logs the exception with markers to distinguish its component elements.
+        /// Writes the exception in a structured format with markers to distinguish its component elements.
         /// </summary>
+        /// <remarks>
+        /// The exception will not be terminated by a new line.
+        /// </remarks>
         /// <param name="writer">The log stream writer</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
         public void WriteTo(TestLogStreamWriter writer)
         {
-            using (writer.BeginMarker(MarkerClasses.Exception))
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
+            using (writer.BeginMarker(Marker.Exception))
             {
-                using (writer.BeginMarker(MarkerClasses.ExceptionType))
+                using (writer.BeginMarker(Marker.ExceptionType))
                     writer.Write(type);
 
                 if (message.Length != 0)
                 {
                     writer.Write(@": ");
-                    using (writer.BeginMarker(MarkerClasses.ExceptionMessage))
+                    using (writer.BeginMarker(Marker.ExceptionMessage))
                         writer.Write(message);
                 }
 
@@ -132,9 +157,14 @@ namespace Gallio.Model.Diagnostics
 
                 if (!String.IsNullOrEmpty(stackTrace))
                 {
-                    writer.Write(Environment.NewLine);
-                    using (writer.BeginMarker(MarkerClasses.StackTrace))
-                        writer.Write(stackTrace);
+                    string stackTraceWithNoTrailingNewLine =
+                        stackTrace.EndsWith("\n") ? stackTrace.Substring(0, stackTrace.Length - 1) : stackTrace;
+                    if (stackTraceWithNoTrailingNewLine.Length != 0)
+                    {
+                        writer.Write(Environment.NewLine);
+                        using (writer.BeginMarker(Marker.StackTrace))
+                            writer.Write(stackTraceWithNoTrailingNewLine);
+                    }
                 }
             }
         }

@@ -55,6 +55,8 @@
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Collections\UserDataCollectionTest.cs" />
     <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
+    <Compile Include="Framework\Comparisons\DiffSetTest.cs" />
+    <Compile Include="Framework\Comparisons\DiffTest.cs" />
     <Compile Include="Framework\Conversions\ArrayToArrayConversionRuleTest.cs" />
     <Compile Include="Framework\Conversions\BaseConversionRuleTest.cs" />
     <Compile Include="Framework\Conversions\BaseConverterTest.cs" />
@@ -130,10 +132,12 @@
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />
     <Compile Include="Linq\ExpressionInstrumentorTest.cs" />
-    <Compile Include="Framework\Utilities\StackTraceFilterTest.cs" />
+    <Compile Include="Model\Diagnostics\ExceptionDataTest.cs" />
+    <Compile Include="Model\Diagnostics\StackTraceFilterTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
     <Compile Include="Model\BaseTestExplorerTest.cs" />
     <Compile Include="Model\Filters\FilterParseExceptionTest.cs" />
+    <Compile Include="Model\Logging\StructuredTextTest.cs" />
     <Compile Include="Model\ModelExceptionTest.cs" />
     <Compile Include="Reflection\Impl\CecilReflectionPolicyTest.cs" />
     <Compile Include="Reflection\ReflectionOnlyAssemblyLoaderTest.cs" />
@@ -221,6 +225,7 @@
     <Compile Include="Utilities\ExceptionUtilsTest.cs" />
     <Compile Include="Runtime\CorrelatedExceptionEventArgsTest.cs" />
     <Compile Include="Utilities\MimeTypesTest.cs" />
+    <Compile Include="Utilities\RangeTest.cs" />
     <Compile Include="Utilities\StringUtilsTest.cs" />
     <Compile Include="Runtime\UnhandledExceptionPolicyTest.cs" />
   </ItemGroup>
@@ -249,6 +254,9 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Framework\Utilities\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

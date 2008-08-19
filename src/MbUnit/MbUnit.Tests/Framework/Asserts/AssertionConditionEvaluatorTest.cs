@@ -47,8 +47,8 @@ namespace MbUnit.Tests.Framework
             NewAssert.IsNotNull(failure);
             NewAssert.AreEqual(String.Format("Expected the condition to evaluate to {0}.", expectedResult.ToString().ToLowerInvariant()), failure.Description);
             NewAssert.AreEqual(new[] {
-                new KeyValuePair<string, string>("Condition", "! expectedResult"),
-                new KeyValuePair<string, string>("expectedResult", Formatter.Instance.Format(expectedResult)),
+                new AssertionFailure.LabeledValue("Condition", "! expectedResult"),
+                new AssertionFailure.LabeledValue("expectedResult", Formatter.Instance.Format(expectedResult)),
             }, failure.LabeledValues);
         }
 
@@ -60,8 +60,8 @@ namespace MbUnit.Tests.Framework
             NewAssert.IsNotNull(failure);
             NewAssert.AreEqual("Expected the condition to evaluate to true but it threw an exception.", failure.Description);
             NewAssert.AreEqual(new[] {
-                new KeyValuePair<string, string>("Condition", "x.Equals(null)"),
-                new KeyValuePair<string, string>("x", "null"),
+                new AssertionFailure.LabeledValue("Condition", "x.Equals(null)"),
+                new AssertionFailure.LabeledValue("x", "null"),
             }, failure.LabeledValues);
             NewAssert.AreEqual(1, failure.Exceptions.Count);
             NewAssert.Contains(failure.Exceptions[0].ToString(), "NullReferenceException");
@@ -99,9 +99,9 @@ namespace MbUnit.Tests.Framework
             NewAssert.IsNotNull(failure);
 
             NewAssert.AreEqual(new[] {
-                new KeyValuePair<string, string>("Condition", "! (x.ToString() == \"42\")"),
-                new KeyValuePair<string, string>("x.ToString()", "\"42\""),
-                new KeyValuePair<string, string>("x", "42"),
+                new AssertionFailure.LabeledValue("Condition", "! (x.ToString() == \"42\")"),
+                new AssertionFailure.LabeledValue("x.ToString()", "\"42\""),
+                new AssertionFailure.LabeledValue("x", "42"),
             }, failure.LabeledValues);
         }
     }

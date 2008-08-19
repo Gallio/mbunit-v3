@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Model;
+using Gallio.Model.Logging;
 using Gallio.Runner.Reports;
 using Gallio.Model.Serialization;
 using MbUnit.Framework;
@@ -93,7 +94,7 @@ namespace Gallio.Tests.Runner.Reports
         [Test]
         public void TestLogSetTest()
         {
-            testStepRun.TestLog = new TestLog();
+            testStepRun.TestLog = new StructuredTestLog();
             Assert.IsNotNull(testStepRun.TestLog);
         }
 

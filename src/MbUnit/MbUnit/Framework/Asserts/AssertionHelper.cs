@@ -25,7 +25,7 @@ namespace MbUnit.Framework
     /// Provides utilities to assist with the implementation of new asserts.
     /// </summary>
     [TestFrameworkInternal]
-    public abstract class AssertHelper
+    public abstract class AssertionHelper
     {
         /// <summary>
         /// <para>
@@ -80,9 +80,9 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Submit failure if there's a failure.
+        /// Submits a failure if the assertion failure object is non-null.
         /// </summary>
-        /// <param name="failure">Failure to be submited.</param>
+        /// <param name="failure">Failure to be submited, or null if none</param>
         public static void Fail(AssertionFailure failure)
         {
             if (failure != null)

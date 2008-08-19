@@ -320,25 +320,29 @@ div.gallio-report div.navigator
 }
 
 /* Test log stream markers */
-.gallio-report .logStreamMarker-assertionFailure
+.gallio-report .logStreamMarker-AssertionFailure
 {
 }
 
-.gallio-report .logStreamMarker-exception
-{
-	font-style: italic;
-}
-
-.gallio-report .logStreamMarker-stackTrace
+.gallio-report .logStreamMarker-Exception
 {
 	font-style: italic;
 }
 
-.gallio-report .logStreamMarker-console
+.gallio-report .logStreamMarker-StackTrace
+{
+	font-style: italic;
+}
+
+.gallio-report .logStreamMarker-Monospace
 {
 	font-family: Consolas, Courier New, Courier;
 }
 
+.gallio-report .logStreamMarker-Highlight
+{
+	background-color: Yellow;
+}
 
 /* Sections */
 .gallio-report div.section

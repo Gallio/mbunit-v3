@@ -53,7 +53,7 @@
     <Compile Include="Framework\AnnotationAttribute.cs" />
     <Compile Include="Framework\ApartmentStateAttribute.cs" />
     <Compile Include="Framework\AssemblyFixtureAttribute.cs" />
-    <Compile Include="Framework\Asserts\AssertHelper.cs" />
+    <Compile Include="Framework\Asserts\AssertionHelper.cs" />
     <Compile Include="Framework\Asserts\AssertionFailure.cs" />
     <Compile Include="Framework\Asserts\AssertionFailureBehavior.cs" />
     <Compile Include="Framework\Asserts\AssertionFailureBuilder.cs" />

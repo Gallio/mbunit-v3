@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runner.Reports;
 
@@ -29,7 +30,7 @@ namespace Gallio.Reports
     {
         private readonly string name;
         private readonly string description;
-        private TestLogAttachmentContentDisposition defaultAttachmentContentDisposition;
+        private AttachmentContentDisposition defaultAttachmentContentDisposition;
 
         /// <summary>
         /// Gets the name of the option that how attachments are saved.
@@ -56,9 +57,9 @@ namespace Gallio.Reports
 
         /// <summary>
         /// Gets or sets the default attachment content disposition.
-        /// Defaults to <see cref="TestLogAttachmentContentDisposition.Absent" />.
+        /// Defaults to <see cref="AttachmentContentDisposition.Absent" />.
         /// </summary>
-        public TestLogAttachmentContentDisposition DefaultAttachmentContentDisposition
+        public AttachmentContentDisposition DefaultAttachmentContentDisposition
         {
             get { return defaultAttachmentContentDisposition; }
             set { defaultAttachmentContentDisposition = value; }
@@ -69,14 +70,14 @@ namespace Gallio.Reports
         /// </summary>
         /// <param name="options">The formatter options</param>
         /// <returns>The attachment content disposition</returns>
-        protected TestLogAttachmentContentDisposition GetAttachmentContentDisposition(NameValueCollection options)
+        protected AttachmentContentDisposition GetAttachmentContentDisposition(NameValueCollection options)
         {
             string option = options.Get(AttachmentContentDispositionOption);
             if (option != null)
             {
                 try
                 {
-                    return (TestLogAttachmentContentDisposition)Enum.Parse(typeof(TestLogAttachmentContentDisposition), option, true);
+                    return (AttachmentContentDisposition)Enum.Parse(typeof(AttachmentContentDisposition), option, true);
                 }
                 catch (ArgumentException)
                 {

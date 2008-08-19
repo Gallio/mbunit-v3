@@ -20,7 +20,7 @@ using Gallio.Framework;
 using Gallio.Model.Diagnostics;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Framework.Utilities
+namespace Gallio.Tests.Model.Diagnostics
 {
     [TestsOn(typeof(StackTraceFilter))]
     public class StackTraceFilterTest

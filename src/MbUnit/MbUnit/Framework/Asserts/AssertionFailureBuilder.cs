@@ -16,8 +16,10 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
+using Gallio.Framework.Comparisons;
 using Gallio.Framework.Formatting;
 using Gallio.Model.Diagnostics;
+using Gallio.Model.Logging;
 
 namespace MbUnit.Framework
 {
@@ -31,25 +33,49 @@ namespace MbUnit.Framework
     public class AssertionFailureBuilder
     {
         private readonly string description;
+        private readonly IFormatter formatter;
 
         private string message;
         private string stackTrace;
         private bool isStackTraceSet;
-        private List<KeyValuePair<string, string>> labeledValues;
+        private List<AssertionFailure.LabeledValue> labeledValues;
         private List<ExceptionData> exceptions;
 
         /// <summary>
-        /// Creates an assertion failure builder.
+        /// Creates an assertion failure builder with the default formatter.
         /// </summary>
         /// <param name="description">The description of the failure</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="description"/>
         /// is null</exception>
         public AssertionFailureBuilder(string description)
+            : this(description, Gallio.Framework.Formatting.Formatter.Instance)
+        {
+        }
+
+        /// <summary>
+        /// Creates an assertion failure builder with the specified formatter.
+        /// </summary>
+        /// <param name="description">The description of the failure</param>
+        /// <param name="formatter">The formatter to use</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="description"/> or
+        /// <paramref name="formatter"/>  is null</exception>
+        public AssertionFailureBuilder(string description, IFormatter formatter)
         {
             if (description == null)
                 throw new ArgumentNullException("description");
+            if (formatter == null)
+                throw new ArgumentNullException("formatter");
 
             this.description = description;
+            this.formatter = formatter;
+        }
+
+        /// <summary>
+        /// Gets the formatted used by the builder.
+        /// </summary>
+        public IFormatter Formatter
+        {
+            get { return formatter; }
         }
 
         /// <summary>
@@ -92,37 +118,163 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// <para>
-        /// Sets the expected value.
-        /// This is a convenience method for setting a labeled value called "Expected Value".
+        /// Sets the raw expected value to be formatted using <see cref="Formatter" />.
         /// </para>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// value will appear relative to other labeled values.
         /// </para>
         /// </summary>
-        /// <param name="value">The expected value</param>
+        /// <remarks>
+        /// This is a convenience method for setting a labeled value called "Expected Value".
+        /// </remarks>
+        /// <param name="expectedValue">The expected value</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
-        public AssertionFailureBuilder SetExpectedValue(object value)
+        public AssertionFailureBuilder SetRawExpectedValue(object expectedValue)
         {
-            SetLabeledValueImpl("Expected Value", value);
+            return SetRawLabeledValue("Expected Value", expectedValue);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sets the raw actual value to be formatted using <see cref="Formatter" />.
+        /// </para>
+        /// <para>
+        /// The order in which this method is called determines the order in which this
+        /// value will appear relative to other labeled values.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// This is a convenience method for setting a labeled value called "Actual Value".
+        /// </remarks>
+        /// <param name="actualValue">The actual value</param>
+        /// <returns>The builder, to allow for fluent method chaining</returns>
+        public AssertionFailureBuilder SetRawActualValue(object actualValue)
+        {
+            return SetRawLabeledValue("Actual Value", actualValue);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sets the raw expected and actual values to be formatted using <see cref="Formatter" />
+        /// and includes formatting of their differences.
+        /// </para>
+        /// <para>
+        /// The order in which this method is called determines the order in which the
+        /// values will appear relative to other labeled values.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// This is a convenience method for setting a pair of labeled values called "Expected Value"
+        /// and "Actual Value" and including formatting of differences produced by <see cref="DiffSet"/>.
+        /// </remarks>
+        /// <param name="expectedValue">The expected value</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <returns>The builder, to allow for fluent method chaining</returns>
+        public AssertionFailureBuilder SetRawExpectedAndActualValueWithDiffs(object expectedValue, object actualValue)
+        {
+            if (ReferenceEquals(expectedValue, actualValue))
+            {
+                SetRawExpectedValue(expectedValue);
+                SetRawActualValue(actualValue);
+            }
+            else
+            {
+                string formattedExpectedValue = Formatter.Format(expectedValue);
+                string formattedActualValue = Formatter.Format(actualValue);
+
+                if (formattedExpectedValue == formattedActualValue)
+                {
+                    SetRawExpectedValue(expectedValue);
+                    SetRawActualValue(actualValue);
+                    SetLabeledValue("Remark", "The expected and actual values are distinct instances but their formatted representations are equal.");
+                }
+                else
+                {
+                    DiffSet diffSet = DiffSet.Compute(formattedExpectedValue, formattedActualValue);
+
+                    StructuredTextWriter highlightedExpectedValueWriter = new StructuredTextWriter();
+                    StructuredTextWriter highlightedActualValueWriter = new StructuredTextWriter();
+
+                    diffSet.WriteHighlightedLeftDocumentTo(highlightedExpectedValueWriter);
+                    diffSet.WriteHighlightedRightDocumentTo(highlightedActualValueWriter);
+
+                    SetLabeledValue("Expected Value", highlightedExpectedValueWriter.ToStructuredText());
+                    SetLabeledValue("Actual Value", highlightedActualValueWriter.ToStructuredText());
+                }
+            }
+
             return this;
         }
 
         /// <summary>
         /// <para>
-        /// Sets the actual value.
-        /// This is a convenience method for setting a labeled value called "Actual Value".
+        /// Sets a raw labeled value to be formatted using <see cref="Formatter" />.
         /// </para>
         /// <para>
         /// The order in which this method is called determines the order in which this
-        /// value will appear relative to other labeled values.
+        /// labeled value will appear relative to other labeled values.
+        /// </para>
+        /// <para>
+        /// If a value is already associated with the specified label, replaces its value and
+        /// repositions it at the end of the list.
         /// </para>
         /// </summary>
-        /// <param name="value">The actual value</param>
+        /// <param name="label">The label</param>
+        /// <param name="value">The raw unformatted value</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
-        public AssertionFailureBuilder SetActualValue(object value)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
+        public AssertionFailureBuilder SetRawLabeledValue(string label, object value)
         {
-            SetLabeledValueImpl("Actual Value", value);
+            return SetLabeledValue(label, Formatter.Format(value));
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sets a labeled value as plain text.
+        /// </para>
+        /// <para>
+        /// The order in which this method is called determines the order in which this
+        /// labeled value will appear relative to other labeled values.
+        /// </para>
+        /// <para>
+        /// If a value is already associated with the specified label, replaces its value and
+        /// repositions it at the end of the list.
+        /// </para>
+        /// </summary>
+        /// <param name="label">The label</param>
+        /// <param name="formattedValue">The formatted value</param>
+        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or <paramref name="formattedValue"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
+        public AssertionFailureBuilder SetLabeledValue(string label, string formattedValue)
+        {
+            SetLabeledValueImpl(new AssertionFailure.LabeledValue(label, formattedValue));
+            return this;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sets a labeled value as structured text.
+        /// </para>
+        /// <para>
+        /// The order in which this method is called determines the order in which this
+        /// labeled value will appear relative to other labeled values.
+        /// </para>
+        /// <para>
+        /// If a value is already associated with the specified label, replaces its value and
+        /// repositions it at the end of the list.
+        /// </para>
+        /// </summary>
+        /// <param name="label">The label</param>
+        /// <param name="formattedValue">The formatted value as structured text</param>
+        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or <paramref name="formattedValue"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
+        public AssertionFailureBuilder SetLabeledValue(string label, StructuredText formattedValue)
+        {
+            SetLabeledValueImpl(new AssertionFailure.LabeledValue(label, formattedValue));
             return this;
         }
 
@@ -139,14 +291,11 @@ namespace MbUnit.Framework
         /// repositions it at the end of the list.
         /// </para>
         /// </summary>
-        /// <param name="label">The label</param>
-        /// <param name="value">The value</param>
+        /// <param name="labeledValue">The labeled value</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
-        public AssertionFailureBuilder SetLabeledValue(string label, object value)
+        public AssertionFailureBuilder SetLabeledValue(AssertionFailure.LabeledValue labeledValue)
         {
-            SetLabeledValueImpl(label, value);
+            SetLabeledValueImpl(labeledValue);
             return this;
         }
 
@@ -200,39 +349,32 @@ namespace MbUnit.Framework
         /// failure objects.
         /// </remarks>
         protected virtual AssertionFailure CreateAssertionFailure(string description,
-            string message, string stackTrace, KeyValuePair<string, string>[] labeledValues,
-            ExceptionData[] exceptions)
+            string message, string stackTrace, IList<AssertionFailure.LabeledValue> labeledValues,
+            IList<ExceptionData> exceptions)
         {
             return new AssertionFailure(description, message, stackTrace, labeledValues, exceptions);
         }
 
-        private void SetLabeledValueImpl(string label, object value)
+        private void SetLabeledValueImpl(AssertionFailure.LabeledValue labeledValue)
         {
-            if (label == null)
-                throw new ArgumentNullException("label");
-            if (label.Length == 0)
-                throw new ArgumentException("The label must not be empty.", "label");
-
             if (labeledValues == null)
-                labeledValues = new List<KeyValuePair<string, string>>();
-
-            string formattedValue = Formatter.Instance.Format(value);
+                labeledValues = new List<AssertionFailure.LabeledValue>();
 
             for (int i = 0; i < labeledValues.Count; i++)
             {
-                if (labeledValues[i].Key == label)
+                if (labeledValues[i].Label == labeledValue.Label)
                 {
                     labeledValues.RemoveAt(i);
                     break;
                 }
             }
 
-            labeledValues.Add(new KeyValuePair<string,string>(label, formattedValue));
+            labeledValues.Add(labeledValue);
         }
 
-        private KeyValuePair<string, string>[] GetLabeledValuesAsArray()
+        private AssertionFailure.LabeledValue[] GetLabeledValuesAsArray()
         {
-            return labeledValues != null ? labeledValues.ToArray() : EmptyArray<KeyValuePair<string, string>>.Instance;
+            return labeledValues != null ? labeledValues.ToArray() : EmptyArray<AssertionFailure.LabeledValue>.Instance;
         }
 
         private ExceptionData[] GetExceptionsAsArray()

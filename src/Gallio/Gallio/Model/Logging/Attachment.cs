@@ -18,7 +18,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Xml.Serialization;
-using Gallio.Model.Execution;
 using Gallio.Utilities;
 
 namespace Gallio.Model.Logging
@@ -156,5 +155,11 @@ namespace Gallio.Model.Logging
                 return CreateXmlAttachment(name, writer.ToString());
             }
         }
+
+        /// <summary>
+        /// Generates serializable attachment data from an attachment.
+        /// </summary>
+        /// <returns>The attachment data</returns>
+        public abstract AttachmentData ToAttachmentData();
     }
 }

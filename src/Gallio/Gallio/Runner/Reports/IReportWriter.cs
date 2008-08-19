@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runner.Reports
@@ -64,7 +65,7 @@ namespace Gallio.Runner.Reports
         /// <param name="xmlWriter">The XML writer</param>
         /// <param name="attachmentContentDisposition">The content disposition to use for all attachments</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="xmlWriter"/> is null</exception>
-        void SerializeReport(XmlWriter xmlWriter, TestLogAttachmentContentDisposition attachmentContentDisposition);
+        void SerializeReport(XmlWriter xmlWriter, AttachmentContentDisposition attachmentContentDisposition);
 
         /// <summary>
         /// <para>
@@ -82,11 +83,11 @@ namespace Gallio.Runner.Reports
         /// This method may do nothing if the report has already been saved.
         /// </remarks>
         /// <param name="attachmentContentDisposition">The content disposition to use for all attachments.  If
-        /// the content disposition is <see cref="TestLogAttachmentContentDisposition.Link" /> then
+        /// the content disposition is <see cref="AttachmentContentDisposition.Link" /> then
         /// this method will automatically call <see cref="SaveReportAttachments" /> to save the attachments.</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown <paramref name="progressMonitor" /> is null</exception>
-        void SaveReport(TestLogAttachmentContentDisposition attachmentContentDisposition, IProgressMonitor progressMonitor);
+        void SaveReport(AttachmentContentDisposition attachmentContentDisposition, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// <para>

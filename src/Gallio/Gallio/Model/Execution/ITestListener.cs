@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Model.Execution
@@ -52,22 +53,11 @@ namespace Gallio.Model.Execution
         void NotifyTestStepFinished(string stepId, TestResult result);
 
         /// <summary>
-        /// Notifies the listener that a text attachment has been added to a test step log.
+        /// Notifies the listener that an attachment has been added to a test step log.
         /// </summary>
         /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="attachmentName">The attachment name, not null</param>
-        /// <param name="contentType">The content type, not null</param>
-        /// <param name="text">The text contents, not null</param>
-        void NotifyTestStepLogAttachText(string stepId, string attachmentName, string contentType, string text);
-
-        /// <summary>
-        /// Notifies the listener that a binary attachment has been added to a test step log.
-        /// </summary>
-        /// <param name="stepId">The id of the test step, not null</param>
-        /// <param name="attachmentName">The attachment name, not null</param>
-        /// <param name="contentType">The content type, not null</param>
-        /// <param name="bytes">The binary contents, not null</param>
-        void NotifyTestStepLogAttachBytes(string stepId, string attachmentName, string contentType, byte[] bytes);
+        /// <param name="attachment">The attachment, not null</param>
+        void NotifyTestStepLogAttach(string stepId, Attachment attachment);
 
         /// <summary>
         /// Notifies the listener that text has been written to a test step log stream.
@@ -98,8 +88,8 @@ namespace Gallio.Model.Execution
         /// </summary>
         /// <param name="stepId">The id of the test step, not null</param>
         /// <param name="streamName">The stream name, not null</param>
-        /// <param name="class">The marker class, not null</param>
-        void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, string @class);
+        /// <param name="marker">The marker</param>
+        void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, Marker marker);
 
         /// <summary>
         /// Notifies the listener that a region started with Begin* has finished within a test step log stream.

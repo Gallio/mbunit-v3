@@ -21,15 +21,16 @@ using Gallio.Model.Execution;
 namespace Gallio.Model.Logging
 {
     /// <summary>
-    /// A textual implementation of <see cref="TestLogWriter" />.
+    /// An implementation of <see cref="TestLogWriter" /> that represents the test log as
+    /// text written to a <see cref="TextWriter" />.
     /// </summary>
     /// <seealso cref="StubTestContextTracker" />
-    public class TextualTestLogWriter : UnifiedTestLogWriter
+    public class TextualTestLogWriter : TestLogWriter
     {
         private readonly TextWriter writer;
         private readonly bool verbose;
+        private readonly Stack<bool> blockStack;
         private bool needNewline;
-        private Stack<bool> blockStack = new Stack<bool>();
 
         /// <summary>
         /// Creates a stub test log writer.
@@ -46,6 +47,7 @@ namespace Gallio.Model.Logging
 
             this.writer = writer;
             this.verbose = verbose;
+            blockStack = new Stack<bool>();
         }
 
         /// <summary>
@@ -70,28 +72,17 @@ namespace Gallio.Model.Logging
         }
 
         /// <inheritdoc />
-        protected override void AttachTextImpl(string attachmentName, string contentType, string text)
-        {
-            Attach(attachmentName, contentType);
-        }
-
-        /// <inheritdoc />
-        protected override void AttachBytesImpl(string attachmentName, string contentType, byte[] bytes)
-        {
-            Attach(attachmentName, contentType);
-        }
-
-        private void Attach(string attachmentName, string contentType)
+        protected override void AttachImpl(Attachment attachment)
         {
             if (verbose)
             {
                 WriteNewlineIfNeeded();
-                writer.WriteLine("[Attachment '{0}': {1}]", attachmentName, contentType);
+                writer.WriteLine("[Attachment '{0}': {1}]", attachment.Name, attachment.ContentType);
             }
         }
 
         /// <inheritdoc />
-        protected override void WriteImpl(string streamName, string text)
+        protected override void StreamWriteImpl(string streamName, string text)
         {
             writer.Write(text);
 
@@ -99,7 +90,7 @@ namespace Gallio.Model.Logging
         }
 
         /// <inheritdoc />
-        protected override void EmbedImpl(string streamName, string attachmentName)
+        protected override void StreamEmbedImpl(string streamName, string attachmentName)
         {
             if (verbose)
             {
@@ -109,7 +100,7 @@ namespace Gallio.Model.Logging
         }
 
         /// <inheritdoc />
-        protected override void BeginSectionImpl(string streamName, string sectionName)
+        protected override void StreamBeginSectionImpl(string streamName, string sectionName)
         {
             if (verbose)
             {
@@ -126,16 +117,16 @@ namespace Gallio.Model.Logging
         }
 
         /// <inheritdoc />
-        protected override void BeginMarkerImpl(string streamName, string @class)
+        protected override void StreamBeginMarkerImpl(string streamName, Marker marker)
         {
             if (verbose)
-                writer.WriteLine("[Marker '{0}']", @class);
+                writer.Write("[Marker '{0}']", marker.Class);
 
             blockStack.Push(false);
         }
 
         /// <inheritdoc />
-        protected override void EndImpl(string streamName)
+        protected override void StreamEndImpl(string streamName)
         {
             bool block = blockStack.Pop();
             if (block)
@@ -145,7 +136,7 @@ namespace Gallio.Model.Logging
             {
                 writer.Write("[End]");
                 if (block)
-                    WriteNewlineIfNeeded();
+                    writer.WriteLine();
             }
         }
 

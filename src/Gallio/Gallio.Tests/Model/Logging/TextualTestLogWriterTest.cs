@@ -31,7 +31,7 @@ namespace Gallio.Tests.Model.Logging
         public void AttachText(bool verbose, string expectedOutput)
         {
             StringTestLogWriter logWriter = new StringTestLogWriter(verbose);
-            logWriter.AttachText("foo", "text/plain", "don't care");
+            logWriter.Attach(new TextAttachment("foo", "text/plain", "don't care"));
 
             Assert.AreEqual(expectedOutput, logWriter.ToString());
         }
@@ -42,7 +42,7 @@ namespace Gallio.Tests.Model.Logging
         public void AttachBytes(bool verbose, string expectedOutput)
         {
             StringTestLogWriter logWriter = new StringTestLogWriter(verbose);
-            logWriter.AttachBytes("foo", "application/octet-stream", new byte[0]); 
+            logWriter.Attach(new BinaryAttachment("foo", "application/octet-stream", new byte[0])); 
 
             Assert.AreEqual(expectedOutput, logWriter.ToString());
         }
@@ -53,7 +53,7 @@ namespace Gallio.Tests.Model.Logging
         public void Write(bool verbose, string expectedOutput)
         {
             StringTestLogWriter logWriter = new StringTestLogWriter(verbose);
-            logWriter.Write("AnyStream", "abcdef");
+            logWriter["AnyStream"].Write("abcdef");
 
             Assert.AreEqual(expectedOutput, logWriter.ToString());
         }
@@ -64,8 +64,7 @@ namespace Gallio.Tests.Model.Logging
         public void Embed(bool verbose, string expectedOutput)
         {
             StringTestLogWriter logWriter = new StringTestLogWriter(verbose);
-            logWriter.AttachText("foo", "text/plain", "don't care");
-            logWriter.Embed("AnyStream", "foo");
+            logWriter["AnyStream"].Embed(new TextAttachment("foo", "text/plain", "don't care"));
 
             Assert.AreEqual(expectedOutput, logWriter.ToString());
         }
@@ -76,9 +75,8 @@ namespace Gallio.Tests.Model.Logging
         public void Sections(bool verbose, string expectedOutput)
         {
             StringTestLogWriter logWriter = new StringTestLogWriter(verbose);
-            logWriter.BeginSection("AnyStream", "foo");
-            logWriter.Write("AnyStream", "Bar bar bar");
-            logWriter.End("AnyStream");
+            using (logWriter["AnyStream"].BeginSection("foo"))
+                logWriter["AnyStream"].Write("Bar bar bar");
 
             Assert.AreEqual(expectedOutput, logWriter.ToString());
         }
@@ -89,9 +87,8 @@ namespace Gallio.Tests.Model.Logging
         public void Markers(bool verbose, string expectedOutput)
         {
             StringTestLogWriter logWriter = new StringTestLogWriter(verbose);
-            logWriter.BeginMarker("AnyStream", "foo");
-            logWriter.Write("AnyStream", "Bar bar bar");
-            logWriter.End("AnyStream");
+            using (logWriter["AnyStream"].BeginMarker(new Marker("foo")))
+                logWriter["AnyStream"].Write("Bar bar bar");
 
             Assert.AreEqual(expectedOutput, logWriter.ToString());
         }

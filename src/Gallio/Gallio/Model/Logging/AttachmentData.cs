@@ -19,11 +19,11 @@ using System.Text;
 using System.Xml.Serialization;
 using Gallio.Utilities;
 
-namespace Gallio.Runner.Reports
+namespace Gallio.Model.Logging
 {
     /// <summary>
     /// <para>
-    /// An Xml-serializable attachment.
+    /// An Xml-serializable structure that describes the contents, encoding and disposition of an attachment.
     /// </para>
     /// <para>
     /// The contents of the attachment are embedded in the execution log according to
@@ -33,12 +33,12 @@ namespace Gallio.Runner.Reports
     /// </summary>
     [Serializable]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-    public sealed class TestLogAttachment
+    public sealed class AttachmentData
     {
         private string name;
         private string contentType;
-        private TestLogAttachmentEncoding encoding;
-        private TestLogAttachmentContentDisposition contentDisposition;
+        private AttachmentEncoding encoding;
+        private AttachmentContentDisposition contentDisposition;
         private string serializedContents;
         private byte[] bytes;
         private string contentPath;
@@ -46,12 +46,12 @@ namespace Gallio.Runner.Reports
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
-        private TestLogAttachment()
+        private AttachmentData()
         {
         }
 
-        private TestLogAttachment(string name, string contentType,
-            TestLogAttachmentEncoding encoding, string serializedContents, byte[] bytes)
+        internal AttachmentData(string name, string contentType,
+            AttachmentEncoding encoding, string serializedContents, byte[] bytes)
         {
             if (name == null)
                 throw new ArgumentNullException(@"name");
@@ -63,39 +63,6 @@ namespace Gallio.Runner.Reports
             this.encoding = encoding;
             this.serializedContents = serializedContents;
             this.bytes = bytes;
-        }
-
-        /// <summary>
-        /// Creates a text attachment.
-        /// </summary>
-        /// <param name="name">The attachment name</param>
-        /// <param name="contentType">The content type</param>
-        /// <param name="text">The text</param>
-        /// <returns>The attachment</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, <paramref name="contentType"/>
-        /// or <paramref name="text"/> is null</exception>
-        public static TestLogAttachment CreateTextAttachment(string name, string contentType, string text)
-        {
-            if (text == null)
-                throw new ArgumentNullException("text");
-            return new TestLogAttachment(name, contentType, TestLogAttachmentEncoding.Text, text, null);
-        }
-
-        /// <summary>
-        /// Creates a binary attachment.
-        /// </summary>
-        /// <param name="name">The attachment name</param>
-        /// <param name="contentType">The content type</param>
-        /// <param name="bytes">The binary data</param>
-        /// <returns>The attachment</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, <paramref name="contentType"/>
-        /// or <paramref name="bytes"/> is null</exception>
-        public static TestLogAttachment CreateBinaryAttachment(string name, string contentType, byte[] bytes)
-        {
-            if (bytes == null)
-                throw new ArgumentNullException("bytes");
-            return new TestLogAttachment(name, contentType, TestLogAttachmentEncoding.Base64,
-                null, bytes);
         }
 
         /// <summary>
@@ -135,7 +102,7 @@ namespace Gallio.Runner.Reports
         /// This value specifies how the attachment is represented in Xml.
         /// </summary>
         [XmlAttribute("encoding")]
-        public TestLogAttachmentEncoding Encoding
+        public AttachmentEncoding Encoding
         {
             get { return encoding; }
             set { encoding = value; }
@@ -158,7 +125,7 @@ namespace Gallio.Runner.Reports
         /// indicates how the attachment has been stored.
         /// </summary>
         [XmlAttribute("contentDisposition")]
-        public TestLogAttachmentContentDisposition ContentDisposition
+        public AttachmentContentDisposition ContentDisposition
         {
             get { return contentDisposition; }
             set { contentDisposition = value; }
@@ -188,7 +155,7 @@ namespace Gallio.Runner.Reports
         /// </summary>
         public bool IsText
         {
-            get { return encoding == TestLogAttachmentEncoding.Text; }
+            get { return encoding == AttachmentEncoding.Text; }
         }
 
         /// <summary>

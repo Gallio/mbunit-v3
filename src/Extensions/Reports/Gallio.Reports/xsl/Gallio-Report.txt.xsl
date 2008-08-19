@@ -169,23 +169,21 @@
   <xsl:template match="g:text">
     <xsl:param name="prefix" select="''"  />
 
+    <xsl:variable name="preceding-inline-tag" select="preceding::node()[self::g:body or self::g:text or self::g:section or self::g:embed][1][self::g:text]"/>
+    <xsl:variable name="following-inline-tag" select="following::node()[self::g:body or self::g:text or self::g:section or self::g:embed][1][self::g:text]"/>
+
     <xsl:call-template name="indent">
       <xsl:with-param name="text" select="text()" />
       <xsl:with-param name="firstLinePrefix">
         <!-- omit prefix when we have a preceding text node with no intervening block tags -->
-        <xsl:if test="not(preceding::node()[self::g:body or self::g:text or self::g:section or self::g:embed][1][self::g:text])">
+        <xsl:if test="not($preceding-inline-tag)">
           <xsl:value-of select="$prefix"/>
         </xsl:if>
       </xsl:with-param>
-      <xsl:with-param name="secondLinePrefix" select="$prefix" />
-      <xsl:with-param name="lastLineSuffix">
-        <!-- omit suffix when we have a following text node with no intervening block tags -->
-        <xsl:if test="not(following::node()[self::g:body or self::g:text or self::g:section or self::g:embed][1][self::g:text])">
-          <xsl:value-of select="'&#xA;'"/>
-        </xsl:if>
-      </xsl:with-param>
+      <xsl:with-param name="otherLinePrefix" select="$prefix" />
+      <!-- omit suffix when we have a following text node with no intervening block tags -->
+      <xsl:with-param name="trailingNewline" select="not($following-inline-tag)" />
     </xsl:call-template>
-
   </xsl:template>
 
   <xsl:template match="g:section">

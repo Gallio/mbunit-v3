@@ -22,7 +22,6 @@ using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Gallio.TDNetRunner.Properties;
 using Gallio.Model;
-using Gallio.Runner.Reports;
 using TestDriven.Framework;
 using ITestListener=TestDriven.Framework.ITestListener;
 using TDF = TestDriven.Framework;
@@ -105,11 +104,11 @@ namespace Gallio.TDNetRunner
 
             // It's important to set the stack trace here so the user can double-click in the
             // output window to go the faulting line
-            TestLogStream failureStream = e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Failures);
+            StructuredTestLogStream failureStream = e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Failures);
             if (failureStream != null)
                 result.StackTrace = failureStream.ToString();
 
-            TestLogStream warningStream = e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Warnings);
+            StructuredTestLogStream warningStream = e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Warnings);
             if (warningStream != null)
                 result.Message = warningStream.ToString();
 

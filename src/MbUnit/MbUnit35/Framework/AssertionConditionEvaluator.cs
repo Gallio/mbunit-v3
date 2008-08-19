@@ -140,12 +140,12 @@ namespace MbUnit.Framework
                 }
 
                 failureBuilder.SetMessage(messageFormat, messageArgs);
-                failureBuilder.SetLabeledValue("Condition", condition.Body);
+                failureBuilder.SetRawLabeledValue("Condition", condition.Body);
 
                 var labeledTraces = new List<Trace>();
                 AddLabeledTraces(labeledTraces, trace, 0);
                 foreach (Trace labeledTrace in labeledTraces)
-                    failureBuilder.SetLabeledValue(Formatter.Instance.Format(labeledTrace.Expression), labeledTrace.Result);
+                    failureBuilder.SetRawLabeledValue(Formatter.Instance.Format(labeledTrace.Expression), labeledTrace.Result);
 
                 return failureBuilder.ToAssertionFailure();
             }

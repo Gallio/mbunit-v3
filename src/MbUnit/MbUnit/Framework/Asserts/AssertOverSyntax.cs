@@ -64,7 +64,7 @@ namespace MbUnit.Framework
             IEnumerable<TActual> actualValues, Action<TExpected, TActual> assertion,
             string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (expectedValues == null)
                 {
@@ -73,7 +73,7 @@ namespace MbUnit.Framework
 
                     return new AssertionFailureBuilder("The expected value sequence is null but the actual value sequence is not.")
                         .SetMessage(messageFormat, messageArgs)
-                        .SetActualValue(actualValues)
+                        .SetRawActualValue(actualValues)
                         .ToAssertionFailure();
                 }
 
@@ -87,12 +87,11 @@ namespace MbUnit.Framework
                         return new AssertionFailureBuilder(String.Format("The expected value sequence has {0} elements but the actual value sequence has {1}.",
                             1 + index + CountRemainingElements(expectedEnumerator), index))
                             .SetMessage(messageFormat, messageArgs)
-                            .SetExpectedValue(expectedValues)
-                            .SetActualValue(actualValues)
+                            .SetRawExpectedAndActualValueWithDiffs(expectedValues, actualValues)
                             .ToAssertionFailure();
                     }
 
-                    AssertionFailure[] failures = AssertHelper.Eval(delegate
+                    AssertionFailure[] failures = AssertionHelper.Eval(delegate
                     {
                         assertion(expectedEnumerator.Current, actualEnumerator.Current);
                     });
@@ -101,8 +100,7 @@ namespace MbUnit.Framework
                     {
                         return new AssertionFailureBuilder(String.Format("Assertion failed at index {0}.", index))
                             .SetMessage(messageFormat, messageArgs)
-                            .SetExpectedValue(expectedValues)
-                            .SetActualValue(actualValues)
+                            .SetRawExpectedAndActualValueWithDiffs(expectedValues, actualValues)
                             .ToAssertionFailure();
                     }
 
@@ -114,8 +112,7 @@ namespace MbUnit.Framework
                     return new AssertionFailureBuilder(String.Format("The expected value sequence has {0} elements but the actual value sequence has {1}.",
                         index, index + CountRemainingElements(actualEnumerator) + 1))
                         .SetMessage(messageFormat, messageArgs)
-                        .SetExpectedValue(expectedValues)
-                        .SetActualValue(actualValues)
+                        .SetRawExpectedAndActualValueWithDiffs(expectedValues, actualValues)
                         .ToAssertionFailure();
                 }
 

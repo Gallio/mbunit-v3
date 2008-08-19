@@ -296,7 +296,7 @@ namespace Gallio.Model.Execution
                     EventHandlerUtils.SafeInvoke(cachedFinishingHandlers, this, EventArgs.Empty);
 
                 if (isDisposing)
-                    logWriter.Write(TestLogStreamNames.Failures, "The test step was orphaned by the test runner!\n");
+                    logWriter.Failures.Write("The test step was orphaned by the test runner!\n");
 
                 logWriter.Close();
 

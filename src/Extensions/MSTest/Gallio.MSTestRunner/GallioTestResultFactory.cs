@@ -31,7 +31,7 @@ namespace Gallio.MSTestRunner
             result.TestName = run.Step.FullName;
             result.Outcome = GetOutcome(run.Result.Outcome);
 
-            foreach (TestLogStream stream in run.TestLog.Streams)
+            foreach (StructuredTestLogStream stream in run.TestLog.Streams)
             {
                 string contents = stream.ToString();
 

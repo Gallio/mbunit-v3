@@ -75,10 +75,7 @@ namespace Gallio.Runner
         public event EventHandler<TestStepMetadataAddedEventArgs> TestStepMetadataAdded;
 
         /// <inheritdoc/>
-        public event EventHandler<TestStepLogAttachTextEventArgs> TestStepLogAttachText;
-
-        /// <inheritdoc/>
-        public event EventHandler<TestStepLogBinaryAttachBytesEventArgs> TestStepLogAttachBytes;
+        public event EventHandler<TestStepLogAttachEventArgs> TestStepLogAttach;
 
         /// <inheritdoc/>
         public event EventHandler<TestStepLogStreamWriteEventArgs> TestStepLogStreamWrite;
@@ -240,21 +237,12 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Dispatches the <see cref="TestStepLogAttachText" /> event.
+        /// Dispatches the <see cref="TestStepLogAttach" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        public void NotifyTestStepLogAttachText(TestStepLogAttachTextEventArgs e)
+        public void NotifyTestStepLogAttach(TestStepLogAttachEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(TestStepLogAttachText, this, e);
-        }
-
-        /// <summary>
-        /// Dispatches the <see cref="TestStepLogAttachBytes" /> event.
-        /// </summary>
-        /// <param name="e">The event arguments</param>
-        public void NotifyTestStepLogAttachBytes(TestStepLogBinaryAttachBytesEventArgs e)
-        {
-            EventHandlerUtils.SafeInvoke(TestStepLogAttachBytes, this, e);
+            EventHandlerUtils.SafeInvoke(TestStepLogAttach, this, e);
         }
 
         /// <summary>

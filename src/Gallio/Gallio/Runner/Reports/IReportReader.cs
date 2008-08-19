@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runner.Reports
@@ -55,8 +56,8 @@ namespace Gallio.Runner.Reports
         /// Loads referenced report attachments from the container.
         /// </para>
         /// <para>
-        /// This method has the effect of populating the contents of all <see cref="TestLogAttachment" />
-        /// nodes in the report that have non-null <see cref="TestLogAttachment.ContentPath" />.
+        /// This method has the effect of populating the contents of all <see cref="AttachmentData" />
+        /// nodes in the report that have non-null <see cref="AttachmentData.ContentPath" />.
         /// </para>
         /// </summary>
         /// <param name="report">The report whose attachments are to be loaded</param>

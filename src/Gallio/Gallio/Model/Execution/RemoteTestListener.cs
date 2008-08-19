@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Model.Execution
@@ -63,17 +64,9 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public void NotifyTestStepLogAttachText(string stepId, string attachmentName, string contentType,
-            string text)
+        public void NotifyTestStepLogAttach(string stepId, Attachment attachment)
         {
-            listener.NotifyTestStepLogAttachText(stepId, attachmentName, contentType, text);
-        }
-
-        /// <inheritdoc />
-        public void NotifyTestStepLogAttachBytes(string stepId, string attachmentName, string contentType,
-            byte[] bytes)
-        {
-            listener.NotifyTestStepLogAttachBytes(stepId, attachmentName, contentType, bytes);
+            listener.NotifyTestStepLogAttach(stepId, attachment);
         }
 
         /// <inheritdoc />
@@ -95,9 +88,9 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, string sectionName)
+        public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, Marker marker)
         {
-            listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, sectionName);
+            listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, marker);
         }
 
         /// <inheritdoc />

@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Logging;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Model.Logging
@@ -28,15 +27,7 @@ namespace Gallio.Model.Logging
         private readonly TestLogStreamWriter writer;
 
         /// <summary>
-        /// Creates a logger for the default log stream.
-        /// </summary>
-        public TestLogStreamLogger()
-            : this(Gallio.Framework.Log.Default)
-        {
-        }
-
-        /// <summary>
-        /// Creates a logger for the specified log stream.
+        /// Creates a logger for the log stream writer.
         /// </summary>
         /// <param name="writer">The log stream writer</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>

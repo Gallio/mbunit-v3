@@ -119,20 +119,12 @@ namespace Gallio.Runner.Extensions
                     e.MetadataValue);
             };
 
-            Events.TestStepLogAttachBytes += delegate(object sender, TestStepLogBinaryAttachBytesEventArgs e)
+            Events.TestStepLogAttach += delegate(object sender, TestStepLogAttachEventArgs e)
             {
-                LogDebugFormat("[TestStepLogAttachBytes({0})]\n\tName: {1}\n\tContentType: {2}",
+                LogDebugFormat("[TestStepLogAttach({0})]\n\tName: {1}\n\tContentType: {2}",
                     e.TestStepRun.Step.FullName,
-                    e.AttachmentName,
-                    e.ContentType);
-            };
-
-            Events.TestStepLogAttachText += delegate(object sender, TestStepLogAttachTextEventArgs e)
-            {
-                LogDebugFormat("[TestStepLogAttachText({0})]\n\tName: {1}\n\tContentType: {2}",
-                    e.TestStepRun.Step.FullName,
-                    e.AttachmentName,
-                    e.ContentType);
+                    e.Attachment.Name,
+                    e.Attachment.ContentType);
             };
 
             Events.TestStepLogStreamWrite += delegate(object sender, TestStepLogStreamWriteEventArgs e)
@@ -164,7 +156,7 @@ namespace Gallio.Runner.Extensions
                 LogDebugFormat("[TestStepLogStreamBeginMarker({0})]\n\tStream: {1}\n\tClass: {2}",
                     e.TestStepRun.Step.FullName,
                     e.LogStreamName,
-                    e.Class);
+                    e.Marker);
             };
 
             Events.TestStepLogStreamEnd += delegate(object sender, TestStepLogStreamEndEventArgs e)

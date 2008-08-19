@@ -15,10 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using Gallio;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
+using TestLogStreamWriter=Gallio.Model.Logging.TestLogStreamWriter;
 
 namespace MbUnit.Framework
 {
@@ -39,14 +40,14 @@ namespace MbUnit.Framework
         private readonly string description;
         private readonly string message;
         private readonly string stackTrace;
-        private readonly KeyValuePair<string, string>[] labeledValues;
-        private readonly ExceptionData[] exceptions;
+        private readonly IList<LabeledValue> labeledValues;
+        private readonly IList<ExceptionData> exceptions;
 
         /// <summary>
         /// Creates an assertion failure object.
         /// </summary>
         protected internal AssertionFailure(string description, string message, string stackTrace,
-            KeyValuePair<string, string>[] labeledValues, ExceptionData[] exceptions)
+            IList<LabeledValue> labeledValues, IList<ExceptionData> exceptions)
         {
             this.description = description;
             this.message = message;
@@ -83,9 +84,9 @@ namespace MbUnit.Framework
         /// <summary>
         /// Gets formatted representations of labeled values as key/value pairs.
         /// </summary>
-        public IList<KeyValuePair<string, string>> LabeledValues
+        public IList<LabeledValue> LabeledValues
         {
-            get { return Array.AsReadOnly(labeledValues); }
+            get { return new ReadOnlyCollection<LabeledValue>(labeledValues); }
         }
 
         /// <summary>
@@ -93,20 +94,20 @@ namespace MbUnit.Framework
         /// </summary>
         public IList<ExceptionData> Exceptions
         {
-            get { return Array.AsReadOnly(exceptions); }
+            get { return new ReadOnlyCollection<ExceptionData>(exceptions); }
         }
 
         /// <summary>
-        /// Writes the assertion failure to a log stream writer.
+        /// Writes the assertion failure to a structured text writer.
         /// </summary>
-        /// <param name="writer">The log stream writer</param>
+        /// <param name="writer">The structured text writer</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
         public virtual void WriteTo(TestLogStreamWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
-            using (writer.BeginMarker(MarkerClasses.AssertionFailure))
+            using (writer.BeginMarker(Marker.AssertionFailure))
             {
                 using (writer.BeginSection(description))
                 {
@@ -127,30 +128,32 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Writes the details about the assertion failure to the log stream writer.
+        /// Writes the details about the assertion failure to the structured text writer.
         /// </summary>
-        /// <param name="writer">The log stream writer, not null</param>
+        /// <param name="writer">The structured text writer, not null</param>
         protected virtual void WriteDetails(TestLogStreamWriter writer)
         {
             if (!string.IsNullOrEmpty(message))
                 writer.WriteLine(message);
 
             int paddedLength = ComputePaddedLabelLength();
-            foreach (KeyValuePair<string, string> pair in labeledValues)
+            foreach (LabeledValue labeledValue in labeledValues)
             {
                 writer.Write("* ");
-                writer.Write(pair.Key);
-                WritePaddingSpaces(writer, paddedLength - pair.Key.Length);
+                writer.Write(labeledValue.Label);
+                WritePaddingSpaces(writer, paddedLength - labeledValue.Label.Length);
                 writer.Write(" : ");
-                writer.WriteLine(pair.Value);
+                writer.WriteStructuredText(labeledValue.FormattedValue);
+                writer.WriteLine();
             }
 
-            if (exceptions.Length != 0)
+            if (exceptions.Count != 0)
             {
                 foreach (ExceptionData exception in exceptions)
                 {
                     writer.WriteLine();
                     writer.WriteException(exception);
+                    writer.WriteLine();
                 }
             }
 
@@ -158,25 +161,22 @@ namespace MbUnit.Framework
             {
                 writer.WriteLine();
 
-                using (writer.BeginMarker(MarkerClasses.StackTrace))
-                    WriteWithNoExcessNewLine(writer, stackTrace);
+                using (writer.BeginMarker(Marker.StackTrace))
+                {
+                    if (stackTrace.EndsWith("\n"))
+                        writer.Write(stackTrace);
+                    else
+                        writer.WriteLine(stackTrace);
+                }
             }
-        }
-
-        private static void WriteWithNoExcessNewLine(TextWriter writer, string text)
-        {
-            writer.Write(text);
-
-            if (!text.EndsWith("\n"))
-                writer.WriteLine();
         }
 
         private int ComputePaddedLabelLength()
         {
             int maxLabelLength = 0;
-            foreach (KeyValuePair<string, string> pair in labeledValues)
-                if (pair.Key.Length <= MaxPaddedLabelLength)
-                    maxLabelLength = Math.Max(maxLabelLength, pair.Key.Length);
+            foreach (LabeledValue labeledValue in labeledValues)
+                if (labeledValue.Label.Length <= MaxPaddedLabelLength)
+                    maxLabelLength = Math.Max(maxLabelLength, labeledValue.Label.Length);
             return maxLabelLength;
         }
 
@@ -184,6 +184,76 @@ namespace MbUnit.Framework
         {
             while (count-- > 0)
                 writer.Write(' ');
+        }
+
+        /// <summary>
+        /// <para>
+        /// A labeled value describes a named assertion parameter.
+        /// </para>
+        /// <para>
+        /// The label indicates the purpose of the value, such as "Expected Value".
+        /// The value itself should be formatted to emphasize structural characteristics.
+        /// </para>
+        /// <para>
+        /// For additional emphasis, such as for comparison purposes (ie. diffs), the value may
+        /// be formatted as structured text to include highlights and other markup.
+        /// </para>
+        /// </summary>
+        [Serializable]
+        public struct LabeledValue
+        {
+            private readonly string label;
+            private readonly StructuredText formattedValue;
+
+            /// <summary>
+            /// Creates a labeled value with plain text.
+            /// </summary>
+            /// <param name="label">The label</param>
+            /// <param name="formattedValue">The formatted value as plain text</param>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or
+            /// <paramref name="formattedValue"/> is null</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
+            public LabeledValue(string label, string formattedValue)
+                : this(label, new StructuredText(formattedValue))
+            {
+            }
+
+            /// <summary>
+            /// Creates a labeled value with structured text.
+            /// </summary>
+            /// <param name="label">The label</param>
+            /// <param name="formattedValue">The formatted value as structured text</param>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or
+            /// <paramref name="formattedValue"/> is null</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
+            public LabeledValue(string label, StructuredText formattedValue)
+            {
+                if (label == null)
+                    throw new ArgumentNullException("label");
+                if (label.Length == 0)
+                    throw new ArgumentException("The label must not be empty.", "label");
+                if (formattedValue == null)
+                    throw new ArgumentNullException("formattedValue");
+
+                this.label = label;
+                this.formattedValue = formattedValue;
+            }
+
+            /// <summary>
+            /// Gets the label.
+            /// </summary>
+            public string Label
+            {
+                get { return label; }
+            }
+
+            /// <summary>
+            /// Gets the formatted value as structured text.
+            /// </summary>
+            public StructuredText FormattedValue
+            {
+                get { return formattedValue; }
+            }
         }
     }
 }

@@ -14,17 +14,18 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Events
 {
     /// <summary>
-    /// Arguments for an event raised to indicate that a text attachment has been added to a test step log.
+    /// Arguments for an event raised to indicate that an attachment has been added to a test step log.
     /// </summary>
-    public sealed class TestStepLogAttachTextEventArgs : TestStepLogAttachArgs
+    public sealed class TestStepLogAttachEventArgs : TestStepEventArgs
     {
-        private readonly string text;
+        private readonly Attachment attachment;
 
         /// <summary>
         /// Initializes the event arguments.
@@ -32,26 +33,24 @@ namespace Gallio.Runner.Events
         /// <param name="report">The report</param>
         /// <param name="test">The test data</param>
         /// <param name="testStepRun">The test step run</param>
-        /// <param name="attachmentName">The attachment name</param>
-        /// <param name="contentType">The content type</param>
-        /// <param name="text">The attached text</param>
+        /// <param name="attachment">The attachment</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report>"/>, <paramref name="test"/>
-        /// <paramref name="testStepRun"/>, <paramref name="attachmentName"/>, <paramref name="contentType" /> or <paramref name="text" /> is null</exception>
-        public TestStepLogAttachTextEventArgs(Report report, TestData test, TestStepRun testStepRun, string attachmentName, string contentType, string text)
-            : base(report, test, testStepRun, attachmentName, contentType)
+        /// <paramref name="testStepRun"/> or <paramref name="attachment"/> is null</exception>
+        public TestStepLogAttachEventArgs(Report report, TestData test, TestStepRun testStepRun, Attachment attachment)
+            : base(report, test, testStepRun)
         {
-            if (text == null)
-                throw new ArgumentNullException("text");
+            if (attachment == null)
+                throw new ArgumentNullException("attachment");
 
-            this.text = text;
+            this.attachment = attachment;
         }
 
         /// <summary>
-        /// Gets the attached text.
+        /// Gets the attachment.
         /// </summary>
-        public string Text
+        public Attachment Attachment
         {
-            get { return text; }
+            get { return attachment; }
         }
     }
 }

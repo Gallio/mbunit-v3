@@ -16,28 +16,31 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Gallio.Model.Logging;
 using Gallio.Utilities;
 
-namespace Gallio.Runner.Reports
+namespace Gallio.Model.Logging
 {
     /// <summary>
-    /// An Xml-serializable test log.
+    /// A structured test log is an Xml-serializable in-memory representation of a test
+    /// log written by a <see cref="TestLogWriter" />.
     /// </summary>
+    /// <seealso cref="StructuredTestLogWriter"/>
     [Serializable]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     [XmlRoot("testLog", Namespace=XmlSerializationUtils.GallioNamespace)]
-    public sealed class TestLog
+    public sealed class StructuredTestLog
     {
-        private readonly List<TestLogStream> streams;
-        private readonly List<TestLogAttachment> attachments;
+        private readonly List<StructuredTestLogStream> streams;
+        private readonly List<AttachmentData> attachments;
 
         /// <summary>
-        /// Creates an empty execution log.
+        /// Creates an empty log.
         /// </summary>
-        public TestLog()
+        public StructuredTestLog()
         {
-            streams = new List<TestLogStream>();
-            attachments = new List<TestLogAttachment>();
+            streams = new List<StructuredTestLogStream>();
+            attachments = new List<AttachmentData>();
         }
 
         /// <summary>
@@ -45,8 +48,8 @@ namespace Gallio.Runner.Reports
         /// Used for Xml-serialization.
         /// </summary>
         [XmlArray("streams", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        [XmlArrayItem("stream", typeof(TestLogStream), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        public List<TestLogStream> Streams
+        [XmlArrayItem("stream", typeof(StructuredTestLogStream), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        public List<StructuredTestLogStream> Streams
         {
             get { return streams; }
         }
@@ -55,10 +58,20 @@ namespace Gallio.Runner.Reports
         /// Gets the list of attachments, not null.
         /// </summary>
         [XmlArray("attachments", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        [XmlArrayItem("attachment", typeof(TestLogAttachment), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        public List<TestLogAttachment> Attachments
+        [XmlArrayItem("attachment", typeof(AttachmentData), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        public List<AttachmentData> Attachments
         {
             get { return attachments; }
+        }
+
+        /// <summary>
+        /// Gets an attachment by name.
+        /// </summary>
+        /// <param name="name">The attachment name</param>
+        /// <returns>The attachment or null if not found</returns>
+        public AttachmentData GetAttachment(string name)
+        {
+            return attachments.Find(attachment => attachment.Name == name);
         }
 
         /// <summary>
@@ -66,12 +79,9 @@ namespace Gallio.Runner.Reports
         /// </summary>
         /// <param name="name">The stream name</param>
         /// <returns>The stream or null if not found</returns>
-        public TestLogStream GetStream(string name)
+        public StructuredTestLogStream GetStream(string name)
         {
-            return streams.Find(delegate(TestLogStream stream)
-            {
-                return stream.Name == name;
-            });
+            return streams.Find(stream => stream.Name == name);
         }
     }
 }

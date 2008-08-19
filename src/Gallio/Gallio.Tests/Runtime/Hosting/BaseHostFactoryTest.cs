@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework;
 using Gallio.Model.Logging;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.Hosting;
@@ -30,7 +31,7 @@ namespace Gallio.Tests.Runtime.Hosting
         public void CreateHostThrowsIfHostSetupIsNull()
         {
             StubHostFactory factory = new StubHostFactory();
-            factory.CreateHost(null, new TestLogStreamLogger());
+            factory.CreateHost(null, new TestLogStreamLogger(Log.Default));
         }
 
         [Test, ExpectedArgumentNullException]
@@ -47,7 +48,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             HostSetup originalHostSetup = new HostSetup();
             originalHostSetup.WorkingDirectory = "";
-            ILogger logger = new TestLogStreamLogger();
+            ILogger logger = new TestLogStreamLogger(Log.Default);
             Assert.IsNotNull(factory.CreateHost(originalHostSetup, logger));
 
             Assert.AreNotSame(originalHostSetup, factory.HostSetup);

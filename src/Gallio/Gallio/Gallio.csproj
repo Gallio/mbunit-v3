@@ -11,7 +11,7 @@
     <AssemblyName>Gallio</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
-    <SGenUseProxyTypes>false</SGenUseProxyTypes>
+    <SGenUseProxyTypes>true</SGenUseProxyTypes>
     <SGenShouldGenerateSerializer>true</SGenShouldGenerateSerializer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -68,7 +68,9 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +78,7 @@
     <Compile Include="Collections\CollectionEqualityComparer.cs" />
     <Compile Include="Collections\HashSet.cs" />
     <Compile Include="Collections\Key.cs" />
+    <Compile Include="Collections\ReadOnlyDictionary.cs" />
     <Compile Include="Concurrency\ProcessTask.cs" />
     <Compile Include="Concurrency\Task.cs" />
     <Compile Include="Concurrency\TaskContainer.cs" />
@@ -138,8 +141,24 @@
     <Compile Include="Model\Diagnostics\TestEntryPointAttribute.cs" />
     <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
-    <Compile Include="Model\Logging\UnifiedTestLogWriter.cs" />
-    <Compile Include="Model\Logging\MarkerClasses.cs" />
+    <Compile Include="Framework\Comparisons\DiffSet.cs" />
+    <Compile Include="Framework\Comparisons\Diff.cs" />
+    <Compile Include="Framework\Comparisons\DiffKind.cs" />
+    <Compile Include="Model\Logging\Marker.cs" />
+    <Compile Include="Model\Logging\StructuredTestLogWriter.cs" />
+    <Compile Include="Model\Logging\StructuredTestLog.cs" />
+    <Compile Include="Model\Logging\AttachmentData.cs" />
+    <Compile Include="Model\Logging\AttachmentContentDisposition.cs" />
+    <Compile Include="Model\Logging\AttachmentEncoding.cs" />
+    <Compile Include="Model\Logging\StructuredTestLogStream.cs" />
+    <Compile Include="Model\Logging\StructuredText.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Logging\StructuredTextWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Logging\TestLogStreamWriter.cs" />
+    <Compile Include="Utilities\Range.cs" />
     <Compile Include="Model\Execution\RemoteTestListener.cs" />
     <Compile Include="Model\Filters\FilterParseException.cs" />
     <Compile Include="Model\ITestPackageExplorerFactory.cs" />
@@ -184,20 +203,17 @@
     <Compile Include="Runner\Events\RunFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\RunStartedEventArgs.cs" />
     <Compile Include="Runner\Events\OperationFinishedEventArgs.cs" />
-    <Compile Include="Runner\Reports\TestLogStreamMarkerTag.cs" />
     <Compile Include="Runner\TestRunnerOptions.cs" />
     <Compile Include="Runner\TestRunnerEventDispatcher.cs" />
     <Compile Include="Runner\Events\TestStepEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepLifecyclePhaseChangedEventArgs.cs" />
-    <Compile Include="Runner\Events\TestStepLogAttachArgs.cs" />
-    <Compile Include="Runner\Events\TestStepLogBinaryAttachBytesEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepLogStreamEmbedEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepLogStreamEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepLogStreamEndEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepLogStreamBeginSectionEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepLogStreamWriteEventArgs.cs" />
-    <Compile Include="Runner\Events\TestStepLogAttachTextEventArgs.cs" />
+    <Compile Include="Runner\Events\TestStepLogAttachEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepMetadataAddedEventArgs.cs" />
     <Compile Include="Runner\Events\TestStepStartedEventArgs.cs" />
     <Compile Include="Runner\Events\UnloadFinishedEventArgs.cs" />
@@ -443,7 +459,6 @@
     <Compile Include="Runtime\RuntimeBootstrap.cs" />
     <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
     <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
-    <Compile Include="Model\Logging\TestLogStreamWriter.cs" />
     <Compile Include="Model\Logging\TestLogWriter.cs" />
     <Compile Include="Triple.cs" />
     <Compile Include="Utilities\CurrentDirectorySwitcher.cs" />
@@ -540,7 +555,6 @@
     <Compile Include="Runner\Harness\UnhandledExceptionTestEnvironment.cs" />
     <Compile Include="Runner\Projects\FilterInfo.cs" />
     <Compile Include="Runner\Projects\Project.cs" />
-    <Compile Include="Runner\Reports\TestLogAttachmentContentDisposition.cs" />
     <Compile Include="Runner\Reports\DefaultReportReader.cs" />
     <Compile Include="Runner\Reports\DefaultReportWriter.cs" />
     <Compile Include="Runner\Reports\FileSystemReportContainer.cs" />
@@ -562,19 +576,6 @@
     <Compile Include="Model\Serialization\TestModelData.cs" />
     <Compile Include="Model\TestResult.cs" />
     <Compile Include="Runner\Reports\DefaultReportManager.cs" />
-    <Compile Include="Runner\Reports\TestLog.cs" />
-    <Compile Include="Runner\Reports\TestLogAttachment.cs" />
-    <Compile Include="Runner\Reports\TestLogAttachmentEncoding.cs" />
-    <Compile Include="Runner\Reports\TestLogStream.cs" />
-    <Compile Include="Runner\Reports\TestLogStreamBodyTag.cs" />
-    <Compile Include="Runner\Reports\TestLogStreamContainerTag.cs" />
-    <Compile Include="Runner\Reports\TestLogStreamEmbedTag.cs" />
-    <Compile Include="Runner\Reports\TestLogStreamSectionTag.cs" />
-    <Compile Include="Runner\Reports\TestLogStreamTag.cs" />
-    <Compile Include="Runner\Reports\TestLogStreamTextFormatter.cs" />
-    <Compile Include="Runner\Reports\TestLogStreamTextTag.cs" />
-    <Compile Include="Runner\Reports\TestLogWriter.cs" />
-    <Compile Include="Runner\Reports\ITestLogStreamTagVisitor.cs" />
     <Compile Include="Runner\Reports\IReportFormatter.cs" />
     <Compile Include="Runner\Reports\IReportManager.cs" />
     <Compile Include="Runner\Reports\TestPackageRun.cs" />
@@ -652,6 +653,9 @@
     <Compile Include="Collections\CollectionUtils.cs" />
     <Compile Include="Collections\GenericUtils.cs" />
     <Compile Include="Utilities\Sync.cs" />
+    <Compile Include="XmlSerializableTypeIncludes.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utilities\XmlSerializationUtils.cs" />
     <Compile Include="Runtime\CorrelatedExceptionEventArgs.cs" />
     <Compile Include="Utilities\StringUtils.cs" />

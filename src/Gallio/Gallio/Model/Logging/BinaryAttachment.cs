@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Logging;
 
 namespace Gallio.Model.Logging
 {
@@ -24,30 +23,36 @@ namespace Gallio.Model.Logging
     [Serializable]
     public sealed class BinaryAttachment : Attachment
     {
-        private readonly byte[] data;
+        private readonly byte[] bytes;
 
         /// <summary>
         /// Creates an attachment.
         /// </summary>
         /// <param name="name">The attachment name, not null</param>
         /// <param name="contentType">The content type, not null</param>
-        /// <param name="data">The binary data, not null</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> or <paramref name="data"/> is null</exception>
-        public BinaryAttachment(string name, string contentType, byte[] data)
+        /// <param name="bytes">The binary data, not null</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contentType"/> or <paramref name="bytes"/> is null</exception>
+        public BinaryAttachment(string name, string contentType, byte[] bytes)
             : base(name, contentType)
         {
-            if (data == null)
-                throw new ArgumentNullException("data");
+            if (bytes == null)
+                throw new ArgumentNullException("bytes");
 
-            this.data = data;
+            this.bytes = bytes;
         }
 
         /// <summary>
         /// Gets the binary content of the attachment, not null.
         /// </summary>
-        public byte[] Data
+        public byte[] Bytes
         {
-            get { return data; }
+            get { return bytes; }
+        }
+
+        /// <inheritdoc />
+        public override AttachmentData ToAttachmentData()
+        {
+            return new AttachmentData(Name, ContentType, AttachmentEncoding.Base64, null, bytes);
         }
     }
 }

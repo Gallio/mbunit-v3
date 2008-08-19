@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Model;
+using Gallio.Model.Logging;
 using Gallio.Runner.Reports;
 using Gallio.Tests.Model;
 using MbUnit.Framework;
@@ -103,7 +104,7 @@ namespace Gallio.Tests.Runner.Reports
             MbUnit.Framework.InterimAssert.WithPairs(expected.Children, actual.Children, AreEqual);
         }
 
-        public static void AreEqual(TestLog expected, TestLog actual)
+        public static void AreEqual(StructuredTestLog expected, StructuredTestLog actual)
         {
             if (expected == null)
             {
@@ -115,7 +116,7 @@ namespace Gallio.Tests.Runner.Reports
             InterimAssert.WithPairs(expected.Streams, actual.Streams, AreEqual);
         }
 
-        public static void AreEqual(TestLogStream expected, TestLogStream actual)
+        public static void AreEqual(StructuredTestLogStream expected, StructuredTestLogStream actual)
         {
             if (expected == null)
             {
@@ -129,7 +130,7 @@ namespace Gallio.Tests.Runner.Reports
             // FIXME: not precise
         }
 
-        public static void AreEqual(TestLogAttachment expected, TestLogAttachment actual)
+        public static void AreEqual(AttachmentData expected, AttachmentData actual)
         {
             if (expected == null)
             {

@@ -32,7 +32,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void GreaterThan_should_fail_when_type_is_not_IComparable()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => 
+            AssertionFailure[] failures = AssertionHelper.Eval(() => 
                 NewAssert.GreaterThan(new Exception(), new Exception()));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("System.InvalidOperationException: No ordering comparison defined on type System.Exception."
@@ -42,30 +42,30 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void GreaterThan_fails_when_left_value_is_not_greater_than_right()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => 
+            AssertionFailure[] failures = AssertionHelper.Eval(() => 
                 NewAssert.GreaterThan(5, 5));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("5", failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("5", failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("5", failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("5", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
         public void GreaterThan_fail_when_left_value_is_null()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => 
+            AssertionFailure[] failures = AssertionHelper.Eval(() => 
                 NewAssert.GreaterThan(null, "abc"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("Expected left to be greater than right.", failures[0].Description);
-            NewAssert.AreEqual("Left Value", failures[0].LabeledValues[0].Key);
-            NewAssert.AreEqual("null", failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("Right Value", failures[0].LabeledValues[1].Key);
-            NewAssert.AreEqual("\"abc\"", failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("Left Value", failures[0].LabeledValues[0].Label);
+            NewAssert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("Right Value", failures[0].LabeledValues[1].Label);
+            NewAssert.AreEqual("\"abc\"", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
         public void GreaterThan_fail_when_left_value_is_null_with_custom_message()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThan(null, "abc", "custom message."));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.GreaterThan(null, "abc", "custom message."));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("custom message.", failures[0].Message);
         }
@@ -73,7 +73,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void GreaterThan_fail_when_left_value_is_null_with_custom_message_and_argument()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThan(null, "abc", "{0} message.", "MbUnit"));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.GreaterThan(null, "abc", "{0} message.", "MbUnit"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("MbUnit message.", failures[0].Message);
         }
@@ -129,7 +129,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void GreaterThanOrEqual_fails_when_left_value_is_not_greater_or_equal_than_right()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThanOrEqual(5, 6));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.GreaterThanOrEqual(5, 6));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("Expected left to be greater or equal than right.", failures[0].Description);
         }
@@ -137,18 +137,18 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void GreaterThanOrEqual_fail_when_left_value_is_null()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThanOrEqual(null, "abc"));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.GreaterThanOrEqual(null, "abc"));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("Left Value", failures[0].LabeledValues[0].Key);
-            NewAssert.AreEqual("Right Value", failures[0].LabeledValues[1].Key);
-            NewAssert.AreEqual("null", failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("\"abc\"", failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("Left Value", failures[0].LabeledValues[0].Label);
+            NewAssert.AreEqual("Right Value", failures[0].LabeledValues[1].Label);
+            NewAssert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("\"abc\"", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
         public void GreaterThanOrEqual_fail_when_left_value_is_null_with_custom_message()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThanOrEqual(null, "abc", "custom message."));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.GreaterThanOrEqual(null, "abc", "custom message."));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("custom message.", failures[0].Message);
         }
@@ -156,7 +156,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void GreaterThanOrEqual_fail_when_left_value_is_null_with_custom_message_and_argument()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.GreaterThanOrEqual(null, "abc", "{0} message.", "MbUnit"));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.GreaterThanOrEqual(null, "abc", "{0} message.", "MbUnit"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("MbUnit message.", failures[0].Message);
         }
@@ -213,7 +213,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void LessThan_fails_when_left_value_is_not_less_than_right()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThan("mb", "mb"));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.LessThan("mb", "mb"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("Expected left to be less than right.", failures[0].Description);
         }
@@ -221,18 +221,18 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void LessThan_on_failure_test_with_values_only()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThan("abc", null));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.LessThan("abc", null));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("Left Value", failures[0].LabeledValues[0].Key);
-            NewAssert.AreEqual("Right Value", failures[0].LabeledValues[1].Key);
-            NewAssert.AreEqual("\"abc\"", failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("null", failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("Left Value", failures[0].LabeledValues[0].Label);
+            NewAssert.AreEqual("Right Value", failures[0].LabeledValues[1].Label);
+            NewAssert.AreEqual("\"abc\"", failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
         public void LessThan_fail_when_left_value_is_null_with_custom_message()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThan(5, 1.1, "custom message."));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.LessThan(5, 1.1, "custom message."));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("custom message.", failures[0].Message);
         }
@@ -246,7 +246,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void LessThan_check_custom_message_and_argument_on_failure()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThan("d", "abc", "{0} message.", "MbUnit"));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.LessThan("d", "abc", "{0} message.", "MbUnit"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("MbUnit message.", failures[0].Message);
         }
@@ -295,7 +295,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void LessThanOrEqual_fails_when_left_value_is_not_less_or_equal_than_right()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThanOrEqual("ms", "mb"));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.LessThanOrEqual("ms", "mb"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("Expected left to be less or equal than right.", failures[0].Description);
         }
@@ -303,14 +303,14 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void LessThanOrEqual_fail_when_left_value_is_null()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThanOrEqual("abc", null));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.LessThanOrEqual("abc", null));
             NewAssert.AreEqual(1, failures.Length);
         }
 
         [Test]
         public void LessThanOrEqual_fail_when_left_value_is_null_with_custom_message()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThanOrEqual("abc", null, "custom message."));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.LessThanOrEqual("abc", null, "custom message."));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("custom message.", failures[0].Message);
         }
@@ -318,7 +318,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void LessThanOrEqual_fail_when_left_value_is_null_with_custom_message_and_argument()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.LessThanOrEqual("k", "abc", "{0} message.", "MbUnit"));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.LessThanOrEqual("k", "abc", "{0} message.", "MbUnit"));
             NewAssert.AreEqual(1, failures.Length);
             NewAssert.AreEqual("MbUnit message.", failures[0].Message);
         }
@@ -377,13 +377,15 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void Between_fails_when_test_value_is_left_of_the_range()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.Between(0, 1, 3));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.Between(0, 1, 3));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("The test value is not in the range.", failures[0].Description);
-            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
-            NewAssert.AreEqual("0", failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("Range", failures[0].LabeledValues[1].Key);
-            NewAssert.AreEqual("\"(1 - 3)\"", failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("The actual value should be between the minimum and maximum values.", failures[0].Description);
+            NewAssert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
+            NewAssert.AreEqual("0", failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("Minimum Value", failures[0].LabeledValues[1].Label);
+            NewAssert.AreEqual("1", failures[0].LabeledValues[1].FormattedValue.ToString());
+            NewAssert.AreEqual("Maximum Value", failures[0].LabeledValues[2].Label);
+            NewAssert.AreEqual("3", failures[0].LabeledValues[2].FormattedValue.ToString());
         }
         #endregion
 
@@ -399,13 +401,15 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void NotBetween_fails_when_test_value_is_left_of_the_range()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.NotBetween(1, 1, 3));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.NotBetween(1, 1, 3));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("The test value is in the range.", failures[0].Description);
-            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
-            NewAssert.AreEqual("1", failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("Range", failures[0].LabeledValues[1].Key);
-            NewAssert.AreEqual("\"(1 - 3)\"", failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("The actual value should not be between the minimum and maximum values.", failures[0].Description);
+            NewAssert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
+            NewAssert.AreEqual("1", failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("Minimum Value", failures[0].LabeledValues[1].Label);
+            NewAssert.AreEqual("1", failures[0].LabeledValues[1].FormattedValue.ToString());
+            NewAssert.AreEqual("Maximum Value", failures[0].LabeledValues[2].Label);
+            NewAssert.AreEqual("3", failures[0].LabeledValues[2].FormattedValue.ToString());
         }
         #endregion
 
@@ -414,124 +418,115 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void Fail_without_parameters()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(NewAssert.Fail);
+            AssertionFailure[] failures = AssertionHelper.Eval(NewAssert.Fail);
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("Custom failure.", failures[0].Description);
+            NewAssert.AreEqual("An assertion failed.", failures[0].Description);
             NewAssert.AreEqual("", failures[0].Message);
-        }
-
-        [Test]
-        public void Fail_with_message()
-        {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.Fail("Message"));
-            NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("Custom failure.", failures[0].Description);
-            NewAssert.AreEqual("Message", failures[0].Message);
         }
 
         [Test]
         public void Fail_with_message_and_arguments()
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() => NewAssert.Fail("{0} {1}.", "MbUnit", "message"));
+            AssertionFailure[] failures = AssertionHelper.Eval(() => NewAssert.Fail("{0} {1}.", "MbUnit", "message"));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("Custom failure.", failures[0].Description);
+            NewAssert.AreEqual("An assertion failed.", failures[0].Description);
             NewAssert.AreEqual("MbUnit message.", failures[0].Message);
         }
 
         #endregion
 
-        #region In
+        #region Contains (for collections)
 
         [Test]
-        public void In_generic_ICollection_int_test()
+        public void Contains_generic_ICollection_int_test()
         {
-            NewAssert.In(2, new List<int>(new[] { 1, 2, 3 }));
+            NewAssert.Contains(new List<int>(new[] { 1, 2, 3 }), 2);
         }
 
         [Test]
         [Row("2", new[] { "1", "2", "3" })]
         [Row(null, new[] { "1", "2", null, "3" })]
-        public void In_list_string_test(string testValue, string[] list)
+        public void Contains_list_string_test(string testValue, string[] list)
         {
-            NewAssert.In(testValue, new List<string>(list));
+            NewAssert.Contains(new List<string>(list), testValue);
         }
 
         [Test]
-        [Row(new[] { 1, 2, 3 }, "\"{1, 2, 3}\"")]
-        [Row(new[] { 1, 2 }, "\"{1, 2}\"")]
-        [Row(new[] { 1, 2, 3, 5 }, "\"{1, 2, 3, ...}\"")]
-        public void In_fails_when_test_value_is_not_in_the_list(int[] listItems, string expectedCollection)
+        [Row(new[] { 1, 2, 3 }, "[1, 2, 3]")]
+        [Row(new[] { 1, 2 }, "[1, 2]")]
+        [Row(new[] { 1, 2, 3, 5 }, "[1, 2, 3, 5]")]
+        public void Contains_fails_when_test_value_is_not_in_the_list(int[] listItems, string expectedCollection)
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() =>
-                NewAssert.In(4, new List<int>(listItems)));
+            AssertionFailure[] failures = AssertionHelper.Eval(() =>
+                NewAssert.Contains(new List<int>(listItems), 4));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("The test value is not in the IList collection.", failures[0].Description);
-            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
-            NewAssert.AreEqual("4", failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("List Values", failures[0].LabeledValues[1].Key);
-            NewAssert.AreEqual(expectedCollection, failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("Expected the value to appear within the enumeration.", failures[0].Description);
+            NewAssert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            NewAssert.AreEqual("4", failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("Enumeration", failures[0].LabeledValues[1].Label);
+            NewAssert.AreEqual(expectedCollection, failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        [Row("test", new[] { "1", "2", "3" }, "\"test\"", "\"{1, 2, 3}\"")]
-        [Row(null, new[] { "1", "2", "3" }, "null", "\"{1, 2, 3}\"")]
-        public void In_fails_when_test_value_is_not_in_the_string_list(string testValue, string[] listItems, string expectedLabledValue, string expectedCollection)
+        [Row("test", new[] { "1", "2", "3" }, "\"test\"", "[\"1\", \"2\", \"3\"]")]
+        [Row(null, new[] { "1", "2", "3" }, "null", "[\"1\", \"2\", \"3\"]")]
+        public void Contains_fails_when_test_value_is_not_in_the_string_list(string testValue, string[] listItems, string expectedLabledValue, string expectedCollection)
         {
-            AssertionFailure[] failures = AssertHelper.Eval(() =>
-                NewAssert.In(testValue, new List<string>(listItems)));
+            AssertionFailure[] failures = AssertionHelper.Eval(() =>
+                NewAssert.Contains(new List<string>(listItems), testValue));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("The test value is not in the IList collection.", failures[0].Description);
-            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
-            NewAssert.AreEqual(expectedLabledValue, failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("List Values", failures[0].LabeledValues[1].Key);
-            NewAssert.AreEqual(expectedCollection, failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("Expected the value to appear within the enumeration.", failures[0].Description);
+            NewAssert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            NewAssert.AreEqual(expectedLabledValue, failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("Enumeration", failures[0].LabeledValues[1].Label);
+            NewAssert.AreEqual(expectedCollection, failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        public void In_dictionary_int_test()
+        public void ContainsKey_dictionary_int_test()
         {
-
-            NewAssert.In(2, new Dictionary<int, int>
-                                {
-                                {1, 1},
-                                {2, 2}
-                            });
+            NewAssert.ContainsKey(new Dictionary<int, int>
+              {
+                  {1, 1},
+                  {2, 2}
+              }, 2);
         }
 
         [Test]
-        public void In_fails_when_test_value_is_not_in_the_dictionary()
+        public void ContainsKey_fails_when_test_value_is_not_in_the_dictionary()
         {
             var dictionary = new Dictionary<int, string>
                                  {
                 { 1, "1" },
                 { 2, "2`" },
             };
-            AssertionFailure[] failures = AssertHelper.Eval(() =>
-                NewAssert.In(0, dictionary));
+            AssertionFailure[] failures = AssertionHelper.Eval(() =>
+                NewAssert.ContainsKey(dictionary, 0));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("The test value is not in the IDictionary collection.", failures[0].Description);
-            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
-            NewAssert.AreEqual("0", failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("List of keys", failures[0].LabeledValues[1].Key);
-            NewAssert.AreEqual("\"{1, 2}\"", failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("Expected the key to appear within the dictionary.", failures[0].Description);
+            NewAssert.AreEqual("Key", failures[0].LabeledValues[0].Label);
+            NewAssert.AreEqual("0", failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("Dictionary", failures[0].LabeledValues[1].Label);
+            NewAssert.AreEqual("[1: \"1\", 2: \"2`\"]", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]
-        public void In_fails_when_test_value_is_not_in_the_dictionary_key_is_reference_type()
+        public void Contains_fails_when_test_value_is_not_in_the_dictionary_key_is_reference_type()
         {
             var dictionary = new Dictionary<List<int>, string>
                                  {
                 { new List<int>(new[] {1, 2}), "1" },
                 { new List<int>(new[] {3, 4}), "2`" },
             };
-            AssertionFailure[] failures = AssertHelper.Eval(() =>
-                NewAssert.In(new List<int>(new[] { 5 }), dictionary, "{0} message.", "custom"));
+            AssertionFailure[] failures = AssertionHelper.Eval(() =>
+                NewAssert.ContainsKey(dictionary, new List<int>(new[] { 5 }), "{0} message.", "custom"));
             NewAssert.AreEqual(1, failures.Length);
-            NewAssert.AreEqual("The test value is not in the IDictionary collection.", failures[0].Description);
-            NewAssert.AreEqual("Test Value", failures[0].LabeledValues[0].Key);
-            NewAssert.AreEqual("[5]", failures[0].LabeledValues[0].Value);
-            NewAssert.AreEqual("List of keys", failures[0].LabeledValues[1].Key);
-            NewAssert.AreEqual("\"{System.Collections.Generic.List`1[System.Int32], System.Collections.Generic.List`1[System.Int32]}\"", failures[0].LabeledValues[1].Value);
+            NewAssert.AreEqual("Expected the key to appear within the dictionary.", failures[0].Description);
+            NewAssert.AreEqual("Key", failures[0].LabeledValues[0].Label);
+            NewAssert.AreEqual("[5]", failures[0].LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("Dictionary", failures[0].LabeledValues[1].Label);
+            NewAssert.AreEqual("[[1, 2]: \"1\", [3, 4]: \"2`\"]",
+                failures[0].LabeledValues[1].FormattedValue.ToString());
             NewAssert.AreEqual("custom message.", failures[0].Message);
         }
         #endregion

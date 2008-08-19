@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using Gallio.Model;
+using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 using Gallio.Utilities;
@@ -97,11 +98,13 @@ namespace Gallio.Icarus.Core.Reports
         {
             MetadataMap visibleEntries = testStepRun.Step.Metadata.Copy();
             visibleEntries.Remove(MetadataKeys.TestKind);
+
             if (testStepRun.Step.IsPrimary)
             {
                 visibleEntries.AddAll(testData.Metadata);
                 visibleEntries.Remove(MetadataKeys.TestKind);
             }
+
             if (visibleEntries.Keys.Count > 0)
             {
                 xmlTextWriter.WriteRaw("<ul class=\"metadata\">");
@@ -126,61 +129,23 @@ namespace Gallio.Icarus.Core.Reports
         private static void RenderExecutionLogStreams(XmlTextWriter xmlTextWriter, TestStepRun testStepRun)
         {
             xmlTextWriter.WriteRaw(String.Format("<div id=\"log-{0}\" class=\"log\">", testStepRun.Step.Id));
-            foreach (TestLogStream executionLogStream in testStepRun.TestLog.Streams)
+
+            foreach (StructuredTestLogStream executionLogStream in testStepRun.TestLog.Streams)
             {
                 xmlTextWriter.WriteRaw(String.Format("<div class=\"logStream logStream-{0}\">", executionLogStream.Name));
                 xmlTextWriter.WriteRaw(String.Format("<span class=\"logStreamHeading\"><xsl:value-of select=\"{0}\" /></span>", 
                     executionLogStream.Name));
                 xmlTextWriter.WriteRaw("<div class=\"logStreamBody\">");
-                foreach (TestLogStreamTag executionLogStreamTag in executionLogStream.Body.Contents)
-                    RenderExecutionLogStreamContents(xmlTextWriter, testStepRun, executionLogStreamTag);
+
+                executionLogStream.Body.Accept(new RenderTagVisitor(xmlTextWriter, testStepRun));
+
                 xmlTextWriter.WriteRaw("</div></div>");
             }
+
             if (testStepRun.TestLog.Attachments.Count > 0)
                 RenderExecutionLogAttachmentList(xmlTextWriter, testStepRun);
-            xmlTextWriter.WriteRaw("</div>");
-        }
 
-        private static void RenderExecutionLogStreamContents(XmlTextWriter xmlTextWriter, TestStepRun testStepRun, TestLogStreamTag testLogStreamTag)
-        {
-            if (testLogStreamTag is TestLogStreamTextTag)
-            {
-                // write text block
-                TestLogStreamTextTag textTag = ((TestLogStreamTextTag)testLogStreamTag);
-                xmlTextWriter.WriteRaw(String.Format("<div>{0}</div>", textTag.Text));
-            }
-            else if (testLogStreamTag is TestLogStreamSectionTag)
-            {
-                TestLogStreamSectionTag sectionTag = (TestLogStreamSectionTag)testLogStreamTag;
-                xmlTextWriter.WriteRaw(String.Format("<div class=\"logStreamSection\"><span class=\"logStreamSectionHeading\">{0}</span><div>", 
-                    sectionTag.Name));
-                foreach (TestLogStreamTag elst in sectionTag.Contents)
-                    RenderExecutionLogStreamContents(xmlTextWriter, testStepRun, elst);
-                xmlTextWriter.WriteRaw("</div></div>");
-            }
-            else if (testLogStreamTag is TestLogStreamEmbedTag)
-            {
-                TestLogStreamEmbedTag embedTag = (TestLogStreamEmbedTag)testLogStreamTag;
-                foreach (TestLogAttachment attachment in testStepRun.TestLog.Attachments)
-                {
-                    if (attachment.Name == embedTag.AttachmentName)
-                    {
-                        string src = Path.Combine(Path.Combine(reportFolder, FileUtils.EncodeFileName(testStepRun.Step.Id)), attachment.Name);
-                        if (attachment.ContentType.StartsWith("image/"))
-                            xmlTextWriter.WriteRaw(String.Format("<div class=\"logAttachmentEmbedding\"><img src=\"{0}\" alt=\"Attachment: {1}\" /></div>",
-                                src, attachment.Name));
-                        else
-                            xmlTextWriter.WriteRaw(String.Format("Attachment: <a href=\"{0}\">{1}</a>", src, attachment.Name));
-                        break;
-                    }
-                }
-            }
-            else if (testLogStreamTag is TestLogStreamMarkerTag)
-            {
-                TestLogStreamMarkerTag markerTag = (TestLogStreamMarkerTag)testLogStreamTag;
-                foreach (TestLogStreamTag elst in markerTag.Contents)
-                    RenderExecutionLogStreamContents(xmlTextWriter, testStepRun, elst);
-            }
+            xmlTextWriter.WriteRaw("</div>");
         }
 
         private static void RenderExecutionLogAttachmentList(XmlTextWriter xmlTextWriter, TestStepRun testStepRun)
@@ -188,9 +153,9 @@ namespace Gallio.Icarus.Core.Reports
             xmlTextWriter.WriteRaw("<div class=\"logAttachmentList\">Attachments: ");
             for (int i = 0; i < testStepRun.TestLog.Attachments.Count; i++)
             {
-                TestLogAttachment attachment = testStepRun.TestLog.Attachments[i];
-                string src = Path.Combine(Path.Combine(reportFolder, FileUtils.EncodeFileName(testStepRun.Step.Id)), attachment.Name);
-                xmlTextWriter.WriteRaw(String.Format("<a href=\"{0}\">{1}</a>", src, attachment.Name));
+                AttachmentData attachmentData = testStepRun.TestLog.Attachments[i];
+                string src = Path.Combine(Path.Combine(reportFolder, FileUtils.EncodeFileName(testStepRun.Step.Id)), attachmentData.Name);
+                xmlTextWriter.WriteRaw(String.Format("<a href=\"{0}\">{1}</a>", src, attachmentData.Name));
                 if (i < (testStepRun.TestLog.Attachments.Count - 1))
                     xmlTextWriter.WriteRaw(", ");
             }
@@ -246,6 +211,63 @@ namespace Gallio.Icarus.Core.Reports
             public int assertCount;
             public double duration;
             public int runCount;
+        }
+
+        private sealed class RenderTagVisitor : StructuredTestLogStream.ITagVisitor
+        {
+            private readonly XmlTextWriter xmlTextWriter;
+            private readonly TestStepRun testStepRun;
+
+            public RenderTagVisitor(XmlTextWriter xmlTextWriter, TestStepRun testStepRun)
+            {
+                this.xmlTextWriter = xmlTextWriter;
+                this.testStepRun = testStepRun;
+            }
+
+            public void VisitBodyTag(StructuredTestLogStream.BodyTag tag)
+            {
+                tag.AcceptContents(this);
+            }
+
+            public void VisitSectionTag(StructuredTestLogStream.SectionTag tag)
+            {
+                xmlTextWriter.WriteRaw(String.Format("<div class=\"logStreamSection\"><span class=\"logStreamSectionHeading\">{0}</span><div>", tag.Name));
+
+                tag.AcceptContents(this);
+
+                xmlTextWriter.WriteRaw("</div></div>");
+            }
+
+            public void VisitMarkerTag(StructuredTestLogStream.MarkerTag tag)
+            {
+                tag.AcceptContents(this);
+            }
+
+            public void VisitEmbedTag(StructuredTestLogStream.EmbedTag tag)
+            {
+                AttachmentData attachment = testStepRun.TestLog.GetAttachment(tag.AttachmentName);
+                if (attachment != null)
+                {
+                    string src = Path.Combine(Path.Combine(reportFolder, FileUtils.EncodeFileName(testStepRun.Step.Id)), attachment.Name);
+
+                    if (attachment.ContentType.StartsWith("image/"))
+                    {
+                        xmlTextWriter.WriteRaw(
+                            String.Format(
+                                "<div class=\"logAttachmentEmbedding\"><img src=\"{0}\" alt=\"Attachment: {1}\" /></div>",
+                                src, attachment.Name));
+                    }
+                    else
+                    {
+                        xmlTextWriter.WriteRaw(String.Format("Attachment: <a href=\"{0}\">{1}</a>", src, attachment.Name));
+                    }
+                }
+            }
+
+            public void VisitTextTag(StructuredTestLogStream.TextTag tag)
+            {
+                xmlTextWriter.WriteRaw(String.Format("<span>{0}</span>", tag.Text));
+            }
         }
     }
 }

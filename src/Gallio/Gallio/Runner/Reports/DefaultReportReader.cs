@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml.Serialization;
+using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runner.Reports
@@ -112,10 +113,10 @@ namespace Gallio.Runner.Reports
             if (report.TestPackageRun == null)
                 return;
 
-            List<TestLogAttachment> attachmentsToLoad = new List<TestLogAttachment>();
+            List<AttachmentData> attachmentsToLoad = new List<AttachmentData>();
             foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
             {
-                foreach (TestLogAttachment attachment in testStepRun.TestLog.Attachments)
+                foreach (AttachmentData attachment in testStepRun.TestLog.Attachments)
                 {
                     if (attachment.ContentPath != null)
                         attachmentsToLoad.Add(attachment);
@@ -127,11 +128,11 @@ namespace Gallio.Runner.Reports
 
             using (progressMonitor.BeginTask("Loading report attachments.", attachmentsToLoad.Count))
             {
-                foreach (TestLogAttachment attachment in attachmentsToLoad)
+                foreach (AttachmentData attachment in attachmentsToLoad)
                 {
                     progressMonitor.ThrowIfCanceled();
 
-                    if (attachment.ContentDisposition != TestLogAttachmentContentDisposition.Link
+                    if (attachment.ContentDisposition != AttachmentContentDisposition.Link
                         || attachment.ContentPath == null)
                         continue;
 
@@ -143,14 +144,14 @@ namespace Gallio.Runner.Reports
             }
         }
 
-        private void LoadAttachmentContents(TestLogAttachment attachment, string attachmentPath)
+        private void LoadAttachmentContents(AttachmentData attachmentData, string attachmentPath)
         {
             using (Stream attachmentStream = reportContainer.OpenRead(attachmentPath))
             {
                 // TODO: How should we handle missing attachments?  Currently we just throw an exception.
                 try
                 {
-                    attachment.LoadContents(attachmentStream);
+                    attachmentData.LoadContents(attachmentStream);
                 }
                 catch (Exception ex)
                 {

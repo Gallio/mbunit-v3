@@ -82,57 +82,77 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void CanSetExpectedValue()
+        public void CanSetRawExpectedValue()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetExpectedValue("Abc");
+            builder.SetRawExpectedValue("Abc");
             NewAssert.AreEqual(new[]
             {
-                new KeyValuePair<string, string>("Expected Value", "\"Abc\"")
+                new AssertionFailure.LabeledValue("Expected Value", "\"Abc\"")
             }, builder.ToAssertionFailure().LabeledValues);
 
-            builder.SetExpectedValue(null);
+            builder.SetRawExpectedValue(null);
             NewAssert.AreEqual(new[]
             {
-                new KeyValuePair<string, string>("Expected Value", "null")
+                new AssertionFailure.LabeledValue("Expected Value", "null")
             }, builder.ToAssertionFailure().LabeledValues);
         }
 
         [Test]
-        public void CanSetActualValue()
+        public void CanSetRawActualValue()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetActualValue("Abc");
+            builder.SetRawActualValue("Abc");
             NewAssert.AreEqual(new[]
             {
-                new KeyValuePair<string, string>("Actual Value", "\"Abc\"")
+                new AssertionFailure.LabeledValue("Actual Value", "\"Abc\"")
             }, builder.ToAssertionFailure().LabeledValues);
 
-            builder.SetActualValue(null);
+            builder.SetRawActualValue(null);
             NewAssert.AreEqual(new[]
             {
-                new KeyValuePair<string, string>("Actual Value", "null")
+                new AssertionFailure.LabeledValue("Actual Value", "null")
             }, builder.ToAssertionFailure().LabeledValues);
         }
 
         [Test]
-        public void CanSetLabeledValue()
+        public void CanSetRawLabeledValue()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetLabeledValue("Abc", 123);
-            builder.SetLabeledValue("Def", 3.0m);
+            builder.SetRawLabeledValue("Abc", 123);
+            builder.SetRawLabeledValue("Def", 3.0m);
             NewAssert.AreEqual(new[]
             {
-                new KeyValuePair<string, string>("Abc", "123"),
-                new KeyValuePair<string, string>("Def", "3.0m")
+                new AssertionFailure.LabeledValue("Abc", "123"),
+                new AssertionFailure.LabeledValue("Def", "3.0m")
             }, builder.ToAssertionFailure().LabeledValues);
 
-            builder.SetLabeledValue("Abc", null);
+            builder.SetRawLabeledValue("Abc", null);
             NewAssert.AreEqual(new[]
             {
-                new KeyValuePair<string, string>("Def", "3.0m"),
-                new KeyValuePair<string, string>("Abc", "null")
+                new AssertionFailure.LabeledValue("Def", "3.0m"),
+                new AssertionFailure.LabeledValue("Abc", "null")
             }, builder.ToAssertionFailure().LabeledValues);
+        }
+
+        [Test, Pending]
+        public void CanSetFormattedLabeledValueAsPlainTextString()
+        {
+        }
+
+        [Test, Pending]
+        public void CanSetFormattedLabeledValueAsStructuredTextString()
+        {
+        }
+
+        [Test, Pending]
+        public void CanSetFormattedLabeledValueAsLabeledValueStruct()
+        {
+        }
+
+        [Test, Pending]
+        public void CanSetRawExpectedAndActualValueWithDiffs()
+        {
         }
 
         [Test]

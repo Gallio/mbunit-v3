@@ -103,14 +103,9 @@ namespace Gallio.Runner.Events
         event EventHandler<TestStepMetadataAddedEventArgs> TestStepMetadataAdded;
 
         /// <summary>
-        /// The event raised to indicate that a text attachment has been added to a test step log.
+        /// The event raised to indicate that an attachment has been added to a test step log.
         /// </summary>
-        event EventHandler<TestStepLogAttachTextEventArgs> TestStepLogAttachText;
-
-        /// <summary>
-        /// The event raised to indicate that a binary attachment has been added to a test step log.
-        /// </summary>
-        event EventHandler<TestStepLogBinaryAttachBytesEventArgs> TestStepLogAttachBytes;
+        event EventHandler<TestStepLogAttachEventArgs> TestStepLogAttach;
 
         /// <summary>
         /// The event raised to indicate that text has been written to a test step log stream.

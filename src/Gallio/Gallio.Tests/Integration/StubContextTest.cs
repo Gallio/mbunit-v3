@@ -49,11 +49,8 @@ namespace Gallio.Tests.Integration
 
                 string output = remoteCode.Run();
 
-                Assert.AreEqual("[Attachment 'Attachment1': text/plain]\n"
-                    + "[Begin Section 'Test Section']\n"
-                    + "Foo\n"
-                    + "[Embedded Attachment 'Attachment1']\n"
-                    + "[End Section]\n",
+                Assert.AreEqual("Test Section\n"
+                    + "Foo\n",
                     output);
             }
             finally

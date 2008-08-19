@@ -83,13 +83,13 @@ namespace Gallio.Runner.Reports
         }
 
         /// <inheritdoc />
-        public void SerializeReport(XmlWriter xmlWriter, TestLogAttachmentContentDisposition attachmentContentDisposition)
+        public void SerializeReport(XmlWriter xmlWriter, AttachmentContentDisposition attachmentContentDisposition)
         {
             if (xmlWriter == null)
                 throw new ArgumentNullException(@"xmlWriter");
 
-            Dictionary<TestLogAttachment, KeyValuePair<TestLogAttachmentContentDisposition, string>>
-                originalAttachmentData = new Dictionary<TestLogAttachment, KeyValuePair<TestLogAttachmentContentDisposition, string>>();
+            Dictionary<AttachmentData, KeyValuePair<AttachmentContentDisposition, string>>
+                originalAttachmentData = new Dictionary<AttachmentData, KeyValuePair<AttachmentContentDisposition, string>>();
             try
             {
                 XmlAttributes ignoreAttributes = new XmlAttributes();
@@ -100,17 +100,17 @@ namespace Gallio.Runner.Reports
                 overrides.Add(typeof(TestStepData), @"ParentId", ignoreAttributes);
 
                 // Only include content path when linking.
-                if (attachmentContentDisposition != TestLogAttachmentContentDisposition.Link)
+                if (attachmentContentDisposition != AttachmentContentDisposition.Link)
                 {
-                    overrides.Add(typeof(TestLogAttachment), @"ContentPath", ignoreAttributes);
+                    overrides.Add(typeof(AttachmentData), @"ContentPath", ignoreAttributes);
                 }
 
                 // Only include content data when inline.
-                if (attachmentContentDisposition != TestLogAttachmentContentDisposition.Inline)
+                if (attachmentContentDisposition != AttachmentContentDisposition.Inline)
                 {
-                    overrides.Add(typeof(TestLogAttachment), @"InnerText", ignoreAttributes);
-                    overrides.Add(typeof(TestLogAttachment), @"InnerXml", ignoreAttributes);
-                    overrides.Add(typeof(TestLogAttachment), @"Encoding", ignoreAttributes);
+                    overrides.Add(typeof(AttachmentData), @"InnerText", ignoreAttributes);
+                    overrides.Add(typeof(AttachmentData), @"InnerXml", ignoreAttributes);
+                    overrides.Add(typeof(AttachmentData), @"Encoding", ignoreAttributes);
                 }
 
                 // Munge the content paths and content disposition.
@@ -118,9 +118,9 @@ namespace Gallio.Runner.Reports
                 {
                     foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
                     {
-                        foreach (TestLogAttachment attachment in testStepRun.TestLog.Attachments)
+                        foreach (AttachmentData attachment in testStepRun.TestLog.Attachments)
                         {
-                            originalAttachmentData.Add(attachment, new KeyValuePair<TestLogAttachmentContentDisposition, string>(
+                            originalAttachmentData.Add(attachment, new KeyValuePair<AttachmentContentDisposition, string>(
                                 attachment.ContentDisposition, attachment.ContentPath));
 
                             string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
@@ -137,8 +137,8 @@ namespace Gallio.Runner.Reports
             finally
             {
                 // Restore content disposition and path in the XML document to the original values.
-                foreach (KeyValuePair<TestLogAttachment,
-                    KeyValuePair<TestLogAttachmentContentDisposition, string>> pair in originalAttachmentData)
+                foreach (KeyValuePair<AttachmentData,
+                    KeyValuePair<AttachmentContentDisposition, string>> pair in originalAttachmentData)
                 {
                     pair.Key.ContentDisposition = pair.Value.Key;
                     pair.Key.ContentPath = pair.Value.Value;
@@ -147,7 +147,7 @@ namespace Gallio.Runner.Reports
         }
 
         /// <inheritdoc />
-        public void SaveReport(TestLogAttachmentContentDisposition attachmentContentDisposition,
+        public void SaveReport(AttachmentContentDisposition attachmentContentDisposition,
             IProgressMonitor progressMonitor)
         {
             if (progressMonitor == null)
@@ -179,7 +179,7 @@ namespace Gallio.Runner.Reports
                 progressMonitor.Worked(1);
                 progressMonitor.SetStatus(@"");
 
-                if (attachmentContentDisposition == TestLogAttachmentContentDisposition.Link && attachmentCount != 0)
+                if (attachmentContentDisposition == AttachmentContentDisposition.Link && attachmentCount != 0)
                 {
                     progressMonitor.ThrowIfCanceled();
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(attachmentCount))
@@ -208,7 +208,7 @@ namespace Gallio.Runner.Reports
             {
                 foreach (TestStepRun testStepRun in report.TestPackageRun.AllTestStepRuns)
                 {
-                    foreach (TestLogAttachment attachment in testStepRun.TestLog.Attachments)
+                    foreach (AttachmentData attachment in testStepRun.TestLog.Attachments)
                     {
                         string attachmentPath = GetAttachmentPath(testStepRun.Step.Id, attachment.Name);
 
@@ -225,10 +225,10 @@ namespace Gallio.Runner.Reports
             }
         }
 
-        private void SaveAttachmentContents(TestLogAttachment attachment, string attachmentPath)
+        private void SaveAttachmentContents(AttachmentData attachmentData, string attachmentPath)
         {
-            using (Stream attachmentStream = reportContainer.OpenWrite(attachmentPath, attachment.ContentType, Encoding.UTF8))
-                attachment.SaveContents(attachmentStream, Encoding.UTF8);
+            using (Stream attachmentStream = reportContainer.OpenWrite(attachmentPath, attachmentData.ContentType, Encoding.UTF8))
+                attachmentData.SaveContents(attachmentStream, Encoding.UTF8);
         }
 
         private string GetAttachmentPath(string testStepId, string attachmentName)

@@ -15,24 +15,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Xml.Serialization;
-using Gallio.Utilities;
+using Gallio.Framework.Comparisons;
+using MbUnit.Framework;
 
-namespace Gallio.Runner.Reports
+namespace Gallio.Tests.Framework.Comparisons
 {
-    /// <summary>
-    /// An Xml-serializable execution log body.
-    /// Contains all other tags within a log stream.
-    /// </summary>
-    [Serializable]
-    [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-    public sealed class TestLogStreamBodyTag : TestLogStreamContainerTag
+    [TestsOn(typeof(Diff))]
+    [Pending]
+    public class DiffTest
     {
-        /// <inheritdoc />
-        public override void Accept(ITestLogStreamTagVisitor visitor)
-        {
-            visitor.VisitBodyTag(this);
-        }
     }
 }

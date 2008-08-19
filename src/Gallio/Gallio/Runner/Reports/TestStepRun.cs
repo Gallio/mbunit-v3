@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Collections;
 using Gallio.Model;
+using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Utilities;
 
@@ -36,7 +37,7 @@ namespace Gallio.Runner.Reports
         private DateTime startTime;
         private DateTime endTime;
         private TestResult result;
-        private TestLog testLog;
+        private StructuredTestLog testLog;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -132,12 +133,12 @@ namespace Gallio.Runner.Reports
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlElement("testLog", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
-        public TestLog TestLog
+        public StructuredTestLog TestLog
         {
             get
             {
                 if (testLog == null)
-                    testLog = new TestLog();
+                    testLog = new StructuredTestLog();
                 return testLog;
             }
             set

@@ -331,7 +331,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     else
                         pendingBanner = banner;
 
-                    foreach (TestLogStream stream in run.TestLog.Streams)
+                    foreach (StructuredTestLogStream stream in run.TestLog.Streams)
                         OutputLogStreamContents(stream);
 
                     if (nestingCount == 0)
@@ -339,7 +339,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 }
             }
 
-            private void OutputLogStreamContents(TestLogStream stream)
+            private void OutputLogStreamContents(StructuredTestLogStream stream)
             {
                 string contents = string.Concat("*** ", stream.Name, " ***\n", stream.ToString(), "\n");
 

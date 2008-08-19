@@ -17,18 +17,55 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using Gallio;
 using Gallio.Model.Diagnostics;
 
 namespace MbUnit.Framework
 {
     /// <summary>
+    /// <para>
     /// Defines a set of assertions.
+    /// </para>
+    /// <para>
+    /// Each assertion is generally provided in at least 4 flavors distinguished by overloads:
+    /// <list type="bullet">
+    /// <item>A simple form that takes only the assertion parameters.</item>
+    /// <item>A simple form that accepts a custom message format string and arguments in addition to the assertion parameters.</item>
+    /// <item>A rich form that takes the assertion parameters and a custom comparer object.</item>
+    /// <item>A rich form that accepts a custom message format string and arguments in addition to the assertion parameters and a custom comparer object.</item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// The value upon which the assertion is being evaluated is usually called the "actual value".
+    /// Other parameters for the assertion are given names such as the "expected value", "unexpected value",
+    /// or other terms as appropriate.  In some cases where the role of a parameter is ambiguous,
+    /// we may use designations such as "left" and "right" to distinguish the parameters.
+    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Framework authors may choose to extend this class with additional assertions by creating
+    /// a subclass.  Alternately, new assertions can be defined in other classes.
+    /// </para>
+    /// <para>
+    /// When formatting values for inclusion in assertion failures, it is recommended to use the
+    /// formatter provided by the <see cref="AssertionFailureBuilder.Formatter" /> property instead
+    /// of directly calling <see cref="Object.ToString" />.  This enables custom formatting rules to
+    /// decide how best to present values of particular types and yields a more consistent user experience.
+    /// In particular the <see cref="AssertionFailureBuilder.SetRawLabeledValue" /> method and
+    /// its siblings automatically format values in this manner.
+    /// </para>
+    /// </remarks>
     [TestFrameworkInternal]
     public abstract class NewAssert
     {
+        /// <summary>
+        /// Prevents instatiation.
+        /// </summary>
+        protected NewAssert()
+        {
+        }
+
         #region Private stuff
         /// <summary>
         /// Always throws a <see cref="InvalidOperationException" />.
@@ -140,7 +177,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (comparer == null)
                     comparer = DefaultEqualityComparer;
@@ -150,8 +187,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected values to be equal.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetExpectedValue(expectedValue)
-                    .SetActualValue(actualValue)
+                    .SetRawExpectedAndActualValueWithDiffs(expectedValue, actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -159,96 +195,96 @@ namespace MbUnit.Framework
 
         #region AreNotEqual
         /// <summary>
-        /// Verifies that an actual value does not equal some expected value.
+        /// Verifies that an actual value does not equal some unexpected value.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedValue">The expected value</param>
+        /// <param name="unexpectedValue">The unexpected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotEqual<T>(T expectedValue, T actualValue)
+        public static void AreNotEqual<T>(T unexpectedValue, T actualValue)
         {
-            AreNotEqual<T>(expectedValue, actualValue, (string)null, null);
+            AreNotEqual<T>(unexpectedValue, actualValue, (string)null, null);
         }
 
         /// <summary>
-        /// Verifies that an actual value does not equal some expected value.
+        /// Verifies that an actual value does not equal some unexpected value.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedValue">The expected value</param>
+        /// <param name="unexpectedValue">The unexpected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotEqual<T>(T expectedValue, T actualValue, string messageFormat, params object[] messageArgs)
+        public static void AreNotEqual<T>(T unexpectedValue, T actualValue, string messageFormat, params object[] messageArgs)
         {
-            AreNotEqual<T>(expectedValue, actualValue, (Func<T, T, bool>)null, messageFormat, messageArgs);
+            AreNotEqual<T>(unexpectedValue, actualValue, (Func<T, T, bool>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
-        /// Verifies that an actual value does not equal some expected value according to a particular comparer.
+        /// Verifies that an actual value does not equal some unexpected value according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedValue">The expected value</param>
+        /// <param name="unexpectedValue">The unexpected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotEqual<T>(T expectedValue, T actualValue, IEqualityComparer<T> comparer)
+        public static void AreNotEqual<T>(T unexpectedValue, T actualValue, IEqualityComparer<T> comparer)
         {
-            AreNotEqual<T>(expectedValue, actualValue, comparer, null, null);
+            AreNotEqual<T>(unexpectedValue, actualValue, comparer, null, null);
         }
 
         /// <summary>
-        /// Verifies that an actual value does not equal some expected value according to a particular comparer.
+        /// Verifies that an actual value does not equal some unexpected value according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedValue">The expected value</param>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotEqual<T>(T expectedValue, T actualValue, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
-        {
-            AreNotEqual<T>(expectedValue, actualValue, comparer != null ? comparer.Equals : (Func<T, T, bool>)null, messageFormat, messageArgs);
-        }
-
-        /// <summary>
-        /// Verifies that an actual value does not equal some expected value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedValue">The expected value</param>
-        /// <param name="actualValue">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotEqual<T>(T expectedValue, T actualValue, Func<T, T, bool> comparer)
-        {
-            AreNotEqual<T>(expectedValue, actualValue, comparer, null, null);
-        }
-
-        /// <summary>
-        /// Verifies that an actual value does not equal some expected value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedValue">The expected value</param>
+        /// <param name="unexpectedValue">The unexpected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotEqual<T>(T expectedValue, T actualValue, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        public static void AreNotEqual<T>(T unexpectedValue, T actualValue, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AreNotEqual<T>(unexpectedValue, actualValue, comparer != null ? comparer.Equals : (Func<T, T, bool>)null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that an actual value does not equal some unexpected value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="unexpectedValue">The unexpected value</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreNotEqual<T>(T unexpectedValue, T actualValue, Func<T, T, bool> comparer)
+        {
+            AreNotEqual<T>(unexpectedValue, actualValue, comparer, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an actual value does not equal some unexpected value according to a particular comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="unexpectedValue">The unexpected value</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreNotEqual<T>(T unexpectedValue, T actualValue, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        {
+            AssertionHelper.Verify(delegate
             {
                 if (comparer == null)
                     comparer = DefaultEqualityComparer;
 
-                if (!comparer(expectedValue, actualValue))
+                if (! comparer(unexpectedValue, actualValue))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be non-equal.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetExpectedValue(expectedValue)
-                    .SetActualValue(actualValue)
+                    .SetRawLabeledValue("Unexpected Value", unexpectedValue)
+                    .SetRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -280,15 +316,14 @@ namespace MbUnit.Framework
         public static void AreSame<T>(T expectedValue, T actualValue, string messageFormat, params object[] messageArgs)
             where T : class
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (Object.ReferenceEquals(expectedValue, actualValue))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be referentially identical.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetExpectedValue(expectedValue)
-                    .SetActualValue(actualValue)
+                    .SetRawExpectedAndActualValueWithDiffs(expectedValue, actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -296,39 +331,39 @@ namespace MbUnit.Framework
 
         #region AreNotSame
         /// <summary>
-        /// Verifies that an actual value is not referentially identical to some expected value.
+        /// Verifies that an actual value is not referentially identical to some unexpected value.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedValue">The expected value</param>
+        /// <param name="unexpectedValue">The unexpected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotSame<T>(T expectedValue, T actualValue)
+        public static void AreNotSame<T>(T unexpectedValue, T actualValue)
             where T : class
         {
-            AreNotSame<T>(expectedValue, actualValue, (string)null, null);
+            AreNotSame<T>(unexpectedValue, actualValue, (string)null, null);
         }
 
         /// <summary>
-        /// Verifies that an actual value is not referentially identical to some expected value.
+        /// Verifies that an actual value is not referentially identical to some unexpected value.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedValue">The expected value</param>
+        /// <param name="unexpectedValue">The unexpected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotSame<T>(T expectedValue, T actualValue, string messageFormat, params object[] messageArgs)
+        public static void AreNotSame<T>(T unexpectedValue, T actualValue, string messageFormat, params object[] messageArgs)
             where T : class
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
-                if (!Object.ReferenceEquals(expectedValue, actualValue))
+                if (! Object.ReferenceEquals(unexpectedValue, actualValue))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be referentially different.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetExpectedValue(expectedValue)
-                    .SetActualValue(actualValue)
+                    .SetRawLabeledValue("Unexpected Value", unexpectedValue)
+                    .SetRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -356,15 +391,90 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Contains(string actualValue, string expectedSubstring, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (actualValue.Contains(expectedSubstring))
                     return null;
 
                 return new AssertionFailureBuilder("Expected string to contain a particular substring.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetLabeledValue("Expected Substring", expectedSubstring)
-                    .SetActualValue(actualValue)
+                    .SetRawLabeledValue("Expected Substring", expectedSubstring)
+                    .SetRawActualValue(actualValue)
+                    .ToAssertionFailure();
+            });
+        }
+
+        /// <summary>
+        /// Asserts that <paramref name="expectedValue"/> is in the enumeration <paramref name="enumeration"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="enumeration">The enumeration of items</param>
+        /// <param name="expectedValue">The expected value expected to be found in the collection</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        static public void Contains<T>(IEnumerable<T> enumeration, T expectedValue)
+        {
+            Contains(enumeration, expectedValue, null);
+        }
+
+        /// <summary>
+        /// Asserts that <paramref name="expectedValue"/> is in the enumeration <paramref name="enumeration"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="enumeration">The enumeration of items</param>
+        /// <param name="expectedValue">The expected value expected to be found in the collection</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        static public void Contains<T>(IEnumerable<T> enumeration, T expectedValue, string messageFormat, params object[] messageArgs)
+        {
+            AssertionHelper.Verify(delegate
+            {
+                foreach (T item in enumeration)
+                    if (DefaultEqualityComparer(expectedValue, item))
+                        return null;
+
+                return new AssertionFailureBuilder("Expected the value to appear within the enumeration.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .SetRawExpectedValue(expectedValue)
+                    .SetRawLabeledValue("Enumeration", enumeration)
+                    .ToAssertionFailure();
+            });
+        }
+
+        /// <summary>
+        /// Asserts that <paramref name="key"/> is in the dictionary <paramref name="dictionary"/>.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key</typeparam>
+        /// <typeparam name="TValue">The type of value</typeparam>
+        /// <param name="dictionary">The dictionary of items</param>
+        /// <param name="key">The key expected to be found in the dictionary</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        static public void ContainsKey<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
+        {
+            ContainsKey(dictionary, key, null);
+        }
+
+        /// <summary>
+        /// Asserts that <paramref name="key"/> is in the dictionary <paramref name="dictionary"/>.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key</typeparam>
+        /// <typeparam name="TValue">The type of value</typeparam>
+        /// <param name="dictionary">The dictionary of items</param>
+        /// <param name="key">The key expected to be found in the dictionary</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        static public void ContainsKey<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, string messageFormat, params object[] messageArgs)
+        {
+            AssertionHelper.Verify(delegate
+            {
+                if (dictionary.ContainsKey(key))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected the key to appear within the dictionary.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .SetRawLabeledValue("Key", key)
+                    .SetRawLabeledValue("Dictionary", dictionary)
                     .ToAssertionFailure();
             });
         }
@@ -372,35 +482,35 @@ namespace MbUnit.Framework
 
         #region DoesNotContain
         /// <summary>
-        /// Verifies that a string does not contain some expected value.
+        /// Verifies that a string does not contain some unexpected substring.
         /// </summary>
         /// <param name="actualValue">The actual value</param>
-        /// <param name="expectedSubstring">The expected substring</param>
+        /// <param name="unexpectedSubstring">The unexpected substring</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void DoesNotContain(string actualValue, string expectedSubstring)
+        public static void DoesNotContain(string actualValue, string unexpectedSubstring)
         {
-            DoesNotContain(actualValue, expectedSubstring, null);
+            DoesNotContain(actualValue, unexpectedSubstring, null);
         }
 
         /// <summary>
-        /// Verifies that a string does not contain some expected value.
+        /// Verifies that a string does not contain some unexpected substring.
         /// </summary>
         /// <param name="actualValue">The actual value</param>
-        /// <param name="expectedSubstring">The expected substring</param>
+        /// <param name="unexpectedSubstring">The unexpected substring</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void DoesNotContain(string actualValue, string expectedSubstring, string messageFormat, params object[] messageArgs)
+        public static void DoesNotContain(string actualValue, string unexpectedSubstring, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
-                if (!actualValue.Contains(expectedSubstring))
+                if (! actualValue.Contains(unexpectedSubstring))
                     return null;
 
                 return new AssertionFailureBuilder("Expected string to not contain a particular substring.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetLabeledValue("Expected Substring", expectedSubstring)
-                    .SetActualValue(actualValue)
+                    .SetRawLabeledValue("Unexpected Substring", unexpectedSubstring)
+                    .SetRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -426,14 +536,14 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsTrue(bool actualValue, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (actualValue)
                     return null;
 
                 return new AssertionFailureBuilder("Expected value to be true.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetActualValue(actualValue)
+                    .SetRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -459,14 +569,14 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsFalse(bool actualValue, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (!actualValue)
                     return null;
 
                 return new AssertionFailureBuilder("Expected value to be false.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetActualValue(actualValue)
+                    .SetRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -492,14 +602,14 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsNull(object actualValue, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (actualValue == null)
                     return null;
 
                 return new AssertionFailureBuilder("Expected value to be null.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetActualValue(actualValue)
+                    .SetRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -525,14 +635,14 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void IsNotNull(object actualValue, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (actualValue != null)
                     return null;
 
                 return new AssertionFailureBuilder("Expected value to be non-null.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetActualValue(actualValue)
+                    .SetRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -558,19 +668,6 @@ namespace MbUnit.Framework
         /// <param name="left">The expected value</param>
         /// <param name="right">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThan<T>(T left, T right, string messageFormat)
-        {
-            GreaterThan(left, right, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that an left value is greater than right value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="left">The expected value</param>
-        /// <param name="right">The actual value</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void GreaterThan<T>(T left, T right, string messageFormat, params object[] messageArgs)
@@ -586,7 +683,7 @@ namespace MbUnit.Framework
         /// <param name="right">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThan<T>(T left, T right, Func<T, T, int> comparer)
+        public static void GreaterThan<T>(T left, T right, Comparison<T> comparer)
         {
             GreaterThan(left, right, comparer, null, null);
         }
@@ -599,23 +696,9 @@ namespace MbUnit.Framework
         /// <param name="right">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat)
-        {
-            GreaterThan(left, right, comparer, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that an left value is greater than right value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="left">The expected value</param>
-        /// <param name="right">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
+        public static void GreaterThan<T>(T left, T right, Comparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertOrder(left, right, comparer
                     , "Expected left to be greater than right."
@@ -643,19 +726,6 @@ namespace MbUnit.Framework
         /// <param name="left">The expected value</param>
         /// <param name="right">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThanOrEqual<T>(T left, T right, string messageFormat)
-        {
-            GreaterThanOrEqual(left, right, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that an left value is greater or equal than right value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="left">The expected value</param>
-        /// <param name="right">The actual value</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void GreaterThanOrEqual<T>(T left, T right, string messageFormat, params object[] messageArgs)
@@ -671,7 +741,7 @@ namespace MbUnit.Framework
         /// <param name="right">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThanOrEqual<T>(T left, T right, Func<T, T, int> comparer)
+        public static void GreaterThanOrEqual<T>(T left, T right, Comparison<T> comparer)
         {
             GreaterThanOrEqual(left, right, comparer, null, null);
         }
@@ -684,23 +754,9 @@ namespace MbUnit.Framework
         /// <param name="right">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThanOrEqual<T>(T left, T right, Func<T, T, int> comparer, string messageFormat)
-        {
-            GreaterThanOrEqual(left, right, comparer, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that an left value is greater or equal than right value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="left">The expected value</param>
-        /// <param name="right">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void GreaterThanOrEqual<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
+        public static void GreaterThanOrEqual<T>(T left, T right, Comparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertOrder(left, right, comparer
                  , "Expected left to be greater or equal than right."
@@ -730,19 +786,6 @@ namespace MbUnit.Framework
         /// <param name="left">The expected value</param>
         /// <param name="right">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void LessThan<T>(T left, T right, string messageFormat)
-        {
-            LessThan(left, right, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that an left value is less than right value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="left">The expected value</param>
-        /// <param name="right">The actual value</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void LessThan<T>(T left, T right, string messageFormat, params object[] messageArgs)
@@ -758,7 +801,7 @@ namespace MbUnit.Framework
         /// <param name="right">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void LessThan<T>(T left, T right, Func<T, T, int> comparer)
+        public static void LessThan<T>(T left, T right, Comparison<T> comparer)
         {
             LessThan(left, right, comparer, null, null);
         }
@@ -771,23 +814,9 @@ namespace MbUnit.Framework
         /// <param name="right">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void LessThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat)
-        {
-            LessThan(left, right, comparer, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that an left value is less than right value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="left">The expected value</param>
-        /// <param name="right">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void LessThan<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
+        public static void LessThan<T>(T left, T right, Comparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertOrder(left, right, comparer
                     , "Expected left to be less than right."
@@ -816,19 +845,6 @@ namespace MbUnit.Framework
         /// <param name="left">The expected value</param>
         /// <param name="right">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void LessThanOrEqual<T>(T left, T right, string messageFormat)
-        {
-            LessThanOrEqual(left, right, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that an left value is less or equal than right value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="left">The expected value</param>
-        /// <param name="right">The actual value</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void LessThanOrEqual<T>(T left, T right, string messageFormat, params object[] messageArgs)
@@ -844,7 +860,7 @@ namespace MbUnit.Framework
         /// <param name="right">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void LessThanOrEqual<T>(T left, T right, Func<T, T, int> comparer)
+        public static void LessThanOrEqual<T>(T left, T right, Comparison<T> comparer)
         {
             LessThanOrEqual(left, right, comparer, null, null);
         }
@@ -857,23 +873,9 @@ namespace MbUnit.Framework
         /// <param name="right">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void LessThanOrEqual<T>(T left, T right, Func<T, T, int> comparer, string messageFormat)
-        {
-            LessThanOrEqual(left, right, comparer, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that an left value is less or equal than right value according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="left">The expected value</param>
-        /// <param name="right">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void LessThanOrEqual<T>(T left, T right, Func<T, T, int> comparer, string messageFormat, params object[] messageArgs)
+        public static void LessThanOrEqual<T>(T left, T right, Comparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertOrder(left, right, comparer
                     , "Expected left to be less or equal than right."
@@ -888,97 +890,70 @@ namespace MbUnit.Framework
         /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
-        public static void Between<T>(T test, T left, T right)
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="minimum">Inclusive minimum value</param>
+        /// <param name="maximum">Inclusive maximum value</param>
+        public static void Between<T>(T actualValue, T minimum, T maximum)
         {
-            Between(test, left, right, (string)null, null);
+            Between(actualValue, minimum, maximum, (string)null, null);
         }
 
         /// <summary>
         /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Between<T>(T test, T left, T right, string messageFormat)
-        {
-            Between(test, left, right, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that a test value is between left and right values according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="minimum">Inclusive minimum value</param>
+        /// <param name="maximum">Inclusive maximum value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Between<T>(T test, T left, T right, string messageFormat, params object[] messageArgs)
+        public static void Between<T>(T actualValue, T minimum, T maximum, string messageFormat, params object[] messageArgs)
         {
-            Between(test, left, right, null, messageFormat, messageArgs);
+            Between(actualValue, minimum, maximum, null, messageFormat, messageArgs);
         }
 
         /// <summary>
         /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="minimum">Inclusive minimum value</param>
+        /// <param name="maximum">Inclusive maximum value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Between<T>(T test, T left, T right, Func<T, T, T, int> comparer)
+        public static void Between<T>(T actualValue, T minimum, T maximum, Comparison<T> comparer)
         {
-            Between(test, left, right, comparer, null, null);
+            Between(actualValue, minimum, maximum, comparer, null, null);
         }
 
         /// <summary>
         /// Verifies that a test value is between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Between<T>(T test, T left, T right, Func<T, T, T, int> comparer, string messageFormat)
-        {
-            Between(test, left, right, comparer, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that a test value is between left and right values according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="minimum">Inclusive minimum value</param>
+        /// <param name="maximum">Inclusive maximum value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Between<T>(T test, T left, T right, Func<T, T, T, int> comparer, string messageFormat, params object[] messageArgs)
+        public static void Between<T>(T actualValue, T minimum, T maximum, Comparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (comparer == null)
-                    comparer = BetweenCompare;
+                    comparer = DefaultCompare;
 
-                if (comparer(test, left, right) == 0)
+                if (comparer(actualValue, minimum) >= 0
+                    && comparer(actualValue, maximum) <= 0)
                     return null;
 
-                return new AssertionFailureBuilder("The test value is not in the range.")
+                return new AssertionFailureBuilder("The actual value should be between the minimum and maximum values.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetLabeledValue("Test Value", test)
-                    .SetLabeledValue("Range", String.Format("({0} - {1})", left, right))
+                    .SetRawActualValue(actualValue)
+                    .SetRawLabeledValue("Minimum Value", minimum)
+                    .SetRawLabeledValue("Maximum Value", maximum)
                     .ToAssertionFailure();
             });
         }
@@ -990,97 +965,70 @@ namespace MbUnit.Framework
         /// Verifies that a test value is not between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
-        public static void NotBetween<T>(T test, T left, T right)
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="minimum">Inclusive minimum value</param>
+        /// <param name="maximum">Inclusive maximum value</param>
+        public static void NotBetween<T>(T actualValue, T minimum, T maximum)
         {
-            NotBetween(test, left, right, (string)null, null);
+            NotBetween(actualValue, minimum, maximum, (string)null, null);
         }
 
         /// <summary>
         /// Verifies that a test value is not between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void NotBetween<T>(T test, T left, T right, string messageFormat)
-        {
-            NotBetween(test, left, right, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that a test value is not between left and right values according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="minimum">Inclusive minimum value</param>
+        /// <param name="maximum">Inclusive maximum value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void NotBetween<T>(T test, T left, T right, string messageFormat, params object[] messageArgs)
+        public static void NotBetween<T>(T actualValue, T minimum, T maximum, string messageFormat, params object[] messageArgs)
         {
-            NotBetween(test, left, right, null, messageFormat, messageArgs);
+            NotBetween(actualValue, minimum, maximum, null, messageFormat, messageArgs);
         }
 
         /// <summary>
         /// Verifies that a test value is not between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="minimum">Inclusive minimum value</param>
+        /// <param name="maximum">Inclusive maximum value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void NotBetween<T>(T test, T left, T right, Func<T, T, T, int> comparer)
+        public static void NotBetween<T>(T actualValue, T minimum, T maximum, Comparison<T> comparer)
         {
-            NotBetween(test, left, right, comparer, null, null);
+            NotBetween(actualValue, minimum, maximum, comparer, null, null);
         }
 
         /// <summary>
         /// Verifies that a test value is not between left and right values according to a particular comparer.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void NotBetween<T>(T test, T left, T right, Func<T, T, T, int> comparer, string messageFormat)
-        {
-            NotBetween(test, left, right, comparer, messageFormat, null);
-        }
-
-        /// <summary>
-        /// Verifies that a test value is not between left and right values according to a particular comparer.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value</param>
-        /// <param name="left">Left limit</param>
-        /// <param name="right">Right limit</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="minimum">Inclusive minimum value</param>
+        /// <param name="maximum">Inclusive maximum value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void NotBetween<T>(T test, T left, T right, Func<T, T, T, int> comparer, string messageFormat, params object[] messageArgs)
+        public static void NotBetween<T>(T actualValue, T minimum, T maximum, Comparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 if (comparer == null)
-                    comparer = BetweenCompare;
+                    comparer = DefaultCompare;
 
-                if (comparer(test, left, right) != 0)
+                if (comparer(actualValue, minimum) < 0
+                    || comparer(actualValue, maximum) > 0)
                     return null;
 
-                return new AssertionFailureBuilder("The test value is in the range.")
+                return new AssertionFailureBuilder("The actual value should not be between the minimum and maximum values.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetLabeledValue("Test Value", test)
-                    .SetLabeledValue("Range", String.Format("({0} - {1})", left, right))
+                    .SetRawActualValue(actualValue)
+                    .SetRawLabeledValue("Minimum Value", minimum)
+                    .SetRawLabeledValue("Maximum Value", maximum)
                     .ToAssertionFailure();
             });
         }
@@ -1088,123 +1036,38 @@ namespace MbUnit.Framework
 
         #region Fail
         /// <summary>
-        /// Throws an <see cref="AssertionException"/> with the message that is
-        /// passed in. This is used by the other Assert functions.
+        /// Signals an assertion failure.
         /// </summary>
-        /// <param name="messageFormat">
-        /// The format of the message to initialize the <see cref="AssertionException"/> with.
-        /// </param>
-        /// <param name="messageArgs">
-        /// An <see cref="Object"/> array containing zero or more objects to format.
-        /// </param>
         /// <remarks>
         /// <para>
-        /// The error message is formatted using <see cref="String.Format(string, object[])"/>.
+        /// Use <see cref="AssertionHelper.Verify" /> and <see cref="AssertionHelper.Fail" />
+        /// instead when implementing custom assertions.
         /// </para>
         /// </remarks>
-        static public void Fail(string messageFormat, params object[] messageArgs)
-        {
-            AssertHelper.Fail(new AssertionFailureBuilder("Custom failure.")
-                .SetMessage(messageFormat, messageArgs)
-                .ToAssertionFailure());
-        }
-
-        /// <summary>
-        /// Throws an <see cref="AssertionException"/> with the message that is
-        /// passed in. This is used by the other Assert functions.
-        /// </summary>
-        /// <param name="message">The message to initialize the <see cref="AssertionException"/> with.</param>
-        static public void Fail(string message)
-        {
-            Fail(message, null);
-        }
-
-        /// <summary>
-        /// Throws an <see cref="AssertionException"/> with the message that is
-        /// passed in. This is used by the other Assert functions.
-        /// </summary>
-        static public void Fail()
+        /// <exception cref="AssertionException">Thrown unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void Fail()
         {
             Fail(string.Empty);
         }
-        #endregion
-
-        #region In
 
         /// <summary>
-        /// Asserts that <paramref name="test"/> is in the collection <paramref name="list"/>.
+        /// Signals an assertion failure with a particular message.
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value expected to be found in the collection.</param>
-        /// <param name="list">list of items.</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        static public void In<T>(T test, ICollection<T> list)
+        /// <param name="messageFormat">The format of the assertion failure message</param>
+        /// <param name="messageArgs">The arguments for the assertion failure message format string</param>
+        /// <remarks>
+        /// <para>
+        /// Use <see cref="AssertionHelper.Verify" /> and <see cref="AssertionHelper.Fail" />
+        /// instead when implementing custom assertions.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="AssertionException">Thrown unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void Fail(string messageFormat, params object[] messageArgs)
         {
-            In(test, list, null);
+            AssertionHelper.Fail(new AssertionFailureBuilder("An assertion failed.")
+                .SetMessage(messageFormat, messageArgs)
+                .ToAssertionFailure());
         }
-
-        /// <summary>
-        /// Asserts that <paramref name="test"/> is in the collection <paramref name="list"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="test">The test value expected to be found in the collection.</param>
-        /// <param name="list">list of items.</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        static public void In<T>(T test, ICollection<T> list, string messageFormat, params object[] messageArgs)
-        {
-            AssertHelper.Verify(delegate
-            {
-                if (list.Contains(test))
-                    return null;
-
-                return new AssertionFailureBuilder("The test value is not in the IList collection.")
-                    .SetMessage(messageFormat, messageArgs)
-                    .SetLabeledValue("Test Value", test)
-                    .SetLabeledValue("List Values", OutputCollectionValues(list))
-                    .ToAssertionFailure();
-            });
-        }
-
-        /// <summary>
-        /// Asserts that <paramref name="test"/> is in the dictionary <paramref name="dictionary"/>.
-        /// </summary>
-        /// <typeparam name="TKey">The type of key</typeparam>
-        /// <typeparam name="TValue">The type of value</typeparam>
-        /// <param name="test">The test value expected to be found in the list.</param>
-        /// <param name="dictionary">list of items.</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        static public void In<TKey, TValue>(TKey test, IDictionary<TKey, TValue> dictionary)
-        {
-            In(test, dictionary, null);
-        }
-
-        /// <summary>
-        /// Asserts that <paramref name="test"/> is in the dictionary <paramref name="dictionary"/>.
-        /// </summary>
-        /// <typeparam name="TKey">The type of key</typeparam>
-        /// <typeparam name="TValue">The type of value</typeparam>
-        /// <param name="test">The test value expected to be found in the list.</param>
-        /// <param name="dictionary">list of items.</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        static public void In<TKey, TValue>(TKey test, IDictionary<TKey, TValue> dictionary, string messageFormat, params object[] messageArgs)
-        {
-            AssertHelper.Verify(delegate
-            {
-                if (dictionary.ContainsKey(test))
-                    return null;
-
-                return new AssertionFailureBuilder("The test value is not in the IDictionary collection.")
-                    .SetMessage(messageFormat, messageArgs)
-                    .SetLabeledValue("Test Value", test)
-                    .SetLabeledValue("List of keys", OutputCollectionValues(dictionary))
-                    .ToAssertionFailure();
-            });
-        }
-
         #endregion
 
         #region Throws
@@ -1264,14 +1127,14 @@ namespace MbUnit.Framework
         public static Exception Throws(Type expectedExceptionType, Action action, string messageFormat, params object[] messageArgs)
         {
             Exception result = null;
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 try
                 {
                     action();
                     return new AssertionFailureBuilder("Expected the block to throw an exception.")
                         .SetMessage(messageFormat, messageArgs)
-                        .SetLabeledValue("Expected Exception Type", expectedExceptionType)
+                        .SetRawLabeledValue("Expected Exception Type", expectedExceptionType)
                         .ToAssertionFailure();
                 }
                 catch (Exception actualException)
@@ -1284,7 +1147,7 @@ namespace MbUnit.Framework
 
                     return new AssertionFailureBuilder("The block threw an exception of a different type than was expected.")
                         .SetMessage(messageFormat, messageArgs)
-                        .SetLabeledValue("Expected Exception Type", expectedExceptionType)
+                        .SetRawLabeledValue("Expected Exception Type", expectedExceptionType)
                         .AddException(actualException)
                         .ToAssertionFailure();
                 }
@@ -1316,7 +1179,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void DoesNotThrow(Action action, string messageFormat, params object[] messageArgs)
         {
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 try
                 {
@@ -1393,7 +1256,7 @@ namespace MbUnit.Framework
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            AssertHelper.Verify(delegate
+            AssertionHelper.Verify(delegate
             {
                 AssertionFailure[] failures = AssertionContext.CurrentContext.CaptureFailures(action,
                     AssertionFailureBehavior.Log, true);
@@ -1463,18 +1326,9 @@ namespace MbUnit.Framework
                     , typeof(T)));
         }
 
-        private static int BetweenCompare<T>(T test, T left, T right)
+        private static void AssertOrder<T>(T left, T right, Comparison<T> comparer, string exceptionMessage, Func<int, bool> isCompareSuccesfull, string messageFormat, params object[] messageArgs)
         {
-            if (DefaultCompare(test, left) < 0)
-                return 1;
-            if (DefaultCompare(test, right) > 0)
-                return -1;
-            return 0;
-        }
-
-        private static void AssertOrder<T>(T left, T right, Func<T, T, int> comparer, string exceptionMessage, Func<int, bool> isCompareSuccesfull, string messageFormat, params object[] messageArgs)
-        {
-            AssertHelper.Verify(() =>
+            AssertionHelper.Verify(() =>
             {
                 if (comparer == null)
                     comparer = DefaultCompare;
@@ -1484,37 +1338,10 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder(exceptionMessage)
                     .SetMessage(messageFormat, messageArgs)
-                    .SetLabeledValue("Left Value", left)
-                    .SetLabeledValue("Right Value", right)
+                    .SetRawLabeledValue("Left Value", left)
+                    .SetRawLabeledValue("Right Value", right)
                     .ToAssertionFailure();
             });
-        }
-
-        private static string OutputCollectionValues<T>(IEnumerable<T> list)
-        {
-            var output = new StringBuilder("{");
-            var count = 0;
-            foreach (var item in list)
-            {
-                if (++count > 3)
-                {
-                    output.Append("...");
-                    break;
-                }
-                output.Append(item.ToString());
-                output.Append(", ");
-            }
-            if (output[output.Length - 1].Equals(' '))
-                output.Remove(output.Length - 2, 2);
-            return output.Append("}").ToString();
-        }
-
-        private static string OutputCollectionValues<TKey, TValue>(IDictionary<TKey, TValue> dictionary)
-        {
-            IList<TKey> list = new List<TKey>();
-            foreach (TKey key in dictionary.Keys)
-                list.Add(key);
-            return OutputCollectionValues(list);
         }
     }
 }
