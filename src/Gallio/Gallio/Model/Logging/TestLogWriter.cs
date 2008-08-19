@@ -369,6 +369,10 @@ namespace Gallio.Model.Logging
         /// <summary>
         /// Writes a text string to a log stream.
         /// </summary>
+        /// <remarks>
+        /// The implementation can assume that newlines are normalized to LFs ('\n') only
+        /// and that CRs ('\r') have been stripped.
+        /// </remarks>
         /// <param name="streamName">The log stream name</param>
         /// <param name="text">The text to write, never null</param>
         protected abstract void StreamWriteImpl(string streamName, string text);
@@ -422,7 +426,10 @@ namespace Gallio.Model.Logging
             lock (this)
             {
                 ThrowIfClosed();
-                StreamWriteImpl(streamName, text);
+
+                text = NormalizeLineEndings(text);
+                if (text.Length != 0)
+                    StreamWriteImpl(streamName, text);
             }
         }
 
@@ -524,6 +531,11 @@ namespace Gallio.Model.Logging
                 streamDepths.Remove(streamName);
             else
                 streamDepths[streamName] = depth - 1;
+        }
+
+        private static string NormalizeLineEndings(string text)
+        {
+            return text.Replace("\r", "");
         }
     }
 }

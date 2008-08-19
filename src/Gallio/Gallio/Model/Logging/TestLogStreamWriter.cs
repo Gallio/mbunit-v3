@@ -35,6 +35,10 @@ namespace Gallio.Model.Logging
     /// The object extends <see cref="MarshalByRefObject" /> so instances may be
     /// accessed by remote clients if required.
     /// </para>
+    /// <para>
+    /// Newlines are always normalized to LFs ('\n') only.  Any CRs ('\r') that are
+    /// written are automatically stripped.
+    /// </para>
     /// </remarks>
     /// <seealso cref="TestLogWriter"/>
     public class TestLogStreamWriter : TextWriter

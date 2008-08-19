@@ -144,9 +144,6 @@ namespace Gallio.Model.Logging
 
             public void Flush()
             {
-                // Normalize newlines before writing out the tags.
-                textBuilder.Replace("\r", "");
-
                 if (textBuilder.Length != 0)
                 {
                     containerStack.Peek().Contents.Add(new StructuredTestLogStream.TextTag(textBuilder.ToString()));

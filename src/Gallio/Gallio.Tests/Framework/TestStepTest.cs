@@ -24,15 +24,15 @@ namespace Gallio.Tests.Framework
         [Test]
         public void CurrentStepHasCorrectTestName()
         {
-            StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName$");
+            StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/TestStepTest/CurrentStepHasCorrectTestName$");
 
             TestStep.RunStep("Step1", delegate
             {
-                StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName/Step1$");
+                StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/TestStepTest/CurrentStepHasCorrectTestName/Step1$");
 
                 TestStep.RunStep("Step2", delegate
                 {
-                    StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName/Step1/Step2$");
+                    StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/TestStepTest/CurrentStepHasCorrectTestName/Step1/Step2$");
                 });
             });
         }

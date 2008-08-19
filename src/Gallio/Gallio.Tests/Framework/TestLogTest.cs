@@ -30,14 +30,14 @@ namespace Gallio.Tests.Framework
         public void LogContainsStaticVersionsOfLogWriterDeclaredMethods()
         {
             AssertContainsStaticVersionsOfDeclaredMethods(typeof(TestLogWriter),
-                "get_Item", "Close");
+                "get_Item", "Close", "get_IsClosed");
         }
 
         [Test]
         public void LogContainsStaticVersionsOfLogStreamWriterDeclaredMethods()
         {
             AssertContainsStaticVersionsOfDeclaredMethods(typeof(TestLogStreamWriter),
-                "get_StreamName", "get_Encoding", "get_NewLine", "set_NewLine", "Flush", "Close");
+                "get_StreamName", "get_Encoding", "get_NewLine", "set_NewLine", "Flush", "Close", "get_Container");
         }
 
         private void AssertContainsStaticVersionsOfDeclaredMethods(Type sourceType, params string[] excludedMethodNames)

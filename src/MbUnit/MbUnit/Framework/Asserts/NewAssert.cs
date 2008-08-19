@@ -72,7 +72,7 @@ namespace MbUnit.Framework
         /// Use <see cref="NewAssert.AreEqual{T}(T, T)" /> instead.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static new void Equals(object a, object b)
+        private static new void Equals(object a, object b)
         {
             throw new InvalidOperationException("Assert.Equals should not be used for assertions.  Use Assert.AreEqual instead.");
         }
@@ -81,7 +81,8 @@ namespace MbUnit.Framework
         /// Always throws a <see cref="InvalidOperationException" />.
         /// Use <see cref="NewAssert.AreSame{T}(T, T)" /> instead.
         /// </summary>
-        public static new void ReferenceEquals(object a, object b)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        private static new void ReferenceEquals(object a, object b)
         {
             throw new InvalidOperationException("Assert.ReferenceEquals should not be used for assertions.  Use Assert.AreSame instead.");
         }
@@ -1169,6 +1170,7 @@ namespace MbUnit.Framework
             DoesNotThrow(action, null, null);
         }
 
+
         /// <summary>
         /// Evaluates an action delegate and verifies that it does not throw an exception of any type.
         /// </summary>
@@ -1263,7 +1265,11 @@ namespace MbUnit.Framework
                 if (failures.Length == 0)
                     return null;
 
-                return new AssertionFailureBuilder(String.Format("There were {0} failures within the multiple assertion block.", failures.Length))
+                string description = failures.Length == 1
+                    ? "There was 1 failure within the multiple assertion block."
+                    : String.Format("There were {0} failures within the multiple assertion block.", failures.Length);
+
+                return new AssertionFailureBuilder(description)
                     .SetMessage(messageFormat, messageArgs)
                     .ToAssertionFailure();
             });

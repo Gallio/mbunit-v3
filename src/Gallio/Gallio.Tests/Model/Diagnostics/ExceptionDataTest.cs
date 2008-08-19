@@ -51,7 +51,10 @@ namespace Gallio.Tests.Model.Diagnostics
         public void PopulatesPropertiesFromException()
         {
             Exception inner = new Exception("Foo");
+            PopulateStackTrace(inner);
+
             Exception outer = new Exception("Bar", inner);
+            PopulateStackTrace(outer);
 
             ExceptionData outerData = new ExceptionData(outer);
             NewAssert.AreEqual(outer.GetType().FullName, outerData.Type);
@@ -94,7 +97,7 @@ namespace Gallio.Tests.Model.Diagnostics
         public void ToStringBareBones()
         {
             ExceptionData data = new ExceptionData("type", "message", "stacktrace", null);
-            NewAssert.AreEqual("Description\n", data.ToString());
+            NewAssert.AreEqual("type: message\nstacktrace", data.ToString());
         }
 
         [Test]
@@ -102,7 +105,7 @@ namespace Gallio.Tests.Model.Diagnostics
         {
             ExceptionData innerData = new ExceptionData("type", "message", "stacktrace", null);
             ExceptionData outerData = new ExceptionData("type", "message", "stacktrace", innerData);
-            NewAssert.AreEqual("Description\n", outerData.ToString());
+            NewAssert.AreEqual("type: message ---> type: message\nstacktrace\n   --- End of inner exception stack trace ---\nstacktrace", outerData.ToString());
         }
 
         [Test]
@@ -112,7 +115,7 @@ namespace Gallio.Tests.Model.Diagnostics
             StringTestLogWriter writer = new StringTestLogWriter(true);
             data.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker 'assertionFailure'][Section 'Description']\n[End]\n[End]", writer.ToString());
+            NewAssert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n[Marker \'StackTrace\']stacktrace[End][End]", writer.ToString());
         }
 
         [Test]
@@ -124,7 +127,18 @@ namespace Gallio.Tests.Model.Diagnostics
             StringTestLogWriter writer = new StringTestLogWriter(true);
             outerData.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker 'assertionFailure'][Section 'Description']\nMessage goes here\n* Expected Value : \"Expected value\"\n* Actual Value   : \"Actual value\"\n* Very Long Label That Will Not Be Padded : \"\"\n* x              : 42\n\n[Marker 'exception'][Marker 'exceptionType']System.Exception[End]: [Marker 'exceptionMessage']Boom[End][End]\n\n[Marker 'exception'][Marker 'exceptionType']System.Exception[End]: [Marker 'exceptionMessage']Kaput[End][End]\n\n[Marker 'stackTrace']Stack goes here\n[End][End]\n[End]", writer.ToString());
+            NewAssert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End] ---> [Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n[Marker \'StackTrace\']stacktrace[End][End]\n   --- End of inner exception stack trace ---\n[Marker \'StackTrace\']stacktrace[End][End]", writer.ToString());
+        }
+
+        private static void PopulateStackTrace(Exception ex)
+        {
+            try
+            {
+                throw ex;
+            }
+            catch
+            {
+            }
         }
     }
 }
