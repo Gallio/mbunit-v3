@@ -78,7 +78,7 @@ namespace MbUnit.Framework
                         string name = String.Format("Threaded Repetition #{0}", index + 1);
                         ThreadTask task = new ThreadTask(name, delegate
                         {
-                            TestContext threadContext = Step.RunStep(name, delegate
+                            TestContext threadContext = TestStep.RunStep(name, delegate
                             {
                                 inner(state);
                             });

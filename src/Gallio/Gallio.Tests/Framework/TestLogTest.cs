@@ -20,11 +20,11 @@ using Gallio.Framework;
 using Gallio.Model.Logging;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Model.Logging
+namespace Gallio.Tests.Framework
 {
     [TestFixture]
-    [TestsOn(typeof(Log))]
-    public class LogTest
+    [TestsOn(typeof(TestLog))]
+    public class TestLogTest
     {
         [Test]
         public void LogContainsStaticVersionsOfLogWriterDeclaredMethods()
@@ -52,7 +52,7 @@ namespace Gallio.Tests.Model.Logging
                     return parameter.ParameterType;
                 });
 
-                MethodInfo targetMethod = typeof(Log).GetMethod(sourceMethod.Name, BindingFlags.Static | BindingFlags.Public,
+                MethodInfo targetMethod = typeof(TestLog).GetMethod(sourceMethod.Name, BindingFlags.Static | BindingFlags.Public,
                     null, parameterTypes, null);
 
                 Assert.IsNotNull(targetMethod, "Log is missing a static method '{0}({1})' corresponding to those defined by type {2}",
@@ -62,7 +62,7 @@ namespace Gallio.Tests.Model.Logging
 
                 Assert.AreEqual(sourceMethod.ReturnType, targetMethod.ReturnType);
 
-                Log.WriteLine("Found method '{0}'", sourceMethod.Name);
+                TestLog.WriteLine("Found method '{0}'", sourceMethod.Name);
             }
         }
     }

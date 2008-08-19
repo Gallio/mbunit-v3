@@ -44,7 +44,7 @@ namespace Gallio.Tests.Runtime
         public void PolicyPerformsCorrelationThenReporting()
         {
             using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath).CreateHost(new HostSetup(),
-                new TestLogStreamLogger(Log.Default)))
+                new TestLogStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 host.GetHostService().Do<object, object>(PolicyPerformsCorrelationThenReportingCallback, null);
@@ -55,7 +55,7 @@ namespace Gallio.Tests.Runtime
         public void PolicyHandlesUnhandledExceptionsAndRecursion()
         {
             using (IHost host = new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath).CreateHost(new HostSetup(),
-                new TestLogStreamLogger(Log.Default)))
+                new TestLogStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 host.GetHostService().Do<object, object>(PolicyHandlesUnhandledExceptionsAndRecursionCallback, null);

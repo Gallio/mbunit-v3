@@ -60,13 +60,13 @@ namespace MbUnit.Tests.Framework
         [Test, Explicit("Explicit")]
         public void SelectedExplicitTest()
         {
-            Log.WriteLine("Got here");
+            TestLog.WriteLine("Got here");
         }
 
         [Test, Explicit("Explicit")]
         public void UnselectedExplicitTest()
         {
-            Log.WriteLine("Got here");
+            TestLog.WriteLine("Got here");
         }
     }
 }

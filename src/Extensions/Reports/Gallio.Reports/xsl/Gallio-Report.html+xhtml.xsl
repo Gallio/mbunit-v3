@@ -547,7 +547,7 @@ html
     <xsl:param name="attachments" />
     <xsl:variable name="attachmentName" select="@attachmentName" />
     
-    <div class="logAttachmentEmbedding">
+    <div class="logStreamEmbed">
       <xsl:apply-templates select="$attachments/g:attachment[@name=$attachmentName]" mode="embed" />
     </div>
   </xsl:template>

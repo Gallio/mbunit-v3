@@ -68,7 +68,7 @@ namespace MbUnit.Tests.Framework
             [Test, Repeat(4)]
             public void Test()
             {
-                Log.WriteLine("Run #{0}", ++index);
+                TestLog.WriteLine("Run #{0}", ++index);
                 if (index == 2)
                     Assert.Fail("Boom");
             }

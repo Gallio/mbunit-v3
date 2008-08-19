@@ -106,7 +106,7 @@ namespace MbUnit.Framework
             }
             catch (Exception)
             {
-                Log.Failures.WriteLine("{0}: {1}", label, RuntimeAccessor.Instance.Resolve<IFormatter>().Format(value));
+                TestLog.Failures.WriteLine("{0}: {1}", label, RuntimeAccessor.Instance.Resolve<IFormatter>().Format(value));
                 throw;
             }
         }
@@ -119,8 +119,8 @@ namespace MbUnit.Framework
             }
             catch (Exception)
             {
-                Log.Failures.WriteLine("{0}: {1}", label1, RuntimeAccessor.Instance.Resolve<IFormatter>().Format(value1));
-                Log.Failures.WriteLine("{0}: {1}", label2, RuntimeAccessor.Instance.Resolve<IFormatter>().Format(value2));
+                TestLog.Failures.WriteLine("{0}: {1}", label1, RuntimeAccessor.Instance.Resolve<IFormatter>().Format(value1));
+                TestLog.Failures.WriteLine("{0}: {1}", label2, RuntimeAccessor.Instance.Resolve<IFormatter>().Format(value2));
                 throw;
             }
         }

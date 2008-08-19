@@ -34,7 +34,7 @@ namespace Gallio.Tests.Runtime.Hosting
         [Test]
         public void IsLocalFlagShouldBeTrue()
         {
-            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger(Log.Default)))
+            using (IHost host = Factory.CreateHost(new HostSetup(), new TestLogStreamLogger(TestLog.Default)))
                 Assert.IsTrue(host.IsLocal);
         }
     }

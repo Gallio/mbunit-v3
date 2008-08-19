@@ -99,7 +99,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test()
             {
-                Log.WriteLine("{0}, {1}", typeof(T), value);
+                TestLog.WriteLine("{0}, {1}", typeof(T), value);
             }
         }
 
@@ -159,7 +159,7 @@ namespace MbUnit.Tests.Framework
             public void InstanceFactoryTest<T>(T value, SimpleUseCases instance, string source)
             {
                 Assert.AreSame(this, instance);
-                Log.WriteLine("{0}: {1}, {2}", source, typeof(T), value);
+                TestLog.WriteLine("{0}: {1}, {2}", source, typeof(T), value);
             }
 
             [Test]
@@ -174,7 +174,7 @@ namespace MbUnit.Tests.Framework
             [Factory(typeof(ExternalFactories), "Method", Order=9)]
             public void StaticFactoryTest<T>(T value, string source)
             {
-                Log.WriteLine("{0}: {1}, {2}", source, typeof(T), value);
+                TestLog.WriteLine("{0}: {1}, {2}", source, typeof(T), value);
             }
         }
 

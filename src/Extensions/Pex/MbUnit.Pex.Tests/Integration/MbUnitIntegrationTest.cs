@@ -52,7 +52,7 @@ namespace MbUnit.Pex.Tests.Integration
             Tasks.WatchTask(task);
             Tasks.JoinAndVerify(new TimeSpan(0, 2, 0));
 
-            Log.WriteLine(PexExitCodes.Describe(task.ExitCode));
+            TestLog.WriteLine(PexExitCodes.Describe(task.ExitCode));
             Assert.AreEqual(PexExitCodes.Success, task.ExitCode);
         }
     }

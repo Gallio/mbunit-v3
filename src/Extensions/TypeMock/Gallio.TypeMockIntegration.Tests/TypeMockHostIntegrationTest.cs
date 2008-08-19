@@ -41,7 +41,7 @@ namespace Gallio.TypeMockIntegration.Tests
         {
             TypeMockHostFactory factory = new TypeMockHostFactory(RuntimeAccessor.InstallationPath);
 
-            using (IHost host = factory.CreateHost(new HostSetup(), new TestLogStreamLogger(Log.Default)))
+            using (IHost host = factory.CreateHost(new HostSetup(), new TestLogStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
 

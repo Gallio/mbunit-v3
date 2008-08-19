@@ -31,7 +31,7 @@ namespace MbUnit.TestResources.Fixtures
         public void SetUp()
         {
             previousContext = TestContext.CurrentContext;
-            Log.WriteLine(TestContext.CurrentContext.Outcome);
+            TestLog.WriteLine(TestContext.CurrentContext.Outcome);
             Assert.Fail("Boom");
         }
 
@@ -44,13 +44,13 @@ namespace MbUnit.TestResources.Fixtures
         [TearDown]
         public void TearDown()
         {
-            Log.WriteLine(TestContext.CurrentContext.Outcome);
+            TestLog.WriteLine(TestContext.CurrentContext.Outcome);
         }
 
         [FixtureTearDown]
         public void TestFixtureTearDown()
         {
-            Log.WriteLine(previousContext.Outcome);
+            TestLog.WriteLine(previousContext.Outcome);
         }
     }
 }

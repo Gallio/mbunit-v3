@@ -64,9 +64,23 @@ namespace Gallio.Model.Logging
 
         /// <summary>
         /// Standard marker class for content that should be displayed with a highlight.
-        /// This can be used to flag differences, for example.
         /// </summary>
         public const string HighlightClass = "Highlight";
+
+        /// <summary>
+        /// Standard marker class for content that represents added content in a diff.
+        /// </summary>
+        public const string DiffAdditionClass = "DiffAddition";
+
+        /// <summary>
+        /// Standard marker class for content that represents deleted content in a diff.
+        /// </summary>
+        public const string DiffDeletionClass = "DiffDeletion";
+
+        /// <summary>
+        /// Standard marker class for content that represents changed content in a diff.
+        /// </summary>
+        public const string DiffChangeClass = "DiffChange";
 
         /// <summary>
         /// Standard marker for assertion failures.
@@ -118,11 +132,34 @@ namespace Gallio.Model.Logging
 
         /// <summary>
         /// Standard marker for content that should be displayed with a highlight.
-        /// This can be used to flag differences, for example.
         /// </summary>
         public static Marker Highlight
         {
             get { return new Marker(HighlightClass); }
+        }
+
+        /// <summary>
+        /// Standard marker for content that represents added content in a diff.
+        /// </summary>
+        public static Marker DiffAddition
+        {
+            get { return new Marker(DiffAdditionClass); }
+        }
+
+        /// <summary>
+        /// Standard marker for content that represents deleted content in a diff.
+        /// </summary>
+        public static Marker DiffDeletion
+        {
+            get { return new Marker(DiffDeletionClass); }
+        }
+
+        /// <summary>
+        /// Standard marker for content that represents changed content in a diff.
+        /// </summary>
+        public static Marker DiffChange
+        {
+            get { return new Marker(DiffChangeClass); }
         }
 
         /// <summary>

@@ -44,7 +44,7 @@ namespace Gallio.Framework
     /// reclamation just prior to marking the test step as finished.
     /// </para>
     /// </summary>
-    /// <seealso cref="Step"/>
+    /// <seealso cref="Framework.TestStep"/>
     public sealed class TestContext
     {
         private static readonly Key<TestContext> GallioFrameworkContextKey = new Key<TestContext>("Gallio.Framework.Context");

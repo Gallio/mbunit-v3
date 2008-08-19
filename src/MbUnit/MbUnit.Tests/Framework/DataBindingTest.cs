@@ -82,7 +82,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test()
             {
-                Log.WriteLine(typeof(T));
+                TestLog.WriteLine(typeof(T));
             }
         }
 
@@ -93,7 +93,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test()
             {
-                Log.WriteLine(typeof(T));
+                TestLog.WriteLine(typeof(T));
             }
         }
 
@@ -112,7 +112,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test()
             {
-                Log.WriteLine("({0}, {1})", item, price);
+                TestLog.WriteLine("({0}, {1})", item, price);
             }
         }
 
@@ -132,7 +132,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test()
             {
-                Log.WriteLine("({0}, {1})", item, price);
+                TestLog.WriteLine("({0}, {1})", item, price);
             }
         }
 
@@ -152,7 +152,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test()
             {
-                Log.WriteLine("{0} -> ({1}, {2})", typeof(T), item, price);
+                TestLog.WriteLine("{0} -> ({1}, {2})", typeof(T), item, price);
             }
         }
 
@@ -168,7 +168,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test()
             {
-                Log.WriteLine("({0}, {1})", Item, Price);
+                TestLog.WriteLine("({0}, {1})", Item, Price);
             }
         }
 
@@ -194,7 +194,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test()
             {
-                Log.WriteLine("({0}, {1})", item, price);
+                TestLog.WriteLine("({0}, {1})", item, price);
             }
         }
 
@@ -204,7 +204,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test([Column("Apples")] string item, [Column(1)] decimal price)
             {
-                Log.WriteLine("({0}, {1})", item, price);
+                TestLog.WriteLine("({0}, {1})", item, price);
             }
         }
 
@@ -215,7 +215,7 @@ namespace MbUnit.Tests.Framework
             [Row("Apples", 1)]
             public void Test(string item, decimal price)
             {
-                Log.WriteLine("({0}, {1})", item, price);
+                TestLog.WriteLine("({0}, {1})", item, price);
             }
         }
 
@@ -244,7 +244,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test([Bind("Variety", Source = "Data")] string variety)
             {
-                Log.WriteLine("{0} -> ({1}, {2}) x {3}, {4}", typeof(T), item, price, Quantity, variety);
+                TestLog.WriteLine("{0} -> ({1}, {2}) x {3}, {4}", typeof(T), item, price, Quantity, variety);
             }
         }
 
@@ -272,7 +272,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test([Bind(4)] string variety)
             {
-                Log.WriteLine("{0} -> ({1}, {2}) x {3}, {4}", typeof(T), item, price, Quantity, variety);
+                TestLog.WriteLine("{0} -> ({1}, {2}) x {3}, {4}", typeof(T), item, price, Quantity, variety);
             }
         }
 
@@ -301,7 +301,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test(string variety)
             {
-                Log.WriteLine("{0} -> ({1}, {2}) x {3}, {4}", typeof(T), item, price, Quantity, variety);
+                TestLog.WriteLine("{0} -> ({1}, {2}) x {3}, {4}", typeof(T), item, price, Quantity, variety);
             }
         }
 
@@ -321,7 +321,7 @@ namespace MbUnit.Tests.Framework
             [Test]
             public void Test()
             {
-                Log.WriteLine("{0}, {1} -> ({2}, {3})", typeof(T), typeof(P), item, price);
+                TestLog.WriteLine("{0}, {1} -> ({2}, {3})", typeof(T), typeof(P), item, price);
             }
         }
 
@@ -332,7 +332,7 @@ namespace MbUnit.Tests.Framework
             [Row(typeof(string), typeof(decimal), "Apples", 1)]
             public void Test<T, P>(T item, P price)
             {
-                Log.WriteLine("{0}, {1} -> ({2}, {3})", typeof(T), typeof(P), item, price);
+                TestLog.WriteLine("{0}, {1} -> ({2}, {3})", typeof(T), typeof(P), item, price);
             }
         }
 
@@ -353,7 +353,7 @@ namespace MbUnit.Tests.Framework
             [Row(typeof(int), 456, Order = 1)]
             public void Test<TInner>(TInner innerValue)
             {
-                Log.WriteLine("{0}, {1} -> ({2}, {3})", typeof(TOuter), typeof(TInner), outerValue, innerValue);
+                TestLog.WriteLine("{0}, {1} -> ({2}, {3})", typeof(TOuter), typeof(TInner), outerValue, innerValue);
             }
         }
 
@@ -368,7 +368,7 @@ namespace MbUnit.Tests.Framework
             public void Test<[Bind(0, Source = "A")] TA, [Bind(0, Source = "B")] TB>(
                 [Bind(1, Source = "A")] TA outerValue, [Bind(1, Source = "B")] TB innerValue)
             {
-                Log.WriteLine("{0}, {1} -> ({2}, {3})", typeof(TA), typeof(TB), outerValue, innerValue);
+                TestLog.WriteLine("{0}, {1} -> ({2}, {3})", typeof(TA), typeof(TB), outerValue, innerValue);
             }
         }
 
@@ -378,7 +378,7 @@ namespace MbUnit.Tests.Framework
             [Test, CombinatorialJoin]
             public void Test([Column(0, 1)] int a, [Column(0, 1)] int b, [Column(0, 1)] int c)
             {
-                Log.WriteLine("{0}{1}{2}", a, b, c);
+                TestLog.WriteLine("{0}{1}{2}", a, b, c);
             }
         }
 
@@ -388,7 +388,7 @@ namespace MbUnit.Tests.Framework
             [Test, SequentialJoin]
             public void Test([Column(0, 1)] int a, [Column(0, 1)] int b, [Column(0, 1)] int c)
             {
-                Log.WriteLine("{0}{1}{2}", a, b, c);
+                TestLog.WriteLine("{0}{1}{2}", a, b, c);
             }
         }
 
@@ -398,7 +398,7 @@ namespace MbUnit.Tests.Framework
             [Test, PairwiseJoin]
             public void Test([Column(0, 1)] int a, [Column(0, 1)] int b, [Column(0, 1)] int c)
             {
-                Log.WriteLine("{0}{1}{2}", a, b, c);
+                TestLog.WriteLine("{0}{1}{2}", a, b, c);
             }
         }
     }

@@ -60,7 +60,7 @@ namespace Gallio.Framework.Pattern
             if (!testCommand.AreDependenciesSatisfied())
             {
                 ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
-                Log.Warnings.WriteLine("Skipped due to an unsatisfied test dependency.");
+                TestLog.Warnings.WriteLine("Skipped due to an unsatisfied test dependency.");
                 context.FinishStep(TestOutcome.Skipped, null);
                 return TestOutcome.Skipped;
             }
@@ -166,7 +166,7 @@ namespace Gallio.Framework.Pattern
             }
             catch (Exception ex)
             {
-                Log.Failures.WriteException(ex, String.Format("An exception occurred while getting data items for test '{0}'.", testState.Test.FullName));
+                TestLog.Failures.WriteException(ex, String.Format("An exception occurred while getting data items for test '{0}'.", testState.Test.FullName));
                 return TestOutcome.Error;
             }
         }
@@ -239,7 +239,7 @@ namespace Gallio.Framework.Pattern
 
                 if (reusePrimaryTestStep)
                 {
-                    Log.Failures.WriteException(ex, message);
+                    TestLog.Failures.WriteException(ex, message);
                     return TestOutcome.Error;
                 }
                 else
@@ -284,7 +284,7 @@ namespace Gallio.Framework.Pattern
             }
             catch (Exception ex)
             {
-                Log.Failures.WriteException(ex,
+                TestLog.Failures.WriteException(ex,
                     String.Format("An exception occurred while running test instance '{0}'.", testInstanceState.TestStep.Name));
                 return TestOutcome.Error;
             }
@@ -516,7 +516,7 @@ namespace Gallio.Framework.Pattern
         private static TestOutcome ReportTestError(ITestCommand testCommand, ITestStep parentTestStep, Exception ex, string message)
         {
             ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
-            Log.Failures.WriteException(ex, message);
+            TestLog.Failures.WriteException(ex, message);
             context.FinishStep(TestOutcome.Error, null);
             return TestOutcome.Error;
         }

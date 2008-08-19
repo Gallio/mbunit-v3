@@ -102,7 +102,7 @@ namespace Gallio.Reports.Tests
                     formatter.Format(reportWriter, options, progressMonitor);
 
                     string reportContents = File.ReadAllText(reportPath);
-                    Log.AttachPlainText("MHTML Report", reportContents);
+                    TestLog.AttachPlainText("MHTML Report", reportContents);
 
                     Assert.Contains(reportContents, "MIME-Version: 1.0");
                     Assert.Contains(reportContents, "Content-Type: multipart/related; type=\"text/html\"; boundary=");

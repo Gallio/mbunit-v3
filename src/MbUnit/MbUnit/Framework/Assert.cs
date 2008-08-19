@@ -3474,7 +3474,7 @@ namespace MbUnit.Framework
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            Log.Warnings.WriteLine(message);
+            TestLog.Warnings.WriteLine(message);
         }
         #endregion
 

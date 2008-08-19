@@ -245,11 +245,25 @@
       <xsl:choose>
         <!-- natural word breaks -->
         <xsl:when test="$char = ' '">
-          <xsl:value-of select="$char"/>
-          <xsl:call-template name="print-text-with-breaks">
-            <xsl:with-param name="text" select="substring($text, 2)" />
-            <xsl:with-param name="count" select="0" />
-          </xsl:call-template>
+          <xsl:choose>
+            <!-- when we have leading spaces, use a non-breaking space instead so that it does not get collapsed into any previous spaces
+                 this code generates effectively sequences of alternating non-breaking spaces and spaces so that the text behaves
+                 almost as if it were preformatted -->
+            <xsl:when test="$count = 0">
+              <xsl:text>&#160;</xsl:text><wbr/>
+              <xsl:call-template name="print-text-with-breaks">
+                <xsl:with-param name="text" select="substring($text, 2)" />
+                <xsl:with-param name="count" select="1" />
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text> </xsl:text>
+              <xsl:call-template name="print-text-with-breaks">
+                <xsl:with-param name="text" select="substring($text, 2)" />
+                <xsl:with-param name="count" select="0" />
+              </xsl:call-template>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:when>
 
         <!-- line breaks -->

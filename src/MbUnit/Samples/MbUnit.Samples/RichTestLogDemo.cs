@@ -32,7 +32,7 @@ namespace MbUnit.Samples
     {
         private static TestLogStreamWriter MbUnitRocks
         {
-            get { return Log.Writer["MbUnit Rocks"]; }
+            get { return TestLog.Writer["MbUnit Rocks"]; }
         }
 
         /// <summary>
@@ -70,22 +70,22 @@ namespace MbUnit.Samples
                 }
             }
 
-            Step.RunStep("Lemmings!", delegate
+            TestStep.RunStep("Lemmings!", delegate
             {
                 MbUnitRocks.WriteLine("You can subdivide a test into nested steps.");
                 MbUnitRocks.WriteLine("And run them repeatedly with independent failure conditions.");
 
                 for (int i = 5; i > 0; i--)
                 {
-                    Step.RunStep(i.ToString(), delegate { MbUnitRocks.WriteLine("..."); });
+                    TestStep.RunStep(i.ToString(), delegate { MbUnitRocks.WriteLine("..."); });
                 }
 
                 try
                 {
-                    Step.RunStep("Uh oh!", delegate
+                    TestStep.RunStep("Uh oh!", delegate
                     {
-                        Step.AddMetadata(MetadataKeys.Description, "The untimely death of a Blocker Lemming.");
-                        Step.AddMetadata("Epitaph", "Did not follow the herd."); 
+                        TestStep.AddMetadata(MetadataKeys.Description, "The untimely death of a Blocker Lemming.");
+                        TestStep.AddMetadata("Epitaph", "Did not follow the herd."); 
 
                         Assert.IsTrue(false, "*POP*");
                     });
@@ -95,9 +95,9 @@ namespace MbUnit.Samples
                 }
             });
 
-            Step.AddMetadata("Highlight", "It's dynamic!");
+            TestStep.AddMetadata("Highlight", "It's dynamic!");
 
-            Step.RunStep("Tag Line", delegate
+            TestStep.RunStep("Tag Line", delegate
             {
                 MbUnitRocks.WriteLine("And so much more...");
                 MbUnitRocks.WriteLine();
@@ -119,13 +119,13 @@ namespace MbUnit.Samples
             Debug.WriteLine("Debug...");
             Trace.WriteLine("... and Trace messages go here.");
 
-            Log.Warnings.WriteLine("Warnings go here.");
+            TestLog.Warnings.WriteLine("Warnings go here.");
 
-            Log.Failures.WriteLine("Failures go here.");
+            TestLog.Failures.WriteLine("Failures go here.");
 
-            Log.WriteLine("Log messages go here by default.");
+            TestLog.WriteLine("Log messages go here by default.");
 
-            Log.Writer["My Custom Log"].WriteLine("Log messages can also go here or to any other custom stream of your choice.");
+            TestLog.Writer["My Custom Log"].WriteLine("Log messages can also go here or to any other custom stream of your choice.");
         }
     }
 }

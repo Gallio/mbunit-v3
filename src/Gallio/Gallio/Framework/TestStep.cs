@@ -15,11 +15,9 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using System.Security.Permissions;
 using Gallio;
 using Gallio.Model;
 using Gallio.Reflection;
-using Gallio.Utilities;
 
 namespace Gallio.Framework
 {
@@ -77,7 +75,7 @@ namespace Gallio.Framework
     /// public void MeasurePerformance()
     /// {
     ///     // Warm up.
-    ///     Context.RunStep("Warm Up", DoSomething);
+    ///     TestContext.RunStep("Warm Up", DoSomething);
     /// 
     ///     // Run as many iterations as possible for 10 seconds.
     ///     int iterations = 0;
@@ -99,7 +97,7 @@ namespace Gallio.Framework
     /// </code>
     /// </para>
     /// </example>
-    public static class Step
+    public static class TestStep
     {
         /// <summary>
         /// Gets reflection information about the current step.

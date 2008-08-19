@@ -31,7 +31,7 @@ namespace Gallio.Tests.Runtime.Hosting
         public void CreateHostThrowsIfHostSetupIsNull()
         {
             StubHostFactory factory = new StubHostFactory();
-            factory.CreateHost(null, new TestLogStreamLogger(Log.Default));
+            factory.CreateHost(null, new TestLogStreamLogger(TestLog.Default));
         }
 
         [Test, ExpectedArgumentNullException]
@@ -48,7 +48,7 @@ namespace Gallio.Tests.Runtime.Hosting
 
             HostSetup originalHostSetup = new HostSetup();
             originalHostSetup.WorkingDirectory = "";
-            ILogger logger = new TestLogStreamLogger(Log.Default);
+            ILogger logger = new TestLogStreamLogger(TestLog.Default);
             Assert.IsNotNull(factory.CreateHost(originalHostSetup, logger));
 
             Assert.AreNotSame(originalHostSetup, factory.HostSetup);

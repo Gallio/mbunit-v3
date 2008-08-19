@@ -43,8 +43,8 @@ namespace MbUnit.Tests.Framework
         public void DifferentTestContextsHaveDifferentAssertionContexts()
         {
             AssertionContext a = null, b = null;
-            Step.RunStep("A", () => a = AssertionContext.CurrentContext);
-            Step.RunStep("B", () => b = AssertionContext.CurrentContext);
+            TestStep.RunStep("A", () => a = AssertionContext.CurrentContext);
+            TestStep.RunStep("B", () => b = AssertionContext.CurrentContext);
 
             Assert.IsNotNull(a);
             Assert.IsNotNull(b);
@@ -103,6 +103,29 @@ namespace MbUnit.Tests.Framework
                         throw new InvalidOperationException("Boom");
                     }, AssertionFailureBehavior.LogAndThrow, false);
                 });
+            }
+        }
+
+        public class WhenAssertionFailureBehaviorIsThrow
+        {
+            [Test]
+            public void TheAssertionIsNotLoggedButItIsCapturedButExecutionEnds()
+            {
+                StubAssertionFailure failure1 = new StubAssertionFailure();
+                StubAssertionFailure failure2 = new StubAssertionFailure();
+                bool completed = false;
+
+                AssertionFailure[] failures = AssertionContext.CurrentContext.CaptureFailures(delegate
+                {
+                    AssertionContext.CurrentContext.SubmitFailure(failure1);
+                    AssertionContext.CurrentContext.SubmitFailure(failure2);
+                    completed = true;
+                }, AssertionFailureBehavior.Throw, false);
+
+                ArrayAssert.AreEqual(new[] { failure1 }, failures);
+                Assert.IsFalse(failure1.WasWriteToCalled);
+                Assert.IsFalse(failure2.WasWriteToCalled);
+                Assert.IsFalse(completed);
             }
         }
 

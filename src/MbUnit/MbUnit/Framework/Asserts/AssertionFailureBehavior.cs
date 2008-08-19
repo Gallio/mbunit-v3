@@ -46,6 +46,14 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// <para>
+        /// When an assertion failure is reported, throw an <see cref="AssertionFailureException" />
+        /// to immediately abort the current computation.
+        /// </para>
+        /// </summary>
+        Throw,
+
+        /// <summary>
+        /// <para>
         /// When an assertion failure is reported, save it in a list to be processed 
         /// or possibly logged later and allow the current computation to continue.
         /// </para>

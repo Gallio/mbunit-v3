@@ -83,42 +83,42 @@ namespace MbUnit.Tests.Framework
         [CsvData(Contents="abc,123\ndef,456")]
         public void Inline(string x, int y)
         {
-            Log.WriteLine("({0}, {1})", x, y);
+            TestLog.WriteLine("({0}, {1})", x, y);
         }
 
         [Test]
         [CsvData(Contents = "abc|123\n;Comment\ndef|456", FieldDelimiter='|', CommentPrefix=';')]
         public void InlineWithNonstandardSettings(string x, int y)
         {
-            Log.WriteLine("({0}, {1})", x, y);
+            TestLog.WriteLine("({0}, {1})", x, y);
         }
 
         [Test]
         [CsvData(ResourcePath="CsvDataTest.csv", HasHeader=true)]
         public void ImplicitlyScopedResourceWithHeader(decimal price, string item)
         {
-            Log.WriteLine("{0}: {1}", item, price);
+            TestLog.WriteLine("{0}: {1}", item, price);
         }
 
         [Test]
         [CsvData(ResourceScope = typeof(CsvDataTest), ResourcePath = "CsvDataTest.csv", HasHeader = true)]
         public void ExplicitlyScopedResourceWithHeader(decimal price, string item)
         {
-            Log.WriteLine("{0}: {1}", item, price);
+            TestLog.WriteLine("{0}: {1}", item, price);
         }
 
         [Test]
         [CsvData(ResourcePath = @"MbUnit.Tests\Framework\CsvDataTest.csv", HasHeader = true)]
         public void AbsolutelyScopedResourceWithHeader(decimal price, string item)
         {
-            Log.WriteLine("{0}: {1}", item, price);
+            TestLog.WriteLine("{0}: {1}", item, price);
         }
 
         [Test]
         [CsvData(FilePath = @"..\Framework\CsvDataTest.csv", HasHeader = true)]
         public void FileWithHeader(decimal price, string item)
         {
-            Log.WriteLine("{0}: {1}", item, price);
+            TestLog.WriteLine("{0}: {1}", item, price);
         }
     }
 }

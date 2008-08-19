@@ -19,20 +19,20 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework
 {
     [TestFixture]
-    public class StepTest
+    public class TestStepTest
     {
         [Test]
         public void CurrentStepHasCorrectTestName()
         {
-            StringAssert.Like(Step.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName$");
+            StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName$");
 
-            Step.RunStep("Step1", delegate
+            TestStep.RunStep("Step1", delegate
             {
-                StringAssert.Like(Step.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName/Step1$");
+                StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName/Step1$");
 
-                Step.RunStep("Step2", delegate
+                TestStep.RunStep("Step2", delegate
                 {
-                    StringAssert.Like(Step.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName/Step1/Step2$");
+                    StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/StepTest/CurrentStepHasCorrectTestName/Step1/Step2$");
                 });
             });
         }
@@ -40,14 +40,14 @@ namespace Gallio.Tests.Framework
         [Test]
         public void MetadataAdditionsAreVisibleInStepInfo()
         {
-            Assert.IsNull(Step.CurrentStep.Metadata.GetValue("New"));
+            Assert.IsNull(TestStep.CurrentStep.Metadata.GetValue("New"));
 
-            Step.AddMetadata("New", "And improved!");
-            Assert.AreEqual("And improved!", Step.CurrentStep.Metadata.GetValue("New"));
+            TestStep.AddMetadata("New", "And improved!");
+            Assert.AreEqual("And improved!", TestStep.CurrentStep.Metadata.GetValue("New"));
 
-            Step.AddMetadata("New", "Now with less sugar.");
+            TestStep.AddMetadata("New", "Now with less sugar.");
             CollectionAssert.AreElementsEqual(new string[] { "And improved!", "Now with less sugar." },
-                Step.CurrentStep.Metadata["New"]);
+                TestStep.CurrentStep.Metadata["New"]);
         }
     }
 }

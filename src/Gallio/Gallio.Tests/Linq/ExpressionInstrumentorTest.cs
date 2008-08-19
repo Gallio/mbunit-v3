@@ -167,7 +167,7 @@ namespace Gallio.Tests.Linq
         [Test]
         public void VoidReturnType()
         {
-            AssertTrace(() => Log.WriteLine("Foo"), new[] { "Constant", "Call" });
+            AssertTrace(() => TestLog.WriteLine("Foo"), new[] { "Constant", "Call" });
         }
 
         [TestFrameworkInternal]
@@ -186,11 +186,11 @@ namespace Gallio.Tests.Linq
         private static void AssertTrace<T>(Expression<System.Func<T>> expr,
             T expectedValue, string[] expectedTrace)
         {
-            using (Log.BeginSection(expr.Format()))
+            using (TestLog.BeginSection(expr.Format()))
             {
                 var tracer = new ExpressionTracer();
 
-                Log.WriteLine("Rewritten expression: {0}", tracer.Rewrite(expr).Format());
+                TestLog.WriteLine("Rewritten expression: {0}", tracer.Rewrite(expr).Format());
                 T actualValue = tracer.Compile(expr)();
 
                 NewAssert.AreEqual(expectedValue, actualValue, "Expression result should be equal.");
@@ -221,7 +221,7 @@ namespace Gallio.Tests.Linq
             protected override T Intercept<T>(Expression expr, System.Func<T> continuation)
             {
                 T value = base.Intercept<T>(expr, continuation);
-                Log.WriteLine("{0}: {1}", Formatter.Instance.Format(expr), Formatter.Instance.Format(value));
+                TestLog.WriteLine("{0}: {1}", Formatter.Instance.Format(expr), Formatter.Instance.Format(value));
 
                 trace.Add(expr.NodeType.ToString());
                 return value;

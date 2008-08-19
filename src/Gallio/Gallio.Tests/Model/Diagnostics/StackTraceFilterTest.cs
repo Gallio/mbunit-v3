@@ -55,7 +55,7 @@ namespace Gallio.Tests.Model.Diagnostics
             public void OmitsDebuggerHiddenMethods()
             {
                 string trace = CaptureHidden();
-                Log.WriteLine(trace);
+                TestLog.WriteLine(trace);
 
                 Assert.Contains(trace, "OmitsDebuggerHiddenMethods");
                 Assert.IsFalse(trace.Contains("CaptureHidden"));
@@ -65,7 +65,7 @@ namespace Gallio.Tests.Model.Diagnostics
             public void OmitsInternalMethods()
             {
                 string trace = CaptureInternal();
-                Log.WriteLine(trace);
+                TestLog.WriteLine(trace);
 
                 Assert.Contains(trace, "OmitsInternalMethods");
                 Assert.IsFalse(trace.Contains("CaptureInternal"));
@@ -75,7 +75,7 @@ namespace Gallio.Tests.Model.Diagnostics
             public void CutsOffAtTestEntryPoint()
             {
                 string trace = CaptureProxy();
-                Log.WriteLine(trace);
+                TestLog.WriteLine(trace);
 
                 Assert.IsFalse(trace.Contains("CutsOffAtTestEntryPoint"));
                 Assert.Contains(trace, "CaptureProxy");
@@ -117,7 +117,7 @@ namespace Gallio.Tests.Model.Diagnostics
                 catch (InvalidOperationException ex)
                 {
                     trace = StackTraceFilter.FilterException(ex).ToString();
-                    Log.WriteLine(trace);
+                    TestLog.WriteLine(trace);
                 }
 
                 Assert.Contains(trace, "OmitsDebuggerHiddenMethods");
@@ -136,7 +136,7 @@ namespace Gallio.Tests.Model.Diagnostics
                 catch (InvalidOperationException ex)
                 {
                     trace = StackTraceFilter.FilterException(ex).ToString();
-                    Log.WriteLine(trace);
+                    TestLog.WriteLine(trace);
                 }
 
                 Assert.Contains(trace, "OmitsInternalMethods");
@@ -155,7 +155,7 @@ namespace Gallio.Tests.Model.Diagnostics
                 catch (InvalidOperationException ex)
                 {
                     trace = StackTraceFilter.FilterException(ex).ToString();
-                    Log.WriteLine(trace);
+                    TestLog.WriteLine(trace);
                 }
 
                 Assert.Contains(trace, "OmitsInternalGenericMethods");
@@ -174,7 +174,7 @@ namespace Gallio.Tests.Model.Diagnostics
                 catch (InvalidOperationException ex)
                 {
                     trace = StackTraceFilter.FilterException(ex).ToString();
-                    Log.WriteLine(trace);
+                    TestLog.WriteLine(trace);
                 }
 
                 Assert.IsFalse(trace.Contains("CutsOffAtTestEntryPoint"));

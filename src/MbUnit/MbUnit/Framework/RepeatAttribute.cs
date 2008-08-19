@@ -69,7 +69,7 @@ namespace MbUnit.Framework
                 for (int i = 0; i < numRepetitions; i++)
                 {
                     string name = String.Format("Repetition #{0}", i + 1);
-                    TestContext context = Step.RunStep(name, delegate
+                    TestContext context = TestStep.RunStep(name, delegate
                     {
                         inner(state);
                     });
@@ -79,7 +79,7 @@ namespace MbUnit.Framework
                         passedCount += 1;
                 }
 
-                Log.WriteLine(String.Format("{0} of {1} repetitions passed.",
+                TestLog.WriteLine(String.Format("{0} of {1} repetitions passed.",
                     passedCount, numRepetitions));
 
                 if (outcome.Status != TestStatus.Passed)

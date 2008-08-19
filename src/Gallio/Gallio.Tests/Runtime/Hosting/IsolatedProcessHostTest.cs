@@ -42,7 +42,7 @@ namespace Gallio.Tests.Runtime.Hosting
             HostSetup hostSetup = new HostSetup();
             hostSetup.Configuration.LegacyUnhandledExceptionPolicyEnabled = true;
 
-            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(Log.Default)))
+            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
                 host.GetHostService().Do<object, object>(ThrowUnhandledExceptionCallback, null);

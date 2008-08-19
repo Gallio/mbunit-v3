@@ -196,8 +196,8 @@ namespace MbUnit.Framework
                     StructuredTextWriter highlightedExpectedValueWriter = new StructuredTextWriter();
                     StructuredTextWriter highlightedActualValueWriter = new StructuredTextWriter();
 
-                    diffSet.WriteHighlightedLeftDocumentTo(highlightedExpectedValueWriter);
-                    diffSet.WriteHighlightedRightDocumentTo(highlightedActualValueWriter);
+                    diffSet.WriteAnnotatedLeftDocumentTo(highlightedExpectedValueWriter);
+                    diffSet.WriteAnnotatedRightDocumentTo(highlightedActualValueWriter);
 
                     SetLabeledValue("Expected Value", highlightedExpectedValueWriter.ToStructuredText());
                     SetLabeledValue("Actual Value", highlightedActualValueWriter.ToStructuredText());

@@ -60,7 +60,7 @@ at NCover.Framework.CoverageData._MergeMethod(MethodData leftSide, MethodData ri
             Type simpleTestType = typeof(SimpleTest);
 
             TestLauncher launcher = new TestLauncher();
-            launcher.Logger = new TestLogStreamLogger(Log.Default);
+            launcher.Logger = new TestLogStreamLogger(TestLog.Default);
             launcher.TestPackageConfig.AssemblyFiles.Add(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly));
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = tempPath;
             launcher.TestRunnerFactoryName = NCoverTestRunnerFactoryName;

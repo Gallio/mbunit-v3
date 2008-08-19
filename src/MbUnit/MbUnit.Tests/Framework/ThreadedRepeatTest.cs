@@ -70,7 +70,7 @@ namespace MbUnit.Tests.Framework
             {
                 string name = TestContext.CurrentContext.TestStep.Name;
 
-                Log.WriteLine("Run: {0}", name);
+                TestLog.WriteLine("Run: {0}", name);
                 if (name == "Threaded Repetition #2")
                     Assert.Fail("Boom");
             }

@@ -45,7 +45,7 @@ namespace MbUnit.Samples
         public void DisposeBrowser()
         {
             if (TestContext.CurrentContext.Outcome.Status == TestStatus.Failed)
-                Snapshot("Final screen when failure occurred.", Log.Failures);
+                Snapshot("Final screen when failure occurred.", TestLog.Failures);
 
             if (ie != null)
                 ie.Dispose();
@@ -59,7 +59,7 @@ namespace MbUnit.Samples
         [Test]
         public void DemoCaptureOnFailure()
         {
-            using (Log.BeginSection("Go to Google, enter MbUnit as a search term and click I'm Feeling Lucky"))
+            using (TestLog.BeginSection("Go to Google, enter MbUnit as a search term and click I'm Feeling Lucky"))
             {
                 ie.GoTo("http://www.google.com");
 
@@ -80,7 +80,7 @@ namespace MbUnit.Samples
         [Test]
         public void DemoNoCaptureOnSuccess()
         {
-            using (Log.BeginSection("Go to Google, enter MbUnit as a search term and click I'm Feeling Lucky"))
+            using (TestLog.BeginSection("Go to Google, enter MbUnit as a search term and click I'm Feeling Lucky"))
             {
                 ie.GoTo("http://www.google.com");
 
@@ -88,7 +88,7 @@ namespace MbUnit.Samples
                 ie.Button(Find.ByName("btnI")).Click();
             }
 
-            using (Log.BeginSection("Click on About."))
+            using (TestLog.BeginSection("Click on About."))
             {
                 Assert.IsTrue(ie.ContainsText("MbUnit"));
                 ie.Link(Find.ByUrl(new Regex(@"About\.aspx"))).Click();
@@ -99,7 +99,7 @@ namespace MbUnit.Samples
 
         private void Snapshot(string caption)
         {
-            Snapshot(caption, Log.Default);
+            Snapshot(caption, TestLog.Default);
         }
 
         private void Snapshot(string caption, TestLogStreamWriter logStreamWriter)
@@ -115,7 +115,7 @@ namespace MbUnit.Samples
         {
             public void LogAction(string message)
             {
-                Log.WriteLine(message);
+                TestLog.WriteLine(message);
             }
         }
     }

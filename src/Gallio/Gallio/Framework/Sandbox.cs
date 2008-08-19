@@ -341,11 +341,11 @@ namespace Gallio.Framework
             switch (outcome.Status)
             {
                 case TestStatus.Passed:
-                    return Log.Default;
+                    return TestLog.Default;
                 case TestStatus.Failed:
-                    return Log.Failures;
+                    return TestLog.Failures;
                 default:
-                    return Log.Warnings;
+                    return TestLog.Warnings;
             }
         }
     }

@@ -36,7 +36,7 @@ namespace MbUnit.Framework
     /// <para>
     /// Output from the test, such as text written to the console, is captured
     /// by the framework and will be included in the test report.  Additional
-    /// information can also be logged during test execution using the <see cref="Log" />
+    /// information can also be logged during test execution using the <see cref="TestLog" />
     /// class.
     /// </para>
     /// </summary>
@@ -70,9 +70,9 @@ namespace MbUnit.Framework
                     {
                         action(state);
 
-                        using (Log.Failures.BeginSection("Expected Exception"))
+                        using (TestLog.Failures.BeginSection("Expected Exception"))
                         {
-                            Log.Failures.WriteLine("Expected an exception of type '{0}' but none was thrown.", expectedExceptionType);
+                            TestLog.Failures.WriteLine("Expected an exception of type '{0}' but none was thrown.", expectedExceptionType);
                         }
 
                         throw new SilentTestException(TestOutcome.Failed);
@@ -84,10 +84,10 @@ namespace MbUnit.Framework
                             && exceptionType.FullName != expectedExceptionType
                             && exceptionType.AssemblyQualifiedName != expectedExceptionType)
                         {
-                            using (Log.Failures.BeginSection("Expected Exception"))
+                            using (TestLog.Failures.BeginSection("Expected Exception"))
                             {
-                                Log.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
-                                Log.Failures.WriteException(ex);
+                                TestLog.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
+                                TestLog.Failures.WriteException(ex);
                             }
 
                             throw new SilentTestException(TestOutcome.Failed);

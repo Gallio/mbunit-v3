@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Gallio.Collections;
 using Gallio.Model.Logging;
 
@@ -69,6 +70,22 @@ namespace Gallio.Model.Logging
 
             this.bodyTag = bodyTag;
             this.attachments = attachments;
+        }
+
+        /// <summary>
+        /// Gets a copy of the body tag that described the structured text.
+        /// </summary>
+        public StructuredTestLogStream.BodyTag BodyTag
+        {
+            get { return bodyTag.Clone(); }
+        }
+
+        /// <summary>
+        /// Gets the immutable list of attachments.
+        /// </summary>
+        public IList<Attachment> Attachments
+        {
+            get { return new ReadOnlyCollection<Attachment>(attachments); }
         }
 
         /// <summary>

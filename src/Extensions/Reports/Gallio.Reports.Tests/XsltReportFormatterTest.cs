@@ -171,7 +171,7 @@ namespace Gallio.Reports.Tests
                     formatter.Format(reportWriter, options, progressMonitor);
 
                     string reportContents = File.ReadAllText(reportPath);
-                    Log.EmbedXml("Diagnostic report contents", reportContents);
+                    TestLog.EmbedXml("Diagnostic report contents", reportContents);
                     Assert.Contains(reportContents, "<resourceRoot>Foo</resourceRoot>");
                     Assert.Contains(reportContents, "The report.");
 

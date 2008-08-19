@@ -356,7 +356,7 @@
     <Compile Include="Framework\Pattern\ToolInfo.cs" />
     <Compile Include="Framework\Sandbox.cs" />
     <Compile Include="Framework\SilentTestException.cs" />
-    <Compile Include="Framework\Step.cs" />
+    <Compile Include="Framework\TestStep.cs" />
     <Compile Include="Framework\Tasks.cs" />
     <Compile Include="Model\Logging\TestLogStreamLogger.cs" />
     <Compile Include="Framework\Utilities\SampleRunner.cs" />
@@ -659,7 +659,7 @@
     <Compile Include="Utilities\XmlSerializationUtils.cs" />
     <Compile Include="Runtime\CorrelatedExceptionEventArgs.cs" />
     <Compile Include="Utilities\StringUtils.cs" />
-    <Compile Include="Framework\Log.cs" />
+    <Compile Include="Framework\TestLog.cs" />
     <Compile Include="Model\Logging\Attachment.cs" />
     <Compile Include="Model\Logging\BinaryAttachment.cs" />
     <Compile Include="Model\Logging\TestLogStreamNames.cs" />

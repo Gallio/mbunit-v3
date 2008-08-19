@@ -69,11 +69,11 @@ namespace Gallio.Tests.Integration
 
                 Assert.IsFalse(RuntimeAccessor.IsInitialized);
 
-                Log.AttachPlainText("Attachment1", "Text");
-                using (Log.BeginSection("Test Section"))
+                TestLog.AttachPlainText("Attachment1", "Text");
+                using (TestLog.BeginSection("Test Section"))
                 {
-                    Log.WriteLine("Foo");
-                    Log.EmbedExisting("Attachment1");
+                    TestLog.WriteLine("Foo");
+                    TestLog.EmbedExisting("Attachment1");
                 }
 
                 return textWriter.ToString();

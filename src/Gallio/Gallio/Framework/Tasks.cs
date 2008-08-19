@@ -134,7 +134,7 @@ namespace Gallio.Framework
             task.CaptureConsoleOutput = true;
             task.CaptureConsoleError = true;
 
-            ConfigureProcessTaskForLogging(task, Log.Default);
+            ConfigureProcessTaskForLogging(task, TestLog.Default);
             WatchTask(task);
             return task;
         }

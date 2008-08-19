@@ -30,78 +30,78 @@ namespace Gallio.Reports.Tests
         [Test]
         public void EmbeddedResources()
         {
-            Log.Write("Embedded image:");
-            Log.EmbedImage("Image", Resources.MbUnitLogo);
+            TestLog.Write("Embedded image:");
+            TestLog.EmbedImage("Image", Resources.MbUnitLogo);
 
-            Log.Write("Embedded plain text:");
-            Log.EmbedPlainText("Plain Text", "This is some plain text.\nLalalala...");
+            TestLog.Write("Embedded plain text:");
+            TestLog.EmbedPlainText("Plain Text", "This is some plain text.\nLalalala...");
 
-            Log.Write("Embedded XML:");
-            Log.EmbedXml("XML", "<life><universe><everything>42</everything></universe></life>");
+            TestLog.Write("Embedded XML:");
+            TestLog.EmbedXml("XML", "<life><universe><everything>42</everything></universe></life>");
 
-            Log.Write("Embedded XHTML:");
-            Log.EmbedXHtml("XHtml", "<p>Some <b>XHTML</b> markup.<br/>With a line break.</p>");
+            TestLog.Write("Embedded XHTML:");
+            TestLog.EmbedXHtml("XHtml", "<p>Some <b>XHTML</b> markup.<br/>With a line break.</p>");
 
-            Log.Write("Embedded HTML:");
-            Log.EmbedHtml("Html", "<p>Some <b>HTML</b> markup.<br>With a line break.</p>");
+            TestLog.Write("Embedded HTML:");
+            TestLog.EmbedHtml("Html", "<p>Some <b>HTML</b> markup.<br>With a line break.</p>");
 
-            Log.Write("Embedded binary data:");
-            Log.Embed(new BinaryAttachment("Binary", "application/octet-stream", new byte[] { 67, 65, 66, 66, 65, 71, 69 }));
+            TestLog.Write("Embedded binary data:");
+            TestLog.Embed(new BinaryAttachment("Binary", "application/octet-stream", new byte[] { 67, 65, 66, 66, 65, 71, 69 }));
 
-            Log.Write("The same embedded image as above:");
-            Log.EmbedExisting("Image");
+            TestLog.Write("The same embedded image as above:");
+            TestLog.EmbedExisting("Image");
         }
 
         [Test]
         public void AttachedResources()
         {
-            Log.WriteLine("Attached image.");
-            Log.AttachImage("Image", Resources.MbUnitLogo);
+            TestLog.WriteLine("Attached image.");
+            TestLog.AttachImage("Image", Resources.MbUnitLogo);
 
-            Log.WriteLine("Attached plain text.");
-            Log.AttachPlainText("Plain Text", "This is some plain text.\nLalalala...");
+            TestLog.WriteLine("Attached plain text.");
+            TestLog.AttachPlainText("Plain Text", "This is some plain text.\nLalalala...");
 
-            Log.WriteLine("Attached XML.");
-            Log.AttachXml("XML", "<life><universe><everything>42</everything></universe></life>");
+            TestLog.WriteLine("Attached XML.");
+            TestLog.AttachXml("XML", "<life><universe><everything>42</everything></universe></life>");
 
-            Log.WriteLine("Attached XHTML.");
-            Log.AttachXHtml("XHtml", "<p>Some <b>XHTML</b> markup.<br/>With a line break.</p>");
+            TestLog.WriteLine("Attached XHTML.");
+            TestLog.AttachXHtml("XHtml", "<p>Some <b>XHTML</b> markup.<br/>With a line break.</p>");
 
-            Log.WriteLine("Attached HTML.");
-            Log.AttachHtml("Html", "<p>Some <b>HTML</b> markup.<br>With a line break.</p>");
+            TestLog.WriteLine("Attached HTML.");
+            TestLog.AttachHtml("Html", "<p>Some <b>HTML</b> markup.<br>With a line break.</p>");
 
-            Log.WriteLine("Attached binary data.");
-            Log.Attach(new BinaryAttachment("Binary", "application/octet-stream", new byte[] { 67, 65, 66, 66, 65, 71, 69 }));
+            TestLog.WriteLine("Attached binary data.");
+            TestLog.Attach(new BinaryAttachment("Binary", "application/octet-stream", new byte[] { 67, 65, 66, 66, 65, 71, 69 }));
         }
 
         [Test]
         public void ReportStreams()
         {
-            Log.Failures.WriteLine("A failure.");
-            Log.Warnings.WriteLine("A warning.");
-            Log.ConsoleInput.WriteLine("Console input.");
-            Log.ConsoleOutput.WriteLine("Console output.");
-            Log.ConsoleError.WriteLine("Console error.");
-            Log.DebugTrace.WriteLine("Debug / trace.");
-            Log.WriteLine("Default log stream.");
+            TestLog.Failures.WriteLine("A failure.");
+            TestLog.Warnings.WriteLine("A warning.");
+            TestLog.ConsoleInput.WriteLine("Console input.");
+            TestLog.ConsoleOutput.WriteLine("Console output.");
+            TestLog.ConsoleError.WriteLine("Console error.");
+            TestLog.DebugTrace.WriteLine("Debug / trace.");
+            TestLog.WriteLine("Default log stream.");
         }
 
         [Test]
         public void Sections()
         {
-            Log.Write("Some text with no newline.");
+            TestLog.Write("Some text with no newline.");
 
-            using (Log.BeginSection("A section."))
+            using (TestLog.BeginSection("A section."))
             {
-                Log.WriteLine("Some text.");
-                Log.WriteLine("More text.");
+                TestLog.WriteLine("Some text.");
+                TestLog.WriteLine("More text.");
 
-                Log.EmbedImage("An image", Resources.MbUnitLogo);
+                TestLog.EmbedImage("An image", Resources.MbUnitLogo);
 
-                using (Log.BeginSection("Another section."))
+                using (TestLog.BeginSection("Another section."))
                 {
-                    Log.Write("Same image as above.");
-                    Log.EmbedExisting("An image");
+                    TestLog.Write("Same image as above.");
+                    TestLog.EmbedExisting("An image");
                 }
             }
         }

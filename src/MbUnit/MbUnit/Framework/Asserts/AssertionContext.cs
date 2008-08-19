@@ -114,7 +114,8 @@ namespace MbUnit.Framework
         /// <para>
         /// The set of failures captured will depend on the setting of <paramref name="assertionFailureBehavior"/>.
         /// <list type="bullet">
-        /// <item>If set to <see cref="Framework.AssertionFailureBehavior.LogAndThrow"/>, then only
+        /// <item>If set to <see cref="Framework.AssertionFailureBehavior.LogAndThrow"/> or 
+        /// <see cref="Framework.AssertionFailureBehavior.Throw"/>, then only
         /// the first failure will be captured since execution will be immediately aborted when it happens.</item>
         /// <item>If set to <see cref="Framework.AssertionFailureBehavior.Log"/> or
         /// <see cref="Framework.AssertionFailureBehavior.Defer" />, then all
@@ -257,8 +258,12 @@ namespace MbUnit.Framework
 
             private void ThrowFailureAccordingToBehavior(AssertionFailure failure)
             {
-                if (assertionFailureBehavior == AssertionFailureBehavior.LogAndThrow)
-                    throw new AssertionFailureException(failure, true);
+                switch (assertionFailureBehavior)
+                {
+                    case AssertionFailureBehavior.LogAndThrow:
+                    case AssertionFailureBehavior.Throw:
+                        throw new AssertionFailureException(failure, true);
+                }
             }
         }
     }

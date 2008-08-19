@@ -221,22 +221,22 @@ div.gallio-report div.navigator
 
 .gallio-report .testStepRunHeading-Level1
 {
-	font-size: 11pt;
+	font-size: 12pt;
 }
 
 .gallio-report .testStepRunHeading-Level2
 {
-	font-size: 10pt;
+	font-size: 11pt;
 }
 
 .gallio-report .testStepRunHeading-Level3
 {
-	font-size: 9pt;
+	font-size: 10pt;
 }
 
 .gallio-report .testStepRunHeading-Level4
 {
-	font-size: 9pt;
+	font-size: 10pt;
 }
 
 
@@ -262,13 +262,6 @@ div.gallio-report div.navigator
 	font-style: italic;
 }
 
-.gallio-report .logAttachmentEmbedding
-{
-	font-size: 10pt;
-	font-style: italic;
-	padding: 5px 10px 5px 10px;
-}
-
 .gallio-report .logStream
 {
 	background-color: #f0f0f0;
@@ -281,13 +274,13 @@ div.gallio-report div.navigator
 .gallio-report .logStreamHeading
 {
 	font-weight:bold;
-	font-size: 9pt;
+	font-size: 10pt;
 	text-decoration: underline;
 }
 
 .gallio-report .logStreamBody
 {
-	font-size: 10pt;
+	font-size: 9pt;
 	border-style: none;
 }
 
@@ -301,9 +294,14 @@ div.gallio-report div.navigator
 
 .gallio-report .logStreamSectionHeading
 {
-	font-size: 10pt;
 	font-weight: bold;
 	text-decoration: underline;
+}
+
+.gallio-report .logStreamEmbed
+{
+	font-style: italic;
+	padding: 5px 10px 5px 10px;
 }
 
 /* Test log streams */
@@ -342,6 +340,21 @@ div.gallio-report div.navigator
 .gallio-report .logStreamMarker-Highlight
 {
 	background-color: Yellow;
+}
+
+.gallio-report .logStreamMarker-DiffAddition
+{
+	background-color: #8080ff;
+}
+
+.gallio-report .logStreamMarker-DiffDeletion
+{
+	background-color: #ff8080;
+}
+
+.gallio-report .logStreamMarker-DiffChange
+{
+	background-color: #80ff80;
 }
 
 /* Sections */

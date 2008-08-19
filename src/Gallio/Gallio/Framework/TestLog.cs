@@ -47,7 +47,7 @@ namespace Gallio.Framework
     /// of diagnostic information over the course of the test.
     /// </para>
     /// </summary>
-    public static class Log
+    public static class TestLog
     {
         #region Current log writer accessor
         /// <summary>
@@ -123,7 +123,7 @@ namespace Gallio.Framework
 
         /// <summary>
         /// Gets the current stream writer for the built-in log stream where the output from the convenience methods
-        /// of the <see cref="Log" /> class is recorded.
+        /// of the <see cref="TestLog" /> class is recorded.
         /// </summary>
         public static TestLogStreamWriter Default
         {

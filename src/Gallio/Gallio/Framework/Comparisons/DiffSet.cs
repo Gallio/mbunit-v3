@@ -136,11 +136,20 @@ namespace Gallio.Framework.Comparisons
         }
 
         /// <summary>
-        /// Writes the left document to the structured text writer, with changes highlighted.
+        /// <para>
+        /// Writes the left document to the structured text writer, with changes annotated
+        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
+        /// and <see cref="Marker.DiffChange" />.
+        /// </para>
+        /// <para>
+        /// For the purposes of determining additions and deletions, the left document
+        /// is considered the original and the right document is the considered to be the
+        /// one that was modified.
+        /// </para>
         /// </summary>
         /// <param name="writer">The structured text writer to receive the highlighted document</param>
         /// <exception cref="ArgumentNullException">Thrown if <param nameref="builder" /> if null</exception>
-        public void WriteHighlightedLeftDocumentTo(TestLogStreamWriter writer)
+        public void WriteAnnotatedLeftDocumentTo(TestLogStreamWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
@@ -149,21 +158,32 @@ namespace Gallio.Framework.Comparisons
             {
                 if (diff.LeftRange.Length != 0)
                 {
-                    string part = diff.LeftRange.SubstringOf(leftDocument);
-                    if (diff.Kind == DiffKind.NoChange)
-                        writer.Write(part);
-                    else
-                        writer.WriteHighlighted(part);
+                    if (diff.Kind != DiffKind.NoChange)
+                        writer.BeginMarker(diff.RightRange.Length == 0 ? Marker.DiffDeletion : Marker.DiffChange);
+
+                    writer.Write(diff.LeftRange.SubstringOf(leftDocument));
+
+                    if (diff.Kind != DiffKind.NoChange)
+                        writer.End();
                 }
             }
         }
 
         /// <summary>
-        /// Writes the right document to the structured text writer, with changes highlighted.
+        /// <para>
+        /// Writes the right document to the structured text writer, with changes annotated
+        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
+        /// and <see cref="Marker.DiffChange" />.
+        /// </para>
+        /// <para>
+        /// For the purposes of determining additions and deletions, the left document
+        /// is considered the original and the right document is the considered to be the
+        /// one that was modified.
+        /// </para>
         /// </summary>
         /// <param name="writer">The structured text writer to receive the highlighted document</param>
         /// <exception cref="ArgumentNullException">Thrown if <param nameref="builder" /> if null</exception>
-        public void WriteHighlightedRightDocumentTo(TestLogStreamWriter writer)
+        public void WriteAnnotatedRightDocumentTo(TestLogStreamWriter writer)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
@@ -172,11 +192,13 @@ namespace Gallio.Framework.Comparisons
             {
                 if (diff.RightRange.Length != 0)
                 {
-                    string part = diff.RightRange.SubstringOf(rightDocument);
-                    if (diff.Kind == DiffKind.NoChange)
-                        writer.Write(part);
-                    else
-                        writer.WriteHighlighted(part);
+                    if (diff.Kind != DiffKind.NoChange)
+                        writer.BeginMarker(diff.LeftRange.Length == 0 ? Marker.DiffAddition : Marker.DiffChange);
+
+                    writer.Write(diff.RightRange.SubstringOf(rightDocument));
+
+                    if (diff.Kind != DiffKind.NoChange)
+                        writer.End();
                 }
             }
         }

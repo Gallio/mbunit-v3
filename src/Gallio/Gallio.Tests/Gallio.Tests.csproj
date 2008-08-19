@@ -153,7 +153,7 @@
     <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />
-    <Compile Include="Framework\StepTest.cs" />
+    <Compile Include="Framework\TestStepTest.cs" />
     <Compile Include="Runtime\Remoting\BaseChannelTest.cs" />
     <Compile Include="Runtime\Remoting\BaseClientChannelTest.cs" />
     <Compile Include="Runtime\Remoting\BaseServerChannelTest.cs" />
@@ -170,7 +170,7 @@
     <Compile Include="Runtime\RuntimeAccessorTest.cs" />
     <Compile Include="Runtime\RuntimeRegisteredComponentResolverTest.cs" />
     <Compile Include="Integration\StubContextTest.cs" />
-    <Compile Include="Model\Logging\LogTest.cs" />
+    <Compile Include="Framework\TestLogTest.cs" />
     <Compile Include="Model\Logging\TextualTestLogWriterTest.cs" />
     <Compile Include="Model\Execution\TestCommandFactoryTest.cs" />
     <Compile Include="Model\Filters\NameFilterTest.cs" />

@@ -55,7 +55,7 @@ namespace MbUnit.Tests.Integration
         {
             string value = ConfigurationManager.AppSettings["TestConfigurationSetting"];
             Assert.AreEqual("TestConfigurationValue", value);
-            Log.WriteLine(value);
+            TestLog.WriteLine(value);
         }
     }
 }

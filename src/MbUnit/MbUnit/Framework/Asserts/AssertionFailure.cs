@@ -136,15 +136,22 @@ namespace MbUnit.Framework
             if (!string.IsNullOrEmpty(message))
                 writer.WriteLine(message);
 
-            int paddedLength = ComputePaddedLabelLength();
-            foreach (LabeledValue labeledValue in labeledValues)
+            if (labeledValues.Count != 0)
             {
-                writer.Write("* ");
-                writer.Write(labeledValue.Label);
-                WritePaddingSpaces(writer, paddedLength - labeledValue.Label.Length);
-                writer.Write(" : ");
-                writer.WriteStructuredText(labeledValue.FormattedValue);
                 writer.WriteLine();
+
+                using (writer.BeginMarker(Marker.Monospace))
+                {
+                    int paddedLength = ComputePaddedLabelLength();
+                    foreach (LabeledValue labeledValue in labeledValues)
+                    {
+                        writer.Write(labeledValue.Label);
+                        WritePaddingSpaces(writer, paddedLength - labeledValue.Label.Length);
+                        writer.Write(" : ");
+                        writer.WriteStructuredText(labeledValue.FormattedValue);
+                        writer.WriteLine();
+                    }
+                }
             }
 
             if (exceptions.Count != 0)

@@ -135,7 +135,7 @@ namespace Gallio.Tests.Framework.Data
             List<IList<IDataItem>> itemLists = new List<IList<IDataItem>>(PairwiseJoinStrategy.Instance.Join(providers, bindingsPerProvider, true));
 
             int[][] values = new int[itemLists.Count][];
-            using (Log.BeginSection(String.Format("{0} combinations.", itemLists.Count)))
+            using (TestLog.BeginSection(String.Format("{0} combinations.", itemLists.Count)))
             {
                 for (int i = 0; i < itemLists.Count; i++)
                 {
@@ -149,11 +149,11 @@ namespace Gallio.Tests.Framework.Data
                         values[i][j] = value;
 
                         if (j != 0)
-                            Log.Write(",");
-                        Log.Write(value);
+                            TestLog.Write(",");
+                        TestLog.Write(value);
                     }
 
-                    Log.WriteLine();
+                    TestLog.WriteLine();
                 }
             }
 
@@ -163,7 +163,7 @@ namespace Gallio.Tests.Framework.Data
             double stdevOccurrences = 0;
             int pairingCount = 0;
 
-            using (Log.BeginSection("Pairings"))
+            using (TestLog.BeginSection("Pairings"))
             {
                 for (int firstDimension = 0; firstDimension < dimensions; firstDimension++)
                 {
@@ -178,7 +178,7 @@ namespace Gallio.Tests.Framework.Data
                                     if (values[i][firstDimension] == firstValue && values[i][secondDimension] == secondValue)
                                         occurrences += 1;
 
-                                Log.WriteLine("{0} x {1} : ({2}, {3}) -> {4} occurrences.",
+                                TestLog.WriteLine("{0} x {1} : ({2}, {3}) -> {4} occurrences.",
                                     firstDimension, secondDimension, firstValue, secondValue, occurrences);
 
                                 if (occurrences == 0)
@@ -199,12 +199,12 @@ namespace Gallio.Tests.Framework.Data
             else
                 stdevOccurrences = 0;
 
-            using (Log.BeginSection("Statistics"))
+            using (TestLog.BeginSection("Statistics"))
             {
                 // A mean of exactly 1 implies we have found a minimal covering.
                 // A low standard deviation indicates good uniformity among the covered pairs.  0 would be ideal.
-                Log.WriteLine("Pairing Occurrence Mean: {0}", meanOccurrences);
-                Log.WriteLine("Pairing Occurrence Stdev: {0}", stdevOccurrences);
+                TestLog.WriteLine("Pairing Occurrence Mean: {0}", meanOccurrences);
+                TestLog.WriteLine("Pairing Occurrence Stdev: {0}", stdevOccurrences);
             }
 
             Assert.IsFalse(missingPairing, "One or more pairings were not covered!");

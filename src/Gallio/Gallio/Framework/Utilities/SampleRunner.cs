@@ -225,7 +225,7 @@ namespace Gallio.Framework.Utilities
 
         private void Launch(bool doNoRun)
         {
-            TestLogStreamWriter logStreamWriter = Log.Default;
+            TestLogStreamWriter logStreamWriter = TestLog.Default;
 
             TestLauncher launcher = new TestLauncher();
             launcher.TestPackageConfig = packageConfig;
