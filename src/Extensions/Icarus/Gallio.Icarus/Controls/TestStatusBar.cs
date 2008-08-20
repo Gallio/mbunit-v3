@@ -26,20 +26,20 @@ namespace Gallio.Icarus.Controls
         private double elapsedTime;
 
         private Color failedColor = Color.Red;
-        private int failedTests = 0;
+        private int failedTests;
         
         private Color skippedColor = Color.SlateGray;
-        private int skippedTests = 0;
+        private int skippedTests;
 
         private Color passedColor = Color.Green;
-        private int passedTests = 0;
+        private int passedTests;
 
         private Color inconclusiveColor = Color.Gold;
-        private int inconclusiveTests = 0;
+        private int inconclusiveTests;
 
-        private int totalTests = 0;
+        private int totalTests;
 
-        private string mode = "MbUnit";
+        private string mode = "Integration";
 
         [Browsable(false)]
         public double ElapsedTime
@@ -207,7 +207,7 @@ namespace Gallio.Icarus.Controls
 
             base.OnPaint(e);
 
-            int alpha = 200;
+            const int alpha = 200;
             SolidBrush backBrush = new SolidBrush(BackColor);
             SolidBrush textBrush = new SolidBrush(FromColor(ForeColor, alpha));
 
@@ -226,7 +226,7 @@ namespace Gallio.Icarus.Controls
 
             if (totalTests > 0)
             {
-                if (mode == "MbUnit" || failedTests == 0)
+                if (mode == "Integration" || failedTests == 0)
                 {
                     // Draw passed region.
                     float width = r.Width * (passedTests / (float)totalTests);
@@ -249,7 +249,6 @@ namespace Gallio.Icarus.Controls
                     // Draw skipped region.
                     width = r.Width * (skippedTests / (float)totalTests);
                     left = right;
-                    right = left + width;
                     DrawProgressRegion(e.Graphics, r, left, width, skippedColor);
                 }
                 else

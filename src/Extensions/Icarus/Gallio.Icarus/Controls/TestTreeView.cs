@@ -13,20 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
+using Gallio.Icarus.Controllers;
 using Gallio.Model;
 
 namespace Gallio.Icarus.Controls
 {
     public class TestTreeView : TreeViewAdv
     {
-        private NodeCheckBox nodeCheckBox;
+        private readonly NodeCheckBox nodeCheckBox;
 
         public bool EditEnabled
         {
@@ -61,26 +57,26 @@ namespace Gallio.Icarus.Controls
             nodeTextBox.EditEnabled = false;
             nodeTextBox.LeftMargin = 3;
             nodeTextBox.ParentColumn = null;
-            nodeTextBox.DrawText += new EventHandler<DrawEventArgs>(nodeTextBox_DrawText);
+            nodeTextBox.DrawText += nodeTextBox_DrawText;
             NodeControls.Add(nodeTextBox);
         }
 
-        private void nodeTextBox_DrawText(object sender, DrawEventArgs e)
+        private static void nodeTextBox_DrawText(object sender, DrawEventArgs e)
         {
             TestTreeNode node = (TestTreeNode)e.Node.Tag;
             switch (node.TestStatus)
             {
                 case TestStatus.Passed:
-                    e.TextColor = Color.Green;
+                    e.TextColor = OptionsController.Instance.PassedColor;
                     break;
                 case TestStatus.Failed:
-                    e.TextColor = Color.Red;
+                    e.TextColor = OptionsController.Instance.FailedColor;
                     break;
                 case TestStatus.Skipped:
-                    e.TextColor = Color.SlateGray;
+                    e.TextColor = OptionsController.Instance.SkippedColor;
                     break;
                 case TestStatus.Inconclusive:
-                    e.TextColor = Color.Gold;
+                    e.TextColor = OptionsController.Instance.InconclusiveColor;
                     break;
             }
         }

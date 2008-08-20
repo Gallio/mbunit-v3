@@ -58,6 +58,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
+    <Reference Include="NDepend.Helpers.FileDirectoryPath, Version=1.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\NDepend.Helpers.FileDirectoryPath.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -121,6 +125,50 @@
     </Compile>
     <Compile Include="AnnotationsWindow.Designer.cs">
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IOptionsController.cs" />
+    <Compile Include="Options\AppearanceOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\AppearanceOptions.Designer.cs">
+      <DependentUpon>AppearanceOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\AssembliesOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\AssembliesOptions.Designer.cs">
+      <DependentUpon>AssembliesOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\ColorsOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\ColorsOptions.Designer.cs">
+      <DependentUpon>ColorsOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Options.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Options\Options.Designer.cs">
+      <DependentUpon>Options.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\OptionsController.cs" />
+    <Compile Include="Options\OptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\OptionsPanel.Designer.cs">
+      <DependentUpon>OptionsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\PluginDirectoriesOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\PluginDirectoriesOptions.Designer.cs">
+      <DependentUpon>PluginDirectoriesOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\StartupOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\StartupOptions.Designer.cs">
+      <DependentUpon>StartupOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="ProjectExplorer.cs">
       <SubType>Form</SubType>
@@ -186,12 +234,6 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Arguments.cs" />
-    <Compile Include="Options.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Options.Designer.cs">
-      <DependentUpon>Options.cs</DependentUpon>
-    </Compile>
     <Compile Include="Paths.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PropertiesWindow.cs">
@@ -228,10 +270,6 @@
     <EmbeddedResource Include="Main.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Main.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options.resx">
-      <DependentUpon>Options.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PropertiesWindow.resx">
       <DependentUpon>PropertiesWindow.cs</DependentUpon>
@@ -325,6 +363,30 @@
     <EmbeddedResource Include="AnnotationsWindow.resx">
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\AppearanceOptions.resx">
+      <DependentUpon>AppearanceOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\AssembliesOptions.resx">
+      <DependentUpon>AssembliesOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\ColorsOptions.resx">
+      <DependentUpon>ColorsOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\Options.resx">
+      <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\OptionsPanel.resx">
+      <DependentUpon>OptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\PluginDirectoriesOptions.resx">
+      <DependentUpon>PluginDirectoriesOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\StartupOptions.resx">
+      <DependentUpon>StartupOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProjectExplorer.resx">
       <DependentUpon>ProjectExplorer.cs</DependentUpon>

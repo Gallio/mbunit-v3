@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Controls
     public class TestTreeModel : TreeModel, ITestTreeModel
     {
         private bool filterPassed, filterFailed, filterSkipped;
-        private TestTreeSorter testTreeSorter = new TestTreeSorter();
+        private readonly TestTreeSorter testTreeSorter = new TestTreeSorter();
 
         public event EventHandler<EventArgs> TestCountChanged;
         public event EventHandler<TestResultEventArgs> TestResult;
@@ -96,10 +96,10 @@ namespace Gallio.Icarus.Controls
             }
         }
 
-        private int CountTests(Node node)
+        private static int CountTests(Node node)
         {
             int count = 0;
-            if (node is TestTreeNode && ((TestTreeNode)node).IsTest && ((TestTreeNode)node).IsChecked)
+            if (node is TestTreeNode && ((TestTreeNode)node).IsTest && node.IsChecked)
                 count += 1;
             foreach (Node n in node.Nodes)
                 count += CountTests(n);
@@ -117,7 +117,7 @@ namespace Gallio.Icarus.Controls
                 ResetTestStatus(node);
         }
 
-        private void ResetTestStatus(Node node)
+        private static void ResetTestStatus(Node node)
         {
             ((TestTreeNode)node).ClearTestStepRuns();
             foreach (Node n in node.Nodes)
@@ -190,8 +190,11 @@ namespace Gallio.Icarus.Controls
             return true;
         }
 
-        private void FilterNode(TestTreeNode node, string text, TestStatus testStatus, string nodeType)
+        private static void FilterNode(Node node, string text, TestStatus testStatus, string nodeType)
         {
+            if (node == null)
+                throw new ArgumentNullException("node");
+
             string key = testStatus.ToString();
             TestTreeNode filterNode;
             List<TestTreeNode> nodes = ((TestTreeNode)node.Parent).Find(key, true);
@@ -238,11 +241,9 @@ namespace Gallio.Icarus.Controls
                     list.Sort(testTreeSorter);
                     return list;
                 }
-                else
-                    return null;
+                return null;
             }
-            else
-                return base.GetChildren(treePath);
+            return base.GetChildren(treePath);
         }
 
         private class TestTreeSorter : IComparer
@@ -254,7 +255,7 @@ namespace Gallio.Icarus.Controls
             /// <summary>
             /// Case insensitive comparer object
             /// </summary>
-            private CaseInsensitiveComparer caseInsensitiveComparer = new CaseInsensitiveComparer();
+            private readonly CaseInsensitiveComparer caseInsensitiveComparer = new CaseInsensitiveComparer();
 
             /// <summary>
             /// Gets or sets the order of sorting to apply (for example, 'Ascending' or 'Descending').
@@ -267,14 +268,12 @@ namespace Gallio.Icarus.Controls
 
             public int Compare(object x, object y)
             {
-                int compareResult;
-
                 // Cast the objects to be compared to ListViewItem objects
                 TestTreeNode X = (TestTreeNode)x;
                 TestTreeNode Y = (TestTreeNode)y;
 
                 // standard text sort (ci)
-                compareResult = caseInsensitiveComparer.Compare(X.Text, Y.Text);
+                int compareResult = caseInsensitiveComparer.Compare(X.Text, Y.Text);
 
                 // Calculate correct return value based on object comparison
                 if (SortOrder == SortOrder.Ascending)
@@ -282,16 +281,13 @@ namespace Gallio.Icarus.Controls
                     // Ascending sort is selected, return normal result of compare operation
                     return compareResult;
                 }
-                else if (SortOrder == SortOrder.Descending)
+                if (SortOrder == SortOrder.Descending)
                 {
                     // Descending sort is selected, return negative result of compare operation
                     return (-compareResult);
                 }
-                else
-                {
-                    // Return '0' to indicate they are equal
-                    return 0;
-                }
+                // Return '0' to indicate they are equal
+                return 0;
             }
         }
     }

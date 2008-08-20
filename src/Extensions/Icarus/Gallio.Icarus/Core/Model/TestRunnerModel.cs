@@ -47,11 +47,11 @@ namespace Gallio.Icarus.Core.Model
         private readonly TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
         private readonly TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
 
-        private StatusStripProgressMonitorProvider progressMonitorProvider = new StatusStripProgressMonitorProvider();
+        private readonly StatusStripProgressMonitorProvider progressMonitorProvider = new StatusStripProgressMonitorProvider();
 
-        private string reportNameFormat = "test-report-{0}-{1}";
+        private const string reportNameFormat = "test-report-{0}-{1}";
         private string reportFolder;
-        private string executionLogFolder;
+        private readonly string executionLogFolder;
         private Report previousReportFromUnloadedPackage;
 
         public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
@@ -79,7 +79,7 @@ namespace Gallio.Icarus.Core.Model
             this.reportManager = reportManager;
 
             // hook up status strip
-            ((StatusStripProgressMonitorProvider)progressMonitorProvider).ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e) {
+            progressMonitorProvider.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e) {
                 if (ProgressUpdate != null) ProgressUpdate(this, e); };
 
             // set up reports
@@ -101,7 +101,8 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                testRunner.Dispose(progressMonitor);
+                if (testRunner != null)
+                    testRunner.Dispose(progressMonitor);
             });
         }
 
@@ -112,7 +113,8 @@ namespace Gallio.Icarus.Core.Model
 
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                testRunner.Load(testPackageConfig, progressMonitor);
+                if (testRunner != null)
+                    testRunner.Load(testPackageConfig, progressMonitor);
             });
         }
 
@@ -120,7 +122,8 @@ namespace Gallio.Icarus.Core.Model
         {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                testRunner.Explore(testExplorationOptions, progressMonitor);
+                if (testRunner != null)
+                    testRunner.Explore(testExplorationOptions, progressMonitor);
             });
 
             return Report.TestModel;
@@ -133,7 +136,8 @@ namespace Gallio.Icarus.Core.Model
             // run tests
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                testRunner.Run(testExecutionOptions, progressMonitor);
+                if (testRunner != null)
+                    testRunner.Run(testExecutionOptions, progressMonitor);
             });
         }
 
@@ -164,7 +168,7 @@ namespace Gallio.Icarus.Core.Model
             return new FileSystemReportContainer(reportFolder, reportName);
         }
 
-        private string GenerateReportName(Report report)
+        private static string GenerateReportName(Report report)
         {
             DateTime reportTime = report.TestPackageRun != null ? report.TestPackageRun.StartTime : DateTime.Now;
 
@@ -205,13 +209,20 @@ namespace Gallio.Icarus.Core.Model
             string cssFile = Path.Combine(executionLogFolder, "ExecutionLog.css");
             if (!File.Exists(cssFile))
             {
-                Stream css = Assembly.GetExecutingAssembly().GetManifestResourceStream("Gallio.Icarus.Core.Reports.ExecutionLog.css");
-                FileStream fs = File.Open(cssFile, FileMode.Create, FileAccess.Write);
-                const int size = 4096;
-                byte[] bytes = new byte[size];
-                int numBytes;
-                while ((numBytes = css.Read(bytes, 0, size)) > 0)
-                    fs.Write(bytes, 0, numBytes);
+                using (Stream css = Assembly.GetExecutingAssembly().GetManifestResourceStream("Gallio.Icarus.Core.Reports.ExecutionLog.css"))
+                {
+                    if (css != null)
+                    {
+                        using (FileStream fs = File.Open(cssFile, FileMode.Create, FileAccess.Write))
+                        {
+                            const int size = 4096;
+                            byte[] bytes = new byte[size];
+                            int numBytes;
+                            while ((numBytes = css.Read(bytes, 0, size)) > 0)
+                                fs.Write(bytes, 0, numBytes);
+                        }
+                    }
+                }
             }
         }
 
@@ -261,7 +272,8 @@ namespace Gallio.Icarus.Core.Model
 
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
-                testRunner.Unload(progressMonitor);
+                if (testRunner != null)
+                    testRunner.Unload(progressMonitor);
             });
         }
 

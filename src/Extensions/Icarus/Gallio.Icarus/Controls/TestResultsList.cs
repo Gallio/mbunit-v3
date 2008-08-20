@@ -15,20 +15,16 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 
 using Gallio.Model;
-using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
-using Gallio.Reflection;
 
 namespace Gallio.Icarus.Controls
 {
     public class TestResultsList : ListView
     {
-        private TestResultsListColumnSorter columnSorter;
+        private readonly TestResultsListColumnSorter columnSorter;
 
         public TestResultsList()
         {
@@ -53,7 +49,7 @@ namespace Gallio.Icarus.Controls
             CodeReference.Width = 200;
             Assembly.Text = "Assembly";
             Assembly.Width = 200;
-            Columns.AddRange(new ColumnHeader[] { StepName, TestKind, Duration, Asserts, CodeReference, Assembly});
+            Columns.AddRange(new[] { StepName, TestKind, Duration, Asserts, CodeReference, Assembly});
             FullRowSelect = true;
             View = View.Details;
         }
@@ -66,10 +62,7 @@ namespace Gallio.Icarus.Controls
             if (e.Column == columnSorter.SortColumn)
             {
                 // Reverse the current sort direction for this column.
-                if (columnSorter.Order == SortOrder.Ascending)
-                    columnSorter.Order = SortOrder.Descending;
-                else
-                    columnSorter.Order = SortOrder.Ascending;
+                columnSorter.Order = columnSorter.Order == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
             }
             else
             {
@@ -98,8 +91,10 @@ namespace Gallio.Icarus.Controls
                     break;
             }
             ListViewItem lvi = new ListViewItem(testStepRun.Step.Name, imgIndex);
-            lvi.SubItems.AddRange(new string[] { testKind, testStepRun.Result.Duration.ToString("0.000"), 
-                testStepRun.Result.AssertCount.ToString(), testStepRun.Step.CodeReference.TypeName, testStepRun.Step.CodeReference.AssemblyName });
+            string codeReference = testStepRun.Step.CodeReference.TypeName ?? string.Empty;
+            string assemblyName = testStepRun.Step.CodeReference.AssemblyName ?? string.Empty;
+            lvi.SubItems.AddRange(new[] { testKind, testStepRun.Result.Duration.ToString("0.000"), 
+                testStepRun.Result.AssertCount.ToString(), codeReference, assemblyName });
             if (columnSorter.SortColumn == 0)
                 lvi.IndentCount = indentCount;
             Items.Add(lvi);
@@ -127,7 +122,7 @@ namespace Gallio.Icarus.Controls
         /// <summary>
         /// Case insensitive comparer object
         /// </summary>
-        private CaseInsensitiveComparer ObjectCompare;
+        private readonly CaseInsensitiveComparer ObjectCompare;
 
         /// <summary>
         /// Class constructor.  Initializes various elements
@@ -153,11 +148,10 @@ namespace Gallio.Icarus.Controls
         public int Compare(object x, object y)
         {
             int compareResult;
-            ListViewItem listviewX, listviewY;
 
             // Cast the objects to be compared to ListViewItem objects
-            listviewX = (ListViewItem)x;
-            listviewY = (ListViewItem)y;
+            ListViewItem listviewX = (ListViewItem)x;
+            ListViewItem listviewY = (ListViewItem)y;
 
             // Compare the two items
             if (ColumnToSort == 0)
@@ -165,7 +159,7 @@ namespace Gallio.Icarus.Controls
                 // status column
                 compareResult = listviewX.ImageIndex.CompareTo(listviewY.ImageIndex);
             }
-            else if (ColumnToSort == 3)
+            else if (ColumnToSort == 2 || ColumnToSort == 3)
             {
                 // duration column
                 decimal left = Convert.ToDecimal(listviewX.SubItems[ColumnToSort].Text);
@@ -192,16 +186,13 @@ namespace Gallio.Icarus.Controls
                 // Ascending sort is selected, return normal result of compare operation
                 return compareResult;
             }
-            else if (OrderOfSort == SortOrder.Descending)
+            if (OrderOfSort == SortOrder.Descending)
             {
                 // Descending sort is selected, return negative result of compare operation
                 return (-compareResult);
             }
-            else
-            {
-                // Return '0' to indicate they are equal
-                return 0;
-            }
+            // Return '0' to indicate they are equal
+            return 0;
         }
 
         /// <summary>

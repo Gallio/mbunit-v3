@@ -20,13 +20,17 @@ using Aga.Controls.Tree;
 using Gallio.Icarus.Controls.Interfaces;
 using Gallio.Runner.Projects;
 using Gallio.Utilities;
+using NDepend.Helpers.FileDirectoryPath;
+using System.Collections.Generic;
 
 namespace Gallio.Icarus.Controls
 {
     public class ProjectTreeModel : TreeModelBase, IProjectTreeModel
     {
-        private Node projectRoot, assemblies, reports;
-        private Project project;
+        private readonly Node projectRoot;
+        private readonly Node assemblies;
+        private readonly Node reports;
+        private Project project = new Project();
         private string fileName = string.Empty;
 
         private string FileName
@@ -46,13 +50,11 @@ namespace Gallio.Icarus.Controls
 
         public ProjectTreeModel()
         {
-            project = new Project();
-
             projectRoot = new Node("Default");
             assemblies = new Node("Assemblies");
             projectRoot.Nodes.Add(assemblies);
             reports = new Node("Reports");
-            reports.Image = global::Gallio.Icarus.Properties.Resources.Report.ToBitmap();
+            reports.Image = Properties.Resources.Report.ToBitmap();
             projectRoot.Nodes.Add(reports);
         }
 
@@ -62,22 +64,22 @@ namespace Gallio.Icarus.Controls
             {
                 yield return projectRoot;
             }
-            else if ((Node)treePath.LastNode == projectRoot)
+            else if (treePath.LastNode == projectRoot)
             {
                 foreach (Node n in projectRoot.Nodes)
                     yield return n;
             }
-            else if ((Node)treePath.LastNode == assemblies)
+            else if (treePath.LastNode == assemblies)
             {
                 foreach (string assemblyFile in project.TestPackageConfig.AssemblyFiles)
                 {
                     Node n = new Node(Path.GetFileNameWithoutExtension(assemblyFile));
-                    n.Image = global::Gallio.Icarus.Properties.Resources.Assembly;
+                    n.Image = Properties.Resources.Assembly;
                     n.Tag = assemblyFile;
                     yield return n;
                 }
             }
-            else if ((Node)treePath.LastNode == reports && fileName != string.Empty)
+            else if (treePath.LastNode == reports && fileName != string.Empty)
             {
                 string reportDirectory = Path.Combine(Path.GetDirectoryName(fileName), "Reports");
                 if (Directory.Exists(reportDirectory))
@@ -85,7 +87,7 @@ namespace Gallio.Icarus.Controls
                     foreach (string file in Directory.GetFiles(reportDirectory, ".xml", SearchOption.AllDirectories))
                     {
                         Node n = new Node(Path.GetFileNameWithoutExtension(file));
-                        n.Image = global::Gallio.Icarus.Properties.Resources.XmlFile.ToBitmap();
+                        n.Image = Properties.Resources.XmlFile.ToBitmap();
                         n.Tag = file;
                         yield return n;
                     }
@@ -101,28 +103,55 @@ namespace Gallio.Icarus.Controls
             return true;
         }
 
-        public void SaveProject(string fileName)
+        public void SaveProject(string file)
         {
-            if (fileName == string.Empty)
+            if (file == string.Empty)
             {
                 // create folder (if necessary)
                 if (!Directory.Exists(Paths.IcarusAppDataFolder))
                     Directory.CreateDirectory(Paths.IcarusAppDataFolder);
-                fileName = Paths.DefaultProject;
+                file = Paths.DefaultProject;
             }
-            XmlSerializationUtils.SaveToXml(project, fileName);
-            FileName = fileName;
+            ConvertToRelativePaths(Path.GetDirectoryName(file));
+            XmlSerializationUtils.SaveToXml(project, file);
+            FileName = file;
         }
 
-        public void LoadProject(string fileName)
+        private void ConvertToRelativePaths(string directory)
+        {
+            IList<string> assemblyList = new List<string>();
+            foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
+            {
+                if (Path.IsPathRooted(assembly))
+                {
+                    try
+                    {
+                        FilePathAbsolute filePath = new FilePathAbsolute(assembly);
+                        DirectoryPathAbsolute directoryPath = new DirectoryPathAbsolute(directory);
+                        assemblyList.Add(filePath.GetPathRelativeFrom(directoryPath).Path);
+                    }
+                    catch
+                    {
+                        assemblyList.Add(assembly);
+                    }
+                }
+                else
+                    assemblyList.Add(assembly);
+            }
+            project.TestPackageConfig.AssemblyFiles.Clear();
+            project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
+        }
+
+        public void LoadProject(string file)
         {
             // fail fast
-            if (!File.Exists(fileName))
-                throw new ArgumentException(String.Format("Project file {0} does not exist.", fileName));
+            if (!File.Exists(file))
+                throw new ArgumentException(String.Format("Project file {0} does not exist.", file));
 
             // deserialize project
-            project = XmlSerializationUtils.LoadFromXml<Project>(fileName);
-            FileName = fileName;
+            Environment.CurrentDirectory = Path.GetDirectoryName(file);
+            project = XmlSerializationUtils.LoadFromXml<Project>(file);
+            FileName = file;
         }
 
         public void NewProject()

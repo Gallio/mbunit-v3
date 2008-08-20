@@ -30,10 +30,6 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void Options_Test()
         {
-            IProjectAdapterView projectAdapterView = mocks.CreateMock<IProjectAdapterView>();
-            Expect.Call(projectAdapterView.Settings).Return(new Settings());
-            mocks.ReplayAll();
-            Options options = new Options(projectAdapterView);
         }
     }
 }

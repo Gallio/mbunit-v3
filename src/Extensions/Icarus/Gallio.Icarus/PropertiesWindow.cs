@@ -24,7 +24,7 @@ namespace Gallio.Icarus
 {
     public partial class PropertiesWindow : DockWindow
     {
-        private IProjectAdapterView projectAdapterView;
+        private readonly IProjectAdapterView projectAdapterView;
 
         public IList<string> HintDirectories
         {
@@ -76,7 +76,7 @@ namespace Gallio.Icarus
             {
                 // TODO: move to resources for localisation
                 string message = "Folder path does not exist." + Environment.NewLine + "Please select a valid folder path.";
-                string title = "Invalid folder path";
+                const string title = "Invalid folder path";
                 MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

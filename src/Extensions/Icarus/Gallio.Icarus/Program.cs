@@ -18,6 +18,7 @@ using System.IO;
 using System.Windows.Forms;
 using Gallio.Icarus.Adapter;
 using Gallio.Icarus.AdapterModel;
+using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.Interfaces;
 using Gallio.Icarus.Core.Model;
@@ -27,6 +28,7 @@ using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
+using Gallio.Runtime.ConsoleSupport;
 
 namespace Gallio.Icarus
 {
@@ -36,28 +38,29 @@ namespace Gallio.Icarus
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        //[LoaderOptimization(LoaderOptimization.MultiDomain)] // Disabled due to bug: http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=95157
+        //[LoaderOptimization(LoaderOptimization.MultiDomain)]
+        // Disabled due to bug: http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=95157
         public static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Main projectAdapterView = new Main();
-            projectAdapterView.Args = args;
+            Arguments arguments = ParseArguments(args);
+            Main projectAdapterView = new Main(arguments);
 
             RuntimeSetup runtimeSetup = new RuntimeSetup();
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
             runtimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Program).Assembly));
-            runtimeSetup.PluginDirectories.AddRange(projectAdapterView.Settings.PluginDirectories);
+            runtimeSetup.PluginDirectories.AddRange(OptionsController.Instance.PluginDirectories);
             using (RuntimeBootstrap.Initialize(runtimeSetup, new IcarusLogger(projectAdapterView)))
             {
                 // wire up model
                 IProjectAdapter projectAdapter = new ProjectAdapter(projectAdapterView, new ProjectAdapterModel(), new ProjectTreeModel());
 
                 ITestRunner testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(
-                    projectAdapterView.Settings.TestRunnerFactory);
+                    OptionsController.Instance.TestRunnerFactory);
 
                 IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
                 ITestRunnerModel testRunnerModel = new TestRunnerModel(testRunner, reportManager);
@@ -71,6 +74,15 @@ namespace Gallio.Icarus
 
                 GC.KeepAlive(projectPresenter);
             }
+        }
+
+        private static Arguments ParseArguments(string[] args)
+        {
+            // parse command line arguments
+            CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
+            Arguments arguments = new Arguments();
+            argumentParser.Parse(args, arguments, delegate { });
+            return arguments;
         }
     }
 }

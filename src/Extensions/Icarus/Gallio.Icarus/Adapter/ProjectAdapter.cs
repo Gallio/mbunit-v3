@@ -34,7 +34,7 @@ namespace Gallio.Icarus.Adapter
         private readonly IProjectAdapterModel projectAdapterModel;
         private readonly IProjectTreeModel projectTreeModel;
         private TestModelData testModelData;
-        private AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
+        private readonly AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
         private string mode;
 
         public TestModelData TestModelData
@@ -140,7 +140,7 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.TestTreeModel = projectAdapterModel.TreeModel;
 
             // assembly watcher
-            assemblyWatcher.AssemblyChangedEvent += new AssemblyWatcher.AssemblyChangedHandler(assemblyWatcher_AssemblyChangedEvent);
+            assemblyWatcher.AssemblyChangedEvent += assemblyWatcher_AssemblyChangedEvent;
         }
 
         private void OnUpdateHintDirectoriesEvent(object sender, SingleEventArgs<IList<string>> e)
@@ -171,9 +171,18 @@ namespace Gallio.Icarus.Adapter
 
         private void AddAssembliesEventHandler(object sender, SingleEventArgs<IList<string>> e)
         {
-            Project.TestPackageConfig.AssemblyFiles.AddRange(e.Arg);
             foreach (string assembly in e.Arg)
-                assemblyWatcher.Add(assembly);
+            {
+                if (!File.Exists(assembly))
+                    continue;
+                if (Path.GetExtension(assembly) == ".gallio")
+                    projectTreeModel.LoadProject(assembly);
+                else
+                {
+                    projectTreeModel.Project.TestPackageConfig.AssemblyFiles.Add(assembly);
+                    assemblyWatcher.Add(assembly);
+                }
+            }
         }
 
         private void RemoveAssembliesEventHandler(object sender, EventArgs e)
@@ -184,12 +193,8 @@ namespace Gallio.Icarus.Adapter
 
         private void RemoveAssemblyEventHandler(object sender, SingleEventArgs<string> e)
         {
-            string fileName;
             TestData test = testModelData != null ? testModelData.GetTestById(e.Arg) : null;
-            if (test != null)
-                fileName = test.Metadata.GetValue(MetadataKeys.CodeBase);
-            else
-                fileName = e.Arg;
+            string fileName = test != null ? test.Metadata.GetValue(MetadataKeys.CodeBase) : e.Arg;
             
             // remove assembly
             assemblyWatcher.Remove(fileName);
@@ -250,7 +255,7 @@ namespace Gallio.Icarus.Adapter
             projectAdapterView.TestFilters = UpdateTestFilters(Project.TestFilters);
         }
 
-        private List<string> UpdateTestFilters(List<FilterInfo> filters)
+        private static List<string> UpdateTestFilters(IEnumerable<FilterInfo> filters)
         {
             List<string> list = new List<string>();
             foreach (FilterInfo filter in filters)

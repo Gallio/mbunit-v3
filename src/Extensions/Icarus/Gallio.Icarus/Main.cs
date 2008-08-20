@@ -21,16 +21,14 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-
 using Aga.Controls.Tree;
-
+using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Interfaces;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runtime;
-using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 using WeifenLuo.WinFormsUI.Docking;
@@ -39,29 +37,28 @@ namespace Gallio.Icarus
 {
     public partial class Main : Form, IProjectAdapterView
     {
-        private TaskManager primaryTaskManager = new TaskManager();
-        private TaskManager executionLogTaskManager = new TaskManager();
+        private readonly TaskManager primaryTaskManager = new TaskManager();
+        private readonly TaskManager executionLogTaskManager = new TaskManager();
 
         private string projectFileName = String.Empty;
-        private Settings settings;
-        private Arguments arguments;
+        private readonly Arguments arguments;
         
         // dock panel windows
-        private DeserializeDockContent deserializeDockContent;
-        private TestExplorer testExplorer;
-        private ProjectExplorer projectExplorer;
-        private TestResults testResults;
-        private ReportWindow reportWindow;
-        private RuntimeLogWindow runtimeLogWindow;
-        private About aboutDialog;
-        private PropertiesWindow propertiesWindow;
-        private FiltersWindow filtersWindow;
-        private ExecutionLogWindow executionLogWindow;
-        private AnnotationsWindow annotationsWindow;
+        private readonly DeserializeDockContent deserializeDockContent;
+        private readonly TestExplorer testExplorer;
+        private readonly ProjectExplorer projectExplorer;
+        private readonly TestResults testResults;
+        private readonly ReportWindow reportWindow;
+        private readonly RuntimeLogWindow runtimeLogWindow;
+        private readonly About aboutDialog;
+        private readonly PropertiesWindow propertiesWindow;
+        private readonly FiltersWindow filtersWindow;
+        private readonly ExecutionLogWindow executionLogWindow;
+        private readonly AnnotationsWindow annotationsWindow;
         
         // progress monitoring
-        private ProgressMonitor progressMonitor;
-        private System.Timers.Timer progressMonitorTimer;
+        private readonly ProgressMonitor progressMonitor;
+        private readonly System.Timers.Timer progressMonitorTimer;
         private bool showProgressMonitor = true;
         private string taskName, subTaskName;
         private double totalWorkUnits, completedWorkUnits;
@@ -94,10 +91,10 @@ namespace Gallio.Icarus
             set
             {
                 taskName = value;
-                Sync.Invoke(this, delegate
-                {
-                    UpdateProgress();
-                });
+                // TODO: Tidy this up
+                if (value == "Running the tests.")
+                    showProgressMonitor = false;
+                Sync.Invoke(this, UpdateProgress);
             }
         }
 
@@ -106,10 +103,7 @@ namespace Gallio.Icarus
             set
             {
                 subTaskName = value;
-                Sync.Invoke(this, delegate
-                {
-                    UpdateProgress();
-                });
+                Sync.Invoke(this, UpdateProgress);
             }
         }
 
@@ -121,14 +115,13 @@ namespace Gallio.Icarus
                 Sync.Invoke(this, delegate
                 {
                     UpdateProgress();
-                    if (value == 0)
-                    {
-                        // task is complete, hide progress monitor
-                        progressMonitorTimer.Enabled = false;
-                        progressMonitor.Hide();
-                        Cursor = Cursors.Default;
-                        showProgressMonitor = true;
-                    }
+                    if (value != 0)
+                        return;
+                    // task is complete, hide progress monitor
+                    progressMonitorTimer.Enabled = false;
+                    progressMonitor.Hide();
+                    Cursor = Cursors.Default;
+                    showProgressMonitor = true;
                 });
             }
         }
@@ -141,7 +134,7 @@ namespace Gallio.Icarus
                 Sync.Invoke(this, delegate
                 {
                     UpdateProgress();
-                    if (value > 0 && !progressMonitor.Visible && showProgressMonitor)
+                    if (value > 0 && !progressMonitor.Visible && showProgressMonitor && OptionsController.Instance.ShowProgressDialogs)
                         progressMonitorTimer.Enabled = true;
                     Cursor = Cursors.WaitCursor;
                 });
@@ -227,38 +220,6 @@ namespace Gallio.Icarus
             }
         }
 
-        public Settings Settings
-        {
-            get
-            {
-                if (settings == null)
-                {
-                    settings = LoadSettings();
-                    if (settings == null)
-                        settings = new Settings();
-                }
-                return settings;
-            }
-            set
-            {
-                if (settings == null)
-                    throw new ArgumentNullException("value");
-                settings = value;
-            }
-        }
-
-        private Settings LoadSettings()
-        {
-            try
-            {
-                if (File.Exists(Paths.SettingsFile))
-                    return XmlSerializationUtils.LoadFromXml<Settings>(Paths.SettingsFile);
-            }
-            catch
-            { }
-            return null;
-        }
-
         public IList<string> HintDirectories
         {
             set
@@ -308,10 +269,7 @@ namespace Gallio.Icarus
             set
             {
                 projectFileName = value;
-                if (value != string.Empty)
-                    Text = String.Format("{0} - Gallio Icarus", value);
-                else
-                    Text = "Gallio Icarus";
+                Text = value != string.Empty ? String.Format("{0} - Gallio Icarus", value) : "Gallio Icarus";
             }
         }
 
@@ -344,15 +302,6 @@ namespace Gallio.Icarus
             set { testExplorer.EditEnabled = value; }
         }
 
-        public string[] Args
-        {
-            set
-            {
-                if (value.Length > 0)
-                    arguments = ParseArguments(value);
-            }
-        }
-
         public event EventHandler<GetTestTreeEventArgs> GetTestTree;
         public event EventHandler<SingleEventArgs<IList<string>>> AddAssemblies;
         public event EventHandler<EventArgs> RemoveAssemblies;
@@ -379,15 +328,17 @@ namespace Gallio.Icarus
         public event EventHandler<EventArgs> UnloadTestPackage;
         public event EventHandler<EventArgs> CleanUp;
 
-        public Main()
+        public Main(Arguments arguments)
         {
+            this.arguments = arguments;
+
             InitializeComponent();
 
             UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
 
             testExplorer = new TestExplorer(this);
             projectExplorer = new ProjectExplorer(this);
-            testResults = new TestResults();
+            testResults = new TestResults(OptionsController.Instance);
             reportWindow = new ReportWindow(this);
             runtimeLogWindow = new RuntimeLogWindow();
             aboutDialog = new About();
@@ -397,21 +348,17 @@ namespace Gallio.Icarus
             annotationsWindow = new AnnotationsWindow(this);
             progressMonitor = new ProgressMonitor();
 
-            deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
+            deserializeDockContent = GetContentFromPersistString;
 
-            progressMonitorTimer = new System.Timers.Timer();
-            progressMonitorTimer.Interval = 300;
-            progressMonitorTimer.AutoReset = false;
-            progressMonitorTimer.Elapsed += delegate { Sync.Invoke(this, delegate { progressMonitor.Show(this); }); };
-        }
-
-        private Arguments ParseArguments(string[] args)
-        {
-            // parse command line arguments
-            CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
-            Arguments arguments = new Arguments();
-            argumentParser.Parse(args, arguments, delegate { });
-            return arguments;
+            progressMonitorTimer = new System.Timers.Timer {Interval = 1000, AutoReset = false};
+            progressMonitorTimer.Elapsed += delegate
+            {
+                Sync.Invoke(this, delegate
+                {
+                    if (progressMonitor != null)
+                        progressMonitor.Show(this);
+                });
+            };
         }
 
         private IDockContent GetContentFromPersistString(string persistString)
@@ -420,22 +367,19 @@ namespace Gallio.Icarus
                 return testExplorer;
             if (persistString == typeof(ProjectExplorer).ToString())
                 return projectExplorer;
-            else if (persistString == typeof(TestResults).ToString())
+            if (persistString == typeof(TestResults).ToString())
                 return testResults;
-            else if (persistString == typeof(ReportWindow).ToString())
+            if (persistString == typeof(ReportWindow).ToString())
                 return reportWindow;
-            else if (persistString == typeof(PropertiesWindow).ToString())
+            if (persistString == typeof(PropertiesWindow).ToString())
                 return propertiesWindow;
-            else if (persistString == typeof(FiltersWindow).ToString())
+            if (persistString == typeof(FiltersWindow).ToString())
                 return filtersWindow;
-            else if (persistString == typeof(ExecutionLogWindow).ToString())
+            if (persistString == typeof(ExecutionLogWindow).ToString())
                 return executionLogWindow;
-            else if (persistString == typeof(RuntimeLogWindow).ToString())
+            if (persistString == typeof(RuntimeLogWindow).ToString())
                 return runtimeLogWindow;
-            else if (persistString == typeof(AnnotationsWindow).ToString())
-                return annotationsWindow;
-            else
-                return null;
+            return persistString == typeof(AnnotationsWindow).ToString() ? annotationsWindow : null;
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -456,24 +400,10 @@ namespace Gallio.Icarus
             }
 
             List<string> assemblyFiles = new List<string>();
-            if (arguments != null)
-            {
-                foreach (string file in arguments.Assemblies)
-                {
-                    if (File.Exists(file))
-                    {
-                        if (Path.GetExtension(file) == ".gallio")
-                        {
-                            ProjectFileName = file;
-                            break;
-                        }
-                        else
-                            assemblyFiles.Add(file);
-                    }
-                }
-            }
-            else if (Settings.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
-                ProjectFileName = Paths.DefaultProject;
+            if (arguments != null && arguments.Assemblies.Length > 0)
+                assemblyFiles.AddRange(arguments.Assemblies);
+            else if (OptionsController.Instance.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
+                assemblyFiles.Add(Paths.DefaultProject);
 
             primaryTaskManager.StartTask(delegate
             {
@@ -481,14 +411,9 @@ namespace Gallio.Icarus
                     GetReportTypes(this, EventArgs.Empty);
                 if (GetTestFrameworks != null)
                     GetTestFrameworks(this, EventArgs.Empty);
-                if (projectFileName != string.Empty)
-                    OpenProjectFromFile();
-                else
-                {
-                    if (assemblyFiles.Count > 0 && AddAssemblies != null)
-                        AddAssemblies(this, new SingleEventArgs<IList<string>>(assemblyFiles));
-                    ThreadedReloadTree(true);
-                }
+                if (assemblyFiles.Count > 0 && AddAssemblies != null)
+                    AddAssemblies(this, new SingleEventArgs<IList<string>>(assemblyFiles));
+                ThreadedReloadTree(true);
             });
         }
 
@@ -543,12 +468,8 @@ namespace Gallio.Icarus
                     if (RunTests != null)
                         RunTests(this, new EventArgs());
 
-                    // create report (if necessary)
-                    if (!reportWindow.IsHidden)
-                        ThreadedCreateReport();
-
                     // enable/disable buttons
-                    Invoke((MethodInvoker)delegate()
+                    Invoke((MethodInvoker)delegate
                     {
                         stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                         startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
@@ -564,24 +485,16 @@ namespace Gallio.Icarus
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
         {
-            primaryTaskManager.StartTask(delegate
-            {
-                ThreadedReloadTree(true);
-            });
+            primaryTaskManager.StartTask(() => ThreadedReloadTree(true));
         }
 
         private void openProject_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFile = new OpenFileDialog();
-            openFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
-            if (openFile.ShowDialog() == DialogResult.OK)
-            {
-                ProjectFileName = openFile.FileName;
-                primaryTaskManager.StartTask(delegate
-                {
-                    OpenProjectFromFile();
-                });
-            }
+            OpenFileDialog openFile = new OpenFileDialog {Filter = "Gallio Projects (*.gallio)|*.gallio"};
+            if (openFile.ShowDialog() != DialogResult.OK)
+                return;
+            ProjectFileName = openFile.FileName;
+            primaryTaskManager.StartTask(OpenProjectFromFile);
         }
 
         private void OpenProjectFromFile()
@@ -607,11 +520,13 @@ namespace Gallio.Icarus
         {
             if (projectFileName == String.Empty)
             {
-                SaveFileDialog saveFile = new SaveFileDialog();
-                saveFile.OverwritePrompt = true;
-                saveFile.AddExtension = true;
-                saveFile.DefaultExt = "Gallio Projects (*.gallio)|*.gallio";
-                saveFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
+                SaveFileDialog saveFile = new SaveFileDialog
+                                              {
+                                                  OverwritePrompt = true,
+                                                  AddExtension = true,
+                                                  DefaultExt = "Gallio Projects (*.gallio)|*.gallio",
+                                                  Filter = "Gallio Projects (*.gallio)|*.gallio"
+                                              };
                 if (saveFile.ShowDialog() == DialogResult.OK)
                     ProjectFileName = saveFile.FileName;
             }
@@ -630,9 +545,12 @@ namespace Gallio.Icarus
 
         public void AddAssembliesToTree()
         {
-            OpenFileDialog openFile = new OpenFileDialog();
-            openFile.Filter = "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*";
-            openFile.Multiselect = true;
+            OpenFileDialog openFile = new OpenFileDialog
+                                          {
+                                              Filter =
+                                                  "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*",
+                                              Multiselect = true
+                                          };
             if (openFile.ShowDialog() == DialogResult.OK)
             {
                 primaryTaskManager.StartTask(delegate
@@ -646,10 +564,7 @@ namespace Gallio.Icarus
 
         public void ReloadTree()
         {
-            primaryTaskManager.StartTask(delegate
-            {
-                ThreadedReloadTree(false);
-            });
+            primaryTaskManager.StartTask(() => ThreadedReloadTree(false));
         }
 
         private void ThreadedReloadTree(bool reloadTestModelData)
@@ -660,25 +575,10 @@ namespace Gallio.Icarus
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
-            Options options = new Options(this);
-            if (options.ShowDialog() == DialogResult.OK)
+            using (Options.Options options = new Options.Options(OptionsController.Instance))
             {
-                try
-                {
-                    XmlSerializationUtils.SaveToXml<Settings>(settings, Paths.SettingsFile);
-                }
-                catch (Exception ex)
-                {
-                    UnhandledExceptionPolicy.Report("An exception occurred while saving the report.", ex);
-                }
+                options.ShowDialog();
             }
-            if (!options.IsDisposed)
-                options.Dispose();
-        }
-
-        private void ExitMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
         }
 
         public void ResetTests()
@@ -739,11 +639,6 @@ namespace Gallio.Icarus
             SaveProjectToFile();
         }
 
-        private void openProjectToolStripButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CreateNewProject();
@@ -780,7 +675,7 @@ namespace Gallio.Icarus
             ShowOnlineHelp();
         }
 
-        private void ShowOnlineHelp()
+        private static void ShowOnlineHelp()
         {
             System.Diagnostics.Process.Start("http://docs.mbunit.com");
         }
@@ -828,10 +723,7 @@ namespace Gallio.Icarus
 
         public void CreateReport()
         {
-            primaryTaskManager.StartTask(delegate
-            {
-                ThreadedCreateReport();
-            });
+            primaryTaskManager.StartTask(ThreadedCreateReport);
         }
 
         private void ThreadedCreateReport()
@@ -950,24 +842,25 @@ namespace Gallio.Icarus
         public void AssemblyChanged(string filePath)
         {
             List<TaskButton> taskButtons = new List<TaskButton>();
-            TaskButton yes = new TaskButton();
-            yes.Text = "Yes";
-            yes.Icon = global::Gallio.Icarus.Properties.Resources.tick;
-            yes.Description = "Reload the test model.";
+            TaskButton yes = new TaskButton
+                                 {
+                                     Text = "Yes",
+                                     Icon = Properties.Resources.tick,
+                                     Description = "Reload the test model."
+                                 };
             taskButtons.Add(yes);
-            TaskButton no = new TaskButton();
-            no.Text = "No";
-            no.Icon = global::Gallio.Icarus.Properties.Resources.cross;
-            no.Description = "Don't reload.";
+            TaskButton no = new TaskButton
+                                {
+                                    Text = "No",
+                                    Icon = Properties.Resources.cross,
+                                    Description = "Don't reload."
+                                };
             taskButtons.Add(no);
 
-            if (TaskDialog.Show("Assembly changed", filePath + " has changed, would you like to reload the test model?", 
-                taskButtons) == yes)
+            if (OptionsController.Instance.AlwaysReloadAssemblies || TaskDialog.Show("Assembly changed", filePath + 
+                " has changed, would you like to reload the test model?", taskButtons) == yes)
             {
-                primaryTaskManager.StartTask(delegate()
-                {
-                    ThreadedReloadTree(true);
-                });
+                primaryTaskManager.StartTask(() => ThreadedReloadTree(true));
             }
         }
 
@@ -1036,7 +929,7 @@ namespace Gallio.Icarus
             testResults.SelectedNodeIds = testIds;
         }
 
-        private void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)
+        private static void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)
         {
             if (e.Exception is ThreadAbortException || e.IsRecursive)
                 return;
@@ -1064,10 +957,7 @@ namespace Gallio.Icarus
 
             progressMonitor.TaskName = taskName;
             progressMonitor.SubTaskName = subTaskName;
-            if (totalWorkUnits > 0)
-                progressMonitor.Progress = String.Format("{0:P}", (completedWorkUnits / totalWorkUnits));
-            else
-                progressMonitor.Progress = String.Empty;
+            progressMonitor.Progress = totalWorkUnits > 0 ? String.Format("{0:P}", (completedWorkUnits / totalWorkUnits)) : String.Empty;
 
             StringBuilder sb = new StringBuilder();
             sb.Append(taskName);

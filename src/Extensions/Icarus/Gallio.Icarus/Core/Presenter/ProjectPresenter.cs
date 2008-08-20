@@ -52,8 +52,8 @@ namespace Gallio.Icarus.Core.Presenter
             projectAdapter.GetExecutionLog += projectAdapter_GetExecutionLog;
             projectAdapter.UnloadTestPackage += projectAdapter_UnloadTestPackage;
 
-            testRunnerModel.ProgressUpdate += new EventHandler<ProgressUpdateEventArgs>(testRunnerModel_ProgressUpdate);
-            testRunnerModel.TestStepFinished += new EventHandler<TestStepFinishedEventArgs>(testRunnerModel_TestStepFinished);
+            testRunnerModel.ProgressUpdate += testRunnerModel_ProgressUpdate;
+            testRunnerModel.TestStepFinished += testRunnerModel_TestStepFinished;
         }
 
         public void testRunnerModel_TestStepFinished(object sender, TestStepFinishedEventArgs e)

@@ -28,9 +28,10 @@ namespace Gallio.Icarus.Controls
     {
         private TestStatus testStatus = TestStatus.Skipped;
         private bool sourceCodeAvailable, isTest;
-        private string name, nodeType;
+        private readonly string name;
+        private readonly string nodeType;
         protected Image nodeTypeIcon, testStatusIcon;
-        private List<TestStepRun> testStepRuns;
+        private readonly List<TestStepRun> testStepRuns;
 
         public string Name
         {
@@ -143,25 +144,25 @@ namespace Gallio.Icarus.Controls
             switch (nodeType)
             {
                 case TestKinds.Assembly:
-                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Assembly;
+                    nodeTypeIcon = Properties.Resources.Assembly;
                     break;
                 case "Namespace":
-                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Namespace;
+                    nodeTypeIcon = Properties.Resources.Namespace;
                     break;
                 case TestKinds.Fixture:
-                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Fixture;
+                    nodeTypeIcon = Properties.Resources.Fixture;
                     break;
                 case TestKinds.Test:
-                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.Test;
+                    nodeTypeIcon = Properties.Resources.Test;
                     break;
                 case "FilterPassed":
-                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.FilterPassed;
+                    nodeTypeIcon = Properties.Resources.FilterPassed;
                     break;
                 case "FilterFailed":
-                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.FilterFailed;
+                    nodeTypeIcon = Properties.Resources.FilterFailed;
                     break;
                 case "FilterSkipped":
-                    nodeTypeIcon = global::Gallio.Icarus.Properties.Resources.FilterSkipped;
+                    nodeTypeIcon = Properties.Resources.FilterSkipped;
                     break;
                 // TODO: Icons for metadata etc...
             }
@@ -272,17 +273,16 @@ namespace Gallio.Icarus.Controls
                 parent.TestStatus = SiblingTestStatus;
         }
 
-        private Image GetTestStatusIcon(TestStatus testStatus)
+        private Image GetTestStatusIcon(TestStatus status)
         {
-            switch (TestStatus)
+            switch (status)
             {
                 case TestStatus.Failed:
-                    return global::Gallio.Icarus.Properties.Resources.cross;
+                    return Properties.Resources.cross;
                 case TestStatus.Passed:
-                    return global::Gallio.Icarus.Properties.Resources.tick;
+                    return Properties.Resources.tick;
                 case TestStatus.Inconclusive:
-                    return global::Gallio.Icarus.Properties.Resources.error;
-                case TestStatus.Skipped:
+                    return Properties.Resources.error;
                 default:
                     return null;
             }

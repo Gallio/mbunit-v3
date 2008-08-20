@@ -13,18 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-
-using Gallio.Model;
-using Gallio.Model.Serialization;
-using Gallio.Runner.Reports;
-using Gallio.Icarus.Controls.Interfaces;
+using System.Collections.Generic;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
-using System.Collections.Generic;
+using Gallio.Icarus.Interfaces;
+using Gallio.Model;
+using Gallio.Runner.Reports;
 using Gallio.Utilities;
 
 namespace Gallio.Icarus
@@ -48,7 +44,7 @@ namespace Gallio.Icarus
             set
             {
                 treeModel = value;
-                ((TestTreeModel)treeModel).TestResult += new EventHandler<TestResultEventArgs>(TestResults_TestResult);
+                ((TestTreeModel)treeModel).TestResult += TestResults_TestResult;
             }
         }
 
@@ -57,10 +53,16 @@ namespace Gallio.Icarus
             set { testProgressStatusBar.Total = value; }
         }
 
-        public TestResults()
+        public TestResults(IOptionsController optionsController)
         {
             selectedNodeIds = new List<string>();
             InitializeComponent();
+
+            testProgressStatusBar.DataBindings.Add("Mode", optionsController, "TestProgressBarStyle");
+            testProgressStatusBar.DataBindings.Add("PassedColor", optionsController, "PassedColor");
+            testProgressStatusBar.DataBindings.Add("FailedColor", optionsController, "FailedColor");
+            testProgressStatusBar.DataBindings.Add("InconclusiveColor", optionsController, "InconclusiveColor");
+            testProgressStatusBar.DataBindings.Add("SkippedColor", optionsController, "SkippedColor");
         }
 
         private void TestResults_TestResult(object sender, TestResultEventArgs e)

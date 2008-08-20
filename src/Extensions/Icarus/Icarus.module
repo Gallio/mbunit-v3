@@ -12,6 +12,7 @@
 
     <Binary Include="libs\Aga.Controls.dll" />
     <Binary Include="libs\ICSharpCode.TextEditor.dll" />
+    <Binary Include="libs\NDepend.Helpers.FileDirectoryPath.dll" />
     <Binary Include="libs\WeifenLuo.WinFormsUI.Docking.dll" />
   </ItemGroup>
 

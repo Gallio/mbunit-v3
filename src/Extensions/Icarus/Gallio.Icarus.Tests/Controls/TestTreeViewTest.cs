@@ -13,9 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Icarus.Controls;
 using MbUnit.Framework;
 
-namespace Gallio.Icarus.Controls.Tests
+namespace Gallio.Icarus.Tests.Controls
 {
     public class TestTreeViewTest
     {

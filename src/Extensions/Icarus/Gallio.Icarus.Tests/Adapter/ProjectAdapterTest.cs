@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Windows.Forms;
+using Gallio.Icarus.Adapter;
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Core.CustomEventArgs;
 using Gallio.Icarus.Core.Interfaces;
@@ -29,13 +29,12 @@ using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
-using Gallio.Utilities;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using Gallio.Icarus.Controls.Interfaces;
 
-namespace Gallio.Icarus.Adapter.Tests
+namespace Gallio.Icarus.Tests.Adapter
 {
     [TestFixture, Category("Adapter")]
     public class ProjectAdapterTest : MockTest
@@ -188,13 +187,13 @@ namespace Gallio.Icarus.Adapter.Tests
         }
 
         [Test]
-        public void AddAssembliesEventHandler_Test()
+        public void AddAssembliesEventHandler_Test_InvalidAssembly()
         {
             mocks.ReplayAll();
 
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            addAssembliesEvent.Raise(mockView, new SingleEventArgs<IList<string>>(new string[] { "test.dll" }));
-            Assert.IsTrue(projectAdapter.Project.TestPackageConfig.AssemblyFiles.Contains("test.dll"));
+            addAssembliesEvent.Raise(mockView, new SingleEventArgs<IList<string>>(new[] { "test.dll" }));
+            Assert.AreEqual(0, projectAdapter.Project.TestPackageConfig.AssemblyFiles.Count);
         }
 
         [Test]
@@ -247,17 +246,16 @@ namespace Gallio.Icarus.Adapter.Tests
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.GetTestTree += new EventHandler<GetTestTreeEventArgs>(mockPresenter.projectAdapter_GetTestTree);
+            projectAdapter.GetTestTree += mockPresenter.projectAdapter_GetTestTree;
             getTestTreeEvent.Raise(mockView, new GetTestTreeEventArgs("mode", true));
         }
 
         [Test]
         public void GetTestTree_Test_NoReload()
         {
-            string mode = "test";
+            const string mode = "test";
             TestData testData = new TestData("id", "name", "fullname");
             TestModelData testModelData = new TestModelData(testData);
-            ListViewItem[] assemblies = new ListViewItem[] { };
             LastCall.IgnoreArguments();
             mockModel.BuildTestTree(testModelData, mode);
             mockView.Annotations = testModelData.Annotations;
@@ -275,7 +273,7 @@ namespace Gallio.Icarus.Adapter.Tests
             mockPresenter.projectAdapter_RunTests(projectAdapter, new SingleEventArgs<bool>(false));
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.RunTests += new EventHandler<EventArgs>(mockPresenter.projectAdapter_RunTests);
+            projectAdapter.RunTests += mockPresenter.projectAdapter_RunTests;
             runTestsEvent.Raise(mockView, EventArgs.Empty);
         }
 
@@ -286,7 +284,7 @@ namespace Gallio.Icarus.Adapter.Tests
             mockPresenter.projectAdapter_GenerateReport(projectAdapter, EventArgs.Empty);
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.GenerateReport += new EventHandler<EventArgs>(mockPresenter.projectAdapter_GenerateReport);
+            projectAdapter.GenerateReport += mockPresenter.projectAdapter_GenerateReport;
             generateReportEvent.Raise(mockView, EventArgs.Empty);
         }
 
@@ -298,7 +296,7 @@ namespace Gallio.Icarus.Adapter.Tests
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.CancelOperation += new EventHandler<EventArgs>(mockPresenter.projectAdapter_CancelOperation);
+            projectAdapter.CancelOperation += mockPresenter.projectAdapter_CancelOperation;
             cancelOperationEvent.Raise(mockView, EventArgs.Empty);
         }
 
@@ -310,21 +308,21 @@ namespace Gallio.Icarus.Adapter.Tests
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.GetReportTypes += new EventHandler<EventArgs>(mockPresenter.projectAdapter_GetReportTypes);
+            projectAdapter.GetReportTypes += mockPresenter.projectAdapter_GetReportTypes;
             getReportTypesEvent.Raise(mockView, EventArgs.Empty);
         }
 
         [Test]
         public void SaveReportAsEventHandler_Test()
         {
-            string fileName = @"C:\test.html";
-            string format = "html";
+            const string fileName = @"C:\test.html";
+            const string format = "html";
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
             mockPresenter.projectAdapter_SaveReportAs(projectAdapter, new SaveReportAsEventArgs(fileName, format));
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.SaveReportAs += new EventHandler<SaveReportAsEventArgs>(mockPresenter.projectAdapter_SaveReportAs);
+            projectAdapter.SaveReportAs += mockPresenter.projectAdapter_SaveReportAs;
             saveReportAsEvent.Raise(mockView, new SaveReportAsEventArgs(fileName, format));
         }
 
@@ -342,7 +340,7 @@ namespace Gallio.Icarus.Adapter.Tests
         public void OpenProjectEventHandler_Test()
         {
             string assembly = Assembly.GetExecutingAssembly().CodeBase;
-            project.TestPackageConfig.AssemblyFiles.AddRange(new string[] { assembly, assembly });
+            project.TestPackageConfig.AssemblyFiles.AddRange(new[] { assembly, assembly });
             string fileName = Path.GetTempFileName();
             projectTreeModel.LoadProject(fileName);
             mockView.HintDirectories = null;
@@ -356,7 +354,7 @@ namespace Gallio.Icarus.Adapter.Tests
             mockView.TestFilters = null;
             LastCall.IgnoreArguments();
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
-            string mode = "Namespace";
+            const string mode = "Namespace";
             mockPresenter.projectAdapter_GetTestTree(projectAdapter, new GetTestTreeEventArgs(true, new TestPackageConfig()));
             LastCall.IgnoreArguments();
             mockView.EditEnabled = false;
@@ -365,8 +363,8 @@ namespace Gallio.Icarus.Adapter.Tests
             mocks.ReplayAll();
 
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.GetTestTree += new EventHandler<GetTestTreeEventArgs>(mockPresenter.projectAdapter_GetTestTree);
-            projectAdapter.SetFilter += new EventHandler<SingleEventArgs<Filter<ITest>>>(mockPresenter.projectAdapter_SetFilter);
+            projectAdapter.GetTestTree += mockPresenter.projectAdapter_GetTestTree;
+            projectAdapter.SetFilter += mockPresenter.projectAdapter_SetFilter;
             openProjectEvent.Raise(mockView, new OpenProjectEventArgs(fileName, mode));
         }
 
@@ -395,7 +393,7 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void UpdateApplicationBaseDirectoryEventHandler_Test()
         {
-            string applicationBaseDirectory = "test";
+            const string applicationBaseDirectory = "test";
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
             Assert.IsNull(projectAdapter.Project.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
@@ -406,7 +404,7 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void UpdateWorkingDirectoryEventHandler_Test()
         {
-            string workingDirectory = "test";
+            const string workingDirectory = "test";
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
             Assert.IsNull(projectAdapter.Project.TestPackageConfig.HostSetup.WorkingDirectory);
@@ -451,7 +449,7 @@ namespace Gallio.Icarus.Adapter.Tests
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.GetTestFrameworks += new EventHandler<EventArgs>(mockPresenter.projectAdapter_GetTestFrameworks);
+            projectAdapter.GetTestFrameworks += mockPresenter.projectAdapter_GetTestFrameworks;
             getTestFrameworksEvent.Raise(mockView, EventArgs.Empty);
         }
 
@@ -508,7 +506,7 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void ReportPath_Test()
         {
-            string reportPath = @"C:\somepath.html";
+            const string reportPath = @"C:\somepath.html";
             mockView.ReportPath = reportPath;
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
@@ -603,13 +601,13 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void GetExecutionLog_Test()
         {
-            SingleEventArgs<IList<string>> e = new SingleEventArgs<IList<string>>(new List<string>() { "test" });
+            SingleEventArgs<IList<string>> e = new SingleEventArgs<IList<string>>(new List<string> { "test" });
             mockPresenter = mocks.CreateMock<IProjectPresenter>();
             mockPresenter.projectAdapter_GetExecutionLog(projectAdapter, e);
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.GetExecutionLog += new EventHandler<SingleEventArgs<IList<string>>>(mockPresenter.projectAdapter_GetExecutionLog);
+            projectAdapter.GetExecutionLog += mockPresenter.projectAdapter_GetExecutionLog;
             getExecutionLogEvent.Raise(mockView, e);
         }
 
@@ -621,7 +619,7 @@ namespace Gallio.Icarus.Adapter.Tests
             LastCall.IgnoreArguments();
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
-            projectAdapter.UnloadTestPackage += new EventHandler<EventArgs>(mockPresenter.projectAdapter_UnloadTestPackage);
+            projectAdapter.UnloadTestPackage += mockPresenter.projectAdapter_UnloadTestPackage;
             unloadTestPackageEvent.Raise(mockView, EventArgs.Empty);
         }
 
@@ -665,7 +663,7 @@ namespace Gallio.Icarus.Adapter.Tests
         [Test]
         public void AssemblyChangedEvent_Test()
         {
-            string path = @"\a\file\path";
+            const string path = @"\a\file\path";
             mockView.AssemblyChanged(path);
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);

@@ -16,8 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+
 using Gallio.Utilities;
 using Gallio.Runner;
+using System.Drawing;
 
 namespace Gallio.Icarus
 {
@@ -27,23 +29,49 @@ namespace Gallio.Icarus
     public class Settings : ICloneable
     {
         private string testRunnerFactory = StandardTestRunnerFactoryNames.IsolatedProcess;
-        // Switch above & below to step into tests
-        //private string testRunnerFactory = StandardTestRunnerFactoryNames.Local;
         private bool restorePreviousSettings = true;
-        private List<string> pluginDirectories;
+        private readonly List<string> pluginDirectories = new List<string>();
+        private bool alwaysReloadAssemblies;
+        private bool showProgressDialogs = true;
+        private string testProgressBarStyle = "Integration";
+        private int passedColor = Color.Green.ToArgb();
+        private int failedColor = Color.Red.ToArgb();
+        private int inconclusiveColor = Color.Gold.ToArgb();
+        private int skippedColor = Color.SlateGray.ToArgb();
 
-        [XmlAttribute("testRunnerFactory")]
+        [XmlElement("testRunnerFactory")]
         public string TestRunnerFactory
         {
             get { return testRunnerFactory; }
             set { testRunnerFactory = value; }
         }
 
-        [XmlAttribute("restorePreviousSettings")]
+        [XmlElement("restorePreviousSettings")]
         public bool RestorePreviousSettings
         {
             get { return restorePreviousSettings; }
             set { restorePreviousSettings = value; }
+        }
+
+        [XmlElement("alwaysReloadTests")]
+        public bool AlwaysReloadAssemblies
+        {
+            get { return alwaysReloadAssemblies; }
+            set { alwaysReloadAssemblies = value; }
+        }
+
+        [XmlElement("showProgressDialogs")]
+        public bool ShowProgressDialogs
+        {
+            get { return showProgressDialogs; }
+            set { showProgressDialogs = value; }
+        }
+
+        [XmlElement("testProgressBarStyle")]
+        public string TestProgressBarStyle
+        {
+            get { return testProgressBarStyle; }
+            set { testProgressBarStyle = value; }
         }
 
         [XmlArray("pluginDirectories", IsNullable = false)]
@@ -59,9 +87,32 @@ namespace Gallio.Icarus
             }
         }
 
-        public Settings()
+        [XmlElement("passedColor")]
+        public int PassedColor
         {
-            pluginDirectories = new List<string>();
+            get { return passedColor; }
+            set { passedColor = value; }
+        }
+
+        [XmlElement("failedColor")]
+        public int FailedColor
+        {
+            get { return failedColor; }
+            set { failedColor = value; }
+        }
+
+        [XmlElement("inconclusiveColor")]
+        public int InconclusiveColor
+        {
+            get { return inconclusiveColor; }
+            set { inconclusiveColor = value; }
+        }
+
+        [XmlElement("skippedColor")]
+        public int SkippedColor
+        {
+            get { return skippedColor; }
+            set { skippedColor = value; }
         }
 
         object ICloneable.Clone()
