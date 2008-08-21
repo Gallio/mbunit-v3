@@ -55,7 +55,7 @@ namespace Gallio.Icarus
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.reportViewer);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(292, 273);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(292, 248);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -65,12 +65,17 @@ namespace Gallio.Icarus
             // 
             // reportViewer
             // 
+            this.reportViewer.AllowNavigation = false;
+            this.reportViewer.AllowWebBrowserDrop = false;
+            this.reportViewer.CausesValidation = false;
             this.reportViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.reportViewer.Location = new System.Drawing.Point(0, 0);
             this.reportViewer.MinimumSize = new System.Drawing.Size(20, 20);
             this.reportViewer.Name = "reportViewer";
-            this.reportViewer.Size = new System.Drawing.Size(292, 273);
+            this.reportViewer.ScriptErrorsSuppressed = true;
+            this.reportViewer.Size = new System.Drawing.Size(292, 248);
             this.reportViewer.TabIndex = 6;
+            this.reportViewer.WebBrowserShortcutsEnabled = false;
             // 
             // ExecutionLogWindow
             // 
