@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Gallio.Framework;
 using Gallio.Collections;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
@@ -12,27 +10,25 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     [TestFixture]
     public class EquivalenceClassCollectionTest
     {
-        private EquivalenceClassCollection<object> collection;
-
         [Test]
         [ExpectedArgumentNullException]
         public void ConstructsWithNullInitializer()
         {
-            collection = new EquivalenceClassCollection<object>(null);
+            new EquivalenceClassCollection<object>(null);
         }
 
         [Test]
-        [ExpectedArgumentException]
         public void ConstructsWithInitializerHavingNullElement()
         {
             EquivalenceClass<object> class1 = new EquivalenceClass<object>(new object());
-            collection = new EquivalenceClassCollection<object>(class1, null);
+            NewAssert.Throws<ArgumentException>(() => new EquivalenceClassCollection<object>(class1, null));
         }
 
         [Test]
         public void ConstructWithEmptyInitializer()
         {
-            collection = new EquivalenceClassCollection<object>(EmptyArray<EquivalenceClass<object>>.Instance);
+            EquivalenceClassCollection<object> collection = new EquivalenceClassCollection<object>(EmptyArray<EquivalenceClass<object>>.Instance);
+            Assert.AreEqual(0, collection.EquivalenceClasses.Count);
             Assert.AreEqual(0, collection.Count());
         }
 
@@ -41,24 +37,32 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         {
             EquivalenceClass<object> class1 = new EquivalenceClass<object>(new object());
             EquivalenceClass<object> class2 = new EquivalenceClass<object>(new object());
-            collection = new EquivalenceClassCollection<object>(class1, class2);
-            Assert.AreEqual(2, collection.Count());
-            Assert.IsTrue(collection.Contains(class1));
-            Assert.IsTrue(collection.Contains(class2));
+
+            EquivalenceClassCollection<object> collection = new EquivalenceClassCollection<object>(class1, class2);
+            NewAssert.AreEqual(new[] { class1, class2 }, collection.EquivalenceClasses);
+            NewAssert.AreEqual(new[] { class1, class2 }, collection.ToArray());
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ConstructsFromDistinctInstancesWithNullInitializerForValueType()
+        {
+            EquivalenceClassCollection<int>.FromDistinctInstances(null);
         }
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void ConstructsFromDistinctInstancesWithNullInitializer()
+        public void ConstructsFromDistinctInstancesWithNullInitializerForNullableType()
         {
-            collection = EquivalenceClassCollection<object>.FromDistinctInstances(null);
+            EquivalenceClassCollection<int?> @class = EquivalenceClassCollection<int?>.FromDistinctInstances(null);
+            Assert.AreEqual(1, @class.Count());
+            NewAssert.AreEqual(new int?[] { null }, @class.EquivalenceClasses[0].EquivalentInstances);
         }
 
         [Test]
-        [ExpectedArgumentException]
-        public void ConstructsFromDistinctInstancesWithInitializerHavinhNullElement()
+        public void ConstructsFromDistinctInstancesWithNullInitializerForReferenceType()
         {
-            collection = EquivalenceClassCollection<object>.FromDistinctInstances(new object(), null);
+            EquivalenceClassCollection<object> @class = EquivalenceClassCollection<object>.FromDistinctInstances(null);
+            Assert.AreEqual(1, @class.Count());
+            NewAssert.AreEqual(new object[] { null }, @class.EquivalenceClasses[0].EquivalentInstances);
         }
 
         [Test]
@@ -67,11 +71,12 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             object instance1 = new object();
             object instance2 = new object();
             object instance3 = new object();
-            collection = EquivalenceClassCollection<object>.FromDistinctInstances(instance1, instance2, instance3);
-            Assert.AreEqual(3, collection.Count());
-            Assert.AreEqual(1, collection.ElementAt(0).Count());
-            Assert.AreEqual(1, collection.ElementAt(1).Count());
-            Assert.AreEqual(1, collection.ElementAt(2).Count());
+
+            EquivalenceClassCollection<object> collection = EquivalenceClassCollection<object>.FromDistinctInstances(instance1, instance2, instance3);
+            NewAssert.Over.Sequence(new[] { instance1, instance2, instance3 }, collection.EquivalenceClasses,
+                (instance, @class) => NewAssert.AreEqual(new[] { instance }, @class.EquivalentInstances));
+            NewAssert.Over.Sequence(new[] { instance1, instance2, instance3 }, collection.ToArray(),
+                (instance, @class) => NewAssert.AreEqual(new[] { instance }, @class.EquivalentInstances));
         }
     }
 }

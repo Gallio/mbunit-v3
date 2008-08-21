@@ -71,28 +71,28 @@ namespace MbUnit.Framework
                         action(state);
 
                         using (TestLog.Failures.BeginSection("Expected Exception"))
-                        {
                             TestLog.Failures.WriteLine("Expected an exception of type '{0}' but none was thrown.", expectedExceptionType);
-                        }
-
-                        throw new SilentTestException(TestOutcome.Failed);
+                    }
+                    catch (TestException)
+                    {
+                        throw;
                     }
                     catch (Exception ex)
                     {
                         Type exceptionType = ex.GetType();
-                        if (exceptionType.Name != expectedExceptionType
-                            && exceptionType.FullName != expectedExceptionType
-                            && exceptionType.AssemblyQualifiedName != expectedExceptionType)
-                        {
-                            using (TestLog.Failures.BeginSection("Expected Exception"))
-                            {
-                                TestLog.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
-                                TestLog.Failures.WriteException(ex);
-                            }
+                        if (exceptionType.Name == expectedExceptionType
+                            || exceptionType.FullName == expectedExceptionType
+                            || exceptionType.AssemblyQualifiedName == expectedExceptionType)
+                            return;
 
-                            throw new SilentTestException(TestOutcome.Failed);
+                        using (TestLog.Failures.BeginSection("Expected Exception"))
+                        {
+                            TestLog.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
+                            TestLog.Failures.WriteException(ex);
                         }
                     }
+
+                    throw new SilentTestException(TestOutcome.Failed);
                 }
                 else
                 {

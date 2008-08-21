@@ -98,10 +98,10 @@ namespace Gallio.Framework.Text
         /// <paramref name="rightDocument"/> is null</exception>
         public static DiffSet GetDiffSet(string leftDocument, string rightDocument)
         {
-            return GetDiffSet(leftDocument, rightDocument, true);
+            return GetDiffSet(leftDocument, rightDocument, true, true);
         }
 
-        internal static DiffSet GetDiffSet(string leftDocument, string rightDocument, bool optimize)
+        internal static DiffSet GetDiffSet(string leftDocument, string rightDocument, bool optimize, bool boundRuntime)
         {
             if (leftDocument == null)
                 throw new ArgumentNullException("leftDocument");
@@ -111,9 +111,9 @@ namespace Gallio.Framework.Text
             var diffs = new List<Diff>();
 
             if (optimize)
-                FastDiff(diffs, new Substring(leftDocument), new Substring(rightDocument));
+                FastDiff(diffs, new Substring(leftDocument), new Substring(rightDocument), boundRuntime);
             else
-                SlowDiff(diffs, new Substring(leftDocument), new Substring(rightDocument));
+                SlowDiff(diffs, new Substring(leftDocument), new Substring(rightDocument), boundRuntime);
 
             CanonicalizeDiffs(diffs);
             return new DiffSet(diffs, leftDocument, rightDocument);
@@ -254,7 +254,7 @@ namespace Gallio.Framework.Text
             return prevLeftRange.EndIndex == leftLength && prevRightRange.EndIndex == rightLength;
         }
 
-        private static void FastDiff(IList<Diff> diffs, Substring left, Substring right)
+        private static void FastDiff(IList<Diff> diffs, Substring left, Substring right, bool boundRuntime)
         {
             // If either document is empty, then the change covers the whole document.
             if (left.Length == 0 || right.Length == 0)
@@ -282,7 +282,7 @@ namespace Gallio.Framework.Text
             // Now work on the middle part.
             Substring leftMiddle = left.Extract(commonPrefixLength, left.Length - commonPrefixLength - commonSuffixLength);
             Substring rightMiddle = right.Extract(commonPrefixLength, right.Length - commonPrefixLength - commonSuffixLength);
-            SlowDiff(diffs, leftMiddle, rightMiddle);
+            SlowDiff(diffs, leftMiddle, rightMiddle, boundRuntime);
 
             // Tack on the final diff for the common suffix, if any.
             if (commonSuffixLength != 0)
@@ -293,9 +293,9 @@ namespace Gallio.Framework.Text
             }
         }
 
-        private static void SlowDiff(IList<Diff> diffs, Substring left, Substring right)
+        private static void SlowDiff(IList<Diff> diffs, Substring left, Substring right, bool boundRuntime)
         {
-            DiffAlgorithm.PopulateDiffs(diffs, left, right);
+            DiffAlgorithm.PopulateDiffs(diffs, left, right, boundRuntime);
         }
 
         private static void CanonicalizeDiffs(IList<Diff> diffs)
@@ -325,13 +325,37 @@ namespace Gallio.Framework.Text
 
         private sealed class DiffAlgorithm
         {
-            // The value of N*M to start binding the runtime.
-            private const long TooLong = 10000000L;
-
             // Ordinarily the worst case runtime is O((N + M) * D) which can be very large
             // as D approaches N + M.  Here we attempt to limit the worst case to O(D ^ PowLimit)
             // when N * M is too big.
             private const double PowLimit = 1.5;
+
+            // The value of N * M at which to start binding the runtime.
+            // We want a value sufficiently high that we will get accurate diffs
+            // for sequences that contain relatively a large number of adjacent differences
+            // but not so big that it takes too long to run.
+            //
+            // Experimental results on completely different strings of identical size
+            // with disjoint alphabets on Intel Core 2 Duo U7700, 1.33Ghz laptop.
+            //
+            //   N and M    Unbounded    Bounded
+            //    1000        169ms         16ms
+            //    2000        615ms         40ms
+            //    3000       1545ms         66ms
+            //    4000       2481ms         91ms
+            //    5000       4416ms        169ms
+            //    6000       6189ms        210ms
+            //    7000       7430ms        267ms
+            //    8000      10337ms        293ms
+            //    9000      13661ms        381ms
+            //   10000      17579ms        464ms
+            //
+            // The Eclipse implementation uses a limit of 10,000,000 which in our chart would
+            // mean applying to runtime bounded approximations at a problem size of about 3162.
+            // Still rather slow and there are plenty of slower machines out there.
+            //
+            // So instead we bound the problem size to 2000 ^ 2 = 4,000,000 for now.
+            private const long TooLong = 4000000;
 
             // The maximum number of non-diagonal edits (differences) to consider.
             private readonly int max;
@@ -356,7 +380,7 @@ namespace Gallio.Framework.Text
                 rightVector = new int[vectorLength];
             }
 
-            public static void PopulateDiffs(IList<Diff> diffs, Substring left, Substring right)
+            public static void PopulateDiffs(IList<Diff> diffs, Substring left, Substring right, bool boundRuntime)
             {
                 if (left.Length == 0 && right.Length == 0)
                     return;
@@ -365,7 +389,7 @@ namespace Gallio.Framework.Text
                 int m = right.Length;
 
                 int max = CeilNPlusMOverTwo(n, m);
-                if (((long) n) * ((long) m) > TooLong)
+                if (boundRuntime && ((long) n) * ((long) m) > TooLong)
                     max = (int) Math.Pow(max, PowLimit - 1.0);
 
                 DiffAlgorithm algorithm = new DiffAlgorithm(diffs, left.Range.StartIndex, right.Range.StartIndex, max);
@@ -436,10 +460,10 @@ namespace Gallio.Framework.Text
                 if (n != 0 && m != 0)
                 {
                     int middleSnakeLeftStartIndex, middleSnakeRightStartIndex, middleSnakeLength;
-                    int d = FindMiddleSnake(left, right, out middleSnakeLeftStartIndex, out middleSnakeRightStartIndex, out middleSnakeLength);
-                    if (d > 1)
+                    int ses = FindMiddleSnake(left, right, out middleSnakeLeftStartIndex, out middleSnakeRightStartIndex, out middleSnakeLength);
+                    if (ses > 1)
                     {
-                        // If D >= 2 then the edit script includes at least 2 differences, so we divide the problem.
+                        // If SES >= 2 then the edit script includes at least 2 differences, so we divide the problem.
                         ComputeLCS(
                             left.Extract(0, middleSnakeLeftStartIndex),
                             right.Extract(0, middleSnakeRightStartIndex));
@@ -455,10 +479,10 @@ namespace Gallio.Framework.Text
                     }
                     else
                     {
-                        // If D = 1, then exactly one symbol needs to be added or deleted from either sequence.
-                        // If D = 0, then both sequences are equal.
+                        // If SES = 1, then exactly one symbol needs to be added or deleted from either sequence.
+                        // If SES = 0, then both sequences are equal.
 
-                        if (d != 0)
+                        if (ses != 0)
                         {
                             // The middle snake is the common part after the change so we just need to grab the
                             // common part before the change.
@@ -493,9 +517,7 @@ namespace Gallio.Framework.Text
             /// <param name="middleSnakeLeftStartIndex">The starting index of the middle snake in "A"</param>
             /// <param name="middleSnakeRightStartIndex">The starting index of the middle snake in "B"</param>
             /// <param name="middleSnakeLength">The middle snake length</param>
-            /// <returns>The number of sequences of non-diagonal edges which determines the
-            /// number of differences between "A" and "B".  Zero would mean that there were no non-diagonal
-            /// edges, so the two sequences must be are equal (middle snakes cover both sequences).</returns>
+            /// <returns>The length of the shorted edit script between "A" and "B"</returns>
             private int FindMiddleSnake(Substring left, Substring right, out int middleSnakeLeftStartIndex, out int middleSnakeRightStartIndex, out int middleSnakeLength)
             {
                 int n = left.Length;
@@ -503,11 +525,6 @@ namespace Gallio.Framework.Text
 
                 int delta = n - m;
                 bool isDeltaOdd = (delta & 1) != 0;
-
-                for (int i = 0; i < leftVector.Length; i++)
-                    leftVector[i] = 10000;
-                for (int i = 0; i < rightVector.Length; i++)
-                    rightVector[i] = 10000;
 
                 leftVector[max + 1] = 0;
                 rightVector[max - 1] = n;
@@ -583,7 +600,90 @@ namespace Gallio.Framework.Text
                 }
 
                 // We have exceeded the maximum effort we are willing to expend finding a diff.
-                throw new NotImplementedException("Find D-path with max progress.");
+                //
+                // So we artificially divide the problem by finding the snakes in the forward / reverse
+                // direction that have the most progress toward (N, M) / (0, 0).  These are the
+                // ones that maximize x + y / minimize u + v.  The snake we return will not actually
+                // be the middle snake (since we haven't found it yet) but it will be good enough
+                // to reduce the problem.
+                //
+                // These snakes all begin on the same diagonal as the others of equal
+                // progress in the same direction.  As there may be several of them, we need a way
+                // to decide which one to pursue.
+                //
+                // The Eclipse LCS implementation chooses the median of these snakes with respect to k.
+                // Intuitively this is the one that is nearer the direct line between (0, 0) and (N, M)
+                // so it has a good chance of forming a path with more balanced changes between A and B
+                // than the snakes that consist of significantly more changes to A than B or vice-versa.
+                // Consequently the median of theses snakes should yield a pretty good approximation. -- Jeff.
+
+                int bestProgress = 0;
+                Dictionary<int, bool> bestKs = new Dictionary<int,bool>(); // with the forward direction indicated by value true
+
+                for (int k = -end; k <= end; k += 2)
+                {
+                    // Forward direction.
+                    int x = leftVector[max + k];
+                    int y = x - k;
+                    if (x < n && y < m)
+                    {
+                        int progress = x + y;
+                        if (progress >= bestProgress)
+                        {
+                            if (progress > bestProgress)
+                            {
+                                bestProgress = progress;
+                                bestKs.Clear();
+                            }
+                            bestKs[k] = true;
+                        }
+                    }
+
+                    // Reverse direction.
+                    int u = rightVector[max + k];
+                    int v = u - k - delta;
+                    if (u >= 0 && v >= 0)
+                    {
+                        int progress = n + m - u - v;
+                        if (progress >= bestProgress)
+                        {
+                            if (progress > bestProgress)
+                            {
+                                bestProgress = progress;
+                                bestKs.Clear();
+                            }
+                            bestKs[k] = false;
+                        }
+                    }
+                }
+
+                int[] sortedKs = new int[bestKs.Count];
+                bestKs.Keys.CopyTo(sortedKs, 0);
+                Array.Sort(sortedKs);
+
+                int medianK = sortedKs[sortedKs.Length / 2];
+
+                if (bestKs[medianK])
+                {
+                    int x = leftVector[max + medianK];
+                    int y = x - medianK;
+                    middleSnakeLeftStartIndex = x;
+                    middleSnakeRightStartIndex = y;
+                }
+                else
+                {
+                    int u = rightVector[max + medianK];
+                    int v = u - medianK - delta;
+                    middleSnakeLeftStartIndex = u;
+                    middleSnakeRightStartIndex = v;
+                }
+
+                middleSnakeLength = 0;
+
+                // We need to return the length of the shortest edit script but we don't actually know
+                // what it is.  Fortunately the caller does not care as long as it's greater than 2, which
+                // it must be since d > end >= max > 2.
+                return int.MaxValue;
             }
 
             private static int CeilNPlusMOverTwo(int n, int m)

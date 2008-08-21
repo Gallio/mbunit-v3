@@ -17,7 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Framework.Text;
 using Gallio.Model.Diagnostics;
+using Gallio.Model.Logging;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
@@ -29,6 +31,12 @@ namespace MbUnit.Tests.Framework
         public void ConstructorThrowsExceptionWhenDescriptionIsNull()
         {
             new AssertionFailureBuilder(null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ConstructorThrowsExceptionWhenFormatterIsNull()
+        {
+            new AssertionFailureBuilder("abc", null);
         }
 
         [Test]
@@ -135,24 +143,85 @@ namespace MbUnit.Tests.Framework
             }, builder.ToAssertionFailure().LabeledValues);
         }
 
-        [Test, Pending]
+        [Test]
         public void CanSetFormattedLabeledValueAsPlainTextString()
         {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            builder.SetLabeledValue("Abc", "123");
+            NewAssert.AreEqual(new[]
+            {
+                new AssertionFailure.LabeledValue("Abc", "123")
+            }, builder.ToAssertionFailure().LabeledValues);
         }
 
-        [Test, Pending]
+        [Test]
         public void CanSetFormattedLabeledValueAsStructuredTextString()
         {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            builder.SetLabeledValue("Abc", new StructuredText("123"));
+            NewAssert.AreEqual(new[]
+            {
+                new AssertionFailure.LabeledValue("Abc", new StructuredText("123"))
+            }, builder.ToAssertionFailure().LabeledValues);
         }
 
-        [Test, Pending]
+        [Test]
         public void CanSetFormattedLabeledValueAsLabeledValueStruct()
         {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            builder.SetLabeledValue(new AssertionFailure.LabeledValue("Abc", new StructuredText("123")));
+            NewAssert.AreEqual(new[]
+            {
+                new AssertionFailure.LabeledValue("Abc", new StructuredText("123"))
+            }, builder.ToAssertionFailure().LabeledValues);
         }
 
-        [Test, Pending]
-        public void CanSetRawExpectedAndActualValueWithDiffs()
+        [Test]
+        public void ShowsExpectedAndActualValueWithDiffs_ReferentialEquality()
         {
+            const string str = "123";
+
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
+            builder.SetRawExpectedAndActualValueWithDiffs(str, str);
+
+            NewAssert.AreEqual(new[]
+            {
+                new AssertionFailure.LabeledValue("Expected Value", new StructuredText("\"123\"")),
+                new AssertionFailure.LabeledValue("Actual Value", new StructuredText("\"123\""))
+            }, builder.ToAssertionFailure().LabeledValues);
+        }
+
+        [Test]
+        public void ShowsExpectedAndActualValueWithDiffs_RepresentationalEquality()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
+            builder.SetRawExpectedAndActualValueWithDiffs(1, 1u);
+
+            NewAssert.AreEqual(new[]
+            {
+                new AssertionFailure.LabeledValue("Expected Value", new StructuredText("1")),
+                new AssertionFailure.LabeledValue("Actual Value", new StructuredText("1")),
+                new AssertionFailure.LabeledValue("Remark", "The expected and actual values are distinct instances but their formatted representations are equal.")
+            }, builder.ToAssertionFailure().LabeledValues);
+        }
+
+        [Test]
+        public void ShowsExpectedAndActualValueWithDiffs_Difference()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
+            builder.SetRawExpectedAndActualValueWithDiffs("acde", "bcef");
+
+            DiffSet diffSet = DiffSet.GetDiffSet("\"acde\"", "\"bcef\"");
+            StructuredTextWriter expectedValueWriter = new StructuredTextWriter();
+            diffSet.WriteAnnotatedLeftDocumentTo(expectedValueWriter);
+            StructuredTextWriter actualValueWriter = new StructuredTextWriter();
+            diffSet.WriteAnnotatedRightDocumentTo(actualValueWriter);
+
+            NewAssert.AreEqual(new[]
+            {
+                new AssertionFailure.LabeledValue("Expected Value", expectedValueWriter.ToStructuredText()),
+                new AssertionFailure.LabeledValue("Actual Value", actualValueWriter.ToStructuredText())
+            }, builder.ToAssertionFailure().LabeledValues);
         }
 
         [Test]

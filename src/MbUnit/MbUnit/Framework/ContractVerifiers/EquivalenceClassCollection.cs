@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace MbUnit.Framework.ContractVerifiers
@@ -57,32 +58,36 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <typeparam name="T">The type of equivalent object instances.</typeparam>
     public class EquivalenceClassCollection<T> : IEnumerable<EquivalenceClass<T>>
     {
-        private readonly List<EquivalenceClass<T>> collection;
+        private readonly List<EquivalenceClass<T>> equivalenceClasses;
+
+        private EquivalenceClassCollection()
+        {
+            equivalenceClasses = new List<EquivalenceClass<T>>();
+        }
 
         /// <summary>
         /// Constructs a collection of equivalence classes.
         /// </summary>
-        /// <param name="collection">An array of equivalence classes.</param>
-        public EquivalenceClassCollection(params EquivalenceClass<T>[] collection)
+        /// <param name="equivalenceClasses">An array of equivalence classes.</param>
+        public EquivalenceClassCollection(params EquivalenceClass<T>[] equivalenceClasses)
         {
-            if (collection == null)
+            if (equivalenceClasses == null)
             {
-                throw new ArgumentNullException("collection", String.Format("A collection of equivalence classes " +
+                throw new ArgumentNullException("equivalenceClasses", String.Format("A collection of equivalence classes " +
                     "of type '{0}' cannot be initialized from a null reference.", typeof(T)));
             }
 
-            this.collection = new List<EquivalenceClass<T>>();
-
-            foreach (EquivalenceClass<T> item in collection)
+            this.equivalenceClasses = new List<EquivalenceClass<T>>();
+            foreach (EquivalenceClass<T> item in equivalenceClasses)
             {
                 if (item == null)
                 {
                     throw new ArgumentException(String.Format("One of the equivalence classes provided to " +
                         "the constructor of the equivalence class collection of type '{0}' is a null reference.", 
-                        typeof(T)), "collection");
+                        typeof(T)), "equivalenceClasses");
                 }
 
-                this.collection.Add(item);
+                this.equivalenceClasses.Add(item);
             }
         }
 
@@ -95,18 +100,30 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <returns></returns>
         public static EquivalenceClassCollection<T> FromDistinctInstances(params T[] distinctInstances)
         {
+            EquivalenceClassCollection<T> collection = new EquivalenceClassCollection<T>();
+
             if (distinctInstances == null)
             {
-                throw new ArgumentNullException("distinctInstances", String.Format("A collection of equivalence classes " +
-                    "of type '{0}' cannot be initialized from a null reference.", typeof(T)));
+                if (default(T) != null)
+                    throw new ArgumentNullException("distinctInstances", "The instance cannot be null for a value type.");
+
+                collection.equivalenceClasses.Add(new EquivalenceClass<T>(null));
+            }
+            else
+            {
+                foreach (T instance in distinctInstances)
+                    collection.equivalenceClasses.Add(new EquivalenceClass<T>(instance));
             }
 
-            List<EquivalenceClass<T>> list = new List<EquivalenceClass<T>>();
+            return collection;
+        }
 
-            foreach (T instance in distinctInstances)
-                list.Add(new EquivalenceClass<T>(instance));
-
-            return new EquivalenceClassCollection<T>(list.ToArray());
+        /// <summary>
+        /// Gets the equivalence classes.
+        /// </summary>
+        public IList<EquivalenceClass<T>> EquivalenceClasses
+        {
+            get { return new ReadOnlyCollection<EquivalenceClass<T>>(equivalenceClasses); }
         }
 
         /// <summary>
@@ -115,7 +132,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <returns>A strongly-typed enumerator.</returns>
         public IEnumerator<EquivalenceClass<T>> GetEnumerator()
         {
-            return collection.GetEnumerator();
+            return equivalenceClasses.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

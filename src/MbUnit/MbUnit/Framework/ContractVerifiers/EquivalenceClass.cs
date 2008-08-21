@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace MbUnit.Framework.ContractVerifiers
@@ -19,7 +20,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <typeparam name="T">The type of equivalent instances.</typeparam>
     public class EquivalenceClass<T> : IEnumerable<T>
     {
-        private readonly List<T> collection;
+        private readonly List<T> equivalentInstances;
 
         /// <summary>
         /// Constructs an class of equivalent instances.
@@ -29,7 +30,10 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             if (equivalentInstances == null)
             {
-                this.collection = new List<T>(new T[] { default(T) });
+                if (default(T) != null)
+                    throw new ArgumentNullException("equivalentInstances", "The instance cannot be null for a value type.");
+
+                this.equivalentInstances = new List<T>(new T[] { default(T) });
             }
             else
             {
@@ -39,8 +43,16 @@ namespace MbUnit.Framework.ContractVerifiers
                         typeof(T)), "equivalentInstances");
                 }
 
-                this.collection = new List<T>(equivalentInstances);
+                this.equivalentInstances = new List<T>(equivalentInstances);
             }
+        }
+
+        /// <summary>
+        /// Gets the collection of equivalent instances.
+        /// </summary>
+        public IList<T> EquivalentInstances
+        {
+            get { return new ReadOnlyCollection<T>(equivalentInstances); }
         }
 
         /// <summary>
@@ -49,9 +61,9 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <returns>A strongly-typed enumerator.</returns>
         public IEnumerator<T> GetEnumerator()
         {
-            return collection.GetEnumerator();
+            return equivalentInstances.GetEnumerator();
         }
-        
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

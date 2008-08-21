@@ -25,23 +25,6 @@ namespace MbUnit.Tests.Framework
     public class NewAssertTest
     {
         #region AreEqual
-        [Test]
-        public void AreEqual_simple_diff_deletion()
-        {
-            NewAssert.AreEqual("123", "");
-        }
-
-        [Test]
-        public void AreEqual_simple_diff_addition()
-        {
-            NewAssert.AreEqual("", "abc");
-        }
-
-        [Test]
-        public void AreEqual_simple_diff_change()
-        {
-            NewAssert.AreEqual("abc", "def");
-        }
         #endregion
 
         #region GreaterThan

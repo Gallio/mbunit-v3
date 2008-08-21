@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Gallio.Framework;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using Gallio.Collections;
@@ -12,20 +9,31 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     [TestFixture]
     public class EquivalenceClassTest
     {
-        private EquivalenceClass<object> target;
+        [Test, ExpectedArgumentNullException]
+        public void ConstructsWithNullInitializerForValueType()
+        {
+            new EquivalenceClass<int>(null);
+        }
 
         [Test]
-        [ExpectedArgumentNullException]
-        public void ConstructsWithNullInitializer()
+        public void ConstructsWithNullInitializerForNullableType()
         {
-            target = new EquivalenceClass<object>(null);
+            EquivalenceClass<int?> target = new EquivalenceClass<int?>(null);
+            NewAssert.AreEqual(new int?[] { null }, target.EquivalentInstances);
+        }
+
+        [Test]
+        public void ConstructsWithNullInitializerForReferenceType()
+        {
+            EquivalenceClass<object> target = new EquivalenceClass<object>(null);
+            NewAssert.AreEqual(new object[] { null }, target.EquivalentInstances);
         }
 
         [Test]
         [ExpectedArgumentException]
         public void ConstructsWithInitializerContainingNoObjects()
         {
-            target = new EquivalenceClass<object>(EmptyArray<object>.Instance);
+            new EquivalenceClass<object>(EmptyArray<object>.Instance);
         }
 
         [Test]
@@ -34,7 +42,10 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             object object1 = new object();
             object object2 = new object();
             object object3 = new object();
-            target = new EquivalenceClass<object>(object1, object2, object3);
+
+            EquivalenceClass<object> target = new EquivalenceClass<object>(object1, object2, object3);
+            NewAssert.AreEqual(new[] { object1, object2, object3 }, target.EquivalentInstances);
+
             Assert.AreEqual(3, target.Count());
             Assert.IsTrue(target.Contains(object1));
             Assert.IsTrue(target.Contains(object2));
