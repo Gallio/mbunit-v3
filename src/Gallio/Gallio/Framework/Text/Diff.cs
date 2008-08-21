@@ -14,9 +14,9 @@
 // limitations under the License.
 
 using System;
-using Gallio.Utilities;
+using Gallio.Framework.Text;
 
-namespace Gallio.Framework.Comparisons
+namespace Gallio.Framework.Text
 {
     /// <summary>
     /// Describes the difference between a range of the left document and a range of the right document.
@@ -24,7 +24,7 @@ namespace Gallio.Framework.Comparisons
     /// an identical region or one with changes.
     /// </summary>
     [Serializable]
-    public struct Diff
+    public struct Diff : IEquatable<Diff>
     {
         private readonly Range leftRange;
         private readonly Range rightRange;
@@ -65,6 +65,42 @@ namespace Gallio.Framework.Comparisons
         public Range RightRange
         {
             get { return rightRange; }
+        }
+
+        /// <inheritdoc />
+        public bool Equals(Diff other)
+        {
+            return kind == other.kind && leftRange == other.leftRange && rightRange == other.rightRange;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is Diff && Equals((Diff)obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return leftRange.GetHashCode() ^ rightRange.GetHashCode() ^ (int)kind;
+        }
+
+        /// <inheritdoc />
+        public static bool operator ==(Diff a, Diff b)
+        {
+            return a.Equals(b);
+        }
+
+        /// <inheritdoc />
+        public static bool operator !=(Diff a, Diff b)
+        {
+            return !(a == b);
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return String.Format(@"{0}: {1}, {2}", kind, leftRange, rightRange);
         }
     }
 }

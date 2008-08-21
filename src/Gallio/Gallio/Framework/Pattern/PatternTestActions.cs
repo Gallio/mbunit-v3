@@ -16,6 +16,7 @@
 using System;
 using Gallio.Framework.Pattern;
 using Gallio;
+using Gallio.Model.Diagnostics;
 
 namespace Gallio.Framework.Pattern
 {
@@ -158,30 +159,35 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void BeforeTest(PatternTestState testState)
         {
             beforeTestChain.Action(testState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void InitializeTest(PatternTestState testState)
         {
             initializeTestChain.Action(testState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void DisposeTest(PatternTestState testState)
         {
             disposeTestChain.Action(testState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void AfterTest(PatternTestState testState)
         {
             afterTestChain.Action(testState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void DecorateTestInstance(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
         {
             decorateTestInstanceChain.Action(testState, decoratedTestInstanceActions);

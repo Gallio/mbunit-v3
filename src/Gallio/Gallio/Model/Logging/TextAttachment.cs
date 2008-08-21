@@ -22,7 +22,7 @@ namespace Gallio.Model.Logging
     /// Represents a text-encoded attachment.
     /// </summary>
     [Serializable]
-    public sealed class TextAttachment : Attachment
+    public sealed class TextAttachment : Attachment, IEquatable<TextAttachment>
     {
         private readonly string text;
 
@@ -54,6 +54,26 @@ namespace Gallio.Model.Logging
         public override AttachmentData ToAttachmentData()
         {
             return new AttachmentData(Name, ContentType, AttachmentEncoding.Text, text, null);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(TextAttachment other)
+        {
+            return Name == other.Name
+                && ContentType == other.ContentType
+                && text == other.text;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as TextAttachment);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode() ^ ContentType.GetHashCode() ^ text.GetHashCode();
         }
     }
 }

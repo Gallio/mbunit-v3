@@ -20,10 +20,8 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Framework.Pattern
 {
     [TestsOn(typeof(PatternUsageErrorException))]
-    public class PatternUsageErrorExceptionTest : ExceptionContractVerifier<PatternUsageErrorException>
+    [VerifyExceptionContract(typeof(PatternUsageErrorException), ImplementsStandardConstructors=false)]
+    public class PatternUsageErrorExceptionTest
     {
-        public override void DefaultConstructorIsWellDefined()
-        {
-        }
     }
 }

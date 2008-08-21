@@ -21,18 +21,8 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Framework
 {
     [TestsOn(typeof(SilentTestException))]
-    public class SilentTestExceptionTest : ExceptionContractVerifier<SilentTestException>
+    [VerifyExceptionContract(typeof(SilentTestException), ImplementsStandardConstructors=false)]
+    public class SilentTestExceptionTest
     {
-        public override void DefaultConstructorIsWellDefined()
-        {
-        }
-
-        public override void StandardMessageAndInnerExceptionConstructorIsWellDefined(string message, bool hasInnerException)
-        {
-        }
-
-        public override void StandardMessageConstructorIsWellDefined(string message)
-        {
-        }
     }
 }

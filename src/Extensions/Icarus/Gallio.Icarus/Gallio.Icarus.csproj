@@ -378,15 +378,19 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Options\Options.resx">
       <DependentUpon>Options.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\OptionsPanel.resx">
       <DependentUpon>OptionsPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\PluginDirectoriesOptions.resx">
       <DependentUpon>PluginDirectoriesOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\StartupOptions.resx">
       <DependentUpon>StartupOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ProjectExplorer.resx">
       <DependentUpon>ProjectExplorer.cs</DependentUpon>

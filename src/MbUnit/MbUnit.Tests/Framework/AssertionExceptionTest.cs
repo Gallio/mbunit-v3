@@ -20,7 +20,8 @@ using MbUnit.Framework.ContractVerifiers;
 namespace MbUnit.Tests.Framework
 {
     [TestsOn(typeof(AssertionException))]
-    public class AssertionExceptionTest : ExceptionContractVerifier<AssertionException>
+    [VerifyExceptionContract(typeof(AssertionException))]
+    public class AssertionExceptionTest
     {
     }
 }

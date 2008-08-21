@@ -26,7 +26,7 @@ namespace Gallio.Icarus
     [Serializable]
     [XmlRoot("settings", Namespace = XmlSerializationUtils.GallioNamespace)]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-    public class Settings : ICloneable
+    public class Settings : System.ICloneable
     {
         private string testRunnerFactory = StandardTestRunnerFactoryNames.IsolatedProcess;
         private bool restorePreviousSettings = true;
@@ -115,7 +115,7 @@ namespace Gallio.Icarus
             set { skippedColor = value; }
         }
 
-        object ICloneable.Clone()
+        object System.ICloneable.Clone()
         {
             return Clone();
         }

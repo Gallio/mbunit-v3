@@ -170,6 +170,9 @@ namespace Gallio.Model.Execution
         public void AddAssertCount(int value)
         {
             Interlocked.Add(ref assertCount, value);
+
+            if (parent != null)
+                parent.AddAssertCount(value);
         }
 
         /// <inheritdoc />

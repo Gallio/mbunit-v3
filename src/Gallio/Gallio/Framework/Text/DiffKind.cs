@@ -14,17 +14,27 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Gallio.Framework.Comparisons;
-using MbUnit.Framework;
 
-namespace Gallio.Tests.Framework.Comparisons
+namespace Gallio.Framework.Text
 {
-    [TestsOn(typeof(Diff))]
-    [Pending]
-    public class DiffTest
+    /// <summary>
+    /// Describes whether a difference represents a changed or unchanged region.
+    /// </summary>
+    public enum DiffKind
     {
+        /// <summary>
+        /// <para>
+        /// Indicates there is no change between the left and right documents over the ranges described by the diff.
+        /// </para>
+        /// </summary>
+        NoChange,
+
+        /// <summary>
+        /// <para>
+        /// Indicates there is a change between the left and right documents over the ranges described by the diff.
+        /// Text may have been added, removed, or edited.
+        /// </para>
+        /// </summary>
+        Change
     }
 }

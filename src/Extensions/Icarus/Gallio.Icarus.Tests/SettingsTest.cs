@@ -68,7 +68,7 @@ namespace Gallio.Icarus.Tests
         {
             settings.RestorePreviousSettings = false;
             Assert.IsFalse(settings.RestorePreviousSettings);
-            ICloneable ic = (ICloneable)settings;
+            System.ICloneable ic = (System.ICloneable)settings;
             Settings clonedSettings = (Settings)ic.Clone();
             Assert.IsFalse(clonedSettings.RestorePreviousSettings);
             settings.RestorePreviousSettings = true;

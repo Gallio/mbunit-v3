@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 
 namespace Gallio.Framework.Pattern
 {
@@ -159,48 +160,56 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void BeforeTestInstance(PatternTestInstanceState testInstanceState)
         {
             beforeTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void InitializeTestInstance(PatternTestInstanceState testInstanceState)
         {
             initializeTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void SetUpTestInstance(PatternTestInstanceState testInstanceState)
         {
             setUpTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void ExecuteTestInstance(PatternTestInstanceState testInstanceState)
         {
             executeTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void TearDownTestInstance(PatternTestInstanceState testInstanceState)
         {
             tearDownTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void DisposeTestInstance(PatternTestInstanceState testInstanceState)
         {
             disposeTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void AfterTestInstance(PatternTestInstanceState testInstanceState)
         {
             afterTestInstanceChain.Action(testInstanceState);
         }
 
         /// <inheritdoc />
+        [TestEntryPoint]
         public void DecorateChildTest(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
         {
             decorateChildTestChain.Action(testInstanceState, decoratedChildTestActions);

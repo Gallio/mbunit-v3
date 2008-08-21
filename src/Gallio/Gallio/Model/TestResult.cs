@@ -31,7 +31,8 @@ namespace Gallio.Model
         private double duration;
 
         /// <summary>
-        /// Gets or sets the test outcome.
+        /// Gets or sets the test outcome, including its children (unless they were skipped
+        /// or are otherwise irrelevant to the outcome of their parent).
         /// </summary>
         /// <value>
         /// Defaults to <see cref="TestOutcome.Inconclusive" />.
@@ -44,7 +45,7 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Gets or sets the number of assertions evaluated by the test.
+        /// Gets or sets the number of assertions evaluated by the test, including its children.
         /// </summary>
         [XmlAttribute("assertCount")]
         public int AssertCount
@@ -54,7 +55,7 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Gets or sets the test duration in seconds.
+        /// Gets or sets the test duration in seconds, including its children.
         /// </summary>
         [XmlAttribute("duration")]
         public double Duration

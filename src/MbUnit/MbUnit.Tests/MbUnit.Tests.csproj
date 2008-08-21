@@ -63,6 +63,12 @@
     <Compile Include="Framework\AssertWithReflectionTest.cs" />
     <Compile Include="Framework\AssertWithTypeTest.cs" />
     <Compile Include="Framework\CollectionAssertTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\EquivalenceClassTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyComparisonContractAttributeTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyContractAttributeBaseTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyEqualityContractAttributeTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyExceptionContractAttributeTest.cs" />
     <Compile Include="Integration\ConfigurationFileTest.cs" />
     <Compile Include="Framework\AutomaticTestFixtureTest.cs" />
     <Compile Include="Framework\RepeatTest.cs" />

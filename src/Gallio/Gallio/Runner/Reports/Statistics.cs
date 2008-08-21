@@ -264,7 +264,13 @@ namespace Gallio.Runner.Reports
             if (testStepRun == null)
                 throw new ArgumentNullException("testStepRun");
 
-            assertCount += testStepRun.Result.AssertCount;
+            // The assert count and duration statistics are pre-aggregated in that parent tests include
+            // the values for their children when publishing their results.  This implies that the
+            // root test will contain the official final tally which will be larger than all previously
+            // seen tallies.
+            assertCount = Math.Max(assertCount, testStepRun.Result.AssertCount);
+            duration = Math.Max(duration, testStepRun.Result.Duration);
+
             stepCount += 1;
 
             if (! testStepRun.Step.IsTestCase)

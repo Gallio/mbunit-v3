@@ -52,7 +52,7 @@ namespace MbUnit.Tests.Framework
                 .AddException(new Exception("Boom"))
                 .AddException(new Exception("Kaput"))
                 .ToAssertionFailure();
-            NewAssert.AreEqual("Description\nMessage goes here\n* Expected Value : \"Expected value\"\n* Actual Value   : \"Actual value\"\n* Very Long Label That Will Not Be Padded : \"\"\n* x              : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n", failure.ToString());
+            NewAssert.AreEqual("Description\nMessage goes here\n\nExpected Value : \"Expected value\"\nActual Value   : \"Actual value\"\nVery Long Label That Will Not Be Padded : \"\"\nx              : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n", failure.ToString());
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace MbUnit.Tests.Framework
             StringTestLogWriter writer = new StringTestLogWriter(true);
             failure.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker 'assertionFailure'][Section 'Description']\n[End]\n[End]", writer.ToString());
+            NewAssert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\n[End]\n[End]", writer.ToString());
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace MbUnit.Tests.Framework
             StringTestLogWriter writer = new StringTestLogWriter(true);
             failure.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker 'assertionFailure'][Section 'Description']\nMessage goes here\n* Expected Value : \"Expected value\"\n* Actual Value   : \"Actual value\"\n* Very Long Label That Will Not Be Padded : \"\"\n* x              : 42\n\n[Marker 'exception'][Marker 'exceptionType']System.Exception[End]: [Marker 'exceptionMessage']Boom[End][End]\n\n[Marker 'exception'][Marker 'exceptionType']System.Exception[End]: [Marker 'exceptionMessage']Kaput[End][End]\n\n[Marker 'stackTrace']Stack goes here\n[End][End]\n[End]", writer.ToString());
+            NewAssert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\nMessage goes here\n\n[Marker \'Monospace\']Expected Value : \"Expected value\"\nActual Value   : \"Actual value\"\nVery Long Label That Will Not Be Padded : \"\"\nx              : 42\n[End]\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Boom[End][End]\n\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Kaput[End][End]\n\n[Marker \'StackTrace\']Stack goes here\n[End][End]\n[End]", writer.ToString());
         }
     }
 }

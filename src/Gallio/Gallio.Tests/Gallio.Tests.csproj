@@ -55,8 +55,9 @@
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Collections\UserDataCollectionTest.cs" />
     <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
-    <Compile Include="Framework\Comparisons\DiffSetTest.cs" />
-    <Compile Include="Framework\Comparisons\DiffTest.cs" />
+    <Compile Include="Framework\Text\SubstringTest.cs" />
+    <Compile Include="Framework\Text\DiffSetTest.cs" />
+    <Compile Include="Framework\Text\DiffTest.cs" />
     <Compile Include="Framework\Conversions\ArrayToArrayConversionRuleTest.cs" />
     <Compile Include="Framework\Conversions\BaseConversionRuleTest.cs" />
     <Compile Include="Framework\Conversions\BaseConverterTest.cs" />
@@ -137,7 +138,19 @@
     <Compile Include="Host\HostExceptionTest.cs" />
     <Compile Include="Model\BaseTestExplorerTest.cs" />
     <Compile Include="Model\Filters\FilterParseExceptionTest.cs" />
+    <Compile Include="Model\Logging\MarkerTest.cs" />
+    <Compile Include="Model\Logging\StructuredTestLogStreamTest.cs" />
     <Compile Include="Model\Logging\StructuredTextTest.cs" />
+    <Compile Include="Model\Logging\Tags\BaseTagTest.cs" />
+    <Compile Include="Model\Logging\Tags\BinaryAttachmentTest.cs" />
+    <Compile Include="Model\Logging\Tags\BodyTagTest.cs" />
+    <Compile Include="Model\Logging\Tags\ContainerTagTest.cs" />
+    <Compile Include="Model\Logging\Tags\EmbedTagTest.cs" />
+    <Compile Include="Model\Logging\Tags\MarkerTagTest.cs" />
+    <Compile Include="Model\Logging\Tags\SectionTagTest.cs" />
+    <Compile Include="Model\Logging\Tags\TagTest.cs" />
+    <Compile Include="Model\Logging\Tags\TextAttachmentTest.cs" />
+    <Compile Include="Model\Logging\Tags\TextTagTest.cs" />
     <Compile Include="Model\ModelExceptionTest.cs" />
     <Compile Include="Reflection\Impl\CecilReflectionPolicyTest.cs" />
     <Compile Include="Reflection\ReflectionOnlyAssemblyLoaderTest.cs" />
@@ -225,7 +238,7 @@
     <Compile Include="Utilities\ExceptionUtilsTest.cs" />
     <Compile Include="Runtime\CorrelatedExceptionEventArgsTest.cs" />
     <Compile Include="Utilities\MimeTypesTest.cs" />
-    <Compile Include="Utilities\RangeTest.cs" />
+    <Compile Include="Framework\Text\RangeTest.cs" />
     <Compile Include="Utilities\StringUtilsTest.cs" />
     <Compile Include="Runtime\UnhandledExceptionPolicyTest.cs" />
   </ItemGroup>

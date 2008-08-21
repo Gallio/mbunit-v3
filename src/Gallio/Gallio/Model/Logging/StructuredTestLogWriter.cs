@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Model.Logging;
+using Gallio.Model.Logging.Tags;
 
 namespace Gallio.Model.Logging
 {
@@ -125,13 +126,13 @@ namespace Gallio.Model.Logging
         private sealed class StreamState
         {
             private readonly StructuredTestLogStream testLogStream;
-            private readonly Stack<StructuredTestLogStream.ContainerTag> containerStack;
+            private readonly Stack<ContainerTag> containerStack;
             private readonly StringBuilder textBuilder;
 
             public StreamState(string streamName)
             {
                 testLogStream = new StructuredTestLogStream(streamName);
-                containerStack = new Stack<StructuredTestLogStream.ContainerTag>();
+                containerStack = new Stack<ContainerTag>();
                 textBuilder = new StringBuilder();
 
                 containerStack.Push(testLogStream.Body);
@@ -146,7 +147,7 @@ namespace Gallio.Model.Logging
             {
                 if (textBuilder.Length != 0)
                 {
-                    containerStack.Peek().Contents.Add(new StructuredTestLogStream.TextTag(textBuilder.ToString()));
+                    containerStack.Peek().Contents.Add(new TextTag(textBuilder.ToString()));
                     textBuilder.Length = 0;
                 }
             }
@@ -158,15 +159,15 @@ namespace Gallio.Model.Logging
 
             public void BeginSection(string sectionName)
             {
-                Begin(new StructuredTestLogStream.SectionTag(sectionName));
+                Begin(new SectionTag(sectionName));
             }
 
             public void BeginMarker(Marker marker)
             {
-                Begin(new StructuredTestLogStream.MarkerTag(marker));
+                Begin(new MarkerTag(marker));
             }
 
-            private void Begin(StructuredTestLogStream.ContainerTag tag)
+            private void Begin(ContainerTag tag)
             {
                 Flush();
 
@@ -186,7 +187,7 @@ namespace Gallio.Model.Logging
             public void Embed(string attachmentName)
             {
                 Flush();
-                containerStack.Peek().Contents.Add(new StructuredTestLogStream.EmbedTag(attachmentName));
+                containerStack.Peek().Contents.Add(new EmbedTag(attachmentName));
             }
         }
     }

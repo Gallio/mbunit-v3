@@ -14,15 +14,14 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 
-namespace Gallio.Utilities
+namespace Gallio.Framework.Text
 {
     /// <summary>
     /// A range denotes a segment of a string or other indexed data structure.
     /// </summary>
     [Serializable]
-    public struct Range
+    public struct Range : IEquatable<Range>
     {
         private readonly int startIndex;
         private readonly int length;
@@ -43,6 +42,19 @@ namespace Gallio.Utilities
 
             this.startIndex = startIndex;
             this.length = length;
+        }
+
+        /// <summary>
+        /// Creates a new range between the start index (inclusively) and end index (exclusively).
+        /// </summary>
+        /// <param name="startIndex">The start index</param>
+        /// <param name="endIndex">The end index</param>
+        /// <returns>The new range</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="startIndex"/>
+        /// is negative or greater than <paramref name="endIndex"/></exception>
+        public static Range Between(int startIndex, int endIndex)
+        {
+            return new Range(startIndex, endIndex - startIndex);
         }
 
         /// <summary>
@@ -97,6 +109,43 @@ namespace Gallio.Utilities
                 return new Range(range.startIndex, length + range.length);
 
             throw new ArgumentException("The ranges must be adjacent.", "range");
+        }
+
+        /// <inheritdoc />
+        public bool Equals(Range other)
+        {
+            return startIndex == other.startIndex
+                && length == other.length;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is Range && Equals((Range)obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return (startIndex << 16) ^ length;
+        }
+
+        /// <inheritdoc />
+        public static bool operator ==(Range a, Range b)
+        {
+            return a.Equals(b);
+        }
+
+        /// <inheritdoc />
+        public static bool operator !=(Range a, Range b)
+        {
+            return !(a == b);
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return String.Format("[{0} .. {1})", startIndex, EndIndex);
         }
     }
 }

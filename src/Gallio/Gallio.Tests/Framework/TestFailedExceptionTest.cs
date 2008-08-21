@@ -20,7 +20,8 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Framework
 {
     [TestsOn(typeof(TestFailedException))]
-    public class TestFailedExceptionTest : ExceptionContractVerifier<TestFailedException>
+    [VerifyExceptionContract(typeof(TestFailedException))]
+    public class TestFailedExceptionTest
     {
     }
 }

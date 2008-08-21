@@ -21,7 +21,8 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Host
 {
     [TestsOn(typeof(HostException))]
-    public class HostExceptionTest : ExceptionContractVerifier<HostException>
+    [VerifyExceptionContract(typeof(HostException))]
+    public class HostExceptionTest
     {
     }
 }

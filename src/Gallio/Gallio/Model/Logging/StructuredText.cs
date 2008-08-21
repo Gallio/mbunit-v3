@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Gallio.Collections;
 using Gallio.Model.Logging;
+using Gallio.Model.Logging.Tags;
 
 namespace Gallio.Model.Logging
 {
@@ -32,9 +33,9 @@ namespace Gallio.Model.Logging
     /// </para>
     /// </summary>
     [Serializable]
-    public sealed class StructuredText
+    public sealed class StructuredText : IEquatable<StructuredText>
     {
-        private readonly StructuredTestLogStream.BodyTag bodyTag;
+        private readonly BodyTag bodyTag;
         private readonly IList<Attachment> attachments;
 
         /// <summary>
@@ -47,10 +48,21 @@ namespace Gallio.Model.Logging
             if (text == null)
                 throw new ArgumentNullException("text");
 
-            bodyTag = new StructuredTestLogStream.BodyTag();
-            bodyTag.Contents.Add(new StructuredTestLogStream.TextTag(text));
+            bodyTag = new BodyTag();
+            bodyTag.Contents.Add(new TextTag(text));
 
             attachments = EmptyArray<Attachment>.Instance;
+        }
+
+        /// <summary>
+        /// Creates a structured text object that wraps the body tag of a structured test log stream
+        /// and no attachments.
+        /// </summary>
+        /// <param name="bodyTag">The body tag to wrap</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="bodyTag"/> is null</exception>
+        public StructuredText(BodyTag bodyTag)
+            : this(bodyTag, EmptyArray<Attachment>.Instance)
+        {
         }
 
         /// <summary>
@@ -60,8 +72,8 @@ namespace Gallio.Model.Logging
         /// <param name="bodyTag">The body tag to wrap</param>
         /// <param name="attachments">The list of attachments</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="bodyTag"/>,
-        /// or <paramref name="attachments"/>is null</exception>
-        public StructuredText(StructuredTestLogStream.BodyTag bodyTag, IList<Attachment> attachments)
+        /// or <paramref name="attachments"/> is null</exception>
+        public StructuredText(BodyTag bodyTag, IList<Attachment> attachments)
         {
             if (bodyTag == null)
                 throw new ArgumentNullException("bodyTag");
@@ -75,7 +87,7 @@ namespace Gallio.Model.Logging
         /// <summary>
         /// Gets a copy of the body tag that described the structured text.
         /// </summary>
-        public StructuredTestLogStream.BodyTag BodyTag
+        public BodyTag BodyTag
         {
             get { return bodyTag.Clone(); }
         }
@@ -111,6 +123,38 @@ namespace Gallio.Model.Logging
         public override string ToString()
         {
             return bodyTag.ToString();
+        }
+
+        /// <inheritdoc />
+        public bool Equals(StructuredText other)
+        {
+            return other != null
+                && GenericUtils.ElementsEqual(attachments, other.attachments)
+                && bodyTag.Equals(other.bodyTag);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as StructuredText);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return attachments.Count ^ bodyTag.GetHashCode();
+        }
+
+        /// <inheritdoc />
+        public static bool operator ==(StructuredText a, StructuredText b)
+        {
+            return ReferenceEquals(a, b) || ! ReferenceEquals(a, null) && a.Equals(b);
+        }
+
+        /// <inheritdoc />
+        public static bool operator !=(StructuredText a, StructuredText b)
+        {
+            return !(a == b);
         }
     }
 }

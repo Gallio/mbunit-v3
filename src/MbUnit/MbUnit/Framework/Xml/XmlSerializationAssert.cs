@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
+using Gallio.Framework;
 
 namespace MbUnit.Framework.Xml
 {

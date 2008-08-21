@@ -19,6 +19,7 @@ using System.IO;
 using System.Xml;
 using Gallio.Model;
 using Gallio.Model.Logging;
+using Gallio.Model.Logging.Tags;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 using Gallio.Utilities;
@@ -195,8 +196,6 @@ namespace Gallio.Icarus.Core.Reports
                 statistics.inconclusiveCount += childStats.inconclusiveCount;
                 statistics.passedCount += childStats.passedCount;
                 statistics.skippedCount += childStats.skippedCount;
-                statistics.assertCount += childStats.assertCount;
-                statistics.duration += childStats.duration;
                 statistics.runCount += childStats.runCount;
             }
             return statistics;
@@ -213,7 +212,7 @@ namespace Gallio.Icarus.Core.Reports
             public int runCount;
         }
 
-        private sealed class RenderTagVisitor : StructuredTestLogStream.ITagVisitor
+        private sealed class RenderTagVisitor : ITagVisitor
         {
             private readonly XmlTextWriter xmlTextWriter;
             private readonly TestStepRun testStepRun;
@@ -224,12 +223,12 @@ namespace Gallio.Icarus.Core.Reports
                 this.testStepRun = testStepRun;
             }
 
-            public void VisitBodyTag(StructuredTestLogStream.BodyTag tag)
+            public void VisitBodyTag(BodyTag tag)
             {
                 tag.AcceptContents(this);
             }
 
-            public void VisitSectionTag(StructuredTestLogStream.SectionTag tag)
+            public void VisitSectionTag(SectionTag tag)
             {
                 xmlTextWriter.WriteRaw(String.Format("<div class=\"logStreamSection\"><span class=\"logStreamSectionHeading\">{0}</span><div>", tag.Name));
 
@@ -238,12 +237,12 @@ namespace Gallio.Icarus.Core.Reports
                 xmlTextWriter.WriteRaw("</div></div>");
             }
 
-            public void VisitMarkerTag(StructuredTestLogStream.MarkerTag tag)
+            public void VisitMarkerTag(MarkerTag tag)
             {
                 tag.AcceptContents(this);
             }
 
-            public void VisitEmbedTag(StructuredTestLogStream.EmbedTag tag)
+            public void VisitEmbedTag(EmbedTag tag)
             {
                 AttachmentData attachment = testStepRun.TestLog.GetAttachment(tag.AttachmentName);
                 if (attachment != null)
@@ -264,7 +263,7 @@ namespace Gallio.Icarus.Core.Reports
                 }
             }
 
-            public void VisitTextTag(StructuredTestLogStream.TextTag tag)
+            public void VisitTextTag(TextTag tag)
             {
                 xmlTextWriter.WriteRaw(String.Format("<span>{0}</span>", tag.Text));
             }

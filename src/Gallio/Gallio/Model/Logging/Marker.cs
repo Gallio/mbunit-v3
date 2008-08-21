@@ -28,7 +28,7 @@ namespace Gallio.Model.Logging
     /// </para>
     /// </summary>
     [Serializable]
-    public struct Marker
+    public struct Marker : IEquatable<Marker>
     {
         private readonly string @class;
 
@@ -207,6 +207,36 @@ namespace Gallio.Model.Logging
         public override string ToString()
         {
             return @class;
+        }
+
+        /// <inheritdoc />
+        public bool Equals(Marker other)
+        {
+            return @class == other.@class;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is Marker && Equals((Marker)obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return @class.GetHashCode();
+        }
+
+        /// <inheritdoc />
+        public static bool operator ==(Marker a, Marker b)
+        {
+            return a.Equals(b);
+        }
+
+        /// <inheritdoc />
+        public static bool operator !=(Marker a, Marker b)
+        {
+            return !(a == b);
         }
     }
 }

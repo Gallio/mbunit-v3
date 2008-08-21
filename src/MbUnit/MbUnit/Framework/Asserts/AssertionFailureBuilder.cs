@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
-using Gallio.Framework.Comparisons;
+using Gallio.Framework.Text;
 using Gallio.Framework.Formatting;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
@@ -191,7 +191,7 @@ namespace MbUnit.Framework
                 }
                 else
                 {
-                    DiffSet diffSet = DiffSet.Compute(formattedExpectedValue, formattedActualValue);
+                    DiffSet diffSet = DiffSet.GetDiffSet(formattedExpectedValue, formattedActualValue);
 
                     StructuredTextWriter highlightedExpectedValueWriter = new StructuredTextWriter();
                     StructuredTextWriter highlightedActualValueWriter = new StructuredTextWriter();

@@ -136,14 +136,15 @@
     <Compile Include="Framework\Formatting\StringFormattingRule.cs" />
     <Compile Include="Framework\Formatting\TypeFormattingRule.cs" />
     <Compile Include="Framework\Formatting\XPathNavigableFormattingRule.cs" />
+    <Compile Include="ICloneable.cs" />
     <Compile Include="Model\Diagnostics\TestFrameworkInternalAttribute.cs" />
     <Compile Include="Model\Diagnostics\StackTraceFilter.cs" />
     <Compile Include="Model\Diagnostics\TestEntryPointAttribute.cs" />
     <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
-    <Compile Include="Framework\Comparisons\DiffSet.cs" />
-    <Compile Include="Framework\Comparisons\Diff.cs" />
-    <Compile Include="Framework\Comparisons\DiffKind.cs" />
+    <Compile Include="Framework\Text\DiffSet.cs" />
+    <Compile Include="Framework\Text\Diff.cs" />
+    <Compile Include="Framework\Text\DiffKind.cs" />
     <Compile Include="Model\Logging\Marker.cs" />
     <Compile Include="Model\Logging\StructuredTestLogWriter.cs" />
     <Compile Include="Model\Logging\StructuredTestLog.cs" />
@@ -157,8 +158,17 @@
     <Compile Include="Model\Logging\StructuredTextWriter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\Logging\Tags\BodyTag.cs" />
+    <Compile Include="Model\Logging\Tags\ContainerTag.cs" />
+    <Compile Include="Model\Logging\Tags\EmbedTag.cs" />
+    <Compile Include="Model\Logging\Tags\ITagVisitor.cs" />
+    <Compile Include="Model\Logging\Tags\MarkerTag.cs" />
+    <Compile Include="Model\Logging\Tags\SectionTag.cs" />
+    <Compile Include="Model\Logging\Tags\Tag.cs" />
+    <Compile Include="Model\Logging\Tags\TagFormatter.cs" />
+    <Compile Include="Model\Logging\Tags\TextTag.cs" />
     <Compile Include="Model\Logging\TestLogStreamWriter.cs" />
-    <Compile Include="Utilities\Range.cs" />
+    <Compile Include="Framework\Text\Range.cs" />
     <Compile Include="Model\Execution\RemoteTestListener.cs" />
     <Compile Include="Model\Filters\FilterParseException.cs" />
     <Compile Include="Model\ITestPackageExplorerFactory.cs" />
@@ -652,6 +662,9 @@
     <Compile Include="Reflection\Impl\IXmlDocumentationResolver.cs" />
     <Compile Include="Collections\CollectionUtils.cs" />
     <Compile Include="Collections\GenericUtils.cs" />
+    <Compile Include="Framework\Text\Substring.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\Sync.cs" />
     <Compile Include="XmlSerializableTypeIncludes.cs">
       <SubType>Component</SubType>

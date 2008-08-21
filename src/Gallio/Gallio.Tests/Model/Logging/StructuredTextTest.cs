@@ -14,18 +14,59 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Gallio.Collections;
 using Gallio.Model.Logging;
+using Gallio.Model.Logging.Tags;
 using MbUnit.Framework;
+using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Model.Logging
 {
     [TestsOn(typeof(StructuredText))]
-    [Pending("Will use new equality contyract verifier stuff.")]
-    public class StructuredTextTest
+    [VerifyEqualityContract(typeof(StructuredText))]
+    public class StructuredTextTest : IEquivalenceClassProvider<StructuredText>
     {
+        public EquivalenceClassCollection<StructuredText> GetEquivalenceClasses()
+        {
+            return EquivalenceClassCollection<StructuredText>.FromDistinctInstances(
+                new StructuredText("lalalala"),
+                new StructuredText(new BodyTag() { Contents = { new TextTag("blah") }}),
+                new StructuredText(new BodyTag() { Contents = { new TextTag("blah") }},
+                    new[] { new TextAttachment("abc", MimeTypes.PlainText, "blah") })
+                );
+        }
 
+        [Test, ExpectedArgumentNullException]
+        public void ConstructorWithTextThrowsIfStringIsNull()
+        {
+            new StructuredText((string)null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ConstructorWithBodyTagThrowsIfBodyTagIsNull()
+        {
+            new StructuredText((BodyTag)null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ConstructorWithBodyTagAndAttachmentThrowsIfBodyTagIsNull()
+        {
+            new StructuredText(null, EmptyArray<Attachment>.Instance);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ConstructorWithBodyTagAndAttachmentThrowsIfAttachmentListIsNull()
+        {
+            new StructuredText(new BodyTag(), null);
+        }
+
+        [Test]
+        public void ConstructorWithTextInitializesProperties()
+        {
+            StructuredText text = new StructuredText("blah");
+            Assert.AreEqual(0, text.Attachments.Count);
+
+            NewAssert.AreEqual(new BodyTag() { Contents = { new TextTag("blah") } }, text.BodyTag);
+        }
     }
 }

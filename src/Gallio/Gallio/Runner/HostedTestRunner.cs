@@ -162,7 +162,7 @@ namespace Gallio.Runner
             this.logger = logger;
 
             int extensionCount = extensions.Count;
-            using (progressMonitor.BeginTask("Initalizing the test runner.", 10 + extensionCount))
+            using (progressMonitor.BeginTask("Initializing the test runner.", 10 + extensionCount))
             {
                 foreach (ITestRunnerExtension extension in extensions)
                 {

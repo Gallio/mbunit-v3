@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Collections;
 
 namespace Gallio.Model.Logging
 {
@@ -21,7 +22,7 @@ namespace Gallio.Model.Logging
     /// Represents a binary-encoded attachments.
     /// </summary>
     [Serializable]
-    public sealed class BinaryAttachment : Attachment
+    public sealed class BinaryAttachment : Attachment, IEquatable<BinaryAttachment>
     {
         private readonly byte[] bytes;
 
@@ -53,6 +54,26 @@ namespace Gallio.Model.Logging
         public override AttachmentData ToAttachmentData()
         {
             return new AttachmentData(Name, ContentType, AttachmentEncoding.Base64, null, bytes);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(BinaryAttachment other)
+        {
+            return Name == other.Name
+                && ContentType == other.ContentType
+                && GenericUtils.ElementsEqual(bytes, other.bytes);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as BinaryAttachment);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode() ^ ContentType.GetHashCode() ^ -1;
         }
     }
 }

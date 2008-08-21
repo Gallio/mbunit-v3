@@ -22,18 +22,8 @@ namespace Gallio.Tests.Reflection
 {
     // TODO: Implement tests for special constructors.
     [TestsOn(typeof(CodeElementResolveException))]
-    public class CodeElementResolveExceptionTest : ExceptionContractVerifier<CodeElementResolveException>
+    [VerifyExceptionContract(typeof(CodeElementResolveException), ImplementsStandardConstructors=false)]
+    public class CodeElementResolveExceptionTest
     {
-        public override void DefaultConstructorIsWellDefined()
-        {
-        }
-
-        public override void StandardMessageAndInnerExceptionConstructorIsWellDefined(string message, bool hasInnerException)
-        {
-        }
-
-        public override void StandardMessageConstructorIsWellDefined(string message)
-        {
-        }
     }
 }

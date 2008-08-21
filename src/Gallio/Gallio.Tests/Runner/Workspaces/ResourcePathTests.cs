@@ -24,8 +24,21 @@ namespace Gallio.Tests.Runner.Workspaces
 {
     [TestFixture]
     [TestsOn(typeof(ResourcePath))]
-    public class ResourcePathTests
+    [VerifyEqualityContract(typeof(ResourcePath))]
+    public class ResourcePathTests : IEquivalenceClassProvider<ResourcePath>
     {
+        /// <inheritdoc />
+        public EquivalenceClassCollection<ResourcePath> GetEquivalenceClasses()
+        {
+            return EquivalenceClassCollection<ResourcePath>.FromDistinctInstances(
+                ResourcePath.Empty,
+                ResourcePath.Root,
+                new ResourcePath(@"\foo"),
+                new ResourcePath(@"\bar"),
+                new ResourcePath(@"foo"),
+                new ResourcePath(@"bar"));
+        }
+
         [Test]
         [ExpectedArgumentNullException]
         public void ConstructorThrowsIfPathIsNull()
@@ -96,20 +109,6 @@ namespace Gallio.Tests.Runner.Workspaces
         public void CombineWithShouldReturnOtherPathIfAbsolute(string a, string b, string combined)
         {
             Assert.AreEqual(new ResourcePath(combined), new ResourcePath(a).CombinedWith(new ResourcePath(b)));
-        }
-
-        public class ResourcePathEqualityContractVerifier : EqualityContractVerifier<ResourcePath>
-        {
-            /// <inheritdoc />
-            public override IEnumerable<ResourcePath> GetDistinctInstances()
-            {
-                yield return ResourcePath.Empty;
-                yield return ResourcePath.Root;
-                yield return new ResourcePath(@"\foo");
-                yield return new ResourcePath(@"\bar");
-                yield return new ResourcePath(@"foo");
-                yield return new ResourcePath(@"bar");
-            }
         }
     }
 }

@@ -1,0 +1,595 @@
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Gallio.Framework.Text;
+using Gallio.Model.Logging;
+
+namespace Gallio.Framework.Text
+{
+    /// <summary>
+    /// <para>
+    /// A diff set consists of a sequence of differences between a left document and a right document
+    /// that indicate changed and unchanged regions.
+    /// </para>
+    /// <para>
+    /// If the changes are applied in order to the left document, the right document will be
+    /// reproduced.  If the inverse changes are applied in order to the right document, the
+    /// left document will be reproduced.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This implementation is based on Myers' O((M + N) * D) time and O(M + N) space algorithm
+    /// for computing the longest common subsequence from his paper
+    /// "An O(ND) Difference Algorithm and Its Variations."
+    /// (http://citeseer.ist.psu.edu/myers86ond.html)
+    /// </para>
+    /// <para>
+    /// There were two other sources for inspiration although this implementation is not
+    /// a direct port of either of them.
+    /// <list type="bullet">
+    /// <item>The org.eclipse.compare.internal.LCS class in Eclipse (http://www.eclipse.org) from
+    /// which we borrow the concept of limiting the number of differences to produce an approximate
+    /// result with a reduced time bound for large data sets.  Since the Eclipse implementation
+    /// of the LCS follows Myers' algorithm pretty closely, it was also very useful as a point
+    /// of comparison for finding bugs.</item>
+    /// <item>Neil Fraser's "Diff Match and Patch" algorithm (http://code.google.com/p/google-diff-match-patch/)</item>
+    /// </list>
+    /// </para>
+    /// </remarks>
+    [Serializable]
+    public sealed class DiffSet
+    {
+        private readonly IList<Diff> diffs;
+        private readonly string leftDocument;
+        private readonly string rightDocument;
+
+        /// <summary>
+        /// Constructs a diff set.
+        /// </summary>
+        /// <param name="diffs">The list of differences that indicate the changed and
+        /// unchanged regions between the left and right documents.  The diffs span
+        /// the entire range of the left and right documents and are listed in document order.</param>
+        /// <param name="leftDocument">The left document</param>
+        /// <param name="rightDocument">The right document</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="leftDocument"/>,
+        /// <paramref name="rightDocument"/> or <paramref name="diffs"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="diffs"/> does not
+        /// completely cover the left and right documents or are not listed in the correct order</exception>
+        public DiffSet(IList<Diff> diffs, string leftDocument, string rightDocument)
+        {
+            if (diffs == null)
+                throw new ArgumentNullException("diffs");
+            if (leftDocument == null)
+                throw new ArgumentNullException("leftDocument");
+            if (rightDocument == null)
+                throw new ArgumentNullException("rightDocument");
+
+            if (!ValidateDiffs(diffs, leftDocument.Length, rightDocument.Length))
+                throw new ArgumentException("The list of differences should cover the left and right documents in order.", "diffs");
+
+            this.diffs = diffs;
+            this.rightDocument = rightDocument;
+            this.leftDocument = leftDocument;
+        }
+
+        /// <summary>
+        /// Gets the set of differences between a left document and a right document.
+        /// </summary>
+        /// <param name="leftDocument">The left document</param>
+        /// <param name="rightDocument">The right document</param>
+        /// <returns>The set of differences</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="leftDocument"/> or
+        /// <paramref name="rightDocument"/> is null</exception>
+        public static DiffSet GetDiffSet(string leftDocument, string rightDocument)
+        {
+            return GetDiffSet(leftDocument, rightDocument, true);
+        }
+
+        internal static DiffSet GetDiffSet(string leftDocument, string rightDocument, bool optimize)
+        {
+            if (leftDocument == null)
+                throw new ArgumentNullException("leftDocument");
+            if (rightDocument == null)
+                throw new ArgumentNullException("rightDocument");
+
+            var diffs = new List<Diff>();
+
+            if (optimize)
+                FastDiff(diffs, new Substring(leftDocument), new Substring(rightDocument));
+            else
+                SlowDiff(diffs, new Substring(leftDocument), new Substring(rightDocument));
+
+            CanonicalizeDiffs(diffs);
+            return new DiffSet(diffs, leftDocument, rightDocument);
+        }
+
+        /// <summary>
+        /// Gets the list of differences that indicate the changed and
+        /// unchanged regions between the left and right documents.  The diffs span
+        /// the entire range of the left and right documents and are listed in document order.
+        /// </summary>
+        public IList<Diff> Diffs
+        {
+            get { return new ReadOnlyCollection<Diff>(diffs); }
+        }
+
+        /// <summary>
+        /// Gets the left document.
+        /// </summary>
+        public string LeftDocument
+        {
+            get { return leftDocument; }
+        }
+
+        /// <summary>
+        /// Gets the right document.
+        /// </summary>
+        public string RightDocument
+        {
+            get { return rightDocument; }
+        }
+
+        /// <summary>
+        /// Returns true if the list of differences contains changed regions.
+        /// </summary>
+        public bool ContainsChanges
+        {
+            get
+            {
+                foreach (Diff diff in diffs)
+                    if (diff.Kind == DiffKind.Change)
+                        return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the list of differences is empty which can only occur when
+        /// both document being compared are empty.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return diffs.Count == 0; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Writes the left document to the structured text writer, with changes annotated
+        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
+        /// and <see cref="Marker.DiffChange" />.
+        /// </para>
+        /// <para>
+        /// For the purposes of determining additions and deletions, the left document
+        /// is considered the original and the right document is the considered to be the
+        /// one that was modified.
+        /// </para>
+        /// </summary>
+        /// <param name="writer">The structured text writer to receive the highlighted document</param>
+        /// <exception cref="ArgumentNullException">Thrown if <param nameref="builder" /> if null</exception>
+        public void WriteAnnotatedLeftDocumentTo(TestLogStreamWriter writer)
+        {
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
+            foreach (Diff diff in diffs)
+            {
+                if (diff.LeftRange.Length != 0)
+                {
+                    if (diff.Kind != DiffKind.NoChange)
+                        writer.BeginMarker(diff.RightRange.Length == 0 ? Marker.DiffDeletion : Marker.DiffChange);
+
+                    writer.Write(diff.LeftRange.SubstringOf(leftDocument));
+
+                    if (diff.Kind != DiffKind.NoChange)
+                        writer.End();
+                }
+            }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Writes the right document to the structured text writer, with changes annotated
+        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
+        /// and <see cref="Marker.DiffChange" />.
+        /// </para>
+        /// <para>
+        /// For the purposes of determining additions and deletions, the left document
+        /// is considered the original and the right document is the considered to be the
+        /// one that was modified.
+        /// </para>
+        /// </summary>
+        /// <param name="writer">The structured text writer to receive the highlighted document</param>
+        /// <exception cref="ArgumentNullException">Thrown if <param nameref="builder" /> if null</exception>
+        public void WriteAnnotatedRightDocumentTo(TestLogStreamWriter writer)
+        {
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
+            foreach (Diff diff in diffs)
+            {
+                if (diff.RightRange.Length != 0)
+                {
+                    if (diff.Kind != DiffKind.NoChange)
+                        writer.BeginMarker(diff.LeftRange.Length == 0 ? Marker.DiffAddition : Marker.DiffChange);
+
+                    writer.Write(diff.RightRange.SubstringOf(rightDocument));
+
+                    if (diff.Kind != DiffKind.NoChange)
+                        writer.End();
+                }
+            }
+        }
+
+        private static bool ValidateDiffs(IEnumerable<Diff> diffs, int leftLength, int rightLength)
+        {
+            Range prevLeftRange = new Range(0, 0);
+            Range prevRightRange = new Range(0, 0);
+            foreach (Diff diff in diffs)
+            {
+                if (diff.LeftRange.StartIndex != prevLeftRange.EndIndex)
+                    return false;
+                if (diff.RightRange.StartIndex != prevRightRange.EndIndex)
+                    return false;
+
+                prevLeftRange = diff.LeftRange;
+                prevRightRange = diff.RightRange;
+            }
+
+            return prevLeftRange.EndIndex == leftLength && prevRightRange.EndIndex == rightLength;
+        }
+
+        private static void FastDiff(IList<Diff> diffs, Substring left, Substring right)
+        {
+            // If either document is empty, then the change covers the whole document.
+            if (left.Length == 0 || right.Length == 0)
+            {
+                diffs.Add(new Diff(DiffKind.Change, left.Range, right.Range));
+                return;
+            }
+
+            // Reduce the problem size by identifying a common prefix and suffix, if any.
+            int commonPrefixLength = left.FindCommonPrefixLength(right);
+            if (commonPrefixLength != 0)
+            {
+                if (commonPrefixLength == left.Length || commonPrefixLength == right.Length)
+                {
+                    diffs.Add(new Diff(DiffKind.NoChange, left.Range, right.Range));
+                    return;
+                }
+                
+                diffs.Add(new Diff(DiffKind.NoChange, new Range(left.Range.StartIndex, commonPrefixLength),
+                    new Range(right.Range.StartIndex, commonPrefixLength)));
+            }
+
+            int commonSuffixLength = left.FindCommonSuffixLength(right);
+
+            // Now work on the middle part.
+            Substring leftMiddle = left.Extract(commonPrefixLength, left.Length - commonPrefixLength - commonSuffixLength);
+            Substring rightMiddle = right.Extract(commonPrefixLength, right.Length - commonPrefixLength - commonSuffixLength);
+            SlowDiff(diffs, leftMiddle, rightMiddle);
+
+            // Tack on the final diff for the common suffix, if any.
+            if (commonSuffixLength != 0)
+            {
+                diffs.Add(new Diff(DiffKind.NoChange,
+                    new Range(leftMiddle.Range.EndIndex, commonSuffixLength),
+                    new Range(rightMiddle.Range.EndIndex, commonSuffixLength)));
+            }
+        }
+
+        private static void SlowDiff(IList<Diff> diffs, Substring left, Substring right)
+        {
+            DiffAlgorithm.PopulateDiffs(diffs, left, right);
+        }
+
+        private static void CanonicalizeDiffs(IList<Diff> diffs)
+        {
+            for (int i = 0; i < diffs.Count; i++)
+            {
+                Diff curDiff = diffs[i];
+
+                if (curDiff.LeftRange.Length == 0 && curDiff.RightRange.Length == 0)
+                {
+                    diffs.RemoveAt(i);
+                }
+                else if (i != 0)
+                {
+                    Diff prevDiff = diffs[i - 1];
+                    if (prevDiff.Kind == curDiff.Kind)
+                    {
+                        diffs.RemoveAt(i);
+                        i -= 1;
+                        diffs[i] = new Diff(prevDiff.Kind,
+                            prevDiff.LeftRange.ExtendWith(curDiff.LeftRange),
+                            prevDiff.RightRange.ExtendWith(curDiff.RightRange));
+                    }
+                }
+            }
+        }
+
+        private sealed class DiffAlgorithm
+        {
+            // The value of N*M to start binding the runtime.
+            private const long TooLong = 10000000L;
+
+            // Ordinarily the worst case runtime is O((N + M) * D) which can be very large
+            // as D approaches N + M.  Here we attempt to limit the worst case to O(D ^ PowLimit)
+            // when N * M is too big.
+            private const double PowLimit = 1.5;
+
+            // The maximum number of non-diagonal edits (differences) to consider.
+            private readonly int max;
+
+            // Each of these represents a "V" vector from Myers' algorithm which allows signed integer indices in
+            // a range -MAX .. MAX.  We must add the offset "max" to find the center of the vector.
+            private readonly int[] leftVector;
+            private readonly int[] rightVector;
+
+            private readonly IList<Diff> diffs;
+            private int commonSeqLeftStartIndex, commonSeqRightStartIndex, commonSeqLength;
+
+            private DiffAlgorithm(IList<Diff> diffs, int leftStartIndex, int rightStartIndex, int max)
+            {
+                this.diffs = diffs;
+                this.commonSeqLeftStartIndex = leftStartIndex;
+                this.commonSeqRightStartIndex = rightStartIndex;
+                this.max = max;
+
+                int vectorLength = max * 2 + 1;
+                leftVector = new int[vectorLength];
+                rightVector = new int[vectorLength];
+            }
+
+            public static void PopulateDiffs(IList<Diff> diffs, Substring left, Substring right)
+            {
+                if (left.Length == 0 && right.Length == 0)
+                    return;
+
+                int n = left.Length;
+                int m = right.Length;
+
+                int max = CeilNPlusMOverTwo(n, m);
+                if (((long) n) * ((long) m) > TooLong)
+                    max = (int) Math.Pow(max, PowLimit - 1.0);
+
+                DiffAlgorithm algorithm = new DiffAlgorithm(diffs, left.Range.StartIndex, right.Range.StartIndex, max);
+
+                algorithm.ComputeLCS(left, right);
+                algorithm.FlushDiffs(left.Range.EndIndex, right.Range.EndIndex);
+            }
+
+            private void EmitDiffsFromCommonSequence(int leftIndex, int rightIndex, int length)
+            {
+                if (length == 0)
+                    return;
+
+                int commonSeqLeftEndIndex = commonSeqLeftStartIndex + commonSeqLength;
+                int commonSeqRightEndIndex = commonSeqRightStartIndex + commonSeqLength;
+
+                if (leftIndex == commonSeqLeftEndIndex && rightIndex == commonSeqRightEndIndex)
+                {
+                    commonSeqLength += length;
+                }
+                else
+                {
+                    if (commonSeqLength != 0)
+                        diffs.Add(new Diff(DiffKind.NoChange,
+                            new Range(commonSeqLeftStartIndex, commonSeqLength),
+                            new Range(commonSeqRightStartIndex, commonSeqLength)));
+
+                    diffs.Add(new Diff(DiffKind.Change,
+                        new Range(commonSeqLeftEndIndex, leftIndex - commonSeqLeftEndIndex),
+                        new Range(commonSeqRightEndIndex, rightIndex - commonSeqRightEndIndex)));
+
+                    commonSeqLeftStartIndex = leftIndex;
+                    commonSeqRightStartIndex = rightIndex;
+                    commonSeqLength = length;
+                }
+            }
+
+            private void FlushDiffs(int leftEndIndex, int rightEndIndex)
+            {
+                int commonSeqLeftEndIndex = commonSeqLeftStartIndex + commonSeqLength;
+                int commonSeqRightEndIndex = commonSeqRightStartIndex + commonSeqLength;
+
+                if (commonSeqLength != 0)
+                    diffs.Add(new Diff(DiffKind.NoChange,
+                        new Range(commonSeqLeftStartIndex, commonSeqLength),
+                        new Range(commonSeqRightStartIndex, commonSeqLength)));
+
+                if (leftEndIndex != commonSeqLeftEndIndex || rightEndIndex != commonSeqRightEndIndex)
+                    diffs.Add(new Diff(DiffKind.Change,
+                        new Range(commonSeqLeftEndIndex, leftEndIndex - commonSeqLeftEndIndex),
+                        new Range(commonSeqRightEndIndex, rightEndIndex - commonSeqRightEndIndex)));
+            }
+
+            /// <summary>
+            /// <para>
+            /// Determines the longest common subsequence between two sequences and populates the
+            /// list of diffs derived from the result as we go.  Each recursive step identifies
+            /// a middle "snake" (a common sequence) then splits the problem until nothing remains.
+            /// </para>
+            /// </summary>
+            /// <param name="left">The sequence "A"</param>
+            /// <param name="right">The sequence "B"</param>
+            private void ComputeLCS(Substring left, Substring right)
+            {
+                int n = left.Length;
+                int m = right.Length;
+
+                if (n != 0 && m != 0)
+                {
+                    int middleSnakeLeftStartIndex, middleSnakeRightStartIndex, middleSnakeLength;
+                    int d = FindMiddleSnake(left, right, out middleSnakeLeftStartIndex, out middleSnakeRightStartIndex, out middleSnakeLength);
+                    if (d > 1)
+                    {
+                        // If D >= 2 then the edit script includes at least 2 differences, so we divide the problem.
+                        ComputeLCS(
+                            left.Extract(0, middleSnakeLeftStartIndex),
+                            right.Extract(0, middleSnakeRightStartIndex));
+
+                        EmitDiffsFromCommonSequence(
+                            left.Range.StartIndex + middleSnakeLeftStartIndex,
+                            right.Range.StartIndex + middleSnakeRightStartIndex,
+                            middleSnakeLength);
+
+                        ComputeLCS(
+                            left.Extract(middleSnakeLeftStartIndex + middleSnakeLength),
+                            right.Extract(middleSnakeRightStartIndex + middleSnakeLength));
+                    }
+                    else
+                    {
+                        // If D = 1, then exactly one symbol needs to be added or deleted from either sequence.
+                        // If D = 0, then both sequences are equal.
+
+                        if (d != 0)
+                        {
+                            // The middle snake is the common part after the change so we just need to grab the
+                            // common part before the change.
+                            EmitDiffsFromCommonSequence(
+                                left.Range.StartIndex,
+                                right.Range.StartIndex,
+                                Math.Min(middleSnakeLeftStartIndex, middleSnakeRightStartIndex));
+                        }
+
+                        EmitDiffsFromCommonSequence(
+                            left.Range.StartIndex + middleSnakeLeftStartIndex,
+                            right.Range.StartIndex + middleSnakeRightStartIndex,
+                            middleSnakeLength);
+                    }
+                }
+            }
+
+            /// <summary>
+            /// <para>
+            /// Finds a middle "snake", which is a (possibly empty) sequence of diagonal edges in the edit
+            /// graph.  Thus it directly represents a common sequence.
+            /// </para>
+            /// <para>
+            /// In essence, this function searches D-paths forward and backward in the sequence until it
+            /// finds the middle snake.  The middle snake informs us about a common sequence sandwiched
+            /// between two other sequences that may contain changes.  By definition, the left and right
+            /// middle snakes must be of equal length.
+            /// </para>
+            /// </summary>
+            /// <param name="left">The sequence "A"</param>
+            /// <param name="right">The sequence "B"</param>
+            /// <param name="middleSnakeLeftStartIndex">The starting index of the middle snake in "A"</param>
+            /// <param name="middleSnakeRightStartIndex">The starting index of the middle snake in "B"</param>
+            /// <param name="middleSnakeLength">The middle snake length</param>
+            /// <returns>The number of sequences of non-diagonal edges which determines the
+            /// number of differences between "A" and "B".  Zero would mean that there were no non-diagonal
+            /// edges, so the two sequences must be are equal (middle snakes cover both sequences).</returns>
+            private int FindMiddleSnake(Substring left, Substring right, out int middleSnakeLeftStartIndex, out int middleSnakeRightStartIndex, out int middleSnakeLength)
+            {
+                int n = left.Length;
+                int m = right.Length;
+
+                int delta = n - m;
+                bool isDeltaOdd = (delta & 1) != 0;
+
+                for (int i = 0; i < leftVector.Length; i++)
+                    leftVector[i] = 10000;
+                for (int i = 0; i < rightVector.Length; i++)
+                    rightVector[i] = 10000;
+
+                leftVector[max + 1] = 0;
+                rightVector[max - 1] = n;
+
+                int end = Math.Min(CeilNPlusMOverTwo(n, m), max);
+                for (int d = 0; d <= end; d++)
+                {
+                    // Search forward D-paths.
+                    for (int k = -d; k <= d; k += 2)
+                    {
+                        // Find the end of the furthest reaching forward D-path in diagonal k.
+                        int x = k == -d || k != d && leftVector[max + k - 1] < leftVector[max + k + 1]
+                            ? leftVector[max + k + 1]
+                            : leftVector[max + k - 1] + 1;
+
+                        int origX = x;
+                        for (int y = x - k; x < n && y < m && left[x] == right[y]; )
+                        {
+                            x += 1;
+                            y += 1;
+                        }
+
+                        leftVector[max + k] = x;
+
+                        // If the D-path is feasible and overlaps the furthest reaching reverse (D-1)-Path in diagonal k
+                        // then we have found the middle snake.
+                        if (isDeltaOdd && k >= delta - d + 1 && k <= delta + d - 1)
+                        {
+                            int u = rightVector[max + k - delta];
+                            if (x >= u)
+                            {
+                                middleSnakeLeftStartIndex = origX;
+                                middleSnakeRightStartIndex = origX - k;
+                                middleSnakeLength = x - origX;
+                                return d * 2 - 1;
+                            }
+                        }
+                    }
+
+                    // Search reverse D-paths.
+                    for (int k = -d; k <= d; k += 2)
+                    {
+                        // Find the end of the furthest reaching reverse D-path in diagonal k + delta.
+                        int u = k == d || k != -d && rightVector[max + k - 1] < rightVector[max + k + 1]
+                            ? rightVector[max + k - 1]
+                            : rightVector[max + k + 1] - 1;
+
+                        int kPlusDelta = k + delta;
+                        int origU = u;
+                        int v;
+                        for (v = u - kPlusDelta; u > 0 && v > 0 && left[u - 1] == right[v - 1]; )
+                        {
+                            u -= 1;
+                            v -= 1;
+                        }
+
+                        rightVector[max + k] = u;
+
+                        // If the D-path is feasible and overlaps the furthest reaching forward D-Path in diagonal k
+                        // then we have found the middle snake.
+                        if (!isDeltaOdd && kPlusDelta >= -d && kPlusDelta <= d)
+                        {
+                            int x = leftVector[max + kPlusDelta];
+                            if (u <= x)
+                            {
+                                middleSnakeLeftStartIndex = u;
+                                middleSnakeRightStartIndex = v;
+                                middleSnakeLength = origU - u;
+                                return d * 2;
+                            }
+                        }
+                    }
+                }
+
+                // We have exceeded the maximum effort we are willing to expend finding a diff.
+                throw new NotImplementedException("Find D-path with max progress.");
+            }
+
+            private static int CeilNPlusMOverTwo(int n, int m)
+            {
+                return (n + m + 1) / 2;
+            }
+        }
+    }
+}

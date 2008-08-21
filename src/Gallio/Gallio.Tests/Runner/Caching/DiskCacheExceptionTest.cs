@@ -21,7 +21,8 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Runner.Caching
 {
     [TestsOn(typeof(DiskCacheException))]
-    public class DiskCacheExceptionTest : ExceptionContractVerifier<DiskCacheException>
+    [VerifyExceptionContract(typeof(DiskCacheException))]
+    public class DiskCacheExceptionTest
     {
     }
 }

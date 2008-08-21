@@ -20,7 +20,8 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Framework.Data
 {
     [TestsOn(typeof(DataBindingException))]
-    public class DataBindingExceptionTest : ExceptionContractVerifier<DataBindingException>
+    [VerifyExceptionContract(typeof(DataBindingException))]
+    public class DataBindingExceptionTest
     {
     }
 }
