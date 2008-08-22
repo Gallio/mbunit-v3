@@ -158,9 +158,7 @@ namespace MbUnit.Framework
                     int paddedLength = ComputePaddedLabelLength();
                     foreach (LabeledValue labeledValue in labeledValues)
                     {
-                        WriteLabel(writer, labeledValue.Label);
-                        WritePaddingSpaces(writer, paddedLength - labeledValue.Label.Length);
-                        writer.Write(@" : ");
+                        WriteLabel(writer, labeledValue.Label, paddedLength);
                         WriteFormattedValue(writer, labeledValue.FormattedValue);
                         writer.WriteLine();
                     }
@@ -206,9 +204,14 @@ namespace MbUnit.Framework
                 writer.Write(' ');
         }
 
-        private static void WriteLabel(TestLogStreamWriter writer, string label)
+        private static void WriteLabel(TestLogStreamWriter writer, string label, int paddedLength)
         {
-            WriteTruncated(writer, new StructuredText(label), MaxLabelLengthBeforeTruncation);
+            using (writer.BeginMarker(Marker.Label))
+            {
+                WriteTruncated(writer, new StructuredText(label), MaxLabelLengthBeforeTruncation);
+                WritePaddingSpaces(writer, paddedLength - label.Length);
+                writer.Write(@" : ");
+            }
         }
 
         private static void WriteFormattedValue(TestLogStreamWriter writer, StructuredText formattedValue)

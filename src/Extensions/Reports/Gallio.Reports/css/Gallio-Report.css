@@ -322,6 +322,11 @@ div.gallio-report div.navigator
 {
 }
 
+.gallio-report .logStreamMarker-Label
+{
+	font-weight: bold;
+}
+
 .gallio-report .logStreamMarker-Exception
 {
 	font-style: italic;

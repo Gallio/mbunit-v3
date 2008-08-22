@@ -228,14 +228,14 @@ namespace Gallio.Framework.Text
         /// to display for context, or <see cref="int.MaxValue" /> for no limit.  Extraneous context
         /// is split in two with an ellipsis inserted in between both halves</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxContentLength"/>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxContextLength"/>
         /// is negative</exception>
         public void WriteTo(TestLogStreamWriter writer, DiffStyle style, int maxContextLength)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
             if (maxContextLength < 0)
-                throw new ArgumentOutOfRangeException("maxContentLength");
+                throw new ArgumentOutOfRangeException("maxContextLength");
 
             foreach (Diff diff in diffs)
             {

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Framework;
 using Gallio.Framework.Text;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
@@ -226,17 +227,18 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void TruncatesDiffContextWhenTooLong()
         {
-            string expectedValue = new string('x', AssertionFailure.MaxFormattedValueLength + 1);
-            string actualValue = new string('y', AssertionFailure.MaxFormattedValueLength + 1);
+            string expectedValue = "z" + new string('x', AssertionFailure.MaxFormattedValueLength) + "z";
+            string actualValue = "Z" + new string('x', AssertionFailure.MaxFormattedValueLength) + "Z";
 
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
             builder.SetRawExpectedAndActualValueWithDiffs(expectedValue, actualValue);
             AssertionFailure failure = builder.ToAssertionFailure();
+            TestLog.Write(failure);
 
             int split = AssertionFailureBuilder.CompressedDiffContextLength / 2;
-            NewAssert.AreEqual("\"" + new string('x', split) + "..." + new string('x', split) + "\"",
+            NewAssert.AreEqual("\"z" + new string('x', split) + "..." + new string('x', split) + "z\"",
                 failure.LabeledValues[0].FormattedValue.ToString());
-            NewAssert.AreEqual("\"" + new string('y', split) + "..." + new string('y', split) + "\"",
+            NewAssert.AreEqual("\"Z" + new string('x', split) + "..." + new string('x', split) + "Z\"",
                 failure.LabeledValues[1].FormattedValue.ToString());
         }
 

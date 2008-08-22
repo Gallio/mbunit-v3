@@ -42,6 +42,11 @@ namespace Gallio.Model.Logging
         public const string AssertionFailureClass = "AssertionFailure";
 
         /// <summary>
+        /// Standard marker class for labels and headings.
+        /// </summary>
+        public const string LabelClass = "Label";
+
+        /// <summary>
         /// Standard marker class for exceptions including their details.
         /// </summary>
         public const string ExceptionClass = "Exception";
@@ -93,17 +98,19 @@ namespace Gallio.Model.Logging
         public const string EllipsisClass = "Ellipsis";
 
         /// <summary>
-        /// Standard attribute used to denote the text that can replace the content of
-        /// a marked region.  It is used to store the text elided with an ellipsis marker.
-        /// </summary>
-        public const string AltTextAttribute = "AltText";
-
-        /// <summary>
         /// Standard marker for assertion failures.
         /// </summary>
         public static Marker AssertionFailure
         {
             get { return new Marker(AssertionFailureClass); }
+        }
+
+        /// <summary>
+        /// Standard marker for labels and headings.
+        /// </summary>
+        public static Marker Label
+        {
+            get { return new Marker(LabelClass); }
         }
 
         /// <summary>
