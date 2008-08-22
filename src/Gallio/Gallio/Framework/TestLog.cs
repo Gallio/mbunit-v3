@@ -21,7 +21,6 @@ using System.Xml.Serialization;
 using Gallio.Framework;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
-using TestLogStreamWriter=Gallio.Model.Logging.TestLogStreamWriter;
 
 namespace Gallio.Framework
 {
@@ -470,18 +469,17 @@ namespace Gallio.Framework
 
         /// <summary>
         /// <para>
-        /// Writes structured text.
+        /// Writes a test log stream writable object to the stream.
         /// </para>
         /// <para>
         /// This is a convenience method that forwards the request to the current default
         /// log stream writer as returned by the <see cref="Default" /> property.
         /// </para>
         /// </summary>
-        /// <param name="structuredText">The structured text to write, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="structuredText"/> is null</exception>
-        public static void WriteStructuredText(StructuredText structuredText)
+        /// <param name="obj">The object to write, or null if none</param>
+        public static void Write(ITestLogStreamWritable obj)
         {
-            Default.WriteStructuredText(structuredText);
+            Default.Write(obj);
         }
 
         /// <summary>
@@ -582,6 +580,28 @@ namespace Gallio.Framework
         public static void WriteHighlighted(string text)
         {
             Default.WriteHighlighted(text);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Writes an ellipsis to indicate where content has been elided for brevity.
+        /// An ellipsis may be used, for example, when printing assertion failures to clearly
+        /// identify sections where the user is not being presented all of the information
+        /// because it was too long and had to be truncated.
+        /// </para>
+        /// <para>
+        /// This is a convenience method that forwards the request to the current default
+        /// log stream writer as returned by the <see cref="Default" /> property.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// This is a convenience method that simply encapsulates "..." within a
+        /// marked region of type <see cref="Marker.Ellipsis" />.  However, tools
+        /// may reinterpret the special marker to make the "..." less ambiguous.
+        /// </remarks>
+        public static void WriteEllipsis()
+        {
+            Default.WriteEllipsis();
         }
 
         /// <summary>

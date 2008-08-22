@@ -51,7 +51,7 @@ namespace Gallio.Framework.Formatting
         public string Format(object obj, IFormatter formatter)
         {
             string result = (string) converter.Convert(obj, typeof(string));
-            if (string.IsNullOrEmpty(result))
+            if (result == null)
                 return null;
 
             return string.Concat("{", StringUtils.ToUnquotedStringLiteral(result), "}");

@@ -53,7 +53,7 @@ namespace Gallio.Framework.Text
     /// </para>
     /// </remarks>
     [Serializable]
-    public sealed class DiffSet
+    public sealed class DiffSet : ITestLogStreamWritable
     {
         private readonly IList<Diff> diffs;
         private readonly string leftDocument;
@@ -170,68 +170,130 @@ namespace Gallio.Framework.Text
 
         /// <summary>
         /// <para>
-        /// Writes the left document to the structured text writer, with changes annotated
-        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
-        /// and <see cref="Marker.DiffChange" />.
+        /// Writes the diffs using the <see cref="DiffStyle.Interleaved" />
+        /// presentation style and no limits on the context length.
         /// </para>
         /// <para>
         /// For the purposes of determining additions and deletions, the left document
         /// is considered the original and the right document is the considered to be the
-        /// one that was modified.
+        /// one that was modified.  Changes are annotated by markers:
+        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
+        /// and <see cref="Marker.DiffChange" />.
         /// </para>
         /// </summary>
-        /// <param name="writer">The structured text writer to receive the highlighted document</param>
-        /// <exception cref="ArgumentNullException">Thrown if <param nameref="builder" /> if null</exception>
-        public void WriteAnnotatedLeftDocumentTo(TestLogStreamWriter writer)
+        /// <param name="writer">The test log stream writer to receive the highlighted document</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null</exception>
+        public void WriteTo(TestLogStreamWriter writer)
         {
-            if (writer == null)
-                throw new ArgumentNullException("writer");
-
-            foreach (Diff diff in diffs)
-            {
-                if (diff.LeftRange.Length != 0)
-                {
-                    if (diff.Kind != DiffKind.NoChange)
-                        writer.BeginMarker(diff.RightRange.Length == 0 ? Marker.DiffDeletion : Marker.DiffChange);
-
-                    writer.Write(diff.LeftRange.SubstringOf(leftDocument));
-
-                    if (diff.Kind != DiffKind.NoChange)
-                        writer.End();
-                }
-            }
+            WriteTo(writer, DiffStyle.Interleaved, int.MaxValue);
         }
 
         /// <summary>
         /// <para>
-        /// Writes the right document to the structured text writer, with changes annotated
-        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
-        /// and <see cref="Marker.DiffChange" />.
+        /// Writes the diffs using the specified
+        /// presentation style and no limits on the context length.
         /// </para>
         /// <para>
         /// For the purposes of determining additions and deletions, the left document
         /// is considered the original and the right document is the considered to be the
-        /// one that was modified.
+        /// one that was modified.  Changes are annotated by markers:
+        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
+        /// and <see cref="Marker.DiffChange" />.
         /// </para>
         /// </summary>
-        /// <param name="writer">The structured text writer to receive the highlighted document</param>
-        /// <exception cref="ArgumentNullException">Thrown if <param nameref="builder" /> if null</exception>
-        public void WriteAnnotatedRightDocumentTo(TestLogStreamWriter writer)
+        /// <param name="writer">The test log stream writer to receive the highlighted document</param>
+        /// <param name="style">The presentation style</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null</exception>
+        public void WriteTo(TestLogStreamWriter writer, DiffStyle style)
+        {
+            WriteTo(writer, style, int.MaxValue);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Writes the diffs using the specified
+        /// presentation style and max context length.
+        /// </para>
+        /// <para>
+        /// For the purposes of determining additions and deletions, the left document
+        /// is considered the original and the right document is the considered to be the
+        /// one that was modified.  Changes are annotated by markers:
+        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
+        /// and <see cref="Marker.DiffChange" />.
+        /// </para>
+        /// </summary>
+        /// <param name="writer">The test log stream writer to receive the highlighted document</param>
+        /// <param name="style">The presentation style</param>
+        /// <param name="maxContextLength">The maximum number of characters of unchanged regions
+        /// to display for context, or <see cref="int.MaxValue" /> for no limit.  Extraneous context
+        /// is split in two with an ellipsis inserted in between both halves</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref nameref="writer" /> if null</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxContentLength"/>
+        /// is negative</exception>
+        public void WriteTo(TestLogStreamWriter writer, DiffStyle style, int maxContextLength)
         {
             if (writer == null)
                 throw new ArgumentNullException("writer");
+            if (maxContextLength < 0)
+                throw new ArgumentOutOfRangeException("maxContentLength");
 
             foreach (Diff diff in diffs)
             {
-                if (diff.RightRange.Length != 0)
+                if (diff.Kind == DiffKind.NoChange)
                 {
-                    if (diff.Kind != DiffKind.NoChange)
-                        writer.BeginMarker(diff.LeftRange.Length == 0 ? Marker.DiffAddition : Marker.DiffChange);
+                    WriteContext(writer, new Substring(leftDocument, diff.LeftRange), maxContextLength);
+                }
+                else
+                {
+                    if (diff.LeftRange.Length != 0)
+                    {
+                        switch (style)
+                        {
+                            case DiffStyle.Interleaved:
+                                using (writer.BeginMarker(Marker.DiffDeletion))
+                                    writer.Write(diff.LeftRange.SubstringOf(leftDocument));
+                                break;
 
-                    writer.Write(diff.RightRange.SubstringOf(rightDocument));
+                            case DiffStyle.LeftOnly:
+                                using (writer.BeginMarker(diff.RightRange.Length == 0 ? Marker.DiffDeletion : Marker.DiffChange))
+                                    writer.Write(diff.LeftRange.SubstringOf(leftDocument));
+                                break;
+                        }
+                    }
 
-                    if (diff.Kind != DiffKind.NoChange)
-                        writer.End();
+                    if (diff.RightRange.Length != 0)
+                    {
+                        switch (style)
+                        {
+                            case DiffStyle.Interleaved:
+                                using (writer.BeginMarker(Marker.DiffAddition))
+                                    writer.Write(diff.RightRange.SubstringOf(rightDocument));
+                                break;
+
+                            case DiffStyle.RightOnly:
+                                using (writer.BeginMarker(diff.LeftRange.Length == 0 ? Marker.DiffAddition : Marker.DiffChange))
+                                    writer.Write(diff.RightRange.SubstringOf(rightDocument));
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void WriteContext(TestLogStreamWriter writer, Substring context, int maxContextLength)
+        {
+            if (context.Length < maxContextLength)
+            {
+                writer.Write(context.ToString());
+            }
+            else
+            {
+                int split = maxContextLength / 2;
+                if (split > 0)
+                {
+                    writer.Write(context.Extract(0, split).ToString());
+                    writer.WriteEllipsis();
+                    writer.Write(context.Extract(context.Length - split));
                 }
             }
         }
@@ -354,8 +416,8 @@ namespace Gallio.Framework.Text
             // mean applying to runtime bounded approximations at a problem size of about 3162.
             // Still rather slow and there are plenty of slower machines out there.
             //
-            // So instead we bound the problem size to 2000 ^ 2 = 4,000,000 for now.
-            private const long TooLong = 4000000;
+            // So instead we bound the problem size to 2500 ^ 2 = 6,250,000 for now.
+            private const long TooLong = 6250000;
 
             // The maximum number of non-diagonal edits (differences) to consider.
             private readonly int max;

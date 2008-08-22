@@ -357,6 +357,11 @@ div.gallio-report div.navigator
 	background-color: #80ff80;
 }
 
+.gallio-report .logStreamMarker-Ellipsis
+{
+	text-decoration: underline;
+}
+
 /* Sections */
 .gallio-report div.section
 {

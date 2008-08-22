@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Collections;
 using Gallio.Utilities;
@@ -14,12 +15,14 @@ namespace Gallio.Model.Logging.Tags
     public sealed class MarkerTag : ContainerTag, ICloneable<MarkerTag>, IEquatable<MarkerTag>
     {
         private string @class;
+        private readonly List<Attribute> attributes;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
         /// </summary>
         private MarkerTag()
         {
+            attributes = new List<Attribute>();
         }
 
         /// <summary>
@@ -27,8 +30,12 @@ namespace Gallio.Model.Logging.Tags
         /// </summary>
         /// <param name="marker">The marker</param>
         public MarkerTag(Marker marker)
+            : this()
         {
             @class = marker.Class;
+
+            foreach (KeyValuePair<string, string> pair in marker.Attributes)
+                attributes.Add(new Attribute(pair.Key, pair.Value));
         }
 
         /// <summary>
@@ -36,16 +43,26 @@ namespace Gallio.Model.Logging.Tags
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if the <paramref name="value"/> is not a valid identifier.
-        /// <seealso cref="Gallio.Model.Logging.Marker.ValidateClass"/></exception>
+        /// <seealso cref="Logging.Marker.ValidateIdentifier"/></exception>
         [XmlAttribute("class")]
         public string Class
         {
             get { return @class; }
             set
             {
-                Marker.ValidateClass(value);
+                Marker.ValidateIdentifier(value);
                 @class = value;
             }
+        }
+
+        /// <summary>
+        /// Gets the list of marker attributes.
+        /// </summary>
+        [XmlArray("attributes", IsNullable = false)]
+        [XmlArrayItem("attributes", typeof(Attribute), IsNullable = false)]
+        public List<Attribute> Attributes
+        {
+            get { return attributes; }
         }
 
         /// <summary>
@@ -54,7 +71,14 @@ namespace Gallio.Model.Logging.Tags
         [XmlIgnore]
         public Marker Marker
         {
-            get { return new Marker(@class); }
+            get
+            {
+                var attributes = new Dictionary<string, string>();
+                foreach (Attribute attribute in this.attributes)
+                    attributes.Add(attribute.Name, attribute.Value);
+
+                return new Marker(@class, attributes);
+            }
         }
 
         /// <inheritdoc />
@@ -62,6 +86,8 @@ namespace Gallio.Model.Logging.Tags
         {
             MarkerTag copy = new MarkerTag();
             copy.@class = @class;
+            foreach (Attribute attribute in attributes)
+                copy.attributes.Add(new Attribute(attribute.Name, attribute.Value));
             CopyTo(copy);
             return copy;
         }
@@ -100,6 +126,75 @@ namespace Gallio.Model.Logging.Tags
         {
             using (writer.BeginMarker(Marker))
                 base.WriteToImpl(writer);
+        }
+
+        /// <summary>
+        /// Represents a marker attribute.
+        /// </summary>
+        [Serializable]
+        [XmlRoot("marker", Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
+        public sealed class Attribute
+        {
+            private string name;
+            private string value;
+
+            /// <summary>
+            /// Creates an uninitialized instance for Xml deserialization.
+            /// </summary>
+            private Attribute()
+            {
+            }
+
+            /// <summary>
+            /// Creates an initialized attribute.
+            /// </summary>
+            /// <param name="name">The attribute name</param>
+            /// <param name="value">The attribute value</param>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="name"/>
+            /// is invalid</exception>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+            /// or <paramref name="value"/> is null</exception>
+            public Attribute(string name, string value)
+            {
+                Marker.ValidateAttribute(name, value);
+
+                this.name = name;
+                this.value = value;
+            }
+
+            /// <summary>
+            /// Gets or sets the attribute name, not null.
+            /// </summary>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentException">Thrown if the <paramref name="value"/> is not a valid identifier.
+            /// <seealso cref="Logging.Marker.ValidateIdentifier"/></exception>
+            [XmlAttribute("name")]
+            public string Name
+            {
+                get { return name; }
+                set
+                {
+                    Marker.ValidateIdentifier(value);
+                    name = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the attribute value, not null.
+            /// </summary>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            [XmlAttribute("value")]
+            public string Value
+            {
+                get { return this.value; }
+                set
+                {
+                    if (value == null)
+                        throw new ArgumentNullException("value");
+                    this.value = value;
+                }
+            }
         }
     }
 }

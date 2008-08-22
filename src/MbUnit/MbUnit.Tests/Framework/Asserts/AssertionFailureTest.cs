@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework;
 using Gallio.Model.Logging;
 using MbUnit.Framework;
 
@@ -84,6 +85,20 @@ namespace MbUnit.Tests.Framework
             failure.WriteTo(writer.Failures);
 
             NewAssert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\nMessage goes here\n\n[Marker \'Monospace\']Expected Value : \"Expected value\"\nActual Value   : \"Actual value\"\nVery Long Label That Will Not Be Padded : \"\"\nx              : 42\n[End]\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Boom[End][End]\n\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Kaput[End][End]\n\n[Marker \'StackTrace\']Stack goes here\n[End][End]\n[End]", writer.ToString());
+        }
+
+        [Test]
+        public void TruncatesLabelsAndFormattedValues()
+        {
+            AssertionFailure failure = new AssertionFailureBuilder("Description")
+                .SetStackTrace(null)
+                .SetLabeledValue(new string('x', AssertionFailure.MaxLabelLengthBeforeTruncation + 1),
+                    new string('y', AssertionFailure.MaxFormattedValueLength + 1))
+                .ToAssertionFailure();
+
+            NewAssert.AreEqual("Description\n\n"
+                + new string('x', AssertionFailure.MaxLabelLengthBeforeTruncation) + "... : "
+                + new string('y', AssertionFailure.MaxFormattedValueLength) + "...\n", failure.ToString());
         }
     }
 }

@@ -24,6 +24,7 @@ namespace Gallio.Collections
     /// </summary>
     /// <typeparam name="TKey">The dictionary key type</typeparam>
     /// <typeparam name="TValue">The dictionary value type</typeparam>
+    [Serializable]
     public class EmptyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         /// <summary>

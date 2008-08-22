@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using Gallio.Model.Logging;
-using Gallio.Model.Logging.Tags;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
@@ -13,7 +13,10 @@ namespace Gallio.Tests.Model.Logging
         {
             return EquivalenceClassCollection<Marker>.FromDistinctInstances(
                 Marker.AssertionFailure,
-                Marker.DiffAddition
+                Marker.DiffAddition,
+                Marker.AssertionFailure.WithAttribute("a", "x"),
+                Marker.AssertionFailure.WithAttribute("a", "y"),
+                Marker.AssertionFailure.WithAttribute("a", "x").WithAttribute("b", "y")
                 );
         }
 
@@ -23,9 +26,9 @@ namespace Gallio.Tests.Model.Logging
         [Row("  ", ExpectedException = typeof(ArgumentException))]
         [Row(":$%", ExpectedException = typeof(ArgumentException))]
         [Row("abcd_1234")]
-        public void ValidateClass(string @class)
+        public void ValidateIdentifier(string @class)
         {
-            Marker.ValidateClass(@class);
+            Marker.ValidateIdentifier(@class);
         }
 
         [Test]
@@ -34,9 +37,40 @@ namespace Gallio.Tests.Model.Logging
         [Row("  ", ExpectedException = typeof(ArgumentException))]
         [Row(":$%", ExpectedException = typeof(ArgumentException))]
         [Row("abcd_1234")]
-        public void ConstructorPerformsValidation(string @class)
+        public void ConstructorPerformsValidationOfClass(string @class)
         {
             new Marker(@class);
+        }
+
+        [Test]
+        [Row(null, "aa", ExpectedException = typeof(ArgumentNullException))]
+        [Row("abc", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("", "aa", ExpectedException = typeof(ArgumentException))]
+        [Row("  ", "aa", ExpectedException = typeof(ArgumentException))]
+        [Row(":$%", "aa", ExpectedException = typeof(ArgumentException))]
+        [Row("abcd_1234", "aa")]
+        public void ConstructorPerformsValidationOfAttributeName(string name, string value)
+        {
+            new Marker(Marker.DiffAdditionClass,
+                new Dictionary<string, string>() { { name, value }});
+        }
+
+        [Test]
+        [Row(null, "aa", ExpectedException = typeof(ArgumentNullException))]
+        [Row("abc", null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("", "aa", ExpectedException = typeof(ArgumentException))]
+        [Row("  ", "aa", ExpectedException = typeof(ArgumentException))]
+        [Row(":$%", "aa", ExpectedException = typeof(ArgumentException))]
+        [Row("abcd_1234", "aa")]
+        public void WithAttributePerformsValidationOfAttributeNameAndValue(string name, string value)
+        {
+            new Marker(Marker.DiffAdditionClass).WithAttribute(name, value);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ConstructorThrowsIfAttributesDictionaryIsNull()
+        {
+            new Marker(Marker.AssertionFailureClass, null);
         }
 
         [Test]
@@ -46,9 +80,24 @@ namespace Gallio.Tests.Model.Logging
         }
 
         [Test]
-        public void ToStringReturnsTheMarkerClass()
+        public void ToStringReturnsTheMarkerClassAndSortedAttributeValues()
         {
             NewAssert.AreEqual("foo", new Marker("foo").ToString());
+            NewAssert.AreEqual("foo: a = \"x\", b = \"z\", c = \"y\"", new Marker("foo")
+                .WithAttribute("a", "x")
+                .WithAttribute("c", "y")
+                .WithAttribute("b", "z").ToString());
+        }
+
+        [Test]
+        public void CanChainAttributesFluently()
+        {
+            Marker marker = Marker.Ellipsis
+                .WithAttribute("a", "123")
+                .WithAttribute("b", "456");
+            Assert.AreEqual(2, marker.Attributes.Count);
+            Assert.AreEqual("123", marker.Attributes["a"]);
+            Assert.AreEqual("456", marker.Attributes["b"]);
         }
     }
 }

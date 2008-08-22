@@ -22,6 +22,7 @@ namespace Gallio.Collections
     /// <summary>
     /// A read-only dictionary wrapper.
     /// </summary>
+    [Serializable]
     public class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         private readonly IDictionary<TKey, TValue> inner;

@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.Text;
+using Gallio.Framework;
 using Gallio.Framework.Text;
 using Gallio.Model.Logging;
 using Gallio.Model.Logging.Tags;
@@ -107,21 +108,22 @@ namespace Gallio.Tests.Framework.Text
         }
 
         [Test]
-        public void WriteAnnotatedLeftDocumentToThrowsWhenWriterIsNull()
+        public void WriteToThrowsWhenWriterIsNull()
         {
             DiffSet diffSet = new DiffSet(new Diff[] { }, "", "");
-            NewAssert.Throws<ArgumentNullException>(() => diffSet.WriteAnnotatedLeftDocumentTo(null));
+            NewAssert.Throws<ArgumentNullException>(() => diffSet.WriteTo(null));
         }
 
         [Test]
-        public void WriteAnnotatedRightDocumentToThrowsWhenWriterIsNull()
+        public void WriteToThrowsWhenMaxContextLengthIsNegative()
         {
             DiffSet diffSet = new DiffSet(new Diff[] { }, "", "");
-            NewAssert.Throws<ArgumentNullException>(() => diffSet.WriteAnnotatedRightDocumentTo(null));
+            StructuredTextWriter writer = new StructuredTextWriter();
+            NewAssert.Throws<ArgumentNullException>(() => diffSet.WriteTo(writer, DiffStyle.Interleaved, -1));
         }
 
         [Test]
-        public void WriteAnnotatedLeftDocumentTo()
+        public void WriteTo_InterleavedStyle()
         {
             DiffSet diffSet = new DiffSet(new Diff[] { 
                 new Diff(DiffKind.Change, new Range(0, 1), new Range(0, 1)), // change
@@ -132,7 +134,36 @@ namespace Gallio.Tests.Framework.Text
             }, "acde", "bcef");
 
             StructuredTextWriter writer = new StructuredTextWriter();
-            diffSet.WriteAnnotatedLeftDocumentTo(writer);
+            diffSet.WriteTo(writer);
+            TestLog.WriteLine(writer);
+
+            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            {
+                Contents = {
+                    new MarkerTag(Marker.DiffDeletion) { Contents = { new TextTag("a") } },
+                    new MarkerTag(Marker.DiffAddition) { Contents = { new TextTag("b") } },
+                    new TextTag("c"),
+                    new MarkerTag(Marker.DiffDeletion) { Contents = { new TextTag("d") } },
+                    new TextTag("e"),
+                    new MarkerTag(Marker.DiffAddition) { Contents = { new TextTag("f") } }
+                }
+            }), writer.ToStructuredText());
+        }
+
+        [Test]
+        public void WriteTo_LeftOnlyStyle()
+        {
+            DiffSet diffSet = new DiffSet(new Diff[] { 
+                new Diff(DiffKind.Change, new Range(0, 1), new Range(0, 1)), // change
+                new Diff(DiffKind.NoChange, new Range(1, 1), new Range(1, 1)), // same
+                new Diff(DiffKind.Change, new Range(2, 1), new Range(2, 0)), // deletion
+                new Diff(DiffKind.NoChange, new Range(3, 1), new Range(2, 1)), // same
+                new Diff(DiffKind.Change, new Range(4, 0), new Range(3, 1)), // addition
+            }, "acde", "bcef");
+
+            StructuredTextWriter writer = new StructuredTextWriter();
+            diffSet.WriteTo(writer, DiffStyle.LeftOnly);
+            TestLog.WriteLine(writer);
 
             NewAssert.AreEqual(new StructuredText(new BodyTag()
             {
@@ -146,7 +177,7 @@ namespace Gallio.Tests.Framework.Text
         }
 
         [Test]
-        public void WriteAnnotatedRightDocumentTo()
+        public void WriteTo_RightOnlyStyle()
         {
             DiffSet diffSet = new DiffSet(new Diff[] { 
                 new Diff(DiffKind.Change, new Range(0, 1), new Range(0, 1)), // change
@@ -157,7 +188,8 @@ namespace Gallio.Tests.Framework.Text
             }, "acde", "bcef");
 
             StructuredTextWriter writer = new StructuredTextWriter();
-            diffSet.WriteAnnotatedRightDocumentTo(writer);
+            diffSet.WriteTo(writer, DiffStyle.RightOnly);
+            TestLog.WriteLine(writer);
 
             NewAssert.AreEqual(new StructuredText(new BodyTag()
             {
@@ -165,6 +197,35 @@ namespace Gallio.Tests.Framework.Text
                     new MarkerTag(Marker.DiffChange) { Contents = { new TextTag("b") } },
                     new TextTag("ce"),
                     new MarkerTag(Marker.DiffAddition) { Contents = { new TextTag("f") } }
+                }
+            }), writer.ToStructuredText());
+        }
+
+        [Test]
+        public void WriteTo_LeftOnlyWithLimitedContext()
+        {
+            DiffSet diffSet = new DiffSet(new Diff[] { 
+                new Diff(DiffKind.Change, new Range(0, 1), new Range(0, 1)), // change
+                new Diff(DiffKind.NoChange, new Range(1, 20), new Range(1, 20)), // same
+                new Diff(DiffKind.Change, new Range(21, 1), new Range(21, 0)), // deletion
+                new Diff(DiffKind.NoChange, new Range(22, 20), new Range(21, 20)), // same
+                new Diff(DiffKind.Change, new Range(42, 0), new Range(41, 1)), // addition
+            }, "accccccccccccccccccccdeeeeeeeeeeeeeeeeeeee", "bcccccccccccccccccccceeeeeeeeeeeeeeeeeeeef");
+
+            StructuredTextWriter writer = new StructuredTextWriter();
+            diffSet.WriteTo(writer, DiffStyle.LeftOnly, 7);
+
+            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            {
+                Contents = {
+                    new MarkerTag(Marker.DiffChange) { Contents = { new TextTag("a") } },
+                    new TextTag("ccc"),
+                    new MarkerTag(Marker.Ellipsis) { Contents = { new TextTag("...") } },
+                    new TextTag("ccc"),
+                    new MarkerTag(Marker.DiffDeletion) { Contents = { new TextTag("d") } },
+                    new TextTag("eee"),
+                    new MarkerTag(Marker.Ellipsis) { Contents = { new TextTag("...") } },
+                    new TextTag("eee")
                 }
             }), writer.ToStructuredText());
         }

@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
-using TestLogStreamWriter=Gallio.Model.Logging.TestLogStreamWriter;
+using Gallio.Utilities;
 
 namespace MbUnit.Framework
 {
@@ -34,9 +34,22 @@ namespace MbUnit.Framework
     /// </para>
     /// </summary>
     [Serializable]
-    public class AssertionFailure
+    public class AssertionFailure : ITestLogStreamWritable
     {
         private const int MaxPaddedLabelLength = 16;
+
+        /// <summary>
+        /// Gets the maximum length of label that can be presented before truncation occurs.
+        /// </summary>
+        /// <value>100</value>
+        public static readonly int MaxLabelLengthBeforeTruncation = 100;
+
+        /// <summary>
+        /// Gets the maximum length of formatted value that can be presented before truncation occurs.
+        /// </summary>
+        /// <value>2000</value>
+        public static readonly int MaxFormattedValueLength = 2000;
+
         private readonly string description;
         private readonly string message;
         private readonly string stackTrace;
@@ -98,9 +111,9 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Writes the assertion failure to a structured text writer.
+        /// Writes the assertion failure to a test log stream.
         /// </summary>
-        /// <param name="writer">The structured text writer</param>
+        /// <param name="writer">The test log stream</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
         public virtual void WriteTo(TestLogStreamWriter writer)
         {
@@ -145,10 +158,10 @@ namespace MbUnit.Framework
                     int paddedLength = ComputePaddedLabelLength();
                     foreach (LabeledValue labeledValue in labeledValues)
                     {
-                        writer.Write(labeledValue.Label);
+                        WriteLabel(writer, labeledValue.Label);
                         WritePaddingSpaces(writer, paddedLength - labeledValue.Label.Length);
-                        writer.Write(" : ");
-                        writer.WriteStructuredText(labeledValue.FormattedValue);
+                        writer.Write(@" : ");
+                        WriteFormattedValue(writer, labeledValue.FormattedValue);
                         writer.WriteLine();
                     }
                 }
@@ -191,6 +204,22 @@ namespace MbUnit.Framework
         {
             while (count-- > 0)
                 writer.Write(' ');
+        }
+
+        private static void WriteLabel(TestLogStreamWriter writer, string label)
+        {
+            WriteTruncated(writer, new StructuredText(label), MaxLabelLengthBeforeTruncation);
+        }
+
+        private static void WriteFormattedValue(TestLogStreamWriter writer, StructuredText formattedValue)
+        {
+            WriteTruncated(writer, formattedValue, MaxFormattedValueLength);
+        }
+
+        private static void WriteTruncated(TestLogStreamWriter writer, StructuredText text, int maxLength)
+        {
+            if (text.TruncatedWriteTo(writer, maxLength))
+                writer.WriteEllipsis();
         }
 
         /// <summary>
@@ -260,6 +289,12 @@ namespace MbUnit.Framework
             public StructuredText FormattedValue
             {
                 get { return formattedValue; }
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return label + @": " + formattedValue;
             }
         }
     }

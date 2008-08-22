@@ -33,7 +33,7 @@ namespace Gallio.Model.Logging
     /// </para>
     /// </summary>
     [Serializable]
-    public sealed class StructuredText : IEquatable<StructuredText>
+    public sealed class StructuredText : IEquatable<StructuredText>, ITestLogStreamWritable
     {
         private readonly BodyTag bodyTag;
         private readonly IList<Attachment> attachments;
@@ -101,19 +101,56 @@ namespace Gallio.Model.Logging
         }
 
         /// <summary>
+        /// Returns the total length of all <see cref="TextTag" />s that appear within
+        /// the structured text body.
+        /// </summary>
+        /// <returns>The total text length</returns>
+        public int GetTextLength()
+        {
+            TextLengthVisitor visitor = new TextLengthVisitor();
+            bodyTag.Accept(visitor);
+            return visitor.Length;
+        }
+
+        /// <summary>
         /// Writes the structured text to a test log stream writer.
         /// </summary>
         /// <param name="writer">The writer</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
         public void WriteTo(TestLogStreamWriter writer)
         {
+            WritePreambleTo(writer);
+
+            bodyTag.WriteTo(writer);
+        }
+
+        /// <summary>
+        /// Writes the structured text to a test log stream writer and truncates its text
+        /// to a particular maximum length, omitting all subsequent contents.
+        /// </summary>
+        /// <param name="writer">The writer</param>
+        /// <param name="maxLength">The maximum length of text to write</param>
+        /// <returns>True if truncation occurred</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative</exception>
+        public bool TruncatedWriteTo(TestLogStreamWriter writer, int maxLength)
+        {
+            if (maxLength < 0)
+                throw new ArgumentOutOfRangeException("maxLength", "Max length must not be negative.");
+            WritePreambleTo(writer);
+
+            TruncateTextVisitor visitor = new TruncateTextVisitor(writer, maxLength);
+            bodyTag.Accept(visitor);
+            return visitor.Truncating;
+        }
+
+        private void WritePreambleTo(TestLogStreamWriter writer)
+        {
             if (writer == null)
                 throw new ArgumentNullException("writer");
 
             foreach (Attachment attachment in attachments)
                 writer.Container.Attach(attachment);
-
-            bodyTag.WriteTo(writer);
         }
 
         /// <summary>
@@ -155,6 +192,73 @@ namespace Gallio.Model.Logging
         public static bool operator !=(StructuredText a, StructuredText b)
         {
             return !(a == b);
+        }
+
+        private sealed class TextLengthVisitor : BaseTagVisitor
+        {
+            public int Length { get; private set;}
+
+            public override void VisitTextTag(TextTag tag)
+            {
+                Length += tag.Text.Length;
+            }
+        }
+
+        private sealed class TruncateTextVisitor : BaseTagVisitor
+        {
+            private readonly TestLogStreamWriter writer;
+            private readonly int maxLength;
+            private int length;
+
+            public TruncateTextVisitor(TestLogStreamWriter writer, int maxLength)
+            {
+                this.writer = writer;
+                this.maxLength = maxLength;
+            }
+
+            public bool Truncating
+            {
+                get { return length > maxLength; }
+            }
+
+            public override void VisitSectionTag(SectionTag tag)
+            {
+                if (!Truncating)
+                {
+                    using (writer.BeginSection(tag.Name))
+                        tag.AcceptContents(this);
+                }
+            }
+
+            public override void VisitMarkerTag(MarkerTag tag)
+            {
+                if (!Truncating)
+                {
+                    using (writer.BeginMarker(tag.Marker))
+                        tag.AcceptContents(this);
+                }
+            }
+
+            public override void VisitEmbedTag(EmbedTag tag)
+            {
+                if (!Truncating)
+                {
+                    writer.EmbedExisting(tag.AttachmentName);
+                }
+            }
+
+            public override void VisitTextTag(TextTag tag)
+            {
+                if (! Truncating)
+                {
+                    length += tag.Text.Length;
+
+                    if (length > maxLength)
+                        writer.Write(tag.Text.Substring(0, tag.Text.Length - length + maxLength));
+                    else
+                        writer.Write(tag.Text);
+                }
+            }
         }
     }
 }

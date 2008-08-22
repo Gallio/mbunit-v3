@@ -10,7 +10,9 @@ namespace Gallio.Tests.Model.Logging.Tags
         public override EquivalenceClassCollection<MarkerTag> GetEquivalenceClasses()
         {
             return EquivalenceClassCollection<MarkerTag>.FromDistinctInstances(
+                new MarkerTag(Marker.AssertionFailure),
                 new MarkerTag(Marker.Highlight),
+                new MarkerTag(Marker.AssertionFailure.WithAttribute("x", "y")),
                 new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text") } },
                 new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text"), new TextTag("more") } }
                 );

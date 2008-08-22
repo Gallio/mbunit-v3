@@ -26,6 +26,18 @@ namespace Gallio.Tests.Model.Logging
     [VerifyEqualityContract(typeof(StructuredText))]
     public class StructuredTextTest : IEquivalenceClassProvider<StructuredText>
     {
+        private static readonly StructuredText Example = new StructuredText(new BodyTag()
+        {
+            Contents =
+                {
+                    new TextTag("a"), 
+                    new SectionTag("blah") { Contents = { new TextTag("bc") }},
+                    new MarkerTag(Marker.AssertionFailure) { Contents = { new TextTag("def")}},
+                    new EmbedTag("attachment"),
+                    new TextTag("ghij")
+                }
+        }, new Attachment[] { new TextAttachment("attachment", MimeTypes.PlainText, "text") });
+
         public EquivalenceClassCollection<StructuredText> GetEquivalenceClasses()
         {
             return EquivalenceClassCollection<StructuredText>.FromDistinctInstances(
@@ -67,6 +79,140 @@ namespace Gallio.Tests.Model.Logging
             Assert.AreEqual(0, text.Attachments.Count);
 
             NewAssert.AreEqual(new BodyTag() { Contents = { new TextTag("blah") } }, text.BodyTag);
+        }
+
+        [Test]
+        public void ConstructorWithBodyTagInitializesProperties()
+        {
+            StructuredText text = new StructuredText(Example.BodyTag);
+            Assert.AreEqual(0, text.Attachments.Count);
+
+            NewAssert.AreEqual(Example.BodyTag, text.BodyTag);
+        }
+
+        [Test]
+        public void ConstructorWithBodyTagAndAttachmentsInitializesProperties()
+        {
+            StructuredText text = new StructuredText(Example.BodyTag, Example.Attachments);
+
+            NewAssert.AreEqual(Example.BodyTag, text.BodyTag);
+            NewAssert.AreEqual(Example.Attachments, text.Attachments);
+        }
+
+        [Test]
+        public void GetTextLength()
+        {
+            Assert.AreEqual(10, Example.GetTextLength());
+        }
+        
+        [Test, ExpectedArgumentNullException]
+        public void WriteToThrowsIfWriterIsNull()
+        {
+            Example.WriteTo(null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void TruncatedWriteToThrowsIfWriterIsNull()
+        {
+            Example.TruncatedWriteTo(null, 0);
+        }
+
+        [Test, ExpectedArgumentOutOfRangeException]
+        public void TruncatedWriteToThrowsIfMaxLengthIsNegative()
+        {
+            Example.TruncatedWriteTo(new StructuredTextWriter(), -1);
+        }
+
+        [Test]
+        public void WriteToRecreatesTheStructuredText()
+        {
+            StructuredTextWriter writer = new StructuredTextWriter();
+            Example.WriteTo(writer);
+            NewAssert.AreEqual(Example, writer.ToStructuredText());
+        }
+
+        [Test]
+        public void TruncatedWriteToRecreatesTheStructuredTextWhenMaxLengthEqualsTextLength()
+        {
+            StructuredTextWriter writer = new StructuredTextWriter();
+            Assert.IsFalse(Example.TruncatedWriteTo(writer, Example.GetTextLength()));
+            NewAssert.AreEqual(Example, writer.ToStructuredText());
+        }
+
+        [Test]
+        public void TruncatedWriteToRecreatesTheStructuredTextWhenMaxLengthExceedsTextLength()
+        {
+            StructuredTextWriter writer = new StructuredTextWriter();
+            Assert.IsFalse(Example.TruncatedWriteTo(writer, Example.GetTextLength() + 1));
+            NewAssert.AreEqual(Example, writer.ToStructuredText());
+        }
+
+        [Test]
+        public void TruncatedWriteToTruncatesWhenLengthIsInsufficient0()
+        {
+            StructuredTextWriter writer = new StructuredTextWriter();
+            Assert.IsTrue(Example.TruncatedWriteTo(writer, 0));
+            NewAssert.AreEqual(new StructuredText(new BodyTag(),
+                new Attachment[] { new TextAttachment("attachment", MimeTypes.PlainText, "text") }),
+                writer.ToStructuredText());
+        }
+
+        [Test]
+        public void TruncatedWriteToTruncatesWhenLengthIsInsufficient1()
+        {
+            StructuredTextWriter writer = new StructuredTextWriter();
+            Assert.IsTrue(Example.TruncatedWriteTo(writer, 1));
+            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            {
+                Contents =
+                    {
+                        new TextTag("a"), 
+                        new SectionTag("blah")
+                    }
+            }, new Attachment[] { new TextAttachment("attachment", MimeTypes.PlainText, "text") }),
+            writer.ToStructuredText());
+        }
+
+        [Test]
+        public void TruncatedWriteToTruncatesWhenLengthIsInsufficient5()
+        {
+            StructuredTextWriter writer = new StructuredTextWriter();
+            Assert.IsTrue(Example.TruncatedWriteTo(writer, 5));
+            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            {
+                Contents =
+                    {
+                        new TextTag("a"),
+                        new SectionTag("blah") { Contents = { new TextTag("bc") }},
+                        new MarkerTag(Marker.AssertionFailure) { Contents = { new TextTag("de")}}
+                    }
+            }, new Attachment[] { new TextAttachment("attachment", MimeTypes.PlainText, "text") }),
+            writer.ToStructuredText());
+        }
+
+        [Test]
+        public void TruncatedWriteToTruncatesWhenLengthIsInsufficient8()
+        {
+            StructuredTextWriter writer = new StructuredTextWriter();
+            Assert.IsTrue(Example.TruncatedWriteTo(writer, 8));
+            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            {
+                Contents =
+                    {
+                        new TextTag("a"),
+                        new SectionTag("blah") { Contents = { new TextTag("bc") }},
+                        new MarkerTag(Marker.AssertionFailure) { Contents = { new TextTag("def")}},
+                        new EmbedTag("attachment"),
+                        new TextTag("gh")
+                    }
+            }, new Attachment[] { new TextAttachment("attachment", MimeTypes.PlainText, "text") }),
+            writer.ToStructuredText());
+        }
+
+        [Test]
+        public void ToStringEqualsBodyTagToString()
+        {
+            Assert.AreEqual(Example.BodyTag.ToString(), Example.ToString());
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Gallio.Model.Logging.Tags
     /// test log stream when written back out.
     /// </summary>
     [Serializable]
-    public abstract class Tag : ICloneable<Tag>, IEquatable<Tag>
+    public abstract class Tag : ICloneable<Tag>, IEquatable<Tag>, ITestLogStreamWritable
     {
         /// <summary>
         /// Invokes the appropriate visitor method for this tag type.

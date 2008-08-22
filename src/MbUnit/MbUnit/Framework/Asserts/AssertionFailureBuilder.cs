@@ -32,6 +32,8 @@ namespace MbUnit.Framework
     /// </summary>
     public class AssertionFailureBuilder
     {
+        internal static readonly int CompressedDiffContextLength = 50;
+
         private readonly string description;
         private readonly IFormatter formatter;
 
@@ -175,8 +177,8 @@ namespace MbUnit.Framework
         {
             if (ReferenceEquals(expectedValue, actualValue))
             {
-                SetRawExpectedValue(expectedValue);
-                SetRawActualValue(actualValue);
+                SetRawLabeledValue("Expected & Actual Value", expectedValue);
+                SetLabeledValue("Remark", "The expected and actual values are the same instance.");
             }
             else
             {
@@ -185,9 +187,8 @@ namespace MbUnit.Framework
 
                 if (formattedExpectedValue == formattedActualValue)
                 {
-                    SetRawExpectedValue(expectedValue);
-                    SetRawActualValue(actualValue);
-                    SetLabeledValue("Remark", "The expected and actual values are distinct instances but their formatted representations are equal.");
+                    SetLabeledValue("Expected & Actual Value", formattedExpectedValue);
+                    SetLabeledValue("Remark", "The expected and actual values are distinct instances but their formatted representations look the same.");
                 }
                 else
                 {
@@ -196,9 +197,11 @@ namespace MbUnit.Framework
                     StructuredTextWriter highlightedExpectedValueWriter = new StructuredTextWriter();
                     StructuredTextWriter highlightedActualValueWriter = new StructuredTextWriter();
 
-                    diffSet.WriteAnnotatedLeftDocumentTo(highlightedExpectedValueWriter);
-                    diffSet.WriteAnnotatedRightDocumentTo(highlightedActualValueWriter);
-
+                    diffSet.WriteTo(highlightedExpectedValueWriter, DiffStyle.LeftOnly,
+                        formattedExpectedValue.Length <= AssertionFailure.MaxFormattedValueLength ? int.MaxValue : CompressedDiffContextLength);
+                    diffSet.WriteTo(highlightedActualValueWriter, DiffStyle.RightOnly,
+                        formattedActualValue.Length <= AssertionFailure.MaxFormattedValueLength ? int.MaxValue : CompressedDiffContextLength);
+ 
                     SetLabeledValue("Expected Value", highlightedExpectedValueWriter.ToStructuredText());
                     SetLabeledValue("Actual Value", highlightedActualValueWriter.ToStructuredText());
                 }

@@ -136,6 +136,7 @@
     <Compile Include="Framework\Formatting\StringFormattingRule.cs" />
     <Compile Include="Framework\Formatting\TypeFormattingRule.cs" />
     <Compile Include="Framework\Formatting\XPathNavigableFormattingRule.cs" />
+    <Compile Include="Framework\Text\DiffStyle.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="Model\Diagnostics\TestFrameworkInternalAttribute.cs" />
     <Compile Include="Model\Diagnostics\StackTraceFilter.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Framework\Text\DiffSet.cs" />
     <Compile Include="Framework\Text\Diff.cs" />
     <Compile Include="Framework\Text\DiffKind.cs" />
+    <Compile Include="Model\Logging\ITestLogStreamWritable.cs" />
     <Compile Include="Model\Logging\Marker.cs" />
     <Compile Include="Model\Logging\StructuredTestLogWriter.cs" />
     <Compile Include="Model\Logging\StructuredTestLog.cs" />
@@ -158,6 +160,7 @@
     <Compile Include="Model\Logging\StructuredTextWriter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\Logging\Tags\BaseTagVisitor.cs" />
     <Compile Include="Model\Logging\Tags\BodyTag.cs" />
     <Compile Include="Model\Logging\Tags\ContainerTag.cs" />
     <Compile Include="Model\Logging\Tags\EmbedTag.cs" />

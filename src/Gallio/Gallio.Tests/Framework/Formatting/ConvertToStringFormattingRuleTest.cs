@@ -26,8 +26,8 @@ namespace Gallio.Tests.Framework.Formatting
     public class ConvertToStringFormattingRuleTest : BaseUnitTest
     {
         [Test]
-        [Row("", null)]
         [Row(null, null)]
+        [Row("", "{}")]
         [Row("abc", "{abc}")]
         [Row("abc\ndef", "{abc\\ndef}")] // note using literal format
         public void Format(string simulatedConversionResult, string expectedResult)

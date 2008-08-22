@@ -33,7 +33,7 @@ namespace Gallio.Model.Logging
     /// </summary>
     [Serializable]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-    public sealed class StructuredTestLogStream
+    public sealed class StructuredTestLogStream : ITestLogStreamWritable
     {
         private string name;
         private BodyTag body;

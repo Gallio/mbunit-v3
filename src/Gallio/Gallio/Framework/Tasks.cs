@@ -20,7 +20,6 @@ using Gallio.Collections;
 using Gallio.Concurrency;
 using Gallio.Framework;
 using Gallio.Model.Logging;
-using TestLogStreamWriter=Gallio.Model.Logging.TestLogStreamWriter;
 
 namespace Gallio.Framework
 {

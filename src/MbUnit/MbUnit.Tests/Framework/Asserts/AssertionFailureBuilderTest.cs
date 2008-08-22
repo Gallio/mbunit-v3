@@ -186,8 +186,8 @@ namespace MbUnit.Tests.Framework
 
             NewAssert.AreEqual(new[]
             {
-                new AssertionFailure.LabeledValue("Expected Value", new StructuredText("\"123\"")),
-                new AssertionFailure.LabeledValue("Actual Value", new StructuredText("\"123\""))
+                new AssertionFailure.LabeledValue("Expected & Actual Value", new StructuredText("\"123\"")),
+                new AssertionFailure.LabeledValue("Remark", "The expected and actual values are the same instance.")
             }, builder.ToAssertionFailure().LabeledValues);
         }
 
@@ -199,9 +199,8 @@ namespace MbUnit.Tests.Framework
 
             NewAssert.AreEqual(new[]
             {
-                new AssertionFailure.LabeledValue("Expected Value", new StructuredText("1")),
-                new AssertionFailure.LabeledValue("Actual Value", new StructuredText("1")),
-                new AssertionFailure.LabeledValue("Remark", "The expected and actual values are distinct instances but their formatted representations are equal.")
+                new AssertionFailure.LabeledValue("Expected & Actual Value", new StructuredText("1")),
+                new AssertionFailure.LabeledValue("Remark", "The expected and actual values are distinct instances but their formatted representations look the same.")
             }, builder.ToAssertionFailure().LabeledValues);
         }
 
@@ -213,15 +212,32 @@ namespace MbUnit.Tests.Framework
 
             DiffSet diffSet = DiffSet.GetDiffSet("\"acde\"", "\"bcef\"");
             StructuredTextWriter expectedValueWriter = new StructuredTextWriter();
-            diffSet.WriteAnnotatedLeftDocumentTo(expectedValueWriter);
+            diffSet.WriteTo(expectedValueWriter, DiffStyle.LeftOnly);
             StructuredTextWriter actualValueWriter = new StructuredTextWriter();
-            diffSet.WriteAnnotatedRightDocumentTo(actualValueWriter);
+            diffSet.WriteTo(actualValueWriter, DiffStyle.RightOnly);
 
             NewAssert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected Value", expectedValueWriter.ToStructuredText()),
                 new AssertionFailure.LabeledValue("Actual Value", actualValueWriter.ToStructuredText())
             }, builder.ToAssertionFailure().LabeledValues);
+        }
+
+        [Test]
+        public void TruncatesDiffContextWhenTooLong()
+        {
+            string expectedValue = new string('x', AssertionFailure.MaxFormattedValueLength + 1);
+            string actualValue = new string('y', AssertionFailure.MaxFormattedValueLength + 1);
+
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
+            builder.SetRawExpectedAndActualValueWithDiffs(expectedValue, actualValue);
+            AssertionFailure failure = builder.ToAssertionFailure();
+
+            int split = AssertionFailureBuilder.CompressedDiffContextLength / 2;
+            NewAssert.AreEqual("\"" + new string('x', split) + "..." + new string('x', split) + "\"",
+                failure.LabeledValues[0].FormattedValue.ToString());
+            NewAssert.AreEqual("\"" + new string('y', split) + "..." + new string('y', split) + "\"",
+                failure.LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]

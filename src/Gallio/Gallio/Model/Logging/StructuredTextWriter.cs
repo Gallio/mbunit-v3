@@ -25,7 +25,7 @@ namespace Gallio.Model.Logging
     /// <see cref="StructuredText" /> or <see cref="string" />.
     /// </para>
     /// </summary>
-    public class StructuredTextWriter : TestLogStreamWriter
+    public class StructuredTextWriter : TestLogStreamWriter, ITestLogStreamWritable
     {
         /// <summary>
         /// Creates a structured text writer.
@@ -55,6 +55,12 @@ namespace Gallio.Model.Logging
         public override string ToString()
         {
             return ToStructuredText().ToString();
+        }
+
+        /// <inheritdoc />
+        public void WriteTo(TestLogStreamWriter writer)
+        {
+            ToStructuredText().WriteTo(writer);
         }
 
         #region Hide irrelevant base functionality.

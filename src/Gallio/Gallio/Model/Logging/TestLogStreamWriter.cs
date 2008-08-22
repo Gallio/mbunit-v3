@@ -120,18 +120,33 @@ namespace Gallio.Model.Logging
             container.StreamWrite(streamName, new String(buffer, index, count));
         }
 
+        /// <inheritdoc />
+        public sealed override void WriteLine(object value)
+        {
+            Write(value);
+            WriteLine();
+        }
+
+        /// <inheritdoc />
+        public override void Write(object value)
+        {
+            ITestLogStreamWritable writable = value as ITestLogStreamWritable;
+            if (writable != null)
+                writable.WriteTo(this);
+            else
+                base.Write(value);
+        }
+
         /// <summary>
         /// <para>
-        /// Writes structured text.
+        /// Writes a test log stream writable object to the stream.
         /// </para>
         /// </summary>
-        /// <param name="structuredText">The structured text to write, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="structuredText"/> is null</exception>
-        public void WriteStructuredText(StructuredText structuredText)
+        /// <param name="obj">The object to write, or null if none</param>
+        public void Write(ITestLogStreamWritable obj)
         {
-            if (structuredText == null)
-                throw new ArgumentNullException("structuredText");
-            structuredText.WriteTo(this);
+            if (obj != null)
+                obj.WriteTo(this);
         }
 
         /// <summary>
@@ -219,6 +234,25 @@ namespace Gallio.Model.Logging
         {
             using (BeginMarker(Marker.Highlight))
                 Write(text);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Writes an ellipsis to indicate where content has been elided for brevity.
+        /// An ellipsis may be used, for example, when printing assertion failures to clearly
+        /// identify sections where the user is not being presented all of the information
+        /// because it was too long and had to be truncated.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// This is a convenience method that simply encapsulates "..." within a
+        /// marked region of type <see cref="Marker.Ellipsis" />.  However, tools
+        /// may reinterpret the special marker to make the "..." less ambiguous.
+        /// </remarks>
+        public void WriteEllipsis()
+        {
+            using (BeginMarker(Marker.Ellipsis))
+                Write(@"...");
         }
 
         /// <summary>

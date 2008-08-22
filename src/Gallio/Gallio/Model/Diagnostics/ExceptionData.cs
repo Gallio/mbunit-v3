@@ -17,7 +17,6 @@ using System;
 using System.IO;
 using Gallio.Model.Logging;
 using Gallio.Utilities;
-using TestLogStreamWriter=Gallio.Model.Logging.TestLogStreamWriter;
 
 namespace Gallio.Model.Diagnostics
 {
@@ -25,7 +24,7 @@ namespace Gallio.Model.Diagnostics
     /// Provides raw serializable information about an exception.
     /// </summary>
     [Serializable]
-    public sealed class ExceptionData
+    public sealed class ExceptionData : ITestLogStreamWritable
     {
         private readonly string type;
         private readonly string message;

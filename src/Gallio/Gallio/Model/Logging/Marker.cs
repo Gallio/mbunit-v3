@@ -14,6 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Text;
+using Gallio.Collections;
 
 namespace Gallio.Model.Logging
 {
@@ -31,6 +34,7 @@ namespace Gallio.Model.Logging
     public struct Marker : IEquatable<Marker>
     {
         private readonly string @class;
+        private readonly SortedDictionary<string, string> attributes;
 
         /// <summary>
         /// Standard marker class for assertion failures.
@@ -81,6 +85,18 @@ namespace Gallio.Model.Logging
         /// Standard marker class for content that represents changed content in a diff.
         /// </summary>
         public const string DiffChangeClass = "DiffChange";
+
+        /// <summary>
+        /// Standard marker class for content that has been elided and may be made available
+        /// instead as an attribute.
+        /// </summary>
+        public const string EllipsisClass = "Ellipsis";
+
+        /// <summary>
+        /// Standard attribute used to denote the text that can replace the content of
+        /// a marked region.  It is used to store the text elided with an ellipsis marker.
+        /// </summary>
+        public const string AltTextAttribute = "AltText";
 
         /// <summary>
         /// Standard marker for assertion failures.
@@ -163,15 +179,50 @@ namespace Gallio.Model.Logging
         }
 
         /// <summary>
+        /// Standard marker for text that is elided and replaced by an ellipsis.
+        /// </summary>
+        public static Marker Ellipsis
+        {
+            get { return new Marker(EllipsisClass); }
+        }
+
+        /// <summary>
         /// Creates a marker.
         /// </summary>
         /// <param name="class">The marker class</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="ValidateClass"/></exception>
+        /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
         public Marker(string @class)
+            : this(@class, EmptyDictionary<string, string>.Instance)
         {
-            ValidateClass(@class);
+        }
+
+        /// <summary>
+        /// Creates a marker with attributes.
+        /// </summary>
+        /// <param name="class">The marker class</param>
+        /// <param name="attributes">The attributes</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> or
+        /// <paramref name="attributes"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if the <paramref name="class"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
+        public Marker(string @class, IDictionary<string, string> attributes)
+        {
+            ValidateIdentifier(@class);
+            if (attributes == null)
+                throw new ArgumentNullException("attributes");
+
+            foreach (KeyValuePair<string, string> pair in attributes)
+                ValidateAttribute(pair.Key, pair.Value);
+
             this.@class = @class;
+            this.attributes = new SortedDictionary<string, string>(attributes);
+        }
+
+        // Optimized constructor when arguments are already known to be valid.
+        private Marker(string @class, SortedDictionary<string, string> attributes)
+        {
+            this.@class = @class;
+            this.attributes = attributes;
         }
 
         /// <summary>
@@ -183,36 +234,79 @@ namespace Gallio.Model.Logging
         }
 
         /// <summary>
-        /// Verifies that the parameter is a valid marker class identifier.
+        /// Gets the marker's attributes which are optional name/value pairs associated
+        /// with a marker to carry additional semantic content.
         /// </summary>
-        /// <param name="class">The class</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="class"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="class"/> is empty or contains characters
-        /// other than letters, digits and underscores</exception>
-        public static void ValidateClass(string @class)
+        public IDictionary<string, string> Attributes
         {
-            if (@class == null)
-                throw new ArgumentNullException("class");
-            if (@class.Length == 0)
-                throw new ArgumentException("Marker class name must not be empty.", "class");
+            get { return new ReadOnlyDictionary<string, string>(attributes); }
+        }
 
-            foreach (char c in @class)
+        /// <summary>
+        /// Creates a copy of the marker with the specified attribute added.
+        /// </summary>
+        /// <param name="name">The attribute name</param>
+        /// <param name="value">The attribute value</param>
+        /// <returns>The marker copy with the attribute</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>
+        /// or <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if the <paramref name="name"/> is not a valid identifier.  <seealso cref="ValidateIdentifier"/></exception>
+        public Marker WithAttribute(string name, string value)
+        {
+            ValidateAttribute(name, value);
+
+            var newAttributes = new SortedDictionary<string, string>(attributes) { { name, value } };
+            return new Marker(@class, newAttributes);
+        }
+
+        /// <summary>
+        /// Verifies that the parameter is a valid marker class or attribute identifier.
+        /// </summary>
+        /// <param name="identifier">The identifier</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="identifier"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="identifier"/> is empty or contains characters
+        /// other than letters, digits and underscores</exception>
+        public static void ValidateIdentifier(string identifier)
+        {
+            if (identifier == null)
+                throw new ArgumentNullException("identifier");
+            if (identifier.Length == 0)
+                throw new ArgumentException("Marker class or attribute name must not be empty.", "identifier");
+
+            foreach (char c in identifier)
             {
                 if (!Char.IsLetterOrDigit(c) && c != '_')
-                    throw new ArgumentException("Marker class name must only consist of letters, digits and underscores.", "class");
+                    throw new ArgumentException("Marker class or attribute name must only consist of letters, digits and underscores.", "identifier");
             }
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return @class;
+            StringBuilder result = new StringBuilder(@class);
+
+            bool first = true;
+            foreach (KeyValuePair<string, string> pair in attributes)
+            {
+                if (first)
+                {
+                    result.Append(": ");
+                    first = false;
+                }
+                else
+                    result.Append(", ");
+
+                result.Append(pair.Key).Append(" = \"").Append(pair.Value).Append("\"");
+            }
+
+            return result.ToString();
         }
 
         /// <inheritdoc />
         public bool Equals(Marker other)
         {
-            return @class == other.@class;
+            return @class == other.@class
+                && GenericUtils.KeyValuePairsEqual(attributes, other.attributes);
         }
 
         /// <inheritdoc />
@@ -237,6 +331,13 @@ namespace Gallio.Model.Logging
         public static bool operator !=(Marker a, Marker b)
         {
             return !(a == b);
+        }
+
+        internal static void ValidateAttribute(string name, string value)
+        {
+            ValidateIdentifier(name);
+            if (value == null)
+                throw new ArgumentNullException("value");
         }
     }
 }
