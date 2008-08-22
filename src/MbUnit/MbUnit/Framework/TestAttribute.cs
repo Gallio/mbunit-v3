@@ -73,10 +73,6 @@ namespace MbUnit.Framework
                         using (TestLog.Failures.BeginSection("Expected Exception"))
                             TestLog.Failures.WriteLine("Expected an exception of type '{0}' but none was thrown.", expectedExceptionType);
                     }
-                    catch (TestException)
-                    {
-                        throw;
-                    }
                     catch (Exception ex)
                     {
                         Type exceptionType = ex.GetType();
@@ -84,6 +80,9 @@ namespace MbUnit.Framework
                             || exceptionType.FullName == expectedExceptionType
                             || exceptionType.AssemblyQualifiedName == expectedExceptionType)
                             return;
+
+                        if (ex is TestException)
+                            throw;
 
                         using (TestLog.Failures.BeginSection("Expected Exception"))
                         {
