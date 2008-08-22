@@ -119,7 +119,7 @@ namespace Gallio.Tests.Framework.Text
         {
             DiffSet diffSet = new DiffSet(new Diff[] { }, "", "");
             StructuredTextWriter writer = new StructuredTextWriter();
-            NewAssert.Throws<ArgumentNullException>(() => diffSet.WriteTo(writer, DiffStyle.Interleaved, -1));
+            NewAssert.Throws<ArgumentOutOfRangeException>(() => diffSet.WriteTo(writer, DiffStyle.Interleaved, -1));
         }
 
         [Test]
@@ -399,6 +399,57 @@ namespace Gallio.Tests.Framework.Text
                 Assert.IsTrue(diffSet.ContainsChanges);
                 NewAssert.AreEqual(new[] { new Diff(DiffKind.Change, new Range(0, problemSize), new Range(0, problemSize)) }, diffSet.Diffs);
                 return timer.ElapsedMilliseconds;
+            }
+        }
+
+        public class RegressionTests
+        {
+            [Test, Repeat(10)]
+            public void ComputesValidDiffsForRandomInputs()
+            {
+                Random random = new Random();
+                StringBuilder a = new StringBuilder();
+                for (int i = random.Next(100); i > 0; i--)
+                    a.Append((char)(random.Next(26) + 'a'));
+                StringBuilder b = new StringBuilder();
+                for (int i = random.Next(100); i > 0; i--)
+                    b.Append((char)(random.Next(26) + 'a'));
+
+                Check(a.ToString(), b.ToString());
+            }
+
+            /// <summary>
+            /// There was a bug where we would return an invalid diff basically consisting
+            /// of just the common prefix because the diff algorithm was terminating prematurely
+            /// on empty input in one document without recording the diffs.
+            /// </summary>
+            [Test]
+            public void TrailingAddition()
+            {
+                Check("o", "ogkndudaftrwhmgwdppjhplcc");
+            }
+
+            private static void Check(string a, string b)
+            {
+                TestLog.WriteLine("A: " + a);
+                TestLog.WriteLine("B: " + b);
+
+                DiffSet diffSet = DiffSet.GetDiffSet(a, b);
+
+                TestLog.Write("Diff: ");
+                TestLog.WriteLine(diffSet);
+
+                foreach (Diff diff in diffSet.Diffs)
+                {
+                    if (diff.Kind == DiffKind.NoChange)
+                        NewAssert.AreEqual(
+                            diff.LeftRange.SubstringOf(diffSet.LeftDocument),
+                            diff.RightRange.SubstringOf(diffSet.RightDocument));
+                    else
+                        NewAssert.AreNotEqual(
+                            diff.LeftRange.SubstringOf(diffSet.LeftDocument),
+                            diff.RightRange.SubstringOf(diffSet.RightDocument));
+                }
             }
         }
     }

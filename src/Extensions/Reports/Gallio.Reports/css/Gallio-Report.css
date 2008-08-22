@@ -344,17 +344,18 @@ div.gallio-report div.navigator
 
 .gallio-report .logStreamMarker-DiffAddition
 {
-	background-color: #8080ff;
+	background-color: #a0a0ff;
 }
 
 .gallio-report .logStreamMarker-DiffDeletion
 {
-	background-color: #ff8080;
+	background-color: #ffa0a0;
+	text-decoration: line-through;
 }
 
 .gallio-report .logStreamMarker-DiffChange
 {
-	background-color: #80ff80;
+	background-color: #a0ffa0;
 }
 
 .gallio-report .logStreamMarker-Ellipsis

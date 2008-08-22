@@ -329,7 +329,7 @@ namespace Gallio.Framework.Text
             int commonPrefixLength = left.FindCommonPrefixLength(right);
             if (commonPrefixLength != 0)
             {
-                if (commonPrefixLength == left.Length || commonPrefixLength == right.Length)
+                if (commonPrefixLength == left.Length && commonPrefixLength == right.Length)
                 {
                     diffs.Add(new Diff(DiffKind.NoChange, left.Range, right.Range));
                     return;
@@ -444,9 +444,6 @@ namespace Gallio.Framework.Text
 
             public static void PopulateDiffs(IList<Diff> diffs, Substring left, Substring right, bool boundRuntime)
             {
-                if (left.Length == 0 && right.Length == 0)
-                    return;
-
                 int n = left.Length;
                 int m = right.Length;
 
