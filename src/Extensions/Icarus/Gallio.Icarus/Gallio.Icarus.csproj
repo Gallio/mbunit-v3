@@ -186,6 +186,12 @@
     <Compile Include="ProgressMonitor.Designer.cs">
       <DependentUpon>ProgressMonitor.cs</DependentUpon>
     </Compile>
+    <Compile Include="ReloadDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReloadDialog.Designer.cs">
+      <DependentUpon>ReloadDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="RuntimeLogWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -398,6 +404,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ProgressMonitor.resx">
       <DependentUpon>ProgressMonitor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReloadDialog.resx">
+      <DependentUpon>ReloadDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="RuntimeLogWindow.resx">

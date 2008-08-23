@@ -839,28 +839,13 @@ namespace Gallio.Icarus
             }
         }
 
-        public void AssemblyChanged(string filePath)
+        public void AssemblyChanged(string assembly)
         {
-            List<TaskButton> taskButtons = new List<TaskButton>();
-            TaskButton yes = new TaskButton
-                                 {
-                                     Text = "Yes",
-                                     Icon = Properties.Resources.tick,
-                                     Description = "Reload the test model."
-                                 };
-            taskButtons.Add(yes);
-            TaskButton no = new TaskButton
-                                {
-                                    Text = "No",
-                                    Icon = Properties.Resources.cross,
-                                    Description = "Don't reload."
-                                };
-            taskButtons.Add(no);
-
-            if (OptionsController.Instance.AlwaysReloadAssemblies || TaskDialog.Show("Assembly changed", filePath + 
-                " has changed, would you like to reload the test model?", taskButtons) == yes)
+            using (ReloadDialog reloadDialog = new ReloadDialog(assembly))
             {
-                primaryTaskManager.StartTask(() => ThreadedReloadTree(true));
+                if (OptionsController.Instance.AlwaysReloadAssemblies || reloadDialog.ShowDialog() == DialogResult.OK)
+                    primaryTaskManager.StartTask(() => ThreadedReloadTree(true));
+                OptionsController.Instance.AlwaysReloadAssemblies = reloadDialog.AlwaysReloadTests;
             }
         }
 

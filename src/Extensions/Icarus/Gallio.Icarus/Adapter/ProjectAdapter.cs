@@ -166,7 +166,7 @@ namespace Gallio.Icarus.Adapter
 
         public void assemblyWatcher_AssemblyChangedEvent(string fullPath)
         {
-            projectAdapterView.AssemblyChanged(fullPath);
+            projectAdapterView.AssemblyChanged(Path.GetFileNameWithoutExtension(fullPath));
         }
 
         private void AddAssembliesEventHandler(object sender, SingleEventArgs<IList<string>> e)
