@@ -41,22 +41,6 @@ namespace Gallio.Icarus.Tests
             projectAdapterView.ReloadTree();
         }
 
-        //[Test]
-        //public void ExpandTree_Test()
-        //{
-        //    mocks.ReplayAll();
-        //    testExplorer = new TestExplorer(projectAdapterView);
-        //    TestTreeNode node = new TestTreeNode("test", "test", 0);
-        //    TestTreeNode child = new TestTreeNode("child", "child", 0);
-        //    child.TestState = TestStates.Success;
-        //    TestTreeNode child2 = new TestTreeNode("child2", "child2", 0);
-        //    child2.TestState = TestStates.Success;
-        //    child.Nodes.Add(child2);
-        //    node.Nodes.Add(child);
-        //    testExplorer.DataBind(new TreeNode[] { node });
-        //    testExplorer.ExpandTree(TestStates.Success);
-        //}
-
         [Test]
         public void TreeFilter_Test()
         {

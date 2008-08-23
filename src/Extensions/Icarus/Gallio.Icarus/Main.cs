@@ -336,7 +336,7 @@ namespace Gallio.Icarus
 
             UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
 
-            testExplorer = new TestExplorer(this);
+            testExplorer = new TestExplorer(this, OptionsController.Instance);
             projectExplorer = new ProjectExplorer(this);
             testResults = new TestResults(OptionsController.Instance);
             reportWindow = new ReportWindow(this);

@@ -38,6 +38,7 @@ namespace Gallio.Icarus
         private int failedColor = Color.Red.ToArgb();
         private int inconclusiveColor = Color.Gold.ToArgb();
         private int skippedColor = Color.SlateGray.ToArgb();
+        private readonly List<string> treeViewCategories = new List<string>();
 
         [XmlElement("testRunnerFactory")]
         public string TestRunnerFactory
@@ -82,8 +83,7 @@ namespace Gallio.Icarus
             set
             {
                 pluginDirectories.Clear();
-                foreach (string dir in value)
-                    pluginDirectories.Add(dir);
+                pluginDirectories.AddRange(value);
             }
         }
 
@@ -113,6 +113,18 @@ namespace Gallio.Icarus
         {
             get { return skippedColor; }
             set { skippedColor = value; }
+        }
+
+        [XmlArray("treeViewCategories", IsNullable = false)]
+        [XmlArrayItem("treeViewCategory", typeof(string), IsNullable = false)]
+        public List<string> TreeViewCategories
+        {
+            get { return treeViewCategories; }
+            set
+            {
+                treeViewCategories.Clear();
+                treeViewCategories.AddRange(value);
+            }
         }
 
         object System.ICloneable.Clone()

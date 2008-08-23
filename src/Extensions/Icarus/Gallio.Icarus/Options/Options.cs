@@ -39,6 +39,7 @@ namespace Gallio.Icarus.Options
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
+            controller.Cancel();
             Close();
         }
 
@@ -55,9 +56,6 @@ namespace Gallio.Icarus.Options
                 case "appearance":
                     AddPanel(new AppearanceOptions(controller));
                     break;
-                case "assemblies":
-                    AddPanel(new AssembliesOptions(controller));
-                    break;
                 case "colors":
                     AddPanel(new ColorsOptions(controller));
                     break;
@@ -66,6 +64,9 @@ namespace Gallio.Icarus.Options
                     break;
                 case "startup":
                     AddPanel(new StartupOptions(controller));
+                    break;
+                case "testExplorer":
+                    AddPanel(new TestExplorerOptions(controller));
                     break;
                 default:
                     ClearPanel();

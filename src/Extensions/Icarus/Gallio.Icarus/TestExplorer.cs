@@ -28,7 +28,7 @@ namespace Gallio.Icarus
 {
     public partial class TestExplorer : DockWindow
     {
-        private IProjectAdapterView projectAdapterView;
+        private readonly IProjectAdapterView projectAdapterView;
 
         public string TreeFilter
         {
@@ -54,13 +54,12 @@ namespace Gallio.Icarus
             set { testTree.EditEnabled = value; }
         }
 
-        public TestExplorer(IProjectAdapterView projectAdapterView)
+        public TestExplorer(IProjectAdapterView projectAdapterView, IOptionsController optionsController)
         {
-            if (projectAdapterView == null)
-                throw new ArgumentNullException("projectAdapterView");
-
             this.projectAdapterView = projectAdapterView;
             InitializeComponent();
+            treeViewComboBox.ComboBox.BindingContext = BindingContext;
+            treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories;
             treeViewComboBox.SelectedIndex = 0;
         }
 

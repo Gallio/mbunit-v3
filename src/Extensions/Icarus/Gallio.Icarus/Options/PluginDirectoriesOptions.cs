@@ -43,7 +43,7 @@ namespace Gallio.Icarus.Options
         private void removePluginDirectoryButton_Click(object sender, EventArgs e)
         {
             if (optionsController != null)
-                optionsController.RemovePluginDirectory((string) pluginDirectoriesListBox.SelectedItem);
+                optionsController.PluginDirectories.Remove((string) pluginDirectoriesListBox.SelectedItem);
         }
 
         private void addFolderButton_Click(object sender, EventArgs e)
@@ -52,7 +52,7 @@ namespace Gallio.Icarus.Options
             {
                 if (!pluginDirectoriesListBox.Items.Contains(newPluginDirectoryTextBox.Text))
                 {
-                    optionsController.AddPluginDirectory(newPluginDirectoryTextBox.Text);
+                    optionsController.PluginDirectories.Add(newPluginDirectoryTextBox.Text);
                     newPluginDirectoryTextBox.Clear();
                     // TODO: move to resources for localisation
                     const string message =

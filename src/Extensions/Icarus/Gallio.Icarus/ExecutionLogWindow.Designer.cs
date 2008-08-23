@@ -69,6 +69,7 @@ namespace Gallio.Icarus
             this.reportViewer.AllowWebBrowserDrop = false;
             this.reportViewer.CausesValidation = false;
             this.reportViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.reportViewer.IsWebBrowserContextMenuEnabled = false;
             this.reportViewer.Location = new System.Drawing.Point(0, 0);
             this.reportViewer.MinimumSize = new System.Drawing.Size(20, 20);
             this.reportViewer.Name = "reportViewer";

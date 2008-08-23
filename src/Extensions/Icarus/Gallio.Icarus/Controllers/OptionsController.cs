@@ -23,13 +23,18 @@ using Gallio.Icarus.Interfaces;
 using Gallio.Runner;
 using Gallio.Runtime;
 using Gallio.Utilities;
+using Gallio.Model;
 
 namespace Gallio.Icarus.Controllers
 {
     internal class OptionsController : IOptionsController
     {
-        private readonly Settings settings;
-        private BindingList<string> pluginDirectories;
+        private Settings settings;
+
+        private readonly BindingList<string> pluginDirectories;
+        private readonly BindingList<string> selectedTreeViewCategories;
+        private readonly BindingList<string> unselectedTreeViewCategories;
+        private readonly List<string> unselectedTreeViewCategoriesList = new List<string>();
 
         public bool AlwaysReloadAssemblies
         {
@@ -74,12 +79,17 @@ namespace Gallio.Icarus.Controllers
 
         public BindingList<string> PluginDirectories
         {
-            get
-            {
-                if (pluginDirectories == null)
-                    pluginDirectories = new BindingList<string>(settings.PluginDirectories);
-                return pluginDirectories;
-            }
+            get { return pluginDirectories; }
+        }
+
+        public BindingList<string> SelectedTreeViewCategories
+        {
+            get { return selectedTreeViewCategories; }
+        }
+
+        public BindingList<string> UnselectedTreeViewCategories
+        {
+            get { return unselectedTreeViewCategories; }
         }
 
         public Color PassedColor
@@ -108,7 +118,11 @@ namespace Gallio.Icarus.Controllers
 
         private OptionsController()
         {
-            settings = Load() ?? new Settings();
+            Load();
+
+            pluginDirectories = new BindingList<string>(settings.PluginDirectories);
+            selectedTreeViewCategories = new BindingList<string>(settings.TreeViewCategories);
+            unselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
         }
 
         internal static OptionsController Instance
@@ -119,13 +133,27 @@ namespace Gallio.Icarus.Controllers
         private class Nested
         {
             static Nested()
-            {
-            }
+            { }
 
             internal static readonly OptionsController instance = new OptionsController();
         }
 
-        private static Settings Load()
+        private void Load()
+        {
+            settings = LoadSettings() ?? new Settings();
+
+            if (settings.TreeViewCategories.Count == 0)
+                settings.TreeViewCategories.AddRange(new[] { "Namespace", "AuthorName", "CategoryName", "Importance", "TestsOn" });
+
+            unselectedTreeViewCategoriesList.Clear();
+            foreach (FieldInfo fi in typeof(MetadataKeys).GetFields())
+            {
+                if (!unselectedTreeViewCategoriesList.Contains(fi.Name))
+                    unselectedTreeViewCategoriesList.Add(fi.Name);
+            }
+        }
+
+        private static Settings LoadSettings()
         {
             try
             {
@@ -134,7 +162,7 @@ namespace Gallio.Icarus.Controllers
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("An exception occurred while saving the report.", ex);
+                UnhandledExceptionPolicy.Report("An exception occurred while loading settings.", ex);
             }
             return null;    
         }
@@ -151,14 +179,9 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public void RemovePluginDirectory(string directory)
+        public void Cancel()
         {
-            pluginDirectories.Remove(directory);
-        }
-
-        public void AddPluginDirectory(string directory)
-        {
-            pluginDirectories.Add(directory);
+            Load();
         }
     }
 }

@@ -46,11 +46,11 @@ namespace Gallio.Icarus.Options
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Colors");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Appearance", new System.Windows.Forms.TreeNode[] {
             treeNode1});
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Assemblies");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Plugin directories");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Runtime", new System.Windows.Forms.TreeNode[] {
-            treeNode4});
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Startup");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Plugin directories");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Runtime", new System.Windows.Forms.TreeNode[] {
+            treeNode3});
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Startup");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Test Explorer");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Options));
             this.optionCategoryTree = new System.Windows.Forms.TreeView();
             this.cancelButton = new System.Windows.Forms.Button();
@@ -69,17 +69,17 @@ namespace Gallio.Icarus.Options
             treeNode1.Text = "Colors";
             treeNode2.Name = "appearance";
             treeNode2.Text = "Appearance";
-            treeNode3.Name = "assemblies";
-            treeNode3.Text = "Assemblies";
-            treeNode4.Name = "pluginDirectories";
-            treeNode4.Text = "Plugin directories";
-            treeNode5.Name = "runtime";
-            treeNode5.Text = "Runtime";
-            treeNode6.Name = "startup";
-            treeNode6.Text = "Startup";
+            treeNode3.Name = "pluginDirectories";
+            treeNode3.Text = "Plugin directories";
+            treeNode4.Name = "runtime";
+            treeNode4.Text = "Runtime";
+            treeNode5.Name = "startup";
+            treeNode5.Text = "Startup";
+            treeNode6.Name = "testExplorer";
+            treeNode6.Text = "Test Explorer";
             this.optionCategoryTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode2,
-            treeNode3,
+            treeNode4,
             treeNode5,
             treeNode6});
             this.optionCategoryTree.Size = new System.Drawing.Size(175, 350);

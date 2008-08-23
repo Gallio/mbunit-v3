@@ -297,12 +297,6 @@ namespace Gallio.Icarus
             // treeViewComboBox
             // 
             this.treeViewComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.treeViewComboBox.Items.AddRange(new object[] {
-            "Namespaces",
-            "Authors",
-            "Categories",
-            "Importance",
-            "TestsOn"});
             this.treeViewComboBox.Name = "treeViewComboBox";
             this.treeViewComboBox.Size = new System.Drawing.Size(121, 25);
             this.treeViewComboBox.SelectedIndexChanged += new System.EventHandler(this.treeViewComboBox_SelectedIndexChanged);

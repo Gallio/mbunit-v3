@@ -27,14 +27,14 @@ namespace Gallio.Icarus.Interfaces
         string TestRunnerFactory { get; set; }
         string[] TestRunnerFactories { get; }
         BindingList<string> PluginDirectories { get; }
+        BindingList<string> SelectedTreeViewCategories { get; }
+        BindingList<string> UnselectedTreeViewCategories { get; }
         Color PassedColor { get; set; }
         Color FailedColor { get; set; }
         Color InconclusiveColor { get; set; }
         Color SkippedColor { get; set; }
-        
+
         void Save();
-        
-        void RemovePluginDirectory(string directory);
-        void AddPluginDirectory(string directory);
+        void Cancel();
     }
 }
