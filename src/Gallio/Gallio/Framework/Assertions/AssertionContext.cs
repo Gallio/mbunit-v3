@@ -21,14 +21,14 @@ using Gallio.Collections;
 using Gallio.Framework;
 using Gallio.Model.Diagnostics;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Assertions
 {
     /// <summary>
     /// Describes the context in which an assertion is being evaluated.
     /// </summary>
     public sealed class AssertionContext
     {
-        private static readonly Key<AssertionContext> AssertionContextKey = new Key<AssertionContext>("MbUnit.Framework.AssertionContext");
+        private static readonly Key<AssertionContext> AssertionContextKey = new Key<AssertionContext>("Gallio.Framework.Assertions.AssertionContext");
 
         private readonly TestContext testContext;
         private Scope scope;
@@ -114,13 +114,13 @@ namespace MbUnit.Framework
         /// <para>
         /// The set of failures captured will depend on the setting of <paramref name="assertionFailureBehavior"/>.
         /// <list type="bullet">
-        /// <item>If set to <see cref="Framework.AssertionFailureBehavior.LogAndThrow"/> or 
-        /// <see cref="Framework.AssertionFailureBehavior.Throw"/>, then only
+        /// <item>If set to <see cref="Assertions.AssertionFailureBehavior.LogAndThrow"/> or 
+        /// <see cref="Assertions.AssertionFailureBehavior.Throw"/>, then only
         /// the first failure will be captured since execution will be immediately aborted when it happens.</item>
-        /// <item>If set to <see cref="Framework.AssertionFailureBehavior.Log"/> or
-        /// <see cref="Framework.AssertionFailureBehavior.Defer" />, then all
+        /// <item>If set to <see cref="Assertions.AssertionFailureBehavior.Log"/> or
+        /// <see cref="Assertions.AssertionFailureBehavior.Defer" />, then all
         /// failures will be captured until the block terminates or throws an exception for some other reason.</item>
-        /// <item>If set to <see cref="Framework.AssertionFailureBehavior.Ignore"/>, then no failures
+        /// <item>If set to <see cref="Assertions.AssertionFailureBehavior.Ignore"/>, then no failures
         /// will be captured since they will all be ignored!</item>
         /// </list>
         /// </para>

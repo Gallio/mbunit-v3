@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework

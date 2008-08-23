@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using MbUnit.Framework.Reflection;

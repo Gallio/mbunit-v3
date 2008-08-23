@@ -52,13 +52,9 @@
   <ItemGroup>
     <Compile Include="Framework\ApartmentStateTest.cs" />
     <Compile Include="Framework\ArrayAssertTest.cs" />
-    <Compile Include="Framework\Asserts\AssertExTest.cs" />
-    <Compile Include="Framework\Asserts\AssertImplementationConsistencyTest.cs" />
-    <Compile Include="Framework\Asserts\AssertionContextTest.cs" />
-    <Compile Include="Framework\Asserts\AssertionConditionEvaluatorTest.cs" />
-    <Compile Include="Framework\Asserts\AssertionFailureTest.cs" />
-    <Compile Include="Framework\Asserts\AssertionFailureBuilderTest.cs" />
-    <Compile Include="Framework\Asserts\NewAssertTest.cs" />
+    <Compile Include="Framework\AssertExTest.cs" />
+    <Compile Include="Framework\AssertImplementationConsistencyTest.cs" />
+    <Compile Include="Framework\NewAssertTest.cs" />
     <Compile Include="Framework\AssertTest.cs" />
     <Compile Include="Framework\AssertWithReflectionTest.cs" />
     <Compile Include="Framework\AssertWithTypeTest.cs" />
@@ -136,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compatibility\" />
+    <Folder Include="Framework\Asserts\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

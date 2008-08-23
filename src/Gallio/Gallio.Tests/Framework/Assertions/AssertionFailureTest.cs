@@ -15,10 +15,11 @@
 
 using System;
 using Gallio.Framework;
+using Gallio.Framework.Assertions;
 using Gallio.Model.Logging;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Framework
+namespace Gallio.Tests.Framework.Assertions
 {
     [TestsOn(typeof(AssertionFailure))]
     [DependsOn(typeof(AssertionFailureBuilderTest))]

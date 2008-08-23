@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using Gallio.Collections;
+using Gallio.Framework.Assertions;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using MbUnit.Framework;

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Gallio;
+using Gallio.Framework.Assertions;
 using Gallio.Runtime;
 using Gallio.Framework;
 using Gallio.Framework.Formatting;

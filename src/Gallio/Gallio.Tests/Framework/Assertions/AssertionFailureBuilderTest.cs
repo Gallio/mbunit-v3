@@ -18,12 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gallio.Framework;
+using Gallio.Framework.Assertions;
 using Gallio.Framework.Text;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Framework
+namespace Gallio.Tests.Framework.Assertions
 {
     [TestsOn(typeof(AssertionFailureBuilder))]
     public class AssertionFailureBuilderTest

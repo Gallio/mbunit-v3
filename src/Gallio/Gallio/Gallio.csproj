@@ -86,6 +86,13 @@
     <Compile Include="Concurrency\TaskResult.cs" />
     <Compile Include="Concurrency\ThreadAbortScope.cs" />
     <Compile Include="Concurrency\ThreadTask.cs" />
+    <Compile Include="Framework\Assertions\AssertionContext.cs" />
+    <Compile Include="Framework\Assertions\AssertionException.cs" />
+    <Compile Include="Framework\Assertions\AssertionFailure.cs" />
+    <Compile Include="Framework\Assertions\AssertionFailureBehavior.cs" />
+    <Compile Include="Framework\Assertions\AssertionFailureBuilder.cs" />
+    <Compile Include="Framework\Assertions\AssertionFailureException.cs" />
+    <Compile Include="Framework\Assertions\AssertionHelper.cs" />
     <Compile Include="Framework\Conversions\ArrayToArrayConversionRule.cs" />
     <Compile Include="Framework\Conversions\BaseConverter.cs" />
     <Compile Include="Framework\Conversions\ConversionCost.cs" />

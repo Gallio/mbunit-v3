@@ -16,12 +16,13 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
+using Gallio.Framework.Assertions;
 using Gallio.Framework.Text;
 using Gallio.Framework.Formatting;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Assertions
 {
     /// <summary>
     /// <para>

@@ -53,11 +53,6 @@
     <Compile Include="Framework\AnnotationAttribute.cs" />
     <Compile Include="Framework\ApartmentStateAttribute.cs" />
     <Compile Include="Framework\AssemblyFixtureAttribute.cs" />
-    <Compile Include="Framework\Asserts\AssertionHelper.cs" />
-    <Compile Include="Framework\Asserts\AssertionFailure.cs" />
-    <Compile Include="Framework\Asserts\AssertionFailureBehavior.cs" />
-    <Compile Include="Framework\Asserts\AssertionFailureBuilder.cs" />
-    <Compile Include="Framework\Asserts\AssertionFailureException.cs" />
     <Compile Include="Framework\BindAttribute.cs" />
     <Compile Include="Framework\ColumnAttribute.cs" />
     <Compile Include="Framework\CombinatorialJoinAttribute.cs" />
@@ -80,9 +75,8 @@
     <Compile Include="Framework\JoinAttribute.cs" />
     <Compile Include="Framework\MultipleAssertsAttribute.cs" />
     <Compile Include="Framework\NameAttribute.cs" />
-    <Compile Include="Framework\Asserts\AssertionContext.cs" />
-    <Compile Include="Framework\Asserts\NewAssert.cs" />
-    <Compile Include="Framework\Asserts\AssertOverSyntax.cs" />
+    <Compile Include="Framework\NewAssert.cs" />
+    <Compile Include="Framework\AssertOverSyntax.cs" />
     <Compile Include="Framework\PairwiseJoinAttribute.cs" />
     <Compile Include="Framework\PendingAttribute.cs" />
     <Compile Include="Framework\Reflection\ReflectionException.cs" />
@@ -92,7 +86,6 @@
     <Compile Include="Framework\ArrayAssert.cs" />
     <Compile Include="Framework\AssemblyResolverAttribute.cs" />
     <Compile Include="Framework\Assert.cs" />
-    <Compile Include="Framework\Asserts\AssertionException.cs" />
     <Compile Include="Framework\AuthorAttribute.cs" />
     <Compile Include="Framework\CategoryAttribute.cs" />
     <Compile Include="Framework\CollectionAssert.cs" />
@@ -149,6 +142,9 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Framework\Asserts\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

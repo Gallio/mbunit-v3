@@ -21,7 +21,7 @@ using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
 using Gallio.Utilities;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Assertions
 {
     /// <summary>
     /// <para>

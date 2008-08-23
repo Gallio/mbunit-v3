@@ -55,6 +55,10 @@
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Collections\UserDataCollectionTest.cs" />
     <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
+    <Compile Include="Framework\Assertions\AssertionConditionEvaluatorTest.cs" />
+    <Compile Include="Framework\Assertions\AssertionContextTest.cs" />
+    <Compile Include="Framework\Assertions\AssertionFailureBuilderTest.cs" />
+    <Compile Include="Framework\Assertions\AssertionFailureTest.cs" />
     <Compile Include="Framework\Text\SubstringTest.cs" />
     <Compile Include="Framework\Text\DiffSetTest.cs" />
     <Compile Include="Framework\Text\DiffTest.cs" />

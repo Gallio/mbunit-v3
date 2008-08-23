@@ -18,10 +18,10 @@ using System.Runtime.Serialization;
 using Gallio.Framework;
 using Gallio.Model;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Assertions
 {
     /// <summary>
-    /// The exception type used to signal MbUnit assertion failures.
+    /// The exception type used by the Gallio assertion framework to signal assertion failures.
     /// </summary>
     [Serializable]
     public class AssertionException : TestException

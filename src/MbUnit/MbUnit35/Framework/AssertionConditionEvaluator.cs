@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Gallio.Collections;
+using Gallio.Framework.Assertions;
 using Gallio.Framework.Formatting;
 using Gallio.Linq;
 using Gallio.Model.Diagnostics;

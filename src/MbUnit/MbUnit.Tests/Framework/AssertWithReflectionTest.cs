@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework

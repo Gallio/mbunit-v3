@@ -14,8 +14,9 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework.Assertions;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Assertions
 {
     /// <summary>
     /// <para>

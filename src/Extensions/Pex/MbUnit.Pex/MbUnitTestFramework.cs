@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Framework.Assertions;
 using Gallio.Framework.Pattern;
 using Gallio.Reflection;
 using MbUnit.Framework;

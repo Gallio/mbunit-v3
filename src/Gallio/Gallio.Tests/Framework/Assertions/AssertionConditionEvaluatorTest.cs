@@ -18,10 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gallio.Framework;
+using Gallio.Framework.Assertions;
 using Gallio.Framework.Formatting;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Framework
+namespace Gallio.Tests.Framework.Assertions
 {
     [TestsOn(typeof(AssertionConditionEvaluator))]
     public class AssertionConditionEvaluatorTest

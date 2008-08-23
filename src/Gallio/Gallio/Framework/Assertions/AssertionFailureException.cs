@@ -15,8 +15,9 @@
 
 using System;
 using System.Runtime.Serialization;
+using Gallio.Framework.Assertions;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Assertions
 {
     /// <summary>
     /// <para>

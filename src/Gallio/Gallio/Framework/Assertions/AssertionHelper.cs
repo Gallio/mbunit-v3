@@ -17,9 +17,10 @@ using System;
 using System.Threading;
 using Gallio;
 using Gallio.Framework;
+using Gallio.Framework.Assertions;
 using Gallio.Model.Diagnostics;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Assertions
 {
     /// <summary>
     /// Provides utilities to assist with the implementation of new asserts.
