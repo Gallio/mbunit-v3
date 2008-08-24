@@ -14,7 +14,7 @@
     <Binary Include="Gallio.VisualStudio.Addin\bin\Gallio.VisualStudio.Toolkit.dll">
       <Folder>VisualStudio</Folder>
     </Binary>
-    <Binary Include="Gallio.VisualStudio.Addin\bin\Gallio.VisualStudio.Addin.AddIn">
+    <Binary Include="Gallio.VisualStudio.Addin\Gallio.VisualStudio.Addin.AddIn">
       <Folder>VisualStudio</Folder>
     </Binary>
 
