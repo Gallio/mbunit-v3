@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.VisualStudio.Toolkit\Gallio.VisualStudio.Toolkit.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Addin\Gallio.VisualStudio.Addin.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Addin.Tests\Gallio.VisualStudio.Addin.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.VisualStudio.Addin\bin\Gallio.VisualStudio.Addin.dll">
+      <Folder>VisualStudio</Folder>
+    </Binary>
+    <Binary Include="Gallio.VisualStudio.Addin\bin\Gallio.VisualStudio.Toolkit.dll">
+      <Folder>VisualStudio</Folder>
+    </Binary>
+    <Binary Include="Gallio.VisualStudio.Addin\bin\Gallio.VisualStudio.Addin.AddIn">
+      <Folder>VisualStudio</Folder>
+    </Binary>
+
+    <TestAssembly Include="Gallio.VisualStudio.Addin.Tests\bin\Gallio.VisualStudio.Addin.Tests.dll" />
+
+    <Feature Include="FEATURE_VISUALSTUDIO_ADDIN" />
+  </ItemGroup>
+</Project>
