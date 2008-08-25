@@ -182,7 +182,7 @@ namespace MbUnit.Framework.ContractVerifiers
             base.Validate(scope, codeElement);
 
             if (GetIEquatableInterface() == null)
-                ThrowUsageErrorException("The specified type must implement the generic System.IEquatable<T> interface.");
+                ThrowUsageErrorException("The specified type must implement the generic 'System.IEquatable<T>' interface.");
         }
 
         /// <inheritdoc />
@@ -211,7 +211,7 @@ namespace MbUnit.Framework.ContractVerifiers
                 "Verify the implementation of 'Object.Equals()' on the type '" + Type.FullName + "'.",
                 state =>
                 {
-                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance, 
+                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance, false,
                         (a, b) =>
                         {
                             return ((object)a).Equals((object)b);
@@ -237,13 +237,9 @@ namespace MbUnit.Framework.ContractVerifiers
                     while (enumerator1.MoveNext() && enumerator2.MoveNext())
                     {
                         foreach (object x in (IEnumerable)enumerator1.Current)
-                        {
                             foreach (object y in (IEnumerable)enumerator2.Current)
-                            {
                                 Assert.AreEqual(x.GetHashCode(), y.GetHashCode(),
                                     "Hash code should return the same value for '{0}' and '{1}'.", x, y);
-                            }
-                        }
                     }
                 });
         }
@@ -265,7 +261,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         null, new Type[] { Type }, null);
                     Assert.IsNotNull(equals, "The type '" + Type.FullName + "' should implement the method 'bool Equals(" + Type.Name + ")'.");
       
-                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance,
+                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance, false,
                         (a, b) =>
                         {
                             return (bool)equals.Invoke(a, new object[] { b });
@@ -290,7 +286,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         null, new Type[] { Type, Type }, null);
                     Assert.IsNotNull(@operator, "The type '" + Type.FullName + "' should implement the static equality operator (==) overload.");
 
-                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance,
+                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance, true,
                         (a, b) =>
                         {
                             return (bool)@operator.Invoke(null, new object[] { a, b });
@@ -315,7 +311,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         null, new Type[] { Type, Type }, null);
                     Assert.IsNotNull(@operator, "The type '" + Type.FullName + "' should implement the static inequality operator (!=) overload.");
 
-                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance,
+                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance, true,
                         (a, b) =>
                         {
                             return !(bool)@operator.Invoke(null, new object[] { a, b });
@@ -333,7 +329,7 @@ namespace MbUnit.Framework.ContractVerifiers
         protected IEnumerable GetEquivalentClasses(Type fixtureType, object fixtureInstance)
         {
             Type interfaceType = GetIEquivalenceClassProviderInterface(fixtureType);
-            Assert.IsNotNull(interfaceType, "The equality contract verifier for the test fixture '{0}' must implement the interface 'IEquivalentClassProvider'.");
+            Assert.IsNotNull(interfaceType, "The equality contract verifier for the test fixture '{0}' must implement the interface 'IEquivalentClassProvider'.", fixtureType.ToString());
             return (IEnumerable)interfaceType.InvokeMember("GetEquivalenceClasses",
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod,
                 null, fixtureInstance, null);
@@ -344,9 +340,13 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         /// <param name="fixtureType">The type of the fixture.</param>
         /// <param name="fixtureInstance">The fixture instance.</param>
+        /// <param name="isStaticMethodInvoked">Indicates whether the equality operation 
+        /// is based on the invocation of a static method (true) or an instance method (false).</param>
         /// <param name="equals">The equality operation.</param>
-        protected void VerifyEqualityContract(Type fixtureType, object fixtureInstance, Func<object, object, bool> equals)
+        protected void VerifyEqualityContract(Type fixtureType, object fixtureInstance, 
+            bool isStaticMethodInvoked, Func<object, object, bool> equals)
         {
+            VerifyEqualityBetweenTwoNullReferences(isStaticMethodInvoked, equals);
             int i = 0;
 
             foreach (object a in GetEquivalentClasses(fixtureType, fixtureInstance))
@@ -355,7 +355,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 foreach (object b in GetEquivalentClasses(fixtureType, fixtureInstance))
                 {
-                    CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, i == j, equals);
+                    CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, i == j, isStaticMethodInvoked, equals);
                     j++;
                 }
 
@@ -370,25 +370,70 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <param name="b">The second class of equivalent object instances.</param>
         /// <param name="equalityExpected">Indicates whether all the object instances which 
         /// belong to the two classes are expected to be equal or not.</param>
+        /// <param name="isStaticMethodInvoked">Indicates whether the equality operation 
+        /// is based on the invocation of a static method (true) or an instance method (false).</param>
         /// <param name="equals">The equality function used for the evaluation.</param>
-        protected void CompareEquivalentInstances(IEnumerable a, IEnumerable b, bool equalityExpected, Func<object, object, bool> equals)
+        protected void CompareEquivalentInstances(IEnumerable a, IEnumerable b, 
+            bool equalityExpected, bool isStaticMethodInvoked, Func<object, object, bool> equals)
         {
             foreach (object x in a)
             {
-                Assert.IsTrue(equals(x, x), "Equality operator should consider '{0}' equal to itself.", x);
-
+                Assert.IsTrue(equals(x, x), "The equality operator should consider '{0}' equal to itself.", x);
+                VerifyNullReferenceEquality(x, isStaticMethodInvoked, equals);
+                
                 foreach (object y in b)
                 {
                     if (equalityExpected)
                     {
-                        Assert.IsTrue(equals(x, y), "Equality operator should consider '{0}' equal to '{1}'.", x, y);
-                        Assert.IsTrue(equals(y, x), "Equality operator should condider '{0}' equal to '{1}'.", y, x);
+                        Assert.IsTrue(equals(x, y), "The equality operator should consider '{0}' equal to '{1}'.", x, y);
+                        Assert.IsTrue(equals(y, x), "The equality operator should condider '{0}' equal to '{1}'.", y, x);
                     }
                     else
                     {
-                        Assert.IsFalse(equals(x, y), "Equality operator should consider '{0}' not equal to '{1}'.", x, y);
-                        Assert.IsFalse(equals(y, x), "Equality operator should consider '{0}' not equal to '{1}'.", y, x);
+                        Assert.IsFalse(equals(x, y), "The equality operator should consider '{0}' not equal to '{1}'.", x, y);
+                        Assert.IsFalse(equals(y, x), "The equality operator should consider '{0}' not equal to '{1}'.", y, x);
                     }
+                }
+            }
+        }
+
+        private void VerifyEqualityBetweenTwoNullReferences(bool isStaticMethodInvoked, Func<object, object, bool> equals)
+        {
+            if (!Type.IsValueType && isStaticMethodInvoked)
+            {
+                try
+                {
+                    Assert.IsTrue(equals(null, null), "The equality operator should consider two null references equal.");
+                }
+                catch (TargetInvocationException)
+                {
+                    Assert.Fail("The equality operator should consider two null references equal.");
+                }
+                catch (NullReferenceException)
+                {
+                    Assert.Fail("The equality operator should consider two null references equal.");
+                }
+            }
+        }
+
+        private void VerifyNullReferenceEquality(object x, bool isStaticMethodInvoked, Func<object, object, bool> equals)
+        {
+            if (!Type.IsValueType)
+            {
+                try
+                {
+                    Assert.IsFalse(equals(x, null), "Equality operator should consider '{0}' not equal to a null reference.", x);
+                    
+                    if (isStaticMethodInvoked)
+                        Assert.IsFalse(equals(null, x), "Equality operator should consider '{0}' not equal to a null reference.", x);
+                }
+                catch (TargetInvocationException)
+                {
+                    Assert.Fail("Equality operator should consider '{0}' not equal to a null reference.", x);
+                }
+                catch (NullReferenceException)
+                {
+                    Assert.Fail("Equality operator should consider '{0}' not equal to a null reference.", x);
                 }
             }
         }

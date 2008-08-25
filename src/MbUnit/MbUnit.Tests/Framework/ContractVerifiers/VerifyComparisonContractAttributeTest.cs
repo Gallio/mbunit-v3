@@ -53,7 +53,6 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             public EquivalenceClassCollection<SampleComparable> GetEquivalenceClasses()
             {
                 return new EquivalenceClassCollection<SampleComparable>(
-                    new EquivalenceClass<SampleComparable>(null),
                     new EquivalenceClass<SampleComparable>(new SampleComparable(123), new SampleComparable(123)),
                     new EquivalenceClass<SampleComparable>(new SampleComparable(456)),
                     new EquivalenceClass<SampleComparable>(new SampleComparable(789)));
@@ -68,7 +67,6 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             public EquivalenceClassCollection<SampleComparable> GetEquivalenceClasses()
             {
                 return new EquivalenceClassCollection<SampleComparable>(
-                    new EquivalenceClass<SampleComparable>(null),
                     new EquivalenceClass<SampleComparable>(new SampleComparable(123), new SampleComparable(123)),
                     new EquivalenceClass<SampleComparable>(new SampleComparable(456)),
                     new EquivalenceClass<SampleComparable>(new SampleComparable(789)));

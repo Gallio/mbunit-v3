@@ -87,7 +87,6 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     public EquivalenceClassCollection<Foo> GetEquivalenceClasses()
     ///     {
     ///         return EquivalenceClassCollection<Foo>.FromDistinctInstances(
-    ///             null,
     ///             new Foo(1),
     ///             new Foo(2),
     ///             new Foo(5),
@@ -221,13 +220,13 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             return Math.Sign(i.CompareTo(j));
                         },
-                        r =>
+                        result =>
                         {
-                            if (r == 0)
+                            if (result == 0)
                             {
                                 return "zero";
                             }
-                            else if (r > 0)
+                            else if (result > 0)
                             {
                                 return "a positive result";
                             }
@@ -265,7 +264,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             return (i > j);
                         },
-                        r => r.ToString());
+                        result => result.ToString());
                 });
         }
 
@@ -295,7 +294,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             return (i >= j);
                         },
-                        r => r.ToString());
+                        result => result.ToString());
                 });
         }
 
@@ -325,7 +324,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             return (i < j);
                         },
-                        r => r.ToString());
+                        result => result.ToString());
                 });
         }
 
@@ -355,7 +354,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             return (i <= j);
                         },
-                        r => r.ToString());
+                        result => result.ToString());
                 });
         }
 
@@ -381,16 +380,17 @@ namespace MbUnit.Framework.ContractVerifiers
         /// for all the possible combinations between the objects found
         /// in all the available equivalence classes.
         /// </summary>
-        /// <typeparam name="U">The type of the result returned by the comparison operation (usually Int32 or Boolean).</typeparam>
+        /// <typeparam name="U">The type of the result returned by the comparison operator (usually Boolean or Int32).</typeparam>
         /// <param name="fixtureType">The type of the test fixture.</param>
         /// <param name="fixtureInstance">The instance of test fixture.</param>
         /// <param name="isStaticMethodInvoked">Indicates whether the comparison method is based on the invocation of a static method (true) or an instance method (false).</param>
         /// <param name="compares">The comparison operation.</param>
         /// <param name="refers">The reference operation which provides the expected result.</param>
-        /// <param name="formatsExpectedResult">Formats the expected result as a displayable text.</param>
-        protected void VerifyComparisonContract<U>(Type fixtureType, object fixtureInstance, bool isStaticMethodInvoked, 
+        /// <param name="formatsExpectedResult">Formats the expected result.</param>
+        protected void VerifyComparisonContract<U>(Type fixtureType, object fixtureInstance, bool isStaticMethodInvoked,
             Func<object, object, U> compares, Func<int, int, U> refers, Func<U, string> formatsExpectedResult)
         {
+            VerifyEqualityBetweenTwoNullReferences<U>(isStaticMethodInvoked, compares, refers);
             int i = 0;
 
             foreach (object a in GetEquivalentClasses(fixtureType, fixtureInstance))
@@ -400,7 +400,7 @@ namespace MbUnit.Framework.ContractVerifiers
                 foreach (object b in GetEquivalentClasses(fixtureType, fixtureInstance))
                 {
                     CompareEquivalentInstances<U>((IEnumerable)a, (IEnumerable)b,
-                        isStaticMethodInvoked, refers(i, j), compares, formatsExpectedResult);
+                        isStaticMethodInvoked, refers(i, j), formatsExpectedResult, refers(i, Int32.MinValue), compares);
                     j++;
                 }
 
@@ -413,26 +413,71 @@ namespace MbUnit.Framework.ContractVerifiers
         /// all the possible combinations of objects found in the two specified
         /// equivalence classes.
         /// </summary>
-        /// <typeparam name="U">The type of the result returned by the comparison operation (usually Int32 or Boolean).</typeparam>
+        /// <typeparam name="U">The type of the result returned by the comparison operator (usually Boolean or Int32).</typeparam>
         /// <param name="a">The first equivalence class.</param>
         /// <param name="b">The second equivalence class.</param>
         /// <param name="isStaticMethodInvoked">Indicates whether the comparison method is based on the invocation of a static method (true) or an instance method (false).</param>
         /// <param name="expectedResult">The expected result of the comparison.</param>
+        /// <param name="formatsExpectedResult">Formats the expected result.</param>
+        /// <param name="expectedResultForNullComparison"></param>
         /// <param name="compares">The comparison operation.</param>
-        /// <param name="formatsExpectedResult">Formats the expected result as a displayable text.</param>
         protected void CompareEquivalentInstances<U>(IEnumerable a, IEnumerable b, bool isStaticMethodInvoked,
-            U expectedResult, Func<object, object, U> compares, Func<U, string> formatsExpectedResult)
+            U expectedResult, Func<U, string> formatsExpectedResult, U expectedResultForNullComparison, Func<object, object, U> compares)
         {
             foreach (object x in a)
             {
-                if (isStaticMethodInvoked || (x != null))
+                VerifyNullReferenceComparison<U>(x, isStaticMethodInvoked, compares, expectedResultForNullComparison);
+
+                if (isStaticMethodInvoked)
                 {
                     foreach (object y in b)
                     {
                         Assert.AreEqual(expectedResult, compares(x, y),
-                            "The comparison between '{0}' and '{1}' should give {2}.", 
+                            "The comparison between '{0}' and '{1}' should give '{2}'.",
                             x, y, formatsExpectedResult(expectedResult));
                     }
+                }
+            }
+        }
+
+        private void VerifyEqualityBetweenTwoNullReferences<U>(bool isStaticMethodInvoked, Func<object, object, U> compares, Func<int, int, U> refers)
+        {
+            if (!Type.IsValueType && isStaticMethodInvoked)
+            {
+                try
+                {
+                    Assert.AreEqual(compares(null, null), refers(0, 0), "The comparison operator should consider two null references equal.");
+                }
+                catch (TargetInvocationException)
+                {
+                    Assert.Fail("The comparison operator should consider two null references equal.");
+                }
+                catch (NullReferenceException)
+                {
+                    Assert.Fail("The comparison operator should consider two null references equal.");
+                }
+            }
+        }
+
+        private void VerifyNullReferenceComparison<U>(object x, bool isStaticMethodInvoked, 
+            Func<object, object, U> compares, U expectedResult)
+        {
+            if (!Type.IsValueType)
+            {
+                try
+                {
+                    Assert.AreEqual(expectedResult, compares(x, null), "Comparison operator should consider '{0}' greater than a null reference.", x);
+
+                    if (isStaticMethodInvoked)
+                        Assert.AreNotEqual(expectedResult, compares(null, x), "Comparison operator should consider a null reference less than '{0}'.", x);
+                }
+                catch (TargetInvocationException)
+                {
+                    Assert.Fail("Comparison operator should compares any object greater than a null reference.", x);
+                }
+                catch (NullReferenceException)
+                {
+                    Assert.Fail("Comparison operator should compares any object greater than a null reference.", x);
                 }
             }
         }

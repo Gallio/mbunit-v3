@@ -30,25 +30,28 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             new EquivalenceClass<int>(null);
         }
 
-        [Test]
+        [Test, ExpectedArgumentNullException]
         public void ConstructsWithNullInitializerForNullableType()
         {
-            EquivalenceClass<int?> target = new EquivalenceClass<int?>(null);
-            NewAssert.AreEqual(new int?[] { null }, target.EquivalentInstances);
+            new EquivalenceClass<int?>(null);
         }
 
-        [Test]
+        [Test, ExpectedArgumentNullException]
         public void ConstructsWithNullInitializerForReferenceType()
         {
-            EquivalenceClass<object> target = new EquivalenceClass<object>(null);
-            NewAssert.AreEqual(new object[] { null }, target.EquivalentInstances);
+            new EquivalenceClass<object>(null);
         }
 
-        [Test]
-        [ExpectedArgumentException]
+        [Test, ExpectedArgumentException]
         public void ConstructsWithInitializerContainingNoObjects()
         {
             new EquivalenceClass<object>(EmptyArray<object>.Instance);
+        }
+
+        [Test, ExpectedArgumentException]
+        public void ConstructsWithInitializerContainingNullReference()
+        {
+            new EquivalenceClass<object>(new Object(), new Object(), null);
         }
 
         [Test]

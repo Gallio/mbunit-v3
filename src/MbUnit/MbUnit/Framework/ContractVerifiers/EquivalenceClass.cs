@@ -38,24 +38,32 @@ namespace MbUnit.Framework.ContractVerifiers
         private readonly List<T> equivalentInstances;
 
         /// <summary>
-        /// Constructs an class of equivalent instances.
+        /// Constructs a class of equivalent instances.
         /// </summary>
         /// <param name="equivalentInstances">The type of equivalent instances.</param>
         public EquivalenceClass(params T[] equivalentInstances)
         {
             if (equivalentInstances == null)
             {
-                if (default(T) != null)
-                    throw new ArgumentNullException("equivalentInstances", "The instance cannot be null for a value type.");
-
-                this.equivalentInstances = new List<T>(new T[] { default(T) });
+                throw new ArgumentNullException("equivalentInstances", String.Format("An equivalence class " +
+                    "of type '{0}' cannot be initialized with a null reference.", typeof(T)));
             }
             else
             {
                 if (equivalentInstances.Length == 0)
                 {
-                    throw new ArgumentException(String.Format("An equivalence class of type '{0}' must be initialized with at least one object.", 
-                        typeof(T)), "equivalentInstances");
+                    throw new ArgumentException(String.Format("An equivalence class of type '{0}' must be " + 
+                        "initialized with at least one instance.", typeof(T)), "equivalentInstances");
+                }
+
+                foreach (T item in equivalentInstances)
+                {
+                    if (Object.ReferenceEquals(item, null))
+                    {
+                        throw new ArgumentException(String.Format("An equivalence class " +
+                            "of type '{0}' cannot be initialized with a collection of instances containing " +
+                            "a null reference.", typeof(T), "equivalentInstances"));
+                    }
                 }
 
                 this.equivalentInstances = new List<T>(equivalentInstances);
@@ -71,7 +79,7 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Returns a strongly-typed enumerator through the collection.
+        /// Returns a strongly-typed enumerator that iterates through the collection.
         /// </summary>
         /// <returns>A strongly-typed enumerator.</returns>
         public IEnumerator<T> GetEnumerator()

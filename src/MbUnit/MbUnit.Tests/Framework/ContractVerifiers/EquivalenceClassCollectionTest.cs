@@ -25,8 +25,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     [TestFixture]
     public class EquivalenceClassCollectionTest
     {
-        [Test]
-        [ExpectedArgumentNullException]
+        [Test, ExpectedArgumentNullException]
         public void ConstructsWithNullInitializer()
         {
             new EquivalenceClassCollection<object>(null);
@@ -64,20 +63,16 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             EquivalenceClassCollection<int>.FromDistinctInstances(null);
         }
 
-        [Test]
+        [Test, ExpectedArgumentNullException]
         public void ConstructsFromDistinctInstancesWithNullInitializerForNullableType()
         {
-            EquivalenceClassCollection<int?> @class = EquivalenceClassCollection<int?>.FromDistinctInstances(null);
-            Assert.AreEqual(1, @class.Count());
-            NewAssert.AreEqual(new int?[] { null }, @class.EquivalenceClasses[0].EquivalentInstances);
+            EquivalenceClassCollection<int?>.FromDistinctInstances(null);
         }
 
-        [Test]
+        [Test, ExpectedArgumentNullException]
         public void ConstructsFromDistinctInstancesWithNullInitializerForReferenceType()
         {
-            EquivalenceClassCollection<object> @class = EquivalenceClassCollection<object>.FromDistinctInstances(null);
-            Assert.AreEqual(1, @class.Count());
-            NewAssert.AreEqual(new object[] { null }, @class.EquivalenceClasses[0].EquivalentInstances);
+            EquivalenceClassCollection<object>.FromDistinctInstances(null);
         }
 
         [Test]

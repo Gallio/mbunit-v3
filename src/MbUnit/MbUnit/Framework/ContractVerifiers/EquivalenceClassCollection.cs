@@ -93,16 +93,16 @@ namespace MbUnit.Framework.ContractVerifiers
             }
 
             this.equivalenceClasses = new List<EquivalenceClass<T>>();
-            foreach (EquivalenceClass<T> item in equivalenceClasses)
+            foreach (EquivalenceClass<T> equivalenceClass in equivalenceClasses)
             {
-                if (item == null)
+                if (equivalenceClass == null)
                 {
                     throw new ArgumentException(String.Format("One of the equivalence classes provided to " +
                         "the constructor of the equivalence class collection of type '{0}' is a null reference.", 
                         typeof(T)), "equivalenceClasses");
                 }
 
-                this.equivalenceClasses.Add(item);
+                this.equivalenceClasses.Add(equivalenceClass);
             }
         }
 
@@ -119,10 +119,8 @@ namespace MbUnit.Framework.ContractVerifiers
 
             if (distinctInstances == null)
             {
-                if (default(T) != null)
-                    throw new ArgumentNullException("distinctInstances", "The instance cannot be null for a value type.");
-
-                collection.equivalenceClasses.Add(new EquivalenceClass<T>(null));
+                throw new ArgumentNullException("distinctInstances", String.Format("A collection of equivalence classes " +
+                    "of type '{0}' cannot be initialized from a null reference.", typeof(T)));
             }
             else
             {
