@@ -664,7 +664,7 @@ namespace Gallio.Icarus.Tests.Adapter
         public void AssemblyChangedEvent_Test()
         {
             const string path = @"\a\file\path";
-            mockView.AssemblyChanged(path);
+            mockView.AssemblyChanged("path");
             mocks.ReplayAll();
             projectAdapter = new ProjectAdapter(mockView, mockModel, projectTreeModel);
             projectAdapter.assemblyWatcher_AssemblyChangedEvent(path);
