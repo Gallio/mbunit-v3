@@ -59,7 +59,8 @@ namespace Gallio.Model.Logging
         /// <inheritdoc />
         public bool Equals(TextAttachment other)
         {
-            return Name == other.Name
+            return other != null
+                && Name == other.Name
                 && ContentType == other.ContentType
                 && text == other.text;
         }
