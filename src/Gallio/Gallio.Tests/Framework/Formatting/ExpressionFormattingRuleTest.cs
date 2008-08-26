@@ -31,7 +31,7 @@ namespace Gallio.Tests.Framework.Formatting
         [Test]
         public void SimpleExpressions()
         {
-            NewAssert.Multiple(() =>
+            Assert.Multiple(() =>
             {
                 int x = 5, y = 2;
                 int[] arr = new int[1];
@@ -137,19 +137,19 @@ namespace Gallio.Tests.Framework.Formatting
         [TestFrameworkInternal]
         private void AssertFormat(Expression<System.Action> expr, string expectedFormat)
         {
-            NewAssert.AreEqual(expectedFormat, Formatter.Format(expr));
+            Assert.AreEqual(expectedFormat, Formatter.Format(expr));
         }
 
         [TestFrameworkInternal]
         private void AssertFormat<T>(Expression<System.Func<T>> expr, string expectedFormat)
         {
-            NewAssert.AreEqual(expectedFormat, Formatter.Format(expr));
+            Assert.AreEqual(expectedFormat, Formatter.Format(expr));
         }
 
         [TestFrameworkInternal]
         private void AssertFormat<TArg, TResult>(Expression<System.Func<TArg, TResult>> expr, string expectedFormat)
         {
-            NewAssert.AreEqual(expectedFormat, Formatter.Format(expr));
+            Assert.AreEqual(expectedFormat, Formatter.Format(expr));
         }
 
         [Test]

@@ -35,7 +35,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         public void ConstructsWithInitializerHavingNullElement()
         {
             EquivalenceClass<object> class1 = new EquivalenceClass<object>(new object());
-            NewAssert.Throws<ArgumentException>(() => new EquivalenceClassCollection<object>(class1, null));
+            Assert.Throws<ArgumentException>(() => new EquivalenceClassCollection<object>(class1, null));
         }
 
         [Test]
@@ -53,8 +53,8 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             EquivalenceClass<object> class2 = new EquivalenceClass<object>(new object());
 
             EquivalenceClassCollection<object> collection = new EquivalenceClassCollection<object>(class1, class2);
-            NewAssert.AreEqual(new[] { class1, class2 }, collection.EquivalenceClasses);
-            NewAssert.AreEqual(new[] { class1, class2 }, collection.ToArray());
+            Assert.AreEqual(new[] { class1, class2 }, collection.EquivalenceClasses);
+            Assert.AreEqual(new[] { class1, class2 }, collection.ToArray());
         }
 
         [Test, ExpectedArgumentNullException]
@@ -83,10 +83,10 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             object instance3 = new object();
 
             EquivalenceClassCollection<object> collection = EquivalenceClassCollection<object>.FromDistinctInstances(instance1, instance2, instance3);
-            NewAssert.Over.Sequence(new[] { instance1, instance2, instance3 }, collection.EquivalenceClasses,
-                (instance, @class) => NewAssert.AreEqual(new[] { instance }, @class.EquivalentInstances));
-            NewAssert.Over.Sequence(new[] { instance1, instance2, instance3 }, collection.ToArray(),
-                (instance, @class) => NewAssert.AreEqual(new[] { instance }, @class.EquivalentInstances));
+            Assert.Over.Sequence(new[] { instance1, instance2, instance3 }, collection.EquivalenceClasses,
+                (instance, @class) => Assert.AreEqual(new[] { instance }, @class.EquivalentInstances));
+            Assert.Over.Sequence(new[] { instance1, instance2, instance3 }, collection.ToArray(),
+                (instance, @class) => Assert.AreEqual(new[] { instance }, @class.EquivalentInstances));
         }
     }
 }

@@ -78,7 +78,7 @@ namespace Gallio.Tests.Model.Logging
             StructuredText text = new StructuredText("blah");
             Assert.AreEqual(0, text.Attachments.Count);
 
-            NewAssert.AreEqual(new BodyTag() { Contents = { new TextTag("blah") } }, text.BodyTag);
+            Assert.AreEqual(new BodyTag() { Contents = { new TextTag("blah") } }, text.BodyTag);
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace Gallio.Tests.Model.Logging
             StructuredText text = new StructuredText(Example.BodyTag);
             Assert.AreEqual(0, text.Attachments.Count);
 
-            NewAssert.AreEqual(Example.BodyTag, text.BodyTag);
+            Assert.AreEqual(Example.BodyTag, text.BodyTag);
         }
 
         [Test]
@@ -95,8 +95,8 @@ namespace Gallio.Tests.Model.Logging
         {
             StructuredText text = new StructuredText(Example.BodyTag, Example.Attachments);
 
-            NewAssert.AreEqual(Example.BodyTag, text.BodyTag);
-            NewAssert.AreEqual(Example.Attachments, text.Attachments);
+            Assert.AreEqual(Example.BodyTag, text.BodyTag);
+            Assert.AreEqual(Example.Attachments, text.Attachments);
         }
 
         [Test]
@@ -128,7 +128,7 @@ namespace Gallio.Tests.Model.Logging
         {
             StructuredTextWriter writer = new StructuredTextWriter();
             Example.WriteTo(writer);
-            NewAssert.AreEqual(Example, writer.ToStructuredText());
+            Assert.AreEqual(Example, writer.ToStructuredText());
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace Gallio.Tests.Model.Logging
         {
             StructuredTextWriter writer = new StructuredTextWriter();
             Assert.IsFalse(Example.TruncatedWriteTo(writer, Example.GetTextLength()));
-            NewAssert.AreEqual(Example, writer.ToStructuredText());
+            Assert.AreEqual(Example, writer.ToStructuredText());
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace Gallio.Tests.Model.Logging
         {
             StructuredTextWriter writer = new StructuredTextWriter();
             Assert.IsFalse(Example.TruncatedWriteTo(writer, Example.GetTextLength() + 1));
-            NewAssert.AreEqual(Example, writer.ToStructuredText());
+            Assert.AreEqual(Example, writer.ToStructuredText());
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace Gallio.Tests.Model.Logging
         {
             StructuredTextWriter writer = new StructuredTextWriter();
             Assert.IsTrue(Example.TruncatedWriteTo(writer, 0));
-            NewAssert.AreEqual(new StructuredText(new BodyTag(),
+            Assert.AreEqual(new StructuredText(new BodyTag(),
                 new Attachment[] { new TextAttachment("attachment", MimeTypes.PlainText, "text") }),
                 writer.ToStructuredText());
         }
@@ -162,7 +162,7 @@ namespace Gallio.Tests.Model.Logging
         {
             StructuredTextWriter writer = new StructuredTextWriter();
             Assert.IsTrue(Example.TruncatedWriteTo(writer, 1));
-            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            Assert.AreEqual(new StructuredText(new BodyTag()
             {
                 Contents =
                     {
@@ -178,7 +178,7 @@ namespace Gallio.Tests.Model.Logging
         {
             StructuredTextWriter writer = new StructuredTextWriter();
             Assert.IsTrue(Example.TruncatedWriteTo(writer, 5));
-            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            Assert.AreEqual(new StructuredText(new BodyTag()
             {
                 Contents =
                     {
@@ -195,7 +195,7 @@ namespace Gallio.Tests.Model.Logging
         {
             StructuredTextWriter writer = new StructuredTextWriter();
             Assert.IsTrue(Example.TruncatedWriteTo(writer, 8));
-            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            Assert.AreEqual(new StructuredText(new BodyTag()
             {
                 Contents =
                     {

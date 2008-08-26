@@ -34,7 +34,7 @@ namespace Gallio.Tests.Model.Logging.Tags
             {
                 foreach (ICloneable item in @class)
                 {
-                    NewAssert.AreEqual(item, item.Clone());
+                    Assert.AreEqual(item, item.Clone());
                 }
             }
         }
@@ -46,7 +46,7 @@ namespace Gallio.Tests.Model.Logging.Tags
             {
                 foreach (ICloneable<T> item in @class)
                 {
-                    NewAssert.AreEqual(item, item.Clone());
+                    Assert.AreEqual(item, item.Clone());
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace Gallio.Tests.Model.Logging.Tags
                     TagFormatter formatter = new TagFormatter();
                     item.Accept(formatter);
 
-                    NewAssert.AreEqual(formatter.ToString(), item.ToString());
+                    Assert.AreEqual(formatter.ToString(), item.ToString());
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Gallio.Tests.Model.Logging.Tags
                     PrepareLogWriterForWriteToTest(writer.Container);
                     item.WriteTo(writer);
 
-                    NewAssert.AreEqual(writer.ToString(), item.ToString());
+                    Assert.AreEqual(writer.ToString(), item.ToString());
                 }
             }
         }

@@ -226,10 +226,10 @@ namespace Gallio.Tests.Reflection
                 }
 
                 AreEqualUpToAssemblyDisplayName(CodeReference.CreateFromAssembly(target), info.CodeReference);
-                StringAssert.AreEqualIgnoreCase(Path.GetFileName(AssemblyUtils.GetAssemblyLocalPath(target)), Path.GetFileName(info.Path));
+                OldStringAssert.AreEqualIgnoreCase(Path.GetFileName(AssemblyUtils.GetAssemblyLocalPath(target)), Path.GetFileName(info.Path));
 
                 CodeLocation infoLocation = info.GetCodeLocation();
-                StringAssert.AreEqualIgnoreCase(Path.GetFileName(AssemblyUtils.GetAssemblyLocalPath(target)), Path.GetFileName(infoLocation.Path));
+                OldStringAssert.AreEqualIgnoreCase(Path.GetFileName(AssemblyUtils.GetAssemblyLocalPath(target)), Path.GetFileName(infoLocation.Path));
                 Assert.AreEqual(0, infoLocation.Line);
                 Assert.AreEqual(0, infoLocation.Column);
 
@@ -504,7 +504,7 @@ namespace Gallio.Tests.Reflection
                 CodeLocation infoLocation = info.GetCodeLocation();
 
                 if (targetLocation != CodeLocation.Unknown && infoLocation != CodeLocation.Unknown)
-                    StringAssert.AreEqualIgnoreCase(targetLocation.Path, infoLocation.Path);
+                    OldStringAssert.AreEqualIgnoreCase(targetLocation.Path, infoLocation.Path);
             });
 
             if (recursive)

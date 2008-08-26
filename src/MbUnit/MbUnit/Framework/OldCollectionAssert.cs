@@ -28,7 +28,7 @@ namespace MbUnit.Framework
     /// <see cref="ICollection"/> class.
     /// </para>
     /// </remarks>
-    public static class CollectionAssert
+    public static class OldCollectionAssert
     {
         #region Synchronized
 
@@ -50,8 +50,8 @@ namespace MbUnit.Framework
             if (expected == null && actual == null)
                 return;
 
-            Assert.IsNotNull(expected);
-            Assert.IsNotNull(actual);
+            OldAssert.IsNotNull(expected);
+            OldAssert.IsNotNull(actual);
             AreSyncRootEqual(expected.SyncRoot, actual);
         }
 
@@ -73,9 +73,9 @@ namespace MbUnit.Framework
             if (expected == null && actual == null)
                 return;
 
-            Assert.IsNotNull(expected);
-            Assert.IsNotNull(actual);
-            Assert.AreEqual(expected, actual.SyncRoot,
+            OldAssert.IsNotNull(expected);
+            OldAssert.IsNotNull(actual);
+            OldAssert.AreEqual(expected, actual.SyncRoot,
                         "Property SyncRoot not equal");
 
         }
@@ -90,8 +90,8 @@ namespace MbUnit.Framework
             ICollection actual
             )
         {
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.IsSynchronized,
+            OldAssert.IsNotNull(actual);
+            OldAssert.IsTrue(actual.IsSynchronized,
                           "Property IsSynchronized is false");
         }
 
@@ -106,8 +106,8 @@ namespace MbUnit.Framework
             ICollection actual
             )
         {
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsSynchronized,
+            OldAssert.IsNotNull(actual);
+            OldAssert.IsFalse(actual.IsSynchronized,
                           "Property IsSynchronized is true");
         }
 
@@ -129,8 +129,8 @@ namespace MbUnit.Framework
             if (expected == null && actual == null)
                 return;
 
-            Assert.IsNotNull(expected);
-            Assert.IsNotNull(actual);
+            OldAssert.IsNotNull(expected);
+            OldAssert.IsNotNull(actual);
             AreIsSynchronizedEqual(expected.IsSynchronized, actual);
         }
 
@@ -149,8 +149,8 @@ namespace MbUnit.Framework
             ICollection actual
             )
         {
-            Assert.IsNotNull(actual);
-            Assert.AreEqual(expected, actual.IsSynchronized,
+            OldAssert.IsNotNull(actual);
+            OldAssert.AreEqual(expected, actual.IsSynchronized,
                         "Property IsSynchronized not equal");
 
         }
@@ -177,8 +177,8 @@ namespace MbUnit.Framework
             if (expected == null && actual == null)
                 return;
 
-            Assert.IsNotNull(expected);
-            Assert.IsNotNull(actual);
+            OldAssert.IsNotNull(expected);
+            OldAssert.IsNotNull(actual);
             AreCountEqual(expected.Count, actual);
         }
 
@@ -197,8 +197,8 @@ namespace MbUnit.Framework
             ICollection actual
             )
         {
-            Assert.IsNotNull(actual);
-            Assert.AreEqual(expected, actual.Count,
+            OldAssert.IsNotNull(actual);
+            OldAssert.AreEqual(expected, actual.Count,
                         "Property Count not equal");
 
         }
@@ -220,7 +220,7 @@ namespace MbUnit.Framework
             int i = 0;
             foreach (Object o in col)
                 ++i;
-            Assert.AreEqual(i, col.Count);
+            OldAssert.AreEqual(i, col.Count);
         }
         #endregion
 
@@ -244,8 +244,8 @@ namespace MbUnit.Framework
             if (expected == null && actual == null)
                 return;
 
-            Assert.IsNotNull(expected);
-            Assert.IsNotNull(actual);
+            OldAssert.IsNotNull(expected);
+            OldAssert.IsNotNull(actual);
             AreCountEqual(expected, actual);
             AreElementsEqual(expected, actual);
         }
@@ -267,7 +267,7 @@ namespace MbUnit.Framework
         {
             string failMessage;
             bool areEqual = ElementsEqual(expected, actual, out failMessage);
-            if (!areEqual) Assert.Fail(failMessage);
+            if (!areEqual) OldAssert.Fail(failMessage);
         }
 
         /// <summary>
@@ -288,8 +288,8 @@ namespace MbUnit.Framework
             failMessage = string.Empty;
             if (expected == null && actual == null)
                 return true;
-            Assert.IsNotNull(expected);
-            Assert.IsNotNull(actual);
+            OldAssert.IsNotNull(expected);
+            OldAssert.IsNotNull(actual);
 
             IEnumerator expectedEnumerator = null;
             IEnumerator actualEnumerator = null;
@@ -310,7 +310,7 @@ namespace MbUnit.Framework
                     }
                     if (expectedHasElement)
                     {
-                        bool equalElements = Assert.ObjectsEqual(expectedEnumerator.Current, actualEnumerator.Current);
+                        bool equalElements = OldAssert.ObjectsEqual(expectedEnumerator.Current, actualEnumerator.Current);
                         if(!equalElements)
                         {
                             failMessage = "Element of the collection different";
@@ -382,9 +382,9 @@ namespace MbUnit.Framework
             if (fail)
             {
                 if (args != null)
-                    Assert.Fail(message, args);
+                    OldAssert.Fail(message, args);
                 else
-                    Assert.Fail(message);
+                    OldAssert.Fail(message);
             }
         }
         #endregion
@@ -432,9 +432,9 @@ namespace MbUnit.Framework
             if (fail)
             {
                 if (args != null)
-                    Assert.Fail(message, args);
+                    OldAssert.Fail(message, args);
                 else
-                    Assert.Fail(message);
+                    OldAssert.Fail(message);
             }
         }
         #endregion
@@ -491,9 +491,9 @@ namespace MbUnit.Framework
             if (fail)
             {
                 if (args != null)
-                    Assert.Fail(message, args);
+                    OldAssert.Fail(message, args);
                 else
-                    Assert.Fail(message);
+                    OldAssert.Fail(message);
             }
         }
         #endregion
@@ -562,9 +562,9 @@ namespace MbUnit.Framework
             if (!foundAll)
             {
                 if (args != null)
-                    Assert.Fail(message, args);
+                    OldAssert.Fail(message, args);
                 else
-                    Assert.Fail(message);
+                    OldAssert.Fail(message);
             }
         }
         #endregion
@@ -654,7 +654,7 @@ namespace MbUnit.Framework
                         
             if (needToFail)
             {
-                Assert.Fail(message, args);
+                OldAssert.Fail(message, args);
             }
             
         }
@@ -708,7 +708,7 @@ namespace MbUnit.Framework
                         
             if (needToFail)
             {
-                Assert.Fail(message, args);
+                OldAssert.Fail(message, args);
             }
             
         }
@@ -752,9 +752,9 @@ namespace MbUnit.Framework
             if (!found)
             {
                 if (args != null)
-                    Assert.Fail(message, args);
+                    OldAssert.Fail(message, args);
                 else
-                    Assert.Fail(message);
+                    OldAssert.Fail(message);
             }
         }
         #endregion
@@ -807,7 +807,7 @@ namespace MbUnit.Framework
                         
             if (needToFail)
             {
-                Assert.Fail(message, args);
+                OldAssert.Fail(message, args);
             }
             
         }
@@ -861,7 +861,7 @@ namespace MbUnit.Framework
                         
             if (needToFail)
             {
-                Assert.Fail(message, args);
+                OldAssert.Fail(message, args);
             }          
         }
        
@@ -915,9 +915,9 @@ namespace MbUnit.Framework
             if (!foundAll)
             {
                 if (args != null)
-                    Assert.Fail(message, args);
+                    OldAssert.Fail(message, args);
                 else
-                    Assert.Fail(message);
+                    OldAssert.Fail(message);
             }
         }
     

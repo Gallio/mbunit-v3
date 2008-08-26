@@ -72,17 +72,17 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 Assert.AreEqual(0, dataSet.ColumnCount);
-                CollectionAssert.AreElementsEqual(new IDataSet[] { }, dataSet.DataSets);
+                OldCollectionAssert.AreElementsEqual(new IDataSet[] { }, dataSet.DataSets);
 
                 dataSet.AddDataSet(dataSetWithTwoColumns);
 
                 Assert.AreEqual(2, dataSet.ColumnCount);
-                CollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns }, dataSet.DataSets);
+                OldCollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns }, dataSet.DataSets);
 
                 dataSet.AddDataSet(dataSetWithThreeColumns);
 
                 Assert.AreEqual(3, dataSet.ColumnCount);
-                CollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns, dataSetWithThreeColumns }, dataSet.DataSets);
+                OldCollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns, dataSetWithThreeColumns }, dataSet.DataSets);
             }
         }
 
@@ -155,7 +155,7 @@ namespace Gallio.Tests.Framework.Data
                 {
                     Assert.IsTrue(includeDynamicItems);
 
-                    CollectionAssert.AreElementsEqual(new IDataProvider[] { provider }, mergeProviders);
+                    OldCollectionAssert.AreElementsEqual(new IDataProvider[] { provider }, mergeProviders);
                     Assert.AreSame(bindings, mergeBindings);
                     return results;
                 });

@@ -37,7 +37,7 @@ namespace Gallio.Tests.Framework.Assertions
         [Row(true), Row(false)]
         public void ReturnsNullIfTheConditionEvaluatesAsExpected(bool expectedResult)
         {
-            NewAssert.IsNull(AssertionConditionEvaluator.Eval(() => expectedResult, expectedResult, null));
+            Assert.IsNull(AssertionConditionEvaluator.Eval(() => expectedResult, expectedResult, null));
         }
 
         [Test]
@@ -45,9 +45,9 @@ namespace Gallio.Tests.Framework.Assertions
         public void FailureDescribesExpectedResultAndConditionAndParameters(bool expectedResult)
         {
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => !expectedResult, expectedResult, null);
-            NewAssert.IsNotNull(failure);
-            NewAssert.AreEqual(String.Format("Expected the condition to evaluate to {0}.", expectedResult.ToString().ToLowerInvariant()), failure.Description);
-            NewAssert.AreEqual(new[] {
+            Assert.IsNotNull(failure);
+            Assert.AreEqual(String.Format("Expected the condition to evaluate to {0}.", expectedResult.ToString().ToLowerInvariant()), failure.Description);
+            Assert.AreEqual(new[] {
                 new AssertionFailure.LabeledValue("Condition", "! expectedResult"),
                 new AssertionFailure.LabeledValue("expectedResult", Formatter.Instance.Format(expectedResult)),
             }, failure.LabeledValues);
@@ -58,38 +58,38 @@ namespace Gallio.Tests.Framework.Assertions
         {
             object x = null;
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => x.Equals(null), true, null);
-            NewAssert.IsNotNull(failure);
-            NewAssert.AreEqual("Expected the condition to evaluate to true but it threw an exception.", failure.Description);
-            NewAssert.AreEqual(new[] {
+            Assert.IsNotNull(failure);
+            Assert.AreEqual("Expected the condition to evaluate to true but it threw an exception.", failure.Description);
+            Assert.AreEqual(new[] {
                 new AssertionFailure.LabeledValue("Condition", "x.Equals(null)"),
                 new AssertionFailure.LabeledValue("x", "null"),
             }, failure.LabeledValues);
-            NewAssert.AreEqual(1, failure.Exceptions.Count);
-            NewAssert.Contains(failure.Exceptions[0].ToString(), "NullReferenceException");
+            Assert.AreEqual(1, failure.Exceptions.Count);
+            Assert.Contains(failure.Exceptions[0].ToString(), "NullReferenceException");
         }
 
         [Test]
         public void FailureIncludesStackTrace()
         {
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => true, false, null);
-            NewAssert.IsNotNull(failure);
-            NewAssert.Contains(failure.StackTrace, "FailureIncludesStackTrace");
+            Assert.IsNotNull(failure);
+            Assert.Contains(failure.StackTrace, "FailureIncludesStackTrace");
         }
 
         [Test]
         public void FailureIncludesOptionalMessageWhenProvided()
         {
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => true, false, "Expected {0}", "true");
-            NewAssert.IsNotNull(failure);
-            NewAssert.AreEqual("Expected true", failure.Message);
+            Assert.IsNotNull(failure);
+            Assert.AreEqual("Expected true", failure.Message);
         }
 
         [Test]
         public void FailureExcludesOptionalMessageWhenOmitted()
         {
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => true, false, null);
-            NewAssert.IsNotNull(failure);
-            NewAssert.IsNull(failure.Message);
+            Assert.IsNotNull(failure);
+            Assert.IsNull(failure.Message);
         }
 
         [Test]
@@ -97,9 +97,9 @@ namespace Gallio.Tests.Framework.Assertions
         {
             int x = 42;
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => ! (x.ToString() == "42"), true, null);
-            NewAssert.IsNotNull(failure);
+            Assert.IsNotNull(failure);
 
-            NewAssert.AreEqual(new[] {
+            Assert.AreEqual(new[] {
                 new AssertionFailure.LabeledValue("Condition", "! (x.ToString() == \"42\")"),
                 new AssertionFailure.LabeledValue("x.ToString()", "\"42\""),
                 new AssertionFailure.LabeledValue("x", "42"),

@@ -106,7 +106,7 @@ namespace Gallio.Tests.Model
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeElement.CodeReference);
             Assert.AreEqual(sampleAssembly.GetName().Name, assemblyTest.Name);
             Assert.IsFalse(assemblyTest.IsTestCase);
-            Assert.GreaterEqualThan(assemblyTest.Children.Count, 2);
+            Assert.GreaterThanOrEqual(assemblyTest.Children.Count, 2);
 
             BaseTest fixtureTest = (BaseTest)GetDescendantByName(assemblyTest, "SimpleTest");
             Assert.AreSame(assemblyTest, fixtureTest.Parent);
@@ -164,15 +164,15 @@ namespace Gallio.Tests.Model
 
             Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
             Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
-            StringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
+            OldStringAssert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
             Assert.AreEqual("A sample test assembly for " + framework.Name + ".", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
             Assert.AreEqual(testResourcesNamespace, assemblyTest.Metadata.GetValue(MetadataKeys.Title));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));
 
             Assert.AreEqual("1.2.3.4", assemblyTest.Metadata.GetValue(MetadataKeys.InformationalVersion));
-            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.FileVersion));
-            StringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.Version));
+            OldStringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.FileVersion));
+            OldStringAssert.IsNonEmpty(assemblyTest.Metadata.GetValue(MetadataKeys.Version));
         }
 
         protected void PopulateTestTree()

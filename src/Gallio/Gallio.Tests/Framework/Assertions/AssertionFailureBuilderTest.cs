@@ -45,7 +45,7 @@ namespace Gallio.Tests.Framework.Assertions
         public void ConstructorSetsDescription()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            NewAssert.AreEqual("Description", builder.ToAssertionFailure().Description);
+            Assert.AreEqual("Description", builder.ToAssertionFailure().Description);
         }
 
         [Test]
@@ -53,19 +53,19 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.SetMessage("Message");
-            NewAssert.AreEqual("Message", builder.ToAssertionFailure().Message);
+            Assert.AreEqual("Message", builder.ToAssertionFailure().Message);
 
             builder.SetMessage(null);
-            NewAssert.IsNull(builder.ToAssertionFailure().Message);
+            Assert.IsNull(builder.ToAssertionFailure().Message);
 
             builder.SetMessage("New Message", null);
-            NewAssert.AreEqual("New Message", builder.ToAssertionFailure().Message);
+            Assert.AreEqual("New Message", builder.ToAssertionFailure().Message);
 
             builder.SetMessage("New Message: {0}", "Hello!");
-            NewAssert.AreEqual("New Message: Hello!", builder.ToAssertionFailure().Message);
+            Assert.AreEqual("New Message: Hello!", builder.ToAssertionFailure().Message);
 
             builder.SetMessage(null, null);
-            NewAssert.IsNull(builder.ToAssertionFailure().Message);
+            Assert.IsNull(builder.ToAssertionFailure().Message);
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.SetStackTrace("Stack");
-            NewAssert.AreEqual("Stack", builder.ToAssertionFailure().StackTrace);
+            Assert.AreEqual("Stack", builder.ToAssertionFailure().StackTrace);
         }
 
         [Test]
@@ -81,14 +81,14 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.SetStackTrace(null);
-            NewAssert.IsNull(builder.ToAssertionFailure().StackTrace);
+            Assert.IsNull(builder.ToAssertionFailure().StackTrace);
         }
 
         [Test]
         public void AutomaticStackTraceUsedIfNotSet()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            NewAssert.Contains(builder.ToAssertionFailure().StackTrace, "AutomaticStackTraceUsedIfNotSet");
+            Assert.Contains(builder.ToAssertionFailure().StackTrace, "AutomaticStackTraceUsedIfNotSet");
         }
 
         [Test]
@@ -96,13 +96,13 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.SetRawExpectedValue("Abc");
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected Value", "\"Abc\"")
             }, builder.ToAssertionFailure().LabeledValues);
 
             builder.SetRawExpectedValue(null);
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected Value", "null")
             }, builder.ToAssertionFailure().LabeledValues);
@@ -113,13 +113,13 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.SetRawActualValue("Abc");
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Actual Value", "\"Abc\"")
             }, builder.ToAssertionFailure().LabeledValues);
 
             builder.SetRawActualValue(null);
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Actual Value", "null")
             }, builder.ToAssertionFailure().LabeledValues);
@@ -131,14 +131,14 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.SetRawLabeledValue("Abc", 123);
             builder.SetRawLabeledValue("Def", 3.0m);
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", "123"),
                 new AssertionFailure.LabeledValue("Def", "3.0m")
             }, builder.ToAssertionFailure().LabeledValues);
 
             builder.SetRawLabeledValue("Abc", null);
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Def", "3.0m"),
                 new AssertionFailure.LabeledValue("Abc", "null")
@@ -150,7 +150,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.SetLabeledValue("Abc", "123");
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", "123")
             }, builder.ToAssertionFailure().LabeledValues);
@@ -161,7 +161,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.SetLabeledValue("Abc", new StructuredText("123"));
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", new StructuredText("123"))
             }, builder.ToAssertionFailure().LabeledValues);
@@ -172,7 +172,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.SetLabeledValue(new AssertionFailure.LabeledValue("Abc", new StructuredText("123")));
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", new StructuredText("123"))
             }, builder.ToAssertionFailure().LabeledValues);
@@ -186,7 +186,7 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
             builder.SetRawExpectedAndActualValueWithDiffs(str, str);
 
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected & Actual Value", new StructuredText("\"123\"")),
                 new AssertionFailure.LabeledValue("Remark", "The expected and actual values are the same instance.")
@@ -199,7 +199,7 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
             builder.SetRawExpectedAndActualValueWithDiffs(1, 1u);
 
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected & Actual Value", new StructuredText("1")),
                 new AssertionFailure.LabeledValue("Remark", "The expected and actual values are distinct instances but their formatted representations look the same.")
@@ -218,7 +218,7 @@ namespace Gallio.Tests.Framework.Assertions
             StructuredTextWriter actualValueWriter = new StructuredTextWriter();
             diffSet.WriteTo(actualValueWriter, DiffStyle.RightOnly);
 
-            NewAssert.AreEqual(new[]
+            Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected Value", expectedValueWriter.ToStructuredText()),
                 new AssertionFailure.LabeledValue("Actual Value", actualValueWriter.ToStructuredText())
@@ -237,9 +237,9 @@ namespace Gallio.Tests.Framework.Assertions
             TestLog.Write(failure);
 
             int split = AssertionFailureBuilder.CompressedDiffContextLength / 2;
-            NewAssert.AreEqual("\"z" + new string('x', split) + "..." + new string('x', split) + "z\"",
+            Assert.AreEqual("\"z" + new string('x', split) + "..." + new string('x', split) + "z\"",
                 failure.LabeledValues[0].FormattedValue.ToString());
-            NewAssert.AreEqual("\"Z" + new string('x', split) + "..." + new string('x', split) + "Z\"",
+            Assert.AreEqual("\"Z" + new string('x', split) + "..." + new string('x', split) + "Z\"",
                 failure.LabeledValues[1].FormattedValue.ToString());
         }
 
@@ -247,14 +247,14 @@ namespace Gallio.Tests.Framework.Assertions
         public void AddExceptionThrowsIfArgumentIsNull()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            NewAssert.Throws<ArgumentNullException>(() => builder.AddException((Exception) null));
+            Assert.Throws<ArgumentNullException>(() => builder.AddException((Exception) null));
         }
 
         [Test]
         public void AddExceptionDataThrowsIfArgumentIsNull()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            NewAssert.Throws<ArgumentNullException>(() => builder.AddException((ExceptionData)null));
+            Assert.Throws<ArgumentNullException>(() => builder.AddException((ExceptionData)null));
         }
 
         [Test]
@@ -264,8 +264,8 @@ namespace Gallio.Tests.Framework.Assertions
             builder.AddException(new InvalidOperationException("Boom 1"));
             builder.AddException(new InvalidOperationException("Boom 2"));
 
-            NewAssert.Over.Sequence(new[] { "Boom 1", "Boom 2" }, builder.ToAssertionFailure().Exceptions,
-                (expectedSubstring, actual) => NewAssert.Contains(actual.ToString(), expectedSubstring));
+            Assert.Over.Sequence(new[] { "Boom 1", "Boom 2" }, builder.ToAssertionFailure().Exceptions,
+                (expectedSubstring, actual) => Assert.Contains(actual.ToString(), expectedSubstring));
         }
     }
 }

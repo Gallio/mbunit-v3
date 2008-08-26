@@ -18,14 +18,14 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
-    [TestsOn(typeof(StringAssert))]
-    public class StringAssertTest
+    [TestsOn(typeof(OldStringAssert))]
+    public class OldStringAssertTest
     {
         #region AreEqual
         [Test]
         public void AreEqualIgnoreCase()
         {
-            StringAssert.AreEqualIgnoreCase("hello", "HELLO");
+            OldStringAssert.AreEqualIgnoreCase("hello", "HELLO");
         }
 
         #endregion
@@ -34,7 +34,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void DoesNotContain()
         {
-            StringAssert.DoesNotContain("hello", 'k');
+            OldStringAssert.DoesNotContain("hello", 'k');
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace MbUnit.Tests.Framework
         {
             string s = "frame work";
             string pattern = @"fra";
-            StringAssert.StartsWith(s, pattern);
+            OldStringAssert.StartsWith(s, pattern);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace MbUnit.Tests.Framework
         {
             string s = "framework";
             string pattern = @"ork";
-            StringAssert.EndsWith(s, pattern);
+            OldStringAssert.EndsWith(s, pattern);
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace MbUnit.Tests.Framework
         {
             string s = "framework";
             string contain = "ork";
-            StringAssert.Contains(s, contain);
+            OldStringAssert.Contains(s, contain);
         }
 
         #endregion
@@ -67,13 +67,13 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void IsEmpty()
         {
-            StringAssert.IsEmpty("");
+            OldStringAssert.IsEmpty("");
         }
 
         [Test]
         public void IsNotEmpty()
         {
-            StringAssert.IsNonEmpty(" ");
+            OldStringAssert.IsNonEmpty(" ");
         }
 
         #endregion
@@ -85,7 +85,7 @@ namespace MbUnit.Tests.Framework
             string s = "Testing";
             string pattern = @"^Testing$";
 
-            StringAssert.FullMatch(s, pattern);
+            OldStringAssert.FullMatch(s, pattern);
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace MbUnit.Tests.Framework
             string s = "Testing";
             string regEx = @"(?<Test>\w{3})$";
 
-            StringAssert.Like(s, regEx);
+            OldStringAssert.Like(s, regEx);
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace MbUnit.Tests.Framework
             string s = "Testing";
             string regEx = @"notthere";
 
-            StringAssert.NotLike(s, regEx);
+            OldStringAssert.NotLike(s, regEx);
         }
 
 

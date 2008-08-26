@@ -23,7 +23,7 @@ namespace MbUnit.Framework
 	/// <summary>
 	/// Array Assertion class
 	/// </summary>
-	public static class ArrayAssert
+	public static class OldArrayAssert
 	{
 		/// <summary>
 		/// Verifies that both array have the same dimension and elements.
@@ -35,14 +35,14 @@ namespace MbUnit.Framework
 			if(expected==null && actual==null)
 				return;
 			
-			Assert.IsNotNull(expected);
-			Assert.IsNotNull(actual);
+			OldAssert.IsNotNull(expected);
+			OldAssert.IsNotNull(actual);
 			
-			Assert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
-			Assert.AreEqual(expected.Length,actual.Length);
+			OldAssert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
+			OldAssert.AreEqual(expected.Length,actual.Length);
 			for(int i = 0;i<expected.Length;++i)
 			{
-				Assert.AreEqual(expected[i], actual[i]);
+				OldAssert.AreEqual(expected[i], actual[i]);
 			}
 		}
 
@@ -51,14 +51,14 @@ namespace MbUnit.Framework
 			if(expected==null && actual==null)
 				return;
 			
-			Assert.IsNotNull(expected);
-			Assert.IsNotNull(actual);
+			OldAssert.IsNotNull(expected);
+			OldAssert.IsNotNull(actual);
 			
-			Assert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
-			Assert.AreEqual(expected.Length,actual.Length);
+			OldAssert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
+			OldAssert.AreEqual(expected.Length,actual.Length);
 			for(int i = 0;i<expected.Length;++i)
 			{
-				Assert.AreEqual(expected[i], actual[i]);
+				OldAssert.AreEqual(expected[i], actual[i]);
 			}
 		}
 
@@ -67,14 +67,14 @@ namespace MbUnit.Framework
 			if(expected==null && actual==null)
 				return;
 			
-			Assert.IsNotNull(expected);
-			Assert.IsNotNull(actual);
+			OldAssert.IsNotNull(expected);
+			OldAssert.IsNotNull(actual);
 			
-			Assert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
-			Assert.AreEqual(expected.Length,actual.Length);
+			OldAssert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
+			OldAssert.AreEqual(expected.Length,actual.Length);
 			for(int i = 0;i<expected.Length;++i)
 			{
-				Assert.AreEqual(expected[i], actual[i]);
+				OldAssert.AreEqual(expected[i], actual[i]);
 			}
 		}
 						
@@ -83,14 +83,14 @@ namespace MbUnit.Framework
 			if(expected==null && actual==null)
 				return;
 			
-			Assert.IsNotNull(expected);
-			Assert.IsNotNull(actual);
+			OldAssert.IsNotNull(expected);
+			OldAssert.IsNotNull(actual);
 			
-			Assert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
-			Assert.AreEqual(expected.Length,actual.Length);
+			OldAssert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
+			OldAssert.AreEqual(expected.Length,actual.Length);
 			for(int i = 0;i<expected.Length;++i)
 			{
-				Assert.AreEqual(expected[i], actual[i]);
+				OldAssert.AreEqual(expected[i], actual[i]);
 			}
 		}
 
@@ -100,14 +100,14 @@ namespace MbUnit.Framework
 			if(expected==null && actual==null)
 				return;
 			
-			Assert.IsNotNull(expected);
-			Assert.IsNotNull(actual);
+			OldAssert.IsNotNull(expected);
+			OldAssert.IsNotNull(actual);
 			
-			Assert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
-			Assert.AreEqual(expected.Length,actual.Length);
+			OldAssert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
+			OldAssert.AreEqual(expected.Length,actual.Length);
 			for(int i = 0;i<expected.Length;++i)
 			{
-				Assert.AreEqual(expected[i], actual[i]);
+				OldAssert.AreEqual(expected[i], actual[i]);
 			}
 		}
 
@@ -116,14 +116,14 @@ namespace MbUnit.Framework
 			if(expected==null && actual==null)
 				return;
 			
-			Assert.IsNotNull(expected);
-			Assert.IsNotNull(actual);
+			OldAssert.IsNotNull(expected);
+			OldAssert.IsNotNull(actual);
 			
-			Assert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
-			Assert.AreEqual(expected.Length,actual.Length);
+			OldAssert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
+			OldAssert.AreEqual(expected.Length,actual.Length);
 			for(int i = 0;i<expected.Length;++i)
 			{
-				Assert.AreEqual(expected[i], actual[i],delta);
+				OldAssert.AreEqual(expected[i], actual[i],delta);
 			}
 		}
 
@@ -133,14 +133,14 @@ namespace MbUnit.Framework
 			if(expected==null && actual==null)
 				return;
 			
-			Assert.IsNotNull(expected);
-			Assert.IsNotNull(actual);
+			OldAssert.IsNotNull(expected);
+			OldAssert.IsNotNull(actual);
 			
-			Assert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
-			Assert.AreEqual(expected.Length,actual.Length);
+			OldAssert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
+			OldAssert.AreEqual(expected.Length,actual.Length);
 			for(int i = 0;i<expected.Length;++i)
 			{
-				Assert.AreEqual(expected[i], actual[i],delta);
+				OldAssert.AreEqual(expected[i], actual[i],delta);
 			}
 		}	
 		
@@ -150,14 +150,14 @@ namespace MbUnit.Framework
 			if(expected==null && actual==null)
 				return;
 			
-			Assert.IsNotNull(expected);
-			Assert.IsNotNull(actual);
+			OldAssert.IsNotNull(expected);
+			OldAssert.IsNotNull(actual);
 			
-			Assert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
-			Assert.AreEqual(expected.Length,actual.Length);
+			OldAssert.AreEqual(expected.Rank,actual.Rank,"Rank are not equal");
+			OldAssert.AreEqual(expected.Length,actual.Length);
 			for(int i = 0;i<expected.Length;++i)
 			{
-				Assert.AreEqual(expected[i], actual[i]);
+				OldAssert.AreEqual(expected[i], actual[i]);
 			}
 		}
 

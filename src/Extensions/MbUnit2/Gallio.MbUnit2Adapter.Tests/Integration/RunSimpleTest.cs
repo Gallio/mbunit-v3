@@ -45,7 +45,7 @@ namespace Gallio.MbUnit2Adapter.Tests.Integration
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
             Assert.AreEqual(TestOutcome.Failed, run.Result.Outcome);
-            StringAssert.Contains(run.TestLog.GetStream(TestLogStreamNames.Failures).ToString(), "Boom");
+            Assert.Contains(run.TestLog.GetStream(TestLogStreamNames.Failures).ToString(), "Boom");
         }
     }
 }

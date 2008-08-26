@@ -51,14 +51,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\ApartmentStateTest.cs" />
-    <Compile Include="Framework\ArrayAssertTest.cs" />
+    <Compile Include="Framework\OldArrayAssertTest.cs" />
     <Compile Include="Framework\AssertExTest.cs" />
     <Compile Include="Framework\AssertImplementationConsistencyTest.cs" />
-    <Compile Include="Framework\NewAssertTest.cs" />
     <Compile Include="Framework\AssertTest.cs" />
+    <Compile Include="Framework\OldAssertTest.cs" />
     <Compile Include="Framework\AssertWithReflectionTest.cs" />
-    <Compile Include="Framework\AssertWithTypeTest.cs" />
-    <Compile Include="Framework\CollectionAssertTest.cs" />
+    <Compile Include="Framework\OldAssertWithTypeTest.cs" />
+    <Compile Include="Framework\OldCollectionAssertTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassTest.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyComparisonContractAttributeTest.cs" />
@@ -89,7 +89,7 @@
     <Compile Include="Framework\Reflection\SampleClass.cs" />
     <Compile Include="Framework\Reflection\StaticTests.cs" />
     <Compile Include="Framework\Reflection\TestSample.cs" />
-    <Compile Include="Framework\StringAssertTest.cs" />
+    <Compile Include="Framework\OldStringAssertTest.cs" />
     <Compile Include="Framework\Xml\XmlSerializationAssertTest.cs" />
   </ItemGroup>
   <ItemGroup>

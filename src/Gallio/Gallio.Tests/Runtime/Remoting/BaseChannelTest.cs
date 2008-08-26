@@ -47,20 +47,20 @@ namespace Gallio.Tests.Runtime.Remoting
 
             using (StubChannel stub = new StubChannel(channel, uri))
             {
-                CollectionAssert.Contains(ChannelServices.RegisteredChannels, channel);
+                OldCollectionAssert.Contains(ChannelServices.RegisteredChannels, channel);
 
                 Assert.AreSame(channel, stub.Channel);
                 Assert.AreEqual(uri, stub.ChannelUri);
             }
 
-            CollectionAssert.DoesNotContain(ChannelServices.RegisteredChannels, channel);
+            OldCollectionAssert.DoesNotContain(ChannelServices.RegisteredChannels, channel);
         }
 
         [Test]
         public void GetServiceUriCombinesTheServiceNameWithTheChannelUri()
         {
             using (StubChannel stub = new StubChannel(new IpcClientChannel(), new Uri("ipc://foo")))
-                Assert.AreEqual(new Uri("ipc://foo/Service"), stub.GetServiceUri("Service"));
+                Assert.AreEqual("ipc://foo/Service", stub.GetServiceUri("Service"));
         }
 
         [Test, ExpectedArgumentNullException]

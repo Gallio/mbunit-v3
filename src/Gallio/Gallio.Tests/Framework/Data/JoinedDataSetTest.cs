@@ -72,17 +72,17 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 Assert.AreEqual(0, dataSet.ColumnCount);
-                CollectionAssert.AreElementsEqual(new IDataSet[] { }, dataSet.DataSets);
+                OldCollectionAssert.AreElementsEqual(new IDataSet[] { }, dataSet.DataSets);
 
                 dataSet.AddDataSet(dataSetWithTwoColumns);
 
                 Assert.AreEqual(2, dataSet.ColumnCount);
-                CollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns }, dataSet.DataSets);
+                OldCollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns }, dataSet.DataSets);
 
                 dataSet.AddDataSet(dataSetWithThreeColumns);
 
                 Assert.AreEqual(5, dataSet.ColumnCount);
-                CollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns, dataSetWithThreeColumns }, dataSet.DataSets);
+                OldCollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns, dataSetWithThreeColumns }, dataSet.DataSets);
             }
         }
 
@@ -226,12 +226,12 @@ namespace Gallio.Tests.Framework.Data
                     bool includeDynamicItems)
                 {
                     Assert.IsTrue(includeDynamicItems);
-                    CollectionAssert.AreElementsEqual(new IDataProvider[] { dataSet1, dataSet2 }, joinProviders);
+                    OldCollectionAssert.AreElementsEqual(new IDataProvider[] { dataSet1, dataSet2 }, joinProviders);
 
                     Assert.AreEqual(2, joinBindingsPerProvider.Count);
 
-                    CollectionAssert.AreElementsEqual(new DataBinding[] { pathBinding, indexZeroBinding, pathBinding }, joinBindingsPerProvider[0]);
-                    CollectionAssert.AreElementsEqual(new DataBinding[] { indexZeroBinding, indexOneBinding }, joinBindingsPerProvider[1]);
+                    OldCollectionAssert.AreElementsEqual(new DataBinding[] { pathBinding, indexZeroBinding, pathBinding }, joinBindingsPerProvider[0]);
+                    OldCollectionAssert.AreElementsEqual(new DataBinding[] { indexZeroBinding, indexOneBinding }, joinBindingsPerProvider[1]);
 
                     return results;
                 });

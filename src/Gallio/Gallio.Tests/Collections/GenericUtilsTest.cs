@@ -34,7 +34,7 @@ namespace Gallio.Tests.Collections
                 return value.ToString();
             });
 
-            ArrayAssert.AreEqual(expectedOutput, output);
+            OldArrayAssert.AreEqual(expectedOutput, output);
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace Gallio.Tests.Collections
                 return value.ToString();
             });
 
-            ArrayAssert.AreEqual(expectedOutput, output);
+            OldArrayAssert.AreEqual(expectedOutput, output);
         }
     }
 }

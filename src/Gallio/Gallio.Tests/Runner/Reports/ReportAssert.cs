@@ -48,8 +48,8 @@ namespace Gallio.Tests.Runner.Reports
                 return;
             }
 
-            CollectionAssert.AreElementsEqual(expected.AssemblyFiles, actual.AssemblyFiles);
-            CollectionAssert.AreElementsEqual(expected.HintDirectories, actual.HintDirectories);
+            OldCollectionAssert.AreElementsEqual(expected.AssemblyFiles, actual.AssemblyFiles);
+            OldCollectionAssert.AreElementsEqual(expected.HintDirectories, actual.HintDirectories);
 
             // TODO: Compare HostSetup objects.
         }

@@ -24,15 +24,15 @@ namespace Gallio.Tests.Framework
         [Test]
         public void CurrentStepHasCorrectTestName()
         {
-            StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/TestStepTest/CurrentStepHasCorrectTestName$");
+            OldStringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/TestStepTest/CurrentStepHasCorrectTestName$");
 
             TestStep.RunStep("Step1", delegate
             {
-                StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/TestStepTest/CurrentStepHasCorrectTestName/Step1$");
+                OldStringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/TestStepTest/CurrentStepHasCorrectTestName/Step1$");
 
                 TestStep.RunStep("Step2", delegate
                 {
-                    StringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/TestStepTest/CurrentStepHasCorrectTestName/Step1/Step2$");
+                    OldStringAssert.Like(TestStep.CurrentStep.FullName, "Gallio.Tests/TestStepTest/CurrentStepHasCorrectTestName/Step1/Step2$");
                 });
             });
         }
@@ -46,7 +46,7 @@ namespace Gallio.Tests.Framework
             Assert.AreEqual("And improved!", TestStep.CurrentStep.Metadata.GetValue("New"));
 
             TestStep.AddMetadata("New", "Now with less sugar.");
-            CollectionAssert.AreElementsEqual(new string[] { "And improved!", "Now with less sugar." },
+            OldCollectionAssert.AreElementsEqual(new string[] { "And improved!", "Now with less sugar." },
                 TestStep.CurrentStep.Metadata["New"]);
         }
     }

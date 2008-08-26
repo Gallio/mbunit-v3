@@ -258,7 +258,7 @@ namespace Gallio.Tests.Framework.Data
             Assert.AreSame(slotValues, spec.SlotValues);
             Assert.AreSame(NullConverter.Instance, spec.Converter);
             Assert.AreEqual("Void StaticMethod[Int32](Int32)", spec.ResolvedMethod.ToString());
-            CollectionAssert.AreElementsEqual(new object[] { 1 }, spec.ResolvedArguments);
+            OldCollectionAssert.AreElementsEqual(new object[] { 1 }, spec.ResolvedArguments);
         }
 
         [Test]

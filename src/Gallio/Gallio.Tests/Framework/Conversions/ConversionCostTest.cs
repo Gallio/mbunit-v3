@@ -79,7 +79,7 @@ namespace Gallio.Tests.Framework.Conversions
         [Test]
         public void CompareToRanksConversionCostsNumerically()
         {
-            Assert.LowerThan(0, ConversionCost.Typical.CompareTo(ConversionCost.Best));
+            Assert.LessThan(0, ConversionCost.Typical.CompareTo(ConversionCost.Best));
             Assert.GreaterThan(0, ConversionCost.Best.CompareTo(ConversionCost.Typical));
             Assert.AreEqual(0, ConversionCost.Best.CompareTo(ConversionCost.Best));
         }

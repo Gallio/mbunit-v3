@@ -45,7 +45,7 @@ namespace Gallio.XunitAdapter.Tests.Integration
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
             Assert.AreEqual(TestStatus.Failed, run.Result.Outcome.Status);
-            StringAssert.Contains(run.TestLog.GetStream(TestLogStreamNames.Failures).ToString(), "Boom");
+            OldStringAssert.Contains(run.TestLog.GetStream(TestLogStreamNames.Failures).ToString(), "Boom");
         }
     }
 }

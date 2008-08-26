@@ -33,7 +33,7 @@ namespace Gallio.Tests.Reflection
             members.Add(Reflector.Wrap(typeof(B).GetMethod("MemberB")));
 
             IList<IMethodInfo> sortedMembers = CodeElementSorter.SortMembersByDeclaringType(members);
-            CollectionAssert.AreElementsEqual(new IMethodInfo[] { members[0], members[2], members[1] }, sortedMembers);
+            OldCollectionAssert.AreElementsEqual(new IMethodInfo[] { members[0], members[2], members[1] }, sortedMembers);
         }
 
         private class A

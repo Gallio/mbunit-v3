@@ -56,7 +56,7 @@ namespace Gallio.PowerShellCommands.Tests
         {
             ProcessTask task = RunPowerShell("-verbose -filter Type:PassingTests -ignore-annotations");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
-            StringAssert.Like(task.ConsoleOutput, "ResultCode *: 0");
+            OldStringAssert.Like(task.ConsoleOutput, "ResultCode *: 0");
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Gallio.PowerShellCommands.Tests
         {
             ProcessTask task = RunPowerShell("-verbose -filter Type:SimpleTest -ignore-annotations");
             Assert.Contains(task.ConsoleOutput, "2 run, 1 passed, 1 failed, 0 inconclusive, 0 skipped");
-            StringAssert.Like(task.ConsoleOutput, "ResultCode *: 1");
+            OldStringAssert.Like(task.ConsoleOutput, "ResultCode *: 1");
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace Gallio.PowerShellCommands.Tests
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.IsFalse(task.ConsoleOutput.Contains("An error has occurred that was not properly handled. Additional information is shown below. The Windows PowerShell process will exit."),
                 "Should not print a message about the unhandled exception.");
-            StringAssert.Like(task.ConsoleOutput, "ResultCode *: 0");
+            OldStringAssert.Like(task.ConsoleOutput, "ResultCode *: 0");
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Gallio.PowerShellCommands.Tests
             ProcessTask task = RunPowerShell("-filter Type:PassingTests -ignore-annotations -runner-extension 'DebugExtension,Gallio'");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
             Assert.Contains(task.ConsoleOutput, "TestStepStarted"); // text appears in the debug output
-            StringAssert.Like(task.ConsoleOutput, "ResultCode *: 0");
+            OldStringAssert.Like(task.ConsoleOutput, "ResultCode *: 0");
         }
 
         private ProcessTask RunPowerShell(string options)

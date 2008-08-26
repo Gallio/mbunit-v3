@@ -91,14 +91,14 @@ namespace Gallio.Tests.Model.Logging
         [Test]
         public void ConstructorInitializesProperties()
         {
-            NewAssert.AreEqual("foo", new Marker("foo").Class);
+            Assert.AreEqual("foo", new Marker("foo").Class);
         }
 
         [Test]
         public void ToStringReturnsTheMarkerClassAndSortedAttributeValues()
         {
-            NewAssert.AreEqual("foo", new Marker("foo").ToString());
-            NewAssert.AreEqual("foo: a = \"x\", b = \"z\", c = \"y\"", new Marker("foo")
+            Assert.AreEqual("foo", new Marker("foo").ToString());
+            Assert.AreEqual("foo: a = \"x\", b = \"z\", c = \"y\"", new Marker("foo")
                 .WithAttribute("a", "x")
                 .WithAttribute("c", "y")
                 .WithAttribute("b", "z").ToString());

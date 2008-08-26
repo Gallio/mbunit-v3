@@ -55,20 +55,20 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
                 Assert.AreEqual(0, launcher.ReportFormatOptions.Count);
-                CollectionAssert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
+                OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
                 Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
                 Assert.IsFalse(launcher.ShowReports);
 
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
                 Assert.AreEqual(0, launcher.TestRunnerExtensions.Count);
-                CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestRunnerExtensionSpecifications);
+                OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.TestRunnerExtensionSpecifications);
 
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
                 Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
-                CollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
+                OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
 
-                CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.AssemblyFiles);
-                CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
+                OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.AssemblyFiles);
+                OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
 
                 Assert.IsNull(launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
@@ -114,20 +114,20 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
                 Assert.AreEqual(0, launcher.ReportFormatOptions.Count);
-                CollectionAssert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
+                OldCollectionAssert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
 
                 Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
                 Assert.AreEqual(0, launcher.TestRunnerExtensions.Count);
-                CollectionAssert.AreElementsEqual(new string[] { "DebugExtension,Gallio" }, launcher.TestRunnerExtensionSpecifications);
+                OldCollectionAssert.AreElementsEqual(new string[] { "DebugExtension,Gallio" }, launcher.TestRunnerExtensionSpecifications);
 
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
                 Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
-                CollectionAssert.AreElementsEqual(new string[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
+                OldCollectionAssert.AreElementsEqual(new string[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
 
-                CollectionAssert.AreElementsEqual(new string[] { "assembly1", "assembly2" }, launcher.TestPackageConfig.AssemblyFiles);
-                CollectionAssert.AreElementsEqual(new string[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);
+                OldCollectionAssert.AreElementsEqual(new string[] { "assembly1", "assembly2" }, launcher.TestPackageConfig.AssemblyFiles);
+                OldCollectionAssert.AreElementsEqual(new string[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);
 
                 Assert.AreEqual("baseDir", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
                 Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);

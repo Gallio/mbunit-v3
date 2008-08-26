@@ -74,7 +74,7 @@ namespace Gallio.Tests.Framework.Assertions
                     completed = true;
                 }, AssertionFailureBehavior.LogAndThrow, false);
 
-                ArrayAssert.AreEqual(new[] { failure1 }, failures);
+                OldArrayAssert.AreEqual(new[] { failure1 }, failures);
                 Assert.IsTrue(failure1.WasWriteToCalled);
                 Assert.IsFalse(failure2.WasWriteToCalled);
                 Assert.IsFalse(completed);
@@ -97,7 +97,7 @@ namespace Gallio.Tests.Framework.Assertions
             [Test]
             public void AnExceptionMayEscapeTheBlock()
             {
-                NewAssert.Throws<InvalidOperationException>(delegate
+                Assert.Throws<InvalidOperationException>(delegate
                 {
                     AssertionContext.CurrentContext.CaptureFailures(delegate
                     {
@@ -123,7 +123,7 @@ namespace Gallio.Tests.Framework.Assertions
                     completed = true;
                 }, AssertionFailureBehavior.Throw, false);
 
-                ArrayAssert.AreEqual(new[] { failure1 }, failures);
+                OldArrayAssert.AreEqual(new[] { failure1 }, failures);
                 Assert.IsFalse(failure1.WasWriteToCalled);
                 Assert.IsFalse(failure2.WasWriteToCalled);
                 Assert.IsFalse(completed);
@@ -146,7 +146,7 @@ namespace Gallio.Tests.Framework.Assertions
                     completed = true;
                 }, AssertionFailureBehavior.Log, false);
 
-                ArrayAssert.AreEqual(new[] { failure1, failure2 }, failures);
+                OldArrayAssert.AreEqual(new[] { failure1, failure2 }, failures);
                 Assert.IsTrue(failure1.WasWriteToCalled);
                 Assert.IsTrue(failure2.WasWriteToCalled);
                 Assert.IsTrue(completed);
@@ -169,7 +169,7 @@ namespace Gallio.Tests.Framework.Assertions
                     completed = true;
                 }, AssertionFailureBehavior.Defer, false);
 
-                ArrayAssert.AreEqual(new[] { failure1, failure2 }, failures);
+                OldArrayAssert.AreEqual(new[] { failure1, failure2 }, failures);
                 Assert.IsFalse(failure1.WasWriteToCalled);
                 Assert.IsFalse(failure2.WasWriteToCalled);
                 Assert.IsTrue(completed);

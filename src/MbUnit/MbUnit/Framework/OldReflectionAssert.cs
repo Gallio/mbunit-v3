@@ -24,7 +24,7 @@ namespace MbUnit.Framework
 	/// <summary>
 	/// Reflection Assertion class
 	/// </summary>
-	public static class ReflectionAssert
+    public static class OldReflectionAssert
 	{
 		/// <summary>
 		/// Asserts whether an instance of the <paramref name="parent"/> 
@@ -111,7 +111,7 @@ namespace MbUnit.Framework
 		public static void HasMethod(Type type, BindingFlags flags, string name, params Type[] parameters)
 		{
 			Assert.IsNotNull(type, "Type is null");
-			StringAssert.IsNonEmpty(name);
+			OldStringAssert.IsNonEmpty(name);
 			
 			Assert.IsNotNull(type.GetMethod(name,parameters),
 			                 "Method {0} of type {1} not found with matching arguments",
@@ -134,7 +134,7 @@ namespace MbUnit.Framework
 		public static void HasField(Type type, BindingFlags flags,string name)
 		{
 			Assert.IsNotNull(type, "Type is null");
-			StringAssert.IsNonEmpty(name);
+			OldStringAssert.IsNonEmpty(name);
 			
 			Assert.IsNotNull(type.GetField(name),
 			                 "Field {0} of type {1} not found with binding flags {2}",

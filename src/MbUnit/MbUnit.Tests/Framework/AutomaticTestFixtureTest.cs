@@ -49,7 +49,7 @@ namespace MbUnit.Tests.Framework
 
             TestData nestedFixture = Runner.GetTestData(CodeReference.CreateFromType(typeof(AutomaticTestFixtureSampleWithNonPrimaryPattern.NestedFixture)));
             Assert.IsNotNull(nestedFixture);
-            CollectionAssert.Contains(fixture.Children, nestedFixture);
+            OldCollectionAssert.Contains(fixture.Children, nestedFixture);
         }
 
         [Test]
@@ -69,12 +69,12 @@ namespace MbUnit.Tests.Framework
             {
                 TestData test = Runner.GetTestData(CodeReference.CreateFromMember(testMethod));
                 Assert.IsNotNull(test);
-                CollectionAssert.Contains(fixture.Children, test);
+                OldCollectionAssert.Contains(fixture.Children, test);
             }
 
             TestData nestedFixture = Runner.GetTestData(CodeReference.CreateFromType(sampleType.GetNestedType("NestedFixture")));
             Assert.IsNotNull(nestedFixture);
-            CollectionAssert.Contains(fixture.Children, nestedFixture);
+            OldCollectionAssert.Contains(fixture.Children, nestedFixture);
         }
 
         [Test]

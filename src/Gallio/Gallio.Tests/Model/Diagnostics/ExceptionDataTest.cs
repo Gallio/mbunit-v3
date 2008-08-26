@@ -57,16 +57,16 @@ namespace Gallio.Tests.Model.Diagnostics
             PopulateStackTrace(outer);
 
             ExceptionData outerData = new ExceptionData(outer);
-            NewAssert.AreEqual(outer.GetType().FullName, outerData.Type);
-            NewAssert.AreEqual(outer.Message, outerData.Message);
-            NewAssert.AreEqual(outer.StackTrace, outerData.StackTrace);
-            NewAssert.IsNotNull(outerData.InnerException);
+            Assert.AreEqual(outer.GetType().FullName, outerData.Type);
+            Assert.AreEqual(outer.Message, outerData.Message);
+            Assert.AreEqual(outer.StackTrace, outerData.StackTrace);
+            Assert.IsNotNull(outerData.InnerException);
 
             ExceptionData innerData = outerData.InnerException;
-            NewAssert.AreEqual(inner.GetType().FullName, innerData.Type);
-            NewAssert.AreEqual(inner.Message, innerData.Message);
-            NewAssert.AreEqual(inner.StackTrace, innerData.StackTrace);
-            NewAssert.IsNull(innerData.InnerException);
+            Assert.AreEqual(inner.GetType().FullName, innerData.Type);
+            Assert.AreEqual(inner.Message, innerData.Message);
+            Assert.AreEqual(inner.StackTrace, innerData.StackTrace);
+            Assert.IsNull(innerData.InnerException);
         }
 
         [Test]
@@ -75,29 +75,29 @@ namespace Gallio.Tests.Model.Diagnostics
             ExceptionData innerData = new ExceptionData("type", "message", "stacktrace", null);
             ExceptionData outerData = new ExceptionData("type", "message", "stacktrace", innerData);
 
-            NewAssert.AreEqual("type", innerData.Type);
-            NewAssert.AreEqual("message", innerData.Message);
-            NewAssert.AreEqual("stacktrace", innerData.StackTrace);
-            NewAssert.IsNull(innerData.InnerException);
+            Assert.AreEqual("type", innerData.Type);
+            Assert.AreEqual("message", innerData.Message);
+            Assert.AreEqual("stacktrace", innerData.StackTrace);
+            Assert.IsNull(innerData.InnerException);
 
-            NewAssert.AreEqual("type", outerData.Type);
-            NewAssert.AreEqual("message", outerData.Message);
-            NewAssert.AreEqual("stacktrace", outerData.StackTrace);
-            NewAssert.AreSame(innerData, outerData.InnerException);
+            Assert.AreEqual("type", outerData.Type);
+            Assert.AreEqual("message", outerData.Message);
+            Assert.AreEqual("stacktrace", outerData.StackTrace);
+            Assert.AreSame(innerData, outerData.InnerException);
         }
 
         [Test]
         public void WriteToThrowsIfArgumentIsNull()
         {
             ExceptionData data = new ExceptionData("type", "message", "stacktrace", null);
-            NewAssert.Throws<ArgumentNullException>(() => data.WriteTo(null));
+            Assert.Throws<ArgumentNullException>(() => data.WriteTo(null));
         }
 
         [Test]
         public void ToStringBareBones()
         {
             ExceptionData data = new ExceptionData("type", "message", "stacktrace", null);
-            NewAssert.AreEqual("type: message\nstacktrace", data.ToString());
+            Assert.AreEqual("type: message\nstacktrace", data.ToString());
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace Gallio.Tests.Model.Diagnostics
         {
             ExceptionData innerData = new ExceptionData("type", "message", "stacktrace", null);
             ExceptionData outerData = new ExceptionData("type", "message", "stacktrace", innerData);
-            NewAssert.AreEqual("type: message ---> type: message\nstacktrace\n   --- End of inner exception stack trace ---\nstacktrace", outerData.ToString());
+            Assert.AreEqual("type: message ---> type: message\nstacktrace\n   --- End of inner exception stack trace ---\nstacktrace", outerData.ToString());
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Gallio.Tests.Model.Diagnostics
             StringTestLogWriter writer = new StringTestLogWriter(true);
             data.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n[Marker \'StackTrace\']stacktrace[End][End]", writer.ToString());
+            Assert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n[Marker \'StackTrace\']stacktrace[End][End]", writer.ToString());
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace Gallio.Tests.Model.Diagnostics
             StringTestLogWriter writer = new StringTestLogWriter(true);
             outerData.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End] ---> [Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n[Marker \'StackTrace\']stacktrace[End][End]\n   --- End of inner exception stack trace ---\n[Marker \'StackTrace\']stacktrace[End][End]", writer.ToString());
+            Assert.AreEqual("[Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End] ---> [Marker \'Exception\'][Marker \'ExceptionType\']type[End]: [Marker \'ExceptionMessage\']message[End]\n[Marker \'StackTrace\']stacktrace[End][End]\n   --- End of inner exception stack trace ---\n[Marker \'StackTrace\']stacktrace[End][End]", writer.ToString());
         }
 
         private static void PopulateStackTrace(Exception ex)

@@ -46,7 +46,7 @@ namespace Gallio.Tests.Framework.Text
         [Test]
         public void ToStringFormatting()
         {
-            NewAssert.AreEqual("Change: [1 .. 3), [2 .. 6)", new Diff(DiffKind.Change, new Range(1, 2), new Range(2, 4)).ToString());
+            Assert.AreEqual("Change: [1 .. 3), [2 .. 6)", new Diff(DiffKind.Change, new Range(1, 2), new Range(2, 4)).ToString());
         }
     }
 }

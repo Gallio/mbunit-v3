@@ -83,7 +83,7 @@ namespace Gallio.Tests.Framework.Text
         {
             Substring substring = new Substring("abcde", new Range(1, 3));
             char c;
-            NewAssert.Throws<IndexOutOfRangeException>(() => c = substring[-1]);
+            Assert.Throws<IndexOutOfRangeException>(() => c = substring[-1]);
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace Gallio.Tests.Framework.Text
         {
             Substring substring = new Substring("abcde", new Range(1, 3));
             char c;
-            NewAssert.Throws<IndexOutOfRangeException>(() => c = substring[3]);
+            Assert.Throws<IndexOutOfRangeException>(() => c = substring[3]);
         }
 
         [Test]

@@ -50,7 +50,7 @@ namespace Gallio.Tests.Reflection
             loader.AddHintDirectory(binDir);
 
             IAssemblyInfo assembly = loader.ReflectionPolicy.LoadAssembly(new AssemblyName("Gallio")); // would ordinarily be loaded from somewhere else
-            StringAssert.StartsWith(assembly.Path, binDir);
+            OldStringAssert.StartsWith(assembly.Path, binDir);
         }
     }
 }

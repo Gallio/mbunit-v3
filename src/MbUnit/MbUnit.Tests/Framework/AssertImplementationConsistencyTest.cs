@@ -24,7 +24,7 @@ using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
 {
-    [Row(typeof(NewAssert))]
+    [Row(typeof(Assert))]
     public class AssertImplementationConsistencyTest<TAssert>
     {
         private const string CustomMessageSuffix = "System.String, System.Object[])";
@@ -53,7 +53,7 @@ namespace MbUnit.Tests.Framework
                 else
                     counterpart = ReplaceSuffix(assert, NoMessageSuffix, ", " + CustomMessageSuffix);
 
-                NewAssert.Contains(asserts, counterpart, "Assert type {0} should contain a counterpart for its '{1}' assert with / without a custom message format and arguments.",
+                Assert.Contains(asserts, counterpart, "Assert type {0} should contain a counterpart for its '{1}' assert with / without a custom message format and arguments.",
                     typeof(TAssert), assert);
             }
         }

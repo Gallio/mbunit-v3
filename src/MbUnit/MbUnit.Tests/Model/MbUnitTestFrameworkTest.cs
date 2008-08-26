@@ -69,7 +69,7 @@ namespace MbUnit.Tests.Model
             Assert.AreEqual(TestKinds.Assembly, assemblyTest.Kind);
             Assert.AreEqual(CodeReference.CreateFromAssembly(sampleAssembly), assemblyTest.CodeElement.CodeReference);
             Assert.AreEqual(sampleAssembly, ((IAssemblyInfo) assemblyTest.CodeElement).Resolve(true));
-            Assert.GreaterEqualThan(assemblyTest.Children.Count, 1);
+            Assert.GreaterThanOrEqual(assemblyTest.Children.Count, 1);
 
             PatternTest typeTest = (PatternTest)GetDescendantByName(assemblyTest, "SimpleTest");
             Assert.IsNotNull(typeTest, "Could not find the SimpleTest fixture.");

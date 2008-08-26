@@ -21,8 +21,8 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
-    [TestsOn(typeof(CollectionAssert))]
-    public class CollectionAssertTest
+    [TestsOn(typeof(OldCollectionAssert))]
+    public class OldCollectionAssertTest
     {
         ArrayList arr;
         ArrayList arrSynced;
@@ -53,26 +53,26 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void AreSyncRootEqual()
         {
-            CollectionAssert.AreSyncRootEqual(arr, arrSynced);
+            OldCollectionAssert.AreSyncRootEqual(arr, arrSynced);
         }
 
         [Test]
         public void IsSynchronized()
         {
-            CollectionAssert.IsSynchronized(arrSynced);
+            OldCollectionAssert.IsSynchronized(arrSynced);
         }
 
         [Test]
         public void AreIsSynchronizedEqual()
         {
-            CollectionAssert.AreIsSynchronizedEqual(arrSynced, arr2Synced);
+            OldCollectionAssert.AreIsSynchronizedEqual(arrSynced, arr2Synced);
         }
 
         [Test]
         public void AreIsSynchronizedEqualBool()
         {
-            CollectionAssert.AreIsSynchronizedEqual(true, arrSynced);
-            CollectionAssert.AreIsSynchronizedEqual(false, arr2);
+            OldCollectionAssert.AreIsSynchronizedEqual(true, arrSynced);
+            OldCollectionAssert.AreIsSynchronizedEqual(false, arr2);
         }
         #endregion
 
@@ -80,25 +80,25 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void AreElementsEqual()
         {
-            CollectionAssert.AreElementsEqual(arr, arr2);
+            OldCollectionAssert.AreElementsEqual(arr, arr2);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
         public void AreElementsEqualExpectedNullFail()
         {
-            CollectionAssert.AreElementsEqual(null, arr2);
+            OldCollectionAssert.AreElementsEqual(null, arr2);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
         public void AreElementsEqualActualNullFail()
         {
-            CollectionAssert.AreElementsEqual(arr, null);
+            OldCollectionAssert.AreElementsEqual(arr, null);
         }
 
         [Test]
         public void AreElementsEqualNull()
         {
-            CollectionAssert.AreElementsEqual(null, null);
+            OldCollectionAssert.AreElementsEqual(null, null);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
@@ -111,37 +111,37 @@ namespace MbUnit.Tests.Framework
             arr3.Add("Four");
             arr3.Add("Five");
 
-            CollectionAssert.AreElementsEqual(arr, arr3);
+            OldCollectionAssert.AreElementsEqual(arr, arr3);
         }
 
         [Test]
         public void AreEqual()
         {
-            CollectionAssert.AreEqual(arr, arr2);
+            OldCollectionAssert.AreEqual(arr, arr2);
         }
 
         [Test]
         public void AreEqualSwap()
         {
-            CollectionAssert.AreEqual(arr2, arr);
+            OldCollectionAssert.AreEqual(arr2, arr);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
         public void AreEqualExpectedNullFail()
         {
-            CollectionAssert.AreEqual(null, arr2);
+            OldCollectionAssert.AreEqual(null, arr2);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
         public void AreEqualActualNullFail()
         {
-            CollectionAssert.AreEqual(arr, null);
+            OldCollectionAssert.AreEqual(arr, null);
         }
 
         [Test]
         public void AreEqualNullFail()
         {
-            CollectionAssert.AreEqual(null, null);
+            OldCollectionAssert.AreEqual(null, null);
         }
 
 
@@ -151,7 +151,7 @@ namespace MbUnit.Tests.Framework
             ArrayList arr3 = new ArrayList();
             arr3.Add("One");
 
-            CollectionAssert.AreEqual(arr, arr3);
+            OldCollectionAssert.AreEqual(arr, arr3);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
@@ -163,7 +163,7 @@ namespace MbUnit.Tests.Framework
             arr3.Add("One");
             arr3.Add("Two");
 
-            CollectionAssert.AreEqual(arr, arr3);
+            OldCollectionAssert.AreEqual(arr, arr3);
         }
 
         #endregion
@@ -172,25 +172,25 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void AreCountEqual()
         {
-            CollectionAssert.AreCountEqual(4, arr);
+            OldCollectionAssert.AreCountEqual(4, arr);
         }
 
         [Test]
         public void AreCountEqualNull()
         {
-            CollectionAssert.AreCountEqual(null, null);
+            OldCollectionAssert.AreCountEqual(null, null);
         }
 
         [Test]
         public void IsCountCorrect()
         {
-            CollectionAssert.IsCountCorrect(arr);
+            OldCollectionAssert.IsCountCorrect(arr);
         }
 
         [Test, ExpectedArgumentNullException]
         public void IsCountCorrectNull()
         {
-            CollectionAssert.IsCountCorrect(null);
+            OldCollectionAssert.IsCountCorrect(null);
         }
 
         #endregion
@@ -203,17 +203,17 @@ namespace MbUnit.Tests.Framework
             al.Add("x");
             al.Add("y");
             al.Add("z");
-            CollectionAssert.AllItemsAreInstancesOfType(al, typeof(string));
-            CollectionAssert.AllItemsAreInstancesOfType(al, typeof(string), "test");
-            CollectionAssert.AllItemsAreInstancesOfType(al, typeof(string), "test {0}", "1");
+            OldCollectionAssert.AllItemsAreInstancesOfType(al, typeof(string));
+            OldCollectionAssert.AllItemsAreInstancesOfType(al, typeof(string), "test");
+            OldCollectionAssert.AllItemsAreInstancesOfType(al, typeof(string), "test {0}", "1");
 
             al = new ArrayList();
             al.Add(new DataSet());
             al.Add(new DataSet());
             al.Add(new DataSet());
-            CollectionAssert.AllItemsAreInstancesOfType(al, typeof(DataSet));
-            CollectionAssert.AllItemsAreInstancesOfType(al, typeof(DataSet), "test");
-            CollectionAssert.AllItemsAreInstancesOfType(al, typeof(DataSet), "test {0}", "1");
+            OldCollectionAssert.AllItemsAreInstancesOfType(al, typeof(DataSet));
+            OldCollectionAssert.AllItemsAreInstancesOfType(al, typeof(DataSet), "test");
+            OldCollectionAssert.AllItemsAreInstancesOfType(al, typeof(DataSet), "test {0}", "1");
         }
 
         [Test()]
@@ -224,7 +224,7 @@ namespace MbUnit.Tests.Framework
             al.Add("x");
             al.Add("y");
             al.Add(new object());
-            CollectionAssert.AllItemsAreInstancesOfType(al, typeof(string), "test");
+            OldCollectionAssert.AllItemsAreInstancesOfType(al, typeof(string), "test");
         }
 
         [Test()]
@@ -235,7 +235,7 @@ namespace MbUnit.Tests.Framework
             al.Add("x");
             al.Add("y");
             al.Add(new object());
-            CollectionAssert.AllItemsAreInstancesOfType(al, typeof(string), "test {0}", "1");
+            OldCollectionAssert.AllItemsAreInstancesOfType(al, typeof(string), "test {0}", "1");
         }
 
         [Test()]
@@ -246,7 +246,7 @@ namespace MbUnit.Tests.Framework
             al.Add("x");
             al.Add("y");
             al.Add(new object());
-            CollectionAssert.AllItemsAreInstancesOfType(al, typeof(string));
+            OldCollectionAssert.AllItemsAreInstancesOfType(al, typeof(string));
         }
         #endregion
 
@@ -259,18 +259,18 @@ namespace MbUnit.Tests.Framework
             al.Add("y");
             al.Add("z");
 
-            CollectionAssert.AllItemsAreNotNull(al);
-            CollectionAssert.AllItemsAreNotNull(al, "test");
-            CollectionAssert.AllItemsAreNotNull(al, "test {0}", "1");
+            OldCollectionAssert.AllItemsAreNotNull(al);
+            OldCollectionAssert.AllItemsAreNotNull(al, "test");
+            OldCollectionAssert.AllItemsAreNotNull(al, "test {0}", "1");
 
             al = new ArrayList();
             al.Add(new DataSet());
             al.Add(new DataSet());
             al.Add(new DataSet());
 
-            CollectionAssert.AllItemsAreNotNull(al);
-            CollectionAssert.AllItemsAreNotNull(al, "test");
-            CollectionAssert.AllItemsAreNotNull(al, "test {0}", "1");
+            OldCollectionAssert.AllItemsAreNotNull(al);
+            OldCollectionAssert.AllItemsAreNotNull(al, "test");
+            OldCollectionAssert.AllItemsAreNotNull(al, "test {0}", "1");
         }
 
         [Test]
@@ -282,7 +282,7 @@ namespace MbUnit.Tests.Framework
             al.Add(null);
             al.Add("z");
 
-            CollectionAssert.AllItemsAreNotNull(al);
+            OldCollectionAssert.AllItemsAreNotNull(al);
         }
 
         [Test]
@@ -294,7 +294,7 @@ namespace MbUnit.Tests.Framework
             al.Add(null);
             al.Add("z");
 
-            CollectionAssert.AllItemsAreNotNull(al, "test {0}", "1");
+            OldCollectionAssert.AllItemsAreNotNull(al, "test {0}", "1");
         }
 
         [Test]
@@ -306,7 +306,7 @@ namespace MbUnit.Tests.Framework
             al.Add(null);
             al.Add("z");
 
-            CollectionAssert.AllItemsAreNotNull(al, "test");
+            OldCollectionAssert.AllItemsAreNotNull(al, "test");
         }
         #endregion
 
@@ -320,18 +320,18 @@ namespace MbUnit.Tests.Framework
             al.Add(new object());
             al.Add(new object());
 
-            CollectionAssert.AllItemsAreUnique(al);
-            CollectionAssert.AllItemsAreUnique(al, "test");
-            CollectionAssert.AllItemsAreUnique(al, "test {0}", "1");
+            OldCollectionAssert.AllItemsAreUnique(al);
+            OldCollectionAssert.AllItemsAreUnique(al, "test");
+            OldCollectionAssert.AllItemsAreUnique(al, "test {0}", "1");
 
             al = new ArrayList();
             al.Add("x");
             al.Add("y");
             al.Add("z");
 
-            CollectionAssert.AllItemsAreUnique(al);
-            CollectionAssert.AllItemsAreUnique(al, "test");
-            CollectionAssert.AllItemsAreUnique(al, "test {0}", "1");
+            OldCollectionAssert.AllItemsAreUnique(al);
+            OldCollectionAssert.AllItemsAreUnique(al, "test");
+            OldCollectionAssert.AllItemsAreUnique(al, "test {0}", "1");
         }
 
         [Test]
@@ -344,7 +344,7 @@ namespace MbUnit.Tests.Framework
             al.Add(new object());
             al.Add(x);
 
-            CollectionAssert.AllItemsAreUnique(al);
+            OldCollectionAssert.AllItemsAreUnique(al);
         }
 
         [Test]
@@ -357,7 +357,7 @@ namespace MbUnit.Tests.Framework
             al.Add(new object());
             al.Add(x);
 
-            CollectionAssert.AllItemsAreUnique(al, "test");
+            OldCollectionAssert.AllItemsAreUnique(al, "test");
         }
 
         [Test]
@@ -370,7 +370,7 @@ namespace MbUnit.Tests.Framework
             al.Add(new object());
             al.Add(x);
 
-            CollectionAssert.AllItemsAreUnique(al, "test {0}", "1");
+            OldCollectionAssert.AllItemsAreUnique(al, "test {0}", "1");
         }
 
         #endregion
@@ -395,9 +395,9 @@ namespace MbUnit.Tests.Framework
             set2.Add(y);
             set2.Add(x);
 
-            CollectionAssert.AreEquivalent(set1, set2);
-            CollectionAssert.AreEquivalent(set1, set2, "test");
-            CollectionAssert.AreEquivalent(set1, set2, "test {0}", "1");
+            OldCollectionAssert.AreEquivalent(set1, set2);
+            OldCollectionAssert.AreEquivalent(set1, set2, "test");
+            OldCollectionAssert.AreEquivalent(set1, set2, "test {0}", "1");
         }
 
         [Test]
@@ -419,7 +419,7 @@ namespace MbUnit.Tests.Framework
             set2.Add(y);
             set2.Add(x);
 
-            CollectionAssert.AreEquivalent(set1, set2, "test {0}", "1");
+            OldCollectionAssert.AreEquivalent(set1, set2, "test {0}", "1");
         }
 
         [Test]
@@ -441,7 +441,7 @@ namespace MbUnit.Tests.Framework
             set2.Add(y);
             set2.Add(z);
 
-            CollectionAssert.AreEquivalent(set1, set2, "test {0}", "1");
+            OldCollectionAssert.AreEquivalent(set1, set2, "test {0}", "1");
         }
 
         [Test]
@@ -449,7 +449,7 @@ namespace MbUnit.Tests.Framework
         {
             string[] stringArray1 = { "ab", "bc", "cd" };
             string[] stringArray2 = { "cd", string.Format("b{0}", "c"), "ab" };
-            CollectionAssert.AreEquivalent(stringArray1, stringArray2);
+            OldCollectionAssert.AreEquivalent(stringArray1, stringArray2);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
@@ -457,7 +457,7 @@ namespace MbUnit.Tests.Framework
         {
             string[] stringArray1 = { "a", "b" };
             string[] stringArray2 = { "a", "b", "c" };
-            CollectionAssert.AreEquivalent(stringArray1, stringArray2);
+            OldCollectionAssert.AreEquivalent(stringArray1, stringArray2);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
@@ -465,7 +465,7 @@ namespace MbUnit.Tests.Framework
         {
             string[] stringArray1 = { "a", "b", "c" };
             string[] stringArray2 = { "a", "b", "d" };
-            CollectionAssert.AreEquivalent(stringArray1, stringArray2);
+            OldCollectionAssert.AreEquivalent(stringArray1, stringArray2);
         }
         #endregion
 
@@ -483,9 +483,9 @@ namespace MbUnit.Tests.Framework
             set2.Add("y");
             set2.Add("x");
 
-            CollectionAssert.AreNotEqual(set1, set2);
-            CollectionAssert.AreNotEqual(set1, set2, "test");
-            CollectionAssert.AreNotEqual(set1, set2, "test {0}", "1");
+            OldCollectionAssert.AreNotEqual(set1, set2);
+            OldCollectionAssert.AreNotEqual(set1, set2, "test");
+            OldCollectionAssert.AreNotEqual(set1, set2, "test {0}", "1");
         }
 
         #endregion
@@ -510,9 +510,9 @@ namespace MbUnit.Tests.Framework
             set2.Add(y);
             set2.Add(x);
 
-            CollectionAssert.AreNotEquivalent(set1, set2);
-            CollectionAssert.AreNotEquivalent(set1, set2, "test");
-            CollectionAssert.AreNotEquivalent(set1, set2, "test {0}", "1");
+            OldCollectionAssert.AreNotEquivalent(set1, set2);
+            OldCollectionAssert.AreNotEquivalent(set1, set2, "test");
+            OldCollectionAssert.AreNotEquivalent(set1, set2, "test {0}", "1");
         }
 
         #endregion
@@ -531,30 +531,30 @@ namespace MbUnit.Tests.Framework
             al.Add(y);
             al.Add(z);
 
-            CollectionAssert.Contains(al, x);
-            CollectionAssert.Contains(al, x, "test");
-            CollectionAssert.Contains(al, x, "test {0}", "1");
+            OldCollectionAssert.Contains(al, x);
+            OldCollectionAssert.Contains(al, x, "test");
+            OldCollectionAssert.Contains(al, x, "test {0}", "1");
         }
 
         [Test]
         public void Contains_UsesValueTypeEqualityForStringTypes()
         {
             string[] stringArray = { string.Format("a{0}", "c"), "b" };
-            CollectionAssert.Contains(stringArray, "ac");
+            OldCollectionAssert.Contains(stringArray, "ac");
         }
 
         [Test]
         public void Contains_NullItemSearchSupported()
         {
             string[] stringArray = { "a", "b", null };
-            CollectionAssert.Contains(stringArray, null);
+            OldCollectionAssert.Contains(stringArray, null);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
         public void Contains_RaisesAssertionExceptionIfItemNotFound()
         {
             string[] stringArray = { "a", "b", "c" };
-            CollectionAssert.Contains(stringArray, "d");
+            OldCollectionAssert.Contains(stringArray, "d");
         }
         #endregion
 
@@ -572,9 +572,9 @@ namespace MbUnit.Tests.Framework
             al.Add(y);
             al.Add(z);
 
-            CollectionAssert.DoesNotContain(al, a);
-            CollectionAssert.DoesNotContain(al, a, "test");
-            CollectionAssert.DoesNotContain(al, a, "test {0}", "1");
+            OldCollectionAssert.DoesNotContain(al, a);
+            OldCollectionAssert.DoesNotContain(al, a, "test");
+            OldCollectionAssert.DoesNotContain(al, a, "test {0}", "1");
         }
         #endregion
 
@@ -585,7 +585,7 @@ namespace MbUnit.Tests.Framework
         {
             string[] superset = { "ab", "bc", "cd" };
             string[] subset = { "cd", string.Format("b{0}", "c") };
-            CollectionAssert.IsSubsetOf(subset, superset);
+            OldCollectionAssert.IsSubsetOf(subset, superset);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
@@ -593,7 +593,7 @@ namespace MbUnit.Tests.Framework
         {
             string[] superset = { "a", "b" };
             string[] subset = { "a", "b", "c" };
-            CollectionAssert.IsSubsetOf(subset, superset);
+            OldCollectionAssert.IsSubsetOf(subset, superset);
         }
 
         [Test, ExpectedException(typeof(AssertionException))]
@@ -601,7 +601,7 @@ namespace MbUnit.Tests.Framework
         {
             string[] superset = { "a", "b", "c" };
             string[] subset = { "a", "d" };
-            CollectionAssert.IsSubsetOf(subset, superset);
+            OldCollectionAssert.IsSubsetOf(subset, superset);
         }
 
         //[Test]
@@ -646,9 +646,9 @@ namespace MbUnit.Tests.Framework
             set1.Add(z);
             set2.Add(a);
 
-            CollectionAssert.IsNotSubsetOf(set1, set2);
-            CollectionAssert.IsNotSubsetOf(set1, set2, "test");
-            CollectionAssert.IsNotSubsetOf(set1, set2, "test {0}", "1");
+            OldCollectionAssert.IsNotSubsetOf(set1, set2);
+            OldCollectionAssert.IsNotSubsetOf(set1, set2, "test");
+            OldCollectionAssert.IsNotSubsetOf(set1, set2, "test {0}", "1");
         }
         #endregion
     }

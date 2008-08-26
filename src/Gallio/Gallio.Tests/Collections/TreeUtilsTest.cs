@@ -41,7 +41,7 @@ namespace Gallio.Tests.Collections
                 return node.Id;
             });
 
-            CollectionAssert.AreElementsEqual(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, ids);
+            OldCollectionAssert.AreElementsEqual(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, ids);
         }
 
         private sealed class Node

@@ -33,7 +33,7 @@ namespace Gallio.Tests.Framework.Text
             DiffSet diffSet = new DiffSet(new[] { new Diff(DiffKind.Change, new Range(0, 3), new Range(0, 3)) }, "abc", "def");
             Assert.AreEqual("abc", diffSet.LeftDocument);
             Assert.AreEqual("def", diffSet.RightDocument);
-            NewAssert.AreEqual(new[] { new Diff(DiffKind.Change, new Range(0, 3), new Range(0, 3)) }, diffSet.Diffs);
+            Assert.AreEqual(new[] { new Diff(DiffKind.Change, new Range(0, 3), new Range(0, 3)) }, diffSet.Diffs);
         }
 
         [Test, ExpectedArgumentNullException]
@@ -111,7 +111,7 @@ namespace Gallio.Tests.Framework.Text
         public void WriteToThrowsWhenWriterIsNull()
         {
             DiffSet diffSet = new DiffSet(new Diff[] { }, "", "");
-            NewAssert.Throws<ArgumentNullException>(() => diffSet.WriteTo(null));
+            Assert.Throws<ArgumentNullException>(() => diffSet.WriteTo(null));
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Gallio.Tests.Framework.Text
         {
             DiffSet diffSet = new DiffSet(new Diff[] { }, "", "");
             StructuredTextWriter writer = new StructuredTextWriter();
-            NewAssert.Throws<ArgumentOutOfRangeException>(() => diffSet.WriteTo(writer, DiffStyle.Interleaved, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => diffSet.WriteTo(writer, DiffStyle.Interleaved, -1));
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace Gallio.Tests.Framework.Text
             diffSet.WriteTo(writer);
             TestLog.WriteLine(writer);
 
-            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            Assert.AreEqual(new StructuredText(new BodyTag()
             {
                 Contents = {
                     new MarkerTag(Marker.DiffDeletion) { Contents = { new TextTag("a") } },
@@ -165,7 +165,7 @@ namespace Gallio.Tests.Framework.Text
             diffSet.WriteTo(writer, DiffStyle.LeftOnly);
             TestLog.WriteLine(writer);
 
-            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            Assert.AreEqual(new StructuredText(new BodyTag()
             {
                 Contents = {
                     new MarkerTag(Marker.DiffChange) { Contents = { new TextTag("a") } },
@@ -191,7 +191,7 @@ namespace Gallio.Tests.Framework.Text
             diffSet.WriteTo(writer, DiffStyle.RightOnly);
             TestLog.WriteLine(writer);
 
-            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            Assert.AreEqual(new StructuredText(new BodyTag()
             {
                 Contents = {
                     new MarkerTag(Marker.DiffChange) { Contents = { new TextTag("b") } },
@@ -215,7 +215,7 @@ namespace Gallio.Tests.Framework.Text
             StructuredTextWriter writer = new StructuredTextWriter();
             diffSet.WriteTo(writer, DiffStyle.LeftOnly, 7);
 
-            NewAssert.AreEqual(new StructuredText(new BodyTag()
+            Assert.AreEqual(new StructuredText(new BodyTag()
             {
                 Contents = {
                     new MarkerTag(Marker.DiffChange) { Contents = { new TextTag("a") } },
@@ -238,7 +238,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("", "");
                 Assert.IsTrue(diffSet.IsEmpty);
                 Assert.IsFalse(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] { }, diffSet.Diffs);
+                Assert.AreEqual(new Diff[] { }, diffSet.Diffs);
             }
         }
 
@@ -250,7 +250,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("this is a test", "this is a test");
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsFalse(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] { new Diff(DiffKind.NoChange, new Range(0, 14), new Range(0, 14)) }, diffSet.Diffs);
+                Assert.AreEqual(new Diff[] { new Diff(DiffKind.NoChange, new Range(0, 14), new Range(0, 14)) }, diffSet.Diffs);
             }
         }
 
@@ -262,7 +262,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("", "abcde");
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] { new Diff(DiffKind.Change, new Range(0, 0), new Range(0, 5)) },
+                Assert.AreEqual(new Diff[] { new Diff(DiffKind.Change, new Range(0, 0), new Range(0, 5)) },
                     diffSet.Diffs);
             }
 
@@ -272,7 +272,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("abcde", "");
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] { new Diff(DiffKind.Change, new Range(0, 5), new Range(0, 0)) },
+                Assert.AreEqual(new Diff[] { new Diff(DiffKind.Change, new Range(0, 5), new Range(0, 0)) },
                     diffSet.Diffs);
             }
         }
@@ -285,7 +285,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("123abcZZdef45", "123uvZZxy45");
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] {
+                Assert.AreEqual(new Diff[] {
                     new Diff(DiffKind.NoChange, new Range(0, 3), new Range(0, 3)),
                     new Diff(DiffKind.Change, new Range(3, 3), new Range(3, 2)),
                     new Diff(DiffKind.NoChange, new Range(6, 2), new Range(5, 2)),
@@ -303,7 +303,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("1", "2", optimize, true);
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] {
+                Assert.AreEqual(new Diff[] {
                     new Diff(DiffKind.Change, new Range(0, 1), new Range(0, 1))
                 }, diffSet.Diffs);
             }
@@ -314,7 +314,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("", "1", optimize, true);
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] {
+                Assert.AreEqual(new Diff[] {
                     new Diff(DiffKind.Change, new Range(0, 0), new Range(0, 1))
                 }, diffSet.Diffs);
             }
@@ -325,7 +325,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("1", "", optimize, true);
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] {
+                Assert.AreEqual(new Diff[] {
                     new Diff(DiffKind.Change, new Range(0, 1), new Range(0, 0))
                 }, diffSet.Diffs);
             }
@@ -336,7 +336,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("234", "123", optimize, true);
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] {
+                Assert.AreEqual(new Diff[] {
                     new Diff(DiffKind.Change, new Range(0, 0), new Range(0, 1)),
                     new Diff(DiffKind.NoChange, new Range(0, 2), new Range(1, 2)),
                     new Diff(DiffKind.Change, new Range(2, 1), new Range(3, 0))
@@ -349,7 +349,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("123", "234", optimize, true);
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] {
+                Assert.AreEqual(new Diff[] {
                     new Diff(DiffKind.Change, new Range(0, 1), new Range(0, 0)),
                     new Diff(DiffKind.NoChange, new Range(1, 2), new Range(0, 2)),
                     new Diff(DiffKind.Change, new Range(3, 0), new Range(2, 1))
@@ -362,7 +362,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet("123abcdef", "abc456def", optimize, true);
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new Diff[] {
+                Assert.AreEqual(new Diff[] {
                     new Diff(DiffKind.Change, new Range(0, 3), new Range(0, 0)),
                     new Diff(DiffKind.NoChange, new Range(3, 3), new Range(0, 3)),
                     new Diff(DiffKind.Change, new Range(6, 0), new Range(3, 3)),
@@ -380,7 +380,7 @@ namespace Gallio.Tests.Framework.Text
 
                 long boundedMillis = RunWorstCaseDiff(problemSize, true);
                 long unboundedMillis = RunWorstCaseDiff(problemSize, false);
-                NewAssert.LessThan(boundedMillis, unboundedMillis, "The bounded approximated algorithm should be faster than the unbounded precise algorithm.");
+                Assert.LessThan(boundedMillis, unboundedMillis, "The bounded approximated algorithm should be faster than the unbounded precise algorithm.");
             }
 
             private static long RunWorstCaseDiff(int problemSize, bool bounded)
@@ -397,7 +397,7 @@ namespace Gallio.Tests.Framework.Text
                 DiffSet diffSet = DiffSet.GetDiffSet(left.ToString(), right.ToString(), false, bounded);
                 Assert.IsFalse(diffSet.IsEmpty);
                 Assert.IsTrue(diffSet.ContainsChanges);
-                NewAssert.AreEqual(new[] { new Diff(DiffKind.Change, new Range(0, problemSize), new Range(0, problemSize)) }, diffSet.Diffs);
+                Assert.AreEqual(new[] { new Diff(DiffKind.Change, new Range(0, problemSize), new Range(0, problemSize)) }, diffSet.Diffs);
                 return timer.ElapsedMilliseconds;
             }
         }
@@ -442,11 +442,11 @@ namespace Gallio.Tests.Framework.Text
                 foreach (Diff diff in diffSet.Diffs)
                 {
                     if (diff.Kind == DiffKind.NoChange)
-                        NewAssert.AreEqual(
+                        Assert.AreEqual(
                             diff.LeftRange.SubstringOf(diffSet.LeftDocument),
                             diff.RightRange.SubstringOf(diffSet.RightDocument));
                     else
-                        NewAssert.AreNotEqual(
+                        Assert.AreNotEqual(
                             diff.LeftRange.SubstringOf(diffSet.LeftDocument),
                             diff.RightRange.SubstringOf(diffSet.RightDocument));
                 }

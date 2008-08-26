@@ -19,8 +19,8 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
-    [TestsOn(typeof(ArrayAssert))]
-    public class ArrayAssertTest
+    [TestsOn(typeof(OldArrayAssert))]
+    public class OldArrayAssertTest
     {
         [Test]
         public void AreEqualBool()
@@ -38,7 +38,7 @@ namespace MbUnit.Tests.Framework
             arr2[2] = true;
             arr2[3] = false;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace MbUnit.Tests.Framework
             bool[] arr1 = null;
             bool[] arr2 = null;
             
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace MbUnit.Tests.Framework
             arr2[2] = char.MaxValue;
             arr2[3] = char.MinValue;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace MbUnit.Tests.Framework
             Char[] arr1 = null;
             Char[] arr2 = null;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace MbUnit.Tests.Framework
             arr2[2] = byte.MaxValue;
             arr2[3] = byte.MinValue;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace MbUnit.Tests.Framework
             byte[] arr1 = null;
             byte[] arr2 = null;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace MbUnit.Tests.Framework
             arr2[2] = int.MaxValue;
             arr2[3] = int.MinValue;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace MbUnit.Tests.Framework
             int[] arr1 = null;
             int[] arr2 = null;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace MbUnit.Tests.Framework
             arr2[2] = long.MaxValue;
             arr2[3] = long.MinValue;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -159,7 +159,7 @@ namespace MbUnit.Tests.Framework
             long[] arr1 = null;
             long[] arr2 = null;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -178,7 +178,7 @@ namespace MbUnit.Tests.Framework
             arr2[2] = float.MaxValue;
             arr2[3] = float.MinValue;
 
-            ArrayAssert.AreEqual(arr1, arr2, 0);
+            OldArrayAssert.AreEqual(arr1, arr2, 0);
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace MbUnit.Tests.Framework
             float[] arr1 = null;
             float[] arr2 = null;
 
-            ArrayAssert.AreEqual(arr1, arr2, 0);
+            OldArrayAssert.AreEqual(arr1, arr2, 0);
         }
 
         [Test]
@@ -206,7 +206,7 @@ namespace MbUnit.Tests.Framework
             arr2[2] = double.MaxValue;
             arr2[3] = double.MinValue;
 
-            ArrayAssert.AreEqual(arr1, arr2, 0);
+            OldArrayAssert.AreEqual(arr1, arr2, 0);
         }
 
         [Test]
@@ -215,7 +215,7 @@ namespace MbUnit.Tests.Framework
             double[] arr1 = null;
             double[] arr2 = null;
 
-            ArrayAssert.AreEqual(arr1, arr2, 0);
+            OldArrayAssert.AreEqual(arr1, arr2, 0);
         }
 
         [Test]
@@ -234,7 +234,7 @@ namespace MbUnit.Tests.Framework
             arr2[2] = float.MaxValue;
             arr2[3] = double.MinValue;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
 
         [Test]
@@ -243,7 +243,7 @@ namespace MbUnit.Tests.Framework
             object[] arr1 = null;
             object[] arr2 = null;
 
-            ArrayAssert.AreEqual(arr1, arr2);
+            OldArrayAssert.AreEqual(arr1, arr2);
         }
     }
 }

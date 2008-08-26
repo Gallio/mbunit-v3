@@ -23,7 +23,7 @@ using Gallio.Model.Diagnostics;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Defines methods used with the <see cref="NewAssert.Over" /> syntax for mapping
+    /// Defines methods used with the <see cref="Assert.Over" /> syntax for mapping
     /// assertions over complex data structures.
     /// </summary>
     [TestFrameworkInternal]

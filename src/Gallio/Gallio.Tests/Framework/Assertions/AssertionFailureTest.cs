@@ -29,7 +29,7 @@ namespace Gallio.Tests.Framework.Assertions
         public void WriteToThrowsIfArgumentIsNull()
         {
             AssertionFailure failure = new AssertionFailureBuilder("Description").ToAssertionFailure();
-            NewAssert.Throws<ArgumentNullException>(() => failure.WriteTo(null));
+            Assert.Throws<ArgumentNullException>(() => failure.WriteTo(null));
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace Gallio.Tests.Framework.Assertions
                 .SetStackTrace(null)
                 .ToAssertionFailure();
 
-            NewAssert.AreEqual("Description\n", failure.ToString());
+            Assert.AreEqual("Description\n", failure.ToString());
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Gallio.Tests.Framework.Assertions
                 .AddException(new Exception("Kaput"))
                 .ToAssertionFailure();
 
-            NewAssert.AreEqual("Description\nMessage goes here\n\nExpected Value : \"Expected value\"\nActual Value   : \"Actual value\"\nVery Long Label That Will Not Be Padded : \"\"\nx              : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n", failure.ToString());
+            Assert.AreEqual("Description\nMessage goes here\n\nExpected Value : \"Expected value\"\nActual Value   : \"Actual value\"\nVery Long Label That Will Not Be Padded : \"\"\nx              : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n", failure.ToString());
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace Gallio.Tests.Framework.Assertions
             StringTestLogWriter writer = new StringTestLogWriter(true);
             failure.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\n[End]\n[End]", writer.ToString());
+            Assert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\n[End]\n[End]", writer.ToString());
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace Gallio.Tests.Framework.Assertions
             StringTestLogWriter writer = new StringTestLogWriter(true);
             failure.WriteTo(writer.Failures);
 
-            NewAssert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\nMessage goes here\n\n[Marker \'Monospace\'][Marker \'Label\']Expected Value : [End]\"Expected value\"\n[Marker \'Label\']Actual Value   : [End]\"Actual value\"\n[Marker \'Label\']Very Long Label That Will Not Be Padded : [End]\"\"\n[Marker \'Label\']x              : [End]42\n[End]\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Boom[End][End]\n\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Kaput[End][End]\n\n[Marker \'StackTrace\']Stack goes here\n[End][End]\n[End]", writer.ToString());
+            Assert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\nMessage goes here\n\n[Marker \'Monospace\'][Marker \'Label\']Expected Value : [End]\"Expected value\"\n[Marker \'Label\']Actual Value   : [End]\"Actual value\"\n[Marker \'Label\']Very Long Label That Will Not Be Padded : [End]\"\"\n[Marker \'Label\']x              : [End]42\n[End]\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Boom[End][End]\n\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Kaput[End][End]\n\n[Marker \'StackTrace\']Stack goes here\n[End][End]\n[End]", writer.ToString());
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace Gallio.Tests.Framework.Assertions
                     new string('y', AssertionFailure.MaxFormattedValueLength + 1))
                 .ToAssertionFailure();
 
-            NewAssert.AreEqual("Description\n\n"
+            Assert.AreEqual("Description\n\n"
                 + new string('x', AssertionFailure.MaxLabelLengthBeforeTruncation) + "... : "
                 + new string('y', AssertionFailure.MaxFormattedValueLength) + "...\n", failure.ToString());
         }

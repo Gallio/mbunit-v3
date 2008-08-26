@@ -123,7 +123,7 @@ namespace Gallio.Tests.Framework.Data
 
             InterimAssert.With("Expected", expectedValues, "Actual", actualValues, delegate
             {
-                ArrayAssert.AreEqual(expectedValues, actualValues);
+                OldArrayAssert.AreEqual(expectedValues, actualValues);
             });
         }
 

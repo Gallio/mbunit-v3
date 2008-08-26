@@ -24,7 +24,7 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// <para>
-    /// Runs the test as if it were surrounded by <see cref="NewAssert.Multiple(Action)" /> so that
+    /// Runs the test as if it were surrounded by <see cref="Assert.Multiple(Action)" /> so that
     /// multiple assertion failures within the test are tolerated.  When an assertion failure occurs,
     /// it is reported but the test is allowed to proceed until it completes or throws an unhandled
     /// exception.  When the test finishes, it will still be marked as failed, as usual.
@@ -43,7 +43,7 @@ namespace MbUnit.Framework
         [TestEntryPoint]
         private void WithMultiple(PatternTestInstanceState state, Action<PatternTestInstanceState> action)
         {
-            NewAssert.Multiple(() => action(state));
+            Assert.Multiple(() => action(state));
         }
     }
 }

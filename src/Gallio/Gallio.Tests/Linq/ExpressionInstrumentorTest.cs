@@ -38,7 +38,7 @@ namespace Gallio.Tests.Linq
         [Test]
         public void AllExpressionTypes()
         {
-            NewAssert.Multiple(() =>
+            Assert.Multiple(() =>
             {
                 int x = 5, y = 2;
                 int[] arr = new int[1];
@@ -177,8 +177,8 @@ namespace Gallio.Tests.Linq
             var tracer = new ExpressionTracer();
             T actualValue = tracer.Compile(expr)(arg);
 
-            NewAssert.AreEqual(expectedValue, actualValue, "Expression result should be equal.");
-            NewAssert.Over.Sequence(expectedTrace, tracer.Trace, NewAssert.AreEqual,
+            Assert.AreEqual(expectedValue, actualValue, "Expression result should be equal.");
+            Assert.Over.Sequence(expectedTrace, tracer.Trace, Assert.AreEqual,
                 "Expression trace should be equal.");
         }
 
@@ -193,8 +193,8 @@ namespace Gallio.Tests.Linq
                 TestLog.WriteLine("Rewritten expression: {0}", tracer.Rewrite(expr).Format());
                 T actualValue = tracer.Compile(expr)();
 
-                NewAssert.AreEqual(expectedValue, actualValue, "Expression result should be equal.");
-                NewAssert.Over.Sequence(expectedTrace, tracer.Trace, NewAssert.AreEqual,
+                Assert.AreEqual(expectedValue, actualValue, "Expression result should be equal.");
+                Assert.Over.Sequence(expectedTrace, tracer.Trace, Assert.AreEqual,
                     "Expression trace should be equal.");
             }
         }
@@ -205,7 +205,7 @@ namespace Gallio.Tests.Linq
             var tracer = new ExpressionTracer();
             tracer.Compile(expr)();
 
-            NewAssert.Over.Sequence(expectedTrace, tracer.Trace, NewAssert.AreEqual,
+            Assert.Over.Sequence(expectedTrace, tracer.Trace, Assert.AreEqual,
                 "Expression trace should be equal.");
         }
 

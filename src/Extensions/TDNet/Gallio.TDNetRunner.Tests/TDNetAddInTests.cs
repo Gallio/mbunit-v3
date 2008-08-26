@@ -221,17 +221,17 @@ namespace Gallio.TDNetRunner.Tests
             Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
             Assert.AreEqual(Path.Combine(Path.GetTempPath(), @"Gallio.TDNetRunner"), launcher.ReportDirectory);
             Assert.AreEqual(0, launcher.ReportFormatOptions.Count);
-            CollectionAssert.AreElementsEqual(new string[] { "html" }, launcher.ReportFormats);
+            OldCollectionAssert.AreElementsEqual(new string[] { "html" }, launcher.ReportFormats);
             Assert.AreEqual(Path.GetFileName(assemblyFile), launcher.ReportNameFormat);
             Assert.IsFalse(launcher.ShowReports);
             Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
 
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
             Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTestRunner).Assembly)), launcher.RuntimeSetup.InstallationPath);
-            CollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
+            OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
 
-            CollectionAssert.AreElementsEqual(new string[] { assemblyFile }, launcher.TestPackageConfig.AssemblyFiles);
-            CollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
+            OldCollectionAssert.AreElementsEqual(new string[] { assemblyFile }, launcher.TestPackageConfig.AssemblyFiles);
+            OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
 
             Assert.AreEqual(Path.GetDirectoryName(assemblyFile), launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
             Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);

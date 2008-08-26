@@ -62,7 +62,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             object object3 = new object();
 
             EquivalenceClass<object> target = new EquivalenceClass<object>(object1, object2, object3);
-            NewAssert.AreEqual(new[] { object1, object2, object3 }, target.EquivalentInstances);
+            Assert.AreEqual(new[] { object1, object2, object3 }, target.EquivalentInstances);
 
             Assert.AreEqual(3, target.Count());
             Assert.IsTrue(target.Contains(object1));

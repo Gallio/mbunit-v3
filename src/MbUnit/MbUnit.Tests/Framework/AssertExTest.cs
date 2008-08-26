@@ -27,7 +27,7 @@ namespace MbUnit.Tests.Framework
         [Test, Pending]
         public void Test()
         {
-            NewAssert.Multiple(() =>
+            Assert.Multiple(() =>
             {
                 AssertEx.That(() => false);
                 int x = 4;

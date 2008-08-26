@@ -28,13 +28,13 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void IsSealed()
         {
-            ReflectionAssert.IsSealed(typeof(SuccessClass));
+            OldReflectionAssert.IsSealed(typeof(SuccessClass));
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void IsSealedFail()
         {
-            ReflectionAssert.IsSealed(typeof(FailClass));
+            OldReflectionAssert.IsSealed(typeof(FailClass));
         }
         #endregion
 
@@ -42,31 +42,31 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void HasConstructorNoParamter()
         {
-            ReflectionAssert.HasConstructor(typeof(SuccessClass));
+            OldReflectionAssert.HasConstructor(typeof(SuccessClass));
         }
 
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void HasConstructorNoParamterFail()
         {
-            ReflectionAssert.HasConstructor(typeof(FailClass));
+            OldReflectionAssert.HasConstructor(typeof(FailClass));
         }
         [Test]
         public void HasConstructorStringParamter()
         {
-            ReflectionAssert.HasConstructor(typeof(SuccessClass),typeof(string));
+            OldReflectionAssert.HasConstructor(typeof(SuccessClass),typeof(string));
         }
 
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void HasConstructorStringParameterFail()
         {
-            ReflectionAssert.HasConstructor(typeof(FailClass),typeof(string));
+            OldReflectionAssert.HasConstructor(typeof(FailClass),typeof(string));
         }
         [Test]
         public void HasConstructorPrivate()
         {
-            ReflectionAssert.HasConstructor(typeof(NoPublicConstructor),
+            OldReflectionAssert.HasConstructor(typeof(NoPublicConstructor),
                 BindingFlags.Instance | BindingFlags.NonPublic);
         }
         #endregion
@@ -75,13 +75,13 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void HasDefaultConstructor()
         {
-            ReflectionAssert.HasDefaultConstructor(typeof(SuccessClass));
+            OldReflectionAssert.HasDefaultConstructor(typeof(SuccessClass));
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void HasDefaultConstructorFail()
         {
-            ReflectionAssert.HasDefaultConstructor(typeof(FailClass));
+            OldReflectionAssert.HasDefaultConstructor(typeof(FailClass));
         }
         #endregion
 
@@ -89,13 +89,13 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void NotCreatable()
         {
-            ReflectionAssert.NotCreatable(typeof(NoPublicConstructor));
+            OldReflectionAssert.NotCreatable(typeof(NoPublicConstructor));
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void NotCreatableFail()
         {
-            ReflectionAssert.NotCreatable(typeof(SuccessClass));
+            OldReflectionAssert.NotCreatable(typeof(SuccessClass));
         }
         #endregion 
 
@@ -103,19 +103,19 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void HasField()
         {
-            ReflectionAssert.HasField(typeof(SuccessClass),"PublicField");
+            OldReflectionAssert.HasField(typeof(SuccessClass),"PublicField");
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void HasFieldFail()
         {
-            ReflectionAssert.HasField(typeof(FailClass), "PublicField");
+            OldReflectionAssert.HasField(typeof(FailClass), "PublicField");
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void HasPrivateFieldFail()
         {
-            ReflectionAssert.HasField(typeof(SuccessClass), "privateField");
+            OldReflectionAssert.HasField(typeof(SuccessClass), "privateField");
         }
         #endregion
 
@@ -123,24 +123,24 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void HasMethod()
         {
-            ReflectionAssert.HasMethod(typeof(SuccessClass), "Method");
+            OldReflectionAssert.HasMethod(typeof(SuccessClass), "Method");
         }
         [Test]
         public void HasMethodOneParameter()
         {
-            ReflectionAssert.HasMethod(typeof(SuccessClass), "Method",typeof(string));
+            OldReflectionAssert.HasMethod(typeof(SuccessClass), "Method",typeof(string));
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void HasMethodFail()
         {
-            ReflectionAssert.HasMethod(typeof(FailClass), "Method");
+            OldReflectionAssert.HasMethod(typeof(FailClass), "Method");
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void HasMethodOneParameterFail()
         {
-            ReflectionAssert.HasMethod(typeof(FailClass), "Method",typeof(string));
+            OldReflectionAssert.HasMethod(typeof(FailClass), "Method",typeof(string));
         }
         #endregion 
 
@@ -148,13 +148,13 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void ObjectIsAssignableFromString()
         {
-            ReflectionAssert.IsAssignableFrom(typeof(Object), typeof(string));            
+            OldReflectionAssert.IsAssignableFrom(typeof(Object), typeof(string));            
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void StringIsNotAssignableFromObject()
         {
-            ReflectionAssert.IsAssignableFrom(typeof(string),typeof(Object));
+            OldReflectionAssert.IsAssignableFrom(typeof(string),typeof(Object));
         }
         #endregion
 
@@ -162,13 +162,13 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void IsInstanceOf()
         {
-            ReflectionAssert.IsInstanceOf(typeof(string), "hello");
+            OldReflectionAssert.IsInstanceOf(typeof(string), "hello");
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void IsInstanceOfFail()
         {
-            ReflectionAssert.IsInstanceOf(typeof(string), 1);
+            OldReflectionAssert.IsInstanceOf(typeof(string), 1);
         }
         #endregion
 
@@ -176,13 +176,13 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void ReadOnlyProperty()
         {
-            ReflectionAssert.ReadOnlyProperty(typeof(string), "Length");
+            OldReflectionAssert.ReadOnlyProperty(typeof(string), "Length");
         }
         [Test]
         [ExpectedException(typeof(AssertionException))]
         public void ReadOnlyPropertyFail()
         {
-            ReflectionAssert.ReadOnlyProperty(typeof(SuccessClass), "Prop");
+            OldReflectionAssert.ReadOnlyProperty(typeof(SuccessClass), "Prop");
         }
         #endregion        
 

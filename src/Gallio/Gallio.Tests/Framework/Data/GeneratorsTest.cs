@@ -25,7 +25,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void LinearInt32()
         {
-            CollectionAssert.AreElementsEqual(new int[] { 0, 2, 4, 6 }, Generators.Linear(0, 4, 2));
+            OldCollectionAssert.AreElementsEqual(new int[] { 0, 2, 4, 6 }, Generators.Linear(0, 4, 2));
         }
 
         [Test, ExpectedArgumentOutOfRangeException]
@@ -37,7 +37,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void LinearDouble()
         {
-            CollectionAssert.AreElementsEqual(new double[] { -0.5, 2, 4.5, 7 }, Generators.Linear(-0.5, 4, 2.5));
+            OldCollectionAssert.AreElementsEqual(new double[] { -0.5, 2, 4.5, 7 }, Generators.Linear(-0.5, 4, 2.5));
         }
 
         [Test, ExpectedArgumentOutOfRangeException]
@@ -49,7 +49,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void EnumValues()
         {
-            CollectionAssert.AreElementsEqual(new Answer[] { Answer.Yes, Answer.No }, Generators.EnumValues(typeof(Answer)));
+            OldCollectionAssert.AreElementsEqual(new Answer[] { Answer.Yes, Answer.No }, Generators.EnumValues(typeof(Answer)));
         }
 
         [Test, ExpectedArgumentNullException]

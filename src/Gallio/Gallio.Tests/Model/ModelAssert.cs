@@ -86,7 +86,7 @@ namespace Gallio.Tests.Model
                 return;
             }
 
-            InterimAssert.WithKeyedPairs(expected, actual, CollectionAssert.AreElementsEqual);
+            InterimAssert.WithKeyedPairs(expected, actual, OldCollectionAssert.AreElementsEqual);
         }
 
         public static void AreEqual(TestStepData expected, TestStepData actual)

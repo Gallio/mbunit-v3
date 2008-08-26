@@ -340,7 +340,7 @@ namespace MbUnit.Framework.ContractVerifiers
             if (instance.InnerException == null)
                 Assert.IsNull(result.InnerException, "The inner exception should be preserved by round-trip serialization.");
             else
-                Assert.IsInstanceOfType(instance.InnerException.GetType(), result.InnerException, "The inner exception should be preserved by round-trip serialization.");
+                Assert.AreEqual(instance.InnerException.GetType(), result.InnerException.GetType(), "The inner exception should be preserved by round-trip serialization.");
         }
 
         /// <summary>

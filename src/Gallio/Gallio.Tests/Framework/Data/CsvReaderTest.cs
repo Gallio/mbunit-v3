@@ -94,7 +94,7 @@ namespace Gallio.Tests.Framework.Data
             {
                 InterimAssert.WithPairs(expectedRecords, actualRecords, delegate(object expectedRecord, string[] actualRecord)
                 {
-                    ArrayAssert.AreEqual((string[])expectedRecord, actualRecord);
+                    OldArrayAssert.AreEqual((string[])expectedRecord, actualRecord);
                 });
             });
         }
@@ -106,9 +106,9 @@ namespace Gallio.Tests.Framework.Data
             CsvReader reader = new CsvReader(documentReader);
 
             Assert.AreEqual(0, reader.PreviousRecordLineNumber);
-            ArrayAssert.AreEqual(new string[] { "abc" }, reader.ReadRecord());
+            OldArrayAssert.AreEqual(new string[] { "abc" }, reader.ReadRecord());
             Assert.AreEqual(1, reader.PreviousRecordLineNumber);
-            ArrayAssert.AreEqual(new string[] { "def" }, reader.ReadRecord());
+            OldArrayAssert.AreEqual(new string[] { "def" }, reader.ReadRecord());
             Assert.AreEqual(3, reader.PreviousRecordLineNumber);
             Assert.IsNull(reader.ReadRecord());
             Assert.AreEqual(3, reader.PreviousRecordLineNumber);

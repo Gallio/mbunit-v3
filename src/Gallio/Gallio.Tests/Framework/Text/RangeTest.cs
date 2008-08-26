@@ -75,14 +75,14 @@ namespace Gallio.Tests.Framework.Text
         public void SubstringOfThrowsIfStringIsNull()
         {
             Range range = new Range(0, 4);
-            NewAssert.Throws<ArgumentNullException>(() => range.SubstringOf(null));
+            Assert.Throws<ArgumentNullException>(() => range.SubstringOf(null));
         }
 
         [Test]
         public void SubstringOfThrowsIfRangeIsOutOfBounds()
         {
             Range range = new Range(3, 4);
-            NewAssert.Throws<ArgumentOutOfRangeException>(() => range.SubstringOf("abcde"));
+            Assert.Throws<ArgumentOutOfRangeException>(() => range.SubstringOf("abcde"));
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace Gallio.Tests.Framework.Text
         {
             Range a = new Range(2, 3);
             Range b = new Range(4, 2);
-            NewAssert.Throws<ArgumentException>(() => a.ExtendWith(b));
+            Assert.Throws<ArgumentException>(() => a.ExtendWith(b));
         }
 
         [Test]
@@ -104,25 +104,25 @@ namespace Gallio.Tests.Framework.Text
         {
             Range a = new Range(2, 3);
             Range b = new Range(3, 1);
-            NewAssert.Throws<ArgumentException>(() => a.ExtendWith(b));
+            Assert.Throws<ArgumentException>(() => a.ExtendWith(b));
         }
 
         [Test]
         public void ExtendWithFollowingRange()
         {
-            NewAssert.AreEqual(new Range(2, 3), new Range(2, 1).ExtendWith(new Range(3, 2)));
+            Assert.AreEqual(new Range(2, 3), new Range(2, 1).ExtendWith(new Range(3, 2)));
         }
 
         [Test]
         public void ExtendWithPrecedingRange()
         {
-            NewAssert.AreEqual(new Range(2, 3), new Range(3, 2).ExtendWith(new Range(2, 1)));
+            Assert.AreEqual(new Range(2, 3), new Range(3, 2).ExtendWith(new Range(2, 1)));
         }
 
         [Test]
         public void ToStringFormatting()
         {
-            NewAssert.AreEqual("[2 .. 5)", new Range(2, 3).ToString());
+            Assert.AreEqual("[2 .. 5)", new Range(2, 3).ToString());
         }
     }
 }

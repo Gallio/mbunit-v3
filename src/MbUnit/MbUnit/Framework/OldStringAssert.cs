@@ -24,7 +24,7 @@ namespace MbUnit.Framework
 	/// <summary>
 	/// String Assertion class
 	/// </summary>
-	public static class StringAssert
+    public static class OldStringAssert
 	{
 		/// <summary>
 		/// Asserts that two strings are equal, ignoring the case

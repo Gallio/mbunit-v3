@@ -25,7 +25,7 @@ namespace MbUnit.Framework
     /// <summary>
     /// Provides extended assertions for .Net 3.5.
     /// </summary>
-    public abstract class AssertEx : NewAssert
+    public abstract class AssertEx : Assert
     {
         #region That
         /// <summary>
@@ -36,7 +36,7 @@ namespace MbUnit.Framework
         /// If the condition evaluates to false, the assertion failure message will
         /// describe in detail the intermediate value of relevant sub-expressions within
         /// the condition.  Consequently the assertion failure will include more diagnostic
-        /// information than if <see cref="NewAssert.IsTrue(bool)" /> were used instead.
+        /// information than if <see cref="Assert.IsTrue(bool)" /> were used instead.
         /// </para>
         /// </summary>
         /// <param name="condition">The conditional expression to evaluate</param>
@@ -55,7 +55,7 @@ namespace MbUnit.Framework
         /// If the condition evaluates to false, the assertion failure message will
         /// describe in detail the intermediate value of relevant sub-expressions within
         /// the condition.  Consequently the assertion failure will include more diagnostic
-        /// information than if <see cref="NewAssert.IsTrue(bool, string, object[])" /> were used instead.
+        /// information than if <see cref="Assert.IsTrue(bool, string, object[])" /> were used instead.
         /// </para>
         /// </summary>
         /// <param name="condition">The conditional expression to evaluate</param>
