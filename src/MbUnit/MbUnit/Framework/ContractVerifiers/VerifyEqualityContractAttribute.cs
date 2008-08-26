@@ -33,16 +33,16 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <summary>
     /// <para>
     /// Attribute for test fixtures that verify the implementation 
-    /// contract of a type implementing the generic <see cref="T:IEquatable"/> interface. 
+    /// contract of a type implementing the generic <see cref="IEquatable{T}"/> interface. 
     /// </para>
     /// <para>
-    /// The test fixture must implement the <see cref="T:IEquivalenceClassProvider"/> interface 
+    /// The test fixture must implement the <see cref="IEquivalenceClassProvider{T}"/> interface 
     /// which provides a set of equivalence classes of distinct object instances to be used by
     /// the contract verifier.
     /// </para>
     /// <para>
     /// By default, the verifier will evaluated the behavior of the <see cref="Object.Equals(object)"/>,
-    /// <see cref="Object.GetHashCode"/>, and <see cref="T:IEquatable.Equals"/> methods. It will
+    /// <see cref="Object.GetHashCode"/>, and <see cref="IEquatable{T}.Equals"/> methods. It will
     /// verify as well the good implementation of the equality (==) and the inequality (!=) operator overloads.
     /// Use the named parameters <see cref="VerifyEqualityContractAttribute.ImplementsOperatorOverloads"/>
     /// to disable that verification.
@@ -50,7 +50,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <example>
     /// <para>
     /// The following example declares a simple equatable "Foo" class and tests it using the equality
-    /// contract verifier. The Foo class has a contructor which takes two Int32 arguments. 
+    /// contract verifier. The "Foo" class has a contructor which takes two Int32 arguments. 
     /// The equality contract is based on the result of the multiplication of those two arguments.
     /// Thus, Foo(25, 2) should be equal to (5, 10) because 25 * 2 = 5 * 10.
     /// <code><![CDATA[
@@ -80,8 +80,10 @@ namespace MbUnit.Framework.ContractVerifiers
     /// 
     ///     public static bool operator ==(Foo left, Foo right) 
     ///     {
-    ///         return (((object)left == null) && ((object)right == null)) ||
-    ///            (((object)left != null) && left.Equals(right));
+    ///         return (Object.ReferenceEquals(left, null) 
+    ///             && Object.ReferenceEquals(right, null)) 
+    ///             || (!Object.ReferenceEquals(left, null) 
+    ///             && left.Equals(right));
     ///     }
     ///     
     ///     public static bool operator !=(Foo left, Foo right) 
@@ -90,7 +92,7 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     }
     /// }
     /// 
-    /// [VerifyEqualityContract(typeof(Foo), ImplementsOperatorOverloads = true)]
+    /// [VerifyEqualityContract(typeof(Foo)]
     /// public class FooTest : IEquivalenceClassProvider<Foo>
     /// {
     ///     public EquivalenceClassCollection<Foo> GetEquivalenceClasses()
@@ -110,6 +112,17 @@ namespace MbUnit.Framework.ContractVerifiers
     /// ]]></code>
     /// </para>
     /// </example>
+    /// <para>
+    /// When testing a nullable type such as a reference type, or a value type decorated 
+    /// with <see cref="Nullable{T}"/>, it is not necessary to provide a null reference as an
+    /// object instance to the constructor of the equivalence classes. 
+    /// The contract verifier will check for you that the tested type handles correctly 
+    /// with null references. In the scope of the equality contract, it means that:
+    /// <list type="bullet">
+    /// <item>Any null reference should be not equal to any non-null reference.</item>
+    /// <item>Two null references should be equal together.</item>
+    /// </list>
+    /// </para>
     /// </summary>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
@@ -119,6 +132,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <para>
         /// Determines whether the verifier will evaluate the presence and the 
         /// behavior of the equality and the inequality operator overloads.
+        /// The default value is 'true'.
         /// </para>
         /// Built-in verifications:
         /// <list type="bullet">
@@ -202,7 +216,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Verifies the implementation and the behavior of <see cref="Object.Equals(object)" />.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddObjectEqualsTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -222,7 +236,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Verifies the implementation and the behavior of <see cref="Object.GetHashCode" />.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddObjectGetHashCodeTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -247,7 +261,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Verifies the implementation and the behavior of <see cref="IEquatable{T}.Equals" />.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddEquatableEqualsTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -272,7 +286,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Verifies the implementation and the behavior of the static equality operator overload.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddOperatorEqualsTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -297,7 +311,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Verifies the implementation and the behavior of the static inequality operator overload.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddOperatorNotEqualsTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -323,8 +337,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Casts the instance of the test fixture into a provider of equivalence classes, 
         /// then returns the resulting collection as an enumeration.
         /// </summary>
-        /// <param name="fixtureType">The type of the fixture.</param>
-        /// <param name="fixtureInstance">The fixture instance.</param>
+        /// <param name="fixtureType">The type of the fixture</param>
+        /// <param name="fixtureInstance">The fixture instance</param>
         /// <returns></returns>
         protected IEnumerable GetEquivalentClasses(Type fixtureType, object fixtureInstance)
         {
@@ -338,11 +352,11 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Ensures that an equality operation is correctly implemented.
         /// </summary>
-        /// <param name="fixtureType">The type of the fixture.</param>
-        /// <param name="fixtureInstance">The fixture instance.</param>
+        /// <param name="fixtureType">The type of the fixture</param>
+        /// <param name="fixtureInstance">The fixture instance</param>
         /// <param name="isStaticMethodInvoked">Indicates whether the equality operation 
-        /// is based on the invocation of a static method (true) or an instance method (false).</param>
-        /// <param name="equals">The equality operation.</param>
+        /// is based on the invocation of a static method (true) or an instance method (false)</param>
+        /// <param name="equals">The equality operation</param>
         protected void VerifyEqualityContract(Type fixtureType, object fixtureInstance, 
             bool isStaticMethodInvoked, Func<object, object, bool> equals)
         {
@@ -366,13 +380,13 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Evaluates the equivalence of two classes of object instances.
         /// </summary>
-        /// <param name="a">The first class of equivalent object instances.</param>
-        /// <param name="b">The second class of equivalent object instances.</param>
+        /// <param name="a">The first class of equivalent object instances</param>
+        /// <param name="b">The second class of equivalent object instances</param>
         /// <param name="equalityExpected">Indicates whether all the object instances which 
-        /// belong to the two classes are expected to be equal or not.</param>
+        /// belong to the two classes are expected to be equal or not</param>
         /// <param name="isStaticMethodInvoked">Indicates whether the equality operation 
-        /// is based on the invocation of a static method (true) or an instance method (false).</param>
-        /// <param name="equals">The equality function used for the evaluation.</param>
+        /// is based on the invocation of a static method (true) or an instance method (false)</param>
+        /// <param name="equals">The equality function used for the evaluation</param>
         protected void CompareEquivalentInstances(IEnumerable a, IEnumerable b, 
             bool equalityExpected, bool isStaticMethodInvoked, Func<object, object, bool> equals)
         {

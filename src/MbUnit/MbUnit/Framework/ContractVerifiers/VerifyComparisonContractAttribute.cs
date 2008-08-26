@@ -81,7 +81,7 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     }
     /// }
     /// 
-    /// [VerifyComparisonContract(typeof(Foo), ImplementsOperatorOverloads = true)]
+    /// [VerifyComparisonContract(typeof(Foo))]
     /// public class FooTest : IEquivalenceClassProvider<Foo>
     /// {
     ///     public EquivalenceClassCollection<Foo> GetEquivalenceClasses()
@@ -94,12 +94,19 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     }
     /// }
     /// ]]></code>
-    /// For nullable comparable types, such as the "Foo" class in the example, 
-    /// consider as a good practice to include a null reference as the unique element 
-    /// of your first equivalence class. Indeed, by definition, any object compares 
-    /// greater than null reference, and two null references compare equal to each other.
     /// </para>
     /// </example>
+    /// <para>
+    /// When testing a nullable type such as a reference type, or a value type decorated 
+    /// with <see cref="Nullable{T}"/>, it is not necessary to provide a null reference as an
+    /// object instance to the constructor of the equivalence classes. 
+    /// The contract verifier will check for you that the tested type handles correctly 
+    /// with null references. In the scope of the comparison contract, it means that:
+    /// <list type="bullet">
+    /// <item>Any null reference should compare less than any non-null reference.</item>
+    /// <item>Two null references should compare equal.</item>
+    /// </list>
+    /// </para>
     /// </summary>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
@@ -108,7 +115,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// <para>
         /// Determines whether the verifier will evaluate the presence and the 
-        /// behavior of the four comparison operator overloads.
+        /// behavior of the four comparison operator overloads. 
+        /// The default value is 'true'.
         /// </para>
         /// Built-in verifications:
         /// <list type="bullet">
@@ -158,7 +166,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </para>
         /// </summary>
         /// <param name="type">the type of the object to verify. The type must implement
-        /// the generic <see cref="IComparable{T}"/> interface.</param>
+        /// the generic <see cref="IComparable{T}"/> interface</param>
         public VerifyComparisonContractAttribute(Type type)
             : base("ComparisonContract")
         {
@@ -197,7 +205,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Verifies the implementation and the behavior of <see cref="IComparable{T}.CompareTo" />.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddComparableCompareToTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -239,9 +247,10 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Verifies the implementation and the behavior of the static "greater than" operator overload.
+        /// Verifies the implementation and the behavior of the static 
+        /// "greater than" operator overload.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddOperatorGreaterThanTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -269,9 +278,10 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Verifies the implementation and the behavior of the static "greater than or equal" operator overload.
+        /// Verifies the implementation and the behavior of the static 
+        /// "greater than or equal" operator overload.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddOperatorGreaterThanOrEqualTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -299,9 +309,10 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Verifies the implementation and the behavior of the static "Less Than" operator overload.
+        /// Verifies the implementation and the behavior of the static 
+        /// "Less Than" operator overload.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddOperatorLessThanTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -329,9 +340,10 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Verifies the implementation and the behavior of the static "Less Than Or Equal" operator overload.
+        /// Verifies the implementation and the behavior of the static 
+        /// "Less Than Or Equal" operator overload.
         /// </summary>
-        /// <param name="scope">The pattern evaluation scope.</param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddOperatorLessThanOrEqualTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -363,8 +375,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Casts the instance of the test fixture into a provider of equivalence classes, 
         /// then returns the resulting collection as an enumeration.
         /// </summary>
-        /// <param name="fixtureType">The type of the fixture.</param>
-        /// <param name="fixtureInstance">The fixture instance.</param>
+        /// <param name="fixtureType">The type of the fixture</param>
+        /// <param name="fixtureInstance">The fixture instance</param>
         /// <returns></returns>
         protected IEnumerable GetEquivalentClasses(Type fixtureType, object fixtureInstance)
         {
@@ -380,13 +392,14 @@ namespace MbUnit.Framework.ContractVerifiers
         /// for all the possible combinations between the objects found
         /// in all the available equivalence classes.
         /// </summary>
-        /// <typeparam name="U">The type of the result returned by the comparison operator (usually Boolean or Int32).</typeparam>
-        /// <param name="fixtureType">The type of the test fixture.</param>
+        /// <typeparam name="U">The type of the result returned by the comparison operator (usually Boolean or Int32)</typeparam>
+        /// <param name="fixtureType">The type of the test fixture</param>
         /// <param name="fixtureInstance">The instance of test fixture.</param>
-        /// <param name="isStaticMethodInvoked">Indicates whether the comparison method is based on the invocation of a static method (true) or an instance method (false).</param>
-        /// <param name="compares">The comparison operation.</param>
-        /// <param name="refers">The reference operation which provides the expected result.</param>
-        /// <param name="formatsExpectedResult">Formats the expected result.</param>
+        /// <param name="isStaticMethodInvoked">Indicates whether the comparison method is based on the 
+        /// invocation of a static method (true) or an instance method (false)</param>
+        /// <param name="compares">The comparison operation</param>
+        /// <param name="refers">The reference operation which provides the expected result</param>
+        /// <param name="formatsExpectedResult">Formats the expected result</param>
         protected void VerifyComparisonContract<U>(Type fixtureType, object fixtureInstance, bool isStaticMethodInvoked,
             Func<object, object, U> compares, Func<int, int, U> refers, Func<U, string> formatsExpectedResult)
         {
@@ -413,14 +426,16 @@ namespace MbUnit.Framework.ContractVerifiers
         /// all the possible combinations of objects found in the two specified
         /// equivalence classes.
         /// </summary>
-        /// <typeparam name="U">The type of the result returned by the comparison operator (usually Boolean or Int32).</typeparam>
-        /// <param name="a">The first equivalence class.</param>
-        /// <param name="b">The second equivalence class.</param>
-        /// <param name="isStaticMethodInvoked">Indicates whether the comparison method is based on the invocation of a static method (true) or an instance method (false).</param>
-        /// <param name="expectedResult">The expected result of the comparison.</param>
-        /// <param name="formatsExpectedResult">Formats the expected result.</param>
+        /// <typeparam name="U">The type of the result returned by the comparison 
+        /// operator (usually Boolean or Int32)</typeparam>
+        /// <param name="a">The first equivalence clas</param>
+        /// <param name="b">The second equivalence class</param>
+        /// <param name="isStaticMethodInvoked">Indicates whether the comparison method 
+        /// is based on the invocation of a static method (true) or an instance method (false)</param>
+        /// <param name="expectedResult">The expected result of the comparison</param>
+        /// <param name="formatsExpectedResult">Formats the expected result</param>
         /// <param name="expectedResultForNullComparison"></param>
-        /// <param name="compares">The comparison operation.</param>
+        /// <param name="compares">The comparison operation</param>
         protected void CompareEquivalentInstances<U>(IEnumerable a, IEnumerable b, bool isStaticMethodInvoked,
             U expectedResult, Func<U, string> formatsExpectedResult, U expectedResultForNullComparison, Func<object, object, U> compares)
         {

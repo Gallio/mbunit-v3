@@ -24,8 +24,15 @@ namespace MbUnit.Framework.ContractVerifiers
     /// Provides equivalence classes of object instances.
     /// </para>
     /// <para>
-    /// That interface is one of the two side parts contract for the equality 
-    /// contract verifier <see cref="VerifyEqualityContractAttribute"/>.
+    /// That interface is one of the two side parts contracts for the equality 
+    /// contract verifier <see cref="VerifyEqualityContractAttribute"/> and
+    /// <see cref="VerifyComparisonContractAttribute"/>.
+    /// </para>
+    /// <para>
+    /// Equivalent classes are used by some contract verifiers such as 
+    /// <see cref="VerifyEqualityContractAttribute"/> and
+    /// <see cref="VerifyComparisonContractAttribute"/> to check for 
+    /// the correct implementation of object equality or comparison.
     /// </para>
     /// </summary>
     public interface IEquivalenceClassProvider<T>
@@ -33,7 +40,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Provides equivalence classes of object instances.
         /// </summary>
-        /// <returns>A collection of equivalence classes.</returns>
+        /// <returns>A collection of equivalence classes</returns>
         EquivalenceClassCollection<T> GetEquivalenceClasses();
     }
 }

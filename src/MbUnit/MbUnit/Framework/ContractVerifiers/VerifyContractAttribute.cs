@@ -25,7 +25,7 @@ using Gallio.Framework.Data;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
-    /// Abstract attribute to qualify test fixtures that verify contracts.
+    /// Abstract attribute to qualify test fixtures that verify implementation contracts.
     /// </summary>
     [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = true, Inherited = true)]
     public abstract class VerifyContractAttribute : TestDecoratorPatternAttribute
@@ -61,8 +61,8 @@ namespace MbUnit.Framework.ContractVerifiers
 
         /// <summary>
         /// Injects in the pattern evaluation scope some test methods
-        /// that will verify the good implementation of the contract according
-        /// to the current options.
+        /// that will verify the good implementation of the contract,
+        /// according to the current options.
         /// </summary>
         /// <param name="scope">The scope of the verify contract pattern</param>
         protected abstract void AddContractTests(PatternEvaluationScope scope);

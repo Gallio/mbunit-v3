@@ -27,13 +27,13 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </para>
     /// <para>
     /// Equivalent classes are used by some contract verifiers such as 
-    /// <see cref="VerifyEqualityContractAttribute"/> to check for the correct
-    /// implementation of object equality or comparison.
+    /// <see cref="VerifyEqualityContractAttribute"/> and
+    /// <see cref="VerifyComparisonContractAttribute"/> to check for 
+    /// the correct implementation of object equality or comparison.
     /// </para>
     /// <para>
     /// You can construct and initialize a collection of equivalence classes either by using the
-    /// constructor, or by using the factory method.
-    /// <see cref="T:EquivalenceClassCollection.FromDistinctInstances"/> in more simple scenarios.
+    /// constructor, or by using the factory method <see cref="EquivalenceClassCollection{T}.FromDistinctInstances"/>:
     /// <list type="bullet">
     /// <item>
     /// Use the constructor when you want to create equivalence classes containing a variable 
@@ -55,7 +55,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </example>
     /// </item>
     /// <item>
-    /// Use the factory method for more simple scenarios, when the equivalence classes
+    /// Use the factory method in more simple scenarios, when the equivalence classes
     /// will only contain one single object instance.
     /// <example>
     /// <code><![CDATA[
@@ -81,9 +81,17 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
+        /// <para>
         /// Constructs a collection of equivalence classes.
+        /// </para>
+        /// <para>
+        /// Equivalent classes are used by some contract verifiers such as 
+        /// <see cref="VerifyEqualityContractAttribute"/> and
+        /// <see cref="VerifyComparisonContractAttribute"/> to check for 
+        /// the correct implementation of object equality or comparison.
+        /// </para>
         /// </summary>
-        /// <param name="equivalenceClasses">An array of equivalence classes.</param>
+        /// <param name="equivalenceClasses">An array of equivalence classes</param>
         public EquivalenceClassCollection(params EquivalenceClass<T>[] equivalenceClasses)
         {
             if (equivalenceClasses == null)
@@ -107,11 +115,19 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
+        /// <para>
         /// Constructs a collection of equivalence classes from the specified distinct object
         /// instances. The collection will contain one equivalence class for each of the
         /// distinct object instances provided.
+        /// </para>
+        /// <para>
+        /// Equivalent classes are used by some contract verifiers such as 
+        /// <see cref="VerifyEqualityContractAttribute"/> and
+        /// <see cref="VerifyComparisonContractAttribute"/> to check for 
+        /// the correct implementation of object equality or comparison.
+        /// </para>
         /// </summary>
-        /// <param name="distinctInstances">An array of distinct object instances.</param>
+        /// <param name="distinctInstances">An array of distinct object instances</param>
         /// <returns></returns>
         public static EquivalenceClassCollection<T> FromDistinctInstances(params T[] distinctInstances)
         {
@@ -142,7 +158,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Returns a strongly-typed enumerator that iterates through the collection.
         /// </summary>
-        /// <returns>A strongly-typed enumerator.</returns>
+        /// <returns>A strongly-typed enumerator</returns>
         public IEnumerator<EquivalenceClass<T>> GetEnumerator()
         {
             return equivalenceClasses.GetEnumerator();

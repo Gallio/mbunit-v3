@@ -38,31 +38,31 @@ namespace MbUnit.Framework.ContractVerifiers
     /// and the implementation of the 3 recommended constructors. Use the named 
     /// parameters <see cref="VerifyExceptionContractAttribute.ImplementsSerialization" />
     /// and <see cref="VerifyExceptionContractAttribute.ImplementsStandardConstructors" />
-    /// to modify this behavior.
+    /// to modify that behavior.
     /// </para>
     /// <example>
     /// <para>
-    /// The following example declares a simple custom exception named "MyException", 
+    /// The following example declares a simple custom exception, 
     /// and tests it using the exception contract verifier.
     /// <code><![CDATA[
     /// [Serializable]
     /// public class MyException : Exception, ISerializable
     /// {
-    ///     public SerializedExceptionSample()
+    ///     public MyException()
     ///     {
     ///     }
     ///
-    ///     public SerializedExceptionSample(string message)
+    ///     public MyException(string message)
     ///         : base(message)
     ///     {
     ///     }
     ///
-    ///     public SerializedExceptionSample(string message, Exception innerException)
+    ///     public MyException(string message, Exception innerException)
     ///         : base(message, innerException)
     ///     {
     ///     }
     ///
-    ///     protected SerializedExceptionSample(SerializationInfo info, StreamingContext context)
+    ///     protected MyException(SerializationInfo info, StreamingContext context)
     ///         : base(info, context)
     ///     {
     ///     }
@@ -73,10 +73,8 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     }
     /// }
     /// 
-    /// [VerifyExceptionContract(typeof(MyException),
-    ///     ImplementsSerialization = false,
-    ///     ImplementsStandardConstructors = true)]
-    /// private class MyExceptionTest
+    /// [VerifyExceptionContract(typeof(MyException)]
+    /// public class MyExceptionTest
     /// {
     /// }
     /// ]]></code>
@@ -152,7 +150,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// to modify this behavior.
         /// </para>
         /// </summary>
-        /// <param name="exceptionType">The custom exception type to verify. It must derive from <see cref="Exception" />.</param>
+        /// <param name="exceptionType">The custom exception type to verify. 
+        /// It must derive from <see cref="Exception" />.</param>
         public VerifyExceptionContractAttribute(Type exceptionType)
             : base("ExceptionContract")
         {
@@ -192,9 +191,9 @@ namespace MbUnit.Framework.ContractVerifiers
 
         /// <summary>
         /// Adds a child test which verifies that the exception type has
-        /// the 'Serializable' attribute.
+        /// the <see cref="SerializableAttribute" /> attribute.
         /// </summary>
-        /// <param name="scope"></param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddHasSerializableAttributeTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -213,7 +212,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// a non-public serializable constructor with the signature 
         /// '.ctor(SerializationInfo, StreamingContext)'.
         /// </summary>
-        /// <param name="scope"></param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddHasSerializationConstructorTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -232,7 +231,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Adds a child test which verifies that the exception type has
         /// a valid default constructor.
         /// </summary>
-        /// <param name="scope"></param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddIsDefaultConstructorWellDefinedTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -256,7 +255,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Adds a child test which verifies that the exception type has
         /// a single argument constructor with the signature '.ctor(string)'.
         /// </summary>
-        /// <param name="scope"></param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddIsStandardMessageConstructorWellDefinedTest(PatternEvaluationScope scope)
         {
             PatternTest test = AddContractTest(
@@ -297,7 +296,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Adds a child test which verifies that the exception type has
         /// a two arguments constructor with signature '.ctor(string, Exception)'.
         /// </summary>
-        /// <param name="scope"></param>
+        /// <param name="scope">The pattern evaluation scope</param>
         private void AddIsStandardMessageAndInnerExceptionConstructorWellDefinedTest(PatternEvaluationScope scope)
         {
             AddContractTest(
@@ -328,7 +327,8 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Verifies that the <see cref="Exception.Message" /> and <see cref="Exception.InnerException" />
+        /// Verifies that the <see cref="Exception.Message" /> and 
+        /// <see cref="Exception.InnerException" />
         /// properties are preserved by round-trip serialization.
         /// </summary>
         /// <param name="instance">The exception instance.</param>
@@ -358,6 +358,5 @@ namespace MbUnit.Framework.ContractVerifiers
                 return (Exception)formatter.Deserialize(stream);
             }
         }
-    
     }
 }

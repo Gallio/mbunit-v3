@@ -24,23 +24,35 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <summary>
     /// <para>
     /// Contains a collection of equivalent object instances. 
-    /// All the elements of the collection are supposed to be equal together.
+    /// All the elements of the collection should be equal together, in
+    /// the sense of the local implementation of an equality contract
+    /// (<see cref="IEquatable{T}"/>) or a comparison contract 
+    /// (<see cref="IComparable{T}"/>).
     /// </para>
     /// <para>
     /// Equivalent classes are used by some contract verifiers such as 
-    /// <see cref="VerifyEqualityContractAttribute"/> to check for correct
-    /// implementation of object equality or comparison.
+    /// <see cref="VerifyEqualityContractAttribute"/> and
+    /// <see cref="VerifyComparisonContractAttribute"/> to check for 
+    /// the correct implementation of object equality or comparison.
     /// </para>
     /// </summary>
-    /// <typeparam name="T">The type of equivalent instances.</typeparam>
+    /// <typeparam name="T">The type of equivalent object instances.</typeparam>
     public class EquivalenceClass<T> : IEnumerable<T>
     {
         private readonly List<T> equivalentInstances;
 
         /// <summary>
+        /// <para>
         /// Constructs a class of equivalent instances.
+        /// </para>
+        /// <para>
+        /// All the elements of the collection should be equal together, in
+        /// the sense of the local implementation of an equality contract
+        /// (<see cref="IEquatable{T}"/>) or a comparison contract 
+        /// (<see cref="IComparable{T}"/>).
+        /// </para>
         /// </summary>
-        /// <param name="equivalentInstances">The type of equivalent instances.</param>
+        /// <param name="equivalentInstances">The type of equivalent object instances</param>
         public EquivalenceClass(params T[] equivalentInstances)
         {
             if (equivalentInstances == null)
@@ -81,7 +93,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Returns a strongly-typed enumerator that iterates through the collection.
         /// </summary>
-        /// <returns>A strongly-typed enumerator.</returns>
+        /// <returns>A strongly-typed enumerator</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return equivalentInstances.GetEnumerator();
