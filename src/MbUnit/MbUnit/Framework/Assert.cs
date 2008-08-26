@@ -716,6 +716,46 @@ namespace MbUnit.Framework
         }
         #endregion
 
+        #region IsAssignableFrom
+        /// <summary>
+        /// Asserts that an object may be assigned a  value of a given Type.
+        /// </summary>
+        /// <param name="expectedType">The Type to compare with the object's Type</param>
+        /// <param name="actualValue">The object under examination</param>
+        public static void IsAssignableFrom(Type expectedType, object actualValue)
+        {
+            IsAssignableFrom(expectedType, actualValue, null, null);
+        }
+
+        /// <summary>
+        /// Asserts that an object may be assigned a  value of a given Type.
+        /// </summary>
+        /// <param name="expectedType">The Type to compare with the object's Type</param>
+        /// <param name="actualValue">The object under examination</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        public static void IsAssignableFrom(Type expectedType, object actualValue, string messageFormat, params object[] messageArgs)
+        {
+            if (expectedType == null)
+                throw new ArgumentNullException("expectedType");
+            if (actualValue == null)
+                throw new ArgumentNullException("actualValue");
+
+            AssertionHelper.Verify(delegate
+            {
+                if (actualValue.GetType().IsAssignableFrom(expectedType))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected the actual type to be assignable to the expected type.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .SetRawLabeledValue("Actual Type", actualValue.GetType())
+                    .SetRawLabeledValue("Expected Type", expectedType)
+                    .ToAssertionFailure();
+            });
+        }
+
+        #endregion
+
         #region IsInstanceOfType
         /// <summary>
         /// Verifies that an actual value is an instance of some expected type.
