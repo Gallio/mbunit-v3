@@ -242,9 +242,9 @@ namespace Gallio.Tests.Framework.Data
                 List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(bindings, true));
                 Assert.AreEqual(items.Count, 2);
 
-                InterimAssert.Throws<ArgumentNullException>(delegate { items[0].GetValue(null); });
+                Assert.Throws<ArgumentNullException>(delegate { items[0].GetValue(null); });
 
-                InterimAssert.Throws<DataBindingException>(delegate { items[0].GetValue(bindings[0]); });
+                Assert.Throws<DataBindingException>(delegate { items[0].GetValue(bindings[0]); });
                 Assert.AreEqual(2, items[0].GetValue(bindings[1]));
                 Assert.AreEqual(1, items[0].GetValue(bindings[2]));
                 Assert.AreEqual(4, items[0].GetValue(bindings[3]));
@@ -259,7 +259,7 @@ namespace Gallio.Tests.Framework.Data
 
                 Assert.IsFalse(items[0].IsDynamic);
 
-                InterimAssert.Throws<DataBindingException>(delegate { items[1].GetValue(bindings[0]); });
+                Assert.Throws<DataBindingException>(delegate { items[1].GetValue(bindings[0]); });
                 Assert.AreEqual(-2, items[1].GetValue(bindings[1]));
                 Assert.AreEqual(-1, items[1].GetValue(bindings[2]));
                 Assert.AreEqual(-4, items[1].GetValue(bindings[3]));

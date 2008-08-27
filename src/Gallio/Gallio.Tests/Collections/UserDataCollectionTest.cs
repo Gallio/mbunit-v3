@@ -59,7 +59,7 @@ namespace Gallio.Tests.Collections
             int value;
             Assert.IsFalse(collection.TryGetValue(new Key<int>("key"), out value));
             Assert.AreEqual(0, value);
-            InterimAssert.Throws<KeyNotFoundException>(delegate { collection.GetValue(new Key<int>("key"));});
+            Assert.Throws<KeyNotFoundException>(delegate { collection.GetValue(new Key<int>("key"));});
             Assert.AreEqual(42, collection.GetValueOrDefault(new Key<int>("key"), 42));
         }
 

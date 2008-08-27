@@ -38,9 +38,9 @@ namespace MbUnit.Framework
 		/// </param>
 		public static void IsAssignableFrom(Type parent, Type child)
 		{
-			Assert.IsNotNull(parent);
-			Assert.IsNotNull(child);
-			Assert.IsTrue(parent.IsAssignableFrom(child),
+			OldAssert.IsNotNull(parent);
+			OldAssert.IsNotNull(child);
+			OldAssert.IsTrue(parent.IsAssignableFrom(child),
 			              "{0} is not assignable from {1}",
 			              parent,
 			              child
@@ -59,9 +59,9 @@ namespace MbUnit.Framework
 		/// </param>
 		public static void IsInstanceOf(Type type, Object child)
 		{
-			Assert.IsNotNull(type);
-			Assert.IsNotNull(child);
-			Assert.IsTrue(type.IsInstanceOfType(child),
+			OldAssert.IsNotNull(type);
+			OldAssert.IsNotNull(child);
+			OldAssert.IsTrue(type.IsInstanceOfType(child),
 			              "{0} is not an instance of {1}",
 			              type,
 			              child
@@ -89,8 +89,8 @@ namespace MbUnit.Framework
 		/// </summary>				
 		public static void HasConstructor(Type type, BindingFlags flags, params Type[] parameters)
 		{
-			Assert.IsNotNull(type);
-			Assert.IsNotNull(type.GetConstructor(flags,null,parameters,null),
+			OldAssert.IsNotNull(type);
+			OldAssert.IsNotNull(type.GetConstructor(flags,null,parameters,null),
 			                 "{0} does not have matching constructor",
 			                 type.FullName
 			                 );
@@ -110,10 +110,10 @@ namespace MbUnit.Framework
 		/// </summary>				
 		public static void HasMethod(Type type, BindingFlags flags, string name, params Type[] parameters)
 		{
-			Assert.IsNotNull(type, "Type is null");
+			OldAssert.IsNotNull(type, "Type is null");
 			OldStringAssert.IsNonEmpty(name);
 			
-			Assert.IsNotNull(type.GetMethod(name,parameters),
+			OldAssert.IsNotNull(type.GetMethod(name,parameters),
 			                 "Method {0} of type {1} not found with matching arguments",
 			                 name,
 			                 type
@@ -133,10 +133,10 @@ namespace MbUnit.Framework
 		/// </summary>								
 		public static void HasField(Type type, BindingFlags flags,string name)
 		{
-			Assert.IsNotNull(type, "Type is null");
+			OldAssert.IsNotNull(type, "Type is null");
 			OldStringAssert.IsNonEmpty(name);
 			
-			Assert.IsNotNull(type.GetField(name),
+			OldAssert.IsNotNull(type.GetField(name),
 			                 "Field {0} of type {1} not found with binding flags {2}",
 			                 name,
 			                 type,
@@ -146,10 +146,10 @@ namespace MbUnit.Framework
 
 		public static void ReadOnlyProperty(Type t, string propertyName)
 		{
-			Assert.IsNotNull(t);
-			Assert.IsNotNull(propertyName);
+			OldAssert.IsNotNull(t);
+			OldAssert.IsNotNull(propertyName);
 			PropertyInfo pi = t.GetProperty(propertyName);
-			Assert.IsNotNull(pi,
+			OldAssert.IsNotNull(pi,
 				"Type {0} does not contain property {1}",
 				t.FullName,
 				propertyName);
@@ -158,8 +158,8 @@ namespace MbUnit.Framework
 
 		public static void ReadOnlyProperty(PropertyInfo pi)
 		{
-			Assert.IsNotNull(pi);
-			Assert.IsFalse(pi.CanWrite,
+			OldAssert.IsNotNull(pi);
+			OldAssert.IsFalse(pi.CanWrite,
 				"Property {0}.{1} is not read-only",
 				pi.DeclaringType.Name,
 				pi.Name
@@ -168,10 +168,10 @@ namespace MbUnit.Framework
 
 		public static void WriteOnlyProperty(Type t, string propertyName)
 		{
-			Assert.IsNotNull(t);
-			Assert.IsNotNull(propertyName);
+			OldAssert.IsNotNull(t);
+			OldAssert.IsNotNull(propertyName);
 			PropertyInfo pi = t.GetProperty(propertyName);
-			Assert.IsNotNull(pi,
+			OldAssert.IsNotNull(pi,
 				"Type {0} does not contain property {1}",
 				t.FullName,
 				propertyName);
@@ -180,8 +180,8 @@ namespace MbUnit.Framework
 
 		public static void WriteOnlyProperty(PropertyInfo pi)
 		{
-			Assert.IsNotNull(pi);
-			Assert.IsFalse(pi.CanRead,
+			OldAssert.IsNotNull(pi);
+			OldAssert.IsFalse(pi.CanRead,
 				"Property {0}.{1} is not read-only",
 				pi.DeclaringType.FullName,
 				pi.Name
@@ -190,18 +190,18 @@ namespace MbUnit.Framework
 
 		public static void IsSealed(Type t)
 		{
-			Assert.IsNotNull(t);
-			Assert.IsTrue(t.IsSealed,
+			OldAssert.IsNotNull(t);
+			OldAssert.IsTrue(t.IsSealed,
 				"Type {0} is not sealed",
 				t.FullName);
 		}
 		
 		public static void NotCreatable(Type t)
 		{
-			Assert.IsNotNull(t);
+			OldAssert.IsNotNull(t);
 			foreach(ConstructorInfo ci in t.GetConstructors())
 			{
-				Assert.Fail(
+				OldAssert.Fail(
 					"Non-private constructor found in class {0}  that must not be creatable",
 					t.FullName);
 			}

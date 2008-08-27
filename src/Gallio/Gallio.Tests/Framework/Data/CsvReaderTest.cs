@@ -90,13 +90,7 @@ namespace Gallio.Tests.Framework.Data
             while ((record = reader.ReadRecord()) != null)
                 actualRecords.Add(record);
 
-            InterimAssert.With("Expected", expectedRecords, "Actual", actualRecords, delegate
-            {
-                InterimAssert.WithPairs(expectedRecords, actualRecords, delegate(object expectedRecord, string[] actualRecord)
-                {
-                    OldArrayAssert.AreEqual((string[])expectedRecord, actualRecord);
-                });
-            });
+            Assert.Over.Sequence(expectedRecords, actualRecords, (expectedRecord, actualRecord) => Assert.AreEqual((string[])expectedRecord, actualRecord));
         }
 
         [Test]

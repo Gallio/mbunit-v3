@@ -562,7 +562,7 @@ namespace Gallio.Tests.Reflection
                 if (target.IsArray)
                     Assert.AreEqual(target.GetArrayRank(), info.ArrayRank);
                 else
-                    InterimAssert.Throws<InvalidOperationException>(delegate { GC.KeepAlive(info.ArrayRank); });
+                    Assert.Throws<InvalidOperationException>(delegate { GC.KeepAlive(info.ArrayRank); });
 
                 if (info.IsArray || info.IsByRef || info.IsPointer || info.IsGenericParameter)
                     return; // Stop here for special types.
@@ -589,7 +589,7 @@ namespace Gallio.Tests.Reflection
                         // expected because the method was hidden but not overridden.  In this case, we need
                         // to perform the comparison on the basis of the named method we obtained rather
                         // than the one we were originally looking for.
-                        InterimAssert.DoesNotThrow(delegate
+                        Assert.DoesNotThrow(delegate
                         {
                             AreEqualWhenResolved(methodByName, info.GetMethod(methodByName.Name, AllPublic));
                         });
@@ -615,7 +615,7 @@ namespace Gallio.Tests.Reflection
                         if (method.IsGenericMethod)
                             continue;
 
-                        InterimAssert.Throws<AmbiguousMatchException>(delegate
+                        Assert.Throws<AmbiguousMatchException>(delegate
                         {
                             Assert.IsNotNull(info.GetMethod(method.Name, AllPublic));
                         });
@@ -632,14 +632,14 @@ namespace Gallio.Tests.Reflection
                         PropertyInfo propertyByName = target.GetProperty(property.Name, AllPublic);
                         Assert.IsNotNull(propertyByName);
 
-                        InterimAssert.DoesNotThrow(delegate
+                        Assert.DoesNotThrow(delegate
                         {
                             AreEqualWhenResolved(propertyByName, info.GetProperty(propertyByName.Name, AllPublic));
                         });
                     }
                     catch (AmbiguousMatchException)
                     {
-                        InterimAssert.Throws<AmbiguousMatchException>(delegate
+                        Assert.Throws<AmbiguousMatchException>(delegate
                         {
                             Assert.IsNotNull(info.GetProperty(property.Name, AllPublic));
                         });
@@ -656,14 +656,14 @@ namespace Gallio.Tests.Reflection
                         FieldInfo fieldByName = target.GetField(field.Name, AllPublic);
                         Assert.IsNotNull(fieldByName);
 
-                        InterimAssert.DoesNotThrow(delegate
+                        Assert.DoesNotThrow(delegate
                         {
                             AreEqualWhenResolved(fieldByName, info.GetField(fieldByName.Name, AllPublic));
                         });
                     }
                     catch (AmbiguousMatchException)
                     {
-                        InterimAssert.Throws<AmbiguousMatchException>(delegate
+                        Assert.Throws<AmbiguousMatchException>(delegate
                         {
                             Assert.IsNotNull(info.GetField(field.Name, AllPublic));
                         });
@@ -680,14 +680,14 @@ namespace Gallio.Tests.Reflection
                         EventInfo eventByName = target.GetEvent(@event.Name, AllPublic);
                         Assert.IsNotNull(eventByName);
 
-                        InterimAssert.DoesNotThrow(delegate
+                        Assert.DoesNotThrow(delegate
                         {
                             AreEqualWhenResolved(eventByName, info.GetEvent(eventByName.Name, AllPublic));
                         });
                     }
                     catch (AmbiguousMatchException)
                     {
-                        InterimAssert.Throws<AmbiguousMatchException>(delegate
+                        Assert.Throws<AmbiguousMatchException>(delegate
                         {
                             Assert.IsNotNull(info.GetEvent(@event.Name, AllPublic));
                         });
@@ -701,14 +701,14 @@ namespace Gallio.Tests.Reflection
                         Type nestedTypeByName = target.GetNestedType(nestedType.Name, AllPublic);
                         Assert.IsNotNull(nestedTypeByName);
 
-                        InterimAssert.DoesNotThrow(delegate
+                        Assert.DoesNotThrow(delegate
                         {
                             AreEqualWhenResolved(nestedTypeByName, info.GetNestedType(nestedTypeByName.Name, AllPublic));
                         });
                     }
                     catch (AmbiguousMatchException)
                     {
-                        InterimAssert.Throws<AmbiguousMatchException>(delegate
+                        Assert.Throws<AmbiguousMatchException>(delegate
                         {
                             Assert.IsNotNull(info.GetNestedType(nestedType.Name, AllPublic));
                         });
@@ -912,7 +912,7 @@ namespace Gallio.Tests.Reflection
 
         private void AreElementsEqualWhenResolved(IEnumerable<ParameterInfo> expected, IEnumerable<IParameterInfo> actual)
         {
-            InterimAssert.WithPairs(expected, actual, AreEqualWhenResolved);
+            Assert.Over.Sequence(expected, actual, AreEqualWhenResolved);
         }
 
         private void AreAttributeProvidersEquivalent<TTarget, TWrapper>(TTarget expectedTarget, TWrapper actualWrapper)

@@ -79,7 +79,7 @@ namespace Gallio.NAntTasks.Tests
                 return result;
             });
 
-            InterimAssert.DoesNotThrow(delegate { task.InternalExecute(); });
+            Assert.DoesNotThrow(delegate { task.InternalExecute(); });
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace Gallio.NAntTasks.Tests
                 return result;
             });
 
-            InterimAssert.DoesNotThrow(delegate { task.InternalExecute(); });
+            Assert.DoesNotThrow(delegate { task.InternalExecute(); });
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace Gallio.NAntTasks.Tests
                 return result;
             });
 
-            InterimAssert.Throws<BuildException>(delegate { task.InternalExecute(); });
+            Assert.Throws<BuildException>(delegate { task.InternalExecute(); });
 
             Assert.AreEqual(ResultCode.Failure.ToString(), task.Properties["ExitCode"]);
             Assert.AreEqual("42", task.Properties["Stats.AssertCount"]);
@@ -192,7 +192,7 @@ namespace Gallio.NAntTasks.Tests
                 return result;
             });
 
-            InterimAssert.DoesNotThrow(delegate { task.InternalExecute(); });
+            Assert.DoesNotThrow(delegate { task.InternalExecute(); });
         }
 
         [Test]
@@ -206,7 +206,7 @@ namespace Gallio.NAntTasks.Tests
                 throw new Exception("Simulated error.");
             });
 
-            InterimAssert.Throws<Exception>(delegate { task.InternalExecute(); });
+            Assert.Throws<Exception>(delegate { task.InternalExecute(); });
         }
 
         private static DirSet CreateDirSet(string dirName)

@@ -95,7 +95,7 @@
     <Compile Include="Framework\ExpectedArgumentOutOfRangeExceptionAttribute.cs" />
     <Compile Include="Framework\ExpectedExceptionAttribute.cs" />
     <Compile Include="Framework\FileAssert.cs" />
-    <Compile Include="Framework\GenericAssert.cs" />
+    <Compile Include="Framework\OldGenericAssert.cs" />
     <Compile Include="Framework\IgnoreAttribute.cs" />
     <Compile Include="Framework\ImportanceAttribute.cs" />
     <Compile Include="Framework\InterimAssert.cs" />

@@ -67,7 +67,7 @@ namespace Gallio.Tests.Framework.Data
                 Assert.IsTrue(items[0].IsDynamic);
                 Assert.AreEqual(2, items[1].GetValue(bindings[0]));
                 Assert.IsFalse(items[1].IsDynamic);
-                InterimAssert.Throws<InvalidOperationException>(delegate { items[2].GetValue(bindings[0]); });
+                Assert.Throws<InvalidOperationException>(delegate { items[2].GetValue(bindings[0]); });
                 Assert.AreEqual(3, items[3].GetValue(bindings[0]));
                 Assert.IsTrue(items[3].IsDynamic);
             }

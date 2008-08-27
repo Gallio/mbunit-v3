@@ -22,7 +22,7 @@ namespace MbUnit.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(Assert))]
-    public class AssertWithReflectionTest
+    public class OldAssertWithReflectionTest
     {
         #region IsSealed
         [Test]

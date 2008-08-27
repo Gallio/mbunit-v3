@@ -39,65 +39,6 @@ namespace MbUnit.Framework
     /// </remarks>
     public static class InterimAssert
     {
-        /// <summary>
-        /// Asserts that the specified block of code does not throw an exception.
-        /// </summary>
-        /// <param name="action">The block of code to run</param>
-        public static void DoesNotThrow(Action action)
-        {
-            DoesNotThrow(action, "");
-        }
-
-        /// <summary>
-        /// Asserts that the specified block of code does not throw an exception.
-        /// </summary>
-        /// <param name="action">The block of code to run</param>
-        /// <param name="message">The failure message</param>
-        public static void DoesNotThrow(Action action, string message)
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("The block threw an exception: " + ex + "\n" + message);
-            }
-        }
-
-        /// <summary>
-        /// Asserts that the specified block of code does not throw an exception.
-        /// </summary>
-        /// <param name="action">The block of code to run</param>
-        /// <param name="messageFormat">The failure message format string</param>
-        /// <param name="messageArgs">The failure message arguments</param>
-        public static void DoesNotThrow(Action action, string messageFormat, params object[] messageArgs)
-        {
-            DoesNotThrow(action, String.Format(messageFormat, messageArgs));
-        }
-
-        public static void Throws<T>(Action action)
-            where T : Exception
-        {
-            Throws(typeof(T), action);
-        }
-
-        public static void Throws(Type exceptionType, Action action)
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            {
-                if (exceptionType.IsInstanceOfType(ex))
-                    return;
-
-                Assert.Fail("Expected the block to throw an exception of type '{0}' but it actually threw:\n{1}", exceptionType, ex);
-            }
-
-            Assert.Fail("Expected the block to throw an exception of type '{0}'.", exceptionType);
-        }
 
         public static void With(string label, object value, Action action)
         {
@@ -321,16 +262,6 @@ namespace MbUnit.Framework
                         Assert.AreNotEqual(items[i].GetHashCode(), items[j].GetHashCode(), "Objects {0} and {1} should not have the same hashcode.", i, j);
                 }
             }
-        }
-
-        public static void Inconclusive(string message)
-        {
-            throw new TestInconclusiveException(message);
-        }
-
-        public static void Inconclusive(string messageFormat, params object[] messageArgs)
-        {
-            Inconclusive(String.Format(messageFormat, messageArgs));
         }
     }
 }

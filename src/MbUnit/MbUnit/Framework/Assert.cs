@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio;
+using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Model.Diagnostics;
 
@@ -61,7 +62,8 @@ namespace MbUnit.Framework
     public abstract class Assert
     {
         /// <summary>
-        /// Prevents instatiation.
+        /// Prevents instantiation.
+        /// Subclasses should likewise define their constructor to be protected.
         /// </summary>
         protected Assert()
         {
@@ -1303,6 +1305,30 @@ namespace MbUnit.Framework
             AssertionHelper.Fail(new AssertionFailureBuilder("An assertion failed.")
                 .SetMessage(messageFormat, messageArgs)
                 .ToAssertionFailure());
+        }
+        #endregion
+
+        #region Inconclusive
+        /// <summary>
+        /// Signals that a test has yielded an inconclusive result.
+        /// </summary>
+        /// <exception cref="TestInconclusiveException">Thrown always</exception>
+        public static void Inconclusive(string message)
+        {
+            Inconclusive(message, null);
+        }
+
+        /// <summary>
+        /// Signals that a test has yielded an inconclusive result.
+        /// </summary>
+        /// <param name="messageFormat">The custom message format string, or null if none</param>
+        /// <param name="messageArgs">The custom message arguments, or null if none</param>
+        /// <exception cref="TestInconclusiveException">Thrown always</exception>
+        public static void Inconclusive(string messageFormat, params object[] messageArgs)
+        {
+            throw new TestInconclusiveException(messageFormat != null && messageArgs != null
+                ? String.Format(messageFormat, messageArgs)
+                : messageFormat);
         }
         #endregion
 

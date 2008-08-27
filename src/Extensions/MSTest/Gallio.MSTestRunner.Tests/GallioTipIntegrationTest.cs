@@ -70,11 +70,11 @@ namespace Gallio.MSTestRunner.Tests
         {
             string value = (string) Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0", "InstallDir", null);
             if (value == null)
-                InterimAssert.Inconclusive("Visual Studio 2008 does not appear to be installed.");
+                Assert.Inconclusive("Visual Studio 2008 does not appear to be installed.");
 
             string executablePath = Path.Combine(value, "MSTest.exe");
             if (! File.Exists(executablePath))
-                InterimAssert.Inconclusive("Visual Studio 2008 appears to be installed but MSTest.exe was not found.");
+                Assert.Inconclusive("Visual Studio 2008 appears to be installed but MSTest.exe was not found.");
 
             string testAssemblyPath = AssemblyUtils.GetAssemblyLocalPath(typeof(SimpleTest).Assembly);
             string workingDirectory = Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTipIntegrationTest).Assembly));

@@ -35,7 +35,7 @@ namespace Gallio.Tests.Framework.Data
         {
             BoundDataAccessor accessor = new BoundDataAccessor(new DataBinding(0, null));
 
-            InterimAssert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
+            Assert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
         }
 
         [Test]

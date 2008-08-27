@@ -139,8 +139,8 @@ namespace Gallio.Tests.Model
             Assert.IsTrue(readOnly.IsReadOnly);
             AssertAreEqual(original, readOnly);
 
-            MbUnit.Framework.InterimAssert.Throws<NotSupportedException>(delegate { readOnly.Add("def", "456"); });
-            MbUnit.Framework.InterimAssert.Throws<NotSupportedException>(delegate { readOnly["abc"].Add("456"); });
+            MbUnit.Framework.Assert.Throws<NotSupportedException>(delegate { readOnly.Add("def", "456"); });
+            MbUnit.Framework.Assert.Throws<NotSupportedException>(delegate { readOnly["abc"].Add("456"); });
         }
 
         private static void AssertAreEqual(MetadataMap expected, MetadataMap actual)

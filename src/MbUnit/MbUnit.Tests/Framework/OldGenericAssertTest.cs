@@ -22,15 +22,15 @@ namespace MbUnit.Tests.Framework
     // FIXME: May contain NUnit derived code but is missing proper attribution!
     //        Need to follow-up with the original contributor.
     [TestFixture]
-    [TestsOn(typeof(GenericAssert))]
-    public class GenericAssertTest
+    [TestsOn(typeof(OldGenericAssert))]
+    public class OldGenericAssertTest
     {
         #region IsEmpty
         //NUnit Code
         [Test]
         public void IsEmpty()
         {
-            GenericAssert.IsEmpty(new List<string>());
+            OldGenericAssert.IsEmpty(new List<string>());
         }
 
         [Test, ExpectedException(typeof(AssertionException), "List expected to be empty")]
@@ -39,7 +39,7 @@ namespace MbUnit.Tests.Framework
             List<string> arr = new List<string>();
             arr.Add("Testing");
 
-            GenericAssert.IsEmpty(arr, "List");
+            OldGenericAssert.IsEmpty(arr, "List");
         }
 
         #endregion
@@ -52,13 +52,13 @@ namespace MbUnit.Tests.Framework
             List<string> arr = new List<string>();
             arr.Add("Testing");
 
-            GenericAssert.IsNotEmpty(arr);
+            OldGenericAssert.IsNotEmpty(arr);
         }
 
         [Test, ExpectedException(typeof(AssertionException), "List expected not to be empty")]
         public void IsNotEmptyFail()
         {
-            GenericAssert.IsNotEmpty(new List<string>(), "List");
+            OldGenericAssert.IsNotEmpty(new List<string>(), "List");
         }
 
         #endregion

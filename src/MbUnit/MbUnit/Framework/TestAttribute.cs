@@ -14,10 +14,12 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Model.Diagnostics;
+using Gallio.Model.Filters;
 using Gallio.Reflection;
 
 namespace MbUnit.Framework
@@ -76,9 +78,7 @@ namespace MbUnit.Framework
                     catch (Exception ex)
                     {
                         Type exceptionType = ex.GetType();
-                        if (exceptionType.Name == expectedExceptionType
-                            || exceptionType.FullName == expectedExceptionType
-                            || exceptionType.AssemblyQualifiedName == expectedExceptionType)
+                        if (ReflectionUtils.IsAssignableFrom(expectedExceptionType, exceptionType))
                             return;
 
                         if (ex is TestException)

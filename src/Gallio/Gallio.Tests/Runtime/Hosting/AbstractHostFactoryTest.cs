@@ -54,7 +54,7 @@ namespace Gallio.Tests.Runtime.Hosting
             }
 
             // Should fail.
-            InterimAssert.Throws<Exception>(delegate { hostService.Ping(); });
+            Assert.Throws<Exception>(delegate { hostService.Ping(); });
         }
 
         [Test]

@@ -255,5 +255,37 @@ namespace Gallio.Reflection
                     throw new NotSupportedException("TypeCode not supported.");
             }
         }
+
+        /// <summary>
+        /// Returns true if the named type is assignable from the specified type.
+        /// </summary>
+        /// <param name="searchTypeName">The search type</param>
+        /// <param name="candidateType">The candidate type</param>
+        /// <returns>True if the search type is assignable from the candidate type</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="searchTypeName"/>
+        /// or <paramref name="candidateType"/> is null</exception>
+        public static bool IsAssignableFrom(string searchTypeName, Type candidateType)
+        {
+            if (searchTypeName == null)
+                throw new ArgumentNullException("searchTypeName");
+            if (candidateType == null)
+                throw new ArgumentNullException("candidateType");
+
+            for (Type type = candidateType; type != null; type = type.BaseType)
+            {
+                if (candidateType.Name == searchTypeName
+                    || candidateType.FullName == searchTypeName
+                    || candidateType.AssemblyQualifiedName == searchTypeName)
+                    return true;
+
+                candidateType = candidateType.BaseType;
+            }
+
+            foreach (Type interfaceType in candidateType.GetInterfaces())
+                if (IsAssignableFrom(searchTypeName, interfaceType))
+                    return true;
+
+            return false;
+        }
     }
 }

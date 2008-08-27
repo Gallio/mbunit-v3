@@ -125,7 +125,7 @@ namespace Gallio.Tests.Framework.Data
             DataBindingContext context = new DataBindingContext(Mocks.Stub<IConverter>());
 
             IDataAccessor accessor = context.RegisterBinding(dataSet, new DataBinding(0, null));
-            InterimAssert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
+            Assert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
         }
 
         [Test]

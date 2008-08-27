@@ -300,10 +300,7 @@ namespace Gallio.Tests.Model.Execution
         {
             IList<ITestCommand> all = rootCommand.GetAllCommands();
 
-            InterimAssert.WithPairs(all, names, delegate(ITestCommand node, string name)
-            {
-                Assert.AreEqual(name, node.Test.Name);
-            });
+            Assert.Over.Sequence(all, names, (node, name) => Assert.AreEqual(name, node.Test.Name));
         }
 
         private void AssertCommandExplicit(params string[] names)

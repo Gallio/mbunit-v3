@@ -29,7 +29,7 @@ namespace Gallio.Tests.Reflection
         public void AddHintDirectoryThrowsWhenPathIsNull()
         {
             ReflectionOnlyAssemblyLoader loader = new ReflectionOnlyAssemblyLoader();
-            InterimAssert.Throws<ArgumentNullException>(delegate { loader.AddHintDirectory(null); });
+            Assert.Throws<ArgumentNullException>(delegate { loader.AddHintDirectory(null); });
         }
 
         [Test]

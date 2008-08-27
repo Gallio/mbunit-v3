@@ -213,7 +213,7 @@ namespace Gallio.Tests.Framework.Data
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
 
             ObjectCreationSpec spec = new ObjectCreationSpec(AbstractClassInfo, slotValues, NullConverter.Instance);
-            InterimAssert.Throws<InvalidOperationException>(delegate { spec.CreateInstance(); });
+            Assert.Throws<InvalidOperationException>(delegate { spec.CreateInstance(); });
         }
 
         [Test]
@@ -395,7 +395,7 @@ namespace Gallio.Tests.Framework.Data
             ObjectCreationSpec spec = new ObjectCreationSpec(EmptyClassInfo,
                 EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
 
-            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format(null, Mocks.Stub<IFormatter>()); });
+            Assert.Throws<ArgumentNullException>(delegate { spec.Format(null, Mocks.Stub<IFormatter>()); });
         }
 
         [Test]
@@ -404,7 +404,7 @@ namespace Gallio.Tests.Framework.Data
             ObjectCreationSpec spec = new ObjectCreationSpec(EmptyClassInfo,
                 EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
 
-            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format("Foo", null); });
+            Assert.Throws<ArgumentNullException>(delegate { spec.Format("Foo", null); });
         }
 
         [Test]

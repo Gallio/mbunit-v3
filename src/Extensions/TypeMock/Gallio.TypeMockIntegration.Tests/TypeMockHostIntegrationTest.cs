@@ -33,7 +33,7 @@ namespace Gallio.TypeMockIntegration.Tests
         public void TestFixtureSetUp()
         {
             if (!Service.IsInstalled)
-                InterimAssert.Inconclusive("TypeMock does not appear to be installed so these tests will be skipped.");
+                Assert.Inconclusive("TypeMock does not appear to be installed so these tests will be skipped.");
         }
 
         [Test]

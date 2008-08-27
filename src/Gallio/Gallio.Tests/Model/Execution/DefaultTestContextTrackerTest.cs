@@ -178,7 +178,7 @@ namespace Gallio.Tests.Model.Execution
             IDisposable cookie = mgr.EnterContext(new StubTestContext());
             cookie.Dispose();
 
-            InterimAssert.Throws<InvalidOperationException>(delegate { cookie.Dispose(); });
+            Assert.Throws<InvalidOperationException>(delegate { cookie.Dispose(); });
         }
 
         [Test]
@@ -188,7 +188,7 @@ namespace Gallio.Tests.Model.Execution
 
             Tasks.StartThreadTask("A different thread.", delegate
             {
-                InterimAssert.Throws<InvalidOperationException>(delegate { cookie.Dispose(); });
+                Assert.Throws<InvalidOperationException>(delegate { cookie.Dispose(); });
             });
 
             Tasks.JoinAndVerify(new TimeSpan(0, 0, 5));

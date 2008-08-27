@@ -121,10 +121,7 @@ namespace Gallio.Tests.Framework.Data
                 return (string) item.GetValue(binding);
             });
 
-            InterimAssert.With("Expected", expectedValues, "Actual", actualValues, delegate
-            {
-                OldArrayAssert.AreEqual(expectedValues, actualValues);
-            });
+            Assert.AreEqual(expectedValues, actualValues);
         }
 
         [Test]

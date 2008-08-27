@@ -54,7 +54,7 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 DataBindingContext context = new DataBindingContext(new NullConverter());
-                InterimAssert.Throws<DataBindingException>(delegate { binder.Register(context, resolver); });
+                Assert.Throws<DataBindingException>(delegate { binder.Register(context, resolver); });
             }
         }
 

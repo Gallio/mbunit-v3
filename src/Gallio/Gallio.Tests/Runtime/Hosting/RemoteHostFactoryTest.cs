@@ -45,7 +45,7 @@ namespace Gallio.Tests.Runtime.Hosting
                 Assert.AreEqual(0, callbackCounter);
 
                 Assert.AreEqual(1, host.GetHostService().Do<int, int>(DoCallbackHasRemoteSideEffectsCallback, 1));
-                InterimAssert.Throws<Exception>(delegate { host.GetHostService().Do<int, int>(DoCallbackHasRemoteSideEffectsCallback, 1); });
+                Assert.Throws<Exception>(delegate { host.GetHostService().Do<int, int>(DoCallbackHasRemoteSideEffectsCallback, 1); });
                 Assert.AreEqual(5, host.GetHostService().Do<int, int>(DoCallbackHasRemoteSideEffectsCallback, 3));
 
                 Assert.AreEqual(0, callbackCounter);

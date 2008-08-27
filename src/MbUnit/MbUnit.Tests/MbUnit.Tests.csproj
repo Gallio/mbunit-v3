@@ -56,7 +56,7 @@
     <Compile Include="Framework\AssertImplementationConsistencyTest.cs" />
     <Compile Include="Framework\AssertTest.cs" />
     <Compile Include="Framework\OldAssertTest.cs" />
-    <Compile Include="Framework\AssertWithReflectionTest.cs" />
+    <Compile Include="Framework\OldAssertWithReflectionTest.cs" />
     <Compile Include="Framework\OldAssertWithTypeTest.cs" />
     <Compile Include="Framework\OldCollectionAssertTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />
@@ -72,7 +72,7 @@
     <Compile Include="Framework\CsvDataTest.cs" />
     <Compile Include="Framework\FactoryTest.cs" />
     <Compile Include="Framework\FileAssertTest.cs" />
-    <Compile Include="Framework\GenericAssertTest.cs" />
+    <Compile Include="Framework\OldGenericAssertTest.cs" />
     <Compile Include="Framework\DataBindingTest.cs" />
     <Compile Include="Framework\AssertionExceptionTest.cs" />
     <Compile Include="Framework\Reflection\ReflectionExceptionTest.cs" />

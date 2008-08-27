@@ -22,7 +22,7 @@ namespace MbUnit.Framework
     /// <summary>
     /// Assertion class
     /// </summary>
-     public sealed class GenericAssert
+     public sealed class OldGenericAssert
      {
         #region IsEmpty
          /// <summary>
@@ -36,9 +36,9 @@ namespace MbUnit.Framework
             if (collection.Count != 0)
             {
                 if (args != null)
-                    GenericAssert.FailIsNotEmpty(collection, message, args);
+                    FailIsNotEmpty(collection, message, args);
                 else
-                    GenericAssert.FailIsNotEmpty(collection, message);
+                    FailIsNotEmpty(collection, message);
             }
         }
 
@@ -75,9 +75,9 @@ namespace MbUnit.Framework
             if (collection.Count == 0)
             {
                 if (args != null)
-                    GenericAssert.FailIsEmpty(collection, message, args);
+                    FailIsEmpty(collection, message, args);
                 else
-                    GenericAssert.FailIsEmpty(collection, message);
+                    FailIsEmpty(collection, message);
             }
         }
 
@@ -108,7 +108,7 @@ namespace MbUnit.Framework
              string formatted = string.Empty;
              if (format != null)
                  formatted = format + " ";
-             Assert.Fail(formatted + "expected not to be empty", args);
+             OldAssert.Fail(formatted + "expected not to be empty", args);
          }
 
         static private void FailIsNotEmpty<T>(ICollection<T> expected, string format, params object[] args)
@@ -116,7 +116,7 @@ namespace MbUnit.Framework
             string formatted = string.Empty;
             if (format != null)
                 formatted = format + " ";
-            Assert.Fail(formatted + "expected to be empty", args);
+            OldAssert.Fail(formatted + "expected to be empty", args);
         }
 
         #endregion

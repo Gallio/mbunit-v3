@@ -111,8 +111,8 @@ namespace Gallio.Tests.Framework.Data
             Assert.AreEqual("53", ((XPathNavigator)items[1].GetValue(bindings[0])).Value);
             Assert.AreEqual("y", ((XPathNavigator)items[1].GetValue(bindings[1])).Value);
 
-            InterimAssert.Throws<DataBindingException>(delegate { items[0].GetValue(new DataBinding(0, null)); });
-            InterimAssert.Throws<DataBindingException>(delegate { items[0].GetValue(new DataBinding(null, "not valid xpath")); });
+            Assert.Throws<DataBindingException>(delegate { items[0].GetValue(new DataBinding(0, null)); });
+            Assert.Throws<DataBindingException>(delegate { items[0].GetValue(new DataBinding(null, "not valid xpath")); });
         }
     }
 }

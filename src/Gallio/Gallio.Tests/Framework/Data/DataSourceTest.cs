@@ -207,12 +207,12 @@ namespace Gallio.Tests.Framework.Data
                 Assert.AreEqual(1, map.Count);
                 Assert.AreEqual("Bar", map.GetValue("Foo"));
 
-                InterimAssert.Throws<ArgumentNullException>(delegate { items[0].GetValue(null); });
+                Assert.Throws<ArgumentNullException>(delegate { items[0].GetValue(null); });
                 Assert.AreEqual("ghi", items[0].GetValue(bindings[0]));
                 Assert.AreEqual("def", items[0].GetValue(bindings[1]));
 
                 // Should throw ArgumentNullException when binding list is null.
-                MbUnit.Framework.InterimAssert.Throws<ArgumentNullException>(delegate
+                Assert.Throws<ArgumentNullException>(delegate
                 {
                     items[0].GetValue(null);
                 });

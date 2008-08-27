@@ -43,7 +43,7 @@ namespace Gallio.Tests.Concurrency
 
             scope.Run(delegate
             {
-                InterimAssert.Throws<InvalidOperationException>(delegate
+                Assert.Throws<InvalidOperationException>(delegate
                 {
                     scope.Run(delegate { });
                 });

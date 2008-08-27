@@ -42,7 +42,7 @@ namespace Gallio.Tests.Runner.Caching
         public void GroupsThrowIfKeyIsNull()
         {
             SimpleDiskCache cache = new SimpleDiskCache("foo");
-            InterimAssert.Throws<ArgumentNullException>(delegate { GC.KeepAlive(cache.Groups[null]); });
+            Assert.Throws<ArgumentNullException>(delegate { GC.KeepAlive(cache.Groups[null]); });
         }
 
         public class WithInitiallyNonExistentDiskCache
@@ -111,7 +111,7 @@ namespace Gallio.Tests.Runner.Caching
             [Test]
             public void GroupsAreNotCreatedImplicitlyWhenAFileIsOpenedWithoutOptionToCreate()
             {
-                InterimAssert.Throws<DiskCacheException>(delegate { cache.Groups["A"].OpenFile("file", FileMode.Open, FileAccess.ReadWrite, FileShare.None); });
+                Assert.Throws<DiskCacheException>(delegate { cache.Groups["A"].OpenFile("file", FileMode.Open, FileAccess.ReadWrite, FileShare.None); });
                 Assert.IsFalse(cache.Groups["A"].Exists);
             }
 

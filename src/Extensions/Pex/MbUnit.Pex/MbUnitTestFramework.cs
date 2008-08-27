@@ -66,7 +66,7 @@ namespace MbUnit.Pex
         private static readonly Method TestAttributeConstructor = Metadata<TestAttribute>.Type.DefaultConstructor;
         private static readonly Method IgnoreAttributeConstructorWithReason = Metadata<IgnoreAttribute>.Type.GetMethod(".ctor", Metadata<string>.Type);
         private static readonly Method ExpectedExceptionAttributeConstructorWithType = Metadata<ExpectedExceptionAttribute>.Type.GetMethod(".ctor", Metadata<Type>.Type);
-        private static readonly Method AssertInconclusiveMethod = MetadataFromReflection.GetType(typeof(InterimAssert)).GetMethod("Inconclusive", new TypeEx[] { SystemTypes.String });
+        private static readonly Method AssertInconclusiveMethod = MetadataFromReflection.GetType(typeof(Assert)).GetMethod("Inconclusive", new TypeEx[] { SystemTypes.String });
 
         public MbUnitTestFramework(IPexComponent host)
             : base(host)

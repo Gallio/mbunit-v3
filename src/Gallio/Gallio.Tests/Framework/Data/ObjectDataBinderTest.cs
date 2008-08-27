@@ -56,7 +56,7 @@ namespace Gallio.Tests.Framework.Data
             ObjectDataBinder binder = new ObjectDataBinder(Mocks.Stub<ITypeInfo>());
             IDataAccessor accessor = binder.Register(new DataBindingContext(Mocks.Stub<IConverter>()), Mocks.Stub<IDataSourceResolver>());
 
-            InterimAssert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
+            Assert.Throws<ArgumentNullException>(delegate { accessor.GetValue(null); });
         }
 
         [Test]

@@ -128,7 +128,7 @@ namespace Gallio.Tests.Framework.Data
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
 
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), NonGenericClassEmptyMethodInfo, slotValues, NullConverter.Instance);
-            InterimAssert.Throws<TargetException>(delegate { spec.Invoke(instance); });
+            Assert.Throws<TargetException>(delegate { spec.Invoke(instance); });
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace Gallio.Tests.Framework.Data
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), NonGenericClassEmptyMethodInfo,
                 EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, NullConverter.Instance);
 
-            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Invoke(null); });
+            Assert.Throws<ArgumentNullException>(delegate { spec.Invoke(null); });
         }
 
         [Test]
@@ -240,7 +240,7 @@ namespace Gallio.Tests.Framework.Data
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
 
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), method, slotValues, NullConverter.Instance);
-            InterimAssert.Throws<InvalidOperationException>(delegate { spec.Invoke(null); });
+            Assert.Throws<InvalidOperationException>(delegate { spec.Invoke(null); });
         }
 
         [Test]
@@ -267,7 +267,7 @@ namespace Gallio.Tests.Framework.Data
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), NonGenericClassEmptyMethodInfo,
                 EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
 
-            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format(null, Mocks.Stub<IFormatter>()); });
+            Assert.Throws<ArgumentNullException>(delegate { spec.Format(null, Mocks.Stub<IFormatter>()); });
         }
 
         [Test]
@@ -276,7 +276,7 @@ namespace Gallio.Tests.Framework.Data
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), NonGenericClassEmptyMethodInfo,
                 EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance, Mocks.Stub<IConverter>());
 
-            InterimAssert.Throws<ArgumentNullException>(delegate { spec.Format("Foo", null); });
+            Assert.Throws<ArgumentNullException>(delegate { spec.Format("Foo", null); });
         }
 
         [Test]

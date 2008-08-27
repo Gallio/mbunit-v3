@@ -40,7 +40,7 @@ namespace MbUnit.Framework.Xml
         /// <param name="t">The type to check</param>
         public static void IsXmlSerializable(Type t)
         {
-            InterimAssert.DoesNotThrow(delegate
+            Assert.DoesNotThrow(delegate
             {
                 new XmlSerializer(t);
             }, "The type is not Xml serializable.");
