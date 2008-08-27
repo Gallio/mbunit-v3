@@ -1313,9 +1313,9 @@ namespace MbUnit.Framework
         /// Signals that a test has yielded an inconclusive result.
         /// </summary>
         /// <exception cref="TestInconclusiveException">Thrown always</exception>
-        public static void Inconclusive(string message)
+        public static void Inconclusive()
         {
-            Inconclusive(message, null);
+            Inconclusive(null, null);
         }
 
         /// <summary>
@@ -1328,7 +1328,7 @@ namespace MbUnit.Framework
         {
             throw new TestInconclusiveException(messageFormat != null && messageArgs != null
                 ? String.Format(messageFormat, messageArgs)
-                : messageFormat);
+                : messageFormat ?? "The test was inconclusive.");
         }
         #endregion
 
