@@ -593,6 +593,54 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("System.Collections.Generic.List<int>", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
         #endregion
+
+        #region IsNotAssignableFrom
+
+        [Test]
+        public void IsNotAssignableFrom_without_custom_message()
+        {
+            Assert.IsNotAssignableFrom(typeof(string), new Int32());
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void IsNotAssignableFrom_with_null_expectedType()
+        {
+            Assert.IsNotAssignableFrom(null, new SystemException());
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void IsNotAssignableFrom_with_null_actualValue()
+        {
+            Assert.IsNotAssignableFrom(typeof(int), null);
+        }
+
+        [Test]
+        public void IsNotAssignableFrom_fails_when_object_is_not_assignable_for_classes()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom(typeof(int), new Int32()));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the actual type not to be assignable to the expected type.", failures[0].Description);
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("int", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Expected Type", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("int", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void IsNotAssignableFrom_fails_when_object_is_not_assignable_for_arrays()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.IsNotAssignableFrom(typeof(int[,]), new int[2, 2]));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the actual type not to be assignable to the expected type.", failures[0].Description);
+            Assert.AreEqual("Actual Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("int[,]", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Expected Type", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("int[,]", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        #endregion
         #endregion
 
 
