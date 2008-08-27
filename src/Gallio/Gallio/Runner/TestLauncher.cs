@@ -677,7 +677,7 @@ namespace Gallio.Runner
                     List<string> assembliesToRemove = new List<string>();
                     foreach (string assemblyName in testPackageConfig.AssemblyFiles)
                     {
-                        if (!File.Exists(assemblyName))
+                        if (!File.Exists(assemblyName) || assemblyName != assemblyName.TrimEnd('\\', '/'))
                         {
                             assembliesToRemove.Add(assemblyName);
                             logger.Log(LogSeverity.Error, String.Format("Cannot find assembly: {0}", assemblyName));
