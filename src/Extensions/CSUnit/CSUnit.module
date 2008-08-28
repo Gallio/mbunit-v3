@@ -1,0 +1,40 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(RootDir)\Module.targets" />
+
+  <ItemGroup>
+    <CSharpProject Include="Gallio.CSUnitAdapter\Gallio.CSUnitAdapter.csproj" />
+    <CSharpProject Include="Gallio.CSUnitAdapter.Tests\Gallio.CSUnitAdapter.Tests.csproj" />
+    <CSharpProject Include="Gallio.CSUnitAdapter.TestResources\Gallio.CSUnitAdapter.TestResources.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.dll">
+        <Folder>CSUnit</Folder>
+    </Binary>
+    <Binary Include="Gallio.CSUnitAdapter\Gallio.CSUnitAdapter.plugin">
+        <Folder>CSUnit</Folder>
+    </Binary>
+    <Binary Include="Gallio.CSUnitAdapter\Readme.txt">
+        <Folder>CSUnit</Folder>
+    </Binary>
+    <Binary Include="libs\csUnit.dll">
+        <Folder>CSUnit</Folder>
+    </Binary>
+    <Binary Include="libs\csUnit.Common.dll">
+        <Folder>CSUnit</Folder>
+    </Binary>
+    <Binary Include="libs\csUnitCore.dll">
+        <Folder>CSUnit</Folder>
+    </Binary>
+    <Binary Include="libs\csUnit.Interfaces.dll">
+        <Folder>CSUnit</Folder>
+    </Binary>
+    <Binary Include="libs\license.txt">
+        <Folder>CSUnit</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.CSUnitAdapter.Tests\bin\Gallio.CSUnitAdapter.Tests.dll" />
+  </ItemGroup>
+</Project>

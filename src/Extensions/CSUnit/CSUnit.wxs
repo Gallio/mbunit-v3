@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="binFolder">
+            <Directory Id="CSUnitAdapter" Name="CSUnit" FileSource="$(var.GallioTargetDir)\bin\CSUnit\" >
+                <Component Id="Gallio.CSUnitAdapter.dll" Guid="2f42dcf8-b57a-41c2-a338-24acc6cda114">
+                    <File Id="Gallio.CSUnitAdapter.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="Gallio.CSUnitAdapter.plugin" Guid="432ab536-f2d0-472a-8f2e-cd47d1cea7a7">
+                    <File Id="Gallio.CSUnitAdapter.plugin" KeyPath="yes" />
+                </Component>
+                <Component Id="csUnit.dll" Guid="8c468cac-5a78-4faa-b3fd-7b080dd87cd5">
+                    <File Id="csUnit.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="csUnit.Common.dll" Guid="178216c5-b322-4b0c-8d38-c2085925f5d9">
+                    <File Id="csUnit.Common.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="csUnit.Core.dll" Guid="128ba730-0468-410b-858e-1fb36c2b4a26">
+                    <File Id="csUnit.Core.dll" Name="csUnitCore.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="csUnit.Interfaces.dll" Guid="27b81576-0be2-468e-b043-bb5b16adb788">
+                    <File Id="csUnit.Interfaces.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="csUnit.License.txt" Guid="12371420-2b82-4c1e-8f0a-4d6d13eb0380">
+                    <File Id="csUnit.License.txt" Name="license.txt" KeyPath="yes" />
+                </Component>
+                <Component Id="csUnit.Readme.txt" Guid="2a255a47-64d5-4f82-95c5-e1a63a3800d7">
+                    <File Id="csUnit.Readme.txt" Name="Readme.txt" KeyPath="yes" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+
+        <Feature Id='feat_CSUnitAdapter' Title='csUnit' Level='1'
+            Description='Installs the csUnit adapter.  Enables Gallio to run csUnit tests.'>
+            <ComponentRef Id="Gallio.CSUnitAdapter.dll"/>
+            <ComponentRef Id="Gallio.CSUnitAdapter.plugin"/>
+            <ComponentRef Id="csUnit.dll"/>
+            <ComponentRef Id="csUnit.Common.dll"/>
+            <ComponentRef Id="csUnit.Core.dll"/>
+            <ComponentRef Id="csUnit.Interfaces.dll"/>
+            <ComponentRef Id="csUnit.License.txt"/>
+            <ComponentRef Id="csUnit.Readme.txt"/>
+        </Feature>
+    </Fragment>
+</Wix>

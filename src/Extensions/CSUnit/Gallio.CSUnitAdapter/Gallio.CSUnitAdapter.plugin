@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <gallio>
+    <runtime>
+      <components>
+        <component id="CSUnitAdapter.TestFramework"
+                   service="Gallio.Model.ITestFramework, Gallio"
+                   type="Gallio.CSUnitAdapter.Model.CSUnitTestFramework, Gallio.CSUnitAdapter" />
+      </components>
+    </runtime>
+  </gallio>
+</configuration>
