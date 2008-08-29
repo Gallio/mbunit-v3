@@ -444,28 +444,33 @@ namespace Gallio.Tests.Framework.Text
             {
                 Check("[\"1\", \"2\"]", "[\"1\", \"2\", \"3\"]");
             }
+        }
 
-            private static void Check(string a, string b)
+        internal static void Check(string a, string b)
+        {
+            TestLog.WriteLine("A: " + a);
+            TestLog.WriteLine("B: " + b);
+
+            DiffSet diffSet = DiffSet.GetDiffSet(a, b);
+
+            TestLog.Write("Diff: ");
+            TestLog.WriteLine(diffSet);
+
+            VerifyDiffSetIsValid(diffSet);
+        }
+
+        internal static void VerifyDiffSetIsValid(DiffSet diffSet)
+        {
+            foreach (Diff diff in diffSet.Diffs)
             {
-                TestLog.WriteLine("A: " + a);
-                TestLog.WriteLine("B: " + b);
-
-                DiffSet diffSet = DiffSet.GetDiffSet(a, b);
-
-                TestLog.Write("Diff: ");
-                TestLog.WriteLine(diffSet);
-
-                foreach (Diff diff in diffSet.Diffs)
-                {
-                    if (diff.Kind == DiffKind.NoChange)
-                        Assert.AreEqual(
-                            diff.LeftRange.SubstringOf(diffSet.LeftDocument),
-                            diff.RightRange.SubstringOf(diffSet.RightDocument));
-                    else
-                        Assert.AreNotEqual(
-                            diff.LeftRange.SubstringOf(diffSet.LeftDocument),
-                            diff.RightRange.SubstringOf(diffSet.RightDocument));
-                }
+                if (diff.Kind == DiffKind.NoChange)
+                    Assert.AreEqual(
+                        diff.LeftRange.SubstringOf(diffSet.LeftDocument),
+                        diff.RightRange.SubstringOf(diffSet.RightDocument));
+                else
+                    Assert.AreNotEqual(
+                        diff.LeftRange.SubstringOf(diffSet.LeftDocument),
+                        diff.RightRange.SubstringOf(diffSet.RightDocument));
             }
         }
     }

@@ -27,7 +27,7 @@ namespace Gallio.Framework.Data
     /// to modify how a bound value is resolved.
     /// </para>
     /// </summary>
-    public class DataBinding
+    public class DataBinding : IEquatable<DataBinding>
     {
         private readonly int? index;
         private readonly string path;
@@ -85,7 +85,12 @@ namespace Gallio.Framework.Data
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            DataBinding other = obj as DataBinding;
+            return Equals(obj as DataBinding);
+        }
+
+        /// <inheritdoc />
+        public virtual bool Equals(DataBinding other)
+        {
             return other != null
                 && GetType() == other.GetType()
                 && Index == other.Index
