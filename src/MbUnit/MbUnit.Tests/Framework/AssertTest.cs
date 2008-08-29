@@ -76,12 +76,66 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void AreEqual_IEnumrables()
+        public void AreEqual_fails_with_IEnumrables()
         {
             AssertionFailure[] failures = Capture(() => 
                 Assert.AreEqual(new List<string>(new[] { "1", "2" }), new List<string>(new[] { "1", "2", "3" })));
             Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("[\"1\", \"2\"]", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("[\"1\", \"2\", \"3\"]", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
+
+        [Test]
+        public void AreEqual_fails_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.AreEqual(1, 2, "{0} message", "custom"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        #endregion
+
+        #region AreElementsEqual
+        [Test]
+        public void AreElementsEqual_with_strings()
+        {
+            Assert.AreElementsEqual("12", "12");
+        }
+
+        [Test]
+        public void AreElementsEqual_with_different_types()
+        {
+            Assert.AreElementsEqual(new[] { 1, 2 }, new List<int> { 1, 2 });
+        }
+
+        [Test]
+        public void AreElementsEqual_with_custom_comparer()
+        {
+            Assert.AreElementsEqual("12", "12", (expected, actual) => true);
+            
+        }
+
+        [Test]
+        public void AreElementsEqual_fails_when_elements_are_in_different_order()
+        {
+            AssertionFailure[] failures = Capture(() 
+                => Assert.AreElementsEqual(new[] { 1, 2 }, new List<int> { 2, 1 }));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected collection values to be equal.", failures[0].Description);
+            Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("[1, 2]", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("[2, 1]", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void AreElementsEqual_fails_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.AreElementsEqual("1", "2", "{0} message", "custom"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
         #endregion
 
         #region GreaterThan
