@@ -339,7 +339,7 @@ namespace Gallio.Framework.Text
                     new Range(right.Range.StartIndex, commonPrefixLength)));
             }
 
-            int commonSuffixLength = left.FindCommonSuffixLength(right);
+            int commonSuffixLength = left.Extract(commonPrefixLength).FindCommonSuffixLength(right.Extract(commonPrefixLength));
 
             // Now work on the middle part.
             Substring leftMiddle = left.Extract(commonPrefixLength, left.Length - commonPrefixLength - commonSuffixLength);

@@ -25,6 +25,7 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [Row(typeof(Assert))]
+    [Row(typeof(AssertOverSyntax))]
     public class AssertImplementationConsistencyTest<TAssert>
     {
         private const string CustomMessageSuffix = "System.String, System.Object[])";
@@ -35,7 +36,7 @@ namespace MbUnit.Tests.Framework
         {
             HashSet<string> asserts = new HashSet<string>();
             foreach (MethodInfo assertMethod in
-                    typeof(TAssert).GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly))
+                    typeof(TAssert).GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly))
             {
                 if (! assertMethod.Name.StartsWith("get_") && ! assertMethod.Name.StartsWith("set_"))
                     asserts.Add(assertMethod.ToString());

@@ -877,7 +877,7 @@ namespace Gallio.Tests.Reflection
             foreach (ITypeInfo actualType in actualTypes)
                 keyedActualTypes.Add(actualType.FullName ?? actualType.Name, actualType);
 
-            InterimAssert.WithKeyedPairs(keyedExpectedTypes, keyedActualTypes, AreEqualWhenResolved);
+            Assert.Over.KeyedPairs(keyedExpectedTypes, keyedActualTypes, AreEqualWhenResolved);
         }
 
         private void AreElementsEqualWhenResolved<TMember, TWrapper>(IEnumerable<TMember> expectedMembers, IEnumerable<TWrapper> actualMembers)
@@ -907,12 +907,12 @@ namespace Gallio.Tests.Reflection
                 keyedActualMembers.Add(key, actualMember);
             }
 
-            InterimAssert.WithKeyedPairs(keyedExpectedMembers, keyedActualMembers, AreEqualWhenResolved);
+            Assert.Over.KeyedPairs(keyedExpectedMembers, keyedActualMembers, AreEqualWhenResolved);
         }
 
         private void AreElementsEqualWhenResolved(IEnumerable<ParameterInfo> expected, IEnumerable<IParameterInfo> actual)
         {
-            Assert.Over.Sequence(expected, actual, AreEqualWhenResolved);
+            Assert.Over.Pairs(expected, actual, AreEqualWhenResolved);
         }
 
         private void AreAttributeProvidersEquivalent<TTarget, TWrapper>(TTarget expectedTarget, TWrapper actualWrapper)
@@ -1003,7 +1003,7 @@ namespace Gallio.Tests.Reflection
                 if (supportsSpecialFeatures || !IsSpecialAttribute(actualAttrib))
                     IncrementCount(actualCounts, actualAttrib.GetType());
 
-            InterimAssert.WithKeyedPairs(expectedCounts, actualCounts, delegate(Type type, int expectedCount, int actualCount)
+            Assert.Over.KeyedPairs(expectedCounts, actualCounts, delegate(Type type, int expectedCount, int actualCount)
             {
                 Assert.AreEqual(expectedCount, actualCount, "Number of {0} attributes should be equal.", type);
             });

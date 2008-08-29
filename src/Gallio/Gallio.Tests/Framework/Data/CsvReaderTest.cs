@@ -90,7 +90,7 @@ namespace Gallio.Tests.Framework.Data
             while ((record = reader.ReadRecord()) != null)
                 actualRecords.Add(record);
 
-            Assert.Over.Sequence(expectedRecords, actualRecords, (expectedRecord, actualRecord) => Assert.AreEqual((string[])expectedRecord, actualRecord));
+            Assert.Over.Pairs(expectedRecords, actualRecords, (expectedRecord, actualRecord) => Assert.AreEqual((string[])expectedRecord, actualRecord));
         }
 
         [Test]

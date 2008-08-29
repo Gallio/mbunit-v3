@@ -63,8 +63,8 @@ namespace Gallio.Tests.Model
             AreEqual((TestComponentData)expected, actual);
 
             Assert.AreEqual(expected.IsTestCase, actual.IsTestCase);
-            Assert.Over.Sequence(expected.Children, actual.Children, AreEqual);
-            Assert.Over.Sequence(expected.Parameters, actual.Parameters, AreEqual);
+            Assert.Over.Pairs(expected.Children, actual.Children, AreEqual);
+            Assert.Over.Pairs(expected.Parameters, actual.Parameters, AreEqual);
         }
 
         public static void AreEqual(TestParameterData expected, TestParameterData actual)
@@ -86,7 +86,7 @@ namespace Gallio.Tests.Model
                 return;
             }
 
-            InterimAssert.WithKeyedPairs(expected, actual, OldCollectionAssert.AreElementsEqual);
+            Assert.Over.KeyedPairs(expected, actual, Assert.AreEqual);
         }
 
         public static void AreEqual(TestStepData expected, TestStepData actual)

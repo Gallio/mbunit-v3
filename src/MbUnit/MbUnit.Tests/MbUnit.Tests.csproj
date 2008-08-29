@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\ApartmentStateTest.cs" />
+    <Compile Include="Framework\AssertOverSyntaxTest.cs" />
     <Compile Include="Framework\OldArrayAssertTest.cs" />
     <Compile Include="Framework\AssertExTest.cs" />
     <Compile Include="Framework\AssertImplementationConsistencyTest.cs" />

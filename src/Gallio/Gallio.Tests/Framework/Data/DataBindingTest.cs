@@ -15,13 +15,29 @@
 
 using Gallio.Framework.Data;
 using MbUnit.Framework;
+using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(DataBinding))]
-    public class DataBindingTest
+    [VerifyEqualityContract(typeof(DataBinding), ImplementsOperatorOverloads=false)]
+    public class DataBindingTest : IEquivalenceClassProvider<DataBinding>
     {
+        public EquivalenceClassCollection<DataBinding> GetEquivalenceClasses()
+        {
+            return EquivalenceClassCollection<DataBinding>.FromDistinctInstances(
+                new DataBinding(null, null),
+                new DataBinding(0, null),
+                new DataBinding(1, null),
+                new DataBinding(null, "path"),
+                new DataBinding(null, "path2"),
+                new DataBinding(0, "path"),
+                new DataBinding(1, "path2")
+                );
+        }
+
+
         [Test]
         public void ConstructorWithPathAndIndex()
         {
@@ -50,32 +66,6 @@ namespace Gallio.Tests.Framework.Data
                 new DataBinding(null, null).ToString());
             Assert.AreEqual("Binding Index: 42, Path: 'foo'",
                 new DataBinding(42, "foo").ToString());
-        }
-
-        [Test]
-        public void EqualsAndHashCodeAreEqualForEqualBindings()
-        {
-            Assert.AreEqual(
-                new DataBinding(1, "path"),
-                new DataBinding(1, "path"));
-            Assert.AreEqual(
-                new DataBinding(1, "path").GetHashCode(),
-                new DataBinding(1, "path").GetHashCode());
-        }
-
-        [Test]
-        public void EqualsAndHashCodeAreDistinctForDifferentBindings()
-        {
-            InterimAssert.AreDistinct(
-                new DataBinding(null, null),
-                new DataBinding(0, null),
-                new DataBinding(1, null),
-                new DataBinding(null, "path"),
-                new DataBinding(null, "path2"),
-                new DataBinding(0, "path"),
-                new DataBinding(1, "path2"),
-                null
-            );
         }
     }
 }

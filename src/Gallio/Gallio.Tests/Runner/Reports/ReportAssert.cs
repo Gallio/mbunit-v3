@@ -66,7 +66,7 @@ namespace Gallio.Tests.Runner.Reports
             Assert.AreEqual(expected.EndTime, actual.EndTime);
             AreEqual(expected.Statistics, actual.Statistics);
 
-            Assert.Over.Sequence(expected.AllTestStepRuns, actual.AllTestStepRuns, AreEqual);
+            Assert.Over.Pairs(expected.AllTestStepRuns, actual.AllTestStepRuns, AreEqual);
         }
 
         public static void AreEqual(Statistics expected, Statistics actual)
@@ -101,7 +101,7 @@ namespace Gallio.Tests.Runner.Reports
             ModelAssert.AreEqual(expected.Result, actual.Result);
             AreEqual(expected.TestLog, actual.TestLog);
 
-            Assert.Over.Sequence(expected.Children, actual.Children, AreEqual);
+            Assert.Over.Pairs(expected.Children, actual.Children, AreEqual);
         }
 
         public static void AreEqual(StructuredTestLog expected, StructuredTestLog actual)
@@ -112,8 +112,8 @@ namespace Gallio.Tests.Runner.Reports
                 return;
             }
 
-            Assert.Over.Sequence(expected.Attachments, actual.Attachments, AreEqual);
-            Assert.Over.Sequence(expected.Streams, actual.Streams, AreEqual);
+            Assert.Over.Pairs(expected.Attachments, actual.Attachments, AreEqual);
+            Assert.Over.Pairs(expected.Streams, actual.Streams, AreEqual);
         }
 
         public static void AreEqual(StructuredTestLogStream expected, StructuredTestLogStream actual)

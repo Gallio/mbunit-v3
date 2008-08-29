@@ -264,7 +264,7 @@ namespace Gallio.Tests.Framework.Assertions
             builder.AddException(new InvalidOperationException("Boom 1"));
             builder.AddException(new InvalidOperationException("Boom 2"));
 
-            Assert.Over.Sequence(new[] { "Boom 1", "Boom 2" }, builder.ToAssertionFailure().Exceptions,
+            Assert.Over.Pairs(new[] { "Boom 1", "Boom 2" }, builder.ToAssertionFailure().Exceptions,
                 (expectedSubstring, actual) => Assert.Contains(actual.ToString(), expectedSubstring));
         }
     }

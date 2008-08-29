@@ -83,9 +83,9 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             object instance3 = new object();
 
             EquivalenceClassCollection<object> collection = EquivalenceClassCollection<object>.FromDistinctInstances(instance1, instance2, instance3);
-            Assert.Over.Sequence(new[] { instance1, instance2, instance3 }, collection.EquivalenceClasses,
+            Assert.Over.Pairs(new[] { instance1, instance2, instance3 }, collection.EquivalenceClasses,
                 (instance, @class) => Assert.AreEqual(new[] { instance }, @class.EquivalentInstances));
-            Assert.Over.Sequence(new[] { instance1, instance2, instance3 }, collection.ToArray(),
+            Assert.Over.Pairs(new[] { instance1, instance2, instance3 }, collection.ToArray(),
                 (instance, @class) => Assert.AreEqual(new[] { instance }, @class.EquivalentInstances));
         }
     }

@@ -178,7 +178,7 @@ namespace Gallio.Tests.Linq
             T actualValue = tracer.Compile(expr)(arg);
 
             Assert.AreEqual(expectedValue, actualValue, "Expression result should be equal.");
-            Assert.Over.Sequence(expectedTrace, tracer.Trace, Assert.AreEqual,
+            Assert.Over.Pairs(expectedTrace, tracer.Trace, Assert.AreEqual,
                 "Expression trace should be equal.");
         }
 
@@ -194,7 +194,7 @@ namespace Gallio.Tests.Linq
                 T actualValue = tracer.Compile(expr)();
 
                 Assert.AreEqual(expectedValue, actualValue, "Expression result should be equal.");
-                Assert.Over.Sequence(expectedTrace, tracer.Trace, Assert.AreEqual,
+                Assert.Over.Pairs(expectedTrace, tracer.Trace, Assert.AreEqual,
                     "Expression trace should be equal.");
             }
         }
@@ -205,7 +205,7 @@ namespace Gallio.Tests.Linq
             var tracer = new ExpressionTracer();
             tracer.Compile(expr)();
 
-            Assert.Over.Sequence(expectedTrace, tracer.Trace, Assert.AreEqual,
+            Assert.Over.Pairs(expectedTrace, tracer.Trace, Assert.AreEqual,
                 "Expression trace should be equal.");
         }
 

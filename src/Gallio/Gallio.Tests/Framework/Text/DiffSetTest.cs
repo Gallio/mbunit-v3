@@ -14,9 +14,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Gallio.Framework;
+using Gallio.Framework.Assertions;
 using Gallio.Framework.Text;
 using Gallio.Model.Logging;
 using Gallio.Model.Logging.Tags;
@@ -427,6 +429,20 @@ namespace Gallio.Tests.Framework.Text
             public void TrailingAddition()
             {
                 Check("o", "ogkndudaftrwhmgwdppjhplcc");
+            }
+
+            /// <summary>
+            /// In this case, the fast path optimization was causing problems because the
+            /// length of the common prefix plus the length of the common suffix exceeded
+            /// the length of the shorter string.  That's because one character was part
+            /// of both the common prefix and suffix.
+            /// The fix was to be sure to exclude the common prefix from the range when
+            /// computing the common suffix.
+            /// </summary>
+            [Test]
+            public void OverlappingCommonPrefixAndSuffix()
+            {
+                Check("[\"1\", \"2\"]", "[\"1\", \"2\", \"3\"]");
             }
 
             private static void Check(string a, string b)
