@@ -26,6 +26,62 @@ namespace MbUnit.Tests.Framework
     public class AssertTest
     {
         #region AreEqual
+
+        [Test]
+        public void AreEqual_simple_Test()
+        {
+            Assert.AreEqual("1", "1");
+        }
+
+        [Test]
+        public void AreEqual_with_IEqualityComparer()
+        {
+            Assert.AreEqual("1", "1", new TestComparer { EqualsReturn = true });
+        }
+
+        [Test]
+        public void AreEqual_with_comparer_delegate()
+        {
+            Assert.AreEqual("1", "1", (left, right) => left.Length == right.Length);
+        }
+
+        [Test]
+        public void AreEqual_fails_when_simple_values_different()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.AreEqual(1, 2));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected values to be equal.", failures[0].Description);
+            Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("1", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("2", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void AreEqual_fails_when_expected_value_is_null()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.AreEqual(null, "2"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("\"2\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void AreEqual_fails_when_actual_value_is_null()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.AreEqual("2", null));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("\"2\"", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void AreEqual_IEnumrables()
+        {
+            AssertionFailure[] failures = Capture(() => 
+                Assert.AreEqual(new List<string>(new[] { "1", "2" }), new List<string>(new[] { "1", "2", "3" })));
+            Assert.AreEqual(1, failures.Length);
+        }
         #endregion
 
         #region GreaterThan
@@ -658,6 +714,33 @@ namespace MbUnit.Tests.Framework
             public int CompareTo(object obj)
             {
                 return 1;
+            }
+        }
+
+        private sealed class TestComparer : StringComparer
+        {
+            public bool EqualsReturn;
+            public int CompareReturn;
+
+            public TestComparer()
+            {
+                EqualsReturn = false;
+                CompareReturn = 0;
+            }
+
+            public override int Compare(string x, string y)
+            {
+                return CompareReturn;
+            }
+
+            public override bool Equals(string x, string y)
+            {
+                return EqualsReturn;
+            }
+
+            public override int GetHashCode(string obj)
+            {
+                return obj.GetHashCode();
             }
         }
     }
