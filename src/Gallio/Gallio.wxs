@@ -27,9 +27,13 @@
             </Component>
             <Component Id="Gallio.Registry" Guid="{1AE1AC98-1FF2-4913-9ACA-EB8018E40508}">
                 <RegistryKey Id="Gallio.RegistryKey1" Action="createAndRemoveOnUninstall"
-                             Root="HKLM" Key="Software\Gallio.org\Gallio\3.0">
-                    <RegistryValue Type="string" Name="InstallDir" Value="[INSTALLDIR]"/>
-                    <RegistryValue Type="string" Name="Version" Value="[ProductVersion]"/>
+                             Root="HKLM" Key="Software\Gallio.org\Gallio">
+                    <RegistryValue Type="string" Name="CurrentVersion" Value="3.0"/>
+                    <RegistryKey Key="3.0" Action="createAndRemoveOnUninstall">
+                        <RegistryValue Type="string" Name="Version" Value="[ProductVersion]"/>
+                        <RegistryValue Type="string" Name="InstallationFolder" Value="[INSTALLDIR]"/>
+                        <RegistryKey Key="AdditionalPluginDirectories" Action="createAndRemoveOnUninstall"/>
+                    </RegistryKey>
                 </RegistryKey>
                 <!-- Register the folder so that Visual Studio Add References can find it -->
                 <RegistryKey Id="Gallio.RegistryKey2" Action="createAndRemoveOnUninstall"

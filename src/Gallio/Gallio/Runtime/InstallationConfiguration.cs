@@ -25,9 +25,11 @@ namespace Gallio.Runtime
     [Serializable]
     public class InstallationConfiguration
     {
-        private const string RootKey = @"Software\Gallio";
+        private const string RootKey = @"Software\Gallio.org\Gallio\3.0";
         private const string AdditionalPluginDirectoriesSubKey = @"AdditionalPluginDirectories";
 
+        private string installedVersion;
+        private string installationFolder = String.Empty;
         private readonly List<string> additionalPluginDirectories = new List<string>();
 
         /// <summary>
@@ -40,6 +42,22 @@ namespace Gallio.Runtime
             configuration.LoadFromRegistry(Registry.LocalMachine);
             configuration.LoadFromRegistry(Registry.CurrentUser);
             return configuration;
+        }
+
+        /// <summary>
+        /// Get the version that was installed or null if there is no installation.
+        /// </summary>
+        public string InstalledVersion
+        {
+            get { return installedVersion; }
+        }
+
+        /// <summary>
+        /// Get the folder where Gallio was installed.
+        /// </summary>
+        public string InstallationFolder
+        {
+            get { return installationFolder; }
         }
 
         /// <summary>
@@ -58,6 +76,9 @@ namespace Gallio.Runtime
                 {
                     if (rootKey == null)
                         return;
+
+                    installedVersion = rootKey.GetValue(@"Version", installedVersion) as string;
+                    installationFolder = rootKey.GetValue(@"InstallationFolder", installationFolder) as string;
 
                     LoadAdditionalPluginDirectoriesFromRegistry(rootKey);
                 }
