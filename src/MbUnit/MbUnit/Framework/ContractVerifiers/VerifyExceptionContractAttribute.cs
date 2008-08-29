@@ -25,6 +25,7 @@ using Gallio.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using Gallio.Framework.Data;
+using Gallio.Framework.Assertions;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -200,10 +201,18 @@ namespace MbUnit.Framework.ContractVerifiers
                 scope, 
                 "HasSerializableAttribute",
                 "Verify that the type '" + ExceptionType.FullName + "' has the [Serializable] attribute.",
-                state =>
+                state => 
                 {
-                    Assert.IsTrue(ExceptionType.IsDefined(typeof(SerializableAttribute), false),
-                        "Type '{0}' should have the [Serializable] attribute.", ExceptionType.FullName);
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (ExceptionType.IsDefined(typeof(SerializableAttribute), false))
+                            return null;
+
+                        return new AssertionFailureBuilder("Expected the exception type to be annotated by a particular attribute.")
+                            .SetRawLabeledValue("Exception Type", ExceptionType)
+                            .SetRawLabeledValue("Expected Attribute", typeof(SerializableAttribute))
+                            .ToAssertionFailure();
+                    });
                 });
         }
 
@@ -221,9 +230,18 @@ namespace MbUnit.Framework.ContractVerifiers
                 "Verify that the type '" + ExceptionType.FullName + "' has a non-public serializable constructor with signature '.ctor(SerializationInfo, StreamingContext)'.",
                 state =>
                 {
-                    ConstructorInfo ctor = ExceptionType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance,
-                        null, new Type[] { typeof(SerializationInfo), typeof(StreamingContext) }, null);
-                    Assert.IsNotNull(ctor, "Type '{0}' should have a non-public serializable constructor with signature '.ctor(SerializationInfo, StreamingContext)'", ExceptionType.FullName);
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (ExceptionType.GetConstructor(
+                            BindingFlags.NonPublic | BindingFlags.Instance, null,
+                            new Type[] { typeof(SerializationInfo), typeof(StreamingContext) }, null) != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("Expected the exception type to have non-public constructor dedicated to serialization.")
+                            .SetRawLabeledValue("Exception Type", ExceptionType)
+                            .SetLabeledValue("Constructor Signature", ".ctor(SerializationInfo, StreamingContext)")
+                            .ToAssertionFailure();
+                    });
                 });
         }
 
@@ -241,13 +259,46 @@ namespace MbUnit.Framework.ContractVerifiers
                 state =>
                 {
                     ConstructorInfo ctor = ExceptionType.GetConstructor(EmptyArray<Type>.Instance);
-                    Assert.IsNotNull(ctor, "Type '{0}' should have should have a default constructor.", ExceptionType.FullName);
-                    Exception instance = (Exception)ctor.Invoke(null);
-                    Assert.IsTrue(instance.Message.Contains(ExceptionType.FullName), "The message text must contain the exception type.");
-                    Assert.IsNull(instance.InnerException, "The inner exception should be null.");
 
-                    if (ImplementsSerialization)
-                        AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (ctor != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("The exception type should have a default parameter-less constructor.")
+                            .SetRawLabeledValue("Exception Type", ExceptionType)
+                            .SetLabeledValue("Expected Constructor Signature", ".ctor()")
+                            .ToAssertionFailure();
+                    });
+
+                    Exception instance = (Exception)ctor.Invoke(null);
+
+                    Assert.Multiple(() =>
+                    {
+                        AssertionHelper.Verify(() =>
+                        {
+                            if (instance.Message.Contains(ExceptionType.FullName))
+                                return null;
+
+                            return new AssertionFailureBuilder("The exception message should contain the exception type name.")
+                                .SetRawLabeledValue("Exception Type", ExceptionType)
+                                .SetLabeledValue("Actual Message", instance.Message)
+                                .ToAssertionFailure();
+                        });
+
+                        AssertionHelper.Verify(() =>
+                        {
+                            if (instance.InnerException == null)
+                                return null;
+
+                            return new AssertionFailureBuilder("The inner exception should be null.")
+                                .SetRawLabeledValue("Exception Type", ExceptionType)
+                                .ToAssertionFailure();
+                        });
+
+                        if (ImplementsSerialization)
+                            AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                    });
                 });
         }
 
@@ -268,17 +319,63 @@ namespace MbUnit.Framework.ContractVerifiers
                     foreach (string message in new string[] { null, "", "A message." })
                     {
                         ConstructorInfo ctor = ExceptionType.GetConstructor(new Type[] { typeof(string) });
-                        Assert.IsNotNull(ctor, "Type '{0}' should have should have a single argument constructor with signature '.ctor(string)'.", ExceptionType.FullName);
+
+                        AssertionHelper.Verify(() =>
+                        {
+                            if (ctor != null)
+                                return null;
+                            
+                            return new AssertionFailureBuilder("The exception type should have a single parameter constructor.")
+                                .SetRawLabeledValue("Exception Type", ExceptionType)
+                                .SetLabeledValue("Expected Constructor Signature", ".ctor(string message)")
+                                .ToAssertionFailure();
+                        });
+
                         Exception instance = (Exception)ctor.Invoke(new object[] { message });
-                        Assert.IsNull(instance.InnerException, "The inner exception should be null.");
 
-                        if (message == null)
-                            Assert.IsTrue(instance.Message.Contains(ExceptionType.FullName), "The message text must contain the exception type.");
-                        else
-                            Assert.AreEqual(message, instance.Message, "The message text should be equal to the provided message.");
+                        Assert.Multiple(() =>
+                        {
+                            AssertionHelper.Verify(() =>
+                            {
+                                if (instance.InnerException == null)
+                                    return null;
 
-                        if (ImplementsSerialization)
-                            AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                                return new AssertionFailureBuilder("The inner exception should be null.")
+                                    .SetRawLabeledValue("Exception Type", ExceptionType)
+                                    .ToAssertionFailure();
+                            });
+
+                            if (message == null)
+                            {
+                                AssertionHelper.Verify(() =>
+                                {
+                                    if (instance.Message.Contains(ExceptionType.FullName))
+                                        return null;
+
+                                    return new AssertionFailureBuilder("The exception message should to contain the exception type name.")
+                                        .SetRawLabeledValue("Exception Type", ExceptionType)
+                                        .SetLabeledValue("Actual Message", instance.Message)
+                                        .ToAssertionFailure();
+                                });
+                            }
+                            else
+                            {
+                                AssertionHelper.Verify(() =>
+                                {
+                                    if (message == instance.Message)
+                                        return null;
+
+                                    return new AssertionFailureBuilder("Expected the exception message to be equal to a specific text.")
+                                        .SetRawLabeledValue("Exception Type", ExceptionType)
+                                        .SetLabeledValue("Actual Message", instance.Message)
+                                        .SetLabeledValue("Expected Message", message)
+                                        .ToAssertionFailure();
+                                });
+                            }
+
+                            if (ImplementsSerialization)
+                                AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                        });
                     }
                 });
 
@@ -311,17 +408,65 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             Exception innerException = hasInnerException ? new Exception("Test.") : null;
                             ConstructorInfo ctor = ExceptionType.GetConstructor(new Type[] { typeof(string), typeof(Exception) });
-                            Assert.IsNotNull(ctor, "Type '{0}' should have should have a two arguments constructor with signature '.ctor(string, Exception)'.", ExceptionType.FullName);
+
+                            AssertionHelper.Verify(() =>
+                            {
+                                if (ctor != null)
+                                    return null;
+
+                                return new AssertionFailureBuilder("The exception type should have a two parameters constructor.")
+                                    .SetRawLabeledValue("Exception Type", ExceptionType)
+                                    .SetLabeledValue("Expected Constructor Signature", ".ctor(string message, Exception innerException)")
+                                    .ToAssertionFailure();
+                            });
+
                             Exception instance = (Exception)ctor.Invoke(new object[] { message, innerException });
-                            Assert.AreSame(innerException, instance.InnerException, "The inner exception should be equal to the provided exception.");
 
-                            if (message == null)
-                                Assert.IsTrue(instance.Message.Contains(ExceptionType.FullName), "The message text must contain the exception type.");
-                            else
-                                Assert.AreEqual(message, instance.Message, "The message text should be equal to the provided message.");
+                            Assert.Multiple(() =>
+                            {
+                                AssertionHelper.Verify(() =>
+                                {
+                                    if (Object.ReferenceEquals(innerException, instance.InnerException))
+                                        return null;
 
-                            if (ImplementsSerialization)
-                                AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                                    return new AssertionFailureBuilder("The inner exception should be referentially identical to the exception provided in the constructor.")
+                                        .SetRawLabeledValue("Exception Type", ExceptionType)
+                                        .SetRawLabeledValue("Actual Inner Exception", instance.InnerException)
+                                        .SetRawLabeledValue("Expected Inner Exception", innerException)
+                                        .ToAssertionFailure();
+                                });
+
+                                if (message == null)
+                                {
+                                    AssertionHelper.Verify(() =>
+                                    {
+                                        if (instance.Message.Contains(ExceptionType.FullName))
+                                            return null;
+
+                                        return new AssertionFailureBuilder("The exception message should to contain the exception type name.")
+                                            .SetRawLabeledValue("Exception Type", ExceptionType)
+                                            .SetLabeledValue("Actual Message", instance.Message)
+                                            .ToAssertionFailure();
+                                    });
+                                }
+                                else
+                                {
+                                    AssertionHelper.Verify(() =>
+                                    {
+                                        if (message == instance.Message)
+                                            return null;
+
+                                        return new AssertionFailureBuilder("Expected the exception message to be equal to a specific text.")
+                                            .SetRawLabeledValue("Exception Type", ExceptionType)
+                                            .SetLabeledValue("Actual Message", instance.Message)
+                                            .SetLabeledValue("Expected Message", message)
+                                            .ToAssertionFailure();
+                                    });
+                                }
+
+                                if (ImplementsSerialization)
+                                    AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                            });
                         }
                 });
         }
@@ -332,15 +477,51 @@ namespace MbUnit.Framework.ContractVerifiers
         /// properties are preserved by round-trip serialization.
         /// </summary>
         /// <param name="instance">The exception instance.</param>
-        protected static void AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(Exception instance)
+        protected void AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(Exception instance)
         {
             Exception result = RoundTripSerialize(instance);
-            Assert.AreEqual(result.Message, instance.Message, "The exception message should be preserved by round-trip serialization.");
+
+            AssertionHelper.Verify(() =>
+            {
+                if (result.Message == instance.Message)
+                    return null;
+
+                return new AssertionFailureBuilder("Expected the exception message to be preserved by round-trip serialization.")
+                    .SetRawLabeledValue("Exception Type", ExceptionType)
+                    .SetLabeledValue("Expected Message", instance.Message)
+                    .SetLabeledValue("Actual Message ", result.Message)
+                    .ToAssertionFailure();
+            });
 
             if (instance.InnerException == null)
-                Assert.IsNull(result.InnerException, "The inner exception should be preserved by round-trip serialization.");
+            {
+                AssertionHelper.Verify(() =>
+                {
+                    if (result.InnerException == null)
+                        return null;
+
+                    return new AssertionFailureBuilder("The inner exception should be preserved by round-trip serialization.")
+                        .SetRawLabeledValue("Exception Type", ExceptionType)
+                        .SetRawLabeledValue("Actual Inner Exception", instance.InnerException)
+                        .SetRawLabeledValue("Expected Inner Exception", result.InnerException)
+                        .ToAssertionFailure();
+                });
+            }
             else
-                Assert.AreEqual(instance.InnerException.GetType(), result.InnerException.GetType(), "The inner exception should be preserved by round-trip serialization.");
+            {
+                AssertionHelper.Verify(() =>
+                {
+                    if ((result.InnerException.GetType() == instance.InnerException.GetType()) &&
+                        (result.InnerException.Message == instance.InnerException.Message))
+                        return null;
+
+                    return new AssertionFailureBuilder("The inner exception should be preserved by round-trip serialization.")
+                        .SetRawLabeledValue("Exception Type", ExceptionType)
+                        .SetRawLabeledValue("Actual Inner Exception", instance.InnerException)
+                        .SetRawLabeledValue("Expected Inner Exception", result.InnerException)
+                        .ToAssertionFailure();
+                });
+            }
         }
 
         /// <summary>
