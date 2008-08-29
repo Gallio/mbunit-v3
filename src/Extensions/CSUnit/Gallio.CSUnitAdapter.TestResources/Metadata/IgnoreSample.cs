@@ -17,10 +17,16 @@ using csUnit;
 
 namespace Gallio.CSUnitAdapter.TestResources.Metadata
 {
+    /// <summary>
+    /// A test fixture that is ignored.
+    /// </summary>
     [TestFixture]
     [Ignore("This fixture is ignored. It should not run")]
     public class IgnoreSample
     {
+        /// <summary>
+        /// This test should not execute because the fixture is ignored.
+        /// </summary>
         [Test]
         public void TestInsideIgnoredFixture()
         {

@@ -20,16 +20,20 @@ using Gallio.Reflection;
 
 namespace Gallio.CSUnitAdapter.Model
 {
+    /// <summary>
+    /// Represents an CSUnit assembly-level test.
+    /// </summary>
     public class CSUnitAssemblyTest : CSUnitTest
     {
-        private readonly RemoteLoader loader;
+        private readonly string location;
 
-        public CSUnitAssemblyTest(IAssemblyInfo assembly, RemoteLoader loader)
+        /// <inheritdoc />
+        public CSUnitAssemblyTest(IAssemblyInfo assembly, string location)
             : base(assembly.Name, assembly)
         {
             Kind = TestKinds.Assembly;
 
-            this.loader = loader;
+            this.location = location;
         }
 
         /// <inheritdoc />
@@ -40,7 +44,7 @@ namespace Gallio.CSUnitAdapter.Model
 
         private ITestController CreateTestController()
         {
-            return new CSUnitTestController(loader);
+            return new CSUnitTestController(location);
         }
 
     }

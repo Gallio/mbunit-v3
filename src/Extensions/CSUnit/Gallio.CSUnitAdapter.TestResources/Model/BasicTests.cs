@@ -17,14 +17,16 @@ using System;
 using System.IO;
 using csUnit;
 
-namespace Gallio.CSUnitAdapter.TestResources.Metadata
+namespace Gallio.CSUnitAdapter.TestResources.Model
 {
     /// <summary>
-    /// A simple test fixture.
+    /// Test the various features of the framework.
     /// </summary>
     [TestFixture]
-    public class SimpleTest
+    public class BasicTests
     {
+        // Note: Results should be: 2 pass, 6 fail (1 error), 1 skipped (1 ignore)
+
         /// <summary>
         /// A passing test.
         /// </summary>
@@ -48,7 +50,7 @@ namespace Gallio.CSUnitAdapter.TestResources.Metadata
         /// </summary>
         [Test]
         [Ignore("Blah bla")]
-        public void ThatThatIsIgnored()
+        public void TestThatIsIgnored()
         {
         }
 
@@ -61,6 +63,9 @@ namespace Gallio.CSUnitAdapter.TestResources.Metadata
             throw new EndOfStreamException("Bla blah");
         }
 
+        /// <summary>
+        /// This test expects an exception to be thrown.
+        /// </summary>
         [Test]
         [ExpectedException(typeof(EndOfStreamException))]
         public void TestCatchException()
@@ -68,26 +73,36 @@ namespace Gallio.CSUnitAdapter.TestResources.Metadata
             throw new EndOfStreamException("This should be caught");
         }
 
-
-
+        /// <summary>
+        /// Used to check the output of a failing Assert.Equals function in logs
+        /// </summary>
         [Test(Categories = "AssertFailures")]
         public void TestAssertFailure_EqualsDouble()
         {
             Assert.Equals(3.14, 3.145, "This is my message");    
         }
 
+        /// <summary>
+        /// Used to check the output of a failing Assert.Greater function in logs
+        /// </summary>
         [Test(Categories = "AssertFailures")]
         public void TestAssertFailure_GreaterInt()
         {
             Assert.Greater(1, 200);
         }
 
+        /// <summary>
+        /// Used to check the output of a failing Assert.Contains function in logs
+        /// </summary>
         [Test(Categories = "AssertFailures")]
         public void TestAssertFailure_Contains()
         {
             Assert.Contains("123", "abcdf", "What ever do you mean.");
         }
 
+        /// <summary>
+        /// Used to check the output of a failing Assert.Null function in logs
+        /// </summary>
         [Test(Categories = "AssertFailures")]
         public void TestAssertFailure_Null()
         {

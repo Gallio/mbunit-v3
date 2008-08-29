@@ -17,14 +17,23 @@ using csUnit;
 
 namespace Gallio.CSUnitAdapter.TestResources.Metadata
 {
+    /// <summary>
+    /// A simple class that make use of categories.
+    /// </summary>
     [TestFixture(Categories = "DB")]
     public class DatabaseFixture
     {
+        /// <summary>
+        /// A test that make use of categories.
+        /// </summary>
         [Test(Categories = "mySQL")]
         public void Test1()
         {
         }
 
+        /// <summary>
+        /// Another test that make use of categories.
+        /// </summary>
         [Test(Categories = "MSFT")]
         public void Test2()
         {
@@ -32,22 +41,34 @@ namespace Gallio.CSUnitAdapter.TestResources.Metadata
         }
     }
 
-    [TestFixture(Categories = "DATA, DataSet")]
+    /// <summary>
+    /// Another class that make use of categories.
+    /// </summary>
+    [TestFixture(Categories = "DB, DataSet")]
     public class DatasetFixture
     {
+        /// <summary>
+        /// First test
+        /// </summary>
         [Test(Categories = "mySQL")]
-        public void Test3()
+        public void TestA()
         {
         }
 
+        /// <summary>
+        /// Second test
+        /// </summary>
         [Test(Categories = "MSFT")]
         [Ignore("not relevant")]
-        public void Test4()
+        public void TestB()
         {
         }
 
+        /// <summary>
+        /// Third test
+        /// </summary>
         [Test(Categories = "Oracle")]
-        public void Test5()
+        public void TestC()
         {
         }
     }

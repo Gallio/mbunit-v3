@@ -39,6 +39,8 @@ namespace Gallio.CSUnitAdapter.Model
             assemblyTests = new Dictionary<IAssemblyInfo, ITest>();
         }
 
+        #region ITestExplorer Members
+
         /// <inheritdoc />
         public override void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
         {
@@ -54,6 +56,8 @@ namespace Gallio.CSUnitAdapter.Model
             }
         }
 
+        #endregion
+
         private static Version GetFrameworkVersion(IAssemblyInfo assembly)
         {
             AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, CSUnitAssemblyDisplayName);
@@ -66,20 +70,13 @@ namespace Gallio.CSUnitAdapter.Model
             if (!frameworkTests.TryGetValue(frameworkVersion, out frameworkTest))
             {
                 frameworkTest = CreateFrameworkTest(frameworkVersion);
-                rootTest.AddChild(frameworkTest);
+                if (frameworkTest != null)
+                {
+                    rootTest.AddChild(frameworkTest);
 
-                frameworkTests.Add(frameworkVersion, frameworkTest);
+                    frameworkTests.Add(frameworkVersion, frameworkTest);
+                }
             }
-
-            return frameworkTest;
-        }
-
-        private static ITest CreateFrameworkTest(Version frameworkVersion)
-        {
-            BaseTest frameworkTest = new BaseTest(String.Format(Resources.CSUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-            frameworkTest.BaselineLocalId = Resources.CSUnitTestFramework_FrameworkName;
-            frameworkTest.Kind = TestKinds.Framework;
-
             return frameworkTest;
         }
 
@@ -92,12 +89,22 @@ namespace Gallio.CSUnitAdapter.Model
                 if (assemblyTest != null)
                 {
                     frameworkTest.AddChild(assemblyTest);
-
+                    
                     assemblyTests.Add(assembly, assemblyTest);
                 }
             }
-
             return assemblyTest;
+        }
+
+        private static ITest CreateFrameworkTest(Version frameworkVersion)
+        {
+            string name = String.Format(Resources.CSUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
+            
+            BaseTest frameworkTest = new BaseTest(name, null);
+            frameworkTest.BaselineLocalId = Resources.CSUnitTestFramework_FrameworkName;
+            frameworkTest.Kind = TestKinds.Framework;
+
+            return frameworkTest;
         }
 
         private ITest CreateAssemblyTest(IAssemblyInfo assembly)
@@ -110,95 +117,89 @@ namespace Gallio.CSUnitAdapter.Model
             }
             catch (Exception ex)
             {
-                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly, 
+                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly,
                     "Could not resolve the location of an csUnit test assembly.", ex));
                 return null;
             }
             try
             {
-                RemoteLoader loader = new RemoteLoader();
-                loader.Listener = new NullTestListener();
-                loader.LoadAssembly(location);
+                // Load the assembly using the native CSUnit loader.
+                Loader loader = new Loader(location);
 
-                CSUnitAssemblyTest assemblyTest = new CSUnitAssemblyTest(assembly, loader);
-                assemblyTest.BaselineLocalId = assembly.Name;
+                // TODO: Pure reflective loader for cases like ReSharper where the assembly has not been compiled yet.
 
-                PopulateAssemblyMetadata(assemblyTest);
+                CSUnitAssemblyTest assemblyTest = new CSUnitAssemblyTest(assembly, location);
+                assemblyTest.BaselineLocalId = assembly.Name; // used to do reverse lookup
+                assemblyTest.Kind = TestKinds.Assembly;
+
+                PopulateAssemblyMetadata(assembly, assemblyTest.Metadata);
 
                 foreach (ITestFixtureInfo testFixture in loader.TestFixtureInfos)
                 {
                     ITest fixture = CreateTestFixture(assemblyTest, testFixture);
-                    
+
                     assemblyTest.AddChild(fixture);
                 }
                 return assemblyTest;
-
             }
             catch (Exception ex)
             {
-                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly, 
+                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly,
                     "An exception was thrown while exploring an csUnit test assembly.", ex));
                 return null;
             }
         }
 
-        private ITest CreateTestFixture(CSUnitAssemblyTest parent, ITestFixtureInfo testFixture)
+        private static ITest CreateTestFixture(CSUnitAssemblyTest parent, ITestFixtureInfo testFixture)
         {
-            if (testFixture.TestMethods == null)
-            {
-                return null;
-            }
-
-            string name = testFixture.FullName;
-            ICodeElementInfo codeElement = ((IAssemblyInfo)parent.CodeElement).GetType(name);
+            ICodeElementInfo codeElement = ((IAssemblyInfo)parent.CodeElement).GetType(testFixture.FullName);
+            
             CSUnitTest fixture = new CSUnitTest(codeElement.Name, codeElement);
+            fixture.BaselineLocalId = testFixture.FullName; // used to do reverse lookup
             fixture.Kind = TestKinds.Fixture;
-            fixture.BaselineLocalId = testFixture.FullName;
 
-            PopulateFixtureMetadata(fixture);
-                
-            foreach (ITestMethodInfo testMethod in testFixture.TestMethods)
+            PopulateFixtureMetadata(fixture.CodeElement, fixture.Metadata);
+
+            if (testFixture.TestMethods != null)
             {
-                ITest method = CreateTest(fixture, testMethod);            
+                foreach (ITestMethodInfo testMethod in testFixture.TestMethods)
+                {
+                    ITest method = CreateTest(fixture, testMethod);
 
-                fixture.AddChild(method);
+                    fixture.AddChild(method);
+                }
             }
-
             return fixture;
         }
 
-        private ITest CreateTest(CSUnitTest parent, ITestMethodInfo testMethod)
+        private static ITest CreateTest(CSUnitTest parent, ITestMethodInfo testMethod)
         {
-            string methodName = testMethod.Name;
-            ICodeElementInfo codeElement = ((ITypeInfo)parent.CodeElement).GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
+            ICodeElementInfo codeElement = ((ITypeInfo)parent.CodeElement).GetMethod(testMethod.Name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
+            
             CSUnitTest method = new CSUnitTest(codeElement.Name, codeElement);
+            method.BaselineLocalId = testMethod.FullName; // used to do reverse lookup
             method.Kind = TestKinds.Test;
-            method.BaselineLocalId = testMethod.FullName;
             method.IsTestCase = true;
 
-            PopulateMethodMetadata(method);
+            PopulateMethodMetadata(method.CodeElement, method.Metadata);
 
             return method;
         }
 
-        public static void PopulateAssemblyMetadata(ITest test)
+        public static void PopulateAssemblyMetadata(IAssemblyInfo codeElement, MetadataMap metadata)
         {
-            IAssemblyInfo codeElement = (IAssemblyInfo) test.CodeElement;
-
-            ModelUtils.PopulateMetadataFromAssembly(codeElement, test.Metadata);
+            ModelUtils.PopulateMetadataFromAssembly(codeElement, metadata);
 
             // Add documentation.
             string xmlDocumentation = codeElement.GetXmlDocumentation();
             if (!String.IsNullOrEmpty(xmlDocumentation))
             {
-                test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
             }
         }
 
-        public static void PopulateFixtureMetadata(ITest test)
+        public static void PopulateFixtureMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
         {
-            ICodeElementInfo codeElement = test.CodeElement;
-
             foreach (TestFixtureAttribute attr in AttributeUtils.GetAttributes<TestFixtureAttribute>(codeElement, true))
             {
                 // Add categories 
@@ -207,25 +208,23 @@ namespace Gallio.CSUnitAdapter.Model
                 {
                     foreach (string category in categories.Split(','))
                     {
-                        test.Metadata.Add(MetadataKeys.CategoryName, category);
+                        metadata.Add(MetadataKeys.CategoryName, category);
                     }
                 }
             }
 
-            PopulateCommonMetadata(codeElement, test.Metadata);
+            PopulateCommonMetadata(codeElement, metadata);
         }
 
-        public static void PopulateMethodMetadata(ITest test)
+        public static void PopulateMethodMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
         {
-            ICodeElementInfo codeElement = test.CodeElement;
-            
             foreach (TestAttribute attr in AttributeUtils.GetAttributes<TestAttribute>(codeElement, true))
             {
                 // Add timeout 
                 if (attr.Timeout > 0)
                 {
                     TimeSpan timeout = TimeSpan.FromMilliseconds(attr.Timeout);
-                    test.Metadata.Add("Timeout", timeout.Seconds.ToString("0.000"));
+                    metadata.Add("Timeout", timeout.Seconds.ToString("0.000"));
                 }
 
                 // Add categories 
@@ -234,7 +233,7 @@ namespace Gallio.CSUnitAdapter.Model
                 {
                     foreach (string category in categories.Split(','))
                     {
-                        test.Metadata.Add(MetadataKeys.CategoryName, category);
+                        metadata.Add(MetadataKeys.CategoryName, category);
                     }
                 }
             }
@@ -242,10 +241,10 @@ namespace Gallio.CSUnitAdapter.Model
             // Add expected exception type
             foreach (ExpectedExceptionAttribute attr in AttributeUtils.GetAttributes<ExpectedExceptionAttribute>(codeElement, true))
             {
-                test.Metadata.Add(MetadataKeys.ExpectedException, attr.ExceptionType.FullName);
+                metadata.Add(MetadataKeys.ExpectedException, attr.ExceptionType.FullName);
             }
 
-            PopulateCommonMetadata(codeElement, test.Metadata);
+            PopulateCommonMetadata(codeElement, metadata);
         }
 
         private static void PopulateCommonMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
@@ -262,50 +261,7 @@ namespace Gallio.CSUnitAdapter.Model
             {
                 metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
             }
-        }
-
-        class NullTestListener : ITestListener
-        {
-            #region ITestListener Members
-
-            public void OnAssemblyFinished(object sender, AssemblyEventArgs args)
-            {
-            }
-
-            public void OnAssemblyLoaded(object sender, AssemblyEventArgs args)
-            {
-            }
-
-            public void OnAssemblyStarted(object sender, AssemblyEventArgs args)
-            {
-            }
-
-            public void OnTestError(object sender, TestResultEventArgs args)
-            {
-            }
-
-            public void OnTestFailed(object sender, TestResultEventArgs args)
-            {
-            }
-
-            public void OnTestPassed(object sender, TestResultEventArgs args)
-            {
-            }
-
-            public void OnTestSkipped(object sender, TestResultEventArgs args)
-            {
-            }
-
-            public void OnTestStarted(object sender, TestResultEventArgs args)
-            {
-            }
-
-            public void OnTestsAborted(object sender, AssemblyEventArgs args)
-            {
-            }
-
-            #endregion
-        }
+        }     
     }
 
 }

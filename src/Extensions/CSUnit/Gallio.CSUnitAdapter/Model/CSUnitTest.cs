@@ -18,8 +18,12 @@ using Gallio.Reflection;
 
 namespace Gallio.CSUnitAdapter.Model
 {
+    /// <summary>
+    /// Class that represents a CSUnit test.
+    /// </summary>
     public class CSUnitTest : BaseTest
     {
+        /// <inheritdoc />
         public CSUnitTest(string name, ICodeElementInfo codeElement)
             : base(name, codeElement)
         {            

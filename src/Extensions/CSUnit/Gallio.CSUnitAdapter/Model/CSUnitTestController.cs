@@ -29,37 +29,22 @@ namespace Gallio.CSUnitAdapter.Model
 {
     internal class CSUnitTestController : BaseTestController
     {
-        private RemoteLoader loader;
+        private readonly string assemblyLocation;
 
         /// <summary>
         /// Create a test controller
         /// </summary>
-        /// <param name="loader">the csUnit test runner</param>
-        public CSUnitTestController(RemoteLoader loader)
+        public CSUnitTestController(string assemblyLocation)
         {
-            if (loader == null)
-                throw new ArgumentNullException("loader");
+            if (String.IsNullOrEmpty(assemblyLocation))
+                throw new ArgumentNullException("assemblyLocation");
 
-            this.loader = loader;
-        }
-
-        /// <inheritdoc />
-        public override void Dispose()
-        {
-            loader = null;
-        }
-
-        private void ThrowIfDisposed()
-        {
-            if (loader == null)
-                throw new ObjectDisposedException("The test controller has been disposed.");
+            this.assemblyLocation = assemblyLocation;
         }
 
         /// <inheritdoc />
         protected override TestOutcome RunTestsImpl(ITestCommand rootTestCommand, ITestStep parentTestStep, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            ThrowIfDisposed();
-
             IList<ITestCommand> testCommands = rootTestCommand.GetAllCommands();
             using (progressMonitor.BeginTask(Resources.CSUnitTestController_RunningCSUnitTests, testCommands.Count))
             {
@@ -74,16 +59,15 @@ namespace Gallio.CSUnitAdapter.Model
                     return TestOutcome.Skipped;
                 }
 
-                using (RunnerMonitor monitor = new RunnerMonitor(loader, testCommands, parentTestStep, progressMonitor))
+                using (RunnerMonitor monitor = new RunnerMonitor(testCommands, parentTestStep, progressMonitor))
                 {
-                    return monitor.Run();
+                    return monitor.Run(assemblyLocation);
                 }
             }            
         }
 
         public class RunnerMonitor : csUnit.Interfaces.ITestListener, IDisposable
         {
-            private readonly RemoteLoader loader;
             private readonly IProgressMonitor progressMonitor;
             private readonly ITestStep topTestStep;
 
@@ -93,15 +77,13 @@ namespace Gallio.CSUnitAdapter.Model
             private int failures;
             private Thread runnerThread;
 
-            public RunnerMonitor(RemoteLoader loader, IList<ITestCommand> testCommands, ITestStep topTestStep, IProgressMonitor progressMonitor)
+            public RunnerMonitor(IList<ITestCommand> testCommands, ITestStep topTestStep, IProgressMonitor progressMonitor)
             {
-                if (loader == null)
-                    throw new ArgumentNullException("loader");
+                if (topTestStep == null)
+                    throw new ArgumentNullException("topTestStep");
                 if (progressMonitor == null)
                     throw new ArgumentNullException("progressMonitor");
 
-                this.loader = loader;
-                this.loader.Listener = this;
                 this.progressMonitor = progressMonitor;
                 this.topTestStep = topTestStep;
 
@@ -118,7 +100,6 @@ namespace Gallio.CSUnitAdapter.Model
                 if (testCommands == null)
                     throw new ArgumentNullException("testCommands");
 
-                failures = 0;
                 runnerThread = null;
 
                 testContextStack.Clear();
@@ -148,35 +129,52 @@ namespace Gallio.CSUnitAdapter.Model
                 }
             }
 
-            public TestOutcome Run()
+            public TestOutcome Run(string assemblyPath)
             {
-                TestOutcome outcome = TestOutcome.Passed;                
                 try
                 {
-                    ITestSpec testSpec = new PartialTestSpec(testCommandsByName);
                     runnerThread = Thread.CurrentThread;
                     failures = 0;
 
-                    loader.RunTests(testSpec, TextWriter.Null);
+                    RunTests(assemblyPath);
 
-                    if (failures > 0)
-                    {
-                        outcome = TestOutcome.Failed;
-                    }
+                    return 0 == failures ? TestOutcome.Passed : TestOutcome.Failed;
                 }
                 catch (ThreadAbortException)
                 {
                     if (progressMonitor.IsCanceled)
                     {
                         Thread.ResetAbort();
-                        outcome = TestOutcome.Canceled;
+                        return TestOutcome.Canceled;
                     }
+                    return TestOutcome.Error;
                 }
                 finally
                 {
-                    runnerThread = null;    
-                }                
-                return outcome;
+                    runnerThread = null;
+                }
+            }
+
+            private void RunTests(string assemblyPath)
+            {
+                using (RemoteLoader loader = new RemoteLoader())
+                {
+                    // Attach ourself to get feedback
+                    loader.Listener = this;
+
+                    // Load the test assembly
+                    loader.LoadAssembly(assemblyPath);
+
+                    // Run the tests of that assembly
+                    ITestSpec testSpec = new PartialTestSpec(testCommandsByName);
+                    loader.RunTests(testSpec, TextWriter.Null);
+                }
+                // Note: Make use of AppDomain
+                //   This implementation does not make use of a separate 
+                //   AppDomain to run the tests. Alternatively we can 
+                //   create a new app domain and use the method
+                //     RemoteLoader.CreateInstance( appDomain )
+                //   to create the loader in that domain.
             }
 
             #region ITestListener Members

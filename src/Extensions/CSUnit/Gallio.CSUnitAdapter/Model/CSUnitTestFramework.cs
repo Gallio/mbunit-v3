@@ -22,6 +22,9 @@ using Gallio.Runtime.Hosting;
 
 namespace Gallio.CSUnitAdapter.Model
 {
+    /// <summary>
+    /// Builds a test object model based on reflection against CSUnit framework attributes.
+    /// </summary>
     public class CSUnitTestFramework : BaseTestFramework
     {
         private static readonly string[] frameworkAssemblyFiles = new string[]
