@@ -362,6 +362,74 @@ namespace MbUnit.Framework
         }
         #endregion
 
+        #region AreElementsNotEqual
+        /// <summary>
+        /// Verifies that elements in actual collection are the same and in the same order as in expected collection.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="exectedCollection">The expected collection</param>
+        /// <param name="actualCollection">The actual collection</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsNotEqual<T>(IEnumerable<T> exectedCollection, IEnumerable<T> actualCollection)
+        {
+            AreElementsNotEqual(exectedCollection, actualCollection, null, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that elements in actual collection are the same and in the same order as in expected collection.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="exectedCollection">The expected collection</param>
+        /// <param name="actualCollection">The actual collection</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsNotEqual<T>(IEnumerable<T> exectedCollection, IEnumerable<T> actualCollection, string messageFormat, params object[] messageArgs)
+        {
+            AreElementsNotEqual(exectedCollection, actualCollection, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that elements in actual collection are the same and in the same order as in expected collection.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="exectedCollection">The expected collection</param>
+        /// <param name="actualCollection">The actual collection</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsNotEqual<T>(IEnumerable<T> exectedCollection, IEnumerable<T> actualCollection, Func<IEnumerable<T>, IEnumerable<T>, bool> comparer)
+        {
+            AreElementsNotEqual(exectedCollection, actualCollection, comparer, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that elements in actual collection are the same and in the same order as in expected collection.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="exectedCollection">The expected collection</param>
+        /// <param name="actualCollection">The actual collection</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsNotEqual<T>(IEnumerable<T> exectedCollection, IEnumerable<T> actualCollection, Func<IEnumerable<T>, IEnumerable<T>, bool> comparer, string messageFormat, params object[] messageArgs)
+        {
+            AssertionHelper.Verify(delegate
+            {
+                if (comparer == null)
+                    comparer = DefaultEqualityComparer;
+
+                if (!comparer(exectedCollection, actualCollection))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected collection values not to be equal.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .SetRawExpectedAndActualValueWithDiffs(exectedCollection, actualCollection)
+                    .ToAssertionFailure();
+            });
+        }
+        #endregion
+
         #region AreSame
         /// <summary>
         /// Verifies that an actual value is referentially identical to some expected value.

@@ -138,6 +138,47 @@ namespace MbUnit.Tests.Framework
 
         #endregion
 
+        #region AreElementsNotEqual
+        [Test]
+        public void AreElementsNotEqual_with_strings()
+        {
+            Assert.AreElementsNotEqual("12", "1");
+        }
+
+        [Test]
+        public void AreElementsNotEqual_with_different_types()
+        {
+            Assert.AreElementsNotEqual(new[] { 1, 2 }, new List<int> { 1, 3 });
+        }
+
+        [Test]
+        public void AreElementsNotEqual_with_custom_comparer()
+        {
+            Assert.AreElementsNotEqual("12", "12", (expected, actual) => false);
+
+        }
+
+        [Test]
+        public void AreElementsNotEqual_fails_when_elements_are_in_different_order()
+        {
+            AssertionFailure[] failures = Capture(()
+                => Assert.AreElementsNotEqual(new[] { 1, 2 }, new List<int> { 1, 2 }));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected collection values not to be equal.", failures[0].Description);
+            Assert.AreEqual("Expected & Actual Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("[1, 2]", failures[0].LabeledValues[0].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void AreElementsNotEqual_fails_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.AreElementsNotEqual("2", "2", "{0} message", "custom"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        #endregion
+
         #region GreaterThan
         [Test]
         public void GreaterThan_int_test()
