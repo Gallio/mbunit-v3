@@ -27,6 +27,7 @@ using Gallio.Framework.Data;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Reflection;
+using Gallio.Framework.Assertions;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -248,13 +249,28 @@ namespace MbUnit.Framework.ContractVerifiers
                     IEnumerator enumerator1 = GetEquivalentClasses(state.FixtureType, state.FixtureInstance).GetEnumerator();
                     IEnumerator enumerator2 = GetEquivalentClasses(state.FixtureType, state.FixtureInstance).GetEnumerator();
 
-                    while (enumerator1.MoveNext() && enumerator2.MoveNext())
+                    Assert.Multiple(() =>
                     {
-                        foreach (object x in (IEnumerable)enumerator1.Current)
-                            foreach (object y in (IEnumerable)enumerator2.Current)
-                                Assert.AreEqual(x.GetHashCode(), y.GetHashCode(),
-                                    "Hash code should return the same value for '{0}' and '{1}'.", x, y);
-                    }
+                        while (enumerator1.MoveNext() && enumerator2.MoveNext())
+                        {
+                            foreach (object x in (IEnumerable)enumerator1.Current)
+                                foreach (object y in (IEnumerable)enumerator2.Current)
+                                {
+                                    AssertionHelper.Verify(() =>
+                                    {
+                                        if (x.GetHashCode() == y.GetHashCode())
+                                            return null;
+
+                                        return new AssertionFailureBuilder("The hash codes returned by two instances equal together should be identical.")
+                                            .SetRawLabeledValue("First object instance", x)
+                                            .SetRawLabeledValue("First hash code", x.GetHashCode())
+                                            .SetRawLabeledValue("Second object instance", y)
+                                            .SetRawLabeledValue("Second hash code", y.GetHashCode())
+                                            .ToAssertionFailure();
+                                    });
+                                }
+                        }
+                    });
                 });
         }
 
@@ -273,7 +289,16 @@ namespace MbUnit.Framework.ContractVerifiers
                     MethodInfo equals = GetIEquatableInterface().GetMethod("Equals",
                         BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance,
                         null, new Type[] { Type }, null);
-                    Assert.IsNotNull(equals, "The type '" + Type.FullName + "' should implement the method 'bool Equals(" + Type.Name + ")'.");
+
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (equals != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("Equality method expected to be implemented.")
+                            .SetLabeledValue("Expected Method", "public bool Equals(" + Type.Name + ")")
+                            .ToAssertionFailure();
+                    });
       
                     VerifyEqualityContract(state.FixtureType, state.FixtureInstance, false,
                         (a, b) =>
@@ -298,7 +323,16 @@ namespace MbUnit.Framework.ContractVerifiers
                     MethodInfo @operator = Type.GetMethod("op_Equality",
                         BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
                         null, new Type[] { Type, Type }, null);
-                    Assert.IsNotNull(@operator, "The type '" + Type.FullName + "' should implement the static equality operator (==) overload.");
+
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (@operator != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("Equality method expected to be implemented.")
+                            .SetLabeledValue("Expected Method", "static bool operator ==(" + Type.Name + " left, " + Type.Name + " right)")
+                            .ToAssertionFailure();
+                    });
 
                     VerifyEqualityContract(state.FixtureType, state.FixtureInstance, true,
                         (a, b) =>
@@ -323,7 +357,16 @@ namespace MbUnit.Framework.ContractVerifiers
                     MethodInfo @operator = Type.GetMethod("op_Inequality",
                         BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
                         null, new Type[] { Type, Type }, null);
-                    Assert.IsNotNull(@operator, "The type '" + Type.FullName + "' should implement the static inequality operator (!=) overload.");
+
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (@operator != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("Equality method expected to be implemented.")
+                            .SetLabeledValue("Expected Method", "static bool operator !=(" + Type.Name + " left, " + Type.Name + " right)")
+                            .ToAssertionFailure();
+                    });
 
                     VerifyEqualityContract(state.FixtureType, state.FixtureInstance, true,
                         (a, b) =>
@@ -343,7 +386,18 @@ namespace MbUnit.Framework.ContractVerifiers
         protected IEnumerable GetEquivalentClasses(Type fixtureType, object fixtureInstance)
         {
             Type interfaceType = GetIEquivalenceClassProviderInterface(fixtureType);
-            Assert.IsNotNull(interfaceType, "The equality contract verifier for the test fixture '{0}' must implement the interface 'IEquivalentClassProvider'.", fixtureType.ToString());
+
+            AssertionHelper.Verify(() =>
+            {
+                if (interfaceType != null)
+                    return null;
+
+                return new AssertionFailureBuilder("Expected the contract verifier to implement a particular interface.")
+                    .SetLabeledValue("Contract Verifier", "Equality")
+                    .SetLabeledValue("Expected Interface", "IEquivalentClassProvider<" + Type + ">")
+                    .ToAssertionFailure();
+            });
+
             return (IEnumerable)interfaceType.InvokeMember("GetEquivalenceClasses",
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod,
                 null, fixtureInstance, null);
@@ -360,21 +414,28 @@ namespace MbUnit.Framework.ContractVerifiers
         protected void VerifyEqualityContract(Type fixtureType, object fixtureInstance, 
             bool isStaticMethodInvoked, Func<object, object, bool> equals)
         {
-            VerifyEqualityBetweenTwoNullReferences(isStaticMethodInvoked, equals);
-            int i = 0;
+            // Get the equivalence classes before entering the multiple assertion block in
+            // order to catch any missing implementation of IEquivalentClassProvider<T> before.
+            IEnumerable equivalenceClasses = GetEquivalentClasses(fixtureType, fixtureInstance);
 
-            foreach (object a in GetEquivalentClasses(fixtureType, fixtureInstance))
+            Assert.Multiple(() =>
             {
-                int j = 0;
+                VerifyEqualityBetweenTwoNullReferences(isStaticMethodInvoked, equals);
+                int i = 0;
 
-                foreach (object b in GetEquivalentClasses(fixtureType, fixtureInstance))
+                foreach (object a in equivalenceClasses)
                 {
-                    CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, i == j, isStaticMethodInvoked, equals);
-                    j++;
-                }
+                    int j = 0;
 
-                i++;
-            }
+                    foreach (object b in GetEquivalentClasses(fixtureType, fixtureInstance))
+                    {
+                        CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, i == j, isStaticMethodInvoked, equals);
+                        j++;
+                    }
+
+                    i++;
+                }
+            });
         }
 
         /// <summary>
@@ -392,21 +453,43 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             foreach (object x in a)
             {
-                Assert.IsTrue(equals(x, x), "The equality operator should consider '{0}' equal to itself.", x);
+                AssertionHelper.Verify(() =>
+                {
+                    if (equals(x, x))
+                        return null;
+
+                    return new AssertionFailureBuilder("The equality operator should consider a value equal to itself.")
+                        .SetRawLabeledValue("Value", x)
+                        .ToAssertionFailure();
+                });
+
                 VerifyNullReferenceEquality(x, isStaticMethodInvoked, equals);
                 
                 foreach (object y in b)
                 {
-                    if (equalityExpected)
+                    AssertionHelper.Verify(() =>
                     {
-                        Assert.IsTrue(equals(x, y), "The equality operator should consider '{0}' equal to '{1}'.", x, y);
-                        Assert.IsTrue(equals(y, x), "The equality operator should condider '{0}' equal to '{1}'.", y, x);
-                    }
-                    else
+                        if (equals(x, y) == equalityExpected)
+                            return null;
+
+                        return new AssertionFailureBuilder("The equality operator should consider the left value " + 
+                            "and the right value " + (equalityExpected ? String.Empty : "not ") + "to be equal.")
+                            .SetRawLabeledValue("Left Value", x)
+                            .SetRawLabeledValue("Right Value", y)
+                            .ToAssertionFailure();
+                    });
+
+                    AssertionHelper.Verify(() =>
                     {
-                        Assert.IsFalse(equals(x, y), "The equality operator should consider '{0}' not equal to '{1}'.", x, y);
-                        Assert.IsFalse(equals(y, x), "The equality operator should consider '{0}' not equal to '{1}'.", y, x);
-                    }
+                        if (equals(y, x) == equalityExpected)
+                            return null;
+
+                        return new AssertionFailureBuilder("The equality operator should consider the left value " +
+                            "and the right value " + (equalityExpected ? String.Empty : "not ") + "to be equal.")
+                            .SetRawLabeledValue("Left Value", y)
+                            .SetRawLabeledValue("Right Value", x)
+                            .ToAssertionFailure();
+                    });
                 }
             }
         }
@@ -417,15 +500,32 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 try
                 {
-                    Assert.IsTrue(equals(null, null), "The equality operator should consider two null references equal.");
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (equals(null, null))
+                            return null;
+
+                        return new AssertionFailureBuilder("The equality operator should consider the left value and the right value to be equal.")
+                            .SetRawLabeledValue("Left Value", null)
+                            .SetRawLabeledValue("Right Value", null)
+                            .ToAssertionFailure();
+                    });
                 }
                 catch (TargetInvocationException)
                 {
-                    Assert.Fail("The equality operator should consider two null references equal.");
+                    AssertionHelper.Fail(
+                        new AssertionFailureBuilder("The equality operator should consider the left value and the right value to be equal.")
+                            .SetRawLabeledValue("Left Value", null)
+                            .SetRawLabeledValue("Right Value", null)
+                            .ToAssertionFailure());
                 }
                 catch (NullReferenceException)
                 {
-                    Assert.Fail("The equality operator should consider two null references equal.");
+                    AssertionHelper.Fail(
+                        new AssertionFailureBuilder("The equality operator should consider the left value and the right value to be equal.")
+                            .SetRawLabeledValue("Left Value", null)
+                            .SetRawLabeledValue("Right Value", null)
+                            .ToAssertionFailure());
                 }
             }
         }
@@ -436,18 +536,46 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 try
                 {
-                    Assert.IsFalse(equals(x, null), "Equality operator should consider '{0}' not equal to a null reference.", x);
-                    
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (!equals(x, null))
+                            return null;
+
+                        return new AssertionFailureBuilder("The equality operator should consider the left value and the right value NOT to be equal.")
+                            .SetRawLabeledValue("Left Value", x)
+                            .SetRawLabeledValue("Right Value", null)
+                            .ToAssertionFailure();
+                    });
+
                     if (isStaticMethodInvoked)
-                        Assert.IsFalse(equals(null, x), "Equality operator should consider '{0}' not equal to a null reference.", x);
+                    {
+                        AssertionHelper.Verify(() =>
+                        {
+                            if (!equals(null, x))
+                                return null;
+
+                            return new AssertionFailureBuilder("The equality operator should consider the left value and the right value NOT to be equal.")
+                                .SetRawLabeledValue("Left Value", null)
+                                .SetRawLabeledValue("Right Value", x)
+                                .ToAssertionFailure();
+                        });
+                    }
                 }
                 catch (TargetInvocationException)
                 {
-                    Assert.Fail("Equality operator should consider '{0}' not equal to a null reference.", x);
+                    AssertionHelper.Fail(
+                        new AssertionFailureBuilder("The equality operator should consider the left value and the right value NOT to be equal.")
+                            .SetRawLabeledValue("Left Value", x)
+                            .SetRawLabeledValue("Right Value", null)
+                            .ToAssertionFailure());
                 }
                 catch (NullReferenceException)
                 {
-                    Assert.Fail("Equality operator should consider '{0}' not equal to a null reference.", x);
+                    AssertionHelper.Fail(
+                        new AssertionFailureBuilder("The equality operator should consider the left value and the right value NOT to be equal.")
+                            .SetRawLabeledValue("Left Value", x)
+                            .SetRawLabeledValue("Right Value", null)
+                            .ToAssertionFailure());
                 }
             }
         }
