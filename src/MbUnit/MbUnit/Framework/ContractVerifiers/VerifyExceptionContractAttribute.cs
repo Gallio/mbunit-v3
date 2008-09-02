@@ -404,70 +404,70 @@ namespace MbUnit.Framework.ContractVerifiers
                 {
                     // TODO: replace that awful double-loop by a data-driven test.
                     foreach (string message in new string[] { null, "", "A message." })
-                        foreach (bool hasInnerException in new bool[] { true, false })
-                        {
-                            Exception innerException = hasInnerException ? new Exception("Test.") : null;
-                            ConstructorInfo ctor = ExceptionType.GetConstructor(new Type[] { typeof(string), typeof(Exception) });
+                    foreach (bool hasInnerException in new bool[] { true, false })
+                    {
+                        Exception innerException = hasInnerException ? new Exception("Test.") : null;
+                        ConstructorInfo ctor = ExceptionType.GetConstructor(new Type[] { typeof(string), typeof(Exception) });
 
+                        AssertionHelper.Verify(() =>
+                        {
+                            if (ctor != null)
+                                return null;
+
+                            return new AssertionFailureBuilder("The exception type should have a two parameters constructor.")
+                                .SetRawLabeledValue("Exception Type", ExceptionType)
+                                .SetLabeledValue("Expected Constructor Signature", ".ctor(string message, Exception innerException)")
+                                .ToAssertionFailure();
+                        });
+
+                        Exception instance = (Exception)ctor.Invoke(new object[] { message, innerException });
+
+                        Assert.Multiple(() =>
+                        {
                             AssertionHelper.Verify(() =>
                             {
-                                if (ctor != null)
+                                if (Object.ReferenceEquals(innerException, instance.InnerException))
                                     return null;
 
-                                return new AssertionFailureBuilder("The exception type should have a two parameters constructor.")
+                                return new AssertionFailureBuilder("The inner exception should be referentially identical to the exception provided in the constructor.")
                                     .SetRawLabeledValue("Exception Type", ExceptionType)
-                                    .SetLabeledValue("Expected Constructor Signature", ".ctor(string message, Exception innerException)")
+                                    .SetRawLabeledValue("Actual Inner Exception", instance.InnerException)
+                                    .SetRawLabeledValue("Expected Inner Exception", innerException)
                                     .ToAssertionFailure();
                             });
 
-                            Exception instance = (Exception)ctor.Invoke(new object[] { message, innerException });
-
-                            Assert.Multiple(() =>
+                            if (message == null)
                             {
                                 AssertionHelper.Verify(() =>
                                 {
-                                    if (Object.ReferenceEquals(innerException, instance.InnerException))
+                                    if (instance.Message.Contains(ExceptionType.FullName))
                                         return null;
 
-                                    return new AssertionFailureBuilder("The inner exception should be referentially identical to the exception provided in the constructor.")
+                                    return new AssertionFailureBuilder("The exception message should to contain the exception type name.")
                                         .SetRawLabeledValue("Exception Type", ExceptionType)
-                                        .SetRawLabeledValue("Actual Inner Exception", instance.InnerException)
-                                        .SetRawLabeledValue("Expected Inner Exception", innerException)
+                                        .SetLabeledValue("Actual Message", instance.Message)
                                         .ToAssertionFailure();
                                 });
-
-                                if (message == null)
+                            }
+                            else
+                            {
+                                AssertionHelper.Verify(() =>
                                 {
-                                    AssertionHelper.Verify(() =>
-                                    {
-                                        if (instance.Message.Contains(ExceptionType.FullName))
-                                            return null;
+                                    if (message == instance.Message)
+                                        return null;
 
-                                        return new AssertionFailureBuilder("The exception message should to contain the exception type name.")
-                                            .SetRawLabeledValue("Exception Type", ExceptionType)
-                                            .SetLabeledValue("Actual Message", instance.Message)
-                                            .ToAssertionFailure();
-                                    });
-                                }
-                                else
-                                {
-                                    AssertionHelper.Verify(() =>
-                                    {
-                                        if (message == instance.Message)
-                                            return null;
+                                    return new AssertionFailureBuilder("Expected the exception message to be equal to a specific text.")
+                                        .SetRawLabeledValue("Exception Type", ExceptionType)
+                                        .SetLabeledValue("Actual Message", instance.Message)
+                                        .SetLabeledValue("Expected Message", message)
+                                        .ToAssertionFailure();
+                                });
+                            }
 
-                                        return new AssertionFailureBuilder("Expected the exception message to be equal to a specific text.")
-                                            .SetRawLabeledValue("Exception Type", ExceptionType)
-                                            .SetLabeledValue("Actual Message", instance.Message)
-                                            .SetLabeledValue("Expected Message", message)
-                                            .ToAssertionFailure();
-                                    });
-                                }
-
-                                if (ImplementsSerialization)
-                                    AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
-                            });
-                        }
+                            if (ImplementsSerialization)
+                                AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                        });
+                    }
                 });
         }
 

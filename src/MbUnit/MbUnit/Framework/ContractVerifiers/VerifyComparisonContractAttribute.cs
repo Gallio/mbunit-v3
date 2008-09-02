@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio;
 using Gallio.Framework.Pattern;
 using Gallio.Reflection;
+using Gallio.Framework.Assertions;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -217,7 +218,16 @@ namespace MbUnit.Framework.ContractVerifiers
                     MethodInfo compares = GetIComparableInterface().GetMethod("CompareTo",
                         BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance,
                         null, new Type[] { Type }, null);
-                    Assert.IsNotNull(compares, "The type '" + Type.FullName + "' should implement the method 'bool CompareTo(" + Type.Name + ")'.");
+
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (compares != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("Comparison method expected to be implemented.")
+                            .SetLabeledValue("Expected Method", "public bool CompareTo(" + Type.Name + ")")
+                            .ToAssertionFailure();
+                    });
 
                     VerifyComparisonContract<int>(state.FixtureType, state.FixtureInstance, false,
                         (a, b) =>
@@ -262,7 +272,16 @@ namespace MbUnit.Framework.ContractVerifiers
                     MethodInfo @operator = Type.GetMethod("op_GreaterThan",
                         BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
                         null, new Type[] { Type, Type }, null);
-                    Assert.IsNotNull(@operator, "The type '" + Type.FullName + "' should implement the static 'Greater Than' operator (>) overload.");
+
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (@operator != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("Comparison method expected to be implemented.")
+                            .SetLabeledValue("Expected Method", "'Greater Than' (>) operator overload")
+                            .ToAssertionFailure();
+                    });
 
                     VerifyComparisonContract<bool>(state.FixtureType, state.FixtureInstance, true,
                         (a, b) =>
@@ -293,7 +312,16 @@ namespace MbUnit.Framework.ContractVerifiers
                     MethodInfo @operator = Type.GetMethod("op_GreaterThanOrEqual",
                         BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
                         null, new Type[] { Type, Type }, null);
-                    Assert.IsNotNull(@operator, "The type '" + Type.FullName + "' should implement the static 'Greater Than Or Equal' operator (>=) overload.");
+
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (@operator != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("Comparison method expected to be implemented.")
+                            .SetLabeledValue("Expected Method", "'Greater Than Or Equal' (>=) operator overload")
+                            .ToAssertionFailure();
+                    });
 
                     VerifyComparisonContract<bool>(state.FixtureType, state.FixtureInstance, true,
                         (a, b) =>
@@ -324,7 +352,16 @@ namespace MbUnit.Framework.ContractVerifiers
                     MethodInfo @operator = Type.GetMethod("op_LessThan",
                         BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
                         null, new Type[] { Type, Type }, null);
-                    Assert.IsNotNull(@operator, "The type '" + Type.FullName + "' should implement the static 'Less Than' operator (<) overload.");
+
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (@operator != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("Comparison method expected to be implemented.")
+                            .SetLabeledValue("Expected Method", "'Less Than'(<) operator overload")
+                            .ToAssertionFailure();
+                    });
 
                     VerifyComparisonContract<bool>(state.FixtureType, state.FixtureInstance, true,
                         (a, b) =>
@@ -355,7 +392,16 @@ namespace MbUnit.Framework.ContractVerifiers
                     MethodInfo @operator = Type.GetMethod("op_LessThanOrEqual",
                         BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
                         null, new Type[] { Type, Type }, null);
-                    Assert.IsNotNull(@operator, "The type '" + Type.FullName + "' should implement the static 'Less Than Or Equal' operator (<=) overload.");
+
+                    AssertionHelper.Verify(() =>
+                    {
+                        if (@operator != null)
+                            return null;
+
+                        return new AssertionFailureBuilder("Comparison method expected to be implemented.")
+                            .SetLabeledValue("Expected Method", "'Less Than Or Equal' (<=) operator overload")
+                            .ToAssertionFailure();
+                    });
 
                     VerifyComparisonContract<bool>(state.FixtureType, state.FixtureInstance, true,
                         (a, b) =>
@@ -381,7 +427,18 @@ namespace MbUnit.Framework.ContractVerifiers
         protected IEnumerable GetEquivalentClasses(Type fixtureType, object fixtureInstance)
         {
             Type interfaceType = GetIEquivalenceClassProviderInterface(fixtureType);
-            Assert.IsNotNull(interfaceType, "The equality contract verifier for the test fixture '{0}' must implement the interface 'IEquivalentClassProvider'.");
+            
+            AssertionHelper.Verify(() =>
+            {
+                if (interfaceType != null)
+                    return null;
+
+                return new AssertionFailureBuilder("Expected the contract verifier to implement a particular interface.")
+                    .SetLabeledValue("Contract Verifier", "Comparison")
+                    .SetLabeledValue("Expected Interface", "IEquivalentClassProvider<" + Type + ">")
+                    .ToAssertionFailure();
+            });
+
             return (IEnumerable)interfaceType.InvokeMember("GetEquivalenceClasses",
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod,
                 null, fixtureInstance, null);
@@ -403,22 +460,29 @@ namespace MbUnit.Framework.ContractVerifiers
         protected void VerifyComparisonContract<U>(Type fixtureType, object fixtureInstance, bool isStaticMethodInvoked,
             Func<object, object, U> compares, Func<int, int, U> refers, Func<U, string> formatsExpectedResult)
         {
-            VerifyEqualityBetweenTwoNullReferences<U>(isStaticMethodInvoked, compares, refers);
-            int i = 0;
+            // Get the equivalence classes before entering the multiple assertion block in
+            // order to catch any missing implementation of IEquivalentClassProvider<T> before.
+            IEnumerable equivalenceClasses = GetEquivalentClasses(fixtureType, fixtureInstance);
 
-            foreach (object a in GetEquivalentClasses(fixtureType, fixtureInstance))
+            Assert.Multiple(() =>
             {
-                int j = 0;
+                VerifyEqualityBetweenTwoNullReferences<U>(isStaticMethodInvoked, compares, refers, formatsExpectedResult);
+                int i = 0;
 
-                foreach (object b in GetEquivalentClasses(fixtureType, fixtureInstance))
+                foreach (object a in equivalenceClasses)
                 {
-                    CompareEquivalentInstances<U>((IEnumerable)a, (IEnumerable)b,
-                        isStaticMethodInvoked, refers(i, j), formatsExpectedResult, refers(i, Int32.MinValue), compares);
-                    j++;
-                }
+                    int j = 0;
 
-                i++;
-            }
+                    foreach (object b in GetEquivalentClasses(fixtureType, fixtureInstance))
+                    {
+                        CompareEquivalentInstances<U>((IEnumerable)a, (IEnumerable)b,
+                            isStaticMethodInvoked, refers(i, j), formatsExpectedResult, refers, compares);
+                        j++;
+                    }
+
+                    i++;
+                }
+            });
         }
 
         /// <summary>
@@ -434,65 +498,142 @@ namespace MbUnit.Framework.ContractVerifiers
         /// is based on the invocation of a static method (true) or an instance method (false)</param>
         /// <param name="expectedResult">The expected result of the comparison</param>
         /// <param name="formatsExpectedResult">Formats the expected result</param>
-        /// <param name="expectedResultForNullComparison"></param>
+        /// <param name="refers">The reference operation which provides the expected result</param>
         /// <param name="compares">The comparison operation</param>
         protected void CompareEquivalentInstances<U>(IEnumerable a, IEnumerable b, bool isStaticMethodInvoked,
-            U expectedResult, Func<U, string> formatsExpectedResult, U expectedResultForNullComparison, Func<object, object, U> compares)
+            U expectedResult, Func<U, string> formatsExpectedResult, Func<int, int, U> refers, Func<object, object, U> compares)
         {
             foreach (object x in a)
             {
-                VerifyNullReferenceComparison<U>(x, isStaticMethodInvoked, compares, expectedResultForNullComparison);
+                VerifyNullReferenceComparison<U>(x, isStaticMethodInvoked, compares, refers, formatsExpectedResult);
 
                 if (isStaticMethodInvoked)
                 {
                     foreach (object y in b)
                     {
-                        Assert.AreEqual(expectedResult, compares(x, y),
-                            "The comparison between '{0}' and '{1}' should give '{2}'.",
-                            x, y, formatsExpectedResult(expectedResult));
+                        AssertionHelper.Verify(() =>
+                        {
+                            U actualResult = compares(x, y);
+                            if (expectedResult.Equals(actualResult))
+                                return null;
+
+                            return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
+                                .SetRawLabeledValue("Left Value", x)
+                                .SetRawLabeledValue("Right Value", y)
+                                .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                                .SetLabeledValue("Actual Result", formatsExpectedResult(actualResult))
+                                .ToAssertionFailure();
+                        });
                     }
                 }
             }
         }
 
-        private void VerifyEqualityBetweenTwoNullReferences<U>(bool isStaticMethodInvoked, Func<object, object, U> compares, Func<int, int, U> refers)
+        private void VerifyEqualityBetweenTwoNullReferences<U>(bool isStaticMethodInvoked, 
+            Func<object, object, U> compares, Func<int, int, U> refers,
+            Func<U, string> formatsExpectedResult)
         {
             if (!Type.IsValueType && isStaticMethodInvoked)
             {
-                try
+                AssertionHelper.Verify(() =>
                 {
-                    Assert.AreEqual(compares(null, null), refers(0, 0), "The comparison operator should consider two null references equal.");
-                }
-                catch (TargetInvocationException)
-                {
-                    Assert.Fail("The comparison operator should consider two null references equal.");
-                }
-                catch (NullReferenceException)
-                {
-                    Assert.Fail("The comparison operator should consider two null references equal.");
-                }
+                    U actualResult;
+                    U expectedResult = refers(0, 0);
+
+                    try
+                    {
+                        actualResult = compares(null, null);
+                        if (expectedResult.Equals(actualResult))
+                            return null;
+                    }
+                    catch (TargetInvocationException exception)
+                    {
+                        return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
+                            .SetRawLabeledValue("Left Value", null)
+                            .SetRawLabeledValue("Right Value", null)
+                            .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                            .SetRawLabeledValue("Actual Result", exception.InnerException)
+                            .ToAssertionFailure();
+                    }
+                    catch (NullReferenceException exception)
+                    {
+                        return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
+                            .SetRawLabeledValue("Left Value", null)
+                            .SetRawLabeledValue("Right Value", null)
+                            .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                            .SetRawLabeledValue("Actual Result", exception)
+                            .ToAssertionFailure();
+                    }
+
+                    return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
+                        .SetRawLabeledValue("Left Value", null)
+                        .SetRawLabeledValue("Right Value", null)
+                        .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                        .SetLabeledValue("Actual Result", formatsExpectedResult(actualResult))
+                        .ToAssertionFailure();
+                });
             }
         }
 
-        private void VerifyNullReferenceComparison<U>(object x, bool isStaticMethodInvoked, 
-            Func<object, object, U> compares, U expectedResult)
+        private void VerifyNullReferenceComparison<U>(object x, bool isStaticMethodInvoked,
+            Func<object, object, U> compares, Func<int, int, U> refers, Func<U, string> formatsExpectedResult)
         {
             if (!Type.IsValueType)
             {
-                try
+                AssertionHelper.Verify(() =>
                 {
-                    Assert.AreEqual(expectedResult, compares(x, null), "Comparison operator should consider '{0}' greater than a null reference.", x);
+                    U actualResult = compares(x, null);
+                    U expectedResult = refers(0, Int32.MinValue);
+                    if (expectedResult.Equals(actualResult))
+                        return null;
 
-                    if (isStaticMethodInvoked)
-                        Assert.AreNotEqual(expectedResult, compares(null, x), "Comparison operator should consider a null reference less than '{0}'.", x);
-                }
-                catch (TargetInvocationException)
+                    return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
+                        .SetRawLabeledValue("Left Value", x)
+                        .SetRawLabeledValue("Right Value", null)
+                        .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                        .SetLabeledValue("Actual Result", formatsExpectedResult(actualResult))
+                        .ToAssertionFailure();
+                });
+
+                if (isStaticMethodInvoked)
                 {
-                    Assert.Fail("Comparison operator should compares any object greater than a null reference.", x);
-                }
-                catch (NullReferenceException)
-                {
-                    Assert.Fail("Comparison operator should compares any object greater than a null reference.", x);
+                    AssertionHelper.Verify(() =>
+                    {
+                        U actualResult;
+                        U expectedResult = refers(Int32.MinValue, 0);
+
+                        try
+                        {
+                            actualResult = compares(null, x);
+                            if (expectedResult.Equals(actualResult))
+                                return null;
+                        }
+                        catch (TargetInvocationException exception)
+                        {
+                            return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
+                                .SetRawLabeledValue("Left Value", null)
+                                .SetRawLabeledValue("Right Value", x)
+                                .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                                .SetRawLabeledValue("Actual Result", exception.InnerException)
+                                .ToAssertionFailure();
+                        }
+                        catch (NullReferenceException exception)
+                        {
+                            return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
+                                .SetRawLabeledValue("Left Value", null)
+                                .SetRawLabeledValue("Right Value", x)
+                                .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                                .SetRawLabeledValue("Actual Result", exception)
+                                .ToAssertionFailure();
+                        }
+
+                        return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
+                            .SetRawLabeledValue("Left Value", null)
+                            .SetRawLabeledValue("Right Value", x)
+                            .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                            .SetLabeledValue("Actual Result", formatsExpectedResult(actualResult))
+                            .ToAssertionFailure();
+                    });
                 }
             }
         }
