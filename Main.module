@@ -133,6 +133,7 @@
   <PropertyGroup>
     <InstallerWixProperties>
       Configuration=Release;
+      Platform=x86;
       Version=$(Version);
       TargetDir=$(ImageDir);
       ReleaseDir=$(DistDir);
