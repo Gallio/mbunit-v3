@@ -15,7 +15,7 @@
       <Folder>ReSharper\v4.1</Folder>
     </Binary>
 
-    <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v4.0\Gallio.ReSharperRunner41.Tests.dll" />
+    <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v4.1\Gallio.ReSharperRunner41.Tests.dll" />
 
     <Feature Include="FEATURE_RESHARPER_RUNNER_41" />
   </ItemGroup>
