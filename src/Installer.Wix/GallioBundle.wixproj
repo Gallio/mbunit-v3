@@ -71,6 +71,9 @@
     <Compile Include="..\Extensions\NAnt\NAnt.wxs">
       <Link>NAnt.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\CSUnit\CSUnit.wxs">
+      <Link>CSUnit.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\MbUnit2\MbUnit2.wxs">
       <Link>MbUnit2.wxs</Link>
     </Compile>

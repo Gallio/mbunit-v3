@@ -4,16 +4,16 @@
     <Fragment>
         <!-- Locate the R# InstallDir. -->
         <Property Id="RESHARPER_V40_VS8_INSTALLDIR"> 
-            <RegistrySearch Id='JetBrainsReSharperRegistry3b' Type="raw"
+            <RegistrySearch Id='JetBrainsReSharperRegistryLM.V40.VS8' Type="raw"
                 Root='HKLM' Key='Software\JetBrains\ReSharper\v4.0\vs8.0' Name='InstallDir' />
-            <RegistrySearch Id='JetBrainsReSharperRegistry3a' Type="raw"
+            <RegistrySearch Id='JetBrainsReSharperRegistryCU.V40.VS8' Type="raw"
                 Root='HKCU' Key='Software\JetBrains\ReSharper\v4.0\vs8.0' Name='InstallDir' />
         </Property>
 
         <Property Id="RESHARPER_V40_VS9_INSTALLDIR">
-            <RegistrySearch Id="JetBrainsReSharperRegistry4a" Type="raw"
+            <RegistrySearch Id="JetBrainsReSharperRegistryLM.V40.VS9" Type="raw"
                 Root='HKLM' Key="Software\JetBrains\ReSharper\v4.0\vs9.0" Name="InstallDir" />
-            <RegistrySearch Id="JetBrainsReSharperRegistry4b" Type="raw"
+            <RegistrySearch Id="JetBrainsReSharperRegistryCU.V40.VS9" Type="raw"
                 Root='HKCU' Key="Software\JetBrains\ReSharper\v4.0\vs9.0" Name="InstallDir" />
         </Property>
 
