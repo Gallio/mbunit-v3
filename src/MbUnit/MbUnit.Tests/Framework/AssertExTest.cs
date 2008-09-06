@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
@@ -24,8 +25,45 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(AssertEx))]
     public class AssertExTest
     {
-        [Test, Pending]
-        public void Test()
+        [Test, ExpectedArgumentNullException]
+        public void That_ThrowsIfConditionIsNull()
+        {
+            AssertEx.That(null);
+        }
+
+        [Test]
+        public void That_Success()
+        {
+            AssertionFailure[] failures = AssertTest.Capture(
+                () => AssertEx.That(() => true,
+                    "Hello {0}.", "World"));
+
+            Assert.AreEqual(0, failures.Length);
+        }
+
+
+        [Test]
+        public void That_Failure()
+        {
+            int x = 4;
+            AssertionFailure[] failures = AssertTest.Capture(
+                () => AssertEx.That(() => x == 5,
+                    "Hello {0}.", "World"));
+
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected the condition to evaluate to true.", failures[0].Description);
+            Assert.AreEqual("Hello World.", failures[0].Message);
+            Assert.AreEqual(new[] 
+                {
+                    new AssertionFailure.LabeledValue("Condition", "x == 5"),
+                    new AssertionFailure.LabeledValue("x", "4")
+                }, failures[0].LabeledValues);
+
+            Assert.AreEqual(0, failures[0].InnerFailures.Count);
+        }
+
+        [Test, Explicit("Examples for manual inspection.")]
+        public void Examples()
         {
             Assert.Multiple(() =>
             {

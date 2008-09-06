@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Gallio.Framework.Text;
 using Gallio.Model.Logging;
 
 namespace Gallio.Framework.Text
@@ -48,13 +47,16 @@ namespace Gallio.Framework.Text
     /// result with a reduced time bound for large data sets.  Since the Eclipse implementation
     /// of the LCS follows Myers' algorithm pretty closely, it was also very useful as a point
     /// of comparison for finding bugs.</item>
-    /// <item>Neil Fraser's "Diff Match and Patch" algorithm (http://code.google.com/p/google-diff-match-patch/)</item>
+    /// <item>Neil Fraser's "Diff Match and Patch" algorithm (http://code.google.com/p/google-diff-match-patch/).
+    /// We borrow some ideas about semantic cleanup from here.</item>
     /// </list>
     /// </para>
     /// </remarks>
     [Serializable]
     public sealed class DiffSet : ITestLogStreamWritable
     {
+        private const int SmallChangeThreshold = 5;
+
         private readonly IList<Diff> diffs;
         private readonly string leftDocument;
         private readonly string rightDocument;
@@ -194,11 +196,17 @@ namespace Gallio.Framework.Text
         /// presentation style and no limits on the context length.
         /// </para>
         /// <para>
-        /// For the purposes of determining additions and deletions, the left document
-        /// is considered the original and the right document is the considered to be the
-        /// one that was modified.  Changes are annotated by markers:
-        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
+        /// Changes are annotated by markers: <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
         /// and <see cref="Marker.DiffChange" />.
+        /// </para>
+        /// <para>
+        /// If the style is <see cref="DiffStyle.Interleaved" /> then the left document
+        /// is considered the original and the right document is the considered to be the
+        /// one that was modified so deletions appear within the left and additions within the right.
+        /// </para>
+        /// <para>
+        /// If the style is <see cref="DiffStyle.LeftOnly" /> or <see cref="DiffStyle.RightOnly" />
+        /// then only the deletion and changed markers are used.
         /// </para>
         /// </summary>
         /// <param name="writer">The test log stream writer to receive the highlighted document</param>
@@ -215,11 +223,17 @@ namespace Gallio.Framework.Text
         /// presentation style and max context length.
         /// </para>
         /// <para>
-        /// For the purposes of determining additions and deletions, the left document
-        /// is considered the original and the right document is the considered to be the
-        /// one that was modified.  Changes are annotated by markers:
-        /// by <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
+        /// Changes are annotated by markers: <see cref="Marker.DiffAddition" />, <see cref="Marker.DiffDeletion" />
         /// and <see cref="Marker.DiffChange" />.
+        /// </para>
+        /// <para>
+        /// If the style is <see cref="DiffStyle.Interleaved" /> then the left document
+        /// is considered the original and the right document is the considered to be the
+        /// one that was modified so deletions appear within the left and additions within the right.
+        /// </para>
+        /// <para>
+        /// If the style is <see cref="DiffStyle.LeftOnly" /> or <see cref="DiffStyle.RightOnly" />
+        /// then only the deletion and changed markers are used.
         /// </para>
         /// </summary>
         /// <param name="writer">The test log stream writer to receive the highlighted document</param>
@@ -271,13 +285,74 @@ namespace Gallio.Framework.Text
                                 break;
 
                             case DiffStyle.RightOnly:
-                                using (writer.BeginMarker(diff.LeftRange.Length == 0 ? Marker.DiffAddition : Marker.DiffChange))
+                                using (writer.BeginMarker(diff.LeftRange.Length == 0 ? Marker.DiffDeletion : Marker.DiffChange))
                                     writer.Write(diff.RightRange.SubstringOf(rightDocument));
                                 break;
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Simplifies the diff for presentation.
+        /// </para>
+        /// <para>
+        /// This method applies a series of heuristics to make the diff easier to read
+        /// but perhaps less optimal, including the following:
+        /// <list type="bullet">
+        /// <item>Adjacent diffs of the same kind are combined.</item>
+        /// <item>Small unchanged regions sandwiched between larger changed regions are
+        /// converted to larger changed regions.  This improves the case when only
+        /// a few scattered characters coincidentally match between the two documents.</item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        /// <returns>Returns a simplified diff</returns>
+        public DiffSet Simplify()
+        {
+            if (diffs.Count <= 1)
+                return this;
+
+            List<Diff> simplifiedDiffs = new List<Diff>(diffs);
+            CanonicalizeDiffs(simplifiedDiffs);
+
+            for (int i = 1; i < simplifiedDiffs.Count - 1; i++)
+            {
+                Diff middleDiff = simplifiedDiffs[i];
+                if (middleDiff.Kind == DiffKind.NoChange)
+                {
+                    int middleLength = middleDiff.EffectiveLength;
+                    if (middleLength > SmallChangeThreshold)
+                        continue;
+
+                    // Note: Because the diffs have been canonicalized, we know that the adjacent
+                    //       diffs must be Changes.
+                    Diff leftDiff = simplifiedDiffs[i - 1];
+                    Diff rightDiff = simplifiedDiffs[i + 1];
+
+                    if (middleLength <= leftDiff.EffectiveLength && middleLength <= rightDiff.EffectiveLength)
+                    {
+                        Diff simplifiedDiff = new Diff(DiffKind.Change,
+                            Range.Between(leftDiff.LeftRange.StartIndex, rightDiff.LeftRange.EndIndex),
+                            Range.Between(leftDiff.RightRange.StartIndex, rightDiff.RightRange.EndIndex));
+
+                        simplifiedDiffs[i - 1] = simplifiedDiff;
+                        simplifiedDiffs.RemoveRange(i, 2);
+
+                        // Go back to the previous unchanged region, if there is one, and re-evaluate
+                        // whether it should be merged given that we just increased the length of its
+                        // successor.  Otherwise we simply continue on to the next unchanged region.
+                        if (i > 2)
+                            i -= 3;
+                        else
+                            i -= 1;
+                    }
+                }
+            }
+
+            return new DiffSet(simplifiedDiffs, leftDocument, rightDocument);
         }
 
         private static void WriteContext(TestLogStreamWriter writer, Substring context, int maxContextLength)

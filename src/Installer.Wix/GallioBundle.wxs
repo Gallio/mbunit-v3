@@ -92,6 +92,7 @@
         </FeatureRef>
 
         <Feature Id='feat_Plugins' Title='Plugins' Level="1">
+            <FeatureRef Id='feat_CSUnitAdapter'/>
             <FeatureRef Id='feat_MbUnit2Adapter'/>
 <?ifdef FEATURE_MSTEST_ADAPTER ?>
             <FeatureRef Id='feat_MSTestAdapter'/>
@@ -111,6 +112,9 @@
 <?endif?>
 <?ifdef FEATURE_RESHARPER_RUNNER_40 ?>
             <FeatureRef Id='feat_Gallio.ReSharper.V40'/>
+<?endif?>
+<?ifdef FEATURE_RESHARPER_RUNNER_41 ?>
+            <FeatureRef Id='feat_Gallio.ReSharper.V41'/>
 <?endif?>
             <FeatureRef Id='feat_Gallio.TDNet'/>
 <?ifdef FEATURE_MSTEST_RUNNER ?>

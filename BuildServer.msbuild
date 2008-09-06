@@ -1,12 +1,18 @@
 <Project DefaultTargets="Release" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <Version>$(CCNetLabel)</Version>
     <ShowReports>false</ShowReports>
     <ReportTypes>XML-Inline</ReportTypes>
-    <!--
     <Coverage>true</Coverage>
-    -->
+
+    <Version>$(CCNetLabel)</Version>
+    <SourceDir>$(MSBuildProjectDirectory)</SourceDir>
+    <StartDir>$(SourceDir)</StartDir>
+    <MetaBuildBinDir>$(SourceDir)\tools\MetaBuild\bin</MetaBuildBinDir>
+    <MetaBuildConfigFile>$(SourceDir)\bin\MetaBuild.config.custom</MetaBuildConfigFile>
   </PropertyGroup>
 
-  <Import Project="Build.msbuild" />
+  <Target Name="Release"
+          DependsOnTargets="Clean;Build;Image;Test;Dist" />
+
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.msbuild" />
 </Project>

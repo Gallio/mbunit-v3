@@ -41,12 +41,33 @@ namespace Gallio.Framework.Data
         }
 
         /// <summary>
+        /// Creates an exception with an associated data binding.
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="binding">The associated data binding, or null if none</param>
+        public DataBindingException(string message, DataBinding binding)
+            : base(FormatMessageWithBinding(message, binding))
+        {
+        }
+
+        /// <summary>
         /// Creates an exception.
         /// </summary>
         /// <param name="message">The message</param>
         /// <param name="innerException">The inner exception</param>
         public DataBindingException(string message, Exception innerException)
             : base(message, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Creates an exception with an associated data binding.
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="binding">The associated data binding, or null if none</param>
+        /// <param name="innerException">The inner exception</param>
+        public DataBindingException(string message, DataBinding binding, Exception innerException)
+            : base(FormatMessageWithBinding(message, binding), innerException)
         {
         }
 
@@ -58,6 +79,11 @@ namespace Gallio.Framework.Data
         protected DataBindingException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+        }
+
+        private static string FormatMessageWithBinding(string message, DataBinding binding)
+        {
+            return binding != null ? message + "\nAttempted binding: " + binding : message;
         }
     }
 }

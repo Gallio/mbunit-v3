@@ -15,9 +15,6 @@
 
 using System;
 using System.Threading;
-using Gallio;
-using Gallio.Framework;
-using Gallio.Framework.Assertions;
 using Gallio.Model.Diagnostics;
 
 namespace Gallio.Framework.Assertions
@@ -97,10 +94,15 @@ namespace Gallio.Framework.Assertions
         /// is reified as an assertion failure.
         /// </para>
         /// <para>
-        /// This method is useful for composing assertions.
+        /// The assertion failure behavior while the action runs is <see cref="AssertionFailureBehavior.Throw" />
+        /// so the action terminates on the first failure.  The assertion failure itself is returned
+        /// but it is not logged.
         /// </para>
         /// <para>
-        /// The assertion failure behavior while the action runs is <see cref="AssertionFailureBehavior.LogAndThrow" />.
+        /// This method is very useful for composing assertions because it enables assertions to be
+        /// evaluated, and, when they fail, the failure can be recorded as an inner assertion failure
+        /// of some larger composite assertion.  For example, this makes it possible to create an assertion
+        /// over a collection of items by composing an assertion over a single item.
         /// </para>
         /// </summary>
         /// <param name="action">The action to invoke</param>
@@ -108,7 +110,7 @@ namespace Gallio.Framework.Assertions
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
         public static AssertionFailure[] Eval(Action action)
         {
-            return Eval(action, AssertionFailureBehavior.LogAndThrow);
+            return Eval(action, AssertionFailureBehavior.Throw);
         }
 
         /// <summary>
@@ -116,9 +118,6 @@ namespace Gallio.Framework.Assertions
         /// Performs an action and returns an array containing the assertion failures
         /// that were observed within the block.  If the block throws an exception, it
         /// is reified as an assertion failure.
-        /// </para>
-        /// <para>
-        /// This method is useful for composing assertions.
         /// </para>
         /// </summary>
         /// <param name="action">The action to invoke</param>
@@ -131,22 +130,6 @@ namespace Gallio.Framework.Assertions
                 throw new ArgumentNullException("action");
 
             return AssertionContext.CurrentContext.CaptureFailures(action, assertionFailureBehavior, true);
-        }
-
-        /// <summary>
-        /// Append user's message to assert one.
-        /// </summary>
-        /// <param name="assertMessage">Assert message</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        /// <returns>Assert message with custom message</returns>
-        internal static string AppendCustomMessage(string assertMessage, string messageFormat, params object[] messageArgs)
-        {
-            if (String.IsNullOrEmpty(messageFormat))
-                return assertMessage;
-            return messageArgs != null 
-                ? String.Format("{0}\n{1}", assertMessage, String.Format(messageFormat, messageArgs)) 
-                : String.Format("{0}\n{1}", assertMessage, messageFormat);
         }
     }
 }

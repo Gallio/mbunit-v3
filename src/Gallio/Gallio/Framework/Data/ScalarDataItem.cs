@@ -43,12 +43,18 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
+        public override IEnumerable<DataBinding> GetBindingsForInformalDescription()
+        {
+            yield return new DataBinding(0, null);
+        }
+
+        /// <inheritdoc />
         protected override object GetValueImpl(DataBinding binding)
         {
             if (binding.Index.GetValueOrDefault(-1) == 0)
                 return value;
 
-            throw new DataBindingException("Binding index not available or out of range.");
+            throw new DataBindingException("Binding index not available or out of range.", binding);
         }
     }
 }

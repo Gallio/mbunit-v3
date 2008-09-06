@@ -58,5 +58,11 @@ namespace MbUnit.Samples
         {
             throw new SilentTestException(new TestOutcome(status, category));
         }
+
+        [Test]
+        public void AssertionFailure()
+        {
+            Assert.Fail("Failed!");
+        }
     }
 }

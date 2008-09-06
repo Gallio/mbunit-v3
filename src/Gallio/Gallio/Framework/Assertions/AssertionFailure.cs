@@ -55,18 +55,20 @@ namespace Gallio.Framework.Assertions
         private readonly string stackTrace;
         private readonly IList<LabeledValue> labeledValues;
         private readonly IList<ExceptionData> exceptions;
+        private readonly IList<AssertionFailure> innerFailures;
 
         /// <summary>
         /// Creates an assertion failure object.
         /// </summary>
         protected internal AssertionFailure(string description, string message, string stackTrace,
-            IList<LabeledValue> labeledValues, IList<ExceptionData> exceptions)
+            IList<LabeledValue> labeledValues, IList<ExceptionData> exceptions, IList<AssertionFailure> innerFailures)
         {
             this.description = description;
             this.message = message;
             this.stackTrace = stackTrace;
             this.labeledValues = labeledValues;
             this.exceptions = exceptions;
+            this.innerFailures = innerFailures;
         }
 
         /// <summary>
@@ -111,6 +113,15 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
+        /// Gets the nested assertion failures that contributed to the composite assertion
+        /// failure described by this instance.
+        /// </summary>
+        public IList<AssertionFailure> InnerFailures
+        {
+            get { return new ReadOnlyCollection<AssertionFailure>(innerFailures); }
+        }
+
+        /// <summary>
         /// Writes the assertion failure to a test log stream.
         /// </summary>
         /// <param name="writer">The test log stream</param>
@@ -125,6 +136,9 @@ namespace Gallio.Framework.Assertions
                 using (writer.BeginSection(description))
                 {
                     WriteDetails(writer);
+
+                    foreach (AssertionFailure innerFailure in innerFailures)
+                        innerFailure.WriteTo(writer);
                 }
             }
         }

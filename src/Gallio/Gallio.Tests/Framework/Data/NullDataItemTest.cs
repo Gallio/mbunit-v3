@@ -37,5 +37,13 @@ namespace Gallio.Tests.Framework.Data
         {
             Assert.AreEqual(null, NullDataItem.Instance.GetValue(new DataBinding(0, null)));
         }
+
+        [Test]
+        public void CanGetDescriptiveDataBindingsFromItem()
+        {
+            Assert.AreElementsEqual(new DataBinding[]
+            {
+            }, NullDataItem.Instance.GetBindingsForInformalDescription());
+        }
     }
 }

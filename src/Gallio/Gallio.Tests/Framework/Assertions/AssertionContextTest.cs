@@ -153,7 +153,7 @@ namespace Gallio.Tests.Framework.Assertions
             }
         }
 
-        public class WhenAssertionFailureBehaviorIsDefer
+        public class WhenAssertionFailureBehaviorIsCaptureAndContinue
         {
             [Test]
             public void TheAssertionIsNotLoggedButIsCapturedAndExecutionContinues()
@@ -167,7 +167,7 @@ namespace Gallio.Tests.Framework.Assertions
                     AssertionContext.CurrentContext.SubmitFailure(failure1);
                     AssertionContext.CurrentContext.SubmitFailure(failure2);
                     completed = true;
-                }, AssertionFailureBehavior.Defer, false);
+                }, AssertionFailureBehavior.CaptureAndContinue, false);
 
                 OldArrayAssert.AreEqual(new[] { failure1, failure2 }, failures);
                 Assert.IsFalse(failure1.WasWriteToCalled);
@@ -176,7 +176,7 @@ namespace Gallio.Tests.Framework.Assertions
             }
         }
 
-        public class WhenAssertionFailureBehaviorIsIgnore
+        public class WhenAssertionFailureBehaviorIsDiscard
         {
             [Test]
             public void NothingHappens()
@@ -190,7 +190,7 @@ namespace Gallio.Tests.Framework.Assertions
                     AssertionContext.CurrentContext.SubmitFailure(failure1);
                     AssertionContext.CurrentContext.SubmitFailure(failure2);
                     completed = true;
-                }, AssertionFailureBehavior.Ignore, false);
+                }, AssertionFailureBehavior.Discard, false);
 
                 Assert.IsEmpty(failures);
                 Assert.IsFalse(failure1.WasWriteToCalled);
@@ -205,7 +205,7 @@ namespace Gallio.Tests.Framework.Assertions
 
             public StubAssertionFailure() :
                 base("Description", "Message", "Stack", EmptyArray<LabeledValue>.Instance,
-                EmptyArray<ExceptionData>.Instance)
+                EmptyArray<ExceptionData>.Instance, EmptyArray<AssertionFailure>.Instance)
             {
             }
 

@@ -16,15 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using Gallio.Collections;
-using Gallio.Framework.Assertions;
 using Gallio.Framework.Formatting;
 using Gallio.Linq;
 using Gallio.Model.Diagnostics;
 
-namespace MbUnit.Framework
+namespace Gallio.Framework.Assertions
 {
     /// <summary>
     /// Evaluates a conditional expression.  If the condition evaluates differently

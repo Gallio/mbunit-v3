@@ -86,5 +86,17 @@ namespace Gallio.Tests.Framework.Data
         {
             new DataRow("abc").GetValue(null);
         }
+
+        [Test]
+        public void CanGetDescriptiveDataBindingsFromItem()
+        {
+            DataRow item = new DataRow("abc", "def");
+
+            Assert.AreElementsEqual(new[]
+            {
+                new DataBinding(0, null),
+                new DataBinding(1, null),
+            }, item.GetBindingsForInformalDescription());
+        }
     }
 }

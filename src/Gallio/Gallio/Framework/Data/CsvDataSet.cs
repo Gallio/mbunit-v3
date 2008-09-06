@@ -202,13 +202,19 @@ namespace Gallio.Framework.Data
                 this.header = header;
             }
 
+            public override IEnumerable<DataBinding> GetBindingsForInformalDescription()
+            {
+                for (int i = 0; i < record.Length; i++)
+                    yield return new DataBinding(i, header != null && i < header.Length ? header[i] : null);
+            }
+
             protected override object GetValueImpl(DataBinding binding)
             {
                 int index = GetIndex(binding);
                 if (index >= 0 && index < record.Length)
                     return record[index];
 
-                throw new DataBindingException("Binding path or index could not be mapped to a CSV column.");
+                throw new DataBindingException("Binding path or index could not be mapped to a CSV column.", binding);
             }
 
             private int GetIndex(DataBinding binding)

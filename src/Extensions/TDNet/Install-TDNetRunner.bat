@@ -5,9 +5,9 @@ setlocal
 set LOCALDIR=%~dp0
 set SRCDIR=%LOCALDIR%..\..\
 set ROOTDIR=%SRCDIR%..\
-set LIBSDIR=%ROOTDIR%libs\
+set BINDIR=%ROOTDIR%bin\
 
-set REG=%LIBSDIR%Tools\reg.exe
+set REG=%BINDIR%reg.exe
 set ICARUS_EXE=%SRCDIR%\Extensions\Icarus\bin\Gallio.Icarus.exe
 
 set TDNETRUNNER_DLL=%LOCALDIR%\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll

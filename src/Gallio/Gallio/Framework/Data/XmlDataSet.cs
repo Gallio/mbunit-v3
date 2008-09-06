@@ -118,10 +118,16 @@ namespace Gallio.Framework.Data
                 this.navigator = navigator;
             }
 
+            /// <inheritdoc />
+            public override IEnumerable<DataBinding> GetBindingsForInformalDescription()
+            {
+                yield return new DataBinding(null, ".");
+            }
+
             protected override object GetValueImpl(DataBinding binding)
             {
                 if (binding.Path == null)
-                    throw new DataBindingException("A valid XPath expression is required as the binding path.");
+                    throw new DataBindingException("A valid XPath expression is required as the binding path.", binding);
 
                 try
                 {
@@ -129,7 +135,7 @@ namespace Gallio.Framework.Data
                 }
                 catch (XPathException ex)
                 {
-                    throw new DataBindingException("A valid XPath expression is required as the binding path.", ex);
+                    throw new DataBindingException("A valid XPath expression is required as the binding path.", binding, ex);
                 }
             }
         }

@@ -20,7 +20,7 @@
         <DirectoryRef Id="TARGETDIR">
             <Directory Id="RESHARPER_V31_VS8_INSTALLDIR" Name="ReSharper_V31_VS80">
                 <Directory Id="JetBrains.ReSharper.V31.VS8.PluginsDir" Name="Plugins">
-                    <Directory Id="JetBrains.Resharper.VS31.VS8.GallioDir" Name="Gallio">
+                    <Directory Id="JetBrains.Resharper.V31.VS8.GallioDir" Name="Gallio">
                         <Component Id="Gallio.Loader.V31.VS8.dll" Guid="{4E2A87C0-2AE7-47d6-A4B1-105677B5376F}">
                             <File Id="Gallio.Loader.V31.VS8.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
                         </Component>
@@ -36,7 +36,7 @@
             
             <Directory Id="RESHARPER_V31_VS9_INSTALLDIR" Name="ReSharper_V31_VS90">
                 <Directory Id="JetBrains.ReSharper.V31.VS9.PluginsDir" Name="Plugins">
-                    <Directory Id="JetBrains.Resharper.VS31.VS9.GallioDir" Name="Gallio">
+                    <Directory Id="JetBrains.Resharper.V31.VS9.GallioDir" Name="Gallio">
                         <Component Id="Gallio.Loader.V31.VS9.dll" Guid="{6F303004-6F9A-44b1-AA8B-B1A03DB4E3CC}">
                             <File Id="Gallio.Loader.V31.VS9.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
                         </Component>

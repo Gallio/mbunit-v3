@@ -201,7 +201,7 @@ namespace Gallio.Framework.Data
             return null;
         }
 
-        private sealed class JoinedDataItem : IDataItem
+        private sealed class JoinedDataItem : BaseDataItem
         {
             private readonly JoinedDataSet owner;
             private readonly IList<IDataItem> items;
@@ -212,27 +212,34 @@ namespace Gallio.Framework.Data
                 this.items = items;
             }
 
-            public bool IsDynamic
+            public override bool IsDynamic
             {
                 get { return GenericUtils.Find(items, delegate(IDataItem item) { return item.IsDynamic; }) != null; }
             }
 
-            public void PopulateMetadata(MetadataMap map)
+            public override IEnumerable<DataBinding> GetBindingsForInformalDescription()
+            {
+                for (int i = 0; i < items.Count; i++)
+                {
+                    IDataSet dataSet = owner.DataSets[i];
+                    foreach (DataBinding dataBinding in items[i].GetBindingsForInformalDescription())
+                        yield return owner.TranslateBinding(dataSet, dataBinding);
+                }
+            }
+
+            protected override object GetValueImpl(DataBinding binding)
+            {
+                ResolvedBinding resolvedBinding = owner.ResolveBinding(binding);
+                if (resolvedBinding == null)
+                    throw new DataBindingException("Could not determine the underlying data set that supports the binding.", binding);
+
+                return items[resolvedBinding.DataSetInfo.DataSetIndex].GetValue(resolvedBinding.Inner);
+            }
+
+            protected override void PopulateMetadataImpl(MetadataMap map)
             {
                 foreach (IDataItem item in items)
                     item.PopulateMetadata(map);
-            }
-
-            public object GetValue(DataBinding binding)
-            {
-                if (binding == null)
-                    throw new ArgumentNullException("binding");
-
-                ResolvedBinding resolvedBinding = owner.ResolveBinding(binding);
-                if (resolvedBinding == null)
-                    throw new DataBindingException("Could not determine the underlying data set that supports the binding.");
-
-                return items[resolvedBinding.DataSetInfo.DataSetIndex].GetValue(resolvedBinding.Inner);
             }
         }
 

@@ -102,5 +102,10 @@ namespace Gallio.Framework.Text
         {
             return String.Format(@"{0}: {1}, {2}", kind, leftRange, rightRange);
         }
+
+        internal int EffectiveLength
+        {
+            get { return Math.Max(leftRange.Length, rightRange.Length); }
+        }
     }
 }

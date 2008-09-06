@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Model;
 
 namespace Gallio.Framework.Data
@@ -43,6 +44,9 @@ namespace Gallio.Framework.Data
 
             return GetValueImpl(binding);
         }
+
+        /// <inheritdoc />
+        public abstract IEnumerable<DataBinding> GetBindingsForInformalDescription();
 
         /// <summary>
         /// Implements <see cref="GetValue" />.

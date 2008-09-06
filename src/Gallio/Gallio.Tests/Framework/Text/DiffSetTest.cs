@@ -198,7 +198,7 @@ namespace Gallio.Tests.Framework.Text
                 Contents = {
                     new MarkerTag(Marker.DiffChange) { Contents = { new TextTag("b") } },
                     new TextTag("ce"),
-                    new MarkerTag(Marker.DiffAddition) { Contents = { new TextTag("f") } }
+                    new MarkerTag(Marker.DiffDeletion) { Contents = { new TextTag("f") } }
                 }
             }), writer.ToStructuredText());
         }
@@ -404,6 +404,33 @@ namespace Gallio.Tests.Framework.Text
             }
         }
 
+        public class WhenDiffSetIsBeingPresentedToHumans
+        {
+            // Some examples courtesy of Neil Fraser
+            [Test]
+            [Row("I am the very model of a modern major general.", "`Twas brillig, and the slithy toves did gyre and gimble in the wabe.", 2)]
+            [Row("It was a dark and stormy night.", "The black can in the cupboard.", 2)]
+            //[Row("Slow fool", "Quick fire", 1)]
+            //[Row("Hovering", "My government", 1)]
+            [Row("The black kettle and the teacup.", "The salt and the pepper.", 5)]
+            [Row("Whistling windows.", "Wrestling wrestlers.", 5)]
+            public void Simplify(string leftDocument, string rightDocument, int expectedNumberOfDiffs)
+            {
+                DiffSet originalDiffSet = DiffSet.GetDiffSet(leftDocument, rightDocument);
+                DiffSet simplifiedDiffSet = originalDiffSet.Simplify();
+
+                using (TestLog.BeginSection("Original DiffSet"))
+                    originalDiffSet.WriteTo(TestLog.Default);
+                using (TestLog.BeginSection("Simplified DiffSet"))
+                    simplifiedDiffSet.WriteTo(TestLog.Default);
+
+                VerifyDiffSetIsValid(simplifiedDiffSet);
+                Assert.LessThanOrEqual(simplifiedDiffSet.Diffs.Count, originalDiffSet.Diffs.Count);
+
+                Assert.AreEqual(expectedNumberOfDiffs, simplifiedDiffSet.Diffs.Count);
+            }
+        }
+
         public class RegressionTests
         {
             [Test, Repeat(10)]
@@ -412,10 +439,10 @@ namespace Gallio.Tests.Framework.Text
                 Random random = new Random();
                 StringBuilder a = new StringBuilder();
                 for (int i = random.Next(100); i > 0; i--)
-                    a.Append((char)(random.Next(26) + 'a'));
+                    a.Append((char)(random.Next(6) + 'a'));
                 StringBuilder b = new StringBuilder();
                 for (int i = random.Next(100); i > 0; i--)
-                    b.Append((char)(random.Next(26) + 'a'));
+                    b.Append((char)(random.Next(6) + 'a'));
 
                 Check(a.ToString(), b.ToString());
             }
@@ -451,12 +478,20 @@ namespace Gallio.Tests.Framework.Text
             TestLog.WriteLine("A: " + a);
             TestLog.WriteLine("B: " + b);
 
+            // Standard diff.
             DiffSet diffSet = DiffSet.GetDiffSet(a, b);
-
             TestLog.Write("Diff: ");
             TestLog.WriteLine(diffSet);
 
             VerifyDiffSetIsValid(diffSet);
+
+            // Also check simplified form.
+            DiffSet simplifiedDiffSet = diffSet.Simplify();
+            TestLog.Write("Simplified Diff: ");
+            TestLog.WriteLine(simplifiedDiffSet);
+
+            VerifyDiffSetIsValid(simplifiedDiffSet);
+            Assert.LessThanOrEqual(simplifiedDiffSet.Diffs.Count, diffSet.Diffs.Count);
         }
 
         internal static void VerifyDiffSetIsValid(DiffSet diffSet)

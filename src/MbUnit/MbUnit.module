@@ -1,8 +1,8 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(RootDir)\Module.targets" />
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
-    <NestedModule Include="*\*.module" />
+    <Module Include="*\*.module" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <File Include="MbUnit Website.url" />
+    <Content Include="MbUnit Website.url" />
     
     <Binary Include="MbUnit\bin\MbUnit.dll" />
     <Binary Include="MbUnit\bin\MbUnit.pdb" />

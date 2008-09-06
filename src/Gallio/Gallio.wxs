@@ -100,8 +100,8 @@
         <DirectoryRef Id="extraFolder">
             <Directory Id='H2RegDir' Name='H2Reg'>
                 <Component Id="H2Reg.exe" Guid="779c47b3-56ba-4efc-ab52-3b809c2f2c3b">
-                    <File Id="H2Reg.exe" Source="$(sys.SOURCEFILEDIR)..\..\libs\H2Reg\H2Reg.exe" KeyPath="yes" />
-                    <File Id="H2Reg.ini" Source="$(sys.SOURCEFILEDIR)..\..\libs\H2Reg\H2Reg.ini" />
+                    <File Id="H2Reg.exe" Source="$(sys.SOURCEFILEDIR)..\..\tools\H2Reg\H2Reg.exe" KeyPath="yes" />
+                    <File Id="H2Reg.ini" Source="$(sys.SOURCEFILEDIR)..\..\tools\H2Reg\H2Reg.ini" />
                     <RemoveFile Id="H2Reg_Log.txt" Name="H2Reg_Log.txt" On="uninstall" />
                 </Component>
             </Directory>

@@ -1,5 +1,5 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(RootDir)\Module.targets" />
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   
   <ItemGroup>
     <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.csproj" />
@@ -35,7 +35,7 @@
     <Binary Include="libs\v1.5.8\NCoverFAQ.html">
         <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.dll">
+    <Binary Include="Gallio.NCoverIntegration\bin\v1.5.8\Gallio.NCoverIntegration.dll">
         <Folder>NCover\v1.5.8</Folder>
     </Binary>
     <Binary Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.plugin">
@@ -44,6 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TestAssembly Include="Gallio.NCoverIntegration.Tests\bin\Gallio.NCoverIntegration.Tests.dll" />
+    <TestAssembly Include="Gallio.NCoverIntegration.Tests\bin\v1.5.8\Gallio.NCoverIntegration.Tests.dll" />
   </ItemGroup>
 </Project>

@@ -54,9 +54,10 @@ namespace Gallio.Tests.Framework.Assertions
                 .SetRawLabeledValue("x", 42)
                 .AddException(new Exception("Boom"))
                 .AddException(new Exception("Kaput"))
+                .AddInnerFailure(new AssertionFailureBuilder("Inner").SetStackTrace(null).ToAssertionFailure())
                 .ToAssertionFailure();
 
-            Assert.AreEqual("Description\nMessage goes here\n\nExpected Value : \"Expected value\"\nActual Value   : \"Actual value\"\nVery Long Label That Will Not Be Padded : \"\"\nx              : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\n", failure.ToString());
+            Assert.AreEqual("Description\nMessage goes here\n\nExpected Value : \"Expected value\"\nActual Value   : \"Actual value\"\nVery Long Label That Will Not Be Padded : \"\"\nx              : 42\n\nSystem.Exception: Boom\n\nSystem.Exception: Kaput\n\nStack goes here\nInner\n", failure.ToString());
         }
 
         [Test]
@@ -85,13 +86,14 @@ namespace Gallio.Tests.Framework.Assertions
                 .SetRawLabeledValue("x", 42)
                 .AddException(new Exception("Boom"))
                 .AddException(new Exception("Kaput"))
+                .AddInnerFailure(new AssertionFailureBuilder("Inner").SetStackTrace(null).ToAssertionFailure())
                 .ToAssertionFailure();
             TestLog.Write(failure);
 
             StringTestLogWriter writer = new StringTestLogWriter(true);
             failure.WriteTo(writer.Failures);
 
-            Assert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\nMessage goes here\n\n[Marker \'Monospace\'][Marker \'Label\']Expected Value : [End]\"Expected value\"\n[Marker \'Label\']Actual Value   : [End]\"Actual value\"\n[Marker \'Label\']Very Long Label That Will Not Be Padded : [End]\"\"\n[Marker \'Label\']x              : [End]42\n[End]\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Boom[End][End]\n\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Kaput[End][End]\n\n[Marker \'StackTrace\']Stack goes here\n[End][End]\n[End]", writer.ToString());
+            Assert.AreEqual("[Marker \'AssertionFailure\'][Section \'Description\']\nMessage goes here\n\n[Marker \'Monospace\'][Marker \'Label\']Expected Value : [End]\"Expected value\"\n[Marker \'Label\']Actual Value   : [End]\"Actual value\"\n[Marker \'Label\']Very Long Label That Will Not Be Padded : [End]\"\"\n[Marker \'Label\']x              : [End]42\n[End]\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Boom[End][End]\n\n[Marker \'Exception\'][Marker \'ExceptionType\']System.Exception[End]: [Marker \'ExceptionMessage\']Kaput[End][End]\n\n[Marker \'StackTrace\']Stack goes here\n[End][Marker \'AssertionFailure\'][Section \'Inner\']\n[End]\n[End][End]\n[End]", writer.ToString());
         }
 
         [Test]

@@ -1,0 +1,31 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ReSharper41VS80InstallDir>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.1\vs8.0\@InstallDir)</ReSharper41VS80InstallDir>
+    <ReSharper41VS90InstallDir>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\JetBrains\ReSharper\v4.1\vs9.0\@InstallDir)</ReSharper41VS90InstallDir>
+
+    <ReSharper41Path Condition="'$(ReSharper41Path)'=='' and '$(ReSharper41VS90InstallDir)'!='' and Exists('$(ReSharper41VS90InstallDir)\JetBrains.Platform.ReSharper.Shell.dll')">$(ReSharper41VS90InstallDir)</ReSharper41Path>
+    <ReSharper41Path Condition="'$(ReSharper41Path)'=='' and '$(ReSharper41VS80InstallDir)'!='' and Exists('$(ReSharper41VS80InstallDir)\JetBrains.Platform.ReSharper.Shell.dll')">$(ReSharper41VS80InstallDir)</ReSharper41Path>
+
+    <ReSharper41Installed>false</ReSharper41Installed>
+    <ReSharper41Installed Condition="'$(ReSharper41Path)'!=''">true</ReSharper41Installed>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="$(ReSharper41Installed)">
+      <PropertyGroup>
+        <AssemblySearchPaths>$(ReSharper41Path);$(AssemblySearchPaths)</AssemblySearchPaths>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <BuildDependsOn>MissingReSharper</BuildDependsOn>
+        <RebuildDependsOn>MissingReSharper</RebuildDependsOn>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Target Name="MissingReSharper">
+    <Warning Text="Skipped build for configuration.  ReSharper v4.1 is not installed or could not be located." />
+  </Target>
+</Project>
+

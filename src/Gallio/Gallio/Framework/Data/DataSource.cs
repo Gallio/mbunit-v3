@@ -114,7 +114,25 @@ namespace Gallio.Framework.Data
             return binding;
         }
 
-        private sealed class TranslatedDataItem : IDataItem
+        private DataBinding ReverseTranslateBinding(DataBinding binding)
+        {
+            string alias = FindAliasForIndex(binding.Index);
+            return alias != null ? new DataBinding(binding.Index, alias) : binding;
+        }
+
+        private string FindAliasForIndex(int? index)
+        {
+            if (index.HasValue)
+            {
+                foreach (KeyValuePair<string, int?> indexAlias in indexAliases)
+                    if (indexAlias.Value == index)
+                        return indexAlias.Key;
+            }
+
+            return null;
+        }
+
+        private sealed class TranslatedDataItem : BaseDataItem
         {
             private readonly DataSource source;
             private readonly IDataItem item;
@@ -125,17 +143,23 @@ namespace Gallio.Framework.Data
                 this.item = item;
             }
 
-            public bool IsDynamic
+            public override bool IsDynamic
             {
                 get { return item.IsDynamic; }
             }
 
-            public void PopulateMetadata(MetadataMap map)
+            public override IEnumerable<DataBinding> GetBindingsForInformalDescription()
+            {
+                foreach (DataBinding dataBinding in item.GetBindingsForInformalDescription())
+                    yield return source.ReverseTranslateBinding(dataBinding);
+            }
+
+            protected override void PopulateMetadataImpl(MetadataMap map)
             {
                 item.PopulateMetadata(map);
             }
 
-            public object GetValue(DataBinding binding)
+            protected override object GetValueImpl(DataBinding binding)
             {
                 if (binding == null)
                     throw new ArgumentNullException("binding");

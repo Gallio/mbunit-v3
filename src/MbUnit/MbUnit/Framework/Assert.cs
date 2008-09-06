@@ -1663,8 +1663,7 @@ namespace MbUnit.Framework
 
             AssertionHelper.Verify(delegate
             {
-                AssertionFailure[] failures = AssertionContext.CurrentContext.CaptureFailures(action,
-                    AssertionFailureBehavior.Log, true);
+                AssertionFailure[] failures = AssertionHelper.Eval(action, AssertionFailureBehavior.Log);
                 if (failures.Length == 0)
                     return null;
 

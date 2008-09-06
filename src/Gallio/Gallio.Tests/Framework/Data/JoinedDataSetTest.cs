@@ -352,5 +352,26 @@ namespace Gallio.Tests.Framework.Data
             Assert.AreEqual(5, changedDataBinding.Index);
             Assert.AreEqual("path", dataBinding.Path);
         }
+
+        [Test]
+        public void CanGetDescriptiveDataBindingsFromItem()
+        {
+            DataSource source = new DataSource("Source");
+            source.AddDataSet(new ItemSequenceDataSet(new[] { new DataRow("abc", "def") }, 2));
+            source.AddIndexAlias("abc", 0);
+
+            JoinedDataSet dataSet = new JoinedDataSet();
+            dataSet.AddDataSet(new ItemSequenceDataSet(new[] { new DataRow("xyz") }, 1));
+            dataSet.AddDataSet(source);
+
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
+
+            Assert.AreElementsEqual(new[]
+            {
+                new DataBinding(0, null),
+                new DataBinding(1, "abc"),
+                new DataBinding(2, null)
+            }, items[0].GetBindingsForInformalDescription());
+        }
     }
 }

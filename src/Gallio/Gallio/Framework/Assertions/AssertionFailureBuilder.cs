@@ -43,6 +43,7 @@ namespace Gallio.Framework.Assertions
         private bool isStackTraceSet;
         private List<AssertionFailure.LabeledValue> labeledValues;
         private List<ExceptionData> exceptions;
+        private List<AssertionFailure> innerFailures;
 
         /// <summary>
         /// Creates an assertion failure builder with the default formatter.
@@ -51,7 +52,7 @@ namespace Gallio.Framework.Assertions
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="description"/>
         /// is null</exception>
         public AssertionFailureBuilder(string description)
-            : this(description, Gallio.Framework.Formatting.Formatter.Instance)
+            : this(description, Formatting.Formatter.Instance)
         {
         }
 
@@ -194,6 +195,7 @@ namespace Gallio.Framework.Assertions
                 else
                 {
                     DiffSet diffSet = DiffSet.GetDiffSet(formattedExpectedValue, formattedActualValue);
+                    diffSet = diffSet.Simplify();
 
                     StructuredTextWriter highlightedExpectedValueWriter = new StructuredTextWriter();
                     StructuredTextWriter highlightedActualValueWriter = new StructuredTextWriter();
@@ -335,6 +337,42 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
+        /// Adds a nested assertion failure that contributed to the composite assertion failure
+        /// described by this instance.
+        /// </summary>
+        /// <param name="innerFailure">The inner assertion failure to add</param>
+        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="innerFailure"/> is null</exception>
+        public AssertionFailureBuilder AddInnerFailure(AssertionFailure innerFailure)
+        {
+            if (innerFailure == null)
+                throw new ArgumentNullException("innerFailure");
+
+            if (innerFailures == null)
+                innerFailures = new List<AssertionFailure>();
+            innerFailures.Add(innerFailure);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an enumeration of nested assertion failures that contributed to the composite
+        /// assertion failure described by this instance.
+        /// </summary>
+        /// <param name="innerFailures">The enumeration of inner assertion failures to add</param>
+        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="innerFailures"/> is null or
+        /// contains a null</exception>
+        public AssertionFailureBuilder AddInnerFailures(IEnumerable<AssertionFailure> innerFailures)
+        {
+            if (innerFailures == null)
+                throw new ArgumentNullException("innerFailures");
+
+            foreach (AssertionFailure innerFailure in innerFailures)
+                AddInnerFailure(innerFailure);
+            return this;
+        }
+
+        /// <summary>
         /// Generates an immutable object that describes the failure.
         /// </summary>
         /// <returns>The assertion failure</returns>
@@ -342,7 +380,7 @@ namespace Gallio.Framework.Assertions
         public AssertionFailure ToAssertionFailure()
         {
             return CreateAssertionFailure(description, message, GetStackTraceOrDefault(),
-                GetLabeledValuesAsArray(), GetExceptionsAsArray());
+                GetLabeledValuesAsArray(), GetExceptionsAsArray(), GetInnerFailuresAsArray());
         }
 
         /// <summary>
@@ -354,9 +392,10 @@ namespace Gallio.Framework.Assertions
         /// </remarks>
         protected virtual AssertionFailure CreateAssertionFailure(string description,
             string message, string stackTrace, IList<AssertionFailure.LabeledValue> labeledValues,
-            IList<ExceptionData> exceptions)
+            IList<ExceptionData> exceptions, IList<AssertionFailure> innerFailures)
         {
-            return new AssertionFailure(description, message, stackTrace, labeledValues, exceptions);
+            return new AssertionFailure(description, message, stackTrace, labeledValues, exceptions,
+                innerFailures);
         }
 
         private void SetLabeledValueImpl(AssertionFailure.LabeledValue labeledValue)
@@ -384,6 +423,11 @@ namespace Gallio.Framework.Assertions
         private ExceptionData[] GetExceptionsAsArray()
         {
             return exceptions != null ? exceptions.ToArray() : EmptyArray<ExceptionData>.Instance;
+        }
+
+        private AssertionFailure[] GetInnerFailuresAsArray()
+        {
+            return innerFailures != null ? innerFailures.ToArray() : EmptyArray<AssertionFailure>.Instance;
         }
 
         [TestFrameworkInternal]

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <Fragment>
+        <!-- Locate the R# InstallDir. -->
+        <Property Id="RESHARPER_V41_VS8_INSTALLDIR"> 
+            <RegistrySearch Id='JetBrainsReSharperRegistry3b' Type="raw"
+                Root='HKLM' Key='Software\JetBrains\ReSharper\v4.1\vs8.0' Name='InstallDir' />
+            <RegistrySearch Id='JetBrainsReSharperRegistry3a' Type="raw"
+                Root='HKCU' Key='Software\JetBrains\ReSharper\v4.1\vs8.0' Name='InstallDir' />
+        </Property>
+
+        <Property Id="RESHARPER_V41_VS9_INSTALLDIR">
+            <RegistrySearch Id="JetBrainsReSharperRegistry4a" Type="raw"
+                Root='HKLM' Key="Software\JetBrains\ReSharper\v4.1\vs9.0" Name="InstallDir" />
+            <RegistrySearch Id="JetBrainsReSharperRegistry4b" Type="raw"
+                Root='HKCU' Key="Software\JetBrains\ReSharper\v4.1\vs9.0" Name="InstallDir" />
+        </Property>
+
+        <DirectoryRef Id="TARGETDIR">
+            <Directory Id="RESHARPER_V41_VS8_INSTALLDIR" Name="ReSharper_V41_VS80">
+                <Directory Id="JetBrains.ReSharper.V41.VS8.PluginsDir" Name="Plugins">
+                    <Directory Id="JetBrains.Resharper.V41.VS8.GallioDir" Name="Gallio">
+                        <Component Id="Gallio.Loader.V41.VS8.dll" Guid="{912f84f5-cbc2-485a-acf6-2b2ca4b64f53}">
+                            <File Id="Gallio.Loader.V41.VS8.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
+                        </Component>
+                        <Component Id="Gallio.ReSharperRunner.V41.VS8.dll" Guid="{feaac5ca-513f-4332-b0c7-a5f0ea0ac381}">
+                            <File Id="Gallio.ReSharperRunner.V41.VS8.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v4.1\Gallio.ReSharperRunner41.dll" KeyPath="yes" />
+                            <File Id="Gallio.ReSharperRunner.V41.VS8.dll.config" Source="$(var.GallioTargetDir)\bin\ReSharper\v4.1\Gallio.ReSharperRunner41.dll.config" />
+                            <util:XmlFile Id="FixXmlSettings.V41.VS8" File="[#Gallio.ReSharperRunner.V41.VS8.dll.config]" Action="setValue" 
+                                          ElementPath="//configuration/gallio/installation/path" Value="[binFolder]" />
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+            
+            <Directory Id="RESHARPER_V41_VS9_INSTALLDIR" Name="ReSharper_V41_VS90">
+                <Directory Id="JetBrains.ReSharper.V41.VS9.PluginsDir" Name="Plugins">
+                    <Directory Id="JetBrains.Resharper.V41.VS9.GallioDir" Name="Gallio">
+                        <Component Id="Gallio.Loader.V41.VS9.dll" Guid="{71fb3f08-c140-41ec-bab6-330a36070f35}">
+                            <File Id="Gallio.Loader.V41.VS9.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
+                        </Component>
+                        <Component Id="Gallio.ReSharperRunner.V41.VS9.dll" Guid="{7de4e498-529e-47fc-905f-76b185207d9b}">
+                            <File Id="Gallio.ReSharperRunner.V41.VS9.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v4.1\Gallio.ReSharperRunner41.dll" KeyPath="yes" />
+                            <File Id="Gallio.ReSharperRunner.V41.VS9.dll.config" Source="$(var.GallioTargetDir)\bin\ReSharper\v4.1\Gallio.ReSharperRunner41.dll.config" />
+                            <util:XmlFile Id="FixXmlSettings.V41.VS9" File="[#Gallio.ReSharperRunner.V41.VS9.dll.config]" Action="setValue" 
+                                          ElementPath="//configuration/gallio/installation/path" Value="[binFolder]" />
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+
+        <Feature Id="feat_Gallio.ReSharper.V41" Title="ReSharper v4.1 Plug-in" Level="2"
+                 Description="Installs the ReSharper v4.1 plug-in.">
+            <Condition Level="1">
+                RESHARPER_V41_VS8_INSTALLDIR or RESHARPER_V41_VS9_INSTALLDIR
+            </Condition>
+
+            <Feature Id="feat_Gallio.ReSharper.V41.VS8" Title="Visual Studio 2005" Level="0">
+                <Condition Level="1">RESHARPER_V41_VS8_INSTALLDIR</Condition>
+                <ComponentRef Id="Gallio.ReSharperRunner.V41.VS8.dll"/>
+                <ComponentRef Id="Gallio.Loader.V41.VS8.dll"/>
+            </Feature>
+ 
+            <Feature Id="feat_Gallio.ReSharper.V41.VS9" Title="Visual Studio 2008" Level="0">
+                <Condition Level="1">RESHARPER_V41_VS9_INSTALLDIR</Condition>
+                <ComponentRef Id="Gallio.ReSharperRunner.V41.VS9.dll"/>
+                <ComponentRef Id="Gallio.Loader.V41.VS9.dll"/>
+            </Feature>
+        </Feature>
+    </Fragment>
+</Wix>

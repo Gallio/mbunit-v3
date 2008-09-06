@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Gallio.Collections;
 using Gallio.Framework.Data;
@@ -156,6 +157,22 @@ namespace Gallio.Tests.Framework.Data
             CsvDataSet dataSet = new CsvDataSet(delegate { return new StringReader(""); }, true);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, false));
             Assert.AreEqual(0, items.Count);
+        }
+
+        [Test]
+        public void CanGetDescriptiveDataBindingsFromItem()
+        {
+            CsvDataSet dataSet = new CsvDataSet(delegate { return new StringReader("Fruit,[Metadata]\nApples, x, 2\n"); }, false);
+            dataSet.HasHeader = true;
+
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, false));
+
+            Assert.AreElementsEqual(new[]
+            {
+                new DataBinding(0, "Fruit"),
+                new DataBinding(1, "[Metadata]"),
+                new DataBinding(2, null)
+            }, items[0].GetBindingsForInformalDescription());
         }
     }
 }

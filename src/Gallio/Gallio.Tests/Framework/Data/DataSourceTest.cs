@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Model;
 using MbUnit.Framework;
@@ -217,6 +218,22 @@ namespace Gallio.Tests.Framework.Data
                     items[0].GetValue(null);
                 });
             }
+        }
+
+        [Test]
+        public void CanGetDescriptiveDataBindingsFromItem()
+        {
+            DataSource dataSet = new DataSource("Source");
+            dataSet.AddDataSet(new ItemSequenceDataSet(new[] { new DataRow("abc", "def") }, 2));
+            dataSet.AddIndexAlias("xxx", 1);
+
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
+
+            Assert.AreElementsEqual(new[]
+            {
+                new DataBinding(0, null),
+                new DataBinding(1, "xxx")
+            }, items[0].GetBindingsForInformalDescription());
         }
     }
 }

@@ -107,13 +107,20 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
+        public override IEnumerable<DataBinding> GetBindingsForInformalDescription()
+        {
+            for (int i = 0; i < values.Length; i++)
+                yield return new DataBinding(i, null);
+        }
+
+        /// <inheritdoc />
         protected override object GetValueImpl(DataBinding binding)
         {
             int index = binding.Index.GetValueOrDefault(-1);
             if (index >= 0 && index < values.Length)
                 return values[index];
 
-            throw new DataBindingException("Binding index not available or out of range.");
+            throw new DataBindingException("Binding index not available or out of range.", binding);
         }
 
         private sealed class MetadataNode

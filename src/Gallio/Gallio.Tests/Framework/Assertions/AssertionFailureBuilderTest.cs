@@ -212,7 +212,7 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
             builder.SetRawExpectedAndActualValueWithDiffs("acde", "bcef");
 
-            DiffSet diffSet = DiffSet.GetDiffSet("\"acde\"", "\"bcef\"");
+            DiffSet diffSet = DiffSet.GetDiffSet("\"acde\"", "\"bcef\"").Simplify();
             StructuredTextWriter expectedValueWriter = new StructuredTextWriter();
             diffSet.WriteTo(expectedValueWriter, DiffStyle.LeftOnly);
             StructuredTextWriter actualValueWriter = new StructuredTextWriter();
@@ -266,6 +266,35 @@ namespace Gallio.Tests.Framework.Assertions
 
             Assert.Over.Pairs(new[] { "Boom 1", "Boom 2" }, builder.ToAssertionFailure().Exceptions,
                 (expectedSubstring, actual) => Assert.Contains(actual.ToString(), expectedSubstring));
+        }
+
+        [Test]
+        public void AddInnerFailureThrowsIfArgumentIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            Assert.Throws<ArgumentNullException>(() => builder.AddInnerFailure(null));
+        }
+
+        [Test]
+        public void AddInnerFailuresThrowsIfArgumentIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            Assert.Throws<ArgumentNullException>(() => builder.AddInnerFailures(null));
+        }
+
+        [Test]
+        public void CanAddInnerFailures()
+        {
+            AssertionFailure inner1 = new AssertionFailureBuilder("Inner1").ToAssertionFailure();
+            AssertionFailure inner2 = new AssertionFailureBuilder("Inner2").ToAssertionFailure();
+            AssertionFailure inner3 = new AssertionFailureBuilder("Inner3").ToAssertionFailure();
+
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            builder.AddInnerFailures(new[] { inner1, inner2 });
+            builder.AddInnerFailure(inner3);
+
+            Assert.Over.Pairs(new[] { inner1, inner2, inner3 }, builder.ToAssertionFailure().InnerFailures,
+                Assert.AreEqual);
         }
     }
 }

@@ -114,5 +114,20 @@ namespace Gallio.Tests.Framework.Data
             Assert.Throws<DataBindingException>(delegate { items[0].GetValue(new DataBinding(0, null)); });
             Assert.Throws<DataBindingException>(delegate { items[0].GetValue(new DataBinding(null, "not valid xpath")); });
         }
+
+        [Test]
+        public void CanGetDescriptiveDataBindingsFromItem()
+        {
+            XmlDocument document = new XmlDocument();
+            document.LoadXml("<root><rows><row a=\"42\" b=\"x\"/><row a=\"53\" b=\"y\"/></rows></root>");
+
+            XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", false);
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
+
+            Assert.AreElementsEqual(new[]
+            {
+                new DataBinding(null, ".")
+            }, items[0].GetBindingsForInformalDescription());
+        }
     }
 }

@@ -46,7 +46,7 @@ namespace Gallio.Framework.Assertions
         {
             get
             {
-                TestContext context = Gallio.Framework.TestContext.CurrentContext;
+                TestContext context = TestContext.CurrentContext;
                 lock (context.Data)
                 {
                     AssertionContext assertionContext;
@@ -118,9 +118,9 @@ namespace Gallio.Framework.Assertions
         /// <see cref="Assertions.AssertionFailureBehavior.Throw"/>, then only
         /// the first failure will be captured since execution will be immediately aborted when it happens.</item>
         /// <item>If set to <see cref="Assertions.AssertionFailureBehavior.Log"/> or
-        /// <see cref="Assertions.AssertionFailureBehavior.Defer" />, then all
+        /// <see cref="Assertions.AssertionFailureBehavior.CaptureAndContinue" />, then all
         /// failures will be captured until the block terminates or throws an exception for some other reason.</item>
-        /// <item>If set to <see cref="Assertions.AssertionFailureBehavior.Ignore"/>, then no failures
+        /// <item>If set to <see cref="Assertions.AssertionFailureBehavior.Discard"/>, then no failures
         /// will be captured since they will all be ignored!</item>
         /// </list>
         /// </para>
@@ -241,29 +241,20 @@ namespace Gallio.Framework.Assertions
 
             private void LogFailureAccordingToBehavior(AssertionFailure failure)
             {
-                switch (assertionFailureBehavior)
-                {
-                    case AssertionFailureBehavior.LogAndThrow:
-                    case AssertionFailureBehavior.Log:
-                        LogFailure(failure);
-                        break;
-                }
+                if ((assertionFailureBehavior & AssertionFailureBehavior.Log) != 0)
+                    LogFailure(failure);
             }
 
             private void SaveFailureAccordingToBehavior(AssertionFailure failure)
             {
-                if (assertionFailureBehavior != AssertionFailureBehavior.Ignore)
+                if ((assertionFailureBehavior & AssertionFailureBehavior.Discard) == 0)
                     AddSavedFailure(failure);
             }
 
             private void ThrowFailureAccordingToBehavior(AssertionFailure failure)
             {
-                switch (assertionFailureBehavior)
-                {
-                    case AssertionFailureBehavior.LogAndThrow:
-                    case AssertionFailureBehavior.Throw:
-                        throw new AssertionFailureException(failure, true);
-                }
+                if ((assertionFailureBehavior & AssertionFailureBehavior.Throw) != 0)
+                    throw new AssertionFailureException(failure, true);
             }
         }
     }

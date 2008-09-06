@@ -16,12 +16,15 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 using Gallio.Collections;
 using Gallio.Model;
+using Gallio.Model.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
 using Gallio.Model.Logging;
+using Gallio.Model.Logging.Tags;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
@@ -265,7 +268,9 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             private int stepCount;
             private int nestingCount;
 
+            private readonly ExceptionVisitor exceptionVisitor;
             private readonly List<KeyValuePair<TaskOutputType, string>> combinedOutput;
+            private readonly List<TaskException> pendingExceptions;
             private TestOutcome combinedOutcome;
             private string pendingWarnings;
             private string pendingFailures;
@@ -278,6 +283,17 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
                 combinedOutcome = TestOutcome.Passed;
                 combinedOutput = new List<KeyValuePair<TaskOutputType,string>>();
+                pendingExceptions = new List<TaskException>();
+
+                exceptionVisitor = new ExceptionVisitor(exception =>
+                {
+                    do
+                    {
+                        pendingExceptions.Add(TaskExceptionFactory.CreateTaskException(exception.Type, exception.Message,
+                            exception.StackTrace));
+                        exception = exception.InnerException;
+                    } while (exception != null);
+                });
             }
 
             public void TestStepStarted(TestStepStartedEventArgs e)
@@ -332,7 +348,10 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                         pendingBanner = banner;
 
                     foreach (StructuredTestLogStream stream in run.TestLog.Streams)
+                    {
                         OutputLogStreamContents(stream);
+                        CaptureExceptions(stream);
+                    }
 
                     if (nestingCount == 0)
                         SubmitCombinedResult();
@@ -371,6 +390,11 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 }
             }
 
+            private void CaptureExceptions(StructuredTestLogStream stream)
+            {
+                stream.Body.Accept(exceptionVisitor);
+            }
+
             private void Output(TaskOutputType outputType, string text)
             {
                 combinedOutput.Add(new KeyValuePair<TaskOutputType, string>(outputType, text));
@@ -394,6 +418,15 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 }
             }
 
+            private void OutputPendingExceptions()
+            {
+                if (pendingExceptions.Count != 0)
+                {
+                    server.TaskException(testTask, pendingExceptions.ToArray());
+                    pendingExceptions.Clear();
+                }
+            }
+
             private void SubmitCombinedResult()
             {
                 foreach (KeyValuePair<TaskOutputType, string> message in combinedOutput)
@@ -410,6 +443,8 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     OutputPendingFailures();
                 else if (pendingFailures != null)
                     server.TaskExplain(testTask, pendingFailures);
+
+                OutputPendingExceptions();
 
                 server.TaskFinished(testTask, combinedOutcome.DisplayName, taskResult);
             }
@@ -428,6 +463,106 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     default:
                         throw new ArgumentException("outcome");
                 }
+            }
+        }
+
+        private sealed class ExceptionVisitor : BaseTagVisitor
+        {
+            private readonly Action<ExceptionData> publishException;
+
+            private ExceptionDataBuilder currentBuilder;
+            private string currentMarkerClass;
+            private string currentSectionName;
+
+            public ExceptionVisitor(Action<ExceptionData> publishException)
+            {
+                this.publishException = publishException;
+            }
+
+            public override void VisitMarkerTag(MarkerTag tag)
+            {
+                string oldMarkerClass = currentMarkerClass;
+                currentMarkerClass = tag.Class;
+
+                if (currentMarkerClass == Marker.ExceptionClass ||
+                    currentBuilder == null && currentMarkerClass == Marker.StackTraceClass)
+                {
+                    ExceptionDataBuilder oldBuilder = currentBuilder;
+                    currentBuilder = new ExceptionDataBuilder();
+
+                    base.VisitMarkerTag(tag);
+
+                    // Handle the case where the stack trace is not part of an exception but appears
+                    // within a section that provides additional information since we don't have an exception
+                    // type or anything else.  In particular, this is the case for AssertionFailures.
+                    if (currentBuilder.Message.Length == 0 && currentSectionName != null)
+                        currentBuilder.Message.Append(currentSectionName);
+
+                    ExceptionData currentException = currentBuilder.ToExceptionData();
+                    if (oldBuilder != null)
+                        oldBuilder.Inner = currentException;
+                    else
+                        publishException(currentException);
+
+                    currentBuilder = oldBuilder;
+                }
+                else
+                {
+                    base.VisitMarkerTag(tag);
+                }
+
+                currentMarkerClass = oldMarkerClass;
+            }
+
+            public override void VisitSectionTag(SectionTag tag)
+            {
+                string oldSectionName = currentSectionName;
+                currentSectionName = tag.Name;
+
+                base.VisitSectionTag(tag);
+
+                currentSectionName = oldSectionName;
+            }
+
+            public override void VisitTextTag(TextTag tag)
+            {
+                if (currentBuilder == null)
+                    return;
+
+                switch (currentMarkerClass)
+                {
+                    case Marker.ExceptionTypeClass:
+                        currentBuilder.Type.Append(tag.Text);
+                        break;
+
+                    case Marker.ExceptionMessageClass:
+                        currentBuilder.Message.Append(tag.Text);
+                        break;
+
+                    case Marker.StackTraceClass:
+                        currentBuilder.StackTrace.Append(tag.Text);
+                        break;
+                }
+            }
+        }
+
+        private sealed class ExceptionDataBuilder
+        {
+            public ExceptionDataBuilder()
+            {
+                Type = new StringBuilder();
+                Message = new StringBuilder();
+                StackTrace = new StringBuilder();
+            }
+
+            public StringBuilder Type { get; private set; }
+            public StringBuilder Message { get; private set; }
+            public StringBuilder StackTrace { get; private set; }
+            public ExceptionData Inner { get; set; }
+
+            public ExceptionData ToExceptionData()
+            {
+                return new ExceptionData(Type.ToString(), Message.ToString(), StackTrace.ToString(), Inner);
             }
         }
     }

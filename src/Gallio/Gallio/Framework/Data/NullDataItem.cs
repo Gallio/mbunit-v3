@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Model;
 
 namespace Gallio.Framework.Data
@@ -30,6 +32,12 @@ namespace Gallio.Framework.Data
 
         private NullDataItem()
         {
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<DataBinding> GetBindingsForInformalDescription()
+        {
+            return EmptyArray<DataBinding>.Instance;
         }
 
         /// <inheritdoc />

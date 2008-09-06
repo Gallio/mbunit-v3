@@ -1,0 +1,22 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="ReSharper41.targets" />
+
+  <ItemGroup>
+    <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner41.csproj" />
+    <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner41.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(ReSharper41Installed)">
+    <Binary Include="Gallio.ReSharperRunner\bin\v4.1\Gallio.ReSharperRunner41.dll">
+      <Folder>ReSharper\v4.1</Folder>
+    </Binary>
+    <Binary Include="Gallio.ReSharperRunner\bin\v4.1\Gallio.ReSharperRunner41.dll.config">
+      <Folder>ReSharper\v4.1</Folder>
+    </Binary>
+
+    <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v4.0\Gallio.ReSharperRunner41.Tests.dll" />
+
+    <Feature Include="FEATURE_RESHARPER_RUNNER_41" />
+  </ItemGroup>
+</Project>

@@ -346,14 +346,14 @@ namespace Gallio.Framework.Pattern
         [TestEntryPoint]
         private static TestOutcome DoBeforeTest(Sandbox sandbox, PatternTestState testState)
         {
-            foreach (PatternTestParameter parameter in testState.Test.Parameters)
-            {
-                IDataAccessor accessor = parameter.Binder.Register(testState.BindingContext, parameter.DataContext);
-                testState.SlotBindingAccessors.Add(new KeyValuePair<ISlotInfo, IDataAccessor>(parameter.Slot, accessor));
-            }
-
             return sandbox.Run(delegate
             {
+                foreach (PatternTestParameter parameter in testState.Test.Parameters)
+                {
+                    IDataAccessor accessor = parameter.Binder.Register(testState.BindingContext, parameter.DataContext);
+                    testState.SlotBindingAccessors.Add(new KeyValuePair<ISlotInfo, IDataAccessor>(parameter.Slot, accessor));
+                }
+
                 testState.TestHandler.BeforeTest(testState);
             }, "Before Test");
         }
@@ -407,14 +407,17 @@ namespace Gallio.Framework.Pattern
         [TestEntryPoint]
         private static TestOutcome DoBeforeTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
         {
-            if (testInstanceState.TestState.SlotBindingAccessors.Count != 0)
-            {
-                foreach (KeyValuePair<ISlotInfo, IDataAccessor> entry in testInstanceState.TestState.SlotBindingAccessors)
-                    testInstanceState.SlotValues.Add(entry.Key, entry.Value.GetValue(testInstanceState.BindingItem));
-            }
-
             return sandbox.Run(delegate
             {
+                if (testInstanceState.TestState.SlotBindingAccessors.Count != 0)
+                {
+                    foreach (KeyValuePair<ISlotInfo, IDataAccessor> entry in testInstanceState.TestState.SlotBindingAccessors)
+                    {
+                        object value = Bind(entry.Value, testInstanceState.BindingItem, testInstanceState.Formatter);
+                        testInstanceState.SlotValues.Add(entry.Key, value);
+                    }
+                }
+
                 testInstanceState.TestInstanceHandler.BeforeTestInstance(testInstanceState);
             }, "Before Test Instance");
         }
@@ -507,6 +510,45 @@ namespace Gallio.Framework.Pattern
             }, "Decorate Child Test");
         }
         #endregion
+
+        private static object Bind(IDataAccessor accessor, IDataItem bindingItem, IFormatter formatter)
+        {
+            try
+            {
+                return accessor.GetValue(bindingItem);
+            }
+            catch (DataBindingException ex)
+            {
+                using (TestLog.Failures.BeginSection("Data binding failure"))
+                {
+                    if (!string.IsNullOrEmpty(ex.Message))
+                        TestLog.Failures.WriteLine(ex.Message);
+
+                    bool first = true;
+                    foreach (DataBinding binding in bindingItem.GetBindingsForInformalDescription())
+                    {
+                        if (first)
+                        {
+                            TestLog.Failures.Write("\nAvailable data bindings for this item:\n\n");
+                            first = false;
+                        }
+
+                        using (TestLog.Failures.BeginMarker(Marker.Label))
+                        {
+                            TestLog.Failures.Write(binding);
+                            TestLog.Failures.Write(": ");
+                        }
+
+                        TestLog.Failures.WriteLine(bindingItem.GetValue(binding));
+                    }
+
+                    if (first)
+                        TestLog.Failures.Write("\nThis item does not appear to provide any data bindings.\n");
+                }
+
+                throw new SilentTestException(TestOutcome.Error);
+            }
+        }
 
         private static void AbortSandboxDueToTimeout(Sandbox sandbox, TimeSpan timeout)
         {

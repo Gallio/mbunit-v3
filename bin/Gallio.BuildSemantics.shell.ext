@@ -1,0 +1,67 @@
+<Project InitialTargets="InitializeGallioBuildSemanticsAddIn" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <ItemDefinitionGroup>
+    <Content>
+      <Folder />
+    </Content>
+
+    <Binary>
+      <Folder />
+    </Binary>
+
+    <Document>
+      <Folder />
+    </Document>
+
+    <Extra>
+      <Folder />
+    </Extra>
+    
+    <DocumentedAssembly />
+    <TestAssembly />
+    <Feature />
+
+    <TemplateFile>
+      <Base />
+      <Zip />
+    </TemplateFile>
+  </ItemDefinitionGroup>
+
+  <PropertyGroup>
+    <BinDir>$(SourceDir)\bin</BinDir>
+    <ToolsDir>$(SourceDir)\tools</ToolsDir>
+    <LibsDir>$(SourceDir)\libs</LibsDir>
+  </PropertyGroup>
+
+  <Target Name="InitializeGallioBuildSemanticsAddIn">
+    <ItemGroup>
+      <File Include="@(Content)">
+        <ImagePath>%(Content.Folder)</ImagePath>
+      </File>
+
+      <File Include="@(Binary)">
+        <ImagePath>bin\%(Binary.Folder)</ImagePath>
+      </File>
+
+      <File Include="@(Document)">
+        <ImagePath>docs\%(Document.Folder)</ImagePath>
+      </File>
+
+      <File Include="@(Extra)">
+        <ImagePath>extras\%(Extra.Folder)</ImagePath>
+      </File>
+
+      <LoadItem Include="@(DocumentedAssembly)">
+        <ItemName>DocumentedAssembly</ItemName>
+      </LoadItem>
+
+      <LoadItem Include="@(TestAssembly)">
+        <ItemName>TestAssembly</ItemName>
+      </LoadItem>
+
+      <LoadItem Include="@(Feature)">
+        <ItemName>Feature</ItemName>
+      </LoadItem>      
+    </ItemGroup>
+  </Target>
+
+</Project>

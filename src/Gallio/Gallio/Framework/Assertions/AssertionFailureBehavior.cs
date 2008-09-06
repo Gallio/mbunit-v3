@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using Gallio.Framework.Assertions;
 
 namespace Gallio.Framework.Assertions
 {
@@ -23,49 +22,68 @@ namespace Gallio.Framework.Assertions
     /// Specifies the behavior that should take place when a <see cref="AssertionFailure" />
     /// is submitted to the <see cref="AssertionContext"/>.
     /// </para>
+    /// <para>
+    /// There are three orthogonal dimensions to the assertion failure behavior:
+    /// <list type="bullet">
+    /// <item><see cref="Log"/> / No-<see cref="Log" />: Log the failure when reported, or do not log it.</item>
+    /// <item><see cref="Throw"/> / No-<see cref="Throw"/>: Throw an exception to abort computation, or allow it to continue</item>
+    /// <item><see cref="Discard"/> / No-<see cref="Discard"/> (aka. <see cref="CaptureAndContinue" />): Discard the failure when finished reporting it, or capture it in a list for further processing</item>
+    /// </list>
+    /// </para>
     /// </summary>
+    [Flags]
     public enum AssertionFailureBehavior
     {
         /// <summary>
         /// <para>
-        /// When an assertion failure is reported, log it, then throw an
+        /// When an assertion failure is reported, capture it in a list, log it, and allow
+        /// the computation to continue.
+        /// </para>
+        /// </summary>
+        /// <value>1</value>
+        Log = 1,
+
+        /// <summary>
+        /// <para>
+        /// When an assertion failure is reported, capture it in a list, then throw an
+        /// <see cref="AssertionFailureException" /> to immediately abort the current computation.
+        /// </para>
+        /// </summary>
+        /// <value>2</value>
+        Throw = 2,
+
+        /// <summary>
+        /// <para>
+        /// When an assertion failure is reported, capture it in a list, log it, then throw an
         /// <see cref="AssertionFailureException" /> to immediately abort the current computation.
         /// </para>
         /// <para>
-        /// This is the default behavior.
+        /// This is the default behavior for assertion contexts.
         /// </para>
         /// </summary>
-        LogAndThrow = 0,
+        /// <value>3</value>
+        LogAndThrow = Log | Throw,
 
         /// <summary>
         /// <para>
-        /// When an assertion failure is reported, log the failure and allow the computation to
-        /// continue.
+        /// When an assertion failure is reported, discard it (instead of capturing it in a list)
+        /// and allow the current computation to continue.
         /// </para>
         /// </summary>
-        Log,
+        /// <value>4</value>
+        Discard = 4,
 
         /// <summary>
         /// <para>
-        /// When an assertion failure is reported, throw an <see cref="AssertionFailureException" />
-        /// to immediately abort the current computation.
+        /// When an assertion failure is reported, capture it in a list and allow the current
+        /// computation to continue.
         /// </para>
-        /// </summary>
-        Throw,
-
-        /// <summary>
         /// <para>
-        /// When an assertion failure is reported, save it in a list to be processed 
-        /// or possibly logged later and allow the current computation to continue.
+        /// This is the opposite of <see cref="Discard"/>, and is an alias for the case where none
+        /// of the other flags are specified.
         /// </para>
         /// </summary>
-        Defer,
-
-        /// <summary>
-        /// <para>
-        /// When an assertion failure is reported, ignore it.
-        /// </para>
-        /// </summary>
-        Ignore
+        /// <value>0</value>
+        CaptureAndContinue = 0
     }
 }

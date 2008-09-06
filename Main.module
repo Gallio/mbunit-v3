@@ -1,0 +1,222 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+
+  <PropertyGroup>
+    <Coverage Condition="'$(Coverage)'==''">false</Coverage>
+    <SatisfactoryCoverage>70</SatisfactoryCoverage>
+
+    <ShowReports Condition="'$(ShowReports)'==''">true</ShowReports>
+    <ReportTypes Condition="'$(ReportTypes)'==''">Html-Condensed</ReportTypes>
+    <IgnoreFailures Condition="'$(IgnoreFailures)'==''">false</IgnoreFailures>
+    
+    <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
+    <VSIPSDKHelpPath>$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
+    <VSIPSDKHelpPath Condition="'$(VSIPSDKHelpPath)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\8.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
+    <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
+    <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
+    <NCoverExplorerPath>$(ToolsDir)\NCoverExplorer</NCoverExplorerPath>    
+  </PropertyGroup>
+
+  <!-- ROOT CONTENT -->
+
+  <ItemGroup>
+    <Module Include="src\All.module" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Gallio License.txt" />
+    <Content Include="ASL - Apache Software Foundation License.txt" />
+    
+    <Extra Include="$(ToolsDir)\H2Reg\H2Reg.*" />
+  </ItemGroup>
+
+  <!-- CLEAN TARGETS -->
+
+  <Target Name="BeforeClean"
+          DependsOnTargets="CleanInstallerWix" />
+
+
+  <!-- BUILD TARGETS -->
+
+  <Target Name="AfterBuild"
+          DependsOnTargets="" />
+
+
+  <!-- IMAGE TARGETS -->
+
+  <Target Name="AfterImage"
+          DependsOnTargets="BuildXMLDocs;BuildSourceServerIndex" />
+
+
+  <!-- TEST TARGETS -->
+
+  <Target Name="AfterTest"
+          DependsOnTargets="RunTestAssemblies" />
+
+
+  <!-- DIST TARGETS -->
+
+  <Target Name="AfterDist"
+          DependsOnTargets="BuildCHMDocs;BuildHxSDocs;BuildInstallerWix;BuildZip" />
+
+
+  <!-- SUPPORT CODE: API DOCS -->
+
+  <PropertyGroup>
+    <CopyrightText>Copyright 2005-2008 Gallio Project - http://www.gallio.org/</CopyrightText>
+    <CopyrightHref>http://www.gallio.org/</CopyrightHref>
+
+    <NDocCommonOptions>@(DocumentedAssembly->'"%(FullPath)"', ' ')</NDocCommonOptions>
+
+    <NDocXMLOptions>$(NDocCommonOptions) -documenter=Intellisense "-OutputDirectory=$(ImageDir)\bin" -UseAssemblyShadowCache=False</NDocXMLOptions>
+
+    <NDocCHMOptions>$(NDocCommonOptions) -documenter=MSDN-CHM "-OutputDirectory=$(ImageDir)\docs" -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocCHMOptions>
+
+    <NDocHxSOptions>$(NDocCommonOptions) -documenter=MSDN-Help2 "-OutputDirectory=$(ImageDir)\docs\vs" -GenerateCollectionFiles=True -PlugInNamespace=ms.vsipcc -AllLinksWithinVSHelpCollection=True -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHxSOptions>
+  </PropertyGroup>
+
+  <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
+  <Target Name="BuildXMLDocs">
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocXMLOptions)" />
+    <Delete Files="$(ImageDir)\bin\ndoc_qa.log;$(ImageDir)\bin\ndoc_build.log" />
+  </Target>
+
+  <Target Name="BuildCHMDocs">
+    <Warning Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in libs\Setup Files for the Microsoft HTML Help Workshop installer."
+             Condition="! Exists('$(HTMLHelpCompilerPath)')" />
+
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocCHMOptions)"
+          Condition="Exists('$(HTMLHelpCompilerPath)')" />
+    <RemoveDir Directories="$(ImageDir)\docs\ndoc_msdn_temp" />
+  </Target>
+  <ItemGroup Condition="Exists('$(HTMLHelpCompilerPath)')">
+    <Feature Include="FEATURE_CHM_HELP" />
+  </ItemGroup>
+
+  <Target Name="BuildHxSDocs">
+    <Message Text="$(VSIPSDKHelpPath)" Importance="High" />
+
+    <Warning Text="Visual Studio 2005 or 2008 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio help system.  Check Microsoft's site for the Visual Studio SDK installer."
+           Condition="! Exists('$(VSIPSDKHelpPath)')" />
+
+    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
+          Condition="Exists('$(VSIPSDKHelpPath)')" />
+    <RemoveDir Directories="$(ImageDir)\docs\vs\ndoc_htmlhelp2_temp" />
+  </Target>
+  <ItemGroup Condition="Exists('$(VSIPSDKHelpPath)')">
+    <Feature Include="FEATURE_VS_HELP" />
+  </ItemGroup>
+
+  <!-- SUPPORT CODE: INSTALLERS -->
+
+  <Target Name="BuildInstaller">
+    <Warning Text="The NSIS tools must be installed to generate the installer.  Look in libs\Setup Files for the NSIS installer."
+             Condition="! Exists('$(NSISPath)')" />
+
+    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) /DROOTDIR=&quot;$(RootDir)&quot; &quot;$(SourceDir)\src\Installer\GallioBundle.nsi&quot;"
+          Condition="Exists('$(NSISPath)')" />
+  </Target>
+
+  <PropertyGroup>
+    <InstallerWixProperties>
+      Configuration=Release;
+      Version=$(Version);
+      TargetDir=$(ImageDir);
+      ReleaseDir=$(DistDir);
+      WixTargetsPath=$(LibsDir)\Wix\Microsoft\WiX\v3.0\Wix.targets;
+      WixTasksPath=$(LibsDir)\Wix\Microsoft\WiX\v3.0\WixTasks.dll;
+      WixToolPath=$(LibsDir)\Wix\bin;
+      WixExtDir=$(LibsDir)\Wix\bin;
+      DefineSolutionProperties=false;
+    </InstallerWixProperties>
+    <InstallerFeatureFile>$(SourceDir)\src\Installer.Wix\Features.wxi</InstallerFeatureFile>
+  </PropertyGroup>
+
+  <Target Name="BuildInstallerWix">
+    <Message Text="Building installer..." Importance="High" />
+    <WriteLinesToFile File="$(InstallerFeatureFile)"
+                      Lines="&lt;Include&gt;"
+                      Overwrite="true" />
+    <WriteLinesToFile File="$(InstallerFeatureFile)"
+                      Lines="@(Feature -> '&lt;?define %(Identity)=&quot;true&quot; ?&gt;')"
+                      Overwrite="false" />
+    <WriteLinesToFile File="$(InstallerFeatureFile)"
+                      Lines="&lt;/Include&gt;"
+                      Overwrite="false" />
+    <MSBuild Projects="$(SourceDir)\src\Installer.Wix\GallioBundle.wixproj"
+             Targets="Build"
+             Properties="$(InstallerWixProperties)" />
+  </Target>
+
+  <Target Name="CleanInstallerWix">
+    <MSBuild Projects="$(SourceDir)\src\Installer.Wix\GallioBundle.wixproj"
+             Targets="Clean"
+             Properties="$(InstallerWixProperties)" />
+    <Delete Files="$(InstallerFeatureFile)" />
+  </Target>
+
+  <Target Name="BuildZip">
+    <CreateItem Include="$(ImageDir)\**\*.*">
+      <Output TaskParameter="Include" ItemName="ZipFiles" />
+    </CreateItem>
+
+    <Zip Files="@(ZipFiles)"
+         WorkingDirectory="$(ImageDir)"
+         ZipFileName="$(DistDir)\GallioBundle-$(Version).zip"
+         ZipLevel="9" />
+  </Target>
+
+
+  <!-- SUPPORT CODE: SOURCE SERVER INDEXING -->
+
+  <Target Name="BuildSourceServerIndex">
+    <Warning Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs."
+             Condition="! Exists('$(SourceServerIndexerPath)')" />
+
+    <Exec Command="&quot;$(SourceServerIndexerPath)&quot; -System=svn -Ini=&quot;$(SourceDir)\src\srcsrv.ini&quot; -Source=&quot;$(SourceDir)\src&quot; -Symbols=&quot;$(ImageDir)\bin&quot;"
+          Condition="Exists('$(SourceServerIndexerPath)')" />
+  </Target>
+
+
+  <!-- SUPPORT CODE: TESTS -->
+  
+  <UsingTask AssemblyFile="$(NCoverExplorerPath)\NCoverExplorer.MSBuildTasks.dll" TaskName="NCoverExplorer.MSBuildTasks.NCoverExplorer" />
+
+  <!-- Note: The Gallio MSBuildTasks assembly gets loaded lazily so it's ok
+       to reference it even when it has yet to be build. -->
+  <UsingTask AssemblyFile="$(ImageDir)\bin\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
+
+  <PropertyGroup>
+    <TestRunnerType Condition="$(Coverage)">NCover2</TestRunnerType>
+    <TestRunnerType Condition="! $(Coverage)">IsolatedProcess</TestRunnerType>
+  </PropertyGroup>
+  <Target Name="RunTestAssemblies">
+    <Gallio Assemblies="@(TestAssembly)"
+            WorkingDirectory="$(TempDir)"
+            ApplicationBaseDirectory="$(BuildDir)"
+            ReportDirectory="$(ReportDir)"
+            ReportTypes="$(ReportTypes)"
+            RunnerType="$(TestRunnerType)"
+            ShowReports="$(ShowReports)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Gallio>
+
+    <NCoverExplorer Condition="$(Coverage) and Exists('$(TempDir)\Coverage.xml')"
+                    Exclusions="Assembly=*.Tests;Assembly=*.TestResources;Assembly=JetBrains.*"
+                    XmlReportName="CoverageSummary.xml"
+                    ReportType="ModuleClassFunctionSummary"
+                    ToolPath="$(NCoverExplorerPath)"
+                    OutputDir="$(ReportDir)"
+                    CoverageFiles="$(TempDir)\Coverage.xml"
+                    SatisfactoryCoverage="$(SatisfactoryCoverage)" />
+
+    <Exec Command="cscript $(BinDir)\Run.vbs //nologo &quot;&quot;$(NCoverExplorerPath)\NCoverExplorer.exe&quot; &quot;$(TempDir)\Coverage.xml&quot;&quot;"
+          Condition="$(ShowReports) and $(Coverage) and Exists('$(TempDir)\Coverage.xml')" />
+
+    <Error Text="Some tests failed!"
+             Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
+    <Warning Text="Some tests failed!"
+             Condition="'$(ExitCode)'!='0' and $(IgnoreFailures)" />
+  </Target>  
+
+</Project>

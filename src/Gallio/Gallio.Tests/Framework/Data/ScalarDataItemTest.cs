@@ -71,5 +71,16 @@ namespace Gallio.Tests.Framework.Data
 
             Assert.AreEqual(42, value);
         }
+
+        [Test]
+        public void CanGetDescriptiveDataBindingsFromItem()
+        {
+            ScalarDataItem<string> item = new ScalarDataItem<string>("abc", null, false);
+
+            Assert.AreElementsEqual(new[]
+            {
+                new DataBinding(0, null)
+            }, item.GetBindingsForInformalDescription());
+        }
     }
 }

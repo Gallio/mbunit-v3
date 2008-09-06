@@ -36,87 +36,93 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Evaluates an assertion over matched pairs of expected and actual values
-        /// taken from each sequence.
+        /// Evaluates an assertion over pairs of values taken from two sequences.
+        /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
-        /// <typeparam name="TExpected">The expected value type</typeparam>
-        /// <typeparam name="TActual">The actual value type</typeparam>
-        /// <param name="expectedSequence">The sequence of expected values, or null</param>
-        /// <param name="actualSequence">The sequence of actual values, or null</param>
-        /// <param name="assertion">The assertion to evaluate given an expected value
-        /// and an actual value</param>
-        public void Pairs<TExpected, TActual>(IEnumerable<TExpected> expectedSequence,
-            IEnumerable<TActual> actualSequence, Action<TExpected, TActual> assertion)
+        /// <typeparam name="TLeftValue">The left value type</typeparam>
+        /// <typeparam name="TRightValue">The right value type</typeparam>
+        /// <param name="leftSequence">The left sequence, or null</param>
+        /// <param name="rightSequence">The right sequence, or null</param>
+        /// <param name="assertion">The assertion to evaluate given a left value and a right value</param>
+        public void Pairs<TLeftValue, TRightValue>(IEnumerable<TLeftValue> leftSequence,
+            IEnumerable<TRightValue> rightSequence, Action<TLeftValue, TRightValue> assertion)
         {
-            Pairs(expectedSequence, actualSequence, assertion, null, null);
+            Pairs(leftSequence, rightSequence, assertion, null, null);
         }
 
         /// <summary>
-        /// Evaluates an assertion over matched pairs of expected and actual values
-        /// taken from each sequence.
+        /// Evaluates an assertion over pairs of values taken from two sequence.
+        /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
-        /// <typeparam name="TExpected">The expected value type</typeparam>
-        /// <typeparam name="TActual">The actual value type</typeparam>
-        /// <param name="expectedSequence">The sequence of expected values, or null</param>
-        /// <param name="actualSequence">The sequence of actual values, or null</param>
-        /// <param name="assertion">The assertion to evaluate given an expected value
-        /// and an actual value</param>
+        /// <typeparam name="TLeftValue">The left value type</typeparam>
+        /// <typeparam name="TRightValue">The right value type</typeparam>
+        /// <param name="leftSequence">The left sequence, or null</param>
+        /// <param name="rightSequence">The right sequence, or null</param>
+        /// <param name="assertion">The assertion to evaluate given a left value and a right value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        public void Pairs<TExpected, TActual>(IEnumerable<TExpected> expectedSequence,
-            IEnumerable<TActual> actualSequence, Action<TExpected, TActual> assertion,
+        public void Pairs<TLeftValue, TRightValue>(IEnumerable<TLeftValue> leftSequence,
+            IEnumerable<TRightValue> rightSequence, Action<TLeftValue, TRightValue> assertion,
             string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
             {
-                if (expectedSequence == null)
-                {
-                    if (actualSequence == null)
-                        return null;
+                if (leftSequence == null && rightSequence == null)
+                    return null;
 
-                    return new AssertionFailureBuilder("Expected the expected and actual sequences to either both be null or both be non-null.")
-                        .SetRawExpectedValue(expectedSequence)
-                        .SetRawActualValue(actualSequence)
-                        .SetMessage(messageFormat, messageFormat)
+                if (leftSequence == null || rightSequence == null)
+                {
+                    return new AssertionFailureBuilder(
+                        "Expected the left and right sequences to either both be null or both be non-null.")
+                        .SetMessage(messageFormat, messageArgs)
+                        .SetRawLabeledValue("Left Sequence", leftSequence)
+                        .SetRawLabeledValue("Right Sequence", rightSequence)
                         .ToAssertionFailure();
                 }
 
                 int index = 0;
-                IEnumerator<TExpected> expectedEnumerator = expectedSequence.GetEnumerator();
-                IEnumerator<TActual> actualEnumerator = actualSequence.GetEnumerator();
-                while (expectedEnumerator.MoveNext())
+                IEnumerator<TLeftValue> leftEnumerator = leftSequence.GetEnumerator();
+                IEnumerator<TRightValue> rightEnumerator = rightSequence.GetEnumerator();
+                while (leftEnumerator.MoveNext())
                 {
-                    if (!actualEnumerator.MoveNext())
+                    if (!rightEnumerator.MoveNext())
                     {
-                        return new AssertionFailureBuilder(String.Format("The expected value sequence has {0} elements but the actual value sequence has {1}.",
-                            1 + index + CountRemainingElements(expectedEnumerator), index))
+                        return new AssertionFailureBuilder("Expected the left and right sequences to have the same number of elements.")
                             .SetMessage(messageFormat, messageArgs)
-                            .SetRawExpectedAndActualValueWithDiffs(expectedSequence, actualSequence)
+                            .SetRawLabeledValue("Left Sequence Count", 1 + index + CountRemainingElements(leftEnumerator))
+                            .SetRawLabeledValue("Right Sequence Count", index)
+                            .SetRawLabeledValue("Left Sequence", leftSequence)
+                            .SetRawLabeledValue("Right Sequence", rightSequence)
                             .ToAssertionFailure();
                     }
 
                     AssertionFailure[] failures = AssertionHelper.Eval(delegate
                     {
-                        assertion(expectedEnumerator.Current, actualEnumerator.Current);
+                        assertion(leftEnumerator.Current, rightEnumerator.Current);
                     });
 
                     if (failures.Length != 0)
                     {
-                        return new AssertionFailureBuilder(String.Format("Assertion failed at index {0}.", index))
+                        return new AssertionFailureBuilder("Assertion failed on two values at a particular index within both sequences.")
                             .SetMessage(messageFormat, messageArgs)
-                            .SetRawExpectedAndActualValueWithDiffs(expectedSequence, actualSequence)
+                            .SetLabeledValue("Index", index.ToString())
+                            .SetRawLabeledValue("Left Sequence", leftSequence)
+                            .SetRawLabeledValue("Right Sequence", rightSequence)
+                            .AddInnerFailures(failures)
                             .ToAssertionFailure();
                     }
 
                     index += 1;
                 }
 
-                if (actualEnumerator.MoveNext())
+                if (rightEnumerator.MoveNext())
                 {
-                    return new AssertionFailureBuilder(String.Format("The expected value sequence has {0} elements but the actual value sequence has {1}.",
-                        index, index + CountRemainingElements(actualEnumerator) + 1))
+                    return new AssertionFailureBuilder("Expected the left and right sequences to have the same number of elements.")
                         .SetMessage(messageFormat, messageArgs)
-                        .SetRawExpectedAndActualValueWithDiffs(expectedSequence, actualSequence)
+                        .SetRawLabeledValue("Left Sequence Count", index)
+                        .SetRawLabeledValue("Right Sequence Count", index + CountRemainingElements(rightEnumerator) + 1)
+                        .SetRawLabeledValue("Left Sequence", leftSequence)
+                        .SetRawLabeledValue("Right Sequence", rightSequence)
                         .ToAssertionFailure();
                 }
 
@@ -125,132 +131,129 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Evaluates an assertion with matched pairs with identical keys drawn from a
-        /// dictionary of expected and actual values that have identical keys.
+        /// Evaluates an assertion over key/value pairs with identical keys drawn from two dictionaries.
         /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
         /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TExpectedValue">The expected value type</typeparam>
-        /// <typeparam name="TActualValue">The expected value type</typeparam>
-        /// <param name="expectedDictionary">The dictionary of expected values</param>
-        /// <param name="actualDictionary">The dictionary of actual values</param>
-        /// <param name="assertion">The assertion to evaluate over all pairs, with the expected value as first
-        /// argument, and actual value as second</param>
+        /// <typeparam name="TLeftValue">The expected value type</typeparam>
+        /// <typeparam name="TRightValue">The expected value type</typeparam>
+        /// <param name="leftDictionary">The left dictionary, or null</param>
+        /// <param name="rightDictionary">The right dictionary, or null</param>
+        /// <param name="assertion">The assertion to evaluate over all pairs, with the left value as first
+        /// argument, and right value as second</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public void KeyedPairs<TKey, TExpectedValue, TActualValue>(IDictionary<TKey, TExpectedValue> expectedDictionary,
-            IDictionary<TKey, TActualValue> actualDictionary, Action<TExpectedValue, TActualValue> assertion)
+        public void KeyedPairs<TKey, TLeftValue, TRightValue>(IDictionary<TKey, TLeftValue> leftDictionary,
+            IDictionary<TKey, TRightValue> rightDictionary, Action<TLeftValue, TRightValue> assertion)
         {
-            KeyedPairs(expectedDictionary, actualDictionary, (key, expectedValue, actualValue) => assertion(expectedValue, actualValue));
+            KeyedPairs(leftDictionary, rightDictionary, (key, expectedValue, actualValue) => assertion(expectedValue, actualValue));
         }
 
         /// <summary>
-        /// Evaluates an assertion with matched pairs with identical keys drawn from a
-        /// dictionary of expected and actual values that have identical keys.
+        /// Evaluates an assertion over key/value pairs with identical keys drawn from two dictionaries.
         /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
         /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TExpectedValue">The expected value type</typeparam>
-        /// <typeparam name="TActualValue">The expected value type</typeparam>
-        /// <param name="expectedDictionary">The dictionary of expected values</param>
-        /// <param name="actualDictionary">The dictionary of actual values</param>
-        /// <param name="assertion">The assertion to evaluate over all pairs, with the key as first argument,
-        /// expected value as second, and actual value as third</param>
+        /// <typeparam name="TLeftValue">The expected value type</typeparam>
+        /// <typeparam name="TRightValue">The expected value type</typeparam>
+        /// <param name="leftDictionary">The left dictionary, or null</param>
+        /// <param name="rightDictionary">The right dictionary, or null</param>
+        /// <param name="assertion">The assertion to evaluate over all pairs, with the key as first
+        /// argument, left value as second, and right value as third</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public void KeyedPairs<TKey, TExpectedValue, TActualValue>(IDictionary<TKey, TExpectedValue> expectedDictionary,
-            IDictionary<TKey, TActualValue> actualDictionary, Action<TKey, TExpectedValue, TActualValue> assertion)
+        public void KeyedPairs<TKey, TLeftValue, TRightValue>(IDictionary<TKey, TLeftValue> leftDictionary,
+            IDictionary<TKey, TRightValue> rightDictionary, Action<TKey, TLeftValue, TRightValue> assertion)
         {
-            KeyedPairs(expectedDictionary, actualDictionary, assertion, null, null);
+            KeyedPairs(leftDictionary, rightDictionary, assertion, null, null);
         }
 
         /// <summary>
-        /// Evaluates an assertion with matched pairs with identical keys drawn from a
-        /// dictionary of expected and actual values that have identical keys.
+        /// Evaluates an assertion over key/value pairs with identical keys drawn from two dictionaries.
         /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
         /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TExpectedValue">The expected value type</typeparam>
-        /// <typeparam name="TActualValue">The expected value type</typeparam>
-        /// <param name="expectedDictionary">The dictionary of expected values</param>
-        /// <param name="actualDictionary">The dictionary of actual values</param>
-        /// <param name="assertion">The assertion to evaluate over all pairs, with the key as first argument,
-        /// expected value as second, and actual value as third</param>
+        /// <typeparam name="TLeftValue">The expected value type</typeparam>
+        /// <typeparam name="TRightValue">The expected value type</typeparam>
+        /// <param name="leftDictionary">The left dictionary, or null</param>
+        /// <param name="rightDictionary">The right dictionary, or null</param>
+        /// <param name="assertion">The assertion to evaluate over all pairs, with the left value as first
+        /// argument, and right value as second</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public void KeyedPairs<TKey, TExpectedValue, TActualValue>(IDictionary<TKey, TExpectedValue> expectedDictionary,
-            IDictionary<TKey, TActualValue> actualDictionary, Action<TExpectedValue, TActualValue> assertion,
+        public void KeyedPairs<TKey, TLeftValue, TRightValue>(IDictionary<TKey, TLeftValue> leftDictionary,
+            IDictionary<TKey, TRightValue> rightDictionary, Action<TLeftValue, TRightValue> assertion,
             string messageFormat, params object[] messageArgs)
         {
-            KeyedPairs(expectedDictionary, actualDictionary, (key, expectedValue, actualValue) => assertion(expectedValue, actualValue),
+            KeyedPairs(leftDictionary, rightDictionary, (key, expectedValue, actualValue) => assertion(expectedValue, actualValue),
                 messageFormat, messageArgs);
         }
 
         /// <summary>
-        /// Evaluates an assertion with matched pairs with identical keys drawn from a
-        /// dictionary of expected and actual values that have identical keys.
+        /// Evaluates an assertion over key/value pairs with identical keys drawn from two dictionaries.
         /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
         /// <typeparam name="TKey">The key type</typeparam>
-        /// <typeparam name="TExpectedValue">The expected value type</typeparam>
-        /// <typeparam name="TActualValue">The expected value type</typeparam>
-        /// <param name="expectedDictionary">The dictionary of expected values</param>
-        /// <param name="actualDictionary">The dictionary of actual values</param>
-        /// <param name="assertion">The assertion to evaluate over all pairs, with the key as first argument,
-        /// expected value as second, and actual value as third</param>
+        /// <typeparam name="TLeftValue">The expected value type</typeparam>
+        /// <typeparam name="TRightValue">The expected value type</typeparam>
+        /// <param name="leftDictionary">The left dictionary, or null</param>
+        /// <param name="rightDictionary">The right dictionary, or null</param>
+        /// <param name="assertion">The assertion to evaluate over all pairs, with the key as first
+        /// argument, left value as second, and right value as third</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public void KeyedPairs<TKey, TExpectedValue, TActualValue>(IDictionary<TKey, TExpectedValue> expectedDictionary,
-            IDictionary<TKey, TActualValue> actualDictionary, Action<TKey, TExpectedValue, TActualValue> assertion,
+        public void KeyedPairs<TKey, TLeftValue, TRightValue>(IDictionary<TKey, TLeftValue> leftDictionary,
+            IDictionary<TKey, TRightValue> rightDictionary, Action<TKey, TLeftValue, TRightValue> assertion,
             string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
             {
-                if (expectedDictionary == null)
-                {
-                    if (actualDictionary == null)
-                        return null;
+                if (leftDictionary == null && rightDictionary == null)
+                    return null;
 
-                    return new AssertionFailureBuilder("Expected the expected and actual dictionaries to either both be null or both be non-null.")
-                        .SetRawLabeledValue("Expected Dictionary", expectedDictionary)
-                        .SetRawLabeledValue("Actual Dictionary", actualDictionary)
-                        .SetMessage(messageFormat, messageFormat)
+                if (leftDictionary == null || rightDictionary == null)
+                {
+                    return new AssertionFailureBuilder("Expected the left and right dictionaries to either both be null or both be non-null.")
+                        .SetMessage(messageFormat, messageArgs)
+                        .SetRawLabeledValue("Left Dictionary", leftDictionary)
+                        .SetRawLabeledValue("Right Dictionary", rightDictionary)
                         .ToAssertionFailure();
                 }
 
-                if (expectedDictionary.Count != actualDictionary.Count)
-                    return new AssertionFailureBuilder(String.Format("The expected and actual dictionaries have a different number of items."))
-                        .SetRawLabeledValue("Expected Dictionary Count", expectedDictionary.Count)
-                        .SetRawLabeledValue("Actual Dictionary Count", actualDictionary.Count)
-                        .SetRawLabeledValue("Expected Dictionary", expectedDictionary)
-                        .SetRawLabeledValue("Actual Dictionary", actualDictionary)
+                if (leftDictionary.Count != rightDictionary.Count)
+                    return new AssertionFailureBuilder("Expected the left and right dictionaries to have the same number of items.")
+                        .SetRawLabeledValue("Left Dictionary Count", leftDictionary.Count)
+                        .SetRawLabeledValue("Right Dictionary Count", rightDictionary.Count)
+                        .SetRawLabeledValue("Left Dictionary", leftDictionary)
+                        .SetRawLabeledValue("Right Dictionary", rightDictionary)
                         .SetMessage(messageFormat, messageArgs)
                         .ToAssertionFailure();
 
-                foreach (KeyValuePair<TKey, TExpectedValue> expectedPair in expectedDictionary)
+                foreach (KeyValuePair<TKey, TLeftValue> leftPair in leftDictionary)
                 {
-                    TKey key = expectedPair.Key;
-                    TActualValue actualValue;
-                    if (!actualDictionary.TryGetValue(key, out actualValue))
-                        return new AssertionFailureBuilder("Actual collection does not contain a value for a particular key.")
+                    TKey key = leftPair.Key;
+                    TRightValue rightValue;
+                    if (!rightDictionary.TryGetValue(key, out rightValue))
+                        return new AssertionFailureBuilder("Right dictionary does not contain a value for a particular key that is in the left dictionary.")
                             .SetRawLabeledValue("Missing Key", key)
-                            .SetRawLabeledValue("Expected Dictionary", expectedDictionary)
-                            .SetRawLabeledValue("Actual Dictionary", actualDictionary)
+                            .SetRawLabeledValue("Left Dictionary", leftDictionary)
+                            .SetRawLabeledValue("Right Dictionary", rightDictionary)
                             .SetMessage(messageFormat, messageFormat)
                             .ToAssertionFailure();
 
                     AssertionFailure[] failures = AssertionHelper.Eval(delegate
                     {
-                        assertion(key, expectedPair.Value, actualValue);
+                        assertion(key, leftPair.Value, rightValue);
                     });
 
                     if (failures.Length != 0)
                     {
-                        return new AssertionFailureBuilder(String.Format("Assertion failed on a particular key."))
-                            .SetRawLabeledValue("Failed Key", key)
-                            .SetRawLabeledValue("Expected Dictionary", expectedDictionary)
-                            .SetRawLabeledValue("Actual Dictionary", actualDictionary)
+                        return new AssertionFailureBuilder("Assertion failed on two pairs with a particular key in both dictionaries.")
+                            .SetRawLabeledValue("Key", key)
+                            .SetRawLabeledValue("Left Dictionary", leftDictionary)
+                            .SetRawLabeledValue("Right Dictionary", rightDictionary)
                             .SetMessage(messageFormat, messageArgs)
+                            .AddInnerFailures(failures)
                             .ToAssertionFailure();
                     }
                 }

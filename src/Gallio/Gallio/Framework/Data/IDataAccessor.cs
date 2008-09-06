@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Gallio.Framework.Data
 {
     /// <summary>
@@ -25,6 +27,8 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="item">The data item</param>
         /// <returns>The value</returns>
+        /// <exception cref="DataBindingException">Thrown if the data binding fails</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is null</exception>
         object GetValue(IDataItem item);
     }
 }

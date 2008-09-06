@@ -1,0 +1,7 @@
+castle.core.dll
+castle.dynamicproxy2.dll
+castle.microkernel.dll
+castle.windsor.dll
+mono.cecil.dll
+gallio.xmlserializers.dll
+gallio.host.exe

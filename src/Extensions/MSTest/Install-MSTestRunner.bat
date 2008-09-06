@@ -6,10 +6,10 @@ set LOCALDIR=%~dp0
 set OPTION=%~1
 set SRCDIR=%LOCALDIR%..\..\
 set ROOTDIR=%SRCDIR%..\
-set LIBSDIR=%ROOTDIR%libs\
+set BINDIR=%BINDIR%bin\
 
-set REG=%LIBSDIR%Tools\reg.exe
-set SED=%LIBSDIR%Tools\minised.exe
+set REG=%BINDIR%reg.exe
+set SED=%BINDIR%minised.exe
 
 set MSTESTRUNNER_BIN_DIR=%LOCALDIR%Gallio.MSTestRunner\bin
 

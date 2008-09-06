@@ -1,0 +1,22 @@
+<!--
+  This MetaBuild add-in defines the semantics of several new declarative
+  build items that are used by Gallio build modules.
+
+       - TestAssembly: Path of a compiled test assembly to run.
+
+       - DocumentedAssembly: Path of an assembly with XML documentation to include.
+
+       - Binary: Path of a file to copy into the build\image\bin dir.
+       - Document: Path of a file to copy into the build\image\docs dir.
+       - Extra: Path of a file to copy into the build\image\extras dir.
+       - Content: Path of a file to copy into the build\image dir.
+
+       - Feature: Indicates whether a conditional WiX feature has been compiled.
+
+       (Binary, Document, Extra and Content may have optional Folder metadata
+        to specify a relative destination path within the respective dir.)
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="Gallio.BuildSemantics.shell.ext"
+          Condition="'$(MetaBuildProjectType)'=='Shell'" />
+</Project>

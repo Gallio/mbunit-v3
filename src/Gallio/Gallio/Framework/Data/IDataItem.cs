@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Model;
 
 namespace Gallio.Framework.Data
@@ -75,5 +76,12 @@ namespace Gallio.Framework.Data
         /// <exception cref="DataBindingException">Thrown if the <paramref name="binding"/>
         /// cannot be resolved or if its value cannot be obtained</exception>
         object GetValue(DataBinding binding);
+
+        /// <summary>
+        /// Gets an enumeration of the data bindings that may be queried to informally describe
+        /// its contents.  The enumeration of bindings may not be complete.
+        /// </summary>
+        /// <returns>The enumeration of bindings</returns>
+        IEnumerable<DataBinding> GetBindingsForInformalDescription();
     }
 }

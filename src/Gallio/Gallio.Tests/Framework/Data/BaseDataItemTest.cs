@@ -56,6 +56,11 @@ namespace Gallio.Tests.Framework.Data
             {
                 throw new NotImplementedException();
             }
+
+            public override IEnumerable<DataBinding> GetBindingsForInformalDescription()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

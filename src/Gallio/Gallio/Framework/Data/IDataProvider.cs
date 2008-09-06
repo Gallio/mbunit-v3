@@ -26,6 +26,7 @@ namespace Gallio.Framework.Data
     {
         /// <summary>
         /// Gets an enumeration of data items that can supply values for a given collection of bindings.
+        /// It should produce items even if some of the requested bindings cannot be fulfilled.
         /// </summary>
         /// <param name="bindings">The bindings that are requested</param>
         /// <param name="includeDynamicItems">If true, includes items that may be dynamically

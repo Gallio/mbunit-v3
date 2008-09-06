@@ -1,5 +1,5 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(RootDir)\Module.targets" />
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
     <CSharpProject Include="Gallio\Gallio.csproj" />
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <File Include="Gallio Website.url" />
+    <Content Include="Gallio Website.url" />
   
     <Binary Include="Gallio\bin\Gallio.XmlSerializers.dll" />
     <Binary Include="Gallio\Gallio.plugin" />
@@ -40,7 +40,7 @@
     <TestAssembly Include="Gallio.Tests\bin\Gallio.Tests.dll" />
   </ItemGroup>
 
-  <Target Name="AfterBuild">
-    <Exec Command="&quot;$(LibsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; &quot;Gallio\bin\Castle.Core.dll&quot; &quot;Gallio\bin\Castle.MicroKernel.dll&quot; &quot;Gallio\bin\Castle.Windsor.dll&quot; &quot;Gallio\bin\Castle.DynamicProxy2.dll&quot; &quot;Gallio\bin\Mono.Cecil.dll&quot; /internalize &quot;/out:$(TargetBinDir)\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+  <Target Name="AfterImage">
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; &quot;Gallio\bin\Castle.Core.dll&quot; &quot;Gallio\bin\Castle.MicroKernel.dll&quot; &quot;Gallio\bin\Castle.Windsor.dll&quot; &quot;Gallio\bin\Castle.DynamicProxy2.dll&quot; &quot;Gallio\bin\Mono.Cecil.dll&quot; /internalize &quot;/out:$(ImageDir)\bin\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\src\Key.snk&quot;" />
   </Target>
 </Project>

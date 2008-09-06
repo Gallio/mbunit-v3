@@ -796,11 +796,19 @@ namespace MbUnit.Tests.Framework
 
 
         [TestFrameworkInternal]
-        private static AssertionFailure[] Capture(Gallio.Action action)
+        public static AssertionFailure[] Capture(Gallio.Action action)
         {
-            AssertionFailure[] failures = AssertionHelper.Eval(action, AssertionFailureBehavior.Throw);
-            foreach (AssertionFailure failure in failures)
-                failure.WriteTo(TestLog.Default);
+            AssertionFailure[] failures = AssertionHelper.Eval(action);
+
+            if (failures.Length != 0)
+            {
+                using (TestLog.BeginSection("Captured Assertion Failures"))
+                {
+                    foreach (AssertionFailure failure in failures)
+                        failure.WriteTo(TestLog.Default);
+                }
+            }
+
             return failures;
         }
 

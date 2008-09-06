@@ -92,7 +92,6 @@ namespace Gallio.Framework.Data
         public virtual bool Equals(DataBinding other)
         {
             return other != null
-                && GetType() == other.GetType()
                 && Index == other.Index
                 && Path == other.Path;
         }
