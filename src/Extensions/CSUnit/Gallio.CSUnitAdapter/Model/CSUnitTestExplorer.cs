@@ -60,8 +60,15 @@ namespace Gallio.CSUnitAdapter.Model
 
         private static Version GetFrameworkVersion(IAssemblyInfo assembly)
         {
-            AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, CSUnitAssemblyDisplayName);
-            return frameworkAssemblyName != null ? frameworkAssemblyName.Version : null;
+            if (assembly != null)
+            {
+                AssemblyName frameworkAssemblyName = ReflectionUtils.FindAssemblyReference(assembly, CSUnitAssemblyDisplayName);
+                if (frameworkAssemblyName != null)
+                {
+                    return frameworkAssemblyName.Version;
+                }
+            }
+            return null;
         }
 
         private ITest GetFrameworkTest(Version frameworkVersion, ITest rootTest)
@@ -83,23 +90,163 @@ namespace Gallio.CSUnitAdapter.Model
         private ITest GetAssemblyTest(IAssemblyInfo assembly, ITest frameworkTest)
         {
             ITest assemblyTest;
-            if (!assemblyTests.TryGetValue(assembly, out assemblyTest))
+            if (assemblyTests.TryGetValue(assembly, out assemblyTest))
+                return assemblyTest;
+
+            try
             {
-                assemblyTest = CreateAssemblyTest(assembly);
-                if (assemblyTest != null)
-                {
-                    frameworkTest.AddChild(assemblyTest);
-                    
-                    assemblyTests.Add(assembly, assemblyTest);
-                }
+                Assembly loadedAssembly = assembly.Resolve(false);
+
+                if (loadedAssembly != null)
+                    assemblyTest = BuildAssemblyTest_Native(assembly, loadedAssembly.Location);
+                else
+                    assemblyTest = BuildAssemblyTest_Reflective(assembly);
+            }
+            catch (Exception ex)
+            {
+                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly,
+                    "An exception was thrown while exploring a csUnit test assembly.", ex));
+                return null;
+            }
+
+            if (assemblyTest != null)
+            {
+                frameworkTest.AddChild(assemblyTest);
+                
+                assemblyTests.Add(assembly, assemblyTest);
             }
             return assemblyTest;
         }
 
+        internal ITest BuildAssemblyTest_Native(IAssemblyInfo assembly, string location)
+        {
+            if (String.IsNullOrEmpty(location))
+                throw new ArgumentNullException("location");
+
+            // Load the assembly using the native CSUnit loader.
+            using (Loader loader = new Loader(location))
+            {
+                // Construct the test tree
+                return CreateAssemblyTest(assembly, location, delegate(ITest assemblyTest)
+                {
+                    TestFixtureInfoCollection collection = loader.TestFixtureInfos;
+                    if (collection == null)
+                        return;
+
+                    foreach (ITestFixtureInfo fixtureInfo in collection)
+                    {
+                        try
+                        {
+                            ITypeInfo fixtureType = assembly.GetType(fixtureInfo.FullName);
+
+                            assemblyTest.AddChild(CreateFixtureFromType(fixtureType, delegate(ITest fixtureTest)
+                            {
+                                if (fixtureInfo.TestMethods == null)
+                                    return;
+
+                                foreach (ITestMethodInfo testMethodInfo in fixtureInfo.TestMethods)
+                                {
+                                    try
+                                    {
+                                        IMethodInfo methodType = fixtureType.GetMethod(testMethodInfo.Name,
+                                            BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
+
+                                        fixtureTest.AddChild(CreateTestFromMethod(methodType, null));
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        TestModel.AddAnnotation(new Annotation(AnnotationType.Error, fixtureType,
+                                            "An exception was thrown while exploring a csUnit test case.", ex));
+                                    }
+                                }
+                            }));
+                        }
+                        catch (Exception ex)
+                        {
+                            TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly,
+                                "An exception was thrown while exploring a csUnit test fixture.", ex));
+                        }
+                    }
+                });
+            }
+        }
+
+        internal ITest BuildAssemblyTest_Reflective(IAssemblyInfo assembly)
+        {
+            // Construct the test tree
+            return CreateAssemblyTest(assembly, String.Empty, delegate(ITest assemblyTest)
+            {
+                foreach (ITypeInfo fixtureType in assembly.GetExportedTypes())
+                {
+                    if (!IsTestFixture(fixtureType))
+                        continue;
+
+                    assemblyTest.AddChild(CreateFixtureFromType(fixtureType, delegate(ITest fixtureTest)
+                    {
+                        foreach (IMethodInfo methodType in fixtureType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
+                        {
+                            if (!IsTestCase(methodType))
+                                continue;
+
+                            fixtureTest.AddChild(CreateTestFromMethod(methodType, null));
+                        }
+                    }));
+                }
+            });
+        }
+
+        internal static bool IsTestFixture(ITypeInfo fixture)
+        {
+            if (fixture.IsAbstract)
+                return false;
+
+            if (AttributeUtils.HasAttribute<TestFixtureAttribute>(fixture, true))
+                return true;
+
+            if (fixture.Name.EndsWith("Test"))
+                return true;
+
+            return false;
+        }
+
+        internal static bool IsTestCase(IMethodInfo method)
+        {
+            if (method.ReturnType.FullName != "System.Void")
+                return false;
+
+            //if (method.IsGenericMethod)
+            //    return false;
+
+            if (AttributeUtils.HasAttribute<FixtureSetUpAttribute>(method, true) ||
+                AttributeUtils.HasAttribute<FixtureTearDownAttribute>(method, true))
+                return false;
+
+            if (AttributeUtils.HasAttribute<SetUpAttribute>(method, true) ||
+                AttributeUtils.HasAttribute<TearDownAttribute>(method, true))
+                return false;
+
+            if (method.Name.ToLower().Equals("setup") ||
+                method.Name.ToLower().Equals("teardown"))
+                return false;
+
+            if (AttributeUtils.HasAttribute<TestAttribute>(method, true))
+                return true;
+
+            if (method.Parameters.Count > 0)
+                return false; // Parameterized tests must have an attribute
+
+            if (method.Name.ToLower().StartsWith("test"))
+                return true;
+
+            return false;
+        }
+
+        #region Test creation methods
+
         private static ITest CreateFrameworkTest(Version frameworkVersion)
         {
             string name = String.Format(Resources.CSUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
-            
+
             BaseTest frameworkTest = new BaseTest(name, null);
             frameworkTest.BaselineLocalId = Resources.CSUnitTestFramework_FrameworkName;
             frameworkTest.Kind = TestKinds.Framework;
@@ -107,86 +254,54 @@ namespace Gallio.CSUnitAdapter.Model
             return frameworkTest;
         }
 
-        private ITest CreateAssemblyTest(IAssemblyInfo assembly)
+        private static ITest CreateAssemblyTest(IAssemblyInfo assembly, string assemblyLocation, Action<ITest> consumer)
         {
-            // Resolve test assembly.
-            string location;
-            try
-            {
-                location = assembly.Resolve(true).Location;
-            }
-            catch (Exception ex)
-            {
-                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly,
-                    "Could not resolve the location of an csUnit test assembly.", ex));
-                return null;
-            }
-            try
-            {
-                // Load the assembly using the native CSUnit loader.
-                Loader loader = new Loader(location);
+            CSUnitAssemblyTest assemblyTest = new CSUnitAssemblyTest(assembly, assemblyLocation);
+            assemblyTest.BaselineLocalId = assembly.Name; // used to do reverse lookup
+            assemblyTest.Kind = TestKinds.Assembly;
 
-                // TODO: Pure reflective loader for cases like ReSharper where the assembly has not been compiled yet.
+            PopulateAssemblyMetadata(assembly, assemblyTest.Metadata);
 
-                CSUnitAssemblyTest assemblyTest = new CSUnitAssemblyTest(assembly, location);
-                assemblyTest.BaselineLocalId = assembly.Name; // used to do reverse lookup
-                assemblyTest.Kind = TestKinds.Assembly;
+            if (consumer != null)
+                consumer(assemblyTest);
 
-                PopulateAssemblyMetadata(assembly, assemblyTest.Metadata);
-
-                foreach (ITestFixtureInfo testFixture in loader.TestFixtureInfos)
-                {
-                    ITest fixture = CreateTestFixture(assemblyTest, testFixture);
-
-                    assemblyTest.AddChild(fixture);
-                }
-                return assemblyTest;
-            }
-            catch (Exception ex)
-            {
-                TestModel.AddAnnotation(new Annotation(AnnotationType.Error, assembly,
-                    "An exception was thrown while exploring an csUnit test assembly.", ex));
-                return null;
-            }
+            return assemblyTest;
         }
 
-        private static ITest CreateTestFixture(CSUnitAssemblyTest parent, ITestFixtureInfo testFixture)
+        private static ITest CreateFixtureFromType(ITypeInfo fixtureType, Action<ITest> consumer)
         {
-            ICodeElementInfo codeElement = ((IAssemblyInfo)parent.CodeElement).GetType(testFixture.FullName);
-            
-            CSUnitTest fixture = new CSUnitTest(codeElement.Name, codeElement);
-            fixture.BaselineLocalId = testFixture.FullName; // used to do reverse lookup
-            fixture.Kind = TestKinds.Fixture;
+            CSUnitTest fixtureTest = new CSUnitTest(fixtureType.Name, fixtureType);
+            fixtureTest.BaselineLocalId = fixtureType.FullName; // used to do reverse lookup
+            fixtureTest.Kind = TestKinds.Fixture;
 
-            PopulateFixtureMetadata(fixture.CodeElement, fixture.Metadata);
+            PopulateFixtureMetadata(fixtureType, fixtureTest.Metadata);
 
-            if (testFixture.TestMethods != null)
-            {
-                foreach (ITestMethodInfo testMethod in testFixture.TestMethods)
-                {
-                    ITest method = CreateTest(fixture, testMethod);
+            if (consumer != null)
+                consumer(fixtureTest);
 
-                    fixture.AddChild(method);
-                }
-            }
-            return fixture;
+            return fixtureTest;
         }
 
-        private static ITest CreateTest(CSUnitTest parent, ITestMethodInfo testMethod)
+        private static ITest CreateTestFromMethod(IMethodInfo methodType, Action<BaseTest> consumer)
         {
-            ICodeElementInfo codeElement = ((ITypeInfo)parent.CodeElement).GetMethod(testMethod.Name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
-            
-            CSUnitTest method = new CSUnitTest(codeElement.Name, codeElement);
-            method.BaselineLocalId = testMethod.FullName; // used to do reverse lookup
+            CSUnitTest method = new CSUnitTest(methodType.Name, methodType);
+            method.BaselineLocalId = methodType.DeclaringType.FullName + @"." + methodType.Name; // used to do reverse lookup
             method.Kind = TestKinds.Test;
             method.IsTestCase = true;
 
-            PopulateMethodMetadata(method.CodeElement, method.Metadata);
+            PopulateMethodMetadata(methodType, method.Metadata);
+
+            if (consumer != null)
+                consumer(method);
 
             return method;
         }
 
-        public static void PopulateAssemblyMetadata(IAssemblyInfo codeElement, MetadataMap metadata)
+        #endregion
+
+        #region Populate Metadata methods
+
+        internal static void PopulateAssemblyMetadata(IAssemblyInfo codeElement, MetadataMap metadata)
         {
             ModelUtils.PopulateMetadataFromAssembly(codeElement, metadata);
 
@@ -198,7 +313,7 @@ namespace Gallio.CSUnitAdapter.Model
             }
         }
 
-        public static void PopulateFixtureMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
+        internal static void PopulateFixtureMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
         {
             foreach (TestFixtureAttribute attr in AttributeUtils.GetAttributes<TestFixtureAttribute>(codeElement, true))
             {
@@ -216,7 +331,7 @@ namespace Gallio.CSUnitAdapter.Model
             PopulateCommonMetadata(codeElement, metadata);
         }
 
-        public static void PopulateMethodMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
+        internal static void PopulateMethodMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
         {
             foreach (TestAttribute attr in AttributeUtils.GetAttributes<TestAttribute>(codeElement, true))
             {
@@ -261,7 +376,9 @@ namespace Gallio.CSUnitAdapter.Model
             {
                 metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
             }
-        }     
+        }
+
+        #endregion
     }
 
 }
