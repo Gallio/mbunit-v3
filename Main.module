@@ -14,7 +14,8 @@
     <VSIPSDKHelpPath Condition="'$(VSIPSDKHelpPath)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\8.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
     <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
-    <NCoverExplorerPath>$(ToolsDir)\NCoverExplorer</NCoverExplorerPath>    
+    <SourceServerIndexerPath Condition="! Exists('$(SourceServerIndexerPath)')">$(ProgramFiles)\Debugging Tools for Windows (x86)\srcsrv\ssindex.cmd</SourceServerIndexerPath>
+    <NCoverExplorerPath>$(ToolsDir)\NCoverExplorer</NCoverExplorerPath>
   </PropertyGroup>
 
   <!-- ROOT CONTENT -->
@@ -77,15 +78,21 @@
 
   <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
   <Target Name="BuildXMLDocs">
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocXMLOptions)" />
+    <Message Text="Building XML Docs..."
+             Importance="High" />
+
+    <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocXMLOptions)" />
     <Delete Files="$(ImageDir)\bin\ndoc_qa.log;$(ImageDir)\bin\ndoc_build.log" />
   </Target>
 
   <Target Name="BuildCHMDocs">
-    <Warning Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in libs\Setup Files for the Microsoft HTML Help Workshop installer."
+    <Message Text="Building CHM Docs..."
+             Importance="High" />
+
+    <Warning Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in tools\Setup Files for the Microsoft HTML Help Workshop installer."
              Condition="! Exists('$(HTMLHelpCompilerPath)')" />
 
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocCHMOptions)"
+    <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocCHMOptions)"
           Condition="Exists('$(HTMLHelpCompilerPath)')" />
     <RemoveDir Directories="$(ImageDir)\docs\ndoc_msdn_temp" />
   </Target>
@@ -94,12 +101,15 @@
   </ItemGroup>
 
   <Target Name="BuildHxSDocs">
+    <Message Text="Building HxS Docs..."
+             Importance="High" />
+
     <Message Text="$(VSIPSDKHelpPath)" Importance="High" />
 
     <Warning Text="Visual Studio 2005 or 2008 SDK must be installed so that HTML Help 2 (HxS) documentation can be generated for integration with the Visual Studio help system.  Check Microsoft's site for the Visual Studio SDK installer."
            Condition="! Exists('$(VSIPSDKHelpPath)')" />
 
-    <Exec Command="&quot;$(LibsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
+    <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHxSOptions)"
           Condition="Exists('$(VSIPSDKHelpPath)')" />
     <RemoveDir Directories="$(ImageDir)\docs\vs\ndoc_htmlhelp2_temp" />
   </Target>
@@ -110,7 +120,10 @@
   <!-- SUPPORT CODE: INSTALLERS -->
 
   <Target Name="BuildInstaller">
-    <Warning Text="The NSIS tools must be installed to generate the installer.  Look in libs\Setup Files for the NSIS installer."
+    <Message Text="Building NSIS Installer..."
+             Importance="High" />
+
+    <Warning Text="The NSIS tools must be installed to generate the installer.  Look in tools\Setup Files for the NSIS installer."
              Condition="! Exists('$(NSISPath)')" />
 
     <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) /DROOTDIR=&quot;$(RootDir)&quot; &quot;$(SourceDir)\src\Installer\GallioBundle.nsi&quot;"
@@ -123,17 +136,19 @@
       Version=$(Version);
       TargetDir=$(ImageDir);
       ReleaseDir=$(DistDir);
-      WixTargetsPath=$(LibsDir)\Wix\Microsoft\WiX\v3.0\Wix.targets;
-      WixTasksPath=$(LibsDir)\Wix\Microsoft\WiX\v3.0\WixTasks.dll;
-      WixToolPath=$(LibsDir)\Wix\bin;
-      WixExtDir=$(LibsDir)\Wix\bin;
+      WixTargetsPath=$(ToolsDir)\Wix\Microsoft\WiX\v3.0\Wix.targets;
+      WixTasksPath=$(ToolsDir)\Wix\Microsoft\WiX\v3.0\WixTasks.dll;
+      WixToolPath=$(ToolsDir)\Wix\bin;
+      WixExtDir=$(ToolsDir)\Wix\bin;
       DefineSolutionProperties=false;
     </InstallerWixProperties>
     <InstallerFeatureFile>$(SourceDir)\src\Installer.Wix\Features.wxi</InstallerFeatureFile>
   </PropertyGroup>
 
   <Target Name="BuildInstallerWix">
-    <Message Text="Building installer..." Importance="High" />
+    <Message Text="Building WiX Installer..."
+             Importance="High" />
+
     <WriteLinesToFile File="$(InstallerFeatureFile)"
                       Lines="&lt;Include&gt;"
                       Overwrite="true" />
@@ -156,6 +171,9 @@
   </Target>
 
   <Target Name="BuildZip">
+    <Message Text="Build redistributable Zip archive..."
+             Importance="High" />
+
     <CreateItem Include="$(ImageDir)\**\*.*">
       <Output TaskParameter="Include" ItemName="ZipFiles" />
     </CreateItem>
@@ -170,6 +188,9 @@
   <!-- SUPPORT CODE: SOURCE SERVER INDEXING -->
 
   <Target Name="BuildSourceServerIndex">
+    <Message Text="Generating source server index..."
+             Importance="High" />
+
     <Warning Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs."
              Condition="! Exists('$(SourceServerIndexerPath)')" />
 
@@ -191,6 +212,9 @@
     <TestRunnerType Condition="! $(Coverage)">IsolatedProcess</TestRunnerType>
   </PropertyGroup>
   <Target Name="RunTestAssemblies">
+    <Message Text="Running unit tests..."
+             Importance="High" />
+
     <Gallio Assemblies="@(TestAssembly)"
             WorkingDirectory="$(TempDir)"
             ApplicationBaseDirectory="$(BuildDir)"

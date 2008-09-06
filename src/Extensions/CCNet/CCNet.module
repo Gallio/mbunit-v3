@@ -2,7 +2,7 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <PropertyGroup>
-    <ReportResourcesDir>$(RootDir)\src\Extensions\Reports\Gallio.Reports</ReportResourcesDir>
+    <ReportResourcesDir>$(SourceDir)\src\Extensions\Reports\Gallio.Reports</ReportResourcesDir>
   </PropertyGroup>
   
   <ItemGroup>

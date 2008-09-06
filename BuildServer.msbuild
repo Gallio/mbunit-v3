@@ -3,6 +3,7 @@
     <ShowReports>false</ShowReports>
     <ReportTypes>XML-Inline</ReportTypes>
     <Coverage>true</Coverage>
+    <Configuration>Release</Configuration>
 
     <Version>$(CCNetLabel)</Version>
     <SourceDir>$(MSBuildProjectDirectory)</SourceDir>

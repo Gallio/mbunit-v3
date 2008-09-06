@@ -13,6 +13,10 @@
 
        - Feature: Indicates whether a conditional WiX feature has been compiled.
 
+       - TemplateFile: Path of template directory to zip and metadata
+           specifying the Base dir and Zip file path to create in
+	   build\image\extras\Templates
+
        (Binary, Document, Extra and Content may have optional Folder metadata
         to specify a relative destination path within the respective dir.)
 -->

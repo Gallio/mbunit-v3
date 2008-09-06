@@ -1,27 +1,23 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
-  <PropertyGroup>
-    <TargetTemplatesDir>$(TargetExtrasDir)\Templates\VS2005</TargetTemplatesDir>
-  </PropertyGroup>
-
   <!-- C# Test Project -->
   <ItemGroup>
     <TemplateFile Include="MbUnit.TestProjectTemplate.CSharp.csproj">
       <Base>MbUnit.TestProjectTemplate.CSharp</Base>
-      <Zip>$(TargetTemplatesDir)\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2005\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.vstemplate">
       <Base>MbUnit.TestProjectTemplate.CSharp</Base>
-      <Zip>$(TargetTemplatesDir)\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2005\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.TestProjectTemplate.CSharp</Base>
-      <Zip>$(TargetTemplatesDir)\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2005\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Properties\AssemblyInfo.cs">
       <Base>MbUnit.TestProjectTemplate.CSharp</Base>
-      <Zip>$(TargetTemplatesDir)\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2005\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
   </ItemGroup>
 
@@ -29,19 +25,19 @@
   <ItemGroup>
     <TemplateFile Include="MbUnit.TestProjectTemplate.VisualBasic.vbproj">
       <Base>MbUnit.TestProjectTemplate.VisualBasic</Base>
-      <Zip>$(TargetTemplatesDir)\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2005\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.vstemplate">
       <Base>MbUnit.TestProjectTemplate.VisualBasic</Base>
-      <Zip>$(TargetTemplatesDir)\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2005\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.TestProjectTemplate.VisualBasic</Base>
-      <Zip>$(TargetTemplatesDir)\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2005\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="My Project\AssemblyInfo.vb">
       <Base>MbUnit.TestProjectTemplate.VisualBasic</Base>
-      <Zip>$(TargetTemplatesDir)\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2005\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
   </ItemGroup>
 
@@ -49,15 +45,15 @@
   <ItemGroup>
     <TemplateFile Include="TestFixture.cs">
       <Base>MbUnit.ItemTemplates.CSharp</Base>
-      <Zip>$(TargetTemplatesDir)\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
+      <Zip>VS2005\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="TestFixture.vstemplate">
       <Base>MbUnit.ItemTemplates.CSharp</Base>
-      <Zip>$(TargetTemplatesDir)\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
+      <Zip>VS2005\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.ItemTemplates.CSharp</Base>
-      <Zip>$(TargetTemplatesDir)\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
+      <Zip>VS2005\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
     </TemplateFile>
   </ItemGroup>
 
@@ -65,28 +61,15 @@
   <ItemGroup>
     <TemplateFile Include="TestFixture.vb">
       <Base>MbUnit.ItemTemplates.VisualBasic</Base>
-      <Zip>$(TargetTemplatesDir)\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2005\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="TestFixture.vstemplate">
       <Base>MbUnit.ItemTemplates.VisualBasic</Base>
-      <Zip>$(TargetTemplatesDir)\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2005\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.ItemTemplates.VisualBasic</Base>
-      <Zip>$(TargetTemplatesDir)\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2005\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
   </ItemGroup>
-
-  <Target Name="AfterBuild">
-    <CreateItem Include="%(TemplateFile.Zip)">
-      <Output TaskParameter="Include" ItemName="ZipFile" />
-    </CreateItem>
-
-    <MakeDir Directories="@(ZipFile->'%(RootDir)%(Directory)')" />
-
-    <Zip Files="@(TemplateFile->'%(Base)\%(Identity)')"
-         WorkingDirectory="%(Base)"
-         ZipFileName="%(Zip)"
-         ZipLevel="9" />
-  </Target>
 </Project>

@@ -1,7 +1,7 @@
-<Project InitialTargets="InitializeGallioBuildSemanticsAddIn" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <ItemDefinitionGroup>
     <Content>
-      <Folder />
+      <Folder>.</Folder>
     </Content>
 
     <Binary>
@@ -32,7 +32,12 @@
     <LibsDir>$(SourceDir)\libs</LibsDir>
   </PropertyGroup>
 
-  <Target Name="InitializeGallioBuildSemanticsAddIn">
+  <PropertyGroup>
+    <CoreLoadDependsOn>$(CoreLoadDependsOn);LoadGallioBuildSemanticsAddIn</CoreLoadDependsOn>
+    <CoreImageDependsOn>GenerateTemplateArchives;$(CoreImageDependsOn)</CoreImageDependsOn>
+  </PropertyGroup>
+
+  <Target Name="LoadGallioBuildSemanticsAddIn">
     <ItemGroup>
       <File Include="@(Content)">
         <ImagePath>%(Content.Folder)</ImagePath>
@@ -50,11 +55,11 @@
         <ImagePath>extras\%(Extra.Folder)</ImagePath>
       </File>
 
-      <LoadItem Include="@(DocumentedAssembly)">
+      <LoadItem Include="@(DocumentedAssembly->'%(FullPath)')">
         <ItemName>DocumentedAssembly</ItemName>
       </LoadItem>
 
-      <LoadItem Include="@(TestAssembly)">
+      <LoadItem Include="@(TestAssembly->'%(FullPath)')">
         <ItemName>TestAssembly</ItemName>
       </LoadItem>
 
@@ -64,4 +69,17 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="GenerateTemplateArchives"
+          Condition="'@(TemplateFile)'!=''">
+    <CreateItem Include="$(ImageDir)\extras\Templates\%(TemplateFile.Zip)">
+      <Output TaskParameter="Include" ItemName="TemplateZipFile" />
+    </CreateItem>
+
+    <MakeDir Directories="@(TemplateZipFile->'%(RootDir)%(Directory)')" />
+
+    <Zip Files="@(TemplateFile->'%(Base)\%(Identity)')"
+         WorkingDirectory="%(Base)"
+         ZipFileName="$(ImageDir)\extras\Templates\%(Zip)"
+         ZipLevel="9" />
+  </Target>
 </Project>
