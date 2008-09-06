@@ -44,11 +44,17 @@
   </Target>
 
   <Target Name="GenerateLibCheckStoreFiles">
+    <Message Text="Generating LibCheck store files..."
+             Importance="High" />
+
     <Exec Command="&quot;$(LibCheckExe)&quot; -store Full &quot;%(LibCheckVersionDir.Version)&quot; -full &quot;%(LibCheckVersionDir.FullPath)&quot;"
           WorkingDirectory="$(LibCheckTempDir)" />
   </Target>
 
   <Target Name="GenerateLibCheckReports">
+    <Message Text="Generating LibCheck comparison reports..."
+             Importance="High" />
+
     <MakeDir Directories="$(LibCheckReportDir)" />
 
     <Exec Command="&quot;$(LibCheckExe)&quot; -compare &quot;%(LibCheckVersionDir.Version)&quot; &quot;$(Version)&quot; -header -bydll -out &quot;$(LibCheckReportDir)\%(LibCheckVersionDir.Version)-to-$(Version)&quot;"

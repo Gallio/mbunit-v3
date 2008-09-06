@@ -21,7 +21,7 @@
   <!-- ROOT CONTENT -->
 
   <ItemGroup>
-    <Module Include="src\All.module" />
+    <Module Include="*\*.module" />
   </ItemGroup>
 
   <ItemGroup>

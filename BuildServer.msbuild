@@ -1,9 +1,11 @@
 <Project DefaultTargets="Release" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
+    <Configuration>Release</Configuration>
     <ShowReports>false</ShowReports>
     <ReportTypes>XML-Inline</ReportTypes>
+    <!--
     <Coverage>true</Coverage>
-    <Configuration>Release</Configuration>
+    -->
 
     <Version>$(CCNetLabel)</Version>
     <SourceDir>$(MSBuildProjectDirectory)</SourceDir>
