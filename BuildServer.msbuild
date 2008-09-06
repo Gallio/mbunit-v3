@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <Target Name="Release">
-    <MSBuild Project="$(MetaBuildBinDir)\MetaBuild.msbuild"
+    <MSBuild Projects="$(MetaBuildBinDir)\MetaBuild.msbuild"
              Properties="
 	       Configuration=$(Configuration);
 	       ShowReports=$(ShowReports);
