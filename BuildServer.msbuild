@@ -8,10 +8,10 @@
     -->
 
     <Version>$(CCNetLabel)</Version>
-    <SourceDir>$(MSBuildProjectDirectory)</SourceDir>
-    <StartDir>$(SourceDir)</StartDir>
-    <MetaBuildBinDir>$(SourceDir)\tools\MetaBuild\bin</MetaBuildBinDir>
-    <MetaBuildConfigFile>$(SourceDir)\bin\MetaBuild.config.custom</MetaBuildConfigFile>
+    <RootDir>$(MSBuildProjectDirectory)</RootDir>
+    <StartDir>$(RootDir)</StartDir>
+    <MetaBuildBinDir>$(RootDir)\tools\MetaBuild\bin</MetaBuildBinDir>
+    <MetaBuildConfigFile>$(RootDir)\bin\MetaBuild.config.custom</MetaBuildConfigFile>
   </PropertyGroup>
 
   <Target Name="Release"

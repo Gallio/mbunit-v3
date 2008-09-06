@@ -44,6 +44,6 @@
     <Message Text="Running ILMerge on Gallio assemblies..."
              Importance="High" />
 
-    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; &quot;Gallio\bin\Castle.Core.dll&quot; &quot;Gallio\bin\Castle.MicroKernel.dll&quot; &quot;Gallio\bin\Castle.Windsor.dll&quot; &quot;Gallio\bin\Castle.DynamicProxy2.dll&quot; &quot;Gallio\bin\Mono.Cecil.dll&quot; /internalize &quot;/out:$(ImageDir)\bin\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\src\Key.snk&quot;" />
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; &quot;Gallio\bin\Castle.Core.dll&quot; &quot;Gallio\bin\Castle.MicroKernel.dll&quot; &quot;Gallio\bin\Castle.Windsor.dll&quot; &quot;Gallio\bin\Castle.DynamicProxy2.dll&quot; &quot;Gallio\bin\Mono.Cecil.dll&quot; /internalize &quot;/out:$(ImageDir)\bin\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
   </Target>
 </Project>

@@ -126,7 +126,7 @@
     <Warning Text="The NSIS tools must be installed to generate the installer.  Look in tools\Setup Files for the NSIS installer."
              Condition="! Exists('$(NSISPath)')" />
 
-    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) /DROOTDIR=&quot;$(RootDir)&quot; &quot;$(SourceDir)\src\Installer\GallioBundle.nsi&quot;"
+    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) /DROOTDIR=&quot;$(RootDir)&quot; &quot;$(SourceDir)\Installer\GallioBundle.nsi&quot;"
           Condition="Exists('$(NSISPath)')" />
   </Target>
 
@@ -143,7 +143,7 @@
       WixExtDir=$(ToolsDir)\Wix\bin;
       DefineSolutionProperties=false;
     </InstallerWixProperties>
-    <InstallerFeatureFile>$(SourceDir)\src\Installer.Wix\Features.wxi</InstallerFeatureFile>
+    <InstallerFeatureFile>$(SourceDir)\Installer.Wix\Features.wxi</InstallerFeatureFile>
   </PropertyGroup>
 
   <Target Name="BuildInstallerWix">
@@ -159,13 +159,13 @@
     <WriteLinesToFile File="$(InstallerFeatureFile)"
                       Lines="&lt;/Include&gt;"
                       Overwrite="false" />
-    <MSBuild Projects="$(SourceDir)\src\Installer.Wix\GallioBundle.wixproj"
+    <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Build"
              Properties="$(InstallerWixProperties)" />
   </Target>
 
   <Target Name="CleanInstallerWix">
-    <MSBuild Projects="$(SourceDir)\src\Installer.Wix\GallioBundle.wixproj"
+    <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Clean"
              Properties="$(InstallerWixProperties)" />
     <Delete Files="$(InstallerFeatureFile)" />
@@ -195,7 +195,7 @@
     <Warning Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs."
              Condition="! Exists('$(SourceServerIndexerPath)')" />
 
-    <Exec Command="&quot;$(SourceServerIndexerPath)&quot; -System=svn -Ini=&quot;$(SourceDir)\src\srcsrv.ini&quot; -Source=&quot;$(SourceDir)\src&quot; -Symbols=&quot;$(ImageDir)\bin&quot;"
+    <Exec Command="&quot;$(SourceServerIndexerPath)&quot; -System=svn -Ini=&quot;$(SourceDir)\srcsrv.ini&quot; -Source=&quot;$(SourceDir)&quot; -Symbols=&quot;$(ImageDir)\bin&quot;"
           Condition="Exists('$(SourceServerIndexerPath)')" />
   </Target>
 

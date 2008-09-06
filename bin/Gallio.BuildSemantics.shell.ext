@@ -27,9 +27,10 @@
   </ItemDefinitionGroup>
 
   <PropertyGroup>
-    <BinDir>$(SourceDir)\bin</BinDir>
-    <ToolsDir>$(SourceDir)\tools</ToolsDir>
-    <LibsDir>$(SourceDir)\libs</LibsDir>
+    <BinDir>$(RootDir)\bin</BinDir>
+    <ToolsDir>$(RootDir)\tools</ToolsDir>
+    <LibsDir>$(RootDir)\libs</LibsDir>
+    <SourceDir>$(RootDir)\src</SourceDir>
   </PropertyGroup>
 
   <PropertyGroup>
