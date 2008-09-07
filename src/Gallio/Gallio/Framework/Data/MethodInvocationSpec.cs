@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Gallio.Framework.Conversions;
@@ -117,6 +118,7 @@ namespace Gallio.Framework.Data
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is
         /// null but the method is non-static</exception>
         /// <exception cref="Exception">Any exception thrown by the invoked method</exception>
+        [DebuggerStepThrough, DebuggerHidden]
         public object Invoke(object obj)
         {
             if (obj == null && !resolvedMethod.IsStatic)

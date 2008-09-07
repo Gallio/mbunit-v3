@@ -46,6 +46,9 @@
     <Reference Include="JetBrains.Platform.CommonServices, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="JetBrains.ReSharper.CommonActions, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.ActionManagement, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -79,6 +82,9 @@
     <Reference Include="JetBrains.Platform.ReSharper.UI, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="JetBrains.Platform.ReSharper.UI.Avalon, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="JetBrains.Platform.ReSharper.Util, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -103,10 +109,19 @@
     <Reference Include="JetBrains.ReSharper.SolutionBuilder, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="JetBrains.ReSharper.SolutionBuilder.VS, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="JetBrains.ReSharper.TaskRunnerFramework, Version=3.1.584.3, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="JetBrains.ReSharper.UnitTestExplorer, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.VS, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.VSI, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />

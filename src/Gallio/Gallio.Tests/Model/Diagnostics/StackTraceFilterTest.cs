@@ -62,6 +62,16 @@ namespace Gallio.Tests.Model.Diagnostics
             }
 
             [Test]
+            public void OmitsDebuggerHiddenConstructors()
+            {
+                string trace = new CaptureHiddenConstructor().Trace;
+                TestLog.WriteLine(trace);
+
+                Assert.Contains(trace, "OmitsDebuggerHiddenConstructors");
+                Assert.IsFalse(trace.Contains("CaptureHiddenConstructor"));
+            }
+
+            [Test]
             public void OmitsInternalMethods()
             {
                 string trace = CaptureInternal();
@@ -69,6 +79,38 @@ namespace Gallio.Tests.Model.Diagnostics
 
                 Assert.Contains(trace, "OmitsInternalMethods");
                 Assert.IsFalse(trace.Contains("CaptureInternal"));
+            }
+
+            [Test]
+            public void OmitsOverloadedMethodsAppropriately()
+            {
+                string trace = CaptureOverload(1);
+                TestLog.WriteLine(trace);
+
+                Assert.Contains(trace, "OmitsOverloadedMethodsAppropriately");
+                Assert.IsFalse(trace.Contains("CaptureOverload"), "Should exclude the overload that lacks a debugger hidden");
+
+                trace = CaptureOverload(1, "abc");
+                TestLog.WriteLine(trace);
+
+                Assert.Contains(trace, "OmitsOverloadedMethodsAppropriately");
+                Assert.IsTrue(trace.Contains("CaptureOverload"), "Should include the overload that lacks a debugger hidden");
+            }
+
+            [Test]
+            public void OmitsGenericOverloadedMethodsAppropriately()
+            {
+                string trace = CaptureGenericOverload<int>();
+                TestLog.WriteLine(trace);
+
+                Assert.Contains(trace, "OmitsGenericOverloadedMethodsAppropriately");
+                Assert.IsFalse(trace.Contains("CaptureGenericOverload"), "Should exclude the overload that lacks a debugger hidden");
+
+                trace = CaptureGenericOverload<int, string>();
+                TestLog.WriteLine(trace);
+
+                Assert.Contains(trace, "OmitsGenericOverloadedMethodsAppropriately");
+                Assert.IsTrue(trace.Contains("CaptureGenericOverload"), "Should include the overload that lacks a debugger hidden");
             }
 
             [Test, TestEntryPoint]
@@ -96,10 +138,48 @@ namespace Gallio.Tests.Model.Diagnostics
             }
 
             [MethodImpl(MethodImplOptions.NoInlining)]
+            [DebuggerHidden]
+            private string CaptureOverload(int dummy)
+            {
+                return StackTraceFilter.CaptureFilteredStackTrace();
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            private string CaptureOverload(int dummy1, string dummy2)
+            {
+                return StackTraceFilter.CaptureFilteredStackTrace();
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            [DebuggerHidden]
+            private string CaptureGenericOverload<T>()
+            {
+                return StackTraceFilter.CaptureFilteredStackTrace();
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            private string CaptureGenericOverload<S, T>()
+            {
+                return StackTraceFilter.CaptureFilteredStackTrace();
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
             [TestFrameworkInternal]
             private string CaptureInternal()
             {
                 return StackTraceFilter.CaptureFilteredStackTrace();
+            }
+
+            private class CaptureHiddenConstructor
+            {
+                public readonly string Trace;
+
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                [DebuggerHidden]
+                public CaptureHiddenConstructor()
+                {
+                    Trace = StackTraceFilter.CaptureFilteredStackTrace();
+                }
             }
         }
 
@@ -125,6 +205,25 @@ namespace Gallio.Tests.Model.Diagnostics
             }
 
             [Test]
+            public void OmitsDebuggerHiddenConstructors()
+            {
+                string trace = null;
+                try
+                {
+                    new ThrowHiddenConstructor();
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    trace = StackTraceFilter.FilterException(ex).ToString();
+                    TestLog.WriteLine(trace);
+                }
+
+                Assert.Contains(trace, "OmitsDebuggerHiddenConstructors");
+                Assert.IsFalse(trace.Contains("ThrowHiddenConstructor"));
+            }
+
+            [Test]
             public void OmitsInternalMethods()
             {
                 string trace = null;
@@ -141,6 +240,72 @@ namespace Gallio.Tests.Model.Diagnostics
 
                 Assert.Contains(trace, "OmitsInternalMethods");
                 Assert.IsFalse(trace.Contains("ThrowInternal"));
+            }
+
+            [Test]
+            public void OmitsOverloadedMethodsAppropriately()
+            {
+                string trace = null;
+                try
+                {
+                    ThrowOverload(1);
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    trace = StackTraceFilter.FilterException(ex).ToString();
+                    TestLog.WriteLine(trace);
+                }
+
+                Assert.Contains(trace, "OmitsOverloadedMethodsAppropriately");
+                Assert.IsFalse(trace.Contains("ThrowOverload"), "Should exclude the overload that lacks a debugger hidden");
+
+                try
+                {
+                    ThrowOverload(1, "abc");
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    trace = StackTraceFilter.FilterException(ex).ToString();
+                    TestLog.WriteLine(trace);
+                }
+
+                Assert.Contains(trace, "OmitsOverloadedMethodsAppropriately");
+                Assert.IsTrue(trace.Contains("ThrowOverload"), "Should include the overload that lacks a debugger hidden");
+            }
+
+            [Test]
+            public void OmitsGenericOverloadedMethodsAppropriately()
+            {
+                string trace = null;
+                try
+                {
+                    ThrowGenericOverload<int>();
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    trace = StackTraceFilter.FilterException(ex).ToString();
+                    TestLog.WriteLine(trace);
+                }
+
+                Assert.Contains(trace, "OmitsGenericOverloadedMethodsAppropriately");
+                Assert.IsFalse(trace.Contains("ThrowGenericOverload"), "Should exclude the overload that lacks a debugger hidden");
+
+                try
+                {
+                    ThrowGenericOverload<int, string>();
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    trace = StackTraceFilter.FilterException(ex).ToString();
+                    TestLog.WriteLine(trace);
+                }
+
+                Assert.Contains(trace, "OmitsGenericOverloadedMethodsAppropriately");
+                Assert.IsTrue(trace.Contains("ThrowGenericOverload"), "Should include the overload that lacks a debugger hidden");
             }
 
             [Test]
@@ -196,6 +361,32 @@ namespace Gallio.Tests.Model.Diagnostics
             }
 
             [MethodImpl(MethodImplOptions.NoInlining)]
+            [DebuggerHidden]
+            private void ThrowOverload(int dummy)
+            {
+                throw new InvalidOperationException("Boom");
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            private void ThrowOverload(int dummy1, string dummy2)
+            {
+                throw new InvalidOperationException("Boom");
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            [DebuggerHidden]
+            private void ThrowGenericOverload<T>()
+            {
+                throw new InvalidOperationException("Boom");
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            private void ThrowGenericOverload<T, S>()
+            {
+                throw new InvalidOperationException("Boom");
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
             [TestFrameworkInternal]
             private void ThrowInternal()
             {
@@ -207,6 +398,16 @@ namespace Gallio.Tests.Model.Diagnostics
             private void ThrowInternalGeneric<T>()
             {
                 throw new InvalidOperationException("Boom");
+            }
+
+            private class ThrowHiddenConstructor
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                [DebuggerHidden]
+                public ThrowHiddenConstructor()
+                {
+                    throw new InvalidOperationException("Boom");
+                }
             }
         }
     }

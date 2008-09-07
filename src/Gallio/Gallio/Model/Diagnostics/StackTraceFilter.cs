@@ -46,7 +46,7 @@ namespace Gallio.Model.Diagnostics
     /// </summary>
     public static class StackTraceFilter
     {
-        private static readonly Regex StackFrameRegex = new Regex(@" (?<typeFullName>[^ ]+)\.(?<methodName>[^ .[(]+)(?<genericParams>(?:\[[^(]*\])?)\((?<methodParams>[^)]*)\)",
+        private static readonly Regex StackFrameRegex = new Regex(@" (?<typeFullName>[^ ]+[^ .])\.(?<methodName>[^ [(]+)(?<genericParams>(?:\[[^(]*\])?)\((?<methodParams>[^)]*)\)",
             RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
         /// <summary>
@@ -180,13 +180,12 @@ namespace Gallio.Model.Diagnostics
 
         private static bool ShouldFilterStopAboveFrame(MethodBase method)
         {
-            return method.IsDefined(typeof(TestEntryPointAttribute), true);
+            return HasTestEntryPointAttribute(method);
         }
 
         private static bool ShouldFilterOmitFrame(MethodBase method)
         {
-            if (method.IsDefined(typeof(DebuggerHiddenAttribute), true)
-                || method.IsDefined(typeof(TestFrameworkInternalAttribute), true))
+            if (HasHiddenOrInternalAttribute(method))
                 return true;
 
             Type declaringType = method.DeclaringType;
@@ -201,12 +200,27 @@ namespace Gallio.Model.Diagnostics
             return false;
         }
 
+        private static bool HasSignificantAttribute(MethodBase method)
+        {
+            return HasTestEntryPointAttribute(method)
+                || HasHiddenOrInternalAttribute(method);
+        }
+
+        private static bool HasTestEntryPointAttribute(MethodBase method)
+        {
+            return method.IsDefined(typeof(TestEntryPointAttribute), true);
+        }
+
+        private static bool HasHiddenOrInternalAttribute(MethodBase method)
+        {
+            return method.IsDefined(typeof(DebuggerHiddenAttribute), true)
+                || method.IsDefined(typeof(TestFrameworkInternalAttribute), true);
+        }
+
         [ReflectionPermission(SecurityAction.Assert, MemberAccess=true)]
         private static MethodBase FindMethod(string typeFullName, string methodName, string genericParams, string methodParams)
         {
             // Look for a probable match for the method in each loaded assembly.
-            // TODO: Consider overloads.  (Shouldn't matter much for most filtering purposes
-            //       since overloads tend to have the same contract.)
             for (; ; )
             {
                 foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -217,8 +231,47 @@ namespace Gallio.Model.Diagnostics
                         MemberInfo[] members = type.GetMember(methodName,
                             MemberTypes.Constructor | MemberTypes.Method,
                             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
                         if (members.Length != 0)
+                        {
+                            if (members.Length > 1)
+                            {
+                                // Resolve overloads.
+                                // Very simple heuristic for many overloading situations: count commas.
+                                int paramCount = CountParameters(methodParams);
+                                int genericParamCount = CountParameters(genericParams);
+
+                                MethodBase candidate = null;
+                                foreach (MethodBase method in members)
+                                {
+                                    if (method.GetParameters().Length == paramCount
+                                        && (method.IsGenericMethod ? method.GetGenericArguments().Length : 0) == genericParamCount)
+                                    {
+                                        if (candidate == null)
+                                            candidate = method;
+                                        else
+                                            goto MultipleCandidates;
+                                    }
+                                }
+
+                                if (candidate != null)
+                                    return candidate;
+
+                            MultipleCandidates:
+
+                                // Overload resolution failed, just make a guess.
+                                // Look for one with an interesting attribute, if we find it, we'll
+                                // apply the same behavior to all other overloads.
+                                foreach (MethodBase method in members)
+                                {
+                                    if (HasSignificantAttribute(method))
+                                        return method;
+                                }
+                            }
+
+                            // Otherwise give up and pick the first one.
                             return (MethodBase) members[0];
+                        }
                     }
                 }
 
@@ -232,6 +285,18 @@ namespace Gallio.Model.Diagnostics
                 temp[lastDotPos] = '+';
                 typeFullName = temp.ToString();
             }
+        }
+
+        private static int CountParameters(string str)
+        {
+            if (str.Length == 0)
+                return 0;
+
+            int count = 1;
+            foreach (char c in str)
+                if (c == ',')
+                    count += 1;
+            return count;
         }
     }
 }

@@ -18,6 +18,7 @@ using System.Reflection;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Tests;
 using JetBrains.ProjectModel;
+using JetBrains.UI;
 using JetBrains.Util;
 using MbUnit.Framework;
 
@@ -29,6 +30,8 @@ using JetBrains.Shell.Test;
 using JetBrains.Application;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Test;
+using Resources;
+
 #endif
 
 namespace Gallio.ReSharperRunner.Tests
@@ -41,7 +44,7 @@ namespace Gallio.ReSharperRunner.Tests
     [AssemblyFixture]
     public static class ReSharperTestHarness
     {
-        private static readonly Assembly testAssembly = typeof(ReSharperTestHarness).Assembly;
+        private static readonly Assembly TestAssembly = typeof(ReSharperTestHarness).Assembly;
         private static bool isTestSolutionLoaded;
 
         private static readonly string VersionSuffix = typeof(ReSharperTestHarness).Assembly.GetName().Name.Substring(22, 2);
@@ -51,12 +54,7 @@ namespace Gallio.ReSharperRunner.Tests
         {
             if (Shell.Instance == null)
             {
-                string configName = typeof(ReSharperTestHarness).Namespace + ".TestAssemblies" + VersionSuffix + ".xml";
-#if RESHARPER_31
-                new TestShell(testAssembly, configName);
-#else
-                new TestShell(testAssembly, testAssembly, configName);
-#endif
+                new GallioTestShell();
             }
         }
 
@@ -72,7 +70,7 @@ namespace Gallio.ReSharperRunner.Tests
                 isTestSolutionLoaded = false;
             }
 
-            TestShell shell = Shell.Instance as TestShell;
+            GallioTestShell shell = Shell.Instance as GallioTestShell;
             if (shell != null)
             {
                 shell.TearDown();
@@ -85,7 +83,7 @@ namespace Gallio.ReSharperRunner.Tests
                 return;
 
             FileSystemPath testSolutionPath = new FileSystemPath(
-                Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(testAssembly)), @"..\..\TestSolution" + VersionSuffix + ".sln"));
+                Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(TestAssembly)), @"..\..\TestSolution" + VersionSuffix + ".sln"));
 
             RunWithWriteLock(delegate
             {
@@ -107,6 +105,43 @@ namespace Gallio.ReSharperRunner.Tests
 #if !RESHARPER_31
                 }
             });
+#endif
+        }
+
+        private class GallioTestShell : TestShell
+        {
+            // We need to use our own configuration because the standard JetBrains.resources.config.AllAssemblies.xml
+            // resource in JetBrains.ReSharper.Resources refers to actual testing assemblies that JetBrains does not
+            // publish.  This is problematic because it causes the TestShell to fail to initialize.
+            //
+            // Our configuration is basically a stripped down version of the standard one. -- Jeff.
+            private static readonly string ConfigName = typeof(ReSharperTestHarness).Namespace + ".TestAssemblies" + VersionSuffix + ".xml";
+
+            public GallioTestShell()
+#if RESHARPER_31
+                : base(TestAssembly, ConfigName)
+#else
+                : base(TestAssembly, TestAssembly, ConfigName)
+#endif
+            {
+            }
+
+#if ! RESHARPER_31 && ! RESHARPER_40
+            public override void  InitializeComponents()
+            {
+                // As of ReSharper v4.1, the way the images are loaded has changed somewhat.
+                // Instead of always loading from JetBrains.ReSharper.Resources, the images are resolved
+                // from the "ConfigurationAssembly", which is the one that contains "AllAssemblies.xml".
+                // Of course, that's our test assembly which obviously does not have the resources we need.
+                //
+                // So we explicitly make JetBrains.ReSharper.Resources eligible for image loading.
+                //
+                // Another approach might be to hack the ApplicationConfiguration object after the
+                // AllAssembliesXml has been loaded. -- Jeff.
+                ImageLoader.ImageId.AssembliesEligibleDefault[0] = typeof(ResourceLoader).Assembly;
+
+                base.InitializeComponents();
+            }
 #endif
         }
     }
