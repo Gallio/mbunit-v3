@@ -80,7 +80,6 @@
 
         <!-- Define the features in the bundle -->
         <FeatureRef Id='feat_Gallio'>
-            <FeatureRef Id='feat_Gallio.Reports'/>
         </FeatureRef>
 
         <FeatureRef Id='feat_MbUnit3'>
@@ -92,13 +91,22 @@
         </FeatureRef>
 
         <Feature Id='feat_Plugins' Title='Plugins' Level="1">
-            <FeatureRef Id='feat_CSUnitAdapter'/>
-            <FeatureRef Id='feat_MbUnit2Adapter'/>
+	    <Feature Id='feat_Frameworks' Title="Test Frameworks" Level="1">
+                <FeatureRef Id='feat_CSUnitAdapter'/>
+                <FeatureRef Id='feat_MbUnit2Adapter'/>
 <?ifdef FEATURE_MSTEST_ADAPTER ?>
-            <FeatureRef Id='feat_MSTestAdapter'/>
+                <FeatureRef Id='feat_MSTestAdapter'/>
 <?endif?>
-            <FeatureRef Id='feat_NUnitAdapter'/>
-            <FeatureRef Id='feat_XunitAdapter'/>
+                <FeatureRef Id='feat_NUnitAdapter'/>
+                <FeatureRef Id='feat_XunitAdapter'/>
+            </Feature>
+            <Feature Id='feat_ToolIntegration' Title='Tools' Level="1">
+                <FeatureRef Id='feat_NCoverIntegration'/>
+<?ifdef FEATURE_NCOVER_INTEGRATION_2 ?>
+                <FeatureRef Id='feat_NCoverIntegration2'/>
+<?endif?>
+                <FeatureRef Id='feat_TypeMockIntegration'/>
+            </Feature>
         </Feature>
 
         <Feature Id='feat_Runners' Title='Runners' Level="1">
@@ -120,14 +128,6 @@
 <?ifdef FEATURE_MSTEST_RUNNER ?>
             <FeatureRef Id='feat_MSTestRunner'/>
 <?endif?>
-        </Feature>
-
-        <Feature Id='feat_ToolIntegration' Title='Tool Integration' Level="1">
-            <FeatureRef Id='feat_NCoverIntegration'/>
-<?ifdef FEATURE_NCOVER_INTEGRATION_2 ?>
-            <FeatureRef Id='feat_NCoverIntegration2'/>
-<?endif?>
-            <FeatureRef Id='feat_TypeMockIntegration'/>
         </Feature>
 
         <Feature Id='feat_Docs' Title='Documentation' Level="1">

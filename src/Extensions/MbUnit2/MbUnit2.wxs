@@ -33,7 +33,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_MbUnit2Adapter' Title='MbUnit v2 Plugin' Level='1'
+        <Feature Id='feat_MbUnit2Adapter' Title='MbUnit v2 Adapter' Level='1'
             Description='Installs the MbUnit v2 adapter.  Enables Gallio to run MbUnit v2 tests.'>
             <ComponentRef Id="Gallio.MbUnit2Adapter.dll"/>
             <ComponentRef Id="Gallio.MbUnit2Adapter.plugin"/>

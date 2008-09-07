@@ -64,6 +64,12 @@
             </Directory>
         </DirectoryRef>
 
+        <Feature Id="feat_MSTestAdapter" Title="MSTest Adapter" Level="1" Description="Installs the MSTest adapter.  Enables Gallio to run MSTest tests.">
+            <Condition Level="1">VS2005DEVENV OR VS90DEVENV</Condition>
+            <ComponentRef Id="Gallio.MSTestAdapter.dll" />
+            <ComponentRef Id="MSTest.Readme.txt" />
+        </Feature>
+
         <Feature Id="feat_MSTestRunner" Title="MSTest Runner" Level="2" Description="Visual Studio Team System Extension (Experimental!)">
             <Condition Level="1">VS90DEVENV</Condition>
             <ComponentRef Id="Gallio.Loader.VS90.dll"/>
@@ -84,11 +90,5 @@
                 </Component>
             </Directory>
         </DirectoryRef>
-
-        <Feature Id="feat_MSTestAdapter" Title="MSTest Adapter" Level="2" Description="Visual Studio Team System Extension (Experimental!)">
-            <Condition Level="1">VS2005DEVENV OR VS90DEVENV</Condition>
-            <ComponentRef Id="Gallio.MSTestAdapter.dll" />
-            <ComponentRef Id="MSTest.Readme.txt" />
-        </Feature>
     </Fragment>
 </Wix>

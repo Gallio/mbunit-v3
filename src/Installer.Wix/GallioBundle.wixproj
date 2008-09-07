@@ -44,9 +44,6 @@
     <Compile Include="..\MbUnit\Samples\MbUnitSamples.wxs">
       <Link>MbUnitSamples.wxs</Link>
     </Compile>
-    <Compile Include="..\Extensions\Reports\Reports.wxs">
-      <Link>Reports.wxs</Link>
-    </Compile>
     <Compile Include="..\Extensions\Echo\Echo.wxs">
       <Link>Echo.wxs</Link>
     </Compile>

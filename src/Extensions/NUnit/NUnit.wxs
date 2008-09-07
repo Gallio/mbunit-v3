@@ -33,7 +33,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_NUnitAdapter' Title='NUnit' Level='1'
+        <Feature Id='feat_NUnitAdapter' Title='NUnit Adapter' Level='1'
             Description='Installs the NUnit adapter.  Enables Gallio to run NUnit tests.'>
             <ComponentRef Id="Gallio.NUnitAdapter.dll"/>
             <ComponentRef Id="Gallio.NUnitAdapter.plugin"/>

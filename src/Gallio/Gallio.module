@@ -7,6 +7,8 @@
     <CSharpProject Include="Gallio.Host\Gallio.Host.csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests.csproj" />
     <CSharpProject Include="Gallio.Loader\Gallio.Loader.csproj" />
+    <CSharpProject Include="Gallio.Reports\Gallio.Reports.csproj" />
+    <CSharpProject Include="Gallio.Reports.Tests\Gallio.Reports.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +32,28 @@
     <Binary Include="Gallio35\bin\Gallio35.dll" />
     <Binary Include="Gallio35\bin\Gallio35.pdb" />
     <Binary Include="Gallio35\Gallio35.plugin" />
+    
+    <Binary Include="Gallio.Reports\bin\Gallio.Reports.dll">
+        <Folder>Reports</Folder>
+    </Binary>
+    <Binary Include="Gallio.Reports\Gallio.Reports.plugin">
+        <Folder>Reports</Folder>
+    </Binary>
+    <Binary Include="Gallio.Reports\Readme.txt">
+        <Folder>Reports</Folder>
+    </Binary>
+    <Binary Include="Gallio.Reports\css\*">
+        <Folder>Reports\css</Folder>
+    </Binary>
+    <Binary Include="Gallio.Reports\js\*">
+        <Folder>Reports\js</Folder>
+    </Binary>
+    <Binary Include="Gallio.Reports\img\*">
+        <Folder>Reports\img</Folder>
+    </Binary>
+    <Binary Include="Gallio.Reports\xsl\*">
+        <Folder>Reports\xsl</Folder>
+    </Binary>
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +62,7 @@
 
   <ItemGroup>
     <TestAssembly Include="Gallio.Tests\bin\Gallio.Tests.dll" />
+    <TestAssembly Include="Gallio.Reports.Tests\bin\Gallio.Reports.Tests.dll" />
   </ItemGroup>
 
   <Target Name="AfterImage">
