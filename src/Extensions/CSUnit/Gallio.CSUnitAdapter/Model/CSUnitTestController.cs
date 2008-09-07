@@ -36,9 +36,6 @@ namespace Gallio.CSUnitAdapter.Model
         /// </summary>
         public CSUnitTestController(string assemblyLocation)
         {
-            if (String.IsNullOrEmpty(assemblyLocation))
-                throw new ArgumentNullException("assemblyLocation");
-
             this.assemblyLocation = assemblyLocation;
         }
 
@@ -74,8 +71,13 @@ namespace Gallio.CSUnitAdapter.Model
             private readonly Stack<ITestContext> testContextStack;
             private readonly Dictionary<string, ITestCommand> testCommandsByName;
 
-            private int failures;
+            private IList<ITestCommand> listOfTestCommands;
             private Thread runnerThread;
+
+            private int assemblyFailureCount;
+            private int fixtureFailureCount;
+            private int assemblyErrorCount;
+            private int fixtureErrorCount;
 
             public RunnerMonitor(IList<ITestCommand> testCommands, ITestStep topTestStep, IProgressMonitor progressMonitor)
             {
@@ -105,6 +107,8 @@ namespace Gallio.CSUnitAdapter.Model
                 testContextStack.Clear();
                 testCommandsByName.Clear();
 
+                listOfTestCommands = testCommands;
+
                 // Build a reverse mapping from the tests.
                 foreach (ITestCommand testCommand in testCommands)
                 {
@@ -133,12 +137,12 @@ namespace Gallio.CSUnitAdapter.Model
             {
                 try
                 {
+                    // Save the thread to allow us to abort later
                     runnerThread = Thread.CurrentThread;
-                    failures = 0;
 
                     RunTests(assemblyPath);
 
-                    return 0 == failures ? TestOutcome.Passed : TestOutcome.Failed;
+                    return CalculateOutcome(assemblyFailureCount, assemblyErrorCount);
                 }
                 catch (ThreadAbortException)
                 {
@@ -157,6 +161,14 @@ namespace Gallio.CSUnitAdapter.Model
 
             private void RunTests(string assemblyPath)
             {
+                if (!File.Exists(assemblyPath))
+                {
+                    ITestContext testContext = listOfTestCommands[0].StartPrimaryChildStep(topTestStep);
+                    testContext.LifecyclePhase = LifecyclePhases.Execute;
+                    testContext.LogWriter.Failures.WriteLine("Unable to find the test assembly to run. [{0}]", assemblyPath ?? String.Empty);
+                    testContext.FinishStep(TestOutcome.Error, null);
+                    return;
+                }
                 using (RemoteLoader loader = new RemoteLoader())
                 {
                     // Attach ourself to get feedback
@@ -169,12 +181,6 @@ namespace Gallio.CSUnitAdapter.Model
                     ITestSpec testSpec = new PartialTestSpec(testCommandsByName);
                     loader.RunTests(testSpec, TextWriter.Null);
                 }
-                // Note: Make use of AppDomain
-                //   This implementation does not make use of a separate 
-                //   AppDomain to run the tests. Alternatively we can 
-                //   create a new app domain and use the method
-                //     RemoteLoader.CreateInstance( appDomain )
-                //   to create the loader in that domain.
             }
 
             #region ITestListener Members
@@ -187,14 +193,16 @@ namespace Gallio.CSUnitAdapter.Model
             {
                 ITestCommand testCommand;
                 string testName = args.AssemblyFullName.Split(',')[0];
-                if (testCommandsByName.TryGetValue(testName, out testCommand))
-                {
-                    progressMonitor.SetStatus(testCommand.Test.Name);
+                if (!testCommandsByName.TryGetValue(testName, out testCommand))
+                    return;
 
-                    ITestContext testContext = testCommand.StartPrimaryChildStep(topTestStep);
-                    testContext.LifecyclePhase = LifecyclePhases.Execute;
-                    testContextStack.Push(testContext);
-                }
+                progressMonitor.SetStatus(testCommand.Test.Name);
+
+                ITestContext testContext = testCommand.StartPrimaryChildStep(topTestStep);
+                testContext.LifecyclePhase = LifecyclePhases.Execute;
+                testContextStack.Push(testContext);
+                assemblyFailureCount = 0;
+                assemblyErrorCount = 0;
             }
 
             public void OnTestsAborted(object sender, AssemblyEventArgs args)
@@ -205,46 +213,58 @@ namespace Gallio.CSUnitAdapter.Model
             {
                 ITestCommand testCommand;
                 string testName = args.AssemblyFullName.Split(',')[0];
-                if (testCommandsByName.TryGetValue(testName, out testCommand))
+                if (!testCommandsByName.TryGetValue(testName, out testCommand))
+                    return;
+
+                if (testContextStack.Count <= 0)
+                    return;
+
+                ITestContext testContext = testContextStack.Pop();
+
+                
+                while (testContext.TestStep.Test != testCommand.Test)
                 {
                     progressMonitor.Worked(1);
 
-                    ITestContext testContext = testContextStack.Pop();
-                    testContext.FinishStep(failures == 0 ? TestOutcome.Passed : TestOutcome.Failed, null);
+                    testContext.FinishStep(GetFixtureOutcome(fixtureFailureCount, fixtureErrorCount), null);
+                    testContext = testContextStack.Pop();
                 }
-            }
+
+                progressMonitor.Worked(1);
+                testContext.FinishStep(CalculateOutcome(assemblyFailureCount, assemblyErrorCount), null);
+            }            
 
             public void OnTestStarted(object sender, TestResultEventArgs args)
             {
-                ITestCommand testCommand;
-                string testName = args.ClassName + "." + args.MethodName;
-                if (testCommandsByName.TryGetValue(testName, out testCommand))
-                {
-                    progressMonitor.SetStatus(args.MethodName);
+                ITestCommand fixtureCommand;
+                if (!testCommandsByName.TryGetValue(args.ClassName, out fixtureCommand))
+                    return;
 
-                    ITestContext parentContext = testContextStack.Peek();
-                    ITestContext testContext = testCommand.StartPrimaryChildStep(parentContext.TestStep);
-                    testContext.LifecyclePhase = LifecyclePhases.Execute;
-                    testContextStack.Push(testContext);
-                }
+                ITestCommand testCommand;
+                string testName = args.ClassName + @"." + args.MethodName;
+                if (!testCommandsByName.TryGetValue(testName, out testCommand))
+                    return;
+
+                ITestContext fixtureContext = GetFixtureContext(fixtureCommand);
+                ITestContext testContext = testCommand.StartPrimaryChildStep(fixtureContext.TestStep);
+                testContext.LifecyclePhase = LifecyclePhases.Execute;
+                progressMonitor.SetStatus(testCommand.Test.Name);
+                testContextStack.Push(testContext);
             }
 
             public void OnTestPassed(object sender, TestResultEventArgs args)
             {
-                string testName = args.ClassName + "." + args.MethodName;
-                TestFinished(testName, TestOutcome.Passed, args.AssertCount, args.Duration, null);
+                TestFinished(TestOutcome.Passed, args.ClassName, args.MethodName, args.AssertCount, args.Duration, args.Reason, null);
             }
 
             public void OnTestFailed(object sender, TestResultEventArgs args)
             {
-                Interlocked.Increment(ref failures);
-                string testName = args.ClassName + "." + args.MethodName;
-                TestFinished(testName, TestOutcome.Failed, args.AssertCount, args.Duration, 
-                    delegate(ITestContext testContext)
+                TestFinished(TestOutcome.Failed, args.ClassName, args.MethodName, args.AssertCount, args.Duration, args.Reason,
+                    delegate(ITestContext context)
                     {
                         if (args.Failure != null)
                         {
-                            TestLogStreamWriter log = testContext.LogWriter.Failures;
+                            TestLogStreamWriter log = context.LogWriter.Failures;
 
                             using (log.BeginSection(Resources.CSUnitTestController_ResultMessageSectionName))
                             {
@@ -265,71 +285,153 @@ namespace Gallio.CSUnitAdapter.Model
                             }
                         }
                     });
+                Interlocked.Increment(ref fixtureFailureCount);
             }
 
             public void OnTestError(object sender, TestResultEventArgs args)
             {
-                string testName = args.ClassName + "." + args.MethodName;
-                TestFinished(testName, TestOutcome.Error, args.AssertCount, args.Duration, 
-                    delegate(ITestContext testContext)
+                TestFinished(TestOutcome.Error, args.ClassName, args.MethodName, args.AssertCount, args.Duration, args.Reason,
+                    delegate(ITestContext context)
                     {
                         if (!String.IsNullOrEmpty(args.Reason))
                         {
-                            TestLogStreamWriter log = testContext.LogWriter.Failures;
+                            TestLogStreamWriter log = context.LogWriter.Failures;
 
                             using (log.BeginSection(Resources.CSUnitTestController_ResultMessageSectionName))
                             {
                                 log.Write(args.Reason);
                             }
-                        }                        
+                        }
                     });
+                Interlocked.Increment(ref fixtureErrorCount);
             }
 
             public void OnTestSkipped(object sender, TestResultEventArgs args)
             {
-                ITestCommand testCommand;
-                string testName = args.ClassName + "." + args.MethodName;
-                if (testCommandsByName.TryGetValue(testName, out testCommand))
-                {
-                    progressMonitor.SetStatus(args.MethodName);
-
-                    ITestContext parentContext = testContextStack.Peek();
-                    ITestContext testContext = testCommand.StartPrimaryChildStep(parentContext.TestStep);
-                    testContext.LifecyclePhase = LifecyclePhases.Execute;
-
-                    progressMonitor.Worked(1);
-
-                    testContext.AddAssertCount(args.AssertCount);
-                    testContext.FinishStep(TestOutcome.Ignored, null);
-                }
+                TestFinished(TestOutcome.Skipped, args.ClassName, args.MethodName, args.AssertCount, args.Duration, args.Reason, null);
             }
 
             #endregion
 
-            private delegate void TestContextWorker(ITestContext context);
+            private delegate void TestContextCallback(ITestContext context);
 
-            private void TestFinished(string testName, TestOutcome outcome, int assertCount, ulong duration_nanosec, TestContextWorker worker)
+            private void TestFinished(TestOutcome outcome, string fixtureName, string testName, int assertCount, ulong durationNanosec, string reason, TestContextCallback callback)
             {
+                ITestCommand fixtureCommand;
+                if (!testCommandsByName.TryGetValue(fixtureName, out fixtureCommand))
+                    return;
+
                 ITestCommand testCommand;
-                if (testCommandsByName.TryGetValue(testName, out testCommand))
+                ITestContext testContext = null;
+                if (testCommandsByName.TryGetValue(fixtureName + @"." + testName, out testCommand))
                 {
+                    if (testContextStack.Peek().TestStep.Test == testCommand.Test)
+                    {
+                        // Remove our test context from the stack
+                        testContext = testContextStack.Pop();
+                    }
+                }
+
+                ITestContext fixtureContext = GetFixtureContext(fixtureCommand);
+
+                if (testCommand != null)
+                {
+                    if (testContext == null)
+                    {
+                        testContext = testCommand.StartPrimaryChildStep(fixtureContext.TestStep);
+                        testContext.LifecyclePhase = LifecyclePhases.Execute;
+                        progressMonitor.SetStatus(testCommand.Test.Name);
+                    }
+
                     progressMonitor.Worked(1);
 
                     TimeSpan? duration = null;
-                    if (duration_nanosec > 0)
+                    if (durationNanosec > 0)
                     {
                         // A tick is equal to 100 nanoseconds
-                        duration = TimeSpan.FromTicks((long)(duration_nanosec / 100UL));
+                        duration = TimeSpan.FromTicks((long)(durationNanosec / 100UL));
                     }
 
-                    ITestContext testContext = testContextStack.Pop();
-
-                    if (worker != null)
-                        worker(testContext);
+                    if (callback != null)
+                        callback(testContext);
 
                     testContext.AddAssertCount(assertCount);
                     testContext.FinishStep(outcome, duration);
                 }
+                else if (!String.IsNullOrEmpty(reason))
+                {
+                    TestLogStreamWriter log = fixtureContext.LogWriter.Failures;
+
+                    using (log.BeginSection(Resources.CSUnitTestController_ResultMessageSectionName))
+                    {
+                        log.Write(reason);
+                    }
+                }
+            }
+
+            private ITestContext GetFixtureContext(ITestCommand fixtureCommand)
+            {
+                ITestContext parentContext = testContextStack.Peek();
+                if (parentContext.TestStep.Test != fixtureCommand.Test)
+                {
+                    while (((BaseTest)parentContext.TestStep.Test).Kind != "Assembly")
+                    {
+                        testContextStack.Pop();
+
+                        TestOutcome outcome = GetFixtureOutcome(fixtureFailureCount, fixtureErrorCount);
+
+                        progressMonitor.Worked(1);
+                        parentContext.FinishStep(outcome, null);
+
+                        parentContext = testContextStack.Peek();
+                    }
+                    
+                    parentContext = fixtureCommand.StartPrimaryChildStep(parentContext.TestStep);
+                    parentContext.LifecyclePhase = LifecyclePhases.Execute;
+                    progressMonitor.SetStatus(fixtureCommand.Test.Name);
+                    
+                    testContextStack.Push(parentContext);                    
+                    
+                    fixtureFailureCount = 0;
+                    fixtureErrorCount = 0;
+                }
+                return parentContext;
+            }
+
+            private TestOutcome GetFixtureOutcome(int failureCount, int errorCount)
+            {
+                TestOutcome outcome;
+
+                if (errorCount > 0)
+                {
+                    Interlocked.Add(ref assemblyErrorCount, errorCount);
+                    outcome = TestOutcome.Error;
+                }
+                else if (failureCount > 0)
+                {
+                    Interlocked.Add(ref assemblyFailureCount, errorCount);
+                    outcome = TestOutcome.Failed;
+                }
+                else
+                {
+                    outcome = TestOutcome.Passed;
+                }
+
+                return outcome;
+            }
+
+            private static TestOutcome CalculateOutcome(int failureCount, int errorCount)
+            {
+                TestOutcome outcome;
+
+                if (errorCount > 0)
+                    outcome = TestOutcome.Error;
+                else if (failureCount > 0)
+                    outcome = TestOutcome.Failed;
+                else
+                    outcome = TestOutcome.Passed;
+
+                return outcome;
             }
         }
 
