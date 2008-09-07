@@ -192,6 +192,8 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     }
                     finally
                     {
+                        SubmitFailureForRemainingPendingTasks();
+
                         if (sessionId != null)
                             SessionCache.SaveSerializedReport(sessionId, runner.Report);
                     }
@@ -199,6 +201,15 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 finally
                 {
                     runner.Dispose(CreateProgressMonitor());
+                }
+            }
+
+            private void SubmitFailureForRemainingPendingTasks()
+            {
+                foreach (string testId in testTasks.Keys)
+                {
+                    TestMonitor testMonitor = GetTestMonitor(testId);
+                    testMonitor.SubmitFailureIfNotFinished();
                 }
             }
 
@@ -275,6 +286,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             private string pendingWarnings;
             private string pendingFailures;
             private string pendingBanner;
+            private bool finished;
 
             public TestMonitor(IRemoteTaskServer server, GallioTestItemTask testTask)
             {
@@ -326,15 +338,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     nestingCount -= 1;
                     stepCount += 1;
 
-                    if (pendingBanner != null)
-                    {
-                        combinedOutput.Insert(0, new KeyValuePair<TaskOutputType, string>(TaskOutputType.STDOUT, pendingBanner));
-                        pendingBanner = null;
-                    }
-
-                    // We cannot report pending warnings/failures from prior steps using TaskExplain.
-                    OutputPendingWarnings();
-                    OutputPendingFailures(); 
+                    OutputPendingContents();
 
                     TestStepRun run = e.TestStepRun;
 
@@ -355,6 +359,19 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
                     if (nestingCount == 0)
                         SubmitCombinedResult();
+                }
+            }
+
+            public void SubmitFailureIfNotFinished()
+            {
+                if (!finished)
+                {
+                    Output(TaskOutputType.STDERR, "The test did not run or did not complete normally due to an error.\n" +
+                        "Refer to the Gallio report for more details.");
+                    combinedOutcome = TestOutcome.Error;
+
+                    OutputPendingContents();
+                    SubmitCombinedResult();
                 }
             }
 
@@ -400,6 +417,19 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 combinedOutput.Add(new KeyValuePair<TaskOutputType, string>(outputType, text));
             }
 
+            private void OutputPendingContents()
+            {
+                if (pendingBanner != null)
+                {
+                    combinedOutput.Insert(0, new KeyValuePair<TaskOutputType, string>(TaskOutputType.STDOUT, pendingBanner));
+                    pendingBanner = null;
+                }
+
+                // We cannot report pending warnings/failures from prior steps using TaskExplain.
+                OutputPendingWarnings();
+                OutputPendingFailures();
+            }
+
             private void OutputPendingWarnings()
             {
                 if (pendingWarnings != null)
@@ -434,12 +464,12 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
                 TaskResult taskResult = GetTaskResultForOutcome(combinedOutcome);
 
-                if (stepCount != 1 || taskResult != TaskResult.Skipped)
+                if (stepCount > 1 || taskResult != TaskResult.Skipped)
                     OutputPendingWarnings();
                 else if (pendingWarnings != null)
                     server.TaskExplain(testTask, pendingWarnings);
 
-                if (stepCount != 1 || taskResult != TaskResult.Error && taskResult != TaskResult.Exception)
+                if (stepCount > 1 || taskResult != TaskResult.Error && taskResult != TaskResult.Exception)
                     OutputPendingFailures();
                 else if (pendingFailures != null)
                     server.TaskExplain(testTask, pendingFailures);
@@ -447,6 +477,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 OutputPendingExceptions();
 
                 server.TaskFinished(testTask, combinedOutcome.DisplayName, taskResult);
+                finished = true;
             }
 
             private static TaskResult GetTaskResultForOutcome(TestOutcome outcome)
