@@ -8,7 +8,7 @@
     <CSharpProject Include="Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration2.Tests.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="$(NCover2Installed)">
     <Binary Include="Gallio.NCoverIntegration\bin\v2\Gallio.NCoverIntegration2.dll">
         <Folder>NCover\v2</Folder>
     </Binary>
@@ -16,10 +16,8 @@
         <Folder>NCover\v2</Folder>
     </Binary>
     
-    <Feature Include="FEATURE_NCOVER_INTEGRATION_2" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(NCover2Installed)">
     <TestAssembly Include="Gallio.NCoverIntegration.Tests\bin\v2\Gallio.NCoverIntegration2.Tests.dll" />
+    
+    <Feature Include="FEATURE_NCOVER_INTEGRATION_2" />
   </ItemGroup>
 </Project>
