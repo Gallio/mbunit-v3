@@ -165,7 +165,7 @@ namespace MbUnit.Tests.Framework
                 => Assert.AreElementsNotEqual(new[] { 1, 2 }, new List<int> { 1, 2 }));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected collection values not to be equal.", failures[0].Description);
-            Assert.AreEqual("Expected & Actual Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("Expected Value & Actual Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("[1, 2]", failures[0].LabeledValues[0].FormattedValue.ToString());
         }
 
