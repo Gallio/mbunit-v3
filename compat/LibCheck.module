@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <LibCheckExe>$(ToolsDir)\LibCheck\LibCheck.exe</LibCheckExe>
+    <LibCheckDependencyDir>$(ToolsDir)\LibCheck\temp</LibCheckDependencyDir>
     
     <LibCheckTempDir>$(TempDir)\LibCheck</LibCheckTempDir>
     <LibCheckReportDir>$(ReportDir)\LibCheck</LibCheckReportDir>
@@ -10,6 +11,9 @@
 
   <ItemGroup>
     <OldVersion Include="3.0.0.285" />
+
+    <LibCheckDependency Include="$(SourceDir)\Extensions\NAnt\libs\NAnt.Core.dll" />
+    <LibCheckDependency Include="$(SourceDir)\Extensions\TDNet\libs\TestDriven.Framework.dll" /> <!-- This is really bogus because we don't even want to analyze this assembly.  Problem is that LibCheck doesn't filter by assembly, it filters by module after it has actually loaded each assembly first -->
   </ItemGroup>
 
   <Target Name="AfterTest"
@@ -46,6 +50,12 @@
   <Target Name="GenerateLibCheckStoreFiles">
     <Message Text="Generating LibCheck store files..."
              Importance="High" />
+
+    <RemoveDir Directories="$(LibCheckDependencyDir)" />
+    <MakeDir Directories="$(LibCheckDependencyDir)" />
+
+    <Copy SourceFiles="@(LibCheckDependency)"
+          DestinationFolder="$(LibCheckDependencyDir)" />
 
     <Exec Command="&quot;$(LibCheckExe)&quot; -store Full &quot;%(LibCheckVersionDir.Version)&quot; -full &quot;%(LibCheckVersionDir.FullPath)&quot;"
           WorkingDirectory="$(LibCheckTempDir)" />

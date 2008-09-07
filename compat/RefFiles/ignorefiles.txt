@@ -3,9 +3,13 @@ castle.core.dll
 castle.dynamicproxy2.dll
 castle.microkernel.dll
 castle.windsor.dll
+gallio.tdnetrunner.dll
 gallio.xmlserializers.dll
 gallio.host.exe
 icsharpcode.texteditor.dll
+log4net.dll
 mono.cecil.dll
+nant.core.dll
 ndepend.helpers.filedirectorypath.dll
+testdriven.framework.dll
 weifenluo.winformsui.docking.dll
