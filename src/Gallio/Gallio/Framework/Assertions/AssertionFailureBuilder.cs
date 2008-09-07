@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
-using Gallio.Framework.Assertions;
 using Gallio.Framework.Text;
 using Gallio.Framework.Formatting;
 using Gallio.Model.Diagnostics;
@@ -122,7 +121,7 @@ namespace Gallio.Framework.Assertions
 
         /// <summary>
         /// <para>
-        /// Sets the raw expected value to be formatted using <see cref="Formatter" />.
+        /// Adds the raw expected value to be formatted using <see cref="Formatter" />.
         /// </para>
         /// <para>
         /// The order in which this method is called determines the order in which this
@@ -134,14 +133,14 @@ namespace Gallio.Framework.Assertions
         /// </remarks>
         /// <param name="expectedValue">The expected value</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
-        public AssertionFailureBuilder SetRawExpectedValue(object expectedValue)
+        public AssertionFailureBuilder AddRawExpectedValue(object expectedValue)
         {
-            return SetRawLabeledValue("Expected Value", expectedValue);
+            return AddRawLabeledValue("Expected Value", expectedValue);
         }
 
         /// <summary>
         /// <para>
-        /// Sets the raw actual value to be formatted using <see cref="Formatter" />.
+        /// Adds the raw actual value to be formatted using <see cref="Formatter" />.
         /// </para>
         /// <para>
         /// The order in which this method is called determines the order in which this
@@ -153,14 +152,14 @@ namespace Gallio.Framework.Assertions
         /// </remarks>
         /// <param name="actualValue">The actual value</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
-        public AssertionFailureBuilder SetRawActualValue(object actualValue)
+        public AssertionFailureBuilder AddRawActualValue(object actualValue)
         {
-            return SetRawLabeledValue("Actual Value", actualValue);
+            return AddRawLabeledValue("Actual Value", actualValue);
         }
 
         /// <summary>
         /// <para>
-        /// Sets the raw expected and actual values to be formatted using <see cref="Formatter" />
+        /// Adds the raw expected and actual values to be formatted using <see cref="Formatter" />
         /// and includes formatting of their differences.
         /// </para>
         /// <para>
@@ -170,43 +169,71 @@ namespace Gallio.Framework.Assertions
         /// </summary>
         /// <remarks>
         /// This is a convenience method for setting a pair of labeled values called "Expected Value"
-        /// and "Actual Value" and including formatting of differences produced by <see cref="DiffSet"/>.
+        /// and "Actual Value" with diffs.
         /// </remarks>
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
-        public AssertionFailureBuilder SetRawExpectedAndActualValueWithDiffs(object expectedValue, object actualValue)
+        public AssertionFailureBuilder AddRawExpectedAndActualValuesWithDiffs(object expectedValue, object actualValue)
         {
-            if (ReferenceEquals(expectedValue, actualValue))
+            return AddRawLabeledValuesWithDiffs("Expected Value", expectedValue, "Actual Value", actualValue);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Adds two raw labeled values formatted using <see cref="Formatter" /> and includes
+        /// formatting of their differences.
+        /// </para>
+        /// <para>
+        /// The order in which this method is called determines the order in which the
+        /// values will appear relative to other labeled values.
+        /// </para>
+        /// </summary>
+        /// <param name="leftLabel">The left label</param>
+        /// <param name="leftValue">The left value</param>
+        /// <param name="rightLabel">The right label</param>
+        /// <param name="rightValue">The right value</param>
+        /// <returns>The builder, to allow for fluent method chaining</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="leftLabel"/> or
+        /// <paramref name="rightLabel"/> is null</exception>
+        public AssertionFailureBuilder AddRawLabeledValuesWithDiffs(
+            string leftLabel, object leftValue, string rightLabel, object rightValue)
+        {
+            if (leftLabel == null)
+                throw new ArgumentNullException("leftLabel");
+            if (rightLabel == null)
+                throw new ArgumentNullException("rightLabel");
+
+            if (ReferenceEquals(leftValue, rightValue))
             {
-                SetRawLabeledValue("Expected & Actual Value", expectedValue);
-                SetLabeledValue("Remark", "The expected and actual values are the same instance.");
+                AddRawLabeledValue(String.Format("{0} & {1}", leftLabel, rightLabel), leftValue);
+                AddLabeledValue("Remark", "Both values are the same instance.");
             }
             else
             {
-                string formattedExpectedValue = Formatter.Format(expectedValue);
-                string formattedActualValue = Formatter.Format(actualValue);
+                string formattedLeftValue = Formatter.Format(leftValue);
+                string formattedRightValue = Formatter.Format(rightValue);
 
-                if (formattedExpectedValue == formattedActualValue)
+                if (formattedLeftValue == formattedRightValue)
                 {
-                    SetLabeledValue("Expected & Actual Value", formattedExpectedValue);
-                    SetLabeledValue("Remark", "The expected and actual values are distinct instances but their formatted representations look the same.");
+                    AddLabeledValue(String.Format("{0} & {1}", leftLabel, rightLabel), formattedLeftValue);
+                    AddLabeledValue("Remark", "Both values look the same when formatted but they are distinct instances.");
                 }
                 else
                 {
-                    DiffSet diffSet = DiffSet.GetDiffSet(formattedExpectedValue, formattedActualValue);
+                    DiffSet diffSet = DiffSet.GetDiffSet(formattedLeftValue, formattedRightValue);
                     diffSet = diffSet.Simplify();
 
-                    StructuredTextWriter highlightedExpectedValueWriter = new StructuredTextWriter();
-                    StructuredTextWriter highlightedActualValueWriter = new StructuredTextWriter();
+                    StructuredTextWriter highlightedLeftValueWriter = new StructuredTextWriter();
+                    StructuredTextWriter highlightedRightValueWriter = new StructuredTextWriter();
 
-                    diffSet.WriteTo(highlightedExpectedValueWriter, DiffStyle.LeftOnly,
-                        formattedExpectedValue.Length <= AssertionFailure.MaxFormattedValueLength ? int.MaxValue : CompressedDiffContextLength);
-                    diffSet.WriteTo(highlightedActualValueWriter, DiffStyle.RightOnly,
-                        formattedActualValue.Length <= AssertionFailure.MaxFormattedValueLength ? int.MaxValue : CompressedDiffContextLength);
- 
-                    SetLabeledValue("Expected Value", highlightedExpectedValueWriter.ToStructuredText());
-                    SetLabeledValue("Actual Value", highlightedActualValueWriter.ToStructuredText());
+                    diffSet.WriteTo(highlightedLeftValueWriter, DiffStyle.LeftOnly,
+                        formattedLeftValue.Length <= AssertionFailure.MaxFormattedValueLength ? int.MaxValue : CompressedDiffContextLength);
+                    diffSet.WriteTo(highlightedRightValueWriter, DiffStyle.RightOnly,
+                        formattedRightValue.Length <= AssertionFailure.MaxFormattedValueLength ? int.MaxValue : CompressedDiffContextLength);
+
+                    AddLabeledValue(leftLabel, highlightedLeftValueWriter.ToStructuredText());
+                    AddLabeledValue(rightLabel, highlightedRightValueWriter.ToStructuredText());
                 }
             }
 
@@ -215,15 +242,11 @@ namespace Gallio.Framework.Assertions
 
         /// <summary>
         /// <para>
-        /// Sets a raw labeled value to be formatted using <see cref="Formatter" />.
+        /// Adds a raw labeled value to be formatted using <see cref="Formatter" />.
         /// </para>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// labeled value will appear relative to other labeled values.
-        /// </para>
-        /// <para>
-        /// If a value is already associated with the specified label, replaces its value and
-        /// repositions it at the end of the list.
         /// </para>
         /// </summary>
         /// <param name="label">The label</param>
@@ -231,22 +254,18 @@ namespace Gallio.Framework.Assertions
         /// <returns>The builder, to allow for fluent method chaining</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
-        public AssertionFailureBuilder SetRawLabeledValue(string label, object value)
+        public AssertionFailureBuilder AddRawLabeledValue(string label, object value)
         {
-            return SetLabeledValue(label, Formatter.Format(value));
+            return AddLabeledValue(label, Formatter.Format(value));
         }
 
         /// <summary>
         /// <para>
-        /// Sets a labeled value as plain text.
+        /// Adds a labeled value as plain text.
         /// </para>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// labeled value will appear relative to other labeled values.
-        /// </para>
-        /// <para>
-        /// If a value is already associated with the specified label, replaces its value and
-        /// repositions it at the end of the list.
         /// </para>
         /// </summary>
         /// <param name="label">The label</param>
@@ -254,23 +273,19 @@ namespace Gallio.Framework.Assertions
         /// <returns>The builder, to allow for fluent method chaining</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or <paramref name="formattedValue"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
-        public AssertionFailureBuilder SetLabeledValue(string label, string formattedValue)
+        public AssertionFailureBuilder AddLabeledValue(string label, string formattedValue)
         {
-            SetLabeledValueImpl(new AssertionFailure.LabeledValue(label, formattedValue));
+            AddLabeledValueImpl(new AssertionFailure.LabeledValue(label, formattedValue));
             return this;
         }
 
         /// <summary>
         /// <para>
-        /// Sets a labeled value as structured text.
+        /// Adds a labeled value as structured text.
         /// </para>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// labeled value will appear relative to other labeled values.
-        /// </para>
-        /// <para>
-        /// If a value is already associated with the specified label, replaces its value and
-        /// repositions it at the end of the list.
         /// </para>
         /// </summary>
         /// <param name="label">The label</param>
@@ -278,30 +293,26 @@ namespace Gallio.Framework.Assertions
         /// <returns>The builder, to allow for fluent method chaining</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="label"/> or <paramref name="formattedValue"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="label"/> is empty</exception>
-        public AssertionFailureBuilder SetLabeledValue(string label, StructuredText formattedValue)
+        public AssertionFailureBuilder AddLabeledValue(string label, StructuredText formattedValue)
         {
-            SetLabeledValueImpl(new AssertionFailure.LabeledValue(label, formattedValue));
+            AddLabeledValueImpl(new AssertionFailure.LabeledValue(label, formattedValue));
             return this;
         }
 
         /// <summary>
         /// <para>
-        /// Sets a labeled value.
+        /// Adds a labeled value.
         /// </para>
         /// <para>
         /// The order in which this method is called determines the order in which this
         /// value will appear relative to other labeled values.
         /// </para>
-        /// <para>
-        /// If a value is already associated with the specified label, replaces and
-        /// repositions it at the end of the list.
-        /// </para>
         /// </summary>
         /// <param name="labeledValue">The labeled value</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
-        public AssertionFailureBuilder SetLabeledValue(AssertionFailure.LabeledValue labeledValue)
+        public AssertionFailureBuilder AddLabeledValue(AssertionFailure.LabeledValue labeledValue)
         {
-            SetLabeledValueImpl(labeledValue);
+            AddLabeledValueImpl(labeledValue);
             return this;
         }
 
@@ -398,19 +409,10 @@ namespace Gallio.Framework.Assertions
                 innerFailures);
         }
 
-        private void SetLabeledValueImpl(AssertionFailure.LabeledValue labeledValue)
+        private void AddLabeledValueImpl(AssertionFailure.LabeledValue labeledValue)
         {
             if (labeledValues == null)
                 labeledValues = new List<AssertionFailure.LabeledValue>();
-
-            for (int i = 0; i < labeledValues.Count; i++)
-            {
-                if (labeledValues[i].Label == labeledValue.Label)
-                {
-                    labeledValues.RemoveAt(i);
-                    break;
-                }
-            }
 
             labeledValues.Add(labeledValue);
         }

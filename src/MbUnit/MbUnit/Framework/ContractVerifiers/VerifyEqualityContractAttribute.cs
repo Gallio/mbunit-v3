@@ -262,10 +262,10 @@ namespace MbUnit.Framework.ContractVerifiers
                                             return null;
 
                                         return new AssertionFailureBuilder("The hash codes returned by two instances equal together should be identical.")
-                                            .SetRawLabeledValue("First object instance", x)
-                                            .SetRawLabeledValue("First hash code", x.GetHashCode())
-                                            .SetRawLabeledValue("Second object instance", y)
-                                            .SetRawLabeledValue("Second hash code", y.GetHashCode())
+                                            .AddRawLabeledValue("First object instance", x)
+                                            .AddRawLabeledValue("First hash code", x.GetHashCode())
+                                            .AddRawLabeledValue("Second object instance", y)
+                                            .AddRawLabeledValue("Second hash code", y.GetHashCode())
                                             .ToAssertionFailure();
                                     });
                                 }
@@ -296,7 +296,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Equality method expected to be implemented.")
-                            .SetLabeledValue("Expected Method", "public bool Equals(" + Type.Name + ")")
+                            .AddLabeledValue("Expected Method", "public bool Equals(" + Type.Name + ")")
                             .ToAssertionFailure();
                     });
       
@@ -330,7 +330,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Equality method expected to be implemented.")
-                            .SetLabeledValue("Expected Method", "static bool operator ==(" + Type.Name + " left, " + Type.Name + " right)")
+                            .AddLabeledValue("Expected Method", "static bool operator ==(" + Type.Name + " left, " + Type.Name + " right)")
                             .ToAssertionFailure();
                     });
 
@@ -364,7 +364,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Equality method expected to be implemented.")
-                            .SetLabeledValue("Expected Method", "static bool operator !=(" + Type.Name + " left, " + Type.Name + " right)")
+                            .AddLabeledValue("Expected Method", "static bool operator !=(" + Type.Name + " left, " + Type.Name + " right)")
                             .ToAssertionFailure();
                     });
 
@@ -393,8 +393,8 @@ namespace MbUnit.Framework.ContractVerifiers
                     return null;
 
                 return new AssertionFailureBuilder("Expected the contract verifier to implement a particular interface.")
-                    .SetLabeledValue("Contract Verifier", "Equality")
-                    .SetLabeledValue("Expected Interface", "IEquivalentClassProvider<" + Type + ">")
+                    .AddLabeledValue("Contract Verifier", "Equality")
+                    .AddLabeledValue("Expected Interface", "IEquivalentClassProvider<" + Type + ">")
                     .ToAssertionFailure();
             });
 
@@ -459,7 +459,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         return null;
 
                     return new AssertionFailureBuilder("The equality operator should consider a value equal to itself.")
-                        .SetRawLabeledValue("Value", x)
+                        .AddRawLabeledValue("Value", x)
                         .ToAssertionFailure();
                 });
 
@@ -474,8 +474,8 @@ namespace MbUnit.Framework.ContractVerifiers
 
                         return new AssertionFailureBuilder("The equality operator should consider the left value " + 
                             "and the right value " + (equalityExpected ? String.Empty : "not ") + "to be equal.")
-                            .SetRawLabeledValue("Left Value", x)
-                            .SetRawLabeledValue("Right Value", y)
+                            .AddRawLabeledValue("Left Value", x)
+                            .AddRawLabeledValue("Right Value", y)
                             .ToAssertionFailure();
                     });
 
@@ -486,8 +486,8 @@ namespace MbUnit.Framework.ContractVerifiers
 
                         return new AssertionFailureBuilder("The equality operator should consider the left value " +
                             "and the right value " + (equalityExpected ? String.Empty : "not ") + "to be equal.")
-                            .SetRawLabeledValue("Left Value", y)
-                            .SetRawLabeledValue("Right Value", x)
+                            .AddRawLabeledValue("Left Value", y)
+                            .AddRawLabeledValue("Right Value", x)
                             .ToAssertionFailure();
                     });
                 }
@@ -510,27 +510,27 @@ namespace MbUnit.Framework.ContractVerifiers
                     catch (TargetInvocationException exception)
                     {
                         return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                            .SetRawLabeledValue("Left Value", null)
-                            .SetRawLabeledValue("Right Value", null)
-                            .SetRawLabeledValue("Expected Result", true)
-                            .SetRawLabeledValue("Actual Result", exception.InnerException)
+                            .AddRawLabeledValue("Left Value", null)
+                            .AddRawLabeledValue("Right Value", null)
+                            .AddRawLabeledValue("Expected Result", true)
+                            .AddRawLabeledValue("Actual Result", exception.InnerException)
                             .ToAssertionFailure();
                     }
                     catch (NullReferenceException exception)
                     {
                         return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                            .SetRawLabeledValue("Left Value", null)
-                            .SetRawLabeledValue("Right Value", null)
-                            .SetRawLabeledValue("Expected Result", true)
-                            .SetRawLabeledValue("Actual Result", exception)
+                            .AddRawLabeledValue("Left Value", null)
+                            .AddRawLabeledValue("Right Value", null)
+                            .AddRawLabeledValue("Expected Result", true)
+                            .AddRawLabeledValue("Actual Result", exception)
                             .ToAssertionFailure();
                     }
 
                     return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                        .SetRawLabeledValue("Left Value", null)
-                        .SetRawLabeledValue("Right Value", null)
-                        .SetRawLabeledValue("Expected Result", true)
-                        .SetRawLabeledValue("Actual Result", actualResult)
+                        .AddRawLabeledValue("Left Value", null)
+                        .AddRawLabeledValue("Right Value", null)
+                        .AddRawLabeledValue("Expected Result", true)
+                        .AddRawLabeledValue("Actual Result", actualResult)
                         .ToAssertionFailure();
                 });
             }
@@ -546,10 +546,10 @@ namespace MbUnit.Framework.ContractVerifiers
                         return null;
 
                     return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                        .SetRawLabeledValue("Left Value", x)
-                        .SetRawLabeledValue("Right Value", null)
-                        .SetRawLabeledValue("Expected Result", false)
-                        .SetRawLabeledValue("Actual Result", true)
+                        .AddRawLabeledValue("Left Value", x)
+                        .AddRawLabeledValue("Right Value", null)
+                        .AddRawLabeledValue("Expected Result", false)
+                        .AddRawLabeledValue("Actual Result", true)
                         .ToAssertionFailure();
                 });
 
@@ -565,27 +565,27 @@ namespace MbUnit.Framework.ContractVerifiers
                         catch (TargetInvocationException exception)
                         {
                             return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                                .SetRawLabeledValue("Left Value", null)
-                                .SetRawLabeledValue("Right Value", x)
-                                .SetRawLabeledValue("Expected Result", false)
-                                .SetRawLabeledValue("Actual Result", exception.InnerException)
+                                .AddRawLabeledValue("Left Value", null)
+                                .AddRawLabeledValue("Right Value", x)
+                                .AddRawLabeledValue("Expected Result", false)
+                                .AddRawLabeledValue("Actual Result", exception.InnerException)
                                 .ToAssertionFailure();
                         }
                         catch (NullReferenceException exception)
                         {
                             return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                                .SetRawLabeledValue("Left Value", null)
-                                .SetRawLabeledValue("Right Value", x)
-                                .SetRawLabeledValue("Expected Result", false)
-                                .SetRawLabeledValue("Actual Result", exception)
+                                .AddRawLabeledValue("Left Value", null)
+                                .AddRawLabeledValue("Right Value", x)
+                                .AddRawLabeledValue("Expected Result", false)
+                                .AddRawLabeledValue("Actual Result", exception)
                                 .ToAssertionFailure();
                         }
 
                         return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                            .SetRawLabeledValue("Left Value", null)
-                            .SetRawLabeledValue("Right Value", x)
-                            .SetRawLabeledValue("Expected Result", false)
-                            .SetRawLabeledValue("Actual Result", true)
+                            .AddRawLabeledValue("Left Value", null)
+                            .AddRawLabeledValue("Right Value", x)
+                            .AddRawLabeledValue("Expected Result", false)
+                            .AddRawLabeledValue("Actual Result", true)
                             .ToAssertionFailure();
                     });
                 }

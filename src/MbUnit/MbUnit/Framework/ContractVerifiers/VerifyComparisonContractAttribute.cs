@@ -225,7 +225,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Comparison method expected to be implemented.")
-                            .SetLabeledValue("Expected Method", "public bool CompareTo(" + Type.Name + ")")
+                            .AddLabeledValue("Expected Method", "public bool CompareTo(" + Type.Name + ")")
                             .ToAssertionFailure();
                     });
 
@@ -279,7 +279,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Comparison method expected to be implemented.")
-                            .SetLabeledValue("Expected Method", "'Greater Than' (>) operator overload")
+                            .AddLabeledValue("Expected Method", "'Greater Than' (>) operator overload")
                             .ToAssertionFailure();
                     });
 
@@ -319,7 +319,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Comparison method expected to be implemented.")
-                            .SetLabeledValue("Expected Method", "'Greater Than Or Equal' (>=) operator overload")
+                            .AddLabeledValue("Expected Method", "'Greater Than Or Equal' (>=) operator overload")
                             .ToAssertionFailure();
                     });
 
@@ -359,7 +359,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Comparison method expected to be implemented.")
-                            .SetLabeledValue("Expected Method", "'Less Than'(<) operator overload")
+                            .AddLabeledValue("Expected Method", "'Less Than'(<) operator overload")
                             .ToAssertionFailure();
                     });
 
@@ -399,7 +399,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Comparison method expected to be implemented.")
-                            .SetLabeledValue("Expected Method", "'Less Than Or Equal' (<=) operator overload")
+                            .AddLabeledValue("Expected Method", "'Less Than Or Equal' (<=) operator overload")
                             .ToAssertionFailure();
                     });
 
@@ -434,8 +434,8 @@ namespace MbUnit.Framework.ContractVerifiers
                     return null;
 
                 return new AssertionFailureBuilder("Expected the contract verifier to implement a particular interface.")
-                    .SetLabeledValue("Contract Verifier", "Comparison")
-                    .SetLabeledValue("Expected Interface", "IEquivalentClassProvider<" + Type + ">")
+                    .AddLabeledValue("Contract Verifier", "Comparison")
+                    .AddLabeledValue("Expected Interface", "IEquivalentClassProvider<" + Type + ">")
                     .ToAssertionFailure();
             });
 
@@ -518,10 +518,10 @@ namespace MbUnit.Framework.ContractVerifiers
                                 return null;
 
                             return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
-                                .SetRawLabeledValue("Left Value", x)
-                                .SetRawLabeledValue("Right Value", y)
-                                .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
-                                .SetLabeledValue("Actual Result", formatsExpectedResult(actualResult))
+                                .AddRawLabeledValue("Left Value", x)
+                                .AddRawLabeledValue("Right Value", y)
+                                .AddLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                                .AddLabeledValue("Actual Result", formatsExpectedResult(actualResult))
                                 .ToAssertionFailure();
                         });
                     }
@@ -549,27 +549,27 @@ namespace MbUnit.Framework.ContractVerifiers
                     catch (TargetInvocationException exception)
                     {
                         return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
-                            .SetRawLabeledValue("Left Value", null)
-                            .SetRawLabeledValue("Right Value", null)
-                            .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
-                            .SetRawLabeledValue("Actual Result", exception.InnerException)
+                            .AddRawLabeledValue("Left Value", null)
+                            .AddRawLabeledValue("Right Value", null)
+                            .AddLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                            .AddRawLabeledValue("Actual Result", exception.InnerException)
                             .ToAssertionFailure();
                     }
                     catch (NullReferenceException exception)
                     {
                         return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
-                            .SetRawLabeledValue("Left Value", null)
-                            .SetRawLabeledValue("Right Value", null)
-                            .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
-                            .SetRawLabeledValue("Actual Result", exception)
+                            .AddRawLabeledValue("Left Value", null)
+                            .AddRawLabeledValue("Right Value", null)
+                            .AddLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                            .AddRawLabeledValue("Actual Result", exception)
                             .ToAssertionFailure();
                     }
 
                     return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
-                        .SetRawLabeledValue("Left Value", null)
-                        .SetRawLabeledValue("Right Value", null)
-                        .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
-                        .SetLabeledValue("Actual Result", formatsExpectedResult(actualResult))
+                        .AddRawLabeledValue("Left Value", null)
+                        .AddRawLabeledValue("Right Value", null)
+                        .AddLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                        .AddLabeledValue("Actual Result", formatsExpectedResult(actualResult))
                         .ToAssertionFailure();
                 });
             }
@@ -588,10 +588,10 @@ namespace MbUnit.Framework.ContractVerifiers
                         return null;
 
                     return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
-                        .SetRawLabeledValue("Left Value", x)
-                        .SetRawLabeledValue("Right Value", null)
-                        .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
-                        .SetLabeledValue("Actual Result", formatsExpectedResult(actualResult))
+                        .AddRawLabeledValue("Left Value", x)
+                        .AddRawLabeledValue("Right Value", null)
+                        .AddLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                        .AddLabeledValue("Actual Result", formatsExpectedResult(actualResult))
                         .ToAssertionFailure();
                 });
 
@@ -611,27 +611,27 @@ namespace MbUnit.Framework.ContractVerifiers
                         catch (TargetInvocationException exception)
                         {
                             return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
-                                .SetRawLabeledValue("Left Value", null)
-                                .SetRawLabeledValue("Right Value", x)
-                                .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
-                                .SetRawLabeledValue("Actual Result", exception.InnerException)
+                                .AddRawLabeledValue("Left Value", null)
+                                .AddRawLabeledValue("Right Value", x)
+                                .AddLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                                .AddRawLabeledValue("Actual Result", exception.InnerException)
                                 .ToAssertionFailure();
                         }
                         catch (NullReferenceException exception)
                         {
                             return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
-                                .SetRawLabeledValue("Left Value", null)
-                                .SetRawLabeledValue("Right Value", x)
-                                .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
-                                .SetRawLabeledValue("Actual Result", exception)
+                                .AddRawLabeledValue("Left Value", null)
+                                .AddRawLabeledValue("Right Value", x)
+                                .AddLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                                .AddRawLabeledValue("Actual Result", exception)
                                 .ToAssertionFailure();
                         }
 
                         return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
-                            .SetRawLabeledValue("Left Value", null)
-                            .SetRawLabeledValue("Right Value", x)
-                            .SetLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
-                            .SetLabeledValue("Actual Result", formatsExpectedResult(actualResult))
+                            .AddRawLabeledValue("Left Value", null)
+                            .AddRawLabeledValue("Right Value", x)
+                            .AddLabeledValue("Expected Result", formatsExpectedResult(expectedResult))
+                            .AddLabeledValue("Actual Result", formatsExpectedResult(actualResult))
                             .ToAssertionFailure();
                     });
                 }

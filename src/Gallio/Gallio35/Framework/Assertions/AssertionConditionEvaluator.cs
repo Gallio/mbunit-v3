@@ -139,12 +139,12 @@ namespace Gallio.Framework.Assertions
                 }
 
                 failureBuilder.SetMessage(messageFormat, messageArgs);
-                failureBuilder.SetRawLabeledValue("Condition", condition.Body);
+                failureBuilder.AddRawLabeledValue("Condition", condition.Body);
 
                 var labeledTraces = new List<Trace>();
                 AddLabeledTraces(labeledTraces, trace, 0);
                 foreach (Trace labeledTrace in labeledTraces)
-                    failureBuilder.SetRawLabeledValue(Formatter.Instance.Format(labeledTrace.Expression), labeledTrace.Result);
+                    failureBuilder.AddRawLabeledValue(Formatter.Instance.Format(labeledTrace.Expression), labeledTrace.Result);
 
                 return failureBuilder.ToAssertionFailure();
             }

@@ -14,9 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Framework.Text;
@@ -92,64 +89,45 @@ namespace Gallio.Tests.Framework.Assertions
         }
 
         [Test]
-        public void CanSetRawExpectedValue()
+        public void CanAddRawExpectedValue()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetRawExpectedValue("Abc");
+            builder.AddRawExpectedValue("Abc");
             Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected Value", "\"Abc\"")
             }, builder.ToAssertionFailure().LabeledValues);
-
-            builder.SetRawExpectedValue(null);
-            Assert.AreEqual(new[]
-            {
-                new AssertionFailure.LabeledValue("Expected Value", "null")
-            }, builder.ToAssertionFailure().LabeledValues);
         }
 
         [Test]
-        public void CanSetRawActualValue()
+        public void CanAddRawActualValue()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetRawActualValue("Abc");
+            builder.AddRawActualValue("Abc");
             Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Actual Value", "\"Abc\"")
             }, builder.ToAssertionFailure().LabeledValues);
-
-            builder.SetRawActualValue(null);
-            Assert.AreEqual(new[]
-            {
-                new AssertionFailure.LabeledValue("Actual Value", "null")
-            }, builder.ToAssertionFailure().LabeledValues);
         }
 
         [Test]
-        public void CanSetRawLabeledValue()
+        public void CanAddRawLabeledValue()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetRawLabeledValue("Abc", 123);
-            builder.SetRawLabeledValue("Def", 3.0m);
+            builder.AddRawLabeledValue("Abc", 123);
+            builder.AddRawLabeledValue("Def", 3.0m);
             Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", "123"),
                 new AssertionFailure.LabeledValue("Def", "3.0m")
             }, builder.ToAssertionFailure().LabeledValues);
-
-            builder.SetRawLabeledValue("Abc", null);
-            Assert.AreEqual(new[]
-            {
-                new AssertionFailure.LabeledValue("Def", "3.0m"),
-                new AssertionFailure.LabeledValue("Abc", "null")
-            }, builder.ToAssertionFailure().LabeledValues);
         }
 
         [Test]
-        public void CanSetFormattedLabeledValueAsPlainTextString()
+        public void CanAddFormattedLabeledValueAsPlainTextString()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetLabeledValue("Abc", "123");
+            builder.AddLabeledValue("Abc", "123");
             Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", "123")
@@ -157,10 +135,10 @@ namespace Gallio.Tests.Framework.Assertions
         }
 
         [Test]
-        public void CanSetFormattedLabeledValueAsStructuredTextString()
+        public void CanAddFormattedLabeledValueAsStructuredTextString()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetLabeledValue("Abc", new StructuredText("123"));
+            builder.AddLabeledValue("Abc", new StructuredText("123"));
             Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", new StructuredText("123"))
@@ -168,10 +146,10 @@ namespace Gallio.Tests.Framework.Assertions
         }
 
         [Test]
-        public void CanSetFormattedLabeledValueAsLabeledValueStruct()
+        public void CanAddFormattedLabeledValueAsLabeledValueStruct()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetLabeledValue(new AssertionFailure.LabeledValue("Abc", new StructuredText("123")));
+            builder.AddLabeledValue(new AssertionFailure.LabeledValue("Abc", new StructuredText("123")));
             Assert.AreEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", new StructuredText("123"))
@@ -184,12 +162,12 @@ namespace Gallio.Tests.Framework.Assertions
             const string str = "123";
 
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
-            builder.SetRawExpectedAndActualValueWithDiffs(str, str);
+            builder.AddRawExpectedAndActualValuesWithDiffs(str, str);
 
             Assert.AreEqual(new[]
             {
-                new AssertionFailure.LabeledValue("Expected & Actual Value", new StructuredText("\"123\"")),
-                new AssertionFailure.LabeledValue("Remark", "The expected and actual values are the same instance.")
+                new AssertionFailure.LabeledValue("Expected Value & Actual Value", new StructuredText("\"123\"")),
+                new AssertionFailure.LabeledValue("Remark", "Both values are the same instance.")
             }, builder.ToAssertionFailure().LabeledValues);
         }
 
@@ -197,12 +175,12 @@ namespace Gallio.Tests.Framework.Assertions
         public void ShowsExpectedAndActualValueWithDiffs_RepresentationalEquality()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
-            builder.SetRawExpectedAndActualValueWithDiffs(1, 1u);
+            builder.AddRawExpectedAndActualValuesWithDiffs(1, 1u);
 
             Assert.AreEqual(new[]
             {
-                new AssertionFailure.LabeledValue("Expected & Actual Value", new StructuredText("1")),
-                new AssertionFailure.LabeledValue("Remark", "The expected and actual values are distinct instances but their formatted representations look the same.")
+                new AssertionFailure.LabeledValue("Expected Value & Actual Value", new StructuredText("1")),
+                new AssertionFailure.LabeledValue("Remark", "Both values look the same when formatted but they are distinct instances.")
             }, builder.ToAssertionFailure().LabeledValues);
         }
 
@@ -210,7 +188,7 @@ namespace Gallio.Tests.Framework.Assertions
         public void ShowsExpectedAndActualValueWithDiffs_Difference()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
-            builder.SetRawExpectedAndActualValueWithDiffs("acde", "bcef");
+            builder.AddRawExpectedAndActualValuesWithDiffs("acde", "bcef");
 
             DiffSet diffSet = DiffSet.GetDiffSet("\"acde\"", "\"bcef\"").Simplify();
             StructuredTextWriter expectedValueWriter = new StructuredTextWriter();
@@ -226,13 +204,32 @@ namespace Gallio.Tests.Framework.Assertions
         }
 
         [Test]
+        public void ShowsLabeledValuesWithDiffs_Difference()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
+            builder.AddRawLabeledValuesWithDiffs("Left", "acde", "Right", "bcef");
+
+            DiffSet diffSet = DiffSet.GetDiffSet("\"acde\"", "\"bcef\"").Simplify();
+            StructuredTextWriter expectedValueWriter = new StructuredTextWriter();
+            diffSet.WriteTo(expectedValueWriter, DiffStyle.LeftOnly);
+            StructuredTextWriter actualValueWriter = new StructuredTextWriter();
+            diffSet.WriteTo(actualValueWriter, DiffStyle.RightOnly);
+
+            Assert.AreEqual(new[]
+            {
+                new AssertionFailure.LabeledValue("Left", expectedValueWriter.ToStructuredText()),
+                new AssertionFailure.LabeledValue("Right", actualValueWriter.ToStructuredText())
+            }, builder.ToAssertionFailure().LabeledValues);
+        }
+
+        [Test]
         public void TruncatesDiffContextWhenTooLong()
         {
             string expectedValue = "z" + new string('x', AssertionFailure.MaxFormattedValueLength) + "z";
             string actualValue = "Z" + new string('x', AssertionFailure.MaxFormattedValueLength) + "Z";
 
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
-            builder.SetRawExpectedAndActualValueWithDiffs(expectedValue, actualValue);
+            builder.AddRawExpectedAndActualValuesWithDiffs(expectedValue, actualValue);
             AssertionFailure failure = builder.ToAssertionFailure();
             TestLog.Write(failure);
 
@@ -241,6 +238,55 @@ namespace Gallio.Tests.Framework.Assertions
                 failure.LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("\"Z" + new string('x', split) + "..." + new string('x', split) + "Z\"",
                 failure.LabeledValues[1].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void AddRawLabeledValuesWithDiffsThrowsIfLeftLabelIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            Assert.Throws<ArgumentNullException>(() => builder.AddRawLabeledValuesWithDiffs(null, "abc", "xxx", "def"));
+        }
+
+        [Test]
+        public void AddRawLabeledValuesWithDiffsThrowsIfRightLabelIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            Assert.Throws<ArgumentNullException>(() => builder.AddRawLabeledValuesWithDiffs("xxx", "abc", null, "def"));
+        }
+
+        [Test]
+        public void AddRawLabeledValueThrowsIfLabelIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            Assert.Throws<ArgumentNullException>(() => builder.AddRawLabeledValue(null, "abc"));
+        }
+
+        [Test]
+        public void AddLabeledValueWithStringThrowsIfLabelIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            Assert.Throws<ArgumentNullException>(() => builder.AddLabeledValue(null, "abc"));
+        }
+
+        [Test]
+        public void AddLabeledValueWithStringThrowsIfFormattedValueIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            Assert.Throws<ArgumentNullException>(() => builder.AddLabeledValue("xxx", (string)null));
+        }
+
+        [Test]
+        public void AddLabeledValueWithStructuredTextThrowsIfLabelIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            Assert.Throws<ArgumentNullException>(() => builder.AddLabeledValue(null, new StructuredText("abc")));
+        }
+
+        [Test]
+        public void AddLabeledValueWithStructuredTextThrowsIfFormattedValueIsNull()
+        {
+            AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
+            Assert.Throws<ArgumentNullException>(() => builder.AddLabeledValue("xxx", (StructuredText)null));
         }
 
         [Test]

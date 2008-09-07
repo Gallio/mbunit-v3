@@ -54,7 +54,7 @@ namespace MbUnit.Framework
     /// formatter provided by the <see cref="AssertionFailureBuilder.Formatter" /> property instead
     /// of directly calling <see cref="Object.ToString" />.  This enables custom formatting rules to
     /// decide how best to present values of particular types and yields a more consistent user experience.
-    /// In particular the <see cref="AssertionFailureBuilder.SetRawLabeledValue" /> method and
+    /// In particular the <see cref="AssertionFailureBuilder.AddRawLabeledValue" /> method and
     /// its siblings automatically format values in this manner.
     /// </para>
     /// </remarks>
@@ -191,7 +191,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected values to be equal.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawExpectedAndActualValueWithDiffs(expectedValue, actualValue)
+                    .AddRawExpectedAndActualValuesWithDiffs(expectedValue, actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -287,8 +287,8 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected values to be non-equal.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Unexpected Value", unexpectedValue)
-                    .SetRawActualValue(actualValue)
+                    .AddRawLabeledValue("Unexpected Value", unexpectedValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -356,7 +356,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected collection values to be equal.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawExpectedAndActualValueWithDiffs(exectedCollection, actualCollection)
+                    .AddRawExpectedAndActualValuesWithDiffs(exectedCollection, actualCollection)
                     .ToAssertionFailure();
             });
         }
@@ -424,7 +424,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected collection values not to be equal.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawExpectedAndActualValueWithDiffs(exectedCollection, actualCollection)
+                    .AddRawExpectedAndActualValuesWithDiffs(exectedCollection, actualCollection)
                     .ToAssertionFailure();
             });
         }
@@ -463,7 +463,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected values to be referentially identical.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawExpectedAndActualValueWithDiffs(expectedValue, actualValue)
+                    .AddRawExpectedAndActualValuesWithDiffs(expectedValue, actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -502,8 +502,8 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected values to be referentially different.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Unexpected Value", unexpectedValue)
-                    .SetRawActualValue(actualValue)
+                    .AddRawLabeledValue("Unexpected Value", unexpectedValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -538,8 +538,8 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected string to contain a particular substring.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Expected Substring", expectedSubstring)
-                    .SetRawActualValue(actualValue)
+                    .AddRawLabeledValue("Expected Substring", expectedSubstring)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -575,8 +575,8 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected the value to appear within the enumeration.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawExpectedValue(expectedValue)
-                    .SetRawLabeledValue("Enumeration", enumeration)
+                    .AddRawExpectedValue(expectedValue)
+                    .AddRawLabeledValue("Enumeration", enumeration)
                     .ToAssertionFailure();
             });
         }
@@ -613,8 +613,8 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected the key to appear within the dictionary.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Key", key)
-                    .SetRawLabeledValue("Dictionary", dictionary)
+                    .AddRawLabeledValue("Key", key)
+                    .AddRawLabeledValue("Dictionary", dictionary)
                     .ToAssertionFailure();
             });
         }
@@ -649,8 +649,8 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected string to not contain a particular substring.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Unexpected Substring", unexpectedSubstring)
-                    .SetRawActualValue(actualValue)
+                    .AddRawLabeledValue("Unexpected Substring", unexpectedSubstring)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -683,7 +683,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected value to be true.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawActualValue(actualValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -716,7 +716,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected value to be false.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawActualValue(actualValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -749,7 +749,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected value to be null.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawActualValue(actualValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -782,7 +782,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected value to be non-null.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawActualValue(actualValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -815,7 +815,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected value to be empty.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawActualValue(actualValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -848,7 +848,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected value to be non-empty.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawActualValue(actualValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -886,8 +886,8 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected the actual type to be assignable to the expected type.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Actual Type", actualValue.GetType())
-                    .SetRawLabeledValue("Expected Type", expectedType)
+                    .AddRawLabeledValue("Actual Type", actualValue.GetType())
+                    .AddRawLabeledValue("Expected Type", expectedType)
                     .ToAssertionFailure();
             });
         }
@@ -926,8 +926,8 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected the actual type not to be assignable to the expected type.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Actual Type", actualValue.GetType())
-                    .SetRawLabeledValue("Expected Type", expectedType)
+                    .AddRawLabeledValue("Actual Type", actualValue.GetType())
+                    .AddRawLabeledValue("Expected Type", expectedType)
                     .ToAssertionFailure();
             });
         }
@@ -968,11 +968,11 @@ namespace MbUnit.Framework
 
                 AssertionFailureBuilder builder = new AssertionFailureBuilder("Expected value to be an instance of a particular type.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Expected Type", expectedType);
+                    .AddRawLabeledValue("Expected Type", expectedType);
                 if (actualValue != null)
-                    builder.SetRawLabeledValue("ActualType", actualValue.GetType());
+                    builder.AddRawLabeledValue("ActualType", actualValue.GetType());
                 return builder
-                    .SetRawActualValue(actualValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -1012,11 +1012,11 @@ namespace MbUnit.Framework
 
                 AssertionFailureBuilder builder = new AssertionFailureBuilder("Expected value to not be an instance of a particular type.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Unexpected Type", unexpectedType);
+                    .AddRawLabeledValue("Unexpected Type", unexpectedType);
                 if (actualValue != null)
-                    builder.SetRawLabeledValue("ActualType", actualValue.GetType());
+                    builder.AddRawLabeledValue("ActualType", actualValue.GetType());
                 return builder
-                    .SetRawActualValue(actualValue)
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -1325,9 +1325,9 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("The actual value should be between the minimum and maximum values.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawActualValue(actualValue)
-                    .SetRawLabeledValue("Minimum Value", minimum)
-                    .SetRawLabeledValue("Maximum Value", maximum)
+                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Minimum Value", minimum)
+                    .AddRawLabeledValue("Maximum Value", maximum)
                     .ToAssertionFailure();
             });
         }
@@ -1400,9 +1400,9 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("The actual value should not be between the minimum and maximum values.")
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawActualValue(actualValue)
-                    .SetRawLabeledValue("Minimum Value", minimum)
-                    .SetRawLabeledValue("Maximum Value", maximum)
+                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Minimum Value", minimum)
+                    .AddRawLabeledValue("Maximum Value", maximum)
                     .ToAssertionFailure();
             });
         }
@@ -1535,7 +1535,7 @@ namespace MbUnit.Framework
                     action();
                     return new AssertionFailureBuilder("Expected the block to throw an exception.")
                         .SetMessage(messageFormat, messageArgs)
-                        .SetRawLabeledValue("Expected Exception Type", expectedExceptionType)
+                        .AddRawLabeledValue("Expected Exception Type", expectedExceptionType)
                         .ToAssertionFailure();
                 }
                 catch (Exception actualException)
@@ -1548,7 +1548,7 @@ namespace MbUnit.Framework
 
                     return new AssertionFailureBuilder("The block threw an exception of a different type than was expected.")
                         .SetMessage(messageFormat, messageArgs)
-                        .SetRawLabeledValue("Expected Exception Type", expectedExceptionType)
+                        .AddRawLabeledValue("Expected Exception Type", expectedExceptionType)
                         .AddException(actualException)
                         .ToAssertionFailure();
                 }
@@ -1746,8 +1746,8 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder(exceptionMessage)
                     .SetMessage(messageFormat, messageArgs)
-                    .SetRawLabeledValue("Left Value", left)
-                    .SetRawLabeledValue("Right Value", right)
+                    .AddRawLabeledValue("Left Value", left)
+                    .AddRawLabeledValue("Right Value", right)
                     .ToAssertionFailure();
             });
         }

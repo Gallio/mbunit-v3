@@ -48,10 +48,10 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetMessage("Message goes here")
                 .SetStackTrace("Stack goes here")
-                .SetRawExpectedValue("Expected value")
-                .SetRawActualValue("Actual value")
-                .SetRawLabeledValue("Very Long Label That Will Not Be Padded", "")
-                .SetRawLabeledValue("x", 42)
+                .AddRawExpectedValue("Expected value")
+                .AddRawActualValue("Actual value")
+                .AddRawLabeledValue("Very Long Label That Will Not Be Padded", "")
+                .AddRawLabeledValue("x", 42)
                 .AddException(new Exception("Boom"))
                 .AddException(new Exception("Kaput"))
                 .AddInnerFailure(new AssertionFailureBuilder("Inner").SetStackTrace(null).ToAssertionFailure())
@@ -80,10 +80,10 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetMessage("Message goes here")
                 .SetStackTrace("Stack goes here")
-                .SetRawExpectedValue("Expected value")
-                .SetRawActualValue("Actual value")
-                .SetRawLabeledValue("Very Long Label That Will Not Be Padded", "")
-                .SetRawLabeledValue("x", 42)
+                .AddRawExpectedValue("Expected value")
+                .AddRawActualValue("Actual value")
+                .AddRawLabeledValue("Very Long Label That Will Not Be Padded", "")
+                .AddRawLabeledValue("x", 42)
                 .AddException(new Exception("Boom"))
                 .AddException(new Exception("Kaput"))
                 .AddInnerFailure(new AssertionFailureBuilder("Inner").SetStackTrace(null).ToAssertionFailure())
@@ -101,7 +101,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetStackTrace(null)
-                .SetLabeledValue(new string('x', AssertionFailure.MaxLabelLengthBeforeTruncation + 1),
+                .AddLabeledValue(new string('x', AssertionFailure.MaxLabelLengthBeforeTruncation + 1),
                     new string('y', AssertionFailure.MaxFormattedValueLength + 1))
                 .ToAssertionFailure();
 

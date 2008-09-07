@@ -209,8 +209,8 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Expected the exception type to be annotated by a particular attribute.")
-                            .SetRawLabeledValue("Exception Type", ExceptionType)
-                            .SetRawLabeledValue("Expected Attribute", typeof(SerializableAttribute))
+                            .AddRawLabeledValue("Exception Type", ExceptionType)
+                            .AddRawLabeledValue("Expected Attribute", typeof(SerializableAttribute))
                             .ToAssertionFailure();
                     });
                 });
@@ -238,8 +238,8 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("Expected the exception type to have non-public constructor dedicated to serialization.")
-                            .SetRawLabeledValue("Exception Type", ExceptionType)
-                            .SetLabeledValue("Constructor Signature", ".ctor(SerializationInfo, StreamingContext)")
+                            .AddRawLabeledValue("Exception Type", ExceptionType)
+                            .AddLabeledValue("Constructor Signature", ".ctor(SerializationInfo, StreamingContext)")
                             .ToAssertionFailure();
                     });
                 });
@@ -266,8 +266,8 @@ namespace MbUnit.Framework.ContractVerifiers
                             return null;
 
                         return new AssertionFailureBuilder("The exception type should have a default parameter-less constructor.")
-                            .SetRawLabeledValue("Exception Type", ExceptionType)
-                            .SetLabeledValue("Expected Constructor Signature", ".ctor()")
+                            .AddRawLabeledValue("Exception Type", ExceptionType)
+                            .AddLabeledValue("Expected Constructor Signature", ".ctor()")
                             .ToAssertionFailure();
                     });
 
@@ -281,8 +281,8 @@ namespace MbUnit.Framework.ContractVerifiers
                                 return null;
 
                             return new AssertionFailureBuilder("The exception message should contain the exception type name.")
-                                .SetRawLabeledValue("Exception Type", ExceptionType)
-                                .SetLabeledValue("Actual Message", instance.Message)
+                                .AddRawLabeledValue("Exception Type", ExceptionType)
+                                .AddLabeledValue("Actual Message", instance.Message)
                                 .ToAssertionFailure();
                         });
 
@@ -292,7 +292,7 @@ namespace MbUnit.Framework.ContractVerifiers
                                 return null;
 
                             return new AssertionFailureBuilder("The inner exception should be null.")
-                                .SetRawLabeledValue("Exception Type", ExceptionType)
+                                .AddRawLabeledValue("Exception Type", ExceptionType)
                                 .ToAssertionFailure();
                         });
 
@@ -326,8 +326,8 @@ namespace MbUnit.Framework.ContractVerifiers
                                 return null;
                             
                             return new AssertionFailureBuilder("The exception type should have a single parameter constructor.")
-                                .SetRawLabeledValue("Exception Type", ExceptionType)
-                                .SetLabeledValue("Expected Constructor Signature", ".ctor(string message)")
+                                .AddRawLabeledValue("Exception Type", ExceptionType)
+                                .AddLabeledValue("Expected Constructor Signature", ".ctor(string message)")
                                 .ToAssertionFailure();
                         });
 
@@ -341,7 +341,7 @@ namespace MbUnit.Framework.ContractVerifiers
                                     return null;
 
                                 return new AssertionFailureBuilder("The inner exception should be null.")
-                                    .SetRawLabeledValue("Exception Type", ExceptionType)
+                                    .AddRawLabeledValue("Exception Type", ExceptionType)
                                     .ToAssertionFailure();
                             });
 
@@ -353,8 +353,8 @@ namespace MbUnit.Framework.ContractVerifiers
                                         return null;
 
                                     return new AssertionFailureBuilder("The exception message should to contain the exception type name.")
-                                        .SetRawLabeledValue("Exception Type", ExceptionType)
-                                        .SetLabeledValue("Actual Message", instance.Message)
+                                        .AddRawLabeledValue("Exception Type", ExceptionType)
+                                        .AddLabeledValue("Actual Message", instance.Message)
                                         .ToAssertionFailure();
                                 });
                             }
@@ -366,9 +366,9 @@ namespace MbUnit.Framework.ContractVerifiers
                                         return null;
 
                                     return new AssertionFailureBuilder("Expected the exception message to be equal to a specific text.")
-                                        .SetRawLabeledValue("Exception Type", ExceptionType)
-                                        .SetLabeledValue("Actual Message", instance.Message)
-                                        .SetLabeledValue("Expected Message", message)
+                                        .AddRawLabeledValue("Exception Type", ExceptionType)
+                                        .AddLabeledValue("Actual Message", instance.Message)
+                                        .AddLabeledValue("Expected Message", message)
                                         .ToAssertionFailure();
                                 });
                             }
@@ -415,8 +415,8 @@ namespace MbUnit.Framework.ContractVerifiers
                                 return null;
 
                             return new AssertionFailureBuilder("The exception type should have a two parameters constructor.")
-                                .SetRawLabeledValue("Exception Type", ExceptionType)
-                                .SetLabeledValue("Expected Constructor Signature", ".ctor(string message, Exception innerException)")
+                                .AddRawLabeledValue("Exception Type", ExceptionType)
+                                .AddLabeledValue("Expected Constructor Signature", ".ctor(string message, Exception innerException)")
                                 .ToAssertionFailure();
                         });
 
@@ -430,9 +430,9 @@ namespace MbUnit.Framework.ContractVerifiers
                                     return null;
 
                                 return new AssertionFailureBuilder("The inner exception should be referentially identical to the exception provided in the constructor.")
-                                    .SetRawLabeledValue("Exception Type", ExceptionType)
-                                    .SetRawLabeledValue("Actual Inner Exception", instance.InnerException)
-                                    .SetRawLabeledValue("Expected Inner Exception", innerException)
+                                    .AddRawLabeledValue("Exception Type", ExceptionType)
+                                    .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
+                                    .AddRawLabeledValue("Expected Inner Exception", innerException)
                                     .ToAssertionFailure();
                             });
 
@@ -444,8 +444,8 @@ namespace MbUnit.Framework.ContractVerifiers
                                         return null;
 
                                     return new AssertionFailureBuilder("The exception message should to contain the exception type name.")
-                                        .SetRawLabeledValue("Exception Type", ExceptionType)
-                                        .SetLabeledValue("Actual Message", instance.Message)
+                                        .AddRawLabeledValue("Exception Type", ExceptionType)
+                                        .AddLabeledValue("Actual Message", instance.Message)
                                         .ToAssertionFailure();
                                 });
                             }
@@ -457,9 +457,9 @@ namespace MbUnit.Framework.ContractVerifiers
                                         return null;
 
                                     return new AssertionFailureBuilder("Expected the exception message to be equal to a specific text.")
-                                        .SetRawLabeledValue("Exception Type", ExceptionType)
-                                        .SetLabeledValue("Actual Message", instance.Message)
-                                        .SetLabeledValue("Expected Message", message)
+                                        .AddRawLabeledValue("Exception Type", ExceptionType)
+                                        .AddLabeledValue("Actual Message", instance.Message)
+                                        .AddLabeledValue("Expected Message", message)
                                         .ToAssertionFailure();
                                 });
                             }
@@ -487,9 +487,9 @@ namespace MbUnit.Framework.ContractVerifiers
                     return null;
 
                 return new AssertionFailureBuilder("Expected the exception message to be preserved by round-trip serialization.")
-                    .SetRawLabeledValue("Exception Type", ExceptionType)
-                    .SetLabeledValue("Expected Message", instance.Message)
-                    .SetLabeledValue("Actual Message ", result.Message)
+                    .AddRawLabeledValue("Exception Type", ExceptionType)
+                    .AddLabeledValue("Expected Message", instance.Message)
+                    .AddLabeledValue("Actual Message ", result.Message)
                     .ToAssertionFailure();
             });
 
@@ -501,9 +501,9 @@ namespace MbUnit.Framework.ContractVerifiers
                         return null;
 
                     return new AssertionFailureBuilder("The inner exception should be preserved by round-trip serialization.")
-                        .SetRawLabeledValue("Exception Type", ExceptionType)
-                        .SetRawLabeledValue("Actual Inner Exception", instance.InnerException)
-                        .SetRawLabeledValue("Expected Inner Exception", result.InnerException)
+                        .AddRawLabeledValue("Exception Type", ExceptionType)
+                        .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
+                        .AddRawLabeledValue("Expected Inner Exception", result.InnerException)
                         .ToAssertionFailure();
                 });
             }
@@ -516,9 +516,9 @@ namespace MbUnit.Framework.ContractVerifiers
                         return null;
 
                     return new AssertionFailureBuilder("The inner exception should be preserved by round-trip serialization.")
-                        .SetRawLabeledValue("Exception Type", ExceptionType)
-                        .SetRawLabeledValue("Actual Inner Exception", instance.InnerException)
-                        .SetRawLabeledValue("Expected Inner Exception", result.InnerException)
+                        .AddRawLabeledValue("Exception Type", ExceptionType)
+                        .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
+                        .AddRawLabeledValue("Expected Inner Exception", result.InnerException)
                         .ToAssertionFailure();
                 });
             }

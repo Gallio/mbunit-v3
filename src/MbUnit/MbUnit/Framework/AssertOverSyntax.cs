@@ -75,8 +75,8 @@ namespace MbUnit.Framework
                     return new AssertionFailureBuilder(
                         "Expected the left and right sequences to either both be null or both be non-null.")
                         .SetMessage(messageFormat, messageArgs)
-                        .SetRawLabeledValue("Left Sequence", leftSequence)
-                        .SetRawLabeledValue("Right Sequence", rightSequence)
+                        .AddRawLabeledValue("Left Sequence", leftSequence)
+                        .AddRawLabeledValue("Right Sequence", rightSequence)
                         .ToAssertionFailure();
                 }
 
@@ -89,10 +89,10 @@ namespace MbUnit.Framework
                     {
                         return new AssertionFailureBuilder("Expected the left and right sequences to have the same number of elements.")
                             .SetMessage(messageFormat, messageArgs)
-                            .SetRawLabeledValue("Left Sequence Count", 1 + index + CountRemainingElements(leftEnumerator))
-                            .SetRawLabeledValue("Right Sequence Count", index)
-                            .SetRawLabeledValue("Left Sequence", leftSequence)
-                            .SetRawLabeledValue("Right Sequence", rightSequence)
+                            .AddRawLabeledValue("Left Sequence Count", 1 + index + CountRemainingElements(leftEnumerator))
+                            .AddRawLabeledValue("Right Sequence Count", index)
+                            .AddRawLabeledValue("Left Sequence", leftSequence)
+                            .AddRawLabeledValue("Right Sequence", rightSequence)
                             .ToAssertionFailure();
                     }
 
@@ -105,9 +105,9 @@ namespace MbUnit.Framework
                     {
                         return new AssertionFailureBuilder("Assertion failed on two values at a particular index within both sequences.")
                             .SetMessage(messageFormat, messageArgs)
-                            .SetLabeledValue("Index", index.ToString())
-                            .SetRawLabeledValue("Left Sequence", leftSequence)
-                            .SetRawLabeledValue("Right Sequence", rightSequence)
+                            .AddLabeledValue("Index", index.ToString())
+                            .AddRawLabeledValue("Left Sequence", leftSequence)
+                            .AddRawLabeledValue("Right Sequence", rightSequence)
                             .AddInnerFailures(failures)
                             .ToAssertionFailure();
                     }
@@ -119,10 +119,10 @@ namespace MbUnit.Framework
                 {
                     return new AssertionFailureBuilder("Expected the left and right sequences to have the same number of elements.")
                         .SetMessage(messageFormat, messageArgs)
-                        .SetRawLabeledValue("Left Sequence Count", index)
-                        .SetRawLabeledValue("Right Sequence Count", index + CountRemainingElements(rightEnumerator) + 1)
-                        .SetRawLabeledValue("Left Sequence", leftSequence)
-                        .SetRawLabeledValue("Right Sequence", rightSequence)
+                        .AddRawLabeledValue("Left Sequence Count", index)
+                        .AddRawLabeledValue("Right Sequence Count", index + CountRemainingElements(rightEnumerator) + 1)
+                        .AddRawLabeledValue("Left Sequence", leftSequence)
+                        .AddRawLabeledValue("Right Sequence", rightSequence)
                         .ToAssertionFailure();
                 }
 
@@ -215,17 +215,17 @@ namespace MbUnit.Framework
                 {
                     return new AssertionFailureBuilder("Expected the left and right dictionaries to either both be null or both be non-null.")
                         .SetMessage(messageFormat, messageArgs)
-                        .SetRawLabeledValue("Left Dictionary", leftDictionary)
-                        .SetRawLabeledValue("Right Dictionary", rightDictionary)
+                        .AddRawLabeledValue("Left Dictionary", leftDictionary)
+                        .AddRawLabeledValue("Right Dictionary", rightDictionary)
                         .ToAssertionFailure();
                 }
 
                 if (leftDictionary.Count != rightDictionary.Count)
                     return new AssertionFailureBuilder("Expected the left and right dictionaries to have the same number of items.")
-                        .SetRawLabeledValue("Left Dictionary Count", leftDictionary.Count)
-                        .SetRawLabeledValue("Right Dictionary Count", rightDictionary.Count)
-                        .SetRawLabeledValue("Left Dictionary", leftDictionary)
-                        .SetRawLabeledValue("Right Dictionary", rightDictionary)
+                        .AddRawLabeledValue("Left Dictionary Count", leftDictionary.Count)
+                        .AddRawLabeledValue("Right Dictionary Count", rightDictionary.Count)
+                        .AddRawLabeledValue("Left Dictionary", leftDictionary)
+                        .AddRawLabeledValue("Right Dictionary", rightDictionary)
                         .SetMessage(messageFormat, messageArgs)
                         .ToAssertionFailure();
 
@@ -235,9 +235,9 @@ namespace MbUnit.Framework
                     TRightValue rightValue;
                     if (!rightDictionary.TryGetValue(key, out rightValue))
                         return new AssertionFailureBuilder("Right dictionary does not contain a value for a particular key that is in the left dictionary.")
-                            .SetRawLabeledValue("Missing Key", key)
-                            .SetRawLabeledValue("Left Dictionary", leftDictionary)
-                            .SetRawLabeledValue("Right Dictionary", rightDictionary)
+                            .AddRawLabeledValue("Missing Key", key)
+                            .AddRawLabeledValue("Left Dictionary", leftDictionary)
+                            .AddRawLabeledValue("Right Dictionary", rightDictionary)
                             .SetMessage(messageFormat, messageFormat)
                             .ToAssertionFailure();
 
@@ -249,9 +249,9 @@ namespace MbUnit.Framework
                     if (failures.Length != 0)
                     {
                         return new AssertionFailureBuilder("Assertion failed on two pairs with a particular key in both dictionaries.")
-                            .SetRawLabeledValue("Key", key)
-                            .SetRawLabeledValue("Left Dictionary", leftDictionary)
-                            .SetRawLabeledValue("Right Dictionary", rightDictionary)
+                            .AddRawLabeledValue("Key", key)
+                            .AddRawLabeledValue("Left Dictionary", leftDictionary)
+                            .AddRawLabeledValue("Right Dictionary", rightDictionary)
                             .SetMessage(messageFormat, messageArgs)
                             .AddInnerFailures(failures)
                             .ToAssertionFailure();
