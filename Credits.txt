@@ -20,7 +20,7 @@ Ben Hall, writer and developer
 Dan Maharry, writer
 Dave Griffiths, web developer
 Graham Hay, developer
-Francois Gretief, developer
+Francois Retief, developer
 Jeff Brown, lead of Gallio and MbUnit
 Joey Calisay, developer
 Johan Appelgren, developer
