@@ -27,7 +27,7 @@
   <ItemGroup>
     <Content Include="Gallio License.txt" />
     <Content Include="ASL - Apache Software Foundation License.txt" />
-    <Content Include="Credits.txt" />
+    <Content Include="Credits.html" />
     
     <Extra Include="$(ToolsDir)\H2Reg\H2Reg.*" />
   </ItemGroup>
