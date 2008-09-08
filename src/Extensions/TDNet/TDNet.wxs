@@ -83,18 +83,41 @@
             </Component>
         </DirectoryRef>
 
-        <Feature Id='feat_Gallio.TDNet' Title='TestDriven.Net Runner' Level='2'
+        <Feature Id='feat_Gallio.TDNet' Title='TestDriven.Net Runner' Level='0' AllowAdvertise='no' 
                  Description='Installs the TestDriven.Net add-in.'>
             <Condition Level='1'>TDNET_INSTALLDIR</Condition>
             <ComponentRef Id='Gallio.TDNetRunner.dll'/>
             <ComponentRef Id="TDNetApp.Icarus" />
 
-            <ComponentRef Id='TDNetRunner.CSUnit'/>
-            <ComponentRef Id='TDNetRunner.MbUnit_v3'/>
-            <ComponentRef Id='TDNetRunner.MbUnit_v2'/>
-            <ComponentRef Id='TDNetRunner.MSTest'/>
-            <ComponentRef Id='TDNetRunner.NUnit'/>
-            <ComponentRef Id='TDNetRunner.Xunit'/>
+            <Feature Id='feat_Gallio.TDNetRunner.CSUnit' Title ='csUnit' Level='1' AllowAdvertise='no'>
+                <!-- TODO: <Condition Level='2'> not CSUnitAdapterInstalled </Condition> -->
+                <ComponentRef Id='TDNetRunner.CSUnit'/>
+            </Feature>
+
+            <Feature Id='feat_Gallio.TDNetRunner.MbUnit_v3' Title ='MbUnit v3' Level='1' AllowAdvertise='no'>
+                <!-- TODO: <Condition Level='2'> not MbUnitV3AdapterInstalled </Condition> -->
+                <ComponentRef Id='TDNetRunner.MbUnit_v3'/>
+            </Feature>
+
+            <Feature Id='feat_Gallio.TDNetRunner.MbUnit_v2' Title ='MbUnit v2' Level='1' AllowAdvertise='no'>
+                <!-- TODO: <Condition Level='2'> not MbUnitV2AdapterInstalled </Condition> -->
+                <ComponentRef Id='TDNetRunner.MbUnit_v2'/>
+            </Feature>
+
+            <Feature Id='feat_Gallio.TDNetRunner.MSTest' Title ='MSTest' Level='1' AllowAdvertise='no'>
+                <!-- TODO: <Condition Level='2'> not MSTestAdapterInstalled </Condition> -->
+                <ComponentRef Id='TDNetRunner.MSTest'/>            
+            </Feature>
+
+            <Feature Id='feat_Gallio.TDNetRunner.NUnit' Title ='NUnit' Level='1' AllowAdvertise='no'>
+                <!-- TODO: <Condition Level='2'> not NUnitAdapterInstalled </Condition> -->
+                <ComponentRef Id='TDNetRunner.NUnit'/>
+            </Feature>
+
+            <Feature Id='feat_Gallio.TDNetRunner.Xunit' Title ='Xunit' Level='1' AllowAdvertise='no'>
+                <!-- TODO: <Condition Level='2'> not XunitAdapterInstalled </Condition> -->
+                <ComponentRef Id='TDNetRunner.Xunit'/>
+            </Feature>
         </Feature>
     </Fragment>
 </Wix>

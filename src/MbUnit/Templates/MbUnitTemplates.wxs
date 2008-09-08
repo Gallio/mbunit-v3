@@ -45,7 +45,8 @@
 
         </DirectoryRef>
 
-        <Feature Id="feat_MbUnit3.Templates.VS2005" Title="Visual Studio 2005 Templates" Level="0" Description="Installs the MbUnit v3 Visual Studio 2005 templates.">
+        <Feature Id="feat_MbUnit3.Templates.VS2005" Title="Visual Studio 2005 Templates" Level="0" 
+                 Description="Installs the MbUnit v3 Visual Studio 2005 templates.">
             <Condition Level="1">                 
                  VS2005_ITEMTEMPLATES_DIR and VS2005_PROJECTTEMPLATES_DIR
             </Condition>
@@ -117,7 +118,8 @@
 
         </DirectoryRef>
 
-        <Feature Id="feat_MbUnit3.Templates.VS2008" Title="Visual Studio 2008 Templates" Level="0" Description="Installs the MbUnit v3 Visual Studio 2008 templates.">
+        <Feature Id="feat_MbUnit3.Templates.VS2008" Title="Visual Studio 2008 Templates" Level="0" 
+                 Description="Installs the MbUnit v3 Visual Studio 2008 templates.">
             <Condition Level="1">
                 VS90_ITEMTEMPLATES_DIR and VS90_PROJECTTEMPLATES_DIR
             </Condition>

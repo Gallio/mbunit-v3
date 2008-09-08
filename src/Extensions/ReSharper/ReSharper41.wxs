@@ -51,7 +51,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.ReSharper.V41" Title="ReSharper v4.1 Plug-in" Level="2"
+        <Feature Id="feat_Gallio.ReSharper.V41" Title="ReSharper v4.1 Plug-in" Level="0"
                  Description="Installs the ReSharper v4.1 plug-in.">
             <Condition Level="1">
                 RESHARPER_V41_VS8_INSTALLDIR or RESHARPER_V41_VS9_INSTALLDIR
