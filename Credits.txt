@@ -46,15 +46,18 @@ Cathal Connolly, patches
 Charlie Poole, lead of NUnit
 Damir Gorenman, tester
 Elizabeth Hanelt, spouse
+Ilya Ryzhenkov, developer at JetBrains
 James Newkirk, co-creator of xUnit.Net
 Jamie Cansdale, creator of TestDriven.Net
 Jay Flowers, creator of CI Factory
 Jeroen van Menen, creator of WatiN
 Joe O'Campo, co-creator of NBehave
+Lior Friedman, developer at JetBrains
 Matthew Podwysocki, blogger
 Oren "Ayende" Eini, blogger
 Phil Haack, patches
 Ray Johnson, employer
+Roy Osherove, blogger
 Santosh Kumar Gottipamula, tester
 Todd Menier, patches
 Tomas Chaloupka, patches
