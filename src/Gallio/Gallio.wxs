@@ -15,6 +15,9 @@
             <Component Id="Gallio.License" Guid="{80dcc954-656f-45de-9bf2-bec6ff1d7c58}">
                 <File Id="Gallio.License.txt" Source="$(var.GallioTargetDir)\Gallio License.txt" KeyPath="yes" />
             </Component>
+            <Component Id="Credits" Guid="{7EFEC8C8-CB48-41b3-818C-9CAD85DBECC1}">
+                <File Id="Credits.txt" Source="$(var.GallioTargetDir)\Credits.txt" KeyPath="yes" />
+            </Component>
             <Component Id="Gallio.Website" Guid="{32DF17D3-27D2-4b7a-8094-37A559F2B234}">
                 <File Id="Gallio.Website.url" Source="$(var.GallioTargetDir)\Gallio Website.url" KeyPath="yes">
                     <Shortcut Id="Gallio.Website.lnk" Name="Gallio Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
@@ -215,6 +218,7 @@
             <ComponentRef Id="Gallio.Website" />
             <ComponentRef Id="Gallio.Registry" />
             <ComponentRef Id="Apache.License" />
+            <ComponentRef Id="Credits" />
 	    
             <ComponentRef Id="Gallio.Reports.dll"/>
             <ComponentRef Id="Reports.Readme.txt"/>

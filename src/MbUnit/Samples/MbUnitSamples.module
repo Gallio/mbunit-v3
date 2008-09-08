@@ -11,6 +11,8 @@
 
   <Target Name="AfterImage">
     <RemoveDir Directories="$(ImageDir)\extras\Samples" />
+    <MakeDir Directories="$(ImageDir)\extras" />
+    
     <SvnExport RepositoryPath="$(ModuleDir)"
                LocalPath="$(ImageDir)\extras\Samples" />
 
