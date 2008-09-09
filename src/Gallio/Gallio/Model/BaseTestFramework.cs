@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Gallio.Model
 {
     /// <summary>
@@ -20,6 +22,9 @@ namespace Gallio.Model
     /// </summary>
     public abstract class BaseTestFramework : ITestFramework
     {
+        /// <inheritdoc />
+        public abstract Guid Id { get; }
+
         /// <inheritdoc />
         public abstract string Name { get; }
 

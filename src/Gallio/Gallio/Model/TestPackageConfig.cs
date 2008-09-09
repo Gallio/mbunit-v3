@@ -40,6 +40,7 @@ namespace Gallio.Model
     {
         private readonly List<string> hintDirectories;
         private readonly List<string> assemblyFiles;
+        private readonly List<string> excludedFrameworkIds;
 
         private HostSetup hostSetup;
 
@@ -50,6 +51,7 @@ namespace Gallio.Model
         {
             hintDirectories = new List<string>();
             assemblyFiles = new List<string>();
+            excludedFrameworkIds = new List<string>();
         }
 
         /// <summary>
@@ -70,6 +72,17 @@ namespace Gallio.Model
         public List<string> HintDirectories
         {
             get { return hintDirectories; }
+        }
+
+        /// <summary>
+        /// Gets the list of test framework IDs that are to be excluded from the test
+        /// exploration process.
+        /// </summary>
+        [XmlArray("excludedFrameworkIds", IsNullable = false)]
+        [XmlArrayItem("excludedFrameworkId", typeof(string), IsNullable = false)]
+        public List<string> ExcludedFrameworkIds
+        {
+            get { return excludedFrameworkIds; }
         }
 
         /// <summary>
@@ -121,6 +134,17 @@ namespace Gallio.Model
             FileUtils.CanonicalizePaths(baseDirectory, hintDirectories);
 
             HostSetup.Canonicalize(baseDirectory);
+        }
+
+        /// <summary>
+        /// Returns true if the framework with the specified id should be used to explore
+        /// the contents of the test package.
+        /// </summary>
+        /// <param name="frameworkId">The framework id</param>
+        /// <returns>True if the framework is requested</returns>
+        public bool IsFrameworkRequested(Guid frameworkId)
+        {
+            return ! excludedFrameworkIds.Contains(frameworkId.ToString());
         }
     }
 }

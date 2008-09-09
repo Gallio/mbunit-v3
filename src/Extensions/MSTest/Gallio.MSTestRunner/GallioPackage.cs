@@ -174,7 +174,9 @@ namespace Gallio.MSTestRunner
 
         private void OnProjectAdded(Project project)
         {
+            /*
             RefreshTests(project);
+             */
         }
 
         private void RefreshTests(Project project)

@@ -41,6 +41,21 @@ namespace Gallio.Model
         }
 
         /// <summary>
+        /// Adds test explorers for the frameworks requested by the test model's test package.
+        /// </summary>
+        /// <param name="frameworks">The frameworks</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="frameworks"/> is null</exception>
+        public void AddExplorersForRequestedFrameworks(IEnumerable<ITestFramework> frameworks)
+        {
+            if (frameworks == null)
+                throw new ArgumentNullException("frameworks");
+
+            foreach (ITestFramework framework in frameworks)
+                if (TestModel.TestPackage.Config.IsFrameworkRequested(framework.Id))
+                    AddTestExplorer(framework.CreateTestExplorer(TestModel));
+        }
+
+        /// <summary>
         /// Adds a test explorer to the aggregate.
         /// </summary>
         /// <param name="explorer">The explorer to add</param>

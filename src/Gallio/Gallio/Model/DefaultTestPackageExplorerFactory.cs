@@ -56,8 +56,7 @@ namespace Gallio.Model
             TestModel testModel = new TestModel(testPackage);
 
             AggregateTestExplorer aggregate = new AggregateTestExplorer(testModel);
-            foreach (ITestFramework framework in frameworks)
-                aggregate.AddTestExplorer(framework.CreateTestExplorer(testModel));
+            aggregate.AddExplorersForRequestedFrameworks(frameworks);
 
             return aggregate;
         }

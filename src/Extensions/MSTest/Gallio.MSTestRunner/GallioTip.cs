@@ -52,8 +52,9 @@ namespace Gallio.MSTestRunner
             ITestPackageExplorerFactory explorerFactory = RuntimeProvider.GetRuntime().Resolve<ITestPackageExplorerFactory>();
             WarningLogger logger = new WarningLogger(warningHandler);
 
-            ArrayList tests = new ArrayList();
             TestPackageConfig testPackageConfig = new TestPackageConfig();
+            testPackageConfig.ExcludedFrameworkIds.Add(Guids.MSTestFrameworkId.ToString());
+
             testPackageConfig.AssemblyFiles.Add(location);
 
             ReflectionOnlyAssemblyLoader loader = new ReflectionOnlyAssemblyLoader();
@@ -63,6 +64,7 @@ namespace Gallio.MSTestRunner
             IAssemblyInfo assembly = loader.ReflectionPolicy.LoadAssemblyFrom(location);
             explorer.ExploreAssembly(assembly, null);
 
+            ArrayList tests = new ArrayList();
             foreach (ITest test in explorer.TestModel.AllTests)
             {
                 if (test.IsTestCase)

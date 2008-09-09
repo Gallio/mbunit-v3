@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Reflection;
 using Gallio.NUnitAdapter.Properties;
 using Gallio.Model;
@@ -24,6 +25,14 @@ namespace Gallio.NUnitAdapter.Model
     /// </summary>
     public class NUnitTestFramework : BaseTestFramework
     {
+        private static readonly Guid FrameworkId = new Guid("{E0273D0F-BEAE-47ff-9391-D6782417F000}");
+
+        /// <inheritdoc />
+        public override Guid Id
+        {
+            get { return FrameworkId; }
+        }
+
         /// <inheritdoc />
         public override string Name
         {

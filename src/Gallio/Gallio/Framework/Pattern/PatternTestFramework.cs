@@ -61,6 +61,8 @@ namespace Gallio.Framework.Pattern
     /// </remarks>
     public class PatternTestFramework : BaseTestFramework
     {
+        private static readonly Guid FrameworkId = new Guid("{4E3D9921-A01A-4e6c-9C3D-B8848AD9327B}");
+
         private readonly IPatternTestFrameworkExtension[] extensions;
 
         /// <summary>
@@ -74,6 +76,12 @@ namespace Gallio.Framework.Pattern
                 throw new ArgumentNullException("extensions");
 
             this.extensions = extensions;
+        }
+
+        /// <inheritdoc />
+        public override Guid Id
+        {
+            get { return FrameworkId; }
         }
 
         /// <inheritdoc />

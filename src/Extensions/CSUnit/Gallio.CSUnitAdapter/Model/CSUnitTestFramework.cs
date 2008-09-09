@@ -35,6 +35,14 @@ namespace Gallio.CSUnitAdapter.Model
             @"csUnit.Interfaces.dll",
         };
 
+        private static readonly Guid FrameworkId = new Guid("{B55A8096-EFB9-4570-B977-75695D614E3B}");
+
+        /// <inheritdoc />
+        public override Guid Id
+        {
+            get { return FrameworkId; }
+        }
+
         /// <inheritdoc />
         public override string Name
         {

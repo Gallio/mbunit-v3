@@ -130,9 +130,19 @@ namespace Gallio.ReSharperRunner.Provider
 
         internal sealed class Shim
         {
+            private static readonly Guid NUnitFrameworkId = new Guid("{E0273D0F-BEAE-47ff-9391-D6782417F000}");
+            private static readonly string NUnitProvider = "nUnit";
+            private static readonly Dictionary<string, Guid> IncompatibleProviders;
+
             private readonly IUnitTestProvider provider;
             private readonly GallioTestPresenter presenter;
             private readonly ITestPackageExplorerFactory explorerFactory;
+
+            static Shim()
+            {
+                IncompatibleProviders = new Dictionary<string, Guid>();
+                IncompatibleProviders.Add(NUnitProvider, NUnitFrameworkId);
+            }
 
             /// <summary>
             /// Initializes the provider.
@@ -187,11 +197,26 @@ namespace Gallio.ReSharperRunner.Provider
                 if (assemblyInfo != null)
                 {
                     ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
-                    ITestExplorer explorer = explorerFactory.CreateTestExplorer(new TestPackageConfig(), reflectionPolicy);
+                    ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
 
                     explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
                     explorer.FinishModel();
                 }
+            }
+
+            private ITestExplorer CreateTestExplorer(IReflectionPolicy reflectionPolicy)
+            {
+                TestPackageConfig config = new TestPackageConfig();
+                
+                // Exclude the NUnit framework if the built-in NUnit provider is enabled.
+                foreach (IUnitTestProvider provider in UnitTestManager.GetInstance(SolutionManager.Instance.CurrentSolution).GetEnabledProviders())
+                {
+                    Guid frameworkId;
+                    if (IncompatibleProviders.TryGetValue(provider.ID, out frameworkId))
+                        config.ExcludedFrameworkIds.Add(frameworkId.ToString());
+                }
+
+                return explorerFactory.CreateTestExplorer(config, reflectionPolicy);
             }
 
             /// <summary>
@@ -206,7 +231,7 @@ namespace Gallio.ReSharperRunner.Provider
 
                 PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
                 ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
-                ITestExplorer explorer = explorerFactory.CreateTestExplorer(new TestPackageConfig(), reflectionPolicy);
+                ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
 
                 psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
                 {
@@ -254,7 +279,7 @@ namespace Gallio.ReSharperRunner.Provider
                 if (elementInfo == null)
                     return false;
 
-                ITestExplorer explorer = explorerFactory.CreateTestExplorer(new TestPackageConfig(), reflectionPolicy);
+                ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
                 return explorer.IsTest(elementInfo);
             }
 

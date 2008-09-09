@@ -177,6 +177,8 @@ namespace Gallio.MSTestRunner
                     return;
 
                 TestPackageConfig testPackageConfig = new TestPackageConfig();
+                testPackageConfig.ExcludedFrameworkIds.Add(Guids.MSTestFrameworkId.ToString());
+
                 foreach (ITestElement testElement in runContext.RunConfig.TestElements)
                 {
                     GallioTestElement gallioTestElement = testElement as GallioTestElement;

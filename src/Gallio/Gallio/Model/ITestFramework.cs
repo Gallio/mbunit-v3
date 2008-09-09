@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Model;
 using Gallio.Runtime.Hosting;
@@ -27,6 +28,11 @@ namespace Gallio.Model
     /// </summary>
     public interface ITestFramework
     {
+        /// <summary>
+        /// Gets the unique id of the test framework.
+        /// </summary>
+        Guid Id { get; }
+
         /// <summary>
         /// Gets the name of the test framework.
         /// </summary>

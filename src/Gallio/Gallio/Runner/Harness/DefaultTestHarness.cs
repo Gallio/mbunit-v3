@@ -217,8 +217,7 @@ namespace Gallio.Runner.Harness
                     model = new TestModel(package);
 
                     AggregateTestExplorer explorer = new AggregateTestExplorer(model);
-                    foreach (ITestFramework framework in frameworks)
-                        explorer.AddTestExplorer(framework.CreateTestExplorer(model));
+                    explorer.AddExplorersForRequestedFrameworks(frameworks);
 
                     foreach (IAssemblyInfo assembly in package.Assemblies)
                         explorer.ExploreAssembly(assembly, null);

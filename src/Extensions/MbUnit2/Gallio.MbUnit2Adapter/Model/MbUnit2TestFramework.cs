@@ -37,6 +37,14 @@ namespace Gallio.MbUnit2Adapter.Model
             @"TestFu.dll"
         };
 
+        private static readonly Guid FrameworkId = new Guid("{81CE2FDD-D9E8-46a6-8D2E-AF5E474BA537}");
+
+        /// <inheritdoc />
+        public override Guid Id
+        {
+            get { return FrameworkId; }
+        }
+
         /// <inheritdoc />
         public override string Name
         {

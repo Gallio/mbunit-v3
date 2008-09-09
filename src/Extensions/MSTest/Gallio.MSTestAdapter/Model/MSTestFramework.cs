@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Model;
 
 namespace Gallio.MSTestAdapter.Model
@@ -22,6 +23,14 @@ namespace Gallio.MSTestAdapter.Model
     /// </summary>
     public class MSTestFramework : BaseTestFramework
     {
+        private static readonly Guid FrameworkId = new Guid("{559AA77B-E0E5-43bb-AF48-EF50D0025D3C}");
+
+        /// <inheritdoc />
+        public override Guid Id
+        {
+            get { return FrameworkId; }
+        }
+
         /// <inheritdoc />
         public override string Name
         {
