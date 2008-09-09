@@ -10,7 +10,7 @@
     <OutputType>Package</OutputType>
     <Cultures>en-US</Cultures>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
-    <ReleaseDir Condition="'$(ReleaseDir)'==''">$(MSBuildProjectDirectory)\..\..\build\release</ReleaseDir>
+    <ReleaseDir Condition="'$(ReleaseDir)'==''">$(MSBuildProjectDirectory)\..\..\build\dist</ReleaseDir>
     <TargetDir Condition="'$(TargetDir)'==''">$(MSBuildProjectDirectory)\..\..\build\image</TargetDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -103,6 +103,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixNetFxExtension">
+      <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
+    </WixExtension>
     <WixExtension Include="WixPSExtension">
       <HintPath>$(WixExtDir)\WixPSExtension.dll</HintPath>
     </WixExtension>

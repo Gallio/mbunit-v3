@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
     <Product
         Id="*"
         Name="Gallio $(var.Version)"
@@ -26,6 +27,12 @@
         <Condition Message="An administrator must approve or install [ProductName].">
             Privileged
         </Condition>
+
+        <!-- Check that Microsoft .NET Framework is installed (WinNetFxExtension) -->
+        <PropertyRef Id="NETFRAMEWORK20"/>
+        <Condition Message="This application requires .NET Framework 2.0. Please install the .NET Framework then run the Gallio installer again.">
+            <![CDATA[Installed OR NETFRAMEWORK20]]>
+        </Condition>        
 
         <!-- The files are all packaged in a single cab file inside the msi file -->
         <Media Id="1" EmbedCab="yes" Cabinet="Gallio.cab" />
@@ -91,7 +98,7 @@
         </FeatureRef>
 
         <Feature Id='feat_Plugins' Title='Plugins' Level="1">
-	    <Feature Id='feat_Frameworks' Title="Test Frameworks" Level="1">
+            <Feature Id='feat_Frameworks' Title="Test Frameworks" Level="1">
                 <FeatureRef Id='feat_CSUnitAdapter'/>
                 <FeatureRef Id='feat_MbUnit2Adapter'/>
 <?ifdef FEATURE_MSTEST_ADAPTER ?>
