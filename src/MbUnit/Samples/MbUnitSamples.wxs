@@ -46,6 +46,34 @@
                     <File Id="MSTestTestFixture.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples.VSTSIntegration\MSTestTestFixture.cs" KeyPath="yes" />
                 </Component>
             </Directory>
+            <Directory Id="MbUnit3.Samples.Libs" Name="libs">
+                <Directory Id="MbUnit3.Samples.Libs.WatiN" Name="WatiN">
+                    <Directory Id="MbUnit3.Samples.Libs.WatiN.bin" Name="bin">
+                        <Component Id="MbUnit3.Samples.Interop.SHDocVw.dll" Guid="{CFF4898C-7035-4061-8E46-8FD968619514}">
+                            <File Id="Interop.SHDocVw.dll" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\bin\Interop.SHDocVw.dll" KeyPath="yes" />
+                        </Component>
+                        <Component Id="MbUnit3.Samples.Microsoft.mshtml.dll" Guid="{C8085EDB-06B1-4316-9870-CEE8AB565C1F}">
+                            <File Id="Microsoft.mshtml.dll" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\bin\Microsoft.mshtml.dll" KeyPath="yes" />
+                        </Component>
+                        <Component Id="MbUnit3.Samples.WatiN.Core.dll" Guid="{AF3A65EF-8ADD-499e-AA5B-0EF733064094}">
+                            <File Id="WatiN.Core.dll" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\bin\WatiN.Core.dll" KeyPath="yes" />
+                            <File Id="WatiN.Core.xml" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\bin\WatiN.Core.xml" />
+                        </Component>
+                    </Directory>
+                    <Component Id="MbUnit3.Samples.WatiN.chm" Guid="{3F4B12EB-8AD8-44fd-8EA6-C9DAA5BB81ED}">
+                        <File Id="WatiN.chm" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\WatiN.chm" KeyPath="yes" />
+                    </Component>
+                    <Component Id="MbUnit3.Samples.WatiN.License.txt" Guid="{DF6B8D54-C505-4da0-B8B6-3AE3B1BFC177}">
+                        <File Id="MbUnit3.Samples.WatiN.License.txt" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\License.txt" KeyPath="yes" />
+                    </Component>
+                    <Component Id="MbUnit3.Samples.WatiN.Readme.txt" Guid="{CA55E5CE-FF3D-45a5-BB39-CC671BBC59BD}">
+                        <File Id="MbUnit3.Samples.WatiN.Readme.txt" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\Readme.txt" KeyPath="yes" />
+                    </Component>
+                    <Component Id="MbUnit3.Samples.WatiN.ReleaseHistory.txt" Guid="{670D44B0-A9C3-40ea-BC58-0994BC09B00B}">
+                        <File Id="MbUnit3.Samples.WatiN.ReleaseHistory.txt" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\ReleaseHistory.txt" KeyPath="yes" />
+                    </Component>
+                </Directory>
+            </Directory>
             <Component Id="MbUnit3.Samples.sln" Guid="{846FC9A2-7740-4525-98EF-F52DB44B9A6A}">
                 <File Id="MbUnit.Samples.sln" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples.sln" KeyPath="yes" />
             </Component>
@@ -77,6 +105,13 @@
             <ComponentRef Id="MbUnit3.Samples.vs2008.sln" />
             <ComponentRef Id="MbUnit3.Samples.vs2008.vsmdi" />
             <ComponentRef Id="LocalTestRun.testrunconfig" />
+            <ComponentRef Id="MbUnit3.Samples.WatiN.ReleaseHistory.txt" />
+            <ComponentRef Id="MbUnit3.Samples.WatiN.Readme.txt" />
+            <ComponentRef Id="MbUnit3.Samples.WatiN.License.txt" />
+            <ComponentRef Id="MbUnit3.Samples.WatiN.chm" />
+            <ComponentRef Id="MbUnit3.Samples.WatiN.Core.dll"/>
+            <ComponentRef Id="MbUnit3.Samples.Interop.SHDocVw.dll"/>
+            <ComponentRef Id="MbUnit3.Samples.Microsoft.mshtml.dll"/>
         </Feature>
     </Fragment>
 </Wix>
