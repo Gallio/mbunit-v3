@@ -12,10 +12,10 @@
                 <Directory Id='VS90_Common7_Folder' Name="Common7">
                     <Directory Id="VS90_IDE_Folder" Name="IDE">
                         <Directory Id="VS90_PrivateAssemblies" Name="PrivateAssemblies">
-                            <Component Id="Gallio.Loader.VS90.dll" Guid="{5DB28D6D-775E-41fb-86E6-F304E7B70AB8}">
+                            <Component Id="Gallio.Loader.VS90.dll" Guid="{5DB28D6D-775E-41fb-86E6-F304E7B70AB8}" Win64="no">
                                 <File Id="Gallio.Loader.VS90.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
                             </Component>
-                            <Component Id="Gallio.MSTestRunner.dll" Guid="9A21CBC4-4189-41e2-90F6-4241BA2A634D">
+                            <Component Id="Gallio.MSTestRunner.dll" Guid="9A21CBC4-4189-41e2-90F6-4241BA2A634D" Win64="no">
                                 <File Id="Gallio.MSTestRunner.dll" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestRunner.dll" KeyPath="yes"
                                       Assembly=".net" AssemblyApplication="Gallio.MSTestRunner.dll" />
                                 <File Id="Gallio.MSTestRunner.dll.config" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestRunner.dll.config" />
@@ -25,7 +25,7 @@
                         </Directory>
                     </Directory>
                 </Directory>
-                <Component Id="Gallio.MSTestRunner.VS90.Registry" Guid="{E89197CF-A054-47ae-A1BE-2BB61588ACB1}">
+                <Component Id="Gallio.MSTestRunner.VS90.Registry" Guid="{E89197CF-A054-47ae-A1BE-2BB61588ACB1}" Win64="no">
                     <!-- Register the product -->
                     <RegistryKey Id="Gallio.MSTestRunner.VS90.Registry1" Action="createAndRemoveOnUninstall"
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio.MSTestRunner">
@@ -76,11 +76,11 @@
 
         <DirectoryRef Id="binFolder">
             <Directory Id="MSTestAdapter" Name="MSTest">
-                <Component Id="Gallio.MSTestAdapter.dll" Guid="30F50762-6829-4020-8CC3-11D2151EF058">
+                <Component Id="Gallio.MSTestAdapter.dll" Guid="30F50762-6829-4020-8CC3-11D2151EF058" Win64="no">
                     <File Id="Gallio.MSTestAdapter.dll" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestAdapter.dll" KeyPath="yes" />
                     <File Id="Gallio.MSTestAdapter.plugin" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestAdapter.plugin" />
                 </Component>
-                <Component Id="MSTest.Readme.txt" Guid="3F8743D7-476E-4074-A8AF-FD36E440EC29">
+                <Component Id="MSTest.Readme.txt" Guid="3F8743D7-476E-4074-A8AF-FD36E440EC29" Win64="no">
                     <File Id="MSTest.Readme.txt" Source="$(var.GallioTargetDir)\bin\MSTest\Readme.txt" KeyPath="yes" />
                 </Component>
             </Directory>

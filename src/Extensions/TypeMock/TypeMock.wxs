@@ -3,11 +3,11 @@
     <Fragment>
         <DirectoryRef Id="binFolder">
             <Directory Id="TypeMockIntegration" Name="TypeMock">
-                <Component Id="Gallio.TypeMockIntegration.dll" Guid="70433af5-abed-405a-9073-0aaecb9459c6">
+                <Component Id="Gallio.TypeMockIntegration.dll" Guid="70433af5-abed-405a-9073-0aaecb9459c6" Win64="no">
                     <File Id="Gallio.TypeMockIntegration.dll" Source="$(var.GallioTargetDir)\bin\TypeMock\Gallio.TypeMockIntegration.dll" KeyPath="yes" />
                     <File Id="Gallio.TypeMockIntegration.plugin" Source="$(var.GallioTargetDir)\bin\TypeMock\Gallio.TypeMockIntegration.plugin" />
                 </Component>
-                <Component Id="TypeMock.Integration.dll" Guid="52dbfb41-73be-419d-8db0-54ab1c89bbb8">
+                <Component Id="TypeMock.Integration.dll" Guid="52dbfb41-73be-419d-8db0-54ab1c89bbb8" Win64="no">
                     <File Id="TypeMock.Integration.dll" Source="$(var.GallioTargetDir)\bin\TypeMock\TypeMock.Integration.dll" KeyPath="yes" />
                 </Component>
             </Directory>

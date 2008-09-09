@@ -4,7 +4,7 @@
         <DirectoryRef Id="binFolder">
             <Directory Id="NCover2" Name="NCover">
                 <Directory Id="NCoverIntegration2" Name="v2">
-                    <Component Id="Gallio.NCoverIntegration2.dll" Guid="E801F94C-0C8C-489d-B9EB-86F710C98B83">
+                    <Component Id="Gallio.NCoverIntegration2.dll" Guid="E801F94C-0C8C-489d-B9EB-86F710C98B83" Win64="no">
                          <File Id="Gallio.NCoverIntegration2.dll" Source="$(var.GallioTargetDir)\bin\NCover\v2\Gallio.NCoverIntegration2.dll" KeyPath="yes" />
                          <File Id="Gallio.NCoverIntegration2.plugin" Source="$(var.GallioTargetDir)\bin\NCover\v2\Gallio.NCoverIntegration2.plugin" />
                     </Component>

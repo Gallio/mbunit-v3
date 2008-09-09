@@ -10,19 +10,19 @@
         </Property>
 
         <DirectoryRef Id="binFolder">
-            <Component Id="Gallio.TDNetRunner.dll" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8">
+            <Component Id="Gallio.TDNetRunner.dll" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
                 <File Id="Gallio.TDNetRunner.dll" Source="$(var.GallioTargetDir)\bin\Gallio.TDNetRunner.dll" KeyPath="yes"
                       Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.dll" />
             </Component>
 
-            <Component Id="TDNetApp.Icarus" Guid="0ebd2ab6-3341-4d25-a249-0af80fa32913">
+            <Component Id="TDNetApp.Icarus" Guid="0ebd2ab6-3341-4d25-a249-0af80fa32913" Win64="no">
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Icarus">
                     <RegistryValue Type='string' Name='Application' Value='[#Gallio.Icarus.exe]'/>
                 </RegistryKey>
             </Component>
 
-            <Component Id="TDNetRunner.CSUnit" Guid="69886d58-7ce0-4710-982a-5d8c6f9d66d2">
+            <Component Id="TDNetRunner.CSUnit" Guid="69886d58-7ce0-4710-982a-5d8c6f9d66d2" Win64="no">
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_CSUnit'>
                     <RegistryValue Type='string' Value='20'/>
@@ -32,7 +32,7 @@
                 </RegistryKey>
             </Component>
 
-            <Component Id="TDNetRunner.MbUnit_v3" Guid="315d8ad7-920c-4d75-907c-2f33501b5b86">
+            <Component Id="TDNetRunner.MbUnit_v3" Guid="315d8ad7-920c-4d75-907c-2f33501b5b86" Win64="no">
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MbUnit'>
                     <RegistryValue Type='string' Value='10'/>
@@ -42,7 +42,7 @@
                 </RegistryKey>
             </Component>
 
-            <Component Id="TDNetRunner.MbUnit_v2" Guid="5be9bc6d-2852-443a-8d10-a390c313b107">
+            <Component Id="TDNetRunner.MbUnit_v2" Guid="5be9bc6d-2852-443a-8d10-a390c313b107" Win64="no">
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MbUnit2">
                     <RegistryValue Type='string' Value='5'/>
@@ -52,7 +52,7 @@
                 </RegistryKey>
             </Component>
 
-            <Component Id="TDNetRunner.MSTest" Guid="7b5e80c3-6396-4c6d-a18b-ed884c3d98d7">
+            <Component Id="TDNetRunner.MSTest" Guid="7b5e80c3-6396-4c6d-a18b-ed884c3d98d7" Win64="no">
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MSTest">
                     <RegistryValue Type='string' Value='5'/>
@@ -62,7 +62,7 @@
                 </RegistryKey>
             </Component>
 
-            <Component Id="TDNetRunner.NUnit" Guid="3765c084-ef3f-46bb-b47a-b4cb9d1afaf5">
+            <Component Id="TDNetRunner.NUnit" Guid="3765c084-ef3f-46bb-b47a-b4cb9d1afaf5" Win64="no">
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_NUnit">
                     <RegistryValue Type='string' Value='20'/>
@@ -72,7 +72,7 @@
                 </RegistryKey>
             </Component>
 
-            <Component Id="TDNetRunner.Xunit" Guid="648ce21a-3f03-48c4-a7c1-1591fd76258e">
+            <Component Id="TDNetRunner.Xunit" Guid="648ce21a-3f03-48c4-a7c1-1591fd76258e" Win64="no">
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Xunit">
                     <RegistryValue Type='string' Value='20'/>

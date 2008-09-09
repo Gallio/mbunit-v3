@@ -5,75 +5,75 @@
             <Directory Id="CCNet" Name="CCNet">
                 <Directory Id="webdashboard" Name="webdashboard">
                     <Directory Id="webdashboard.bin" Name="bin">
-                        <Component Id="CCNet.Gallio.WebDashboard.Plugin.dll" Guid="{04852E1E-D257-4731-A417-46B17C307B82}">
+                        <Component Id="CCNet.Gallio.WebDashboard.Plugin.dll" Guid="{04852E1E-D257-4731-A417-46B17C307B82}" Win64="no">
                             <File Id="CCNet.Gallio.WebDashboard.Plugin.dll" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\bin\CCNet.Gallio.WebDashboard.Plugin.dll" KeyPath="yes" />
                         </Component>
                     </Directory>
                     <Directory Id="webdashboard.templates" Name="templates">
-                        <Component Id="CCNet.SiteTemplate.vm" Guid="{346AFDDC-B4E3-49d1-8486-00F9524C3004}">
+                        <Component Id="CCNet.SiteTemplate.vm" Guid="{346AFDDC-B4E3-49d1-8486-00F9524C3004}" Win64="no">
                             <File Id="CCNet.SiteTemplate.vm" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\templates\SiteTemplate.vm" KeyPath="yes" />
                         </Component>
                     </Directory>
                     <Directory Id="webdashboard.gallio" Name="gallio">
                         <Directory Id="webdashboard.gallio.css" Name="css">
-                            <Component Id="CCNet.Gallio.Report.css" Guid="{48A8273A-F100-4702-B45C-4B2BE9AD6235}">
+                            <Component Id="CCNet.Gallio.Report.css" Guid="{48A8273A-F100-4702-B45C-4B2BE9AD6235}" Win64="no">
                                 <File Id="CCNet.Gallio.Report.css" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\css\Gallio-Report.css" KeyPath="yes" />
                             </Component>
                         </Directory>
                         <Directory Id="webdashboard.gallio.js" Name="js">
-                            <Component Id="CCNet.Gallio.Report.js" Guid="{4C1835D0-8DAA-46cd-B7CF-A2B63A0D01C7}">
+                            <Component Id="CCNet.Gallio.Report.js" Guid="{4C1835D0-8DAA-46cd-B7CF-A2B63A0D01C7}" Win64="no">
                                 <File Id="CCNet.Gallio.Report.js" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\js\Gallio-Report.js" KeyPath="yes" />
                             </Component>
                         </Directory>
                         <Directory Id="webdashboard.gallio.xsl" Name="xsl">
-                            <Component Id="CCNet.Gallio.Report.common.xsl" Guid="{2F0CD423-5884-44a7-8A89-1F80D9EAC957}">
+                            <Component Id="CCNet.Gallio.Report.common.xsl" Guid="{2F0CD423-5884-44a7-8A89-1F80D9EAC957}" Win64="no">
                                 <File Id="CCNet.Gallio.Report.common.xsl" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\xsl\Gallio-Report.common.xsl" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Gallio.Report.ccnet.details.xsl" Guid="{0E80D765-AC87-4ff1-92B8-0F1F92875C1C}">
+                            <Component Id="CCNet.Gallio.Report.ccnet.details.xsl" Guid="{0E80D765-AC87-4ff1-92B8-0F1F92875C1C}" Win64="no">
                                 <File Id="CCNet.Gallio.Report.ccnet.details.xsl" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\xsl\Gallio-Report.ccnet-details.xsl" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Gallio.Report.ccnet.details.condensed.xsl" Guid="{52D7D117-8004-4cc2-B59F-B0436482ECC4}">
+                            <Component Id="CCNet.Gallio.Report.ccnet.details.condensed.xsl" Guid="{52D7D117-8004-4cc2-B59F-B0436482ECC4}" Win64="no">
                                 <File Id="CCNet.Gallio.Report.ccnet.details.condensed.xsl" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\xsl\Gallio-Report.ccnet-details-condensed.xsl" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Gallio.Report.html.xhtml.xsl" Guid="{2861BE2A-EDEF-4293-8070-18E1B7600440}">
+                            <Component Id="CCNet.Gallio.Report.html.xhtml.xsl" Guid="{2861BE2A-EDEF-4293-8070-18E1B7600440}" Win64="no">
                                 <File Id="CCNet.Gallio.Report.html.xhtml.xsl" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\xsl\Gallio-Report.html+xhtml.xsl" KeyPath="yes" />
                             </Component>
                         </Directory>
                         <Directory Id="webdashboard.gallio.img" Name="img">
-                            <Component Id="CCNet.Container.png" Guid="{857E70FA-084C-42b9-BAB0-5079C984C089}">
+                            <Component Id="CCNet.Container.png" Guid="{857E70FA-084C-42b9-BAB0-5079C984C089}" Win64="no">
                                 <File Id="CCNet.Container.png" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\Container.png" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Failed.gif" Guid="{7FF8901F-5F93-4131-9E03-768ED987DD4D}">
+                            <Component Id="CCNet.Failed.gif" Guid="{7FF8901F-5F93-4131-9E03-768ED987DD4D}" Win64="no">
                                 <File Id="CCNet.Failed.gif" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\Failed.gif" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Fixture.png" Guid="{6CC1C686-4584-4ac1-A647-D9465182BF96}">
+                            <Component Id="CCNet.Fixture.png" Guid="{6CC1C686-4584-4ac1-A647-D9465182BF96}" Win64="no">
                                 <File Id="CCNet.Fixture.png" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\Fixture.png" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.FullStop.gif" Guid="{6B9FCD61-D4B8-4ab6-ADAB-8BB2526BEC38}">
+                            <Component Id="CCNet.FullStop.gif" Guid="{6B9FCD61-D4B8-4ab6-ADAB-8BB2526BEC38}" Win64="no">
                                 <File Id="CCNet.FullStop.gif" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\FullStop.gif" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.GallioTestReportHeader.png" Guid="{4C77B635-8DA8-4bfa-BD3E-620DD6E22797}">
+                            <Component Id="CCNet.GallioTestReportHeader.png" Guid="{4C77B635-8DA8-4bfa-BD3E-620DD6E22797}" Win64="no">
                                 <File Id="CCNet.GallioTestReportHeader.png" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\GallioTestReportHeader.png" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.header.background.gif" Guid="{262B947F-879A-4ba0-965D-76593206B868}">
+                            <Component Id="CCNet.header.background.gif" Guid="{262B947F-879A-4ba0-965D-76593206B868}" Win64="no">
                                 <File Id="CCNet.header.background.gif" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\header-background.gif" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Ignored.gif" Guid="{83AE6D5C-EDAD-4427-A3F4-A504BE2A8F23}">
+                            <Component Id="CCNet.Ignored.gif" Guid="{83AE6D5C-EDAD-4427-A3F4-A504BE2A8F23}" Win64="no">
                                 <File Id="CCNet.Ignored.gif" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\Ignored.gif" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Logo.png" Guid="{742E5E76-E8A6-481b-B862-19FC9DB43103}">
+                            <Component Id="CCNet.Logo.png" Guid="{742E5E76-E8A6-481b-B862-19FC9DB43103}" Win64="no">
                                 <File Id="CCNet.Logo.png" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\Logo.png" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Minus.gif" Guid="{4BBACD67-59B4-4cc2-8622-C8DA7DCD4BF8}">
+                            <Component Id="CCNet.Minus.gif" Guid="{4BBACD67-59B4-4cc2-8622-C8DA7DCD4BF8}" Win64="no">
                                 <File Id="CCNet.Minus.gif" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\Minus.gif" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Passed.gif" Guid="{0DF6FB86-8824-45d4-9F04-AD194FC78C04}">
+                            <Component Id="CCNet.Passed.gif" Guid="{0DF6FB86-8824-45d4-9F04-AD194FC78C04}" Win64="no">
                                 <File Id="CCNet.Passed.gif" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\Passed.gif" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Plus.gif" Guid="{13D35790-04AC-472e-A67E-9A945E8876AF}">
+                            <Component Id="CCNet.Plus.gif" Guid="{13D35790-04AC-472e-A67E-9A945E8876AF}" Win64="no">
                                 <File Id="CCNet.Plus.gif" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\Plus.gif" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Test.png" Guid="{097D2E03-9BF7-4b7a-BDEA-9541323CC7A8}">
+                            <Component Id="CCNet.Test.png" Guid="{097D2E03-9BF7-4b7a-BDEA-9541323CC7A8}" Win64="no">
                                 <File Id="CCNet.Test.png" Source="$(var.GallioTargetDir)\extras\CCNet\webdashboard\gallio\img\Test.png" KeyPath="yes" />
                             </Component>
                         </Directory>

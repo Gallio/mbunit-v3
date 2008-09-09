@@ -21,10 +21,10 @@
             <Directory Id="RESHARPER_V40_VS8_INSTALLDIR" Name="ReSharper_V40_VS80">
                 <Directory Id="JetBrains.ReSharper.V40.VS8.PluginsDir" Name="Plugins">
                     <Directory Id="JetBrains.Resharper.V40.VS8.GallioDir" Name="Gallio">
-                        <Component Id="Gallio.Loader.V40.VS8.dll" Guid="{0d4e30d2-06c2-4e52-809d-c4bfe117467f}">
+                        <Component Id="Gallio.Loader.V40.VS8.dll" Guid="{0d4e30d2-06c2-4e52-809d-c4bfe117467f}" Win64="no">
                             <File Id="Gallio.Loader.V40.VS8.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
                         </Component>
-                        <Component Id="Gallio.ReSharperRunner.V40.VS8.dll" Guid="{9bad38f6-0f32-4719-abcb-615750a3fb1f}">
+                        <Component Id="Gallio.ReSharperRunner.V40.VS8.dll" Guid="{9bad38f6-0f32-4719-abcb-615750a3fb1f}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V40.VS8.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v4.0\Gallio.ReSharperRunner40.dll" KeyPath="yes" />
                             <File Id="Gallio.ReSharperRunner.V40.VS8.dll.config" Source="$(var.GallioTargetDir)\bin\ReSharper\v4.0\Gallio.ReSharperRunner40.dll.config" />
                             <util:XmlFile Id="FixXmlSettings.V40.VS8" File="[#Gallio.ReSharperRunner.V40.VS8.dll.config]" Action="setValue" 
@@ -37,10 +37,10 @@
             <Directory Id="RESHARPER_V40_VS9_INSTALLDIR" Name="ReSharper_V40_VS90">
                 <Directory Id="JetBrains.ReSharper.V40.VS9.PluginsDir" Name="Plugins">
                     <Directory Id="JetBrains.Resharper.V40.VS9.GallioDir" Name="Gallio">
-                        <Component Id="Gallio.Loader.V40.VS9.dll" Guid="{7bcbb7b9-0450-4d76-ac72-bf8e01e93987}">
+                        <Component Id="Gallio.Loader.V40.VS9.dll" Guid="{7bcbb7b9-0450-4d76-ac72-bf8e01e93987}" Win64="no">
                             <File Id="Gallio.Loader.V40.VS9.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
                         </Component>
-                        <Component Id="Gallio.ReSharperRunner.V40.VS9.dll" Guid="{8bff1a3a-4dc6-41d9-9768-571c8ef7de02}">
+                        <Component Id="Gallio.ReSharperRunner.V40.VS9.dll" Guid="{8bff1a3a-4dc6-41d9-9768-571c8ef7de02}" Win64="no">
                             <File Id="Gallio.ReSharperRunner.V40.VS9.dll" Source="$(var.GallioTargetDir)\bin\ReSharper\v4.0\Gallio.ReSharperRunner40.dll" KeyPath="yes" />
                             <File Id="Gallio.ReSharperRunner.V40.VS9.dll.config" Source="$(var.GallioTargetDir)\bin\ReSharper\v4.0\Gallio.ReSharperRunner40.dll.config" />
                             <util:XmlFile Id="FixXmlSettings.V40.VS9" File="[#Gallio.ReSharperRunner.V40.VS9.dll.config]" Action="setValue" 

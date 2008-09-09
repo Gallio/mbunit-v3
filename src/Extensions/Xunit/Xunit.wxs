@@ -3,25 +3,25 @@
     <Fragment>
         <DirectoryRef Id="binFolder">
             <Directory Id="XunitAdapter" Name="Xunit">
-                <Component Id="Gallio.XunitAdapter.dll" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8">
+                <Component Id="Gallio.XunitAdapter.dll" Guid="2fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
                     <File Id="Gallio.XunitAdapter.dll" Source="$(var.GallioTargetDir)\bin\Xunit\Gallio.XunitAdapter.dll" KeyPath="yes" />
                 </Component>
-                <Component Id="Gallio.XunitAdapter.plugin" Guid="70438af5-abed-405a-9073-0aaecb9459c6">
+                <Component Id="Gallio.XunitAdapter.plugin" Guid="70438af5-abed-405a-9073-0aaecb9459c6" Win64="no">
                     <File Id="Gallio.XunitAdapter.plugin" Source="$(var.GallioTargetDir)\bin\Xunit\Gallio.XunitAdapter.plugin" KeyPath="yes" />
                 </Component>
-                <Component Id="EULA.txt" Guid="687ecebb-3738-4890-992f-6d97e45dac2d">
+                <Component Id="EULA.txt" Guid="687ecebb-3738-4890-992f-6d97e45dac2d" Win64="no">
                     <File Id="EULA.txt" Source="$(var.GallioTargetDir)\bin\Xunit\EULA.txt" KeyPath="yes" />
                 </Component>
-                <Component Id="xUnit.Readme.txt" Guid="1b5e487f-4393-4613-9ab8-222f46464ba9">
+                <Component Id="xUnit.Readme.txt" Guid="1b5e487f-4393-4613-9ab8-222f46464ba9" Win64="no">
                     <File Id="xUnit.Readme.txt" Source="$(var.GallioTargetDir)\bin\Xunit\Readme.txt" KeyPath="yes" />
                 </Component>
-                <Component Id="xunit.dll" Guid="52dbfb41-73ae-419d-8db0-54ab1c89bbb8">
+                <Component Id="xunit.dll" Guid="52dbfb41-73ae-419d-8db0-54ab1c89bbb8" Win64="no">
                     <File Id="xunit.dll" Source="$(var.GallioTargetDir)\bin\Xunit\xunit.dll" KeyPath="yes" />
                 </Component>
-                <Component Id="xunit.xml" Guid="42b6b4c8-df7e-43af-aeeb-c20cffa63592">
+                <Component Id="xunit.xml" Guid="42b6b4c8-df7e-43af-aeeb-c20cffa63592" Win64="no">
                     <File Id="xunit.xml" Source="$(var.GallioTargetDir)\bin\Xunit\xunit.xml" KeyPath="yes" />
                 </Component>
-                <Component Id="xunitext.dll" Guid="4a78a038-ef65-43c2-b44f-b39948ef5ef6">
+                <Component Id="xunitext.dll" Guid="4a78a038-ef65-43c2-b44f-b39948ef5ef6" Win64="no">
                     <File Id="xunitext.dll" Source="$(var.GallioTargetDir)\bin\Xunit\xunitext.dll" KeyPath="yes" />
                 </Component>
             </Directory>

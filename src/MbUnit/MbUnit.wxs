@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="INSTALLDIR">
-            <Component Id="MbUnit.Website" Guid="{6F174992-5128-4c86-BEB3-7CD07C684DC1}">
+            <Component Id="MbUnit.Website" Guid="{6F174992-5128-4c86-BEB3-7CD07C684DC1}" Win64="no">
                 <File Id="MbUnit.Website.url" Source="$(var.GallioTargetDir)\MbUnit Website.url" KeyPath="yes">
                     <Shortcut Id="MbUnit.Website.lnk" Name="MbUnit Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes"/>
                 </File>
@@ -11,13 +11,13 @@
         </DirectoryRef>
 
         <DirectoryRef Id="binFolder">
-            <Component Id="MbUnit.v3" Guid="{2f25f1f8-46ea-40f5-a850-16bac64cad1b}">
+            <Component Id="MbUnit.v3" Guid="{2f25f1f8-46ea-40f5-a850-16bac64cad1b}" Win64="no">
                 <File Id="MbUnit.dll" Source="$(var.GallioTargetDir)\bin\MbUnit.dll" KeyPath="yes"/>
                 <File Id="MbUnit.plugin" Source="$(var.GallioTargetDir)\bin\MbUnit.plugin"/>
                 <File Id="MbUnit.pdb" Source="$(var.GallioTargetDir)\bin\MbUnit.pdb"/>
                 <File Id="MbUnit.xml" Source="$(var.GallioTargetDir)\bin\MbUnit.xml"/>
             </Component>
-            <Component Id="MbUnit35.v3" Guid="{7fa829c3-df5c-4e41-865b-54084c65c0b0}">
+            <Component Id="MbUnit35.v3" Guid="{7fa829c3-df5c-4e41-865b-54084c65c0b0}" Win64="no">
                 <File Id="MbUni35.dll" Source="$(var.GallioTargetDir)\bin\MbUnit35.dll"/>
                 <File Id="MbUnit35.plugin" Source="$(var.GallioTargetDir)\bin\MbUnit35.plugin"/>
                 <File Id="MbUnit35.pdb" Source="$(var.GallioTargetDir)\bin\MbUnit35.pdb"/>

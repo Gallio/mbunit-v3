@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="binFolder">
-            <Component Id="Gallio.Echo" Guid="8f28f164-fa85-4a2f-bfa3-b75c8bea2031">
+            <Component Id="Gallio.Echo" Guid="8f28f164-fa85-4a2f-bfa3-b75c8bea2031" Win64="no">
                 <File Id="Gallio.Echo.exe" Source="$(var.GallioTargetDir)\bin\Gallio.Echo.exe" KeyPath="yes" />
                 <File Id="Gallio.Echo.exe.config" Source="$(var.GallioTargetDir)\bin\Gallio.Echo.exe.config" />
             </Component>

@@ -14,8 +14,8 @@
     <TargetDir Condition="'$(TargetDir)'==''">$(MSBuildProjectDirectory)\..\..\build\image</TargetDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>bin\Debug</OutputPath>
-    <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug;GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
     <Cultures>en-US</Cultures>
     <SuppressIces>ICE69</SuppressIces>
@@ -23,12 +23,28 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>$(ReleaseDir)</OutputPath>
-    <IntermediateOutputPath>obj\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
     <Cultures>en-US</Cultures>
     <SuppressIces>ICE69</SuppressIces>
     <SuppressPdbOutput>true</SuppressPdbOutput>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug;GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
+    <Cultures>en-US</Cultures>
+    <SuppressIces>ICE69</SuppressIces>
+    <SuppressPdbOutput>true</SuppressPdbOutput>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DefineConstants>GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
+    <Cultures>en-US</Cultures>
+    <SuppressIces>ICE69</SuppressIces>
+    <SuppressPdbOutput>true</SuppressPdbOutput>
+    <OutputPath>$(ReleaseDir)</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>    
   <ItemGroup>
     <Compile Include="WixUI_Gallio.wxs" />
     <Compile Include="GallioBundle.wxs" />
