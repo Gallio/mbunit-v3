@@ -23,10 +23,6 @@
                     <Shortcut Id="Gallio.Website.lnk" Name="Gallio Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
                 <RemoveFolder Id="GallioMenuFolder.Remove_GallioWebsite" Directory="GallioMenuFolder" On="uninstall" />
-                <!-- TODO: Need to find a way to put an icon on this link.
-                <util:InternetShortcut Id="Gallio.Website" Name="Gallio Website" Directory="GallioMenuFolder"
-                    Target="http://www.gallio.org/" />
-                  -->
             </Component>
             <Component Id="Gallio.Registry" Guid="{1AE1AC98-1FF2-4913-9ACA-EB8018E40508}">
                 <RegistryKey Id="Gallio.RegistryKey1" Action="createAndRemoveOnUninstall"
