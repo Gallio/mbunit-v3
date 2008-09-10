@@ -267,7 +267,17 @@ namespace Gallio.Reflection.Impl
             }
             else
             {
-                attributeUsage = AttributeUtils.GetAttribute<AttributeUsageAttribute>(attributeType, true);
+                try
+                {
+                    attributeUsage = AttributeUtils.GetAttribute<AttributeUsageAttribute>(attributeType, true);
+                }
+                catch (TargetParameterCountException)
+                {
+                    // This is a hack to work around the fact that ReSharper does not correctly handle
+                    // attribute parameters with enum values.  In particular, this affects the first
+                    // parameter of AttributeUsageAttribute. -- Jeff.
+                    attributeUsage = null;
+                }
 
                 if (attributeUsage == null)
                 {
