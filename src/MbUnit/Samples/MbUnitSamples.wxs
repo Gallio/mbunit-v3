@@ -2,90 +2,103 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:VS="http://schemas.microsoft.com/wix/VSExtension" >
     <Fragment>
-        <DirectoryRef Id="samplesFolder">
+        <DirectoryRef Id="samplesFolder" FileSource="$(var.GallioTargetDir)\extras\Samples\">
+            
             <Directory Id="MbUnit3.Samples" Name="MbUnit.Samples">
                 <Directory Id="MbUnit3.Samples.Properties" Name="Properties">
                     <Component Id="MbUnit3.Samples.AssemblyInfo.cs" Guid="{0EF95DCA-1432-4bfd-B5C8-8D7F7419BB8E}" Win64="no">
-                        <File Id="AssemblyInfo.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\Properties\AssemblyInfo.cs" KeyPath="yes" />
+                        <File Id="MbUnit3.Samples.AssemblyInfo.cs" Name="AssemblyInfo.cs" KeyPath="yes" />
                     </Component>
                     <Component Id="MbUnit3.Samples.Resources.resx" Guid="{9541383E-59EC-4a31-8B4D-BF8EB7786ACC}" Win64="no">
-                        <File Id="Resources.resx" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\Properties\Resources.resx" KeyPath="yes" />
+                        <File Id="MbUnit3.Samples.Resources.resx" Name="Resources.resx" KeyPath="yes" />
                     </Component>
                     <Component Id="MbUnit3.Samples.Resources.Designer.cs" Guid="{1EDC4132-3320-42be-8537-9350CE6E0B2F}" Win64="no">
-                        <File Id="Resources.Designer.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\Properties\Resources.Designer.cs" KeyPath="yes" />
+                        <File Id="MbUnit3.Samples.Resources.Designer.cs" Name="Resources.Designer.cs" KeyPath="yes" />
                     </Component>
                 </Directory>
                 <Directory Id="MbUnit3.Samples.Resources" Name="Resources">
                     <Component Id="MbUnit3.Samples.MbUnitLogo.png" Guid="{049F58D5-7AB5-4537-A559-F8D9E62FE0D6}" Win64="no">
-                        <File Id="MbUnitLogo.png" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\Resources\MbUnitLogo.png" KeyPath="yes" />
+                        <File Id="MbUnit3.Samples.MbUnitLogo.png" Name="MbUnitLogo.png" KeyPath="yes" />
                     </Component>
                 </Directory>
                 <Component Id="MbUnit3.Samples.csproj" Guid="{89A17A8E-6EB6-4847-B1D6-1C5039A7AF03}" Win64="no">
-                    <File Id="MbUnit.Samples.csproj" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\MbUnit.Samples.csproj" KeyPath="yes" />
+                    <File Id="MbUnit3.Samples.csproj" Name="MbUnit.Samples.csproj" KeyPath="yes" />
                 </Component>
-                <Component Id="RichTestLogDemo.cs" Guid="{89001F29-14BC-4415-A026-6212C64052FB}" Win64="no">
-                    <File Id="RichTestLogDemo.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\RichTestLogDemo.cs" KeyPath="yes" />
+                <Component Id="MbUnit3.Samples.RichTestLogDemo.cs" Guid="{89001F29-14BC-4415-A026-6212C64052FB}" Win64="no">
+                    <File Id="MbUnit3.Samples.RichTestLogDemo.cs" Name="RichTestLogDemo.cs" KeyPath="yes" />
                 </Component>
-                <Component Id="WatiNDemo.cs" Guid="{77F37799-7761-4571-A451-A20E0A766E51}" Win64="no">
-                    <File Id="WatiNDemo.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples\WatiNDemo.cs" KeyPath="yes" />
+                <Component Id="MbUnit3.Samples.WatiNDemo.cs" Guid="{77F37799-7761-4571-A451-A20E0A766E51}" Win64="no">
+                    <File Id="MbUnit3.Samples.WatiNDemo.cs" Name="WatiNDemo.cs" KeyPath="yes" />
                 </Component>
             </Directory>
-            <Directory Id="MbUnit3.Samples.VSTSIntegration">
+            
+            <Directory Id="MbUnit3.Samples.VSTSIntegration" Name="MbUnit.Samples.VSTSIntegration">
                 <Directory Id="MbUnit3.Samples.VSTSIntegration.Properties" Name="Properties">
                     <Component Id="MbUnit3.Samples.VSTSIntegration.AssemblyInfo.cs" Guid="{00C5F43A-EC13-4a10-8580-FAC65B0446F3}" Win64="no">
-                        <File Id="VSTSIntegration.AssemblyInfo.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples.VSTSIntegration\Properties\AssemblyInfo.cs" KeyPath="yes" />
+                        <File Id="MbUnit3.Samples.VSTSIntegration.AssemblyInfo.cs" Name="AssemblyInfo.cs" KeyPath="yes" />
                     </Component>
                 </Directory>
                 <Component Id="MbUnit3.Samples.VSTSIntegration.csproj" Guid="{2D1B0C9A-2ED2-4850-BEE7-AD7AD6A4DC04}" Win64="no">
-                    <File Id="MbUnit.Samples.VSTSIntegration.csproj" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration.csproj" KeyPath="yes" />
+                    <File Id="MbUnit3.Samples.VSTSIntegration.csproj" Name="MbUnit.Samples.VSTSIntegration.csproj" KeyPath="yes" />
                 </Component>
-                <Component Id="MbUnitTestFixture.cs" Guid="{194631AE-9D53-4d07-958A-2DC8224B74FB}" Win64="no">
-                    <File Id="MbUnitTestFixture.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples.VSTSIntegration\MbUnitTestFixture.cs" KeyPath="yes" />
+                <Component Id="MbUnit3.Samples.MbUnitTestFixture.cs" Guid="{194631AE-9D53-4d07-958A-2DC8224B74FB}" Win64="no">
+                    <File Id="MbUnit3.Samples.MbUnitTestFixture.cs" Name="MbUnitTestFixture.cs" KeyPath="yes" />
                 </Component>
-                <Component Id="MSTestTestFixture.cs" Guid="{174CC373-F7C4-4ed9-B3FA-C2D76D615073}" Win64="no">
-                    <File Id="MSTestTestFixture.cs" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples.VSTSIntegration\MSTestTestFixture.cs" KeyPath="yes" />
+                <Component Id="MbUnit3.Samples.MSTestTestFixture.cs" Guid="{174CC373-F7C4-4ed9-B3FA-C2D76D615073}" Win64="no">
+                    <File Id="MbUnit3.Samples.MSTestTestFixture.cs" Name="MSTestTestFixture.cs" KeyPath="yes" />
                 </Component>
             </Directory>
+            
             <Directory Id="MbUnit3.Samples.Libs" Name="libs">
                 <Directory Id="MbUnit3.Samples.Libs.WatiN" Name="WatiN">
                     <Directory Id="MbUnit3.Samples.Libs.WatiN.bin" Name="bin">
                         <Component Id="MbUnit3.Samples.Interop.SHDocVw.dll" Guid="{CFF4898C-7035-4061-8E46-8FD968619514}" Win64="no">
-                            <File Id="Interop.SHDocVw.dll" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\bin\Interop.SHDocVw.dll" KeyPath="yes" />
+                            <File Id="MbUnit3.Samples.Interop.SHDocVw.dll" Name="Interop.SHDocVw.dll" KeyPath="yes" />
                         </Component>
                         <Component Id="MbUnit3.Samples.Microsoft.mshtml.dll" Guid="{C8085EDB-06B1-4316-9870-CEE8AB565C1F}" Win64="no">
-                            <File Id="Microsoft.mshtml.dll" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\bin\Microsoft.mshtml.dll" KeyPath="yes" />
+                            <File Id="MbUnit3.Samples.Microsoft.mshtml.dll" Name="Microsoft.mshtml.dll" KeyPath="yes" />
                         </Component>
                         <Component Id="MbUnit3.Samples.WatiN.Core.dll" Guid="{AF3A65EF-8ADD-499e-AA5B-0EF733064094}" Win64="no">
-                            <File Id="WatiN.Core.dll" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\bin\WatiN.Core.dll" KeyPath="yes" />
-                            <File Id="WatiN.Core.xml" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\bin\WatiN.Core.xml" />
+                            <File Id="MbUnit3.Samples.WatiN.Core.dll" Name="WatiN.Core.dll" KeyPath="yes" />
+                            <File Id="MbUnit3.Samples.WatiN.Core.xml" Name="WatiN.Core.xml" />
                         </Component>
                     </Directory>
                     <Component Id="MbUnit3.Samples.WatiN.chm" Guid="{3F4B12EB-8AD8-44fd-8EA6-C9DAA5BB81ED}" Win64="no">
-                        <File Id="WatiN.chm" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\WatiN.chm" KeyPath="yes" />
+                        <File Id="MbUnit3.Samples.WatiN.chm" Name="WatiN.chm" KeyPath="yes" />
                     </Component>
                     <Component Id="MbUnit3.Samples.WatiN.License.txt" Guid="{DF6B8D54-C505-4da0-B8B6-3AE3B1BFC177}" Win64="no">
-                        <File Id="MbUnit3.Samples.WatiN.License.txt" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\License.txt" KeyPath="yes" />
+                        <File Id="MbUnit3.Samples.WatiN.License.txt" Name="License.txt" KeyPath="yes" />
                     </Component>
                     <Component Id="MbUnit3.Samples.WatiN.Readme.txt" Guid="{CA55E5CE-FF3D-45a5-BB39-CC671BBC59BD}" Win64="no">
-                        <File Id="MbUnit3.Samples.WatiN.Readme.txt" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\Readme.txt" KeyPath="yes" />
+                        <File Id="MbUnit3.Samples.WatiN.Readme.txt" Name="Readme.txt" KeyPath="yes" />
                     </Component>
                     <Component Id="MbUnit3.Samples.WatiN.ReleaseHistory.txt" Guid="{670D44B0-A9C3-40ea-BC58-0994BC09B00B}" Win64="no">
-                        <File Id="MbUnit3.Samples.WatiN.ReleaseHistory.txt" Source="$(var.GallioTargetDir)\extras\Samples\libs\WatiN\ReleaseHistory.txt" KeyPath="yes" />
+                        <File Id="MbUnit3.Samples.WatiN.ReleaseHistory.txt" Name="ReleaseHistory.txt" KeyPath="yes" />
                     </Component>
                 </Directory>
             </Directory>
+            
             <Component Id="MbUnit3.Samples.sln" Guid="{846FC9A2-7740-4525-98EF-F52DB44B9A6A}" Win64="no">
-                <File Id="MbUnit.Samples.sln" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples.sln" KeyPath="yes" />
-            </Component>
+                <File Id="MbUnit3.Samples.sln" Name="MbUnit.Samples.sln" KeyPath="yes" >
+                    <Shortcut Id="MbUnit3.Samples.sln.lnk" Name="MbUnit Samples (Visual Studio 2005)" Directory="GallioMenuFolder.Samples" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
+                </File>
+                <RemoveFolder Id="GallioMenuFolder.Samples.Remove" Directory="GallioMenuFolder.Samples" On="uninstall" />
+            </Component>            
             <Component Id="MbUnit3.Samples.vs2008.sln" Guid="{4276EF47-AF73-4ebe-BB80-E2F9358750AC}" Win64="no">
-                <File Id="MbUnit.Samples.vs2008.sln" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples.vs2008.sln" KeyPath="yes" />
-            </Component>
+                <File Id="MbUnit3.Samples.vs2008.sln" Name="MbUnit.Samples.vs2008.sln" KeyPath="yes">
+                    <Shortcut Id="MbUnit3.Samples.vs2008.sln" Name="MbUnit Samples (Visual Studio 2008)" Directory="GallioMenuFolder.Samples" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
+                </File>
+            </Component>            
             <Component Id="MbUnit3.Samples.vs2008.vsmdi" Guid="{1C8B521A-9B43-4f13-97F1-05FE9FC113A9}" Win64="no">
-                <File Id="MbUnit.Samples.vs2008.vsmdi" Source="$(var.GallioTargetDir)\extras\Samples\MbUnit.Samples.vs2008.vsmdi" KeyPath="yes" />
+                <File Id="MbUnit3.Samples.vs2008.vsmdi" Name="MbUnit.Samples.vs2008.vsmdi" KeyPath="yes" />
             </Component>
-            <Component Id="LocalTestRun.testrunconfig" Guid="{19B437EF-6148-4d7a-BA5D-BCF73FD248ED}" Win64="no">
-                <File Id="LocalTestRun.testrunconfig" Source="$(var.GallioTargetDir)\extras\Samples\LocalTestRun.testrunconfig" KeyPath="yes" />
+            <Component Id="MbUnit3.Samples.LocalTestRun.testrunconfig" Guid="{19B437EF-6148-4d7a-BA5D-BCF73FD248ED}" Win64="no">
+                <File Id="MbUnit3.Samples.LocalTestRun.testrunconfig" Name="LocalTestRun.testrunconfig" KeyPath="yes" />
             </Component>
+        </DirectoryRef>
+
+        <DirectoryRef Id="GallioMenuFolder">
+            <Directory Id="GallioMenuFolder.Samples" Name="Samples" />
         </DirectoryRef>
 
         <Feature Id="feat_MbUnit3.Samples" Title="Samples" Level="1"
@@ -95,16 +108,16 @@
             <ComponentRef Id="MbUnit3.Samples.Resources.Designer.cs" />
             <ComponentRef Id="MbUnit3.Samples.MbUnitLogo.png" />
             <ComponentRef Id="MbUnit3.Samples.csproj" />
-            <ComponentRef Id="RichTestLogDemo.cs" />
-            <ComponentRef Id="WatiNDemo.cs" />
+            <ComponentRef Id="MbUnit3.Samples.RichTestLogDemo.cs" />
+            <ComponentRef Id="MbUnit3.Samples.WatiNDemo.cs" />
             <ComponentRef Id="MbUnit3.Samples.VSTSIntegration.AssemblyInfo.cs" />
             <ComponentRef Id="MbUnit3.Samples.VSTSIntegration.csproj" />
-            <ComponentRef Id="MbUnitTestFixture.cs" />
-            <ComponentRef Id="MSTestTestFixture.cs" />
+            <ComponentRef Id="MbUnit3.Samples.MbUnitTestFixture.cs" />
+            <ComponentRef Id="MbUnit3.Samples.MSTestTestFixture.cs" />
             <ComponentRef Id="MbUnit3.Samples.sln" />
             <ComponentRef Id="MbUnit3.Samples.vs2008.sln" />
             <ComponentRef Id="MbUnit3.Samples.vs2008.vsmdi" />
-            <ComponentRef Id="LocalTestRun.testrunconfig" />
+            <ComponentRef Id="MbUnit3.Samples.LocalTestRun.testrunconfig" />
             <ComponentRef Id="MbUnit3.Samples.WatiN.ReleaseHistory.txt" />
             <ComponentRef Id="MbUnit3.Samples.WatiN.Readme.txt" />
             <ComponentRef Id="MbUnit3.Samples.WatiN.License.txt" />

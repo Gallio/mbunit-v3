@@ -16,7 +16,9 @@
                 <File Id="Gallio.License.txt" Source="$(var.GallioTargetDir)\Gallio License.txt" KeyPath="yes" />
             </Component>
             <Component Id="Credits" Guid="{7EFEC8C8-CB48-41b3-818C-9CAD85DBECC1}" Win64="no">
-                <File Id="Credits.html" Source="$(var.GallioTargetDir)\Credits.html" KeyPath="yes" />
+                <File Id="Credits.html" Source="$(var.GallioTargetDir)\Credits.html" KeyPath="yes" >
+                    <Shortcut Id="Gallio.Credits.lnk" Name="Gallio Credits" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
+                </File>
             </Component>
             <Component Id="Gallio.Website" Guid="{32DF17D3-27D2-4b7a-8094-37A559F2B234}" Win64="no">
                 <File Id="Gallio.Website.url" Source="$(var.GallioTargetDir)\Gallio Website.url" KeyPath="yes">
@@ -170,7 +172,7 @@
         <DirectoryRef Id="docsFolder">
             <Component Id="Gallio.chm" Guid="{37BEC1CB-8141-4793-8CFF-986AC4849EB9}" Win64="no">
                 <File Id="Gallio.chm" Source="$(var.GallioTargetDir)\docs\Gallio.chm" KeyPath="yes">
-                    <Shortcut Id="Gallio.Offline.Documentation.lnk" Name="Offline Documentation" Icon="Gallio.icon.exe" IconIndex="0" Directory="GallioMenuFolder" WorkingDirectory="docsFolder" Advertise="yes" Show="normal" />
+                    <Shortcut Id="Gallio.Offline.Documentation.lnk" Name="Offline Documentation" Directory="GallioMenuFolder" WorkingDirectory="docsFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" Show="normal" />
                 </File>
             </Component>
             <Directory Id="docsVsFolder" Name="vs">
@@ -253,7 +255,8 @@
         <PropertyRef Id='VS2005DEVENV'/>
         <PropertyRef Id='VS90DEVENV'/>
 
-        <Feature Id="feat_Gallio.VSHelp" Title="Visual Studio Help Docs" Level="2" Description="Installs the integrated documentation for Visual Studio 2005 and/or Visual Studio 2008. Access with F1 Help.">
+        <Feature Id="feat_Gallio.VSHelp" Title="Visual Studio Help Docs" Level="0" 
+                 Description="Installs the integrated documentation for Visual Studio 2005 and/or Visual Studio 2008. Access with F1 Help.">
             <Condition Level="1">VS2005DEVENV OR VS90DEVENV</Condition>
             <ComponentRef Id="Gallio.Help.vs" />
             <ComponentRef Id="Gallio.H2Reg.ini" />

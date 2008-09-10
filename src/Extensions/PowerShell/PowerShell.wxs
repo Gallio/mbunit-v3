@@ -4,22 +4,23 @@
     <Fragment>
         <PropertyRef Id="POWERSHELL1.0" />
                   
-        <DirectoryRef Id="binFolder">
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="Gallio.PowerShellCommands.dll" Guid="82469f8a-b09b-4fb1-80c6-e3882fd54ffd" Win64="no">
-                <File Id="Gallio.PowerShellCommands.dll" Source="$(var.GallioTargetDir)\bin\Gallio.PowerShellCommands.dll" KeyPath="yes"
+                <File Id="Gallio.PowerShellCommands.dll" Name="Gallio.PowerShellCommands.dll" KeyPath="yes"
                       Assembly=".net"  AssemblyApplication="Gallio.PowerShellCommands.dll" >
                     <ps:SnapIn Id="Gallio" Vendor="Gallio" Description="Gallio Commands." />
                 </File>
             </Component>
             <Component Id="Gallio.PowerShellCommands.xml" Guid="5e084486-4f09-4799-be57-9816b1c125e3" Win64="no">
-                <File Id="Gallio.PowerShellCommands.xml" Source="$(var.GallioTargetDir)\bin\Gallio.PowerShellCommands.xml" />
+                <File Id="Gallio.PowerShellCommands.xml" Name="Gallio.PowerShellCommands.xml" />
             </Component>
             <Component Id="Gallio.PowerShellCommands.dll.Help.xml" Guid="5b184436-4f09-4799-be57-9816b12123f6" Win64="no">
-                <File Id="Gallio.PowerShellCommands.dll.Help.xml" Source="$(var.GallioTargetDir)\bin\Gallio.PowerShellCommands.dll-Help.xml" />
+                <File Id="Gallio.PowerShellCommands.dll.Help.xml" Name="Gallio.PowerShellCommands.dll-Help.xml" />
             </Component>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.PowerShellCommands" Title="PowerShell Commands" Level="2" Description="Installs the PowerShell commands.">
+        <Feature Id="feat_Gallio.PowerShellCommands" Title="PowerShell Commands" Level="0" 
+                 Description="Installs the PowerShell commands.">
             <Condition Level="1">POWERSHELL1.0</Condition>
             <ComponentRef Id="Gallio.PowerShellCommands.dll" />
             <ComponentRef Id="Gallio.PowerShellCommands.xml" />
