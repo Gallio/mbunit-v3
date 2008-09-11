@@ -30,6 +30,12 @@
                 <Component Id="MbUnit3.Samples.WatiNDemo.cs" Guid="{77F37799-7761-4571-A451-A20E0A766E51}" Win64="no">
                     <File Id="MbUnit3.Samples.WatiNDemo.cs" Name="WatiNDemo.cs" KeyPath="yes" />
                 </Component>
+                <Component Id="MbUnit3.Samples.OutcomeDemo.cs" Guid="{E8A33B54-A3F3-490e-8060-47D7DCA2A2B2}" Win64="no">
+                    <File Id="MbUnit3.Samples.OutcomeDemo.cs" Name="OutcomeDemo.cs" KeyPath="yes" />
+                </Component>
+                <Component Id="MbUnit3.Samples.Readme.txt" Guid="{6C6B06F3-B986-4daa-B8F8-2A434B249C15}" Win64="no">
+                    <File Id="MbUnit3.Samples.Readme.txt" Name="Readme.txt" KeyPath="yes" />
+                </Component>
             </Directory>
             
             <Directory Id="MbUnit3.Samples.VSTSIntegration" Name="MbUnit.Samples.VSTSIntegration">
@@ -110,6 +116,8 @@
             <ComponentRef Id="MbUnit3.Samples.csproj" />
             <ComponentRef Id="MbUnit3.Samples.RichTestLogDemo.cs" />
             <ComponentRef Id="MbUnit3.Samples.WatiNDemo.cs" />
+            <ComponentRef Id="MbUnit3.Samples.OutcomeDemo.cs"/>
+            <ComponentRef Id="MbUnit3.Samples.Readme.txt"/>
             <ComponentRef Id="MbUnit3.Samples.VSTSIntegration.AssemblyInfo.cs" />
             <ComponentRef Id="MbUnit3.Samples.VSTSIntegration.csproj" />
             <ComponentRef Id="MbUnit3.Samples.MbUnitTestFixture.cs" />

@@ -86,7 +86,7 @@
             </Component>
         </DirectoryRef>
 
-<?if $(sys.PLATFORM) = "x64" ?>
+<?if $(sys.BUILDARCH) = "x64" ?>
         <DirectoryRef Id='TARGETDIR'>
             <Component Id="TDNetRunner.CSUnit.x64" Guid="{A22F2A3D-8537-4c53-B37F-7873B09471FD}" Win64="yes">
                 <RegistryKey Action="createAndRemoveOnUninstall"
@@ -159,7 +159,7 @@
             <Feature Id='feat_Gallio.TDNetRunner.CSUnit' Title ='csUnit' Level='1' AllowAdvertise='no'>
                 <!-- TODO: <Condition Level='2'> not CSUnitAdapterInstalled </Condition> -->
                 <ComponentRef Id='TDNetRunner.CSUnit'/>
-<?if $(sys.PLATFORM) = "x64" ?>
+<?if $(sys.BUILDARCH) = "x64" ?>
                 <ComponentRef Id='TDNetRunner.CSUnit.x64'/>
 <?endif?>
             </Feature>
@@ -167,7 +167,7 @@
             <Feature Id='feat_Gallio.TDNetRunner.MbUnit_v3' Title ='MbUnit v3' Level='1' AllowAdvertise='no'>
                 <!-- TODO: <Condition Level='2'> not MbUnitV3AdapterInstalled </Condition> -->
                 <ComponentRef Id='TDNetRunner.MbUnit_v3'/>
-<?if $(sys.PLATFORM) = "x64" ?>
+<?if $(sys.BUILDARCH) = "x64" ?>
                 <ComponentRef Id='TDNetRunner.MbUnit_v3.x64'/>
 <?endif?>
             </Feature>
@@ -175,7 +175,7 @@
             <Feature Id='feat_Gallio.TDNetRunner.MbUnit_v2' Title ='MbUnit v2' Level='1' AllowAdvertise='no'>
                 <!-- TODO: <Condition Level='2'> not MbUnitV2AdapterInstalled </Condition> -->
                 <ComponentRef Id='TDNetRunner.MbUnit_v2'/>
-<?if $(sys.PLATFORM) = "x64" ?>
+<?if $(sys.BUILDARCH) = "x64" ?>
                 <ComponentRef Id='TDNetRunner.MbUnit_v2.x64'/>
 <?endif?>
             </Feature>
@@ -183,7 +183,7 @@
             <Feature Id='feat_Gallio.TDNetRunner.MSTest' Title ='MSTest' Level='0' AllowAdvertise='no'>
                 <Condition Level="1">VS90DEVENV</Condition>
                 <ComponentRef Id='TDNetRunner.MSTest'/>            
-<?if $(sys.PLATFORM) = "x64" ?>
+<?if $(sys.BUILDARCH) = "x64" ?>
                 <ComponentRef Id='TDNetRunner.MSTest.x64'/>
 <?endif?>
             </Feature>
@@ -191,7 +191,7 @@
             <Feature Id='feat_Gallio.TDNetRunner.NUnit' Title ='NUnit' Level='1' AllowAdvertise='no'>
                 <!-- TODO: <Condition Level='2'>    not NUnitAdapterInstalled </Condition> -->
                 <ComponentRef Id='TDNetRunner.NUnit'/>
-<?if $(sys.PLATFORM) = "x64" ?>
+<?if $(sys.BUILDARCH) = "x64" ?>
                 <ComponentRef Id='TDNetRunner.NUnit.x64'/>
 <?endif?>
             </Feature>
@@ -199,7 +199,7 @@
             <Feature Id='feat_Gallio.TDNetRunner.Xunit' Title ='Xunit' Level='1' AllowAdvertise='no'>
                 <!-- TODO: <Condition Level='2'> not XunitAdapterInstalled </Condition> -->
                 <ComponentRef Id='TDNetRunner.Xunit'/>
-<?if $(sys.PLATFORM) = "x64" ?>                
+<?if $(sys.BUILDARCH) = "x64" ?>                
                 <ComponentRef Id='TDNetRunner.Xunit.x64'/>
 <?endif?>
             </Feature>
