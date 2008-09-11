@@ -21,6 +21,7 @@ using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
 using Gallio.Model;
 using Gallio.Framework.Data;
+using MbUnit.Framework.ContractVerifiers.Patterns;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -33,21 +34,33 @@ namespace MbUnit.Framework.ContractVerifiers
         private readonly string testPatternName;
 
         /// <inheritdoc />
-        protected VerifyContractAttribute(string testPatternName)
+        protected VerifyContractAttribute(string testPatternName, Type targetType)
         {
+            if (targetType == null)
+            {
+                throw new ArgumentNullException("targetType");
+            }
+
             this.testPatternName = testPatternName;
+            this.TargetType = targetType;
+        }
+
+        /// <summary>
+        /// Gets the type of the object to verify.
+        /// </summary>
+        protected Type TargetType
+        {
+            get;
+            private set;
         }
 
         /// <inheritdoc />
         protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
             base.DecorateTest(scope, codeElement);
-
             var contractTest = new PatternTest(testPatternName, null, scope.TestDataContext.CreateChild());
             contractTest.IsTestCase = false;
-
-            var contractScope = scope.AddChildTest(contractTest);
-            AddContractTests(contractScope);
+            AddPatternTests(scope.AddChildTest(contractTest));
         }
 
         /// <inheritdoc />
@@ -59,40 +72,19 @@ namespace MbUnit.Framework.ContractVerifiers
                 ThrowUsageErrorException("This attribute can only be used on a test fixture.");
         }
 
-        /// <summary>
-        /// Injects in the pattern evaluation scope some test methods
-        /// that will verify the good implementation of the contract,
-        /// according to the current options.
-        /// </summary>
-        /// <param name="scope">The scope of the verify contract pattern</param>
-        protected abstract void AddContractTests(PatternEvaluationScope scope);
-
-        /// <summary>
-        /// Add the specified test action.
-        /// </summary>
-        /// <param name="scope">The scope of the verify contract pattern</param>
-        /// <param name="name">The name of the test to add</param>
-        /// <param name="description">The description of the test to add</param>
-        /// <param name="action">The action to invoke when the test runs</param>
-        protected PatternTest AddContractTest(PatternEvaluationScope scope, string name, 
-            string description, Action<PatternTestInstanceState> action)
+        private void AddPatternTests(PatternEvaluationScope scope)
         {
-            var test = new PatternTest(name, null, scope.TestDataContext.CreateChild());
-            test.Metadata.SetValue(MetadataKeys.Description, description);
-            test.IsTestCase = true;
-            scope.AddChildTest(test);
-
-            test.TestInstanceActions.BeforeTestInstanceChain.After(
-                state =>
-                {
-                    ObjectCreationSpec spec = state.GetFixtureObjectCreationSpec(scope.Parent.CodeElement as ITypeInfo);
-                    state.FixtureType = spec.ResolvedType;
-                    state.FixtureInstance = spec.CreateInstance();
-                });
-
-            test.TestInstanceActions.ExecuteTestInstanceChain.After(action);
-            return test;
+            foreach (PatternTestBuilder item in GetPatternTestBuilders())
+            {
+                item.Build(scope);
+            }
         }
+
+        /// <summary>
+        /// Provides builders of pattern tests for the contract verifier.
+        /// </summary>
+        /// <returns>An enumeration of pattern test builders.</returns>
+        protected abstract IEnumerable<PatternTestBuilder> GetPatternTestBuilders();
 
         /// <summary>
         /// Gets the interface of a particular type if it is implemented by another type,

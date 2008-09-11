@@ -59,6 +59,14 @@
     <Compile Include="Framework\ContractVerifiers\EquivalenceClass.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollection.cs" />
     <Compile Include="Framework\ContractVerifiers\IEquivalenceClassProvider.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\PatternTestBuilderCompares.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\PatternTestBuilderEquals.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\PatternTestBuilderGetHashCode.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\ExceptionConstructorSpec.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\PatternTestBuilderStandardExceptionConstructor.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\PatternTestBuilderHasConstructor.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\PatternTestBuilder.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\PatternTestBuilderHasAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyComparisonContractAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyContractAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyEqualityContractAttribute.cs" />

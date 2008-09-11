@@ -28,6 +28,7 @@ using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Assertions;
+using MbUnit.Framework.ContractVerifiers.Patterns;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -150,16 +151,6 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Gets the type of the object to verify. The type must implement
-        /// the generic <see cref="IEquatable{T}"/> interface.
-        /// </summary>
-        public Type Type
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
         /// <para>
         /// Attribute for test fixtures that verify the implementation 
         /// contract of a type implementing the generic <see cref="IEquatable{T}"/> interface. 
@@ -177,18 +168,12 @@ namespace MbUnit.Framework.ContractVerifiers
         /// to disable that verification.
         /// </para>
         /// </summary>
-        /// <param name="type">the type of the object to verify. The type must implement
+        /// <param name="targetType">the type of the object to verify. The type must implement
         /// the generic <see cref="IEquatable{T}"/> interface.</param>
-        public VerifyEqualityContractAttribute(Type type)
-            : base("EqualityContract")
+        public VerifyEqualityContractAttribute(Type targetType)
+            : base("EqualityContract", targetType)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
-            
             this.ImplementsOperatorOverloads = true;
-            this.Type = type;
         }
 
         /// <inheritdoc />
@@ -201,405 +186,39 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        protected override void AddContractTests(PatternEvaluationScope scope)
+        protected override IEnumerable<PatternTestBuilder> GetPatternTestBuilders()
         {
-            AddObjectEqualsTest(scope);
-            AddObjectGetHashCodeTest(scope);
-            AddEquatableEqualsTest(scope);
+            // Is Object equality method OK?
+            yield return new PatternTestBuilderEquals(TargetType, 
+                "ObjectEquals", false, "bool Equals(Object)", 
+                TargetType.GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(object) }, null));
+            
+            // Is Object hash code calculcation well implemented?
+            yield return new PatternTestBuilderGetHashCode(TargetType);
+
+            // Is IEquatable equality method OK?
+            yield return new PatternTestBuilderEquals(TargetType, 
+                "EquatableEqual", false, "bool Equals(" + TargetType.Name + ")", 
+                GetIEquatableInterface().GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { TargetType }, null));
 
             if (ImplementsOperatorOverloads)
             {
-                AddOperatorEqualsTest(scope);
-                AddOperatorNotEqualsTest(scope);
-            }
-        }
+                // Is equality operator overload OK?
+                yield return new PatternTestBuilderEquals(TargetType,
+                    "OperatorEquals", false, "static bool operator ==(" + TargetType.Name + ", " + TargetType.Name + ")",
+                    TargetType.GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null));
 
-        /// <summary>
-        /// Verifies the implementation and the behavior of <see cref="Object.Equals(object)" />.
-        /// </summary>
-        /// <param name="scope">The pattern evaluation scope</param>
-        private void AddObjectEqualsTest(PatternEvaluationScope scope)
-        {
-            AddContractTest(
-                scope,
-                "ObjectEquals",
-                "Verify the implementation of 'Object.Equals()' on the type '" + Type.FullName + "'.",
-                state =>
-                {
-                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance, false,
-                        (a, b) =>
-                        {
-                            return ((object)a).Equals((object)b);
-                        });
-                });
-        }
-
-        /// <summary>
-        /// Verifies the implementation and the behavior of <see cref="Object.GetHashCode" />.
-        /// </summary>
-        /// <param name="scope">The pattern evaluation scope</param>
-        private void AddObjectGetHashCodeTest(PatternEvaluationScope scope)
-        {
-            AddContractTest(
-                scope,
-                "ObjectGetHashCode",
-                "Verify the implementation of 'Object.GetHashCode()' on the type '" + Type.FullName + "'.",
-                state =>
-                {
-                    IEnumerator enumerator1 = GetEquivalentClasses(state.FixtureType, state.FixtureInstance).GetEnumerator();
-                    IEnumerator enumerator2 = GetEquivalentClasses(state.FixtureType, state.FixtureInstance).GetEnumerator();
-
-                    Assert.Multiple(() =>
-                    {
-                        while (enumerator1.MoveNext() && enumerator2.MoveNext())
-                        {
-                            foreach (object x in (IEnumerable)enumerator1.Current)
-                                foreach (object y in (IEnumerable)enumerator2.Current)
-                                {
-                                    AssertionHelper.Verify(() =>
-                                    {
-                                        if (x.GetHashCode() == y.GetHashCode())
-                                            return null;
-
-                                        return new AssertionFailureBuilder("The hash codes returned by two instances equal together should be identical.")
-                                            .AddRawLabeledValue("First object instance", x)
-                                            .AddRawLabeledValue("First hash code", x.GetHashCode())
-                                            .AddRawLabeledValue("Second object instance", y)
-                                            .AddRawLabeledValue("Second hash code", y.GetHashCode())
-                                            .ToAssertionFailure();
-                                    });
-                                }
-                        }
-                    });
-                });
-        }
-
-        /// <summary>
-        /// Verifies the implementation and the behavior of <see cref="IEquatable{T}.Equals" />.
-        /// </summary>
-        /// <param name="scope">The pattern evaluation scope</param>
-        private void AddEquatableEqualsTest(PatternEvaluationScope scope)
-        {
-            AddContractTest(
-                scope,
-                "EquatableEquals",
-                "Verify the implementation of 'IEquatable<T>.Equals()' on the type '" + Type.FullName + "'.",
-                state =>
-                {
-                    MethodInfo equals = GetIEquatableInterface().GetMethod("Equals",
-                        BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance,
-                        null, new Type[] { Type }, null);
-
-                    AssertionHelper.Verify(() =>
-                    {
-                        if (equals != null)
-                            return null;
-
-                        return new AssertionFailureBuilder("Equality method expected to be implemented.")
-                            .AddLabeledValue("Expected Method", "public bool Equals(" + Type.Name + ")")
-                            .ToAssertionFailure();
-                    });
-      
-                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance, false,
-                        (a, b) =>
-                        {
-                            return (bool)equals.Invoke(a, new object[] { b });
-                        });
-                });
-        }
-
-        /// <summary>
-        /// Verifies the implementation and the behavior of the static equality operator overload.
-        /// </summary>
-        /// <param name="scope">The pattern evaluation scope</param>
-        private void AddOperatorEqualsTest(PatternEvaluationScope scope)
-        {
-            AddContractTest(
-                scope,
-                "OperatorEquals",
-                "Verify the implementation of the equality operator (==) overload on the type '" + Type.FullName + "'.",
-                state =>
-                {
-                    MethodInfo @operator = Type.GetMethod("op_Equality",
-                        BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
-                        null, new Type[] { Type, Type }, null);
-
-                    AssertionHelper.Verify(() =>
-                    {
-                        if (@operator != null)
-                            return null;
-
-                        return new AssertionFailureBuilder("Equality method expected to be implemented.")
-                            .AddLabeledValue("Expected Method", "static bool operator ==(" + Type.Name + " left, " + Type.Name + " right)")
-                            .ToAssertionFailure();
-                    });
-
-                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance, true,
-                        (a, b) =>
-                        {
-                            return (bool)@operator.Invoke(null, new object[] { a, b });
-                        });
-                });
-        }
-
-        /// <summary>
-        /// Verifies the implementation and the behavior of the static inequality operator overload.
-        /// </summary>
-        /// <param name="scope">The pattern evaluation scope</param>
-        private void AddOperatorNotEqualsTest(PatternEvaluationScope scope)
-        {
-            AddContractTest(
-                scope,
-                "OperatorNotEquals",
-                "Verify the implementation of the inequality operator (!=) overload on the type '" + Type.FullName + "'.",
-                state =>
-                {
-                    MethodInfo @operator = Type.GetMethod("op_Inequality",
-                        BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static,
-                        null, new Type[] { Type, Type }, null);
-
-                    AssertionHelper.Verify(() =>
-                    {
-                        if (@operator != null)
-                            return null;
-
-                        return new AssertionFailureBuilder("Equality method expected to be implemented.")
-                            .AddLabeledValue("Expected Method", "static bool operator !=(" + Type.Name + " left, " + Type.Name + " right)")
-                            .ToAssertionFailure();
-                    });
-
-                    VerifyEqualityContract(state.FixtureType, state.FixtureInstance, true,
-                        (a, b) =>
-                        {
-                            return !(bool)@operator.Invoke(null, new object[] { a, b });
-                        });
-                });
-        }
-
-        /// <summary>
-        /// Casts the instance of the test fixture into a provider of equivalence classes, 
-        /// then returns the resulting collection as an enumeration.
-        /// </summary>
-        /// <param name="fixtureType">The type of the fixture</param>
-        /// <param name="fixtureInstance">The fixture instance</param>
-        /// <returns></returns>
-        protected IEnumerable GetEquivalentClasses(Type fixtureType, object fixtureInstance)
-        {
-            Type interfaceType = GetIEquivalenceClassProviderInterface(fixtureType);
-
-            AssertionHelper.Verify(() =>
-            {
-                if (interfaceType != null)
-                    return null;
-
-                return new AssertionFailureBuilder("Expected the contract verifier to implement a particular interface.")
-                    .AddLabeledValue("Contract Verifier", "Equality")
-                    .AddLabeledValue("Expected Interface", "IEquivalentClassProvider<" + Type + ">")
-                    .ToAssertionFailure();
-            });
-
-            return (IEnumerable)interfaceType.InvokeMember("GetEquivalenceClasses",
-                BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod,
-                null, fixtureInstance, null);
-        }
-
-        /// <summary>
-        /// Ensures that an equality operation is correctly implemented.
-        /// </summary>
-        /// <param name="fixtureType">The type of the fixture</param>
-        /// <param name="fixtureInstance">The fixture instance</param>
-        /// <param name="isStaticMethodInvoked">Indicates whether the equality operation 
-        /// is based on the invocation of a static method (true) or an instance method (false)</param>
-        /// <param name="equals">The equality operation</param>
-        protected void VerifyEqualityContract(Type fixtureType, object fixtureInstance, 
-            bool isStaticMethodInvoked, Func<object, object, bool> equals)
-        {
-            // Get the equivalence classes before entering the multiple assertion block in
-            // order to catch any missing implementation of IEquivalentClassProvider<T> before.
-            IEnumerable equivalenceClasses = GetEquivalentClasses(fixtureType, fixtureInstance);
-
-            Assert.Multiple(() =>
-            {
-                VerifyEqualityBetweenTwoNullReferences(isStaticMethodInvoked, equals);
-                int i = 0;
-
-                foreach (object a in equivalenceClasses)
-                {
-                    int j = 0;
-
-                    foreach (object b in GetEquivalentClasses(fixtureType, fixtureInstance))
-                    {
-                        CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, i == j, isStaticMethodInvoked, equals);
-                        j++;
-                    }
-
-                    i++;
-                }
-            });
-        }
-
-        /// <summary>
-        /// Evaluates the equivalence of two classes of object instances.
-        /// </summary>
-        /// <param name="a">The first class of equivalent object instances</param>
-        /// <param name="b">The second class of equivalent object instances</param>
-        /// <param name="equalityExpected">Indicates whether all the object instances which 
-        /// belong to the two classes are expected to be equal or not</param>
-        /// <param name="isStaticMethodInvoked">Indicates whether the equality operation 
-        /// is based on the invocation of a static method (true) or an instance method (false)</param>
-        /// <param name="equals">The equality function used for the evaluation</param>
-        protected void CompareEquivalentInstances(IEnumerable a, IEnumerable b, 
-            bool equalityExpected, bool isStaticMethodInvoked, Func<object, object, bool> equals)
-        {
-            foreach (object x in a)
-            {
-                AssertionHelper.Verify(() =>
-                {
-                    if (equals(x, x))
-                        return null;
-
-                    return new AssertionFailureBuilder("The equality operator should consider a value equal to itself.")
-                        .AddRawLabeledValue("Value", x)
-                        .ToAssertionFailure();
-                });
-
-                VerifyNullReferenceEquality(x, isStaticMethodInvoked, equals);
-                
-                foreach (object y in b)
-                {
-                    AssertionHelper.Verify(() =>
-                    {
-                        if (equals(x, y) == equalityExpected)
-                            return null;
-
-                        return new AssertionFailureBuilder("The equality operator should consider the left value " + 
-                            "and the right value " + (equalityExpected ? String.Empty : "not ") + "to be equal.")
-                            .AddRawLabeledValue("Left Value", x)
-                            .AddRawLabeledValue("Right Value", y)
-                            .ToAssertionFailure();
-                    });
-
-                    AssertionHelper.Verify(() =>
-                    {
-                        if (equals(y, x) == equalityExpected)
-                            return null;
-
-                        return new AssertionFailureBuilder("The equality operator should consider the left value " +
-                            "and the right value " + (equalityExpected ? String.Empty : "not ") + "to be equal.")
-                            .AddRawLabeledValue("Left Value", y)
-                            .AddRawLabeledValue("Right Value", x)
-                            .ToAssertionFailure();
-                    });
-                }
-            }
-        }
-
-        private void VerifyEqualityBetweenTwoNullReferences(bool isStaticMethodInvoked, Func<object, object, bool> equals)
-        {
-            if (!Type.IsValueType && isStaticMethodInvoked)
-            {
-                AssertionHelper.Verify(() =>
-                {
-                    bool actualResult;
-
-                    try
-                    {
-                        if (actualResult = equals(null, null))
-                            return null;
-                    }
-                    catch (TargetInvocationException exception)
-                    {
-                        return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                            .AddRawLabeledValue("Left Value", null)
-                            .AddRawLabeledValue("Right Value", null)
-                            .AddRawLabeledValue("Expected Result", true)
-                            .AddRawLabeledValue("Actual Result", exception.InnerException)
-                            .ToAssertionFailure();
-                    }
-                    catch (NullReferenceException exception)
-                    {
-                        return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                            .AddRawLabeledValue("Left Value", null)
-                            .AddRawLabeledValue("Right Value", null)
-                            .AddRawLabeledValue("Expected Result", true)
-                            .AddRawLabeledValue("Actual Result", exception)
-                            .ToAssertionFailure();
-                    }
-
-                    return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                        .AddRawLabeledValue("Left Value", null)
-                        .AddRawLabeledValue("Right Value", null)
-                        .AddRawLabeledValue("Expected Result", true)
-                        .AddRawLabeledValue("Actual Result", actualResult)
-                        .ToAssertionFailure();
-                });
-            }
-        }
-
-        private void VerifyNullReferenceEquality(object x, bool isStaticMethodInvoked, Func<object, object, bool> equals)
-        {
-            if (!Type.IsValueType)
-            {
-                AssertionHelper.Verify(() =>
-                {
-                    if (!equals(x, null))
-                        return null;
-
-                    return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                        .AddRawLabeledValue("Left Value", x)
-                        .AddRawLabeledValue("Right Value", null)
-                        .AddRawLabeledValue("Expected Result", false)
-                        .AddRawLabeledValue("Actual Result", true)
-                        .ToAssertionFailure();
-                });
-
-                if (isStaticMethodInvoked)
-                {
-                    AssertionHelper.Verify(() =>
-                    {
-                        try
-                        {
-                            if (!equals(null, x))
-                                return null;
-                        }
-                        catch (TargetInvocationException exception)
-                        {
-                            return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                                .AddRawLabeledValue("Left Value", null)
-                                .AddRawLabeledValue("Right Value", x)
-                                .AddRawLabeledValue("Expected Result", false)
-                                .AddRawLabeledValue("Actual Result", exception.InnerException)
-                                .ToAssertionFailure();
-                        }
-                        catch (NullReferenceException exception)
-                        {
-                            return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                                .AddRawLabeledValue("Left Value", null)
-                                .AddRawLabeledValue("Right Value", x)
-                                .AddRawLabeledValue("Expected Result", false)
-                                .AddRawLabeledValue("Actual Result", exception)
-                                .ToAssertionFailure();
-                        }
-
-                        return new AssertionFailureBuilder("The equality result between the left and the right values does not meet expectations.")
-                            .AddRawLabeledValue("Left Value", null)
-                            .AddRawLabeledValue("Right Value", x)
-                            .AddRawLabeledValue("Expected Result", false)
-                            .AddRawLabeledValue("Actual Result", true)
-                            .ToAssertionFailure();
-                    });
-                }
+                // Is inequality operator overload OK?
+                yield return new PatternTestBuilderEquals(TargetType,
+                    "OperatorNotEquals", true, "static bool operator !=(" + TargetType.Name + ", " + TargetType.Name + ")",
+                    TargetType.GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null));
             }
         }
 
         private Type GetIEquatableInterface()
         {
-            return GetInterface(Type, typeof(IEquatable<>).MakeGenericType(Type));
-        }
-
-        private Type GetIEquivalenceClassProviderInterface(Type fixtureType)
-        {
-            return GetInterface(fixtureType, typeof(IEquivalenceClassProvider<>).MakeGenericType(Type));
+            return GetInterface(TargetType, typeof(IEquatable<>)
+                .MakeGenericType(TargetType));
         }
     }
 }
