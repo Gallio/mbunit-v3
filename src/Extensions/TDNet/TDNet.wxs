@@ -8,7 +8,7 @@
         <PropertyRef Id='VS90DEVENV'/>
 
         <Property Id="TDNET_INSTALLDIR">
-            <RegistrySearch Id='TDNet.InstallDir' Type="raw"
+            <RegistrySearch Id='TDNet.InstallDir' Type="raw" Win64="no"
                 Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET' Name='InstallDir' />
         </Property>
 

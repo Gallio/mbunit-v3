@@ -3,7 +3,7 @@
     <Fragment>
         <!-- indicates wheter Pex was installed -->
         <Property Id="PEX_INSTALLDIR" Secure="yes">
-            <RegistrySearch Id="PexConsoleSearch" Type="raw"
+            <RegistrySearch Id="PexConsoleSearch" Type="raw" Win64="no"
                 Root="HKLM" Key="Software\Microsoft\Pex\CurrentVersion" Name="InstallPath" />
         </Property>
 

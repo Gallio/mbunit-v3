@@ -170,9 +170,9 @@
                
         <!-- Detect presence of old pre-WiX Gallio installation. -->
         <Property Id="OLD_GALLIO_UNINSTALL" Secure="yes">
-            <RegistrySearch Id="OldGallioInstallerSearch.LM" Type="raw"
+            <RegistrySearch Id="OldGallioInstallerSearch.LM" Type="raw" Win64="no"
                 Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\Gallio" Name="UninstallString" />
-            <RegistrySearch Id="OldGallioInstallerSearch.CU" Type="raw"
+            <RegistrySearch Id="OldGallioInstallerSearch.CU" Type="raw" Win64="no"
                 Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\Gallio" Name="UninstallString" />
         </Property>
         <!-- MSI has difficulty executing arbitary commands picked from the registry. 
