@@ -106,7 +106,7 @@ namespace Gallio.Runtime.Hosting
 
             public void Bootstrap(string runtimePath)
             {
-                AssemblyResolverBootstrap.Initialize(runtimePath);
+                AssemblyResolverBootstrap.Install(runtimePath);
             }
 
             public void InstallCallback(IResolver masterResolver)

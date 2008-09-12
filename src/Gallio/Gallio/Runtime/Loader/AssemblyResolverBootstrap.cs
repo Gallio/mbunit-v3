@@ -23,20 +23,17 @@ namespace Gallio.Runtime.Loader
     /// assemblies can be resolved assuming we were able to load the main
     /// assembly and access the bootstrap.
     /// </summary>
-    /// <remarks>
-    /// This type is used by the standalone Gallio.Loader assembly.
-    /// </remarks>
     public static class AssemblyResolverBootstrap
     {
         private static readonly object syncRoot = new object();
         private static IAssemblyResolverManager assemblyResolverManager;
 
         /// <summary>
-        /// Initializes a global assembly resolver given the specified runtime path.
+        /// Installs a global assembly resolver given the specified runtime path.
         /// </summary>
         /// <param name="runtimePath">The Gallio runtime path</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimePath"/> is null</exception>
-        public static void Initialize(string runtimePath)
+        public static void Install(string runtimePath)
         {
             if (runtimePath == null)
                 throw new ArgumentNullException("runtimePath");

@@ -16,5 +16,13 @@ The CLR JIT performs some work ahead of time that requires access to all
 referenced assemblies.  So if we're not careful, the JIT will attempt to load
 an assembly that cannot be resolved.
 
+The loader assembly should only use late-binding to access types in Gallio assemblies.
+
+To ensure version independence, primary Gallio assemblies should not refer to
+types in the GallioLoader.
+
 The loader is intended to be resolved either from the GAC or copy-local alongside
 the application.
+
+GallioLoader called into GallioLoaderBootstrap in Gallio.dll.  For correct operation
+both of these publich interfaces must remain binary compatible.

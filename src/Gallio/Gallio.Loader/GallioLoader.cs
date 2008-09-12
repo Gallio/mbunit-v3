@@ -16,9 +16,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using Gallio.Runtime;
-using Gallio.Runtime.Loader;
-using Gallio.Runtime.Logging;
 using Microsoft.Win32;
 
 namespace Gallio.Loader
@@ -72,8 +69,10 @@ namespace Gallio.Loader
             @"HKEY_LOCAL_MACHINE\Wow6432Node\Software\Gallio.org\Gallio\3.0"
         };
 
-        private const string AssemblyResolverBootstrapTypeFullName = "Gallio.Runtime.Loader.AssemblyResolverBootstrap";
-        private const string AssemblyResolverBootstrapInitializeMethodName = "Initialize";
+        private const string GallioLoaderBootstrapTypeFullName = "Gallio.Runtime.Loader.GallioLoaderBootstrap";
+        private const string BootstrapInstallAssemblyResolverMethodName = "InstallAssemblyResolver";
+        private const string BootstrapSetupRuntimeMethodName = "SetupRuntime";
+        private const string BootstrapAddHintDirectoryMethodName = "AddHintDirectory";
 
         private static readonly object syncRoot = new object();
 
@@ -81,10 +80,15 @@ namespace Gallio.Loader
         private static string defaultRuntimePath;
         
         private readonly string runtimePath;
+        private readonly Assembly gallioAssembly;
+        private readonly Type bootstrapType;
 
         private GallioLoader(string runtimePath)
         {
             this.runtimePath = runtimePath;
+
+            gallioAssembly = Assembly.LoadFrom(GetGallioDllPath(runtimePath));
+            bootstrapType = gallioAssembly.GetType(GallioLoaderBootstrapTypeFullName);
         }
 
         /// <summary>
@@ -176,38 +180,36 @@ namespace Gallio.Loader
         /// already been initialized.
         /// </para>
         /// <para>
-        /// If you need more control over this behavior, call <see cref="RuntimeBootstrap" />
+        /// If you need more control over this behavior, call RuntimeBootstrap
         /// yourself.
         /// </para>
         /// </summary>
         public void SetupRuntime()
         {
-            if (!RuntimeAccessor.IsInitialized)
-            {
-                RuntimeSetup setup = new RuntimeSetup();
-                setup.RuntimePath = runtimePath;
-                RuntimeBootstrap.Initialize(setup, NullLogger.Instance);
-            }
+            MethodInfo method = bootstrapType.GetMethod(BootstrapSetupRuntimeMethodName);
+            method.Invoke(null, new object[] { runtimePath });
         }
 
         /// <summary>
         /// Adds a hint directory to the assembly resolver.
         /// </summary>
         /// <param name="path">The path of the hint directory to add</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
         public void AddHintDirectory(string path)
         {
-            AssemblyResolverBootstrap.AssemblyResolverManager.AddHintDirectory(path);
+            if (path == null)
+                throw new ArgumentNullException("path");
+
+            MethodInfo method = bootstrapType.GetMethod(BootstrapAddHintDirectoryMethodName);
+            method.Invoke(null, new object[] { path });
         }
 
         private void InstallAssemblyResolver()
         {
-            Assembly gallioAssembly = Assembly.LoadFrom(GetGallioDllPath(runtimePath));
-
-            Type assemblyResolverBootstrap = gallioAssembly.GetType(AssemblyResolverBootstrapTypeFullName);
-            MethodInfo initialize = assemblyResolverBootstrap.GetMethod(AssemblyResolverBootstrapInitializeMethodName);
-
-            initialize.Invoke(null, new object[] { runtimePath });
+            MethodInfo method = bootstrapType.GetMethod(BootstrapInstallAssemblyResolverMethodName);
+            method.Invoke(null, new object[] { runtimePath });
         }
+
 
         private static string FindRuntimePath()
         {

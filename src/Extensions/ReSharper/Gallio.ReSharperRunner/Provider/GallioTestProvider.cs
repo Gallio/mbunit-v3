@@ -132,7 +132,8 @@ namespace Gallio.ReSharperRunner.Provider
         internal sealed class Shim
         {
             private static readonly Guid NUnitFrameworkId = new Guid("{E0273D0F-BEAE-47ff-9391-D6782417F000}");
-            private static readonly string NUnitProvider = "nUnit";
+            private const string NUnitProvider = "nUnit";
+
             private static readonly Dictionary<string, Guid> IncompatibleProviders;
 
             private readonly IUnitTestProvider provider;
@@ -231,7 +232,7 @@ namespace Gallio.ReSharperRunner.Provider
                     throw new ArgumentNullException("consumer");
 
                 PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
-                ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
+                ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer, psiFile);
                 ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
 
                 psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
@@ -435,10 +436,20 @@ namespace Gallio.ReSharperRunner.Provider
                     this.consumer = consumer;
                 }
 
-                public ConsumerAdapter(IUnitTestProvider provider, UnitTestElementLocationConsumer consumer)
+                public ConsumerAdapter(IUnitTestProvider provider, UnitTestElementLocationConsumer consumer, IFile psiFile)
                     : this(provider, delegate(UnitTestElement element)
                     {
-                        consumer(element.GetDisposition());
+#if RESHARPER_31
+                        IProjectFile projectFile = psiFile.ProjectItem;
+#else
+                        IProjectFile projectFile = psiFile.ProjectFile;
+#endif
+
+                        UnitTestElementDisposition disposition = element.GetDisposition();
+                        if (disposition.Locations.Count != 0 && disposition.Locations[0].ProjectFile == projectFile)
+                        {
+                            consumer(element.GetDisposition());
+                        }
                     })
                 {
                 }
