@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Loader;
 using Gallio.ReSharperRunner.Runtime;
 using JetBrains.ReSharper.UnitTestExplorer;
 using JetBrains.ActionManagement;
@@ -30,7 +31,7 @@ namespace Gallio.ReSharperRunner.Provider.Actions
     {
         static GallioAction()
         {
-            GallioInitializer.Initialize();
+            GallioLoader.Initialize().SetupRuntime();
         }
 
         public abstract bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate);
@@ -39,7 +40,7 @@ namespace Gallio.ReSharperRunner.Provider.Actions
 
         protected static UnitTestSession GetUnitTestSession(IDataContext context)
         {
-            return context.GetData<TreeModelBrowserDescriptor>(TreeModelBrowser.TREE_MODEL_DESCRIPTOR) as UnitTestSession;
+            return context.GetData(TreeModelBrowser.TREE_MODEL_DESCRIPTOR) as UnitTestSession;
         }
     }
 }

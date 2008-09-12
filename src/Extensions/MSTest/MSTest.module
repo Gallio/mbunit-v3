@@ -6,9 +6,6 @@
     <CSharpProject Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.csproj" />
     <CSharpProject Include="Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources.csproj" />
     <CSharpProject Include="Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests.csproj" />
-
-    <CSharpProject Include="Gallio.MSTestRunner\Gallio.MSTestRunner.csproj" />
-    <CSharpProject Include="Gallio.MSTestRunner.Tests\Gallio.MSTestRunner.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(MSTestFrameworkInstalled)">
@@ -25,18 +22,5 @@
     <TestAssembly Include="Gallio.MSTestAdapter.Tests\bin\Gallio.MSTestAdapter.Tests.dll" />
 
     <Feature Include="FEATURE_MSTEST_ADAPTER" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(MSTestVSIPInstalled)">
-    <Binary Include="Gallio.MSTestRunner\bin\Gallio.MSTestRunner.dll">
-      <Folder>MSTest</Folder>
-    </Binary>
-    <Binary Include="Gallio.MSTestRunner\bin\Gallio.MSTestRunner.dll.config">
-      <Folder>MSTest</Folder>
-    </Binary>
-
-    <TestAssembly Include="Gallio.MSTestRunner.Tests\bin\Gallio.MSTestRunner.Tests.dll" />
-
-    <Feature Include="FEATURE_MSTEST_RUNNER" />
   </ItemGroup>
 </Project>

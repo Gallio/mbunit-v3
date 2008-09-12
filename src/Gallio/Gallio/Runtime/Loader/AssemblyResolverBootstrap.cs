@@ -32,14 +32,14 @@ namespace Gallio.Runtime.Loader
         private static IAssemblyResolverManager assemblyResolverManager;
 
         /// <summary>
-        /// Initializes a global assembly resolver given the specified installation path.
+        /// Initializes a global assembly resolver given the specified runtime path.
         /// </summary>
-        /// <param name="installationPath">The Gallio installation path</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="installationPath"/> is null</exception>
-        public static void Initialize(string installationPath)
+        /// <param name="runtimePath">The Gallio runtime path</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimePath"/> is null</exception>
+        public static void Initialize(string runtimePath)
         {
-            if (installationPath == null)
-                throw new ArgumentNullException("installationPath");
+            if (runtimePath == null)
+                throw new ArgumentNullException("runtimePath");
 
             lock (syncRoot)
             {
@@ -47,7 +47,7 @@ namespace Gallio.Runtime.Loader
                     return;
 
                 assemblyResolverManager = new DefaultAssemblyResolverManager();
-                assemblyResolverManager.AddHintDirectory(installationPath);
+                assemblyResolverManager.AddHintDirectory(runtimePath);
             }
         }
 

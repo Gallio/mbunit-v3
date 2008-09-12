@@ -31,12 +31,11 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
     {
         static AnnotationDaemonStage()
         {
-            GallioInitializer.Initialize();
+            GallioLoader.Initialize().SetupRuntime();
         }
 
         public IDaemonStageProcess CreateProcess(IDaemonProcess process)
         {
-            RuntimeProvider.Initialize();
             return new AnnotationDaemonStageProcess(process);
         }
 

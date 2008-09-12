@@ -28,7 +28,7 @@ namespace Gallio.Tests.Runtime
         [Test]
         public void InstallationPathContainsGallioAssembly()
         {
-            string path = RuntimeAccessor.InstallationPath;
+            string path = RuntimeAccessor.RuntimePath;
             Assert.IsTrue(File.Exists(Path.Combine(path, Path.GetFileName(typeof(AssemblyUtils).Assembly.Location))),
                 "Installation path should contain the main Gallio assembly.");
         }

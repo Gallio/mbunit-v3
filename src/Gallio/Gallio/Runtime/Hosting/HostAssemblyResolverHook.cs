@@ -52,19 +52,20 @@ namespace Gallio.Runtime.Hosting
         /// This hook is recommended for newly created domains.
         /// </remarks>
         /// <param name="host">The host</param>
+        /// <param name="runtimePath">The Gallio runtime path</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="host"/> or
-        /// <param name="installationPath" /> is null</exception>
-        public static void Bootstrap(IHost host, string installationPath)
+        /// <paramref name="runtimePath" /> is null</exception>
+        public static void Bootstrap(IHost host, string runtimePath)
         {
             if (host == null)
                 throw new ArgumentNullException("host");
-            if (installationPath == null)
-                throw new ArgumentNullException("installationPath");
+            if (runtimePath == null)
+                throw new ArgumentNullException("runtimePath");
 
             if (!host.IsLocal)
             {
                 Resolver remoteResolver = HostUtils.CreateInstance<Resolver>(host);
-                remoteResolver.Bootstrap(installationPath);
+                remoteResolver.Bootstrap(runtimePath);
             }
         }
 
@@ -103,9 +104,9 @@ namespace Gallio.Runtime.Hosting
         {
             private IResolver masterResolver;
 
-            public void Bootstrap(string installationPath)
+            public void Bootstrap(string runtimePath)
             {
-                AssemblyResolverBootstrap.Initialize(installationPath);
+                AssemblyResolverBootstrap.Initialize(runtimePath);
             }
 
             public void InstallCallback(IResolver masterResolver)

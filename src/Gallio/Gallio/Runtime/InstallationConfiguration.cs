@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Win32;
 
 namespace Gallio.Runtime
@@ -25,11 +26,19 @@ namespace Gallio.Runtime
     [Serializable]
     public class InstallationConfiguration
     {
-        private const string RootKey = @"Software\Gallio.org\Gallio\3.0";
+        private static readonly Pair<RegistryKey, string>[] RootKeys = new[]
+        {
+            new Pair<RegistryKey, string>(Registry.CurrentUser, @"Software\Gallio.org\Gallio\3.0"),
+            new Pair<RegistryKey, string>(Registry.CurrentUser, @"Software\Wow6432Node\Gallio.org\Gallio\3.0"),
+            new Pair<RegistryKey, string>(Registry.LocalMachine, @"Software\Gallio.org\Gallio\3.0"),
+            new Pair<RegistryKey, string>(Registry.LocalMachine, @"Software\Wow6432Node\Gallio.org\Gallio\3.0")
+        };
+
         private const string AdditionalPluginDirectoriesSubKey = @"AdditionalPluginDirectories";
 
         private string installedVersion;
-        private string installationFolder = String.Empty;
+        private string installationFolder;
+        private string developmentRuntimePath;
         private readonly List<string> additionalPluginDirectories = new List<string>();
 
         /// <summary>
@@ -39,25 +48,52 @@ namespace Gallio.Runtime
         public static InstallationConfiguration LoadFromRegistry()
         {
             InstallationConfiguration configuration = new InstallationConfiguration();
-            configuration.LoadFromRegistry(Registry.LocalMachine);
-            configuration.LoadFromRegistry(Registry.CurrentUser);
+
+            foreach (Pair<RegistryKey, string> pair in RootKeys)
+                configuration.LoadFromRegistry(pair.First, pair.Second);
+
             return configuration;
         }
 
         /// <summary>
-        /// Get the version that was installed or null if there is no installation.
+        /// Get or sets the version that was installed, or null if Gallio is not installed.
         /// </summary>
         public string InstalledVersion
         {
             get { return installedVersion; }
+            set { installedVersion = value; }
         }
 
         /// <summary>
-        /// Get the folder where Gallio was installed.
+        /// Get or sets the folder where Gallio was installed, or null if Gallio is not installed.
         /// </summary>
         public string InstallationFolder
         {
             get { return installationFolder; }
+            set { installationFolder = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets or sets the runtime path of the development copy of Gallio to use
+        /// for running tests, or null if not applicable.
+        /// </para>
+        /// <para>
+        /// To facilitate development of Gallio, it is possible to redirect an out-of-process
+        /// or isolated app-domain test runner to a different version of Gallio.  That way a
+        /// standard installation of Gallio can be running in the IDE and then delegating to
+        /// the development version when it actually needs to run tests.
+        /// </para>
+        /// <para>
+        /// Of course, this mechanism can only hook into certain APIs like the test runner
+        /// API.  Consequently it may still be necessary to reinstall Gallio and/or restart
+        /// the IDE if the objective is to test changes made to the IDE add-ins themselves.
+        /// </para>
+        /// </summary>
+        public string DevelopmentRuntimePath
+        {
+            get { return developmentRuntimePath; }
+            set { developmentRuntimePath = value; }
         }
 
         /// <summary>
@@ -68,17 +104,41 @@ namespace Gallio.Runtime
             get { return additionalPluginDirectories; }
         }
 
-        private void LoadFromRegistry(RegistryKey hive)
+
+        /// <summary>
+        /// Returns true if <see cref="DevelopmentRuntimePath" /> is set and refers to a directory
+        /// that exists.
+        /// </summary>
+        /// <returns>True if the development runtime path is valid</returns>
+        public bool IsDevelopmentRuntimePathValid()
         {
             try
             {
-                using (RegistryKey rootKey = hive.OpenSubKey(RootKey))
+                return !string.IsNullOrEmpty(developmentRuntimePath) && Directory.Exists(developmentRuntimePath);
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+        }
+
+        private void LoadFromRegistry(RegistryKey hive, string rootKeyName)
+        {
+            try
+            {
+                using (RegistryKey rootKey = hive.OpenSubKey(rootKeyName))
                 {
                     if (rootKey == null)
                         return;
 
-                    installedVersion = rootKey.GetValue(@"Version", installedVersion) as string;
-                    installationFolder = rootKey.GetValue(@"InstallationFolder", installationFolder) as string;
+                    if (installedVersion == null)
+                        installedVersion = rootKey.GetValue(@"Version", installedVersion) as string;
+
+                    if (installationFolder == null)
+                        installationFolder = rootKey.GetValue(@"InstallationFolder", installationFolder) as string;
+
+                    if (developmentRuntimePath == null)
+                        developmentRuntimePath = rootKey.GetValue(@"DevelopmentRuntimePath", developmentRuntimePath) as string;
 
                     LoadAdditionalPluginDirectoriesFromRegistry(rootKey);
                 }

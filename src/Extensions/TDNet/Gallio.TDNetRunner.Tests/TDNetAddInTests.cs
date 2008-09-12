@@ -227,7 +227,7 @@ namespace Gallio.TDNetRunner.Tests
             Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
 
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTestRunner).Assembly)), launcher.RuntimeSetup.InstallationPath);
+            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTestRunner).Assembly)), launcher.RuntimeSetup.RuntimePath);
             OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
 
             OldCollectionAssert.AreElementsEqual(new string[] { assemblyFile }, launcher.TestPackageConfig.AssemblyFiles);

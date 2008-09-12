@@ -32,7 +32,7 @@ namespace Gallio.Runtime
     public sealed class RuntimeSetup
     {
         private readonly List<string> pluginDirectories;
-        private string installationPath;
+        private string runtimePath;
         private InstallationConfiguration installationConfiguration;
         private string configurationFilePath;
 
@@ -57,22 +57,23 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
-        /// Gets or sets the installation path, or null to determine it automatically
-        /// based on the location of the primary runtime assemblies.  The installation
+        /// Gets or sets the runtime path, or null to determine it automatically
+        /// based on the location of the primary runtime assemblies.  The runtime
         /// path specifies where the standard runtime plugins are located.
         /// </summary>
         /// <value>
         /// The installation path.  Default is <c>null</c>.
         /// </value>
-        [XmlAttribute("installationPath")]
-        public string InstallationPath
+        [XmlAttribute("runtimePath")]
+        public string RuntimePath
         {
-            get { return installationPath; }
-            set { installationPath = value; }
+            get { return runtimePath; }
+            set { runtimePath = value; }
         }
 
         /// <summary>
-        /// Gets or sets the installation configuration, or null to determine it automatically.
+        /// Gets or sets the installation configuration which specifies characteristics
+        /// about the Gallio installation on the local machine, or null to determine it automatically.
         /// </summary>
         /// <value>
         /// The installation configuration.  Default is <c>null</c>.
@@ -109,7 +110,7 @@ namespace Gallio.Runtime
         {
             RuntimeSetup copy = new RuntimeSetup();
             copy.pluginDirectories.AddRange(pluginDirectories);
-            copy.installationPath = installationPath;
+            copy.runtimePath = runtimePath;
             copy.installationConfiguration = installationConfiguration;
             copy.configurationFilePath = configurationFilePath;
             return copy;
@@ -123,7 +124,7 @@ namespace Gallio.Runtime
         public void Canonicalize(string baseDirectory)
         {
             FileUtils.CanonicalizePaths(baseDirectory, pluginDirectories);
-            installationPath = FileUtils.CanonicalizePath(baseDirectory, installationPath);
+            runtimePath = FileUtils.CanonicalizePath(baseDirectory, runtimePath);
             configurationFilePath = FileUtils.CanonicalizePath(baseDirectory, configurationFilePath);
         }
 

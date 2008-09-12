@@ -71,14 +71,14 @@ namespace Gallio.Runtime
         public static event EventHandler InstanceChanged;
 
         /// <summary>
-        /// Gets the path of the Gallio installation.
+        /// Gets the path of the Gallio runtime components.
         /// </summary>
-        /// <returns>The installation path</returns>
-        public static string InstallationPath
+        /// <returns>The runtime path</returns>
+        public static string RuntimePath
         {
             get
             {
-                return Instance.GetRuntimeSetup().InstallationPath;
+                return Instance.GetRuntimeSetup().RuntimePath;
             }
         }
 

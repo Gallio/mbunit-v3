@@ -22,6 +22,7 @@ using Gallio.ReSharperRunner.Provider;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.ReSharperRunner.Runtime;
 using Gallio.ReSharperRunner.Provider.Tasks;
+using Gallio.Runtime;
 using JetBrains.CommonControls;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
@@ -54,7 +55,7 @@ namespace Gallio.ReSharperRunner.Provider
 
         static GallioTestProvider()
         {
-            GallioInitializer.Initialize();
+            GallioLoader.Initialize().SetupRuntime();
         }
 
         public GallioTestProvider()
@@ -151,7 +152,7 @@ namespace Gallio.ReSharperRunner.Provider
             {
                 this.provider = provider;
 
-                explorerFactory = RuntimeProvider.GetRuntime().Resolve<ITestPackageExplorerFactory>();
+                explorerFactory = RuntimeAccessor.Instance.Resolve<ITestPackageExplorerFactory>();
                 presenter = new GallioTestPresenter();
             }
 

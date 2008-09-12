@@ -28,7 +28,7 @@ namespace Gallio.Runner
     {
         private readonly IHostFactory hostFactory;
         private readonly ITestFramework[] frameworks;
-        private readonly string installationPath;
+        private readonly string runtimePath;
         private readonly string name;
         private readonly string description;
 
@@ -57,7 +57,7 @@ namespace Gallio.Runner
 
             this.hostFactory = hostFactory;
             this.frameworks = frameworks;
-            this.installationPath = runtime.GetRuntimeSetup().InstallationPath;
+            this.runtimePath = runtime.GetRuntimeSetup().RuntimePath;
             this.name = name;
             this.description = description;
         }
@@ -77,7 +77,7 @@ namespace Gallio.Runner
         /// <inheritdoc />
         public ITestRunner CreateTestRunner()
         {
-            return new HostedTestRunner(hostFactory, frameworks, installationPath);
+            return new HostedTestRunner(hostFactory, frameworks, runtimePath);
         }
     }
 }

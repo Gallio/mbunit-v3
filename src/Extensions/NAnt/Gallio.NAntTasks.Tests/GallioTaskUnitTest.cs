@@ -64,7 +64,7 @@ namespace Gallio.NAntTasks.Tests
                 OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.TestRunnerExtensionSpecifications);
 
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-                Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
+                Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.RuntimePath);
                 OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
 
                 OldCollectionAssert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.AssemblyFiles);
@@ -123,7 +123,7 @@ namespace Gallio.NAntTasks.Tests
                 OldCollectionAssert.AreElementsEqual(new string[] { "DebugExtension,Gallio" }, launcher.TestRunnerExtensionSpecifications);
 
                 Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-                Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.InstallationPath);
+                Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTask).Assembly)), launcher.RuntimeSetup.RuntimePath);
                 OldCollectionAssert.AreElementsEqual(new string[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
 
                 OldCollectionAssert.AreElementsEqual(new string[] { "assembly1", "assembly2" }, launcher.TestPackageConfig.AssemblyFiles);

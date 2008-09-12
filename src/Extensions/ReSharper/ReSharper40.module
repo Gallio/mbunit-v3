@@ -11,9 +11,6 @@
     <Binary Include="Gallio.ReSharperRunner\bin\v4.0\Gallio.ReSharperRunner40.dll">
       <Folder>ReSharper\v4.0</Folder>
     </Binary>
-    <Binary Include="Gallio.ReSharperRunner\bin\v4.0\Gallio.ReSharperRunner40.dll.config">
-      <Folder>ReSharper\v4.0</Folder>
-    </Binary>
 
     <TestAssembly Include="Gallio.ReSharperRunner.Tests\bin\v4.0\Gallio.ReSharperRunner40.Tests.dll" />
 

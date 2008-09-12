@@ -132,8 +132,11 @@
             <FeatureRef Id='feat_Gallio.ReSharper.V41'/>
 <?endif?>
             <FeatureRef Id='feat_Gallio.TDNet'/>
-<?ifdef FEATURE_MSTEST_RUNNER ?>
-            <FeatureRef Id='feat_MSTestRunner'/>
+<?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
+            <FeatureRef Id='feat_Gallio.VisualStudio.Sail'/>
+<?endif?>
+<?ifdef FEATURE_VISUALSTUDIO_TIP ?>
+            <FeatureRef Id='feat_Gallio.VisualStudio.Tip'/>
 <?endif?>
         </Feature>
 

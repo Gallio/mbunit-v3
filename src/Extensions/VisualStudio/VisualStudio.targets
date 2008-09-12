@@ -1,0 +1,48 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <MSTestVSIPPath Condition="'$(MSTestVSIPPath)'=='' and '$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)\VisualStudioIntegration\Common\Assemblies</MSTestVSIPPath>
+
+    <MSTestVSIPInstalled>false</MSTestVSIPInstalled>
+    <MSTestVSIPInstalled Condition="'$(MSTestVSIPPath)'!=''">true</MSTestVSIPInstalled>
+
+
+    <MSTestFrameworkPath Condition="'$(MSTestFrameworkPath)'==''">$(MSTestVSIPPath)</MSTestFrameworkPath>
+    <MSTestFrameworkPath Condition="'$(MSTestFrameworkPath)'=='' and '$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0\@InstallDir)\PrivateAssemblies</MSTestFrameworkPath>
+
+    <MSTestFrameworkInstalled>false</MSTestFrameworkInstalled>
+    <MSTestFrameworkInstalled Condition="'$(MSTestFrameworkPath)'!=''">true</MSTestFrameworkInstalled>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(MSTestVSIPRequired)'=='true'">
+      <PropertyGroup>
+        <MSTestPath>$(MSTestVSIPPath)</MSTestPath>
+        <MSTestInstalled>$(MSTestVSIPInstalled)</MSTestInstalled>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <MSTestPath>$(MSTestFrameworkPath)</MSTestPath>
+        <MSTestInstalled>$(MSTestFrameworkInstalled)</MSTestInstalled>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Choose>
+    <When Condition="$(MSTestInstalled)">
+      <PropertyGroup>
+        <AssemblySearchPaths>$(MSTestPath);$(AssemblySearchPaths)</AssemblySearchPaths>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <BuildDependsOn>MissingMSTest</BuildDependsOn>
+        <RebuildDependsOn>MissingMSTest</RebuildDependsOn>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Target Name="MissingMSTest">
+    <Warning Text="Skipped build.  Visual Studio 2008 SDK is not installed or could not be located." />
+  </Target>
+</Project>

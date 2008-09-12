@@ -110,7 +110,7 @@ namespace Gallio.Runtime.Windsor
 
             ConfigureForDebugging();
 
-            SetInstallationPath();
+            SetRuntimePath();
             SetInstallationConfiguration();
 
             ConfigureDefaultPluginDirectories();
@@ -186,12 +186,12 @@ namespace Gallio.Runtime.Windsor
                 pluginDirectories.Add(pluginDirectory);
         }
 
-        private void SetInstallationPath()
+        private void SetRuntimePath()
         {
-            if (runtimeSetup.InstallationPath == null)
-                runtimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(IRuntime).Assembly));
+            if (runtimeSetup.RuntimePath == null)
+                runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(IRuntime).Assembly));
 
-            runtimeSetup.InstallationPath = Path.GetFullPath(runtimeSetup.InstallationPath);
+            runtimeSetup.RuntimePath = Path.GetFullPath(runtimeSetup.RuntimePath);
         }
 
         private void SetInstallationConfiguration()
@@ -202,7 +202,7 @@ namespace Gallio.Runtime.Windsor
 
         private void ConfigureDefaultPluginDirectories()
         {
-            AddPluginDirectory(runtimeSetup.InstallationPath);
+            AddPluginDirectory(runtimeSetup.RuntimePath);
         }
 
         private void ConfigurePluginDirectoriesFromSetup()
@@ -300,7 +300,7 @@ namespace Gallio.Runtime.Windsor
 
             XmlElement installationPathElement = gallioElement.SelectSingleNode("installation/path") as XmlElement;
             if (installationPathElement != null && installationPathElement.InnerText.Length != 0)
-                runtimeSetup.InstallationPath = installationPathElement.InnerText;
+                runtimeSetup.RuntimePath = installationPathElement.InnerText;
         }
 
         private void RunContainerInstaller()
@@ -329,7 +329,7 @@ namespace Gallio.Runtime.Windsor
         /// <summary>
         /// Configure the runtime for debugging purposes within Visual Studio.
         /// This code makes assumptions about the layout of the projects on disk that
-        /// help to make debugging work "magically".  Unless a specific installation
+        /// help to make debugging work "magically".  Unless a specific runtime
         /// path has been set, it is overridden with the location of the Gallio project
         /// "bin" folder and the root directory of the source tree is added
         /// the list of plugin directories to ensure that plugins can be resolved.
@@ -339,8 +339,8 @@ namespace Gallio.Runtime.Windsor
         {
             // Find the root "src" dir.
             string initPath;
-            if (! string.IsNullOrEmpty(runtimeSetup.InstallationPath))
-                initPath = runtimeSetup.InstallationPath;
+            if (! string.IsNullOrEmpty(runtimeSetup.RuntimePath))
+                initPath = runtimeSetup.RuntimePath;
             else if (! string.IsNullOrEmpty(runtimeSetup.ConfigurationFilePath))
                 initPath = runtimeSetup.ConfigurationFilePath;
             else
@@ -353,9 +353,9 @@ namespace Gallio.Runtime.Windsor
             if (srcDir == null)
                 return; // not found!
 
-            // Force the installation path to be set to where the primary Gallio assemblies and Gallio.Host.exe
+            // Force the runtime path to be set to where the primary Gallio assemblies and Gallio.Host.exe
             // are located.
-            runtimeSetup.InstallationPath = Path.Combine(srcDir, @"Gallio\Gallio\bin");
+            runtimeSetup.RuntimePath = Path.Combine(srcDir, @"Gallio\Gallio\bin");
 
             // Add the solution folder to the list of plugin directories so that we can resolve
             // all plugins that have been compiled within the solution. 

@@ -89,7 +89,7 @@ namespace Gallio.Echo
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
-            launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(EchoProgram).Assembly));
+            launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(EchoProgram).Assembly));
 
             launcher.TestPackageConfig.HostSetup.ShadowCopy = Arguments.ShadowCopy;
             launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = Arguments.ApplicationBaseDirectory;

@@ -54,7 +54,7 @@ namespace Gallio.TypeMockIntegration
             if (! Service.IsInstalled)
                 throw new IntegrationNotInstalledException("TypeMock does not appear to be installed.");
 
-            TypeMockHost host = new TypeMockHost(hostSetup, logger, InstallationPath);
+            TypeMockHost host = new TypeMockHost(hostSetup, logger, RuntimePath);
             host.Connect();
             return host;
         }

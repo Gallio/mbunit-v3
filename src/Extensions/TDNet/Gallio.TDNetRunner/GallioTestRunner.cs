@@ -140,10 +140,10 @@ namespace Gallio.TDNetRunner
 
             launcher.RuntimeSetup = new RuntimeSetup();
 
-            // Set the installation path explicitly to ensure that we do not encounter problems
+            // Set the runtime path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
-            launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTestRunner).Assembly));
+            launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTestRunner).Assembly));
 
             // This monitor will inform the user in real-time what's going on
             launcher.TestRunnerExtensions.Add(new TDNetLogExtension(testListener));

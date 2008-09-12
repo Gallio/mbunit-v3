@@ -16,7 +16,10 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Xml.XPath;
+using Gallio.Runtime;
+using Gallio.Runtime.Loader;
+using Gallio.Runtime.Logging;
+using Microsoft.Win32;
 
 namespace Gallio.Loader
 {
@@ -34,92 +37,121 @@ namespace Gallio.Loader
     /// in different locations were loaded at the same time.
     /// </para>
     /// <para>
-    /// This type may be used in situations where 3rd party integration mandates the
+    /// The Gallio loader may be used in situations where 3rd party integration mandates the
     /// installation of a Gallio-dependent assembly outside of the Gallio installation path.
     /// It is fairly typical for application plugin models.  
     /// </para>
     /// <para>
-    /// When using this mechanism, one must ensure that no code will be accessed which
-    /// depends on Gallio types until the resolver has been installed.  Thus it may be
-    /// necessary to create "shims" at all external entry points into the system to ensure
-    /// that the resolver is configured.  If the types contain fields that are Gallio types,
-    /// these fields will need to be encapsulated.
+    /// The loader itself will typically be loaded from the GAC or copy-local as usual.
+    /// It will then springboard into the locally installed copy of Gallio which is found
+    /// by searching the registry.  It is also possible to specify the location
+    /// of the Gallio installation explicitly instead.
     /// </para>
     /// <para>
-    /// An alternative strategy for dealing with this assembly referencing problem would be to
-    /// install the main Gallio assemblies in the GAC.  However, that can create its own
-    /// share of problems because it is possible for both the GAC'd assembly and its non-GAC'd
-    /// sibling assembly to the loaded at the same time.
+    /// Once the loader has been initialized, all Gallio types should become accessible.
+    /// In particular, the runtime can then be initialized.
     /// </para>
-    /// <para>
-    /// In sum, this is an awful hack, but a rather useful one given the absence of other
-    /// acceptable workarounds.
-    /// </para>
-    /// <example>
-    /// <para>
-    /// To use the assembly resolver, create a configuration file for your application's
-    /// primary assembly that specifies the path of the main Gallio assembly like this:
-    /// </para>
-    /// <code>
-    /// <![CDATA[
-    /// <configuration>
-    ///   <gallio>
-    ///     <installation>
-    ///       <path>Absolute-path-to-Gallio-installation-folder-binaries</path>
-    ///     </installation>
-    ///   </gallio>
-    /// </configuration>
-    /// ]]>
-    /// </code>
-    /// <para>
-    /// Then install the assembly resolver in your program BEFORE referencing any
-    /// Gallio types.  Beware that types are referenced implicitly by field and
-    /// method declarations.  So you may need to rearrange your code somewhat.
-    /// </para>
-    /// </example>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This hack should be replaced by a redistributable version-independent
-    /// contract assembly someday.
+    /// Then install the assembly resolver in your program BEFORE referencing any
+    /// Gallio types.  Beware that types are referenced implicitly by field and
+    /// method declarations.  When external code calls directly into your assembly,
+    /// you must ensure that all entry points are guarded with appropriate calls
+    /// to the loader.  This may be facilitated somewhat by calling the loader
+    /// from static initializers declared on the appropriate externally visible classes.
     /// </para>
     /// </remarks>
     public class GallioLoader
     {
+        private static readonly string[] RootKeys = new[]
+        {
+            @"HKEY_CURRENT_USER\Software\Gallio.org\Gallio\3.0",
+            @"HKEY_CURRENT_USER\Wow6432Node\Software\Gallio.org\Gallio\3.0",
+            @"HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0",
+            @"HKEY_LOCAL_MACHINE\Wow6432Node\Software\Gallio.org\Gallio\3.0"
+        };
+
         private const string AssemblyResolverBootstrapTypeFullName = "Gallio.Runtime.Loader.AssemblyResolverBootstrap";
         private const string AssemblyResolverBootstrapInitializeMethodName = "Initialize";
 
         private static readonly object syncRoot = new object();
-        private static GallioLoader instance;
-        
-        private readonly string installationPath;
 
-        private GallioLoader(string installationPath)
+        private static GallioLoader instance;
+        private static string defaultRuntimePath;
+        
+        private readonly string runtimePath;
+
+        private GallioLoader(string runtimePath)
         {
-            this.installationPath = installationPath;
+            this.runtimePath = runtimePath;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the Gallio loader instance, or null if not initialized.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// A null result does not mean that Gallio is not loaded or that its assemblies
+        /// cannot be resolved.  It may simply means that this particular loading mechanism
+        /// has not been used.
+        /// </remarks>
+        public static GallioLoader Instance
+        {
+            get { return instance; }
+        }
+
+        /// <summary>
+        /// Gets the runtime path that will be used by default by the loader.
+        /// The path is determined by looking up the location of the Gallio installation
+        /// in the registry.  It may be overridden by setting the development runtime path key.
+        /// </summary>
+        /// <returns>The installed runtime path</returns>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
+        public static string GetDefaultRuntimePath()
+        {
+            lock (syncRoot)
+            {
+                if (defaultRuntimePath == null)
+                {
+                    defaultRuntimePath = FindRuntimePath();
+                    if (defaultRuntimePath == null)
+                        throw new InvalidOperationException(
+                            "The Gallio runtime path could not be determined from the registry or by inspecting the location of other assemblies.");
+                }
+            }
+
+            return defaultRuntimePath;
         }
 
         /// <summary>
         /// Initializes the Gallio loader (if not already initialized) and returns
         /// its singleton reference.
         /// </summary>
-        /// <param name="assembly">The primary assembly whose configuration file
-        /// contains the Gallio installation path</param>
         /// <returns>The loader</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the loader could not be initialized due to missing
-        /// configuration information</exception>
-        public static GallioLoader Initialize(Assembly assembly)
+        public static GallioLoader Initialize()
         {
-            if (assembly == null)
-                throw new ArgumentNullException("assembly");
+            return Initialize(null);
+        }
 
+        /// <summary>
+        /// Initializes the Gallio loader (if not already initialized) and returns
+        /// its singleton reference.
+        /// </summary>
+        /// <param name="runtimePath">The runtime path from which to load Gallio,
+        /// or null to determine it automatically</param>
+        /// <returns>The loader</returns>
+        public static GallioLoader Initialize(string runtimePath)
+        {
             lock (syncRoot)
             {
                 if (instance == null)
                 {
-                    string installationPath = GetInstallationPath(assembly);
-                    GallioLoader loader = new GallioLoader(installationPath);
+                    if (runtimePath == null)
+                        runtimePath = GetDefaultRuntimePath();
+
+                    GallioLoader loader = new GallioLoader(runtimePath);
                     loader.InstallAssemblyResolver();
 
                     instance = loader;
@@ -130,41 +162,112 @@ namespace Gallio.Loader
         }
 
         /// <summary>
-        /// Gets the Gallio installation path.
+        /// Gets the Gallio runtime path.
         /// </summary>
-        public string InstallationPath
+        public string RuntimePath
         {
-            get { return installationPath; }
+            get { return runtimePath; }
         }
 
-        private static string GetInstallationPath(Assembly assembly)
+        /// <summary>
+        /// <para>
+        /// Sets up the runtime with a default runtime setup using the loader's
+        /// runtime path and a null logger.  Does nothing if the runtime has
+        /// already been initialized.
+        /// </para>
+        /// <para>
+        /// If you need more control over this behavior, call <see cref="RuntimeBootstrap" />
+        /// yourself.
+        /// </para>
+        /// </summary>
+        public void SetupRuntime()
         {
-            string configFilePath = new Uri(assembly.CodeBase).LocalPath + ".config";
-            XPathNavigator navigator;
-            try
+            if (!RuntimeAccessor.IsInitialized)
             {
-                XPathDocument doc = new XPathDocument(configFilePath);
-                navigator = doc.CreateNavigator().SelectSingleNode("//gallio/installation/path");
+                RuntimeSetup setup = new RuntimeSetup();
+                setup.RuntimePath = runtimePath;
+                RuntimeBootstrap.Initialize(setup, NullLogger.Instance);
             }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException(String.Format("Could not load Gallio configuration from file: '{0}'.", configFilePath), ex);
-            }
+        }
 
-            // If the installation path is not set then assume it is colocated with the loader.
-            if (navigator == null || string.IsNullOrEmpty(navigator.Value))
-                return Path.GetDirectoryName(configFilePath);
-
-            return navigator.Value;
+        /// <summary>
+        /// Adds a hint directory to the assembly resolver.
+        /// </summary>
+        /// <param name="path">The path of the hint directory to add</param>
+        public void AddHintDirectory(string path)
+        {
+            AssemblyResolverBootstrap.AssemblyResolverManager.AddHintDirectory(path);
         }
 
         private void InstallAssemblyResolver()
         {
-            Assembly gallioAssembly = Assembly.LoadFrom(Path.Combine(installationPath, "Gallio.dll"));
+            Assembly gallioAssembly = Assembly.LoadFrom(GetGallioDllPath(runtimePath));
+
             Type assemblyResolverBootstrap = gallioAssembly.GetType(AssemblyResolverBootstrapTypeFullName);
             MethodInfo initialize = assemblyResolverBootstrap.GetMethod(AssemblyResolverBootstrapInitializeMethodName);
 
-            initialize.Invoke(null, new object[] { installationPath });
+            initialize.Invoke(null, new object[] { runtimePath });
+        }
+
+        private static string FindRuntimePath()
+        {
+            string runtimePath;
+
+            string installationFolder = GetInstallationFolderFromRegistry();
+            if (installationFolder != null)
+            {
+                runtimePath = Path.Combine(installationFolder, "bin");
+                if (IsRuntimePathValid(runtimePath))
+                    return runtimePath;
+            }
+
+            runtimePath = GetDevelopmentRuntimePathFromRegistry();
+            if (runtimePath != null && IsRuntimePathValid(runtimePath))
+                return runtimePath;
+
+            try
+            {
+                return Path.GetDirectoryName(Assembly.Load("Gallio").Location);
+            }
+            catch
+            {
+            }
+
+            return null;
+        }
+
+        private static string GetInstallationFolderFromRegistry()
+        {
+            foreach (string rootKey in RootKeys)
+            {
+                string value = Registry.GetValue(rootKey, @"InstallationFolder", null) as string;
+                if (value != null)
+                    return value;
+            }
+
+            return null;
+        }
+
+        private static string GetDevelopmentRuntimePathFromRegistry()
+        {
+            foreach (string rootKey in RootKeys)
+            {
+                string value = Registry.GetValue(rootKey, @"DevelopmentRuntimePath", null) as string;
+                if (value != null)
+                    return value;
+            }
+
+            return null;
+        }
+
+        private static bool IsRuntimePathValid(string runtimePath)
+        {
+            return File.Exists(GetGallioDllPath(runtimePath));
+        }
+
+        private static string GetGallioDllPath(string runtimePath)
+        {
+            return Path.Combine(runtimePath, "Gallio.dll");
         }
     }
 }

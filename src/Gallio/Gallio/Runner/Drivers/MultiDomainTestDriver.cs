@@ -30,7 +30,7 @@ namespace Gallio.Runner.Drivers
     {
         private readonly ITestFramework[] frameworks;
         private readonly IHost primaryHost;
-        private readonly string installationPath;
+        private readonly string runtimePath;
         private Remote remote;
 
         /// <summary>
@@ -38,21 +38,21 @@ namespace Gallio.Runner.Drivers
         /// </summary>
         /// <param name="frameworks">The test frameworks that should participate in test domain configuration</param>
         /// <param name="primaryHost">The primary host within which to create additional hosts for each test domain</param>
-        /// <param name="installationPath">The installation path</param>
+        /// <param name="runtimePath">The Gallio runtime path</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="frameworks"/>,
-        /// <paramref name="primaryHost"/>, <paramref name="installationPath"/> is null</exception>
-        public MultiDomainTestDriver(ITestFramework[] frameworks, IHost primaryHost, string installationPath)
+        /// <paramref name="primaryHost"/>, <paramref name="runtimePath"/> is null</exception>
+        public MultiDomainTestDriver(ITestFramework[] frameworks, IHost primaryHost, string runtimePath)
         {
             if (frameworks == null)
                 throw new ArgumentNullException("frameworks");
             if (primaryHost == null)
                 throw new ArgumentNullException("primaryHost");
-            if (installationPath == null)
-                throw new ArgumentNullException("installationPath");
+            if (runtimePath == null)
+                throw new ArgumentNullException("runtimePath");
 
             this.frameworks = frameworks;
             this.primaryHost = primaryHost;
-            this.installationPath = installationPath;
+            this.runtimePath = runtimePath;
 
             remote = HostUtils.CreateInstance<Remote>(primaryHost);
         }
@@ -101,7 +101,7 @@ namespace Gallio.Runner.Drivers
             foreach (TestDomainSetup testDomain in testDomains.Values)
             {
                 ILogger logger = new RemoteLogger(Logger);
-                ITestDriver testDriver = remote.CreateRemoteTestDriver(testDomain, logger, installationPath);
+                ITestDriver testDriver = remote.CreateRemoteTestDriver(testDomain, logger, runtimePath);
                 testDriver.Initialize(RuntimeSetup, logger);
 
                 yield return new Partition(new ProxyTestDriver(testDriver), testDomain.TestPackageConfig);
@@ -121,11 +121,11 @@ namespace Gallio.Runner.Drivers
 
         private class Remote : LongLivedMarshalByRefObject
         {
-            public ITestDriver CreateRemoteTestDriver(TestDomainSetup setup, ILogger logger, string installationPath)
+            public ITestDriver CreateRemoteTestDriver(TestDomainSetup setup, ILogger logger, string runtimePath)
             {
                 IHostFactory hostFactory = new IsolatedAppDomainHostFactory();
                 IHost host = hostFactory.CreateHost(setup.TestPackageConfig.HostSetup, logger);
-                HostAssemblyResolverHook.Bootstrap(host, installationPath);
+                HostAssemblyResolverHook.Bootstrap(host, runtimePath);
 
                 ITestDriver remoteTestDriver = HostUtils.CreateInstance<LocalTestDriver>(host);
                 ProxyTestDriver proxyTestDriver = new ProxyTestDriver(remoteTestDriver);

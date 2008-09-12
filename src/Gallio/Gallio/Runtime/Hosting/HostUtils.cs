@@ -49,6 +49,9 @@ namespace Gallio.Runtime.Hosting
             if (type == null)
                 throw new ArgumentNullException("type");
 
+            // FIXME: Will need to take into account times when we might wish to redirect
+            //        the assembly loading to a different path, eg. when DevelopmentRuntimePath
+            //        is set.
             Assembly assembly = type.Assembly;
             IHostService hostService = host.GetHostService();
             try

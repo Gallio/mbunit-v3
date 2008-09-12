@@ -54,7 +54,7 @@ namespace Gallio.Runtime.Hosting
         // FIXME: Large timeout to workaround the remoting starvation issue.  See Google Code issue #147.  Reduce value when fixed.
         private static readonly TimeSpan WatchdogTimeout = TimeSpan.FromSeconds(120);
 
-        private readonly string installationPath;
+        private readonly string runtimePath;
 
         private readonly string uniqueId;
         private ProcessTask processTask;
@@ -66,16 +66,16 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
         /// <param name="logger">The logger for host message output</param>
-        /// <param name="installationPath">The runtime installation path where the hosting executable will be found</param>
+        /// <param name="runtimePath">The runtime path where the hosting executable will be found</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
-        /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null</exception>
-        public IsolatedProcessHost(HostSetup hostSetup, ILogger logger, string installationPath)
+        /// <paramref name="logger"/>, or <paramref name="runtimePath"/> is null</exception>
+        public IsolatedProcessHost(HostSetup hostSetup, ILogger logger, string runtimePath)
             : base(hostSetup, logger, PingInterval)
         {
-            if (installationPath == null)
-                throw new ArgumentNullException("installationPath");
+            if (runtimePath == null)
+                throw new ArgumentNullException("runtimePath");
 
-            this.installationPath = installationPath;
+            this.runtimePath = runtimePath;
             uniqueId = Hash64.CreateUniqueHash().ToString();
         }
 
@@ -267,7 +267,7 @@ namespace Gallio.Runtime.Hosting
 
         private string GetInstalledHostProcessPath()
         {
-            string hostProcessPath = Path.Combine(installationPath, HostAppFileName);
+            string hostProcessPath = Path.Combine(runtimePath, HostAppFileName);
             if (!File.Exists(hostProcessPath))
                 throw new HostException(String.Format("Could not find the installed host application in '{0}'.", hostProcessPath));
 

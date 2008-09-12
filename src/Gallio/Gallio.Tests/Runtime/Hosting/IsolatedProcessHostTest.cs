@@ -33,7 +33,7 @@ namespace Gallio.Tests.Runtime.Hosting
     {
         public override IHostFactory Factory
         {
-            get { return new IsolatedProcessHostFactory(RuntimeAccessor.InstallationPath); }
+            get { return new IsolatedProcessHostFactory(RuntimeAccessor.RuntimePath); }
         }
 
         [Test]

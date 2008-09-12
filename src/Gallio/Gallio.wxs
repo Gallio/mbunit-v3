@@ -36,11 +36,13 @@
                         <RegistryKey Key="AdditionalPluginDirectories" Action="createAndRemoveOnUninstall"/>
                     </RegistryKey>
                 </RegistryKey>
+
                 <!-- Register the folder so that Visual Studio Add References can find it -->
                 <RegistryKey Id="Gallio.RegistryKey2" Action="createAndRemoveOnUninstall"
                              Root="HKLM" Key="SOFTWARE\Microsoft\.NETFramework\v2.0.50727\AssemblyFoldersEx\Gallio">
                     <RegistryValue Type="string" Value="[INSTALLDIR]bin"/>
                 </RegistryKey>
+
                 <!-- Add the Gallio bin folder to the path -->
                 <Environment Id="Gallio.Path" Name="Path" Value="[INSTALLDIR]bin" Action="set" Part="last" Separator=";" />
             </Component>
@@ -66,8 +68,10 @@
                 <File Id="Gallio.Host.exe" Source="$(var.GallioTargetDir)\bin\Gallio.Host.exe" KeyPath="yes" />
                 <File Id="Gallio.Host.exe.config" Source="$(var.GallioTargetDir)\bin\Gallio.Host.exe.config" />
             </Component>
+
             <Component Id="Gallio.Loader" Guid="{1b752f49-373c-4a57-8f72-eb97287d0d35}" Win64="no">
-                <File Id="Gallio.Loader.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" />
+	        <!-- Install in the GAC -->
+                <File Id="Gallio.Loader.dll" Source="$(var.GallioTargetDir)\bin\Gallio.Loader.dll" KeyPath="yes" Assembly=".net" />
             </Component>
 	    
             <Directory Id="ReportsFolder" Name="Reports">

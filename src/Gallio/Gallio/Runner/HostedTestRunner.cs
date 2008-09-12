@@ -30,16 +30,18 @@ using Gallio.Runtime.ProgressMonitoring;
 namespace Gallio.Runner
 {
     /// <summary>
+    /// <para>
     /// An implementation of <see cref="ITestRunner" /> that runs tests within
     /// the context of particular <see cref="IHost" />.  The host is created
     /// when the package is loaded and is disposed when the package is unloaded.
     /// Consequently each new package runs in a new host.
+    /// </para>
     /// </summary>
     public class HostedTestRunner : ITestRunner
     {
         private readonly IHostFactory hostFactory;
         private readonly ITestFramework[] frameworks;
-        private readonly string installationPath;
+        private readonly string runtimePath;
 
         private readonly TestRunnerEventDispatcher eventDispatcher;
         private readonly object syncRoot;
@@ -69,21 +71,21 @@ namespace Gallio.Runner
         /// </summary>
         /// <param name="hostFactory">The host factory</param>
         /// <param name="frameworks">The test frameworks</param>
-        /// <param name="installationPath">The installation path</param>
+        /// <param name="runtimePath">The runtime path</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
-        /// <paramref name="frameworks"/> or <paramref name="installationPath"/> is null</exception>
-        public HostedTestRunner(IHostFactory hostFactory, ITestFramework[] frameworks, string installationPath)
+        /// <paramref name="frameworks"/> or <paramref name="runtimePath"/> is null</exception>
+        public HostedTestRunner(IHostFactory hostFactory, ITestFramework[] frameworks, string runtimePath)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
             if (frameworks == null)
                 throw new ArgumentNullException("frameworks");
-            if (installationPath == null)
-                throw new ArgumentNullException("installationPath");
+            if (runtimePath == null)
+                throw new ArgumentNullException("runtimePath");
 
             this.hostFactory = hostFactory;
             this.frameworks = frameworks;
-            this.installationPath = installationPath;
+            this.runtimePath = runtimePath;
 
             eventDispatcher = new TestRunnerEventDispatcher();
             syncRoot = new object();
@@ -392,15 +394,20 @@ namespace Gallio.Runner
         {
             progressMonitor.SetStatus("Initializing the host environment.");
 
+            // Override the runtime path for development.
+            RuntimeSetup runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
+            if (runtimeSetup.InstallationConfiguration.IsDevelopmentRuntimePathValid())
+                runtimeSetup.RuntimePath = runtimeSetup.InstallationConfiguration.DevelopmentRuntimePath;
+
             // Configure the host's primary parameters.
             HostSetup hostSetup = new HostSetup();
-            hostSetup.ApplicationBaseDirectory = RuntimeAccessor.InstallationPath;
+            hostSetup.ApplicationBaseDirectory = RuntimeAccessor.RuntimePath;
             hostSetup.WorkingDirectory = packageHostSetup.WorkingDirectory;
             hostSetup.ShadowCopy = packageHostSetup.ShadowCopy;
 
             host = hostFactory.CreateHost(hostSetup, logger);
-            testDriver = new MultiDomainTestDriver(frameworks, host, installationPath);
-            testDriver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(), logger);
+            testDriver = new MultiDomainTestDriver(frameworks, host, runtimePath);
+            testDriver.Initialize(runtimeSetup, logger);
 
             progressMonitor.Worked(totalWork);
         }

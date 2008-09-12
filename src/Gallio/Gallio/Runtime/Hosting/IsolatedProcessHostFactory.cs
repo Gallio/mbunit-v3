@@ -25,7 +25,7 @@ namespace Gallio.Runtime.Hosting
     /// </summary>
     public class IsolatedProcessHostFactory : BaseHostFactory
     {
-        private readonly string installationPath;
+        private readonly string runtimePath;
 
         /// <summary>
         /// Creates a host factory.
@@ -37,34 +37,35 @@ namespace Gallio.Runtime.Hosting
             if (runtime == null)
                 throw new ArgumentNullException("runtime");
 
-            installationPath = runtime.GetRuntimeSetup().InstallationPath;
+            runtimePath = runtime.GetRuntimeSetup().RuntimePath;
         }
 
         /// <summary>
         /// Creates a host factory.
         /// </summary>
-        /// <param name="installationPath">The installation path of the host executable</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="installationPath"/> is null</exception>
-        public IsolatedProcessHostFactory(string installationPath)
+        /// <param name="runtimePath">The path of the runtime components,
+        /// in particular the folder where Gallio.Host.exe is located</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimePath"/> is null</exception>
+        public IsolatedProcessHostFactory(string runtimePath)
         {
-            if (installationPath == null)
-                throw new ArgumentNullException("installationPath");
+            if (runtimePath == null)
+                throw new ArgumentNullException("runtimePath");
 
-            this.installationPath = installationPath;
+            this.runtimePath = runtimePath;
         }
 
         /// <summary>
-        /// Gets the installation path of the host executable.
+        /// Gets the path of the runtime components, in particular the folder where Gallio.Host.exe is located.
         /// </summary>
-        protected string InstallationPath
+        protected string RuntimePath
         {
-            get { return installationPath; }
+            get { return runtimePath; }
         }
 
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            IsolatedProcessHost host = new IsolatedProcessHost(hostSetup, logger, installationPath);
+            IsolatedProcessHost host = new IsolatedProcessHost(hostSetup, logger, runtimePath);
             host.Connect();
             return host;
         }

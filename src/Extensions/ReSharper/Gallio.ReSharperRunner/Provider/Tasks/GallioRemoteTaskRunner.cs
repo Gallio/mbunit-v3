@@ -37,7 +37,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         static GallioRemoteTaskRunner()
         {
-            GallioInitializer.Initialize();
+            GallioLoader.Initialize().SetupRuntime();
         }
 
         public GallioRemoteTaskRunner(IRemoteTaskServer server)
@@ -52,7 +52,6 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         public override TaskResult Start(TaskExecutionNode node)
         {
-            RuntimeProvider.Initialize();
             return TaskResult.Success; 
         }
 

@@ -69,7 +69,7 @@ namespace Gallio.Echo.Tests
             string executablePath = Path.Combine(workingDirectory, "Gallio.Echo.exe");
 
             ProcessTask task = Tasks.StartProcessTask(executablePath,
-                "\"" + testAssemblyPath + "\" /pd:\"" + RuntimeAccessor.InstallationPath + "\" " + options,
+                "\"" + testAssemblyPath + "\" /pd:\"" + RuntimeAccessor.RuntimePath + "\" " + options,
                 workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");

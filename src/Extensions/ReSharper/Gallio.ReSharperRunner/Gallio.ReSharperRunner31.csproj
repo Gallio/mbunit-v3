@@ -124,12 +124,10 @@
     <Compile Include="Provider\ReSharperExceptionDialogSuppressor.cs" />
     <Compile Include="Provider\SessionCache.cs" />
     <Compile Include="Provider\Tasks\TaskExceptionFactory.cs" />
-    <Compile Include="Runtime\GallioInitializer.cs" />
     <Compile Include="Runtime\ReSharperLogger.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicy.cs" />
     <Compile Include="Reflection\PsiReflectionPolicy.cs" />
     <Compile Include="Reflection\ReSharperReflectionPolicy.cs" />
-    <Compile Include="Runtime\RuntimeProvider.cs" />
     <Compile Include="Provider\Tasks\GallioRemoteTaskRunner.cs" />
     <Compile Include="Provider\Tasks\GallioRemoteTask.cs" />
     <Compile Include="Provider\Tasks\GallioTestAssemblyTask.cs" />
@@ -160,11 +158,6 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Gallio.ReSharperRunner31.dll.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme - Debugging.txt" />

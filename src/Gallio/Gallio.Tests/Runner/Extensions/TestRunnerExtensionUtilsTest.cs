@@ -52,7 +52,7 @@ namespace Gallio.Tests.Runner.Extensions
         public void CreateTestRunnerExtension(string extensionSpecification, Type expectedExtensionType,
             string expectedParameters)
         {
-            using (new CurrentDirectorySwitcher(RuntimeAccessor.InstallationPath))
+            using (new CurrentDirectorySwitcher(RuntimeAccessor.RuntimePath))
             {
                 ITestRunnerExtension extension = TestRunnerExtensionUtils.CreateExtensionFromSpecification(extensionSpecification);
                 Assert.IsNotNull(extension);

@@ -1,25 +1,36 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="VisualStudio.targets" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.VisualStudio.Toolkit\Gallio.VisualStudio.Toolkit.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Addin\Gallio.VisualStudio.Addin.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Addin.Tests\Gallio.VisualStudio.Addin.Tests.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail.Tests.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip.Proxy.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip.Tests.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Binary Include="Gallio.VisualStudio.Addin\bin\Gallio.VisualStudio.Addin.dll">
+  <ItemGroup Condition="$(VSIPInstalled)">
+    <Binary Include="Gallio.VisualStudio.Shell\bin\Gallio.VisualStudio.Shell.dll">
       <Folder>VisualStudio</Folder>
     </Binary>
-    <Binary Include="Gallio.VisualStudio.Addin\bin\Gallio.VisualStudio.Toolkit.dll">
+    <Binary Include="Gallio.VisualStudio.Sail\bin\Gallio.VisualStudio.Sail.dll">
       <Folder>VisualStudio</Folder>
     </Binary>
-    <Binary Include="Gallio.VisualStudio.Addin\Gallio.VisualStudio.Addin.AddIn">
+    <Binary Include="Gallio.VisualStudio.Tip\bin\Gallio.VisualStudio.Tip.dll">
+      <Folder>VisualStudio</Folder>
+    </Binary>
+    <Binary Include="Gallio.VisualStudio.Tip.Proxy\bin\Gallio.VisualStudio.Tip.Proxy.dll">
       <Folder>VisualStudio</Folder>
     </Binary>
 
-    <TestAssembly Include="Gallio.VisualStudio.Addin.Tests\bin\Gallio.VisualStudio.Addin.Tests.dll" />
+    <TestAssembly Include="Gallio.VisualStudio.Shell.Tests\bin\Gallio.VisualStudio.Shell.Tests.dll" />
+    <TestAssembly Include="Gallio.VisualStudio.Sail.Tests\bin\Gallio.VisualStudio.Sail.Tests.dll" />
+    <TestAssembly Include="Gallio.VisualStudio.Tip.Tests\bin\Gallio.VisualStudio.Tip.Tests.dll" />
 
-    <Feature Include="FEATURE_VISUALSTUDIO_ADDIN" />
+    <Feature Include="FEATURE_VISUALSTUDIO_SAIL" />
+    <Feature Include="FEATURE_VISUALSTUDIO_TIP" />
   </ItemGroup>
 </Project>

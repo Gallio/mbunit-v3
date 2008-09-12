@@ -97,7 +97,7 @@ namespace Gallio.PowerShellCommands.Tests
 
             ProcessTask task = Tasks.StartProcessTask(executablePath,
                "\"& Add-PSSnapIn Gallio; $DebugPreference = 'Continue'; Run-Gallio 'MbUnit.TestResources.dll' -pd '" +
-               RuntimeAccessor.InstallationPath + "' " + options + "\"",
+               RuntimeAccessor.RuntimePath + "' " + options + "\"",
                workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");

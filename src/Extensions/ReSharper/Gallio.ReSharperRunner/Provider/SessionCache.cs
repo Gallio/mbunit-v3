@@ -23,6 +23,7 @@ using System.Text;
 using Gallio.ReSharperRunner.Runtime;
 using Gallio.Runner.Caching;
 using Gallio.Runner.Reports;
+using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.ReSharperRunner.Provider
@@ -52,7 +53,7 @@ namespace Gallio.ReSharperRunner.Provider
                     return null;
 
                 group.CreateSubdirectory(directory);
-                IReportManager reportManager = RuntimeProvider.GetRuntime().Resolve<IReportManager>();
+                IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
                 FileSystemReportContainer reportContainer = new FileSystemReportContainer(htmlReportFile.DirectoryName, ReportBaseName);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
                 NameValueCollection options = new NameValueCollection();

@@ -50,7 +50,7 @@ namespace Gallio.NCoverIntegration
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            NCoverHost host = new NCoverHost(hostSetup, logger, InstallationPath);
+            NCoverHost host = new NCoverHost(hostSetup, logger, RuntimePath);
             host.Connect();
             return host;
         }

@@ -76,9 +76,9 @@ namespace Gallio.Tests.Host
         private static ProcessTask StartHost(string arguments)
         {
             return Tasks.StartProcessTask(
-                Path.Combine(RuntimeAccessor.InstallationPath, "Gallio.Host.exe"),
+                Path.Combine(RuntimeAccessor.RuntimePath, "Gallio.Host.exe"),
                 arguments,
-                RuntimeAccessor.InstallationPath);
+                RuntimeAccessor.RuntimePath);
         }
     }
 }

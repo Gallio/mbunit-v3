@@ -685,7 +685,7 @@ namespace Gallio.MSBuildTasks
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
-            launcher.RuntimeSetup.InstallationPath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Gallio).Assembly));
+            launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Gallio).Assembly));
 
             if (echoResults)
                 launcher.TestRunnerExtensions.Add(new TaskLogExtension(Log));

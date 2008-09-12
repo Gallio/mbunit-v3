@@ -94,7 +94,7 @@ namespace Gallio.MSBuildTasks.Tests
         {
             ProcessTask task = Tasks.StartProcessTask(executablePath,
                 String.Concat("Integration.proj /v:detailed /t:", target,
-                " /p:GallioPath=\"", RuntimeAccessor.InstallationPath, "\""),
+                " /p:GallioPath=\"", RuntimeAccessor.RuntimePath, "\""),
                 workingDirectory);
 
             Assert.IsTrue(task.Run(TimeSpan.FromSeconds(60)), "A timeout occurred.");

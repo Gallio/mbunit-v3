@@ -30,7 +30,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     {
         static GallioRemoteTask()
         {
-            GallioInitializer.Initialize();
+            GallioLoader.Initialize();
         }
 
         protected GallioRemoteTask()
