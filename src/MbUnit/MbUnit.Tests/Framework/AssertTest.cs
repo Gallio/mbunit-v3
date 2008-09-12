@@ -820,7 +820,7 @@ namespace MbUnit.Tests.Framework
             }
         }
 
-        private sealed class TestComparer : StringComparer
+        internal sealed class TestComparer : StringComparer
         {
             public bool EqualsReturn;
             public int CompareReturn;

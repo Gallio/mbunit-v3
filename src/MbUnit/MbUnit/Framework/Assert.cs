@@ -59,7 +59,7 @@ namespace MbUnit.Framework
     /// </para>
     /// </remarks>
     [TestFrameworkInternal]
-    public abstract class Assert
+    public abstract partial class Assert
     {
         /// <summary>
         /// Prevents instantiation.

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{321FD171-880D-472E-9912-EC844889E11A}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -71,6 +71,7 @@
     <Compile Include="Framework\ContractVerifiers\VerifyContractAttributeBaseTest.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyEqualityContractAttributeTest.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyExceptionContractAttributeTest.cs" />
+    <Compile Include="Framework\StringAssertTest.cs" />
     <Compile Include="Integration\ConfigurationFileTest.cs" />
     <Compile Include="Framework\AutomaticTestFixtureTest.cs" />
     <Compile Include="Framework\RepeatTest.cs" />
