@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<FxCopProject Version="1.36" Name="MbUnit">
+<FxCopProject Version="1.36" Name="Gallio">
  <ProjectOptions>
   <SharedProject>True</SharedProject>
-  <Stylesheet Apply="False">http://www.gotdotnet.com/team/fxcop//xsl/1.35/FxCopReport.xsl</Stylesheet>
+  <Stylesheet Apply="False">c:\program files\microsoft fxcop 1.36\Xml\FxCopReport.xsl</Stylesheet>
   <SaveMessages>
    <Project Status="Excluded" NewOnly="False" />
    <Report Status="Active" NewOnly="False" />
@@ -22,19 +22,33 @@
  </ProjectOptions>
  <Targets>
   <AssemblyReferenceDirectories>
-   <Directory>$(ProjectDir)/../libs/MbUnit2/bin/</Directory>
-   <Directory>$(ProjectDir)/../libs/TestDriven.Net/</Directory>
+   <Directory>$(ProjectDir)/Extensions/MbUnit2/libs/</Directory>
+   <Directory>$(ProjectDir)/Extensions/TDNet/libs/</Directory>
   </AssemblyReferenceDirectories>
-  <Target Name="$(ProjectDir)/Gallio/MbUnit.Gallio/bin/MbUnit.Gallio.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Plugins/MbUnit.Plugin.MbUnit2Adapter/bin/MbUnit.Plugin.MbUnit2Adapter.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Plugins/MbUnit.Plugin.NUnitAdapter/bin/MbUnit.Plugin.NUnitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Plugins/MbUnit.Plugin.Reports/bin/MbUnit.Plugin.Reports.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Plugins/MbUnit.Plugin.XunitAdapter/bin/MbUnit.Plugin.XunitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Runners/MbUnit.AddIn.TDNet/bin/MbUnit.AddIn.TDNet.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Runners/MbUnit.Echo/bin/MbUnit.Echo.exe" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Runners/MbUnit.Icarus/bin/MbUnit.Icarus.exe" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Runners/MbUnit.Tasks.MSBuild/bin/MbUnit.Tasks.MSBuild.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Runners/MbUnit.Tasks.NAnt/bin/MbUnit.Tasks.NAnt.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\CCNet\CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\CSUnit\Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\Echo\Gallio.Echo\bin\Gallio.Echo.exe" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\Icarus\Gallio.Icarus\bin\Gallio.Icarus.exe" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\MbUnit2\Gallio.MbUnit2Adapter\bin\Gallio.MbUnit2Adapter.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\MSBuild\Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\MSTest\Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\NAnt\Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\NCover\Gallio.NCoverIntegration\bin\v1.5.8\Gallio.NCoverIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\NCover\Gallio.NCoverIntegration\bin\v2\Gallio.NCoverIntegration2.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\NUnit\Gallio.NUnitAdapter\bin\Gallio.NUnitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\Pex\MbUnit.Pex\bin\MbUnit.Pex.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\PowerShell\Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" Analyze="False" AnalyzeAllChildren="False" />
+  <Target Name="$(ProjectDir)\Extensions\TDNet\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\TypeMock\Gallio.TypeMockIntegration\bin\Gallio.TypeMockIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Extensions\Xunit\Gallio.XunitAdapter\bin\Gallio.XunitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Gallio\Gallio.Host\bin\Gallio.Host.exe" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Gallio\Gallio.Loader\bin\Gallio.Loader.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Gallio\Gallio.Reports\bin\Gallio.Reports.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Gallio\Gallio\bin\Gallio.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\Gallio\Gallio35\bin\Gallio35.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\MbUnit\MbUnit.Compatibility\bin\MbUnit.Compatibility.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\MbUnit\MbUnit\bin\MbUnit.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\MbUnit\MbUnit35\bin\MbUnit35.dll" Analyze="True" AnalyzeAllChildren="True" />
  </Targets>
  <Rules>
   <RuleFiles>
@@ -163,36 +177,5 @@
   <Groups />
   <Settings />
  </Rules>
- <FxCopReport Version="1.36">
-  <Targets>
-   <Target Name="$(ProjectDir)/Runners/MbUnit.Tasks.MSBuild/bin/MbUnit.Tasks.MSBuild.dll">
-    <Modules>
-     <Module Name="mbunit.tasks.msbuild.dll">
-      <Namespaces>
-       <Namespace Name="MbUnit.Tasks.MSBuild">
-        <Types>
-         <Type Name="MbUnit">
-          <Messages>
-           <Message TypeName="TypeNamesShouldNotMatchNamespaces" Category="Microsoft.Naming" CheckId="CA1724" Status="Excluded" Created="2007-09-06 06:02:30Z">
-            <Issue>
-             <Item>'MbUnit'</Item>
-             <Item>MbUnit</Item>
-            </Issue>
-           </Message>
-          </Messages>
-         </Type>
-        </Types>
-       </Namespace>
-      </Namespaces>
-     </Module>
-    </Modules>
-   </Target>
-  </Targets>
-  <Rules>
-   <Rule TypeName="TypeNamesShouldNotMatchNamespaces" Category="Microsoft.Naming" CheckId="CA1724">
-    <Resolution Name="Default">The type name {0} conflicts in whole or in part with the namespace name '{1}'. Change either name to eliminate the conflict.</Resolution>
-    <Resolution Name="System">The type name {0} conflicts in whole or in part with the namespace name '{1}' defined in the .NET Framework. Rename the type to eliminate the conflict.</Resolution>
-   </Rule>
-  </Rules>
- </FxCopReport>
+ <FxCopReport Version="1.36" />
 </FxCopProject>

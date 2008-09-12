@@ -1,0 +1,32 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+    <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+
+    <PropertyGroup>
+        <FxCopToolDir>C:\Program Files\Microsoft FxCop 1.36</FxCopToolDir>
+        <FxCopProjectFile>$(SourceDir)\All.fxcop</FxCopProjectFile>
+        <FxCopReportDir>$(ReportDir)\FxCop</FxCopReportDir>
+    </PropertyGroup>
+
+    <Target Name="AfterTest" 
+            DependsOnTargets="GenerateFxCopReports">
+    </Target>
+
+    <Target Name="GenerateFxCopReports">
+        <Message Text="Generating code analysis reports..." 
+                 Importance="High" />
+
+        <MakeDir Directories="$(FxCopReportDir)"/>
+
+        <Warning Text="Microsoft FxCop must be installed so that code analysis reports can be generated.  Look in tools\Setup Files for the Microsoft FxCop installer."
+                 Condition="! Exists('$(FxCopToolDir)\FxCopCmd.exe')" />
+
+        <FxCop Condition="Exists('$(FxCopToolDir)\FxCopCmd.exe')"
+            ToolPath="$(FxCopToolDir)"
+            ProjectFile="$(FxCopProjectFile)"
+            AnalysisReportFileName="$(FxCopReportDir)\FxCopReport.html"
+            OutputXslFileName="$(FxCopToolDir)\Xml\FxCopReport.xsl"
+            ApplyOutXsl="True"
+            ContinueOnError="True"
+        />
+    </Target>
+</Project>
