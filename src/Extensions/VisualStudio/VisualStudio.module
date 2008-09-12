@@ -16,10 +16,19 @@
     <Binary Include="Gallio.VisualStudio.Shell\bin\Gallio.VisualStudio.Shell.dll">
       <Folder>VisualStudio</Folder>
     </Binary>
+    <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.plugin">
+      <Folder>VisualStudio</Folder>
+    </Binary>
     <Binary Include="Gallio.VisualStudio.Sail\bin\Gallio.VisualStudio.Sail.dll">
       <Folder>VisualStudio</Folder>
     </Binary>
+    <Binary Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.plugin">
+      <Folder>VisualStudio</Folder>
+    </Binary>
     <Binary Include="Gallio.VisualStudio.Tip\bin\Gallio.VisualStudio.Tip.dll">
+      <Folder>VisualStudio</Folder>
+    </Binary>
+    <Binary Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip.plugin">
       <Folder>VisualStudio</Folder>
     </Binary>
     <Binary Include="Gallio.VisualStudio.Tip.Proxy\bin\Gallio.VisualStudio.Tip.Proxy.dll">

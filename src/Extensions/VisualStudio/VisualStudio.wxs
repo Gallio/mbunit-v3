@@ -10,7 +10,7 @@
         <DirectoryRef Id="binFolder">
             <Directory Id="VisualStudio" Name="VisualStudio">
                 <Component Id="Gallio.VisualStudio.Shell.dll" Guid="{E0BE4838-A5CA-4af4-8838-3AC519AF28F9}" Win64="no">
-                    <File Id="Gallio.VisualStudio.Shell.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Shell.dll" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.VisaulStudio.Shell.dll" />
+                    <File Id="Gallio.VisualStudio.Shell.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Shell.dll" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Shell.dll" />
                     <File Id="Gallio.VisualStudio.Shell.plugin" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Shell.plugin" />
                 </Component>
 		
@@ -22,12 +22,14 @@
                 <Component Id="Gallio.VisualStudio.Tip.dll" Guid="{03BC061B-BCEC-4e3f-BC65-EEE2BCDA30E9}" Win64="no">
                     <File Id="Gallio.VisualStudio.Tip.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.dll" KeyPath="yes" />
                     <File Id="Gallio.VisualStudio.Tip.plugin" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.plugin" />
-
-		    <!-- Install in GAC -->
-                    <File Id="Gallio.VisualStudio.Tip.Proxy.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.Proxy.dll" Assembly=".net" />
                 </Component>
 
-                <Component Id="Gallio.VisualStudio.Shell.VS90.Registry" Guid="{E89197CF-A054-47ae-A1BE-2BB61588ACB1}">
+                <Component Id="Gallio.VisualStudio.Tip.Proxy.dll" Guid="{471E67AA-8B22-421a-BECC-6B900D5CD698}" Win64="no">
+		    <!-- Install in GAC -->
+                    <File Id="Gallio.VisualStudio.Tip.Proxy.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.Proxy.dll" Assembly=".net" KeyPath="yes" />
+                </Component>
+
+                <Component Id="Gallio.VisualStudio.Shell.VS90.Registry" Guid="{AE9CCDE1-FF9F-4519-96D8-F4E2609B1B40}" Win64="no">
                     <!-- Register the product -->
                     <RegistryKey Id="Gallio.VisualStudio.Shell.VS90.Registry1" Action="createAndRemoveOnUninstall"
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio">
@@ -54,7 +56,7 @@
                     </RegistryKey>
 		</Component>
 
-                <Component Id="Gallio.VisualStudio.Tip.VS90.Registry" Guid="{E89197CF-A054-47ae-A1BE-2BB61588ACB1}">		
+                <Component Id="Gallio.VisualStudio.Tip.VS90.Registry" Guid="{E89197CF-A054-47ae-A1BE-2BB61588ACB1}" Win64="no">		
                     <!-- Register the test types -->
                     <RegistryKey Id="Gallio.VisualStudio.Tip.VS90.Registry4" Action="createAndRemoveOnUninstall"
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}">
@@ -82,6 +84,7 @@
             <ComponentRef Id="Gallio.VisualStudio.Shell.VS90.Registry"/>
 
             <ComponentRef Id="Gallio.VisualStudio.Tip.dll"/>
+            <ComponentRef Id="Gallio.VisualStudio.Tip.Proxy.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Tip.VS90.Registry"/>
         </Feature>
 	

@@ -12,7 +12,6 @@
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
     <VSIPSDKHelpPath>$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
     <VSIPSDKHelpPath Condition="'$(VSIPSDKHelpPath)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\8.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
-    <NSISPath>$(ProgramFiles)\NSIS\makensis.exe</NSISPath>
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
     <SourceServerIndexerPath Condition="! Exists('$(SourceServerIndexerPath)')">$(ProgramFiles)\Debugging Tools for Windows (x86)\srcsrv\ssindex.cmd</SourceServerIndexerPath>
     <NCoverExplorerPath>$(ToolsDir)\NCoverExplorer</NCoverExplorerPath>
@@ -59,7 +58,7 @@
   <!-- DIST TARGETS -->
 
   <Target Name="AfterDist"
-          DependsOnTargets="BuildCHMDocs;BuildHxSDocs;BuildInstallerWix;BuildZip" />
+          DependsOnTargets="BuildCHMDocs;BuildHxSDocs;BuildInstaller;BuildZip" />
 
 
   <!-- SUPPORT CODE: API DOCS -->
@@ -120,17 +119,6 @@
 
   <!-- SUPPORT CODE: INSTALLERS -->
 
-  <Target Name="BuildInstaller">
-    <Message Text="Building NSIS Installer..."
-             Importance="High" />
-
-    <Warning Text="The NSIS tools must be installed to generate the installer.  Look in tools\Setup Files for the NSIS installer."
-             Condition="! Exists('$(NSISPath)')" />
-
-    <Exec Command="&quot;$(NSISPath)&quot; /V2 /NOCONFIG /DVERSION=$(Version) /DROOTDIR=&quot;$(RootDir)&quot; &quot;$(SourceDir)\Installer\GallioBundle.nsi&quot;"
-          Condition="Exists('$(NSISPath)')" />
-  </Target>
-
   <PropertyGroup>
     <InstallerWixProperties>
       Configuration=Release;
@@ -146,10 +134,10 @@
     <InstallerFeatureFile>$(SourceDir)\Installer.Wix\Features.wxi</InstallerFeatureFile>
   </PropertyGroup>
 
-  <Target Name="BuildInstallerWix">
-    <Message Text="Building WiX Installer..."
-             Importance="High" />
+  <Target Name="BuildInstaller"
+          DependsOnTargets="BuildInstaller-x86;BuildInstaller-x64" />
 
+  <Target Name="PrepareToBuildInstaller">
     <WriteLinesToFile File="$(InstallerFeatureFile)"
                       Lines="&lt;Include&gt;"
                       Overwrite="true" />
@@ -159,24 +147,41 @@
     <WriteLinesToFile File="$(InstallerFeatureFile)"
                       Lines="&lt;/Include&gt;"
                       Overwrite="false" />
+  </Target>
+
+  <Target Name="BuildInstaller-x86" DependsOnTargets="PrepareToBuildInstaller">
+    <Message Text="Building WiX Installer for x86..."
+             Importance="High" />
 
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Build"
              Properties="$(InstallerWixProperties);Platform=x86" />
+  </Target>
+
+  <Target Name="BuildInstaller-x64" DependsOnTargets="PrepareToBuildInstaller">
+    <Message Text="Building WiX Installer for x64..."
+             Importance="High" />
+
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Build"
              Properties="$(InstallerWixProperties);Platform=x64" />
   </Target>
 
-  <Target Name="CleanInstallerWix">
+  <Target Name="CleanInstaller"
+          DependsOnTargets="CleanInstaller-x86;CleanInstaller-x64">
+    <Delete Files="$(InstallerFeatureFile)" />
+  </Target>
+
+  <Target Name="CleanInstaller-x86">
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Clean"
              Properties="$(InstallerWixProperties);Platform=x86" />
+  </Target>
+
+  <Target Name="CleanInstaller-x64">
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Clean"
              Properties="$(InstallerWixProperties);Platform=x64" />
-
-    <Delete Files="$(InstallerFeatureFile)" />
   </Target>
 
   <Target Name="BuildZip">
