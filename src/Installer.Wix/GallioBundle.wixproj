@@ -6,7 +6,7 @@
     <ProductVersion>3.0</ProductVersion>
     <ProjectGuid>{a00a00a0-a0a0-4355-a2e3-b48284792334}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>GallioBundle-$(Version)-Setup</OutputName>
+    <OutputName>GallioBundle-$(Version)-Setup-$(Platform)</OutputName>
     <OutputType>Package</OutputType>
     <Cultures>en-US</Cultures>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>

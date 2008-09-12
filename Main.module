@@ -134,7 +134,6 @@
   <PropertyGroup>
     <InstallerWixProperties>
       Configuration=Release;
-      Platform=x86;
       Version=$(Version);
       TargetDir=$(ImageDir);
       ReleaseDir=$(DistDir);
@@ -160,15 +159,23 @@
     <WriteLinesToFile File="$(InstallerFeatureFile)"
                       Lines="&lt;/Include&gt;"
                       Overwrite="false" />
+
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Build"
-             Properties="$(InstallerWixProperties)" />
+             Properties="$(InstallerWixProperties);Platform=x86" />
+    <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
+             Targets="Build"
+             Properties="$(InstallerWixProperties);Platform=x64" />
   </Target>
 
   <Target Name="CleanInstallerWix">
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Clean"
-             Properties="$(InstallerWixProperties)" />
+             Properties="$(InstallerWixProperties);Platform=x86" />
+    <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
+             Targets="Clean"
+             Properties="$(InstallerWixProperties);Platform=x64" />
+
     <Delete Files="$(InstallerFeatureFile)" />
   </Target>
 
