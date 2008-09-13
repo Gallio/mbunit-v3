@@ -19,6 +19,9 @@
     <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.plugin">
       <Folder>VisualStudio</Folder>
     </Binary>
+    <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.addin">
+      <Folder>VisualStudio</Folder>
+    </Binary>
     <Binary Include="Gallio.VisualStudio.Sail\bin\Gallio.VisualStudio.Sail.dll">
       <Folder>VisualStudio</Folder>
     </Binary>

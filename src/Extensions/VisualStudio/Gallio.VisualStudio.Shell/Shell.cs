@@ -90,48 +90,28 @@ namespace Gallio.VisualStudio.Shell
 
         internal void OnPackageInitialized(ShellPackage package)
         {
-            this.package = package;
+            if (package == null)
+                throw new ArgumentNullException("package");
 
-            dte = GetVsService<DTE2>(typeof(SDTE));
-
-            if (dte != null)
-            {
-                string progId = typeof (ShellAddInHandler).GUID.ToString();
-                addIn = dte.AddIns.Add(progId, VSPackage.PackageDescription, VSPackage.PackageName, false);
-                addIn.Connected = true;
-            }
+            ConfigureShellServices(package, addInHandler);
         }
 
         internal void OnPackageDisposed()
         {
-            if (addIn != null)
-            {
-                addIn.Remove();
-                addIn = null;
-            }
-
-            package = null;
-            dte = null;
+            ConfigureShellServices(null, addInHandler);
         }
 
         internal void OnAddInConnected(ShellAddInHandler addInHandler)
         {
-            this.addInHandler = addInHandler;
+            if (addInHandler == null)
+                throw new ArgumentNullException("addInHandler");
 
-            if (package != null && addIn != null)
-            {
-                actionManager.Initialize();
-            }
+            ConfigureShellServices(package, addInHandler);
         }
 
         internal void OnAddInDisconnected()
         {
-            if (package != null && addIn != null)
-            {
-                actionManager.Shutdown();
-            }
-
-            addInHandler = null;
+            ConfigureShellServices(package, null);
         }
 
         internal void QueryStatus(string commandName, vsCommandStatusTextWanted neededText, ref vsCommandStatus statusOption, ref object commandText)
@@ -142,6 +122,32 @@ namespace Gallio.VisualStudio.Shell
         internal void Exec(string commandName, vsCommandExecOption executeOption, ref object variantIn, ref object variantOut, ref bool handled)
         {
             actionManager.Exec(commandName, executeOption, ref variantIn, ref variantOut, ref handled);
+        }
+
+        private void ConfigureShellServices(ShellPackage package, ShellAddInHandler addInHandler)
+        {
+            if (package == null || addInHandler == null)
+                DisposeShellServices();
+
+            this.package = package;
+            this.addInHandler = addInHandler;
+
+            addIn = addInHandler != null ? addInHandler.AddIn : null;
+            dte = package != null ? GetVsService<DTE2>(typeof(SDTE)) :
+                addInHandler != null ? addInHandler.DTE : null;
+
+            if (package != null && addInHandler != null)
+                InitializeShellServices();
+        }
+
+        private void InitializeShellServices()
+        {
+            actionManager.Initialize();
+        }
+
+        private void DisposeShellServices()
+        {
+            actionManager.Shutdown();
         }
     }
 }

@@ -20,3 +20,4 @@ if exist "%GALLIO_LOADER_DLL%" "%GACUTIL%" /i "%GALLIO_LOADER_DLL%" /f
 if exist "%GALLIO_VISUALSTUDIO_TIP_PROXY_DLL%" "%GACUTIL%" /i "%GALLIO_VISUALSTUDIO_TIP_PROXY_DLL%" /f
 
 "%REG%" ADD HKLM\Software\Gallio.org\Gallio\3.0 /F /V DevelopmentRuntimePath /D "%RUNTIME_PATH%
+

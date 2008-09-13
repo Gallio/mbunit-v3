@@ -6,7 +6,7 @@ set LOCALDIR=%~dp0
 set OPTION=%~1
 set SRCDIR=%LOCALDIR%..\..\
 set ROOTDIR=%SRCDIR%..\
-set BINDIR=%BINDIR%bin\
+set BINDIR=%ROOTDIR%bin\
 
 set REG=%BINDIR%reg.exe
 set SED=%BINDIR%minised.exe
@@ -40,14 +40,14 @@ exit /b 0
 
 
 :INSTALL
-gacutil /i /f "%LOADER_BIN_DIR%\Gallio.Loader.dll"
-gacutil /i /f "%TIPPROXY_BIN_DIR%\Gallio.VisualStudio.Tip.Proxy.dll"
+"%GACUTIL%" /i "%LOADER_BIN_DIR%\Gallio.Loader.dll" /f
+"%GACUTIL%" /i "%TIPPROXY_BIN_DIR%\Gallio.VisualStudio.Tip.Proxy.dll" /f
 
 REM Register Shell
 "%REG%" ADD "%VS_PRODUCT_KEY%" /V Package /D "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" /F >nul
 "%REG%" ADD "%VS_PRODUCT_KEY%" /V UseInterface /T REG_DWORD /D "1" /F >nul
 
-"%REG%" ADD %VS_PACKAGE_KEY% /VE /D "Gallio.VisualStudio.Shell.ShellPackage, Gallio.VisualStudio.Shell" /F >nul
+"%REG%" ADD %VS_PACKAGE_KEY% /VE /D "Gallio Shell Package" /F >nul
 "%REG%" ADD %VS_PACKAGE_KEY% /V InprocServer32 /D "%SystemRoot%\system32\mscoree.dll" /F >nul
 "%REG%" ADD %VS_PACKAGE_KEY% /V Class /D "Gallio.VisualStudio.Shell.ShellPackage" /F >nul
 "%REG%" ADD %VS_PACKAGE_KEY% /V CodeBase /D "%SHELL_BIN_DIR%\Gallio.VisualStudio.Shell.dll" /F >nul
@@ -58,6 +58,9 @@ REM Register Shell
 "%REG%" ADD %VS_PACKAGE_KEY% /V CompanyName /D "Gallio Project" /F >nul
 
 "%REG%" ADD "%VS_ROOT_KEY%\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" /V "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" /T REG_DWORD /D "0" /F >nul
+
+REM Register AddIn
+"%REG%" ADD %VS_ROOT_KEY%\AutomationOptions\LookInFolders /V "%SHELL_BIN_DIR%" /D "Gallio" /F >nul
 
 REM Register TIP
 "%REG%" ADD %VS_TEST_TYPE_KEY% /V NameId /D "#100" /F >nul
@@ -71,14 +74,16 @@ exit /b 0
 
 
 :UNINSTALL
-gacutil /u Gallio.Loader
-gacutil /u Gallio.VisualStudio.Tip.Proxy
+"%GACUTIL%" /u Gallio.Loader
+"%GACUTIL%" /u Gallio.VisualStudio.Tip.Proxy
 
 "%REG%" DELETE "%VS_TEST_TYPE_KEY%" /F 2>nul >nul
 "%REG%" DELETE "%VS_PRODUCT_KEY%" /F 2>nul >nul
 "%REG%" DELETE "%VS_PACKAGE_KEY%" /F 2>nul >nul
 
 "%REG%" DELETE "%VS_ROOT_KEY%\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}" /V "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" /F 2>nul >nul
+"%REG%" DELETE "%VS_ROOT_KEY%\AutomationOptions\LookInFolders" /V "%SHELL_BIN_DIR%" /F 2>nul >nul
+
 exit /b 0
 
 

@@ -124,6 +124,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Gallio.VisualStudio.Shell.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Gallio.VisualStudio.Shell.plugin" />
     <None Include="Resources\Product.ico" />
   </ItemGroup>
