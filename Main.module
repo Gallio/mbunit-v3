@@ -34,7 +34,7 @@
   <!-- CLEAN TARGETS -->
 
   <Target Name="BeforeClean"
-          DependsOnTargets="CleanInstallerWix" />
+          DependsOnTargets="CleanInstaller" />
 
 
   <!-- BUILD TARGETS -->
