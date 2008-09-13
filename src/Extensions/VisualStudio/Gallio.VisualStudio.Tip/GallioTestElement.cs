@@ -107,7 +107,7 @@ namespace Gallio.VisualStudio.Tip
 
         public override string Adapter
         {
-            get { return typeof(GallioTestAdapter).AssemblyQualifiedName; }
+            get { return typeof(GallioTestAdapterProxy).AssemblyQualifiedName; }
         }
 
         public override bool CanBeAggregated

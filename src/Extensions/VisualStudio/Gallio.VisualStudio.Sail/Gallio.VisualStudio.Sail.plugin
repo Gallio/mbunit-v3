@@ -5,7 +5,7 @@
       <components>
         <component id="Sail.ShellExtension"
                    service="Gallio.VisualStudio.Shell.IShellExtension, Gallio.VisualStudio.Shell"
-                   component="Gallio.VisualStudio.Sail.SailShellExtension, Gallio.VisualStudio.Sail" />
+                   type="Gallio.VisualStudio.Sail.SailShellExtension, Gallio.VisualStudio.Sail" />
       </components>
     </runtime>
   </gallio>

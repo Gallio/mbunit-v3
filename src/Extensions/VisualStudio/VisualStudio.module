@@ -46,4 +46,11 @@
     <Feature Include="FEATURE_VISUALSTUDIO_SAIL" />
     <Feature Include="FEATURE_VISUALSTUDIO_TIP" />
   </ItemGroup>
+
+  <Target Name="AfterImage"
+          Condition="$(VSIPInstalled)">
+    <FileUpdate Files="$(ImageDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.plugin"
+                Regex="0\.0\.0\.0"
+                ReplacementText="$(Version)" />
+  </Target>
 </Project>

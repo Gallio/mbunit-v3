@@ -5,11 +5,11 @@
       <components>
         <component id="Tip.ShellExtension"
                    service="Gallio.VisualStudio.Shell.IShellExtension, Gallio.VisualStudio.Shell"
-                   component="Gallio.VisualStudio.Tip.TipShellExtension, Gallio.VisualStudio.Tip" />
+                   type="Gallio.VisualStudio.Tip.TipShellExtension, Gallio.VisualStudio.Tip" />
 
         <component id="Tip.ProxyTargetFactory"
-                   service="Gallio.VisualStudio.Tip.IProxyTargetFactory, Gallio.VisualStudio.Tip.Proxy"
-                   component="Gallio.VisualStudio.Tip.DefaultProxyTargetFactory, Gallio.VisualStudio.Tip" />
+                   service="Gallio.VisualStudio.Tip.IProxyTargetFactory, Gallio.VisualStudio.Tip.Proxy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL"
+                   type="Gallio.VisualStudio.Tip.DefaultProxyTargetFactory, Gallio.VisualStudio.Tip" />	   
       </components>
     </runtime>
   </gallio>
