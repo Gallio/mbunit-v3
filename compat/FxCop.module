@@ -2,10 +2,14 @@
     <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
     <PropertyGroup>
-        <FxCopToolDir>C:\Program Files\Microsoft FxCop 1.36</FxCopToolDir>
-        <FxCopProjectFile>$(SourceDir)\All.fxcop</FxCopProjectFile>
+        <FxCopToolDir>$(ProgramFiles)\Microsoft FxCop 1.36</FxCopToolDir>
         <FxCopReportDir>$(ReportDir)\FxCop</FxCopReportDir>
-    </PropertyGroup>
+    </PropertyGroup>    
+
+    <ItemGroup>
+        <FxCopProject Include="API.fxcop" />
+	<FxCopProject Include="Non-API.fxcop" />
+    </ItemGroup>
 
     <Target Name="AfterTest" 
             DependsOnTargets="GenerateFxCopReports">
@@ -22,10 +26,9 @@
 
         <FxCop Condition="Exists('$(FxCopToolDir)\FxCopCmd.exe')"
             ToolPath="$(FxCopToolDir)"
-            ProjectFile="$(FxCopProjectFile)"
-            AnalysisReportFileName="$(FxCopReportDir)\FxCopReport.html"
-            OutputXslFileName="$(FxCopToolDir)\Xml\FxCopReport.xsl"
-            ApplyOutXsl="True"
+            ProjectFile="%(FxCopProject.FullPath)"
+            AnalysisReportFileName="$(FxCopReportDir)\FxCopReport-%(FxCopProject.Filename).xml"
+            ApplyOutXsl="False"
             ContinueOnError="True"
         />
     </Target>

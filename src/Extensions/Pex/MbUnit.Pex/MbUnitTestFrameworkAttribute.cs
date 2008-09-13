@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Microsoft.Pex.Engine.TestFrameworks;
 using Microsoft.Pex.Engine.ComponentModel;
 using Microsoft.Pex.Framework.TestFrameworks;
@@ -22,6 +23,7 @@ namespace MbUnit.Pex
     /// <summary>
     /// Integrates MbUnit test framework support into Pex.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false, Inherited = true)]
     internal sealed class MbUnitTestFrameworkAttribute : PexTestFrameworkAttributeBase
     {
         /// <excludedoc />

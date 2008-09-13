@@ -22,33 +22,19 @@
  </ProjectOptions>
  <Targets>
   <AssemblyReferenceDirectories>
-   <Directory>$(ProjectDir)/Extensions/MbUnit2/libs/</Directory>
-   <Directory>$(ProjectDir)/Extensions/TDNet/libs/</Directory>
+   <Directory>$(ProjectDir)/../src/Extensions/MSBuild/Gallio.MSBuildTasks/bin/</Directory>
+   <Directory>$(ProjectDir)/../src/Extensions/NAnt/Gallio.NAntTasks/bin/</Directory>
+   <Directory>$(ProjectDir)/../src/Extensions/PowerShell/Gallio.PowerShellCommands/bin/</Directory>
+   <Directory>$(ProjectDir)/../src/Extensions/PowerShell/libs/</Directory>
+   <Directory>$(ProjectDir)/../src/Gallio/Gallio.Reports/bin/</Directory>
   </AssemblyReferenceDirectories>
-  <Target Name="$(ProjectDir)\Extensions\CCNet\CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\CSUnit\Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\Echo\Gallio.Echo\bin\Gallio.Echo.exe" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\Icarus\Gallio.Icarus\bin\Gallio.Icarus.exe" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\MbUnit2\Gallio.MbUnit2Adapter\bin\Gallio.MbUnit2Adapter.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\MSBuild\Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\MSTest\Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\NAnt\Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\NCover\Gallio.NCoverIntegration\bin\v1.5.8\Gallio.NCoverIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\NCover\Gallio.NCoverIntegration\bin\v2\Gallio.NCoverIntegration2.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\NUnit\Gallio.NUnitAdapter\bin\Gallio.NUnitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\Pex\MbUnit.Pex\bin\MbUnit.Pex.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\PowerShell\Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" Analyze="False" AnalyzeAllChildren="False" />
-  <Target Name="$(ProjectDir)\Extensions\TDNet\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\TypeMock\Gallio.TypeMockIntegration\bin\Gallio.TypeMockIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Extensions\Xunit\Gallio.XunitAdapter\bin\Gallio.XunitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Gallio\Gallio.Host\bin\Gallio.Host.exe" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Gallio\Gallio.Loader\bin\Gallio.Loader.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Gallio\Gallio.Reports\bin\Gallio.Reports.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Gallio\Gallio\bin\Gallio.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\Gallio\Gallio35\bin\Gallio35.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\MbUnit\MbUnit.Compatibility\bin\MbUnit.Compatibility.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\MbUnit\MbUnit\bin\MbUnit.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\MbUnit\MbUnit35\bin\MbUnit35.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\..\src\Extensions\Pex\MbUnit.Pex\bin\MbUnit.Pex.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\..\src\Gallio\Gallio.Loader\bin\Gallio.Loader.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\..\src\Gallio\Gallio\bin\Gallio.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\..\src\Gallio\Gallio35\bin\Gallio35.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\..\src\MbUnit\MbUnit.Compatibility\bin\MbUnit.Compatibility.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\..\src\MbUnit\MbUnit\bin\MbUnit.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\..\src\MbUnit\MbUnit35\bin\MbUnit35.dll" Analyze="True" AnalyzeAllChildren="True" />
  </Targets>
  <Rules>
   <RuleFiles>
@@ -68,7 +54,6 @@
     <Rule Name="DoNotDeclareVirtualMembersInSealedTypes" Enabled="True" />
     <Rule Name="DoNotDeclareVisibleInstanceFields" Enabled="True" />
     <Rule Name="DoNotHideBaseClassMethods" Enabled="True" />
-    <Rule Name="DoNotNestGenericTypesInMemberSignatures" Enabled="True" />
     <Rule Name="DoNotOverloadOperatorEqualsOnReferenceTypes" Enabled="True" />
     <Rule Name="DoNotPassTypesByReference" Enabled="True" />
     <Rule Name="EnumeratorsShouldBeStronglyTyped" Enabled="True" />
@@ -114,26 +99,60 @@
     <Rule Name="DoNotPrefixEnumValuesWithTypeName" Enabled="True" />
     <Rule Name="EventsShouldNotHaveBeforeOrAfterPrefix" Enabled="True" />
     <Rule Name="FlagsEnumsShouldHavePluralNames" Enabled="True" />
-    <Rule Name="IdentifiersShouldBeCasedCorrectly" Enabled="True" />
-    <Rule Name="IdentifiersShouldBeSpelledCorrectly" Enabled="True" />
     <Rule Name="IdentifiersShouldDifferByMoreThanCase" Enabled="True" />
     <Rule Name="IdentifiersShouldHaveCorrectPrefix" Enabled="True" />
-    <Rule Name="IdentifiersShouldHaveCorrectSuffix" Enabled="True" />
-    <Rule Name="IdentifiersShouldNotContainTypeNames" Enabled="True" />
     <Rule Name="IdentifiersShouldNotContainUnderscores" Enabled="True" />
-    <Rule Name="IdentifiersShouldNotMatchKeywords" Enabled="True" />
     <Rule Name="OnlyFlagsEnumsShouldHavePluralNames" Enabled="True" />
     <Rule Name="ParameterNamesShouldMatchBaseDeclaration" Enabled="True" />
     <Rule Name="ParameterNamesShouldNotMatchMemberNames" Enabled="True" />
-    <Rule Name="PropertyNamesShouldNotMatchGetMethods" Enabled="True" />
     <Rule Name="ResourceStringCompoundWordsShouldBeCasedCorrectly" Enabled="True" />
     <Rule Name="ResourceStringsShouldBeSpelledCorrectly" Enabled="True" />
     <Rule Name="TypeNamesShouldNotMatchNamespaces" Enabled="True" />
-    <Rule Name="UsePreferredTerms" Enabled="True" />
    </RuleFile>
-   <RuleFile Name="$(FxCopDir)\Rules\PerformanceRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\PerformanceRules.dll" Enabled="True" AllRulesEnabled="False">
+    <Rule Name="AvoidExcessiveLocals" Enabled="True" />
+    <Rule Name="AvoidUncalledPrivateCode" Enabled="True" />
+    <Rule Name="AvoidUninstantiatedInternalClasses" Enabled="True" />
+    <Rule Name="AvoidUnusedPrivateFields" Enabled="True" />
+    <Rule Name="DoNotCastUnnecessarily" Enabled="True" />
+    <Rule Name="DoNotInitializeUnnecessarily" Enabled="True" />
+    <Rule Name="InitializeReferenceTypeStaticFieldsInline" Enabled="True" />
+    <Rule Name="MarkAssembliesWithNeutralResourcesLanguage" Enabled="True" />
+    <Rule Name="MarkMembersAsStatic" Enabled="True" />
+    <Rule Name="OverrideEqualsAndOperatorEqualsOnValueTypes" Enabled="True" />
+    <Rule Name="PreferJaggedArraysOverMultidimensional" Enabled="True" />
+    <Rule Name="PropertiesShouldNotReturnArrays" Enabled="True" />
+    <Rule Name="RemoveEmptyFinalizers" Enabled="True" />
+    <Rule Name="RemoveUnusedLocals" Enabled="True" />
+    <Rule Name="TestForEmptyStringsUsingStringLength" Enabled="True" />
+    <Rule Name="UseLiteralsWhereAppropriate" Enabled="True" />
+   </RuleFile>
    <RuleFile Name="$(FxCopDir)\Rules\PortabilityRules.dll" Enabled="True" AllRulesEnabled="True" />
-   <RuleFile Name="$(FxCopDir)\Rules\SecurityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\SecurityRules.dll" Enabled="True" AllRulesEnabled="False">
+    <Rule Name="ArrayFieldsShouldNotBeReadOnly" Enabled="True" />
+    <Rule Name="CallGCKeepAliveWhenUsingNativeResources" Enabled="True" />
+    <Rule Name="CatchNonClsCompliantExceptionsInGeneralHandlers" Enabled="True" />
+    <Rule Name="DoNotDeclareReadOnlyMutableReferenceTypes" Enabled="True" />
+    <Rule Name="DoNotIndirectlyExposeMethodsWithLinkDemands" Enabled="True" />
+    <Rule Name="MethodSecurityShouldBeASupersetOfType" Enabled="True" />
+    <Rule Name="OverrideLinkDemandsShouldBeIdenticalToBase" Enabled="True" />
+    <Rule Name="PointersShouldNotBeVisible" Enabled="True" />
+    <Rule Name="ReviewDeclarativeSecurityOnValueTypes" Enabled="True" />
+    <Rule Name="ReviewDenyAndPermitOnlyUsage" Enabled="True" />
+    <Rule Name="ReviewImperativeSecurity" Enabled="True" />
+    <Rule Name="ReviewSuppressUnmanagedCodeSecurityUsage" Enabled="True" />
+    <Rule Name="ReviewVisibleEventHandlers" Enabled="True" />
+    <Rule Name="SealMethodsThatSatisfyPrivateInterfaces" Enabled="True" />
+    <Rule Name="SecureAsserts" Enabled="True" />
+    <Rule Name="SecuredTypesShouldNotExposeFields" Enabled="True" />
+    <Rule Name="SecureSerializationConstructors" Enabled="True" />
+    <Rule Name="SecurityTransparentAssembliesShouldNotContainSecurityCriticalCode" Enabled="True" />
+    <Rule Name="SecurityTransparentCodeShouldNotAssert" Enabled="True" />
+    <Rule Name="SecurityTransparentCodeShouldNotReferenceNonpublicSecurityCriticalCode" Enabled="True" />
+    <Rule Name="StaticConstructorsShouldBePrivate" Enabled="True" />
+    <Rule Name="TypeLinkDemandsRequireInheritanceDemands" Enabled="True" />
+    <Rule Name="WrapVulnerableFinallyClausesInOuterTry" Enabled="True" />
+   </RuleFile>
    <RuleFile Name="$(FxCopDir)\Rules\UsageRules.dll" Enabled="True" AllRulesEnabled="False">
     <Rule Name="CallBaseClassMethodsOnISerializableTypes" Enabled="True" />
     <Rule Name="CollectionPropertiesShouldBeReadOnly" Enabled="True" />
@@ -177,5 +196,38 @@
   <Groups />
   <Settings />
  </Rules>
- <FxCopReport Version="1.36" />
+ <FxCopReport Version="1.36">
+  <Targets>
+   <Target Name="$(ProjectDir)\..\src\Gallio\Gallio.Loader\bin\Gallio.Loader.dll">
+    <Modules>
+     <Module Name="gallio.loader.dll">
+      <Namespaces>
+       <Namespace Name="Gallio.Loader">
+        <Types>
+         <Type Name="GallioLoader">
+          <Members>
+           <Member Name="#GetDefaultRuntimePath()">
+            <Messages>
+             <Message TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024" Status="Excluded" Created="2008-09-13 00:06:10Z">
+              <Issue>
+               <Item>'GallioLoader.GetDefaultRuntimePath()'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+  </Targets>
+  <Rules>
+   <Rule TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024">
+    <Resolution Name="Default">Change {0} to a property if appropriate.</Resolution>
+   </Rule>
+  </Rules>
+ </FxCopReport>
 </FxCopProject>

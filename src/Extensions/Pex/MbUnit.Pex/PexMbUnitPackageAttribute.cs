@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Microsoft.Pex.Framework.Packages;
 
 namespace MbUnit.Pex
@@ -31,6 +32,8 @@ namespace MbUnit.Pex
     /// </code>
     /// </example>
     /// </summary>
+    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple=false, Inherited=true)]
+    [CLSCompliant(false)]
     public sealed class PexMbUnitPackageAttribute : PexPackageAssemblyAttribute
     {
         /// <summary>
