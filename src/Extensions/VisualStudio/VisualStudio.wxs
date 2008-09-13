@@ -105,7 +105,7 @@
 <?endif?>
                 
 <?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
-            <Feature Id="feat_Gallio.VisualStudio.Sail" Title="Sail" Level="1" Description="Simple test runner add-in for Visual Studio.">
+            <Feature Id="feat_Gallio.VisualStudio.Sail" Title="Sail" Level="2" Description="Simple test runner add-in for Visual Studio (Experimental!)">
                 <ComponentRef Id="Gallio.VisualStudio.Sail.dll"/>
                 <!--
                 <ComponentRef Id="Gallio.VisualStudio.Sail.VS90.Registry"/>
