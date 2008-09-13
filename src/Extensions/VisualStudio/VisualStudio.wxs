@@ -45,9 +45,9 @@
 
                     <!-- Register the add-in -->
                     <RegistryKey Id="Gallio.VisualStudio.Shell.VS90.Registry4" Action="createAndRemoveOnUninstall"
-                                 Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\AutomationOptions\LookInFolders}">
-                        <RegistryValue Type="string" Name="[#VisualStudio.Shell]" Value="Gallio"/>
-                    </RegistryKey>		    
+                                 Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\AutomationOptions\LookInFolders">
+                        <RegistryValue Type="string" Name="[VisualStudio]" Value="Gallio" />
+                    </RegistryKey>
                 </Component>
 
 <?ifdef FEATURE_VISUALSTUDIO_SAIL ?>

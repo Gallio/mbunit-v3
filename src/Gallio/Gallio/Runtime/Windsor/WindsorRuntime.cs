@@ -297,10 +297,6 @@ namespace Gallio.Runtime.Windsor
                 XmlInterpreter configInterpreter = new XmlInterpreter(resource);
                 configInterpreter.ProcessResource(resource, container.Kernel.ConfigurationStore);
             }
-
-            XmlElement installationPathElement = gallioElement.SelectSingleNode("installation/path") as XmlElement;
-            if (installationPathElement != null && installationPathElement.InnerText.Length != 0)
-                runtimeSetup.RuntimePath = installationPathElement.InnerText;
         }
 
         private void RunContainerInstaller()
