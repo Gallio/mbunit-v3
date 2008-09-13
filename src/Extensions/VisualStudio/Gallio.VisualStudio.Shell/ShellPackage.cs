@@ -15,7 +15,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using EnvDTE;
 using Gallio.Loader;
 using Gallio.VisualStudio.Shell.Resources;
 using Microsoft.VisualStudio.Shell;
@@ -48,11 +47,6 @@ namespace Gallio.VisualStudio.Shell
         private static ShellPackage instance;
         private Shell shell;
 
-        static ShellPackage()
-        {
-            GallioLoader.Initialize();
-        }
-
         /// <summary>
         /// Creates the shell package.
         /// </summary>
@@ -83,6 +77,8 @@ namespace Gallio.VisualStudio.Shell
         /// <inheritdoc />
         protected override void Initialize()
         {
+            GallioLoader.Initialize();
+
             base.Initialize();
 
             shell = new Shell();

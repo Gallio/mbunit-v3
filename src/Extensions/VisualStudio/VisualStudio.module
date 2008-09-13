@@ -39,6 +39,7 @@
     <TestAssembly Include="Gallio.VisualStudio.Sail.Tests\bin\Gallio.VisualStudio.Sail.Tests.dll" />
     <TestAssembly Include="Gallio.VisualStudio.Tip.Tests\bin\Gallio.VisualStudio.Tip.Tests.dll" />
 
+    <Feature Include="FEATURE_VISUALSTUDIO" />
     <Feature Include="FEATURE_VISUALSTUDIO_SAIL" />
     <Feature Include="FEATURE_VISUALSTUDIO_TIP" />
   </ItemGroup>

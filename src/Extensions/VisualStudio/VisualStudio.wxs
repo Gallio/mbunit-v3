@@ -2,6 +2,8 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:vs="http://schemas.microsoft.com/wix/VSExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <?include ..\..\Installer.Wix\Features.wxi ?>
+
     <Fragment>
         <PropertyRef Id='VS2005DEVENV'/>
         <PropertyRef Id='VS90DEVENV'/>
@@ -13,22 +15,7 @@
                     <File Id="Gallio.VisualStudio.Shell.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Shell.dll" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Shell.dll" />
                     <File Id="Gallio.VisualStudio.Shell.plugin" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Shell.plugin" />
                 </Component>
-		
-                <Component Id="Gallio.VisualStudio.Sail.dll" Guid="{05E499FA-1897-48d0-98DC-ED8B3E4AFFD3}" Win64="no">
-                    <File Id="Gallio.VisualStudio.Sail.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Sail.dll" KeyPath="yes" />
-                    <File Id="Gallio.VisualStudio.Sail.plugin" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Sail.plugin" />
-                </Component>
-		
-                <Component Id="Gallio.VisualStudio.Tip.dll" Guid="{03BC061B-BCEC-4e3f-BC65-EEE2BCDA30E9}" Win64="no">
-                    <File Id="Gallio.VisualStudio.Tip.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.dll" KeyPath="yes" />
-                    <File Id="Gallio.VisualStudio.Tip.plugin" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.plugin" />
-                </Component>
-
-                <Component Id="Gallio.VisualStudio.Tip.Proxy.dll" Guid="{471E67AA-8B22-421a-BECC-6B900D5CD698}" Win64="no">
-		    <!-- Install in GAC -->
-                    <File Id="Gallio.VisualStudio.Tip.Proxy.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.Proxy.dll" Assembly=".net" KeyPath="yes" />
-                </Component>
-
+                
                 <Component Id="Gallio.VisualStudio.Shell.VS90.Registry" Guid="{AE9CCDE1-FF9F-4519-96D8-F4E2609B1B40}" Win64="no">
                     <!-- Register the product -->
                     <RegistryKey Id="Gallio.VisualStudio.Shell.VS90.Registry1" Action="createAndRemoveOnUninstall"
@@ -43,7 +30,7 @@
                         <RegistryValue Type="string" Value="Gallio.VisualStudio.Shell.ShellPackage, !(bind.assemblyFullName.Gallio.VisualStudio.Shell.dll)"/>
                         <RegistryValue Type="string" Name="InprocServer32" Value="[SystemFolder]mscoree.dll"/>
                         <RegistryValue Type="string" Name="Class" Value="Gallio.VisualStudio.Shell.ShellPackage"/>
-                        <RegistryValue Type="string" Name="Assembly" Value="Gallio.VisualStudio.Shell"/>
+                        <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.VisualStudio.Shell.dll]"/>
                         <RegistryValue Type="integer" Name="ID" Value="1"/>
                         <RegistryValue Type="string" Name="MinEdition" Value="Standard"/>
                         <RegistryValue Type="string" Name="ProductVersion" Value="3.0"/>
@@ -54,9 +41,32 @@
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}">
                         <RegistryValue Type="integer" Name="{9e600ffc-344d-4e6f-89c0-ded6afb42459}" Value="0"/>
                     </RegistryKey>
-		</Component>
+                </Component>
 
-                <Component Id="Gallio.VisualStudio.Tip.VS90.Registry" Guid="{E89197CF-A054-47ae-A1BE-2BB61588ACB1}" Win64="no">		
+<?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
+                <Component Id="Gallio.VisualStudio.Sail.dll" Guid="{05E499FA-1897-48d0-98DC-ED8B3E4AFFD3}" Win64="no">
+                    <File Id="Gallio.VisualStudio.Sail.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Sail.dll" KeyPath="yes" />
+                    <File Id="Gallio.VisualStudio.Sail.plugin" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Sail.plugin" />
+                </Component>
+		
+                <!--
+                <Component Id="Gallio.VisualStudio.Sail.VS90.Registry" Guid="{887DB38D-42DB-4dcc-9008-9DF0E6CBE8A4}">
+                </Component>
+                -->
+<?endif?>
+                
+<?ifdef FEATURE_VISUALSTUDIO_TIP ?>
+                <Component Id="Gallio.VisualStudio.Tip.dll" Guid="{03BC061B-BCEC-4e3f-BC65-EEE2BCDA30E9}" Win64="no">
+                    <File Id="Gallio.VisualStudio.Tip.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.dll" KeyPath="yes" />
+                    <File Id="Gallio.VisualStudio.Tip.plugin" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.plugin" />
+                </Component>
+
+                <Component Id="Gallio.VisualStudio.Tip.Proxy.dll" Guid="{471E67AA-8B22-421a-BECC-6B900D5CD698}" Win64="no">
+                    <!-- Install in GAC -->
+                    <File Id="Gallio.VisualStudio.Tip.Proxy.dll" Source="$(var.GallioTargetDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.Proxy.dll" Assembly=".net" KeyPath="yes" />
+                </Component>
+
+                <Component Id="Gallio.VisualStudio.Tip.VS90.Registry" Guid="{E89197CF-A054-47ae-A1BE-2BB61588ACB1}" Win64="no">                
                     <!-- Register the test types -->
                     <RegistryKey Id="Gallio.VisualStudio.Tip.VS90.Registry4" Action="createAndRemoveOnUninstall"
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}">
@@ -69,35 +79,32 @@
                         </RegistryKey>
                     </RegistryKey>
                 </Component>
-
-		<!--
-                <Component Id="Gallio.VisualStudio.Sail.VS90.Registry" Guid="{887DB38D-42DB-4dcc-9008-9DF0E6CBE8A4}">
-                </Component>
-		-->
+<?endif?>
             </Directory>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.VisualStudio.Tip" Title="Visual Studio Team System Test Runner" Level="0" Description="Test integration provider for Visual Studio Team System (Experimental!)">
+        <Feature Id="feat_Gallio.VisualStudio" Title="Visual Studio integration." Level="0" Description="Installs the pre-requisite packages for Visual Studio integration features.">
             <Condition Level="1">VS90DEVENV</Condition>
 
             <ComponentRef Id="Gallio.VisualStudio.Shell.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell.VS90.Registry"/>
-
-            <ComponentRef Id="Gallio.VisualStudio.Tip.dll"/>
-            <ComponentRef Id="Gallio.VisualStudio.Tip.Proxy.dll"/>
-            <ComponentRef Id="Gallio.VisualStudio.Tip.VS90.Registry"/>
-        </Feature>
-	
-        <Feature Id="feat_Gallio.VisualStudio.Sail" Title="Sail" Level="0" Description="Simple test runner add-in for Visual Studio.">
-            <Condition Level="1">VS90DEVENV</Condition>
-
-            <ComponentRef Id="Gallio.VisualStudio.Shell.dll"/>
-            <ComponentRef Id="Gallio.VisualStudio.Shell.VS90.Registry"/>
-
-            <ComponentRef Id="Gallio.VisualStudio.Sail.dll"/>
-	    <!--
-            <ComponentRef Id="Gallio.VisualStudio.Sail.VS90.Registry"/>
-	    -->
+            
+<?ifdef FEATURE_VISUALSTUDIO_TIP ?>
+            <Feature Id="feat_Gallio.VisualStudio.Tip" Title="Visual Studio Team System Test Runner" Level="2" Description="Test integration provider for Visual Studio Team System (Experimental!)">
+                <ComponentRef Id="Gallio.VisualStudio.Tip.dll"/>
+                <ComponentRef Id="Gallio.VisualStudio.Tip.Proxy.dll"/>
+                <ComponentRef Id="Gallio.VisualStudio.Tip.VS90.Registry"/>
+            </Feature>
+<?endif?>
+                
+<?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
+            <Feature Id="feat_Gallio.VisualStudio.Sail" Title="Sail" Level="1" Description="Simple test runner add-in for Visual Studio.">
+                <ComponentRef Id="Gallio.VisualStudio.Sail.dll"/>
+                <!--
+                <ComponentRef Id="Gallio.VisualStudio.Sail.VS90.Registry"/>
+                -->
+            </Feature>
+<?endif?>
         </Feature>
     </Fragment>
 </Wix>

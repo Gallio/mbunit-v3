@@ -12,6 +12,7 @@ set REG=%BINDIR%reg.exe
 set SED=%BINDIR%minised.exe
 set GACUTIL=%BINDIR%gacutil.exe
 
+set LOADER_BIN_DIR=%SRCDIR%Gallio\Gallio.Loader\bin
 set SHELL_BIN_DIR=%LOCALDIR%Gallio.VisualStudio.Shell\bin
 set SAIL_BIN_DIR=%LOCALDIR%Gallio.VisualStudio.Sail\bin
 set TIP_BIN_DIR=%LOCALDIR%Gallio.VisualStudio.Tip\bin
@@ -39,7 +40,7 @@ exit /b 0
 
 
 :INSTALL
-gacutil /i /f "%SHELL_BIN_DIR%\Gallio.Loader.dll"
+gacutil /i /f "%LOADER_BIN_DIR%\Gallio.Loader.dll"
 gacutil /i /f "%TIPPROXY_BIN_DIR%\Gallio.VisualStudio.Tip.Proxy.dll"
 
 REM Register Shell
@@ -49,7 +50,7 @@ REM Register Shell
 "%REG%" ADD %VS_PACKAGE_KEY% /VE /D "Gallio.VisualStudio.Shell.ShellPackage, Gallio.VisualStudio.Shell" /F >nul
 "%REG%" ADD %VS_PACKAGE_KEY% /V InprocServer32 /D "%SystemRoot%\system32\mscoree.dll" /F >nul
 "%REG%" ADD %VS_PACKAGE_KEY% /V Class /D "Gallio.VisualStudio.Shell.ShellPackage" /F >nul
-"%REG%" ADD %VS_PACKAGE_KEY% /V Assembly /D "Gallio.VisualStudio.Shell" /F >nul
+"%REG%" ADD %VS_PACKAGE_KEY% /V CodeBase /D "%SHELL_BIN_DIR%\Gallio.VisualStudio.Shell.dll" /F >nul
 "%REG%" ADD %VS_PACKAGE_KEY% /V ID /T REG_DWORD /D 1 /F >nul
 "%REG%" ADD %VS_PACKAGE_KEY% /V MinEdition /D "Standard" /F >nul
 "%REG%" ADD %VS_PACKAGE_KEY% /V ProductVersion /D "3.0" /F >nul

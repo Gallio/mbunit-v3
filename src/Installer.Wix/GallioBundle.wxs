@@ -74,8 +74,8 @@
         <InstallExecuteSequence>
             <FindRelatedProducts Before="LaunchConditions" />
             <RemoveExistingProducts After="InstallValidate" />
-            <Custom Action="VS2005Setup" Before="InstallFinalize"><![CDATA[(&feat_Gallio.VisualStudio.Tip > 1 OR &feat_Gallio.VisualStudio.Sail > 1 OR &feat_MbUnit3.Templates.VS2005 > 1) AND VS2005DEVENV <> ""]]></Custom>
-            <Custom Action="VS90Setup" Before="InstallFinalize"><![CDATA[(&feat_Gallio.VisualStudio.Tip > 1 OR &feat_Gallio.VisualStudio.Sail > 1 OR &feat_MbUnit3.Templates.VS2008 > 1) AND VS90DEVENV <> ""]]></Custom>
+            <Custom Action="VS2005Setup" Before="InstallFinalize"><![CDATA[(&feat_MbUnit3.Templates.VS2005 > 1) AND VS2005DEVENV <> ""]]></Custom>
+            <Custom Action="VS90Setup" Before="InstallFinalize"><![CDATA[(&feat_Gallio.VisualStudio > 1 OR &feat_MbUnit3.Templates.VS2008 > 1) AND VS90DEVENV <> ""]]></Custom>
         </InstallExecuteSequence>
 
         <InstallUISequence>
@@ -136,11 +136,8 @@
             <FeatureRef Id='feat_Gallio.ReSharper.V41'/>
 <?endif?>
             <FeatureRef Id='feat_Gallio.TDNet'/>
-<?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
-            <FeatureRef Id='feat_Gallio.VisualStudio.Sail'/>
-<?endif?>
-<?ifdef FEATURE_VISUALSTUDIO_TIP ?>
-            <FeatureRef Id='feat_Gallio.VisualStudio.Tip'/>
+<?ifdef FEATURE_VISUALSTUDIO ?>
+            <FeatureRef Id='feat_Gallio.VisualStudio'/>
 <?endif?>
         </Feature>
 
