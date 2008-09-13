@@ -124,7 +124,6 @@
       Configuration=Release;
       Version=$(Version);
       TargetDir=$(ImageDir);
-      ReleaseDir=$(DistDir);
       WixTargetsPath=$(ToolsDir)\Wix\Microsoft\WiX\v3.0\Wix.targets;
       WixTasksPath=$(ToolsDir)\Wix\Microsoft\WiX\v3.0\WixTasks.dll;
       WixToolPath=$(ToolsDir)\Wix\bin;
@@ -156,6 +155,9 @@
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Build"
              Properties="$(InstallerWixProperties);Platform=x86" />
+
+    <Copy SourceFiles="$(SourceDir)\Installer.Wix\bin\x86\Release\GallioBundle-$(Version)-Setup-x86.msi"
+          DestinationFolder="$(DistDir)" />
   </Target>
 
   <Target Name="BuildInstaller-x64" DependsOnTargets="PrepareToBuildInstaller">
@@ -165,6 +167,9 @@
     <MSBuild Projects="$(SourceDir)\Installer.Wix\GallioBundle.wixproj"
              Targets="Build"
              Properties="$(InstallerWixProperties);Platform=x64" />
+	     
+    <Copy SourceFiles="$(SourceDir)\Installer.Wix\bin\x64\Release\GallioBundle-$(Version)-Setup-x64.msi"
+          DestinationFolder="$(DistDir)" />
   </Target>
 
   <Target Name="CleanInstaller"

@@ -10,7 +10,6 @@
     <OutputType>Package</OutputType>
     <Cultures>en-US</Cultures>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
-    <ReleaseDir Condition="'$(ReleaseDir)'==''">$(MSBuildProjectDirectory)\..\..\build\dist</ReleaseDir>
     <TargetDir Condition="'$(TargetDir)'==''">$(MSBuildProjectDirectory)\..\..\build\image</TargetDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -18,21 +17,21 @@
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug;GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
     <Cultures>en-US</Cultures>
-    <SuppressIces>ICE69</SuppressIces>
+    <SuppressIces>ICE69;ICE61</SuppressIces>
     <SuppressPdbOutput>true</SuppressPdbOutput>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>$(ReleaseDir)</OutputPath>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
     <Cultures>en-US</Cultures>
-    <SuppressIces>ICE69</SuppressIces>
+    <SuppressIces>ICE69;ICE61</SuppressIces>
     <SuppressPdbOutput>true</SuppressPdbOutput>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DefineConstants>Debug;GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
     <Cultures>en-US</Cultures>
-    <SuppressIces>ICE69</SuppressIces>
+    <SuppressIces>ICE69;ICE61</SuppressIces>
     <SuppressPdbOutput>true</SuppressPdbOutput>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
@@ -40,9 +39,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <DefineConstants>GallioTargetDir=$(TargetDir);Version=$(Version)</DefineConstants>
     <Cultures>en-US</Cultures>
-    <SuppressIces>ICE69</SuppressIces>
+    <SuppressIces>ICE69;ICE61</SuppressIces>
     <SuppressPdbOutput>true</SuppressPdbOutput>
-    <OutputPath>$(ReleaseDir)</OutputPath>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>    
   <ItemGroup>
