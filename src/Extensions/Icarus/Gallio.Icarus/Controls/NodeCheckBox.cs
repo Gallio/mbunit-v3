@@ -18,6 +18,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Aga.Controls.Tree;
+using Gallio.Icarus.Models;
 
 namespace Gallio.Icarus.Controls
 {
@@ -25,33 +26,32 @@ namespace Gallio.Icarus.Controls
     {
         public override void MouseDown(TreeNodeAdvMouseEventArgs args)
         {
-            if (args.Button == MouseButtons.Left && IsEditEnabled(args.Node))
-            {
-                DrawContext context = new DrawContext();
-                context.Bounds = args.ControlBounds;
-                Rectangle rect = GetBounds(args.Node, context);
-                if (rect.Contains(args.ViewLocation))
-                {
-                    CheckState state = GetCheckState(args.Node);
-                    state = GetNewState(state);
-                    Parent.BeginUpdate();
-                    SetCheckState(args.Node, state);
-                    ((TestTreeNode)args.Node.Tag).UpdateStateOfRelatedNodes();
-                    Parent.EndUpdate();
-                    ((TestTreeModel)Parent.Model).OnTestCountChanged(EventArgs.Empty);
-                    args.Handled = true;
-                }
-            }
+            if (args.Button != MouseButtons.Left || !IsEditEnabled(args.Node))
+                return;
+            
+            DrawContext context = new DrawContext();
+            context.Bounds = args.ControlBounds;
+            Rectangle rect = GetBounds(args.Node, context);
+            
+            if (!rect.Contains(args.ViewLocation))
+                return;
+
+            CheckState state = GetCheckState(args.Node);
+            state = GetNewState(state);
+            Parent.BeginUpdate();
+            SetCheckState(args.Node, state);
+            ((TestTreeNode)args.Node.Tag).UpdateStateOfRelatedNodes();
+            Parent.EndUpdate();
+            ((TestTreeModel)Parent.Model).OnTestCountChanged(EventArgs.Empty);
+            args.Handled = true;
         }
         
-        private CheckState GetNewState(CheckState state)
+        private static CheckState GetNewState(CheckState state)
         {
             switch (state)
             {
                 case CheckState.Unchecked:
                         return CheckState.Checked;
-                case CheckState.Checked:
-                case CheckState.Indeterminate:
                 default:
                         return CheckState.Unchecked;
             }

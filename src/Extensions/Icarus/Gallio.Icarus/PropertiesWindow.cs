@@ -17,44 +17,25 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus
 {
     public partial class PropertiesWindow : DockWindow
     {
-        private readonly IProjectAdapterView projectAdapterView;
+        private readonly IProjectController projectController;
 
-        public IList<string> HintDirectories
+        public PropertiesWindow(IProjectController projectController)
         {
-            set
-            {
-                hintDirectoriesListBox.Items.Clear();
-                foreach (string s in value)
-                    hintDirectoriesListBox.Items.Add(s);
-            }
-        }
-
-        public string ApplicationBaseDirectory
-        {
-            set { applicationBaseDirectoryTextBox.Text = value ?? ""; }
-        }
-
-        public string WorkingDirectory
-        {
-            set { workingDirectoryTextBox.Text = value ?? ""; }
-        }
-
-        public bool ShadowCopy
-        {
-            set { shadowCopyCheckBox.Checked = value; }
-        }
-
-        public PropertiesWindow(IProjectAdapterView projectAdapterView)
-        {
-            this.projectAdapterView = projectAdapterView;
+            this.projectController = projectController;
             InitializeComponent();
+            hintDirectoriesListBox.DataSource = projectController.HintDirectories;
+            applicationBaseDirectoryTextBox.DataBindings.Add("Text", projectController, 
+                "TestPackageConfig.HostSetup.ApplicationBaseDirectory").DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            workingDirectoryTextBox.DataBindings.Add("Text", projectController,
+                "TestPackageConfig.HostSetup.WorkingDirectory").DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            shadowCopyCheckBox.DataBindings.Add("Checked", projectController, 
+                "TestPackageConfig.HostSetup.ShadowCopy").DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
         }
 
         private void findHintDirectoryButton_Click(object sender, EventArgs e)
@@ -67,18 +48,9 @@ namespace Gallio.Icarus
         private void addFolderButton_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(newHintDirectoryTextBox.Text))
-            {
-                hintDirectoriesListBox.Items.Add(newHintDirectoryTextBox.Text);
-                newHintDirectoryTextBox.Clear();
-                UpdateHintDirectories();
-            }
+                projectController.HintDirectories.Add(newHintDirectoryTextBox.Text);
             else
-            {
-                // TODO: move to resources for localisation
-                string message = "Folder path does not exist." + Environment.NewLine + "Please select a valid folder path.";
-                const string title = "Invalid folder path";
-                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                DisplayInvalidFolderMessage();
         }
 
         private void hintDirectoriesListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -88,17 +60,7 @@ namespace Gallio.Icarus
 
         private void removeHintDirectoryButton_Click(object sender, EventArgs e)
         {
-            while (hintDirectoriesListBox.SelectedItems.Count > 0)
-                hintDirectoriesListBox.Items.Remove(hintDirectoriesListBox.SelectedItem);
-            UpdateHintDirectories();
-        }
-
-        private void UpdateHintDirectories()
-        {
-            List<string> list = new List<string>();
-            foreach (object o in hintDirectoriesListBox.Items)
-                list.Add((string)o);
-            projectAdapterView.UpdateHintDirectories(list);
+            projectController.HintDirectories.Remove((string)hintDirectoriesListBox.SelectedItem);
         }
 
         private void findApplicationBaseDirectoryButton_Click(object sender, EventArgs e)
@@ -108,9 +70,12 @@ namespace Gallio.Icarus
                 applicationBaseDirectoryTextBox.Text = folderBrowserDialog.SelectedPath;
         }
 
-        private void applicationBaseDirectoryTextBox_TextChanged(object sender, EventArgs e)
+        private static void DisplayInvalidFolderMessage()
         {
-            projectAdapterView.UpdateApplicationBaseDirectory(applicationBaseDirectoryTextBox.Text.Length == 0 ? null : applicationBaseDirectoryTextBox.Text);
+            // TODO: move to resources for localisation
+            string message = "Folder path does not exist." + Environment.NewLine + "Please select a valid folder path.";
+            const string title = "Invalid folder path";
+            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void findWorkingDirectoryButton_Click(object sender, EventArgs e)
@@ -118,16 +83,6 @@ namespace Gallio.Icarus
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 workingDirectoryTextBox.Text = folderBrowserDialog.SelectedPath;
-        }
-
-        private void workingDirectoryTextBox_TextChanged(object sender, EventArgs e)
-        {
-            projectAdapterView.UpdateWorkingDirectory(workingDirectoryTextBox.Text.Length == 0 ? null : workingDirectoryTextBox.Text);
-        }
-
-        private void shadowCopyCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            projectAdapterView.UpdateShadowCopy(shadowCopyCheckBox.Checked);
         }
     }
 }

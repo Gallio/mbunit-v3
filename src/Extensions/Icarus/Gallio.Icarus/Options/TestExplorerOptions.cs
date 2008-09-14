@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus.Options
 {

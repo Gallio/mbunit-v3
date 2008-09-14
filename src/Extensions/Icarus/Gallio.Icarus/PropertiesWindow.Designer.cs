@@ -150,7 +150,6 @@ namespace Gallio.Icarus
             this.applicationBaseDirectoryTextBox.Name = "applicationBaseDirectoryTextBox";
             this.applicationBaseDirectoryTextBox.Size = new System.Drawing.Size(614, 20);
             this.applicationBaseDirectoryTextBox.TabIndex = 7;
-            this.applicationBaseDirectoryTextBox.TextChanged += new System.EventHandler(this.applicationBaseDirectoryTextBox_TextChanged);
             // 
             // findWorkingDirectoryButton
             // 
@@ -171,7 +170,6 @@ namespace Gallio.Icarus
             this.workingDirectoryTextBox.Name = "workingDirectoryTextBox";
             this.workingDirectoryTextBox.Size = new System.Drawing.Size(614, 20);
             this.workingDirectoryTextBox.TabIndex = 10;
-            this.workingDirectoryTextBox.TextChanged += new System.EventHandler(this.workingDirectoryTextBox_TextChanged);
             // 
             // workingDirectoryLabel
             // 
@@ -191,7 +189,6 @@ namespace Gallio.Icarus
             this.shadowCopyCheckBox.TabIndex = 12;
             this.shadowCopyCheckBox.Text = "Shadow copy";
             this.shadowCopyCheckBox.UseVisualStyleBackColor = true;
-            this.shadowCopyCheckBox.CheckedChanged += new System.EventHandler(this.shadowCopyCheckBox_CheckedChanged);
             // 
             // PropertiesWindow
             // 

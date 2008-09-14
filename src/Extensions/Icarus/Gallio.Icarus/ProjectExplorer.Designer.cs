@@ -47,10 +47,14 @@ namespace Gallio.Icarus
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.projectTree = new Gallio.Icarus.Controls.ProjectTreeView();
             this.projectTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addAssembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeAssemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeAssembliesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
+            this.projectTreeMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripContainer1
@@ -85,18 +89,45 @@ namespace Gallio.Icarus
             this.projectTree.SelectedNode = null;
             this.projectTree.Size = new System.Drawing.Size(281, 248);
             this.projectTree.TabIndex = 5;
+            this.projectTree.SelectionChanged += new System.EventHandler(this.projectTree_SelectionChanged);
+            this.projectTree.DoubleClick += new System.EventHandler(this.projectTree_DoubleClick);
             // 
             // projectTreeMenuStrip
             // 
+            this.projectTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addAssembliesToolStripMenuItem,
+            this.removeAssemblyToolStripMenuItem,
+            this.removeAssembliesToolStripMenuItem});
             this.projectTreeMenuStrip.Name = "classTreeMenuStrip";
-            this.projectTreeMenuStrip.Size = new System.Drawing.Size(61, 4);
+            this.projectTreeMenuStrip.Size = new System.Drawing.Size(179, 92);
+            // 
+            // addAssembliesToolStripMenuItem
+            // 
+            this.addAssembliesToolStripMenuItem.Name = "addAssembliesToolStripMenuItem";
+            this.addAssembliesToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.addAssembliesToolStripMenuItem.Text = "Add assemblies...";
+            this.addAssembliesToolStripMenuItem.Click += new System.EventHandler(this.addAssembliesToolStripMenuItem_Click);
+            // 
+            // removeAssemblyToolStripMenuItem
+            // 
+            this.removeAssemblyToolStripMenuItem.Name = "removeAssemblyToolStripMenuItem";
+            this.removeAssemblyToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.removeAssemblyToolStripMenuItem.Text = "Remove assembly";
+            this.removeAssemblyToolStripMenuItem.Click += new System.EventHandler(this.removeAssemblyToolStripMenuItem_Click);
+            // 
+            // removeAssembliesToolStripMenuItem
+            // 
+            this.removeAssembliesToolStripMenuItem.Name = "removeAssembliesToolStripMenuItem";
+            this.removeAssembliesToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.removeAssembliesToolStripMenuItem.Text = "Remove assemblies";
+            this.removeAssembliesToolStripMenuItem.Click += new System.EventHandler(this.removeAssembliesToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(41, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(111, 25);
             this.toolStrip1.TabIndex = 5;
             // 
             // ProjectExplorer
@@ -113,6 +144,7 @@ namespace Gallio.Icarus
             this.toolStripContainer1.TopToolStripPanel.PerformLayout();
             this.toolStripContainer1.ResumeLayout(false);
             this.toolStripContainer1.PerformLayout();
+            this.projectTreeMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -123,5 +155,8 @@ namespace Gallio.Icarus
         private Gallio.Icarus.Controls.ProjectTreeView projectTree;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ContextMenuStrip projectTreeMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addAssembliesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeAssembliesToolStripMenuItem;
     }
 }

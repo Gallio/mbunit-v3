@@ -15,11 +15,11 @@
 
 using System.Collections.Generic;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Controllers;
-using Gallio.Icarus.Controls;
-using Gallio.Icarus.Core.CustomEventArgs;
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
+using Gallio.Icarus.Models.Interfaces;
 using Gallio.Model;
+using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Utilities;
 
@@ -27,36 +27,22 @@ namespace Gallio.Icarus
 {
     public partial class TestResults : DockWindow
     {
-        private IList<string> selectedNodeIds;
-        private ITreeModel treeModel;
-
-        public IList<string> SelectedNodeIds
-        {
-            set
-            {
-                selectedNodeIds = value;
-                UpdateTestResults();
-            }
-        }
-
-        public ITreeModel TreeModel
-        {
-            set
-            {
-                treeModel = value;
-                ((TestTreeModel)treeModel).TestResult += TestResults_TestResult;
-            }
-        }
+        readonly ITestController testController;
 
         public int TotalTests
         {
             set { testProgressStatusBar.Total = value; }
         }
 
-        public TestResults(IOptionsController optionsController)
+        public TestResults(ITestController testController, IOptionsController optionsController)
         {
-            selectedNodeIds = new List<string>();
+            this.testController = testController;
+
             InitializeComponent();
+
+            testController.TestStepFinished += testController_TestStepFinished;
+            testController.SelectedTests.ListChanged += delegate { Sync.Invoke(this, UpdateTestResults); };
+            testController.RunStarted += delegate { Reset(); };
 
             testProgressStatusBar.DataBindings.Add("Mode", optionsController, "TestProgressBarStyle");
             testProgressStatusBar.DataBindings.Add("PassedColor", optionsController, "PassedColor");
@@ -65,7 +51,7 @@ namespace Gallio.Icarus
             testProgressStatusBar.DataBindings.Add("SkippedColor", optionsController, "SkippedColor");
         }
 
-        private void TestResults_TestResult(object sender, TestResultEventArgs e)
+        void testController_TestStepFinished(object sender, TestStepFinishedEventArgs e)
         {
             Sync.Invoke(this, delegate
             {
@@ -74,14 +60,19 @@ namespace Gallio.Icarus
             });
         }
 
-        private void UpdateTestResults()
+        void UpdateTestResults()
         {
+            testProgressStatusBar.Total = testController.TestCount;
+
             testResultsList.BeginUpdate();
             testResultsList.Items.Clear();
 
             List<TestTreeNode> nodes = new List<TestTreeNode>();
-            foreach (string nodeId in selectedNodeIds)
-                nodes.AddRange(((TestTreeModel)treeModel).Root.Find(nodeId, true));
+            if (testController.SelectedTests.Count > 0)
+                foreach (string nodeId in testController.SelectedTests)
+                    nodes.AddRange(((ITestTreeModel)testController.Model).Root.Find(nodeId, true));
+            else
+                nodes.Add(((ITestTreeModel)testController.Model).Root);
 
             foreach (TestTreeNode node in nodes)
                 UpdateTestResults(node, 0);
@@ -90,7 +81,7 @@ namespace Gallio.Icarus
             testResultsList.EndUpdate();
         }
 
-        private void UpdateTestResults(TestTreeNode node, int indentCount)
+        void UpdateTestResults(TestTreeNode node, int indentCount)
         {
             foreach (TestStepRun tsr in node.TestStepRuns)
                 testResultsList.AddTestStepRun(node.NodeType, tsr, indentCount);
@@ -102,31 +93,34 @@ namespace Gallio.Icarus
             }
         }
 
-        public void Reset()
+        void Reset()
         {
-            testProgressStatusBar.Clear();
-            testResultsList.Items.Clear();
+            Sync.Invoke(this, delegate
+            {
+                testProgressStatusBar.Clear();
+                testResultsList.Items.Clear();
+            });
         }
 
-        private void UpdateProgress(TestStepRun testStepRun)
+        void UpdateProgress(TestStepRun testStepRun)
         {
-            if (testStepRun.Step.IsPrimary && testStepRun.Step.IsTestCase)
+            if (!testStepRun.Step.IsPrimary || !testStepRun.Step.IsTestCase)
+                return;
+
+            switch (testStepRun.Result.Outcome.Status)
             {
-                switch (testStepRun.Result.Outcome.Status)
-                {
-                    case TestStatus.Passed:
-                        testProgressStatusBar.Passed += 1;
-                        break;
-                    case TestStatus.Failed:
-                        testProgressStatusBar.Failed += 1;
-                        break;
-                    case TestStatus.Skipped:
-                        testProgressStatusBar.Skipped += 1;
-                        break;
-                    case TestStatus.Inconclusive:
-                        testProgressStatusBar.Inconclusive += 1;
-                        break;
-                }
+                case TestStatus.Passed:
+                    testProgressStatusBar.Passed += 1;
+                    break;
+                case TestStatus.Failed:
+                    testProgressStatusBar.Failed += 1;
+                    break;
+                case TestStatus.Skipped:
+                    testProgressStatusBar.Skipped += 1;
+                    break;
+                case TestStatus.Inconclusive:
+                    testProgressStatusBar.Inconclusive += 1;
+                    break;
             }
         }
     }

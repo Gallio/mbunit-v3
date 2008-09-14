@@ -29,34 +29,26 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
-
-using Gallio.Icarus.Interfaces;
-using Gallio.Runner.Projects;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Model;
+using Gallio.Model.Filters;
 
 namespace Gallio.Icarus
 {
     public partial class FiltersWindow : DockWindow
     {
-        private IProjectAdapterView projectAdapterView;
+        private readonly IProjectController projectController;
+        private readonly ITestController testController;
 
-        public IList<string> Filters
+        public FiltersWindow(IProjectController projectController, ITestController testController)
         {
-            set
-            {
-                // populate list box
-                filtersListBox.Items.Clear();
-                foreach (string filter in value)
-                    filtersListBox.Items.Add(filter);
-            }
-        }
+            this.projectController = projectController;
+            this.testController = testController;
 
-        public FiltersWindow(IProjectAdapterView projectAdapterView)
-        {
-            this.projectAdapterView = projectAdapterView;
             InitializeComponent();
+
+            filtersListBox.DataSource = projectController.TestFilters;
         }
 
         private void filtersListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -66,7 +58,7 @@ namespace Gallio.Icarus
 
         private void removeFilterButton_Click(object sender, EventArgs e)
         {
-            projectAdapterView.OnDeleteFilter((string)filtersListBox.SelectedItem);
+            projectController.DeleteFilter((string)filtersListBox.SelectedItem);
         }
 
         private void filterNameTextBox_TextChanged(object sender, EventArgs e)
@@ -79,20 +71,22 @@ namespace Gallio.Icarus
             if (filtersListBox.Items.Contains(filterNameTextBox.Text))
             {
                 // TODO: Localisation 
-                string title = "Duplicate test filter";
-                string message = "A test filter with that name already exists. Please choose another.";
+                const string title = "Duplicate test filter";
+                const string message = "A test filter with that name already exists. Please choose another.";
                 MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                projectAdapterView.OnSaveFilter(filterNameTextBox.Text);
+                projectController.SaveFilter(filterNameTextBox.Text, testController.GetCurrentFilter());
                 filterNameTextBox.Clear();
             }
         }
 
         private void applyFilterButton_Click(object sender, EventArgs e)
         {
-            projectAdapterView.OnApplyFilter((string)filtersListBox.SelectedItem);
+            Filter<ITest> filter = projectController.GetFilter((string) filtersListBox.SelectedItem);
+            if (filter != null)
+                testController.ApplyFilter(filter);
         }
     }
 }

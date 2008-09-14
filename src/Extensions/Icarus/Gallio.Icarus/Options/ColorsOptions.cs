@@ -15,7 +15,7 @@
 
 using System;
 using System.Windows.Forms;
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus.Options
 {

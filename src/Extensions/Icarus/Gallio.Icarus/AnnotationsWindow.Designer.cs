@@ -136,7 +136,7 @@ namespace Gallio.Icarus
             this.showInfoToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(242, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(245, 25);
             this.toolStrip1.TabIndex = 0;
             // 
             // showErrorsToolStripButton
@@ -147,8 +147,8 @@ namespace Gallio.Icarus
             this.showErrorsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("showErrorsToolStripButton.Image")));
             this.showErrorsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.showErrorsToolStripButton.Name = "showErrorsToolStripButton";
-            this.showErrorsToolStripButton.Size = new System.Drawing.Size(75, 22);
-            this.showErrorsToolStripButton.Text = "{0} Errors";
+            this.showErrorsToolStripButton.Size = new System.Drawing.Size(65, 22);
+            this.showErrorsToolStripButton.Text = "0 Errors";
             this.showErrorsToolStripButton.Click += new System.EventHandler(this.annotationsToolStripButton_Click);
             // 
             // showWarningsToolStripButton
@@ -159,8 +159,8 @@ namespace Gallio.Icarus
             this.showWarningsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("showWarningsToolStripButton.Image")));
             this.showWarningsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.showWarningsToolStripButton.Name = "showWarningsToolStripButton";
-            this.showWarningsToolStripButton.Size = new System.Drawing.Size(91, 22);
-            this.showWarningsToolStripButton.Text = "{0} Warnings";
+            this.showWarningsToolStripButton.Size = new System.Drawing.Size(81, 22);
+            this.showWarningsToolStripButton.Text = "0 Warnings";
             this.showWarningsToolStripButton.Click += new System.EventHandler(this.annotationsToolStripButton_Click);
             // 
             // showInfoToolStripButton
@@ -171,8 +171,8 @@ namespace Gallio.Icarus
             this.showInfoToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("showInfoToolStripButton.Image")));
             this.showInfoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.showInfoToolStripButton.Name = "showInfoToolStripButton";
-            this.showInfoToolStripButton.Size = new System.Drawing.Size(66, 22);
-            this.showInfoToolStripButton.Text = "{0} Info";
+            this.showInfoToolStripButton.Size = new System.Drawing.Size(56, 22);
+            this.showInfoToolStripButton.Text = "0 Info";
             this.showInfoToolStripButton.Click += new System.EventHandler(this.annotationsToolStripButton_Click);
             // 
             // AnnotationsWindow

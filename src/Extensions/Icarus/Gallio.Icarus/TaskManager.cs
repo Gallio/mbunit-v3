@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Runtime;
 
@@ -22,7 +21,7 @@ namespace Gallio.Icarus
 {
     internal sealed class TaskManager
     {
-        private Task currentWorkerTask = null;
+        private Task currentWorkerTask;
 
         public void StartTask(Action action)
         {
@@ -38,7 +37,7 @@ namespace Gallio.Icarus
                     if (!workerTask.IsAborted)
                     {
                         if (workerTask.Result.Exception != null)
-                            UnhandledExceptionPolicy.Report("An exception occurred in a background task.", this.currentWorkerTask.Result.Exception);
+                            UnhandledExceptionPolicy.Report("An exception occurred in a background task.", currentWorkerTask.Result.Exception);
                     }
 
                     lock (this)

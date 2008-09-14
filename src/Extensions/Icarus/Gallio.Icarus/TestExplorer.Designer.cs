@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Icarus.Controls;
+
 namespace Gallio.Icarus
 {
     partial class TestExplorer
@@ -45,8 +47,8 @@ namespace Gallio.Icarus
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestExplorer));
+            this.testTree = new TestTreeView();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.testTree = new Gallio.Icarus.Controls.TestTreeView();
             this.testTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();

@@ -19,7 +19,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner;
 using Gallio.Runtime;
 using Gallio.Utilities;

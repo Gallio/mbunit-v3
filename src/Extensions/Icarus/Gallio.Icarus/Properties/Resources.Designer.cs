@@ -123,6 +123,13 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        internal static System.Drawing.Icon PropertyWindow {
+            get {
+                object obj = ResourceManager.GetObject("PropertyWindow", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon Report {
             get {
                 object obj = ResourceManager.GetObject("Report", resourceCulture);

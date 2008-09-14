@@ -77,6 +77,7 @@ namespace Gallio.Icarus.Controls
 
         public void AddTestStepRun(string testKind, TestStepRun testStepRun, int indentCount)
         {
+            // get the appropriate icon based on outcome
             int imgIndex = -1;
             switch (testStepRun.Result.Outcome.Status)
             {
@@ -90,14 +91,24 @@ namespace Gallio.Icarus.Controls
                     imgIndex = 0;
                     break;
             }
-            ListViewItem lvi = new ListViewItem(testStepRun.Step.Name, imgIndex);
+            // convert the test step run information to a format for display as a list view item
+            string duration = testStepRun.Result.Duration.ToString("0.000");
+            string assertCount = testStepRun.Result.AssertCount.ToString();
             string codeReference = testStepRun.Step.CodeReference.TypeName ?? string.Empty;
             string assemblyName = testStepRun.Step.CodeReference.AssemblyName ?? string.Empty;
-            lvi.SubItems.AddRange(new[] { testKind, testStepRun.Result.Duration.ToString("0.000"), 
-                testStepRun.Result.AssertCount.ToString(), codeReference, assemblyName });
+            ListViewItem listViewItem = CreateListViewItem(testStepRun.Step.Name, imgIndex, testKind, duration, assertCount, 
+                codeReference, assemblyName, indentCount);
+            Items.Add(listViewItem);
+        }
+
+        private ListViewItem CreateListViewItem(string name, int imgIndex, string testKind, string duration, string assertCount, 
+            string codeReference, string assemblyName, int indentCount)
+        {
+            ListViewItem lvi = new ListViewItem(name, imgIndex);
+            lvi.SubItems.AddRange(new[] { testKind, duration, assertCount, codeReference, assemblyName });
             if (columnSorter.SortColumn == 0)
                 lvi.IndentCount = indentCount;
-            Items.Add(lvi);
+            return lvi;
         }
 
         public new void Clear()
@@ -154,30 +165,30 @@ namespace Gallio.Icarus.Controls
             ListViewItem listviewY = (ListViewItem)y;
 
             // Compare the two items
-            if (ColumnToSort == 0)
+            switch (ColumnToSort)
             {
-                // status column
-                compareResult = listviewX.ImageIndex.CompareTo(listviewY.ImageIndex);
-            }
-            else if (ColumnToSort == 2 || ColumnToSort == 3)
-            {
-                // duration column
-                decimal left = Convert.ToDecimal(listviewX.SubItems[ColumnToSort].Text);
-                decimal right = Convert.ToDecimal(listviewY.SubItems[ColumnToSort].Text);
-                if (left < right)
-                    compareResult = 1;
-                else
+                case 0: // outcome
+                    compareResult = listviewX.ImageIndex.CompareTo(listviewY.ImageIndex);
+                    break;
+                case 3: // assert count
+                case 2: // duration
                 {
-                    if (left > right)
-                        compareResult = -1;
+                    decimal left = Convert.ToDecimal(listviewX.SubItems[ColumnToSort].Text);
+                    decimal right = Convert.ToDecimal(listviewY.SubItems[ColumnToSort].Text);
+                    if (left < right)
+                        compareResult = 1;
                     else
-                        compareResult = 0;
+                    {
+                        if (left > right)
+                            compareResult = -1;
+                        else
+                            compareResult = 0;
+                    }
                 }
-            }
-            else
-            {
-                // standard text sort (ci)
-                compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
+                    break;
+                default: // text
+                    compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
+                    break;
             }
 
             // Calculate correct return value based on object comparison

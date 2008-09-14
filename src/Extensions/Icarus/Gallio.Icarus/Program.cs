@@ -16,19 +16,18 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using Gallio.Icarus.Adapter;
-using Gallio.Icarus.AdapterModel;
 using Gallio.Icarus.Controllers;
-using Gallio.Icarus.Controls;
-using Gallio.Icarus.Core.Interfaces;
-using Gallio.Icarus.Core.Model;
-using Gallio.Icarus.Core.Presenter;
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
+using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Services.Interfaces;
 using Gallio.Reflection;
 using Gallio.Runner;
+using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
+using Gallio.Icarus.Services;
 
 namespace Gallio.Icarus
 {
@@ -46,33 +45,40 @@ namespace Gallio.Icarus
             Application.SetCompatibleTextRenderingDefault(false);
 
             Arguments arguments = ParseArguments(args);
-            Main projectAdapterView = new Main(arguments);
+
+            RuntimeLogController runtimeLogController = new RuntimeLogController();
+
+            IOptionsController optionsController = OptionsController.Instance;
 
             RuntimeSetup runtimeSetup = new RuntimeSetup();
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
             runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Program).Assembly));
-            runtimeSetup.PluginDirectories.AddRange(OptionsController.Instance.PluginDirectories);
-            using (RuntimeBootstrap.Initialize(runtimeSetup, new IcarusLogger(projectAdapterView)))
+            runtimeSetup.PluginDirectories.AddRange(optionsController.PluginDirectories);
+            
+            using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                // wire up model
-                IProjectAdapter projectAdapter = new ProjectAdapter(projectAdapterView, new ProjectAdapterModel(), new ProjectTreeModel());
-
+                IProjectTreeModel projectTreeModel = new ProjectTreeModel(Paths.DefaultProject, new Project());
+                IProjectController projectController = new ProjectController(projectTreeModel);
+                
                 ITestRunner testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(
-                    OptionsController.Instance.TestRunnerFactory);
+                    optionsController.TestRunnerFactory);
+                ITestRunnerService testRunnerService = new TestRunnerService(testRunner);
+                ITestController testController = new TestController(testRunnerService, new TestTreeModel());
+                
+                IExecutionLogController executionLogController = new ExecutionLogController(testController);
 
                 IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
-                ITestRunnerModel testRunnerModel = new TestRunnerModel(testRunner, reportManager);
+                IReportController reportController = new ReportController(new ReportService(reportManager));
 
-                IProjectPresenter projectPresenter = new ProjectPresenter(projectAdapter, testRunnerModel);
+                Main main = new Main(projectController, testController, runtimeLogController, executionLogController, 
+                    reportController, arguments);
 
-                testRunnerModel.Initialize();
-                projectAdapterView.CleanUp += delegate { testRunnerModel.Dispose(); };
+                testRunnerService.Initialize();
+                main.CleanUp += delegate { testRunnerService.Dispose(); };
 
-                Application.Run(projectAdapterView);
-
-                GC.KeepAlive(projectPresenter);
+                Application.Run(main);
             }
         }
 

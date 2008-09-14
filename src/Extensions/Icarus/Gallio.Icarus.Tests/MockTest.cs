@@ -14,12 +14,10 @@
 // limitations under the License.
 
 using MbUnit.Framework;
-
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests
 {
-    [TestFixture]
     public class MockTest
     {
         protected MockRepository mocks;

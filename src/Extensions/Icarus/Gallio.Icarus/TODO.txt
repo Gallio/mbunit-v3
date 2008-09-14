@@ -1,2 +1,0 @@
-Plugin directories -> Options (Program.cs, add to RuntimeSetup (see Echo)).
-IcarusLogger -> Route log to new tab (Runtime?) Colour coding (see Echo)?

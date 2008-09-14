@@ -16,6 +16,8 @@
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
 using Gallio.Icarus.Controllers;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
 using Gallio.Model;
 
 namespace Gallio.Icarus.Controls
@@ -63,22 +65,55 @@ namespace Gallio.Icarus.Controls
 
         private static void nodeTextBox_DrawText(object sender, DrawEventArgs e)
         {
+            IOptionsController optionsController = OptionsController.Instance;
+
             TestTreeNode node = (TestTreeNode)e.Node.Tag;
             switch (node.TestStatus)
             {
                 case TestStatus.Passed:
-                    e.TextColor = OptionsController.Instance.PassedColor;
+                    e.TextColor = optionsController.PassedColor;
                     break;
                 case TestStatus.Failed:
-                    e.TextColor = OptionsController.Instance.FailedColor;
+                    e.TextColor = optionsController.FailedColor;
                     break;
                 case TestStatus.Skipped:
-                    e.TextColor = OptionsController.Instance.SkippedColor;
+                    e.TextColor = optionsController.SkippedColor;
                     break;
                 case TestStatus.Inconclusive:
-                    e.TextColor = OptionsController.Instance.InconclusiveColor;
+                    e.TextColor = optionsController.InconclusiveColor;
                     break;
             }
+        }
+
+        public void Expand(TestStatus state)
+        {
+            BeginUpdate();
+            CollapseAll();
+            foreach (TreeNodeAdv node in AllNodes)
+                TestNodes(node, state);
+            EndUpdate();
+        }
+
+        private void TestNodes(TreeNodeAdv node, TestStatus state)
+        {
+            if (node.Tag is TestTreeNode)
+                if (((TestTreeNode)node.Tag).TestStatus == state)
+                    Expand(node);
+
+            // Loop though all the child nodes and expand them if they
+            // meet the test state.
+            foreach (TreeNodeAdv tNode in node.Children)
+                TestNodes(tNode, state);
+        }
+
+        public void Expand(TreeNodeAdv node)
+        {
+            // Loop through all parent nodes that are not already
+            // expanded and expand them.
+            if (node.Parent != null && !node.Parent.IsExpanded)
+                Expand(node.Parent);
+
+            node.Expand();
         }
     }
 }

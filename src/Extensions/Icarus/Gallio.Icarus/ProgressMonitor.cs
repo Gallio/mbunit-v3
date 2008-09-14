@@ -14,56 +14,51 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
     public partial class ProgressMonitor : Form
     {
-        public ProgressMonitor()
+        private readonly ITestController testController;
+        private readonly IOptionsController optionsController;
+
+        public ProgressMonitor(ITestController testController, IOptionsController optionsController)
         {
+            this.testController = testController;
+            this.optionsController = optionsController;
+
             InitializeComponent();
+
+            testController.ProgressUpdate += testController_ProgressUpdate;
         }
 
-        public string TaskName
+        void testController_ProgressUpdate(object sender, ProgressMonitoring.EventArgs.ProgressUpdateEventArgs e)
         {
-            set { Text = value; }
-        }
+            Sync.Invoke(this, delegate
+            {
+                progressBar.Maximum = Convert.ToInt32(e.TotalWorkUnits);
+                progressBar.Value = Convert.ToInt32(e.CompletedWorkUnits);
 
-        public string SubTaskName
-        {
-            set { subTaskNameLabel.Text = value; }
-        }
-
-        public string Progress
-        {
-            set { progressLabel.Text = value; }
-        }
-
-        public int TotalWorkUnits
-        {
-            set { progressBar.Maximum = value; }
-        }
-
-        public int CompletedWorkUnits
-        {
-            set { progressBar.Value = value; }
+                Text = e.TaskName;
+                subTaskNameLabel.Text = e.SubTaskName;
+                progressLabel.Text = e.TotalWorkUnits > 0
+                    ? String.Format("{0:P}", (e.CompletedWorkUnits/e.TotalWorkUnits))
+                    : String.Empty;
+            });
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            ((IProjectAdapterView)Owner).CancelRunningOperation();
+            testController.Cancel();
         }
 
         private void runInBackgroundButton_Click(object sender, EventArgs e)
         {
-            ((IProjectAdapterView)Owner).ShowProgressMonitor = false;
+            if (ParentForm != null)
+                ((Main) ParentForm).ShowProgressMonitor = false;
             Hide();
         }
     }

@@ -14,43 +14,34 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
-
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Serialization;
-using Gallio.Icarus.Interfaces;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
     public partial class AnnotationsWindow : DockWindow
     {
-        private readonly IProjectAdapterView projectAdapterView;
-        private List<AnnotationData> annotations;
-        
-        public List<AnnotationData> Annotations
-        {
-            set
-            {
-                annotations = value;
-                PopulateListView();
-            }
-        }
+        private readonly ITestController testController;
 
-        public AnnotationsWindow(IProjectAdapterView projectAdapterView)
+        public AnnotationsWindow(ITestController testController)
         {
-            this.projectAdapterView = projectAdapterView;
+            this.testController = testController;
             InitializeComponent();
 
-            Annotations = new List<AnnotationData>();
+            testController.LoadFinished += delegate
+            {
+                Sync.Invoke(this, PopulateListView);
+            };
         }
 
         private void PopulateListView()
         {
             annotationsListView.Items.Clear();
             int error = 0, warning = 0, info = 0;
-            foreach (AnnotationData annotationData in annotations)
+            foreach (AnnotationData annotationData in testController.Report.TestModel.Annotations)
             {
                 switch (annotationData.Type)
                 {
@@ -74,12 +65,14 @@ namespace Gallio.Icarus
             showErrorsToolStripButton.Text = string.Format("{0} Errors", error);
             showWarningsToolStripButton.Text = string.Format("{0} Warnings", warning);
             showInfoToolStripButton.Text = string.Format("{0} Info", info);
+
+            Show();
         }
 
         private void AddListViewItem(AnnotationData annotationData, int imgIndex)
         {
             ListViewItem lvi = new ListViewItem(annotationData.Message, imgIndex);
-            lvi.SubItems.AddRange(new string[] { annotationData.Details, annotationData.CodeLocation.ToString(), 
+            lvi.SubItems.AddRange(new[] { annotationData.Details, annotationData.CodeLocation.ToString(), 
                         annotationData.CodeReference.ToString() });
             lvi.Tag = annotationData;
             annotationsListView.Items.Add(lvi);
@@ -93,7 +86,8 @@ namespace Gallio.Icarus
         private void annotationsListView_DoubleClick(object sender, EventArgs e)
         {
             foreach (ListViewItem lvi in annotationsListView.SelectedItems)
-                projectAdapterView.SourceCodeLocation = ((AnnotationData)lvi.Tag).CodeLocation;
+                if (ParentForm != null)
+                    ((Main)ParentForm).ShowSourceCode(((AnnotationData)lvi.Tag).CodeLocation);
         }
     }
 }

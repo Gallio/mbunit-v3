@@ -14,100 +14,61 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-
 using Aga.Controls.Tree;
-
-using Gallio.Icarus.Controls;
-using Gallio.Icarus.Interfaces;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Models;
 using Gallio.Model;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
     public partial class TestExplorer : DockWindow
     {
-        private readonly IProjectAdapterView projectAdapterView;
+        private readonly IProjectController projectController;
+        private readonly ITestController testController;
 
-        public string TreeFilter
+        public TestExplorer(IProjectController projectController, ITestController testController, 
+            IOptionsController optionsController)
         {
-            get
-            {
-                return Sync.Invoke<string>(this, delegate
-                {
-                    return (string)treeViewComboBox.SelectedItem;
-                });
-            }
-        }
+            this.projectController = projectController;
+            this.testController = testController;
 
-        public ITreeModel TreeModel
-        {
-            set
-            {
-                testTree.Model = value;
-            }
-        }
-
-        public bool EditEnabled
-        {
-            set { testTree.EditEnabled = value; }
-        }
-
-        public TestExplorer(IProjectAdapterView projectAdapterView, IOptionsController optionsController)
-        {
-            this.projectAdapterView = projectAdapterView;
             InitializeComponent();
-            treeViewComboBox.ComboBox.BindingContext = BindingContext;
-            treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories;
-            treeViewComboBox.SelectedIndex = 0;
-        }
 
-        private void ExpandTree(TestStatus state)
-        {
-            testTree.BeginUpdate();
-            testTree.CollapseAll();
-            foreach (TreeNodeAdv node in testTree.AllNodes)
-                TestNodes(node, state);
-            testTree.EndUpdate();
-        }
-
-        private void TestNodes(TreeNodeAdv node, TestStatus state)
-        {
-            if (node.Tag is TestTreeNode)
+            if (treeViewComboBox.ComboBox != null)
             {
-                if (((TestTreeNode)node.Tag).TestStatus == state)
-                    ExpandNode(node);
+                treeViewComboBox.ComboBox.BindingContext = BindingContext;
+                treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories;
+                testController.TreeViewCategory = treeViewComboBox.ComboBox.SelectedItem;
+                treeViewComboBox.ComboBox.DataBindings.Add("SelectedItem", testController, "TreeViewCategory");
             }
+            treeViewComboBox.SelectedIndex = 0;
 
-            // Loop though all the child nodes and expand them if they
-            // meet the test state.
-            foreach (TreeNodeAdv tNode in node.Children)
-                TestNodes(tNode, state);
-        }
+            testTree.Model = testController.Model;
 
-        private void ExpandNode(TreeNodeAdv node)
-        {
-            // Loop through all parent nodes that are not already
-            // expanded and expand them.
-            if (node.Parent != null && !node.Parent.IsExpanded)
-                ExpandNode(node.Parent);
+            testController.LoadStarted += delegate { testTree.EditEnabled = false; };
+            testController.LoadFinished += delegate
+            {
+                testTree.EditEnabled = true;
+                testTree.ExpandAll();
+            };
 
-            node.Expand();
+            testController.RunStarted += delegate { testTree.EditEnabled = false; };
+            testController.RunFinished += delegate { testTree.EditEnabled = true; };
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (testTree.SelectedNode.Tag is TestTreeNode)
-            {
-                TestTreeNode node = (TestTreeNode)testTree.SelectedNode.Tag;
-                projectAdapterView.ThreadedRemoveAssembly(node.Name);
-            }
+            if (!(testTree.SelectedNode.Tag is TestTreeNode))
+                return;
+
+            TestTreeNode node = (TestTreeNode)testTree.SelectedNode.Tag;
+            projectController.RemoveAssembly(node.Name);
         }
 
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            projectAdapterView.ReloadTree();
+            testController.Reload();
         }
 
         private void filterPassedTestsToolStripButton_Click(object sender, EventArgs e)
@@ -127,15 +88,10 @@ namespace Gallio.Icarus
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
         {
-            projectAdapterView.ResetTests();
+            testController.ResetTests();
         }
 
         private void expandAllMenuItem_Click(object sender, EventArgs e)
-        {
-            ExpandAll();
-        }
-
-        public void ExpandAll()
         {
             testTree.ExpandAll();
         }
@@ -151,30 +107,27 @@ namespace Gallio.Icarus
             if (sortToolStripButton.Checked && sortUpToolStripButton.Checked)
                 sortUpToolStripButton.Checked = false;
 
-            if (sortToolStripButton.Checked)
-                ((TestTreeModel)testTree.Model).SortOrder = SortOrder.Ascending;
-            else
-                ((TestTreeModel)testTree.Model).SortOrder = SortOrder.None;
+            ((TestTreeModel)testTree.Model).SortOrder = sortToolStripButton.Checked ? SortOrder.Ascending : SortOrder.None;
         }
 
         private void viewSourceCodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            projectAdapterView.ViewSourceCode(((TestTreeNode)testTree.SelectedNode.Tag).Name);
+            testController.ViewSourceCode(((TestTreeNode)testTree.SelectedNode.Tag).Name);
         }
 
         private void expandPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExpandTree(TestStatus.Passed);
+            testTree.Expand(TestStatus.Passed);
         }
 
         private void expandFailedTestsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExpandTree(TestStatus.Failed);
+            testTree.Expand(TestStatus.Failed);
         }
 
         private void expandInconclusiveTestsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExpandTree(TestStatus.Inconclusive);
+            testTree.Expand(TestStatus.Inconclusive);
         }
 
         private void filterPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -194,36 +147,36 @@ namespace Gallio.Icarus
 
         private void addAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            projectAdapterView.AddAssembliesToTree();
+            if (ParentForm != null)
+                ((Main)ParentForm).AddAssembliesToTree();
         }
 
         private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            projectAdapterView.RemoveAssembliesFromTree();
+            projectController.RemoveAllAssemblies();
         }
 
         private void testTree_SelectionChanged(object sender, EventArgs e)
         {
+            testController.SelectedTests.Clear();
             if (testTree.SelectedNode != null)
             {
                 TestTreeNode testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
                 removeAssemblyToolStripMenuItem.Enabled = testTreeNode.NodeType == TestKinds.Assembly;
                 viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
-                List<string> testIds = new List<string>();
                 if (testTreeNode.NodeType == TestKinds.Namespace)
                 {
                     foreach (Node n in testTreeNode.Nodes)
-                        testIds.Add(((TestTreeNode)n).Name);
+                        testController.SelectedTests.Add(((TestTreeNode)n).Name);
                 }
                 else
-                    testIds.Add(testTreeNode.Name);
-                projectAdapterView.UpdateSelectedNode(testIds);
+                    testController.SelectedTests.Add(testTreeNode.Name);
             }
             else
             {
+                testController.SelectedTests.Add(((TestTreeNode)testTree.Root.Tag).Name);
                 removeAssemblyToolStripMenuItem.Enabled = false;
                 viewSourceCodeToolStripMenuItem.Enabled = false;
-                projectAdapterView.UpdateSelectedNode(new List<string>());
             }
         }
 
@@ -233,10 +186,7 @@ namespace Gallio.Icarus
             if (sortUpToolStripButton.Checked && sortToolStripButton.Checked)
                 sortToolStripButton.Checked = false;
 
-            if (sortUpToolStripButton.Checked)
-                ((TestTreeModel)testTree.Model).SortOrder = SortOrder.Descending;
-            else
-                ((TestTreeModel)testTree.Model).SortOrder = SortOrder.None;
+            ((TestTreeModel)testTree.Model).SortOrder = sortUpToolStripButton.Checked ? SortOrder.Descending : SortOrder.None;
         }
     }
 }

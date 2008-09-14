@@ -26,7 +26,7 @@ namespace Gallio.Icarus
     [Serializable]
     [XmlRoot("settings", Namespace = XmlSerializationUtils.GallioNamespace)]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
-    public class Settings : System.ICloneable
+    public class Settings
     {
         private string testRunnerFactory = StandardTestRunnerFactoryNames.IsolatedProcess;
         private bool restorePreviousSettings = true;
@@ -125,16 +125,6 @@ namespace Gallio.Icarus
                 treeViewCategories.Clear();
                 treeViewCategories.AddRange(value);
             }
-        }
-
-        object System.ICloneable.Clone()
-        {
-            return Clone();
-        }
-
-        public Settings Clone()
-        {
-            return (Settings)MemberwiseClone();
         }
     }
 }

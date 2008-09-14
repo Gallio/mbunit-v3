@@ -13,37 +13,84 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Windows.Forms;
-
 using Aga.Controls.Tree;
-
-using Gallio.Icarus.Controls;
-using Gallio.Icarus.Interfaces;
-using Gallio.Model;
-using Gallio.Utilities;
+using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus
 {
     public partial class ProjectExplorer : DockWindow
     {
-        private IProjectAdapterView projectAdapterView;
+        private readonly IProjectController projectController;
 
-        public ITreeModel TreeModel
+        public ProjectExplorer(IProjectController projectController)
         {
-            set
-            {
-                projectTree.Model = value;
-            }
+            this.projectController = projectController;
+            InitializeComponent();
+            projectTree.Model = projectController.Model;
+            projectTree.ExpandAll();
         }
 
-        public ProjectExplorer(IProjectAdapterView projectAdapterView)
+        private void projectTree_SelectionChanged(object sender, System.EventArgs e)
         {
-            if (projectAdapterView == null)
-                throw new ArgumentNullException("projectAdapterView");
+            if (projectTree.SelectedNode != null)
+            {
+                Node node = (Node)projectTree.SelectedNode.Tag;
+                if (node != null && node.Text == "Assemblies")
+                {
+                    addAssembliesToolStripMenuItem.Visible = true;
+                    addAssembliesToolStripMenuItem.Enabled = true;
+                    removeAssemblyToolStripMenuItem.Visible = true;
+                    removeAssemblyToolStripMenuItem.Enabled = false;
+                    removeAssembliesToolStripMenuItem.Visible = true;
+                    removeAssembliesToolStripMenuItem.Enabled = true;
+                    return;
+                }
+                if (projectTree.SelectedNode.Parent != null)
+                {
+                    node = (Node) projectTree.SelectedNode.Parent.Tag;
+                    if (node != null && node.Text == "Assemblies")
+                    {
+                        addAssembliesToolStripMenuItem.Visible = true;
+                        addAssembliesToolStripMenuItem.Enabled = true;
+                        removeAssemblyToolStripMenuItem.Visible = true;
+                        removeAssemblyToolStripMenuItem.Enabled = true;
+                        removeAssembliesToolStripMenuItem.Visible = true;
+                        removeAssembliesToolStripMenuItem.Enabled = true;
+                        return;
+                    }
+                }
+            }
+            addAssembliesToolStripMenuItem.Visible = false;
+            removeAssemblyToolStripMenuItem.Visible = false;
+            removeAssembliesToolStripMenuItem.Visible = false;
+        }
 
-            this.projectAdapterView = projectAdapterView;
-            InitializeComponent();
+        private void removeAssemblyToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            if (projectTree.SelectedNode == null)
+                return;
+
+            Node node = (Node)projectTree.SelectedNode.Tag;
+            string fileName = (string)node.Tag;
+            projectController.RemoveAssembly(fileName);
+        }
+
+        private void removeAssembliesToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            projectController.RemoveAllAssemblies();
+        }
+
+        private void addAssembliesToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            if (ParentForm != null)
+                ((Main)ParentForm).AddAssembliesToTree();
+        }
+
+        private void projectTree_DoubleClick(object sender, System.EventArgs e)
+        {
+            if (projectTree.SelectedNode != null && ((Node)projectTree.SelectedNode.Tag).Text == "Properties")
+                if (ParentForm != null)
+                    ((Main)ParentForm).ShowWindow("propertiesToolStripMenuItem");
         }
     }
 }

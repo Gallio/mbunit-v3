@@ -65,7 +65,6 @@ namespace Gallio.Icarus
             // 
             // reportViewer
             // 
-            this.reportViewer.AllowNavigation = false;
             this.reportViewer.AllowWebBrowserDrop = false;
             this.reportViewer.CausesValidation = false;
             this.reportViewer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -85,6 +84,8 @@ namespace Gallio.Icarus
             this.ClientSize = new System.Drawing.Size(292, 273);
             this.Controls.Add(this.toolStripContainer1);
             this.Name = "ExecutionLogWindow";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.TabText = "Execution log";
             this.Text = "Execution log";
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);

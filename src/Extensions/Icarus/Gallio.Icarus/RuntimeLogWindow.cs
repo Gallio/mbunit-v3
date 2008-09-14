@@ -13,30 +13,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Drawing;
+using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
     public partial class RuntimeLogWindow : DockWindow
     {
-        public string LogBody
-        {
-            get { return logBody.Text; }
-        }
-
-        public RuntimeLogWindow()
+        public RuntimeLogWindow(IRuntimeLogController runtimeLogController)
         {
             InitializeComponent();
+
+            runtimeLogController.LogMessage += runtimeLogController_LogMessage;
         }
 
-        public void AppendTextLine(string text, Color color)
+        void runtimeLogController_LogMessage(object sender, Controllers.EventArgs.RuntimeLogEventArgs e)
+        {
+            Sync.Invoke(this, delegate
+            {
+                AppendTextLine(e.Message, e.Color);
+            });
+        }
+
+        private void AppendTextLine(string text, Color color)
         {
             AppendText(text, color);
             AppendText("\n", color);
         }
 
-        public void AppendText(string text, Color color)
+        private void AppendText(string text, Color color)
         {
             int start = logBody.TextLength;
             logBody.AppendText(text);
@@ -52,12 +58,7 @@ namespace Gallio.Icarus
             logBody.SelectionLength = 0;
         }
 
-        public void Clear()
-        {
-            logBody.Clear();
-        }
-
-        private void clearAllToolStripButton_Click(object sender, EventArgs e)
+        private void clearAllToolStripButton_Click(object sender, System.EventArgs e)
         {
             logBody.Clear();
         }

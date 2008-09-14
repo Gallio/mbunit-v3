@@ -59,28 +59,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdapterModel\ProjectAdapterModelTest.cs" />
-    <Compile Include="Adapter\ProjectAdapterTest.cs" />
-    <Compile Include="AboutTest.cs" />
-    <Compile Include="AssemblyListTest.cs" />
-    <Compile Include="Controls\TestTreeModelTest.cs" />
-    <Compile Include="Controls\TaskButtonTest.cs" />
+    <Compile Include="Controllers\ProjectControllerTest.cs" />
+    <Compile Include="Controllers\TestControllerTest.cs" />
     <Compile Include="Controls\TestResultsListTest.cs" />
     <Compile Include="Controls\TestStatusBarTest.cs">
     </Compile>
-    <Compile Include="Controls\TestTreeNodeTest.cs" />
     <Compile Include="Controls\TestTreeViewTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RuntimeLogWindowTest.cs" />
-    <Compile Include="FiltersWindowTest.cs" />
-    <Compile Include="Core\Remoting\AssemblyWatcherTest.cs" />
-    <Compile Include="PropertiesWindowTest.cs" />
-    <Compile Include="IcarusLoggerTest.cs" />
-    <Compile Include="Core\ProgressMonitoring\StatusStripProgressMonitorPresenterTest.cs" />
-    <Compile Include="OptionsTest.cs" />
-    <Compile Include="Core\Model\TestRunnerModelTest.cs" />
-    <Compile Include="Core\Presenter\ProjectPresenterTest.cs" />
     <Compile Include="MockTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -118,6 +104,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Options\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

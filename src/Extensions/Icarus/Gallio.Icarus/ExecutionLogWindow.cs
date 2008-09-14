@@ -13,21 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.IO;
+using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus
 {
     public partial class ExecutionLogWindow : DockWindow
     {
-        public ExecutionLogWindow()
+        public ExecutionLogWindow(IExecutionLogController executionLogController)
         {
             InitializeComponent();
-        }
 
-        public Stream Log
-        {
-            set { reportViewer.DocumentStream = value; }
+            executionLogController.ExecutionLogUpdated += delegate
+            {
+                reportViewer.DocumentStream = executionLogController.ExecutionLog;
+            };
         }
     }
 }

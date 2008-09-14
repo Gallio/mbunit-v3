@@ -88,7 +88,7 @@ namespace Gallio.Icarus
             this.clearAllToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(33, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(35, 25);
             this.toolStrip1.TabIndex = 0;
             // 
             // clearAllToolStripButton
@@ -109,8 +109,8 @@ namespace Gallio.Icarus
             this.Controls.Add(this.toolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "RuntimeLogWindow";
-            this.TabText = "Runtime log";
-            this.Text = "Runtime log";
+            this.TabText = "Runtime";
+            this.Text = "Runtime";
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.PerformLayout();
