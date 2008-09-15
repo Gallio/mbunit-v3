@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="binFolder">
+            <Directory Id="TeamCityIntegration" Name="TeamCity">
+                <Component Id="Gallio.TeamCityIntegration.dll" Guid="{E729AAA0-3E16-4ac9-BB82-26F2F2F93BA4}" Win64="no">
+                    <File Id="Gallio.TeamCityIntegration.dll" Source="$(var.GallioTargetDir)\bin\TeamCity\Gallio.TeamCityIntegration.dll" KeyPath="yes" />
+                    <File Id="Gallio.TeamCityIntegration.plugin" Source="$(var.GallioTargetDir)\bin\TeamCity\Gallio.TeamCityIntegration.plugin" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+
+        <Feature Id='feat_TeamCityIntegration' Title='TeamCity Integration' Level='1'
+            Description='Provides integration with the TeamCity test reporting features.'>
+            <ComponentRef Id="Gallio.TeamCityIntegration.dll"/>
+        </Feature>
+    </Fragment>
+</Wix>

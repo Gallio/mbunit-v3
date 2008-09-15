@@ -116,6 +116,7 @@
 <?ifdef FEATURE_NCOVER_INTEGRATION_2 ?>
                 <FeatureRef Id='feat_NCoverIntegration2'/>
 <?endif?>
+                <FeatureRef Id='feat_TeamCityIntegration'/>
                 <FeatureRef Id='feat_TypeMockIntegration'/>
             </Feature>
         </Feature>

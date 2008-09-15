@@ -1,0 +1,22 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.csproj" />
+
+    <CSharpProject Include="Gallio.TeamCityIntegration.Tests\Gallio.TeamCityIntegration.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.TeamCityIntegration\bin\Gallio.TeamCityIntegration.dll">
+        <Folder>TeamCity</Folder>
+    </Binary>
+    <Binary Include="Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.plugin">
+        <Folder>TeamCity</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.TeamCityIntegration.Tests\bin\Gallio.TeamCityIntegration.Tests.dll" />
+  </ItemGroup>
+</Project>

@@ -42,6 +42,7 @@
   <Target Name="$(ProjectDir)\..\src\Extensions\NUnit\Gallio.NUnitAdapter\bin\Gallio.NUnitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\PowerShell\Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" Analyze="False" AnalyzeAllChildren="False" />
   <Target Name="$(ProjectDir)\..\src\Extensions\TDNet\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)\..\src\Extensions\TeamCity\Gallio.TeamCityIntegration\bin\Gallio.TeamCityIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\TypeMock\Gallio.TypeMockIntegration\bin\Gallio.TypeMockIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Sail/bin/Gallio.VisualStudio.Sail.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Shell/bin/Gallio.VisualStudio.Shell.dll" Analyze="True" AnalyzeAllChildren="True" />
