@@ -14,12 +14,21 @@
 // limitations under the License.
 
 using System;
-using Gallio.Icarus.Controllers.EventArgs;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Gallio.Icarus.Controllers.Interfaces
+namespace Gallio.VisualStudio.Tip
 {
-    public interface IRuntimeLogController
+    /// <summary>
+    /// Provides services for proxies.
+    /// </summary>
+    /// <remarks>
+    /// We do not directly register the <see cref="IProxyTargetFactory"/> interface
+    /// because it refers to Visual Studio types that might not be loadable in certain
+    /// contexts and cause issues during runtime initialization.
+    /// </remarks>
+    public interface IProxyHandler
     {
-        event EventHandler<RuntimeLogEventArgs> LogMessage;
+        IProxyTargetFactory TargetFactory { get; }
     }
 }

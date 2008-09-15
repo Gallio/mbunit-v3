@@ -31,12 +31,12 @@ namespace Gallio.VisualStudio.Tip
         public static IProxyTargetFactory GetTargetFactory()
         {
             GallioLoader.Initialize().SetupRuntime();
-            return ResolveTargetFactory();
+            return ResolveProxyHandler().TargetFactory;
         }
 
-        private static IProxyTargetFactory ResolveTargetFactory()
+        private static IProxyHandler ResolveProxyHandler()
         {
-            return RuntimeAccessor.Instance.Resolve<IProxyTargetFactory>();
+            return RuntimeAccessor.Instance.Resolve<IProxyHandler>();
         }
     }
 }

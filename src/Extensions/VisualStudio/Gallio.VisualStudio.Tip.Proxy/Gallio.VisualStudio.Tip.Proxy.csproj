@@ -66,6 +66,7 @@
     <Compile Include="GallioTestElement.cs" />
     <Compile Include="GallioTestResult.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="IProxyHandler.cs" />
     <Compile Include="MarshalByRefTestAdapterProxy.cs" />
     <Compile Include="ProxyHelper.cs" />
     <Compile Include="GallioTestAdapterProxy.cs" />

@@ -1,4 +1,4 @@
-// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,22 +16,31 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.TestAdapter;
-using Microsoft.VisualStudio.TestTools.Vsip;
+using Microsoft.VisualStudio.TestTools.Common;
 
 namespace Gallio.VisualStudio.Tip
 {
-    public class DefaultProxyTargetFactory : IProxyTargetFactory
+    public class DefaultProxyHandler : IProxyHandler
     {
-        public ITestAdapter CreateTestAdapter()
+        private readonly Factory targetFactory = new Factory();
+
+        public IProxyTargetFactory TargetFactory
         {
-            return new GallioTestAdapter();
+            get { return targetFactory; }
         }
 
-        public ITip CreateTip(ITmi tmi)
+        public class Factory : IProxyTargetFactory
         {
-            return new GallioTip(tmi);
+            public ITestAdapter CreateTestAdapter()
+            {
+                return new GallioTestAdapter();
+            }
+
+            public ITip CreateTip(ITmi tmi)
+            {
+                return new GallioTip(tmi);
+            }
         }
     }
 }

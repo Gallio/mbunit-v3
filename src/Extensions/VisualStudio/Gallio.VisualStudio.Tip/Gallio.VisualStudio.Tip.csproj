@@ -73,7 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DefaultProxyTargetFactory.cs" />
+    <Compile Include="DefaultProxyHandler.cs" />
     <Compile Include="GallioTestAdapter.cs" />
     <Compile Include="GallioTestElementFactory.cs" />
     <Compile Include="GallioTestResultFactory.cs" />
