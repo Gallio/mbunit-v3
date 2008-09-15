@@ -17,6 +17,7 @@ echo Installing the locally compiled Gallio test runner for TestDriven.Net.
 echo.
 
 "%REG%" ADD %TDKEY%\Gallio_Icarus /V Application /D "%ICARUS_EXE%" /F >nul
+call :AddRunner CSUnit csUnit
 call :AddRunner MbUnit MbUnit
 call :AddRunner MbUnit2 MbUnit.Framework
 call :AddRunner MSTest Microsoft.VisualStudio.QualityTools.UnitTestFramework

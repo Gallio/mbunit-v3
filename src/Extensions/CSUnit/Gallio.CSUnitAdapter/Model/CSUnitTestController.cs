@@ -19,11 +19,18 @@ using System.IO;
 using System.Threading;
 using csUnit.Core;
 using csUnit.Interfaces;
+using Gallio.Collections;
 using Gallio.CSUnitAdapter.Properties;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
+using Gallio.Reflection;
+using Gallio.Runner.Harness;
+using Gallio.Runtime;
+using Gallio.Runtime.Hosting;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runtime.Remoting;
+using ITestListener=csUnit.Interfaces.ITestListener;
 
 namespace Gallio.CSUnitAdapter.Model
 {
@@ -63,7 +70,7 @@ namespace Gallio.CSUnitAdapter.Model
             }            
         }
 
-        public class RunnerMonitor : csUnit.Interfaces.ITestListener, IDisposable
+        public class RunnerMonitor : LongLivedMarshalByRefObject, ITestListener, ITestSpec, IDisposable
         {
             private readonly IProgressMonitor progressMonitor;
             private readonly ITestStep topTestStep;
@@ -92,12 +99,12 @@ namespace Gallio.CSUnitAdapter.Model
                 testContextStack = new Stack<ITestContext>();
                 testCommandsByName = new Dictionary<string, ITestCommand>();
 
-                Initialise(testCommands);
+                Initialize(testCommands);
 
                 progressMonitor.Canceled += Canceled;
             }
 
-            public void Initialise(IList<ITestCommand> testCommands)
+            public void Initialize(IList<ITestCommand> testCommands)
             {
                 if (testCommands == null)
                     throw new ArgumentNullException("testCommands");
@@ -169,27 +176,61 @@ namespace Gallio.CSUnitAdapter.Model
                     testContext.FinishStep(TestOutcome.Error, null);
                     return;
                 }
-                using (RemoteLoader loader = new RemoteLoader())
+
+                // Remark: We cannot use the RemoteLoader directly from this AppDomain.
+                //   csUnit v2.5 contains a bug in its detection of the NUnitAdapter.  It tries
+                //   to enumerate ALL types in ALL assemblies that are loaded in the AppDomain.
+                //   Bad news for us because some of these types derived from other types in
+                //   assemblies that cannot be loaded (eg. VisualStudio APIs).
+                //   So csUnit promptly blows up.  The workaround is to create our own AppDomain.
+                //   We cannot use the csUnit Loader because it does things like report
+                //   events asynchronously and possibly out of order or even in parallel. -- Jeff.
+                // See also: http://sourceforge.net/tracker/index.php?func=detail&aid=2111390&group_id=23919&atid=380010
+                HostSetup hostSetup = new HostSetup();
+                hostSetup.ApplicationBaseDirectory = Path.GetDirectoryName(assemblyPath);
+                hostSetup.WorkingDirectory = hostSetup.ApplicationBaseDirectory;
+                hostSetup.ShadowCopy = true;
+
+                string configFile = assemblyPath + ".config";
+                if (File.Exists(configFile))
+                    hostSetup.Configuration.ConfigurationXml = File.ReadAllText(configFile);
+
+                using (IsolatedAppDomainHost host = new IsolatedAppDomainHost(hostSetup, RuntimeAccessor.Logger))
                 {
-                    // Attach ourself to get feedback
-                    loader.Listener = this;
+                    host.Connect();
 
-                    // Load the test assembly
-                    loader.LoadAssembly(assemblyPath);
+                    Type loaderType = typeof(RemoteLoader);
+                    if (!loaderType.Assembly.GlobalAssemblyCache)
+                    {
+                        string loaderPath = Path.GetDirectoryName(
+                                AssemblyUtils.GetFriendlyAssemblyLocation(loaderType.Assembly));
+                        HostAssemblyResolverHook.Bootstrap(host, loaderPath);
+                    }
 
-                    // Run the tests of that assembly
-                    ITestSpec testSpec = new PartialTestSpec(testCommandsByName);
-                    loader.RunTests(testSpec, TextWriter.Null);
+                    using (RemoteLoader loader = (RemoteLoader) host.GetHostService().CreateInstance(
+                        loaderType.Assembly.FullName,
+                        loaderType.FullName).Unwrap())
+                    {
+                        // Attach ourself to get feedback
+                        loader.Listener = this;
+
+                        // Load the test assembly
+                        loader.LoadAssembly(assemblyPath);
+
+                        // Run the tests of that assembly
+                        TextWriter consoleOutputWriter = new ContextualLogTextWriter(TestLogStreamNames.ConsoleOutput);
+                        loader.RunTests(this, consoleOutputWriter);
+                    }
                 }
             }
 
             #region ITestListener Members
 
-            public void OnAssemblyLoaded(object sender, AssemblyEventArgs args)
+            void ITestListener.OnAssemblyLoaded(object sender, AssemblyEventArgs args)
             {
             }
 
-            public void OnAssemblyStarted(object sender, AssemblyEventArgs args)
+            void ITestListener.OnAssemblyStarted(object sender, AssemblyEventArgs args)
             {
                 ITestCommand testCommand;
                 string testName = args.AssemblyFullName.Split(',')[0];
@@ -205,11 +246,11 @@ namespace Gallio.CSUnitAdapter.Model
                 assemblyErrorCount = 0;
             }
 
-            public void OnTestsAborted(object sender, AssemblyEventArgs args)
+            void ITestListener.OnTestsAborted(object sender, AssemblyEventArgs args)
             {
             }
 
-            public void OnAssemblyFinished(object sender, AssemblyEventArgs args)
+            void ITestListener.OnAssemblyFinished(object sender, AssemblyEventArgs args)
             {
                 ITestCommand testCommand;
                 string testName = args.AssemblyFullName.Split(',')[0];
@@ -234,7 +275,7 @@ namespace Gallio.CSUnitAdapter.Model
                 testContext.FinishStep(CalculateOutcome(assemblyFailureCount, assemblyErrorCount), null);
             }            
 
-            public void OnTestStarted(object sender, TestResultEventArgs args)
+            void ITestListener.OnTestStarted(object sender, TestResultEventArgs args)
             {
                 ITestCommand fixtureCommand;
                 if (!testCommandsByName.TryGetValue(args.ClassName, out fixtureCommand))
@@ -252,12 +293,12 @@ namespace Gallio.CSUnitAdapter.Model
                 testContextStack.Push(testContext);
             }
 
-            public void OnTestPassed(object sender, TestResultEventArgs args)
+            void ITestListener.OnTestPassed(object sender, TestResultEventArgs args)
             {
                 TestFinished(TestOutcome.Passed, args.ClassName, args.MethodName, args.AssertCount, args.Duration, args.Reason, null);
             }
 
-            public void OnTestFailed(object sender, TestResultEventArgs args)
+            void ITestListener.OnTestFailed(object sender, TestResultEventArgs args)
             {
                 TestFinished(TestOutcome.Failed, args.ClassName, args.MethodName, args.AssertCount, args.Duration, args.Reason,
                     delegate(ITestContext context)
@@ -288,7 +329,7 @@ namespace Gallio.CSUnitAdapter.Model
                 Interlocked.Increment(ref fixtureFailureCount);
             }
 
-            public void OnTestError(object sender, TestResultEventArgs args)
+            void ITestListener.OnTestError(object sender, TestResultEventArgs args)
             {
                 TestFinished(TestOutcome.Error, args.ClassName, args.MethodName, args.AssertCount, args.Duration, args.Reason,
                     delegate(ITestContext context)
@@ -306,9 +347,59 @@ namespace Gallio.CSUnitAdapter.Model
                 Interlocked.Increment(ref fixtureErrorCount);
             }
 
-            public void OnTestSkipped(object sender, TestResultEventArgs args)
+            void ITestListener.OnTestSkipped(object sender, TestResultEventArgs args)
             {
                 TestFinished(TestOutcome.Skipped, args.ClassName, args.MethodName, args.AssertCount, args.Duration, args.Reason, null);
+            }
+
+            #endregion
+
+            #region ITestSpec Members
+
+            bool ITestSpec.Includes(ITestFixture testFixture)
+            {
+                return testCommandsByName.ContainsKey(testFixture.FullName);
+            }
+
+            bool ITestSpec.Includes(ITestMethod testMethod)
+            {
+                return testCommandsByName.ContainsKey(testMethod.FullName);
+            }
+
+            void ITestSpec.Clear()
+            {
+                throw new NotSupportedException();
+            }
+
+            bool ITestSpec.Empty
+            {
+                get { throw new NotSupportedException(); }
+            }
+
+            bool ITestSpec.IsAssemblyConfigured(string assemblyName)
+            {
+                throw new NotSupportedException();
+            }
+
+            bool ITestSpec.IsFixtureConfigured(string assemblyName, string fixtureFullName)
+            {
+                throw new NotSupportedException();
+            }
+
+            bool ITestSpec.IsTestConfigured(string assemblyName, string fixtureFullName, string methodName)
+            {
+                throw new NotSupportedException();
+            }
+
+            csUnit.Set<ISelector> ITestSpec.Selectors
+            {
+                get { throw new NotSupportedException(); }
+                set { throw new NotSupportedException(); }
+            }
+
+            TestRunKind ITestSpec.TestRunKind
+            {
+                get { throw new NotSupportedException(); }
             }
 
             #endregion
@@ -433,76 +524,6 @@ namespace Gallio.CSUnitAdapter.Model
 
                 return outcome;
             }
-        }
-
-        [Serializable]
-        private class PartialTestSpec : ITestSpec
-        {
-            private readonly Dictionary<string, ITestCommand> testCommands;
-
-            public PartialTestSpec(Dictionary<string, ITestCommand> testCommands)
-            {
-                if (testCommands == null)
-                    throw new ArgumentNullException("testCommands");
-
-                this.testCommands = testCommands;
-            }
-
-            #region ITestSpec Members
-
-            public bool Includes(ITestFixture testFixture)
-            {
-                return testCommands.ContainsKey(testFixture.FullName);
-            }
-
-            public bool Includes(ITestMethod testMethod)
-            {
-                return testCommands.ContainsKey(testMethod.FullName);
-            }
-
-            public void Clear()
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool Empty
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public bool IsAssemblyConfigured(string assemblyName)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsFixtureConfigured(string assemblyName, string fixtureFullName)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsTestConfigured(string assemblyName, string fixtureFullName, string methodName)
-            {
-                throw new NotImplementedException();
-            }
-
-            public csUnit.Set<ISelector> Selectors
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public TestRunKind TestRunKind
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            #endregion
         }
     }
 }
