@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
-        <DirectoryRef Id="binFolder">
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="TypeMockIntegration" Name="TypeMock">
                 <Component Id="Gallio.TypeMockIntegration.dll" Guid="70433af5-abed-405a-9073-0aaecb9459c6" Win64="no">
-                    <File Id="Gallio.TypeMockIntegration.dll" Source="$(var.GallioTargetDir)\bin\TypeMock\Gallio.TypeMockIntegration.dll" KeyPath="yes" />
-                    <File Id="Gallio.TypeMockIntegration.plugin" Source="$(var.GallioTargetDir)\bin\TypeMock\Gallio.TypeMockIntegration.plugin" />
+                    <File Name="Gallio.TypeMockIntegration.dll" KeyPath="yes" />
+                    <File Name="Gallio.TypeMockIntegration.plugin" />
                 </Component>
                 <Component Id="TypeMock.Integration.dll" Guid="52dbfb41-73be-419d-8db0-54ab1c89bbb8" Win64="no">
-                    <File Id="TypeMock.Integration.dll" Source="$(var.GallioTargetDir)\bin\TypeMock\TypeMock.Integration.dll" KeyPath="yes" />
+                    <File Name="TypeMock.Integration.dll" KeyPath="yes" />
                 </Component>
             </Directory>
         </DirectoryRef>

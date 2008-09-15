@@ -4,22 +4,22 @@
         <Property Id="INSTALLDESKTOPSHORTCUT" Value="1" />
         <Property Id="INSTALLSTARTMENUSHORTCUT" Value="1" />
 
-        <DirectoryRef Id="binFolder">
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="Gallio.Icarus.exe" Guid="2a7e3285-c570-44fa-8132-cb6d22f2f7c0" Win64="no">
-                <File Id="Gallio.Icarus.exe" Source="$(var.GallioTargetDir)\bin\Gallio.Icarus.exe" KeyPath="yes" />
-                <File Id="Gallio.Icarus.exe.config" Source="$(var.GallioTargetDir)\bin\Gallio.Icarus.exe.config" />
+                <File Name="Gallio.Icarus.exe" KeyPath="yes" />
+                <File Name="Gallio.Icarus.exe.config" />
             </Component>
             <Component Id="Aga.Controls.dll" Guid="3c58ac7a-fe23-4bd4-9bb4-1bd5c107ba89" Win64="no">
-                <File Id="Aga.Controls.dll" Source="$(var.GallioTargetDir)\bin\Aga.Controls.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
+                <File Name="Aga.Controls.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
             </Component>
             <Component Id="ICSharpCode.TextEditor.dll" Guid="7b12c1e0-c859-4ca8-a32a-b3e1f5059055" Win64="no">
-                <File Id="ICSharpCode.TextEditor.dll" Source="$(var.GallioTargetDir)\bin\ICSharpCode.TextEditor.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
+                <File Name="ICSharpCode.TextEditor.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
             </Component>
             <Component Id="NDepend.Helpers.FileDirectoryPath.dll" Guid="4FCA8142-6163-4c67-A895-53372A852008" Win64="no">
-                <File Id="NDepend.Helpers.FileDirectoryPath.dll" Source="$(var.GallioTargetDir)\bin\NDepend.Helpers.FileDirectoryPath.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
+                <File Name="NDepend.Helpers.FileDirectoryPath.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
             </Component>
             <Component Id="WeifenLuo.WinFormsUI.Docking.dll" Guid="3B11B01F-71EB-4423-AC66-55CE8E6E30D9" Win64="no">
-                <File Id="WeifenLuo.WinFormsUI.Docking.dll" Source="$(var.GallioTargetDir)\bin\WeifenLuo.WinFormsUI.Docking.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
+                <File Name="WeifenLuo.WinFormsUI.Docking.dll" Assembly=".net" AssemblyApplication="Gallio.Icarus.exe" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
@@ -49,7 +49,8 @@
             </Component>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.Icarus" Title="Icarus (GUI Test Runner)" Level="1" Description="Installs the Gallio GUI-based test runner.">
+        <Feature Id="feat_Gallio.Icarus" Title="Icarus (GUI Test Runner)" Level="1" 
+            Description="Installs the Gallio GUI-based test runner.">
             <ComponentRef Id="Gallio.Icarus.exe" />
 
             <ComponentRef Id="Aga.Controls.dll" />

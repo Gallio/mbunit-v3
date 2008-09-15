@@ -12,9 +12,9 @@
                 Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET' Name='InstallDir' />
         </Property>
 
-        <DirectoryRef Id="binFolder">
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="Gallio.TDNetRunner.dll" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
-                <File Id="Gallio.TDNetRunner.dll" Source="$(var.GallioTargetDir)\bin\Gallio.TDNetRunner.dll" KeyPath="yes"
+                <File Name="Gallio.TDNetRunner.dll" KeyPath="yes"
                       Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.dll" />
             </Component>
 

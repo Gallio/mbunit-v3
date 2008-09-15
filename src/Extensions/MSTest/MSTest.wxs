@@ -7,15 +7,15 @@
         <PropertyRef Id='VS90DEVENV'/>
         <PropertyRef Id='VS90_ROOT_FOLDER'/>
 
-        <DirectoryRef Id="binFolder">
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="MSTestAdapter" Name="MSTest">
                 <Component Id="Gallio.MSTestAdapter.dll" Guid="30F50762-6829-4020-8CC3-11D2151EF058" Win64="no">
-                    <File Id="Gallio.MSTestAdapter.dll" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestAdapter.dll" KeyPath="yes" />
-                    <File Id="Gallio.MSTestAdapter.plugin" Source="$(var.GallioTargetDir)\bin\MSTest\Gallio.MSTestAdapter.plugin" />
+                    <File Name="Gallio.MSTestAdapter.dll" KeyPath="yes" />
+                    <File Name="Gallio.MSTestAdapter.plugin" />
                 </Component>
 
                 <Component Id="MSTest.Readme.txt" Guid="3F8743D7-476E-4074-A8AF-FD36E440EC29" Win64="no">
-                    <File Id="MSTest.Readme.txt" Source="$(var.GallioTargetDir)\bin\MSTest\Readme.txt" KeyPath="yes" />
+                    <File Id="MSTest.Readme.txt" Name="Readme.txt" KeyPath="yes" />
                 </Component>
             </Directory>
         </DirectoryRef>
