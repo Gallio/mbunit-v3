@@ -16,17 +16,38 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Loader;
 
 namespace Gallio.VisualStudio.Shell
 {
     /// <summary>
-    /// Interface for objects that hold a reference to the shell.
+    /// Provides access to the global <see cref="IShell" /> for Visual Studio plugins.
     /// </summary>
-    public interface IShellAccessor
+    public static class ShellAccessor
     {
+        private static readonly object shellLock = new object();
+        private static Shell shell;
+
         /// <summary>
-        /// Gets the shell.
+        /// Gets the shell, or null if not initialized.
         /// </summary>
-        IShell Shell { get; }
+        public static IShell Shell
+        {
+            get { return shell; }
+        }
+
+        internal static Shell GetShellInternal(bool autoInit)
+        {
+            lock (shellLock)
+            {
+                if (shell == null && autoInit)
+                {
+                    GallioLoader.Initialize().SetupRuntime();
+                    shell = new Shell();
+                }
+
+                return shell;
+            }
+        }
     }
 }

@@ -42,64 +42,32 @@ namespace Gallio.VisualStudio.Shell
     [ProvideLoadKey("Standard", "3.0", "Gallio", "Gallio Project", VSPackageResourceIds.ProductLoadKeyId)]
     [Guid(Guids.ShellPkgGuidString)]
     [ComVisible(true)]
-    public sealed class ShellPackage : Package, IVsInstalledProduct, IShellAccessor
+    public sealed class ShellPackage : Package, IVsInstalledProduct
     {
-        private static ShellPackage instance;
         private Shell shell;
-
-        /// <summary>
-        /// Creates the shell package.
-        /// </summary>
-        public ShellPackage()
-        {
-            instance = this;
-        }
-
-        /// <summary>
-        /// Gets the singleton instance of the shell package.
-        /// </summary>
-        public static ShellPackage Instance
-        {
-            get { return instance; }
-        }
-
-        /// <inheritdoc />
-        public IShell Shell
-        {
-            get { return shell; }
-        }
-
-        internal Shell ShellInternal
-        {
-            get { return shell; }
-        }
 
         /// <inheritdoc />
         protected override void Initialize()
         {
-            GallioLoader.Initialize();
-
             base.Initialize();
 
-            shell = new Shell();
+            shell = ShellAccessor.GetShellInternal(true);
             shell.OnPackageInitialized(this);
         }
 
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-            try
+            if (disposing)
             {
-                base.Dispose(disposing);
-
-                if (disposing && shell != null)
+                if (shell != null)
+                {
                     shell.OnPackageDisposed();
+                    shell = null;
+                }
             }
-            finally
-            {
-                instance = null;
-                shell = null;
-            }
+
+            base.Dispose(disposing);
         }
 
         int IVsInstalledProduct.IdBmpSplash(out uint pIdBmp)

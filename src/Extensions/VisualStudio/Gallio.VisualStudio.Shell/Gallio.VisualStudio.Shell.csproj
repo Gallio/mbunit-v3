@@ -83,8 +83,8 @@
     <Compile Include="Actions\IActionManager.cs" />
     <Compile Include="BaseShellExtension.cs" />
     <Compile Include="IShell.cs" />
-    <Compile Include="IShellAccessor.cs" />
     <Compile Include="IShellExtension.cs" />
+    <Compile Include="ShellAccessor.cs" />
     <Compile Include="ShellAddInHandler.cs" />
     <Compile Include="ShellComponent.cs" />
     <Compile Include="ShellPackage.cs" />

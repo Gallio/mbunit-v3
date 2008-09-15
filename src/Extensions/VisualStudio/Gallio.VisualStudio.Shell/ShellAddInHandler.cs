@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
 using Extensibility;
+using Gallio.Loader;
 
 namespace Gallio.VisualStudio.Shell
 {
@@ -29,9 +30,9 @@ namespace Gallio.VisualStudio.Shell
     [ComVisible(true)]
     public class ShellAddInHandler : IDTExtensibility2, IDTCommandTarget
     {
-        private Shell shell;
         private DTE2 dte;
         private AddIn addIn;
+        private Shell shell;
 
         /// <summary>
         /// Gets the automation object.
@@ -60,12 +61,8 @@ namespace Gallio.VisualStudio.Shell
             dte = (DTE2)application;
             addIn = (AddIn)addInInst;
 
-            ShellPackage package = ShellPackage.Instance;
-            if (package != null)
-                shell = package.ShellInternal;
-
-            if (shell != null)
-                shell.OnAddInConnected(this);
+            shell = ShellAccessor.GetShellInternal(true);
+            shell.OnAddInConnected(this);
         }
 
         /// <summary>Implements the OnDisconnection method of the IDTExtensibility2 interface.
@@ -79,8 +76,10 @@ namespace Gallio.VisualStudio.Shell
             {
                 shell.OnAddInDisconnected();
                 shell = null;
-                addIn = null;
             }
+
+            addIn = null;
+            dte = null;
         }
 
         /// <summary>Implements the OnAddInsUpdate method of the IDTExtensibility2 interface.

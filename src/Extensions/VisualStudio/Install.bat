@@ -40,8 +40,7 @@ exit /b 0
 
 
 :INSTALL
-"%GACUTIL%" /i "%LOADER_BIN_DIR%\Gallio.Loader.dll" /f
-"%GACUTIL%" /i "%TIPPROXY_BIN_DIR%\Gallio.VisualStudio.Tip.Proxy.dll" /f
+call "%~dp0\..\..\RegisterAssembliesForDebugging.bat"
 
 REM Register Shell
 "%REG%" ADD "%VS_PRODUCT_KEY%" /V Package /D "{9e600ffc-344d-4e6f-89c0-ded6afb42459}" /F >nul
@@ -74,8 +73,7 @@ exit /b 0
 
 
 :UNINSTALL
-"%GACUTIL%" /u Gallio.Loader
-"%GACUTIL%" /u Gallio.VisualStudio.Tip.Proxy
+call "%~dp0\..\..\UnregisterAssembliesForDebugging.bat"
 
 "%REG%" DELETE "%VS_TEST_TYPE_KEY%" /F 2>nul >nul
 "%REG%" DELETE "%VS_PRODUCT_KEY%" /F 2>nul >nul

@@ -20,7 +20,7 @@ namespace Gallio.VisualStudio.Shell
     /// <summary>
     /// Abstract base class for shell extensions.
     /// </summary>
-    public abstract class BaseShellExtension : IShellExtension, IShellAccessor
+    public abstract class BaseShellExtension : IShellExtension
     {
         private IShell shell;
 

@@ -20,6 +20,8 @@ using EnvDTE80;
 using Gallio.VisualStudio.Shell.Actions;
 using Gallio.VisualStudio.Shell.Resources;
 using Microsoft.VisualStudio.Shell.Interop;
+using Gallio.Runtime;
+using System.Collections.Generic;
 
 namespace Gallio.VisualStudio.Shell
 {
@@ -29,6 +31,7 @@ namespace Gallio.VisualStudio.Shell
     public class Shell : IShell
     {
         private readonly DefaultActionManager actionManager;
+        private readonly List<IShellExtension> extensions;
 
         private ShellPackage package;
         private DTE2 dte;
@@ -38,6 +41,7 @@ namespace Gallio.VisualStudio.Shell
         public Shell()
         {
             actionManager = new DefaultActionManager(this);
+            extensions = new List<IShellExtension>();
         }
 
         /// <inheritdoc />
@@ -127,7 +131,10 @@ namespace Gallio.VisualStudio.Shell
         private void ConfigureShellServices(ShellPackage package, ShellAddInHandler addInHandler)
         {
             if (package == null || addInHandler == null)
-                DisposeShellServices();
+            {
+                ShutdownShellExtensions();
+                ShutdownShellServices();
+            }
 
             this.package = package;
             this.addInHandler = addInHandler;
@@ -137,7 +144,10 @@ namespace Gallio.VisualStudio.Shell
                 addInHandler != null ? addInHandler.DTE : null;
 
             if (package != null && addInHandler != null)
+            {
                 InitializeShellServices();
+                InitializeShellExtensions();
+            }
         }
 
         private void InitializeShellServices()
@@ -145,9 +155,26 @@ namespace Gallio.VisualStudio.Shell
             actionManager.Initialize();
         }
 
-        private void DisposeShellServices()
+        private void ShutdownShellServices()
         {
             actionManager.Shutdown();
+        }
+
+        private void InitializeShellExtensions()
+        {
+            foreach (IShellExtension extension in RuntimeAccessor.Instance.ResolveAll<IShellExtension>())
+            {
+                extensions.Add(extension);
+                extension.Initialize(this);
+            }
+        }
+
+        private void ShutdownShellExtensions()
+        {
+            foreach (IShellExtension extension in extensions)
+                extension.Shutdown();
+
+            extensions.Clear();
         }
     }
 }

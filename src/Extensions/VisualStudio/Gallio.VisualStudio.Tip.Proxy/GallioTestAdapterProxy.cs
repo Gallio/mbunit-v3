@@ -48,7 +48,8 @@ namespace Gallio.VisualStudio.Tip
         private static AppDomain runnerAppDomain;
 
         public GallioTestAdapterProxy()
-            : base(CreateRemoteShim())
+            //: base(CreateRemoteShim())
+            : base(new Shim())
         {
         }
 
@@ -56,7 +57,7 @@ namespace Gallio.VisualStudio.Tip
         {
             PrepareRunnerAppDomain();
 
-            IShim shim = (IShim)runnerAppDomain.CreateInstanceFromAndUnwrap(typeof(Shim).Assembly.Location, typeof(Shim).FullName);
+            IShim shim = (IShim)runnerAppDomain.CreateInstanceAndUnwrap(typeof(Shim).Assembly.FullName, typeof(Shim).FullName);
             shim.AddHintDirectory(Path.GetDirectoryName(typeof(IRunContext).Assembly.Location));
             return shim;
         }

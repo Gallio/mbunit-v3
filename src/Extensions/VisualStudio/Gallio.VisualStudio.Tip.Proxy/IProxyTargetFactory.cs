@@ -28,7 +28,5 @@ namespace Gallio.VisualStudio.Tip
         ITestAdapter CreateTestAdapter();
 
         ITip CreateTip(ITmi tmi);
-
-        ITuip CreateTuip(IServiceProvider serviceProvider);
     }
 }

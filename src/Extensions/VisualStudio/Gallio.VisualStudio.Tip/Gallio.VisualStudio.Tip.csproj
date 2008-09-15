@@ -75,20 +75,11 @@
   <ItemGroup>
     <Compile Include="DefaultProxyTargetFactory.cs" />
     <Compile Include="GallioTestAdapter.cs" />
-    <Compile Include="GallioTestElement.cs" />
     <Compile Include="GallioTestElementFactory.cs" />
-    <Compile Include="GallioTestResult.cs" />
     <Compile Include="GallioTestResultFactory.cs" />
     <Compile Include="GallioTip.cs" />
     <Compile Include="GallioTuip.cs" />
-    <Compile Include="Guids.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\VSPackage.Designer.cs">
-      <DependentUpon>VSPackage.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Resources\VSPackageResourceIds.cs" />
     <Compile Include="RunContextExtension.cs" />
     <Compile Include="RunContextLogger.cs" />
     <Compile Include="TipShellExtension.cs" />
@@ -99,6 +90,7 @@
     <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.csproj">
       <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
       <Name>Gallio.Loader</Name>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
@@ -116,14 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.VisualStudio.Tip.plugin" />
-    <None Include="Resources\Test.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\VSPackage.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>VSPackage.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme - Debugging.txt" />

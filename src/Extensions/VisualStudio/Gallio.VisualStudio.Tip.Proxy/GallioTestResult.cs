@@ -19,9 +19,9 @@ using Microsoft.VisualStudio.TestTools.Common;
 
 namespace Gallio.VisualStudio.Tip
 {
-    // TODO: Save all step run details and provide a custom result viewer.
+    // TODO: Save all step run details so that we can provide a custom result viewer.
     [Serializable]
-    internal sealed class GallioTestResult : TestResult
+    public sealed class GallioTestResult : TestResult
     {
         public GallioTestResult(GallioTestResult result)
             : base(result)

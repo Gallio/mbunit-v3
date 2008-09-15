@@ -33,10 +33,5 @@ namespace Gallio.VisualStudio.Tip
         {
             return new GallioTip(tmi);
         }
-
-        public ITuip CreateTuip(IServiceProvider serviceProvider)
-        {
-            return new GallioTuip(serviceProvider);
-        }
     }
 }

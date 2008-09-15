@@ -22,7 +22,7 @@ namespace Gallio.VisualStudio.Shell
     /// <summary>
     /// Abstract base class for a component that requires a reference to the <see cref="IShell" />.
     /// </summary>
-    public abstract class ShellComponent : IShellAccessor
+    public abstract class ShellComponent
     {
         private readonly IShell shell;
 
@@ -39,7 +39,9 @@ namespace Gallio.VisualStudio.Shell
             this.shell = shell;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the shell associated with the component.
+        /// </summary>
         public IShell Shell
         {
             get { return shell; }

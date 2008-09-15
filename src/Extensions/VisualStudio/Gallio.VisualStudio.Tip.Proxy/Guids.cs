@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.TestTools.Common;
 
 namespace Gallio.VisualStudio.Tip
 {
-    internal static class Guids
+    public static class Guids
     {
         public const string GallioTestTypeGuidString = "F3589083-259C-4054-87F7-75CDAD4B08E5";
         public static readonly TestType GallioTestType = new TestType(new Guid(GallioTestTypeGuidString));

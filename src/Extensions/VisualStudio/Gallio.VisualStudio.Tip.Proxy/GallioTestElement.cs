@@ -24,7 +24,7 @@ namespace Gallio.VisualStudio.Tip
 {
     [Serializable]
     [Guid(Guids.GallioTestTypeGuidString)]
-    internal sealed class GallioTestElement : TestElement
+    public sealed class GallioTestElement : TestElement
     {
         private const string GallioTestIdKey = "Gallio.TestId";
         private const string AssemblyNameKey = "Gallio.AssemblyName";
@@ -192,7 +192,7 @@ namespace Gallio.VisualStudio.Tip
             get { return location; }
         }
 
-        internal void SetCodeReference(string assemblyName, string namespaceName, string typeName, string memberName, string parameterName)
+        public void SetCodeReference(string assemblyName, string namespaceName, string typeName, string memberName, string parameterName)
         {
             this.assemblyName = assemblyName;
             this.namespaceName = namespaceName;
@@ -201,7 +201,7 @@ namespace Gallio.VisualStudio.Tip
             this.parameterName = parameterName;
         }
 
-        internal void SetCodeLocation(string location)
+        public void SetCodeLocation(string location)
         {
             this.location = location;
         }

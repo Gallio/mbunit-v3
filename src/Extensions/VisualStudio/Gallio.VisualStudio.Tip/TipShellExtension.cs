@@ -78,7 +78,7 @@ namespace Gallio.VisualStudio.Tip
         /// <inheritdoc />
         protected override void InitializeImpl()
         {
-            Shell.ProfferVsService(typeof(SGallioTestService), () => new GallioTuipProxy(Shell.Package));
+            Shell.ProfferVsService(typeof(SGallioTestService), () => new GallioTuip(this));
 
             buildEvents = Shell.DTE.Events.BuildEvents;
             buildEvents.OnBuildProjConfigBegin += OnBuildProjConfigBegin;

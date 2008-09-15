@@ -16,29 +16,72 @@
 using System;
 using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.Vsip;
+using Gallio.VisualStudio.Shell;
+using EnvDTE;
+using System.Runtime.InteropServices;
 
 namespace Gallio.VisualStudio.Tip
 {
-    public class GallioTuip : BaseTuip
+    /// <summary>
+    /// The Gallio test UI provider.
+    /// </summary>
+    [ComVisible(true)]
+    public class GallioTuip : ITuip, SGallioTestService
     {
-        public GallioTuip(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        private readonly TipShellExtension ext;
+
+        public GallioTuip(TipShellExtension ext)
         {
+            if (ext == null)
+                throw new ArgumentNullException("ext");
+
+            this.ext = ext;
         }
 
-        public override void InvokeResultViewer(TestResultMessage result)
+        public IRunConfigurationCustomEditor RunConfigurationEditor
         {
-            // TODO: Should show a view with the execution log and summary for the test result.
+            get { return null; }
         }
 
-        public override void CloseResultViewer(TestResultMessage result)
+        public void InvokeEditor(UIBlob uiBlob, ITestElement test)
+        {
+            GallioTestElement gallioTest = test as GallioTestElement;
+            if (gallioTest != null)
+            {
+                // TODO: Use the test location information to navigate to the appropriate
+                // source file and line number.
+                // eg. ext.Shell.DTE.ItemOperations.OpenFile(...);
+            }
+        }
+
+        public void InvokeResultViewer(TestResultMessage result)
+        {
+            GallioTestResult gallioResult = result as GallioTestResult;
+            if (gallioResult != null)
+            {
+                // TODO: Should show a viewer with details about the test result.
+                // This might require us to store additional details about the result, possibly in
+                // a side-band channel with all of the report contents preserved and ready to
+                // be rendered on demand.
+            }
+        }
+
+        public void CloseResultViewer(TestResultMessage result)
         {
             // TODO
         }
 
-        public override IRunConfigurationCustomEditor RunConfigurationEditor
+        public bool IsTestPropertiesReadOnly(ITestElement test)
         {
-            get { return null; }
+            return true;
+        }
+
+        public void UpdateTestCustomProperty(ITestElement test, string propertyToChange)
+        {
+        }
+
+        public void UpdateTestProperty(ITestElement test, System.ComponentModel.PropertyDescriptor propertyToChange)
+        {
         }
     }
 }
