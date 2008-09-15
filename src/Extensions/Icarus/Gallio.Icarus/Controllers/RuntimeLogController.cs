@@ -39,6 +39,10 @@ namespace Gallio.Icarus.Controllers
                     color = Color.Gold;
                     break;
 
+                case LogSeverity.Important:
+                    color = Color.Black;
+                    break;
+
                 case LogSeverity.Info:
                     color = Color.Gray;
                     break;

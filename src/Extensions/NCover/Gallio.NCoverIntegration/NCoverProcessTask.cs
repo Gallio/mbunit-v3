@@ -78,7 +78,7 @@ namespace Gallio.NCoverIntegration
 
         private Process RegisterAndStartProfiler(ProfilerSettings settings, bool redirectOutput)
         {
-            logger.Log(LogSeverity.Info, "* Starting NCover profiler.");
+            logger.Log(LogSeverity.Important, "* Starting NCover profiler.");
 
             driver = new ProfilerDriver(settings);
 
@@ -133,7 +133,7 @@ namespace Gallio.NCoverIntegration
             {
                 // Allow some time for the final processing to take place such as writing out the 
                 // XML reports.  If it really takes too long then abort it.
-                logger.Log(LogSeverity.Info, "* Waiting for NCover to exit.");
+                logger.Log(LogSeverity.Important, "* Waiting for NCover to exit.");
                 if (waitForExitTask != null && ! waitForExitTask.Join(WaitForExitTimeout))
                 {
                     logger.Log(LogSeverity.Error, "* Timed out.  Aborting NCover.");

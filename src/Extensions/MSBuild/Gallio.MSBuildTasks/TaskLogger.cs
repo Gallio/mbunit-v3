@@ -51,8 +51,12 @@ namespace Gallio.MSBuildTasks
                     taskLoggingHelper.LogWarning(message);
                     break;
 
-                case LogSeverity.Info:
+                case LogSeverity.Important:
                     taskLoggingHelper.LogMessage(MessageImportance.High, message);
+                    break;
+
+                case LogSeverity.Info:
+                    taskLoggingHelper.LogMessage(MessageImportance.Normal, message);
                     break;
 
                 case LogSeverity.Debug:

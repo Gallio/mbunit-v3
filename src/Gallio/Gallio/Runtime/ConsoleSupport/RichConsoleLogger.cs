@@ -62,6 +62,10 @@ namespace Gallio.Runtime.ConsoleSupport
                                 console.ForegroundColor = ConsoleColor.Yellow;
                                 break;
 
+                            case LogSeverity.Important:
+                                console.ForegroundColor = ConsoleColor.White;
+                                break;
+
                             case LogSeverity.Info:
                                 console.ForegroundColor = ConsoleColor.Gray;
                                 break;

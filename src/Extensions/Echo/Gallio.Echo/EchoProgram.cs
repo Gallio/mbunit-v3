@@ -75,10 +75,6 @@ namespace Gallio.Echo
         {
             logger.Log(LogSeverity.Debug, Arguments.ToString());
 
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(Resources.MainClass_Initializing);
-            Console.ResetColor();
-
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(Console);
@@ -146,11 +142,11 @@ namespace Gallio.Echo
             switch (Arguments.Verbosity)
             {
                 case Verbosity.Quiet:
-                    minSeverity = LogSeverity.Error;
+                    minSeverity = LogSeverity.Warning;
                     break;
                 default:
                 case Verbosity.Normal:
-                    minSeverity = LogSeverity.Warning;
+                    minSeverity = LogSeverity.Important;
                     break;
                 case Verbosity.Verbose:
                     minSeverity = LogSeverity.Info;

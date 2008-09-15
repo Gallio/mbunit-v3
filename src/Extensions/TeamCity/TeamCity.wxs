@@ -7,12 +7,17 @@
                     <File Name="Gallio.TeamCityIntegration.dll" KeyPath="yes" />
                     <File Name="Gallio.TeamCityIntegration.plugin" />
                 </Component>
+		
+                <Component Id="TeamCity.Readme.txt" Guid="{7E2D01EA-590D-4822-9748-691332285A1D}" Win64="no">
+                    <File Id="TeamCity.Readme.txt" Name="Readme.txt" KeyPath="yes" />
+                </Component>
             </Directory>
         </DirectoryRef>
 
         <Feature Id='feat_TeamCityIntegration' Title='TeamCity Integration' Level='1'
             Description='Provides integration with the TeamCity test reporting features.'>
             <ComponentRef Id="Gallio.TeamCityIntegration.dll"/>
+            <ComponentRef Id="TeamCity.Readme.txt"/>
         </Feature>
     </Fragment>
 </Wix>

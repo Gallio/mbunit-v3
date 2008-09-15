@@ -421,22 +421,39 @@ namespace Gallio.Runner
             Canonicalize(null);
             DisplayConfiguration();
 
-            VerifyAssemblies();
-
-            if (testPackageConfig.AssemblyFiles.Count == 0)
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            logger.Log(LogSeverity.Important, String.Format("Start time: {0}", DateTime.Now.ToShortTimeString()));
+            try
             {
-                logger.Log(LogSeverity.Warning, "No test assemblies to execute!");
-                return CreateResult(ResultCode.NoTests);
+                VerifyAssemblies();
+
+                if (testPackageConfig.AssemblyFiles.Count == 0)
+                {
+                    logger.Log(LogSeverity.Warning, "No test assemblies to execute!");
+                    return CreateResult(ResultCode.NoTests);
+                }
+
+                using (InitializeRuntimeIfNeeded())
+                    return RunWithRuntime();
+            }
+            finally
+            {
+                logger.Log(LogSeverity.Important,
+                    String.Format("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
+                        DateTime.Now.ToShortTimeString(),
+                        stopWatch.Elapsed.TotalSeconds));
+            }
+        }
+
+        private IDisposable InitializeRuntimeIfNeeded()
+        {
+            if (runtimeSetup != null)
+            {
+                logger.Log(LogSeverity.Important, "Initializing the runtime and loading plugins.");
+                return RuntimeBootstrap.Initialize(runtimeSetup, logger);
             }
 
-            logger.Log(LogSeverity.Info, "Initializing the test runner.");
-
-            using (runtimeSetup != null
-                ? RuntimeBootstrap.Initialize(runtimeSetup, logger)
-                : null)
-            {
-                return RunWithRuntime();
-            }
+            return null;
         }
 
         private TestLauncherResult RunWithRuntime()
@@ -469,9 +486,6 @@ namespace Gallio.Runner
 
         private TestLauncherResult RunWithInitializedRunner(ITestRunner runner, IReportManager reportManager)
         {
-            Stopwatch stopWatch = Stopwatch.StartNew();
-            logger.Log(LogSeverity.Info, String.Format("Start time: {0}", DateTime.Now.ToShortTimeString()));
-
             TestLauncherResult result;
             bool wasCanceled = false;
             try
@@ -530,13 +544,9 @@ namespace Gallio.Runner
             }
 
             // Done.
-            logger.Log(LogSeverity.Info, String.Format("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
-                DateTime.Now.ToShortTimeString(),
-                stopWatch.Elapsed.TotalSeconds));
-
             if (showReports && result.ReportDocumentPaths.Count != 0)
             {
-                logger.Log(LogSeverity.Info, "Displaying reports.");
+                logger.Log(LogSeverity.Important, "Displaying reports.");
                 ShowReportDocuments(result);
             }
 

@@ -123,9 +123,6 @@
   <data name="MainClass_Canceled" xml:space="preserve">
     <value>Canceled!</value>
   </data>
-  <data name="MainClass_Initializing" xml:space="preserve">
-    <value>Initializing the test runner and loading plugins.</value>
-  </data>
   <data name="MainClass_OpeningReports" xml:space="preserve">
     <value>Opening reports.</value>
   </data>

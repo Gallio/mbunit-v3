@@ -68,6 +68,7 @@ namespace Gallio.PowerShellCommands
                             cmdlet.WriteWarning(message);
                             break;
 
+                        case LogSeverity.Important:
                         case LogSeverity.Info:
                             cmdlet.WriteVerbose(message);
                             break;

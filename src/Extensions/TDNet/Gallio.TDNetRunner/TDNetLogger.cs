@@ -52,6 +52,7 @@ namespace Gallio.TDNetRunner
                     testListener.WriteLine(message, Category.Warning);
                     break;
 
+                case LogSeverity.Important:
                 case LogSeverity.Info:
                     testListener.WriteLine(message, Category.Info);
                     break;

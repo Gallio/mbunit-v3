@@ -261,7 +261,7 @@ namespace Gallio.TDNetRunner
         private static void LogAddInVersion(ILogger logger)
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            logger.Log(LogSeverity.Info, String.Format(Resources.RunnerNameAndVersion + "\n",
+            logger.Log(LogSeverity.Important, String.Format(Resources.RunnerNameAndVersion + "\n",
                 appVersion.Major, appVersion.Minor, appVersion.Build));
         }
 

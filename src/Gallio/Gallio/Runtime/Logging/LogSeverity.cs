@@ -33,13 +33,18 @@ namespace Gallio.Runtime.Logging
         Info = 1,
 
         /// <summary>
+        /// The severity used for important messages.
+        /// </summary>
+        Important = 2,
+
+        /// <summary>
         /// The severity used for warning messages.
         /// </summary>
-        Warning = 2,
+        Warning = 3,
 
         /// <summary>
         /// The severity used for error messages.
         /// </summary>
-        Error = 3
+        Error = 4
     }
 }

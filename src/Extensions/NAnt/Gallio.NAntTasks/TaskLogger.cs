@@ -50,8 +50,12 @@ namespace Gallio.NAntTasks
                     task.Log(Level.Warning, message);
                     break;
 
-                case LogSeverity.Info:
+                case LogSeverity.Important:
                     task.Log(Level.Info, message);
+                    break;
+
+                case LogSeverity.Info:
+                    task.Log(Level.Verbose, message);
                     break;
 
                 case LogSeverity.Debug:
