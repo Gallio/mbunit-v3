@@ -23,6 +23,7 @@
                 xmlns="http://www.w3.org/1999/xhtml">
   <xsl:template match="g:report" mode="xhtml-document">
     <html xml:lang="en" lang="en" dir="ltr">
+      <xsl:comment> saved from url=(0014)about:internet </xsl:comment><xsl:text>&#13;&#10;</xsl:text>
       <head>
         <title>Gallio Test Report</title>
         <link rel="stylesheet" type="text/css" href="{$cssDir}Gallio-Report.css" />
