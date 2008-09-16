@@ -115,12 +115,27 @@ namespace Gallio.Reflection
         /// <summary>
         /// Resolves all the attributes.
         /// </summary>
+        /// <remarks>
+        /// Omits attributes that cannot be resolved.
+        /// </remarks>
         /// <param name="attributes">The attribute descriptions</param>
         /// <returns>The resolved attribute instances</returns>
         public static IEnumerable<object> ResolveAttributes(IEnumerable<IAttributeInfo> attributes)
         {
             foreach (IAttributeInfo attribute in attributes)
-                yield return attribute.Resolve(false);
+            {
+                object obj;
+                try
+                {
+                    obj = attribute.Resolve(false);
+                }
+                catch (CodeElementResolveException)
+                {
+                    continue;
+                }
+
+                yield return obj;
+            }
         }
     }
 }

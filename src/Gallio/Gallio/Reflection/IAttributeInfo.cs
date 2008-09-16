@@ -72,7 +72,8 @@ namespace Gallio.Reflection
         /// Gets the attribute as an object.
         /// </summary>
         /// <param name="throwOnError">If true, throws an exception if the target could
-        /// not be resolved, otherwise the result may include unresolved types, enums or arrays</param>
+        /// not be resolved, otherwise the result may include unresolved types, enums or arrays
+        /// though it still may throw an exception if the attribute class cannot be instantiated</param>
         /// <returns>The attribute</returns>
         /// <exception cref="CodeElementResolveException">Thrown if the attribute could not be resolved</exception>
         object Resolve(bool throwOnError);
