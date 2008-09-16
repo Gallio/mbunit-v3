@@ -61,8 +61,13 @@
   <ItemGroup>
     <Compile Include="Controllers\ProjectControllerTest.cs" />
     <Compile Include="Controllers\TestControllerTest.cs" />
-    <Compile Include="Controls\TestResultsListTest.cs" />
+    <Compile Include="Controls\NodeCheckBoxTest.cs" />
+    <Compile Include="Controls\ProjectTreeViewTest.cs" />
+    <Compile Include="Controls\TestResultsListTest.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\TestStatusBarTest.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\TestTreeViewTest.cs">
       <SubType>Code</SubType>

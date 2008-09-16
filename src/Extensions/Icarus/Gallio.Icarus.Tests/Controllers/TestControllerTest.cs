@@ -72,19 +72,18 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void GetCurrentFilter_Test_AnyFilter()
         {
-            ITestRunnerService testRunnerService = SetupTestRunnerService();
-            testRunnerService.SetFilter(null);
-            LastCall.IgnoreArguments();
+            Filter<ITest> filter = new NoneFilter<ITest>();
 
             ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
-            TestTreeNode root = new TestTreeNode("root", "root", "root");
-            root.CheckState = CheckState.Checked;
-            Expect.Call(testTreeModel.Root).Return(root);
+            Expect.Call(testTreeModel.GetCurrentFilter()).Return(filter);
+
+            ITestRunnerService testRunnerService = SetupTestRunnerService();
+            testRunnerService.SetFilter(filter);
 
             mocks.ReplayAll();
 
             TestController testController = new TestController(testRunnerService, testTreeModel);
-            Assert.AreEqual("*", testController.GetCurrentFilter().ToFilterExpr());
+            Assert.AreEqual(filter, testController.GetCurrentFilter());
         }
 
         [Test]

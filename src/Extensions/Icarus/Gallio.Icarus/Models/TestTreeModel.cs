@@ -381,16 +381,77 @@ namespace Gallio.Icarus.Models
                 foreach (Filter<ITest> childFilter in orFilter.Filters)
                     RecursivelyApplyFilter(childFilter);
             }
-            else if (filter is IdFilter<ITest>)
+            else if (filter is PropertyFilter<ITest>)
             {
-                IdFilter<ITest> idFilter = (IdFilter<ITest>)filter;
-                EqualityFilter<string> equalityFilter = (EqualityFilter<string>)idFilter.ValueFilter;
+                PropertyFilter<ITest> propertyFilter = (PropertyFilter<ITest>)filter;
+                EqualityFilter<string> equalityFilter = (EqualityFilter<string>)propertyFilter.ValueFilter;
                 foreach (TestTreeNode n in Root.Find(equalityFilter.Comparand, true))
                 {
                     n.CheckState = CheckState.Checked;
                     n.UpdateStateOfRelatedNodes();
                 }
             }
+        }
+
+        public Filter<ITest> GetCurrentFilter()
+        {
+            Filter<ITest> filter;
+            if (Root.CheckState == CheckState.Checked)
+                filter = new AnyFilter<ITest>();
+            else
+                filter = Root.CheckState == CheckState.Unchecked
+                    ? new NoneFilter<ITest>()
+                    : CreateFilter(Nodes);
+            return filter;
+        }
+
+        private static Filter<ITest> CreateFilter(IEnumerable<Node> nodes)
+        {
+            List<Filter<ITest>> filters = new List<Filter<ITest>>();
+            foreach (Node n in nodes)
+            {
+                if (!(n is TestTreeNode))
+                    continue;
+                TestTreeNode node = (TestTreeNode)n;
+                switch (node.CheckState)
+                {
+                    case CheckState.Checked:
+                        {
+                            EqualityFilter<string> equalityFilter = new EqualityFilter<string>(node.Name);
+                            switch (node.NodeType)
+                            {
+                                case TestKinds.Namespace:
+                                    filters.Add(new NamespaceFilter<ITest>(equalityFilter));
+                                    break;
+
+                                case TestKinds.Fixture:
+                                case TestKinds.Test:
+                                    filters.Add(new IdFilter<ITest>(equalityFilter));
+                                    break;
+
+                                default:
+                                    if (typeof(MetadataKeys).GetField(node.NodeType) != null && node.Name != "None")
+                                        filters.Add(new MetadataFilter<ITest>(node.NodeType, equalityFilter));
+                                    else
+                                    {
+                                        Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                                        if (childFilters != null)
+                                            filters.Add(childFilters);
+                                    }
+                                    break;
+                            }
+                            break;
+                        }
+                    case CheckState.Indeterminate:
+                        {
+                            Filter<ITest> childFilters = CreateFilter(node.Nodes);
+                            if (childFilters != null)
+                                filters.Add(childFilters);
+                            break;
+                        }
+                }
+            }
+            return filters.Count > 1 ? new OrFilter<ITest>(filters.ToArray()) : filters[0];
         }
 
         private class TestTreeSorter : IComparer

@@ -221,13 +221,17 @@ namespace Gallio.Icarus.Controllers
 
         private void PublishUpdates()
         {
+            testFilters.ListChanged -= testFilters_ListChanged;
             testFilters.Clear();
             foreach (FilterInfo filterInfo in projectTreeModel.Project.TestFilters)
                 testFilters.Add(filterInfo);
+            testFilters.ListChanged += testFilters_ListChanged;
 
+            hintDirectories.ListChanged -= hintDirectories_ListChanged;
             hintDirectories.Clear();
             foreach (string hintDirectory in TestPackageConfig.HintDirectories)
                 hintDirectories.Add(hintDirectory);
+            hintDirectories.ListChanged += hintDirectories_ListChanged;
 
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs("TestPackageConfig"));

@@ -25,10 +25,10 @@ using Gallio.Runner.Reports;
 using System.Windows.Forms;
 using Gallio.Reflection;
 
-namespace Gallio.Icarus.Controls.Tests
+namespace Gallio.Icarus.Tests.Controls
 {
     [TestFixture, Category("Controls")]
-    public class TestResultsListTest
+    public class TestResultsListTest : TestResultsList
     {
         private TestResultsList testResultsList;
 
@@ -134,6 +134,24 @@ namespace Gallio.Icarus.Controls.Tests
             Assert.AreEqual(1, testResultsList.Items.Count);
             testResultsList.Clear();
             Assert.AreEqual(0, testResultsList.Items.Count);
+        }
+
+        [Test]
+        public void OnColumnClick_Test()
+        {
+            columnSorter.SortColumn = 0;
+            Assert.AreEqual(SortOrder.None, columnSorter.Order);
+            OnColumnClick(new ColumnClickEventArgs(1));
+            Assert.AreEqual(SortOrder.Ascending, columnSorter.Order);
+        }
+
+        [Test]
+        public void OnColumnClick_Reverse_Test()
+        {
+            columnSorter.SortColumn = 1;
+            columnSorter.Order = SortOrder.Ascending;
+            OnColumnClick(new ColumnClickEventArgs(1));
+            Assert.AreEqual(SortOrder.Descending, columnSorter.Order);
         }
     }
 }

@@ -15,18 +15,50 @@
 
 using Gallio.Icarus.Controls;
 using MbUnit.Framework;
+using Aga.Controls.Tree.NodeControls;
+using NodeCheckBox=Gallio.Icarus.Controls.NodeCheckBox;
 
 namespace Gallio.Icarus.Tests.Controls
 {
     public class TestTreeViewTest
     {
         [Test]
+        public void Constructor_Test()
+        {
+            TestTreeView testTreeView = new TestTreeView();
+            Assert.AreEqual(4, testTreeView.NodeControls.Count);
+
+            NodeCheckBox nodeCheckBox = (NodeCheckBox)testTreeView.NodeControls[0];
+            Assert.AreEqual("CheckState", nodeCheckBox.DataPropertyName);
+            Assert.AreEqual(0, nodeCheckBox.LeftMargin);
+            Assert.IsNull(nodeCheckBox.ParentColumn);
+            Assert.IsTrue(nodeCheckBox.ThreeState);
+
+            NodeIcon nodeTypeIcon = (NodeIcon) testTreeView.NodeControls[1];
+            Assert.AreEqual("NodeTypeIcon", nodeTypeIcon.DataPropertyName);
+            Assert.AreEqual(1, nodeTypeIcon.LeftMargin);
+            Assert.IsNull(nodeTypeIcon.ParentColumn);
+
+            NodeIcon testStateIcon = (NodeIcon) testTreeView.NodeControls[2];
+            Assert.AreEqual("TestStatusIcon", testStateIcon.DataPropertyName);
+            Assert.AreEqual(1, testStateIcon.LeftMargin);
+            Assert.IsNull(testStateIcon.ParentColumn);
+
+            NodeTextBox nodeTextBox = (NodeTextBox) testTreeView.NodeControls[3];
+            Assert.AreEqual("Text", nodeTextBox.DataPropertyName);
+            Assert.IsTrue(nodeTextBox.IncrementalSearchEnabled);
+            Assert.IsFalse(nodeTextBox.EditEnabled);
+            Assert.AreEqual(3, nodeTextBox.LeftMargin);
+            Assert.IsNull(nodeTextBox.ParentColumn);
+        }
+
+        [Test]
         public void EditEnabled_Test()
         {
-            //TestTreeView testTreeView = new TestTreeView();
-            //Assert.IsTrue(testTreeView.EditEnabled);
-            //testTreeView.EditEnabled = false;
-            //Assert.IsFalse(testTreeView.EditEnabled);
+            TestTreeView testTreeView = new TestTreeView();
+            Assert.IsTrue(testTreeView.EditEnabled);
+            testTreeView.EditEnabled = false;
+            Assert.IsFalse(testTreeView.EditEnabled);
         }
     }
 }

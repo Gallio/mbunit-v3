@@ -14,17 +14,19 @@
 // limitations under the License.
 
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 using Gallio.Icarus.Controls;
 using Gallio.Icarus.Tests.Properties;
 
 using MbUnit.Framework;
+using Rhino.Mocks;
 
-namespace Gallio.Icarus.Controls.Tests
+namespace Gallio.Icarus.Tests.Controls
 {
     [TestFixture, Category("Controls")]
-    public class TestStatusBarTest
+    class TestStatusBarTest : TestStatusBar
     {
         private TestStatusBar testStatusBar;
 
@@ -121,6 +123,31 @@ namespace Gallio.Icarus.Controls.Tests
             Assert.AreEqual(0, testStatusBar.Total);
             testStatusBar.Total = 15;
             Assert.AreEqual(15, testStatusBar.Total);
+        }
+
+        [Test]
+        public void OnPaint_Test()
+        {
+            MockRepository mockRepository = new MockRepository();
+            Graphics g = mockRepository.CreateMock<Graphics>();
+            using (mockRepository.Record())
+            {
+                g.FillRectangle(new SolidBrush(Color.Black), new Rectangle());
+                LastCall.IgnoreArguments();
+                Expect.Call(g.SmoothingMode).Return(SmoothingMode.Default);
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.DrawRectangle(Pens.Black, new Rectangle());
+                LastCall.IgnoreArguments();
+                g.DrawString(string.Empty, Font, new SolidBrush(Color.Empty), 0, 0, new StringFormat());
+                LastCall.IgnoreArguments();
+                g.SmoothingMode = SmoothingMode.Default;
+            }
+
+            mockRepository.ReplayAll();
+
+            OnPaint(new PaintEventArgs(g, new Rectangle()));
+
+            mockRepository.VerifyAll();
         }
     }
 }

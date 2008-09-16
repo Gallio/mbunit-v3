@@ -16,11 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Forms;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Icarus.Services.Interfaces;
@@ -103,7 +101,6 @@ namespace Gallio.Icarus.Controllers
             };
 
             selectedTests = new BindingList<string>(new List<string>());
-            selectedTests.ListChanged += delegate { testTreeModel.ResetTestStatus(); };
         }
 
         public void ApplyFilter(Filter<ITest> filter)
@@ -129,64 +126,9 @@ namespace Gallio.Icarus.Controllers
 
         public Filter<ITest> GetCurrentFilter()
         {
-            Filter<ITest> filter;
-            if (testTreeModel.Root.CheckState == CheckState.Checked)
-                filter = new AnyFilter<ITest>();
-            else
-                filter = testTreeModel.Root.CheckState == CheckState.Unchecked
-                    ? new NoneFilter<ITest>()
-                    : CreateFilter(testTreeModel.Nodes);
+            Filter<ITest> filter = testTreeModel.GetCurrentFilter();
             testRunnerService.SetFilter(filter);
             return filter;
-        }
-
-        private static Filter<ITest> CreateFilter(IEnumerable<Node> nodes)
-        {
-            List<Filter<ITest>> filters = new List<Filter<ITest>>();
-            foreach (Node n in nodes)
-            {
-                if (!(n is TestTreeNode))
-                    continue;
-                TestTreeNode node = (TestTreeNode)n;
-                switch (node.CheckState)
-                {
-                    case CheckState.Checked:
-                        {
-                            EqualityFilter<string> equalityFilter = new EqualityFilter<string>(node.Name);
-                            switch (node.NodeType)
-                            {
-                                case TestKinds.Namespace:
-                                    filters.Add(new NamespaceFilter<ITest>(equalityFilter));
-                                    break;
-
-                                case TestKinds.Fixture:
-                                case TestKinds.Test:
-                                    filters.Add(new IdFilter<ITest>(equalityFilter));
-                                    break;
-
-                                default:
-                                    if (typeof(MetadataKeys).GetField(node.NodeType) != null && node.Name != "None")
-                                        filters.Add(new MetadataFilter<ITest>(node.NodeType, equalityFilter));
-                                    else
-                                    {
-                                        Filter<ITest> childFilters = CreateFilter(node.Nodes);
-                                        if (childFilters != null)
-                                            filters.Add(childFilters);
-                                    }
-                                    break;
-                            }
-                            break;
-                        }
-                    case CheckState.Indeterminate:
-                        {
-                            Filter<ITest> childFilters = CreateFilter(node.Nodes);
-                            if (childFilters != null)
-                                filters.Add(childFilters);
-                            break;
-                        }
-                }
-            }
-            return filters.Count > 1 ? new OrFilter<ITest>(filters.ToArray()) : filters[0];
         }
 
         private void Load()

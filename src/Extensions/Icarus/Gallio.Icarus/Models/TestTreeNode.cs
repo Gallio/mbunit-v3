@@ -182,7 +182,7 @@ namespace Gallio.Icarus.Models
             return nodes;
         }
 
-        private List<TestTreeNode> Find(string key, bool searchChildren, Node node)
+        private static List<TestTreeNode> Find(string key, bool searchChildren, Node node)
         {
             List<TestTreeNode> nodes = new List<TestTreeNode>();
             if (node is TestTreeNode)
@@ -273,7 +273,7 @@ namespace Gallio.Icarus.Models
                 parent.TestStatus = SiblingTestStatus;
         }
 
-        private Image GetTestStatusIcon(TestStatus status)
+        private static Image GetTestStatusIcon(TestStatus status)
         {
             switch (status)
             {

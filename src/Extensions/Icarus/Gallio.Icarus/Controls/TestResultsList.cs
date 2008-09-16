@@ -24,7 +24,7 @@ namespace Gallio.Icarus.Controls
 {
     public class TestResultsList : ListView
     {
-        private readonly TestResultsListColumnSorter columnSorter;
+        protected readonly TestResultsListColumnSorter columnSorter;
 
         public TestResultsList()
         {

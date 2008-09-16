@@ -24,7 +24,9 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
+using Gallio.Model.Filters;
 using Gallio.Reflection;
+using Gallio.Runner.Projects;
 using Gallio.Runtime;
 using Gallio.Utilities;
 using WeifenLuo.WinFormsUI.Docking;
@@ -60,7 +62,6 @@ namespace Gallio.Icarus
         
         private string ProjectFileName
         {
-            get { return projectFileName; }
             set
             {
                 projectFileName = value;
@@ -189,15 +190,30 @@ namespace Gallio.Icarus
                         continue;
                     if (Path.GetExtension(assembly) == "'gallio")
                     {
-                        projectController.OpenProject(assembly);
+                        OpenProject(assembly);
                         continue;
                     }
                     projectController.AddAssemblies(assemblyFiles);
                 }
             }
             else if (OptionsController.Instance.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
-                projectController.OpenProject(Paths.DefaultProject);
+                OpenProject(Paths.DefaultProject);
+        }
+
+        void OpenProject(string fileName)
+        {
+            projectController.OpenProject(fileName);
             testController.Reload(projectController.TestPackageConfig);
+            testController.LoadFinished += delegate
+            {
+                foreach (FilterInfo filterInfo in projectController.TestFilters)
+                {
+                    if (filterInfo.FilterName != "AutoSave")
+                        continue;
+                    testController.ApplyFilter(FilterUtils.ParseTestFilter(filterInfo.Filter));
+                    return;
+                }
+            };
         }
 
         private void DefaultDockState()
@@ -257,14 +273,8 @@ namespace Gallio.Icarus
                 if (openFile.ShowDialog() != DialogResult.OK)
                     return;
                 ProjectFileName = openFile.FileName;
-                OpenProjectFromFile();
+                OpenProject(projectFileName);
             }
-        }
-
-        private void OpenProjectFromFile()
-        {
-            projectController.OpenProject(projectFileName);
-            testController.Reload(projectController.TestPackageConfig);
         }
 
         private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
