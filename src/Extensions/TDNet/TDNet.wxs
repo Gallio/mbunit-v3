@@ -21,6 +21,7 @@
             <Component Id="TDNetApp.Icarus" Guid="0ebd2ab6-3341-4d25-a249-0af80fa32913" Win64="no">
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Icarus">
+                    <RegistryValue Type='string' Value='10'/>
                     <RegistryValue Type='string' Name='Application' Value='[#Gallio.Icarus.exe]'/>
                 </RegistryKey>
             </Component>

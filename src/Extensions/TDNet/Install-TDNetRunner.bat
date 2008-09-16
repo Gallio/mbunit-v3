@@ -16,7 +16,9 @@ set TDKEY=HKLM\Software\MutantDesign\TestDriven.Net\TestRunners
 echo Installing the locally compiled Gallio test runner for TestDriven.Net.
 echo.
 
+"%REG%" ADD %TDKEY%\Gallio_Icarus /VE /D 10 /F >nul
 "%REG%" ADD %TDKEY%\Gallio_Icarus /V Application /D "%ICARUS_EXE%" /F >nul
+
 call :AddRunner CSUnit csUnit
 call :AddRunner MbUnit MbUnit
 call :AddRunner MbUnit2 MbUnit.Framework
