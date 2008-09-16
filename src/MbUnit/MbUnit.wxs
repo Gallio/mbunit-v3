@@ -10,18 +10,24 @@
             </Component>
         </DirectoryRef>
 
-        <DirectoryRef Id="binFolder">
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="MbUnit.v3" Guid="{2f25f1f8-46ea-40f5-a850-16bac64cad1b}" Win64="no">
-                <File Id="MbUnit.dll" Source="$(var.GallioTargetDir)\bin\MbUnit.dll" KeyPath="yes"/>
-                <File Id="MbUnit.plugin" Source="$(var.GallioTargetDir)\bin\MbUnit.plugin"/>
-                <File Id="MbUnit.pdb" Source="$(var.GallioTargetDir)\bin\MbUnit.pdb"/>
-                <File Id="MbUnit.xml" Source="$(var.GallioTargetDir)\bin\MbUnit.xml"/>
+                <File Name="MbUnit.dll" KeyPath="yes" />
+                <File Name="MbUnit.plugin" />
+                <File Name="MbUnit.pdb" />
+                <File Name="MbUnit.xml" />
             </Component>
             <Component Id="MbUnit35.v3" Guid="{7fa829c3-df5c-4e41-865b-54084c65c0b0}" Win64="no">
-                <File Id="MbUni35.dll" Source="$(var.GallioTargetDir)\bin\MbUnit35.dll"/>
-                <File Id="MbUnit35.plugin" Source="$(var.GallioTargetDir)\bin\MbUnit35.plugin"/>
-                <File Id="MbUnit35.pdb" Source="$(var.GallioTargetDir)\bin\MbUnit35.pdb"/>
-                <File Id="MbUnit35.xml" Source="$(var.GallioTargetDir)\bin\MbUnit35.xml"/>
+                <File Name="MbUnit35.dll" KeyPath="yes" />
+                <File Name="MbUnit35.plugin" />
+                <File Name="MbUnit35.pdb" />
+                <File Name="MbUnit35.xml" />
+            </Component>
+            <Component Id="MbUnit.Compatibility.v3" Guid="{107b6248-21bd-4d8f-b20b-3101b938429f}" Win64="no">
+                <File Name="MbUnit.Compatibility.dll" KeyPath="yes"/>
+                <File Name="MbUnit.Compatibility.plugin" />
+                <File Name="MbUnit.Compatibility.pdb" />
+                <File Name="MbUnit.Compatibility.xml" />
             </Component>
         </DirectoryRef>
 
@@ -29,6 +35,7 @@
                  Description="Installs the MbUnit v3 framework components.">
             <ComponentRef Id='MbUnit.v3'/>
             <ComponentRef Id='MbUnit35.v3'/>
+            <ComponentRef Id='MbUnit.Compatibility.v3'/>
             <ComponentRef Id='MbUnit.Website'/>
         </Feature>
     </Fragment>
