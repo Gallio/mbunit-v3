@@ -34,18 +34,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="csUnit.Common, Version=2.5.3081.40665, Culture=neutral, PublicKeyToken=6871f04765cca910, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\csunit.org\csUnit 2.5\csUnit.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="csUnit.Interfaces, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\csunit.org\csUnit 2.5\csUnit.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="csUnitCore, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\csunit.org\csUnit 2.5\csUnitCore.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="csUnit">
       <SpecificVersion>False</SpecificVersion>
