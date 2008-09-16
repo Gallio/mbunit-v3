@@ -174,7 +174,7 @@ namespace Gallio.Icarus
             }
             else
             {
-                testController.SelectedTests.Add(((TestTreeNode)testTree.Root.Tag).Name);
+                testController.SelectedTests.Add(((TestTreeModel)testTree.Model).Root.Name);
                 removeAssemblyToolStripMenuItem.Enabled = false;
                 viewSourceCodeToolStripMenuItem.Enabled = false;
             }
