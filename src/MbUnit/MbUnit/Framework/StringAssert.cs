@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Gallio;
 using Gallio.Framework.Assertions;
 
@@ -21,6 +23,7 @@ namespace MbUnit.Framework
 {
     public abstract partial class Assert
     {
+        #region AreEqualIgnoreCase
         /// <summary>
         /// Asserts that two strings are equal, ignoring the case
         /// </summary>
@@ -111,5 +114,74 @@ namespace MbUnit.Framework
                         .ToAssertionFailure();
                 });
         }
+        #endregion
+
+        #region FullMatch
+
+        /// <summary>
+        /// Verifies that testValue matches regular expression pattern exactly.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void FullMatch(string testValue, string regexPattern)
+        {
+            FullMatch(testValue, regexPattern, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that testValue matches regular expression pattern exactly.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void FullMatch(string testValue, string regexPattern, string messageFormat, params object[] messageArgs)
+        {
+            FullMatch(testValue, new Regex(regexPattern), messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that testValue matches regular expression pattern exactly.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regEx">Regular expression</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void FullMatch(string testValue, Regex regEx)
+        {
+            FullMatch(testValue, regEx, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that testValue matches regular expression pattern exactly.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regEx">Regular expression</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void FullMatch(string testValue, Regex regEx, string messageFormat, params object[] messageArgs)
+        {
+            if (testValue == null)
+                throw new ArgumentNullException("testValue");
+            if (regEx == null)
+                throw new ArgumentNullException("regEx");
+
+            AssertionHelper.Verify(delegate
+            {
+                Match match = regEx.Match(testValue);
+                if (match.Success && testValue.Length.Equals(match.Length))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected to have an exact match.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Test Value", testValue)
+                    .AddRawLabeledValue("Regex Pattern", regEx.ToString())
+                    .ToAssertionFailure();
+            });
+        }
+
+        #endregion
     }
 }
