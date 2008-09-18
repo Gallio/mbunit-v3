@@ -16,6 +16,7 @@
 using System;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
+using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
 using MbUnit.Framework;
 
@@ -47,7 +48,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetMessage("Message goes here")
-                .SetStackTrace("Stack goes here")
+                .SetStackTrace(new StackTraceData("Stack goes here"))
                 .AddRawExpectedValue("Expected value")
                 .AddRawActualValue("Actual value")
                 .AddRawLabeledValue("Very Long Label That Will Not Be Padded", "")
@@ -79,7 +80,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailure failure = new AssertionFailureBuilder("Description")
                 .SetMessage("Message goes here")
-                .SetStackTrace("Stack goes here")
+                .SetStackTrace(new StackTraceData("Stack goes here"))
                 .AddRawExpectedValue("Expected value")
                 .AddRawActualValue("Actual value")
                 .AddRawLabeledValue("Very Long Label That Will Not Be Padded", "")

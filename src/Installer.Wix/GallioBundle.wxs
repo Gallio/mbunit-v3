@@ -112,6 +112,7 @@
                 <FeatureRef Id='feat_XunitAdapter'/>
             </Feature>
             <Feature Id='feat_ToolIntegration' Title='Tools' Level="1">
+                <FeatureRef Id='feat_Navigator'/>
                 <FeatureRef Id='feat_NCoverIntegration'/>
 <?ifdef FEATURE_NCOVER_INTEGRATION_2 ?>
                 <FeatureRef Id='feat_NCoverIntegration2'/>

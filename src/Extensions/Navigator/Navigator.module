@@ -1,0 +1,22 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.Navigator\Gallio.Navigator.csproj" />
+
+    <CSharpProject Include="Gallio.Navigator.Tests\Gallio.Navigator.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.Navigator\bin\Gallio.Navigator.dll">
+        <Folder>Navigator</Folder>
+    </Binary>
+    <Binary Include="Gallio.Navigator\Readme.txt">
+        <Folder>Navigator</Folder>
+    </Binary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.Navigator.Tests\bin\Gallio.Navigator.Tests.dll" />
+  </ItemGroup>
+</Project>

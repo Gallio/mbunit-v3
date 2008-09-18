@@ -52,7 +52,7 @@ namespace Gallio.Framework.Assertions
 
         private readonly string description;
         private readonly string message;
-        private readonly string stackTrace;
+        private readonly StackTraceData stackTrace;
         private readonly IList<LabeledValue> labeledValues;
         private readonly IList<ExceptionData> exceptions;
         private readonly IList<AssertionFailure> innerFailures;
@@ -60,7 +60,7 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Creates an assertion failure object.
         /// </summary>
-        protected internal AssertionFailure(string description, string message, string stackTrace,
+        protected internal AssertionFailure(string description, string message, StackTraceData stackTrace,
             IList<LabeledValue> labeledValues, IList<ExceptionData> exceptions, IList<AssertionFailure> innerFailures)
         {
             this.description = description;
@@ -91,7 +91,7 @@ namespace Gallio.Framework.Assertions
         /// <summary>
         /// Get the stack track of the failure, or null if none.
         /// </summary>
-        public string StackTrace
+        public StackTraceData StackTrace
         {
             get { return stackTrace; }
         }
@@ -189,17 +189,11 @@ namespace Gallio.Framework.Assertions
                 }
             }
 
-            if (!string.IsNullOrEmpty(stackTrace))
+            if (!stackTrace.IsEmpty)
             {
                 writer.WriteLine();
-
-                using (writer.BeginMarker(Marker.StackTrace))
-                {
-                    if (stackTrace.EndsWith("\n"))
-                        writer.Write(stackTrace);
-                    else
-                        writer.WriteLine(stackTrace);
-                }
+                stackTrace.WriteTo(writer);
+                writer.WriteLine();
             }
         }
 

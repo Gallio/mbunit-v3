@@ -107,7 +107,7 @@ namespace Gallio.Model.Diagnostics
                 throw new ArgumentNullException("exception");
 
             return new ExceptionData(exception.Type, exception.Message,
-                FilterStackFrames(EnumerateStackFrameInfo(exception.StackTrace)),
+                FilterStackFrames(EnumerateStackFrameInfo(exception.StackTrace.ToString())),
                 exception.InnerException != null ? FilterException(exception.InnerException) : null);
         }
 

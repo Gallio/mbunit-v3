@@ -69,8 +69,8 @@ namespace Gallio.Tests.Framework.Assertions
         public void CanSetStackTrace()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            builder.SetStackTrace("Stack");
-            Assert.AreEqual("Stack", builder.ToAssertionFailure().StackTrace);
+            builder.SetStackTrace(new StackTraceData("Stack"));
+            Assert.AreEqual("Stack", builder.ToAssertionFailure().StackTrace.ToString());
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace Gallio.Tests.Framework.Assertions
         public void AutomaticStackTraceUsedIfNotSet()
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
-            Assert.Contains(builder.ToAssertionFailure().StackTrace, "AutomaticStackTraceUsedIfNotSet");
+            Assert.Contains(builder.ToAssertionFailure().StackTrace.ToString(), "AutomaticStackTraceUsedIfNotSet");
         }
 
         [Test]

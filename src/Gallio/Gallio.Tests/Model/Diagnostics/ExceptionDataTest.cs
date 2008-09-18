@@ -44,7 +44,13 @@ namespace Gallio.Tests.Model.Diagnostics
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfStackTraceIsNull()
         {
-            new ExceptionData("type", "message", null, null);
+            new ExceptionData("type", "message", (string) null, null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ConstructorThrowsIfStackTraceDataIsNull()
+        {
+            new ExceptionData("type", "message", (StackTraceData)null, null);
         }
 
         [Test]
@@ -59,13 +65,13 @@ namespace Gallio.Tests.Model.Diagnostics
             ExceptionData outerData = new ExceptionData(outer);
             Assert.AreEqual(outer.GetType().FullName, outerData.Type);
             Assert.AreEqual(outer.Message, outerData.Message);
-            Assert.AreEqual(outer.StackTrace, outerData.StackTrace);
+            Assert.AreEqual(outer.StackTrace, outerData.StackTrace.ToString());
             Assert.IsNotNull(outerData.InnerException);
 
             ExceptionData innerData = outerData.InnerException;
             Assert.AreEqual(inner.GetType().FullName, innerData.Type);
             Assert.AreEqual(inner.Message, innerData.Message);
-            Assert.AreEqual(inner.StackTrace, innerData.StackTrace);
+            Assert.AreEqual(inner.StackTrace, innerData.StackTrace.ToString());
             Assert.IsNull(innerData.InnerException);
         }
 
@@ -77,12 +83,12 @@ namespace Gallio.Tests.Model.Diagnostics
 
             Assert.AreEqual("type", innerData.Type);
             Assert.AreEqual("message", innerData.Message);
-            Assert.AreEqual("stacktrace", innerData.StackTrace);
+            Assert.AreEqual("stacktrace", innerData.StackTrace.ToString());
             Assert.IsNull(innerData.InnerException);
 
             Assert.AreEqual("type", outerData.Type);
             Assert.AreEqual("message", outerData.Message);
-            Assert.AreEqual("stacktrace", outerData.StackTrace);
+            Assert.AreEqual("stacktrace", outerData.StackTrace.ToString());
             Assert.AreSame(innerData, outerData.InnerException);
         }
 

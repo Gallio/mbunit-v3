@@ -15,8 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Gallio.Collections;
+using Gallio.Reflection;
 
 namespace Gallio.Model.Logging
 {
@@ -96,6 +98,26 @@ namespace Gallio.Model.Logging
         /// instead as an attribute.
         /// </summary>
         public const string EllipsisClass = "Ellipsis";
+
+        /// <summary>
+        /// Standard marker class for code location references.
+        /// </summary>
+        public const string CodeLocationClass = "CodeLocation";
+
+        /// <summary>
+        /// Path attribute for code location references.
+        /// </summary>
+        public const string CodeLocationPathAttrib = "path";
+
+        /// <summary>
+        /// Path attribute for code location references.
+        /// </summary>
+        public const string CodeLocationLineNumberAttrib = "line";
+
+        /// <summary>
+        /// Path attribute for code location references.
+        /// </summary>
+        public const string CodeLocationColumnNumberAttrib = "column";
 
         /// <summary>
         /// Standard marker for assertion failures.
@@ -191,6 +213,21 @@ namespace Gallio.Model.Logging
         public static Marker Ellipsis
         {
             get { return new Marker(EllipsisClass); }
+        }
+
+        /// <summary>
+        /// Creates a standard marker for a code location.
+        /// </summary>
+        public static Marker CodeLocation(CodeLocation location)
+        {
+            var marker = new Marker(CodeLocationClass);
+            if (location.Path != null)
+                marker = marker.WithAttribute(CodeLocationPathAttrib, location.Path);
+            if (location.Line != 0)
+                marker = marker.WithAttribute(CodeLocationLineNumberAttrib, location.Line.ToString(CultureInfo.InvariantCulture));
+            if (location.Column != 0)
+                marker = marker.WithAttribute(CodeLocationPathAttrib, location.Column.ToString(CultureInfo.InvariantCulture));
+            return marker;
         }
 
         /// <summary>

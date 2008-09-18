@@ -24,9 +24,8 @@ namespace Gallio.Model.Logging
 {
     /// <summary>
     /// <para>
-    /// A structured text object is an immutable value type that wraps a <see cref="StructuredTestLogStream" />.
-    /// It encapsulates a fragment of a structured log such that it can be written back to a test log
-    /// stream later on.
+    /// A structured text object contains attachments and formatted text with rich
+    /// presentation elements.
     /// </para>
     /// <para>
     /// Structured text is emitted by a <see cref="StructuredTextWriter" />.

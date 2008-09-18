@@ -38,3 +38,10 @@ function expand(ids)
         }
     }
 }
+
+function navigateTo(path, line, column)
+{
+    var navigator = new ActiveXObject("Gallio.Navigator.GallioNavigator");
+    if (navigator)
+        navigator.NavigateTo(path, line, column);
+}

@@ -74,7 +74,7 @@ namespace Gallio.Model.Logging.Tags
         /// Gets the list of marker attributes.
         /// </summary>
         [XmlArray("attributes", IsNullable = false)]
-        [XmlArrayItem("attributes", typeof(Attribute), IsNullable = false)]
+        [XmlArrayItem("attribute", typeof(Attribute), IsNullable = false)]
         public List<Attribute> Attributes
         {
             get { return attributes; }

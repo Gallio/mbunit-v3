@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
+            <Directory Id="Navigator" Name="Navigator">
+                <Component Id="Gallio.Navigator.dll" Guid="{AF22A32E-D8AA-40a2-8E14-07A70C52F46F}" Win64="no">
+                    <File Name="Gallio.Navigator.dll" KeyPath="yes" Assembly=".net" AssemblyRegisterComInterop="yes" />
+                </Component>
+		
+                <Component Id="Navigator.Readme.txt" Guid="{AA7095B2-D4F7-480a-ADCD-DE5B46C10BA2}" Win64="no">
+                    <File Id="Navigator.Readme.txt" Name="Readme.txt" KeyPath="yes" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+
+        <Feature Id='feat_Navigator' Title='Browser Integration' Level='1'
+            Description='Provides integration with Internet Explorer to enable navigation to source code from Gallio reports.'>
+            <ComponentRef Id="Gallio.Navigator.dll"/>
+            <ComponentRef Id="Navigator.Readme.txt"/>
+        </Feature>
+    </Fragment>
+</Wix>

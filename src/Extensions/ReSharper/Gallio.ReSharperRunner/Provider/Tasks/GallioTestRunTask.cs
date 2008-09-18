@@ -302,7 +302,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     do
                     {
                         pendingExceptions.Add(TaskExceptionFactory.CreateTaskException(exception.Type, exception.Message,
-                            exception.StackTrace));
+                            exception.StackTrace.ToString()));
                         exception = exception.InnerException;
                     } while (exception != null);
                 });

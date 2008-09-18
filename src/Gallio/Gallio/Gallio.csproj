@@ -145,6 +145,7 @@
     <Compile Include="Framework\Formatting\XPathNavigableFormattingRule.cs" />
     <Compile Include="Framework\Text\DiffStyle.cs" />
     <Compile Include="ICloneable.cs" />
+    <Compile Include="Model\Diagnostics\StackTraceData.cs" />
     <Compile Include="Model\Diagnostics\TestFrameworkInternalAttribute.cs" />
     <Compile Include="Model\Diagnostics\StackTraceFilter.cs" />
     <Compile Include="Model\Diagnostics\TestEntryPointAttribute.cs" />

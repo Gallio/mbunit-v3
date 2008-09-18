@@ -134,7 +134,16 @@ html
       <xsl:if test="g:codeLocation/@path">
         <div class="annotation-location">
           <xsl:text>Location: </xsl:text>
-          <xsl:call-template name="format-code-location"><xsl:with-param name="codeLocation" select="g:codeLocation" /></xsl:call-template>
+          <xsl:call-template name="code-location-link">
+            <xsl:with-param name="path" select="g:codeLocation/@path" />
+            <xsl:with-param name="line" select="g:codeLocation/@line" />
+            <xsl:with-param name="column" select="g:codeLocation/@column" />
+            <xsl:with-param name="content">
+              <xsl:call-template name="format-code-location">
+                <xsl:with-param name="codeLocation" select="g:codeLocation" />
+              </xsl:call-template>
+            </xsl:with-param>
+          </xsl:call-template>
         </div>
       </xsl:if>
       
@@ -522,9 +531,25 @@ html
     <xsl:param name="attachments" />
 
     <span class="logStreamMarker-{@class}">
-      <xsl:apply-templates select="g:contents" mode="stream">
-        <xsl:with-param name="attachments" select="$attachments" />
-      </xsl:apply-templates>
+      <xsl:choose>
+        <xsl:when test="@class = 'CodeLocation'">
+          <xsl:call-template name="code-location-link">
+            <xsl:with-param name="path" select="g:attributes/g:attribute[@name='path']/@value" />
+            <xsl:with-param name="line" select="g:attributes/g:attribute[@name='line']/@value" />
+            <xsl:with-param name="column" select="g:attributes/g:attribute[@name='column']/@value" />
+            <xsl:with-param name="content">
+              <xsl:apply-templates select="g:contents" mode="stream">
+                <xsl:with-param name="attachments" select="$attachments" />
+              </xsl:apply-templates>
+            </xsl:with-param>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="g:contents" mode="stream">
+            <xsl:with-param name="attachments" select="$attachments" />
+          </xsl:apply-templates>
+        </xsl:otherwise>
+      </xsl:choose>      
     </span>
   </xsl:template>
 
@@ -690,6 +715,28 @@ html
       <xsl:when test="$statistics/@inconclusiveCount > 0">status-inconclusive</xsl:when>
       <xsl:when test="$statistics/@passedCount > 0">status-passed</xsl:when>
       <xsl:otherwise>status-skipped</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="code-location-link">
+    <xsl:param name="path" />
+    <xsl:param name="line" />
+    <xsl:param name="column" />
+    <xsl:param name="content" />
+
+    <xsl:choose>
+      <xsl:when test="$path and $line > 0 and $column > 0">
+        <a href="gallio:navigateTo?path={$path}&amp;line={$line}&amp;column={$column}"><xsl:value-of select="$content"/></a>
+      </xsl:when>
+      <xsl:when test="$path and $line > 0">
+        <a href="gallio:navigateTo?path={$path}&amp;line={$line}"><xsl:value-of select="$content"/></a>
+      </xsl:when>
+      <xsl:when test="$path">
+        <a href="gallio:navigateTo?path={$path}"><xsl:value-of select="$content"/></a>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$content"/>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   

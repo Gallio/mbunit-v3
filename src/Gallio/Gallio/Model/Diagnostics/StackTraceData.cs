@@ -1,0 +1,99 @@
+﻿using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using Gallio.Model.Logging;
+using Gallio.Reflection;
+
+namespace Gallio.Model.Diagnostics
+{
+    /// <summary>
+    /// Describes a stack trace in a serializable form.
+    /// </summary>
+    [Serializable]
+    public sealed class StackTraceData : ITestLogStreamWritable
+    {
+        private static readonly Regex StackFrameRegex = new Regex(@"(?<prefix>\) in )(?<path>\S.*):line (?<line>[0-9]+)",
+            RegexOptions.Multiline | RegexOptions.Compiled);
+
+        private readonly string stackTrace;
+
+        /// <summary>
+        /// Creates a stack trace data object from a string.
+        /// </summary>
+        /// <param name="stackTrace">The stack trace</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stackTrace"/> is null</exception>
+        public StackTraceData(string stackTrace)
+        {
+            if (stackTrace == null)
+                throw new ArgumentNullException("stackTrace");
+
+            this.stackTrace = stackTrace.EndsWith("\n") ? stackTrace.Substring(0, stackTrace.Length - 1) : stackTrace;
+        }
+
+        /// <summary>
+        /// Returns true if the stack trace data is empty.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return stackTrace.Length == 0; }
+        }
+
+        /// <summary>
+        /// Formats the stack trace to a string similar to the one that the .Net framework
+        /// would ordinarily construct.
+        /// </summary>
+        /// <remarks>
+        /// The exception will not be terminated by a new line.
+        /// </remarks>
+        /// <returns>The formatted stack trace</returns>
+        public override string ToString()
+        {
+            //StringTestLogWriter writer = new StringTestLogWriter(false);
+            //WriteTo(writer.Default);
+            //return writer.ToString();
+            return stackTrace;
+        }
+
+        /// <summary>
+        /// Writes the stack trace in a structured format with markers to distinguish its component elements.
+        /// </summary>
+        /// <remarks>
+        /// The stack trace will not be terminated by a new line.
+        /// </remarks>
+        /// <param name="writer">The log stream writer</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        public void WriteTo(TestLogStreamWriter writer)
+        {
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
+            if (IsEmpty)
+                return;
+
+            using (writer.BeginMarker(Marker.StackTrace))
+            {
+                int pos = 0;
+                foreach (Match match in StackFrameRegex.Matches(stackTrace))
+                {
+                    if (match.Index != pos)
+                        writer.Write(stackTrace.Substring(pos, match.Index - pos));
+
+                    string prefix = match.Groups["prefix"].Value;
+                    writer.Write(prefix);
+
+                    string path = match.Groups["path"].Value;
+                    int line;
+                    int.TryParse(match.Groups["line"].Value, NumberStyles.None, CultureInfo.InvariantCulture, out line);
+
+                    using (writer.BeginMarker(Marker.CodeLocation(new CodeLocation(path, line, 0))))
+                        writer.Write(match.Value.Substring(prefix.Length));
+
+                    pos = match.Index + match.Length;
+                }
+
+                if (pos < stackTrace.Length)
+                    writer.Write(stackTrace.Substring(pos));
+            }
+        }
+    }
+}

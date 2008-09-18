@@ -38,7 +38,7 @@ namespace Gallio.Framework.Assertions
         private readonly IFormatter formatter;
 
         private string message;
-        private string stackTrace;
+        private StackTraceData stackTrace;
         private bool isStackTraceSet;
         private List<AssertionFailure.LabeledValue> labeledValues;
         private List<ExceptionData> exceptions;
@@ -112,7 +112,7 @@ namespace Gallio.Framework.Assertions
         /// </summary>
         /// <param name="stackTrace">The stack trace, or null if none</param>
         /// <returns>The builder, to allow for fluent method chaining</returns>
-        public AssertionFailureBuilder SetStackTrace(string stackTrace)
+        public AssertionFailureBuilder SetStackTrace(StackTraceData stackTrace)
         {
             this.stackTrace = stackTrace;
             isStackTraceSet = true;
@@ -402,7 +402,7 @@ namespace Gallio.Framework.Assertions
         /// failure objects.
         /// </remarks>
         protected virtual AssertionFailure CreateAssertionFailure(string description,
-            string message, string stackTrace, IList<AssertionFailure.LabeledValue> labeledValues,
+            string message, StackTraceData stackTrace, IList<AssertionFailure.LabeledValue> labeledValues,
             IList<ExceptionData> exceptions, IList<AssertionFailure> innerFailures)
         {
             return new AssertionFailure(description, message, stackTrace, labeledValues, exceptions,
@@ -433,12 +433,12 @@ namespace Gallio.Framework.Assertions
         }
 
         [TestFrameworkInternal]
-        private string GetStackTraceOrDefault()
+        private StackTraceData GetStackTraceOrDefault()
         {
             if (isStackTraceSet)
                 return stackTrace;
 
-            return StackTraceFilter.CaptureFilteredStackTrace();
+            return new StackTraceData(StackTraceFilter.CaptureFilteredStackTrace());
         }
     }
 }

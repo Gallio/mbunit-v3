@@ -73,7 +73,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => true, false, null);
             Assert.IsNotNull(failure);
-            Assert.Contains(failure.StackTrace, "FailureIncludesStackTrace");
+            Assert.Contains(failure.StackTrace.ToString(), "FailureIncludesStackTrace");
         }
 
         [Test]

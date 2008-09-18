@@ -14,21 +14,20 @@
 // limitations under the License.
 
 using System;
-using System.IO;
 using Gallio.Model.Logging;
 using Gallio.Utilities;
 
 namespace Gallio.Model.Diagnostics
 {
     /// <summary>
-    /// Provides raw serializable information about an exception.
+    /// Describes an exception in a serializable form.
     /// </summary>
     [Serializable]
     public sealed class ExceptionData : ITestLogStreamWritable
     {
         private readonly string type;
         private readonly string message;
-        private readonly string stackTrace;
+        private readonly StackTraceData stackTrace;
         private readonly ExceptionData innerException;
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace Gallio.Model.Diagnostics
 
             type = exception.GetType().FullName;
             message = ExceptionUtils.SafeGetMessage(exception);
-            stackTrace = ExceptionUtils.SafeGetStackTrace(exception);
+            stackTrace = new StackTraceData(ExceptionUtils.SafeGetStackTrace(exception));
             if (exception.InnerException != null)
                 innerException = new ExceptionData(exception.InnerException);
         }
@@ -53,11 +52,25 @@ namespace Gallio.Model.Diagnostics
         /// </summary>
         /// <param name="type">The exception type full name</param>
         /// <param name="message">The exception message text</param>
-        /// <param name="stackTrace">The formatted exception stack trace</param>
+        /// <param name="stackTrace">The exception stack trace</param>
         /// <param name="innerException">The inner exception data, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>,
         /// <paramref name="message"/> or <paramref name="stackTrace"/> is null</exception>
         public ExceptionData(string type, string message, string stackTrace, ExceptionData innerException)
+            : this(type, message, new StackTraceData(stackTrace), innerException)
+        {
+        }
+
+        /// <summary>
+        /// Creates an exception data object.
+        /// </summary>
+        /// <param name="type">The exception type full name</param>
+        /// <param name="message">The exception message text</param>
+        /// <param name="stackTrace">The exception stack trace</param>
+        /// <param name="innerException">The inner exception data, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>,
+        /// <paramref name="message"/> or <paramref name="stackTrace"/> is null</exception>
+        public ExceptionData(string type, string message, StackTraceData stackTrace, ExceptionData innerException)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -89,9 +102,9 @@ namespace Gallio.Model.Diagnostics
         }
 
         /// <summary>
-        /// Gets the formatted exception stack trace.
+        /// Gets the exception stack trace.
         /// </summary>
-        public string StackTrace
+        public StackTraceData StackTrace
         {
             get { return stackTrace; }
         }
@@ -154,16 +167,10 @@ namespace Gallio.Model.Diagnostics
                     writer.Write(@" ---");
                 }
 
-                if (!String.IsNullOrEmpty(stackTrace))
+                if (!stackTrace.IsEmpty)
                 {
-                    string stackTraceWithNoTrailingNewLine =
-                        stackTrace.EndsWith("\n") ? stackTrace.Substring(0, stackTrace.Length - 1) : stackTrace;
-                    if (stackTraceWithNoTrailingNewLine.Length != 0)
-                    {
-                        writer.Write(Environment.NewLine);
-                        using (writer.BeginMarker(Marker.StackTrace))
-                            writer.Write(stackTraceWithNoTrailingNewLine);
-                    }
+                    writer.WriteLine();
+                    stackTrace.WriteTo(writer);
                 }
             }
         }
