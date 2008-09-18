@@ -204,7 +204,7 @@ namespace Gallio.Tests.Framework.Assertions
             private bool wasWriteToCalled;
 
             public StubAssertionFailure() :
-                base("Description", "Message", "Stack", EmptyArray<LabeledValue>.Instance,
+                base("Description", "Message", new StackTraceData("stackTrace"), EmptyArray<LabeledValue>.Instance,
                 EmptyArray<ExceptionData>.Instance, EmptyArray<AssertionFailure>.Instance)
             {
             }
