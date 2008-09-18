@@ -1,9 +1,23 @@
-﻿using System;
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using EnvDTE;
 using Gallio.Navigator.Native;
-using Constants = Gallio.Navigator.Native.Constants;
 using Thread = System.Threading.Thread;
 
 namespace Gallio.Navigator
@@ -32,7 +46,7 @@ namespace Gallio.Navigator
             {
                 IOleMessageFilter newFilter = new MessageFilter();
                 IOleMessageFilter oldFilter;
-                CoRegisterMessageFilter(newFilter, out oldFilter);
+                NativeMethods.CoRegisterMessageFilter(newFilter, out oldFilter);
                 try
                 {
                     DTE dte = (DTE)GetDTEObject();
@@ -44,7 +58,7 @@ namespace Gallio.Navigator
                 }
                 finally
                 {
-                    CoRegisterMessageFilter(oldFilter, out newFilter);
+                    NativeMethods.CoRegisterMessageFilter(oldFilter, out newFilter);
                 }
             });
 
@@ -54,6 +68,26 @@ namespace Gallio.Navigator
 
             if (exception != null)
                 throw new ApplicationException("Could not perform the requested Visual Studio operation.", exception);
+        }
+
+        /// <summary>
+        /// Makes Visual Studio the foreground window.
+        /// </summary>
+        /// <param name="dte">The Visual Studio DTE</param>
+        public static void BringVisualStudioToFront(DTE dte)
+        {
+            // Inspired from FxCop GUI implementation.
+            Window window = dte.MainWindow;
+
+            IntPtr hWnd = (IntPtr) window.HWnd;
+            if (NativeMethods.IsIconic(hWnd))
+                NativeMethods.ShowWindowAsync(hWnd, NativeConstants.SW_RESTORE);
+
+            NativeMethods.SetForegroundWindow(hWnd);
+            Thread.Sleep(50);
+
+            window.Activate();
+            window.Visible = true;
         }
 
         private static object GetDTEObject()
@@ -89,22 +123,19 @@ namespace Gallio.Navigator
             }
         }
 
-        // Implement the IOleMessageFilter interface.
-        [DllImport("Ole32.dll")]
-        private static extern int CoRegisterMessageFilter(IOleMessageFilter newFilter, out IOleMessageFilter oldFilter);
-
         // This fancy bit of logic is from an MSDN article:
         // Fixing 'Application is Busy' and 'Call was Rejected By Callee' Errors
         // http://msdn.microsoft.com/en-us/library/ms228772(VS.80).aspx
         private sealed class MessageFilter : IOleMessageFilter
         {
+            private const int QuickRetryMilliseconds = 50;
             private const int MaxRetryMilliseconds = 30000;
 
             // IOleMessageFilter functions.
             // Handle incoming thread requests.
             int IOleMessageFilter.HandleInComingCall(int dwCallType, IntPtr hTaskCaller, int dwTickCount, IntPtr lpInterfaceInfo)
             {
-                return Constants.SERVERCALL_ISHANDLED;
+                return NativeConstants.SERVERCALL_ISHANDLED;
             }
 
             // Thread call was rejected, so try again.
@@ -113,8 +144,8 @@ namespace Gallio.Navigator
                 if (dwTickCount < MaxRetryMilliseconds
                     && dwRejectType == SERVERCALL.SERVERCALL_RETRYLATER)
                 {
-                    // Retry the thread call after 100ms.
-                    return 100;
+                    // Retry the thread call after 100ms, or immediately.
+                    return dwTickCount < QuickRetryMilliseconds ? 0 : 100;
                 }
 
                 // Too busy; cancel call.
@@ -123,7 +154,7 @@ namespace Gallio.Navigator
 
             int IOleMessageFilter.MessagePending(IntPtr hTaskCallee, int dwTickCount, int dwPendingType)
             {
-                return Constants.PENDINGMSG_WAITDEFPROCESS;
+                return NativeConstants.PENDINGMSG_WAITDEFPROCESS;
             }
         }
     }

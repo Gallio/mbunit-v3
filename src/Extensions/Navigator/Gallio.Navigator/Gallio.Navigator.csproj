@@ -64,7 +64,7 @@
     <Compile Include="Native\BINDSTATUS.cs" />
     <Compile Include="Native\BINDVERB.cs" />
     <Compile Include="Native\BSCF.cs" />
-    <Compile Include="Native\Constants.cs" />
+    <Compile Include="Native\NativeConstants.cs" />
     <Compile Include="Native\IInternetBindInfo.cs" />
     <Compile Include="Native\IInternetProtocol.cs" />
     <Compile Include="Native\IInternetProtocolInfo.cs" />
@@ -72,6 +72,7 @@
     <Compile Include="Native\IInternetProtocolSink.cs" />
     <Compile Include="Native\IObjectSafety.cs" />
     <Compile Include="Native\IOleMessageFilter.cs" />
+    <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\PARSEACTION.cs" />
     <Compile Include="Native\PI_FLAGS.cs" />
     <Compile Include="Native\PROTOCOLDATA.cs" />

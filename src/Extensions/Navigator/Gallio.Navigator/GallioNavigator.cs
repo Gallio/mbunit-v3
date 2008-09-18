@@ -1,4 +1,19 @@
-﻿using System;
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
 using System.Runtime.InteropServices;
 using Gallio.Navigator.Native;
 
@@ -38,45 +53,45 @@ namespace Gallio.Navigator
 
         int IObjectSafety.GetInterfaceSafetyOptions(ref Guid riid, ref int pdwSupportedOptions, ref int pdwEnabledOptions)
         {
-            pdwSupportedOptions = Constants.INTERFACESAFE_FOR_UNTRUSTED_CALLER | Constants.INTERFACESAFE_FOR_UNTRUSTED_DATA;
+            pdwSupportedOptions = NativeConstants.INTERFACESAFE_FOR_UNTRUSTED_CALLER | NativeConstants.INTERFACESAFE_FOR_UNTRUSTED_DATA;
 
-            if (riid == Constants.IID_IDispatch || riid == Constants.IID_IDispatchEx)
+            if (riid == NativeConstants.IID_IDispatch || riid == NativeConstants.IID_IDispatchEx)
             {
-                pdwEnabledOptions = safeForScripting ? Constants.INTERFACESAFE_FOR_UNTRUSTED_CALLER : 0;
-                return Constants.S_OK;
+                pdwEnabledOptions = safeForScripting ? NativeConstants.INTERFACESAFE_FOR_UNTRUSTED_CALLER : 0;
+                return NativeConstants.S_OK;
             }
 
-            if (riid == Constants.IID_IPersistStorage || riid == Constants.IID_IPersistStream || riid == Constants.IID_IPersistPropertyBag)
+            if (riid == NativeConstants.IID_IPersistStorage || riid == NativeConstants.IID_IPersistStream || riid == NativeConstants.IID_IPersistPropertyBag)
             {
-                pdwEnabledOptions = safeForInitialization ? Constants.INTERFACESAFE_FOR_UNTRUSTED_DATA : 0;
-                return Constants.S_OK;
+                pdwEnabledOptions = safeForInitialization ? NativeConstants.INTERFACESAFE_FOR_UNTRUSTED_DATA : 0;
+                return NativeConstants.S_OK;
             }
 
             pdwEnabledOptions = 0;
-            return Constants.E_NOINTERFACE;
+            return NativeConstants.E_NOINTERFACE;
         }
 
         int IObjectSafety.SetInterfaceSafetyOptions(ref Guid riid, int dwOptionSetMask, int dwEnabledOptions)
         {
-            if (riid == Constants.IID_IDispatch || riid == Constants.IID_IDispatchEx)
+            if (riid == NativeConstants.IID_IDispatch || riid == NativeConstants.IID_IDispatchEx)
             {
-                if ((dwEnabledOptions & dwOptionSetMask & ~ Constants.INTERFACESAFE_FOR_UNTRUSTED_CALLER) != 0)
-                    return Constants.E_FAIL;
+                if ((dwEnabledOptions & dwOptionSetMask & ~ NativeConstants.INTERFACESAFE_FOR_UNTRUSTED_CALLER) != 0)
+                    return NativeConstants.E_FAIL;
 
                 safeForScripting = (dwEnabledOptions & dwOptionSetMask) != 0;
-                return Constants.S_OK;
+                return NativeConstants.S_OK;
             }
 
-            if (riid == Constants.IID_IPersistStorage || riid == Constants.IID_IPersistStream || riid == Constants.IID_IPersistPropertyBag)
+            if (riid == NativeConstants.IID_IPersistStorage || riid == NativeConstants.IID_IPersistStream || riid == NativeConstants.IID_IPersistPropertyBag)
             {
-                if ((dwEnabledOptions & dwOptionSetMask & ~Constants.INTERFACESAFE_FOR_UNTRUSTED_DATA) != 0)
-                    return Constants.E_FAIL;
+                if ((dwEnabledOptions & dwOptionSetMask & ~NativeConstants.INTERFACESAFE_FOR_UNTRUSTED_DATA) != 0)
+                    return NativeConstants.E_FAIL;
 
                 safeForInitialization = (dwEnabledOptions & dwOptionSetMask) != 0;
-                return Constants.S_OK;
+                return NativeConstants.S_OK;
             }
 
-            return Constants.E_NOINTERFACE;
+            return NativeConstants.E_NOINTERFACE;
         }
 
         #endregion

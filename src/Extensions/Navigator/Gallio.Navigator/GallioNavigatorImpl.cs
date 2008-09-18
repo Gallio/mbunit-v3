@@ -1,7 +1,24 @@
-﻿using System;
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using EnvDTE;
+using System.Runtime.InteropServices;
 
 namespace Gallio.Navigator
 {
@@ -30,7 +47,13 @@ namespace Gallio.Navigator
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format("Gallio could not navigate to: {0} ({1},{2}).\n\n{3}.", path, lineNumber, columnNumber, ex));
+                MessageBox.Show(String.Format(
+#if DEBUG
+                    "Gallio could not navigate to: {0} ({1},{2}).\n\n{3}.",
+#else
+                    "Gallio could not navigate to: {0} ({1},{2}) because the file was not found or Visual Studio could not be controlled.\nPlease try again after launching Visual Studio manually and opening the appropriate solution.",
+#endif
+                    path, lineNumber, columnNumber, ex));
                 return false;
             }
         }
@@ -41,10 +64,10 @@ namespace Gallio.Navigator
 
             VisualStudioSupport.WithDTE(dte =>
             {
-                dte.MainWindow.Activate();
-                dte.MainWindow.Visible = true;
+                Window window = OpenFile(dte, path);
+                if (window == null)
+                    window = FindFileInSolution(dte, path);
 
-                Window window = dte.OpenFile(Constants.vsViewKindCode, path);
                 TextSelection selection = window.Selection as TextSelection;
                 if (lineNumber != 0)
                 {
@@ -54,9 +77,111 @@ namespace Gallio.Navigator
 
                 window.Activate();
                 window.Visible = true;
+
+                VisualStudioSupport.BringVisualStudioToFront(dte);
             });
 
             return true;
+        }
+
+        private static Window OpenFile(DTE dte, string path)
+        {
+            try
+            {
+                if (!File.Exists(path))
+                    return null;
+
+                return dte.OpenFile(Constants.vsViewKindCode, path);
+            }
+            catch (COMException ex)
+            {
+                if (ex.ErrorCode != Native.NativeConstants.STG_E_FILENOTFOUND)
+                    throw;
+
+                return null;
+            }
+        }
+
+        private static Window FindFileInSolution(DTE dte, string path)
+        {
+            Solution solution = dte.Solution;
+
+            if (! solution.IsOpen)
+                    throw new ApplicationException("File not found and no solution is open to be searched.");
+
+            List<string> searchPaths = new List<string>();
+            searchPaths.Add(Path.GetDirectoryName(solution.FileName));
+
+            foreach (Project project in FindAllProjects(solution))
+            {
+                try
+                {
+                    string projectFile = project.FileName;
+                    if (! string.IsNullOrEmpty(projectFile))
+                        searchPaths.Add(Path.GetDirectoryName(projectFile));
+                }
+                catch (COMException)
+                {
+                }
+            }
+
+            return FindFileInSearchPaths(dte, searchPaths, path);
+        }
+
+        private static IEnumerable<Project> FindAllProjects(Solution solution)
+        {
+            var projects = new List<Project>();
+
+            foreach (Project project in solution.Projects)
+            {
+                if (project.Kind != Constants.vsProjectItemKindSolutionItems)
+                    projects.Add(project);
+
+                FindAllProjects(projects, project.ProjectItems);
+            }
+
+            return projects;
+        }
+
+        private static void FindAllProjects(IList<Project> projects, ProjectItems parent)
+        {
+            foreach (ProjectItem projectItem in parent)
+            {
+                Project project = projectItem.SubProject;
+                if (project != null)
+                {
+                    if (project.Kind != EnvDTE.Constants.vsProjectItemKindSolutionItems)
+                        projects.Add(project);
+
+                    FindAllProjects(projects, project.ProjectItems);
+                }
+            }
+        }
+
+        private static Window FindFileInSearchPaths(DTE dte, IEnumerable<string> searchPaths, string path)
+        {
+            for (; ; )
+            {
+                path = RemoveLeadingSegment(path);
+                if (path.Length == 0)
+                    return null;
+
+                foreach (string searchPath in searchPaths)
+                {
+                    Window window = OpenFile(dte, Path.Combine(searchPath, path));
+                    if (window != null)
+                        return window;
+                }
+            }
+        }
+
+        private static string RemoveLeadingSegment(string path)
+        {
+            int slash = path.IndexOfAny(new[] {Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar});
+            if (slash < 0)
+                return "";
+
+            return path.Substring(slash + 1);
         }
     }
 }

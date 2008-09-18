@@ -1,4 +1,19 @@
-﻿using System;
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
@@ -65,23 +80,23 @@ namespace Gallio.Navigator
         public int Read(IntPtr pv, uint cb, out uint pcbRead)
         {
             pcbRead = 0;
-            return Constants.S_FALSE;
+            return NativeConstants.S_FALSE;
         }
 
         public int Seek(long dlibMove, uint dwOrigin, out ulong plibNewPosition)
         {
             plibNewPosition = 0;
-            return Constants.E_FAIL;
+            return NativeConstants.E_FAIL;
         }
 
         public int LockRequest(uint dwOptions)
         {
-            return Constants.S_OK;
+            return NativeConstants.S_OK;
         }
 
         public int UnlockRequest()
         {
-            return Constants.S_OK;
+            return NativeConstants.S_OK;
         }
 
         #endregion
@@ -89,7 +104,7 @@ namespace Gallio.Navigator
 
         public int Start(string szUrl, IInternetProtocolSink protocolSink, IInternetBindInfo bindInfo, uint grfPI, uint dwReserved)
         {
-            int hr = Constants.INET_E_INVALID_URL;
+            int hr = NativeConstants.INET_E_INVALID_URL;
             try
             {
                 Uri uri = new Uri(szUrl);
@@ -109,7 +124,7 @@ namespace Gallio.Navigator
                             Navigator.NavigateTo(path, lineNumber, columnNumber);
 
                             // Abort the request by indicating that there is no data.
-                            hr = Constants.INET_E_DATA_NOT_AVAILABLE;
+                            hr = NativeConstants.INET_E_DATA_NOT_AVAILABLE;
                             break;
                     }
                 }
@@ -127,30 +142,30 @@ namespace Gallio.Navigator
 
         public int Continue(ref PROTOCOLDATA protocolData)
         {
-            return Constants.S_OK;
+            return NativeConstants.S_OK;
         }
 
         public int Abort(int hrReason, uint dwOptions)
         {
             if (protocolSink != null)
                 protocolSink.ReportResult(hrReason, 0, null);
-            return Constants.S_OK;
+            return NativeConstants.S_OK;
         }
 
         public int Terminate(uint dwOptions)
         {
             protocolSink = null;
-            return Constants.S_OK;
+            return NativeConstants.S_OK;
         }
 
         public int Suspend()
         {
-            return Constants.E_NOTIMPL;
+            return NativeConstants.E_NOTIMPL;
         }
 
         public int Resume()
         {
-            return Constants.E_NOTIMPL;
+            return NativeConstants.E_NOTIMPL;
         }
 
         #endregion
@@ -160,25 +175,25 @@ namespace Gallio.Navigator
         {
             pwzResult = null;
             pcchResult = 0;
-            return Constants.INET_E_DEFAULT_ACTION;
+            return NativeConstants.INET_E_DEFAULT_ACTION;
         }
 
         public int CompareUrl(string pwzUrl1, string pwzUrl2, uint dwCompareFlags)
         {
-            return Constants.INET_E_DEFAULT_ACTION;
+            return NativeConstants.INET_E_DEFAULT_ACTION;
         }
 
         public int ParseUrl(string pwzUrl, PARSEACTION ParseAction, uint dwParseFlags, out string pwzResult, uint cchResult, out uint pcchResult, uint dwReserved)
         {
             pwzResult = null;
             pcchResult = 0;
-            return Constants.INET_E_DEFAULT_ACTION;
+            return NativeConstants.INET_E_DEFAULT_ACTION;
         }
 
         public int QueryInfo(string pwzUrl, QUERYOPTION OueryOption, uint dwQueryFlags, IntPtr pBuffer, uint cbBuffer, ref uint pcbBuf, uint dwReserved)
         {
             pcbBuf = 0;
-            return Constants.INET_E_DEFAULT_ACTION;
+            return NativeConstants.INET_E_DEFAULT_ACTION;
         }
         #endregion
 

@@ -14,26 +14,25 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Gallio.Navigator.Native
 {
-    [ComImport, Guid("CB5BDC81-93C1-11CF-8F20-00805F2CD064")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IObjectSafety
+    internal static class NativeMethods
     {
-        [PreserveSig]
-        int GetInterfaceSafetyOptions(
-            ref Guid riid,
-            [MarshalAs(UnmanagedType.U4)] ref int pdwSupportedOptions,
-            [MarshalAs(UnmanagedType.U4)] ref int pdwEnabledOptions);
+        [DllImport("Ole32.dll")]
+        public static extern int CoRegisterMessageFilter(IOleMessageFilter newFilter, out IOleMessageFilter oldFilter);
 
-        [PreserveSig]
-        int SetInterfaceSafetyOptions(
-            ref Guid riid,
-            [MarshalAs(UnmanagedType.U4)] int dwOptionSetMask,
-            [MarshalAs(UnmanagedType.U4)] int dwEnabledOptions);
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsIconic(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
     }
 }
