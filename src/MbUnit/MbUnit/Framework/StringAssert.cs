@@ -183,5 +183,231 @@ namespace MbUnit.Framework
         }
 
         #endregion
+
+        #region Like
+
+        /// <summary>
+        /// Verifies that testValue matches regular expression pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void Like(string testValue, string regexPattern)
+        {
+            Like(testValue, regexPattern, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that testValue matches regular expression pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void Like(string testValue, string regexPattern, string messageFormat, params object[] messageArgs)
+        {
+            Like(testValue, new Regex(regexPattern), messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that testValue matches regular expression pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regEx">Regular expression</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void Like(string testValue, Regex regEx)
+        {
+            Like(testValue, regEx, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that testValue matches regular expression pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regEx">Regular expression</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void Like(string testValue, Regex regEx, string messageFormat, params object[] messageArgs)
+        {
+            if (testValue == null)
+                throw new ArgumentNullException("testValue");
+            if (regEx == null)
+                throw new ArgumentNullException("regEx");
+
+            AssertionHelper.Verify(delegate
+            {
+                if (regEx.Match(testValue).Success)
+                    return null;
+
+                return new AssertionFailureBuilder("Expected to match Regex pattern.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Test Value", testValue)
+                    .AddRawLabeledValue("Regex Pattern", regEx.ToString())
+                    .ToAssertionFailure();
+            });
+        }
+
+        #endregion
+
+        #region NotLike
+
+        /// <summary>
+        /// Verifies that testValue doesn't matches regular expression pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void NotLike(string testValue, string regexPattern)
+        {
+            NotLike(testValue, regexPattern, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that testValue doesn't matches regular expression pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void NotLike(string testValue, string regexPattern, string messageFormat, params object[] messageArgs)
+        {
+            NotLike(testValue, new Regex(regexPattern), messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that testValue doesn't matches regular expression pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regEx">Regular expression</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void NotLike(string testValue, Regex regEx)
+        {
+            NotLike(testValue, regEx, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that testValue doesn't matches regular expression pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="regEx">Regular expression</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void NotLike(string testValue, Regex regEx, string messageFormat, params object[] messageArgs)
+        {
+            if (testValue == null)
+                throw new ArgumentNullException("testValue");
+            if (regEx == null)
+                throw new ArgumentNullException("regEx");
+
+            AssertionHelper.Verify(delegate
+            {
+                if (!regEx.Match(testValue).Success)
+                    return null;
+
+                return new AssertionFailureBuilder("Expected not to match Regex pattern.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Test Value", testValue)
+                    .AddRawLabeledValue("Regex Pattern", regEx.ToString())
+                    .ToAssertionFailure();
+            });
+        }
+
+        #endregion
+
+        #region StartsWith
+
+        /// <summary>
+        /// Verifies that testValue starts with the specified pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="pattern">Regular expression pattern</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void StartsWith(string testValue, string pattern)
+        {
+            StartsWith(testValue, pattern, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that testValue starts with the specified pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="pattern">Regular expression pattern</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void StartsWith(string testValue, string pattern, string messageFormat, params object[] messageArgs)
+        {
+            if (testValue == null && pattern == null)
+                return;
+
+            if (testValue == null)
+                throw new ArgumentNullException("testValue");
+            if (pattern == null)
+                throw new ArgumentNullException("pattern");
+
+            AssertionHelper.Verify(delegate
+            {
+                if (testValue.StartsWith(pattern))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected to start with the specified pattern.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Test Value", testValue)
+                    .AddRawLabeledValue("Pattern", pattern)
+                    .ToAssertionFailure();
+            });
+        }
+
+        #endregion
+
+        #region EndsWith
+
+        /// <summary>
+        /// Verifies that testValue ends with the specified pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="pattern">Regular expression pattern</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void EndsWith(string testValue, string pattern)
+        {
+            EndsWith(testValue, pattern, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that testValue ends with the specified pattern.
+        /// </summary>
+        /// <param name="testValue">The test value</param>
+        /// <param name="pattern">Regular expression pattern</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void EndsWith(string testValue, string pattern, string messageFormat, params object[] messageArgs)
+        {
+            if (testValue == null && pattern == null)
+                return;
+
+            if (testValue == null)
+                throw new ArgumentNullException("testValue");
+            if (pattern == null)
+                throw new ArgumentNullException("pattern");
+
+            AssertionHelper.Verify(delegate
+            {
+                if (testValue.EndsWith(pattern))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected to end with the specified pattern.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Test Value", testValue)
+                    .AddRawLabeledValue("Pattern", pattern)
+                    .ToAssertionFailure();
+            });
+        }
+
+        #endregion
     }
 }
