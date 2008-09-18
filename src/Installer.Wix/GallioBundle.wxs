@@ -150,11 +150,11 @@
 <?ifdef FEATURE_VS_HELP ?>
             <FeatureRef Id='feat_Gallio.VSHelp'/>
 <?endif?>
+            <FeatureRef Id='feat_MbUnit3.Samples'/>
         </Feature>
 
         <Feature Id='feat_Extras' Title='Extras' Level="1">
             <FeatureRef Id='feat_CCNetExtensions'/>
-            <FeatureRef Id='feat_MbUnit3.Samples'/>
         </Feature>
 
         <!-- -->

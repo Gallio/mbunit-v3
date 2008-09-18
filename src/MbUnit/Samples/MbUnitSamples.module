@@ -10,13 +10,13 @@
   </ItemGroup>
 
   <Target Name="AfterImage">
-    <RemoveDir Directories="$(ImageDir)\extras\Samples" />
-    <MakeDir Directories="$(ImageDir)\extras" />
+    <RemoveDir Directories="$(ImageDir)\docs\Samples" />
+    <MakeDir Directories="$(ImageDir)\docs" />
     
     <SvnExport RepositoryPath="$(ModuleDir)"
-               LocalPath="$(ImageDir)\extras\Samples" />
+               LocalPath="$(ImageDir)\docs\Samples" />
 
-    <Delete Files="@(ExcludedFile->'$(ImageDir)\extras\Samples\%(Identity)')"
+    <Delete Files="@(ExcludedFile->'$(ImageDir)\docs\Samples\%(Identity)')"
             Condition="'@(ExcludedFile)'!=''" />
   </Target>
 </Project>
