@@ -4,7 +4,7 @@
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="Navigator" Name="Navigator">
                 <Component Id="Gallio.Navigator.dll" Guid="{AF22A32E-D8AA-40a2-8E14-07A70C52F46F}" Win64="no">
-                    <File Name="Gallio.Navigator.dll" KeyPath="yes" Assembly=".net" AssemblyRegisterComInterop="yes" />
+                    <File Name="Gallio.Navigator.dll" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Shell.dll" />
                 </Component>
 		
                 <Component Id="Navigator.Readme.txt" Guid="{AA7095B2-D4F7-480a-ADCD-DE5B46C10BA2}" Win64="no">
@@ -18,5 +18,22 @@
             <ComponentRef Id="Gallio.Navigator.dll"/>
             <ComponentRef Id="Navigator.Readme.txt"/>
         </Feature>
+
+	<!-- AssemblyRegisterComInterop is not in WiX anymore.
+	     The recommended workaround is Tallow but it does not support
+	     ComRegister and ComUnregister operations.  Sure we can duplicate
+	     those registry keys here, but that's error-prone. -->
+        <CustomAction Id="Navigator.Install" Directory='INSTALLDIR' ExeCommand='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" "[#Gallio.Navigator.dll]" /codebase' Execute="deferred" Return="check" Impersonate="no"/>
+        <CustomAction Id="Navigator.Uninstall" Directory='INSTALLDIR' ExeCommand='"[WindowsFolder]Microsoft.NET\Framework\v2.0.50727\regasm.exe" /unregister "[#Gallio.Navigator.dll]"' Execute="deferred" Return="ignore" Impersonate="no"/>
+
+        <InstallExecuteSequence>
+            <Custom Action="Navigator.Install" After="InstallFiles"><![CDATA[(&feat_Navigator = 3) AND NOT(!feat_Navigator = 3)]]></Custom>
+            <Custom Action="Navigator.Uninstall" Before="RemoveFiles"><![CDATA[(&feat_Navigator = 2) AND (!feat_Navigator = 3)]]></Custom>
+        </InstallExecuteSequence>
+
+        <UI>
+            <ProgressText Action="Navigator.Install" Template="[1]">Registering Gallio Navigator components ...</ProgressText>
+            <ProgressText Action="Navigator.Uninstall" Template="[1]">Unregistering Gallio Navigator components ...</ProgressText>
+        </UI>
     </Fragment>
 </Wix>
