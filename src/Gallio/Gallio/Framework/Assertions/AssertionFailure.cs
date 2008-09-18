@@ -189,7 +189,7 @@ namespace Gallio.Framework.Assertions
                 }
             }
 
-            if (!stackTrace.IsEmpty)
+            if (stackTrace != null && !stackTrace.IsEmpty)
             {
                 writer.WriteLine();
                 stackTrace.WriteTo(writer);

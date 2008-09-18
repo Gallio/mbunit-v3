@@ -427,11 +427,11 @@ html
                 <xsl:apply-templates select="g:children/g:testStepRun" mode="details" />
               </ul>
             </xsl:when>
-            <xsl:otherwise>
+            <xsl:when test="g:result/g:outcome/@status = 'passed'">
               <xsl:call-template name="toggle-autoclose">
                 <xsl:with-param name="href">detailPanel-<xsl:value-of select="$id"/></xsl:with-param>
               </xsl:call-template>
-            </xsl:otherwise>
+            </xsl:when>
           </xsl:choose>
         </div>
       </li>
