@@ -347,21 +347,28 @@
         </member>
         <member name="M:Xunit.AssertException.#ctor">
             <summary>
-            Creates a new instance of the <see cref="T:Xunit.AssertException"/> class.
+            Initializes a new instance of the <see cref="T:Xunit.AssertException"/> class.
             </summary>
         </member>
         <member name="M:Xunit.AssertException.#ctor(System.String)">
             <summary>
-            Creates a new instance of the <see cref="T:Xunit.AssertException"/> class.
+            Initializes a new instance of the <see cref="T:Xunit.AssertException"/> class.
             </summary>
             <param name="userMessage">The user message to be displayed</param>
         </member>
         <member name="M:Xunit.AssertException.#ctor(System.String,System.Exception)">
             <summary>
-            Creates a new instance of the <see cref="T:Xunit.AssertException"/> class.
+            Initializes a new instance of the <see cref="T:Xunit.AssertException"/> class.
             </summary>
             <param name="userMessage">The user message to be displayed</param>
             <param name="innerException">The inner exception</param>
+        </member>
+        <member name="M:Xunit.AssertException.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.AssertException"/> class.
+            </summary>
+            <param name="userMessage">The user message to be displayed</param>
+            <param name="stackTrace">The stack trace to be displayed</param>
         </member>
         <member name="M:Xunit.AssertException.FilterStackTrace(System.String)">
             <summary>
@@ -1310,9 +1317,16 @@
         </member>
         <member name="M:Xunit.Sdk.TestCommand.#ctor(System.Reflection.MethodInfo)">
             <summary>
-            Creates a new instance of the <see cref="T:Xunit.Sdk.TestCommand"/> class.
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCommand"/> class.
             </summary>
-            <param name="method">The method under test</param>
+            <param name="method">The method under test.</param>
+        </member>
+        <member name="M:Xunit.Sdk.TestCommand.#ctor(System.Reflection.MethodInfo,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCommand"/> class.
+            </summary>
+            <param name="method">The method under test.</param>
+            <param name="name">The display name of the test.</param>
         </member>
         <member name="M:Xunit.Sdk.TestCommand.Execute(System.Object)">
             <inheritdoc/>
@@ -2009,6 +2023,12 @@
             </summary>
             <param name="method">The test method</param>
             <returns>The test commands which will execute the test runs for the given method</returns>
+        </member>
+        <member name="P:Xunit.FactAttribute.Name">
+            <summary>
+            Gets the name of the test to be used when the test is skipped. Defaults to
+            null, which will cause the fully qualified test name to be used.
+            </summary>
         </member>
         <member name="P:Xunit.FactAttribute.Skip">
             <summary>
