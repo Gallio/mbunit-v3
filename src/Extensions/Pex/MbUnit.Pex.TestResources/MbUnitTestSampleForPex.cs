@@ -80,7 +80,7 @@ namespace MbUnit.Pex.TestResources
         private class SetUpTearDownRecorderAttribute : 
             PexExplorationPackageAttributeBase
         {
-            protected override object BeforeExploration<TAbstractValue>(IPexExplorationComponent<TAbstractValue> host)
+            protected override object BeforeExploration(IPexExplorationComponent host)
             {
                 if (!AssemblyFixture.SetUpCalled)
                     host.Log.LogError(null, PexLogCategories.Execution, "AssemblySetUp was not run");
@@ -90,7 +90,7 @@ namespace MbUnit.Pex.TestResources
                 return null;
             }
 
-            protected override void AfterExploration<TAbstractValue>(IPexExplorationComponent<TAbstractValue> host, object data)
+            protected override void AfterExploration(IPexExplorationComponent host, object data)
             {
                 if (!TestInitializeTouched)
                     host.Log.LogError(null, PexLogCategories.Execution, "TestInitialize was not run");

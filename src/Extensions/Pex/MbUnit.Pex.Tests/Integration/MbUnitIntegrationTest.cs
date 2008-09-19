@@ -35,7 +35,7 @@ namespace MbUnit.Pex.Tests.Integration
     [TestFixture]
     public class MbUnitIntegrationTest
     {
-        private readonly string pexConsole = PexInstallHelper.GetPexConsole(Bitness.Any);
+        private readonly string pexConsole = PexInstallHelper.GetPexConsole(Bitness.AnyCPU);
 
         [Test]
         public void ExecutePex()
