@@ -376,6 +376,22 @@ namespace Gallio.Runner
             }
         }
 
+        /// <summary>
+        /// Provides an opportunity for subclasses to configure the host.
+        /// </summary>
+        /// <param name="hostSetup">The host setup, not null</param>
+        protected virtual void ConfigureHost(HostSetup hostSetup)
+        {
+        }
+
+        /// <summary>
+        /// Provides an opportunity for subclasses to initialize the host once created.
+        /// </summary>
+        /// <param name="host">The host, not null</param>
+        protected virtual void InitializeHost(IHost host)
+        {
+        }
+
         private void DoInitialize(IProgressMonitor progressMonitor)
         {
             progressMonitor.Worked(10);
@@ -405,7 +421,12 @@ namespace Gallio.Runner
             hostSetup.WorkingDirectory = packageHostSetup.WorkingDirectory;
             hostSetup.ShadowCopy = packageHostSetup.ShadowCopy;
 
+            ConfigureHost(hostSetup);
+
             host = hostFactory.CreateHost(hostSetup, logger);
+
+            InitializeHost(host);
+
             testDriver = new MultiDomainTestDriver(frameworks, host, runtimePath);
             testDriver.Initialize(runtimeSetup, logger);
 
