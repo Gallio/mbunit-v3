@@ -34,9 +34,11 @@ namespace Gallio.Icarus.Tests.Controllers
 
             ITestRunnerService testRunnerService = SetupTestRunnerService();
             testRunnerService.SetFilter(filter);
+            LastCall.IgnoreArguments();
 
             ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
             testTreeModel.ApplyFilter(filter);
+            LastCall.IgnoreArguments();
             
             mocks.ReplayAll();
 
