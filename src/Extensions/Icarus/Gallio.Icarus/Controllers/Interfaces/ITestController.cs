@@ -16,8 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Icarus.Models;
+using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -28,9 +29,9 @@ namespace Gallio.Icarus.Controllers.Interfaces
 {
     public interface ITestController
     {
-        BindingList<string> SelectedTests { get; }
-        ITreeModel Model { get; }
-        object TreeViewCategory { get; set; }
+        BindingList<TestTreeNode> SelectedTests { get; }
+        ITestTreeModel Model { get; }
+        string TreeViewCategory { get; set; }
         Report Report { get; }
         IList<string> TestFrameworks { get; }
         int TestCount { get; }

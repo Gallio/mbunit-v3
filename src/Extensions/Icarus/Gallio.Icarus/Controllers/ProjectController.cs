@@ -153,10 +153,10 @@ namespace Gallio.Icarus.Controllers
             testFilters.Add(new FilterInfo(filterName, filter.ToFilterExpr()));
         }
 
-        private void ConvertToRelativePaths(string directory)
+        private static void ConvertToRelativePaths(Project project, string directory)
         {
             IList<string> assemblyList = new List<string>();
-            foreach (string assembly in projectTreeModel.Project.TestPackageConfig.AssemblyFiles)
+            foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
             {
                 if (Path.IsPathRooted(assembly))
                 {
@@ -174,8 +174,8 @@ namespace Gallio.Icarus.Controllers
                 else
                     assemblyList.Add(assembly);
             }
-            projectTreeModel.Project.TestPackageConfig.AssemblyFiles.Clear();
-            projectTreeModel.Project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
+            project.TestPackageConfig.AssemblyFiles.Clear();
+            project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
         }
 
         public void OpenProject(string projectName)
@@ -185,15 +185,41 @@ namespace Gallio.Icarus.Controllers
                 throw new ArgumentException(String.Format("Project file {0} does not exist.", projectName));
 
             // deserialize project
-            Environment.CurrentDirectory = Path.GetDirectoryName(projectName);
             Project project = XmlSerializationUtils.LoadFromXml<Project>(projectName);
+            ConvertFromRelativePaths(project, Path.GetDirectoryName(projectName));
+            
             projectTreeModel.FileName = projectName;
             projectTreeModel.Project = project;
-            
+
             assemblyWatcher.Clear();
             assemblyWatcher.Add(project.TestPackageConfig.AssemblyFiles);
 
             PublishUpdates();
+        }
+
+        private static void ConvertFromRelativePaths(Project project, string directory)
+        {
+            IList<string> assemblyList = new List<string>();
+            foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
+            {
+                if (!Path.IsPathRooted(assembly))
+                {
+                    try
+                    {
+                        FilePathRelative filePath = new FilePathRelative(assembly);
+                        DirectoryPathAbsolute directoryPath = new DirectoryPathAbsolute(directory);
+                        assemblyList.Add(filePath.GetAbsolutePathFrom(directoryPath).Path);
+                    }
+                    catch
+                    {
+                        assemblyList.Add(assembly);
+                    }
+                }
+                else
+                    assemblyList.Add(assembly);
+            }
+            project.TestPackageConfig.AssemblyFiles.Clear();
+            project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
         }
 
         public void NewProject()
@@ -215,7 +241,7 @@ namespace Gallio.Icarus.Controllers
                     Directory.CreateDirectory(Paths.IcarusAppDataFolder);
                 projectName = Paths.DefaultProject;
             }
-            ConvertToRelativePaths(Path.GetDirectoryName(projectName));
+            ConvertToRelativePaths(projectTreeModel.Project, Path.GetDirectoryName(projectName));
             XmlSerializationUtils.SaveToXml(projectTreeModel.Project, projectName);
         }
 

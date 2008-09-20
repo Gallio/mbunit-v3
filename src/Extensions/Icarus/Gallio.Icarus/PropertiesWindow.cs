@@ -30,12 +30,12 @@ namespace Gallio.Icarus
             this.projectController = projectController;
             InitializeComponent();
             hintDirectoriesListBox.DataSource = projectController.HintDirectories;
-            applicationBaseDirectoryTextBox.DataBindings.Add("Text", projectController, 
-                "TestPackageConfig.HostSetup.ApplicationBaseDirectory").DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            applicationBaseDirectoryTextBox.DataBindings.Add("Text", projectController,
+                "TestPackageConfig.HostSetup.ApplicationBaseDirectory", false, DataSourceUpdateMode.OnPropertyChanged);
             workingDirectoryTextBox.DataBindings.Add("Text", projectController,
-                "TestPackageConfig.HostSetup.WorkingDirectory").DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+                "TestPackageConfig.HostSetup.WorkingDirectory", false, DataSourceUpdateMode.OnPropertyChanged);
             shadowCopyCheckBox.DataBindings.Add("Checked", projectController, 
-                "TestPackageConfig.HostSetup.ShadowCopy").DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+                "TestPackageConfig.HostSetup.ShadowCopy", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void findHintDirectoryButton_Click(object sender, EventArgs e)

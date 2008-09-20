@@ -14,14 +14,16 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Xml;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Core.Reports;
+using Gallio.Icarus.Models;
+using Gallio.Icarus.Reports;
 using Gallio.Model.Logging;
 using Gallio.Runner.Events;
+using Gallio.Runtime;
 using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
@@ -30,20 +32,13 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly ITestController testController;
         private MemoryStream executionLog;
-        // TODO: Move this to optionsController
-        private string executionLogFolder = Path.Combine(Paths.IcarusAppDataFolder, @"ExecutionLog");
+        private readonly string executionLogFolder = Path.Combine(Paths.IcarusAppDataFolder, "ExecutionLog");
 
         public event EventHandler<System.EventArgs> ExecutionLogUpdated;
 
         public Stream ExecutionLog
         {
             get { return executionLog; }
-        }
-
-        public string ExecutionLogFolder
-        {
-            get { return executionLogFolder; }
-            set { executionLogFolder = value; }
         }
 
         public ExecutionLogController(ITestController testController)
@@ -87,24 +82,23 @@ namespace Gallio.Icarus.Controllers
             foreach (DirectoryInfo attachmentFolder in di.GetDirectories())
                 attachmentFolder.Delete(true);
 
-            // output css file
-            string cssFile = Path.Combine(executionLogFolder, "ExecutionLog.css");
-            if (File.Exists(cssFile))
-                File.Delete(cssFile);
-
-            using (Stream css = Assembly.GetExecutingAssembly().GetManifestResourceStream("Gallio.Icarus.Reports.ExecutionLog.css"))
+            // copy resources
+            string contentLocalPath = RuntimeAccessor.Instance.MapUriToLocalPath(new Uri("plugin://Gallio.Reports/"));
+            foreach (string resourcePath in new[] { "css", "img" })
             {
-                if (css == null)
-                    return;
-
-                using (FileStream fs = File.Open(cssFile, FileMode.Create, FileAccess.Write))
-                {
-                    const int size = 4096;
-                    byte[] bytes = new byte[size];
-                    int numBytes;
-                    while ((numBytes = css.Read(bytes, 0, size)) > 0)
-                        fs.Write(bytes, 0, numBytes);
-                }
+                string sourceContentPath = Path.Combine(contentLocalPath, resourcePath);
+                string destContentPath = Path.GetFullPath(Path.Combine(executionLogFolder, resourcePath));
+                if (!Directory.Exists(destContentPath))
+                    Directory.CreateDirectory(destContentPath);
+                FileUtils.CopyAllIndirect(sourceContentPath, destContentPath, null,
+                    delegate(string sourceFilePath, string destFilePath)
+                    {
+                        using (Stream sourceStream = File.OpenRead(sourceFilePath))
+                        using (Stream destStream = File.Open(destFilePath, FileMode.CreateNew, FileAccess.Write))
+                        {
+                            FileUtils.CopyStreamContents(sourceStream, destStream);
+                        }
+                    });
             }
         }
 
@@ -116,12 +110,14 @@ namespace Gallio.Icarus.Controllers
             MemoryStream memoryStream = new MemoryStream();
             XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
             TestStepReportWriter testStepReportWriter = new TestStepReportWriter(xmlTextWriter, executionLogFolder, testController.Report.TestModel);
-            testStepReportWriter.RenderReport(testController.SelectedTests, testController.Report.TestPackageRun.AllTestStepRuns);
+            List<string> testIds = new List<string>();
+            foreach (TestTreeNode testTreeNode in testController.SelectedTests)
+                testIds.Add(testTreeNode.Name);
+            testStepReportWriter.RenderReport(testIds, testController.Report.TestPackageRun);
             memoryStream.Position = 0;
             executionLog = memoryStream;
 
-            if (ExecutionLogUpdated != null)
-                ExecutionLogUpdated(this, System.EventArgs.Empty);
+            EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, System.EventArgs.Empty);
         }
     }
 }

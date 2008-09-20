@@ -15,17 +15,16 @@
 
 using System.Collections.Generic;
 using Gallio.Icarus.Controllers;
-using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using System.Windows.Forms;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
+    [Category("Controllers"), Author("Graham Hay")]
     class TestControllerTest : MockTest
     {
         [Test]

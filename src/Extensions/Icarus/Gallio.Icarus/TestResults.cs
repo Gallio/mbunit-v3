@@ -13,12 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
-using Gallio.Icarus.Models.Interfaces;
-using Gallio.Model;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Utilities;
@@ -49,33 +46,33 @@ namespace Gallio.Icarus
             testProgressStatusBar.DataBindings.Add("FailedColor", optionsController, "FailedColor");
             testProgressStatusBar.DataBindings.Add("InconclusiveColor", optionsController, "InconclusiveColor");
             testProgressStatusBar.DataBindings.Add("SkippedColor", optionsController, "SkippedColor");
+            
+            testProgressStatusBar.DataBindings.Add("Passed", testController, "Model.Passed");
+            testProgressStatusBar.DataBindings.Add("Failed", testController, "Model.Failed");
+            testProgressStatusBar.DataBindings.Add("Skipped", testController, "Model.Skipped");
+            testProgressStatusBar.DataBindings.Add("Inconclusive", testController, "Model.Inconclusive");
         }
 
         void testController_TestStepFinished(object sender, TestStepFinishedEventArgs e)
         {
-            Sync.Invoke(this, delegate
-            {
-                UpdateProgress(e.TestStepRun);
-                UpdateTestResults();
-            });
+            Sync.Invoke(this, UpdateTestResults);
         }
 
         void UpdateTestResults()
         {
-            testProgressStatusBar.Total = testController.TestCount;
-
             testResultsList.BeginUpdate();
             testResultsList.Items.Clear();
 
-            List<TestTreeNode> nodes = new List<TestTreeNode>();
-            if (testController.SelectedTests.Count > 0)
-                foreach (string nodeId in testController.SelectedTests)
-                    nodes.AddRange(((ITestTreeModel)testController.Model).Root.Find(nodeId, true));
-            else
-                nodes.Add(((ITestTreeModel)testController.Model).Root);
+            if (testController.Model.Root == null)
+                return;
 
-            foreach (TestTreeNode node in nodes)
-                UpdateTestResults(node, 0);
+            if (testController.SelectedTests.Count == 0)
+                UpdateTestResults(testController.Model.Root, 0);
+            else
+            {
+                foreach (TestTreeNode node in testController.SelectedTests)
+                    UpdateTestResults(node, 0);
+            }
 
             testResultsList.Columns[0].Width = -1;
             testResultsList.EndUpdate();
@@ -98,30 +95,10 @@ namespace Gallio.Icarus
             Sync.Invoke(this, delegate
             {
                 testProgressStatusBar.Clear();
+                testProgressStatusBar.Total = testController.TestCount;
+
                 testResultsList.Items.Clear();
             });
-        }
-
-        void UpdateProgress(TestStepRun testStepRun)
-        {
-            if (!testStepRun.Step.IsPrimary || !testStepRun.Step.IsTestCase)
-                return;
-
-            switch (testStepRun.Result.Outcome.Status)
-            {
-                case TestStatus.Passed:
-                    testProgressStatusBar.Passed += 1;
-                    break;
-                case TestStatus.Failed:
-                    testProgressStatusBar.Failed += 1;
-                    break;
-                case TestStatus.Skipped:
-                    testProgressStatusBar.Skipped += 1;
-                    break;
-                case TestStatus.Inconclusive:
-                    testProgressStatusBar.Inconclusive += 1;
-                    break;
-            }
         }
     }
 }

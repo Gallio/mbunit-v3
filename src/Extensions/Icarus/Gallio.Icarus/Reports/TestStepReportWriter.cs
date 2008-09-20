@@ -24,13 +24,13 @@ using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 using Gallio.Utilities;
 
-namespace Gallio.Icarus.Core.Reports
+namespace Gallio.Icarus.Reports
 {
     public class TestStepReportWriter
     {
-        private readonly XmlTextWriter xmlTextWriter;
-        private readonly string reportFolder;
-        private readonly TestModelData testModelData;
+        readonly XmlTextWriter xmlTextWriter;
+        readonly string reportFolder;
+        readonly TestModelData testModelData;
 
         public TestStepReportWriter(XmlTextWriter xmlTextWriter, string reportFolder, TestModelData testModelData)
         {
@@ -39,12 +39,13 @@ namespace Gallio.Icarus.Core.Reports
             this.testModelData = testModelData;
         }
 
-        internal void RenderReport(IList<string> testIds, IEnumerable<TestStepRun> testStepRuns)
+        internal void RenderReport(IList<string> testIds, TestPackageRun testPackageRun)
         {
             RenderHeader();
-            xmlTextWriter.WriteRaw(
-                "<div id=\"Content\" class=\"content\"><div id=\"Details\" class=\"section\"><div class=\"section-content\"><ul>");
-            foreach (TestStepRun testStepRun in testStepRuns)
+            xmlTextWriter.WriteRaw("<div id=\"Content\" class=\"content\">");
+            RenderNavigator(testPackageRun.AllTestStepRuns, CountTestStepRuns(testPackageRun.AllTestStepRuns));
+            xmlTextWriter.WriteRaw("<div id=\"Details\" class=\"section\"><div class=\"section-content\"><ul>");
+            foreach (TestStepRun testStepRun in testPackageRun.AllTestStepRuns)
             {
                 if (testIds.Count == 0 || testIds.Contains(testStepRun.Step.TestId))
                     RenderTestStepRun(testStepRun);
@@ -53,15 +54,46 @@ namespace Gallio.Icarus.Core.Reports
             xmlTextWriter.Flush();
         }
 
-        private void RenderHeader()
+        static int CountTestStepRuns(IEnumerable<TestStepRun> testStepRuns)
+        {
+            int i = 0;
+            foreach (TestStepRun testStepRun in testStepRuns)
+            {
+                i++;
+                i += CountTestStepRuns(testStepRun.Children);
+            }
+            return i;
+        }
+
+        void RenderHeader()
         {
             xmlTextWriter.WriteStartDocument();
             xmlTextWriter.WriteRaw("<html xml:lang=\"en\" lang=\"en\" dir=\"ltr\"><head>");
-            xmlTextWriter.WriteRaw(String.Format("<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\\ExecutionLog.css\" />", reportFolder));
-            xmlTextWriter.WriteRaw("<style type=\"text/css\">html{overflow:auto;}</style></head><body class=\"gallio-report\">");
+            xmlTextWriter.WriteRaw(String.Format("<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\\css\\Gallio-Report.css\" />", reportFolder));
+            xmlTextWriter.WriteRaw("</head><body class=\"gallio-report\" style=\"overflow: auto;\">");
         }
 
-        private void RenderTestStepRun(TestStepRun testStepRun)
+        void RenderNavigator(IEnumerable<TestStepRun> testStepRuns, int count)
+        {
+            xmlTextWriter.WriteRaw("<div id=\"Navigator\" class=\"navigator\">");
+            xmlTextWriter.WriteRaw("<div class=\"navigator-stripes\">");
+            int i = 0;
+            foreach (TestStepRun testStepRun in testStepRuns)
+            {
+                float position = i * 98 / count + 1;
+                i++;
+
+                if (testStepRun.Result.Outcome.Status == TestStatus.Passed ||
+                    (!testStepRun.Step.IsTestCase && testStepRun.Children.Count != 0))
+                    continue;
+                
+                xmlTextWriter.WriteRaw(string.Format("<a href=\"#testStepRun-{0}\" style=\"top: {1}%\"", testStepRun.Step.Id, position));
+                xmlTextWriter.WriteRaw(string.Format(" class=\"status-{0}\" title=\"{1} {0}\" />", testStepRun.Result.Outcome.Status, testStepRun.Step.Name));
+            }
+            xmlTextWriter.WriteRaw("</div></div>");
+        }
+
+        void RenderTestStepRun(TestStepRun testStepRun)
         {
             TestData testData = testModelData.GetTestById(testStepRun.Step.TestId);
             if (testData == null)
@@ -109,7 +141,7 @@ namespace Gallio.Icarus.Core.Reports
             xmlTextWriter.WriteRaw("</div></li>");
         }
 
-        private void RenderMetadata(TestStepRun testStepRun, TestComponentData testData)
+        void RenderMetadata(TestStepRun testStepRun, TestComponentData testData)
         {
             MetadataMap visibleEntries = testStepRun.Step.Metadata.Copy();
             visibleEntries.Remove(MetadataKeys.TestKind);
@@ -129,7 +161,7 @@ namespace Gallio.Icarus.Core.Reports
             xmlTextWriter.WriteRaw("</ul>");
         }
 
-        private void RenderMetadataValues(string key, IList<string> values)
+        void RenderMetadataValues(string key, IList<string> values)
         {
             xmlTextWriter.WriteRaw(String.Format("<li>{0}: ", key));
             for (int i = 0; i < values.Count; i++)
@@ -141,7 +173,7 @@ namespace Gallio.Icarus.Core.Reports
             xmlTextWriter.WriteRaw("</li>");
         }
 
-        private void RenderExecutionLogStreams(TestStepRun testStepRun)
+        void RenderExecutionLogStreams(TestStepRun testStepRun)
         {
             xmlTextWriter.WriteRaw(String.Format("<div id=\"log-{0}\" class=\"log\">", testStepRun.Step.Id));
 
@@ -163,7 +195,7 @@ namespace Gallio.Icarus.Core.Reports
             xmlTextWriter.WriteRaw("</div>");
         }
 
-        private void RenderExecutionLogAttachmentList(TestStepRun testStepRun)
+        void RenderExecutionLogAttachmentList(TestStepRun testStepRun)
         {
             xmlTextWriter.WriteRaw("<div class=\"logAttachmentList\">Attachments: ");
             for (int i = 0; i < testStepRun.TestLog.Attachments.Count; i++)
@@ -177,7 +209,7 @@ namespace Gallio.Icarus.Core.Reports
             xmlTextWriter.WriteRaw("</div>");
         }
 
-        private static Statistics CalculateStatistics(TestStepRun testStepRun)
+        static Statistics CalculateStatistics(TestStepRun testStepRun)
         {
             Statistics statistics = new Statistics();
             statistics.assertCount = testStepRun.Result.AssertCount;
@@ -215,7 +247,7 @@ namespace Gallio.Icarus.Core.Reports
             return statistics;
         }
 
-        private struct Statistics
+        struct Statistics
         {
             public int skippedCount;
             public int passedCount;
@@ -226,11 +258,11 @@ namespace Gallio.Icarus.Core.Reports
             public int runCount;
         }
 
-        private sealed class RenderTagVisitor : ITagVisitor
+        sealed class RenderTagVisitor : ITagVisitor
         {
-            private readonly XmlTextWriter xmlTextWriter;
-            private readonly string reportFolder;
-            private readonly TestStepRun testStepRun;
+            readonly XmlTextWriter xmlTextWriter;
+            readonly string reportFolder;
+            readonly TestStepRun testStepRun;
 
             public RenderTagVisitor(XmlTextWriter xmlTextWriter, string reportFolder, TestStepRun testStepRun)
             {

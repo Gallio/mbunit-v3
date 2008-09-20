@@ -291,6 +291,7 @@ namespace Gallio.Icarus.Models
         public void AddTestStepRun(TestStepRun testStepRun)
         {
             testStepRuns.Add(testStepRun);
+            
             // combine test status
             if (testStepRun.Result.Outcome.Status > TestStatus || testStepRun.Step.IsPrimary)
                 TestStatus = testStepRun.Result.Outcome.Status;

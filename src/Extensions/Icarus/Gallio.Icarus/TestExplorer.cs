@@ -39,8 +39,6 @@ namespace Gallio.Icarus
             {
                 treeViewComboBox.ComboBox.BindingContext = BindingContext;
                 treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories;
-                testController.TreeViewCategory = treeViewComboBox.ComboBox.SelectedItem;
-                treeViewComboBox.ComboBox.DataBindings.Add("SelectedItem", testController, "TreeViewCategory");
             }
             treeViewComboBox.SelectedIndex = 0;
 
@@ -55,6 +53,16 @@ namespace Gallio.Icarus
 
             testController.RunStarted += delegate { testTree.EditEnabled = false; };
             testController.RunFinished += delegate { testTree.EditEnabled = true; };
+
+            filterPassedTestsToolStripMenuItem.DataBindings.Add("Checked", testController, "Model.FilterPassed", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterPassedTestsToolStripButton.DataBindings.Add("Checked", testController, "Model.FilterPassed", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterFailedTestsToolStripMenuItem.DataBindings.Add("Checked", testController, "Model.FilterFailed", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterFailedTestsToolStripButton.DataBindings.Add("Checked", testController, "Model.FilterFailed", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterSkippedTestsToolStripMenuItem.DataBindings.Add("Checked", testController, "Model.FilterSkipped", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterSkippedTestsToolStripButton.DataBindings.Add("Checked", testController, "Model.FilterSkipped", false, DataSourceUpdateMode.OnPropertyChanged);
+
+            sortAscToolStripButton.DataBindings.Add("Checked", testController, "Model.SortAsc", false, DataSourceUpdateMode.OnPropertyChanged);
+            sortDescToolStripButton.DataBindings.Add("Checked", testController, "Model.SortDesc", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -68,22 +76,8 @@ namespace Gallio.Icarus
 
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            testController.TreeViewCategory = (string)treeViewComboBox.SelectedItem;
             testController.Reload();
-        }
-
-        private void filterPassedTestsToolStripButton_Click(object sender, EventArgs e)
-        {
-            ((TestTreeModel)testTree.Model).FilterPassed = filterPassedTestsToolStripMenuItem.Checked = filterPassedTestsToolStripButton.Checked;
-        }
-
-        private void filterFailedTestsToolStripButton_Click(object sender, EventArgs e)
-        {
-            ((TestTreeModel)testTree.Model).FilterFailed = filterFailedTestsToolStripMenuItem.Checked = filterFailedTestsToolStripButton.Checked;
-        }
-
-        private void filterSkippedTestsToolStripButton_Click(object sender, EventArgs e)
-        {
-            ((TestTreeModel)testTree.Model).FilterSkipped = filterSkippedTestsToolStripMenuItem.Checked = filterSkippedTestsToolStripButton.Checked;
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
@@ -99,15 +93,6 @@ namespace Gallio.Icarus
         private void collapseAllMenuItem_Click(object sender, EventArgs e)
         {
             testTree.CollapseAll();
-        }
-
-        private void sortTree_Click(object sender, EventArgs e)
-        {
-            // can only sort up OR down!
-            if (sortToolStripButton.Checked && sortUpToolStripButton.Checked)
-                sortUpToolStripButton.Checked = false;
-
-            ((TestTreeModel)testTree.Model).SortOrder = sortToolStripButton.Checked ? SortOrder.Ascending : SortOrder.None;
         }
 
         private void viewSourceCodeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -128,21 +113,6 @@ namespace Gallio.Icarus
         private void expandInconclusiveTestsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             testTree.Expand(TestStatus.Inconclusive);
-        }
-
-        private void filterPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ((TestTreeModel)testTree.Model).FilterPassed = filterPassedTestsToolStripButton.Checked = filterPassedTestsToolStripMenuItem.Checked;
-        }
-
-        private void filterFailedTestsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ((TestTreeModel)testTree.Model).FilterFailed = filterFailedTestsToolStripButton.Checked = filterFailedTestsToolStripMenuItem.Checked;
-        }
-
-        private void filterSkippedTestsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ((TestTreeModel)testTree.Model).FilterSkipped = filterSkippedTestsToolStripButton.Checked = filterSkippedTestsToolStripMenuItem.Checked;
         }
 
         private void addAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -167,26 +137,16 @@ namespace Gallio.Icarus
                 if (testTreeNode.NodeType == TestKinds.Namespace)
                 {
                     foreach (Node n in testTreeNode.Nodes)
-                        testController.SelectedTests.Add(((TestTreeNode)n).Name);
+                        testController.SelectedTests.Add((TestTreeNode)n);
                 }
                 else
-                    testController.SelectedTests.Add(testTreeNode.Name);
+                    testController.SelectedTests.Add(testTreeNode);
             }
             else
             {
-                testController.SelectedTests.Add(((TestTreeModel)testTree.Model).Root.Name);
                 removeAssemblyToolStripMenuItem.Enabled = false;
                 viewSourceCodeToolStripMenuItem.Enabled = false;
             }
-        }
-
-        private void sortUpToolStripButton_Click(object sender, EventArgs e)
-        {
-            // can only sort up OR down!
-            if (sortUpToolStripButton.Checked && sortToolStripButton.Checked)
-                sortToolStripButton.Checked = false;
-
-            ((TestTreeModel)testTree.Model).SortOrder = sortUpToolStripButton.Checked ? SortOrder.Descending : SortOrder.None;
         }
     }
 }

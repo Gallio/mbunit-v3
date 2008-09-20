@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Aga.Controls.Tree;
+using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Icarus.Services.Interfaces;
@@ -34,7 +34,7 @@ namespace Gallio.Icarus.Controllers
     public class TestController : ITestController
     {
         private readonly ITestRunnerService testRunnerService;
-        private readonly BindingList<string> selectedTests;
+        private readonly BindingList<TestTreeNode> selectedTests;
         private readonly ITestTreeModel testTreeModel;
         private string treeViewCategory = string.Empty;
         private TestPackageConfig testPackageConfig;
@@ -53,10 +53,10 @@ namespace Gallio.Icarus.Controllers
         public event EventHandler UnloadStarted;
         public event EventHandler UnloadFinished;
         
-        public object TreeViewCategory
+        public string TreeViewCategory
         {
             get { return treeViewCategory; }
-            set { treeViewCategory = (string)value; }
+            set { treeViewCategory = value; }
         }
 
         public Report Report
@@ -64,12 +64,12 @@ namespace Gallio.Icarus.Controllers
             get { return testRunnerService.Report; }
         }
 
-        public BindingList<string> SelectedTests
+        public BindingList<TestTreeNode> SelectedTests
         {
             get { return selectedTests; }
         }
 
-        public ITreeModel Model
+        public ITestTreeModel Model
         {
             get { return testTreeModel; }
         }
@@ -100,7 +100,7 @@ namespace Gallio.Icarus.Controllers
                 EventHandlerUtils.SafeInvoke(ProgressUpdate, this, e);
             };
 
-            selectedTests = new BindingList<string>(new List<string>());
+            selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
         }
 
         public void ApplyFilter(Filter<ITest> filter)

@@ -66,7 +66,8 @@ namespace Gallio.Icarus
             showWarningsToolStripButton.Text = string.Format("{0} Warnings", warning);
             showInfoToolStripButton.Text = string.Format("{0} Info", info);
 
-            Show();
+            if (annotationsListView.Items.Count > 0)
+                Show();
         }
 
         private void AddListViewItem(AnnotationData annotationData, int imgIndex)

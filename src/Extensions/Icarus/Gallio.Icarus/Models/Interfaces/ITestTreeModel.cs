@@ -27,11 +27,17 @@ namespace Gallio.Icarus.Models.Interfaces
     public interface ITestTreeModel : ITreeModel
     {
         Collection<Node> Nodes { get; }
-        bool FilterPassed { set; }
-        bool FilterFailed { set; }
-        bool FilterSkipped { set; }
+        bool FilterPassed { get; set; }
+        bool FilterFailed { get; set; }
+        bool FilterSkipped { get; set; }
         int TestCount { get; }
         TestTreeNode Root { get; }
+        bool SortAsc { get; set; }
+        bool SortDesc { get; set; }
+        int Passed { get; }
+        int Failed { get; }
+        int Skipped { get; }
+        int Inconclusive { get; }
 
         Node FindNode(TreePath path);
         TreePath GetPath(Node node);

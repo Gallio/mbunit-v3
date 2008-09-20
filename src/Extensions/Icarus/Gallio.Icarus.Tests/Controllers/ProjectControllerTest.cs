@@ -21,6 +21,7 @@ using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
+    [Category("Controllers"), Author("Graham Hay")]
     class ProjectControllerTest : MockTest
     {
         [Test]
