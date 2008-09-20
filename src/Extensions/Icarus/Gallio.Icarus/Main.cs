@@ -85,9 +85,10 @@ namespace Gallio.Icarus
             this.testController = testController;
             testController.RunFinished += testController_RunFinished;
             testController.LoadFinished += testController_LoadFinished;
-            testController.ProgressUpdate += UpdateProgress;
+            testController.ProgressUpdate += ProgressUpdate;
             testController.ShowSourceCode += delegate(object sender, ShowSourceCodeEventArgs e) { ShowSourceCode(e.CodeLocation); };
             this.reportController = reportController;
+            reportController.ProgressUpdate += ProgressUpdate;
             this.arguments = arguments;
 
             optionsController = OptionsController.Instance;
@@ -108,11 +109,25 @@ namespace Gallio.Icarus
             executionLogWindow = new ExecutionLogWindow(executionLogController);
             annotationsWindow = new AnnotationsWindow(testController);
 
+            // used by dock window framework to re-assemble layout
             deserializeDockContent = GetContentFromPersistString;
 
+            // set up delay timer for progress monitor
             timer.Interval = 1000;
             timer.AutoReset = false;
             timer.Elapsed += delegate { Sync.Invoke(this, delegate { progressMonitor.Show(this); }); };
+
+            // add a menu item for each report type (Report -> View As)
+            List<string> reportTypes = new List<string>();
+            reportTypes.AddRange(reportController.ReportTypes);
+            reportTypes.Sort();
+            foreach (string reportType in reportTypes)
+            {
+                ToolStripMenuItem menuItem = new ToolStripMenuItem();
+                menuItem.Text = reportType;
+                menuItem.Click += delegate { reportController.ShowReport(testController.Report, menuItem.Text); };
+                viewAsToolStripMenuItem.DropDownItems.Add(menuItem);
+            }
         }
 
         public void ShowSourceCode(CodeLocation codeLocation)
@@ -210,7 +225,7 @@ namespace Gallio.Icarus
                 {
                     if (filterInfo.FilterName != "AutoSave")
                         continue;
-                    testController.ApplyFilter(FilterUtils.ParseTestFilter(filterInfo.Filter));
+                    testController.ApplyFilter(filterInfo.Filter);
                     return;
                 }
             };
@@ -526,7 +541,7 @@ namespace Gallio.Icarus
             });
         }
 
-        private void UpdateProgress(object sender, ProgressUpdateEventArgs e)
+        private void ProgressUpdate(object sender, ProgressUpdateEventArgs e)
         {
             Sync.Invoke(this, delegate
             {

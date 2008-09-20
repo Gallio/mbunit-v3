@@ -35,7 +35,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
 
         void AddAssemblies(IList<string> assemblies);
-        void DeleteFilter(string filterName);
+        void DeleteFilter(FilterInfo filterInfo);
         Filter<ITest> GetFilter(string filterName);
         void NewProject();
         void OpenProject(string projectName);

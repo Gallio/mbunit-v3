@@ -41,7 +41,7 @@ namespace Gallio.Icarus.Tests.Controllers
             mocks.ReplayAll();
 
             TestController testController = new TestController(testRunnerService, testTreeModel);
-            testController.ApplyFilter(filter);
+            testController.ApplyFilter(filter.ToFilterExpr());
         }
 
         ITestRunnerService SetupTestRunnerService()

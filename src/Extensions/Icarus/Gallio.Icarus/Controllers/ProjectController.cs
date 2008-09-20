@@ -20,7 +20,6 @@ using System.IO;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Remoting;
 using Gallio.Model;
@@ -111,15 +110,9 @@ namespace Gallio.Icarus.Controllers
             assemblyWatcher.Add(validAssemblies);
         }
 
-        public void DeleteFilter(string filterName)
+        public void DeleteFilter(FilterInfo filterInfo)
         {
-            foreach (FilterInfo filterInfo in testFilters)
-            {
-                if (filterInfo.FilterName != filterName)
-                    continue;
-                testFilters.Remove(filterInfo);
-                return;
-            }
+            testFilters.Remove(filterInfo);
         }
 
         public Filter<ITest> GetFilter(string filterName)

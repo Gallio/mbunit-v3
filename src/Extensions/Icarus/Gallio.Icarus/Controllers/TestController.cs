@@ -103,10 +103,11 @@ namespace Gallio.Icarus.Controllers
             selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
         }
 
-        public void ApplyFilter(Filter<ITest> filter)
+        public void ApplyFilter(string filter)
         {
-            testTreeModel.ApplyFilter(filter);
-            testRunnerService.SetFilter(filter);
+            Filter<ITest> f = FilterUtils.ParseTestFilter(filter);
+            testTreeModel.ApplyFilter(f);
+            testRunnerService.SetFilter(f);
         }
 
         public void Cancel()

@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -42,7 +41,6 @@ namespace Gallio.Icarus.Controls
             SetCheckState(args.Node, state);
             ((TestTreeNode)args.Node.Tag).UpdateStateOfRelatedNodes();
             Parent.EndUpdate();
-            ((TestTreeModel)Parent.Model).OnTestCountChanged(EventArgs.Empty);
             args.Handled = true;
         }
         

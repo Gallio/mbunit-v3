@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Globalization;
 using System.IO;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
@@ -30,7 +29,6 @@ namespace Gallio.Icarus.Services
     class ReportService : IReportService
     {
         readonly IReportManager reportManager;
-        const string reportNameFormat = "test-report-{0}-{1}";
         readonly ProgressMonitorProvider progressMonitorProvider = new ProgressMonitorProvider();
 
         public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
@@ -51,53 +49,34 @@ namespace Gallio.Icarus.Services
             };
         }
 
-        public void GenerateReport(Report report, string reportFolder)
+        public string SaveReportAs(Report report, string fileName, string format)
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
-            {
-                IReportContainer reportContainer = CreateReportContainer(report, reportFolder);
-                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+            string file = string.Empty;
 
-                // format the report as xml
-                reportManager.Format(reportWriter, "xml", new NameValueCollection(), progressMonitor);
-            });
-        }
-
-        private static IReportContainer CreateReportContainer(Report report, string reportFolder)
-        {
-            string reportName = GenerateReportName(report);
-            return new FileSystemReportContainer(reportFolder, reportName);
-        }
-
-        private static string GenerateReportName(Report report)
-        {
-            DateTime reportTime = report.TestPackageRun != null ? report.TestPackageRun.StartTime : DateTime.Now;
-
-            return String.Format(CultureInfo.InvariantCulture, reportNameFormat,
-                reportTime.ToString(@"yyyyMMdd"),
-                reportTime.ToString(@"HHmmss"));
-        }
-
-        public void SaveReportAs(Report report, string fileName, string format)
-        {
             progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Generating report.", 100))
                 {
-                    IReportContainer reportContainer = new FileSystemReportContainer(Path.GetDirectoryName(fileName),
+                    string folderName = Path.GetDirectoryName(fileName);
+                    IReportContainer reportContainer = new FileSystemReportContainer(folderName,
                         Path.GetFileNameWithoutExtension(fileName));
                     IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
 
-                    // Delete the report if it exists already.
+                    // Delete the report if it already exists
                     reportContainer.DeleteReport();
 
-                    // Format the report in all of the desired ways.
+                    // Format the report
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(100))
                         reportManager.Format(reportWriter, format, new NameValueCollection(), subProgressMonitor);
+
+                    if (reportWriter.ReportDocumentPaths.Count > 0)
+                        file = Path.Combine(folderName, reportWriter.ReportDocumentPaths[0]);
 
                     progressMonitor.SetStatus("Report saved.");
                 }
             });
+            
+            return file;
         }
     }
 }

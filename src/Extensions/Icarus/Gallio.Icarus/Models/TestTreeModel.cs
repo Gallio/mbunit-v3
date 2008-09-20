@@ -35,7 +35,6 @@ namespace Gallio.Icarus.Models
         private readonly TestTreeSorter testTreeSorter = new TestTreeSorter();
         private int passed, failed, skipped, inconclusive;
 
-        public event EventHandler<EventArgs> TestCountChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool FilterPassed
@@ -294,11 +293,6 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public void OnTestCountChanged(EventArgs e)
-        {
-            EventHandlerUtils.SafeInvoke(TestCountChanged, this, e);
-        }
-
         public void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             if (PropertyChanged != null)
@@ -332,7 +326,6 @@ namespace Gallio.Icarus.Models
                 PopulateNamespaceTree(testModelData.RootTest.Children, root);
             else
                 PopulateMetadataTree(treeViewCategory, testModelData.RootTest.Children, root);
-            OnTestCountChanged(EventArgs.Empty);
         }
 
         private static void PopulateNamespaceTree(IList<TestData> list, TestTreeNode parent)
@@ -437,19 +430,17 @@ namespace Gallio.Icarus.Models
 
         public void ApplyFilter(Filter<ITest> filter)
         {
-            if ((filter is AnyFilter<ITest>))
-                return;
-
-            // toggle root node
-            foreach (Node node in Nodes)
+            if (filter is AnyFilter<ITest>)
             {
-                if (!(node is TestTreeNode))
-                    continue;
-                node.CheckState = CheckState.Unchecked;
-                ((TestTreeNode)node).UpdateStateOfRelatedNodes();
+                Root.CheckState = CheckState.Checked;
+                Root.UpdateStateOfRelatedNodes();
+                return;
             }
+
+            Root.CheckState = CheckState.Unchecked;
+            Root.UpdateStateOfRelatedNodes();
+
             RecursivelyApplyFilter(filter);
-            OnTestCountChanged(EventArgs.Empty);
         }
 
         private void RecursivelyApplyFilter(Filter<ITest> filter)

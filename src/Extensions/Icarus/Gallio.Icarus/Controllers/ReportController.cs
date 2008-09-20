@@ -13,24 +13,69 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
     class ReportController : IReportController
     {
-        private readonly IReportService reportService;
+        readonly IReportService reportService;
+        const string reportNameFormat = "test-report-{0}-{1}";
+        readonly TaskManager taskManager = new TaskManager();
+
+        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
 
         public ReportController(IReportService reportService)
         {
-            this.reportService = reportService;    
+            this.reportService = reportService;
+
+            // bubble progress up
+            reportService.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e)
+            {
+                EventHandlerUtils.SafeInvoke(ProgressUpdate, this, e);
+            };
+        }
+
+        public IList<string> ReportTypes
+        {
+            get { return reportService.ReportTypes; }
         }
 
         public void GenerateReport(Report report, string reportDirectory)
         {
-            reportService.GenerateReport(report, reportDirectory);
+            taskManager.StartTask(delegate
+            {
+                string fileName = GenerateReportName(report);
+                reportService.SaveReportAs(report, fileName, "xml");
+            });
+        }
+
+        private static string GenerateReportName(Report report)
+        {
+            DateTime reportTime = report.TestPackageRun != null ? report.TestPackageRun.StartTime : DateTime.Now;
+
+            return String.Format(CultureInfo.InvariantCulture, reportNameFormat,
+                reportTime.ToString(@"yyyyMMdd"),
+                reportTime.ToString(@"HHmmss"));
+        }
+
+        public void ShowReport(Report report, string reportType)
+        {
+            taskManager.StartTask(delegate
+            {
+                string fileName = reportService.SaveReportAs(report, Path.GetTempFileName(), reportType);
+                if (!string.IsNullOrEmpty(fileName))
+                    Process.Start(fileName);
+            });
         }
     }
 }

@@ -31,8 +31,7 @@
 using System;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Model;
-using Gallio.Model.Filters;
+using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus
 {
@@ -49,6 +48,7 @@ namespace Gallio.Icarus
             InitializeComponent();
 
             filtersListBox.DataSource = projectController.TestFilters;
+            filtersListBox.DisplayMember = "FilterName";
         }
 
         private void filtersListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -58,7 +58,7 @@ namespace Gallio.Icarus
 
         private void removeFilterButton_Click(object sender, EventArgs e)
         {
-            projectController.DeleteFilter((string)filtersListBox.SelectedItem);
+            projectController.DeleteFilter((FilterInfo)filtersListBox.SelectedItem);
         }
 
         private void filterNameTextBox_TextChanged(object sender, EventArgs e)
@@ -84,9 +84,8 @@ namespace Gallio.Icarus
 
         private void applyFilterButton_Click(object sender, EventArgs e)
         {
-            Filter<ITest> filter = projectController.GetFilter((string) filtersListBox.SelectedItem);
-            if (filter != null)
-                testController.ApplyFilter(filter);
+            FilterInfo filterInfo = (FilterInfo)filtersListBox.SelectedItem;
+            testController.ApplyFilter(filterInfo.Filter);
         }
     }
 }

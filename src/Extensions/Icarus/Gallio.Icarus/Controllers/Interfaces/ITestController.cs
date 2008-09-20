@@ -46,7 +46,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         event EventHandler UnloadFinished;
         event EventHandler<ShowSourceCodeEventArgs> ShowSourceCode;
 
-        void ApplyFilter(Filter<ITest> filter);
+        void ApplyFilter(string filter);
         void Cancel();
         Filter<ITest> GetCurrentFilter();
         void Reload();

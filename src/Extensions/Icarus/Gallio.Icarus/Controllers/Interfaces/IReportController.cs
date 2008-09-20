@@ -13,12 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
     public interface IReportController
     {
+        IList<string> ReportTypes { get; }
+
+        event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
+
         void GenerateReport(Report report, string reportDirectory);
+        void ShowReport(Report report, string reportType);
     }
 }

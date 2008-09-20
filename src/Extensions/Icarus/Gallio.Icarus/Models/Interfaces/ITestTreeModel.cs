@@ -45,11 +45,8 @@ namespace Gallio.Icarus.Models.Interfaces
         void ResetTestStatus();
         void UpdateTestStatus(TestData testData, TestStepRun testStepRun);
         void FilterTree();
-        void OnTestCountChanged(EventArgs e);
         void ApplyFilter(Filter<ITest> filter);
         Filter<ITest> GetCurrentFilter();
         void BuildTestTree(TestModelData testModelData, string treeViewCategory);
-
-        event EventHandler<EventArgs> TestCountChanged;
     }
 }
