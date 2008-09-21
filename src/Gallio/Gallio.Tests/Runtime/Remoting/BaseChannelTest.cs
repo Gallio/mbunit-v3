@@ -47,13 +47,13 @@ namespace Gallio.Tests.Runtime.Remoting
 
             using (StubChannel stub = new StubChannel(channel, uri))
             {
-                OldCollectionAssert.Contains(ChannelServices.RegisteredChannels, channel);
+                Assert.Contains(ChannelServices.RegisteredChannels, channel);
 
                 Assert.AreSame(channel, stub.Channel);
                 Assert.AreEqual(uri, stub.ChannelUri);
             }
 
-            OldCollectionAssert.DoesNotContain(ChannelServices.RegisteredChannels, channel);
+            Assert.DoesNotContain(ChannelServices.RegisteredChannels, channel);
         }
 
         [Test]

@@ -116,7 +116,7 @@ namespace Gallio.Tests
 
         private void AssertTraceEquals(params string[] expectedTrace)
         {
-            OldCollectionAssert.AreElementsEqual(expectedTrace, trace);
+            Assert.AreElementsEqual(expectedTrace, trace);
         }
 
         private void Trace(string arg1, int arg2, string token, int value)

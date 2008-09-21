@@ -16,7 +16,9 @@
 using System;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Framework
+#pragma warning disable 0618
+
+namespace MbUnit.Tests.Compatibility.Framework
 {
     [TestFixture]
     [TestsOn(typeof(OldArrayAssert))]

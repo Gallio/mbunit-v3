@@ -17,17 +17,19 @@ using System.IO;
 using System.Reflection;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Framework
+#pragma warning disable 0618
+
+namespace MbUnit.Tests.Compatibility.Framework
 {
     [TestFixture]
-    [TestsOn(typeof(FileAssert))]
-    public class FileAssertTest
+    [TestsOn(typeof(OldFileAssert))]
+    public class OldFileAssertTest
     {
         [Test]
         public void AreEqualPath()
         {
             string pathFile = Assembly.GetExecutingAssembly().Location;
-            FileAssert.AreEqual(pathFile, pathFile);
+            OldFileAssert.AreEqual(pathFile, pathFile);
         }
 
         [Test]
@@ -36,7 +38,7 @@ namespace MbUnit.Tests.Framework
             string pathFile = Assembly.GetExecutingAssembly().Location;
             FileInfo file = new FileInfo(pathFile);
             FileInfo file2 = new FileInfo(pathFile);
-            FileAssert.AreEqual(file, file2);
+            OldFileAssert.AreEqual(file, file2);
         }
 
         [Test]
@@ -59,7 +61,7 @@ namespace MbUnit.Tests.Framework
                 File.Copy(pathFile, pathFile + "TestCopy", true);
                 Stream str2 = new FileStream(pathFile + "TestCopy", FileMode.Open);
 
-                FileAssert.AreStreamContentEqual(str, str2);
+                OldFileAssert.AreStreamContentEqual(str, str2);
             }
             finally
             {
@@ -72,14 +74,14 @@ namespace MbUnit.Tests.Framework
         public void Exists()
         {
             string path = Assembly.GetExecutingAssembly().Location;
-            FileAssert.Exists(path);
+            OldFileAssert.Exists(path);
         }
 
         [Test]
         public void NotExists()
         {
             string path = Assembly.GetExecutingAssembly().Location;
-            FileAssert.NotExists(path + "MbUnitTest");
+            OldFileAssert.NotExists(path + "MbUnitTest");
         }
     }
 }

@@ -28,6 +28,7 @@ namespace MbUnit.Framework
     /// <see cref="ICollection"/> class.
     /// </para>
     /// </remarks>
+    [Obsolete("Use Assert instead.")]
     public static class OldCollectionAssert
     {
         #region Synchronized

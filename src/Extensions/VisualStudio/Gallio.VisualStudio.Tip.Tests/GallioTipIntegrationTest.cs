@@ -50,8 +50,8 @@ namespace Gallio.VisualStudio.Tip.Tests
         public void PrintsCorrectOutputForPassingTestsAndReturnsAResultCodeOfZero()
         {
             ProcessTask task = RunMSTest("\"/test:MbUnit v0.0.0.0/MbUnit.TestResources/PassingTests/Pass\"");
-            OldStringAssert.Like(task.ConsoleOutput, "Passed *MbUnit v0.0.0.0/MbUnit.TestResources/PassingTests/Pass");
-            OldStringAssert.Like(task.ConsoleOutput, "Passed *MbUnit v0.0.0.0/MbUnit.TestResources/PassingTests/PassAgain");
+            Assert.Like(task.ConsoleOutput, "Passed *MbUnit v0.0.0.0/MbUnit.TestResources/PassingTests/Pass");
+            Assert.Like(task.ConsoleOutput, "Passed *MbUnit v0.0.0.0/MbUnit.TestResources/PassingTests/PassAgain");
             Assert.Contains(task.ConsoleOutput, "2/2 test(s) Passed");
             Assert.AreEqual(0, task.ExitCode);
         }
@@ -60,8 +60,8 @@ namespace Gallio.VisualStudio.Tip.Tests
         public void PrintsCorrectOutputForFailingTestsAndReturnsAResultCodeOfZero()
         {
             ProcessTask task = RunMSTest("\"/test:MbUnit v0.0.0.0/MbUnit.TestResources/FailingTests/Fail\"");
-            OldStringAssert.Like(task.ConsoleOutput, "Failed *MbUnit v0.0.0.0/MbUnit.TestResources/FailingTests/Fail");
-            OldStringAssert.Like(task.ConsoleOutput, "Failed *MbUnit v0.0.0.0/MbUnit.TestResources/FailingTests/FailAgain");
+            Assert.Like(task.ConsoleOutput, "Failed *MbUnit v0.0.0.0/MbUnit.TestResources/FailingTests/Fail");
+            Assert.Like(task.ConsoleOutput, "Failed *MbUnit v0.0.0.0/MbUnit.TestResources/FailingTests/FailAgain");
             Assert.Contains(task.ConsoleOutput, "0/2 test(s) Passed, 2 Failed");
             Assert.AreEqual(1, task.ExitCode);
         }

@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections;
+using System.Linq;
 using Gallio.Framework.Data;
 using MbUnit.Framework;
 
@@ -25,7 +27,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void LinearInt32()
         {
-            OldCollectionAssert.AreElementsEqual(new int[] { 0, 2, 4, 6 }, Generators.Linear(0, 4, 2));
+            Assert.AreElementsEqual(new int[] { 0, 2, 4, 6 }, Generators.Linear(0, 4, 2));
         }
 
         [Test, ExpectedArgumentOutOfRangeException]
@@ -37,7 +39,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void LinearDouble()
         {
-            OldCollectionAssert.AreElementsEqual(new double[] { -0.5, 2, 4.5, 7 }, Generators.Linear(-0.5, 4, 2.5));
+            Assert.AreElementsEqual(new double[] { -0.5, 2, 4.5, 7 }, Generators.Linear(-0.5, 4, 2.5));
         }
 
         [Test, ExpectedArgumentOutOfRangeException]
@@ -49,7 +51,8 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void EnumValues()
         {
-            OldCollectionAssert.AreElementsEqual(new Answer[] { Answer.Yes, Answer.No }, Generators.EnumValues(typeof(Answer)));
+            Assert.AreElementsEqual(new[] { Answer.Yes, Answer.No },
+                Generators.EnumValues(typeof (Answer)).Cast<Answer>());
         }
 
         [Test, ExpectedArgumentNullException]

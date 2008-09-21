@@ -23,13 +23,13 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [TestsOn(typeof(AssertOverSyntax))]
-    public class AssertOverSyntaxTest
+    public class AssertOverSyntaxTest : BaseAssertTest
     {
         [Test]
         public void Pairs_Success_BothNull()
         {
             AssertionFailure[] failures = AssertTest.Capture(
-                () => Assert.Over.Pairs((int[]) null, (int[]) null, Assert.GreaterThanOrEqual,
+                () => Assert.Over.Pairs((int[]) null, (int[]) null, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(0, failures.Length);
@@ -39,7 +39,7 @@ namespace MbUnit.Tests.Framework
         public void Pairs_Success_BothEmpty()
         {
             AssertionFailure[] failures = AssertTest.Capture(
-                () => Assert.Over.Pairs(new int[] { }, new int[] { }, Assert.GreaterThanOrEqual,
+                () => Assert.Over.Pairs(new int[] { }, new int[] { }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(0, failures.Length);
@@ -49,7 +49,7 @@ namespace MbUnit.Tests.Framework
         public void Pairs_Success_AllPassAssertion()
         {
             AssertionFailure[] failures = AssertTest.Capture(
-                () => Assert.Over.Pairs(new[] { 1, 2, 3 }, new[] { -1, 2, 0 }, Assert.GreaterThanOrEqual,
+                () => Assert.Over.Pairs(new[] { 1, 2, 3 }, new[] { -1, 2, 0 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(0, failures.Length);
@@ -59,7 +59,7 @@ namespace MbUnit.Tests.Framework
         public void Pairs_Failure_AtIndex()
         {
             AssertionFailure[] failures = AssertTest.Capture(
-                () => Assert.Over.Pairs(new[] { 1, 2, 3 }, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqual,
+                () => Assert.Over.Pairs(new[] { 1, 2, 3 }, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);
@@ -79,7 +79,7 @@ namespace MbUnit.Tests.Framework
         public void Pairs_Failure_LeftShorterThanRight()
         {
             AssertionFailure[] failures = AssertTest.Capture(
-                () => Assert.Over.Pairs(new[] { 1, 2 }, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqual,
+                () => Assert.Over.Pairs(new[] { 1, 2 }, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);
@@ -100,7 +100,7 @@ namespace MbUnit.Tests.Framework
         public void Pairs_Failure_LeftLongerThanRight()
         {
             AssertionFailure[] failures = AssertTest.Capture(
-                () => Assert.Over.Pairs(new[] { 1, 2, 5, 0 }, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqual,
+                () => Assert.Over.Pairs(new[] { 1, 2, 5, 0 }, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);
@@ -121,7 +121,7 @@ namespace MbUnit.Tests.Framework
         public void Pairs_Failure_LeftNullButNotRight()
         {
             AssertionFailure[] failures = AssertTest.Capture(
-                () => Assert.Over.Pairs((int[])null, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqual,
+                () => Assert.Over.Pairs((int[])null, new[] { -1, 2, 4 }, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);
@@ -140,7 +140,7 @@ namespace MbUnit.Tests.Framework
         public void Pairs_Failure_RightNullButNotLeft()
         {
             AssertionFailure[] failures = AssertTest.Capture(
-                () => Assert.Over.Pairs(new[] { -1, 2, 4 }, (int[])null, Assert.GreaterThanOrEqual,
+                () => Assert.Over.Pairs(new[] { -1, 2, 4 }, (int[])null, Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);
@@ -162,7 +162,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.KeyedPairs(
                     (IDictionary<int, string>)null,
                     (IDictionary<int, string>)null,
-                    Assert.GreaterThanOrEqual,
+                    Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(0, failures.Length);
@@ -175,7 +175,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.KeyedPairs(
                     new Dictionary<int, string>(),
                     new Dictionary<int, string>(),
-                    Assert.GreaterThanOrEqual,
+                    Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(0, failures.Length);
@@ -188,7 +188,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.KeyedPairs(
                     new Dictionary<int, string> { { 1, "a" }, { 2, "c" }},
                     new Dictionary<int, string> { { 1, "a" }, { 2, "b" } },
-                    Assert.GreaterThanOrEqual,
+                    Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(0, failures.Length);
@@ -201,7 +201,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.KeyedPairs(
                     new Dictionary<int, string> { { 1, "a" }, { 2, "b" } },
                     new Dictionary<int, string> { { 1, "a" }, { 2, "c" } },
-                    Assert.GreaterThanOrEqual,
+                    Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);
@@ -224,7 +224,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.KeyedPairs(
                     new Dictionary<int, string> { { 2, "b" } },
                     new Dictionary<int, string> { { 1, "a" }, { 2, "b" } },
-                    Assert.GreaterThanOrEqual,
+                    Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);
@@ -248,7 +248,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.KeyedPairs(
                     new Dictionary<int, string> { { 1, "a" }, { 2, "b" } },
                     new Dictionary<int, string> { { 2, "b" } },
-                    Assert.GreaterThanOrEqual,
+                    Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);
@@ -272,7 +272,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.KeyedPairs(
                     (IDictionary<int, string>)null,
                     new Dictionary<int, string>(),
-                    Assert.GreaterThanOrEqual,
+                    Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);
@@ -294,7 +294,7 @@ namespace MbUnit.Tests.Framework
                 () => Assert.Over.KeyedPairs(
                     new Dictionary<int, string>(),
                     (IDictionary<int, string>)null,
-                    Assert.GreaterThanOrEqual,
+                    Assert.GreaterThanOrEqualTo,
                     "Hello {0}.", "World"));
 
             Assert.AreEqual(1, failures.Length);

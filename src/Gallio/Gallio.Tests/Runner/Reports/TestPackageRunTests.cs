@@ -75,7 +75,7 @@ namespace Gallio.Tests.Runner.Reports
             testStepRun.Children.Add(new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId")));
             testPackageRun.RootTestStepRun = testStepRun;
 
-            OldCollectionAssert.AreElementsEqual(new TestStepRun[] { testStepRun, testStepRun.Children[0] },
+            Assert.AreElementsEqual(new TestStepRun[] { testStepRun, testStepRun.Children[0] },
                 testPackageRun.AllTestStepRuns);
         }
     }

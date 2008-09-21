@@ -28,6 +28,7 @@ namespace MbUnit.Framework
     /// <summary>
     /// Assertion class
     /// </summary>
+    [Obsolete("Use Assert instead.")]
     public static class OldAssert
     {
         #region Private stuff

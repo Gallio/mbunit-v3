@@ -208,7 +208,7 @@ namespace Gallio.Tests.Framework.Data
             }
 
             Assert.IsFalse(missingPairing, "One or more pairings were not covered!");
-            Assert.LessThanOrEqual(values.Length, empiricalUpperBound, "There were more combinations produced than previously measured.  Has the algorithm gotten worse?");
+            Assert.LessThanOrEqualTo(values.Length, empiricalUpperBound, "There were more combinations produced than previously measured.  Has the algorithm gotten worse?");
         }
     }
 }

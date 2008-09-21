@@ -101,7 +101,7 @@ namespace Gallio.Tests.Reflection
         public void GetSourceLocation_ReturnsMethodSourceFile()
         {
             CodeLocation location = Reflector.GetExecutingFunction().GetCodeLocation();
-            OldStringAssert.EndsWith(location.Path, GetType().Name + ".cs");
+            Assert.EndsWith(location.Path, GetType().Name + ".cs");
         }
 
         [Test]

@@ -47,7 +47,7 @@ namespace Gallio.Tests.Reflection.Impl
         {
             CodeLocation codeLocation = DebugSymbolUtils.GetSourceLocation(typeof(Sample).GetMethod("ConcreteMethod"));
 
-            OldStringAssert.EndsWith(codeLocation.Path, GetType().Name + ".cs");
+            Assert.EndsWith(codeLocation.Path, GetType().Name + ".cs");
             Assert.Between(codeLocation.Line, 1000, 1003);
             Assert.AreEqual(codeLocation.Column, 0, "No column information should be returned because it is inaccurate.");
         }
@@ -89,7 +89,7 @@ namespace Gallio.Tests.Reflection.Impl
         {
             CodeLocation codeLocation = DebugSymbolUtils.GetSourceLocation(type);
 
-            OldStringAssert.EndsWith(codeLocation.Path, GetType().Name + ".cs");
+            Assert.EndsWith(codeLocation.Path, GetType().Name + ".cs");
             Assert.AreEqual(0, codeLocation.Line);
             Assert.AreEqual(0, codeLocation.Column);
         }

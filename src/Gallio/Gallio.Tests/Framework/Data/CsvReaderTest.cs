@@ -100,9 +100,9 @@ namespace Gallio.Tests.Framework.Data
             CsvReader reader = new CsvReader(documentReader);
 
             Assert.AreEqual(0, reader.PreviousRecordLineNumber);
-            OldArrayAssert.AreEqual(new string[] { "abc" }, reader.ReadRecord());
+            Assert.AreEqual(new string[] { "abc" }, reader.ReadRecord());
             Assert.AreEqual(1, reader.PreviousRecordLineNumber);
-            OldArrayAssert.AreEqual(new string[] { "def" }, reader.ReadRecord());
+            Assert.AreEqual(new string[] { "def" }, reader.ReadRecord());
             Assert.AreEqual(3, reader.PreviousRecordLineNumber);
             Assert.IsNull(reader.ReadRecord());
             Assert.AreEqual(3, reader.PreviousRecordLineNumber);

@@ -40,6 +40,7 @@
 //		Author: Jonathan de Halleux
 
 
+using System;
 using System.Security.Principal;
 
 namespace MbUnit.Framework
@@ -47,9 +48,10 @@ namespace MbUnit.Framework
     /// <summary>
 	/// Security Assertion class
 	/// </summary>
-	public sealed class SecurityAssert
+    [Obsolete("No replacement.  Please ask for one if you use this feature.")]
+	public sealed class OldSecurityAssert
 	{
-		private SecurityAssert(){}
+		private OldSecurityAssert(){}
 		
 		#region Authentication and Identity related
 		/// <summary>

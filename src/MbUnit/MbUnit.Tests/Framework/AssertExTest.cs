@@ -23,7 +23,7 @@ using MbUnit.Framework;
 namespace MbUnit.Tests.Framework
 {
     [TestsOn(typeof(AssertEx))]
-    public class AssertExTest
+    public class AssertExTest : BaseAssertTest
     {
         [Test, ExpectedArgumentNullException]
         public void That_ThrowsIfConditionIsNull()
@@ -34,7 +34,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void That_Success()
         {
-            AssertionFailure[] failures = AssertTest.Capture(
+            AssertionFailure[] failures = Capture(
                 () => AssertEx.That(() => true,
                     "Hello {0}.", "World"));
 
@@ -46,7 +46,7 @@ namespace MbUnit.Tests.Framework
         public void That_Failure()
         {
             int x = 4;
-            AssertionFailure[] failures = AssertTest.Capture(
+            AssertionFailure[] failures = Capture(
                 () => AssertEx.That(() => x == 5,
                     "Hello {0}.", "World"));
 

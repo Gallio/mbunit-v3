@@ -54,7 +54,7 @@ namespace Gallio.Tests.Runner.Workspaces
             Assert.AreEqual("", path.ToString());
             Assert.IsTrue(path.IsEmpty);
             Assert.IsFalse(path.IsAbsolute);
-            OldArrayAssert.AreEqual(new string[] { }, path.Segments);
+            Assert.AreEqual(new string[] { }, path.Segments);
             Assert.AreEqual(ResourcePath.Empty, path.Container);
             Assert.AreEqual(ResourcePath.Empty, path);
         }
@@ -67,7 +67,7 @@ namespace Gallio.Tests.Runner.Workspaces
             Assert.AreEqual("\\", path.ToString());
             Assert.IsFalse(path.IsEmpty);
             Assert.IsTrue(path.IsAbsolute);
-            OldArrayAssert.AreEqual(new string[] { }, path.Segments);
+            Assert.AreEqual(new string[] { }, path.Segments);
             Assert.AreEqual(ResourcePath.Empty, path.Container);
             Assert.AreEqual(ResourcePath.Root, path);
         }
@@ -80,7 +80,7 @@ namespace Gallio.Tests.Runner.Workspaces
             Assert.AreEqual("foo\\somepath", path.ToString());
             Assert.IsFalse(path.IsEmpty);
             Assert.IsFalse(path.IsAbsolute);
-            OldArrayAssert.AreEqual(new string[] { "foo", "somepath" }, path.Segments);
+            Assert.AreEqual(new string[] { "foo", "somepath" }, path.Segments);
             Assert.AreEqual(new ResourcePath("foo"), path.Container);
             Assert.AreEqual(new ResourcePath("foo\\somepath"), path);
         }
@@ -93,7 +93,7 @@ namespace Gallio.Tests.Runner.Workspaces
             Assert.AreEqual("\\foo\\somepath", path.ToString());
             Assert.IsFalse(path.IsEmpty);
             Assert.IsTrue(path.IsAbsolute);
-            OldArrayAssert.AreEqual(new string[] { "foo", "somepath" }, path.Segments);
+            Assert.AreEqual(new string[] { "foo", "somepath" }, path.Segments);
             Assert.AreEqual(new ResourcePath("\\foo"), path.Container);
             Assert.AreEqual(new ResourcePath("\\foo\\somepath"), path);
         }

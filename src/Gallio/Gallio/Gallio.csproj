@@ -143,6 +143,7 @@
     <Compile Include="Framework\Formatting\StringFormattingRule.cs" />
     <Compile Include="Framework\Formatting\TypeFormattingRule.cs" />
     <Compile Include="Framework\Formatting\XPathNavigableFormattingRule.cs" />
+    <Compile Include="Framework\ComparisonSemantics.cs" />
     <Compile Include="Framework\Text\DiffStyle.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="Model\Diagnostics\StackTraceData.cs" />

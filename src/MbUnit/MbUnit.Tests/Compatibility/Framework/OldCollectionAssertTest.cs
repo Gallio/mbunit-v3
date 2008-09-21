@@ -18,7 +18,9 @@ using System.Data;
 using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 
-namespace MbUnit.Tests.Framework
+#pragma warning disable 0618
+
+namespace MbUnit.Tests.Compatibility.Framework
 {
     [TestFixture]
     [TestsOn(typeof(OldCollectionAssert))]

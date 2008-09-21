@@ -14,110 +14,171 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Gallio;
 using Gallio.Framework.Assertions;
 
 namespace MbUnit.Framework
 {
     public abstract partial class Assert
     {
-        #region AreEqualIgnoreCase
+        #region Contains
         /// <summary>
-        /// Asserts that two strings are equal, ignoring the case
+        /// Verifies that a string contains some expected value.
         /// </summary>
-        /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedSubstring">The expected substring</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreEqualIgnoreCase(string expectedValue, string actualValue)
+        public static void Contains(string actualValue, string expectedSubstring)
         {
-            AreEqualIgnoreCase(expectedValue, actualValue, (Func<string, string, bool>)null, null, null);
+            Contains(actualValue, expectedSubstring, null);
         }
 
         /// <summary>
-        /// Verifies that an actual value equals some expected value.
+        /// Verifies that a string contains some expected value.
         /// </summary>
-        /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedSubstring">The expected substring</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreEqualIgnoreCase(string expectedValue, string actualValue, string messageFormat, params object[] messageArgs)
+        public static void Contains(string actualValue, string expectedSubstring, string messageFormat, params object[] messageArgs)
         {
-            AreEqualIgnoreCase(expectedValue, actualValue, (Func<string, string, bool>)null, messageFormat, messageArgs);
-        }
+            AssertionHelper.Verify(delegate
+            {
+                if (actualValue.Contains(expectedSubstring))
+                    return null;
 
+                return new AssertionFailureBuilder("Expected string to contain a particular substring.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Expected Substring", expectedSubstring)
+                    .AddRawActualValue(actualValue)
+                    .ToAssertionFailure();
+            });
+        }
+        #endregion
+
+        #region DoesNotContain
         /// <summary>
-        /// Verifies that an actual value equals some expected value according to a particular comparer.
+        /// Verifies that a string does not contain some unexpected substring.
         /// </summary>
-        /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="unexpectedSubstring">The unexpected substring</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreEqualIgnoreCase(string expectedValue, string actualValue, IEqualityComparer<string> comparer)
+        public static void DoesNotContain(string actualValue, string unexpectedSubstring)
         {
-            AreEqual(expectedValue, actualValue, comparer, null, null);
+            DoesNotContain(actualValue, unexpectedSubstring, null);
         }
 
         /// <summary>
-        /// Asserts that two strings are equal, ignoring the case
+        /// Verifies that a string does not contain some unexpected substring.
         /// </summary>
-        /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="unexpectedSubstring">The unexpected substring</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreEqualIgnoreCase(string expectedValue, string actualValue, IEqualityComparer<string> comparer, string messageFormat, params object[] messageArgs)
+        public static void DoesNotContain(string actualValue, string unexpectedSubstring, string messageFormat, params object[] messageArgs)
         {
-            AreEqualIgnoreCase(expectedValue, actualValue, comparer != null ? comparer.Equals : (Func<string, string, bool>)null, messageFormat, messageArgs);
-        }
+            AssertionHelper.Verify(delegate
+            {
+                if (!actualValue.Contains(unexpectedSubstring))
+                    return null;
 
+                return new AssertionFailureBuilder("Expected string to not contain a particular substring.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Unexpected Substring", unexpectedSubstring)
+                    .AddRawActualValue(actualValue)
+                    .ToAssertionFailure();
+            });
+        }
+        #endregion
+
+        #region AreEqual
         /// <summary>
-        /// Asserts that two strings are equal, ignoring the case
+        /// Asserts that two strings are equal according to a particular string comparison mode.
         /// </summary>
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="comparisonType">The string comparison type</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreEqualIgnoreCase(string expectedValue, string actualValue, Func<string, string, bool> comparer)
+        public static void AreEqual(string expectedValue, string actualValue, StringComparison comparisonType)
         {
-            AreEqualIgnoreCase(expectedValue, actualValue, comparer, null, null);
+            AreEqual(expectedValue, actualValue, comparisonType, null, null);
         }
 
         /// <summary>
-        /// Asserts that two strings are equal, ignoring the case
+        /// Asserts that two strings are equal according to a particular string comparison mode.
         /// </summary>
         /// <param name="expectedValue">The expected value</param>
         /// <param name="actualValue">The actual value</param>
-        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="comparisonType">The string comparison type</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreEqualIgnoreCase(string expectedValue, string actualValue, Func<string, string, bool> comparer, string messageFormat, params object[] messageArgs)
+        public static void AreEqual(string expectedValue, string actualValue, StringComparison comparisonType, string messageFormat, params object[] messageArgs)
         {
-            if (expectedValue == null || actualValue == null)
-                AreEqual(expectedValue, actualValue, comparer, messageFormat, messageArgs);
-            else
-                AssertionHelper.Verify(delegate
-                {
-                    if (comparer == null)
-                        comparer = DefaultEqualityComparer;
+            AssertionHelper.Verify(delegate
+            {
+                if (String.Compare(expectedValue, actualValue, comparisonType) == 0)
+                    return null;
 
-                    if (comparer(expectedValue.ToLower(), actualValue.ToLower()))
-                        return null;
+                AssertionFailureBuilder builder = new AssertionFailureBuilder("Expected values to be equal according to string comparison type.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Comparison Type", comparisonType);
 
-                    return new AssertionFailureBuilder("Expected values to be equal.")
-                        .SetMessage(messageFormat, messageArgs)
-                        .AddRawExpectedAndActualValuesWithDiffs(expectedValue, actualValue)
-                        .ToAssertionFailure();
-                });
+                if (comparisonType == StringComparison.CurrentCultureIgnoreCase
+                    || comparisonType == StringComparison.InvariantCultureIgnoreCase
+                    || comparisonType == StringComparison.OrdinalIgnoreCase)
+                    builder.AddRawLabeledValue("Expected Value", expectedValue)
+                        .AddRawLabeledValue("Actual Value", actualValue);
+                else
+                    builder.AddRawExpectedAndActualValuesWithDiffs(expectedValue, actualValue);
+
+                return builder.ToAssertionFailure();
+            });
+        }
+        #endregion
+
+        #region AreNotEqual
+        /// <summary>
+        /// Asserts that two strings are not equal according to a particular string comparison mode.
+        /// </summary>
+        /// <param name="unexpectedValue">The unexpected value</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="comparisonType">The string comparison type</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreNotEqual(string unexpectedValue, string actualValue, StringComparison comparisonType)
+        {
+            AreNotEqual(unexpectedValue, actualValue, comparisonType, null, null);
+        }
+
+        /// <summary>
+        /// Asserts that two strings are not equal according to a particular string comparison mode.
+        /// </summary>
+        /// <param name="unexpectedValue">The unexpected value</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="comparisonType">The string comparison type</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreNotEqual(string unexpectedValue, string actualValue, StringComparison comparisonType, string messageFormat, params object[] messageArgs)
+        {
+            AssertionHelper.Verify(delegate
+            {
+                if (String.Compare(unexpectedValue, actualValue, comparisonType) != 0)
+                    return null;
+
+                return new AssertionFailureBuilder("Expected values to be unequal according to string comparison type.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Comparison Type", comparisonType)
+                    .AddRawLabeledValue("Unexpected Value", unexpectedValue)
+                    .AddRawLabeledValue("Actual Value", actualValue)
+                    .ToAssertionFailure();
+            });
         }
         #endregion
 
         #region FullMatch
-
         /// <summary>
         /// Verifies that testValue matches regular expression pattern exactly.
         /// </summary>

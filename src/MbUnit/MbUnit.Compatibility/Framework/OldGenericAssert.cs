@@ -22,7 +22,8 @@ namespace MbUnit.Framework
     /// <summary>
     /// Assertion class
     /// </summary>
-     public sealed class OldGenericAssert
+    [Obsolete("Use Assert instead.")]
+    public sealed class OldGenericAssert
      {
         #region IsEmpty
          /// <summary>

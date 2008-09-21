@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -91,33 +91,25 @@
     <Compile Include="Framework\RepeatAttribute.cs" />
     <Compile Include="Framework\RowAttribute.cs" />
     <Compile Include="Framework\MixinAttribute.cs" />
-    <Compile Include="Framework\OldArrayAssert.cs" />
     <Compile Include="Framework\AssemblyResolverAttribute.cs" />
-    <Compile Include="Framework\OldAssert.cs" />
     <Compile Include="Framework\AuthorAttribute.cs" />
     <Compile Include="Framework\CategoryAttribute.cs" />
-    <Compile Include="Framework\OldCollectionAssert.cs" />
     <Compile Include="Framework\DescriptionAttribute.cs" />
     <Compile Include="Framework\ExpectedArgumentExceptionAttribute.cs" />
     <Compile Include="Framework\ExpectedArgumentNullExceptionAttribute.cs" />
     <Compile Include="Framework\ExpectedArgumentOutOfRangeExceptionAttribute.cs" />
     <Compile Include="Framework\ExpectedExceptionAttribute.cs" />
-    <Compile Include="Framework\FileAssert.cs" />
-    <Compile Include="Framework\OldGenericAssert.cs" />
     <Compile Include="Framework\IgnoreAttribute.cs" />
     <Compile Include="Framework\ImportanceAttribute.cs" />
     <Compile Include="Framework\InterimAssert.cs" />
     <Compile Include="Framework\MetadataAttribute.cs" />
     <Compile Include="Framework\ParameterAttribute.cs" />
-    <Compile Include="Framework\OldReflectionAssert.cs" />
     <Compile Include="Framework\Reflection\AccessModifier.cs" />
     <Compile Include="Framework\Reflection\MemberType.cs" />
     <Compile Include="Framework\Reflection\Reflector.cs" />
-    <Compile Include="Framework\SecurityAssert.cs" />
     <Compile Include="Framework\SequentialJoinAttribute.cs" />
     <Compile Include="Framework\SetUpAttribute.cs" />
-    <Compile Include="Framework\OldStringAssert.cs" />
-    <Compile Include="Framework\StringAssert.cs" />
+    <Compile Include="Framework\Assert.Strings.cs" />
     <Compile Include="Framework\TearDownAttribute.cs" />
     <Compile Include="Framework\TestAttribute.cs" />
     <Compile Include="Framework\TestDecoratorAttribute.cs" />
@@ -151,6 +143,13 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Framework\Assert.Collections.cs" />
+    <Compile Include="Framework\Assert.Comparisons.cs" />
+    <Compile Include="Framework\Assert.Exceptions.cs" />
+    <Compile Include="Framework\Assert.Reflection.cs" />
+    <Compile Include="Framework\Assert.Relations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

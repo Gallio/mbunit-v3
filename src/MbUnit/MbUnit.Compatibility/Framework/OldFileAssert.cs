@@ -21,7 +21,7 @@ using System.IO;
 
 namespace MbUnit.Framework
 {
-    public static class FileAssert
+    public static class OldFileAssert
     {
         public static void AreEqual(string expectedPath, string actualPath)
         {

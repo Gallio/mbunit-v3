@@ -83,7 +83,7 @@ namespace Gallio.Tests.Framework.Data
             context.RegisterBinding(dataSet2, new DataBinding(0, null));
             context.RegisterBinding(dataSet1, new DataBinding(0, null));
 
-            OldCollectionAssert.AreElementsEqual(new IDataSet[] { dataSet1, dataSet2 }, context.DataSets);
+            Assert.AreElementsEqual(new IDataSet[] { dataSet1, dataSet2 }, context.DataSets);
         }
 
         [Test]

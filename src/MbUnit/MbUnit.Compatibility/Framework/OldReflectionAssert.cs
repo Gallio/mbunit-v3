@@ -24,6 +24,7 @@ namespace MbUnit.Framework
 	/// <summary>
 	/// Reflection Assertion class
 	/// </summary>
+    [Obsolete("Use Assert instead.")]
     public static class OldReflectionAssert
 	{
 		/// <summary>

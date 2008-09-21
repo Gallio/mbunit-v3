@@ -407,7 +407,7 @@ namespace Gallio.Tests.Reflection
                     object[] values = GenericUtils.ConvertAllToArray<ConstantValue, object>(info.InitializedArgumentValues,
                         delegate(ConstantValue constantValue) { return constantValue.Resolve(true); });
 
-                    OldCollectionAssert.AreElementsEqual(new object[] { typeof(int) }, values);
+                    Assert.AreElementsEqual(new object[] { typeof(int) }, values);
                 }
                 catch (NotSupportedException)
                 {
@@ -433,7 +433,7 @@ namespace Gallio.Tests.Reflection
                     object[] values = GenericUtils.ConvertAllToArray<ConstantValue, object>(info.InitializedArgumentValues,
                         delegate(ConstantValue constantValue) { return constantValue.Resolve(true); });
 
-                    OldCollectionAssert.AreElementsEqual(new object[] { typeof(string[]) }, values);
+                    Assert.AreElementsEqual(new object[] { typeof(string[]) }, values);
                 }
                 catch (NotSupportedException)
                 {
@@ -441,11 +441,11 @@ namespace Gallio.Tests.Reflection
                 }
 
 
-                OldCollectionAssert.AreElementsEqual(new KeyValuePair<IFieldInfo, object>[] {
+                Assert.AreElementsEqual(new KeyValuePair<IFieldInfo, object>[] {
                     new KeyValuePair<IFieldInfo, object>(GetField(typeof(SampleAttribute).GetField("Field")), 2)
                 }, fieldValues);
 
-                OldCollectionAssert.AreElementsEqual(new KeyValuePair<IPropertyInfo, object>[] {
+                Assert.AreElementsEqual(new KeyValuePair<IPropertyInfo, object>[] {
                     new KeyValuePair<IPropertyInfo, object>(GetProperty(typeof(SampleAttribute).GetProperty("Property")), "foo")
                 }, propertyValues);
             }

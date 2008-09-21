@@ -53,7 +53,7 @@ namespace Gallio.Tests.Runtime
 
                 IList<string> names = resolver.GetNames();
 
-                OldCollectionAssert.AreElementsEqual(new string[] { "abc", "def" }, names);
+                Assert.AreElementsEqual(new string[] { "abc", "def" }, names);
             }
         }
 

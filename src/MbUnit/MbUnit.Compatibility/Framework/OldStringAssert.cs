@@ -24,6 +24,7 @@ namespace MbUnit.Framework
 	/// <summary>
 	/// String Assertion class
 	/// </summary>
+    [Obsolete("Use Assert instead.")]
     public static class OldStringAssert
 	{
 		/// <summary>

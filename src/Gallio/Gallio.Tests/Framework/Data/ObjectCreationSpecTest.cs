@@ -366,7 +366,7 @@ namespace Gallio.Tests.Framework.Data
             Assert.AreEqual(typeof(GenericClass<int>), spec.ResolvedType);
 
             Assert.AreEqual(constructor, Reflector.Wrap(spec.ResolvedConstructor));
-            OldCollectionAssert.AreElementsEqual(new object[] { 1 }, spec.ResolvedConstructorArguments);
+            Assert.AreElementsEqual(new object[] { 1 }, spec.ResolvedConstructorArguments);
 
             List<KeyValuePair<FieldInfo, object>> fieldValues = new List<KeyValuePair<FieldInfo,object>>(spec.ResolvedFieldValues);
             Assert.AreEqual(1, fieldValues.Count);

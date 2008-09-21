@@ -425,7 +425,7 @@ namespace Gallio.Tests.Framework.Text
                     simplifiedDiffSet.WriteTo(TestLog.Default);
 
                 VerifyDiffSetIsValid(simplifiedDiffSet);
-                Assert.LessThanOrEqual(simplifiedDiffSet.Diffs.Count, originalDiffSet.Diffs.Count);
+                Assert.LessThanOrEqualTo(simplifiedDiffSet.Diffs.Count, originalDiffSet.Diffs.Count);
 
                 Assert.AreEqual(expectedNumberOfDiffs, simplifiedDiffSet.Diffs.Count);
             }
@@ -491,7 +491,7 @@ namespace Gallio.Tests.Framework.Text
             TestLog.WriteLine(simplifiedDiffSet);
 
             VerifyDiffSetIsValid(simplifiedDiffSet);
-            Assert.LessThanOrEqual(simplifiedDiffSet.Diffs.Count, diffSet.Diffs.Count);
+            Assert.LessThanOrEqualTo(simplifiedDiffSet.Diffs.Count, diffSet.Diffs.Count);
         }
 
         internal static void VerifyDiffSetIsValid(DiffSet diffSet)

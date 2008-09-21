@@ -72,17 +72,17 @@ namespace Gallio.Tests.Framework.Data
             using (Mocks.Playback())
             {
                 Assert.AreEqual(0, dataSet.ColumnCount);
-                OldCollectionAssert.AreElementsEqual(new IDataSet[] { }, dataSet.DataSets);
+                Assert.AreElementsEqual(new IDataSet[] { }, dataSet.DataSets);
 
                 dataSet.AddDataSet(dataSetWithTwoColumns);
 
                 Assert.AreEqual(2, dataSet.ColumnCount);
-                OldCollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns }, dataSet.DataSets);
+                Assert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns }, dataSet.DataSets);
 
                 dataSet.AddDataSet(dataSetWithThreeColumns);
 
                 Assert.AreEqual(5, dataSet.ColumnCount);
-                OldCollectionAssert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns, dataSetWithThreeColumns }, dataSet.DataSets);
+                Assert.AreElementsEqual(new IDataSet[] { dataSetWithTwoColumns, dataSetWithThreeColumns }, dataSet.DataSets);
             }
         }
 
@@ -226,12 +226,12 @@ namespace Gallio.Tests.Framework.Data
                     bool includeDynamicItems)
                 {
                     Assert.IsTrue(includeDynamicItems);
-                    OldCollectionAssert.AreElementsEqual(new IDataProvider[] { dataSet1, dataSet2 }, joinProviders);
+                    Assert.AreElementsEqual(new IDataProvider[] { dataSet1, dataSet2 }, joinProviders);
 
                     Assert.AreEqual(2, joinBindingsPerProvider.Count);
 
-                    OldCollectionAssert.AreElementsEqual(new DataBinding[] { pathBinding, indexZeroBinding, pathBinding }, joinBindingsPerProvider[0]);
-                    OldCollectionAssert.AreElementsEqual(new DataBinding[] { indexZeroBinding, indexOneBinding }, joinBindingsPerProvider[1]);
+                    Assert.AreElementsEqual(new DataBinding[] { pathBinding, indexZeroBinding, pathBinding }, joinBindingsPerProvider[0]);
+                    Assert.AreElementsEqual(new DataBinding[] { indexZeroBinding, indexOneBinding }, joinBindingsPerProvider[1]);
 
                     return results;
                 });

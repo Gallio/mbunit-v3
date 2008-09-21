@@ -55,29 +55,29 @@
     <Compile Include="Framework\ContractVerifiers\SampleComparableTest.cs" />
     <Compile Include="Framework\ContractVerifiers\SampleEquatableTest.cs" />
     <Compile Include="Framework\ContractVerifiers\SampleExceptionTest.cs" />
-    <Compile Include="Framework\OldArrayAssertTest.cs" />
+    <Compile Include="Compatibility\Framework\OldArrayAssertTest.cs" />
     <Compile Include="Framework\AssertExTest.cs" />
     <Compile Include="Framework\AssertImplementationConsistencyTest.cs" />
     <Compile Include="Framework\AssertTest.cs" />
-    <Compile Include="Framework\OldAssertTest.cs" />
-    <Compile Include="Framework\OldAssertWithReflectionTest.cs" />
-    <Compile Include="Framework\OldAssertWithTypeTest.cs" />
-    <Compile Include="Framework\OldCollectionAssertTest.cs" />
+    <Compile Include="Compatibility\Framework\OldAssertTest.cs" />
+    <Compile Include="Compatibility\Framework\OldAssertWithReflectionTest.cs" />
+    <Compile Include="Compatibility\Framework\OldAssertWithTypeTest.cs" />
+    <Compile Include="Compatibility\Framework\OldCollectionAssertTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassTest.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyComparisonContractAttributeTest.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyContractAttributeBaseTest.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyEqualityContractAttributeTest.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyExceptionContractAttributeTest.cs" />
-    <Compile Include="Framework\StringAssertTest.cs" />
+    <Compile Include="Framework\AssertTest_Strings.cs" />
     <Compile Include="Integration\ConfigurationFileTest.cs" />
     <Compile Include="Framework\AutomaticTestFixtureTest.cs" />
     <Compile Include="Framework\RepeatTest.cs" />
     <Compile Include="Framework\ExplicitTest.cs" />
     <Compile Include="Framework\CsvDataTest.cs" />
     <Compile Include="Framework\FactoryTest.cs" />
-    <Compile Include="Framework\FileAssertTest.cs" />
-    <Compile Include="Framework\OldGenericAssertTest.cs" />
+    <Compile Include="Compatibility\Framework\OldFileAssertTest.cs" />
+    <Compile Include="Compatibility\Framework\OldGenericAssertTest.cs" />
     <Compile Include="Framework\DataBindingTest.cs" />
     <Compile Include="Framework\AssertionExceptionTest.cs" />
     <Compile Include="Framework\Reflection\ReflectionExceptionTest.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="Framework\Reflection\SampleClass.cs" />
     <Compile Include="Framework\Reflection\StaticTests.cs" />
     <Compile Include="Framework\Reflection\TestSample.cs" />
-    <Compile Include="Framework\OldStringAssertTest.cs" />
+    <Compile Include="Compatibility\Framework\OldStringAssertTest.cs" />
     <Compile Include="Framework\Xml\XmlSerializationAssertTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -131,12 +131,15 @@
     <EmbeddedResource Include="Framework\CsvDataTest.csv" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\AssertTest_Collections.cs" />
+    <Compile Include="Framework\AssertTest_Comparisons.cs" />
+    <Compile Include="Framework\AssertTest_Exceptions.cs" />
+    <Compile Include="Framework\AssertTest_Reflection.cs" />
+    <Compile Include="Framework\AssertTest_Relations.cs" />
+    <Compile Include="Framework\BaseAssertTest.cs" />
     <None Include="MbUnit.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Compatibility\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

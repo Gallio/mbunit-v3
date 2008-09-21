@@ -74,7 +74,7 @@ namespace Gallio.Tests.Framework.Assertions
                     completed = true;
                 }, AssertionFailureBehavior.LogAndThrow, false);
 
-                OldArrayAssert.AreEqual(new[] { failure1 }, failures);
+                Assert.AreEqual(new[] { failure1 }, failures);
                 Assert.IsTrue(failure1.WasWriteToCalled);
                 Assert.IsFalse(failure2.WasWriteToCalled);
                 Assert.IsFalse(completed);
@@ -123,7 +123,7 @@ namespace Gallio.Tests.Framework.Assertions
                     completed = true;
                 }, AssertionFailureBehavior.Throw, false);
 
-                OldArrayAssert.AreEqual(new[] { failure1 }, failures);
+                Assert.AreEqual(new[] { failure1 }, failures);
                 Assert.IsFalse(failure1.WasWriteToCalled);
                 Assert.IsFalse(failure2.WasWriteToCalled);
                 Assert.IsFalse(completed);
@@ -146,7 +146,7 @@ namespace Gallio.Tests.Framework.Assertions
                     completed = true;
                 }, AssertionFailureBehavior.Log, false);
 
-                OldArrayAssert.AreEqual(new[] { failure1, failure2 }, failures);
+                Assert.AreEqual(new[] { failure1, failure2 }, failures);
                 Assert.IsTrue(failure1.WasWriteToCalled);
                 Assert.IsTrue(failure2.WasWriteToCalled);
                 Assert.IsTrue(completed);
@@ -169,7 +169,7 @@ namespace Gallio.Tests.Framework.Assertions
                     completed = true;
                 }, AssertionFailureBehavior.CaptureAndContinue, false);
 
-                OldArrayAssert.AreEqual(new[] { failure1, failure2 }, failures);
+                Assert.AreEqual(new[] { failure1, failure2 }, failures);
                 Assert.IsFalse(failure1.WasWriteToCalled);
                 Assert.IsFalse(failure2.WasWriteToCalled);
                 Assert.IsTrue(completed);

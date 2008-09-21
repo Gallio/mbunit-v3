@@ -31,7 +31,7 @@ namespace Gallio.Tests.Framework.Conversions
             int[] sourceValue = new int[] { 1, 2, 3 };
             string[] targetValue = (string[])Converter.Convert(sourceValue, typeof(string[]));
 
-            OldCollectionAssert.AreElementsEqual(new string[] { "1", "2", "3" }, targetValue);
+            Assert.AreElementsEqual(new string[] { "1", "2", "3" }, targetValue);
         }
 
         [Test]

@@ -13,33 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Text.RegularExpressions;
 using Gallio.Framework.Assertions;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
 {
-    [TestFixture]
     [TestsOn(typeof(Assert))]
-    public class StringAssertTest
+    public class AssertTest_Strings : BaseAssertTest
     {
-        #region AreEqualIgnoreCase
+        #region AreEqual
         [Test]
         public void AreEqualIgnoreCase_Test_with_non_null_values()
         {
-            Assert.AreEqualIgnoreCase("test", "TeSt");
-        }
-
-        [Test]
-        public void AreEqualIgnoreCase_Test_with_IEqualityComparer()
-        {
-            Assert.AreEqualIgnoreCase("test", "dummy", new AssertTest.TestComparer { EqualsReturn = true }, "message");
+            Assert.AreEqual("test", "TeSt", StringComparison.InvariantCultureIgnoreCase);
         }
 
         [Test]
         public void AreEqualIgnoreCase_fails_when_simple_values_different()
         {
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqualIgnoreCase("test", "tEsm"));
+            AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqual("test", "tEsm", StringComparison.InvariantCultureIgnoreCase));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected values to be equal.", failures[0].Description);
             Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
@@ -51,7 +45,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void AreEqualIgnoreCase_fails_when_one_of_the_values_is_null()
         {
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqualIgnoreCase("test", null));
+            AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqual("test", null, StringComparison.InvariantCultureIgnoreCase));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("\"test\"", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
@@ -61,20 +55,11 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void AreEqualIgnoreCase_fails_with_custom_message()
         {
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqualIgnoreCase(null, "test", "{0} message {1}", "MB1", "Mb2"));
+            AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqual(null, "test", "{0} message {1}", "MB1", "Mb2", StringComparison.InvariantCultureIgnoreCase));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("null", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("\"test\"", failures[0].LabeledValues[1].FormattedValue.ToString());
             Assert.AreEqual("MB1 message Mb2", failures[0].Message);
-        }
-
-        [Test]
-        public void AreEqualIgnoreCase_fails_with_custom_Compare()
-        {
-            AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqualIgnoreCase("test", "tesT", new AssertTest.TestComparer { EqualsReturn = false }));
-            Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("\"test\"", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("\"tesT\"", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
         #endregion
 
