@@ -68,7 +68,7 @@ namespace Gallio.Echo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gallio Echo - Version {0}.{1} build {2}.
+        ///   Looks up a localized string similar to Gallio Echo - Version {0}.{1}.{2} build {3}.
         /// </summary>
         internal static string MainClass_ApplicationTitle {
             get {

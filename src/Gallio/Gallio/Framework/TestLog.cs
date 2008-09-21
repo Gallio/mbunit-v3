@@ -14,11 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Xml.Serialization;
-using Gallio.Framework;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
 
@@ -131,6 +129,20 @@ namespace Gallio.Framework
         #endregion
 
         #region Current log writer shortcuts
+        /// <summary>
+        /// <para>
+        /// Flushes the log writer.
+        /// </para>
+        /// <para>
+        /// This is a convenience method that forwards the request to the current log
+        /// writer as returned by the <see cref="Writer" /> property.
+        /// </para>
+        /// </summary>
+        public static void Flush()
+        {
+            Writer.Flush();
+        }
+
         /// <summary>
         /// Attaches an attachment to the execution log.
         /// <para>

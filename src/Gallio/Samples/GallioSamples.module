@@ -2,21 +2,18 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
-    <CSharpProject Include="MbUnit.Samples\MbUnit.Samples.csproj" />
-    <CSharpProject Include="MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration.csproj" />
-
     <ExcludedFile Include="*.module" />
     <ExcludedFile Include="*.wxs" />
   </ItemGroup>
 
   <Target Name="AfterImage">
-    <RemoveDir Directories="$(ImageDir)\samples\MbUnit" />
-    <MakeDir Directories="$(ImageDir)\samples" />
+    <RemoveDir Directories="$(ImageDir)\docs\Samples\Gallio" />
+    <MakeDir Directories="$(ImageDir)\docs\Samples" />
     
     <SvnExport RepositoryPath="$(ModuleDir)"
-               LocalPath="$(ImageDir)\samples\MbUnit" />
+               LocalPath="$(ImageDir)\docs\Samples\Gallio" />
 
-    <Delete Files="@(ExcludedFile->'$(ImageDir)\samples\MbUnit\%(Identity)')"
+    <Delete Files="@(ExcludedFile->'$(ImageDir)\docs\Samples\Gallio\%(Identity)')"
             Condition="'@(ExcludedFile)'!=''" />
   </Target>
 </Project>

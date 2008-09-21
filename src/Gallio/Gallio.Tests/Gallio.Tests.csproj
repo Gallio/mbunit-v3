@@ -137,6 +137,7 @@
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />
     <Compile Include="Linq\ExpressionInstrumentorTest.cs" />
+    <Compile Include="Model\Diagnostics\StackTraceDataTest.cs" />
     <Compile Include="Model\Diagnostics\ExceptionDataTest.cs" />
     <Compile Include="Model\Diagnostics\StackTraceFilterTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="Runner\Workspaces\ResourcePathTests.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
+    <Compile Include="Runtime\Hosting\HostConfigurationTest.cs" />
     <Compile Include="Runtime\Hosting\LocalHostFactoryTest.cs" />
     <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />

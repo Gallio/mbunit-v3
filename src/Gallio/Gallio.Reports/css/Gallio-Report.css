@@ -368,6 +368,11 @@ div.gallio-report div.navigator
 	text-decoration: underline;
 }
 
+.gallio-report .embeddedImage
+{
+	max-width: 800px;
+}
+
 /* Sections */
 .gallio-report div.section
 {

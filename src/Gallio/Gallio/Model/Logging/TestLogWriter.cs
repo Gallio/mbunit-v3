@@ -181,6 +181,18 @@ namespace Gallio.Model.Logging
         }
 
         /// <summary>
+        /// Flushes the log writer.
+        /// </summary>
+        public void Flush()
+        {
+            lock (this)
+            {
+                ThrowIfClosed();
+                FlushImpl();
+            }
+        }
+
+        /// <summary>
         /// Attaches an attachment to the log.
         /// </summary>
         /// <remarks>
@@ -350,6 +362,16 @@ namespace Gallio.Model.Logging
         /// will remain false.
         /// </remarks>
         protected virtual void CloseImpl()
+        {
+        }
+
+        /// <summary>
+        /// Flushes the log.
+        /// </summary>
+        /// <remarks>
+        /// The implementation should flush all of the individual log streams.
+        /// </remarks>
+        protected virtual void FlushImpl()
         {
         }
 

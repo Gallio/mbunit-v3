@@ -544,6 +544,13 @@ html
             </xsl:with-param>
           </xsl:call-template>
         </xsl:when>
+        <xsl:when test="@class = 'Link'">
+          <a href="{g:attributes/g:attribute[@name = 'url']/@value}">
+            <xsl:apply-templates select="g:contents" mode="stream">
+              <xsl:with-param name="attachments" select="$attachments" />
+            </xsl:apply-templates>
+          </a>
+        </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates select="g:contents" mode="stream">
             <xsl:with-param name="attachments" select="$attachments" />
@@ -585,7 +592,7 @@ html
         <xsl:variable name="attachmentBrokerQuery"><xsl:value-of select="$attachmentBrokerUrl"/>testStepId=<xsl:value-of select="../../../g:testStep/@id"/>&amp;attachmentName=<xsl:value-of select="@name"/></xsl:variable>
         <xsl:choose>
           <xsl:when test="$isImage">
-            <img src="{$attachmentBrokerQuery}" alt="Attachment: {@name}" />
+            <a href="{$attachmentBrokerQuery}"><img class="embeddedImage" src="{$attachmentBrokerQuery}" alt="Attachment: {@name}" /></a>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>Attachment: </xsl:text>
@@ -597,7 +604,7 @@ html
         <xsl:variable name="attachmentUri"><xsl:call-template name="path-to-uri"><xsl:with-param name="path" select="@contentPath" /></xsl:call-template></xsl:variable>
         <xsl:choose>
           <xsl:when test="$isImage">
-            <img src="{$attachmentUri}" alt="Attachment: {@name}" />
+            <a href="{$attachmentUri}"><img class="embeddedImage" src="{$attachmentUri}" alt="Attachment: {@name}" /></a>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>Attachment: </xsl:text>
@@ -606,7 +613,7 @@ html
         </xsl:choose>
       </xsl:when>
       <xsl:when test="@contentDisposition = 'inline' and $isImage and @encoding = 'base64'">
-        <img src="data:{@contentType};base64,{text()}" alt="Attachment: {@name}" />
+        <img class="embeddedImage" src="data:{@contentType};base64,{text()}" alt="Attachment: {@name}" />
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>Attachment: </xsl:text>

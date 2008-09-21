@@ -106,7 +106,11 @@ namespace MbUnit.Samples
         {
             using (logStreamWriter.BeginSection(caption))
             {
-                logStreamWriter.WriteLine("Url: {0}", ie.Url);
+                logStreamWriter.Write("Url: ");
+                using (logStreamWriter.BeginMarker(Marker.Link(ie.Url)))
+                    logStreamWriter.Write(ie.Url);
+                logStreamWriter.WriteLine();
+
                 logStreamWriter.EmbedImage(null, new CaptureWebPage(ie).CaptureWebPageImage(false, false, 100));
             }
         }

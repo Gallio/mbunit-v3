@@ -132,6 +132,6 @@
     <value>Gallio</value>
   </data>
   <data name="PackageVersionFormat" xml:space="preserve">
-    <value>Version {0}</value>
+    <value>Version {0}.{1}.{2} build {3}</value>
   </data>
 </root>

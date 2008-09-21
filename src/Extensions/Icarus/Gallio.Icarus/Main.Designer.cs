@@ -585,7 +585,7 @@ namespace Gallio.Icarus
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
             this.Name = "Main";
-            this.Text = "Gallio Icarus {0}.{1}";
+            this.Text = "Gallio Icarus {0}.{1}.{2} build {3}";
             this.Load += new System.EventHandler(this.Form_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.menuStrip.ResumeLayout(false);

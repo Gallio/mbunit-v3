@@ -67,11 +67,6 @@ namespace Gallio.Model.Logging
         }
 
         /// <inheritdoc />
-        protected override void CloseImpl()
-        {
-        }
-
-        /// <inheritdoc />
         protected override void AttachImpl(Attachment attachment)
         {
             if (verbose)

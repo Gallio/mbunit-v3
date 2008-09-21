@@ -30,7 +30,7 @@ namespace Gallio.Icarus
             // Set the application version.
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             versionLabel.Text = String.Format(CultureInfo.CurrentCulture, versionLabel.Text, 
-                appVersion.Major, appVersion.Minor, appVersion.Build);
+                appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
 
             componentList.Items.Clear();
             foreach (string testFramework in testController.TestFrameworks)

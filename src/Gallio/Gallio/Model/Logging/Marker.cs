@@ -110,14 +110,24 @@ namespace Gallio.Model.Logging
         public const string CodeLocationPathAttrib = "path";
 
         /// <summary>
-        /// Path attribute for code location references.
+        /// Line attribute for code location references.
         /// </summary>
         public const string CodeLocationLineNumberAttrib = "line";
 
         /// <summary>
-        /// Path attribute for code location references.
+        /// Column attribute for code location references.
         /// </summary>
         public const string CodeLocationColumnNumberAttrib = "column";
+
+        /// <summary>
+        /// Standard marker class for link to a url.
+        /// </summary>
+        public const string LinkClass = "Link";
+
+        /// <summary>
+        /// Url attribute for links.
+        /// </summary>
+        public const string LinkUrlAttrib = "url";
 
         /// <summary>
         /// Standard marker for assertion failures.
@@ -227,6 +237,17 @@ namespace Gallio.Model.Logging
                 marker = marker.WithAttribute(CodeLocationLineNumberAttrib, location.Line.ToString(CultureInfo.InvariantCulture));
             if (location.Column != 0)
                 marker = marker.WithAttribute(CodeLocationPathAttrib, location.Column.ToString(CultureInfo.InvariantCulture));
+            return marker;
+        }
+
+        /// <summary>
+        /// Creates a standard marker for a link to a Url.
+        /// </summary>
+        public static Marker Link(string url)
+        {
+            var marker = new Marker(LinkClass);
+            if (url != null)
+                marker = marker.WithAttribute(LinkUrlAttrib, url);
             return marker;
         }
 

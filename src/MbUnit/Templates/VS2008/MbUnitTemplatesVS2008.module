@@ -5,23 +5,23 @@
   <ItemGroup>
     <TemplateFile Include="MbUnit.MvcWebApplicationTestProjectTemplate.CSharp.csproj">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
-      <Zip>VS2008\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\CSharp\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.vstemplate">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
-      <Zip>VS2008\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\CSharp\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
-      <Zip>VS2008\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\CSharp\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Properties\AssemblyInfo.cs">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
-      <Zip>VS2008\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\CSharp\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Controllers\HomeControllerTest.cs">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.CSharp</Base>
-      <Zip>VS2008\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\CSharp\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
   </ItemGroup>
 
@@ -29,23 +29,23 @@
   <ItemGroup>
     <TemplateFile Include="MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic.vbproj">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
-      <Zip>VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\VisualBasic\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.vstemplate">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
-      <Zip>VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\VisualBasic\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
-      <Zip>VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\VisualBasic\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="My Project\AssemblyInfo.vb">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
-      <Zip>VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\VisualBasic\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Controllers\HomeControllerTest.vb">
       <Base>MbUnit.MvcWebApplicationTestProjectTemplate.VisualBasic</Base>
-      <Zip>VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\VisualBasic\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
   </ItemGroup>
 
@@ -53,19 +53,19 @@
   <ItemGroup>
     <TemplateFile Include="MbUnit.TestProjectTemplate.CSharp.csproj">
       <Base>MbUnit.TestProjectTemplate.CSharp</Base>
-      <Zip>VS2008\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.vstemplate">
       <Base>MbUnit.TestProjectTemplate.CSharp</Base>
-      <Zip>VS2008\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.TestProjectTemplate.CSharp</Base>
-      <Zip>VS2008\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Properties\AssemblyInfo.cs">
       <Base>MbUnit.TestProjectTemplate.CSharp</Base>
-      <Zip>VS2008\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip</Zip>
     </TemplateFile>
   </ItemGroup>
 
@@ -73,19 +73,19 @@
   <ItemGroup>
     <TemplateFile Include="MbUnit.TestProjectTemplate.VisualBasic.vbproj">
       <Base>MbUnit.TestProjectTemplate.VisualBasic</Base>
-      <Zip>VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.vstemplate">
       <Base>MbUnit.TestProjectTemplate.VisualBasic</Base>
-      <Zip>VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.TestProjectTemplate.VisualBasic</Base>
-      <Zip>VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="My Project\AssemblyInfo.vb">
       <Base>MbUnit.TestProjectTemplate.VisualBasic</Base>
-      <Zip>VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
   </ItemGroup>
 
@@ -93,15 +93,15 @@
   <ItemGroup>
     <TemplateFile Include="TestFixture.cs">
       <Base>MbUnit.ItemTemplates.CSharp</Base>
-      <Zip>VS2008\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="TestFixture.vstemplate">
       <Base>MbUnit.ItemTemplates.CSharp</Base>
-      <Zip>VS2008\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.ItemTemplates.CSharp</Base>
-      <Zip>VS2008\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
+      <Zip>VS2008\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip</Zip>
     </TemplateFile>
   </ItemGroup>
 
@@ -109,15 +109,15 @@
   <ItemGroup>
     <TemplateFile Include="TestFixture.vb">
       <Base>MbUnit.ItemTemplates.VisualBasic</Base>
-      <Zip>VS2008\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="TestFixture.vstemplate">
       <Base>MbUnit.ItemTemplates.VisualBasic</Base>
-      <Zip>VS2008\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
     <TemplateFile Include="Template.ico">
       <Base>MbUnit.ItemTemplates.VisualBasic</Base>
-      <Zip>VS2008\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
+      <Zip>VS2008\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip</Zip>
     </TemplateFile>
   </ItemGroup>
 </Project>

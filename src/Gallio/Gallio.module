@@ -2,6 +2,10 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
+    <Module Include="*\*.module" />
+  </ItemGroup>
+
+  <ItemGroup>
     <CSharpProject Include="Gallio\Gallio.csproj" />
     <CSharpProject Include="Gallio35\Gallio35.csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host.csproj" />

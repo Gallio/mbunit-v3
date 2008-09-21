@@ -95,7 +95,7 @@ namespace Gallio.VisualStudio.Shell.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version {0}.
+        ///   Looks up a localized string similar to Version {0}.{1}.{2} build {3}.
         /// </summary>
         internal static string PackageVersionFormat {
             get {

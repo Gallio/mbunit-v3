@@ -171,7 +171,7 @@ namespace Gallio.Echo
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             applicationTitle = string.Format(Resources.MainClass_ApplicationTitle,
-                appVersion.Major, appVersion.Minor, appVersion.Build);
+                appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
 
             if (!Console.IsRedirected)
                 Console.Title = applicationTitle;

@@ -12,34 +12,26 @@
 
             <Directory Id="VS2005_ITEMTEMPLATES_DIR" Name="ItemTemplates.VS2005">
                 <Directory Id="VS2005.ItemTemplates.CS" Name="CSharp">
-                    <Directory Id="VS2005.ItemTemplates.CS.Test" Name="Test">
-                        <Component Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" Guid="7BB50DCA-BFC5-4303-ACE3-5042927FAD55" Win64="no">
-                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip" KeyPath="yes" />
-                        </Component>
-                    </Directory>
+                    <Component Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" Guid="7BB50DCA-BFC5-4303-ACE3-5042927FAD55" Win64="no">
+                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip" KeyPath="yes" />
+                    </Component>
                 </Directory>
                 <Directory Id="VS2005.ItemTemplates.VB" Name="VisualBasic">
-                    <Directory Id="VS2005.ItemTemplates.VB.Test" Name="Test">
-                        <Component Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Guid="378B0392-A815-4672-94F6-E8CBA5E640FB" Win64="no">
-                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip" KeyPath="yes" />
-                        </Component>
-                    </Directory>
+                    <Component Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Guid="378B0392-A815-4672-94F6-E8CBA5E640FB" Win64="no">
+                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip" KeyPath="yes" />
+                    </Component>
                 </Directory>
             </Directory>
             <Directory Id="VS2005_PROJECTTEMPLATES_DIR" Name="ProjectTemplates.VS2005">
                 <Directory Id="VS2005.ProjectTemplates.CS" Name="CSharp">
-                    <Directory Id="VS2005.ProjectTemplates.CS.Test" Name="Test">
-                        <Component Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" Guid="1F9437C7-BCD1-4327-BBFE-5C67088393A0" Win64="no">
-                            <File Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip" KeyPath="yes" />
-                        </Component>
-                    </Directory>
+                    <Component Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" Guid="1F9437C7-BCD1-4327-BBFE-5C67088393A0" Win64="no">
+                        <File Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip" KeyPath="yes" />
+                    </Component>
                 </Directory>
                 <Directory Id="VS2005.ProjectTemplates.VB" Name="VisualBasic">
-                    <Directory Id="VS2005.ProjectTemplates.VB.Test" Name="Test">
-                        <Component Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" Guid="{07CC045C-C889-4f4f-9AAD-47C49CD04C8E}" Win64="no">
-                            <File Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
-                        </Component>
-                    </Directory>
+                    <Component Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" Guid="{07CC045C-C889-4f4f-9AAD-47C49CD04C8E}" Win64="no">
+                        <File Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
+                    </Component>
                 </Directory>
             </Directory>
 
@@ -66,53 +58,45 @@
 
             <Directory Id="VS90_ITEMTEMPLATES_DIR" Name="ItemTemplates.VS90">
                 <Directory Id="VS90.ItemTemplates.CS" Name="CSharp">
-                    <Directory Id="VS90.ItemTemplates.CS.Test" Name="Test">
-                        <Component Id="VS90.MbUnit3.TestFixtureTemplate.CSharp.zip" Guid="45F61E32-1A5A-4bc0-922F-1162D145A884" Win64="no">
-                            <File Id="VS2008.MbUnit3.TestFixtureTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ItemTemplates\CSharp\Test\MbUnit3.TestFixtureTemplate.CSharp.zip" KeyPath="yes" />
-                        </Component>
-                    </Directory>
+                    <Component Id="VS90.MbUnit3.TestFixtureTemplate.CSharp.zip" Guid="45F61E32-1A5A-4bc0-922F-1162D145A884" Win64="no">
+                        <File Id="VS2008.MbUnit3.TestFixtureTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip" KeyPath="yes" />
+                    </Component>
                 </Directory>
                 <Directory Id="VS90.ItemTemplates.VB" Name="VisualBasic">
-                    <Directory Id="VS90.ItemTemplates.VB.Test" Name="Test">
-                        <Component Id="VS2008.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Guid="7EA51EA1-B9CC-4046-A06C-9209824D61B2" Win64="no">
-                            <File Id="VS2008.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ItemTemplates\VisualBasic\Test\MbUnit3.TestFixtureTemplate.VisualBasic.zip" KeyPath="yes" />
-                        </Component>
-                    </Directory>
+                    <Component Id="VS2008.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Guid="7EA51EA1-B9CC-4046-A06C-9209824D61B2" Win64="no">
+                        <File Id="VS2008.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip" KeyPath="yes" />
+                    </Component>
                 </Directory>
             </Directory>
 
             <Directory Id="VS90_PROJECTTEMPLATES_DIR" Name="ProjectTemplates.VS90">
                 <Directory Id="VS90.ProjectTemplates.CS" Name="CSharp">
-                    <Directory Id="VS90.ProjectTemplates.CS.Test" Name="Test">
-                        <Component Id="VS2008.MbUnit3.TestProjectTemplate.CSharp.zip" Guid="{00EB4409-61A2-4065-B019-7B97AA240825}" Win64="no">
-                            <File Id="VS2008.MbUnit3.TestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\CSharp\Test\MbUnit3.TestProjectTemplate.CSharp.zip" KeyPath="yes" />
-                        </Component>
-                        <Component Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" Guid="{6C15FBB6-E0C7-47f4-B7F6-08FC428AD775}" Win64="no">
-                            <File Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\CSharp\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" KeyPath="yes" />
-                            <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#">
-                                <RegistryValue Type="string" Name="Path" Value="CSharp\Test" />
-                                <RegistryValue Type="string" Name="Template" Value="MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" />
-                                <RegistryValue Type="string" Name="TestFrameworkName" Value="MbUnit v3" />
-                                <RegistryValue Type="string" Name="AdditionalInfo" Value="http://www.mbunit.com/" />
-                            </RegistryKey>
-                        </Component>
-                    </Directory>
+                    <Component Id="VS2008.MbUnit3.TestProjectTemplate.CSharp.zip" Guid="{00EB4409-61A2-4065-B019-7B97AA240825}" Win64="no">
+                        <File Id="VS2008.MbUnit3.TestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip" KeyPath="yes" />
+                    </Component>
+                    <Component Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" Guid="{6C15FBB6-E0C7-47f4-B7F6-08FC428AD775}" Win64="no">
+                        <File Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\CSharp\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" KeyPath="yes" />
+                        <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#">
+                            <RegistryValue Type="string" Name="Path" Value="CSharp" />
+                            <RegistryValue Type="string" Name="Template" Value="MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" />
+                            <RegistryValue Type="string" Name="TestFrameworkName" Value="MbUnit v3" />
+                            <RegistryValue Type="string" Name="AdditionalInfo" Value="http://www.mbunit.com/" />
+                        </RegistryKey>
+                    </Component>
                 </Directory>
                 <Directory Id="VS90.ProjectTemplates.VB" Name="VisualBasic">
-                    <Directory Id="VS90.ProjectTemplates.VB.Test" Name="Test">
-                        <Component Id="VS2008.MbUnit3.TestProjectTemplate.VisualBasic.zip" Guid="{77546593-B0F5-40b9-A02F-FF1D89101498}" Win64="no">
-                            <File Id="VS2008.MbUnit3.TestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.TestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
-                        </Component>
-                        <Component Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" Guid="{8B357A10-BBD9-41e0-8C53-FE05B2E693F5}" Win64="no">
-                            <File Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\VisualBasic\Test\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
-                            <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB">
-                                <RegistryValue Type="string" Name="Path" Value="VisualBasic\Test" />
-                                <RegistryValue Type="string" Name="Template" Value="MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" />
-                                <RegistryValue Type="string" Name="TestFrameworkName" Value="MbUnit v3" />
-                                <RegistryValue Type="string" Name="AdditionalInfo" Value="http://www.mbunit.com/" />
-                            </RegistryKey>
-                        </Component>
-                    </Directory>
+                    <Component Id="VS2008.MbUnit3.TestProjectTemplate.VisualBasic.zip" Guid="{77546593-B0F5-40b9-A02F-FF1D89101498}" Win64="no">
+                        <File Id="VS2008.MbUnit3.TestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
+                    </Component>
+                    <Component Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" Guid="{8B357A10-BBD9-41e0-8C53-FE05B2E693F5}" Win64="no">
+                        <File Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\VisualBasic\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
+                        <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB">
+                            <RegistryValue Type="string" Name="Path" Value="VisualBasic" />
+                            <RegistryValue Type="string" Name="Template" Value="MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" />
+                            <RegistryValue Type="string" Name="TestFrameworkName" Value="MbUnit v3" />
+                            <RegistryValue Type="string" Name="AdditionalInfo" Value="http://www.mbunit.com/" />
+                        </RegistryKey>
+                    </Component>
                 </Directory>
             </Directory>
 

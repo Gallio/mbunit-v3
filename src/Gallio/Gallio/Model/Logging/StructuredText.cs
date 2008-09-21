@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Gallio.Collections;
-using Gallio.Model.Logging;
 using Gallio.Model.Logging.Tags;
 
 namespace Gallio.Model.Logging
@@ -31,6 +30,7 @@ namespace Gallio.Model.Logging
     /// Structured text is emitted by a <see cref="StructuredTextWriter" />.
     /// </para>
     /// </summary>
+    /// <seealso cref="StructuredTextWriter"/>
     [Serializable]
     public sealed class StructuredText : IEquatable<StructuredText>, ITestLogStreamWritable
     {

@@ -84,7 +84,9 @@ namespace Gallio.VisualStudio.Shell
 
         int IVsInstalledProduct.ProductID(out string pbstrPID)
         {
-            pbstrPID = String.Format(VSPackage.PackageVersionFormat, GetType().Assembly.GetName().Version);
+            Version version = GetType().Assembly.GetName().Version;
+            pbstrPID = String.Format(VSPackage.PackageVersionFormat, version.Major,
+                version.Minor, version.Build, version.Revision);
             return VSConstants.S_OK;
         }
 

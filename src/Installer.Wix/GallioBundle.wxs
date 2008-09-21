@@ -64,7 +64,9 @@
 
             <!-- Program Menu Folder and our subfolders for Shortcuts -->
             <Directory Id="ProgramMenuFolder" Name=".">
-                <Directory Id="GallioMenuFolder" Name="Gallio"/>
+                <Directory Id="GallioMenuFolder" Name="Gallio">
+                    <Directory Id="SamplesMenuFolder" Name="Samples" />
+		</Directory>
             </Directory>
         </Directory>
 
@@ -150,8 +152,14 @@
 <?ifdef FEATURE_VS_HELP ?>
             <FeatureRef Id='feat_Gallio.VSHelp'/>
 <?endif?>
-            <FeatureRef Id='feat_MbUnit3.Samples'/>
         </Feature>
+
+	<Feature Id="feat_Samples" Title='Samples' Level="1">
+
+
+            <FeatureRef Id='feat_Gallio.Samples'/>
+            <FeatureRef Id='feat_MbUnit3.Samples'/>
+	</Feature>
 
         <Feature Id='feat_Extras' Title='Extras' Level="1">
             <FeatureRef Id='feat_CCNetExtensions'/>

@@ -227,7 +227,7 @@ namespace Gallio.Runtime.Hosting
             settings.CheckCharacters = false;
             settings.Encoding = textWriter.Encoding;
             using (XmlWriter writer = XmlWriter.Create(textWriter, settings))
-                document.WriteContentTo(writer);
+                document.Save(writer);
         }
 
         /// <summary>

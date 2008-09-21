@@ -776,7 +776,7 @@ namespace Gallio.MSBuildTasks
         {
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Log.LogMessage(String.Format(Resources.TaskNameAndVersion,
-                                         appVersion.Major, appVersion.Minor, appVersion.Build));
+                                         appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision));
         }
 
         private static void AddAllItemSpecs(ICollection<string> collection, IEnumerable<ITaskItem> items)

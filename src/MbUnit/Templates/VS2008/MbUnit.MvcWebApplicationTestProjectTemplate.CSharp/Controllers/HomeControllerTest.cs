@@ -14,19 +14,34 @@ namespace $safeprojectname$.Controllers
     public class HomeControllerTest
     {
         [Test]
-        public void About()
+        public void Index()
         {
-            //
-            // TODO: Add test logic here
-            //
+            // Setup
+            HomeController controller = new HomeController();
+
+            // Execute
+            ViewResult result = controller.Index() as ViewResult;
+
+            // Verify
+            ViewDataDictionary viewData = result.ViewData as ViewDataDictionary;
+
+            Assert.AreEqual("Home Page", viewData["Title"]);
+            Assert.AreEqual("Welcome to ASP.NET MVC!", viewData["Message"]);
         }
 
         [Test]
-        public void Index()
+        public void About()
         {
-            //
-            // TODO: Add test logic here
-            //
+            // Setup
+            HomeController controller = new HomeController();
+
+            // Execute
+            ViewResult result = controller.About() as ViewResult;
+
+            // Verify
+            ViewDataDictionary viewData = result.ViewData as ViewDataDictionary;
+
+            Assert.AreEqual("About Page", viewData["Title"]);
         }
     }
 }

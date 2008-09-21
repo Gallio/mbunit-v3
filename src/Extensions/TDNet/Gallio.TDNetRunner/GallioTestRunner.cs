@@ -262,7 +262,7 @@ namespace Gallio.TDNetRunner
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             logger.Log(LogSeverity.Important, String.Format(Resources.RunnerNameAndVersion + "\n",
-                appVersion.Major, appVersion.Minor, appVersion.Build));
+                appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision));
         }
 
         #endregion

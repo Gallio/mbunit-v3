@@ -70,7 +70,7 @@ namespace Gallio.Icarus
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(160, 13);
             this.versionLabel.TabIndex = 3;
-            this.versionLabel.Text = "Gallio Icarus - Version {0}.{1}.{2}";
+            this.versionLabel.Text = "Gallio Icarus - Version {0}.{1}.{2} build {3}";
             // 
             // label2
             // 

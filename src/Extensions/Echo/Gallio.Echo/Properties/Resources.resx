@@ -127,7 +127,7 @@
     <value>Opening reports.</value>
   </data>
   <data name="MainClass_ApplicationTitle" xml:space="preserve">
-    <value>Gallio Echo - Version {0}.{1} build {2}</value>
+    <value>Gallio Echo - Version {0}.{1}.{2} build {3}</value>
   </data>
   <data name="MainClass_GetTheLatestVersionBanner" xml:space="preserve">
     <value>Get the latest version at </value>

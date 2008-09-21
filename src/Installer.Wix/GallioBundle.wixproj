@@ -50,6 +50,9 @@
     <Compile Include="..\Gallio\Gallio.wxs">
       <Link>Gallio.wxs</Link>
     </Compile>
+    <Compile Include="..\Gallio\Samples\GallioSamples.wxs">
+      <Link>GallioSamples.wxs</Link>
+    </Compile>
     <Compile Include="..\MbUnit\MbUnit.wxs">
       <Link>MbUnit.wxs</Link>
     </Compile>

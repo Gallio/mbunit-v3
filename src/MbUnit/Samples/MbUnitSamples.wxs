@@ -2,7 +2,11 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:VS="http://schemas.microsoft.com/wix/VSExtension" >
     <Fragment>
-        <DirectoryRef Id="samplesFolder" FileSource="$(var.GallioTargetDir)\docs\Samples\">
+        <DirectoryRef Id="samplesFolder" FileSource="$(var.GallioTargetDir)\docs\Samples\Gallio">
+            <Directory Id="samplesFolder.MbUnit" Name="MbUnit" />
+        </DirectoryRef>
+    
+        <DirectoryRef Id="samplesFolder.MbUnit" FileSource="$(var.GallioTargetDir)\samples\MbUnit\">
             
             <Directory Id="MbUnit3.Samples" Name="MbUnit.Samples">
                 <Directory Id="MbUnit3.Samples.Properties" Name="Properties">
@@ -86,13 +90,13 @@
             
             <Component Id="MbUnit3.Samples.sln" Guid="{846FC9A2-7740-4525-98EF-F52DB44B9A6A}" Win64="no">
                 <File Id="MbUnit3.Samples.sln" Name="MbUnit.Samples.sln" KeyPath="yes" >
-                    <Shortcut Id="MbUnit3.Samples.sln.lnk" Name="MbUnit Samples (Visual Studio 2005)" Directory="GallioMenuFolder.Samples" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
+                    <Shortcut Id="MbUnit3.Samples.sln.lnk" Name="MbUnit Samples (Visual Studio 2005)" Directory="SamplesMenuFolder.MbUnit" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
-                <RemoveFolder Id="GallioMenuFolder.Samples.Remove" Directory="GallioMenuFolder.Samples" On="uninstall" />
+                <RemoveFolder Id="SamplesMenuFolder.MbUnit.Remove" Directory="SamplesMenuFolder.MbUnit" On="uninstall" />
             </Component>            
             <Component Id="MbUnit3.Samples.vs2008.sln" Guid="{4276EF47-AF73-4ebe-BB80-E2F9358750AC}" Win64="no">
                 <File Id="MbUnit3.Samples.vs2008.sln" Name="MbUnit.Samples.vs2008.sln" KeyPath="yes">
-                    <Shortcut Id="MbUnit3.Samples.vs2008.sln" Name="MbUnit Samples (Visual Studio 2008)" Directory="GallioMenuFolder.Samples" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
+                    <Shortcut Id="MbUnit3.Samples.vs2008.sln" Name="MbUnit Samples (Visual Studio 2008)" Directory="SamplesMenuFolder.MbUnit" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
             </Component>            
             <Component Id="MbUnit3.Samples.vs2008.vsmdi" Guid="{1C8B521A-9B43-4f13-97F1-05FE9FC113A9}" Win64="no">
@@ -103,12 +107,12 @@
             </Component>
         </DirectoryRef>
 
-        <DirectoryRef Id="GallioMenuFolder">
-            <Directory Id="GallioMenuFolder.Samples" Name="Samples" />
+        <DirectoryRef Id="SamplesMenuFolder">
+            <Directory Id="SamplesMenuFolder.MbUnit" Name="MbUnit" />
         </DirectoryRef>
 
-        <Feature Id="feat_MbUnit3.Samples" Title="Samples" Level="1"
-                 Description="Installs code samples.">
+        <Feature Id="feat_MbUnit3.Samples" Title="MbUnit Samples" Level="1"
+                 Description="Installs MbUnit code samples.">
             <ComponentRef Id="MbUnit3.Samples.AssemblyInfo.cs" />
             <ComponentRef Id="MbUnit3.Samples.Resources.resx" />
             <ComponentRef Id="MbUnit3.Samples.Resources.Designer.cs" />

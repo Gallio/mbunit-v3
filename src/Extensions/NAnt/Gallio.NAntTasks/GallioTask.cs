@@ -588,7 +588,7 @@ namespace Gallio.NAntTasks
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
             Log(Level.Info, String.Format(Resources.TaskNameAndVersion,
-                appVersion.Major, appVersion.Minor, appVersion.Build));
+                appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision));
         }
 
         private void AddAssemblies(TestLauncher launcher)

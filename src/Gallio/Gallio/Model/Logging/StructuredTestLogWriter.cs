@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gallio.Model.Logging;
 using Gallio.Model.Logging.Tags;
 
 namespace Gallio.Model.Logging
@@ -48,15 +47,30 @@ namespace Gallio.Model.Logging
             get { return testLog; }
         }
 
+        /// <summary>
+        /// Flushes the writer and formats it as a string.
+        /// </summary>
+        /// <returns>The formatted log as a string</returns>
+        public override string ToString()
+        {
+            Flush();
+            return testLog.ToString();
+        }
+
         /// <inheritdoc />
         protected override void CloseImpl()
+        {
+            FlushImpl();
+            streamWriters = null;
+        }
+
+        /// <inheritdoc />
+        protected override void FlushImpl()
         {
             if (streamWriters != null)
             {
                 foreach (StreamState writer in streamWriters.Values)
                     writer.Flush();
-
-                streamWriters = null;
             }
         }
 

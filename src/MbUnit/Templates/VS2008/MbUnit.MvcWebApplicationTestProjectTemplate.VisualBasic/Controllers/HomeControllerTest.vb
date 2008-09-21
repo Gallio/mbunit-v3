@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Text
 Imports System.Collections.Generic
 Imports Gallio.Framework
@@ -8,11 +8,30 @@ Imports MbUnit.Framework
 Public Class HomeControllerTest
     <Test()> _
     Public Sub Index()
-        ' TODO: Add test logic here
+        ' Setup
+        Dim controller As HomeController = New HomeController()
+
+        ' Execute
+        Dim result As ViewResult = controller.Index()
+
+        ' Verify
+        Dim viewData As ViewDataDictionary = result.ViewData
+
+        Assert.AreEqual("Home Page", viewData("Title"))
+        Assert.AreEqual("Welcome to ASP.NET MVC!", viewData("Message"))
     End Sub
 
     <Test()> _
     Public Sub About()
-        ' TODO: Add test logic here
+        ' Setup
+        Dim controller As HomeController = New HomeController()
+
+        ' Execute
+        Dim result As ViewResult = controller.About()
+
+        ' Verify
+        Dim viewData As ViewDataDictionary = result.ViewData
+
+        Assert.AreEqual("About Page", viewData("Title"))
     End Sub
 End Class

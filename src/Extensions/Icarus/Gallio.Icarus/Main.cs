@@ -183,7 +183,7 @@ namespace Gallio.Icarus
         {
             // Set the application version in the window title
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            Text = String.Format(Text, appVersion.Major, appVersion.Minor);
+            Text = String.Format(Text, appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
 
             // try to load the dock state, if the file does not exist
             // or loading fails then use defaults.
