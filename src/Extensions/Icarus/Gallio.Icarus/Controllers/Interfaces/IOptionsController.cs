@@ -21,7 +21,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
     public interface IOptionsController
     {
         bool AlwaysReloadAssemblies { get; set; }
-        string TestProgressBarStyle { get; set; }
+        string TestStatusBarStyle { get; set; }
         bool ShowProgressDialogs { get; set; }
         bool RestorePreviousSettings { get; set; }
         string TestRunnerFactory { get; set; }

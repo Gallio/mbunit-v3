@@ -24,7 +24,6 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
-using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner.Projects;
 using Gallio.Runtime;

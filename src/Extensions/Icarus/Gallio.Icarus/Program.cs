@@ -67,7 +67,8 @@ namespace Gallio.Icarus
                 ITestRunnerService testRunnerService = new TestRunnerService(testRunner);
                 ITestController testController = new TestController(testRunnerService, new TestTreeModel());
                 
-                IExecutionLogController executionLogController = new ExecutionLogController(testController);
+                string executionLogFolder = Path.Combine(Paths.IcarusAppDataFolder, "ExecutionLog");
+                IExecutionLogController executionLogController = new ExecutionLogController(testController, executionLogFolder);
 
                 IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
                 IReportController reportController = new ReportController(new ReportService(reportManager));

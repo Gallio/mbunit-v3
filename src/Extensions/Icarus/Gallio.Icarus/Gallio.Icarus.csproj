@@ -95,6 +95,7 @@
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\RuntimeLogController.cs" />
     <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Controls\TestStatusBarStyles.cs" />
     <Compile Include="Controls\ToolStripButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -431,6 +432,7 @@
     <Content Include="Resources\Test.png" />
     <Content Include="Resources\text-x-python.png" />
     <Content Include="Resources\tick.png" />
+    <None Include="app.config" />
     <None Include="Resources\XmlFile.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

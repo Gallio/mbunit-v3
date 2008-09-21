@@ -41,7 +41,7 @@ namespace Gallio.Icarus
             testController.SelectedTests.ListChanged += delegate { Sync.Invoke(this, UpdateTestResults); };
             testController.RunStarted += delegate { Reset(); };
 
-            testProgressStatusBar.DataBindings.Add("Mode", optionsController, "TestProgressBarStyle");
+            testProgressStatusBar.DataBindings.Add("Mode", optionsController, "TestStatusBarStyle");
             testProgressStatusBar.DataBindings.Add("PassedColor", optionsController, "PassedColor");
             testProgressStatusBar.DataBindings.Add("FailedColor", optionsController, "FailedColor");
             testProgressStatusBar.DataBindings.Add("InconclusiveColor", optionsController, "InconclusiveColor");

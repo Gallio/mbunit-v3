@@ -20,7 +20,7 @@ using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Services.Interfaces
 {
-    interface IReportService
+    public interface IReportService
     {
         IList<string> ReportTypes { get; }
 

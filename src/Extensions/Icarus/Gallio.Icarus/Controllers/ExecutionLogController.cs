@@ -32,7 +32,7 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly ITestController testController;
         private MemoryStream executionLog;
-        private readonly string executionLogFolder = Path.Combine(Paths.IcarusAppDataFolder, "ExecutionLog");
+        private readonly string executionLogFolder;
         private readonly TaskManager taskManager = new TaskManager();
 
         public event EventHandler<System.EventArgs> ExecutionLogUpdated;
@@ -42,9 +42,10 @@ namespace Gallio.Icarus.Controllers
             get { return executionLog; }
         }
 
-        public ExecutionLogController(ITestController testController)
+        public ExecutionLogController(ITestController testController, string executionLogFolder)
         {
             this.testController = testController;
+            this.executionLogFolder = executionLogFolder;
 
             testController.SelectedTests.ListChanged += delegate { UpdateExecutionLog(); };
             testController.TestStepFinished += testController_TestStepFinished;

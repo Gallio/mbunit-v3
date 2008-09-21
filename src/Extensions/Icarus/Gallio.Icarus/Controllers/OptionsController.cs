@@ -42,10 +42,10 @@ namespace Gallio.Icarus.Controllers
             set { settings.AlwaysReloadAssemblies = value; }
         }
 
-        public string TestProgressBarStyle
+        public string TestStatusBarStyle
         {
-            get { return settings.TestProgressBarStyle; }
-            set { settings.TestProgressBarStyle = value; }
+            get { return settings.TestStatusBarStyle; }
+            set { settings.TestStatusBarStyle = value; }
         }
 
         public bool ShowProgressDialogs
@@ -148,7 +148,7 @@ namespace Gallio.Icarus.Controllers
             unselectedTreeViewCategoriesList.Clear();
             foreach (FieldInfo fi in typeof(MetadataKeys).GetFields())
             {
-                if (!unselectedTreeViewCategoriesList.Contains(fi.Name))
+                if (!settings.TreeViewCategories.Contains(fi.Name))
                     unselectedTreeViewCategoriesList.Add(fi.Name);
             }
         }

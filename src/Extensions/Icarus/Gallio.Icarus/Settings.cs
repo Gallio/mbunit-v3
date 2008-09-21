@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-
+using Gallio.Icarus.Controls;
 using Gallio.Utilities;
 using Gallio.Runner;
 using System.Drawing;
@@ -33,7 +33,7 @@ namespace Gallio.Icarus
         private readonly List<string> pluginDirectories = new List<string>();
         private bool alwaysReloadAssemblies;
         private bool showProgressDialogs = true;
-        private string testProgressBarStyle = "Integration";
+        private string testStatusBarStyle = TestStatusBarStyles.Integration;
         private int passedColor = Color.Green.ToArgb();
         private int failedColor = Color.Red.ToArgb();
         private int inconclusiveColor = Color.Gold.ToArgb();
@@ -68,11 +68,11 @@ namespace Gallio.Icarus
             set { showProgressDialogs = value; }
         }
 
-        [XmlElement("testProgressBarStyle")]
-        public string TestProgressBarStyle
+        [XmlElement("testStatusBarStyle")]
+        public string TestStatusBarStyle
         {
-            get { return testProgressBarStyle; }
-            set { testProgressBarStyle = value; }
+            get { return testStatusBarStyle; }
+            set { testStatusBarStyle = value; }
         }
 
         [XmlArray("pluginDirectories", IsNullable = false)]
@@ -80,11 +80,6 @@ namespace Gallio.Icarus
         public List<string> PluginDirectories
         {
             get { return pluginDirectories; }
-            set
-            {
-                pluginDirectories.Clear();
-                pluginDirectories.AddRange(value);
-            }
         }
 
         [XmlElement("passedColor")]
@@ -120,11 +115,6 @@ namespace Gallio.Icarus
         public List<string> TreeViewCategories
         {
             get { return treeViewCategories; }
-            set
-            {
-                treeViewCategories.Clear();
-                treeViewCategories.AddRange(value);
-            }
         }
     }
 }
