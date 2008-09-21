@@ -26,7 +26,6 @@ namespace Gallio.Icarus.Models.Interfaces
 {
     public interface ITestTreeModel : ITreeModel
     {
-        Collection<Node> Nodes { get; }
         bool FilterPassed { get; set; }
         bool FilterFailed { get; set; }
         bool FilterSkipped { get; set; }
@@ -39,14 +38,12 @@ namespace Gallio.Icarus.Models.Interfaces
         int Skipped { get; }
         int Inconclusive { get; }
 
+        void ApplyFilter(Filter<ITest> filter);
+        void BuildTestTree(TestModelData testModelData, string treeViewCategory);
         Node FindNode(TreePath path);
+        Filter<ITest> GetCurrentFilter();
         TreePath GetPath(Node node);
-        void OnStructureChanged(TreePathEventArgs args);
         void ResetTestStatus();
         void UpdateTestStatus(TestData testData, TestStepRun testStepRun);
-        void FilterTree();
-        void ApplyFilter(Filter<ITest> filter);
-        Filter<ITest> GetCurrentFilter();
-        void BuildTestTree(TestModelData testModelData, string treeViewCategory);
     }
 }

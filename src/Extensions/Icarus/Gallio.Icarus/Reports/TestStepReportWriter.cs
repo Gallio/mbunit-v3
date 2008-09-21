@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Xml;
 using Gallio.Model;
 using Gallio.Model.Logging;
@@ -29,7 +30,7 @@ namespace Gallio.Icarus.Reports
     public class TestStepReportWriter
     {
         readonly XmlTextWriter xmlTextWriter;
-        readonly string reportFolder;
+        readonly string reportFolder, cssDir, imgDir;
         readonly TestModelData testModelData;
 
         public TestStepReportWriter(XmlTextWriter xmlTextWriter, string reportFolder, TestModelData testModelData)
@@ -37,18 +38,21 @@ namespace Gallio.Icarus.Reports
             this.xmlTextWriter = xmlTextWriter;
             this.reportFolder = reportFolder;
             this.testModelData = testModelData;
+
+            cssDir = Path.Combine(reportFolder, "css");
+            imgDir = Path.Combine(reportFolder, "img");
         }
 
         internal void RenderReport(IList<string> testIds, TestPackageRun testPackageRun)
         {
             RenderHeader();
             xmlTextWriter.WriteRaw("<div id=\"Content\" class=\"content\">");
-            RenderNavigator(testPackageRun.AllTestStepRuns, CountTestStepRuns(testPackageRun.AllTestStepRuns));
-            xmlTextWriter.WriteRaw("<div id=\"Details\" class=\"section\"><div class=\"section-content\"><ul>");
+            RenderNavigator(testPackageRun.Statistics, testPackageRun.AllTestStepRuns);
+            xmlTextWriter.WriteRaw("<div id=\"Details\" class=\"section\"><div class=\"section-content\"><ul class=\"testStepRunContainer\">");
             foreach (TestStepRun testStepRun in testPackageRun.AllTestStepRuns)
             {
-                if (testIds.Count == 0 || testIds.Contains(testStepRun.Step.TestId))
-                    RenderTestStepRun(testStepRun);
+                if (testIds.Contains(testStepRun.Step.TestId))
+                    RenderTestStepRun(testStepRun, 1);
             }
             xmlTextWriter.WriteRaw("</ul></div></div></div></body></html>");
             xmlTextWriter.Flush();
@@ -68,16 +72,24 @@ namespace Gallio.Icarus.Reports
         void RenderHeader()
         {
             xmlTextWriter.WriteStartDocument();
+            //xmlTextWriter.WriteRaw("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" ");
+            //xmlTextWriter.WriteRaw("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
             xmlTextWriter.WriteRaw("<html xml:lang=\"en\" lang=\"en\" dir=\"ltr\"><head>");
-            xmlTextWriter.WriteRaw(String.Format("<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\\css\\Gallio-Report.css\" />", reportFolder));
+            xmlTextWriter.WriteRaw("<title>Execution Log</title>");
+            xmlTextWriter.WriteRaw(String.Format("<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\\Gallio-Report.css\" />", cssDir));
             xmlTextWriter.WriteRaw("</head><body class=\"gallio-report\" style=\"overflow: auto;\">");
         }
 
-        void RenderNavigator(IEnumerable<TestStepRun> testStepRuns, int count)
+        void RenderNavigator(Runner.Reports.Statistics statistics, IEnumerable<TestStepRun> testStepRuns)
         {
             xmlTextWriter.WriteRaw("<div id=\"Navigator\" class=\"navigator\">");
+            string summary = string.Format("{0} run, {1} passed, {2} failed, {3} inconclusive, {4} skipped", statistics.RunCount,
+                FormatStatisticsCategoryCounts(statistics, TestStatus.Passed), FormatStatisticsCategoryCounts(statistics, TestStatus.Failed), 
+                FormatStatisticsCategoryCounts(statistics, TestStatus.Inconclusive), FormatStatisticsCategoryCounts(statistics, TestStatus.Skipped));
+            xmlTextWriter.WriteRaw(string.Format("<a href=\"#\" title=\"{0}\" class=\"navigator-box {1}\"></a>", summary, StatusFromStatistics(statistics)));
             xmlTextWriter.WriteRaw("<div class=\"navigator-stripes\">");
             int i = 0;
+            int count = CountTestStepRuns(testStepRuns);
             foreach (TestStepRun testStepRun in testStepRuns)
             {
                 float position = i * 98 / count + 1;
@@ -88,30 +100,77 @@ namespace Gallio.Icarus.Reports
                     continue;
                 
                 xmlTextWriter.WriteRaw(string.Format("<a href=\"#testStepRun-{0}\" style=\"top: {1}%\"", testStepRun.Step.Id, position));
-                xmlTextWriter.WriteRaw(string.Format(" class=\"status-{0}\" title=\"{1} {0}\" />", testStepRun.Result.Outcome.Status, testStepRun.Step.Name));
+                string status = Enum.GetName(typeof (TestStatus), testStepRun.Result.Outcome.Status).ToLower();
+                xmlTextWriter.WriteRaw(string.Format(" class=\"status-{0}\" title=\"{1} {0}\"></a>", status, testStepRun.Step.Name));
             }
             xmlTextWriter.WriteRaw("</div></div>");
         }
 
-        void RenderTestStepRun(TestStepRun testStepRun)
+        static string FormatStatisticsCategoryCounts(Runner.Reports.Statistics statistics, TestStatus status)
+        {
+            List<TestOutcomeSummary> testOutcomeSummaries = new List<TestOutcomeSummary>();
+            foreach (TestOutcomeSummary tos in statistics.OutcomeSummaries)
+            {
+                if (tos.Outcome.Status == status && tos.Outcome.Category != null)
+                    testOutcomeSummaries.Add(tos);
+            }
+            
+            if (testOutcomeSummaries.Count == 0)
+                return string.Empty;
+
+            testOutcomeSummaries.Sort(delegate(TestOutcomeSummary left, TestOutcomeSummary right)
+            {
+                return left.Outcome.Category.CompareTo(right.Outcome.Category);
+            });
+            
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append(" (");
+            foreach (TestOutcomeSummary testOutcomeSummary in testOutcomeSummaries)
+            {
+                stringBuilder.Append(testOutcomeSummary.Count);
+                stringBuilder.Append(" ");
+                stringBuilder.Append(testOutcomeSummary.Outcome.Category);
+                stringBuilder.Append(",");
+            }
+            
+            // remove trailing comma (if necessary)
+            if (stringBuilder.Length > 0)
+                stringBuilder.Remove(stringBuilder.Length - 1, 1);
+            stringBuilder.Append(")");
+            return stringBuilder.ToString();
+        }
+
+        static string StatusFromStatistics(Runner.Reports.Statistics statistics)
+        {
+            if (statistics.FailedCount > 0)
+                return "status-failed";
+            if (statistics.InconclusiveCount > 0)
+                return "status-inconclusive";
+            return statistics.PassedCount > 0 ? "status-passed" : "status-skipped";
+        }
+
+        void RenderTestStepRun(TestStepRun testStepRun, int nestingLevel)
         {
             TestData testData = testModelData.GetTestById(testStepRun.Step.TestId);
             if (testData == null)
                 throw new InvalidOperationException("The step referenced an unknown test.");
 
             Statistics statistics = CalculateStatistics(testStepRun);
-            
-            xmlTextWriter.WriteRaw(String.Format("<li><span class=\"testStepRunHeading\"><b>{0}</b> Passed: {1} Failed: {2} Inconclusive: {3} Skipped: {4}</span>", testStepRun.Step.Name, statistics.passedCount, statistics.failedCount, statistics.inconclusiveCount, statistics.skippedCount));
+
+            xmlTextWriter.WriteRaw(string.Format("<li id=\"testStepRun-{0}\">", testStepRun.Step.Id));
+            xmlTextWriter.WriteRaw(string.Format("<span class=\"testStepRunHeading testStepRunHeading-Level{0}\"><b>{1}</b>", 
+                nestingLevel, PrintTextWithBreaks(testStepRun.Step.Name)));
+            RenderOutcomeBar(testStepRun.Result.Outcome, statistics, (testStepRun.Children.Count == 0));
+            xmlTextWriter.WriteRaw("</span>");
             
             // stat panel
-            xmlTextWriter.WriteRaw("<div class=\"panel\">");
+            xmlTextWriter.WriteRaw(string.Format("<div id=\"detailPanel-{0}\" class=\"panel\">", testStepRun.Step.Id));
             string testKind = testData.Metadata.GetValue(MetadataKeys.TestKind);
             if (testKind == TestKinds.Assembly || testKind == TestKinds.Framework)
             {
                 xmlTextWriter.WriteRaw("<table class=\"statistics-table\"><tr class=\"alternate-row\">");
                 xmlTextWriter.WriteRaw("<td class=\"statistics-label-cell\">Results:</td><td>");
-                xmlTextWriter.WriteRaw(String.Format("{0} run, {1} passed, {2} failed, {3} inconclusive, {4} skipped", statistics.runCount,
-                    statistics.passedCount, statistics.failedCount, statistics.inconclusiveCount, statistics.skippedCount));
+                xmlTextWriter.WriteRaw(FormatStatistics(statistics));
                 xmlTextWriter.WriteRaw("</td></tr><tr><td class=\"statistics-label-cell\">Duration:</td><td>");
                 xmlTextWriter.WriteRaw(String.Format("{0}s", statistics.duration));
                 xmlTextWriter.WriteRaw(String.Format("</td></tr><tr class=\"alternate-row\"><td class=\"statistics-label-cell\">Assertions:</td><td>{0}", 
@@ -135,10 +194,42 @@ namespace Gallio.Icarus.Reports
             {
                 xmlTextWriter.WriteRaw("<ul class=\"testStepRunContainer\">");
                 foreach (TestStepRun tsr in testStepRun.Children)
-                    RenderTestStepRun(tsr);
+                    RenderTestStepRun(tsr, (nestingLevel + 1));
                 xmlTextWriter.WriteRaw("</ul>");
             }
             xmlTextWriter.WriteRaw("</div></li>");
+        }
+
+        static string FormatStatistics(Statistics statistics)
+        {
+            return string.Format("{0} run, {1} passed, {2} failed, {3} inconclusive, {4} skipped", statistics.runCount,
+                statistics.passedCount, statistics.failedCount, statistics.inconclusiveCount, statistics.skippedCount);
+        }
+
+        static string PrintTextWithBreaks(string text)
+        {
+            return text.Replace(Environment.NewLine, "<br />");
+        }
+
+        void RenderOutcomeBar(TestOutcome testOutcome, Statistics statistics, bool small)
+        {
+            xmlTextWriter.WriteRaw("<table class=\"outcome-bar\"><tr><td>");
+            string status = Enum.GetName(typeof(TestStatus), testOutcome.Status).ToLower();
+            xmlTextWriter.WriteRaw(string.Format("<div class=\"outcome-bar status-{0}", status));
+            if (small)
+                xmlTextWriter.WriteRaw(" condensed");
+            string title = testOutcome.Category ?? status;
+            xmlTextWriter.WriteRaw(string.Format("\" title=\"{0}\" /></td></tr></table>", title));
+
+            if (small)
+                return;
+
+            xmlTextWriter.WriteRaw("<span class=\"outcome-icons\">");
+            xmlTextWriter.WriteRaw(string.Format("<img src=\"{0}\\Passed.gif\" alt=\"Passed\" />{1}", imgDir, statistics.passedCount));
+            xmlTextWriter.WriteRaw(string.Format("<img src=\"{0}\\Failed.gif\" alt=\"Failed\" />{1}", imgDir, statistics.failedCount));
+            xmlTextWriter.WriteRaw(string.Format("<img src=\"{0}\\Ignored.gif\" alt=\"Inconclusive or Skipped\" />{1}", imgDir, 
+                (statistics.inconclusiveCount + statistics.skippedCount)));
+            xmlTextWriter.WriteRaw("</span>");
         }
 
         void RenderMetadata(TestStepRun testStepRun, TestComponentData testData)
@@ -163,7 +254,7 @@ namespace Gallio.Icarus.Reports
 
         void RenderMetadataValues(string key, IList<string> values)
         {
-            xmlTextWriter.WriteRaw(String.Format("<li>{0}: ", key));
+            xmlTextWriter.WriteRaw(String.Format("<li>{0}: ", PrintTextWithBreaks(key)));
             for (int i = 0; i < values.Count; i++)
             {
                 xmlTextWriter.WriteRaw(values[i]);
@@ -313,7 +404,7 @@ namespace Gallio.Icarus.Reports
 
             public void VisitTextTag(TextTag tag)
             {
-                xmlTextWriter.WriteRaw(String.Format("<span>{0}</span>", tag.Text));
+                xmlTextWriter.WriteRaw(String.Format("<span>{0}</span>", PrintTextWithBreaks(tag.Text)));
             }
         }
     }

@@ -33,6 +33,7 @@ namespace Gallio.Icarus.Controllers
         private readonly ITestController testController;
         private MemoryStream executionLog;
         private readonly string executionLogFolder = Path.Combine(Paths.IcarusAppDataFolder, "ExecutionLog");
+        private readonly TaskManager taskManager = new TaskManager();
 
         public event EventHandler<System.EventArgs> ExecutionLogUpdated;
 
@@ -104,20 +105,28 @@ namespace Gallio.Icarus.Controllers
 
         void UpdateExecutionLog()
         {
-            if (testController.Report.TestPackageRun == null)
-                return;
-
-            MemoryStream memoryStream = new MemoryStream();
-            XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
-            TestStepReportWriter testStepReportWriter = new TestStepReportWriter(xmlTextWriter, executionLogFolder, testController.Report.TestModel);
-            List<string> testIds = new List<string>();
-            foreach (TestTreeNode testTreeNode in testController.SelectedTests)
-                testIds.Add(testTreeNode.Name);
-            testStepReportWriter.RenderReport(testIds, testController.Report.TestPackageRun);
-            memoryStream.Position = 0;
-            executionLog = memoryStream;
-
-            EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, System.EventArgs.Empty);
+            taskManager.StartTask(delegate
+            {
+                if (testController.Report.TestPackageRun == null)
+                    executionLog = null;
+                else
+                {
+                    MemoryStream memoryStream = new MemoryStream();
+                    XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
+                    TestStepReportWriter testStepReportWriter = new TestStepReportWriter(xmlTextWriter,
+                        executionLogFolder,
+                        testController.Report.TestModel);
+                    List<string> testIds = new List<string>();
+                    foreach (TestTreeNode testTreeNode in testController.SelectedTests)
+                        testIds.Add(testTreeNode.Name);
+                    if (testIds.Count == 0 && testController.Model.Root != null)
+                        testIds.Add(testController.Model.Root.Name);
+                    testStepReportWriter.RenderReport(testIds, testController.Report.TestPackageRun);
+                    memoryStream.Position = 0;
+                    executionLog = memoryStream;
+                }
+                EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, System.EventArgs.Empty);
+            });
         }
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
@@ -25,7 +26,10 @@ namespace Gallio.Icarus
 
             executionLogController.ExecutionLogUpdated += delegate
             {
-                reportViewer.DocumentStream = executionLogController.ExecutionLog;
+                Sync.Invoke(this, delegate
+                {
+                    reportViewer.DocumentStream = executionLogController.ExecutionLog;
+                });
             };
         }
     }

@@ -183,6 +183,7 @@ namespace Gallio.Icarus.Controllers
         public void ResetTests()
         {
             testTreeModel.ResetTestStatus();
+            testRunnerService.Report.TestPackageRun = null;
         }
 
         public void RunTests()

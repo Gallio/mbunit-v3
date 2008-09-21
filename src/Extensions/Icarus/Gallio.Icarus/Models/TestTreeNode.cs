@@ -299,7 +299,6 @@ namespace Gallio.Icarus.Models
 
         public void ClearTestStepRuns()
         {
-            TestStatus = TestStatus.Skipped;
             testStepRuns.Clear();
         }
     }

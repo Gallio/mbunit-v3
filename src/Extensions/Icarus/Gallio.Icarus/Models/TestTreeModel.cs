@@ -25,7 +25,6 @@ using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Models
 {
@@ -165,11 +164,16 @@ namespace Gallio.Icarus.Models
 
             foreach (Node node in Nodes)
                 ResetTestStatus(node);
+
+            FilterTree();
         }
 
         private static void ResetTestStatus(Node node)
         {
-            ((TestTreeNode)node).ClearTestStepRuns();
+            TestTreeNode testTreeNode = (TestTreeNode) node;
+            testTreeNode.TestStatus = TestStatus.Skipped;
+            testTreeNode.ClearTestStepRuns();
+            
             foreach (Node n in node.Nodes)
                 ResetTestStatus(n);
         }
@@ -207,7 +211,7 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public void FilterTree()
+        private void FilterTree()
         {
             foreach (Node node in Nodes)
                 Filter(node);
@@ -293,7 +297,7 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public void OnPropertyChanged(PropertyChangedEventArgs e)
+        protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, e);

@@ -19,6 +19,7 @@ using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -143,11 +144,10 @@ namespace Gallio.Icarus.Tests.Controllers
         public void ResetTests_Test()
         {
             ITestRunnerService testRunnerService = SetupTestRunnerService();
+            Expect.Call(testRunnerService.Report).Return(new Report());
             ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
             testTreeModel.ResetTestStatus();
-
             mocks.ReplayAll();
-
             TestController testController = new TestController(testRunnerService, testTreeModel);
             testController.ResetTests();
         }

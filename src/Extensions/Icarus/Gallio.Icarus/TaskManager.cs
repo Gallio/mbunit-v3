@@ -55,18 +55,18 @@ namespace Gallio.Icarus
         {
             lock (this)
             {
-                if (currentWorkerTask != null)
-                {
-                    // Allow the task a moment to finish if it is short-lived.
-                    currentWorkerTask.Join(TimeSpan.FromMilliseconds(1));
+                if (currentWorkerTask == null)
+                    return;
 
-                    // Alright, kill it and wait a bit to ensure it's dead.
-                    // But if it's hung, don't worry about it.
-                    currentWorkerTask.Abort();
-                    currentWorkerTask.Join(TimeSpan.FromMilliseconds(500));
+                // Allow the task a moment to finish if it is short-lived.
+                currentWorkerTask.Join(TimeSpan.FromMilliseconds(1));
 
-                    currentWorkerTask = null;
-                }
+                // Alright, kill it and wait a bit to ensure it's dead.
+                // But if it's hung, don't worry about it.
+                currentWorkerTask.Abort();
+                currentWorkerTask.Join(TimeSpan.FromMilliseconds(500));
+
+                currentWorkerTask = null;
             }
         }
     }
