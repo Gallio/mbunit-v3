@@ -47,7 +47,7 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => !expectedResult, expectedResult, null);
             Assert.IsNotNull(failure);
             Assert.AreEqual(String.Format("Expected the condition to evaluate to {0}.", expectedResult.ToString().ToLowerInvariant()), failure.Description);
-            Assert.AreEqual(new[] {
+            Assert.AreElementsEqual(new[] {
                 new AssertionFailure.LabeledValue("Condition", "! expectedResult"),
                 new AssertionFailure.LabeledValue("expectedResult", Formatter.Instance.Format(expectedResult)),
             }, failure.LabeledValues);

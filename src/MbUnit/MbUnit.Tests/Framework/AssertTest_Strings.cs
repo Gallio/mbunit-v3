@@ -35,11 +35,13 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqual("test", "tEsm", StringComparison.InvariantCultureIgnoreCase));
             Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("Expected values to be equal.", failures[0].Description);
-            Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
-            Assert.AreEqual("\"test\"", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
-            Assert.AreEqual("\"tEsm\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("Expected values to be equal according to string comparison type.", failures[0].Description);
+            Assert.AreEqual("Comparison Type", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("InvariantCultureIgnoreCase", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Expected Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("\"test\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("Actual Value", failures[0].LabeledValues[2].Label);
+            Assert.AreEqual("\"tEsm\"", failures[0].LabeledValues[2].FormattedValue.ToString());
         }
 
         [Test]
@@ -47,8 +49,9 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.AreEqual("test", null, StringComparison.InvariantCultureIgnoreCase));
             Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("\"test\"", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("null", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("InvariantCultureIgnoreCase", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("\"test\"", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("null", failures[0].LabeledValues[2].FormattedValue.ToString());
         }
 
 

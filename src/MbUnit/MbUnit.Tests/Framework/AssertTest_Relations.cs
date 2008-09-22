@@ -38,7 +38,7 @@ namespace MbUnit.Tests.Framework
             AssertionFailure[] failures = Capture(() =>
                 Assert.GreaterThan(new Exception(), new Exception()));
             Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("System.InvalidOperationException: No ordering comparison defined on type System.Exception."
+            Assert.AreEqual("System.InvalidOperationException: No ordering comparison defined on values of type System.Exception and System.Exception."
                 , failures[0].Exceptions[0].ToString());
         }
 

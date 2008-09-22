@@ -51,11 +51,17 @@ namespace MbUnit.Tests.Framework
             AssertionFailure[] failures = Capture(()
                 => Assert.AreElementsEqual(new[] { 1, 2 }, new List<int> { 2, 1 }));
             Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("Expected collection values to be equal.", failures[0].Description);
-            Assert.AreEqual("Expected Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("Expected elements to be equal but they differ in at least one position.", failures[0].Description);
+            Assert.AreEqual("Expected Sequence", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("[1, 2]", failures[0].LabeledValues[0].FormattedValue.ToString());
-            Assert.AreEqual("Actual Value", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("Actual Sequence", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("[2, 1]", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("Element Index", failures[0].LabeledValues[2].Label);
+            Assert.AreEqual("0", failures[0].LabeledValues[2].FormattedValue.ToString());
+            Assert.AreEqual("Expected Element", failures[0].LabeledValues[3].Label);
+            Assert.AreEqual("1", failures[0].LabeledValues[3].FormattedValue.ToString());
+            Assert.AreEqual("Actual Element", failures[0].LabeledValues[4].Label);
+            Assert.AreEqual("2", failures[0].LabeledValues[4].FormattedValue.ToString());
         }
 
         [Test]
@@ -85,7 +91,6 @@ namespace MbUnit.Tests.Framework
         public void AreElementsNotEqual_with_custom_comparer()
         {
             Assert.AreElementsNotEqual("12", "12", (expected, actual) => false);
-
         }
 
         [Test]
@@ -94,9 +99,11 @@ namespace MbUnit.Tests.Framework
             AssertionFailure[] failures = Capture(()
                 => Assert.AreElementsNotEqual(new[] { 1, 2 }, new List<int> { 1, 2 }));
             Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("Expected collection values not to be equal.", failures[0].Description);
-            Assert.AreEqual("Expected Value & Actual Value", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("Expected the unexpected and actual sequence to have different elements but all elements were equal.", failures[0].Description);
+            Assert.AreEqual("Unexpected Sequence", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("[1, 2]", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Actual Sequence", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("[1, 2]", failures[0].LabeledValues[1].FormattedValue.ToString());
         }
 
         [Test]

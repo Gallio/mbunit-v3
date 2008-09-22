@@ -124,7 +124,7 @@ namespace MbUnit.Framework
 
                 AssertionFailureBuilder builder = new AssertionFailureBuilder("Expected values to be equal according to string comparison type.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Comparison Type", comparisonType);
+                    .AddLabeledValue("Comparison Type", comparisonType.ToString());
 
                 if (comparisonType == StringComparison.CurrentCultureIgnoreCase
                     || comparisonType == StringComparison.InvariantCultureIgnoreCase

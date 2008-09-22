@@ -128,7 +128,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.AddLabeledValue("Abc", "123");
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", "123")
             }, builder.ToAssertionFailure().LabeledValues);
@@ -177,7 +177,7 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
             builder.AddRawExpectedAndActualValuesWithDiffs(1, 1u);
 
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected Value & Actual Value", new StructuredText("1")),
                 new AssertionFailure.LabeledValue("Remark", "Both values look the same when formatted but they are distinct instances.")

@@ -80,67 +80,165 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
         {
-            Over.Pairs(expectedSequence, actualSequence, (expected, actual) => AreEqual(expected, actual, comparer), messageFormat, messageArgs);
+            AssertionHelper.Verify(delegate
+            {
+                if (expectedSequence == null && actualSequence == null)
+                    return null;
+
+                if (expectedSequence == null || actualSequence == null)
+                {
+                    return new AssertionFailureBuilder(
+                        "Expected elements to be equal but one sequence was null and not the other.")
+                        .SetMessage(messageFormat, messageArgs)
+                        .AddRawLabeledValue("Expected Sequence", expectedSequence)
+                        .AddRawLabeledValue("Actual Sequence", actualSequence)
+                        .ToAssertionFailure();
+                }
+
+                if (comparer == null)
+                    comparer = ComparisonSemantics.Equals;
+
+                int index = 0;
+                IEnumerator<T> expectedEnumerator = expectedSequence.GetEnumerator();
+                IEnumerator<T> actualEnumerator = actualSequence.GetEnumerator();
+                while (expectedEnumerator.MoveNext())
+                {
+                    if (!actualEnumerator.MoveNext())
+                    {
+                        return new AssertionFailureBuilder(
+                            "Expected elements to be equal but the expected sequence has more elements than the actual sequence.")
+                            .SetMessage(messageFormat, messageArgs)
+                            .AddRawLabeledValue("Expected Sequence Count", 1 + index + CountRemainingElements(expectedEnumerator))
+                            .AddRawLabeledValue("Actual Sequence Count", index)
+                            .AddRawLabeledValuesWithDiffs("Expected Sequence", expectedSequence, "Actual Sequence", actualSequence)
+                            .ToAssertionFailure();
+                    }
+
+                    T expectedValue = expectedEnumerator.Current;
+                    T actualValue = actualEnumerator.Current;
+                    if (! comparer(expectedValue, actualValue))
+                    {
+                        return new AssertionFailureBuilder(
+                            "Expected elements to be equal but they differ in at least one position.")
+                            .SetMessage(messageFormat, messageArgs)
+                            .AddRawLabeledValuesWithDiffs("Expected Sequence", expectedSequence, "Actual Sequence", actualSequence)
+                            .AddLabeledValue("Element Index", index.ToString())
+                            .AddRawLabeledValuesWithDiffs("Expected Element", expectedValue, "Actual Element", actualValue)
+                            .ToAssertionFailure();
+                    }
+
+                    index += 1;
+                }
+
+                if (actualEnumerator.MoveNext())
+                {
+                    return new AssertionFailureBuilder(
+                        "Expected elements to be equal but the expected sequence has fewer elements than the actual sequence.")
+                        .SetMessage(messageFormat, messageArgs)
+                        .AddRawLabeledValue("Expected Sequence Count", index)
+                        .AddRawLabeledValue("Actual Sequence Count", index + CountRemainingElements(actualEnumerator) + 1)
+                        .AddRawLabeledValuesWithDiffs("Expected Sequence", expectedSequence, "Actual Sequence", actualSequence)
+                        .ToAssertionFailure();
+                }
+
+                return null;
+            });
         }
         #endregion
 
         #region AreElementsNotEqual
         /// <summary>
-        /// Verifies that expected and actual sequences have the same number of elements but that
-        /// the elements are not equal.
+        /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="unexpectedSequence">The unexpected sequence</param>
         /// <param name="actualSequence">The actual sequence</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsNotEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence)
+        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence)
         {
-            AreElementsNotEqual(expectedSequence, actualSequence, null, null, null);
+            AreElementsNotEqual(unexpectedSequence, actualSequence, null, null, null);
         }
 
         /// <summary>
-        /// Verifies that expected and actual sequences have the same number of elements but that
-        /// the elements are not equal.
+        /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="unexpectedSequence">The unexpected sequence</param>
         /// <param name="actualSequence">The actual sequence</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsNotEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs)
+        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs)
         {
-            AreElementsNotEqual(expectedSequence, actualSequence, null, messageFormat, messageArgs);
+            AreElementsNotEqual(unexpectedSequence, actualSequence, null, messageFormat, messageArgs);
         }
 
         /// <summary>
-        /// Verifies that expected and actual sequences have the same number of elements but that
-        /// the elements are not equal.
+        /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="unexpectedSequence">The unexpected sequence</param>
         /// <param name="actualSequence">The actual sequence</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsNotEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer)
+        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer)
         {
-            AreElementsNotEqual(expectedSequence, actualSequence, comparer, null, null);
+            AreElementsNotEqual(unexpectedSequence, actualSequence, comparer, null, null);
         }
 
         /// <summary>
-        /// Verifies that expected and actual sequences have the same number of elements but that
-        /// the elements are not equal.
+        /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
-        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="unexpectedSequence">The unexpected sequence</param>
         /// <param name="actualSequence">The actual sequence</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsNotEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
         {
-            Over.Pairs(expectedSequence, actualSequence, (expected, actual) => AreNotEqual(expected, actual, comparer), messageFormat, messageArgs);
+            AssertionHelper.Verify(delegate
+            {
+                if (unexpectedSequence == null)
+                {
+                    if (actualSequence != null)
+                        return null;
+
+                    return new AssertionFailureBuilder("Expected the unexpected and actual sequence to have different elements but both sequences were null.")
+                        .SetMessage(messageFormat, messageArgs)
+                        .ToAssertionFailure();
+                }
+                else if (actualSequence == null)
+                {
+                    return null;
+                }
+
+                if (comparer == null)
+                    comparer = ComparisonSemantics.Equals;
+
+                IEnumerator<T> unexpectedEnumerator = unexpectedSequence.GetEnumerator();
+                IEnumerator<T> actualEnumerator = actualSequence.GetEnumerator();
+
+                while (unexpectedEnumerator.MoveNext())
+                {
+                    if (!actualEnumerator.MoveNext())
+                        return null; // different lengths
+
+                    if (! comparer(unexpectedEnumerator.Current, actualEnumerator.Current))
+                        return null; // different contents
+                }
+
+                if (actualEnumerator.MoveNext())
+                    return null; // different lengths
+
+                return new AssertionFailureBuilder(
+                    "Expected the unexpected and actual sequence to have different elements but all elements were equal.")
+                        .SetMessage(messageFormat, messageArgs)
+                        .AddRawLabeledValue("Unexpected Sequence", unexpectedSequence)
+                        .AddRawLabeledValue("Actual Sequence", actualSequence)
+                        .ToAssertionFailure();
+            });
         }
         #endregion
 
@@ -365,5 +463,13 @@ namespace MbUnit.Framework
             });
         }
         #endregion
+
+        internal static int CountRemainingElements(IEnumerator enumerator)
+        {
+            int count = 0;
+            while (enumerator.MoveNext())
+                count++;
+            return count;
+        }
     }
 }

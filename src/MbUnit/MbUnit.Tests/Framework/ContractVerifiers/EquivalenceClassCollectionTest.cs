@@ -53,7 +53,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             EquivalenceClass<object> class2 = new EquivalenceClass<object>(new object());
 
             EquivalenceClassCollection<object> collection = new EquivalenceClassCollection<object>(class1, class2);
-            Assert.AreEqual(new[] { class1, class2 }, collection.EquivalenceClasses);
+            Assert.AreElementsEqual(new[] { class1, class2 }, collection.EquivalenceClasses);
             Assert.AreElementsEqual(new[] { class1, class2 }, collection.ToArray());
         }
 

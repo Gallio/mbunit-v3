@@ -89,7 +89,7 @@ namespace MbUnit.Framework
                     {
                         return new AssertionFailureBuilder("Expected the left and right sequences to have the same number of elements.")
                             .SetMessage(messageFormat, messageArgs)
-                            .AddRawLabeledValue("Left Sequence Count", 1 + index + CountRemainingElements(leftEnumerator))
+                            .AddRawLabeledValue("Left Sequence Count", 1 + index + Assert.CountRemainingElements(leftEnumerator))
                             .AddRawLabeledValue("Right Sequence Count", index)
                             .AddRawLabeledValue("Left Sequence", leftSequence)
                             .AddRawLabeledValue("Right Sequence", rightSequence)
@@ -120,7 +120,7 @@ namespace MbUnit.Framework
                     return new AssertionFailureBuilder("Expected the left and right sequences to have the same number of elements.")
                         .SetMessage(messageFormat, messageArgs)
                         .AddRawLabeledValue("Left Sequence Count", index)
-                        .AddRawLabeledValue("Right Sequence Count", index + CountRemainingElements(rightEnumerator) + 1)
+                        .AddRawLabeledValue("Right Sequence Count", index + Assert.CountRemainingElements(rightEnumerator) + 1)
                         .AddRawLabeledValue("Left Sequence", leftSequence)
                         .AddRawLabeledValue("Right Sequence", rightSequence)
                         .ToAssertionFailure();
@@ -260,14 +260,6 @@ namespace MbUnit.Framework
 
                 return null;
             });
-        }
-
-        private static int CountRemainingElements(IEnumerator enumerator)
-        {
-            int count = 0;
-            while (enumerator.MoveNext())
-                count++;
-            return count;
         }
     }
 }
