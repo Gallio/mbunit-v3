@@ -53,7 +53,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the condition to evaluate to true.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Condition", "x == 5"),
                     new AssertionFailure.LabeledValue("x", "4")

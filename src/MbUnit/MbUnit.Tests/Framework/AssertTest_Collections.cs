@@ -178,7 +178,7 @@ namespace MbUnit.Tests.Framework
                 Assert.ContainsKey(dictionary, 0));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the key to appear within the dictionary.", failures[0].Description);
-            Assert.AreEqual("Key", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("Expected Key", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("0", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("Dictionary", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("[1: \"1\", 2: \"2`\"]", failures[0].LabeledValues[1].FormattedValue.ToString());
@@ -196,7 +196,7 @@ namespace MbUnit.Tests.Framework
                 Assert.ContainsKey(dictionary, new List<int>(new[] { 5 }), "{0} message.", "custom"));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the key to appear within the dictionary.", failures[0].Description);
-            Assert.AreEqual("Key", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("Expected Key", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("[5]", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("Dictionary", failures[0].LabeledValues[1].Label);
             Assert.AreEqual("[[1, 2]: \"1\", [3, 4]: \"2`\"]",

@@ -93,7 +93,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.AddRawExpectedValue("Abc");
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected Value", "\"Abc\"")
             }, builder.ToAssertionFailure().LabeledValues);
@@ -104,7 +104,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.AddRawActualValue("Abc");
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Actual Value", "\"Abc\"")
             }, builder.ToAssertionFailure().LabeledValues);
@@ -116,7 +116,7 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.AddRawLabeledValue("Abc", 123);
             builder.AddRawLabeledValue("Def", 3.0m);
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", "123"),
                 new AssertionFailure.LabeledValue("Def", "3.0m")
@@ -139,7 +139,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.AddLabeledValue("Abc", new StructuredText("123"));
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", new StructuredText("123"))
             }, builder.ToAssertionFailure().LabeledValues);
@@ -150,7 +150,7 @@ namespace Gallio.Tests.Framework.Assertions
         {
             AssertionFailureBuilder builder = new AssertionFailureBuilder("Description");
             builder.AddLabeledValue(new AssertionFailure.LabeledValue("Abc", new StructuredText("123")));
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Abc", new StructuredText("123"))
             }, builder.ToAssertionFailure().LabeledValues);
@@ -164,7 +164,7 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailureBuilder builder = new AssertionFailureBuilder("description");
             builder.AddRawExpectedAndActualValuesWithDiffs(str, str);
 
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected Value & Actual Value", new StructuredText("\"123\"")),
                 new AssertionFailure.LabeledValue("Remark", "Both values are the same instance.")
@@ -196,7 +196,7 @@ namespace Gallio.Tests.Framework.Assertions
             StructuredTextWriter actualValueWriter = new StructuredTextWriter();
             diffSet.WriteTo(actualValueWriter, DiffStyle.RightOnly);
 
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Expected Value", expectedValueWriter.ToStructuredText()),
                 new AssertionFailure.LabeledValue("Actual Value", actualValueWriter.ToStructuredText())
@@ -215,7 +215,7 @@ namespace Gallio.Tests.Framework.Assertions
             StructuredTextWriter actualValueWriter = new StructuredTextWriter();
             diffSet.WriteTo(actualValueWriter, DiffStyle.RightOnly);
 
-            Assert.AreEqual(new[]
+            Assert.AreElementsEqual(new[]
             {
                 new AssertionFailure.LabeledValue("Left", expectedValueWriter.ToStructuredText()),
                 new AssertionFailure.LabeledValue("Right", actualValueWriter.ToStructuredText())

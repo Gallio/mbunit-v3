@@ -60,7 +60,7 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => x.Equals(null), true, null);
             Assert.IsNotNull(failure);
             Assert.AreEqual("Expected the condition to evaluate to true but it threw an exception.", failure.Description);
-            Assert.AreEqual(new[] {
+            Assert.AreElementsEqual(new[] {
                 new AssertionFailure.LabeledValue("Condition", "x.Equals(null)"),
                 new AssertionFailure.LabeledValue("x", "null"),
             }, failure.LabeledValues);
@@ -99,7 +99,7 @@ namespace Gallio.Tests.Framework.Assertions
             AssertionFailure failure = AssertionConditionEvaluator.Eval(() => ! (x.ToString() == "42"), true, null);
             Assert.IsNotNull(failure);
 
-            Assert.AreEqual(new[] {
+            Assert.AreElementsEqual(new[] {
                 new AssertionFailure.LabeledValue("Condition", "! (x.ToString() == \"42\")"),
                 new AssertionFailure.LabeledValue("x.ToString()", "\"42\""),
                 new AssertionFailure.LabeledValue("x", "42"),

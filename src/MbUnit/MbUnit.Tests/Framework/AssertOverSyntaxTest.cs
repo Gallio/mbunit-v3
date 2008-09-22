@@ -65,7 +65,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Assertion failed on two values at a particular index within both sequences.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Index", "2"),
                     new AssertionFailure.LabeledValue("Left Sequence", "[1, 2, 3]"),
@@ -85,7 +85,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the left and right sequences to have the same number of elements.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Left Sequence Count", "2"),
                     new AssertionFailure.LabeledValue("Right Sequence Count", "3"),
@@ -106,7 +106,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the left and right sequences to have the same number of elements.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Left Sequence Count", "4"),
                     new AssertionFailure.LabeledValue("Right Sequence Count", "3"),
@@ -127,7 +127,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the left and right sequences to either both be null or both be non-null.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Left Sequence", "null"),
                     new AssertionFailure.LabeledValue("Right Sequence", "[-1, 2, 4]")
@@ -146,7 +146,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the left and right sequences to either both be null or both be non-null.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Left Sequence", "[-1, 2, 4]"),
                     new AssertionFailure.LabeledValue("Right Sequence", "null")
@@ -207,7 +207,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Assertion failed on two pairs with a particular key in both dictionaries.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Key", "2"),
                     new AssertionFailure.LabeledValue("Left Dictionary", "[1: \"a\", 2: \"b\"]"),
@@ -230,7 +230,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the left and right dictionaries to have the same number of items.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Left Dictionary Count", "1"),
                     new AssertionFailure.LabeledValue("Right Dictionary Count", "2"),
@@ -254,7 +254,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the left and right dictionaries to have the same number of items.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Left Dictionary Count", "2"),
                     new AssertionFailure.LabeledValue("Right Dictionary Count", "1"),
@@ -278,7 +278,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the left and right dictionaries to either both be null or both be non-null.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Left Dictionary", "null"),
                     new AssertionFailure.LabeledValue("Right Dictionary", "[]")
@@ -300,7 +300,7 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("Expected the left and right dictionaries to either both be null or both be non-null.", failures[0].Description);
             Assert.AreEqual("Hello World.", failures[0].Message);
-            Assert.AreEqual(new[] 
+            Assert.AreElementsEqual(new[] 
                 {
                     new AssertionFailure.LabeledValue("Left Dictionary", "[]"),
                     new AssertionFailure.LabeledValue("Right Dictionary", "null")

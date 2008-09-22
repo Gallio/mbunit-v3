@@ -54,7 +54,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
             EquivalenceClassCollection<object> collection = new EquivalenceClassCollection<object>(class1, class2);
             Assert.AreEqual(new[] { class1, class2 }, collection.EquivalenceClasses);
-            Assert.AreEqual(new[] { class1, class2 }, collection.ToArray());
+            Assert.AreElementsEqual(new[] { class1, class2 }, collection.ToArray());
         }
 
         [Test, ExpectedArgumentNullException]
@@ -84,9 +84,9 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
             EquivalenceClassCollection<object> collection = EquivalenceClassCollection<object>.FromDistinctInstances(instance1, instance2, instance3);
             Assert.Over.Pairs(new[] { instance1, instance2, instance3 }, collection.EquivalenceClasses,
-                (instance, @class) => Assert.AreEqual(new[] { instance }, @class.EquivalentInstances));
+                (instance, @class) => Assert.AreElementsEqual(new[] { instance }, @class.EquivalentInstances));
             Assert.Over.Pairs(new[] { instance1, instance2, instance3 }, collection.ToArray(),
-                (instance, @class) => Assert.AreEqual(new[] { instance }, @class.EquivalentInstances));
+                (instance, @class) => Assert.AreElementsEqual(new[] { instance }, @class.EquivalentInstances));
         }
     }
 }

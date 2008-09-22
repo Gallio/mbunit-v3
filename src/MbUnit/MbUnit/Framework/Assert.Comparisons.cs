@@ -285,7 +285,7 @@ namespace MbUnit.Framework
         {
             AssertionHelper.Verify(delegate
             {
-                if (ComparisonSemantics.Same(unexpectedValue, actualValue))
+                if (! ComparisonSemantics.Same(unexpectedValue, actualValue))
                     return null;
 
                 return new AssertionFailureBuilder("Expected values to be referentially different.")
