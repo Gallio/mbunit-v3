@@ -2,12 +2,11 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:VS="http://schemas.microsoft.com/wix/VSExtension" >
     <Fragment>
-        <DirectoryRef Id="samplesFolder" FileSource="$(var.GallioTargetDir)\docs\Samples\Gallio">
+        <DirectoryRef Id="samplesFolder">
             <Directory Id="samplesFolder.MbUnit" Name="MbUnit" />
         </DirectoryRef>
     
         <DirectoryRef Id="samplesFolder.MbUnit" FileSource="$(var.GallioTargetDir)\samples\MbUnit\">
-            
             <Directory Id="MbUnit3.Samples" Name="MbUnit.Samples">
                 <Directory Id="MbUnit3.Samples.Properties" Name="Properties">
                     <Component Id="MbUnit3.Samples.AssemblyInfo.cs" Guid="{0EF95DCA-1432-4bfd-B5C8-8D7F7419BB8E}" Win64="no">
@@ -92,7 +91,6 @@
                 <File Id="MbUnit3.Samples.sln" Name="MbUnit.Samples.sln" KeyPath="yes" >
                     <Shortcut Id="MbUnit3.Samples.sln.lnk" Name="MbUnit Samples (Visual Studio 2005)" Directory="SamplesMenuFolder.MbUnit" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
-                <RemoveFolder Id="SamplesMenuFolder.MbUnit.Remove" Directory="SamplesMenuFolder.MbUnit" On="uninstall" />
             </Component>            
             <Component Id="MbUnit3.Samples.vs2008.sln" Guid="{4276EF47-AF73-4ebe-BB80-E2F9358750AC}" Win64="no">
                 <File Id="MbUnit3.Samples.vs2008.sln" Name="MbUnit.Samples.vs2008.sln" KeyPath="yes">
@@ -109,6 +107,16 @@
 
         <DirectoryRef Id="SamplesMenuFolder">
             <Directory Id="SamplesMenuFolder.MbUnit" Name="MbUnit" />
+        </DirectoryRef>
+
+        <DirectoryRef Id="SamplesMenuFolder.MbUnit">
+            <!-- Component to remove the Samples\MbUnit menu folder on uninstall (if empty) -->
+            <Component Id="SamplesMenuFolder.MbUnit.RemoveFolder" Guid="{59E6DE90-0712-48ca-ACB3-A3EDF894A32A}">
+                <RemoveFolder Id="SamplesMenuFolder.MbUnit.RemoveFolder" On="uninstall" />
+                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\3.0">
+                    <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
+                </RegistryKey>
+            </Component>
         </DirectoryRef>
 
         <Feature Id="feat_MbUnit3.Samples" Title="MbUnit Samples" Level="1"
@@ -137,6 +145,7 @@
             <ComponentRef Id="MbUnit3.Samples.WatiN.Core.dll"/>
             <ComponentRef Id="MbUnit3.Samples.Interop.SHDocVw.dll"/>
             <ComponentRef Id="MbUnit3.Samples.Microsoft.mshtml.dll"/>
+            <ComponentRef Id="SamplesMenuFolder.MbUnit.RemoveFolder"/>
         </Feature>
     </Fragment>
 </Wix>

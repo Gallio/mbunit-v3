@@ -6,7 +6,6 @@
                 <File Id="MbUnit.Website.url" Source="$(var.GallioTargetDir)\MbUnit Website.url" KeyPath="yes">
                     <Shortcut Id="MbUnit.Website.lnk" Name="MbUnit Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes"/>
                 </File>
-                <RemoveFolder Id="GallioMenuFolder.Remove_MbUnitWebsite" Directory="GallioMenuFolder" On="uninstall"/>
             </Component>
         </DirectoryRef>
 
@@ -37,6 +36,7 @@
             <ComponentRef Id='MbUnit35.v3'/>
             <ComponentRef Id='MbUnit.Compatibility.v3'/>
             <ComponentRef Id='MbUnit.Website'/>
+            <ComponentRef Id='GallioMenuFolder.RemoveFolder'/>
         </Feature>
     </Fragment>
 </Wix>

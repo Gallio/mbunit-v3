@@ -2,16 +2,31 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:VS="http://schemas.microsoft.com/wix/VSExtension" >
     <Fragment>
-        <DirectoryRef Id="samplesFolder" FileSource="$(var.GallioTargetDir)\docs\Samples\Gallio">
+        <DirectoryRef Id="samplesFolder">
             <Directory Id="samplesFolder.Gallio" Name="Gallio" />
         </DirectoryRef>
 
+        <DirectoryRef Id="samplesFolder.Gallio" FileSource="$(var.GallioTargetDir)\docs\Samples\Gallio\">
+            <!-- Add samples here -->        
+        </DirectoryRef>
+
         <DirectoryRef Id="SamplesMenuFolder">
-            <Directory Id="SamplesMenuFolder.Gallio" Name="Gallio" />
+            <Directory Id="SamplesMenuFolder.Gallio" Name="Gallio"/>
+        </DirectoryRef>
+
+        <DirectoryRef Id="SamplesMenuFolder.Gallio">
+            <!-- Component to remove the Samples\Gallio menu folder on uninstall (if empty) -->
+            <Component Id="SamplesMenuFolder.Gallio.RemoveFolder" Guid="{844F5E76-BC51-4ff7-8DEB-F18EB004E955}">
+                <RemoveFolder Id="SamplesMenuFolder.Gallio.RemoveFolder" On="uninstall" />
+                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\3.0">
+                    <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
+                </RegistryKey>
+            </Component>
         </DirectoryRef>
 
         <Feature Id="feat_Gallio.Samples" Title="Gallio Samples" Level="1"
                  Description="Installs Gallio code samples.">
+            <ComponentRef Id="SamplesMenuFolder.Gallio.RemoveFolder"/>
         </Feature>
     </Fragment>
 </Wix>

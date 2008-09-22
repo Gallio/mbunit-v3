@@ -15,8 +15,8 @@
             <Component Id="Gallio.License" Guid="{80dcc954-656f-45de-9bf2-bec6ff1d7c58}" Win64="no">
                 <File Id="Gallio.License.txt" Source="$(var.GallioTargetDir)\Gallio License.txt" KeyPath="yes" />
             </Component>
-            <Component Id="Credits" Guid="{7EFEC8C8-CB48-41b3-818C-9CAD85DBECC1}" Win64="no">
-                <File Id="Credits.html" Source="$(var.GallioTargetDir)\Credits.html" KeyPath="yes" >
+            <Component Id="Gallio.Credits" Guid="{7EFEC8C8-CB48-41b3-818C-9CAD85DBECC1}" Win64="no">
+                <File Id="Gallio.Credits.html" Source="$(var.GallioTargetDir)\Credits.html" KeyPath="yes" >
                     <Shortcut Id="Gallio.Credits.lnk" Name="Gallio Credits" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
             </Component>
@@ -24,11 +24,10 @@
                 <File Id="Gallio.Website.url" Source="$(var.GallioTargetDir)\Gallio Website.url" KeyPath="yes">
                     <Shortcut Id="Gallio.Website.lnk" Name="Gallio Website" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
                 </File>
-                <RemoveFolder Id="GallioMenuFolder.Remove_GallioWebsite" Directory="GallioMenuFolder" On="uninstall" />
             </Component>
             <Component Id="Gallio.Registry" Guid="{1AE1AC98-1FF2-4913-9ACA-EB8018E40508}" Win64="no">
                 <RegistryKey Id="Gallio.RegistryKey1" Action="createAndRemoveOnUninstall"
-                             Root="HKLM" Key="Software\Gallio.org\Gallio">
+                             Root="HKLM" Key="SOFTWARE\Gallio.org\Gallio">
                     <RegistryValue Type="string" Name="CurrentVersion" Value="3.0"/>
                     <RegistryKey Key="3.0" Action="createAndRemoveOnUninstall">
                         <RegistryValue Type="string" Name="Version" Value="[ProductVersion]"/>
@@ -200,7 +199,8 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio" Title="Gallio" Level="1" InstallDefault="local" TypicalDefault="install" Absent="disallow" Description="Installs the Gallio test automation platform." ConfigurableDirectory="INSTALLDIR">
+        <Feature Id="feat_Gallio" Title="Gallio" Level="1" InstallDefault="local" TypicalDefault="install" Absent="disallow" AllowAdvertise="no"
+                 Description="Installs the Gallio test automation platform." ConfigurableDirectory="INSTALLDIR">
             <ComponentRef Id="Gallio" />
             <ComponentRef Id="Gallio35" />
             <ComponentRef Id="Gallio.XmlSerializers" />
@@ -210,7 +210,7 @@
             <ComponentRef Id="Gallio.Website" />
             <ComponentRef Id="Gallio.Registry" />
             <ComponentRef Id="Apache.License" />
-            <ComponentRef Id="Credits" />
+            <ComponentRef Id="Gallio.Credits" />
 
             <ComponentRef Id="Gallio.Reports.dll"/>
             <ComponentRef Id="Reports.Readme.txt"/>
@@ -240,6 +240,8 @@
             <ComponentRef Id="Reports.Passed.gif"/>
             <ComponentRef Id="Reports.Plus.gif"/>
             <ComponentRef Id="Reports.Test.png"/>
+
+            <ComponentRef Id="GallioMenuFolder.RemoveFolder"/>
         </Feature>
 
         <Feature Id="feat_Gallio.Help" Title="Standalone Help Docs" Level="1" Description="Installs the standalone help documentation CHM file.">

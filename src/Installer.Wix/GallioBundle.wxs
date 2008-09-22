@@ -66,9 +66,29 @@
             <Directory Id="ProgramMenuFolder" Name=".">
                 <Directory Id="GallioMenuFolder" Name="Gallio">
                     <Directory Id="SamplesMenuFolder" Name="Samples" />
-		</Directory>
+                </Directory>
             </Directory>
         </Directory>
+
+        <DirectoryRef Id="GallioMenuFolder">
+            <!-- Component to remove the Gallio menu folder on uninstall (if empty) -->
+            <Component Id="GallioMenuFolder.RemoveFolder" Guid="{49243D14-436D-47a1-BE3A-AFF7C66C0DFF}">
+                <RemoveFolder Id="GallioMenuFolder.RemoveFolder" On="uninstall" />
+                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\3.0">
+                    <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
+
+        <DirectoryRef Id="SamplesMenuFolder">
+            <!-- Component to remove the Samples menu folder on uninstall (if empty) -->
+            <Component Id="SamplesMenuFolder.RemoveFolder" Guid="{19D19824-95C4-4793-8E8C-0E1088D3C129}">
+                <RemoveFolder Id="SamplesMenuFolder.RemoveFolder" On="uninstall" />
+                <RegistryKey Action="none" Root="HKCU" Key="Software\Gallio.org\Gallio\3.0">
+                    <RegistryValue Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
 
         <CustomActionRef Id="VS2005Setup" />
         <CustomActionRef Id="VS90Setup" />
@@ -103,7 +123,7 @@
             <FeatureRef Id='feat_MbUnit3.Templates.VS2008'/>
         </FeatureRef>
 
-        <Feature Id='feat_Plugins' Title='Plugins' Level="1">
+        <Feature Id='feat_Plugins' Title='Plugins' Level="1" Display="6">
             <Feature Id='feat_Frameworks' Title="Test Frameworks" Level="1">
                 <FeatureRef Id='feat_CSUnitAdapter'/>
                 <FeatureRef Id='feat_MbUnit2Adapter'/>
@@ -154,12 +174,11 @@
 <?endif?>
         </Feature>
 
-	<Feature Id="feat_Samples" Title='Samples' Level="1">
-
-
+        <Feature Id="feat_Samples" Title='Samples' Level="1">
+            <ComponentRef Id="SamplesMenuFolder.RemoveFolder"/>
             <FeatureRef Id='feat_Gallio.Samples'/>
             <FeatureRef Id='feat_MbUnit3.Samples'/>
-	</Feature>
+        </Feature>
 
         <Feature Id='feat_Extras' Title='Extras' Level="1">
             <FeatureRef Id='feat_CCNetExtensions'/>
