@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using System.Text;
 
 namespace Gallio.TeamCityIntegration
@@ -100,7 +101,7 @@ namespace Gallio.TeamCityIntegration
             });
         }
 
-        public void WriteTestStarted(string name)
+        public void WriteTestStarted(string name, bool captureStandardOutput)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
@@ -109,11 +110,13 @@ namespace Gallio.TeamCityIntegration
             {
                 builder.Append("testStarted name='");
                 AppendEscapedString(builder, name);
+                builder.Append("' captureStandardOutput='");
+                AppendEscapedString(builder, captureStandardOutput ? @"true" : @"false");
                 builder.Append('\'');
             });
         }
 
-        public void WriteTestFinished(string name)
+        public void WriteTestFinished(string name, TimeSpan duration)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
@@ -122,6 +125,8 @@ namespace Gallio.TeamCityIntegration
             {
                 builder.Append("testFinished name='");
                 AppendEscapedString(builder, name);
+                builder.Append("' duration='");
+                builder.Append(((int)duration.TotalMilliseconds).ToString(CultureInfo.InvariantCulture));
                 builder.Append('\'');
             });
         }

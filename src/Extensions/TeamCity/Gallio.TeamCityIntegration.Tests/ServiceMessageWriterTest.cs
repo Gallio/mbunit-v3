@@ -14,9 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MbUnit.Framework;
 
 namespace Gallio.TeamCityIntegration.Tests
@@ -91,22 +88,24 @@ namespace Gallio.TeamCityIntegration.Tests
         }
 
         [Test]
-        [Row(null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def",
-            "##teamcity[testStarted name='abc|n|r|||'|]def']")]
-        public void TestStarted(string name, string expectedOutput)
+        [Row(null, true, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("abc\n\r|']def", true,
+            "##teamcity[testStarted name='abc|n|r|||'|]def' captureStandardOutput='true']")]
+        [Row("abc\n\r|']def", false,
+            "##teamcity[testStarted name='abc|n|r|||'|]def' captureStandardOutput='false']")]
+        public void TestStarted(string name, bool captureStandardOutput, string expectedOutput)
         {
-            writer.WriteTestStarted(name);
+            writer.WriteTestStarted(name, captureStandardOutput);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         [Test]
-        [Row(null, null, ExpectedException = typeof(ArgumentNullException))]
-        [Row("abc\n\r|']def",
-            "##teamcity[testFinished name='abc|n|r|||'|]def']")]
-        public void TestFinished(string name, string expectedOutput)
+        [Row(null, 0, null, ExpectedException = typeof(ArgumentNullException))]
+        [Row("abc\n\r|']def", 333,
+            "##teamcity[testFinished name='abc|n|r|||'|]def' duration='333']")]
+        public void TestFinished(string name, int durationMillis, string expectedOutput)
         {
-            writer.WriteTestFinished(name);
+            writer.WriteTestFinished(name, TimeSpan.FromMilliseconds(durationMillis));
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 

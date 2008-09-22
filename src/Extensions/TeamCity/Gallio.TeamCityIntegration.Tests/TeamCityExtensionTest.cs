@@ -158,7 +158,7 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = true })));
 
-            Assert.AreEqual("##teamcity[testStarted name='stepFullName']\n", log.ToString());
+            Assert.AreEqual("##teamcity[testStarted name='stepFullName' captureStandardOutput=\'false\']\n", log.ToString());
         }
 
         [Test]
@@ -201,13 +201,13 @@ namespace Gallio.TeamCityIntegration.Tests
                 new Report(),
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = true }) {
-                    Result = new TestResult() { Outcome = TestOutcome.Passed },
+                    Result = new TestResult() { Outcome = TestOutcome.Passed, Duration = 0.3 },
                     TestLog = ComprehensiveTestLog
                 }));
 
             Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog']\n"
                 + "##teamcity[testStdErr name='stepFullName' out='error|n|nwarning|n|nfailure']\n"
-                + "##teamcity[testFinished name='stepFullName']\n", log.ToString());
+                + "##teamcity[testFinished name='stepFullName' duration='300']\n", log.ToString());
         }
 
         [Test]
@@ -218,14 +218,14 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = true })
                 {
-                    Result = new TestResult() { Outcome = new TestOutcome(TestStatus.Failed, "myError") },
+                    Result = new TestResult() { Outcome = new TestOutcome(TestStatus.Failed, "myError"), Duration = 0.3 },
                     TestLog = ComprehensiveTestLog
                 }));
 
             Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog']\n"
                 + "##teamcity[testStdErr name='stepFullName' out='error|n|nwarning']\n"
                 + "##teamcity[testFailed name='stepFullName' message='myError' details='failure']\n"
-                + "##teamcity[testFinished name='stepFullName']\n", log.ToString());
+                + "##teamcity[testFinished name='stepFullName' duration='300']\n", log.ToString());
         }
 
         [Test]
@@ -236,14 +236,14 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestData("id", "testName", "testFullName"),
                 new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = true })
                 {
-                    Result = new TestResult() { Outcome = TestOutcome.Ignored },
+                    Result = new TestResult() { Outcome = TestOutcome.Ignored, Duration = 0.3 },
                     TestLog = ComprehensiveTestLog
                 }));
 
             Assert.AreEqual("##teamcity[testStdOut name='stepFullName' out='output|n|ninput|n|ntrace|n|nlog']\n"
                 + "##teamcity[testStdErr name='stepFullName' out='error|n|nfailure']\n"
                 + "##teamcity[testIgnored name='stepFullName' message='warning']\n"
-                + "##teamcity[testFinished name='stepFullName']\n", log.ToString());
+                + "##teamcity[testFinished name='stepFullName' duration='300']\n", log.ToString());
         }
 
         private sealed class Log : BaseLogger

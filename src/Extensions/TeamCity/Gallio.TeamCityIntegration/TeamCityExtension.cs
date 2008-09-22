@@ -81,7 +81,7 @@ namespace Gallio.TeamCityIntegration
                     {
                         if (e.TestStepRun.Step.IsTestCase)
                         {
-                            writer.WriteTestStarted(name);
+                            writer.WriteTestStarted(name, false);
                         }
                         else
                         {
@@ -153,7 +153,7 @@ namespace Gallio.TeamCityIntegration
                                 writer.WriteTestIgnored(name, warningText.ToString());
                             }
 
-                            writer.WriteTestFinished(name);
+                            writer.WriteTestFinished(name, TimeSpan.FromSeconds(e.TestStepRun.Result.Duration));
                         }
                         else
                         {
