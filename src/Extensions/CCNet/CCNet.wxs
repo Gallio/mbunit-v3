@@ -9,11 +9,6 @@
                             <File Name="CCNet.Gallio.WebDashboard.Plugin.dll" KeyPath="yes" />
                         </Component>
                     </Directory>
-                    <Directory Id="webdashboard.templates" Name="templates">
-                        <Component Id="CCNet.SiteTemplate.vm" Guid="{346AFDDC-B4E3-49d1-8486-00F9524C3004}" Win64="no">
-                            <File Id="CCNet.SiteTemplate.vm" Name="SiteTemplate.vm" KeyPath="yes" />
-                        </Component>
-                    </Directory>
                     <Directory Id="webdashboard.gallio" Name="gallio">
                         <Directory Id="webdashboard.gallio.css" Name="css">
                             <Component Id="CCNet.Gallio.Report.css" Guid="{48A8273A-F100-4702-B45C-4B2BE9AD6235}" Win64="no">
@@ -85,7 +80,6 @@
         <Feature Id='feat_CCNetExtensions' Title='CruiseControl.Net extensions' Level='1'
             Description='Installs additional resources to assist with CruiseControl.Net integration.'>
             <ComponentRef Id="CCNet.Gallio.WebDashboard.Plugin.dll"/>
-            <ComponentRef Id="CCNet.SiteTemplate.vm"/>
             <ComponentRef Id="CCNet.Gallio.Report.css"/>
             <ComponentRef Id="CCNet.Gallio.Report.js"/>
             <ComponentRef Id="CCNet.Gallio.Report.ccnet.details.xsl"/>

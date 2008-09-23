@@ -3,6 +3,9 @@ How to use Gallio with CruiseControl.Net
 
 Using Gallio in CruiseControl.Net is very straightforward.
 
+NOTE: These instructions are designed for use with CruiseControl.Net v1.4 RTM.
+      They may work with other versions but there are no guarantees.
+
 
 CONFIGURING THE SERVER
 ----------------------
@@ -54,14 +57,14 @@ we must update the dashboard configuration file to include the new test report p
    installation direction into the "webdashboard" folder of your CruiseControl.Net
    installation.
 
-   If you have customized your "templates/SiteTemplates.vm" file, you may wish edit it
-   manually instead of overwriting it.  Add the following DTD declaraction to the top of
-   this file:
+2. (Skip if running CruiseControl.Net v1.4 or more recent.)
 
-      <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/loose.dtd">
+   Edit the "templates/SiteTemplates.vm" file manually to add the following DTD
+   declaraction to the top of this file:
 
+     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-2. Edit the "dashboard.config" file in the CruiseControl.Net "webdashboard" folder.
+3. Edit the "dashboard.config" file in the CruiseControl.Net "webdashboard" folder.
 
      * Within the <buildPlugins> element, add the following elements:
 
@@ -73,14 +76,14 @@ we must update the dashboard configuration file to include the new test report p
                                 xslFileName="gallio\xsl\Gallio-Report.ccnet-details-condensed.xsl" />
           <gallioAttachmentBuildPlugin />
 
-3. Double-check:
+4. Double-check:
 
      * The "webdashboard" folder now contains "gallio\css", "gallio\img", "gallio\js", "gallio\xml".
      * The "webdashboard" folder now contains "bin\CCNet.Gallio.WebDashboard.Plugin.dll".
      * The "webdashboard" folder now contains "templates\SiteTemplate.vm" with an updated DTD declaration.
      * The "dashboard.config" file has been edited to include the new build report section.
 
-4. Restart the CruiseControl.Net web application.  (eg. By resetting IIS.)
+5. Restart the CruiseControl.Net web application.  (eg. By resetting IIS.)
 
 Note:
 
