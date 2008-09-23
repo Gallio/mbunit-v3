@@ -70,6 +70,32 @@ namespace Gallio.PowerShellCommands
         }
 
         /// <summary>
+        /// Sets whether progress information is shown during the execution. If this option is specified,
+        /// the execution is silent and no progress information is displayed.
+        /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>This parameter takes the value true if present and false if not. No
+        /// value has to be specified.</item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// # Shows progress information
+        /// Run-Gallio SomeAssembly.dll
+        /// # Hides progress information
+        /// Run-Gallio SomeAssembly.dll -np
+        /// </code>
+        /// </example>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("np", "no-progress")]
+        public SwitchParameter NoProgress
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets the progress monitor provider for the cmdlet.
         /// </summary>
         public IProgressMonitorProvider ProgressMonitorProvider

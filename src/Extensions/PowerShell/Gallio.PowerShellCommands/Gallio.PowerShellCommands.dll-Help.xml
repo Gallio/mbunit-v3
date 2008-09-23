@@ -112,6 +112,14 @@
         </command:parameter>
 
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
+          <maml:name>NoProgress</maml:name>
+          <maml:description>
+            <maml:para>Sets whether progress information is shown during the execution. If this option is specified, the execution is silent and no progress information is displayed.</maml:para>
+          </maml:description>
+          <dev:defaultValue>false</dev:defaultValue>
+        </command:parameter>
+        
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
           <maml:name>PluginDirectories</maml:name>
           <maml:description>
             <maml:para>Additional Gallio plugin directories to search recursively.</maml:para>
@@ -234,6 +242,14 @@
         <dev:defaultValue>false</dev:defaultValue>
       </command:parameter>
 
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
+        <maml:name>NoProgress</maml:name>
+        <maml:description>
+          <maml:para>Sets whether progress information is shown during the execution. If this option is specified, the execution is silent and no progress information is displayed.</maml:para>
+        </maml:description>
+        <dev:defaultValue>false</dev:defaultValue>
+      </command:parameter>
+      
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
         <maml:name>PluginDirectories</maml:name>
         <maml:description>
