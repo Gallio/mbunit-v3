@@ -36,6 +36,12 @@
     <Binary Include="libs\nunit.core.interfaces.dll">
         <Folder>NUnit</Folder>
     </Binary>
+    <Binary Include="libs\nunit.util.dll">
+        <Folder>NUnit</Folder>
+    </Binary>
+    <Binary Include="libs\addins\NUnit Addins Readme.txt">
+        <Folder>NUnit\addins</Folder>
+    </Binary>
   </ItemGroup>
 
   <ItemGroup>

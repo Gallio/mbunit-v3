@@ -35,7 +35,7 @@ set KEY=%TDKEY%\Gallio_%NAME%
 set PRIORITY=20
 :RETRY_PROMPT
 set /P Answer=Use Gallio TestDriven.Net runner for %NAME%?  (Y/N)
-if /I "%Answer%"=="Y" set PRIORITY=5 & goto :DONE_PROMPT
+if /I "%Answer%"=="Y" set PRIORITY=1 & goto :DONE_PROMPT
 if /I not "%Answer%"=="N" goto :RETRY_PROMPT
 :DONE_PROMPT
 

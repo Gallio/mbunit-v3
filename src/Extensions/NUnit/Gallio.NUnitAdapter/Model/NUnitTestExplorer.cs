@@ -20,6 +20,7 @@ using System.Reflection;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.NUnitAdapter.Properties;
+using NUnit.Util;
 using NUnitCoreExtensions = NUnit.Core.CoreExtensions;
 using NUnitTestRunner = NUnit.Core.TestRunner;
 using NUnitTestPackage = NUnit.Core.TestPackage;
@@ -34,6 +35,8 @@ namespace Gallio.NUnitAdapter.Model
     internal class NUnitTestExplorer : BaseTestExplorer
     {
         private const string NUnitFrameworkAssemblyDisplayName = @"nunit.framework";
+
+        private static bool nunitInitialized;
 
         public readonly Dictionary<Version, ITest> frameworkTests;
         public readonly Dictionary<IAssemblyInfo, ITest> assemblyTests;
@@ -140,9 +143,7 @@ namespace Gallio.NUnitAdapter.Model
 
         private static NUnitTestRunner InitializeTestRunner(string assemblyLocation)
         {
-            // Note: If we don't initialize the host, then we can't enumerate tests!
-            //       Interestingly we don't get any runtime errors if we forget...
-            NUnitCoreExtensions.Host.InitializeService();
+            InitializeNUnit();
 
             NUnitTestPackage package = new NUnitTestPackage(@"Tests");
 
@@ -157,6 +158,22 @@ namespace Gallio.NUnitAdapter.Model
                 throw new ModelException(Resources.NUnitTestExplorer_CannotLoadNUnitTestAssemblies);
 
             return runner;
+        }
+
+        private static void InitializeNUnit()
+        {
+            if (!nunitInitialized)
+            {
+                ServiceManager.Services.AddService(new DomainManager());
+                ServiceManager.Services.AddService(new AddinRegistry());
+                ServiceManager.Services.AddService(new AddinManager());
+                ServiceManager.Services.AddService(new TestAgency());
+                ServiceManager.Services.InitializeServices();
+
+                AppDomain.CurrentDomain.SetData("AddinRegistry", Services.AddinRegistry);
+
+                nunitInitialized = true;
+            }
         }
 
         private static void BuildTest(NUnitTest parentTest, NUnitITest nunitTest)

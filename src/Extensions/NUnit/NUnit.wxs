@@ -27,9 +27,17 @@
                 <Component Id="nunit.framework.extensions.dll" Guid="6ff33a75-1cd2-4292-bd7d-e33cbb6db0d6" Win64="no">
                     <File Name="nunit.framework.extensions.dll" KeyPath="yes" />
                 </Component>
+                <Component Id="nunit.util.dll" Guid="{B943EBB6-B35E-4fe8-8734-6BC5B221D7CF}" Win64="no">
+                    <File Id="nunit.util.dll" Name="nunit.util.dll" KeyPath="yes" />
+                </Component>
                 <Component Id="nunit.Readme.txt" Guid="63e415aa-7a79-4b50-8bb9-f21f5ef867f1" Win64="no">
                     <File Id="nunit.Readme.txt" Name="Readme.txt" KeyPath="yes" />
                 </Component>
+                <Directory Id="NUnitAdapter.addins" Name="addins">
+                    <Component Id="nunit.AddinsReadme.txt" Guid="{AE3699B6-00A1-4baa-BA3B-59065ABC12A0}" Win64="no">
+                        <File Id="nunit.AddinsReadme.txt" Name="NUnit Addins Readme.txt" KeyPath="yes" />
+                    </Component>
+                </Directory>
             </Directory>
         </DirectoryRef>
 
@@ -38,12 +46,14 @@
             <ComponentRef Id="Gallio.NUnitAdapter.dll"/>
             <ComponentRef Id="Gallio.NUnitAdapter.plugin"/>
             <ComponentRef Id="nunit.Readme.txt"/>
+            <ComponentRef Id="nunit.AddinsReadme.txt"/>
             <ComponentRef Id="nunit.license.txt"/>
             <ComponentRef Id="nunit.core.dll"/>
             <ComponentRef Id="nunit.core.extensions.dll"/>
             <ComponentRef Id="nunit.core.interfaces.dll"/>
             <ComponentRef Id="nunit.framework.dll"/>
             <ComponentRef Id="nunit.framework.extensions.dll"/>
+            <ComponentRef Id="nunit.util.dll"/>
         </Feature>
     </Fragment>
 </Wix>
