@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
+using Gallio.Runtime;
 
 namespace Gallio.Model.Execution
 {
@@ -167,7 +168,7 @@ namespace Gallio.Model.Execution
             get
             {
                 ObjectHandle handle = (ObjectHandle)
-                    (CallContext.LogicalGetData(contextKey) ?? CallContext.GetData(illogicalContextKey));
+                    (LogicalGetData(contextKey) ?? CallContext.GetData(illogicalContextKey));
                 if (handle == null)
                     return null;
 
@@ -183,10 +184,23 @@ namespace Gallio.Model.Execution
                 else
                 {
                     ObjectHandle handle = new ObjectHandle(value);
-                    CallContext.LogicalSetData(contextKey, handle);
+                    LogicalSetData(contextKey, handle);
                     CallContext.SetData(illogicalContextKey, handle);
                 }
             }
+        }
+
+        private static void LogicalSetData(string key, object value)
+        {
+            if (! RuntimeDetection.IsUsingMono) // not implemented in mono
+                CallContext.LogicalSetData(key, value);
+        }
+
+        private static object LogicalGetData(string key)
+        {
+            if (!RuntimeDetection.IsUsingMono) // not implemented in mono
+                return CallContext.LogicalGetData(key);
+            return null;
         }
 
         /// <summary>

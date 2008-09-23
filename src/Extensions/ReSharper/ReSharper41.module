@@ -2,6 +2,10 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   <Import Project="ReSharper41.targets" />
 
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+  </PropertyGroup>
+  
   <ItemGroup>
     <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner41.csproj" />
     <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner41.Tests.csproj" />

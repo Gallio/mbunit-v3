@@ -111,7 +111,7 @@ namespace MbUnit.Samples
                     logStreamWriter.Write(ie.Url);
                 logStreamWriter.WriteLine();
 
-                logStreamWriter.EmbedImage(null, new CaptureWebPage(ie).CaptureWebPageImage(false, false, 100));
+                logStreamWriter.EmbedImage(caption + ".png", new CaptureWebPage(ie).CaptureWebPageImage(false, false, 100));
             }
         }
 

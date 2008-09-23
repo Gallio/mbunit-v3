@@ -180,8 +180,14 @@ namespace Gallio.Runtime.ConsoleSupport
                 {
                     try
                     {
-                        bool dummy = Console.CursorVisible;
-                        redirectedFlag = -1;
+                        if (Console.BufferWidth <= 0)
+                        {
+                            redirectedFlag = 1;
+                        }
+                        else
+                        {
+                            redirectedFlag = -1;
+                        }
                     }
                     catch (IOException)
                     {

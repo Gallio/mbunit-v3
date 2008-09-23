@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Text;
 
 namespace Gallio.Utilities
@@ -30,8 +31,15 @@ namespace Gallio.Utilities
         /// <param name="str">The string to truncate</param>
         /// <param name="maxLength">The maximum length of the string to retain</param>
         /// <returns>The truncated string</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="str"/> is null</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative</exception>
         public static string Truncate(string str, int maxLength)
         {
+            if (str == null)
+                throw new ArgumentNullException("str");
+            if (maxLength < 0)
+                throw new ArgumentOutOfRangeException("maxLength", maxLength, "Max length must be non-negative.");
+
             if (str.Length > maxLength)
                 return str.Substring(0, maxLength);
 
@@ -47,8 +55,15 @@ namespace Gallio.Utilities
         /// <param name="maxLength">The maximum length of the string to retain
         /// including the ellipsis mark when used</param>
         /// <returns>The truncated string</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="str"/> is null</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLength"/> is negative</exception>
         public static string TruncateWithEllipsis(string str, int maxLength)
         {
+            if (str == null)
+                throw new ArgumentNullException("str");
+            if (maxLength < 0)
+                throw new ArgumentOutOfRangeException("maxLength", maxLength, "Max length must be non-negative.");
+
             if (str.Length > maxLength)
             {
                 if (maxLength > 3)

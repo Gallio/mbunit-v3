@@ -35,7 +35,7 @@ namespace Gallio.Tests.Runtime.Hosting
             HostConfiguration config = new HostConfiguration();
             config.WriteTo(writer);
 
-            Assert.Contains(writer.ToString(), "encoding=\"utf-16\"");
+            Assert.Contains(writer.ToString(), writer.Encoding.WebName);
         }
 
         [Test]
@@ -45,10 +45,10 @@ namespace Gallio.Tests.Runtime.Hosting
             Assert.AreEqual(Encoding.Unicode.EncodingName, writer.Encoding.EncodingName);
 
             HostConfiguration config = new HostConfiguration();
-            config.ConfigurationXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><configuration />";
+            config.ConfigurationXml = "<?xml version=\"1.0\" encoding=\"utf-32\"?><configuration />";
             config.WriteTo(writer);
 
-            Assert.Contains(writer.ToString(), "encoding=\"utf-16\"");
+            Assert.Contains(writer.ToString(), writer.Encoding.WebName);
         }
     }
 }

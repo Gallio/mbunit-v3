@@ -1,5 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+  </PropertyGroup>
   
   <ItemGroup>
     <CSharpProject Include="Gallio.MSBuildTasks\Gallio.MSBuildTasks.csproj" />

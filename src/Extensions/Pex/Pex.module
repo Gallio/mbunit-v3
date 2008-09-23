@@ -2,6 +2,10 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   <Import Project="Pex.targets" />
 
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+  </PropertyGroup>
+  
   <ItemGroup>
     <CSharpProject Include="MbUnit.Pex\MbUnit.Pex.csproj" />
 

@@ -136,8 +136,20 @@ namespace Gallio.Runtime.Loader
                     if (assemblyName.FullName != assemblyName.Name)
                     {
                         AssemblyName actualAssemblyName = AssemblyName.GetAssemblyName(assemblyPath);
-                        if (assemblyName.FullName != actualAssemblyName.FullName)
-                            continue;
+
+                        if (RuntimeDetection.IsUsingMono)
+                        {
+                            // Mono does not pass in the public key token during resolve!
+                            if (assemblyName.Name != actualAssemblyName.Name
+                                || assemblyName.Version != actualAssemblyName.Version
+                                || assemblyName.CultureInfo.Name != actualAssemblyName.CultureInfo.Name)
+                                continue;
+                        }
+                        else
+                        {
+                            if (assemblyName.FullName != actualAssemblyName.FullName)
+                                continue;
+                        }
                     }
 
                     return LoadFrom(assemblyPath, reflectionOnly);

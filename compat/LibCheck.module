@@ -2,6 +2,8 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+
     <LibCheckExe>$(ToolsDir)\LibCheck\LibCheck.exe</LibCheckExe>
     <LibCheckDependencyDir>$(ToolsDir)\LibCheck\temp</LibCheckDependencyDir>
     

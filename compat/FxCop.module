@@ -1,32 +1,34 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-    <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
-    <PropertyGroup>
-        <FxCopToolDir>$(ProgramFiles)\Microsoft FxCop 1.36</FxCopToolDir>
-    </PropertyGroup>    
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+    
+    <FxCopToolDir>$(ProgramFiles)\Microsoft FxCop 1.36</FxCopToolDir>
+  </PropertyGroup>  
 
-    <ItemGroup>
-        <FxCopProject Include="API.fxcop" />
-	<FxCopProject Include="Non-API.fxcop" />
-    </ItemGroup>
+  <ItemGroup>
+    <FxCopProject Include="API.fxcop" />
+    <FxCopProject Include="Non-API.fxcop" />
+  </ItemGroup>
 
-    <Target Name="AfterTest" 
-            DependsOnTargets="GenerateFxCopReports">
-    </Target>
+  <Target Name="AfterTest" 
+      DependsOnTargets="GenerateFxCopReports">
+  </Target>
 
-    <Target Name="GenerateFxCopReports">
-        <Message Text="Generating code analysis reports..." 
-                 Importance="High" />
+  <Target Name="GenerateFxCopReports">
+    <Message Text="Generating code analysis reports..." 
+         Importance="High" />
 
-        <Warning Text="Microsoft FxCop must be installed so that code analysis reports can be generated.  Look in tools\Setup Files for the Microsoft FxCop installer."
-                 Condition="! Exists('$(FxCopToolDir)\FxCopCmd.exe')" />
+    <Warning Text="Microsoft FxCop must be installed so that code analysis reports can be generated.  Look in tools\Setup Files for the Microsoft FxCop installer."
+         Condition="! Exists('$(FxCopToolDir)\FxCopCmd.exe')" />
 
-        <FxCop Condition="Exists('$(FxCopToolDir)\FxCopCmd.exe')"
-            ToolPath="$(FxCopToolDir)"
-            ProjectFile="%(FxCopProject.FullPath)"
-            AnalysisReportFileName="$(ReportDir)\FxCopReport-%(FxCopProject.Filename).xml"
-            ApplyOutXsl="False"
-            ContinueOnError="True"
-        />
-    </Target>
+    <FxCop Condition="Exists('$(FxCopToolDir)\FxCopCmd.exe')"
+      ToolPath="$(FxCopToolDir)"
+      ProjectFile="%(FxCopProject.FullPath)"
+      AnalysisReportFileName="$(ReportDir)\FxCopReport-%(FxCopProject.Filename).xml"
+      ApplyOutXsl="False"
+      ContinueOnError="True"
+    />
+  </Target>
 </Project>

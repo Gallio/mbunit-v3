@@ -46,7 +46,9 @@ namespace Gallio.Model.Diagnostics
     /// </summary>
     public static class StackTraceFilter
     {
-        private static readonly Regex StackFrameRegex = new Regex(@" (?<typeFullName>[^ ]+[^ .])\.(?<methodName>[^ [(]+)(?<genericParams>(?:\[[^(]*\])?)\((?<methodParams>[^)]*)\)",
+        // The " ?" in between generic params and method params is to allow for an extra
+        // space that Mono inserts there (but the CLR does not).
+        private static readonly Regex StackFrameRegex = new Regex(@" (?<typeFullName>[^ ]+[^ .])\.(?<methodName>[^ [(]+)(?<genericParams>(?:\[[^(]*\])?) ?\((?<methodParams>[^)]*)\)",
             RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
         /// <summary>

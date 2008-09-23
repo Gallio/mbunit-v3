@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.Serialization;
 using System.Text;
 using Gallio.Collections;
 using Gallio.Reflection;
@@ -36,7 +37,7 @@ namespace Gallio.Model.Logging
     public struct Marker : IEquatable<Marker>
     {
         private readonly string @class;
-        private readonly SortedDictionary<string, string> attributes;
+        private readonly AttributeDictionary attributes;
 
         /// <summary>
         /// Standard marker class for assertion failures.
@@ -280,11 +281,11 @@ namespace Gallio.Model.Logging
                 ValidateAttribute(pair.Key, pair.Value);
 
             this.@class = @class;
-            this.attributes = new SortedDictionary<string, string>(attributes);
+            this.attributes = new AttributeDictionary(attributes);
         }
 
         // Optimized constructor when arguments are already known to be valid.
-        private Marker(string @class, SortedDictionary<string, string> attributes)
+        private Marker(string @class, AttributeDictionary attributes)
         {
             this.@class = @class;
             this.attributes = attributes;
@@ -320,7 +321,7 @@ namespace Gallio.Model.Logging
         {
             ValidateAttribute(name, value);
 
-            var newAttributes = new SortedDictionary<string, string>(attributes) { { name, value } };
+            var newAttributes = new AttributeDictionary(attributes) { { name, value } };
             return new Marker(@class, newAttributes);
         }
 
@@ -403,6 +404,31 @@ namespace Gallio.Model.Logging
             ValidateIdentifier(name);
             if (value == null)
                 throw new ArgumentNullException("value");
+        }
+
+        // This is a workaround because Mono's implementation of SortedDictionary does not support serialization.
+        // https://bugzilla.novell.com/show_bug.cgi?id=349053
+        [Serializable]
+        private sealed class AttributeDictionary : SortedDictionary<string, string>, ISerializable
+        {
+            private const string ContentsKey = "Contents";
+
+            public AttributeDictionary(IDictionary<string, string> other)
+                : base(other)
+            {
+            }
+
+            private AttributeDictionary(SerializationInfo info, StreamingContext context)
+            {
+                foreach (KeyValuePair<string, string> pair in
+                    (KeyValuePair<string, string>[]) info.GetValue(ContentsKey, typeof(KeyValuePair<string, string>[])))
+                    Add(pair.Key, pair.Value);
+            }
+
+            public void GetObjectData(SerializationInfo info, StreamingContext context)
+            {
+                info.AddValue(ContentsKey, GenericUtils.ToArray(this));
+            }
         }
     }
 }

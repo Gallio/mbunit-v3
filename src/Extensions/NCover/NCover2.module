@@ -2,6 +2,10 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   <Import Project="NCover2.targets" />
   
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+  </PropertyGroup>
+  
   <ItemGroup>
     <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration2.csproj" />
 

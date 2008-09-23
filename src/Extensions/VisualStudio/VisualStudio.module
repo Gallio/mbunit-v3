@@ -2,6 +2,10 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   <Import Project="VisualStudio.targets" />
   
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+  </PropertyGroup>
+  
   <ItemGroup>
     <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests.csproj" />

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using Gallio.Runtime;
 
 namespace Gallio.Reflection.Impl
 {
@@ -36,9 +37,17 @@ namespace Gallio.Reflection.Impl
             get
             {
                 if (resolver == null)
-                    Interlocked.CompareExchange<IDebugSymbolResolver>(ref resolver, new ComDebugSymbolResolver(), null);
+                    Interlocked.CompareExchange(ref resolver, CreateResolver(), null);
                 return resolver;
             }
+        }
+
+        private static IDebugSymbolResolver CreateResolver()
+        {
+            if (RuntimeDetection.IsUsingMono)
+                return new MonoDebugSymbolResolver();
+
+            return new ComDebugSymbolResolver();
         }
 
         /// <summary>

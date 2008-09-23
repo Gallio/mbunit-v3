@@ -15,6 +15,9 @@
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
     <SourceServerIndexerPath Condition="! Exists('$(SourceServerIndexerPath)')">$(ProgramFiles)\Debugging Tools for Windows (x86)\srcsrv\ssindex.cmd</SourceServerIndexerPath>
     <NCoverExplorerPath>$(ToolsDir)\NCoverExplorer</NCoverExplorerPath>
+
+    <VersionSuffix></VersionSuffix>
+    <VersionSuffix Condition="'$(Runtime)'=='Mono'">-Mono</VersionSuffix>
   </PropertyGroup>
 
   <!-- ROOT CONTENT -->
@@ -134,6 +137,7 @@
   </PropertyGroup>
 
   <Target Name="BuildInstaller"
+          Condition="'$(Runtime)'!='Mono'"
           DependsOnTargets="BuildInstaller-x86;BuildInstaller-x64" />
 
   <Target Name="PrepareToBuildInstaller">
@@ -156,7 +160,7 @@
              Targets="Build"
              Properties="$(InstallerWixProperties);Platform=x86" />
 
-    <Copy SourceFiles="$(SourceDir)\Installer.Wix\bin\x86\Release\GallioBundle-$(Version)-Setup-x86.msi"
+    <Copy SourceFiles="$(SourceDir)\Installer.Wix\bin\x86\Release\GallioBundle-$(Version)$(VersionSuffix)-Setup-x86.msi"
           DestinationFolder="$(DistDir)" />
   </Target>
 
@@ -168,11 +172,12 @@
              Targets="Build"
              Properties="$(InstallerWixProperties);Platform=x64" />
 	     
-    <Copy SourceFiles="$(SourceDir)\Installer.Wix\bin\x64\Release\GallioBundle-$(Version)-Setup-x64.msi"
+    <Copy SourceFiles="$(SourceDir)\Installer.Wix\bin\x64\Release\GallioBundle-$(Version)$(VersionSuffix)-Setup-x64.msi"
           DestinationFolder="$(DistDir)" />
   </Target>
 
   <Target Name="CleanInstaller"
+          Condition="'$(Runtime)'!='Mono'"
           DependsOnTargets="CleanInstaller-x86;CleanInstaller-x64">
     <Delete Files="$(InstallerFeatureFile)" />
   </Target>
@@ -199,7 +204,7 @@
 
     <Zip Files="@(ZipFiles)"
          WorkingDirectory="$(ImageDir)"
-         ZipFileName="$(DistDir)\GallioBundle-$(Version).zip"
+         ZipFileName="$(DistDir)\GallioBundle-$(Version)$(VersionSuffix).zip"
          ZipLevel="9" />
   </Target>
 
@@ -223,7 +228,7 @@
   <UsingTask AssemblyFile="$(NCoverExplorerPath)\NCoverExplorer.MSBuildTasks.dll" TaskName="NCoverExplorer.MSBuildTasks.NCoverExplorer" />
 
   <!-- Note: The Gallio MSBuildTasks assembly gets loaded lazily so it's ok
-       to reference it even when it has yet to be build. -->
+       to reference it even when it has yet to be built. -->
   <UsingTask AssemblyFile="$(ImageDir)\bin\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
 
   <PropertyGroup>
@@ -234,7 +239,8 @@
     <Message Text="Running unit tests..."
              Importance="High" />
 
-    <Gallio Assemblies="@(TestAssembly)"
+    <Gallio Condition="'$(Runtime)'=='CLR'"
+            Assemblies="@(TestAssembly)"
             WorkingDirectory="$(TempDir)"
             ApplicationBaseDirectory="$(BuildDir)"
             ReportDirectory="$(ReportDir)"
@@ -243,6 +249,12 @@
             ShowReports="$(ShowReports)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
+
+    <Exec Condition="'$(Runtime)'=='Mono'"
+          Command="&quot;$(MonoExe)&quot; &quot;$(ImageDir)\bin\Gallio.Echo.exe&quot; @(TestAssembly->'&quot;%(FullPath)&quot;', ' ') /rd:&quot;$(ReportDir)&quot; /rt:&quot;$(ReportTypes)&quot; /r:&quot;$(TestRunnerType)&quot;"
+	  WorkingDirectory="$(TempDir)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Exec>
 
     <NCoverExplorer Condition="$(Coverage) and Exists('$(TempDir)\Coverage.xml')"
                     Exclusions="Assembly=*.Tests;Assembly=*.TestResources;Assembly=JetBrains.*"

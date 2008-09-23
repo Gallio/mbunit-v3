@@ -57,9 +57,16 @@ namespace Gallio.Runtime.Hosting
 
             // TODO: Might need to be more careful about how the Evidence is derived.
             Evidence evidence = AppDomain.CurrentDomain.Evidence;
-            PermissionSet defaultPermissionSet = new PermissionSet(PermissionState.Unrestricted);
-            StrongName[] fullTrustAssemblies = new StrongName[0];
-            return AppDomain.CreateDomain(appDomainSetup.ApplicationName, evidence, appDomainSetup, defaultPermissionSet, fullTrustAssemblies);
+            if (RuntimeDetection.IsUsingMono)
+            {
+                return AppDomain.CreateDomain(appDomainSetup.ApplicationName, evidence, appDomainSetup);
+            }
+            else
+            {
+                PermissionSet defaultPermissionSet = new PermissionSet(PermissionState.Unrestricted);
+                StrongName[] fullTrustAssemblies = new StrongName[0];
+                return AppDomain.CreateDomain(appDomainSetup.ApplicationName, evidence, appDomainSetup, defaultPermissionSet, fullTrustAssemblies);
+            }
         }
     }
 }

@@ -193,6 +193,7 @@
     <Compile Include="Reflection\Impl\BaseReflectionPolicy.cs" />
     <Compile Include="Reflection\Impl\CecilReflectionPolicy.cs" />
     <Compile Include="Reflection\Impl\IUnresolvedCodeElement.cs" />
+    <Compile Include="Reflection\Impl\MonoDebugSymbolResolver.cs" />
     <Compile Include="Reflection\ReflectionOnlyAssemblyLoader.cs" />
     <Compile Include="Runner\Caching\IDiskCacheGroup.cs" />
     <Compile Include="Runner\Caching\IDiskCacheGroupCollection.cs" />

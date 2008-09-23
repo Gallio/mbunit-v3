@@ -24,6 +24,8 @@ namespace Gallio.Tests.Utilities
     public class StringUtilsTest
     {
         [Test]
+        [Row("string", -1, "", ExpectedException=typeof(ArgumentOutOfRangeException))]
+        [Row(null, 0, "", ExpectedException=typeof(ArgumentNullException))]
         [Row("string", 0, "")]
         [Row("string", 3, "str")]
         [Row("string", 5, "strin")]
@@ -36,6 +38,8 @@ namespace Gallio.Tests.Utilities
         }
 
         [Test]
+        [Row("string", -1, "", ExpectedException = typeof(ArgumentOutOfRangeException))]
+        [Row(null, 0, "", ExpectedException = typeof(ArgumentNullException))]
         [Row("string", 0, "")]
         [Row("string", 1, "s")]
         [Row("string", 2, "st")]

@@ -2,6 +2,10 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   <Import Project="MSTest.targets" />
   
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+  </PropertyGroup>
+  
   <ItemGroup>
     <CSharpProject Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.csproj" />
     <CSharpProject Include="Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources.csproj" />
