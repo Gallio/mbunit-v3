@@ -163,6 +163,21 @@ namespace Gallio.Framework.Utilities
         }
 
         /// <summary>
+        /// Gets all test step runs with the given code reference.
+        /// </summary>
+        /// <remarks>
+        /// Can only be called after the tests have run.
+        /// </remarks>
+        /// <param name="codeReference">The code reference of the test</param>
+        /// <returns>The enumeration of test step runs, or null if not found</returns>
+        public IEnumerable<TestStepRun> GetTestStepRuns(CodeReference codeReference)
+        {
+            foreach (TestStepRun run in Report.TestPackageRun.AllTestStepRuns)
+                if (run.Step.CodeReference == codeReference)
+                    yield return run;
+        }
+
+        /// <summary>
         /// Gets the primary test step run of a test with the given code reference.
         /// If there are multiple primary steps, returns the first one found.
         /// </summary>
@@ -173,10 +188,11 @@ namespace Gallio.Framework.Utilities
         /// <returns>The first test step run, or null if not found</returns>
         public TestStepRun GetPrimaryTestStepRun(CodeReference codeReference)
         {
-            return GenericUtils.Find(Report.TestPackageRun.AllTestStepRuns, delegate(TestStepRun run)
-            {
-                return run.Step.IsPrimary && run.Step.CodeReference == codeReference;
-            });
+            foreach (TestStepRun run in GetTestStepRuns(codeReference))
+                if (run.Step.IsPrimary)
+                    return run;
+
+            return null;
         }
 
         /// <summary>

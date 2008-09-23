@@ -13,21 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Icarus.Controls
+using System;
+using System.Collections.Generic;
+using System.Text;
+using NUnit.Framework;
+using NUnit.Framework.Extensions;
+
+namespace Gallio.NUnitAdapter.TestResources
 {
     /// <summary>
-    /// Provides constant names for test progress bar styles.
+    /// Verifies that NUnit addins are registered properly.
     /// </summary>
-    public static class TestStatusBarStyles
+    [TestFixture]
+    public class AddinsTest
     {
-        /// <summary>
-        /// Any failures cause the whole bar to turn the fail test colour (like NUnit).
-        /// </summary>
-        public const string UnitTest = "UnitTest";
-
-        /// <summary>
-        /// Each section (pass/fail/skip) is kept separate (like MbUnit).
-        /// </summary>
-        public const string Integration = "Integration";
+        [RowTest]
+        [Row(1, 2, 3, Description="Pass")]
+        [Row(2, 2, 5, Description="Fail")]
+        public void RowTest(int x, int y, int z)
+        {
+            Assert.AreEqual(z, x + y);
+        }
     }
 }

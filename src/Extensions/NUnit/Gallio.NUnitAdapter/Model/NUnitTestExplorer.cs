@@ -257,6 +257,12 @@ namespace Gallio.NUnitAdapter.Model
         /// </summary>
         private static ICodeElementInfo ParseTestCaseName(ICodeElementInfo parent, string name)
         {
+            // Handle row-test naming scheme.
+            int firstParen = name.IndexOf('(');
+            if (firstParen >= 0)
+                name = name.Substring(0, firstParen);
+
+            // Parse the identifier.
             if (IsProbableIdentifier(name))
             {
                 IAssemblyInfo assembly = ReflectionUtils.GetAssembly(parent);
