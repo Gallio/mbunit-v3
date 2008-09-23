@@ -133,23 +133,11 @@ namespace Gallio.Runtime.Loader
 
                 if (File.Exists(assemblyPath))
                 {
-                    if (assemblyName.FullName != assemblyName.Name)
+                    if (! IsResolvingByPartialName(assemblyName))
                     {
                         AssemblyName actualAssemblyName = AssemblyName.GetAssemblyName(assemblyPath);
-
-                        if (RuntimeDetection.IsUsingMono)
-                        {
-                            // Mono does not pass in the public key token during resolve!
-                            if (assemblyName.Name != actualAssemblyName.Name
-                                || assemblyName.Version != actualAssemblyName.Version
-                                || assemblyName.CultureInfo.Name != actualAssemblyName.CultureInfo.Name)
-                                continue;
-                        }
-                        else
-                        {
-                            if (assemblyName.FullName != actualAssemblyName.FullName)
-                                continue;
-                        }
+                        if (assemblyName.FullName != actualAssemblyName.FullName)
+                            continue;
                     }
 
                     return LoadFrom(assemblyPath, reflectionOnly);
@@ -157,6 +145,23 @@ namespace Gallio.Runtime.Loader
             }
 
             return null;
+        }
+
+        private static bool IsResolvingByPartialName(AssemblyName name)
+        {
+            // On CLR, the full name is just the display name because none of the
+            // other properties of the assembly name are set.
+            if (name.FullName == name.Name)
+                return true;
+
+            // On Mono, the Version is set to 0.0.0.0 but there's no public key token
+            // during partial name resolution.
+            if (RuntimeDetection.IsUsingMono
+                && name.Version == new Version(0, 0, 0, 0)
+                && name.GetPublicKeyToken() == null)
+                return true;
+
+            return false;
         }
 
         private static Assembly LoadFrom(string file, bool reflectionOnly)
