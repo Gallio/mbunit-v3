@@ -14,6 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Security;
 
 namespace Gallio.Runtime
 {
@@ -33,6 +37,66 @@ namespace Gallio.Runtime
         public static bool IsUsingMono
         {
             get { return Type.GetType(@"Mono.Runtime") != null; }
+        }
+
+        /// <summary>
+        /// When using Mono, creates <see cref="ProcessStartInfo" /> that re-enters the Mono runtime
+        /// if the executable is .Net otherwise creates a standard process start info.
+        /// </summary>
+        /// <param name="executablePath">The executable path</param>
+        /// <param name="arguments">The arguments</param>
+        /// <returns>The process start info</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>
+        /// or <paramref name="arguments"/> is null</exception>
+        public static ProcessStartInfo CreateReentrantProcessStartInfo(string executablePath, string arguments)
+        {
+            if (executablePath == null)
+                throw new ArgumentNullException("executablePath");
+            if (arguments == null)
+                throw new ArgumentNullException("arguments");
+
+            if (IsUsingMono && IsDotNetExecutable(executablePath))
+            {
+                string monoExe = GetCurrentMonoRuntimePath();
+                if (monoExe != null)
+                    return new ProcessStartInfo(monoExe, string.Concat("\"", executablePath, "\" ", arguments));
+            }
+
+            return new ProcessStartInfo(executablePath, arguments);
+        }
+
+        private static string GetCurrentMonoRuntimePath()
+        {
+            Process process = Process.GetCurrentProcess();
+            if (process.MainModule != null)
+                return process.MainModule.FileName;
+
+            return null;
+        }
+
+        private static bool IsDotNetExecutable(string executablePath)
+        {
+            try
+            {
+                AssemblyName.GetAssemblyName(executablePath);
+                return true;
+            }
+            catch (SecurityException)
+            {
+                return false;
+            }
+            catch (BadImageFormatException)
+            {
+                return false;
+            }
+            catch (FileLoadException)
+            {
+                return false;
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
         }
     }
 }

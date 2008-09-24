@@ -127,6 +127,9 @@ namespace Gallio.Runtime.Remoting
             //       The problem will manifest as an unhandled exception due to an invalid cross-AppDomain
             //       call just as the AppDomain is being unloaded.
             //       -- Jeff.
+            if (RuntimeDetection.IsUsingMono)
+                return; // Don't need this hack on Mono.  Actually, it causes hangs.
+
             AppDomain.CurrentDomain.DomainUnload += delegate
             {
                 foreach (IChannel channel in ChannelServices.RegisteredChannels)

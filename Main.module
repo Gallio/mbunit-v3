@@ -234,6 +234,7 @@
   <PropertyGroup>
     <TestRunnerType Condition="$(Coverage)">NCover2</TestRunnerType>
     <TestRunnerType Condition="! $(Coverage)">IsolatedProcess</TestRunnerType>
+    <TestRunnerType Condition="'$(Runtime)'=='Mono'">IsolatedAppDomain</TestRunnerType>
   </PropertyGroup>
   <Target Name="RunTestAssemblies">
     <Message Text="Running unit tests..."

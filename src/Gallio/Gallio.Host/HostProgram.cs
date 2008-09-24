@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Gallio.Reflection;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Hosting;
@@ -52,6 +54,7 @@ namespace Gallio.Host
             UnhandledExceptionPolicy.ReportUnhandledException += HandleUnhandledExceptionNotification;
             Console.WriteLine(String.Format("* Host started at {0}.", DateTime.Now));
 
+            bool fatal = false;
             try
             {
                 RunEndpoint();
@@ -59,14 +62,29 @@ namespace Gallio.Host
             catch (Exception ex)
             {
                 Console.WriteLine(String.Format("* Fatal exception: {0}", ExceptionUtils.SafeToString(ex)));
+                fatal = true;
             }
 
             Console.WriteLine(String.Format("* Host stopped at {0}.", DateTime.Now));
 
+            ForceExit(fatal);
+            return 0;
+        }
+
+        private static void ForceExit(bool fatal)
+        {
             // Force the host to terminate in case there are some recalcitrant foreground
             // threads still kicking around.
+
+            if (RuntimeDetection.IsUsingMono && fatal)
+            {
+                // On Mono, we can encounter (unexplained) CannotUnloadAppDomainExceptions
+                // which prevent the process from terminating even when we call Exit.
+                // So in the interest of robustness, we give it a little shove...
+                Process.GetCurrentProcess().Kill();
+            }
+
             Environment.Exit(0);
-            return 0;
         }
 
         private bool ValidateArguments()
@@ -102,51 +120,59 @@ namespace Gallio.Host
                     Arguments.ApplicationBaseDirectory, Arguments.ConfigurationFile, Arguments.ShadowCopy);
 
                 Type endpointType = typeof(HostEndpoint);
-                HostEndpoint endpoint = (HostEndpoint) appDomain.CreateInstanceFromAndUnwrap(
-                            AssemblyUtils.GetAssemblyLocalPath(endpointType.Assembly), endpointType.FullName);
-
-                if (Arguments.OwnerProcessId >= 0)
+                using (HostEndpoint endpoint = (HostEndpoint)appDomain.CreateInstanceFromAndUnwrap(
+                    AssemblyUtils.GetAssemblyLocalPath(endpointType.Assembly), endpointType.FullName))
                 {
-                    if (! endpoint.SetOwnerProcess(Arguments.OwnerProcessId))
+                    if (Arguments.OwnerProcessId >= 0)
                     {
-                        Console.WriteLine(String.Format("* The owner process with PID {0} does not appear to be running!", Arguments.OwnerProcessId));
-                        return;
+                        if (!endpoint.SetOwnerProcess(Arguments.OwnerProcessId))
+                        {
+                            Console.WriteLine(
+                                String.Format("* The owner process with PID {0} does not appear to be running!",
+                                    Arguments.OwnerProcessId));
+                            return;
+                        }
                     }
-                }
 
-                if (Arguments.IpcPortName != null)
-                {
-                    Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'", Arguments.IpcPortName));
-                    endpoint.InitializeIpcChannel(Arguments.IpcPortName);
-                }
-                else
-                {
-                    Console.WriteLine(String.Format("* Listening for connections on TCP port: '{0}'", Arguments.TcpPortNumber));
-                    endpoint.InitializeTcpChannel(Arguments.TcpPortNumber);
-                }
+                    if (Arguments.IpcPortName != null)
+                    {
+                        Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'",
+                            Arguments.IpcPortName));
+                        endpoint.InitializeIpcChannel(Arguments.IpcPortName);
+                    }
+                    else
+                    {
+                        Console.WriteLine(String.Format("* Listening for connections on TCP port: '{0}'",
+                            Arguments.TcpPortNumber));
+                        endpoint.InitializeTcpChannel(Arguments.TcpPortNumber);
+                    }
 
-                TimeSpan? watchdogTimeout = Arguments.TimeoutSeconds <= 0
-                    ? (TimeSpan?) null
-                    : TimeSpan.FromSeconds(Arguments.TimeoutSeconds);
+                    TimeSpan? watchdogTimeout = Arguments.TimeoutSeconds <= 0
+                        ? (TimeSpan?) null
+                        : TimeSpan.FromSeconds(Arguments.TimeoutSeconds);
 
-                HostTerminationReason reason = endpoint.Run(watchdogTimeout);
+                    HostTerminationReason reason = endpoint.Run(watchdogTimeout);
 
-                switch (reason)
-                {
-                    case HostTerminationReason.WatchdogTimeout:
-                        Console.WriteLine("* Watchdog timer expired!");
-                        break;
+                    switch (reason)
+                    {
+                        case HostTerminationReason.WatchdogTimeout:
+                            Console.WriteLine("* Watchdog timer expired!");
+                            break;
 
-                    case HostTerminationReason.Disowned:
-                        Console.WriteLine("* Owner process terminated abruptly!");
-                        break;
+                        case HostTerminationReason.Disowned:
+                            Console.WriteLine("* Owner process terminated abruptly!");
+                            break;
 
-                    case HostTerminationReason.Disposed:
-                        break;
+                        case HostTerminationReason.Disposed:
+                            break;
+                    }
                 }
             }
             finally
             {
+                // For some reason this is throwing CannotUnloadAppDomainException on Mono 1.9.1.
+                // After that happens, the process refuses to shut down normally.
+                // -- Jeff.
                 if (appDomain != null)
                     AppDomain.Unload(appDomain);
             }

@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Gallio.Runtime;
 using Gallio.Utilities;
 
 namespace Gallio.Concurrency
@@ -250,7 +251,7 @@ namespace Gallio.Concurrency
             if (captureConsoleError)
                 consoleErrorCaptureWriter = new StringWriter();
 
-            ProcessStartInfo startInfo = new ProcessStartInfo(executablePath, arguments);
+            ProcessStartInfo startInfo = CreateProcessStartInfo();
 
             startInfo.WorkingDirectory = workingDirectory;
             startInfo.UseShellExecute = useShellExecute;
@@ -268,12 +269,7 @@ namespace Gallio.Concurrency
             process.EnableRaisingEvents = true;
 
             StartLogging();
-
-            // Handle process exit including the case where the process might already
-            // have exited just prior to adding the event handler.
-            process.Exited += delegate { HandleProcessExit(); };
-            if (process.HasExited)
-                HandleProcessExit();
+            StartProcessExitDetection();
         }
 
         /// <summary>
@@ -288,6 +284,42 @@ namespace Gallio.Concurrency
         protected virtual Process StartProcess(ProcessStartInfo startInfo)
         {
             return Process.Start(startInfo);
+        }
+
+        private void StartProcessExitDetection()
+        {
+            if (RuntimeDetection.IsUsingMono)
+            {
+                // On Mono 1.9.1, the process exited event does not seem to be reliably delivered.
+                // So we have to hack around it...
+                var thread = new Thread(() =>
+                {
+                    try
+                    {
+                        while (!process.HasExited)
+                            Thread.Sleep(100);
+                    }
+                    catch
+                    {
+                        // Give up.
+                    }
+                    finally
+                    {
+                        HandleProcessExit();
+                    }
+                });
+
+                thread.IsBackground = true;
+                thread.Start();
+            }
+            else
+            {
+                // Handle process exit including the case where the process might already
+                // have exited just prior to adding the event handler.
+                process.Exited += delegate { HandleProcessExit(); };
+                if (process.HasExited)
+                    HandleProcessExit();
+            }
         }
 
         private void HandleProcessExit()
@@ -322,6 +354,11 @@ namespace Gallio.Concurrency
 
             WaitForConsoleToBeCompletelyReadOnceProcessHasExited();
             return true;
+        }
+
+        private ProcessStartInfo CreateProcessStartInfo()
+        {
+            return RuntimeDetection.CreateReentrantProcessStartInfo(executablePath, arguments);
         }
 
         private void StartLogging()
@@ -373,6 +410,9 @@ namespace Gallio.Concurrency
 
         private void WaitForConsoleToBeCompletelyReadOnceProcessHasExited()
         {
+            if (RuntimeDetection.IsUsingMono)
+                return; // hangs on Mono 1.9.1.  Seems we never get the final events.
+
             // Since the process has exited, it should not take too long to read
             // its remaining output buffer.  The extra synchronization code here
             // helps clients of the ProcessTask to handle process termination more

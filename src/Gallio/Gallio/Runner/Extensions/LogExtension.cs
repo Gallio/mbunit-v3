@@ -41,8 +41,11 @@ namespace Gallio.Runner.Extensions
         {
             Events.ExploreFinished += delegate(object sender, ExploreFinishedEventArgs e)
             {
-                foreach (AnnotationData annotation in e.Report.TestModel.Annotations)
-                    LogAnnotation(annotation);
+                if (e.Success)
+                {
+                    foreach (AnnotationData annotation in e.Report.TestModel.Annotations)
+                        LogAnnotation(annotation);
+                }
             };
 
             Events.TestStepStarted += delegate(object sender, TestStepStartedEventArgs e)

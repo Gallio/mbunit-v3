@@ -12,6 +12,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#define USE_IPC
 
 using System;
 using System.Diagnostics;
@@ -145,7 +146,7 @@ namespace Gallio.Runtime.Hosting
         protected virtual void PrepareConnection(string uniqueId, out string hostConnectionArguments,
             out Func<IClientChannel> clientChannelFactory, out Func<IServerChannel> callbackChannelFactory)
         {
-#if true
+#if USE_IPC
             string portName = @"IsolatedProcessHost." + uniqueId;
 
             hostConnectionArguments = "/ipc-port:" + portName;
@@ -157,9 +158,9 @@ namespace Gallio.Runtime.Hosting
             // remoting timeouts that were occurring.  In due time the whole channel-based
             // remoting infrastructure will probably need to be overhauled to use truly
             // bidirectional channels.  -- Jeff.
-            hostArguments = "/tcp-port:33333";
-            clientChannelFactory = delegate { return new BinaryTcpClientChannel("localhost", 33333); };
-            callbackChannelFactory = delegate { return new BinaryTcpServerChannel("localhost", 33334); };
+            hostConnectionArguments = "/tcp-port:63217";
+            clientChannelFactory = delegate { return new BinaryTcpClientChannel("localhost", 63217); };
+            callbackChannelFactory = delegate { return new BinaryTcpServerChannel("localhost", 63218); };
 #endif
         }
 
