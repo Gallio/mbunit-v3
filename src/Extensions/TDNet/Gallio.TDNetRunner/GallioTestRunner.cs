@@ -69,17 +69,19 @@ namespace Gallio.TDNetRunner
             switch (member.MemberType)
             {
                 case MemberTypes.TypeInfo:
+                case MemberTypes.NestedType:
                     Type type = (Type)member;
-                    // FIXME: Should we always include derived types?
                     filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(type.FullName), true));
                     break;
 
+                case MemberTypes.Constructor:
+                case MemberTypes.Event:
+                case MemberTypes.Field:
+                case MemberTypes.Property:
                 case MemberTypes.Method:
-                    MethodInfo methodInfo = (MethodInfo)member;
                     // We look for the declaring type so we can also use a TypeFilter
                     // to avoid ambiguity
-                    Type declaringType = methodInfo.DeclaringType;
-                    // FIXME: Should we always include derived types?
+                    Type declaringType = member.DeclaringType;
                     filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(declaringType.FullName), true));
                     filters.Add(new MemberFilter<ITest>(new EqualityFilter<string>(member.Name)));
                     break;
@@ -230,8 +232,6 @@ namespace Gallio.TDNetRunner
                     return TestRunState.Failure;
 
                 case ResultCode.NoTests:
-                    return TestRunState.NoTests;
-
                 case ResultCode.Success:
                     return TestRunState.Success;
             }

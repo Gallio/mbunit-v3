@@ -195,7 +195,7 @@ namespace Gallio.TDNetRunner.Tests
         [Row(ResultCode.Failure, TestRunState.Failure)]
         [Row(ResultCode.FatalException, TestRunState.Error)]
         [Row(ResultCode.InvalidArguments, TestRunState.Error)]
-        [Row(ResultCode.NoTests, TestRunState.NoTests)]
+        [Row(ResultCode.NoTests, TestRunState.Success)]
         [Row(ResultCode.Success, TestRunState.Success)]
         public void RunReturnsCorrectResultCode(int resultCode, TestRunState expectedRunState)
         {
