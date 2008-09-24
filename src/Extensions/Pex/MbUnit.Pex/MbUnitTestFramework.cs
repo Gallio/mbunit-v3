@@ -138,10 +138,10 @@ namespace MbUnit.Pex
                 MetadataExpression.String(message)));
         }
 
-        public override void MarkExpectedException(MethodDefinitionBuilder method, Type exceptionType)
+        public override void MarkExpectedException(VisibilityContext visibility, MethodDefinitionBuilder method, Exception exception)
         {
             method.CustomAttributes.Add(new CustomAttributeBuilder(ExpectedExceptionAttributeConstructorWithType,
-                MetadataExpression.TypeOf(exceptionType)));
+                MetadataExpression.TypeOf(exception.GetType())));
         }
 
         public override void MakeInconclusive(MethodDefinitionBuilder method, string message)
