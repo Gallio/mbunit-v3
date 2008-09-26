@@ -52,9 +52,6 @@
   <ItemGroup>
     <Compile Include="Framework\ApartmentStateTest.cs" />
     <Compile Include="Framework\AssertOverSyntaxTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\SampleComparableTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\SampleEquatableTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\SampleExceptionTest.cs" />
     <Compile Include="Compatibility\Framework\OldArrayAssertTest.cs" />
     <Compile Include="Framework\AssertExTest.cs" />
     <Compile Include="Framework\AssertImplementationConsistencyTest.cs" />
