@@ -41,31 +41,35 @@ namespace Gallio.Icarus
         {
             annotationsListView.Items.Clear();
             int error = 0, warning = 0, info = 0;
-            foreach (AnnotationData annotationData in testController.Report.TestModel.Annotations)
+
+            testController.Report.Read(report =>
             {
-                switch (annotationData.Type)
+                foreach (AnnotationData annotationData in report.TestModel.Annotations)
                 {
-                    case AnnotationType.Error:
-                        if (showErrorsToolStripButton.Checked)
-                            AddListViewItem(annotationData, 0);
-                        error++;
-                        break;
-                    case AnnotationType.Warning:
-                        if (showWarningsToolStripButton.Checked)
-                            AddListViewItem(annotationData, 1);
-                        warning++;
-                        break;
-                    case AnnotationType.Info:
-                        if (showInfoToolStripButton.Checked)
-                            AddListViewItem(annotationData, 2);
-                        info++;
-                        break;
+                    switch (annotationData.Type)
+                    {
+                        case AnnotationType.Error:
+                            if (showErrorsToolStripButton.Checked)
+                                AddListViewItem(annotationData, 0);
+                            error++;
+                            break;
+                        case AnnotationType.Warning:
+                            if (showWarningsToolStripButton.Checked)
+                                AddListViewItem(annotationData, 1);
+                            warning++;
+                            break;
+                        case AnnotationType.Info:
+                            if (showInfoToolStripButton.Checked)
+                                AddListViewItem(annotationData, 2);
+                            info++;
+                            break;
+                    }
                 }
-            }
+            });
+
             showErrorsToolStripButton.Text = string.Format("{0} Errors", error);
             showWarningsToolStripButton.Text = string.Format("{0} Warnings", warning);
             showInfoToolStripButton.Text = string.Format("{0} Info", info);
-
             if (annotationsListView.Items.Count > 0)
                 Show();
         }

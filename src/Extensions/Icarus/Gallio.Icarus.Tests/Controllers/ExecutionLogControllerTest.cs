@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
+using Gallio.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
@@ -54,7 +55,7 @@ namespace Gallio.Icarus.Tests.Controllers
             ITestController testController = SetupTestController();
             Report report = new Report();
             report.TestPackageRun = new TestPackageRun();
-            Expect.Call(testController.Report).Return(report).Repeat.Any();
+            Expect.Call(testController.Report).Return(new LockBox<Report>(report)).Repeat.Any();
             ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
             Expect.Call(testController.Model).Return(testTreeModel).Repeat.Twice();
             TestTreeNode root = new TestTreeNode("root", "root", "root");
@@ -82,7 +83,7 @@ namespace Gallio.Icarus.Tests.Controllers
             ITestController testController = SetupTestController();
             Report report = new Report();
             report.TestPackageRun = new TestPackageRun();
-            Expect.Call(testController.Report).Return(report).Repeat.Times(3);
+            Expect.Call(testController.Report).Return(new LockBox<Report>(report)).Repeat.Times(3);
             mocks.ReplayAll();
             ExecutionLogController executionLogController = new ExecutionLogController(testController, executionLogFolder);
             bool finished = false;
@@ -102,7 +103,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             ITestController testController = SetupTestController();
             Report report = new Report();
-            Expect.Call(testController.Report).Return(report);
+            Expect.Call(testController.Report).Return(new LockBox<Report>(report));
             mocks.ReplayAll();
             ExecutionLogController executionLogController = new ExecutionLogController(testController, executionLogFolder);
             bool finished = false;

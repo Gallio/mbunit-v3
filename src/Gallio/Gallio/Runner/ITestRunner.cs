@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Concurrency;
 using Gallio.Model.Execution;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
@@ -63,7 +64,11 @@ namespace Gallio.Runner
         /// the test runner.  When no test package has been loaded, the report will be empty
         /// but not null.
         /// </summary>
-        Report Report { get; }
+        /// <remarks>
+        /// Since the report may be updated concurrently while a test is in progress, it is
+        /// protected by a <see cref="LockBox{T}" />
+        /// </remarks>
+        LockBox<Report> Report { get; }
 
         /// <summary>
         /// <para>

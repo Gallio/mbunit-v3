@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Gallio.Concurrency;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Runner.Drivers;
@@ -44,7 +45,6 @@ namespace Gallio.Runner
         private readonly string runtimePath;
 
         private readonly TestRunnerEventDispatcher eventDispatcher;
-        private readonly object syncRoot;
 
         private readonly List<ITestRunnerExtension> extensions;
 
@@ -53,7 +53,7 @@ namespace Gallio.Runner
 
         private State state;
         private IHost host;
-        private Report report;
+        private LockBox<Report> report;
         private ITestDriver testDriver;
 
         private enum State
@@ -88,11 +88,10 @@ namespace Gallio.Runner
             this.runtimePath = runtimePath;
 
             eventDispatcher = new TestRunnerEventDispatcher();
-            syncRoot = new object();
             state = State.Created;
             extensions = new List<ITestRunnerExtension>();
 
-            report = new Report();
+            ResetReport();
         }
 
         /// <summary>
@@ -126,9 +125,18 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public Report Report
+        public LockBox<Report> Report
         {
-            get { return report; }
+            get
+            {
+                lock (this)
+                    return report;
+            }
+            private set
+            {
+                lock (this)
+                    report = value;
+            }
         }
 
         /// <inheritdoc />
@@ -225,12 +233,12 @@ namespace Gallio.Runner
                 }
                 catch (Exception ex)
                 {
-                    eventDispatcher.NotifyLoadFinished(new LoadFinishedEventArgs(false, report));
+                    Report.Write(report => eventDispatcher.NotifyLoadFinished(new LoadFinishedEventArgs(false, report)));
                     throw new RunnerException("Failed to load the test package.", ex);
                 }
 
                 state = State.Loaded;
-                eventDispatcher.NotifyLoadFinished(new LoadFinishedEventArgs(true, report));
+                Report.Write(report => eventDispatcher.NotifyLoadFinished(new LoadFinishedEventArgs(true, report)));
             }
         }
 
@@ -258,12 +266,12 @@ namespace Gallio.Runner
                 }
                 catch (Exception ex)
                 {
-                    eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(false, report));
+                    Report.Write(report => eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(false, report)));
                     throw new RunnerException("Failed to explore the tests.", ex);
                 }
 
                 state = State.Explored;
-                eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(true, report));
+                Report.Write(report => eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(true, report)));
             }
         }
 
@@ -291,12 +299,12 @@ namespace Gallio.Runner
                 }
                 catch (Exception ex)
                 {
-                    eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(false, report));
+                    Report.Write(report => eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(false, report)));
                     throw new RunnerException("Failed to run the tests.", ex);
                 }
 
                 state = State.RunFinished;
-                eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(true, report));
+                Report.Write(report => eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(true, report)));
             }
         }
 
@@ -399,8 +407,7 @@ namespace Gallio.Runner
 
         private void DoLoad(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
         {
-            report = new Report();
-            report.TestPackageConfig = testPackageConfig;
+            Report = new LockBox<Report>(new Report() { TestPackageConfig = testPackageConfig });
 
             InitializeHost(testPackageConfig.HostSetup, progressMonitor, 5);
             LoadTestDomains(testPackageConfig, progressMonitor, 5);
@@ -443,9 +450,10 @@ namespace Gallio.Runner
 
         private void DoExplore(TestExplorationOptions options, IProgressMonitor progressMonitor)
         {
-            Report oldReport = report;
-            report = new Report();
-            report.TestPackageConfig = oldReport.TestPackageConfig;
+            Report.Read(report =>
+            {
+                Report = new LockBox<Report>(new Report() { TestPackageConfig = report.TestPackageConfig });
+            });
 
             ExploreTestDomains(options, progressMonitor, 10);
         }
@@ -455,31 +463,41 @@ namespace Gallio.Runner
             progressMonitor.SetStatus("Exploring tests.");
 
             using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
-                report.TestModel = testDriver.Explore(options, subProgressMonitor);
+            {
+                Report.Write(report =>
+                {
+                    report.TestModel = testDriver.Explore(options, subProgressMonitor);
+                });
+            }
         }
 
         private void DoRun(TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            Report oldReport = report;
-            report = new Report();
-            report.TestPackageConfig = oldReport.TestPackageConfig;
-            report.TestModel = oldReport.TestModel;
-            report.TestPackageRun = new TestPackageRun();
+            Report.Read(report =>
+            {
+                Report = new LockBox<Report>(new Report()
+                {
+                    TestPackageConfig = report.TestPackageConfig,
+                    TestModel = report.TestModel,
+                    TestPackageRun = new TestPackageRun() { StartTime = DateTime.Now }
+                });
+            });
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            report.TestPackageRun = new TestPackageRun();
-            report.TestPackageRun.StartTime = DateTime.Now;
             try
             {
-                using (HostedTestListener listener = new HostedTestListener(eventDispatcher, report, syncRoot))
+                using (ReportTestListener listener = new ReportTestListener(eventDispatcher, Report))
                 {
                     RunTestDomains(options, listener, progressMonitor, 10);
                 }
             }
             finally
             {
-                report.TestPackageRun.EndTime = DateTime.Now;
-                report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
+                Report.Write(report =>
+                {
+                    report.TestPackageRun.EndTime = DateTime.Now;
+                    report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
+                });
             }
         }
 
@@ -493,7 +511,7 @@ namespace Gallio.Runner
 
         private void DoUnload(IProgressMonitor progressMonitor)
         {
-            report = new Report();
+            ResetReport();
 
             try
             {
@@ -534,7 +552,12 @@ namespace Gallio.Runner
 
         private void DoDispose(IProgressMonitor progressMonitor)
         {
-            report = new Report();
+            ResetReport();
+        }
+
+        private void ResetReport()
+        {
+            Report = new LockBox<Report>(new Report());
         }
 
         private void ThrowIfDisposed()

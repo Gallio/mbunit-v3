@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Gallio.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Services.Interfaces;
@@ -144,7 +145,7 @@ namespace Gallio.Icarus.Tests.Controllers
         public void ResetTests_Test()
         {
             ITestRunnerService testRunnerService = SetupTestRunnerService();
-            Expect.Call(testRunnerService.Report).Return(new Report());
+            Expect.Call(testRunnerService.Report).Return(new LockBox<Report>(new Report()));
             ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
             testTreeModel.ResetTestStatus();
             mocks.ReplayAll();

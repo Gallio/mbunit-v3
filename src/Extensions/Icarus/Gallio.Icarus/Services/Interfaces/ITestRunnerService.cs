@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Concurrency;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -29,7 +30,7 @@ namespace Gallio.Icarus.Services.Interfaces
         event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
         event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
 
-        Report Report { get; }
+        LockBox<Report> Report { get; }
         IList<string> TestFrameworks { get; }
 
         void Initialize();

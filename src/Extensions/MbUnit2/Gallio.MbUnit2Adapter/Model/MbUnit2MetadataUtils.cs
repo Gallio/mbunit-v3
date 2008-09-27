@@ -65,7 +65,7 @@ namespace Gallio.MbUnit2Adapter.Model
                     test.Metadata.Add(MetadataKeys.TestsOn, attrib.TestedType.AssemblyQualifiedName);
                 }
             }
-            catch (CodeElementResolveException)
+            catch (ReflectionWrapperResolveException)
             {
                 // Ignore failures to resolve the tested type.
             }

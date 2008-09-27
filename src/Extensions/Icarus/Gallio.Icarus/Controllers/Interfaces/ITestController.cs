@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
@@ -32,7 +33,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         BindingList<TestTreeNode> SelectedTests { get; }
         ITestTreeModel Model { get; }
         string TreeViewCategory { get; set; }
-        Report Report { get; }
+        LockBox<Report> Report { get; }
         IList<string> TestFrameworks { get; }
         int TestCount { get; }
 

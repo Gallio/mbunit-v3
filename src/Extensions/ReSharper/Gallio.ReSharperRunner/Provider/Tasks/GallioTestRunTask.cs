@@ -195,7 +195,9 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                         SubmitFailureForRemainingPendingTasks();
 
                         if (sessionId != null)
-                            SessionCache.SaveSerializedReport(sessionId, runner.Report);
+                        {
+                            runner.Report.Read(report => SessionCache.SaveSerializedReport(sessionId, report));
+                        }
                     }
                 }
                 finally
@@ -513,7 +515,9 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             public override void VisitMarkerTag(MarkerTag tag)
             {
                 string oldMarkerClass = currentMarkerClass;
-                currentMarkerClass = tag.Class;
+
+                if (IsRecognizedMarkerClass(tag.Class))
+                    currentMarkerClass = tag.Class;
 
                 if (currentMarkerClass == Marker.ExceptionClass ||
                     currentBuilder == null && currentMarkerClass == Marker.StackTraceClass)
@@ -543,6 +547,21 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 }
 
                 currentMarkerClass = oldMarkerClass;
+            }
+
+            private static bool IsRecognizedMarkerClass(string markerClass)
+            {
+                switch (markerClass)
+                {
+                    case Marker.ExceptionClass:
+                    case Marker.StackTraceClass:
+                    case Marker.ExceptionMessageClass:
+                    case Marker.ExceptionTypeClass:
+                        return true;
+
+                    default:
+                        return false;
+                }
             }
 
             public override void VisitSectionTag(SectionTag tag)

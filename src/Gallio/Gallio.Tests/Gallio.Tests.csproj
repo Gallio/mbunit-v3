@@ -54,6 +54,7 @@
     <Compile Include="ActionChainTestForTwoParameters.cs" />
     <Compile Include="BaseUnitTest.cs" />
     <Compile Include="Collections\UserDataCollectionTest.cs" />
+    <Compile Include="Concurrency\LockBoxTest.cs" />
     <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
     <Compile Include="Framework\Assertions\AssertionConditionEvaluatorTest.cs" />
     <Compile Include="Framework\Assertions\AssertionContextTest.cs" />
@@ -160,16 +161,18 @@
     <Compile Include="Model\ModelExceptionTest.cs" />
     <Compile Include="Reflection\Impl\CecilReflectionPolicyTest.cs" />
     <Compile Include="Reflection\ReflectionOnlyAssemblyLoaderTest.cs" />
-    <Compile Include="Reflection\CodeElementResolveExceptionTest.cs" />
+    <Compile Include="Reflection\ReflectionWrapperResolveExceptionTest.cs" />
     <Compile Include="Runner\Caching\DiskCacheExceptionTest.cs" />
     <Compile Include="Runner\Caching\SimpleDiskCacheTest.cs" />
     <Compile Include="Runner\Caching\TemporaryDiskCacheTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
+    <Compile Include="Runner\Sessions\LocalTestSessionManagerTest.cs" />
     <Compile Include="Runner\Workspaces\ResourcePathTests.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
     <Compile Include="Runtime\Hosting\HostConfigurationTest.cs" />
     <Compile Include="Runtime\Hosting\LocalHostFactoryTest.cs" />
+    <Compile Include="Runtime\Logging\EventLoggerTest.cs" />
     <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />

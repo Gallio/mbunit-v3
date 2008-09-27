@@ -289,5 +289,40 @@ namespace Gallio.Runner
         {
             EventHandlerUtils.SafeInvoke(TestStepLogStreamEnd, this, e);
         }
+
+        /// <summary>
+        /// Subscribes to another event object such that the events will be forwarded
+        /// to the handlers registered on this dispatcher.
+        /// </summary>
+        /// <param name="events">The other events object</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="events"/> is null</exception>
+        public void SubscribeTo(ITestRunnerEvents events)
+        {
+            if (events == null)
+                throw new ArgumentNullException("events");
+
+            events.DisposeFinished += (sender, e) => NotifyDisposeFinished(e);
+            events.DisposeStarted += (sender, e) => NotifyDisposeStarted(e);
+            events.ExploreFinished += (sender, e) => NotifyExploreFinished(e);
+            events.ExploreStarted += (sender, e) => NotifyExploreStarted(e);
+            events.InitializeFinished += (sender, e) => NotifyInitializeFinished(e);
+            events.InitializeStarted += (sender, e) => NotifyInitializeStarted(e);
+            events.LoadFinished += (sender, e) => NotifyLoadFinished(e);
+            events.LoadStarted += (sender, e) => NotifyLoadStarted(e);
+            events.RunFinished += (sender, e) => NotifyRunFinished(e);
+            events.RunStarted += (sender, e) => NotifyRunStarted(e);
+            events.TestStepFinished += (sender, e) => NotifyTestStepFinished(e);
+            events.TestStepLifecyclePhaseChanged += (sender, e) => NotifyTestStepLifecyclePhaseChanged(e);
+            events.TestStepLogAttach += (sender, e) => NotifyTestStepLogAttach(e);
+            events.TestStepLogStreamBeginMarker += (sender, e) => NotifyTestStepLogStreamBeginMarker(e);
+            events.TestStepLogStreamBeginSection += (sender, e) => NotifyTestStepLogStreamBeginSection(e);
+            events.TestStepLogStreamEmbed += (sender, e) => NotifyTestStepLogStreamEmbed(e);
+            events.TestStepLogStreamEnd += (sender, e) => NotifyTestStepLogStreamEnd(e);
+            events.TestStepLogStreamWrite += (sender, e) => NotifyTestStepLogStreamWrite(e);
+            events.TestStepMetadataAdded += (sender, e) => NotifyTestStepMetadataAdded(e);
+            events.TestStepStarted += (sender, e) => NotifyTestStepStarted(e);
+            events.UnloadFinished += (sender, e) => NotifyUnloadFinished(e);
+            events.UnloadStarted += (sender, e) => NotifyUnloadStarted(e);
+        }
     }
 }

@@ -80,7 +80,7 @@ namespace Gallio.Reflection
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise returns null</param>
         /// <returns>The native reflection target</returns>
-        /// <exception cref="CodeElementResolveException">Thrown if the target cannot be resolved</exception>
+        /// <exception cref="ReflectionWrapperResolveException">Thrown if the target cannot be resolved</exception>
         Assembly Resolve(bool throwOnError);
     }
 }

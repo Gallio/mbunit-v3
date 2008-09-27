@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Reflection.Impl
 {
@@ -46,20 +47,43 @@ namespace Gallio.Reflection.Impl
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise the result may include unresolved types, enums or arrays</param>
         /// <returns>The attribute instance</returns>
-        /// <exception cref="CodeElementResolveException">Thrown if the attribute could not be resolved</exception>
+        /// <exception cref="ReflectionWrapperResolveException">Thrown if the attribute could not be resolved</exception>
         public static object CreateAttribute(IAttributeInfo attribute, bool throwOnError)
         {
-            ConstructorInfo constructor = attribute.Constructor.Resolve(true);
-            object instance = constructor.Invoke(Array.ConvertAll<ConstantValue, object>(attribute.InitializedArgumentValues,
-                delegate (ConstantValue constantValue) { return constantValue.Resolve(throwOnError); }));
+            try
+            {
+                ConstructorInfo constructor = attribute.Constructor.Resolve(true);
+                object instance = constructor.Invoke(Array.ConvertAll<ConstantValue, object>(attribute.InitializedArgumentValues,
+                        delegate(ConstantValue constantValue) { return constantValue.Resolve(throwOnError); }));
 
-            foreach (KeyValuePair<IFieldInfo, ConstantValue> initializer in attribute.InitializedFieldValues)
-                initializer.Key.Resolve(true).SetValue(instance, initializer.Value.Resolve(throwOnError));
+                foreach (KeyValuePair<IFieldInfo, ConstantValue> initializer in attribute.InitializedFieldValues)
+                    initializer.Key.Resolve(true).SetValue(instance, initializer.Value.Resolve(throwOnError));
 
-            foreach (KeyValuePair<IPropertyInfo, ConstantValue> initializer in attribute.InitializedPropertyValues)
-                initializer.Key.Resolve(true).SetValue(instance, initializer.Value.Resolve(throwOnError), null);
+                foreach (KeyValuePair<IPropertyInfo, ConstantValue> initializer in attribute.InitializedPropertyValues)
+                    initializer.Key.Resolve(true).SetValue(instance, initializer.Value.Resolve(throwOnError), null);
 
-            return instance;
+                return instance;
+            }
+            catch (TargetException ex)
+            {
+                throw new ReflectionWrapperResolveException(attribute, ex);
+            }
+            catch (TargetParameterCountException ex)
+            {
+                throw new ReflectionWrapperResolveException(attribute, ex);
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw new ReflectionWrapperResolveException(attribute, ex.InnerException ?? ex);
+            }
+            catch (MemberAccessException ex)
+            {
+                throw new ReflectionWrapperResolveException(attribute, ex);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ReflectionWrapperResolveException(attribute, ex);
+            }
         }
 
         /// <summary>

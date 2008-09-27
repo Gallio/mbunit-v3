@@ -21,9 +21,9 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Reflection
 {
     // TODO: Implement tests for special constructors.
-    [TestsOn(typeof(CodeElementResolveException))]
-    [VerifyExceptionContract(typeof(CodeElementResolveException), ImplementsStandardConstructors=false)]
-    public class CodeElementResolveExceptionTest
+    [TestsOn(typeof(ReflectionWrapperResolveException))]
+    [VerifyExceptionContract(typeof(ReflectionWrapperResolveException), ImplementsStandardConstructors=false)]
+    public class ReflectionWrapperResolveExceptionTest
     {
     }
 }

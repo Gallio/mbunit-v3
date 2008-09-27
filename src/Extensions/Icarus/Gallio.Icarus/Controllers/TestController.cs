@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
@@ -59,7 +60,7 @@ namespace Gallio.Icarus.Controllers
             set { treeViewCategory = value; }
         }
 
-        public Report Report
+        public LockBox<Report> Report
         {
             get { return testRunnerService.Report; }
         }
@@ -160,7 +161,8 @@ namespace Gallio.Icarus.Controllers
                 if (!testPackageConfig.HostSetup.ShadowCopy)
                     Unload();
 
-                testTreeModel.BuildTestTree(testRunnerService.Report.TestModel, treeViewCategory);
+                testRunnerService.Report.Read(report => testTreeModel.BuildTestTree(
+                    report.TestModel, treeViewCategory));
                 
                 EventHandlerUtils.SafeInvoke(LoadFinished, this, System.EventArgs.Empty);
             });
@@ -183,7 +185,8 @@ namespace Gallio.Icarus.Controllers
         public void ResetTests()
         {
             testTreeModel.ResetTestStatus();
-            testRunnerService.Report.TestPackageRun = null;
+
+            testRunnerService.Report.Write(report => report.TestPackageRun = null);
         }
 
         public void RunTests()

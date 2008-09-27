@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Concurrency;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
@@ -24,38 +25,36 @@ using Gallio.Runner.Reports;
 
 namespace Gallio.Runner
 {
-    internal sealed class HostedTestListener : ITestListener, IDisposable
+    internal sealed class ReportTestListener : ITestListener, IDisposable
     {
         private readonly TestRunnerEventDispatcher eventDispatcher;
-        private readonly Report report;
-        private readonly object syncRoot;
+        private readonly LockBox<Report> reportBox;
 
         private Dictionary<string, TestStepState> states;
 
-        public HostedTestListener(TestRunnerEventDispatcher eventDispatcher, Report report, object syncRoot)
+        public ReportTestListener(TestRunnerEventDispatcher eventDispatcher, LockBox<Report> report)
         {
             this.eventDispatcher = eventDispatcher;
-            this.report = report;
-            this.syncRoot = syncRoot;
+            this.reportBox = report;
 
             states = new Dictionary<string, TestStepState>();
         }
 
         public void Dispose()
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 states = null;
-            }
+            });
         }
 
         public void NotifyTestStepStarted(TestStepData step)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
-                TestData testData = GetTestData(step.TestId);
+                TestData testData = GetTestData(report, step.TestId);
                 TestStepRun testStepRun = new TestStepRun(step);
                 testStepRun.StartTime = DateTime.Now;
 
@@ -74,12 +73,12 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepStarted(
                     new TestStepStartedEventArgs(report, testData, testStepRun));
-            }
+            });
         }
 
         public void NotifyTestStepLifecyclePhaseChanged(string stepId, string lifecyclePhase)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
@@ -87,12 +86,12 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepLifecyclePhaseChanged(
                     new TestStepLifecyclePhaseChangedEventArgs(report, state.TestData, state.TestStepRun, lifecyclePhase));
-            }
+            });
         }
 
         public void NotifyTestStepMetadataAdded(string stepId, string metadataKey, string metadataValue)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
@@ -101,12 +100,12 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepMetadataAdded(
                     new TestStepMetadataAddedEventArgs(report, state.TestData, state.TestStepRun, metadataKey, metadataValue));
-            }
+            });
         }
 
         public void NotifyTestStepFinished(string stepId, TestResult result)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
@@ -119,12 +118,12 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepFinished(
                     new TestStepFinishedEventArgs(report, state.TestData, state.TestStepRun));
-            }
+            });
         }
 
         public void NotifyTestStepLogAttach(string stepId, Attachment attachment)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
@@ -133,12 +132,12 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepLogAttach(
                     new TestStepLogAttachEventArgs(report, state.TestData, state.TestStepRun, attachment));
-            }
+            });
         }
 
         public void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
@@ -147,12 +146,12 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepLogStreamWrite(
                     new TestStepLogStreamWriteEventArgs(report, state.TestData, state.TestStepRun, streamName, text));
-            }
+            });
         }
 
         public void NotifyTestStepLogStreamEmbed(string stepId, string streamName, string attachmentName)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
@@ -161,12 +160,12 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepLogStreamEmbed(
                     new TestStepLogStreamEmbedEventArgs(report, state.TestData, state.TestStepRun, streamName, attachmentName));
-            }
+            });
         }
 
         public void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
@@ -175,12 +174,12 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepLogStreamBeginSection(
                     new TestStepLogStreamBeginSectionEventArgs(report, state.TestData, state.TestStepRun, streamName, sectionName));
-            }
+            });
         }
 
         public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, Marker marker)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
@@ -189,12 +188,12 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepLogStreamBeginMarker(
                     new TestStepLogStreamBeginMarkerEventArgs(report, state.TestData, state.TestStepRun, streamName, marker));
-            }
+            });
         }
 
         public void NotifyTestStepLogStreamEnd(string stepId, string streamName)
         {
-            lock (syncRoot)
+            reportBox.Write(report =>
             {
                 ThrowIfDisposed();
 
@@ -203,10 +202,10 @@ namespace Gallio.Runner
 
                 eventDispatcher.NotifyTestStepLogStreamEnd(
                     new TestStepLogStreamEndEventArgs(report, state.TestData, state.TestStepRun, streamName));
-            }
+            });
         }
 
-        private TestData GetTestData(string testId)
+        private static TestData GetTestData(Report report, string testId)
         {
             TestData testData = report.TestModel.GetTestById(testId);
             if (testData == null)

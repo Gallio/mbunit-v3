@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Concurrency;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Icarus.Services.Interfaces;
@@ -40,12 +41,12 @@ namespace Gallio.Icarus.Services
 
         private readonly ProgressMonitorProvider progressMonitorProvider = new ProgressMonitorProvider();
 
-        private Report previousReportFromUnloadedPackage;
+        private LockBox<Report>? previousReportFromUnloadedPackage;
 
         public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
         public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
 
-        public Report Report
+        public LockBox<Report> Report
         {
             get { return previousReportFromUnloadedPackage ?? testRunner.Report; }
         }
@@ -115,7 +116,12 @@ namespace Gallio.Icarus.Services
                 if (testRunner != null)
                     testRunner.Explore(testExplorationOptions, progressMonitor);
             });
-            return Report.TestModel;
+
+            // We extract the test model from the report.
+            // This is safe because the test model should not change after explore is finished.
+            TestModelData testModelData = null;
+            Report.Read(report => testModelData = report.TestModel);
+            return testModelData;
         }
 
         public void Run()

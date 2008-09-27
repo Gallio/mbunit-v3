@@ -124,7 +124,10 @@ namespace Gallio.Icarus
             {
                 ToolStripMenuItem menuItem = new ToolStripMenuItem();
                 menuItem.Text = reportType;
-                menuItem.Click += delegate { reportController.ShowReport(testController.Report, menuItem.Text); };
+                menuItem.Click += delegate
+                {
+                    testController.Report.Read(report => reportController.ShowReport(report, menuItem.Text));
+                };
                 viewAsToolStripMenuItem.DropDownItems.Add(menuItem);
             }
         }
@@ -155,7 +158,8 @@ namespace Gallio.Icarus
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
 
                 string reportFolder = Path.Combine(Path.GetDirectoryName(projectController.ProjectFileName), "Reports");
-                reportController.GenerateReport(testController.Report, reportFolder);
+
+                testController.Report.Read(report => reportController.GenerateReport(report, reportFolder));
             });
         }
 

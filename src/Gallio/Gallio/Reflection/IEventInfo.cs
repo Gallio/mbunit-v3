@@ -66,7 +66,7 @@ namespace Gallio.Reflection
         /// not be resolved, otherwise returns a reflection object that represents an
         /// unresolved member which may only support a subset of the usual operations</param>
         /// <returns>The native reflection target</returns>
-        /// <exception cref="CodeElementResolveException">Thrown if the target cannot be resolved</exception>
+        /// <exception cref="ReflectionWrapperResolveException">Thrown if the target cannot be resolved</exception>
         new EventInfo Resolve(bool throwOnError);
     }
 }

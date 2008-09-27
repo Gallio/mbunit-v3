@@ -486,7 +486,7 @@ namespace Gallio.Runner
 
         private TestLauncherResult RunWithInitializedRunner(ITestRunner runner, IReportManager reportManager)
         {
-            TestLauncherResult result;
+            TestLauncherResult result = null;
             bool wasCanceled = false;
             try
             {
@@ -514,7 +514,7 @@ namespace Gallio.Runner
                     }
                 }
 
-                result = new TestLauncherResult(runner.Report);
+                runner.Report.Read(report => result = new TestLauncherResult(report));
             }
             finally
             {

@@ -79,7 +79,9 @@
     <Compile Include="Collections\HashSet.cs" />
     <Compile Include="Collections\Key.cs" />
     <Compile Include="Collections\ReadOnlyDictionary.cs" />
+    <Compile Include="Concurrency\WriteAction.cs" />
     <Compile Include="Concurrency\ProcessTask.cs" />
+    <Compile Include="Concurrency\ReadAction.cs" />
     <Compile Include="Concurrency\Task.cs" />
     <Compile Include="Concurrency\TaskContainer.cs" />
     <Compile Include="Concurrency\TaskEventArgs.cs" />
@@ -215,7 +217,7 @@
     <Compile Include="Runner\Extensions\ITestRunnerExtension.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtension.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtils.cs" />
-    <Compile Include="Runner\HostedTestListener.cs" />
+    <Compile Include="Runner\ReportTestListener.cs" />
     <Compile Include="Runner\HostedTestRunner.cs" />
     <Compile Include="Runner\Events\InitializeFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\InitializeStartedEventArgs.cs" />
@@ -226,6 +228,18 @@
     <Compile Include="Runner\Events\RunFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\RunStartedEventArgs.cs" />
     <Compile Include="Runner\Events\OperationFinishedEventArgs.cs" />
+    <Compile Include="Runner\Sessions\LocalTestSession.cs" />
+    <Compile Include="Runner\Sessions\LocalTestSessionManager.cs" />
+    <Compile Include="Runner\Sessions\ITestRun.cs" />
+    <Compile Include="Runner\Sessions\ITestRunHistory.cs" />
+    <Compile Include="Runner\Sessions\ITestSession.cs" />
+    <Compile Include="Runner\Sessions\ITestSessionManager.cs" />
+    <Compile Include="Runner\Sessions\LocalTestRun.cs" />
+    <Compile Include="Runtime\Logging\EventLogger.cs" />
+    <Compile Include="Runtime\Logging\LogMessageEventArgs.cs" />
+    <Compile Include="Runner\Sessions\TestRunEventArgs.cs" />
+    <Compile Include="Runner\Sessions\TestRunStatus.cs" />
+    <Compile Include="Runner\Sessions\TestSessionEventArgs.cs" />
     <Compile Include="Runner\TestRunnerOptions.cs" />
     <Compile Include="Runner\TestRunnerEventDispatcher.cs" />
     <Compile Include="Runner\Events\TestStepEventArgs.cs" />
@@ -511,7 +525,7 @@
     <Compile Include="Reflection\Impl\ReflectorTypeUtils.cs" />
     <Compile Include="Reflection\IReflectionPolicy.cs" />
     <Compile Include="Reflection\IGenericParameterInfo.cs" />
-    <Compile Include="Reflection\CodeElementResolveException.cs" />
+    <Compile Include="Reflection\ReflectionWrapperResolveException.cs" />
     <Compile Include="Model\Serialization\TestPackageData.cs" />
     <Compile Include="Model\Filters\EqualityFilter.cs" />
     <Compile Include="Model\Filters\FilterLexer.cs" />
@@ -679,6 +693,7 @@
     <Compile Include="Framework\Text\Substring.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Concurrency\LockBox.cs" />
     <Compile Include="Utilities\Sync.cs" />
     <Compile Include="XmlSerializableTypeIncludes.cs">
       <SubType>Component</SubType>

@@ -24,14 +24,20 @@ using EnvDTE;
 
 namespace Gallio.VisualStudio.Shell.Reflection
 {
-    internal class CodeModelReflectionPolicy : StaticReflectionPolicy
+    /// <summary>
+    /// A reflection policy implemented over the Visual Studio CodeModel (ie. Intellisense).
+    /// </summary>
+    /// <remarks>
+    /// The implementation is currently incomplete.
+    /// </remarks>
+    public class CodeModelReflectionPolicy : StaticReflectionPolicy
     {
         private readonly CodeModel2 codeModel;
 
         /// <summary>
         /// Creates a reflector with the specified CodeModel.
         /// </summary>
-        /// <param name="codeModel">The CodeModel</param>
+        /// <param name="codeModel">The Visual Studio CodeModel</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeModel"/> is null</exception>
         public CodeModelReflectionPolicy(CodeModel2 codeModel)
         {
@@ -160,139 +166,49 @@ namespace Gallio.VisualStudio.Shell.Reflection
         #endregion
 
         #region Assemblies
-        protected override StaticAssemblyWrapper LoadAssemblyInternal(AssemblyName assemblyName)
+        protected override IAssemblyInfo LoadAssemblyFromImpl(string assemblyFile)
         {
-            foreach (IProject project in codeModel.Solution.GetAllProjects())
-            {
-                IAssemblyFile assemblyFile = BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
+            throw new NotImplementedException();
+        }
 
-                if (assemblyFile != null && IsMatchingAssemblyName(assemblyName, assemblyFile.AssemblyName))
-                    return new StaticAssemblyWrapper(this, project);
-            }
-
-            foreach (IAssembly assembly in codeModel.Solution.GetAllAssemblies())
-            {
-                if (IsMatchingAssemblyName(assemblyName, assembly.AssemblyName))
-                    return new StaticAssemblyWrapper(this, assembly);
-            }
-
-            throw new ArgumentException(String.Format("Could not find assembly '{0}' in the ReSharper code cache.",
-                assemblyName.FullName));
+        protected override IAssemblyInfo LoadAssemblyImpl(AssemblyName assemblyName)
+        {
+            throw new NotImplementedException();
         }
 
         protected override IEnumerable<StaticAttributeWrapper> GetAssemblyCustomAttributes(StaticAssemblyWrapper assembly)
         {
-            IModule moduleHandle = (IModule) assembly.Handle;
-            foreach (IAttributeInstance attrib in codeModel.GetModuleAttributes(moduleHandle).AttributeInstances)
-                yield return new StaticAttributeWrapper(this, attrib);
+            throw new NotImplementedException();
         }
 
         protected override AssemblyName GetAssemblyName(StaticAssemblyWrapper assembly)
         {
-            Project projectHandle = (Project)assembly.Handle;
-            return GetAssemblyName(projectHandle);
+            throw new NotImplementedException();
         }
 
         protected override string GetAssemblyPath(StaticAssemblyWrapper assembly)
         {
-            Project projectHandle = (Project)assembly.Handle;
-            projectHandle.ConfigurationManager.
-            return GetAssemblyFile(projectHandle).Location.FullPath;
+            throw new NotImplementedException();
         }
 
         protected override IList<AssemblyName> GetAssemblyReferences(StaticAssemblyWrapper assembly)
         {
-            Project projectHandle = assembly.Handle as Project;
-            if (projectHandle != null)
-            {
-                ICollection<IModuleReference> moduleRefs = projectHandle.GetModuleReferences();
-                return GenericUtils.ConvertAllToArray<IModuleReference, AssemblyName>(moduleRefs, delegate(IModuleReference moduleRef)
-                {
-                    return GetAssemblyName(moduleRef.ResolveReferencedModule());
-                });
-            }
-
-            // FIXME! Don't know how to handle referenced assemblies for modules.
-            return assembly.Resolve().GetReferencedAssemblies();
+            throw new NotImplementedException();
         }
 
         protected override IList<StaticDeclaredTypeWrapper> GetAssemblyExportedTypes(StaticAssemblyWrapper assembly)
         {
-            Project projectHandle = (Project)assembly.Handle;
-            return GetAssemblyTypes(projectHandle, false);
+            throw new NotImplementedException();
         }
 
         protected override IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(StaticAssemblyWrapper assembly)
         {
-            Project projectHandle = (Project)assembly.Handle;
-            return GetAssemblyTypes(projectHandle, true);
+            throw new NotImplementedException();
         }
 
         protected override StaticDeclaredTypeWrapper GetAssemblyType(StaticAssemblyWrapper assembly, string typeName)
         {
-            Project projectHandle = (Project)assembly.Handle;
-            CodeType typeHandle = projectHandle.CodeModel.CodeTypeFromFullName(typeName);
-            return typeHandle != null ? MakeDeclaredTypeWithoutSubstitution(typeHandle) : null;
-        }
-
-        private static bool IsMatchingAssemblyName(AssemblyName desiredAssemblyName, AssemblyName candidateAssemblyName)
-        {
-            bool haveDesiredFullName = desiredAssemblyName.Name != desiredAssemblyName.FullName;
-            bool haveCandidateFullName = candidateAssemblyName.Name != candidateAssemblyName.FullName;
-
-            if (haveDesiredFullName && haveCandidateFullName)
-                return desiredAssemblyName.FullName == candidateAssemblyName.FullName;
-
-            return desiredAssemblyName.Name == candidateAssemblyName.Name;
-        }
-
-        private static AssemblyName GetAssemblyName(Project projectHandle)
-        {
-
-            IAssembly assemblyHandle = (IAssembly) projectHandle;
-            return assemblyHandle.AssemblyName;
-        }
-
-        private IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(Project projectHandle, bool includeNonPublicTypes)
-        {
-            INamespace namespaceHandle = codeModel.GetNamespace("");
-            IDeclarationsCache cache = GetAssemblyDeclarationsCache(moduleHandle);
-
-            List<StaticDeclaredTypeWrapper> types = new List<StaticDeclaredTypeWrapper>();
-            PopulateAssemblyTypes(types, namespaceHandle, cache, includeNonPublicTypes);
-
-            return types;
-        }
-
-        private void PopulateAssemblyTypes(List<StaticDeclaredTypeWrapper> types, INamespace namespaceHandle,
-            IDeclarationsCache cache, bool includeNonPublicTypes)
-        {
-            foreach (IDeclaredElement elementHandle in namespaceHandle.GetNestedElements(cache))
-            {
-                ITypeElement typeHandle = elementHandle as ITypeElement;
-                if (typeHandle != null)
-                {
-                    PopulateAssemblyTypes(types, typeHandle, includeNonPublicTypes);
-                }
-                else
-                {
-                    INamespace nestedNamespace = elementHandle as INamespace;
-                    if (nestedNamespace != null)
-                        PopulateAssemblyTypes(types, nestedNamespace, cache, includeNonPublicTypes);
-                }
-            }
-        }
-
-        private void PopulateAssemblyTypes(List<StaticDeclaredTypeWrapper> types, ITypeElement typeHandle, bool includeNonPublicTypes)
-        {
-            IModifiersOwner modifiers = typeHandle as IModifiersOwner;
-            if (modifiers != null && (includeNonPublicTypes || modifiers.GetAccessRights() == AccessRights.PUBLIC))
-            {
-                types.Add(MakeDeclaredTypeWithoutSubstitution(typeHandle));
-
-                foreach (ITypeElement nestedType in typeHandle.NestedTypes)
-                    PopulateAssemblyTypes(types, nestedType, includeNonPublicTypes);
-            }
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -300,95 +216,27 @@ namespace Gallio.VisualStudio.Shell.Reflection
         protected override StaticConstructorWrapper GetAttributeConstructor(StaticAttributeWrapper attribute)
         {
             CodeAttribute2 attributeHandle = (CodeAttribute2)attribute.Handle;
-            IDeclaredType declaredTypeHandle = attributeHandle.AttributeType;
-            IConstructor constructorHandle = attributeHandle.Constructor;
-
-            return new StaticConstructorWrapper(this, constructorHandle, MakeDeclaredType(declaredTypeHandle));
+            throw new NotImplementedException();
         }
 
-        protected override object[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
+        protected override ConstantValue[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
         {
             CodeAttribute2 attributeHandle = (CodeAttribute2)attribute.Handle;
-
-            IList<IParameter> parameters = attributeHandle.Constructor.Parameters;
-            if (parameters.Count == 0)
-                return EmptyArray<object>.Instance;
-
-            List<object> values = new List<object>();
-            for (int i = 0; ; i++)
-            {
-                ConstantValue2 rawValue = GetAttributePositionParameterHack(attributeHandle, i);
-                if (rawValue.IsBadValue())
-                    break;
-
-                values.Add(ResolveAttributeValue(rawValue.Value));
-            }
-
-            int lastParameterIndex = parameters.Count - 1;
-            IParameter lastParameter = parameters[lastParameterIndex];
-            if (!lastParameter.IsParameterArray)
-                return values.ToArray();
-
-            // Note: When presented with a constructor that accepts a variable number of
-            //       arguments, ReSharper treats them as a sequence of normal parameter
-            //       values.  So we we need to map them back into a params array appropriately.                
-            object[] args = new object[parameters.Count];
-            values.CopyTo(0, args, 0, lastParameterIndex);
-
-            Type lastParameterType = MakeType(lastParameter.Type).Resolve(true).GetElementType();
-            int varArgsCount = values.Count - lastParameterIndex;
-            Array varArgs = Array.CreateInstance(lastParameterType, varArgsCount);
-
-            for (int i = 0; i < varArgsCount; i++)
-                varArgs.SetValue(values[lastParameterIndex + i], i);
-
-            args[lastParameterIndex] = varArgs;
-            return args;
+            throw new NotImplementedException();
         }
 
-        protected override IEnumerable<KeyValuePair<StaticFieldWrapper, object>> GetAttributeFieldArguments(
+        protected override IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>> GetAttributeFieldArguments(
             StaticAttributeWrapper attribute)
         {
             CodeAttribute2 attributeHandle = (CodeAttribute2)attribute.Handle;
-            List<KeyValuePair<StaticFieldWrapper, object>> values = new List<KeyValuePair<StaticFieldWrapper, object>>();
-
-            foreach (StaticFieldWrapper field in attribute.Type.GetFields(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (ReflectorAttributeUtils.IsAttributeField(field))
-                {
-                    IField fieldHandle = (IField)field.Handle;
-                    ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, fieldHandle);
-                    if (!value.IsBadValue())
-                        values.Add(new KeyValuePair<StaticFieldWrapper, object>(field, ResolveAttributeValue(value.Value)));
-                }
-            }
-
-            return values;
+            throw new NotImplementedException();
         }
 
-        protected override IEnumerable<KeyValuePair<StaticPropertyWrapper, object>> GetAttributePropertyArguments(
+        protected override IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>> GetAttributePropertyArguments(
             StaticAttributeWrapper attribute)
         {
             CodeAttribute2 attributeHandle = (CodeAttribute2)attribute.Handle;
-            List<KeyValuePair<StaticPropertyWrapper, object>> values = new List<KeyValuePair<StaticPropertyWrapper, object>>();
-
-            foreach (StaticPropertyWrapper property in attribute.Type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (ReflectorAttributeUtils.IsAttributeProperty(property))
-                {
-                    IProperty propertyHandle = (IProperty)property.Handle;
-                    ConstantValue2 value = GetAttributeNamedParameterHack(attributeHandle, propertyHandle);
-                    if (!value.IsBadValue())
-                        values.Add(new KeyValuePair<StaticPropertyWrapper, object>(property, ResolveAttributeValue(value.Value)));
-                }
-            }
-
-            return values;
-        }
-
-        private object ResolveAttributeValue(object value)
-        {
-            return ResolveConstant<IType>(value, delegate(IType type) { return MakeType(type).Resolve(false); });
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -688,10 +536,10 @@ namespace Gallio.VisualStudio.Shell.Reflection
             TypeAttributes flags = 0;
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Interface, typeHandle.Kind == vsCMElement.vsCMElementInterface);
 
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Abstract, typeHandle.IsAbstract);
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Sealed, modifiers.IsSealed);
+            //TODO ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Abstract, typeHandle.);
+            //TODO ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Sealed, modifiers.IsSealed);
 
-            bool isNested = typeHandle.GetContainingType() != null;
+            bool isNested = GetContainingType((CodeElement)typeHandle) != null;
 
             // FIXME: Don't know what to do with WithEvents
             switch (typeHandle.Access)
@@ -715,16 +563,14 @@ namespace Gallio.VisualStudio.Shell.Reflection
                     break;
             }
 
-            if (typeHandle is IDelegate || typeHandle is IEnum || typeHandle is IStruct)
-                flags |= TypeAttributes.Sealed;
-
             return flags;
         }
 
         protected override StaticAssemblyWrapper GetTypeAssembly(StaticDeclaredTypeWrapper type)
         {
             CodeType typeHandle = (CodeType)type.Handle;
-            return new StaticAssemblyWrapper(this, typeHandle.);
+            throw new NotImplementedException();
+            // TODO: return new StaticAssemblyWrapper(this, typeHandle.);
         }
 
         protected override string GetTypeNamespace(StaticDeclaredTypeWrapper type)
@@ -851,131 +697,44 @@ namespace Gallio.VisualStudio.Shell.Reflection
 
         private StaticTypeWrapper MakeType(CodeTypeRef typeHandle)
         {
+            throw new NotImplementedException();
         }
 
         private StaticTypeWrapper MakeType(CodeTypeRef2 typeHandle)
         {
-            IDeclaredType declaredTypeHandle = typeHandle as IDeclaredType;
-            if (declaredTypeHandle != null)
-                return MakeType(declaredTypeHandle);
-
-            IArrayType arrayTypeHandle = typeHandle as IArrayType;
-            if (arrayTypeHandle != null)
-                return MakeArrayType(arrayTypeHandle);
-
-            IPointerType pointerTypeHandle = typeHandle as IPointerType;
-            if (pointerTypeHandle != null)
-                return MakePointerType(pointerTypeHandle);
-
-            throw new NotSupportedException("Unsupported type: " + typeHandle);
-        }
-
-        private StaticTypeWrapper MakeType(IDeclaredType typeHandle)
-        {
-            ITypeParameter typeParameterHandle = typeHandle.GetTypeElement() as ITypeParameter;
-            if (typeParameterHandle != null)
-                return MakeGenericParameterType(typeParameterHandle);
-
-            return MakeDeclaredType(typeHandle);
+            throw new NotImplementedException();
         }
 
         private StaticTypeWrapper MakeTypeWithoutSubstitution(CodeType typeElementHandle)
         {
-            ITypeParameter typeParameterHandle = typeElementHandle as ITypeParameter;
-            if (typeParameterHandle != null)
-                return MakeGenericParameterType(typeParameterHandle);
-
-            return MakeDeclaredTypeWithoutSubstitution(typeElementHandle);
+            throw new NotImplementedException();
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredTypeWithoutSubstitution(CodeType typeElementHandle)
         {
-            return MakeDeclaredType(typeElementHandle, typeElementHandle.IdSubstitution);
+            throw new NotImplementedException();
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(CodeType typeHandle)
         {
-            return MakeDeclaredType(typeHandle.GetTypeElement(), typeHandle.GetSubstitution());
-        }
-
-        private StaticDeclaredTypeWrapper MakeDeclaredType(ITypeElement typeElementHandle, ISubstitution substitutionHandle)
-        {
-            if (typeElementHandle is ITypeParameter)
-                throw new ArgumentException("This method should never be called with a generic parameter as input.", "typeElementHandle");
-
-            ITypeElement declaringTypeElementHandle = typeElementHandle.GetContainingType();
-            StaticDeclaredTypeWrapper type;
-            if (declaringTypeElementHandle != null)
-            {
-                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(declaringTypeElementHandle, substitutionHandle);
-                type = new StaticDeclaredTypeWrapper(this, typeElementHandle, declaringType, declaringType.Substitution);
-            }
-            else
-            {
-                type = new StaticDeclaredTypeWrapper(this, typeElementHandle, null, StaticTypeSubstitution.Empty);
-            }
-
-            ITypeParameter[] typeParameterHandles = typeElementHandle.TypeParameters;
-            if (substitutionHandle.IsIdempotent(typeParameterHandles))
-                return type;
-
-            ITypeInfo[] genericArguments = GenericUtils.ConvertAllToArray<ITypeParameter, ITypeInfo>(typeParameterHandles, delegate(ITypeParameter typeParameterHandle)
-            {
-                IType substitutedType = substitutionHandle.Apply(typeParameterHandle);
-                if (substitutedType.IsUnknown)
-                    return MakeGenericParameterType(typeParameterHandle);
-
-                return MakeType(substitutedType);
-            });
-            return type.MakeGenericType(genericArguments);
-        }
-
-        private StaticArrayTypeWrapper MakeArrayType(IArrayType arrayTypeHandle)
-        {
-            return MakeType(arrayTypeHandle.ElementType).MakeArrayType(arrayTypeHandle.Rank);
-        }
-
-        private StaticPointerTypeWrapper MakePointerType(IPointerType pointerTypeHandle)
-        {
-            return MakeType(pointerTypeHandle.ElementType).MakePointerType();
-        }
-
-        private StaticGenericParameterWrapper MakeGenericParameterType(ITypeParameter typeParameterHandle)
-        {
-            ITypeElement declaringTypeHandle = typeParameterHandle.OwnerType;
-            if (declaringTypeHandle != null)
-            {
-                return StaticGenericParameterWrapper.CreateGenericTypeParameter(this, typeParameterHandle, MakeDeclaredTypeWithoutSubstitution(declaringTypeHandle));
-            }
-            else
-            {
-                return StaticGenericParameterWrapper.CreateGenericMethodParameter(this, typeParameterHandle, Wrap(typeParameterHandle.OwnerMethod));
-            }
+            throw new NotImplementedException();
         }
         #endregion
 
         #region Generic Parameters
         protected override GenericParameterAttributes GetGenericParameterAttributes(StaticGenericParameterWrapper genericParameter)
         {
-            ITypeParameter genericParameterHandle = (ITypeParameter)genericParameter.Handle;
-
-            GenericParameterAttributes flags = 0;
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, GenericParameterAttributes.NotNullableValueTypeConstraint, genericParameterHandle.IsValueType);
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, GenericParameterAttributes.ReferenceTypeConstraint, genericParameterHandle.IsClassType);
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, GenericParameterAttributes.DefaultConstructorConstraint, genericParameterHandle.HasDefaultConstructor);
-            return flags;
+            throw new NotImplementedException();
         }
 
         protected override int GetGenericParameterPosition(StaticGenericParameterWrapper genericParameter)
         {
-            ITypeParameter genericParameterHandle = (ITypeParameter)genericParameter.Handle;
-            return genericParameterHandle.Index;
+            throw new NotImplementedException();
         }
 
         protected override IList<StaticTypeWrapper> GetGenericParameterConstraints(StaticGenericParameterWrapper genericParameter)
         {
-            ITypeParameter genericParameterHandle = (ITypeParameter)genericParameter.Handle;
-            return GenericUtils.ConvertAllToArray<IType, StaticTypeWrapper>(genericParameterHandle.TypeConstraints, MakeType);
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -1029,9 +788,6 @@ namespace Gallio.VisualStudio.Shell.Reflection
                     return (CodeFunction2)codeElement;
             }
         }
-        #endregion
-
-        #region HACKS
         #endregion
     }
 }

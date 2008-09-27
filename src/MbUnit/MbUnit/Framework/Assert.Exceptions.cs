@@ -60,7 +60,8 @@ namespace MbUnit.Framework
         /// <param name="expectedExceptionType">The expected exception type</param>
         /// <param name="action">The action delegate to evaluate</param>
         /// <returns>The exception that was thrown</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedExceptionType"/>
+        /// or <paramref name="action"/> is null</exception>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static Exception Throws(Type expectedExceptionType, Action action)
         {
@@ -75,10 +76,13 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <returns>The exception that was thrown</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedExceptionType"/>
+        /// or <paramref name="action"/> is null</exception>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static Exception Throws(Type expectedExceptionType, Action action, string messageFormat, params object[] messageArgs)
         {
+            if (expectedExceptionType == null)
+                throw new ArgumentNullException("expectedExceptionType");
             if (action == null)
                 throw new ArgumentNullException("action");
 

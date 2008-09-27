@@ -84,6 +84,7 @@
     <Compile Include="BaseShellExtension.cs" />
     <Compile Include="IShell.cs" />
     <Compile Include="IShellExtension.cs" />
+    <Compile Include="Reflection\CodeModelReflectionPolicy.cs" />
     <Compile Include="ShellAccessor.cs" />
     <Compile Include="ShellAddInHandler.cs" />
     <Compile Include="ShellComponent.cs" />
@@ -129,9 +130,6 @@
     </None>
     <Content Include="Gallio.VisualStudio.Shell.plugin" />
     <None Include="Resources\Product.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Reflection\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\VisualStudio.targets" />
