@@ -80,7 +80,7 @@ namespace Gallio.Icarus.Tests.Controllers
             mocks.ReplayAll();
             ReportController reportController = new ReportController(reportService);
             reportController.ShowReport(report, reportType);
-            Thread.Sleep(100);
+            Thread.Sleep(200);
         }
 
         IReportService SetupReportService()

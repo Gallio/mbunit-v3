@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Icarus.Models.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
@@ -26,7 +27,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
 {
     public interface IProjectController
     {
-        ITreeModel Model { get; }
+        IProjectTreeModel Model { get; }
         TestPackageConfig TestPackageConfig { get; }
         BindingList<FilterInfo> TestFilters { get; }
         BindingList<string> HintDirectories { get; }

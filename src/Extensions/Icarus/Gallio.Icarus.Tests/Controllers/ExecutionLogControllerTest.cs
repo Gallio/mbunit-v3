@@ -83,7 +83,7 @@ namespace Gallio.Icarus.Tests.Controllers
             ITestController testController = SetupTestController();
             Report report = new Report();
             report.TestPackageRun = new TestPackageRun();
-            Expect.Call(testController.Report).Return(new LockBox<Report>(report)).Repeat.Times(3);
+            Expect.Call(testController.Report).Return(new LockBox<Report>(report));
             mocks.ReplayAll();
             ExecutionLogController executionLogController = new ExecutionLogController(testController, executionLogFolder);
             bool finished = false;

@@ -23,7 +23,7 @@ namespace Gallio.Icarus.Options
         {
             InitializeComponent();
 
-            testProgressBarStyle.DataBindings.Add("Text", optionsController, "TestProgressBarStyle");
+            testProgressBarStyle.DataBindings.Add("Text", optionsController, "TestStatusBarStyle");
             showProgressDialogs.DataBindings.Add("Checked", optionsController, "ShowProgressDialogs");
         }
     }

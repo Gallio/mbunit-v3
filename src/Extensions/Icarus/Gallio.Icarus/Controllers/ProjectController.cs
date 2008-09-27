@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models.Interfaces;
@@ -42,7 +41,7 @@ namespace Gallio.Icarus.Controllers
         public event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ITreeModel Model
+        public IProjectTreeModel Model
         {
             get { return projectTreeModel; }
         }

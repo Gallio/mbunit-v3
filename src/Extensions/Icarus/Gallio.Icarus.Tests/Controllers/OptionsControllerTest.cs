@@ -24,11 +24,25 @@ namespace Gallio.Icarus.Tests.Controllers
 {
     class OptionsControllerTest
     {
+        private readonly string settingsBackup = Paths.SettingsFile + ".bak";
+
         [FixtureSetUp]
         public void FixtureSetUp()
         {
+            if (!File.Exists(Paths.SettingsFile))
+                return;
+            File.Copy(Paths.SettingsFile, settingsBackup);
+            File.Delete(Paths.SettingsFile);
+        }
+
+        [FixtureTearDown]
+        public void FixtureTearDown()
+        {
+            if (!File.Exists(settingsBackup))    
+                return;
             if (File.Exists(Paths.SettingsFile))
                 File.Delete(Paths.SettingsFile);
+            File.Copy(settingsBackup, Paths.SettingsFile);
         }
 
         [Test]

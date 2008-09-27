@@ -54,7 +54,7 @@ namespace Gallio.Icarus.Controllers
         {
             taskManager.StartTask(delegate
             {
-                string fileName = GenerateReportName(report);
+                string fileName = Path.Combine(reportDirectory, GenerateReportName(report));
                 reportService.SaveReportAs(report, fileName, "xml");
             });
         }

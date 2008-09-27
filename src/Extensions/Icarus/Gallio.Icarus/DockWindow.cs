@@ -14,25 +14,24 @@
 // limitations under the License.
 
 using System.Windows.Forms;
-
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
 {
-    public partial class DockWindow : DockContent
+    public abstract partial class DockWindow : DockContent
     {
-        public DockWindow()
+        protected DockWindow()
         {
             InitializeComponent();
         }
 
         private void DockWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                e.Cancel = true;
-                Hide();
-            }
+            if (e.CloseReason != CloseReason.UserClosing)
+                return;
+            
+            e.Cancel = true;
+            Hide();
         }
     }
 }

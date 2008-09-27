@@ -59,6 +59,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutDialogTest.cs" />
+    <Compile Include="AnnotationsWindowTest.cs" />
+    <Compile Include="CodeWindowTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
     <Compile Include="Controllers\OptionsControllerTest.cs" />
     <Compile Include="Controllers\ProjectControllerTest.cs" />
@@ -75,7 +78,12 @@
     <Compile Include="Controls\TestTreeViewTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ExecutionLogWindowTest.cs" />
+    <Compile Include="FiltersWindowTest.cs" />
     <Compile Include="MockTest.cs" />
+    <Compile Include="ProgressMonitorTest.cs" />
+    <Compile Include="ProjectExplorerTest.cs" />
+    <Compile Include="PropertiesWindowTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
