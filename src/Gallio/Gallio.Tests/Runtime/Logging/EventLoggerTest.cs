@@ -37,7 +37,7 @@ namespace Gallio.Tests.Runtime.Logging
             Assert.IsNotNull(receivedEvent);
             Assert.AreEqual(LogSeverity.Important, receivedEvent.Severity);
             Assert.AreEqual("Message", receivedEvent.Message);
-            Assert.AreEqual("Foo", receivedEvent.Exception.Message);
+            Assert.AreEqual("foo", receivedEvent.Exception.Message);
         }
     }
 }
