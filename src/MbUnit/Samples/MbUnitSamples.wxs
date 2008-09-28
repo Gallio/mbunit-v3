@@ -24,6 +24,32 @@
                         <File Id="MbUnit3.Samples.MbUnitLogo.png" Name="MbUnitLogo.png" KeyPath="yes" />
                     </Component>
                 </Directory>
+                <Directory Id="MbUnit3.Samples.ContractVerifiers" Name="ContractVerifiers">
+                    <Directory Id="MbUnit3.Samples.ContractVerifiers.Comparison" Name="Comparison">
+                        <Component Id="MbUnit3.Samples.SampleComparable.cs" Guid="{5b912635-bbb1-49e0-a12e-b67d12d0a5ec}" Win64="no">
+                            <File Id="MbUnit3.Samples.SampleComparable.cs" Name="SampleComparable.cs" KeyPath="yes" />
+                        </Component>
+                        <Component Id="MbUnit3.Samples.SampleComparable.Test.cs" Guid="{1d8d53d0-a644-4b01-badb-6bab16db66ab}" Win64="no">
+                            <File Id="MbUnit3.Samples.SampleComparable.Test.cs" Name="SampleComparable.Test.cs" KeyPath="yes" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="MbUnit3.Samples.ContractVerifiers.Equality" Name="Equality">
+                        <Component Id="MbUnit3.Samples.SampleEquatable.cs" Guid="{29d760c4-c0dc-4a4e-b39d-cec1aa0ec320}" Win64="no">
+                            <File Id="MbUnit3.Samples.SampleEquatable.cs" Name="SampleEquatable.cs" KeyPath="yes" />
+                        </Component>
+                        <Component Id="MbUnit3.Samples.SampleEquatable.Test.cs" Guid="{09103600-35dc-4bf8-9f40-342c7bfdc8d2}" Win64="no">
+                            <File Id="MbUnit3.Samples.SampleEquatable.Test.cs" Name="SampleEquatable.Test.cs" KeyPath="yes" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="MbUnit3.Samples.ContractVerifiers.Exception" Name="Exception">
+                        <Component Id="MbUnit3.Samples.SampleException.cs" Guid="{17171ab2-5354-48e5-9e9f-02f5560e00fa}" Win64="no">
+                            <File Id="MbUnit3.Samples.SampleException.cs" Name="SampleException.cs" KeyPath="yes" />
+                        </Component>
+                        <Component Id="MbUnit3.Samples.SampleException.Test.cs" Guid="{4347fdeb-4ab4-4de8-8f64-32a4a7f3c697}" Win64="no">
+                            <File Id="MbUnit3.Samples.SampleException.Test.cs" Name="SampleException.Test.cs" KeyPath="yes" />
+                        </Component>
+                    </Directory>                    
+                </Directory>
                 <Component Id="MbUnit3.Samples.csproj" Guid="{89A17A8E-6EB6-4847-B1D6-1C5039A7AF03}" Win64="no">
                     <File Id="MbUnit3.Samples.csproj" Name="MbUnit.Samples.csproj" KeyPath="yes" />
                 </Component>
@@ -125,6 +151,12 @@
             <ComponentRef Id="MbUnit3.Samples.Resources.resx" />
             <ComponentRef Id="MbUnit3.Samples.Resources.Designer.cs" />
             <ComponentRef Id="MbUnit3.Samples.MbUnitLogo.png" />
+            <ComponentRef Id="MbUnit3.Samples.SampleComparable.cs" />
+            <ComponentRef Id="MbUnit3.Samples.SampleComparable.Test.cs" />
+            <ComponentRef Id="MbUnit3.Samples.SampleEquatable.cs" />
+            <ComponentRef Id="MbUnit3.Samples.SampleEquatable.Test.cs" />
+            <ComponentRef Id="MbUnit3.Samples.SampleException.cs" />
+            <ComponentRef Id="MbUnit3.Samples.SampleException.Test.cs" />
             <ComponentRef Id="MbUnit3.Samples.csproj" />
             <ComponentRef Id="MbUnit3.Samples.RichTestLogDemo.cs" />
             <ComponentRef Id="MbUnit3.Samples.WatiNDemo.cs" />
