@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Diagnostics;
