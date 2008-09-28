@@ -112,10 +112,22 @@
         <?include Features.wxi ?>
 
         <!-- Define the features in the bundle -->
-        <FeatureRef Id='feat_Gallio'>
+	
+	<!-- About the Display attribute.
+	     From the MSDN:
+
+             The number in this field specifies the order in which the feature is to be displayed in the user interface.
+
+             The value also determines whether or not the feature is initially displayed expanded or collapsed. If the value is null or 0 (zero), the record is not displayed.
+
+             * If the value is odd, the feature node is expanded initially.
+             * If the value is even, the feature node is collapsed initially.
+        -->
+	
+        <FeatureRef Id='feat_Gallio'> <!-- Display="2" -->
         </FeatureRef>
 
-        <FeatureRef Id='feat_MbUnit3'>
+        <FeatureRef Id='feat_MbUnit3'> <!-- Display="4" -->
 <?ifdef FEATURE_MBUNIT_PEX ?>
             <FeatureRef Id='feat_PexAdapter'/>
 <?endif?>
@@ -123,28 +135,17 @@
             <FeatureRef Id='feat_MbUnit3.Templates.VS2008'/>
         </FeatureRef>
 
-        <Feature Id='feat_Plugins' Title='Plugins' Level="1" Display="6">
-            <Feature Id='feat_Frameworks' Title="Test Frameworks" Level="1">
-                <FeatureRef Id='feat_CSUnitAdapter'/>
-                <FeatureRef Id='feat_MbUnit2Adapter'/>
+        <Feature Id='feat_FrameworkAdapters' Title="Test Framework Adapters" Level="1" Display="6">
+            <FeatureRef Id='feat_CSUnitAdapter'/>
+            <FeatureRef Id='feat_MbUnit2Adapter'/>
 <?ifdef FEATURE_MSTEST_ADAPTER ?>
-                <FeatureRef Id='feat_MSTestAdapter'/>
+            <FeatureRef Id='feat_MSTestAdapter'/>
 <?endif?>
-                <FeatureRef Id='feat_NUnitAdapter'/>
-                <FeatureRef Id='feat_XunitAdapter'/>
-            </Feature>
-            <Feature Id='feat_ToolIntegration' Title='Tools' Level="1">
-                <FeatureRef Id='feat_Navigator'/>
-                <FeatureRef Id='feat_NCoverIntegration'/>
-<?ifdef FEATURE_NCOVER_INTEGRATION_2 ?>
-                <FeatureRef Id='feat_NCoverIntegration2'/>
-<?endif?>
-                <FeatureRef Id='feat_TeamCityIntegration'/>
-                <FeatureRef Id='feat_TypeMockIntegration'/>
-            </Feature>
+            <FeatureRef Id='feat_NUnitAdapter'/>
+            <FeatureRef Id='feat_XunitAdapter'/>
         </Feature>
 
-        <Feature Id='feat_Runners' Title='Runners' Level="1">
+        <Feature Id='feat_Runners' Title='Test Runners' Level="1" Display="8">
             <FeatureRef Id='feat_Gallio.Echo'/>
             <FeatureRef Id='feat_Gallio.Icarus'/>
             <FeatureRef Id='feat_Gallio.MsBuildTasks'/>
@@ -165,7 +166,17 @@
 <?endif?>
         </Feature>
 
-        <Feature Id='feat_Docs' Title='Documentation' Level="1">
+        <Feature Id='feat_ToolIntegration' Title='Tool Integration' Level="1" Display="10">
+            <FeatureRef Id='feat_Navigator'/>
+            <FeatureRef Id='feat_NCoverIntegration'/>
+<?ifdef FEATURE_NCOVER_INTEGRATION_2 ?>
+            <FeatureRef Id='feat_NCoverIntegration2'/>
+<?endif?>
+            <FeatureRef Id='feat_TeamCityIntegration'/>
+            <FeatureRef Id='feat_TypeMockIntegration'/>
+        </Feature>
+
+        <Feature Id='feat_Docs' Title='Documentation' Level="1" Display="12">
 <?ifdef FEATURE_CHM_HELP ?>
             <FeatureRef Id='feat_Gallio.Help'/>
 <?endif?>
@@ -174,13 +185,13 @@
 <?endif?>
         </Feature>
 
-        <Feature Id="feat_Samples" Title='Samples' Level="1">
+        <Feature Id="feat_Samples" Title='Samples' Level="1" Display="14">
             <ComponentRef Id="SamplesMenuFolder.RemoveFolder"/>
             <FeatureRef Id='feat_Gallio.Samples'/>
             <FeatureRef Id='feat_MbUnit3.Samples'/>
         </Feature>
 
-        <Feature Id='feat_Extras' Title='Extras' Level="1">
+        <Feature Id='feat_Extras' Title='Extras' Level="1" Display="16">
             <FeatureRef Id='feat_CCNetExtensions'/>
         </Feature>
 

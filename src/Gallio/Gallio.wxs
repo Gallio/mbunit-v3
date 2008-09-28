@@ -200,7 +200,7 @@
         </DirectoryRef>
 
         <Feature Id="feat_Gallio" Title="Gallio" Level="1" InstallDefault="local" TypicalDefault="install" Absent="disallow" AllowAdvertise="no"
-                 Description="Installs the Gallio test automation platform." ConfigurableDirectory="INSTALLDIR">
+                 Description="Installs the Gallio test automation platform." ConfigurableDirectory="INSTALLDIR" Display="2">
             <ComponentRef Id="Gallio" />
             <ComponentRef Id="Gallio35" />
             <ComponentRef Id="Gallio.XmlSerializers" />

@@ -147,6 +147,7 @@
     <Compile Include="Provider\Tasks\GallioTestAssemblyTask.cs" />
     <Compile Include="Provider\Tasks\GallioTestExplicitTask.cs" />
     <Compile Include="Provider\Tasks\GallioTestItemTask.cs" />
+    <Compile Include="Provider\Tasks\GallioTestRunner.cs" />
     <Compile Include="Provider\Tasks\GallioTestRunTask.cs" />
     <Compile Include="Provider\Tasks\TaskExceptionFactory.cs" />
     <Compile Include="Runtime\ReSharperLogger.cs" />

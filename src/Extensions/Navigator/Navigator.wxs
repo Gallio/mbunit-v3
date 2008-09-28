@@ -19,7 +19,7 @@
         </DirectoryRef>
 
         <Feature Id='feat_Navigator' Title='Browser Integration' Level='1'
-            Description='Provides integration with Internet Explorer to enable navigation to source code from Gallio reports.'>
+            Description='Provides integration with Internet Explorer and Firefox to enable navigation to source code from Gallio reports.'>
 	    <ComponentRef Id="Navigator.Gallio.VisualStudio.Interop.dll"/>
             <ComponentRef Id="Gallio.Navigator.exe"/>
             <ComponentRef Id="Navigator.Readme.txt"/>
