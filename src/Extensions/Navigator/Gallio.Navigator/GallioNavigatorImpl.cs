@@ -15,10 +15,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using EnvDTE;
 using System.Runtime.InteropServices;
+using Gallio.Navigator.Native;
+using Gallio.VisualStudio.Interop;
 
 namespace Gallio.Navigator
 {
@@ -47,13 +50,11 @@ namespace Gallio.Navigator
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex);
+
                 MessageBox.Show(String.Format(
-#if DEBUG
-                    "Gallio could not navigate to: {0} ({1},{2}).\n\n{3}.",
-#else
                     "Gallio could not navigate to: {0} ({1},{2}) because the file was not found or Visual Studio could not be controlled.\nPlease try again after launching Visual Studio manually and opening the appropriate solution.",
-#endif
-                    path, lineNumber, columnNumber, ex));
+                    path, lineNumber, columnNumber));
                 return false;
             }
         }
@@ -62,7 +63,7 @@ namespace Gallio.Navigator
         {
             path = Path.GetFullPath(path);
 
-            VisualStudioSupport.WithDTE(dte =>
+            VisualStudioSupport.SafeRunWithActiveVisualStudio(dte =>
             {
                 Window window = OpenFile(dte, path);
                 if (window == null)
@@ -79,7 +80,7 @@ namespace Gallio.Navigator
                 window.Visible = true;
 
                 VisualStudioSupport.BringVisualStudioToFront(dte);
-            });
+            }, TimeSpan.FromSeconds(30));
 
             return true;
         }
@@ -95,7 +96,7 @@ namespace Gallio.Navigator
             }
             catch (COMException ex)
             {
-                if (ex.ErrorCode != Native.NativeConstants.STG_E_FILENOTFOUND)
+                if (ex.ErrorCode != NativeConstants.STG_E_FILENOTFOUND)
                     throw;
 
                 return null;

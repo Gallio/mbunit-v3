@@ -29,6 +29,11 @@ namespace Gallio.VisualStudio.Shell.Actions
         private readonly Dictionary<Type, Action> installedActions;
         private readonly Dictionary<string, ActionButton> installedActionButtons;
 
+        /// <summary>
+        /// Initializes the action manager.
+        /// </summary>
+        /// <param name="shell">The shell</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="shell"/> is null</exception>
         public DefaultActionManager(IShell shell)
             : base(shell)
         {
@@ -36,8 +41,16 @@ namespace Gallio.VisualStudio.Shell.Actions
             installedActionButtons = new Dictionary<string, ActionButton>();
         }
 
+        /// <summary>
+        /// Installs an action button specified by the provided descriptor.
+        /// </summary>
+        /// <param name="descriptor">The action button descriptor</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="descriptor"/> is null</exception>
         public void InstallActionButton(ActionButtonDescriptor descriptor)
         {
+            if (descriptor == null)
+                throw new ArgumentNullException("descriptor");
+
             Action action;
             if (!installedActions.TryGetValue(descriptor.ActionType, out action))
             {

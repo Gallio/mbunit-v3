@@ -7,6 +7,7 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests.csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.csproj" />
@@ -17,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(VSIPInstalled)">
+    <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll">
+        <Folder>VisualStudio</Folder>
+    </Binary>
     <Binary Include="Gallio.VisualStudio.Shell\bin\Gallio.VisualStudio.Shell.dll">
       <Folder>VisualStudio</Folder>
     </Binary>

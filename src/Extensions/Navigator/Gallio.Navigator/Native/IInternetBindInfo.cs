@@ -23,7 +23,7 @@ namespace Gallio.Navigator.Native
     [ComImport]
     [Guid("79EAC9E1-BAF9-11CE-8C82-00AA004BA90B")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IInternetBindInfo
+    internal interface IInternetBindInfo
     {
         [PreserveSig]
         int GetBindInfo(

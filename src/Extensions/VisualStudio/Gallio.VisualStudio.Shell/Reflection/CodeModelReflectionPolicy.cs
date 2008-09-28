@@ -15,7 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using EnvDTE80;
 using Gallio.Collections;
 using Gallio.Reflection;
@@ -32,19 +35,19 @@ namespace Gallio.VisualStudio.Shell.Reflection
     /// </remarks>
     public class CodeModelReflectionPolicy : StaticReflectionPolicy
     {
-        private readonly CodeModel2 codeModel;
+        private readonly Solution solution;
 
         /// <summary>
         /// Creates a reflector with the specified CodeModel.
         /// </summary>
-        /// <param name="codeModel">The Visual Studio CodeModel</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeModel"/> is null</exception>
-        public CodeModelReflectionPolicy(CodeModel2 codeModel)
+        /// <param name="solution">The Visual Studio Solution</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="solution"/> is null</exception>
+        public CodeModelReflectionPolicy(Solution solution)
         {
-            if (codeModel == null)
-                throw new ArgumentNullException("codeModel");
+            if (solution == null)
+                throw new ArgumentNullException("solution");
 
-            this.codeModel = codeModel;
+            this.solution = solution;
         }
 
         #region Wrapping
@@ -88,7 +91,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public StaticTypeWrapper Wrap(CodeType target)
         {
-            return target != null ? MakeTypeWithoutSubstitution(target) : null;
+            return target != null ? MakeDeclaredType(target) : null;
         }
 
         /// <summary>
@@ -101,7 +104,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             if (target == null)
                 return null;
 
-            StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(GetContainingType((CodeElement)target));
+            StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(GetContainingType((CodeElement)target));
             if (target.FunctionKind == vsCMFunction.vsCMFunctionConstructor)
                 return new StaticConstructorWrapper(this, target, declaringType);
             else
@@ -118,7 +121,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             if (target == null)
                 return null;
 
-            StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(GetContainingType((CodeElement)target));
+            StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(GetContainingType((CodeElement)target));
             return new StaticPropertyWrapper(this, target, declaringType, declaringType);
         }
 
@@ -132,7 +135,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             if (target == null)
                 return null;
 
-            StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(GetContainingType((CodeElement)target));
+            StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(GetContainingType((CodeElement)target));
             return new StaticFieldWrapper(this, target, declaringType, declaringType);
         }
 
@@ -146,7 +149,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             if (target == null)
                 return null;
 
-            StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(GetContainingType((CodeElement)target));
+            StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(GetContainingType((CodeElement)target));
             return new StaticEventWrapper(this, target, declaringType, declaringType);
         }
 
@@ -166,65 +169,227 @@ namespace Gallio.VisualStudio.Shell.Reflection
         #endregion
 
         #region Assemblies
+        /// <inheritdoc />
         protected override IAssemblyInfo LoadAssemblyFromImpl(string assemblyFile)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("The Visual Studio CodeModel metadata policy does not support loading assemblies from files.");
         }
 
+        /// <inheritdoc />
         protected override IAssemblyInfo LoadAssemblyImpl(AssemblyName assemblyName)
         {
-            throw new NotImplementedException();
+            foreach (Project project in FindAllProjects())
+            {
+                string projectAssemblyName = GetProjectAssemblyName(project);
+                if (projectAssemblyName == assemblyName.Name)
+                {
+                    CodeModel assemblyHandle = project.CodeModel;
+                    if (assemblyHandle != null)
+                        return new StaticAssemblyWrapper(this, assemblyHandle);
+                }
+            }
+
+            throw new ArgumentException(String.Format("Could not find assembly '{0}' in the VisualStudio solution.",
+                assemblyName.FullName));
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<StaticAttributeWrapper> GetAssemblyCustomAttributes(StaticAssemblyWrapper assembly)
         {
-            throw new NotImplementedException();
+            // TODO
+            yield break;
         }
 
+        /// <inheritdoc />
         protected override AssemblyName GetAssemblyName(StaticAssemblyWrapper assembly)
         {
-            throw new NotImplementedException();
+            CodeModel assemblyHandle = (CodeModel)assembly.Handle;
+            return new AssemblyName(GetProjectAssemblyName(assemblyHandle.Parent));
         }
 
+        /// <inheritdoc />
         protected override string GetAssemblyPath(StaticAssemblyWrapper assembly)
         {
-            throw new NotImplementedException();
+            CodeModel assemblyHandle = (CodeModel)assembly.Handle;
+            string targetPath = GetProjectTargetPath(assemblyHandle.Parent);
+            if (targetPath == null)
+                throw new InvalidOperationException(String.Format("Could not obtain output path of assembly: '{0}'.", assembly));
+
+            return targetPath;
         }
 
+        /// <inheritdoc />
         protected override IList<AssemblyName> GetAssemblyReferences(StaticAssemblyWrapper assembly)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         protected override IList<StaticDeclaredTypeWrapper> GetAssemblyExportedTypes(StaticAssemblyWrapper assembly)
         {
-            throw new NotImplementedException();
+            return GetAssemblyTypes(assembly, true);
         }
 
+        /// <inheritdoc />
         protected override IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(StaticAssemblyWrapper assembly)
         {
-            throw new NotImplementedException();
+            return GetAssemblyTypes(assembly, false);
         }
 
+        /// <inheritdoc />
         protected override StaticDeclaredTypeWrapper GetAssemblyType(StaticAssemblyWrapper assembly, string typeName)
         {
-            throw new NotImplementedException();
+            CodeModel assemblyHandle = (CodeModel)assembly.Handle;
+
+            if (typeName.IndexOf('`') < 0)
+            {
+                try
+                {
+                    CodeType typeHandle = assemblyHandle.CodeTypeFromFullName(typeName.Replace('+', '.'));
+                    if (typeHandle != null)
+                        return MakeDeclaredType(typeHandle);
+                }
+                catch (COMException)
+                {
+                }
+            }
+            else
+            {
+                // The CodeTypeFromFullName API can find generic types but it needs the names of
+                // the generic type parameters to be provided.  eg. "Class<T>" instead of "Class`1".
+                throw new NotImplementedException("Searching for generic types not implemented currently.");
+            }
+
+            return null;
+        }
+
+        private IList<StaticDeclaredTypeWrapper> GetAssemblyTypes(StaticAssemblyWrapper assembly, bool exportedOnly)
+        {
+            CodeModel assemblyHandle = (CodeModel)assembly.Handle;
+            var types = new List<StaticDeclaredTypeWrapper>();
+
+            AddAssemblyTypes(assemblyHandle.CodeElements, exportedOnly, types, null);
+
+            return types;
+        }
+
+        private void AddAssemblyTypes(CodeElements codeElements, bool exportedOnly,
+            List<StaticDeclaredTypeWrapper> types, StaticDeclaredTypeWrapper declaringType)
+        {
+            foreach (CodeElement codeElement in codeElements)
+            {
+                bool mayContainNestedTypes;
+                switch (codeElement.Kind)
+                {
+                    case vsCMElement.vsCMElementClass:
+                    case vsCMElement.vsCMElementStruct:
+                        mayContainNestedTypes = true;
+                        break;
+
+                    case vsCMElement.vsCMElementInterface:
+                    case vsCMElement.vsCMElementDelegate:
+                    case vsCMElement.vsCMElementEnum:
+                        mayContainNestedTypes = false;
+                        break;
+
+                    default:
+                        continue;
+                }
+
+                CodeType typeHandle = (CodeType)codeElement;
+                if (! exportedOnly || typeHandle.Access == vsCMAccess.vsCMAccessPublic)
+                {
+                    StaticDeclaredTypeWrapper type = new StaticDeclaredTypeWrapper(this, codeElement,
+                        declaringType, StaticTypeSubstitution.Empty);
+                    types.Add(type);
+
+                    if (mayContainNestedTypes)
+                        AddAssemblyTypes(typeHandle.Members, exportedOnly, types, type);
+                }
+            }
+        }
+
+        private IEnumerable<Project> FindAllProjects()
+        {
+            foreach (Project project in solution.Projects)
+            {
+                if (project.Kind != Constants.vsProjectKindSolutionItems)
+                    yield return project;
+
+                foreach (Project subProject in FindAllProjects(project.ProjectItems))
+                    yield return subProject;
+            }
+        }
+
+        private static IEnumerable<Project> FindAllProjects(ProjectItems parent)
+        {
+            foreach (ProjectItem projectItem in parent)
+            {
+                Project project = projectItem.SubProject;
+                if (project != null)
+                {
+                    if (project.Kind != Constants.vsProjectKindSolutionItems)
+                        yield return project;
+
+                    foreach (Project subProject in FindAllProjects(project.ProjectItems))
+                        yield return subProject;
+                }
+            }
+        }
+
+        private static string GetProjectAssemblyName(Project project)
+        {
+            try
+            {
+                Property projectAssemblyNameProp = project.Properties.Item("AssemblyName");
+                if (projectAssemblyNameProp != null)
+                    return projectAssemblyNameProp.Value as string;
+            }
+            catch (ArgumentException)
+            {
+            }
+
+            return null;
+        }
+
+        private static string GetProjectTargetPath(Project project)
+        {
+            try
+            {
+                Configuration configuration = project.ConfigurationManager.ActiveConfiguration;
+                if (configuration != null)
+                {
+                    string fullPath = (string)project.Properties.Item("FullPath").Value;
+                    string outputPath = (string)configuration.Properties.Item("OutputPath").Value;
+                    string outputFileName = (string)project.Properties.Item("OutputFileName").Value;
+
+                    return Path.Combine(Path.Combine(fullPath, outputPath), outputFileName);
+                }
+            }
+            catch (ArgumentException)
+            {
+            }
+
+            return null;
         }
         #endregion
 
         #region Attributes
+        /// <inheritdoc />
         protected override StaticConstructorWrapper GetAttributeConstructor(StaticAttributeWrapper attribute)
         {
             CodeAttribute2 attributeHandle = (CodeAttribute2)attribute.Handle;
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         protected override ConstantValue[] GetAttributeConstructorArguments(StaticAttributeWrapper attribute)
         {
             CodeAttribute2 attributeHandle = (CodeAttribute2)attribute.Handle;
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>> GetAttributeFieldArguments(
             StaticAttributeWrapper attribute)
         {
@@ -232,6 +397,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>> GetAttributePropertyArguments(
             StaticAttributeWrapper attribute)
         {
@@ -241,6 +407,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
         #endregion
 
         #region Members
+        /// <inheritdoc />
         protected override IEnumerable<StaticAttributeWrapper> GetMemberCustomAttributes(StaticMemberWrapper member)
         {
             CodeElement2 memberHandle = (CodeElement2)member.Handle;
@@ -269,12 +436,14 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return EmptyArray<StaticAttributeWrapper>.Instance;
         }
 
+        /// <inheritdoc />
         protected override string GetMemberName(StaticMemberWrapper member)
         {
             CodeElement memberHandle = (CodeElement)member.Handle;
             return memberHandle.Name;
         }
 
+        /// <inheritdoc />
         protected override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
         {
             CodeElement memberHandle = (CodeElement)member.Handle;
@@ -290,29 +459,34 @@ namespace Gallio.VisualStudio.Shell.Reflection
         #endregion
 
         #region Events
+        /// <inheritdoc />
         protected override EventAttributes GetEventAttributes(StaticEventWrapper @event)
         {
             return EventAttributes.None;
         }
 
+        /// <inheritdoc />
         protected override StaticMethodWrapper GetEventAddMethod(StaticEventWrapper @event)
         {
             CodeEvent eventHandle = (CodeEvent)@event.Handle;
             return WrapAccessor(eventHandle.Adder, @event);
         }
 
+        /// <inheritdoc />
         protected override StaticMethodWrapper GetEventRaiseMethod(StaticEventWrapper @event)
         {
             // FIXME: Not supported by code model.
             return null;
         }
 
+        /// <inheritdoc />
         protected override StaticMethodWrapper GetEventRemoveMethod(StaticEventWrapper @event)
         {
             CodeEvent eventHandle = (CodeEvent)@event.Handle;
             return WrapAccessor(eventHandle.Remover, @event);
         }
 
+        /// <inheritdoc />
         protected override StaticTypeWrapper GetEventHandlerType(StaticEventWrapper @event)
         {
             CodeEvent eventHandle = (CodeEvent)@event.Handle;
@@ -321,6 +495,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
         #endregion
 
         #region Fields
+        /// <inheritdoc />
         protected override FieldAttributes GetFieldAttributes(StaticFieldWrapper field)
         {
             CodeVariable2 fieldHandle = (CodeVariable2)field.Handle;
@@ -354,6 +529,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return flags;
         }
 
+        /// <inheritdoc />
         protected override StaticTypeWrapper GetFieldType(StaticFieldWrapper field)
         {
             CodeVariable2 fieldHandle = (CodeVariable2)field.Handle;
@@ -362,32 +538,37 @@ namespace Gallio.VisualStudio.Shell.Reflection
         #endregion
 
         #region Properties
+        /// <inheritdoc />
         protected override PropertyAttributes GetPropertyAttributes(StaticPropertyWrapper property)
         {
             // Note: There don't seem to be any usable property attributes.
             return 0;
         }
 
+        /// <inheritdoc />
         protected override StaticTypeWrapper GetPropertyType(StaticPropertyWrapper property)
         {
-            CodeProperty2 propertyHandle = (CodeProperty2)property.Handle;
+            CodeProperty propertyHandle = (CodeProperty)property.Handle;
             return MakeType(propertyHandle.Type);
         }
 
+        /// <inheritdoc />
         protected override StaticMethodWrapper GetPropertyGetMethod(StaticPropertyWrapper property)
         {
-            CodeProperty2 propertyHandle = (CodeProperty2)property.Handle;
+            CodeProperty propertyHandle = (CodeProperty)property.Handle;
             return WrapAccessor(propertyHandle.Getter, property);
         }
 
+        /// <inheritdoc />
         protected override StaticMethodWrapper GetPropertySetMethod(StaticPropertyWrapper property)
         {
-            CodeProperty2 propertyHandle = (CodeProperty2)property.Handle;
+            CodeProperty propertyHandle = (CodeProperty)property.Handle;
             return WrapAccessor(propertyHandle.Setter, property);
         }
         #endregion
 
         #region Functions
+        /// <inheritdoc />
         protected override MethodAttributes GetFunctionAttributes(StaticFunctionWrapper function)
         {
             CodeFunction2 functionHandle = (CodeFunction2)function.Handle;
@@ -424,6 +605,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return flags;
         }
 
+        /// <inheritdoc />
         protected override CallingConventions GetFunctionCallingConvention(StaticFunctionWrapper function)
         {
             CodeFunction2 functionHandle = (CodeFunction2)function.Handle;
@@ -434,6 +616,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return flags;
         }
 
+        /// <inheritdoc />
         protected override IList<StaticParameterWrapper> GetFunctionParameters(StaticFunctionWrapper function)
         {
             CodeFunction2 functionHandle = (CodeFunction2)function.Handle;
@@ -446,12 +629,14 @@ namespace Gallio.VisualStudio.Shell.Reflection
         #endregion
 
         #region Methods
+        /// <inheritdoc />
         protected override IList<StaticGenericParameterWrapper> GetMethodGenericParameters(StaticMethodWrapper method)
         {
             // FIXME: Not supported.
             return EmptyArray<StaticGenericParameterWrapper>.Instance;
         }
 
+        /// <inheritdoc />
         protected override StaticParameterWrapper GetMethodReturnParameter(StaticMethodWrapper method)
         {
             CodeFunction2 methodHandle = (CodeFunction2)method.Handle;
@@ -463,6 +648,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
         #endregion
 
         #region Parameters
+        /// <inheritdoc />
         protected override ParameterAttributes GetParameterAttributes(StaticParameterWrapper parameter)
         {
             if (parameter.Handle is CodeTypeRef)
@@ -479,6 +665,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return flags;
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<StaticAttributeWrapper> GetParameterCustomAttributes(StaticParameterWrapper parameter)
         {
             if (parameter.Handle is CodeTypeRef)
@@ -488,6 +675,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return WrapAttributes(parameterHandle.Attributes);
         }
 
+        /// <inheritdoc />
         protected override string GetParameterName(StaticParameterWrapper parameter)
         {
             if (parameter.Handle is CodeTypeRef)
@@ -497,6 +685,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return parameterHandle.Name;
         }
 
+        /// <inheritdoc />
         protected override int GetParameterPosition(StaticParameterWrapper parameter)
         {
             if (parameter.Handle is CodeTypeRef)
@@ -512,6 +701,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             throw new InvalidOperationException("Could not obtain position of parameter.");
         }
 
+        /// <inheritdoc />
         protected override StaticTypeWrapper GetParameterType(StaticParameterWrapper parameter)
         {
             CodeTypeRef returnTypeHandle = parameter.Handle as CodeTypeRef;
@@ -529,6 +719,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
         #endregion
 
         #region Types
+        /// <inheritdoc />
         protected override TypeAttributes GetTypeAttributes(StaticDeclaredTypeWrapper type)
         {
             CodeType typeHandle = (CodeType)type.Handle;
@@ -539,7 +730,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             //TODO ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Abstract, typeHandle.);
             //TODO ReflectorFlagsUtils.AddFlagIfTrue(ref flags, TypeAttributes.Sealed, modifiers.IsSealed);
 
-            bool isNested = GetContainingType((CodeElement)typeHandle) != null;
+            bool isNested = typeHandle.Parent is CodeType;
 
             // FIXME: Don't know what to do with WithEvents
             switch (typeHandle.Access)
@@ -566,19 +757,22 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return flags;
         }
 
+        /// <inheritdoc />
         protected override StaticAssemblyWrapper GetTypeAssembly(StaticDeclaredTypeWrapper type)
         {
             CodeType typeHandle = (CodeType)type.Handle;
-            throw new NotImplementedException();
-            // TODO: return new StaticAssemblyWrapper(this, typeHandle.);
+            return new StaticAssemblyWrapper(this, typeHandle.ProjectItem.ContainingProject.CodeModel);
         }
 
+        /// <inheritdoc />
         protected override string GetTypeNamespace(StaticDeclaredTypeWrapper type)
         {
             CodeType typeHandle = (CodeType)type.Handle;
-            return typeHandle.Namespace.FullName;
+            CodeNamespace namespaceHandle = typeHandle.Namespace;
+            return namespaceHandle != null ? namespaceHandle.FullName : "";
         }
 
+        /// <inheritdoc />
         protected override StaticDeclaredTypeWrapper GetTypeBaseType(StaticDeclaredTypeWrapper type)
         {
             CodeType typeHandle = (CodeType)type.Handle;
@@ -595,6 +789,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return null;
         }
 
+        /// <inheritdoc />
         protected override IList<StaticDeclaredTypeWrapper> GetTypeInterfaces(StaticDeclaredTypeWrapper type)
         {
             CodeType typeHandle = (CodeType)type.Handle;
@@ -609,12 +804,14 @@ namespace Gallio.VisualStudio.Shell.Reflection
             return interfaces;
         }
 
+        /// <inheritdoc />
         protected override IList<StaticGenericParameterWrapper> GetTypeGenericParameters(StaticDeclaredTypeWrapper type)
         {
             // FIXME: Not supported.
             return EmptyArray<StaticGenericParameterWrapper>.Instance;
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<StaticConstructorWrapper> GetTypeConstructors(StaticDeclaredTypeWrapper type)
         {
             CodeType typeHandle = (CodeType)type.Handle;
@@ -623,13 +820,14 @@ namespace Gallio.VisualStudio.Shell.Reflection
             {
                 if (candidate.Kind == vsCMElement.vsCMElementFunction)
                 {
-                    CodeFunction2 function = (CodeFunction2)typeHandle;
+                    CodeFunction2 function = (CodeFunction2)candidate;
                     if (function.FunctionKind == vsCMFunction.vsCMFunctionConstructor)
                         yield return new StaticConstructorWrapper(this, function, type);
                 }
             }
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<StaticMethodWrapper> GetTypeMethods(StaticDeclaredTypeWrapper type,
             StaticDeclaredTypeWrapper reflectedType)
         {
@@ -642,6 +840,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             }
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<StaticPropertyWrapper> GetTypeProperties(StaticDeclaredTypeWrapper type,
             StaticDeclaredTypeWrapper reflectedType)
         {
@@ -654,6 +853,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             }
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<StaticFieldWrapper> GetTypeFields(StaticDeclaredTypeWrapper type,
             StaticDeclaredTypeWrapper reflectedType)
         {
@@ -666,6 +866,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             }
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<StaticEventWrapper> GetTypeEvents(StaticDeclaredTypeWrapper type,
             StaticDeclaredTypeWrapper reflectedType)
         {
@@ -678,6 +879,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
             }
         }
 
+        /// <inheritdoc />
         protected override IEnumerable<StaticTypeWrapper> GetTypeNestedTypes(StaticDeclaredTypeWrapper type)
         {
             CodeType typeHandle = (CodeType)type.Handle;
@@ -697,41 +899,116 @@ namespace Gallio.VisualStudio.Shell.Reflection
 
         private StaticTypeWrapper MakeType(CodeTypeRef typeHandle)
         {
-            throw new NotImplementedException();
+            int kind = (int) typeHandle.TypeKind;
+            switch (kind)
+            {
+                case (int) vsCMTypeRef.vsCMTypeRefOther:
+                    throw new NotSupportedException("Other");
+
+                case (int) vsCMTypeRef.vsCMTypeRefCodeType:
+                    return MakeDeclaredType(typeHandle.CodeType);
+
+                case (int)vsCMTypeRef.vsCMTypeRefArray:
+                    return MakeType(typeHandle.ElementType).MakeArrayType(typeHandle.Rank);
+
+                case (int)vsCMTypeRef.vsCMTypeRefPointer:
+                    return MakeType(typeHandle.ElementType).MakePointerType();
+
+                case (int)vsCMTypeRef2.vsCMTypeRefReference:
+                    return MakeType(typeHandle.ElementType).MakeByRefType();
+
+                case (int)vsCMTypeRef2.vsCMTypeRefMCBoxedReference:
+                    throw new NotSupportedException("Boxed Reference");
+
+                case (int)vsCMTypeRef.vsCMTypeRefVoid:
+                    return WrapNativeType(typeof(void));
+
+                case (int)vsCMTypeRef.vsCMTypeRefString:
+                    return WrapNativeType(typeof(String));
+
+                case (int)vsCMTypeRef.vsCMTypeRefObject:
+                    return WrapNativeType(typeof(Object));
+
+                case (int)vsCMTypeRef.vsCMTypeRefByte:
+                    return WrapNativeType(typeof(Byte));
+
+                case (int)vsCMTypeRef2.vsCMTypeRefSByte:
+                    return WrapNativeType(typeof(SByte));
+
+                case (int)vsCMTypeRef.vsCMTypeRefChar:
+                    return WrapNativeType(typeof(Char));
+
+                case (int)vsCMTypeRef2.vsCMTypeRefUnsignedChar:
+                    throw new NotSupportedException("Unsigned Char");
+
+                case (int)vsCMTypeRef.vsCMTypeRefShort:
+                    return WrapNativeType(typeof(Int16));
+
+                case (int)vsCMTypeRef2.vsCMTypeRefUnsignedShort:
+                    return WrapNativeType(typeof(UInt16));
+
+                case (int)vsCMTypeRef.vsCMTypeRefInt:
+                    return WrapNativeType(typeof(Int32));
+
+                case (int)vsCMTypeRef2.vsCMTypeRefUnsignedInt:
+                    return WrapNativeType(typeof(UInt32));
+
+                case (int)vsCMTypeRef.vsCMTypeRefLong:
+                    return WrapNativeType(typeof(Int64));
+
+                case (int)vsCMTypeRef2.vsCMTypeRefUnsignedLong:
+                    return WrapNativeType(typeof(UInt64));
+
+                case (int)vsCMTypeRef.vsCMTypeRefFloat:
+                    return WrapNativeType(typeof(Single));
+
+                case (int)vsCMTypeRef.vsCMTypeRefDouble:
+                    return WrapNativeType(typeof(Double));
+
+                case (int)vsCMTypeRef.vsCMTypeRefDecimal:
+                    return WrapNativeType(typeof(Decimal));
+
+                case (int)vsCMTypeRef.vsCMTypeRefBool:
+                    return WrapNativeType(typeof(Boolean));
+
+                case (int)vsCMTypeRef.vsCMTypeRefVariant:
+                    throw new NotSupportedException("Variant");
+
+                default:
+                    throw new NotSupportedException("Kind: " + kind);
+            }
         }
 
-        private StaticTypeWrapper MakeType(CodeTypeRef2 typeHandle)
+        private StaticTypeWrapper WrapNativeType(Type type)
         {
-            throw new NotImplementedException();
-        }
-
-        private StaticTypeWrapper MakeTypeWithoutSubstitution(CodeType typeElementHandle)
-        {
-            throw new NotImplementedException();
-        }
-
-        private StaticDeclaredTypeWrapper MakeDeclaredTypeWithoutSubstitution(CodeType typeElementHandle)
-        {
-            throw new NotImplementedException();
+            // FIXME: Could perhaps return a reference to a Cecil static type wrapper.
+            // Or maybe there's a way to get a code model object for an arbitrary type.
+            throw new NotSupportedException(type.ToString());
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(CodeType typeHandle)
         {
-            throw new NotImplementedException();
+            CodeType declaringTypeHandle = typeHandle.Parent as CodeType;
+            StaticDeclaredTypeWrapper declaringType = declaringTypeHandle != null ? MakeDeclaredType(declaringTypeHandle) : null;
+
+            return new StaticDeclaredTypeWrapper(this, typeHandle, declaringType, StaticTypeSubstitution.Empty);
         }
         #endregion
 
         #region Generic Parameters
+        /// <inheritdoc />
         protected override GenericParameterAttributes GetGenericParameterAttributes(StaticGenericParameterWrapper genericParameter)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         protected override int GetGenericParameterPosition(StaticGenericParameterWrapper genericParameter)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         protected override IList<StaticTypeWrapper> GetGenericParameterConstraints(StaticGenericParameterWrapper genericParameter)
         {
             throw new NotImplementedException();
@@ -758,7 +1035,7 @@ namespace Gallio.VisualStudio.Shell.Reflection
 
             TOutput[] result = new TOutput[count];
             for (int i = 0; i < count; i++)
-                result[i] = converter((TInput)codeElements.Item(0));
+                result[i] = converter((TInput)codeElements.Item(i + 1));
 
             return result;
         }

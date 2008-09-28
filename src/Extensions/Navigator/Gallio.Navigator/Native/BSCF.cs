@@ -19,7 +19,7 @@ using System.Text;
 
 namespace Gallio.Navigator.Native
 {
-    public enum BSCF
+    internal enum BSCF
     {
         BSCF_FIRSTDATANOTIFICATION = 0x01,
         BSCF_INTERMEDIATEDATANOTIFICATION = 0x02,

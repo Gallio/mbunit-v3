@@ -17,7 +17,7 @@ using System;
 
 namespace Gallio.Navigator.Native
 {
-    public struct PROTOCOLDATA
+    internal struct PROTOCOLDATA
     {
         public uint grfFlags;
         public uint dwState;

@@ -14,16 +14,15 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Web;
 using Gallio.Navigator.Native;
 using Microsoft.Win32;
 
 namespace Gallio.Navigator
 {
+    /// <summary>
+    /// Gallio Asynchronous Pluggable Protocol Handler implementation.
+    /// </summary>
     [ComVisible(true)]
     [Guid(ProtocolGuid)]
     [ClassInterface(ClassInterfaceType.None)]
@@ -31,11 +30,8 @@ namespace Gallio.Navigator
     {
         private const string ProtocolGuid = "829B8F35-9874-49db-880F-142C98EB36A1";
         private const string ProtocolCLSID = "{" + ProtocolGuid + "}";
-        private const string ProtocolScheme = "gallio";
         private const string ProtocolDescription = "gallio: Asynchronous Pluggable Protocol Handler";
         private const string CLSIDKeyName = "CLSID";
-
-        private const string NavigateToCommandName = "navigateTo";
 
         private IInternetProtocolSink protocolSink;
 
@@ -44,11 +40,39 @@ namespace Gallio.Navigator
         [ComRegisterFunction]
         internal static void Register(Type type)
         {
+            // Async pluggable protocol handler.
             using (RegistryKey handlerKey = OpenProtocolHandlerKey())
             {
-                RegistryKey gallioKey = handlerKey.CreateSubKey(ProtocolScheme);
-                gallioKey.SetValue(null, ProtocolDescription);
-                gallioKey.SetValue(CLSIDKeyName, ProtocolCLSID);
+                using (RegistryKey gallioKey = handlerKey.CreateSubKey(ProtocolScheme))
+                {
+                    gallioKey.SetValue(null, ProtocolDescription);
+                    gallioKey.SetValue(CLSIDKeyName, ProtocolCLSID);
+                }
+            }
+
+            // Application url protocol handler.
+            string appPath = new Uri(typeof(Program).Assembly.CodeBase).LocalPath;
+
+            using (RegistryKey applicationKey = Registry.ClassesRoot.CreateSubKey(ProtocolScheme))
+            {
+                using (RegistryKey defaultIconKey = applicationKey.CreateSubKey("DefaultIcon"))
+                {
+                    defaultIconKey.SetValue(null, appPath);
+                }
+
+                using (RegistryKey shellKey = applicationKey.CreateSubKey("shell"))
+                {
+                    using (RegistryKey openKey = shellKey.CreateSubKey("open"))
+                    {
+                        using (RegistryKey commandKey = openKey.CreateSubKey("command"))
+                        {
+                            commandKey.SetValue(null, string.Concat("\"", appPath, "\" \"%1\""));
+                        }
+                    }
+                }
+
+                applicationKey.SetValue(null, ProtocolDescription);
+                applicationKey.SetValue("URL Protocol", "");
             }
         }
 
@@ -57,15 +81,10 @@ namespace Gallio.Navigator
         {
             using (RegistryKey handlerKey = OpenProtocolHandlerKey())
             {
-                try
-                {
-                    handlerKey.DeleteSubKeyTree(ProtocolScheme);
-                }
-                catch (ArgumentException)
-                {
-                    // Eat exception in case subkey does not exist.
-                }
+                DeleteSubKeyTree(handlerKey, ProtocolScheme);
             }
+
+            DeleteSubKeyTree(Registry.ClassesRoot, ProtocolScheme);
         }
 
         private static RegistryKey OpenProtocolHandlerKey()
@@ -73,28 +92,40 @@ namespace Gallio.Navigator
             return Registry.ClassesRoot.OpenSubKey(@"PROTOCOLS\Handler", true);
         }
 
+        private static void DeleteSubKeyTree(RegistryKey key, string subKey)
+        {
+            try
+            {
+                key.DeleteSubKeyTree(subKey);
+            }
+            catch (ArgumentException)
+            {
+                // Eat exception in case subkey does not exist.
+            }
+        }
+
         #endregion
 
         #region IInternetProtocol
 
-        public int Read(IntPtr pv, uint cb, out uint pcbRead)
+        int IInternetProtocol.Read(IntPtr pv, uint cb, out uint pcbRead)
         {
             pcbRead = 0;
             return NativeConstants.S_FALSE;
         }
 
-        public int Seek(long dlibMove, uint dwOrigin, out ulong plibNewPosition)
+        int IInternetProtocol.Seek(long dlibMove, uint dwOrigin, out ulong plibNewPosition)
         {
             plibNewPosition = 0;
             return NativeConstants.E_FAIL;
         }
 
-        public int LockRequest(uint dwOptions)
+        int IInternetProtocol.LockRequest(uint dwOptions)
         {
             return NativeConstants.S_OK;
         }
 
-        public int UnlockRequest()
+        int IInternetProtocol.UnlockRequest()
         {
             return NativeConstants.S_OK;
         }
@@ -102,68 +133,115 @@ namespace Gallio.Navigator
         #endregion
         #region IInternetProtocolRoot
 
-        public int Start(string szUrl, IInternetProtocolSink protocolSink, IInternetBindInfo bindInfo, uint grfPI, uint dwReserved)
+        int IInternetProtocolRoot.Start(string szUrl, IInternetProtocolSink protocolSink, IInternetBindInfo bindInfo, uint grfPI, uint dwReserved)
         {
-            int hr = NativeConstants.INET_E_INVALID_URL;
-            try
-            {
-                Uri uri = new Uri(szUrl);
-                if (uri.Scheme == ProtocolScheme)
-                {
-                    string commandName = uri.AbsolutePath;
-                    NameValueCollection args = HttpUtility.ParseQueryString(uri.Query);
-
-                    switch (commandName)
-                    {
-                        case NavigateToCommandName:
-                            string path = args["path"];
-                            int lineNumber = GetValueOrDefault(args, "line", 0);
-                            int columnNumber = GetValueOrDefault(args, "column", 0);
-
-                            protocolSink.ReportProgress(0, "Navigating to source file.");
-                            Navigator.NavigateTo(path, lineNumber, columnNumber);
-
-                            // Abort the request by indicating that there is no data.
-                            hr = NativeConstants.INET_E_DATA_NOT_AVAILABLE;
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // We want to report a result no matter what, even if a serious exception occurs.
-                // Otherwise IE hangs.
-                Debug.WriteLine(String.Format("Gallio could not perform requested service.", ex));
-            }
-
-            protocolSink.ReportResult(hr, 0, null);
-            return hr;
+            return Start(szUrl, protocolSink, bindInfo, grfPI, dwReserved);
         }
 
-        public int Continue(ref PROTOCOLDATA protocolData)
+        int IInternetProtocol.Start(string szUrl, IInternetProtocolSink protocolSink, IInternetBindInfo bindInfo, uint grfPI, uint dwReserved)
+        {
+            return Start(szUrl, protocolSink, bindInfo, grfPI, dwReserved);
+        }
+
+        private int Start(string szUrl, IInternetProtocolSink protocolSink, IInternetBindInfo bindInfo, uint grfPI, uint dwReserved)
+        {
+            this.protocolSink = protocolSink;
+            try
+            {
+                int hr;
+                if (ProcessCommandUrl(szUrl))
+                {
+                    // Abort the request by indicating that there is no data.
+                    hr = NativeConstants.INET_E_DATA_NOT_AVAILABLE;
+                }
+                else
+                {
+                    hr = NativeConstants.INET_E_INVALID_URL;
+                }
+
+                protocolSink.ReportResult(hr, 0, null);
+                return hr;
+            }
+            finally
+            {
+                this.protocolSink = null;
+            }
+        }
+
+        int IInternetProtocolRoot.Continue(ref PROTOCOLDATA protocolData)
+        {
+            return Continue(ref protocolData);
+        }
+
+        int IInternetProtocol.Continue(ref PROTOCOLDATA protocolData)
+        {
+            return Continue(ref protocolData);
+        }
+
+        private int Continue(ref PROTOCOLDATA protocolData)
         {
             return NativeConstants.S_OK;
         }
 
-        public int Abort(int hrReason, uint dwOptions)
+        int IInternetProtocolRoot.Abort(int hrReason, uint dwOptions)
+        {
+            return Abort(hrReason, dwOptions);
+        }
+
+        int IInternetProtocol.Abort(int hrReason, uint dwOptions)
+        {
+            return Abort(hrReason, dwOptions);
+        }
+
+        private int Abort(int hrReason, uint dwOptions)
         {
             if (protocolSink != null)
                 protocolSink.ReportResult(hrReason, 0, null);
             return NativeConstants.S_OK;
         }
 
-        public int Terminate(uint dwOptions)
+        int IInternetProtocolRoot.Terminate(uint dwOptions)
+        {
+            return Terminate(dwOptions);
+        }
+
+        int IInternetProtocol.Terminate(uint dwOptions)
+        {
+            return Terminate(dwOptions);
+        }
+
+        private int Terminate(uint dwOptions)
         {
             protocolSink = null;
             return NativeConstants.S_OK;
         }
 
-        public int Suspend()
+        int IInternetProtocolRoot.Suspend()
+        {
+            return Suspend();
+        }
+
+        int IInternetProtocol.Suspend()
+        {
+            return Suspend();
+        }
+
+        private int Suspend()
         {
             return NativeConstants.E_NOTIMPL;
         }
 
-        public int Resume()
+        int IInternetProtocolRoot.Resume()
+        {
+            return Resume();
+        }
+
+        int IInternetProtocol.Resume()
+        {
+            return Resume();
+        }
+
+        private int Resume()
         {
             return NativeConstants.E_NOTIMPL;
         }
@@ -171,39 +249,37 @@ namespace Gallio.Navigator
         #endregion
         #region IInternetProtocolInfo
 
-        public int CombineUrl(string pwzBaseUrl, string pwzRelativeUrl, uint dwCombineFlags, out string pwzResult, uint cchResult, out uint pcchResult, uint dwReserved)
+        int IInternetProtocolInfo.CombineUrl(string pwzBaseUrl, string pwzRelativeUrl, uint dwCombineFlags, out string pwzResult, uint cchResult, out uint pcchResult, uint dwReserved)
         {
             pwzResult = null;
             pcchResult = 0;
             return NativeConstants.INET_E_DEFAULT_ACTION;
         }
 
-        public int CompareUrl(string pwzUrl1, string pwzUrl2, uint dwCompareFlags)
+        int IInternetProtocolInfo.CompareUrl(string pwzUrl1, string pwzUrl2, uint dwCompareFlags)
         {
             return NativeConstants.INET_E_DEFAULT_ACTION;
         }
 
-        public int ParseUrl(string pwzUrl, PARSEACTION ParseAction, uint dwParseFlags, out string pwzResult, uint cchResult, out uint pcchResult, uint dwReserved)
+        int IInternetProtocolInfo.ParseUrl(string pwzUrl, PARSEACTION ParseAction, uint dwParseFlags, out string pwzResult, uint cchResult, out uint pcchResult, uint dwReserved)
         {
             pwzResult = null;
             pcchResult = 0;
             return NativeConstants.INET_E_DEFAULT_ACTION;
         }
 
-        public int QueryInfo(string pwzUrl, QUERYOPTION OueryOption, uint dwQueryFlags, IntPtr pBuffer, uint cbBuffer, ref uint pcbBuf, uint dwReserved)
+        int IInternetProtocolInfo.QueryInfo(string pwzUrl, QUERYOPTION OueryOption, uint dwQueryFlags, IntPtr pBuffer, uint cbBuffer, ref uint pcbBuf, uint dwReserved)
         {
             pcbBuf = 0;
             return NativeConstants.INET_E_DEFAULT_ACTION;
         }
         #endregion
 
-        private static int GetValueOrDefault(NameValueCollection collection, string key, int defaultValue)
+        /// <inheritdoc />
+        protected override bool HandleNavigateToCommand(string path, int lineNumber, int columnNumber)
         {
-            string value = collection[key];
-            if (value == null)
-                return defaultValue;
-
-            return int.Parse(value, NumberStyles.None, CultureInfo.InvariantCulture);
+            protocolSink.ReportProgress(0, "Navigating to source file.");
+            return base.HandleNavigateToCommand(path, lineNumber, columnNumber);
         }
     }
 }

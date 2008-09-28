@@ -18,7 +18,6 @@ using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
 using Gallio.VisualStudio.Shell.Actions;
-using Gallio.VisualStudio.Shell.Resources;
 using Microsoft.VisualStudio.Shell.Interop;
 using Gallio.Runtime;
 using System.Collections.Generic;
@@ -38,6 +37,9 @@ namespace Gallio.VisualStudio.Shell
         private AddIn addIn;
         private ShellAddInHandler addInHandler;
 
+        /// <summary>
+        /// Creates an uninitialized shell.
+        /// </summary>
         public Shell()
         {
             actionManager = new DefaultActionManager(this);

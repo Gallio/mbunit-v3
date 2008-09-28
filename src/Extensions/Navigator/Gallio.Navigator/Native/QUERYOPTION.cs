@@ -19,7 +19,7 @@ using System.Text;
 
 namespace Gallio.Navigator.Native
 {
-    public enum QUERYOPTION
+    internal enum QUERYOPTION
     {
         QUERY_EXPIRATION_DATE = 1,
         QUERY_TIME_OF_LAST_CHANGE,

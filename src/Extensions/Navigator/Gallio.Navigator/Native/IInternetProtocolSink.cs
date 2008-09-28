@@ -23,7 +23,7 @@ namespace Gallio.Navigator.Native
     [ComImport]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid("79EAC9E5-BAF9-11CE-8C82-00AA004BA90B")]
-    public interface IInternetProtocolSink
+    internal interface IInternetProtocolSink
     {
         [PreserveSig]
         int Switch(

@@ -7,7 +7,7 @@ set SRCDIR=%LOCALDIR%..\..\
 set ROOTDIR=%SRCDIR%..\
 set BINDIR=%ROOTDIR%bin\
 
-set ASM=%LOCALDIR%Gallio.Navigator\bin\Gallio.Navigator.dll
+set ASM=%LOCALDIR%Gallio.Navigator\bin\Gallio.Navigator.exe
 
 "%SYSTEMROOT%\Microsoft.Net\Framework\v2.0.50727\RegAsm.exe" /unregister "%ASM%"
 "%SYSTEMROOT%\Microsoft.Net\Framework\v2.0.50727\RegAsm.exe" "%ASM%" /codebase

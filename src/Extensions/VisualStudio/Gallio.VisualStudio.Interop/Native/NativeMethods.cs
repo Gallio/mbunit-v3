@@ -16,7 +16,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Gallio.Navigator.Native
+namespace Gallio.VisualStudio.Interop.Native
 {
     internal static class NativeMethods
     {

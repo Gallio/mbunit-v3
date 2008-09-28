@@ -14,13 +14,11 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Gallio.Navigator.Native
 {
-    public struct BINDINFO
+    internal struct BINDINFO
     {
         public uint cbSize;
         [MarshalAs(UnmanagedType.LPWStr)] public string szExtraInfo;

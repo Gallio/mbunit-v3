@@ -19,8 +19,16 @@ using System.Text;
 
 namespace Gallio.VisualStudio.Shell.Actions
 {
+    /// <summary>
+    /// Indicates that an action class should be presented by an action button.
+    /// </summary>
     public class ActionButtonAttribute : Attribute
     {
+        /// <summary>
+        /// Creates an action button registration.
+        /// </summary>
+        /// <param name="commandName">The command name</param>
+        /// <param name="commandPath">The command path</param>
         public ActionButtonAttribute(string commandName, string commandPath)
         {
             if (commandName == null)
@@ -35,15 +43,46 @@ namespace Gallio.VisualStudio.Shell.Actions
             Tooltip = "";
         }
 
+        /// <summary>
+        /// Gets the command name.
+        /// </summary>
         public string CommandName { get; private set; }
+
+        /// <summary>
+        /// Gets the command path.
+        /// </summary>
         public string CommandPath { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the text label to display on the button.
+        /// </summary>
         public string Caption { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tooltip for the button.
+        /// </summary>
         public string Tooltip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the initial button status.
+        /// </summary>
         public ActionButtonStatus ButtonStatus { get; set; }
+
+        /// <summary>
+        /// Gets or sets the button style.
+        /// </summary>
         public ActionButtonStyle ButtonStyle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the button state.
+        /// </summary>
         public ActionButtonType ButtonType { get; set; }
 
+        /// <summary>
+        /// Gets a descriptor object formed from the attribute.
+        /// </summary>
+        /// <param name="actionType">The action type on which the attribute appears</param>
+        /// <returns>The descriptor</returns>
         public ActionButtonDescriptor GetDescriptor(Type actionType)
         {
             return new ActionButtonDescriptor()

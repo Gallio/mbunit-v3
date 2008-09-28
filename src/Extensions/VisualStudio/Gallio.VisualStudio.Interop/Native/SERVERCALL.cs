@@ -17,12 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gallio.Navigator.Native
+namespace Gallio.VisualStudio.Interop.Native
 {
-    internal struct SECURITY_ATTRIBUTES
+    internal enum SERVERCALL
     {
-        public uint nLength;
-        public IntPtr lpSecurityDescriptor;
-        public int bInheritHandle;
+        SERVERCALL_ISHANDLED = 0,
+        SERVERCALL_REJECTED = 1,
+        SERVERCALL_RETRYLATER = 2
     }
 }

@@ -14,15 +14,22 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Gallio.Navigator.Native
+namespace Gallio.VisualStudio.Interop.Native
 {
-    internal enum SERVERCALL
+    internal class NativeConstants
     {
-        SERVERCALL_ISHANDLED = 0,
-        SERVERCALL_REJECTED = 1,
-        SERVERCALL_RETRYLATER = 2
+        public const int SW_RESTORE = 9;
+
+        public const int S_OK = 0;
+        public const int S_FALSE = 1;
+
+        public const int E_FAIL = unchecked((int)0x80004005);
+        public const int E_NOTIMPL = unchecked((int)0x80004001);
+        public const int E_NOINTERFACE = unchecked((int)0x80004002);
+
+        public const int SERVERCALL_ISHANDLED = 0;
+        public const int SERVERCALL_RETRYLATER = 2;
+        public const int PENDINGMSG_WAITDEFPROCESS = 2;
     }
 }

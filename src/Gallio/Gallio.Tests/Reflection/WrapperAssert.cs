@@ -104,6 +104,7 @@ namespace Gallio.Tests.Reflection
         private bool supportsEventFields = true;
         private bool supportsFinalizers = true;
         private bool supportsStaticConstructors = true;
+        private bool supportsFullAssemblyName = true;
 
         public WrapperAssert()
         {
@@ -174,6 +175,14 @@ namespace Gallio.Tests.Reflection
         public bool SupportsStaticConstructors
         {
             set { supportsStaticConstructors = value; }
+        }
+
+        /// <summary>
+        /// Specifies whether the reflection API supports full assembly name information.
+        /// </summary>
+        public bool SupportsFullAssemblyName
+        {
+            set { supportsFullAssemblyName = value; }
         }
 
         public void AreEquivalent(string namespaceName, INamespaceInfo info)
@@ -526,7 +535,12 @@ namespace Gallio.Tests.Reflection
                 Assert.AreEqual(target.Namespace ?? "", info.Namespace.Name, target.ToString());
                 Assert.AreEqual(target.Namespace ?? "", info.NamespaceName, target.ToString());
                 AreEqualWhenResolved(target.BaseType, info.BaseType);
-                Assert.AreEqual(target.AssemblyQualifiedName, info.AssemblyQualifiedName, target.ToString());
+
+                if (supportsFullAssemblyName)
+                    Assert.AreEqual(target.AssemblyQualifiedName, info.AssemblyQualifiedName, target.ToString());
+                else
+                    Assert.StartsWith(target.AssemblyQualifiedName, info.AssemblyQualifiedName, target.ToString());
+
                 Assert.AreEqual(target.FullName, info.FullName, target.ToString());
                 AreEqualWhenResolved(target.HasElementType ? target.GetElementType() : null, info.ElementType);
 

@@ -24,14 +24,44 @@ namespace Gallio.VisualStudio.Shell.Actions
     /// </summary>
     public class ActionButtonDescriptor
     {
+        /// <summary>
+        /// Gets or sets the type of the action handler.
+        /// </summary>
         public Type ActionType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command name.
+        /// </summary>
         public string CommandName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command path.
+        /// </summary>
         public string CommandPath { get; set; }
 
+        /// <summary>
+        /// Gets or sets the text label to display on the button.
+        /// </summary>
         public string Caption { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tooltip for the button.
+        /// </summary>
         public string Tooltip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the initial button status.
+        /// </summary>
         public ActionButtonStatus ButtonStatus { get; set; }
+
+        /// <summary>
+        /// Gets or sets the button style.
+        /// </summary>
         public ActionButtonStyle ButtonStyle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the button state.
+        /// </summary>
         public ActionButtonType ButtonType { get; set; }
     }
 }

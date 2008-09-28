@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{22DB6C17-5E90-42C8-9621-E8BAB32EB656}</ProjectGuid>
+    <ProjectGuid>{B6912CC5-1E73-46E0-8F09-7F135924E3E2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gallio.Navigator.Tests</RootNamespace>
-    <AssemblyName>Gallio.Navigator.Tests</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>Gallio.VisualStudio.Interop</RootNamespace>
+    <AssemblyName>Gallio.VisualStudio.Interop</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Key.snk</AssemblyOriginatorKeyFile>
@@ -23,9 +23,10 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.Navigator.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\Gallio.VisualStudio.Interop.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -35,49 +36,31 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Gallio.Navigator.Tests.xml</DocumentationFile>
+    <DocumentationFile>bin\Gallio.VisualStudio.Interop.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Rhino.Mocks, Version=3.3.0.906, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\libs\Rhino.Mocks\bin\Rhino.Mocks.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies\EnvDTE.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GallioNavigatorClientTest.cs" />
-    <Compile Include="ProgramTest.cs" />
+    <Compile Include="ComRetryMessageFilter.cs" />
+    <Compile Include="Native\IOleMessageFilter.cs" />
+    <Compile Include="Native\NativeConstants.cs" />
+    <Compile Include="Native\NativeMethods.cs" />
+    <Compile Include="Native\SERVERCALL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.csproj">
-      <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
-      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.csproj">
-      <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
-      <Name>MbUnit35</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.csproj">
-      <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Gallio.Navigator\Gallio.Navigator.csproj">
-      <Project>{9863B9FA-1DE6-48D5-A84D-FB8FE2025303}</Project>
-      <Name>Gallio.Navigator</Name>
-    </ProjectReference>
+    <Compile Include="VisualStudioSupport.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

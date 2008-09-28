@@ -19,7 +19,7 @@ using System.Text;
 
 namespace Gallio.Navigator.Native
 {
-    public enum PARSEACTION
+    internal enum PARSEACTION
     {
         PARSE_CANONICALIZE = 1,
         PARSE_FRIENDLY,
