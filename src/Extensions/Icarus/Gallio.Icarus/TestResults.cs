@@ -37,7 +37,7 @@ namespace Gallio.Icarus
 
             InitializeComponent();
 
-            testController.TestStepFinished += testController_TestStepFinished;
+            testController.TestStepFinished += delegate { Sync.Invoke(this, UpdateTestResults); };
             testController.SelectedTests.ListChanged += delegate { Sync.Invoke(this, UpdateTestResults); };
             testController.RunStarted += delegate { Reset(); };
 
@@ -51,11 +51,6 @@ namespace Gallio.Icarus
             testProgressStatusBar.DataBindings.Add("Failed", testController, "Model.Failed");
             testProgressStatusBar.DataBindings.Add("Skipped", testController, "Model.Skipped");
             testProgressStatusBar.DataBindings.Add("Inconclusive", testController, "Model.Inconclusive");
-        }
-
-        void testController_TestStepFinished(object sender, TestStepFinishedEventArgs e)
-        {
-            Sync.Invoke(this, UpdateTestResults);
         }
 
         void UpdateTestResults()
@@ -96,7 +91,6 @@ namespace Gallio.Icarus
             {
                 testProgressStatusBar.Clear();
                 testProgressStatusBar.Total = testController.TestCount;
-
                 testResultsList.Items.Clear();
             });
         }

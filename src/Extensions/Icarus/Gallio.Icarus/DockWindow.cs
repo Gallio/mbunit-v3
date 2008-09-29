@@ -18,7 +18,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Gallio.Icarus
 {
-    public abstract partial class DockWindow : DockContent
+    public partial class DockWindow : DockContent
     {
         protected DockWindow()
         {

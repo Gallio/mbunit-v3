@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System.IO;
-
 using Gallio.Reflection;
 
 namespace Gallio.Icarus
@@ -38,6 +37,18 @@ namespace Gallio.Icarus
                 if (codeLocation.Line != 0)
                     textEditorControl.ActiveTextAreaControl.JumpTo(codeLocation.Line, codeLocation.Column);
             }
+
+            textEditorControl.ShowEOLMarkers = false;
+            textEditorControl.ShowHRuler = false;
+            textEditorControl.ShowSpaces = false;
+            textEditorControl.ShowTabs = false;
+            textEditorControl.ShowVRuler = false;
+            textEditorControl.ShowInvalidLines = false;
+
+            textEditorControl.ActiveTextAreaControl.TextArea.KeyDown += (sender, e) =>
+            {
+                e.SuppressKeyPress = true;
+            };
         }
 
         public void JumpTo(int line, int column)
@@ -47,7 +58,7 @@ namespace Gallio.Icarus
 
         public override string ToString()
         {
-            return codeLocation.Path;
+            return codeLocation.Path ?? "(unknown)";
         }
     }
 }

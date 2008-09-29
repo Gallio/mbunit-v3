@@ -57,7 +57,6 @@ namespace Gallio.Icarus
             this.textEditorControl.ShowVRuler = true;
             this.textEditorControl.Size = new System.Drawing.Size(292, 273);
             this.textEditorControl.TabIndex = 0;
-            this.textEditorControl.Text = "textEditorControl1";
             // 
             // CodeWindow
             // 

@@ -76,8 +76,9 @@ namespace Gallio.Icarus
 
         public event EventHandler<EventArgs> CleanUp;
 
-        public Main(IProjectController projectController, ITestController testController, IRuntimeLogController runtimeLogController, 
-            IExecutionLogController executionLogController, IReportController reportController, Arguments arguments)
+        internal Main(IProjectController projectController, ITestController testController, IRuntimeLogController runtimeLogController, 
+            IExecutionLogController executionLogController, IReportController reportController, 
+            IAnnotationsController annotationsController, Arguments arguments)
         {
             this.projectController = projectController;
             projectController.AssemblyChanged += AssemblyChanged;
@@ -85,7 +86,7 @@ namespace Gallio.Icarus
             testController.RunFinished += testController_RunFinished;
             testController.LoadFinished += testController_LoadFinished;
             testController.ProgressUpdate += ProgressUpdate;
-            testController.ShowSourceCode += delegate(object sender, ShowSourceCodeEventArgs e) { ShowSourceCode(e.CodeLocation); };
+            testController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
             this.reportController = reportController;
             reportController.ProgressUpdate += ProgressUpdate;
             this.arguments = arguments;
@@ -106,7 +107,7 @@ namespace Gallio.Icarus
             propertiesWindow = new PropertiesWindow(projectController);
             filtersWindow = new FiltersWindow(projectController, testController);
             executionLogWindow = new ExecutionLogWindow(executionLogController);
-            annotationsWindow = new AnnotationsWindow(testController);
+            annotationsWindow = new AnnotationsWindow(annotationsController);
 
             // used by dock window framework to re-assemble layout
             deserializeDockContent = GetContentFromPersistString;
@@ -114,7 +115,7 @@ namespace Gallio.Icarus
             // set up delay timer for progress monitor
             timer.Interval = 1000;
             timer.AutoReset = false;
-            timer.Elapsed += delegate { Sync.Invoke(this, delegate { progressMonitor.Show(this); }); };
+            timer.Elapsed += delegate { Sync.Invoke(this, () => progressMonitor.Show(this)); };
 
             // add a menu item for each report type (Report -> View As)
             List<string> reportTypes = new List<string>();
@@ -122,8 +123,7 @@ namespace Gallio.Icarus
             reportTypes.Sort();
             foreach (string reportType in reportTypes)
             {
-                ToolStripMenuItem menuItem = new ToolStripMenuItem();
-                menuItem.Text = reportType;
+                ToolStripMenuItem menuItem = new ToolStripMenuItem {Text = reportType};
                 menuItem.Click += delegate
                 {
                     testController.Report.Read(report => reportController.ShowReport(report, menuItem.Text));
@@ -305,11 +305,13 @@ namespace Gallio.Icarus
         {
             if (projectFileName == String.Empty)
             {
-                SaveFileDialog saveFile = new SaveFileDialog();
-                saveFile.OverwritePrompt = true;
-                saveFile.AddExtension = true;
-                saveFile.DefaultExt = "Gallio Projects (*.gallio)|*.gallio";
-                saveFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
+                SaveFileDialog saveFile = new SaveFileDialog
+                                              {
+                                                  OverwritePrompt = true,
+                                                  AddExtension = true,
+                                                  DefaultExt = "Gallio Projects (*.gallio)|*.gallio",
+                                                  Filter = "Gallio Projects (*.gallio)|*.gallio"
+                                              };
                 if (saveFile.ShowDialog() == DialogResult.OK)
                     ProjectFileName = saveFile.FileName;
             }
@@ -323,9 +325,12 @@ namespace Gallio.Icarus
 
         public void AddAssembliesToTree()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*";
-            openFileDialog.Multiselect = true;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+                                                {
+                                                    Filter =
+                                                        "Assemblies or Executables (*.dll, *.exe)|*.dll;*.exe|All Files (*.*)|*.*",
+                                                    Multiselect = true
+                                                };
             using (openFileDialog)
             {
                 if (openFileDialog.ShowDialog() != DialogResult.OK)
@@ -538,10 +543,8 @@ namespace Gallio.Icarus
             // over the place.  That's the cause of most of these errors anyways.
             // Better if we introduced a real abstraction for background task management
             // and displayed progress monitor dialogs for long-running operations. -- Jeff.
-            Sync.Invoke(this, delegate
-            {
-                MessageBox.Show(this, e.GetDescription(), e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            });
+            Sync.Invoke(this,
+                () => MessageBox.Show(this, e.GetDescription(), e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error));
         }
 
         private void ProgressUpdate(object sender, ProgressUpdateEventArgs e)

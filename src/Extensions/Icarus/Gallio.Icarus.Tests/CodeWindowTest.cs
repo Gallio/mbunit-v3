@@ -10,6 +10,7 @@ namespace Gallio.Icarus.Tests
         public void Constructor_Test()
         {
             CodeWindow codeWindow = new CodeWindow(CodeLocation.Unknown);
+            Assert.AreEqual("(unknown)", codeWindow.ToString());
         }
     }
 }

@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Icarus.Controls;
+
 namespace Gallio.Icarus
 {
     partial class AnnotationsWindow
@@ -53,9 +55,9 @@ namespace Gallio.Icarus
             this.annotationReference = new System.Windows.Forms.ColumnHeader();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.showErrorsToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.showWarningsToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.showInfoToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.showErrorsToolStripButton = new ToolStripButton();
+            this.showWarningsToolStripButton = new ToolStripButton();
+            this.showInfoToolStripButton = new ToolStripButton();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -149,7 +151,6 @@ namespace Gallio.Icarus
             this.showErrorsToolStripButton.Name = "showErrorsToolStripButton";
             this.showErrorsToolStripButton.Size = new System.Drawing.Size(65, 22);
             this.showErrorsToolStripButton.Text = "0 Errors";
-            this.showErrorsToolStripButton.Click += new System.EventHandler(this.annotationsToolStripButton_Click);
             // 
             // showWarningsToolStripButton
             // 
@@ -161,7 +162,6 @@ namespace Gallio.Icarus
             this.showWarningsToolStripButton.Name = "showWarningsToolStripButton";
             this.showWarningsToolStripButton.Size = new System.Drawing.Size(81, 22);
             this.showWarningsToolStripButton.Text = "0 Warnings";
-            this.showWarningsToolStripButton.Click += new System.EventHandler(this.annotationsToolStripButton_Click);
             // 
             // showInfoToolStripButton
             // 
@@ -173,7 +173,6 @@ namespace Gallio.Icarus
             this.showInfoToolStripButton.Name = "showInfoToolStripButton";
             this.showInfoToolStripButton.Size = new System.Drawing.Size(56, 22);
             this.showInfoToolStripButton.Text = "0 Info";
-            this.showInfoToolStripButton.Click += new System.EventHandler(this.annotationsToolStripButton_Click);
             // 
             // AnnotationsWindow
             // 
@@ -205,9 +204,9 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ColumnHeader annotationLocation;
         private System.Windows.Forms.ColumnHeader annotationReference;
         private System.Windows.Forms.ImageList imageList1;
-        private System.Windows.Forms.ToolStripButton showErrorsToolStripButton;
-        private System.Windows.Forms.ToolStripButton showWarningsToolStripButton;
-        private System.Windows.Forms.ToolStripButton showInfoToolStripButton;
+        private ToolStripButton showErrorsToolStripButton;
+        private ToolStripButton showWarningsToolStripButton;
+        private ToolStripButton showInfoToolStripButton;
 
     }
 }

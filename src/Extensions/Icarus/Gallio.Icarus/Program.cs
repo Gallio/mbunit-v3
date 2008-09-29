@@ -50,11 +50,15 @@ namespace Gallio.Icarus
 
             IOptionsController optionsController = OptionsController.Instance;
 
-            RuntimeSetup runtimeSetup = new RuntimeSetup();
+            RuntimeSetup runtimeSetup = new RuntimeSetup
+                                            {
+                                                RuntimePath =
+                                                    Path.GetDirectoryName(
+                                                    AssemblyUtils.GetFriendlyAssemblyLocation(typeof (Program).Assembly))
+                                            };
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
-            runtimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(Program).Assembly));
             runtimeSetup.PluginDirectories.AddRange(optionsController.PluginDirectories);
             
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
@@ -73,8 +77,10 @@ namespace Gallio.Icarus
                 IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
                 IReportController reportController = new ReportController(new ReportService(reportManager));
 
+                IAnnotationsController annotationsController = new AnnotationsController(testController);
+
                 Main main = new Main(projectController, testController, runtimeLogController, executionLogController, 
-                    reportController, arguments);
+                    reportController, annotationsController, arguments);
 
                 testRunnerService.Initialize();
                 main.CleanUp += delegate { testRunnerService.Dispose(); };

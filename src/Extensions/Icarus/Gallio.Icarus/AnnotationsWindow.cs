@@ -22,54 +22,51 @@ using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
-    public partial class AnnotationsWindow : DockWindow
+    internal partial class AnnotationsWindow : DockWindow
     {
-        private readonly ITestController testController;
+        private readonly IAnnotationsController annotationsController;
 
-        public AnnotationsWindow(ITestController testController)
+        public AnnotationsWindow(IAnnotationsController annotationsController)
         {
-            this.testController = testController;
+            this.annotationsController = annotationsController;
+            
             InitializeComponent();
 
-            testController.LoadFinished += delegate
+            annotationsController.Annotations.ListChanged += delegate
             {
                 Sync.Invoke(this, PopulateListView);
             };
+
+            showErrorsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowErrors", false, DataSourceUpdateMode.OnPropertyChanged);
+            showErrorsToolStripButton.DataBindings.Add("Text", annotationsController, "ErrorsText");
+
+            showWarningsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowWarnings", false, DataSourceUpdateMode.OnPropertyChanged);
+            showWarningsToolStripButton.DataBindings.Add("Text", annotationsController, "WarningsText");
+
+            showInfoToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowInfo", false, DataSourceUpdateMode.OnPropertyChanged);
+            showInfoToolStripButton.DataBindings.Add("Text", annotationsController, "InfoText");
         }
 
         private void PopulateListView()
         {
             annotationsListView.Items.Clear();
-            int error = 0, warning = 0, info = 0;
 
-            testController.Report.Read(report =>
+            foreach (AnnotationData annotationData in annotationsController.Annotations)
             {
-                foreach (AnnotationData annotationData in report.TestModel.Annotations)
+                switch (annotationData.Type)
                 {
-                    switch (annotationData.Type)
-                    {
-                        case AnnotationType.Error:
-                            if (showErrorsToolStripButton.Checked)
-                                AddListViewItem(annotationData, 0);
-                            error++;
-                            break;
-                        case AnnotationType.Warning:
-                            if (showWarningsToolStripButton.Checked)
-                                AddListViewItem(annotationData, 1);
-                            warning++;
-                            break;
-                        case AnnotationType.Info:
-                            if (showInfoToolStripButton.Checked)
-                                AddListViewItem(annotationData, 2);
-                            info++;
-                            break;
-                    }
+                    case AnnotationType.Error:
+                        AddListViewItem(annotationData, 0);
+                        break;
+                    case AnnotationType.Warning:
+                        AddListViewItem(annotationData, 1);
+                        break;
+                    case AnnotationType.Info:
+                        AddListViewItem(annotationData, 2);
+                        break;
                 }
-            });
+            }
 
-            showErrorsToolStripButton.Text = string.Format("{0} Errors", error);
-            showWarningsToolStripButton.Text = string.Format("{0} Warnings", warning);
-            showInfoToolStripButton.Text = string.Format("{0} Info", info);
             if (annotationsListView.Items.Count > 0)
                 Show();
         }
@@ -81,11 +78,6 @@ namespace Gallio.Icarus
                         annotationData.CodeReference.ToString() });
             lvi.Tag = annotationData;
             annotationsListView.Items.Add(lvi);
-        }
-
-        private void annotationsToolStripButton_Click(object sender, EventArgs e)
-        {
-            PopulateListView();
         }
 
         private void annotationsListView_DoubleClick(object sender, EventArgs e)

@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             if (!File.Exists(Paths.SettingsFile))
                 return;
-            File.Copy(Paths.SettingsFile, settingsBackup);
+            File.Copy(Paths.SettingsFile, settingsBackup, true);
             File.Delete(Paths.SettingsFile);
         }
 
@@ -43,6 +43,7 @@ namespace Gallio.Icarus.Tests.Controllers
             if (File.Exists(Paths.SettingsFile))
                 File.Delete(Paths.SettingsFile);
             File.Copy(settingsBackup, Paths.SettingsFile);
+            File.Delete(settingsBackup);
         }
 
         [Test]
