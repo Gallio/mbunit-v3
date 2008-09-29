@@ -3,6 +3,8 @@
 
   <ItemGroup>
     <ModuleReference Include="..\Gallio\Gallio.module" />
+    
+    <Module Include="Templates\MbUnitTemplates.module" />
   </ItemGroup>
 
   <ItemGroup>
