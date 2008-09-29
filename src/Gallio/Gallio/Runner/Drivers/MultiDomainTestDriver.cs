@@ -86,8 +86,9 @@ namespace Gallio.Runner.Drivers
                 if (File.Exists(assemblyConfigFile))
                     testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml = File.ReadAllText(assemblyConfigFile);
 
-                foreach (KeyValuePair<string, AssemblyName> pair in runtime.GetPluginAssemblyPaths())
-                    testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(pair.Value, pair.Key, true);
+                //FIXME: Causes weird runtime errors with type identity mismatches.
+                //foreach (KeyValuePair<string, AssemblyName> pair in runtime.GetPluginAssemblyPaths())
+                    //testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(pair.Value, pair.Key, true);
 
                 foreach (ITestFramework framework in frameworks)
                     framework.ConfigureTestDomain(testDomain);
@@ -106,7 +107,7 @@ namespace Gallio.Runner.Drivers
             foreach (TestDomainSetup testDomain in testDomains.Values)
             {
                 ILogger logger = new RemoteLogger(Logger);
-                ITestDriver testDriver = remote.CreateRemoteTestDriver(testDomain, logger, runtime.GetRuntimeSetup().RuntimePath);
+                ITestDriver testDriver = remote.CreateRemoteTestDriver(testDomain, logger);
                 testDriver.Initialize(RuntimeSetup, logger);
 
                 yield return new Partition(new ProxyTestDriver(testDriver), testDomain.TestPackageConfig);
@@ -126,11 +127,10 @@ namespace Gallio.Runner.Drivers
 
         private class Remote : LongLivedMarshalByRefObject
         {
-            public ITestDriver CreateRemoteTestDriver(TestDomainSetup setup, ILogger logger, string runtimePath)
+            public ITestDriver CreateRemoteTestDriver(TestDomainSetup setup, ILogger logger)
             {
                 IHostFactory hostFactory = new IsolatedAppDomainHostFactory();
                 IHost host = hostFactory.CreateHost(setup.TestPackageConfig.HostSetup, logger);
-                HostAssemblyResolverHook.Bootstrap(host, runtimePath);
 
                 ITestDriver remoteTestDriver = HostUtils.CreateInstance<LocalTestDriver>(host);
                 ProxyTestDriver proxyTestDriver = new ProxyTestDriver(remoteTestDriver);
