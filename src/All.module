@@ -5,5 +5,8 @@
     <Module Include="Gallio\Gallio.module" />
     <Module Include="MbUnit\MbUnit.module" />
     <Module Include="Extensions\Extensions.module" />
+
+    <Module Include="Gallio\Samples\GallioSamples.module" />
+    <Module Include="MbUnit\Samples\MbUnitSamples.module" />
   </ItemGroup>
 </Project>

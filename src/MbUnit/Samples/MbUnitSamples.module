@@ -2,6 +2,8 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
+    <ModuleReference Include="..\MbUnit.module" />
+
     <CSharpProject Include="MbUnit.Samples\MbUnit.Samples.csproj" />
     <CSharpProject Include="MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration.csproj" />
 

@@ -2,6 +2,8 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
+    <ModuleReference Include="..\..\MbUnit\MbUnit.module" />
+
     <ExcludedFile Include="*.module" />
     <ExcludedFile Include="*.wxs" />
   </ItemGroup>

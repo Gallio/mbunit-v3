@@ -2,7 +2,6 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
-    <Module Include="*\*.module" />
   </ItemGroup>
 
   <ItemGroup>

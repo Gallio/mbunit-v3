@@ -2,7 +2,7 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
-    <Module Include="*\*.module" />
+    <ModuleReference Include="..\Gallio\Gallio.module" />
   </ItemGroup>
 
   <ItemGroup>
