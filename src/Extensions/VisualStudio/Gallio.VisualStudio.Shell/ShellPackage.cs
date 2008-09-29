@@ -20,6 +20,7 @@ using Gallio.VisualStudio.Shell.Resources;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio;
+using Gallio.VisualStudio.Shell.ToolWindows;
 
 namespace Gallio.VisualStudio.Shell
 {
@@ -42,6 +43,7 @@ namespace Gallio.VisualStudio.Shell
     [ProvideLoadKey("Standard", "3.0", "Gallio", "Gallio Project", VSPackageResourceIds.ProductLoadKeyId)]
     [Guid(Guids.ShellPkgGuidString)]
     [ComVisible(true)]
+    [ProvideToolWindow(typeof(GallioToolWindow))]
     public sealed class ShellPackage : Package, IVsInstalledProduct
     {
         private Shell shell;

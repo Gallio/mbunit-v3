@@ -106,8 +106,10 @@
     </Compile>
     <Compile Include="Resources\VSPackageResourceIds.cs" />
     <Compile Include="Shell.cs" />
-    <Compile Include="ToolWindows\ToolWindow.cs" />
-    <Compile Include="ToolWindows\ToolWindowControl.cs">
+    <Compile Include="UI\GallioToolWindow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\GallioToolWindowControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
@@ -127,6 +129,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>VSPackage.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\GallioToolWindowControl.resx">
+      <DependentUpon>GallioToolWindowControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

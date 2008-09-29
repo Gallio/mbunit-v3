@@ -25,17 +25,48 @@ namespace Gallio.VisualStudio.Shell.ToolWindows
     /// Abstract base control class for tool windows.
     /// </summary>
     [ComVisible(true)]
-    public class ToolWindowControl : UserControl
+    public class GallioToolWindowControl : UserControl
     {
-        private ToolWindow toolWindow;
+        private GallioToolWindow toolWindow;
 
         /// <summary>
         /// Gets the tool window.
         /// </summary>
-        public ToolWindow ToolWindow
+        public GallioToolWindow ToolWindow
         {
-            get { return toolWindow; }
-            internal set { toolWindow = value; }
+            get
+            {
+                return toolWindow;
+            }
+
+            internal set
+            {
+                toolWindow = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets the content of the control.
+        /// </summary>
+        public void SetContent(Control content)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException("content");
+            }
+
+            content.Dock = DockStyle.Fill;
+            content.Visible = true;
+            Controls.Clear();
+            Controls.Add(content);
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            this.BackColor = System.Drawing.SystemColors.Window;
+            this.Name = "GallioToolWindowControl";
+            this.ResumeLayout(false);
         }
     }
 }
