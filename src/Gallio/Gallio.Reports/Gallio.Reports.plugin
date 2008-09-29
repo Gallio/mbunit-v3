@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <gallio>
+    <assemblies>
+      <assembly file="Gallio.Reports.dll" />
+    </assemblies>
+
     <runtime>
       <components>
         <component id="ReportFormatter.Xml"

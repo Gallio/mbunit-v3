@@ -27,14 +27,6 @@ namespace Gallio.CSUnitAdapter.Model
     /// </summary>
     public class CSUnitTestFramework : BaseTestFramework
     {
-        private static readonly string[] frameworkAssemblyFiles = new string[]
-        {
-            @"csUnit.dll",
-            @"csUnitCore.dll",
-            @"csUnit.Common.dll",
-            @"csUnit.Interfaces.dll",
-        };
-
         private static readonly Guid FrameworkId = new Guid("{B55A8096-EFB9-4570-B977-75695D614E3B}");
 
         /// <inheritdoc />
@@ -53,40 +45,6 @@ namespace Gallio.CSUnitAdapter.Model
         public override ITestExplorer CreateTestExplorer(TestModel testModel)
         {
             return new CSUnitTestExplorer(testModel);
-        }
-
-        /// <inheritdoc />
-        public override void ConfigureTestDomain(TestDomainSetup testDomainSetup)
-        {
-            foreach (string assembly in testDomainSetup.TestPackageConfig.AssemblyFiles)
-            {
-                string dir = Path.GetDirectoryName(assembly);
-                if (ConfigureAssemblyRedirects(dir, testDomainSetup.TestPackageConfig.HostSetup.Configuration))
-                    return;
-            }
-        }
-
-        private static bool ConfigureAssemblyRedirects(string dir, HostConfiguration config)
-        {
-            int found = 0;
-            foreach (string file in frameworkAssemblyFiles)
-            {
-                string path = Path.Combine(dir, file);
-                if (File.Exists(path))
-                {
-                    try
-                    {
-                        AssemblyName assemblyName = AssemblyName.GetAssemblyName(path);
-                        config.AddAssemblyBinding(assemblyName, new Uri(path).ToString(), true);
-                        found++;
-                    }
-                    catch
-                    {
-                        // ignore loading errors
-                    }
-                }
-            }
-            return found > 0;
         }
     }
 }

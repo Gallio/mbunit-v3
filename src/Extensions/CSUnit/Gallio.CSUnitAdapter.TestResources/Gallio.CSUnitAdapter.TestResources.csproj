@@ -38,6 +38,7 @@
     <Reference Include="csUnit">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\csUnit.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

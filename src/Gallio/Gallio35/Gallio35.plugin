@@ -2,6 +2,10 @@
 <configuration>
   <?if NET35?>
   <gallio>
+    <assemblies>
+      <assembly file="Gallio35.dll" />
+    </assemblies>
+
     <runtime>
       <components>
         <component id="Core.ExpressionFormattingRule"

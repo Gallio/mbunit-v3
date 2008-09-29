@@ -34,20 +34,28 @@
     <DocumentationFile>bin\Gallio.CSUnitAdapter.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="csUnit.Common, Version=2.5.3081.40665, Culture=neutral, PublicKeyToken=6871f04765cca910, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\csUnit.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="csUnit">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\csUnit.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="csUnitCore">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\csUnitCore.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="csUnit.Interfaces">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\csUnit.Interfaces.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

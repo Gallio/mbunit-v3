@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime
@@ -78,5 +80,11 @@ namespace Gallio.Runtime
         /// </summary>
         /// <returns>The runtime setup</returns>
         RuntimeSetup GetRuntimeSetup();
+
+        /// <summary>
+        /// Gets the paths and assembly names of all plugin assemblies.
+        /// </summary>
+        /// <returns>The paths</returns>
+        IDictionary<string, AssemblyName> GetPluginAssemblyPaths();
     }
 }

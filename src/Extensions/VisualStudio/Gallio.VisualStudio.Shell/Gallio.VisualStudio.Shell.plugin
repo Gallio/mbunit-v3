@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <gallio>
+    <assemblies>
+      <assembly file="Gallio.VisualStudio.Shell.dll" />
+    </assemblies>
+
     <runtime>
       <components>
       </components>

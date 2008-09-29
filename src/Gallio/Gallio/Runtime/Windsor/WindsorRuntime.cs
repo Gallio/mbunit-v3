@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
@@ -25,6 +26,7 @@ using Castle.Core.Resource;
 using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
+using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
@@ -47,6 +49,7 @@ namespace Gallio.Runtime.Windsor
         private readonly IAssemblyResolverManager assemblyResolverManager;
         private readonly RuntimeSetup runtimeSetup;
         private readonly List<string> pluginDirectories;
+        private readonly Dictionary<string, AssemblyName> pluginAssemblyPaths;
         private readonly Dictionary<string, string> pluginPaths;
 
         private WindsorContainer container;
@@ -72,6 +75,7 @@ namespace Gallio.Runtime.Windsor
             container = new WindsorContainer();
             pluginDirectories = new List<string>();
             pluginPaths = new Dictionary<string, string>();
+            pluginAssemblyPaths = new Dictionary<string, AssemblyName>();
         }
 
         /// <inheritdoc />
@@ -105,7 +109,8 @@ namespace Gallio.Runtime.Windsor
             else
             {
                 if (ConfigurationManager.GetSection(GallioSectionHandler.SectionName) != null)
-                    LoadConfigurationFromResource(new ConfigResource(GallioSectionHandler.SectionName), GallioSectionHandler.SectionName);
+                    LoadConfigurationFromResource(AppDomain.CurrentDomain.BaseDirectory,
+                        new ConfigResource(GallioSectionHandler.SectionName), GallioSectionHandler.SectionName);
             }
 
             ConfigureForDebugging();
@@ -143,6 +148,12 @@ namespace Gallio.Runtime.Windsor
         public RuntimeSetup GetRuntimeSetup()
         {
             return runtimeSetup.Copy();
+        }
+
+        /// <inheritdoc />
+        public IDictionary<string, AssemblyName> GetPluginAssemblyPaths()
+        {
+            return new ReadOnlyDictionary<string, AssemblyName>(pluginAssemblyPaths);
         }
 
         /// <inheritdoc />
@@ -257,7 +268,7 @@ namespace Gallio.Runtime.Windsor
 
             // Load the configuration.
             FileResource pluginManifestResource = new FileResource(configFile);
-            LoadConfigurationFromResource(pluginManifestResource, configFile);
+            LoadConfigurationFromResource(pluginPath, pluginManifestResource, configFile);
 
             // Register the plugin path.
             string pluginName = Path.GetFileNameWithoutExtension(configFile);
@@ -265,7 +276,7 @@ namespace Gallio.Runtime.Windsor
             pluginPaths.Add(pluginName.ToLowerInvariant(), contentPath);
         }
 
-        private void LoadConfigurationFromResource(IResource resource, string resourceName)
+        private void LoadConfigurationFromResource(string basePath, IResource resource, string resourceName)
         {
             XmlElement rootElement;
             try
@@ -285,10 +296,10 @@ namespace Gallio.Runtime.Windsor
 
             XmlElement gallioElement = rootElement.SelectSingleNode(@"//" + GallioSectionHandler.SectionName) as XmlElement;
             if (gallioElement != null)
-                LoadConfigurationFromXml(gallioElement);
+                LoadConfigurationFromXml(basePath, gallioElement);
         }
 
-        private void LoadConfigurationFromXml(XmlElement gallioElement)
+        private void LoadConfigurationFromXml(string basePath, XmlElement gallioElement)
         {
             XmlElement runtimeElement = gallioElement.SelectSingleNode("runtime") as XmlElement;
             if (runtimeElement != null)
@@ -296,6 +307,39 @@ namespace Gallio.Runtime.Windsor
                 StaticContentResource resource = new StaticContentResource(runtimeElement.OuterXml);
                 XmlInterpreter configInterpreter = new XmlInterpreter(resource);
                 configInterpreter.ProcessResource(resource, container.Kernel.ConfigurationStore);
+            }
+
+            XmlElement assembliesElement = gallioElement.SelectSingleNode("assemblies") as XmlElement;
+            if (assembliesElement != null)
+            {
+                foreach (XmlElement assemblyElement in assembliesElement.SelectNodes("assembly"))
+                {
+                    string assemblyFile = assemblyElement.GetAttribute("file");
+                    if (assemblyFile == null)
+                        throw new ConfigurationErrorsException("Missing assembly file in assembly element.");
+
+                    string assemblyPath = Path.Combine(basePath, assemblyFile);
+                    if (!File.Exists(assemblyPath))
+                        assemblyPath = Path.Combine(Path.Combine(basePath, "bin"), assemblyFile);
+
+                    AssemblyName assemblyName;
+                    try
+                    {
+                        assemblyName = AssemblyName.GetAssemblyName(assemblyPath);
+                    }
+                    catch (IOException ex)
+                    {
+                        throw new ConfigurationErrorsException(
+                            String.Format("Could not get assembly name of plugin assembly '{0}' with base path '{1}'.", assemblyFile, basePath), ex);
+                    }
+                    catch (BadImageFormatException ex)
+                    {
+                        throw new ConfigurationErrorsException(
+                            String.Format("Could not get assembly name of plugin assembly '{0}' with base path '{1}'.", assemblyFile, basePath), ex);
+                    }
+
+                    pluginAssemblyPaths.Add(assemblyPath, assemblyName);
+                }
             }
         }
 

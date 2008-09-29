@@ -2,6 +2,10 @@
 <configuration>
   <?if NET35?>
   <gallio>
+    <assemblies>
+      <assembly file="MbUnit35.dll" />
+    </assemblies>
+
     <runtime>
       <components>
       </components>

@@ -27,16 +27,6 @@ namespace Gallio.MbUnit2Adapter.Model
     /// </summary>
     public class MbUnit2TestFramework : BaseTestFramework
     {
-        private static readonly string[] frameworkAssemblyFiles = new string[]
-        {
-            @"MbUnit.Framework.dll",
-            @"MbUnit.Framework.2.0.dll",
-            @"QuickGraph.Algorithms.dll",
-            @"QuickGraph.dll",
-            @"Refly.dll",
-            @"TestFu.dll"
-        };
-
         private static readonly Guid FrameworkId = new Guid("{81CE2FDD-D9E8-46a6-8D2E-AF5E474BA537}");
 
         /// <inheritdoc />
@@ -55,40 +45,6 @@ namespace Gallio.MbUnit2Adapter.Model
         public override ITestExplorer CreateTestExplorer(TestModel testModel)
         {
             return new MbUnit2TestExplorer(testModel);
-        }
-
-        /// <inheritdoc />
-        public override void ConfigureTestDomain(TestDomainSetup testDomainSetup)
-        {
-            foreach (string assembly in testDomainSetup.TestPackageConfig.AssemblyFiles)
-            {
-                string dir = Path.GetDirectoryName(assembly);
-                if (ConfigureAssemblyRedirects(dir, testDomainSetup.TestPackageConfig.HostSetup.Configuration))
-                    return;
-            }
-        }
-
-        private static bool ConfigureAssemblyRedirects(string dir, HostConfiguration config)
-        {
-            bool foundOne = false;
-            foreach (string file in frameworkAssemblyFiles)
-            {
-                string path = Path.Combine(dir, file);
-                if (File.Exists(path))
-                {
-                    try
-                    {
-                        AssemblyName assemblyName = AssemblyName.GetAssemblyName(path);
-                        config.AddAssemblyBinding(assemblyName, new Uri(path).ToString(), true);
-                        foundOne = true;
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-
-            return foundOne;
         }
     }
 }
