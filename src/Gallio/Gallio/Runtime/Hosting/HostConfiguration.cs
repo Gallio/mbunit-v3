@@ -977,10 +977,10 @@ namespace Gallio.Runtime.Hosting
                     if (value == null)
                         throw new ArgumentNullException("value");
 
-                    string escapedUri = System.Uri.EscapeUriString(value);
-                    if (!System.Uri.IsWellFormedUriString(escapedUri, UriKind.Absolute))
+                    Uri uriObj = new Uri(value);
+                    if (!uriObj.IsAbsoluteUri)
                         throw new ArgumentException(String.Format("The codebase Uri must be a valid absolute Uri but '{0}' was used.", value));
-                    uri = escapedUri;
+                    uri = uriObj.ToString();
                 }
             }
 
