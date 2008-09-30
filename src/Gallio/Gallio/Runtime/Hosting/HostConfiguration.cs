@@ -175,12 +175,15 @@ namespace Gallio.Runtime.Hosting
             if (codeBase == null)
                 throw new ArgumentNullException("codeBase");
 
-            AddAssemblyQualification(assemblyName.Name, assemblyName.FullName);
+            byte[] publicKeyTokenBytes = assemblyName.GetPublicKeyToken();
+            string publicKeyToken = publicKeyTokenBytes != null && publicKeyTokenBytes.Length != 0 ? ToHex(publicKeyTokenBytes) : null;
 
-            byte[] publicKeyToken = assemblyName.GetPublicKeyToken();
+            if (publicKeyToken != null)
+                AddAssemblyQualification(assemblyName.Name, assemblyName.FullName);
+
             AssemblyDependency assemblyDependency = AddAssemblyDependency(
                 assemblyName.Name,
-                publicKeyToken != null && publicKeyToken.Length != 0 ? ToHex(publicKeyToken) : null,
+                publicKeyToken,
                 AssemblyUtils.GetAssemblyNameCulture(assemblyName),
                 GetProcessorArchitectureName(assemblyName.ProcessorArchitecture));
 
