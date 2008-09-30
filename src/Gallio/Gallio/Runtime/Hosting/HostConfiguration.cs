@@ -22,6 +22,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Gallio.Collections;
+using Gallio.Reflection;
 using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
@@ -174,21 +175,77 @@ namespace Gallio.Runtime.Hosting
             if (codeBase == null)
                 throw new ArgumentNullException("codeBase");
 
-            assemblyQualifications.Add(new AssemblyQualification(assemblyName.Name, assemblyName.FullName));
+            AddAssemblyQualification(assemblyName.Name, assemblyName.FullName);
 
-            AssemblyDependency assemblyDependency = new AssemblyDependency(assemblyName.Name);
-
-            if (assemblyName.GetPublicKeyToken() != null)
-                assemblyDependency.AssemblyPublicKeyToken = ToHex(assemblyName.GetPublicKeyToken());
+            byte[] publicKeyToken = assemblyName.GetPublicKeyToken();
+            AssemblyDependency assemblyDependency = AddAssemblyDependency(
+                assemblyName.Name,
+                publicKeyToken != null && publicKeyToken.Length != 0 ? ToHex(publicKeyToken) : null,
+                null, //AssemblyUtils.GetAssemblyNameCulture(assemblyName),
+                null);
 
             if (bindingRedirect)
-                assemblyDependency.BindingRedirects.Add(new AssemblyBindingRedirect(
-                    @"0.0.0.0-65535.65535.65535.65535",
-                    assemblyName.Version.ToString()));
+            {
+                assemblyDependency.AddAssemblyBindingRedirect(@"0.0.0.0-65535.65535.65535.65535", assemblyName.Version.ToString());
+            }
 
-            assemblyDependency.CodeBases.Add(new AssemblyCodeBase(assemblyName.Version.ToString(), codeBase));
+            assemblyDependency.AddAssemblyCodeBase(assemblyName.Version.ToString(), codeBase);
+        }
 
-            assemblyDependencies.Add(assemblyDependency);
+        /// <summary>
+        /// Adds an assembly qualification element if a suitable one does not already exist.
+        /// </summary>
+        /// <param name="partialName">The partial name to quality</param>
+        /// <param name="fullName">The full name</param>
+        /// <returns>The assembly qualification element</returns>
+        /// <exception cref="InvalidOperationException">Thrown if an assembly qualification already
+        /// exists for the same partial name but with a different full name</exception>
+        public AssemblyQualification AddAssemblyQualification(string partialName, string fullName)
+        {
+            AssemblyQualification assemblyQualification = assemblyQualifications.Find(x => x.PartialName == partialName);
+            if (assemblyQualification != null)
+            {
+                if (assemblyQualification.FullName != fullName)
+                    throw new InvalidOperationException(String.Format("The configuration already contains an AssemblyQualification with PartialName='{0}' and FullName='{1}' but the requested qualification has FullName='{2}'.",
+                        partialName, assemblyQualification.FullName, fullName));
+            }
+            else
+            {
+                assemblyQualifications.Add(new AssemblyQualification(partialName, fullName));
+            }
+
+            return assemblyQualification;
+        }
+
+        /// <summary>
+        /// Adds an assembly dependency element if a suitable one does not already exist.
+        /// </summary>
+        /// <param name="name">The assembly name</param>
+        /// <param name="publicKeyToken">The assembly public key token, or null if none</param>
+        /// <param name="culture">The assembly culture</param>
+        /// <param name="architecture">The assembly processor architecture, or null if none</param>
+        /// <returns>The assembly dependency element</returns>
+        public AssemblyDependency AddAssemblyDependency(string name, string publicKeyToken, string culture, string architecture)
+        {
+            if (publicKeyToken != null && publicKeyToken.Length == 0)
+                throw new InvalidOperationException();
+
+            AssemblyDependency assemblyDependency = assemblyDependencies.Find(x =>
+                x.AssemblyName == name && x.AssemblyPublicKeyToken == publicKeyToken
+                && x.AssemblyCulture == culture && x.AssemblyProcessorArchitecture == architecture);
+            if (assemblyDependency == null)
+            {
+                assemblyDependency = new AssemblyDependency(name)
+                {
+                    AssemblyPublicKeyToken = publicKeyToken,
+                    AssemblyCulture = culture,
+                    AssemblyProcessorArchitecture = architecture
+                };
+
+                assemblyDependencies.Add(assemblyDependency);
+            }
+
+            return assemblyDependency;
         }
 
         /// <summary>
@@ -672,6 +729,48 @@ namespace Gallio.Runtime.Hosting
                 foreach (AssemblyCodeBase codeBase in codeBases)
                     codeBase.AddConfigurationElement(dependentAssemblyElement);
             }
+
+            /// <summary>
+            /// Adds an assembly binding redirect element if a suitable one is not already present.
+            /// </summary>
+            /// <param name="oldVersionRange">Th old version range</param>
+            /// <param name="newVersion">The new version for redirection</param>
+            /// <returns>The binding redirect element</returns>
+            public AssemblyBindingRedirect AddAssemblyBindingRedirect(string oldVersionRange, string newVersion)
+            {
+                AssemblyBindingRedirect assemblyBindingRedirect = BindingRedirects.Find(x =>
+                    x.OldVersionRange == oldVersionRange && x.NewVersion == newVersion);
+                if (assemblyBindingRedirect == null)
+                {
+                    assemblyBindingRedirect = new AssemblyBindingRedirect(oldVersionRange, newVersion);
+                    BindingRedirects.Add(assemblyBindingRedirect);
+                }
+
+                return assemblyBindingRedirect;
+            }
+
+            /// <summary>
+            /// Adds an assembly code-base element if a suitable one is not already present.
+            /// </summary>
+            /// <remarks>
+            /// If another codebase element exists with the same version but perhaps
+            /// a different Uri, then we do not add a new codebase since this most
+            /// likely indicates that the same assembly can be loaded from multiple locations.
+            /// </remarks>
+            /// <param name="version">The assembly version</param>
+            /// <param name="uri">The code base uri</param>
+            /// <returns>The code base element</returns>
+            public AssemblyCodeBase AddAssemblyCodeBase(string version, string uri)
+            {
+                AssemblyCodeBase assemblyCodeBase = CodeBases.Find(x => x.Version == version);
+                if (assemblyCodeBase == null)
+                {
+                    assemblyCodeBase = new AssemblyCodeBase(version, uri);
+                    CodeBases.Add(assemblyCodeBase);
+                }
+
+                return assemblyCodeBase;
+            }
         }
 
         /// <summary>
@@ -809,6 +908,7 @@ namespace Gallio.Runtime.Hosting
             /// <param name="uri">The Uri that specifies the location of the assembly</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/>
             /// or <paramref name="uri"/> is null</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="uri"/> is not a valid absolute Uri</exception>
             public AssemblyCodeBase(string version, string uri)
             {
                 if (version == null)
@@ -817,7 +917,7 @@ namespace Gallio.Runtime.Hosting
                     throw new ArgumentNullException("uri");
 
                 this.version = version;
-                this.uri = uri;
+                Uri = uri;
             }
 
             /// <summary>
@@ -841,6 +941,7 @@ namespace Gallio.Runtime.Hosting
             /// Gets or sets the Uri that specifies the location of the assembly.
             /// </summary>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not a valid absolute Uri</exception>
             [XmlAttribute("uri")]
             public string Uri
             {
@@ -849,6 +950,8 @@ namespace Gallio.Runtime.Hosting
                 {
                     if (value == null)
                         throw new ArgumentNullException("value");
+                    if (!System.Uri.IsWellFormedUriString(value, UriKind.Absolute))
+                        throw new ArgumentException(String.Format("The codebase Uri must be a valid absolute Uri but '{0}' was used.", value));
                     uri = value;
                 }
             }

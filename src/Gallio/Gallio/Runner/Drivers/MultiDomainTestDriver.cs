@@ -86,9 +86,8 @@ namespace Gallio.Runner.Drivers
                 if (File.Exists(assemblyConfigFile))
                     testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml = File.ReadAllText(assemblyConfigFile);
 
-                //FIXME: Causes weird runtime errors with type identity mismatches.
-                //foreach (KeyValuePair<string, AssemblyName> pair in runtime.GetPluginAssemblyPaths())
-                    //testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(pair.Value, pair.Key, true);
+                foreach (KeyValuePair<string, AssemblyName> pair in runtime.GetPluginAssemblyPaths())
+                    testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(pair.Value, new Uri(pair.Key).ToString(), true);
 
                 foreach (ITestFramework framework in frameworks)
                     framework.ConfigureTestDomain(testDomain);
@@ -96,7 +95,7 @@ namespace Gallio.Runner.Drivers
                 TestDomainSetup existingTestDomain;
                 if (testDomains.TryGetValue(testDomain.TestPackageConfig.HostSetup, out existingTestDomain))
                 {
-                    MergeDomain(existingTestDomain, testDomain);
+                    existingTestDomain.MergeFrom(testDomain);
                 }
                 else
                 {
@@ -112,17 +111,6 @@ namespace Gallio.Runner.Drivers
 
                 yield return new Partition(new ProxyTestDriver(testDriver), testDomain.TestPackageConfig);
             }
-        }
-
-        private void MergeDomain(TestDomainSetup target, TestDomainSetup source)
-        {
-            foreach (string assemblyFile in source.TestPackageConfig.AssemblyFiles)
-                if (!target.TestPackageConfig.AssemblyFiles.Contains(assemblyFile))
-                    target.TestPackageConfig.AssemblyFiles.Add(assemblyFile);
-
-            foreach (string hintDir in source.TestPackageConfig.HintDirectories)
-                if (!target.TestPackageConfig.HintDirectories.Contains(hintDir))
-                    target.TestPackageConfig.HintDirectories.Add(hintDir);
         }
 
         private class Remote : LongLivedMarshalByRefObject

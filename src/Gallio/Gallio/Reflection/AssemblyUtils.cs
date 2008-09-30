@@ -106,5 +106,16 @@ namespace Gallio.Reflection
 
             return assembly.CodeBase;
         }
+
+        /// <summary>
+        /// Gets the culture component of an assembly name.
+        /// </summary>
+        /// <param name="assemblyName">The assembly name</param>
+        /// <returns>The culture name</returns>
+        public static string GetAssemblyNameCulture(AssemblyName assemblyName)
+        {
+            string culture = assemblyName.CultureInfo.Name;
+            return culture.Length != 0 ? culture : "neutral";
+        }
     }
 }

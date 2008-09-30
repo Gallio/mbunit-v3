@@ -57,5 +57,24 @@ namespace Gallio.Model
                 testPackageConfig = value;
             }
         }
+
+        /// <summary>
+        /// Merges the contents of another test domain setup into this one.
+        /// </summary>
+        /// <param name="source">The source setup</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
+        public void MergeFrom(TestDomainSetup source)
+        {
+            if (source == null)
+                throw new ArgumentNullException("source");
+
+            foreach (string assemblyFile in source.TestPackageConfig.AssemblyFiles)
+                if (!TestPackageConfig.AssemblyFiles.Contains(assemblyFile))
+                    TestPackageConfig.AssemblyFiles.Add(assemblyFile);
+
+            foreach (string hintDir in source.TestPackageConfig.HintDirectories)
+                if (!TestPackageConfig.HintDirectories.Contains(hintDir))
+                    TestPackageConfig.HintDirectories.Add(hintDir);
+        }
     }
 }

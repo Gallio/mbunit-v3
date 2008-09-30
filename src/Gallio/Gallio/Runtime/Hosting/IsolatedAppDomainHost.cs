@@ -76,7 +76,7 @@ namespace Gallio.Runtime.Hosting
                 CreateTemporaryConfigurationFile();
                 CreateAppDomain();
 
-                return CreateRemoteInstance<RemoteHostService>(appDomain, (TimeSpan?)null);
+                return (IRemoteHostService) AppDomainUtils.CreateRemoteInstance(appDomain, typeof(RemoteHostService), (TimeSpan?)null);
             }
             catch (Exception)
             {
@@ -119,14 +119,6 @@ namespace Gallio.Runtime.Hosting
             {
                 throw new HostException("Could not create the isolated AppDomain.", ex);
             }
-        }
-
-        private static T CreateRemoteInstance<T>(AppDomain appDomain, params object[] args)
-        {
-            Type type = typeof(T);
-            string assemblyFile = AssemblyUtils.GetFriendlyAssemblyLocation(type.Assembly);
-            return (T)appDomain.CreateInstanceFromAndUnwrap(assemblyFile, type.FullName, false,
-                BindingFlags.Default, null, args, null, null, null);
         }
 
         private void UnloadAppDomain()

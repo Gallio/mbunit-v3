@@ -14,9 +14,11 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.Policy;
+using Gallio.Reflection;
 
 namespace Gallio.Runtime.Hosting
 {
@@ -66,6 +68,39 @@ namespace Gallio.Runtime.Hosting
                 PermissionSet defaultPermissionSet = new PermissionSet(PermissionState.Unrestricted);
                 StrongName[] fullTrustAssemblies = new StrongName[0];
                 return AppDomain.CreateDomain(appDomainSetup.ApplicationName, evidence, appDomainSetup, defaultPermissionSet, fullTrustAssemblies);
+            }
+        }
+
+        /// <summary>
+        /// Creates a remote instance of a type within another AppDomain.
+        /// </summary>
+        /// <remarks>
+        /// This method first uses <see cref="AppDomain.CreateInstanceAndUnwrap(string, string)" /> to
+        /// try create an instance of the type.  If that fails, it uses <see cref="AppDomain.CreateInstanceFromAndUnwrap(string, string)" />
+        /// to load the assembly that contains the type into the AppDomain then create an instance of the type.
+        /// </remarks>
+        /// <param name="appDomain">The AppDomain in which to create the instance</param>
+        /// <param name="type">The type to instantiate</param>
+        /// <param name="args">The constructor arguments for the type</param>
+        /// <returns>The remote instance</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> or <paramref name="type"/>
+        /// is null</exception>
+        public static object CreateRemoteInstance(AppDomain appDomain, Type type, params object[] args)
+        {
+            if (appDomain == null)
+                throw new ArgumentNullException("appDomain");
+
+            Assembly assembly = type.Assembly;
+            try
+            {
+                return appDomain.CreateInstanceAndUnwrap(assembly.FullName, type.FullName, false,
+                    BindingFlags.Default, null, args, null, null, null);
+            }
+            catch (Exception)
+            {
+                string assemblyFile = AssemblyUtils.GetFriendlyAssemblyLocation(type.Assembly);
+                return appDomain.CreateInstanceFromAndUnwrap(assemblyFile, type.FullName, false,
+                    BindingFlags.Default, null, args, null, null, null);
             }
         }
     }
