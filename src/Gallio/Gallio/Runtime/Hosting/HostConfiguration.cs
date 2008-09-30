@@ -908,7 +908,8 @@ namespace Gallio.Runtime.Hosting
             /// <param name="uri">The Uri that specifies the location of the assembly</param>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="version"/>
             /// or <paramref name="uri"/> is null</exception>
-            /// <exception cref="ArgumentException">Thrown if <paramref name="uri"/> is not a valid absolute Uri</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="uri"/> is not an absolute Uri</exception>
+            /// <exception cref="UriFormatException">Thrown if <paramref name="uri"/> is not a well-formed Uri</exception>
             public AssemblyCodeBase(string version, string uri)
             {
                 if (version == null)
@@ -941,7 +942,8 @@ namespace Gallio.Runtime.Hosting
             /// Gets or sets the Uri that specifies the location of the assembly.
             /// </summary>
             /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-            /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not a valid absolute Uri</exception>
+            /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not an absolute Uri</exception>
+            /// <exception cref="UriFormatException">Thrown if <paramref name="value"/> is not a well-formed Uri</exception>
             [XmlAttribute("uri")]
             public string Uri
             {
@@ -950,9 +952,11 @@ namespace Gallio.Runtime.Hosting
                 {
                     if (value == null)
                         throw new ArgumentNullException("value");
-                    if (!System.Uri.IsWellFormedUriString(value, UriKind.Absolute))
+
+                    string escapedUri = System.Uri.EscapeUriString(value);
+                    if (!System.Uri.IsWellFormedUriString(escapedUri, UriKind.Absolute))
                         throw new ArgumentException(String.Format("The codebase Uri must be a valid absolute Uri but '{0}' was used.", value));
-                    uri = value;
+                    uri = escapedUri;
                 }
             }
 
