@@ -87,6 +87,7 @@
     <Compile Include="Actions\DefaultActionManager.cs" />
     <Compile Include="Actions\IActionManager.cs" />
     <Compile Include="BaseShellExtension.cs" />
+    <Compile Include="IShellComponent.cs" />
     <Compile Include="IShell.cs" />
     <Compile Include="IShellExtension.cs" />
     <Compile Include="Reflection\CodeModelReflectionPolicy.cs" />
