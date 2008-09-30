@@ -181,8 +181,8 @@ namespace Gallio.Runtime.Hosting
             AssemblyDependency assemblyDependency = AddAssemblyDependency(
                 assemblyName.Name,
                 publicKeyToken != null && publicKeyToken.Length != 0 ? ToHex(publicKeyToken) : null,
-                null, //AssemblyUtils.GetAssemblyNameCulture(assemblyName),
-                null);
+                AssemblyUtils.GetAssemblyNameCulture(assemblyName),
+                GetProcessorArchitectureName(assemblyName.ProcessorArchitecture));
 
             if (bindingRedirect)
             {
@@ -190,6 +190,30 @@ namespace Gallio.Runtime.Hosting
             }
 
             assemblyDependency.AddAssemblyCodeBase(assemblyName.Version.ToString(), codeBase);
+        }
+
+        private static string GetProcessorArchitectureName(ProcessorArchitecture architecture)
+        {
+            switch (architecture)
+            {
+                case ProcessorArchitecture.None:
+                    return null;
+
+                case ProcessorArchitecture.MSIL:
+                    return "msil";
+
+                case ProcessorArchitecture.X86:
+                    return "x86";
+
+                case ProcessorArchitecture.IA64:
+                    return "ia64";
+
+                case ProcessorArchitecture.Amd64:
+                    return "amd64";
+
+                default:
+                    throw new ArgumentOutOfRangeException("architecture");
+            }
         }
 
         /// <summary>
