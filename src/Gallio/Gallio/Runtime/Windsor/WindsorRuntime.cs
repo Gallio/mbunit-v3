@@ -316,7 +316,7 @@ namespace Gallio.Runtime.Windsor
                 {
                     string assemblyFile = assemblyElement.GetAttribute("file");
                     if (assemblyFile == null)
-                        throw new ConfigurationErrorsException("Missing assembly file in assembly element.");
+                        continue; // TODO: handle gac attribute
 
                     string assemblyPath = Path.Combine(basePath, assemblyFile);
                     if (!File.Exists(assemblyPath))

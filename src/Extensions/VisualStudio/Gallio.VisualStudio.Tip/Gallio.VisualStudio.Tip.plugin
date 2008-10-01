@@ -3,7 +3,7 @@
   <gallio>
     <assemblies>
       <assembly file="Gallio.VisualStudio.Tip.dll" />
-      <assembly file="Gallio.VisualStudio.Tip.Proxy.dll" />
+      <assembly gac="Gallio.VisualStudio.Tip.Proxy" />
     </assemblies>
 
     <runtime>

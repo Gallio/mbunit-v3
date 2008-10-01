@@ -3,6 +3,7 @@
   <gallio>
     <assemblies>
       <assembly file="Gallio.VisualStudio.Shell.dll" />
+      <assembly gac="Gallio.Loader" />
     </assemblies>
 
     <runtime>
