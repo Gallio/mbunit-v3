@@ -314,33 +314,45 @@ namespace Gallio.Runtime.Windsor
             {
                 foreach (XmlElement assemblyElement in assembliesElement.SelectNodes("assembly"))
                 {
+                    string assemblyGac = assemblyElement.GetAttribute("gac");
+                    if (!string.IsNullOrEmpty(assemblyGac))
+                        RegisterPluginAssemblyFromGac(basePath, assemblyGac);
+
                     string assemblyFile = assemblyElement.GetAttribute("file");
-                    if (assemblyFile == null)
-                        continue; // TODO: handle gac attribute
-
-                    string assemblyPath = Path.Combine(basePath, assemblyFile);
-                    if (!File.Exists(assemblyPath))
-                        assemblyPath = Path.Combine(Path.Combine(basePath, "bin"), assemblyFile);
-
-                    AssemblyName assemblyName;
-                    try
-                    {
-                        assemblyName = AssemblyName.GetAssemblyName(assemblyPath);
-                    }
-                    catch (IOException ex)
-                    {
-                        throw new ConfigurationErrorsException(
-                            String.Format("Could not get assembly name of plugin assembly '{0}' with base path '{1}'.", assemblyFile, basePath), ex);
-                    }
-                    catch (BadImageFormatException ex)
-                    {
-                        throw new ConfigurationErrorsException(
-                            String.Format("Could not get assembly name of plugin assembly '{0}' with base path '{1}'.", assemblyFile, basePath), ex);
-                    }
-
-                    pluginAssemblyPaths.Add(assemblyPath, assemblyName);
+                    if (!string.IsNullOrEmpty(assemblyFile))
+                        RegisterPluginAssemblyFromFile(basePath, assemblyFile);
                 }
             }
+        }
+
+        private void RegisterPluginAssemblyFromGac(string basePath, string assemblyName)
+        {
+            // TODO
+        }
+
+        private void RegisterPluginAssemblyFromFile(string basePath, string assemblyFile)
+        {
+            string assemblyPath = Path.Combine(basePath, assemblyFile);
+            if (!File.Exists(assemblyPath))
+                assemblyPath = Path.Combine(Path.Combine(basePath, "bin"), assemblyFile);
+
+            AssemblyName assemblyName;
+            try
+            {
+                assemblyName = AssemblyName.GetAssemblyName(assemblyPath);
+            }
+            catch (IOException ex)
+            {
+                throw new ConfigurationErrorsException(
+                    String.Format("Could not get assembly name of plugin assembly '{0}' with base path '{1}'.", assemblyFile, basePath), ex);
+            }
+            catch (BadImageFormatException ex)
+            {
+                throw new ConfigurationErrorsException(
+                    String.Format("Could not get assembly name of plugin assembly '{0}' with base path '{1}'.", assemblyFile, basePath), ex);
+            }
+
+            pluginAssemblyPaths.Add(assemblyPath, assemblyName);
         }
 
         private void RunContainerInstaller()
