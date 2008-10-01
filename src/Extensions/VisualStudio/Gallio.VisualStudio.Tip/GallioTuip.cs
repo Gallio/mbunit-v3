@@ -104,7 +104,7 @@ namespace Gallio.VisualStudio.Tip
 
                 windowMap[result.Id] = windowId;
                 window.SetContent(new ResultViewer(gallioResult));
-                window.Caption = result.TestName + " [Results]";
+                window.Caption = String.Format("{0} [{1}]", result.TestName, Properties.Resources.Results);
                 window.Show();
             }
         }

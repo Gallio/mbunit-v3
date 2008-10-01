@@ -51,8 +51,8 @@ namespace Gallio.VisualStudio.Tip.UI
                 throw new ArgumentNullException("testResult");
             }
 
-            InitializeComponent();
             this.testResult = testResult;
+            InitializeComponent();
         }
 
         private void ResultViewer_Load(object sender, EventArgs e)
@@ -62,8 +62,35 @@ namespace Gallio.VisualStudio.Tip.UI
 
         private void InitializeContent()
         {
-            AddRow("Test Name", testResult.TestName);
-            AddRow("Description", testResult.TestDescription);
+            InitializeStatusHeader();
+            InitializeDataGrid();
+        }
+
+        private void InitializeStatusHeader()
+        {
+            if (testResult.HasPassed)
+            {
+                pictureBoxStatus.Image = Properties.Resources.Passed;
+                labelStatus.Text = Properties.Resources.TestHasPassed;
+            }
+            else
+            {
+                pictureBoxStatus.Image = Properties.Resources.Failed;
+                labelStatus.Text = Properties.Resources.TestHasFailed;
+            }
+        }
+
+        private void InitializeDataGrid()
+        {
+            AddRow(Properties.Resources.TestName, testResult.TestName);
+            AddRow(Properties.Resources.Description, testResult.TestDescription);
+            AddRow(Properties.Resources.StartTime, testResult.StartTime.ToString());
+            AddRow(Properties.Resources.EndTime, testResult.EndTime.ToString());
+            AddRow(Properties.Resources.Duration, testResult.Duration.ToString());
+            AddRow(Properties.Resources.ComputerName, testResult.ComputerName);
+            AddRow(Properties.Resources.OutcomeText, testResult.OutcomeText);
+            AddRow(Properties.Resources.ErrorMessage, testResult.ErrorMessage);
+            AddRow(Properties.Resources.ErrorStackTrace, testResult.ErrorStackTrace);
         }
 
         private void AddRow(string name, string value)

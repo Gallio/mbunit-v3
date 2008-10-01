@@ -60,10 +60,96 @@ namespace Gallio.VisualStudio.Tip.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Computer Name.
+        /// </summary>
+        internal static string ComputerName {
+            get {
+                return ResourceManager.GetString("ComputerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        internal static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration.
+        /// </summary>
+        internal static string Duration {
+            get {
+                return ResourceManager.GetString("Duration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End Time.
+        /// </summary>
+        internal static string EndTime {
+            get {
+                return ResourceManager.GetString("EndTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Message.
+        /// </summary>
+        internal static string ErrorMessage {
+            get {
+                return ResourceManager.GetString("ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Stack Trace.
+        /// </summary>
+        internal static string ErrorStackTrace {
+            get {
+                return ResourceManager.GetString("ErrorStackTrace", resourceCulture);
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Failed {
+            get {
+                object obj = ResourceManager.GetObject("Failed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Gallio {
             get {
                 object obj = ResourceManager.GetObject("Gallio", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outcome Text.
+        /// </summary>
+        internal static string OutcomeText {
+            get {
+                return ResourceManager.GetString("OutcomeText", resourceCulture);
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Passed {
+            get {
+                object obj = ResourceManager.GetObject("Passed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Results.
+        /// </summary>
+        internal static string Results {
+            get {
+                return ResourceManager.GetString("Results", resourceCulture);
             }
         }
         
@@ -73,6 +159,42 @@ namespace Gallio.VisualStudio.Tip.Properties {
         internal static string ResultWindowCouldNotBeCreated {
             get {
                 return ResourceManager.GetString("ResultWindowCouldNotBeCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Time.
+        /// </summary>
+        internal static string StartTime {
+            get {
+                return ResourceManager.GetString("StartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The test has failed..
+        /// </summary>
+        internal static string TestHasFailed {
+            get {
+                return ResourceManager.GetString("TestHasFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The test has passed..
+        /// </summary>
+        internal static string TestHasPassed {
+            get {
+                return ResourceManager.GetString("TestHasPassed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test Name.
+        /// </summary>
+        internal static string TestName {
+            get {
+                return ResourceManager.GetString("TestName", resourceCulture);
             }
         }
     }
