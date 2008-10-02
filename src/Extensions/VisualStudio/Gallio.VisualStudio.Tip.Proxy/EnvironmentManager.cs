@@ -47,6 +47,7 @@ namespace Gallio.VisualStudio.Tip
         private static IGallioRemoteEnvironment CreateSharedEnvironment()
         {
             IGallioRemoteEnvironment environment = GallioLoader.CreateRemoteEnvironment();
+            environment.Loader.AddHintDirectory(GetPluginPath());
             environment.Loader.AddHintDirectory(GetVSTSPath());
             environment.Loader.SetupRuntime();
             return environment;
@@ -55,6 +56,11 @@ namespace Gallio.VisualStudio.Tip
         private static string GetVSTSPath()
         {
             return Path.GetDirectoryName(GetAssemblyPath(typeof(ITestAdapter).Assembly));
+        }
+
+        private static string GetPluginPath()
+        {
+            return Path.GetDirectoryName(GetAssemblyPath(typeof(EnvironmentManager).Assembly));
         }
 
         private static string GetAssemblyPath(Assembly assembly)

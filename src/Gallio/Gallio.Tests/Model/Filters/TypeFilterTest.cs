@@ -30,19 +30,6 @@ namespace Gallio.Tests.Model.Filters
     [TestsOn(typeof(TypeFilter<ITestComponent>))]
     public class TypeFilterTest : BaseUnitTest, ITypeFilterTest
     {
-        private ITestComponent component;
-
-        [SetUp]
-        public override void SetUp()
-        {
-            base.SetUp();
-
-            ICodeElementInfo codeElement = Reflector.Wrap(typeof(TypeFilterTest));
-            component = Mocks.CreateMock<ITestComponent>();
-            SetupResult.For(component.CodeElement).Return(codeElement);
-            Mocks.ReplayAll();
-        }
-
         [Test]
         [Row(true, typeof(TypeFilterTest), false)]
         [Row(true, typeof(TypeFilterTest), true)]
@@ -52,6 +39,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithAssemblyQualifiedName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
+            ITestComponent component = GetMockComponentForType(typeof(TypeFilterTest));
             Assert.AreEqual(expectedMatch,
                 new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.AssemblyQualifiedName), includeDerivedTypes).IsMatch(component));
         }
@@ -65,6 +53,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithFullName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
+            ITestComponent component = GetMockComponentForType(typeof(TypeFilterTest));
             Assert.AreEqual(expectedMatch,
                 new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.FullName), includeDerivedTypes).IsMatch(component));
         }
@@ -78,6 +67,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithName(bool expectedMatch, Type type, bool includeDerivedTypes)
         {
+            ITestComponent component = GetMockComponentForType(typeof(TypeFilterTest));
             Assert.AreEqual(expectedMatch,
                 new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.Name), includeDerivedTypes).IsMatch(component));
         }
@@ -85,7 +75,17 @@ namespace Gallio.Tests.Model.Filters
         [Test]
         public void IsMatchConsidersDotDelimiterNestedTypes()
         {
+            ITestComponent component = GetMockComponentForType(typeof(NestedTypeFilterTest));
             Assert.IsTrue(new TypeFilter<ITestComponent>(new EqualityFilter<string>(typeof(NestedTypeFilterTest).FullName.Replace('+', '.')), false).IsMatch(component));
+        }
+
+        private ITestComponent GetMockComponentForType(Type type)
+        {
+            ICodeElementInfo codeElement = Reflector.Wrap(type);
+            ITestComponent component = Mocks.CreateMock<ITestComponent>();
+            SetupResult.For(component.CodeElement).Return(codeElement);
+            Mocks.ReplayAll();
+            return component;
         }
 
         private sealed class NestedTypeFilterTest : BaseUnitTest

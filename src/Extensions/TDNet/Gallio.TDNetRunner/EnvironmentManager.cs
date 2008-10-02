@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using Gallio.Loader;
 
@@ -46,8 +48,19 @@ namespace Gallio.TDNetRunner
         private static IGallioRemoteEnvironment CreateSharedEnvironment()
         {
             IGallioRemoteEnvironment environment = GallioLoader.CreateRemoteEnvironment();
+            environment.Loader.AddHintDirectory(GetPluginPath());
             environment.Loader.SetupRuntime();
             return environment;
+        }
+
+        private static string GetPluginPath()
+        {
+            return Path.GetDirectoryName(GetAssemblyPath(typeof(EnvironmentManager).Assembly));
+        }
+
+        private static string GetAssemblyPath(Assembly assembly)
+        {
+            return new Uri(assembly.CodeBase).LocalPath;
         }
     }
 }
