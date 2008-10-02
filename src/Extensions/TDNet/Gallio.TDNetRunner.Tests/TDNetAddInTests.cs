@@ -25,139 +25,87 @@ using Gallio.Runner;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using TestDriven.Framework;
+using TestDriven.TestRunner.Framework;
 
 namespace Gallio.TDNetRunner.Tests
 {
     // TODO: Verify logged output
     [TestFixture]
-    [TestsOn(typeof(StubbedGallioTestRunner))]
+    [TestsOn(typeof(StubbedTestRunner))]
     public class TDNetAddInTests
     {
-        private ITestListener stubbedTestListener;
-
-        [FixtureSetUp]
-        public void FixtureSetUp()
+        [Test]
+        public void RunThrowsWhenTestListenerIsNull()
         {
-            stubbedTestListener = MockRepository.GenerateStub<ITestListener>();
+            StubbedTestRunner tr = new StubbedTestRunner();
+            Assert.Throws<ArgumentNullException>(() => tr.Run(null, MockRepository.GenerateStub<ITraceListener>(), "foo", "bar"));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void RunAssembly_NullTestListener()
+        public void RunThrowsWhenTraceListenerIsNull()
         {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
-            tr.RunAssembly(null, null);
+            StubbedTestRunner tr = new StubbedTestRunner();
+            Assert.Throws<ArgumentNullException>(() => tr.Run(MockRepository.GenerateStub<ITestListener>(), null, "foo", "bar"));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void RunAssembly_NullAssembly()
+        public void RunThrowsWhenAssemblyPathIsNull()
         {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
-            tr.RunAssembly(stubbedTestListener, null);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void RunNamespace_NullTestListener()
-        {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
-            tr.RunNamespace(null, null, null);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void RunNamespace_NullAssembly()
-        {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
-            tr.RunNamespace(stubbedTestListener, null, null);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void RunNamespace_NullNamespace()
-        {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
-            tr.RunNamespace(stubbedTestListener, Assembly.GetExecutingAssembly(), null);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void RunMember_NullTestListener()
-        {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
-            tr.RunMember(null, null, null);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void RunMember_NullAssembly()
-        {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
-            tr.RunMember(stubbedTestListener, null, null);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void RunMember_NullMember()
-        {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
-            tr.RunMember(stubbedTestListener, Assembly.GetExecutingAssembly(), null);
+            StubbedTestRunner tr = new StubbedTestRunner();
+            Assert.Throws<ArgumentNullException>(() => tr.Run(MockRepository.GenerateStub<ITestListener>(), MockRepository.GenerateStub<ITraceListener>(), null, "bar"));
         }
 
         [Test]
         public void RunAssemblyPassesCorrectOptionsToTheLauncher()
         {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            StubbedTestRunner tr = new StubbedTestRunner();
 
             Assembly assembly = typeof(TDNetAddInTests).Assembly;
+            string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
+
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
-                AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
-                    new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)));
+                AssertTestLauncherOptions(launcher, assemblyPath, new AnyFilter<ITest>());
 
                 return new TestLauncherResult(new Report());
             });
 
-            tr.RunAssembly(stubbedTestListener, assembly);
+            tr.Run(MockRepository.GenerateStub<ITestListener>(), MockRepository.GenerateStub<ITraceListener>(), assemblyPath, null);
         }
 
         [Test]
         public void RunMemberWithTypePassesCorrectOptionsToTheLauncher()
         {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            StubbedTestRunner tr = new StubbedTestRunner();
 
             Type type = typeof(TDNetAddInTests);
             Assembly assembly = type.Assembly;
+            string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
 
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
-                AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
-                    new AndFilter<ITest>(new Filter<ITest>[] {
-                        new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)),
-                        new TypeFilter<ITest>(new EqualityFilter<string>(type.FullName), true)
-                    }));
+                AssertTestLauncherOptions(launcher, assemblyPath,
+                    new TypeFilter<ITest>(new EqualityFilter<string>(type.FullName), true));
 
                 return new TestLauncherResult(new Report());
             });
 
-            tr.RunMember(stubbedTestListener, assembly, type);
+            tr.Run(MockRepository.GenerateStub<ITestListener>(), MockRepository.GenerateStub<ITraceListener>(), assemblyPath, "T:" + type.FullName);
         }
 
         [Test]
         public void RunMemberWithMethodPassesCorrectOptionsToTheLauncher()
         {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            StubbedTestRunner tr = new StubbedTestRunner();
 
             MethodBase method = Reflector.GetExecutingFunction().Resolve(true);
             Assembly assembly = method.DeclaringType.Assembly;
+            string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
 
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
                 AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
                     new AndFilter<ITest>(new Filter<ITest>[] {
-                        new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)),
                         new TypeFilter<ITest>(new EqualityFilter<string>(method.DeclaringType.FullName), true),
                         new MemberFilter<ITest>(new EqualityFilter<string>(method.Name))
                     }));
@@ -165,43 +113,43 @@ namespace Gallio.TDNetRunner.Tests
                 return new TestLauncherResult(new Report());
             });
 
-            tr.RunMember(stubbedTestListener, assembly, method);
+            tr.Run(MockRepository.GenerateStub<ITestListener>(), MockRepository.GenerateStub<ITraceListener>(), assemblyPath,
+                "M:" + method.DeclaringType.FullName + "." + method.Name);
         }
 
         [Test]
         public void RunNamespacePassesCorrectOptionsToTheLauncher()
         {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            StubbedTestRunner tr = new StubbedTestRunner();
 
             Assembly assembly = typeof(TDNetAddInTests).Assembly;
+            string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
             string @namespace = "Foo";
 
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
                 AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
-                    new AndFilter<ITest>(new Filter<ITest>[] {
-                        new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)),
-                        new NamespaceFilter<ITest>(new EqualityFilter<string>(@namespace))
-                    }));
+                    new NamespaceFilter<ITest>(new EqualityFilter<string>(@namespace)));
 
                 return new TestLauncherResult(new Report());
             });
 
-            tr.RunNamespace(stubbedTestListener, assembly, @namespace);
+            tr.Run(MockRepository.GenerateStub<ITestListener>(), MockRepository.GenerateStub<ITraceListener>(), assemblyPath, "N:" + @namespace);
         }
 
         [Test]
-        [Row(ResultCode.Canceled, TestRunState.Error)]
-        [Row(ResultCode.Failure, TestRunState.Failure)]
-        [Row(ResultCode.FatalException, TestRunState.Error)]
-        [Row(ResultCode.InvalidArguments, TestRunState.Error)]
-        [Row(ResultCode.NoTests, TestRunState.Success)]
-        [Row(ResultCode.Success, TestRunState.Success)]
-        public void RunReturnsCorrectResultCode(int resultCode, TestRunState expectedRunState)
+        [Row(ResultCode.Canceled, true, false, true)]
+        [Row(ResultCode.Failure, true, false, true)]
+        [Row(ResultCode.FatalException, true, false, true)]
+        [Row(ResultCode.InvalidArguments, true, false, true)]
+        [Row(ResultCode.NoTests, true, true, false)]
+        [Row(ResultCode.Success, true, true, false)]
+        public void RunReturnsCorrectResultCode(int resultCode, bool expectedExecuted, bool expectedSuccess, bool expectedFailure)
         {
-            StubbedGallioTestRunner tr = new StubbedGallioTestRunner();
+            StubbedTestRunner tr = new StubbedTestRunner();
 
             Assembly assembly = typeof(TDNetAddInTests).Assembly;
+            string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
             tr.SetRunLauncherAction(delegate
             {
                 TestLauncherResult result = new TestLauncherResult(new Report());
@@ -209,7 +157,10 @@ namespace Gallio.TDNetRunner.Tests
                 return result;
             });
 
-            Assert.AreEqual(expectedRunState, tr.RunAssembly(stubbedTestListener, assembly));
+            TestRunResult runResult = tr.Run(MockRepository.GenerateStub<ITestListener>(), MockRepository.GenerateStub<ITraceListener>(), assemblyPath, null);
+            Assert.AreEqual(expectedExecuted, runResult.IsExecuted);
+            Assert.AreEqual(expectedSuccess, runResult.IsSuccess);
+            Assert.AreEqual(expectedFailure, runResult.IsFailure);
         }
 
         private static void AssertTestLauncherOptions(TestLauncher launcher, string assemblyFile, Filter<ITest> filter)
@@ -226,9 +177,7 @@ namespace Gallio.TDNetRunner.Tests
             Assert.IsFalse(launcher.ShowReports);
             Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
 
-            Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(GallioTestRunner).Assembly)), launcher.RuntimeSetup.RuntimePath);
-            Assert.AreElementsEqual(new string[] { }, launcher.RuntimeSetup.PluginDirectories);
+            Assert.IsNull(launcher.RuntimeSetup);
 
             Assert.AreElementsEqual(new string[] { assemblyFile }, launcher.TestPackageConfig.AssemblyFiles);
             Assert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);

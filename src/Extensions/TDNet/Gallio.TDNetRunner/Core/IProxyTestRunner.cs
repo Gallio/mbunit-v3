@@ -13,23 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Controllers.Interfaces;
-using MbUnit.Framework;
-using Rhino.Mocks;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Gallio.Icarus.Tests
+namespace Gallio.TDNetRunner.Core
 {
-    [Category("Views")]
-    class ExecutionLogWindowTest : MockTest
+    /// <summary>
+    /// <para>
+    /// A proxy test runner functions as a wrapper over the TestDriven.Net test runner
+    /// interface.
+    /// </para>
+    /// </summary>
+    internal interface IProxyTestRunner : IDisposable
     {
-        [Test]
-        public void Constructor_Test()
-        {
-            IExecutionLogController executionLogController = mocks.CreateMock<IExecutionLogController>();
-            executionLogController.ExecutionLogUpdated += null;
-            LastCall.IgnoreArguments();
-            mocks.ReplayAll();
-            ExecutionLogWindow executionLogWindow = new ExecutionLogWindow(executionLogController);
-        }
+        void Abort();
+
+        ProxyTestResult Run(IProxyTestListener testListener, string assemblyPath, string testPath);
     }
 }

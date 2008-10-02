@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GallioLoader.cs" />
+    <Compile Include="IGallioRemoteEnvironment.cs" />
+    <Compile Include="IGallioLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

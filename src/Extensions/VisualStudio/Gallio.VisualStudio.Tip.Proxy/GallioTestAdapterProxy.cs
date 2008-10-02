@@ -14,12 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.IO;
-using System.Security;
-using System.Security.Permissions;
-using System.Security.Policy;
+using System.Diagnostics;
 using Gallio.Loader;
-using Microsoft.VisualStudio.TestTools.Execution;
 using Microsoft.VisualStudio.TestTools.TestAdapter;
 
 namespace Gallio.VisualStudio.Tip
@@ -44,62 +40,25 @@ namespace Gallio.VisualStudio.Tip
     /// </remarks>
     public class GallioTestAdapterProxy : MarshalByRefTestAdapterProxy
     {
-        private static readonly object runnerAppDomainSyncRoot = new object();
-        private static AppDomain runnerAppDomain;
-
         public GallioTestAdapterProxy()
-            //: base(CreateRemoteShim())
-            : base(new Shim())
+            : base(CreateRemoteShim())
         {
         }
 
-        private static IShim CreateRemoteShim()
+        private static ITestAdapter CreateRemoteShim()
         {
-            PrepareRunnerAppDomain();
+            IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
 
-            IShim shim = (IShim)runnerAppDomain.CreateInstanceAndUnwrap(typeof(Shim).Assembly.FullName, typeof(Shim).FullName);
-            shim.AddHintDirectory(Path.GetDirectoryName(typeof(IRunContext).Assembly.Location));
+            Type shimType = typeof(Shim);
+            ITestAdapter shim = (ITestAdapter)environment.AppDomain.CreateInstanceAndUnwrap(shimType.Assembly.FullName, shimType.FullName);
             return shim;
         }
 
-        private static void PrepareRunnerAppDomain()
-        {
-            lock (runnerAppDomainSyncRoot)
-            {
-                if (runnerAppDomain != null)
-                    return;
-
-                string runtimePath = GallioLoader.GetDefaultRuntimePath();
-                AppDomainSetup appDomainSetup = new AppDomainSetup();
-                appDomainSetup.ApplicationName = "Gallio";
-                appDomainSetup.ApplicationBase = runtimePath;
-                Evidence evidence = AppDomain.CurrentDomain.Evidence;
-                PermissionSet defaultPermissionSet = new PermissionSet(PermissionState.Unrestricted);
-                StrongName[] fullTrustAssemblies = new StrongName[0];
-                runnerAppDomain = AppDomain.CreateDomain(appDomainSetup.ApplicationName, evidence, appDomainSetup, defaultPermissionSet, fullTrustAssemblies);
-            }
-        }
-
-        private interface IShim : ITestAdapter
-        {
-            void AddHintDirectory(string path);
-        }
-
-        private sealed class Shim : MarshalByRefTestAdapterProxy, IShim
+        private sealed class Shim : MarshalByRefTestAdapterProxy
         {
             public Shim()
-                : base(CreateTarget())
+                : base(ProxyHelper.GetTargetFactory().CreateTestAdapter())
             {
-            }
-
-            public void AddHintDirectory(string path)
-            {
-                GallioLoader.Instance.AddHintDirectory(path);
-            }
-
-            private static ITestAdapter CreateTarget()
-            {
-                return ProxyHelper.GetTargetFactory().CreateTestAdapter();
             }
         }
     }

@@ -123,7 +123,16 @@
     <Compile Include="Provider\GallioTestPresenter.cs" />
     <Compile Include="Provider\ReSharperExceptionDialogSuppressor.cs" />
     <Compile Include="Provider\SessionCache.cs" />
+    <Compile Include="Provider\Tasks\AdapterProxyTaskServer.cs" />
+    <Compile Include="Provider\Tasks\EnvironmentManager.cs" />
     <Compile Include="Provider\Tasks\GallioTestRunner.cs" />
+    <Compile Include="Provider\Tasks\IProxyTaskRunner.cs" />
+    <Compile Include="Provider\Tasks\IProxyTaskServer.cs" />
+    <Compile Include="Provider\Tasks\ProxyTask.cs" />
+    <Compile Include="Provider\Tasks\ProxyTaskException.cs" />
+    <Compile Include="Provider\Tasks\ProxyTaskOutputType.cs" />
+    <Compile Include="Provider\Tasks\ProxyTaskResult.cs" />
+    <Compile Include="Provider\Tasks\RemoteProxyTaskRunner.cs" />
     <Compile Include="Provider\Tasks\TaskExceptionFactory.cs" />
     <Compile Include="Runtime\ReSharperLogger.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicy.cs" />

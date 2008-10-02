@@ -68,10 +68,18 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             return 0;
         }
 
-        public override TaskResult ExecuteRecursive(IRemoteTaskServer server, TaskExecutionNode node)
+        internal override ProxyTask CreateProxyTask()
         {
-            new GallioTestRunner(server).Run(node);
-            return TaskResult.Success;
+            return new Proxy();
+        }
+
+        [Serializable]
+        internal sealed class Proxy : ProxyTask
+        {
+            public override ProxyTaskResult Execute(IProxyTaskServer server)
+            {
+                return new GallioTestRunner(server).Run(this);
+            }
         }
     }
 }

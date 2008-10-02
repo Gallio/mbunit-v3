@@ -89,9 +89,17 @@ namespace Gallio.Model.Filters
         {
             type = type.GenericTypeDefinition ?? type;
 
-            return ValueFilter.IsMatch(type.AssemblyQualifiedName)
-                || ValueFilter.IsMatch(type.FullName)
-                || ValueFilter.IsMatch(type.Name);
+            return IsMatchForTypeName(type.AssemblyQualifiedName)
+                || IsMatchForTypeName(type.FullName)
+                || IsMatchForTypeName(type.Name);
+        }
+
+        private bool IsMatchForTypeName(string name)
+        {
+            if (ValueFilter.IsMatch(name))
+                return true;
+
+            return name.Contains("+") && ValueFilter.IsMatch(name.Replace('+', '.'));
         }
 
         /// <inheritdoc />

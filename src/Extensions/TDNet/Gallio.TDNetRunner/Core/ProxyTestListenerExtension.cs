@@ -22,22 +22,18 @@ using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Gallio.TDNetRunner.Properties;
 using Gallio.Model;
-using TestDriven.Framework;
-using ITestListener=TestDriven.Framework.ITestListener;
-using TDF = TestDriven.Framework;
-using TestResult=TestDriven.Framework.TestResult;
 
-namespace Gallio.TDNetRunner
+namespace Gallio.TDNetRunner.Core
 {
     /// <summary>
     /// A test runner extension that informs TD.NET (and therefore
     /// the user) in real-time what's going with the tests.
     /// </summary>
-    internal class TDNetLogExtension : LogExtension
+    internal class ProxyTestListenerExtension : LogExtension
     {
-        private readonly ITestListener testListener;
+        private readonly IProxyTestListener testListener;
 
-        public TDNetLogExtension(ITestListener testListener)
+        public ProxyTestListenerExtension(IProxyTestListener testListener)
         {
             if (testListener == null)
                 throw new ArgumentNullException(@"testListener");
@@ -70,7 +66,7 @@ namespace Gallio.TDNetRunner
                 message.Append(annotation.Details);
             }
 
-            Category category = GetCategoryForAnnotation(annotation.Type);
+            string category = GetCategoryForAnnotation(annotation.Type);
             testListener.WriteLine(message.ToString(), category);
         }
 
@@ -93,11 +89,11 @@ namespace Gallio.TDNetRunner
                     return; // nothing interesting to report
 
                 testListener.WriteLine(String.Format(Resources.TDNetLogMonitor_TestCasePassed, 
-                    e.TestStepRun.Step.FullName), Category.Info);
+                    e.TestStepRun.Step.FullName), MessageCategory.Info);
             }
 
             // Inform TD.NET what happened 
-            TestResult result = new TestResult();
+            ProxyTestResult result = new ProxyTestResult();
             result.Name = e.TestStepRun.Step.FullName;
             result.TimeSpan = TimeSpan.FromSeconds(e.TestStepRun.Result.Duration);
             // result.TestRunner = "Gallio"; // note: can crash in older versions of TD.Net with MissingFieldException
@@ -117,38 +113,48 @@ namespace Gallio.TDNetRunner
 
             // TD.NET will automatically count the number of passed, ignored and failed tests
             // provided we call the TestFinished method with the right State
-            result.State = GetTestState(e.TestStepRun.Result.Outcome);
+            switch (e.TestStepRun.Result.Outcome.Status)
+            {
+                case TestStatus.Passed:
+                    result.IsSuccess = true;
+                    result.IsFailure = false;
+                    result.IsExecuted = true;
+                    break;
+
+                case TestStatus.Inconclusive:
+                    result.IsSuccess = false;
+                    result.IsFailure = false;
+                    result.IsExecuted = true;
+                    break;
+
+                case TestStatus.Failed:
+                    result.IsSuccess = false;
+                    result.IsFailure = true;
+                    result.IsExecuted = true;
+                    break;
+
+                case TestStatus.Skipped:
+                    result.IsSuccess = false;
+                    result.IsFailure = false;
+                    result.IsExecuted = false;
+                    break;
+            }
 
             testListener.TestFinished(result);
         }
 
-        private static TestState GetTestState(TestOutcome outcome)
-        {
-            switch (outcome.Status)
-            {
-                case TestStatus.Passed:
-                    return TestState.Passed;
-
-                case TestStatus.Skipped:
-                    return TestState.Ignored;
-
-                default:
-                    return TestState.Failed;
-            }
-        }
-
-        private static Category GetCategoryForAnnotation(AnnotationType type)
+        private static string GetCategoryForAnnotation(AnnotationType type)
         {
             switch (type)
             {
                 case AnnotationType.Error:
-                    return Category.Error;
+                    return MessageCategory.Error;
 
                 case AnnotationType.Warning:
-                    return Category.Warning;
+                    return MessageCategory.Warning;
 
                 case AnnotationType.Info:
-                    return Category.Info;
+                    return MessageCategory.Info;
 
                 default:
                     throw new ArgumentException("type");

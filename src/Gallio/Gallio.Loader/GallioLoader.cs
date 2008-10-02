@@ -16,6 +16,9 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Security;
+using System.Security.Permissions;
+using System.Security.Policy;
 using Microsoft.Win32;
 
 namespace Gallio.Loader
@@ -59,7 +62,7 @@ namespace Gallio.Loader
     /// from static initializers declared on the appropriate externally visible classes.
     /// </para>
     /// </remarks>
-    public class GallioLoader
+    public sealed class GallioLoader : MarshalByRefObject, IGallioLoader
     {
         private static readonly string[] RootKeys = new[]
         {
@@ -101,7 +104,7 @@ namespace Gallio.Loader
         /// cannot be resolved.  It may simply means that this particular loading mechanism
         /// has not been used.
         /// </remarks>
-        public static GallioLoader Instance
+        public static IGallioLoader Instance
         {
             get { return instance; }
         }
@@ -134,7 +137,7 @@ namespace Gallio.Loader
         /// its singleton reference.
         /// </summary>
         /// <returns>The loader</returns>
-        public static GallioLoader Initialize()
+        public static IGallioLoader Initialize()
         {
             return Initialize(null);
         }
@@ -146,7 +149,7 @@ namespace Gallio.Loader
         /// <param name="runtimePath">The runtime path from which to load Gallio,
         /// or null to determine it automatically</param>
         /// <returns>The loader</returns>
-        public static GallioLoader Initialize(string runtimePath)
+        public static IGallioLoader Initialize(string runtimePath)
         {
             lock (syncRoot)
             {
@@ -166,35 +169,78 @@ namespace Gallio.Loader
         }
 
         /// <summary>
-        /// Gets the Gallio runtime path.
+        /// Remotely initializes the Gallio loader (if not already initialized) and returns
+        /// its singleton reference within a foreign AppDomain.
         /// </summary>
+        /// <param name="appDomain">The AppDomain in which to initialize the loader</param>
+        /// <returns>The loader</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> is null</exception>
+        public static IGallioLoader InitializeRemote(AppDomain appDomain)
+        {
+            return InitializeRemote(appDomain, null);
+        }
+
+        /// <summary>
+        /// Remotely initializes the Gallio loader (if not already initialized) and returns
+        /// its singleton reference within a foreign AppDomain.
+        /// </summary>
+        /// <param name="appDomain">The AppDomain in which to initialize the loader</param>
+        /// <param name="runtimePath">The runtime path from which to load Gallio,
+        /// or null to determine it automatically</param>
+        /// <returns>The loader</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> is null</exception>
+        public static IGallioLoader InitializeRemote(AppDomain appDomain, string runtimePath)
+        {
+            if (appDomain == null)
+                throw new ArgumentNullException("appDomain");
+
+            Type initializerType = typeof(RemoteInitializer);
+            var initializer = (RemoteInitializer)appDomain.CreateInstanceAndUnwrap(initializerType.Assembly.FullName, initializerType.FullName);
+            return initializer.Initialize(runtimePath);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Creates a private AppDomain that Gallio can reside in.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If you need the Gallio runtime, then you should also call <see cref="SetupRuntime" />
+        /// on the environment's loader.
+        /// </para>
+        /// </remarks>
+        /// <returns>The remote environment</returns>
+        public static IGallioRemoteEnvironment CreateRemoteEnvironment()
+        {
+            string runtimePath = GetDefaultRuntimePath();
+            AppDomainSetup appDomainSetup = new AppDomainSetup();
+            appDomainSetup.ApplicationName = "Gallio";
+            appDomainSetup.ApplicationBase = runtimePath;
+            Evidence evidence = AppDomain.CurrentDomain.Evidence;
+            PermissionSet defaultPermissionSet = new PermissionSet(PermissionState.Unrestricted);
+            StrongName[] fullTrustAssemblies = new StrongName[0];
+            AppDomain appDomain = AppDomain.CreateDomain(appDomainSetup.ApplicationName, evidence,
+                appDomainSetup, defaultPermissionSet, fullTrustAssemblies);
+
+            IGallioLoader loader = InitializeRemote(appDomain);
+            return new RemoteEnvironment(appDomain, loader);
+        }
+
+        /// <inheritdoc />
         public string RuntimePath
         {
             get { return runtimePath; }
         }
 
-        /// <summary>
-        /// <para>
-        /// Sets up the runtime with a default runtime setup using the loader's
-        /// runtime path and a null logger.  Does nothing if the runtime has
-        /// already been initialized.
-        /// </para>
-        /// <para>
-        /// If you need more control over this behavior, call RuntimeBootstrap
-        /// yourself.
-        /// </para>
-        /// </summary>
+        /// <inheritdoc />
         public void SetupRuntime()
         {
             MethodInfo method = bootstrapType.GetMethod(BootstrapSetupRuntimeMethodName);
             method.Invoke(null, new object[] { runtimePath });
         }
 
-        /// <summary>
-        /// Adds a hint directory to the assembly resolver.
-        /// </summary>
-        /// <param name="path">The path of the hint directory to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
+        /// <inheritdoc />
         public void AddHintDirectory(string path)
         {
             if (path == null)
@@ -204,12 +250,17 @@ namespace Gallio.Loader
             method.Invoke(null, new object[] { path });
         }
 
+        /// <inheritdoc />
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+
         private void InstallAssemblyResolver()
         {
             MethodInfo method = bootstrapType.GetMethod(BootstrapInstallAssemblyResolverMethodName);
             method.Invoke(null, new object[] { runtimePath });
         }
-
 
         private static string FindRuntimePath()
         {
@@ -270,6 +321,66 @@ namespace Gallio.Loader
         private static string GetGallioDllPath(string runtimePath)
         {
             return Path.Combine(runtimePath, "Gallio.dll");
+        }
+
+        private sealed class RemoteEnvironment : IGallioRemoteEnvironment
+        {
+            private AppDomain appDomain;
+            private IGallioLoader loader;
+
+            public RemoteEnvironment(AppDomain appDomain, IGallioLoader loader)
+            {
+                this.appDomain = appDomain;
+                this.loader = loader;
+            }
+
+            public AppDomain AppDomain
+            {
+                get
+                {
+                    ThrowIfDisposed();
+                    return appDomain;
+                }
+            }
+
+            public IGallioLoader Loader
+            {
+                get
+                {
+                    ThrowIfDisposed();
+                    return loader;
+                }
+            }
+
+            public void Dispose()
+            {
+                loader = null;
+
+                if (appDomain != null)
+                {
+                    AppDomain.Unload(appDomain);
+                    appDomain = null;
+                }
+            }
+
+            private void ThrowIfDisposed()
+            {
+                if (loader == null)
+                    throw new ObjectDisposedException("The Gallio remote environment has been disposed.");
+            }
+        }
+
+        private sealed class RemoteInitializer : MarshalByRefObject
+        {
+            public IGallioLoader Initialize(string runtimePath)
+            {
+                return GallioLoader.Initialize(runtimePath);
+            }
+
+            public override object InitializeLifetimeService()
+            {
+                return null;
+            }
         }
     }
 }

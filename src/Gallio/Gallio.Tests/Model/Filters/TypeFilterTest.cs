@@ -81,6 +81,16 @@ namespace Gallio.Tests.Model.Filters
             Assert.AreEqual(expectedMatch,
                 new TypeFilter<ITestComponent>(new EqualityFilter<string>(type.Name), includeDerivedTypes).IsMatch(component));
         }
+
+        [Test]
+        public void IsMatchConsidersDotDelimiterNestedTypes()
+        {
+            Assert.IsTrue(new TypeFilter<ITestComponent>(new EqualityFilter<string>(typeof(NestedTypeFilterTest).FullName.Replace('+', '.')), false).IsMatch(component));
+        }
+
+        private sealed class NestedTypeFilterTest : BaseUnitTest
+        {
+        }
     }
 
     /// <summary>

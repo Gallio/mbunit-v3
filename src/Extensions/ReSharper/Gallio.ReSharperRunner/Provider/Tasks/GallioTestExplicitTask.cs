@@ -64,5 +64,21 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         {
             return testId.GetHashCode();
         }
+
+        internal override ProxyTask CreateProxyTask()
+        {
+            return new Proxy(testId);
+        }
+
+        [Serializable]
+        internal sealed class Proxy : ProxyTask
+        {
+            public Proxy(string testId)
+            {
+                TestId = testId;
+            }
+
+            public string TestId { get; private set; }
+        }
     }
 }

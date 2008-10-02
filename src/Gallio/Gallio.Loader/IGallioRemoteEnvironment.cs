@@ -14,32 +14,26 @@
 // limitations under the License.
 
 using System;
-using System.Xml;
-using JetBrains.ReSharper.TaskRunnerFramework;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.Loader
 {
     /// <summary>
-    /// A remote task that is intended to be executed within the Gallio
-    /// runtime environment.
+    /// Provides access to an instance of the Gallio runtime that is running in a foreign AppDomain.
     /// </summary>
-    [Serializable]
-    public abstract class GallioRemoteTask : RemoteTask
+    public interface IGallioRemoteEnvironment : IDisposable
     {
-        protected GallioRemoteTask()
-            : base(GallioTestProvider.ProviderId)
-        {
-        }
-
-        protected GallioRemoteTask(XmlElement element) : base(element)
-        {
-        }
-
         /// <summary>
-        /// Creates a proxy task that describes the remote task without
-        /// referring to any ReSharper assemblies.
+        /// Gets the remote AppDomain.
         /// </summary>
-        /// <returns>The proxy task</returns>
-        internal abstract ProxyTask CreateProxyTask();
+        /// <exception cref="ObjectDisposedException">Thrown if the remote environment has been disposed</exception>
+        AppDomain AppDomain { get; }
+        
+        /// <summary>
+        /// Gets the remote loader.
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">Thrown if the remote environment has been disposed</exception>
+        IGallioLoader Loader { get; }
     }
 }

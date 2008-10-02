@@ -14,257 +14,114 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using Gallio.Runtime.Logging;
-using Gallio.Runtime;
-using Gallio.Reflection;
-using Gallio.TDNetRunner.Properties;
-using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Model;
-using Gallio.Model.Filters;
-using Gallio.Runner;
-using TestDriven.Framework;
-using ITestRunner=TestDriven.Framework.ITestRunner;
-using TDF = TestDriven.Framework;
+using Gallio.Loader;
+using Gallio.TDNetRunner.Core;
+using TestDriven.TestRunner.Framework;
 
 namespace Gallio.TDNetRunner
 {
     /// <summary>
     /// Gallio test runner for TestDriven.NET.
     /// </summary>
+    /// <remarks>
+    /// This class deliberately does not depend on any Gallio types outside of this
+    /// test runner assembly.  That's because the AppDomain the test runner is loaded
+    /// in also includes test assemblies which could contain a different version of
+    /// Gallio.  So we create our own AppDomain so that Gallio itself can deal with
+    /// the version conflicts.  Then we take some care not to directly refer to
+    /// TestDriven.Net types within our own AppDomain so we don't need to load TestDriven.Net
+    /// types.
+    /// </remarks>
     [Serializable]
-    public class GallioTestRunner : ITestRunner
+    public class GallioTestRunner : ITestRunner, IDisposable
     {
-        private readonly string reportType = @"html";
+        internal readonly static string testRunnerName = typeof(GallioTestRunner).FullName;
 
-        #region TDF.ITestRunner Members
+        private IProxyTestRunner testRunner;
 
         /// <summary>
-        /// TD.NET calls this method when you run an entire assemby (by right-clicking
-        /// in a project an selecting "Run Test(s)")
+        /// Initializes the gallio test runner.
         /// </summary>
-        public TestRunState RunAssembly(ITestListener testListener, Assembly assembly)
+        public GallioTestRunner()
         {
-            if (assembly == null)
-                throw new ArgumentNullException(@"assembly");
-
-            return Run(testListener, assembly, new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)));
         }
 
-        /// <summary>
-        /// TD.NET calls this method when you run either all the tests in a fixture or
-        /// an individual test.
-        /// </summary>
-        public TestRunState RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
+        /// <inheritdoc />
+        public void Dispose()
         {
-            if (assembly == null)
-                throw new ArgumentNullException(@"assembly");
-            if (member == null)
-                throw new ArgumentNullException(@"member");
-
-            List<Filter<ITest>> filters = new List<Filter<ITest>>();
-            filters.Add(new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)));
-            switch (member.MemberType)
+            if (testRunner != null)
             {
-                case MemberTypes.TypeInfo:
-                case MemberTypes.NestedType:
-                    Type type = (Type)member;
-                    filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(type.FullName), true));
-                    break;
-
-                case MemberTypes.Constructor:
-                case MemberTypes.Event:
-                case MemberTypes.Field:
-                case MemberTypes.Property:
-                case MemberTypes.Method:
-                    // We look for the declaring type so we can also use a TypeFilter
-                    // to avoid ambiguity
-                    Type declaringType = member.DeclaringType;
-                    filters.Add(new TypeFilter<ITest>(new EqualityFilter<string>(declaringType.FullName), true));
-                    filters.Add(new MemberFilter<ITest>(new EqualityFilter<string>(member.Name)));
-                    break;
-
-                default:
-                    // This is not something we can run so just ignore it
-                    InformNoTestsWereRun(testListener, String.Format(Resources.MbUnitTestRunner_MemberIsNotATest, member.Name));
-                    return TestRunState.NoTests;
+                testRunner.Dispose();
+                testRunner = null;
             }
-
-            return Run(testListener, assembly, new AndFilter<ITest>(filters.ToArray()));
         }
 
-        /// <summary>
-        /// It appears this method never gets called.
-        /// </summary>
-        public TestRunState RunNamespace(ITestListener testListener, Assembly assembly, string ns)
-        {
-            if (assembly == null)
-                throw new ArgumentNullException(@"assembly");
-            if (String.IsNullOrEmpty(ns))
-                throw new ArgumentNullException(@"ns");
-
-            List<Filter<ITest>> filters = new List<Filter<ITest>>();
-            filters.Add(new AssemblyFilter<ITest>(new EqualityFilter<string>(assembly.FullName)));
-            filters.Add(new NamespaceFilter<ITest>(new EqualityFilter<string>(ns)));
-
-            return Run(testListener, assembly, new AndFilter<ITest>(filters.ToArray()));
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Provided so that the unit tests can override test execution behavior.
-        /// </summary>
-        protected virtual TestLauncherResult RunLauncher(TestLauncher launcher)
-        {
-            return launcher.Run();
-        }
-
-        internal TestRunState Run(ITestListener testListener, Assembly assembly, Filter<ITest> filter)
+        /// <inheritdoc />
+        public TestRunResult Run(ITestListener testListener, ITraceListener traceListener, string assemblyPath, string testPath)
         {
             if (testListener == null)
-                throw new ArgumentNullException(@"testListener");
-            if (filter == null)
-                throw new ArgumentNullException(@"filter");
+                throw new ArgumentNullException("testListener");
+            if (traceListener == null)
+                throw new ArgumentNullException("traceListener");
+            if (assemblyPath == null)
+                throw new ArgumentNullException("assemblyPath");
 
-            ILogger logger = new FilteredLogger(new TDNetLogger(testListener), LogSeverity.Info);
-            LogAddInVersion(logger);
+            GetTestRunner();
 
-            TestLauncher launcher = new TestLauncher();
-            launcher.Logger = logger;
-            launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-            launcher.TestExecutionOptions.Filter = filter;
-            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
+            AdapterProxyTestListener proxyTestListner = new AdapterProxyTestListener(testListener, traceListener);
+            ProxyTestResult result = testRunner.Run(proxyTestListner, assemblyPath, testPath);
 
-            launcher.RuntimeSetup = new RuntimeSetup();
-
-            // Set the runtime path explicitly to ensure that we do not encounter problems
-            // when the test assembly contains a local copy of the primary runtime assemblies
-            // which will confuse the runtime into searching in the wrong place for plugins.
-            launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTestRunner).Assembly));
-
-            // This monitor will inform the user in real-time what's going on
-            launcher.TestRunnerExtensions.Add(new TDNetLogExtension(testListener));
-
-            string location = AssemblyUtils.GetFriendlyAssemblyLocation(assembly);
-            launcher.TestPackageConfig.AssemblyFiles.Add(location);
-
-            string assemblyDirectory = Path.GetDirectoryName(location);
-            //launcher.TestPackageConfig.HostSetup.ShadowCopy = true;
-            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = assemblyDirectory;
-            launcher.TestPackageConfig.HostSetup.WorkingDirectory = assemblyDirectory;
-
-            launcher.ReportFormats.Add(reportType);
-            launcher.ReportNameFormat = Path.GetFileName(location);
-            launcher.ReportDirectory = GetReportDirectory(logger) ?? "";
-
-            if (String.IsNullOrEmpty(launcher.ReportDirectory))
-            {
-                return TestRunState.Failure;
-            }
-
-            TestLauncherResult result = RunLauncher(launcher);
-
-            // This will generate a link to the generated report
-            if (result.ReportDocumentPaths.Count != 0)
-            {
-                Uri uri = new Uri(result.ReportDocumentPaths[0]);
-                testListener.TestResultsUrl("file:///" + uri.LocalPath.Replace(" ", "%20").Replace(@"\", @"/"));
-            }
-
-            // Inform no tests run, if necessary.
-            if (result.ResultCode == ResultCode.NoTests)
-                InformNoTestsWereRun(testListener, Resources.MbUnitTestRunner_NoTestsFound);
-            else if (result.Statistics.TestCount == 0)
-                InformNoTestsWereRun(testListener, null);
-
-            return GetTDNetResult(result);
+            return ToTestRunResult(result);
         }
 
-        /// <summary>
-        /// Gets a temporary folder to store the HTML report.
-        /// </summary>
-        /// <param name="logger">The logger</param>
-        /// <returns>The full name of the folder or null if it could not be created.</returns>
-        private static string GetReportDirectory(ILogger logger)
+        /// <inheritdoc />
+        public void Abort()
+        {
+            if (testRunner != null)
+            {
+                testRunner.Abort();
+            }
+        }
+
+        internal virtual IProxyTestRunner CreateTestRunner()
         {
             try
             {
-                DirectoryInfo reportDirectory = new DirectoryInfo(Path.Combine(Path.GetTempPath(), @"Gallio.TDNetRunner"));
-                if (reportDirectory.Exists)
-                {
-                    // Make sure the folder is empty
-                    reportDirectory.Delete(true);
-                }
+                IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
 
-                reportDirectory.Create();
-
-                return reportDirectory.FullName;
+                Type runnerType = typeof(RemoteProxyTestRunner);
+                return (IProxyTestRunner) environment.AppDomain.CreateInstanceAndUnwrap(
+                    runnerType.Assembly.FullName, runnerType.FullName);
             }
-            catch (Exception e)
+            catch (InvalidCastException ex)
             {
-                logger.Log(LogSeverity.Error, "Could not create the report directory.", e);
+                throw new ApplicationException("The Gallio test runner was unable to obtain a proxy for the test runner.  This usually happens because we are trying to run tests that are themselves linked to a Gallio.TDNetRunner assembly in a different folder than is registered with TestDriven.Net.", ex);
+            }
+        }
+
+        private void GetTestRunner()
+        {
+            if (testRunner == null)
+                testRunner = CreateTestRunner();
+        }
+
+        private static TestRunResult ToTestRunResult(ProxyTestResult result)
+        {
+            if (result == null)
                 return null;
-            }
-        }
 
-        /// <summary>
-        /// Translates the test execution result into something understandable
-        /// for TDNet.
-        /// </summary>
-        /// <param name="result">The result information</param>
-        /// <returns>The TestRunState value that should be returned to TDNet.</returns>
-        private static TestRunState GetTDNetResult(TestLauncherResult result)
-        {
-            switch (result.ResultCode)
+            return new TestRunResult()
             {
-                case ResultCode.FatalException:
-                case ResultCode.InvalidArguments:
-                case ResultCode.Canceled:
-                default:
-                    return TestRunState.Error;
-
-                case ResultCode.Failure:
-                    return TestRunState.Failure;
-
-                case ResultCode.NoTests:
-                case ResultCode.Success:
-                    return TestRunState.Success;
-            }
+                IsExecuted = result.IsExecuted,
+                IsFailure = result.IsFailure,
+                IsSuccess = result.IsSuccess,
+                Message = result.Message,
+                Name = result.Name,
+                StackTrace = result.StackTrace,
+                TestRunner = testRunnerName,
+                TotalTests = result.TotalTests
+            };
         }
-
-        /// <summary>
-        /// Inform the user that no tests were run and the reason for it. TD.NET displays
-        /// a message like "0 Passed, 0 Failed, 0 Skipped" but it does it in the status bar,
-        /// which may be harder to notice for the user. Be aware that this message will
-        /// only be displayed when the user runs an individual test or fixture (TD.NET
-        /// ignores the messages we send when it's running an entire assembly).
-        /// </summary>
-        /// <param name="testListener">An ITestListener object to write the message to.</param>
-        /// <param name="reason">The reason no tests were run for.</param>
-        private static void InformNoTestsWereRun(ITestListener testListener, string reason)
-        {
-            if (String.IsNullOrEmpty(reason))
-                reason = @"";
-            else
-                reason = @" (" + reason + @")";
-
-            string message = String.Format("** {0}{1} **", Resources.MbUnitTestRunner_NoTestsWereRun, reason);
-
-            testListener.WriteLine(message, Category.Warning);
-        }
-
-        private static void LogAddInVersion(ILogger logger)
-        {
-            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            logger.Log(LogSeverity.Important, String.Format(Resources.RunnerNameAndVersion + "\n",
-                appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision));
-        }
-
-        #endregion
     }
 }

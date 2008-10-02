@@ -16,25 +16,23 @@
 using System;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
-using TestDriven.Framework;
-using TDF = TestDriven.Framework;
 
-namespace Gallio.TDNetRunner
+namespace Gallio.TDNetRunner.Core
 {
     /// <summary>
     /// An <see cref="ILogger" /> implementation that writes messages to a
-    /// <see cref="ITestListener" /> object.
+    /// <see cref="IProxyTestListener" /> object.
     /// </summary>
-    internal class TDNetLogger : BaseLogger
+    internal class ProxyTestListenerLogger : BaseLogger
     {
-        private readonly ITestListener testListener;
+        private readonly IProxyTestListener testListener;
 
         /// <summary>
         /// Initializes a new instance of the TDNetLogger class.
         /// </summary>
         /// <param name="testListener">An ITestListener object where the
         /// messages will be written to.</param>
-        public TDNetLogger(ITestListener testListener)
+        public ProxyTestListenerLogger(IProxyTestListener testListener)
         {
             this.testListener = testListener;
         }
@@ -45,25 +43,25 @@ namespace Gallio.TDNetRunner
             switch (severity)
             {
                 case LogSeverity.Error:
-                    testListener.WriteLine(message, Category.Error);
+                    testListener.WriteLine(message, MessageCategory.Error);
                     break;
 
                 case LogSeverity.Warning:
-                    testListener.WriteLine(message, Category.Warning);
+                    testListener.WriteLine(message, MessageCategory.Warning);
                     break;
 
                 case LogSeverity.Important:
                 case LogSeverity.Info:
-                    testListener.WriteLine(message, Category.Info);
+                    testListener.WriteLine(message, MessageCategory.Info);
                     break;
 
                 case LogSeverity.Debug:
-                    testListener.WriteLine(message, Category.Debug);
+                    testListener.WriteLine(message, MessageCategory.Debug);
                     break;
             }
 
             if (exception != null)
-                testListener.WriteLine(ExceptionUtils.SafeToString(exception), Category.Error);
+                testListener.WriteLine(ExceptionUtils.SafeToString(exception), MessageCategory.Error);
         }
     }
 }

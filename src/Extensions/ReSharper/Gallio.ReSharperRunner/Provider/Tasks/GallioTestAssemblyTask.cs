@@ -64,5 +64,21 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         {
             return assemblyLocation.GetHashCode();
         }
+
+        internal override ProxyTask CreateProxyTask()
+        {
+            return new Proxy(assemblyLocation);
+        }
+
+        [Serializable]
+        internal sealed class Proxy : ProxyTask
+        {
+            public Proxy(string assemblyLocation)
+            {
+                AssemblyLocation = assemblyLocation;
+            }
+
+            public string AssemblyLocation { get; private set; }
+        }
     }
 }

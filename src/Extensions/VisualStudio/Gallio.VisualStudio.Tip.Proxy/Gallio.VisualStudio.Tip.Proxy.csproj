@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnvironmentManager.cs" />
     <Compile Include="GallioTestElement.cs" />
     <Compile Include="GallioTestResult.cs" />
     <Compile Include="Guids.cs" />

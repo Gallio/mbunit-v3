@@ -14,10 +14,13 @@
 // limitations under the License.
 
 using System;
+using System.IO;
+using System.Security;
+using System.Security.Permissions;
+using System.Security.Policy;
 using System.Threading;
+using System.Reflection;
 using Gallio.Loader;
-using Gallio.ReSharperRunner.Runtime;
-using Gallio.Runtime;
 using JetBrains.ReSharper.TaskRunnerFramework;
 
 namespace Gallio.ReSharperRunner.Provider.Tasks
@@ -26,23 +29,22 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// A remote task runner for Gallio.
     /// </summary>
     /// <remarks>
-    /// This implementation is careful to initialize the <see cref="RuntimeAccessor" />
-    /// before doing anything else because it's possible that the Gallio
-    /// assemblies cannot yet be resolved.
+    /// <para>
+    /// The implementation starts off a fresh AppDomain for Gallio because the
+    /// current AppDomain includes references to test assemblies some of which
+    /// may conflict with Gallio assemblies.  It is careful not to access any
+    /// core Gallio types except within the new AppDomain.
+    /// </para>
     /// </remarks>
     /// <seealso cref="GallioRemoteTask"/> for important remarks related to tasks.
     public class GallioRemoteTaskRunner : RecursiveRemoteTaskRunner
     {
         private TaskResult executeResult;
 
-        static GallioRemoteTaskRunner()
-        {
-            GallioLoader.Initialize().SetupRuntime();
-        }
-
         public GallioRemoteTaskRunner(IRemoteTaskServer server)
             : base(server)
         {
+            executeResult = TaskResult.Error;
         }
 
         public override void ConfigureAppDomain(TaskAppDomainConfiguration configuration)
@@ -62,16 +64,19 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
         public override TaskResult Finish(TaskExecutionNode node)
         {
-            if (!RuntimeAccessor.IsInitialized)
-                return TaskResult.Error;
-
             return executeResult;
         }
 
         public override void ExecuteRecursive(TaskExecutionNode node)
         {
-            GallioRemoteTask rootTask = (GallioRemoteTask)node.RemoteTask;
-            executeResult = rootTask.ExecuteRecursive(Server, node);
+            IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
+
+            Type taskRunnerType = typeof(RemoteProxyTaskRunner);
+            IProxyTaskRunner taskRunner = (IProxyTaskRunner)environment.AppDomain.CreateInstanceAndUnwrap(
+                taskRunnerType.Assembly.FullName, taskRunnerType.FullName);
+
+            AdapterProxyTaskServer proxyTaskServer = new AdapterProxyTaskServer(Server);
+            executeResult = proxyTaskServer.Execute(taskRunner, node);
         }
     }
 }

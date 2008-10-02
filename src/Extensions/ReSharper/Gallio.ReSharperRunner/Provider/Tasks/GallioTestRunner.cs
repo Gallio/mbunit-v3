@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Reflection;
 using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Diagnostics;
@@ -28,10 +27,8 @@ using Gallio.ReSharperRunner.Runtime;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
-using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
-using JetBrains.ReSharper.TaskRunnerFramework;
 using HashSetOfString = Gallio.Collections.HashSet<string>;
 
 namespace Gallio.ReSharperRunner.Provider.Tasks
@@ -44,58 +41,61 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// Handle metadata.
     /// Handle custom log streams and attachments.
     /// </todo>
+    /// <remarks>
+    /// This type is decoupled from the ReSharper interfaces by means of a proxy facade.
+    /// </remarks>
     internal sealed class GallioTestRunner
     {
-        private readonly IRemoteTaskServer server;
+        private readonly IProxyTaskServer server;
         private readonly string sessionId;
 
         private readonly HashSetOfString assemblyLocations;
-        private readonly Dictionary<string, GallioTestItemTask> testTasks;
+        private readonly Dictionary<string, GallioTestItemTask.Proxy> testTasks;
         private readonly Dictionary<string, TestMonitor> testMonitors;
         private readonly HashSetOfString explicitTestIds;
 
-        public GallioTestRunner(IRemoteTaskServer server)
+        public GallioTestRunner(IProxyTaskServer server)
         {
             this.server = server;
-            this.sessionId = GetSessionId(server);
+            sessionId = server.SessionId;
 
             assemblyLocations = new HashSetOfString();
-            testTasks = new Dictionary<string, GallioTestItemTask>();
+            testTasks = new Dictionary<string, GallioTestItemTask.Proxy>();
             testMonitors = new Dictionary<string, TestMonitor>();
             explicitTestIds = new HashSetOfString();
         }
 
-        public void Run(TaskExecutionNode node)
+        public ProxyTaskResult Run(ProxyTask proxyTask)
         {
-            ProcessNodeRecursively(node);
-            RunTests();
+            RecursiveProcessTask(proxyTask);
+            return RunTests();
         }
 
-        private void ProcessNodeRecursively(TaskExecutionNode node)
+        private void RecursiveProcessTask(ProxyTask task)
         {
-            ProcessTask(node.RemoteTask);
+            ProcessTask(task);
 
-            foreach (TaskExecutionNode childNode in node.Children)
-                ProcessNodeRecursively(childNode);
+            foreach (ProxyTask child in task.Children)
+                RecursiveProcessTask(child);
         }
 
-        private void ProcessTask(RemoteTask task)
+        private void ProcessTask(ProxyTask task)
         {
-            GallioTestItemTask itemTask = task as GallioTestItemTask;
+            GallioTestItemTask.Proxy itemTask = task as GallioTestItemTask.Proxy;
             if (itemTask != null)
             {
                 testTasks[itemTask.TestId] = itemTask;
                 return;
             }
 
-            GallioTestAssemblyTask assemblyTask = task as GallioTestAssemblyTask;
+            GallioTestAssemblyTask.Proxy assemblyTask = task as GallioTestAssemblyTask.Proxy;
             if (assemblyTask != null)
             {
                 assemblyLocations.Add(assemblyTask.AssemblyLocation);
                 return;
             }
 
-            GallioTestExplicitTask explicitTask = task as GallioTestExplicitTask;
+            GallioTestExplicitTask.Proxy explicitTask = task as GallioTestExplicitTask.Proxy;
             if (explicitTask != null)
             {
                 explicitTestIds.Add(explicitTask.TestId);
@@ -103,7 +103,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             }
         }
 
-        private void RunTests()
+        private ProxyTaskResult RunTests()
         {
             ILogger logger = new ReSharperLogger();
             ITestRunner runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.Local);
@@ -137,10 +137,12 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                     runner.Load(packageConfig, CreateProgressMonitor());
                     runner.Explore(testExplorationOptions, CreateProgressMonitor());
                     runner.Run(testExecutionOptions, CreateProgressMonitor());
+                    return ProxyTaskResult.Success;
                 }
                 catch (Exception ex)
                 {
                     logger.Log(LogSeverity.Error, "A fatal exception occurred during test execution.", ex);
+                    return ProxyTaskResult.Exception;
                 }
                 finally
                 {
@@ -195,7 +197,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             {
                 if (!testMonitors.TryGetValue(testId, out testMonitor))
                 {
-                    GallioTestItemTask testTask;
+                    GallioTestItemTask.Proxy testTask;
                     if (testTasks.TryGetValue(testId, out testTask))
                     {
                         testMonitor = new TestMonitor(server, testTask);
@@ -212,50 +214,38 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             return NullProgressMonitor.CreateInstance();
         }
 
-        private static string GetSessionId(IRemoteTaskServer server)
-        {
-            // TODO: Should ask for a better way of doing this.
-            object taskRunnerProxy = server.WithoutProxy;
-#if RESHARPER_31
-            PropertyInfo property = taskRunnerProxy.GetType().GetProperty("SessionId");
-            return (string)property.GetValue(taskRunnerProxy, null);
-#else
-            return ((TaskRunnerProxy)taskRunnerProxy).SessionId;
-#endif
-        }
-
         private sealed class TestMonitor
         {
-            private readonly IRemoteTaskServer server;
-            private readonly GallioTestItemTask testTask;
+            private readonly IProxyTaskServer server;
+            private readonly GallioTestItemTask.Proxy testTask;
 
             private int stepCount;
             private int nestingCount;
 
             private readonly ExceptionVisitor exceptionVisitor;
-            private readonly List<KeyValuePair<TaskOutputType, string>> combinedOutput;
-            private readonly List<TaskException> pendingExceptions;
+            private readonly List<KeyValuePair<ProxyTaskOutputType, string>> combinedOutput;
+            private readonly List<ProxyTaskException> pendingExceptions;
             private TestOutcome combinedOutcome;
             private string pendingWarnings;
             private string pendingFailures;
             private string pendingBanner;
             private bool finished;
 
-            public TestMonitor(IRemoteTaskServer server, GallioTestItemTask testTask)
+            public TestMonitor(IProxyTaskServer server, GallioTestItemTask.Proxy testTask)
             {
                 this.server = server;
                 this.testTask = testTask;
 
                 combinedOutcome = TestOutcome.Passed;
-                combinedOutput = new List<KeyValuePair<TaskOutputType, string>>();
-                pendingExceptions = new List<TaskException>();
+                combinedOutput = new List<KeyValuePair<ProxyTaskOutputType, string>>();
+                pendingExceptions = new List<ProxyTaskException>();
 
                 exceptionVisitor = new ExceptionVisitor(exception =>
                 {
                     do
                     {
-                        pendingExceptions.Add(TaskExceptionFactory.CreateTaskException(exception.Type, exception.Message,
-                            exception.StackTrace.ToString()));
+                        pendingExceptions.Add(new ProxyTaskException(
+                            exception.Type, exception.Message, exception.StackTrace.ToString()));
                         exception = exception.InnerException;
                     } while (exception != null);
                 });
@@ -300,7 +290,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
                     string banner = String.Format("### Step {0}: {1} ###\n\n", run.Step.Name, run.Result.Outcome.DisplayName);
                     if (stepCount != 1)
-                        Output(TaskOutputType.STDOUT, banner);
+                        Output(ProxyTaskOutputType.StandardOutput, banner);
                     else
                         pendingBanner = banner;
 
@@ -319,7 +309,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             {
                 if (!finished)
                 {
-                    Output(TaskOutputType.STDERR, "The test did not run or did not complete normally due to an error.\n" +
+                    Output(ProxyTaskOutputType.StandardError, "The test did not run or did not complete normally due to an error.\n" +
                         "Refer to the Gallio Test Report and ReSharper Log for more details.");
                     combinedOutcome = TestOutcome.Error;
 
@@ -339,15 +329,15 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 {
                     case TestLogStreamNames.ConsoleOutput:
                     default:
-                        Output(TaskOutputType.STDOUT, contents);
+                        Output(ProxyTaskOutputType.StandardOutput, contents);
                         break;
 
                     case TestLogStreamNames.ConsoleError:
-                        Output(TaskOutputType.STDERR, contents);
+                        Output(ProxyTaskOutputType.StandardError, contents);
                         break;
 
                     case TestLogStreamNames.DebugTrace:
-                        Output(TaskOutputType.DEBUGTRACE, contents);
+                        Output(ProxyTaskOutputType.DebugTrace, contents);
                         break;
 
                     case TestLogStreamNames.Warnings:
@@ -365,16 +355,16 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 stream.Body.Accept(exceptionVisitor);
             }
 
-            private void Output(TaskOutputType outputType, string text)
+            private void Output(ProxyTaskOutputType outputType, string text)
             {
-                combinedOutput.Add(new KeyValuePair<TaskOutputType, string>(outputType, text));
+                combinedOutput.Add(new KeyValuePair<ProxyTaskOutputType, string>(outputType, text));
             }
 
             private void OutputPendingContents()
             {
                 if (pendingBanner != null)
                 {
-                    combinedOutput.Insert(0, new KeyValuePair<TaskOutputType, string>(TaskOutputType.STDOUT, pendingBanner));
+                    combinedOutput.Insert(0, new KeyValuePair<ProxyTaskOutputType, string>(ProxyTaskOutputType.StandardOutput, pendingBanner));
                     pendingBanner = null;
                 }
 
@@ -387,7 +377,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             {
                 if (pendingWarnings != null)
                 {
-                    Output(TaskOutputType.STDERR, pendingWarnings);
+                    Output(ProxyTaskOutputType.StandardError, pendingWarnings);
                     pendingWarnings = null;
                 }
             }
@@ -396,7 +386,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             {
                 if (pendingFailures != null)
                 {
-                    Output(TaskOutputType.STDERR, pendingFailures);
+                    Output(ProxyTaskOutputType.StandardError, pendingFailures);
                     pendingFailures = null;
                 }
             }
@@ -412,17 +402,17 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
 
             private void SubmitCombinedResult()
             {
-                foreach (KeyValuePair<TaskOutputType, string> message in combinedOutput)
+                foreach (KeyValuePair<ProxyTaskOutputType, string> message in combinedOutput)
                     server.TaskOutput(testTask, message.Value, message.Key);
 
-                TaskResult taskResult = GetTaskResultForOutcome(combinedOutcome);
+                ProxyTaskResult taskResult = GetTaskResultForOutcome(combinedOutcome);
 
-                if (stepCount > 1 || taskResult != TaskResult.Skipped)
+                if (stepCount > 1 || taskResult != ProxyTaskResult.Skipped)
                     OutputPendingWarnings();
                 else if (pendingWarnings != null)
                     server.TaskExplain(testTask, pendingWarnings);
 
-                if (stepCount > 1 || taskResult != TaskResult.Error && taskResult != TaskResult.Exception)
+                if (stepCount > 1 || taskResult != ProxyTaskResult.Error && taskResult != ProxyTaskResult.Exception)
                     OutputPendingFailures();
                 else if (pendingFailures != null)
                     server.TaskExplain(testTask, pendingFailures);
@@ -433,17 +423,17 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 finished = true;
             }
 
-            private static TaskResult GetTaskResultForOutcome(TestOutcome outcome)
+            private static ProxyTaskResult GetTaskResultForOutcome(TestOutcome outcome)
             {
                 switch (outcome.Status)
                 {
                     case TestStatus.Passed:
-                        return TaskResult.Success;
+                        return ProxyTaskResult.Success;
                     case TestStatus.Failed:
-                        return TaskResult.Error;
+                        return ProxyTaskResult.Error;
                     case TestStatus.Inconclusive: // FIXME: not very accurate
                     case TestStatus.Skipped:
-                        return TaskResult.Skipped;
+                        return ProxyTaskResult.Skipped;
                     default:
                         throw new ArgumentException("outcome");
                 }

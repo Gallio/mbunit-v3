@@ -126,10 +126,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Provider\Tasks\EnvironmentManager.cs" />
     <Compile Include="Provider\Actions\ShowFullReportAction.cs" />
     <Compile Include="Provider\Actions\ShowCondensedReportAction.cs" />
     <Compile Include="Provider\Actions\GallioAction.cs" />
     <Compile Include="Provider\Actions\ShowReportAction.cs" />
+    <Compile Include="Provider\Tasks\AdapterProxyTaskServer.cs" />
+    <Compile Include="Provider\Tasks\IProxyTaskServer.cs" />
+    <Compile Include="Provider\Tasks\IProxyTaskRunner.cs" />
+    <Compile Include="Provider\Tasks\ProxyTask.cs" />
+    <Compile Include="Provider\Tasks\ProxyTaskException.cs" />
+    <Compile Include="Provider\Tasks\ProxyTaskOutputType.cs" />
+    <Compile Include="Provider\Tasks\ProxyTaskResult.cs" />
+    <Compile Include="Provider\Tasks\RemoteProxyTaskRunner.cs" />
     <Compile Include="Provider\Daemons\AnnotationDaemonStage.cs" />
     <Compile Include="Provider\Daemons\AnnotationDaemonStageProcess.cs" />
     <Compile Include="Provider\Daemons\AnnotationHighlighting.cs" />

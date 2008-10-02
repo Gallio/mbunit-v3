@@ -10,7 +10,10 @@ set BINDIR=%ROOTDIR%bin\
 set REG=%BINDIR%reg.exe
 set ICARUS_EXE=%SRCDIR%\Extensions\Icarus\bin\Gallio.Icarus.exe
 
-set TDNETRUNNER_DLL=%LOCALDIR%\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll
+REM Point at copy in Tests so that the runner can run its own tests.
+REM Otherwise it gets confused by the presence of two runner dlls, one
+REM loaded using LoadFrom and the other accessible in the AppDomain.
+set TDNETRUNNER_DLL=%LOCALDIR%\Gallio.TDNetRunner.Tests\bin\Gallio.TDNetRunner.dll
 set TDKEY=HKLM\Software\MutantDesign\TestDriven.Net\TestRunners
 
 echo Installing the locally compiled Gallio test runner for TestDriven.Net.

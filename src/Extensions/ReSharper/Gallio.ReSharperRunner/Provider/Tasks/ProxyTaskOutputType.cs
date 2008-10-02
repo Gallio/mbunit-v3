@@ -13,23 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Icarus.Controllers.Interfaces;
-using MbUnit.Framework;
-using Rhino.Mocks;
+using System;
 
-namespace Gallio.Icarus.Tests
+namespace Gallio.ReSharperRunner.Provider.Tasks
 {
-    [Category("Views")]
-    class ExecutionLogWindowTest : MockTest
+    [Serializable]
+    internal enum ProxyTaskOutputType
     {
-        [Test]
-        public void Constructor_Test()
-        {
-            IExecutionLogController executionLogController = mocks.CreateMock<IExecutionLogController>();
-            executionLogController.ExecutionLogUpdated += null;
-            LastCall.IgnoreArguments();
-            mocks.ReplayAll();
-            ExecutionLogWindow executionLogWindow = new ExecutionLogWindow(executionLogController);
-        }
+        StandardOutput,
+        StandardError,
+        DebugTrace
     }
 }

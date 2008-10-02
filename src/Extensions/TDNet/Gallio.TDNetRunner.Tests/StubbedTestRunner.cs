@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using Gallio.Runner;
-using Gallio.TDNetRunner;
+using Gallio.TDNetRunner.Core;
 using MbUnit.Framework;
 
 namespace Gallio.TDNetRunner.Tests
@@ -22,7 +22,7 @@ namespace Gallio.TDNetRunner.Tests
     /// <summary>
     /// Makes it possible to unit test the <see cref="GallioTestRunner" /> class.
     /// </summary>
-    public class StubbedGallioTestRunner : GallioTestRunner
+    internal class StubbedTestRunner : GallioTestRunner
     {
         public delegate TestLauncherResult RunLauncherDelegate(TestLauncher launcher);
         private RunLauncherDelegate action;
@@ -32,10 +32,20 @@ namespace Gallio.TDNetRunner.Tests
             this.action = action;
         }
 
-        protected override TestLauncherResult RunLauncher(TestLauncher launcher)
+        internal override IProxyTestRunner CreateTestRunner()
         {
-            Assert.IsNotNull(action, "The run launcher method should not have been called because no action was set.");
-            return action(launcher);
+            return new StubbedProxyTestRunner() { Action = action };
+        }
+
+        private class StubbedProxyTestRunner : RemoteProxyTestRunner
+        {
+            public RunLauncherDelegate Action { get; set; }
+
+            internal override TestLauncherResult RunLauncher(TestLauncher launcher)
+            {
+                Assert.IsNotNull(Action, "The run launcher method should not have been called because no action was set.");
+                return Action(launcher);
+            }
         }
     }
 }
