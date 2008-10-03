@@ -166,4 +166,13 @@
   <data name="TestName" xml:space="preserve">
     <value>Test Name</value>
   </data>
+  <data name="UnknownTestCodeLocation" xml:space="preserve">
+    <value>Gallio is unable to locate the code of the selected test.</value>
+  </data>
+  <data name="UnknownTestCodeLocationCaption" xml:space="preserve">
+    <value>Open Test</value>
+  </data>
+  <data name="GallioWebSiteUrl" xml:space="preserve">
+    <value>http://www.gallio.org</value>
+  </data>
 </root>

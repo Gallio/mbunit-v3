@@ -20,18 +20,19 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using Gallio.VisualStudio.Shell.ToolWindows;
+using Gallio.VisualStudio.Shell;
+using Gallio.VisualStudio.Shell.UI;
 
 namespace Gallio.VisualStudio.Tip.UI
 {
     /// <summary>
-    /// User control which displays detailed about a Gallio test result.
+    /// UI component which displays results details about a Gallio test.
     /// </summary>
-    public partial class ResultViewer : UserControl
+    public partial class ResultViewer : GallioToolWindowContent
     {
         /// <summary>
         /// Default constructor.
-        /// For the designer only.
+        /// (For the designer only)
         /// </summary>
         public ResultViewer()
         {
@@ -44,7 +45,9 @@ namespace Gallio.VisualStudio.Tip.UI
         /// Constructor.
         /// </summary>
         /// <param name="testResult">The Gallio test result.</param>
-        public ResultViewer(GallioTestResult testResult)
+        /// <param name="shell">The shell for the component.</param>
+        public ResultViewer(GallioTestResult testResult, IShell shell)
+            : base(shell)
         {
             if (testResult == null)
             {
@@ -99,6 +102,13 @@ namespace Gallio.VisualStudio.Tip.UI
             {
                 dataGridView.Rows.Add(name, value);
             }
+        }
+
+        private void pictureBoxGallioLogo_Click(object sender, EventArgs e)
+        {
+            Shell.DTE.ItemOperations.Navigate(
+                Properties.Resources.GallioWebSiteUrl, 
+                EnvDTE.vsNavigateOptions.vsNavigateOptionsNewWindow);
         }
     }
 }

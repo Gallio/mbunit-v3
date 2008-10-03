@@ -20,7 +20,7 @@ using Gallio.VisualStudio.Shell.Resources;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio;
-using Gallio.VisualStudio.Shell.ToolWindows;
+using Gallio.VisualStudio.Shell.UI;
 
 namespace Gallio.VisualStudio.Shell
 {

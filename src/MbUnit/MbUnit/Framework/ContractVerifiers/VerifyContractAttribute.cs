@@ -60,6 +60,7 @@ namespace MbUnit.Framework.ContractVerifiers
             base.DecorateTest(scope, codeElement);
             var contractTest = new PatternTest(testPatternName, null, scope.TestDataContext.CreateChild());
             contractTest.IsTestCase = false;
+            contractTest.Metadata.Add(MetadataKeys.TestKind, TestKinds.Test);
             AddPatternTests(scope.AddChildTest(contractTest));
         }
 

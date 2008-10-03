@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Gallio.VisualStudio.Shell.ToolWindows
+namespace Gallio.VisualStudio.Shell.UI
 {
     /// <summary>
     /// Abstract base control class for tool windows.
@@ -48,7 +48,7 @@ namespace Gallio.VisualStudio.Shell.ToolWindows
         /// <summary>
         /// Sets the content of the control.
         /// </summary>
-        public void SetContent(Control content)
+        public void SetContent(GallioToolWindowContent content)
         {
             if (content == null)
             {

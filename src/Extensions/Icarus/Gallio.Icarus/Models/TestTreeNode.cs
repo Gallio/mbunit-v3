@@ -155,6 +155,9 @@ namespace Gallio.Icarus.Models
                 case TestKinds.Test:
                     nodeTypeIcon = Properties.Resources.Test;
                     break;
+                case TestKinds.Group:
+                    nodeTypeIcon = Properties.Resources.Group;
+                    break;
                 case "FilterPassed":
                     nodeTypeIcon = Properties.Resources.FilterPassed;
                     break;

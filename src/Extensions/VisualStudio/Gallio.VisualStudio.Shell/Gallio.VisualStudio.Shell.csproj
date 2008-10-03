@@ -110,6 +110,9 @@
     <Compile Include="UI\GallioToolWindow.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\GallioToolWindowContent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\GallioToolWindowControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

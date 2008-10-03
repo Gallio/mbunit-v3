@@ -31,10 +31,10 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pictureBoxGallioLogo = new System.Windows.Forms.PictureBox();
             this.dataGridView = new System.Windows.Forms.DataGridView();
-            this.pictureBoxStatus = new System.Windows.Forms.PictureBox();
-            this.labelStatus = new System.Windows.Forms.Label();
             this.columnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pictureBoxStatus = new System.Windows.Forms.PictureBox();
+            this.labelStatus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGallioLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).BeginInit();
@@ -42,6 +42,7 @@
             // 
             // pictureBoxGallioLogo
             // 
+            this.pictureBoxGallioLogo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBoxGallioLogo.Image = global::Gallio.VisualStudio.Tip.Properties.Resources.Gallio;
             this.pictureBoxGallioLogo.Location = new System.Drawing.Point(4, 4);
             this.pictureBoxGallioLogo.Name = "pictureBoxGallioLogo";
@@ -49,6 +50,7 @@
             this.pictureBoxGallioLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBoxGallioLogo.TabIndex = 1;
             this.pictureBoxGallioLogo.TabStop = false;
+            this.pictureBoxGallioLogo.Click += new System.EventHandler(this.pictureBoxGallioLogo_Click);
             // 
             // dataGridView
             // 
@@ -86,6 +88,19 @@
             this.dataGridView.Size = new System.Drawing.Size(271, 175);
             this.dataGridView.TabIndex = 2;
             // 
+            // columnName
+            // 
+            this.columnName.HeaderText = "Name";
+            this.columnName.Name = "columnName";
+            this.columnName.ReadOnly = true;
+            // 
+            // columnValue
+            // 
+            this.columnValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnValue.HeaderText = "Value";
+            this.columnValue.Name = "columnValue";
+            this.columnValue.ReadOnly = true;
+            // 
             // pictureBoxStatus
             // 
             this.pictureBoxStatus.Location = new System.Drawing.Point(4, 58);
@@ -103,19 +118,6 @@
             this.labelStatus.Size = new System.Drawing.Size(41, 13);
             this.labelStatus.TabIndex = 4;
             this.labelStatus.Text = "label1";
-            // 
-            // columnName
-            // 
-            this.columnName.HeaderText = "Name";
-            this.columnName.Name = "columnName";
-            this.columnName.ReadOnly = true;
-            // 
-            // columnValue
-            // 
-            this.columnValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.columnValue.HeaderText = "Value";
-            this.columnValue.Name = "columnValue";
-            this.columnValue.ReadOnly = true;
             // 
             // ResultViewer
             // 

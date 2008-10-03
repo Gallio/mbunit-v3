@@ -19,6 +19,7 @@ using System.Text;
 using Gallio.VisualStudio.Tip.Resources;
 using Microsoft.VisualStudio.TestTools.Common;
 using System.Runtime.InteropServices;
+using Gallio.Reflection;
 
 namespace Gallio.VisualStudio.Tip
 {
@@ -32,7 +33,7 @@ namespace Gallio.VisualStudio.Tip
         private const string TypeNameKey = "Gallio.TypeName";
         private const string MemberNameKey = "Gallio.MemberName";
         private const string ParameterNameKey = "Gallio.ParameterName";
-        private const string LocationKey = "Gallio.Location";
+        private const string CodeLocationKey = "Gallio.CodeLocation";
 
         [PersistenceElementName("gallioTestId")]
         private string gallioTestId;
@@ -52,8 +53,8 @@ namespace Gallio.VisualStudio.Tip
         [PersistenceElementName("parameterName")]
         private string parameterName;
 
-        [PersistenceElementName("location")]
-        private string location;
+        [PersistenceElementName("codeLocation")]
+        private CodeLocation codeLocation;
 
         public GallioTestElement(string id, string name, string description, string assemblyPath)
             : base(GenerateTestId(id), name, description, assemblyPath)
@@ -70,7 +71,7 @@ namespace Gallio.VisualStudio.Tip
             typeName = element.typeName;
             memberName = element.memberName;
             parameterName = element.parameterName;
-            location = element.location;
+            codeLocation = element.codeLocation;
         }
 
         private GallioTestElement(SerializationInfo info, StreamingContext context)
@@ -82,7 +83,7 @@ namespace Gallio.VisualStudio.Tip
             typeName = info.GetString(TypeNameKey);
             memberName = info.GetString(MemberNameKey);
             parameterName = info.GetString(ParameterNameKey);
-            location = info.GetString(LocationKey);
+            codeLocation = (CodeLocation)info.GetValue(CodeLocationKey, typeof(CodeLocation));
         }
 
         public override object Clone()
@@ -145,7 +146,7 @@ namespace Gallio.VisualStudio.Tip
             info.AddValue(TypeNameKey, typeName);
             info.AddValue(MemberNameKey, memberName);
             info.AddValue(ParameterNameKey, parameterName);
-            info.AddValue(LocationKey, location);
+            info.AddValue(CodeLocationKey, codeLocation);
         }
 
         [PropertyWindow]
@@ -187,9 +188,12 @@ namespace Gallio.VisualStudio.Tip
         [LocalizedDescription(typeof(VSPackage), VSPackageResourceIds.LocationPropertyDescriptionKey)]
         [GroupingProperty]
         //[HelpKeyword("key")]
-        public string Location
+        public CodeLocation CodeLocation
         {
-            get { return location; }
+            get
+            {
+                return codeLocation;
+            }
         }
 
         public void SetCodeReference(string assemblyName, string namespaceName, string typeName, string memberName, string parameterName)
@@ -201,9 +205,9 @@ namespace Gallio.VisualStudio.Tip
             this.parameterName = parameterName;
         }
 
-        public void SetCodeLocation(string location)
+        public void SetCodeLocation(CodeLocation codeLocation)
         {
-            this.location = location;
+            this.codeLocation = codeLocation;
         }
 
         private static TestId GenerateTestId(string testId)

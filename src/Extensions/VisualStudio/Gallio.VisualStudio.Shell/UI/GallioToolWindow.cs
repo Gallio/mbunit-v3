@@ -15,13 +15,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.Shell;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace Gallio.VisualStudio.Shell.ToolWindows
+namespace Gallio.VisualStudio.Shell.UI
 {
     /// <summary>
     /// General purpose container for Gallio tool window.
@@ -54,7 +54,7 @@ namespace Gallio.VisualStudio.Shell.ToolWindows
         /// 
         /// </summary>
         /// <param name="content"></param>
-        public void SetContent(Control content)
+        public void SetContent(GallioToolWindowContent content)
         {
             Control.SetContent(content);
         }

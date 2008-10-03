@@ -129,6 +129,15 @@ namespace Gallio.VisualStudio.Tip.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to http://www.gallio.org.
+        /// </summary>
+        internal static string GallioWebSiteUrl {
+            get {
+                return ResourceManager.GetString("GallioWebSiteUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Outcome Text.
         /// </summary>
         internal static string OutcomeText {
@@ -195,6 +204,24 @@ namespace Gallio.VisualStudio.Tip.Properties {
         internal static string TestName {
             get {
                 return ResourceManager.GetString("TestName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gallio is unable to locate the code of the selected test..
+        /// </summary>
+        internal static string UnknownTestCodeLocation {
+            get {
+                return ResourceManager.GetString("UnknownTestCodeLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Test.
+        /// </summary>
+        internal static string UnknownTestCodeLocationCaption {
+            get {
+                return ResourceManager.GetString("UnknownTestCodeLocationCaption", resourceCulture);
             }
         }
     }

@@ -19,6 +19,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Gallio.Utilities;
+using System.Runtime.Serialization;
 
 namespace Gallio.Reflection
 {
@@ -30,7 +31,7 @@ namespace Gallio.Reflection
     /// </remarks>
     [Serializable]
     [XmlRoot("codeLocation", Namespace = XmlSerializationUtils.GallioNamespace)]
-    public struct CodeLocation : IEquatable<CodeLocation>, IXmlSerializable
+    public struct CodeLocation : IEquatable<CodeLocation>, IXmlSerializable, ISerializable
     {
         private string path;
         private int line;
@@ -154,9 +155,11 @@ namespace Gallio.Reflection
         }
         #endregion
 
-        #region Xml Serialization
-        /* Note: We implement our own Xml serialization so that the code location object can still appear to be immutable.
-                 since we don't need any property setters unlike if we were using [XmlAttribute] attributes. */
+        #region Serialization
+
+        // Note: We implement our own Xml serialization so that the code location object can still appear to be immutable.
+        // since we don't need any property setters unlike if we were using [XmlAttribute] attributes.
+
         XmlSchema IXmlSerializable.GetSchema()
         {
             return null;
@@ -186,6 +189,31 @@ namespace Gallio.Reflection
                 return 0;
             return int.Parse(value, NumberStyles.None, CultureInfo.InvariantCulture);
         }
+
+        private const string PathKey = "Gallio.CodeLocation.Path";
+        private const string LineKey = "Gallio.CodeLocation.Line";
+        private const string ColumnKey = "Gallio.CodeLocation.Column";
+
+        /// <summary>
+        /// Allows the code location structure to control 
+        /// its own serialization and deserialization.
+        /// </summary>
+        /// <param name="info">The serialization info to populate with data.</param>
+        /// <param name="context">The destination for this serialization.</param>
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(PathKey, path);
+            info.AddValue(LineKey, line);
+            info.AddValue(ColumnKey, column);
+        }
+
+        private CodeLocation(SerializationInfo info, StreamingContext context)
+        {
+            path = info.GetString(PathKey);
+            line = info.GetInt32(LineKey);
+            column = info.GetInt32(ColumnKey);
+        }
+
         #endregion
     }
 }

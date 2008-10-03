@@ -14,17 +14,19 @@
 // limitations under the License.
 
 using System;
-using Microsoft.VisualStudio.TestTools.Common;
-using Microsoft.VisualStudio.TestTools.Vsip;
-using Gallio.VisualStudio.Shell;
-using EnvDTE;
-using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell;
-using Gallio.VisualStudio.Shell.ToolWindows;
-using Microsoft.VisualStudio.Shell.Interop;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.Exceptions;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using EnvDTE;
+using Gallio.Reflection;
+using Gallio.VisualStudio.Shell;
+using Gallio.VisualStudio.Shell.UI;
 using Gallio.VisualStudio.Tip.UI;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TestTools.Common;
+using Microsoft.VisualStudio.TestTools.Exceptions;
+using Microsoft.VisualStudio.TestTools.Vsip;
 
 namespace Gallio.VisualStudio.Tip
 {
@@ -35,7 +37,11 @@ namespace Gallio.VisualStudio.Tip
     public class GallioTuip : ITuip, SGallioTestService
     {
         private readonly TipShellExtension ext;
-
+        
+        /// <summary>
+        /// Constructs a Gallio test UI provider.
+        /// </summary>
+        /// <param name="ext">The Gallio shell extension.</param>
         public GallioTuip(TipShellExtension ext)
         {
             if (ext == null)
@@ -43,7 +49,11 @@ namespace Gallio.VisualStudio.Tip
 
             this.ext = ext;
         }
-
+        
+        /// <summary>
+        /// User Control to show in the Run Config dialog tab for this Test Type. 
+        /// Returning null signifies this no special editor.
+        /// </summary>
         public IRunConfigurationCustomEditor RunConfigurationEditor
         {
             get
@@ -53,18 +63,30 @@ namespace Gallio.VisualStudio.Tip
         }
 
         /// <summary>
-        /// 
+        /// Invokes the editor for the specified Gallio test.
         /// </summary>
-        /// <param name="uiBlob"></param>
-        /// <param name="test"></param>
+        /// <param name="uiBlob">Identifies the Project/Item blob to be displayed.</param>
+        /// <param name="test">The test that the editor is being invoked for.</param>
         public void InvokeEditor(UIBlob uiBlob, ITestElement test)
         {
             GallioTestElement gallioTest = test as GallioTestElement;
+
             if (gallioTest != null)
             {
-                // TODO: Use the test location information to navigate to the appropriate
-                // source file and line number.
-                // eg. ext.Shell.DTE.ItemOperations.OpenFile(...);
+                if (gallioTest.CodeLocation == CodeLocation.Unknown)
+                {
+                    MessageBox.Show(
+                        Properties.Resources.UnknownTestCodeLocation, 
+                        Properties.Resources.UnknownTestCodeLocationCaption, 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Error);
+                }
+                else
+                {
+                    ext.Shell.DTE.ItemOperations.OpenFile(
+                        gallioTest.CodeLocation.Path, 
+                        EnvDTE.Constants.vsDocumentKindText);
+                }
             }
         }
 
@@ -81,7 +103,7 @@ namespace Gallio.VisualStudio.Tip
         /// <summary>
         /// Invokes the test result viewer for the specified Gallio test.
         /// </summary>
-        /// <param name="result"></param>
+        /// <param name="result">The result of the unit test.</param>
         public void InvokeResultViewer(TestResultMessage result)
         {
             GallioTestResult gallioResult = result as GallioTestResult;
@@ -103,7 +125,7 @@ namespace Gallio.VisualStudio.Tip
                 }
 
                 windowMap[result.Id] = windowId;
-                window.SetContent(new ResultViewer(gallioResult));
+                window.SetContent(new ResultViewer(gallioResult, ext.Shell));
                 window.Caption = String.Format("{0} [{1}]", result.TestName, Properties.Resources.Results);
                 window.Show();
             }
@@ -141,18 +163,30 @@ namespace Gallio.VisualStudio.Tip
             return ext.Shell.Package.FindToolWindow(typeof(GallioToolWindow), windowId, createIfNotFound) as GallioToolWindow;
         }
 
-
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="test"></param>
+        /// <returns></returns>
         public bool IsTestPropertiesReadOnly(ITestElement test)
         {
             return true;
         }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="test"></param>
+        /// <param name="propertyToChange"></param>
         public void UpdateTestCustomProperty(ITestElement test, string propertyToChange)
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="test"></param>
+        /// <param name="propertyToChange"></param>
         public void UpdateTestProperty(ITestElement test, System.ComponentModel.PropertyDescriptor propertyToChange)
         {
         }
