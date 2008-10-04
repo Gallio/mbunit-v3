@@ -18,10 +18,13 @@ using System.Text;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
+using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
+using Gallio.TDNetRunner.Facade;
 using Gallio.TDNetRunner.Properties;
 using Gallio.Model;
+using TestDriven.Framework;
 
 namespace Gallio.TDNetRunner.Core
 {
@@ -29,11 +32,11 @@ namespace Gallio.TDNetRunner.Core
     /// A test runner extension that informs TD.NET (and therefore
     /// the user) in real-time what's going with the tests.
     /// </summary>
-    internal class ProxyTestListenerExtension : LogExtension
+    internal class TDNetExtension : LogExtension
     {
-        private readonly IProxyTestListener testListener;
+        private readonly IFacadeTestListener testListener;
 
-        public ProxyTestListenerExtension(IProxyTestListener testListener)
+        public TDNetExtension(IFacadeTestListener testListener)
         {
             if (testListener == null)
                 throw new ArgumentNullException(@"testListener");
@@ -66,7 +69,7 @@ namespace Gallio.TDNetRunner.Core
                 message.Append(annotation.Details);
             }
 
-            string category = GetCategoryForAnnotation(annotation.Type);
+            FacadeCategory category = GetCategoryForAnnotation(annotation.Type);
             testListener.WriteLine(message.ToString(), category);
         }
 
@@ -89,11 +92,11 @@ namespace Gallio.TDNetRunner.Core
                     return; // nothing interesting to report
 
                 testListener.WriteLine(String.Format(Resources.TDNetLogMonitor_TestCasePassed, 
-                    e.TestStepRun.Step.FullName), MessageCategory.Info);
+                    e.TestStepRun.Step.FullName), FacadeCategory.Info);
             }
 
             // Inform TD.NET what happened 
-            ProxyTestResult result = new ProxyTestResult();
+            FacadeTestResult result = new FacadeTestResult();
             result.Name = e.TestStepRun.Step.FullName;
             result.TimeSpan = TimeSpan.FromSeconds(e.TestStepRun.Result.Duration);
             // result.TestRunner = "Gallio"; // note: can crash in older versions of TD.Net with MissingFieldException
@@ -113,51 +116,47 @@ namespace Gallio.TDNetRunner.Core
 
             // TD.NET will automatically count the number of passed, ignored and failed tests
             // provided we call the TestFinished method with the right State
-            switch (e.TestStepRun.Result.Outcome.Status)
-            {
-                case TestStatus.Passed:
-                    result.IsSuccess = true;
-                    result.IsFailure = false;
-                    result.IsExecuted = true;
-                    break;
-
-                case TestStatus.Inconclusive:
-                    result.IsSuccess = false;
-                    result.IsFailure = false;
-                    result.IsExecuted = true;
-                    break;
-
-                case TestStatus.Failed:
-                    result.IsSuccess = false;
-                    result.IsFailure = true;
-                    result.IsExecuted = true;
-                    break;
-
-                case TestStatus.Skipped:
-                    result.IsSuccess = false;
-                    result.IsFailure = false;
-                    result.IsExecuted = false;
-                    break;
-            }
+            result.State = GetTestState(e.TestStepRun.Result.Outcome.Status);
 
             testListener.TestFinished(result);
         }
 
-        private static string GetCategoryForAnnotation(AnnotationType type)
+        private static FacadeCategory GetCategoryForAnnotation(AnnotationType type)
         {
             switch (type)
             {
                 case AnnotationType.Error:
-                    return MessageCategory.Error;
+                    return FacadeCategory.Error;
 
                 case AnnotationType.Warning:
-                    return MessageCategory.Warning;
+                    return FacadeCategory.Warning;
 
                 case AnnotationType.Info:
-                    return MessageCategory.Info;
+                    return FacadeCategory.Info;
 
                 default:
                     throw new ArgumentException("type");
+            }
+        }
+
+        private static FacadeTestState GetTestState(TestStatus status)
+        {
+            switch (status)
+            {
+                case TestStatus.Passed:
+                    return FacadeTestState.Passed;
+
+                case TestStatus.Inconclusive:
+                    return FacadeTestState.Passed;
+
+                case TestStatus.Failed:
+                    return FacadeTestState.Failed;
+
+                case TestStatus.Skipped:
+                    return FacadeTestState.Ignored;
+
+                default:
+                    throw new ArgumentOutOfRangeException("status");
             }
         }
     }

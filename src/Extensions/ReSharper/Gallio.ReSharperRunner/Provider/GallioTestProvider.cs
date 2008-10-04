@@ -19,6 +19,7 @@ using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Provider;
+using Gallio.ReSharperRunner.Provider.Facade;
 using Gallio.ReSharperRunner.Reflection;
 using Gallio.ReSharperRunner.Runtime;
 using Gallio.ReSharperRunner.Provider.Tasks;
@@ -307,7 +308,7 @@ namespace Gallio.ReSharperRunner.Provider
             /// </summary>
             public RemoteTaskRunnerInfo GetTaskRunnerInfo()
             {
-                return new RemoteTaskRunnerInfo(typeof(GallioRemoteTaskRunner));
+                return new RemoteTaskRunnerInfo(typeof(GallioTaskRunner));
             }
 
             /// <summary>
@@ -348,7 +349,7 @@ namespace Gallio.ReSharperRunner.Provider
                 List<UnitTestTask> tasks = new List<UnitTestTask>();
 
                 // Add the run task.  Must always be first.
-                tasks.Add(new UnitTestTask(null, GallioTestRunTask.Instance));
+                tasks.Add(new UnitTestTask(null, FacadeUtils.ToRemoteTask(GallioTestRunTask.Instance)));
 
                 // Add the test case branch.
                 AddTestTasksFromRootToLeaf(tasks, topElement);
@@ -357,11 +358,11 @@ namespace Gallio.ReSharperRunner.Provider
                 // arbitrary elements.  We don't care about the structure of the task tree beyond this depth.
 
                 // Add the assembly location.
-                tasks.Add(new UnitTestTask(null, new GallioTestAssemblyTask(topElement.GetAssemblyLocation())));
+                tasks.Add(new UnitTestTask(null, FacadeUtils.ToRemoteTask(new GallioTestAssemblyTask(topElement.GetAssemblyLocation()))));
 
                 // Add explicit element markers.
                 foreach (GallioTestElement explicitElement in explicitElements)
-                    tasks.Add(new UnitTestTask(null, new GallioTestExplicitTask(explicitElement.Test.Id)));
+                    tasks.Add(new UnitTestTask(null, FacadeUtils.ToRemoteTask(new GallioTestExplicitTask(explicitElement.Test.Id))));
 
                 return tasks;
             }
@@ -390,7 +391,7 @@ namespace Gallio.ReSharperRunner.Provider
                 if (!element.Test.IsTestCase)
                     return; // workaround
 
-                tasks.Add(new UnitTestTask(element, new GallioTestItemTask(element.Test.Id)));
+                tasks.Add(new UnitTestTask(element, FacadeUtils.ToRemoteTask(new GallioTestItemTask(element.Test.Id))));
             }
 
             /// <summary>

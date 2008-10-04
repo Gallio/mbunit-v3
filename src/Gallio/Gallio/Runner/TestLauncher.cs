@@ -85,6 +85,10 @@ namespace Gallio.Runner
 
         private bool showReports;
 
+        private readonly object cancelationSyncRoot = new object();
+        private bool isCanceled;
+        private IProgressMonitor cancelableProgressMonitor;
+
         #endregion
 
         /// <summary>
@@ -401,6 +405,20 @@ namespace Gallio.Runner
         #region Public Methods
 
         /// <summary>
+        /// Cancels the test run and prevents a new one from starting.
+        /// </summary>
+        public void Cancel()
+        {
+            lock (cancelationSyncRoot)
+            {
+                isCanceled = true;
+
+                if (cancelableProgressMonitor != null)
+                    cancelableProgressMonitor.Cancel();
+            }
+        }
+
+        /// <summary>
         /// <para>
         /// Runs the test package as configured.
         /// </para>
@@ -544,11 +562,8 @@ namespace Gallio.Runner
             }
 
             // Done.
-            if (showReports && result.ReportDocumentPaths.Count != 0)
-            {
-                logger.Log(LogSeverity.Important, "Displaying reports.");
+            if (showReports)
                 ShowReportDocuments(result);
-            }
 
             // Produce the final result code.
             if (wasCanceled)
@@ -572,75 +587,32 @@ namespace Gallio.Runner
             return result;
         }
 
-        /// <summary>
-        /// Method to generate reports in the specified formats for a result set.
-        /// </summary>
-        /// <param name="result">The test results to use</param>
-        /// <param name="reportManager">The report manager</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="result"/>
-        /// or <paramref name="reportManager"/> is null</exception>
-        public void GenerateReports(TestLauncherResult result, IReportManager reportManager)
-        {
-            if (result == null)
-                throw new ArgumentNullException("result");
-            if (reportManager == null)
-                throw new ArgumentNullException("reportManager");
-
-            if (reportFormats.Count == 0)
-                return;
-
-            Report report = result.Report;
-
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
-            {
-                using (progressMonitor.BeginTask("Generating reports.", reportFormats.Count))
-                {
-                    IReportContainer reportContainer = CreateReportContainer(report);
-                    IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
-
-                    // Delete the report if it exists already.
-                    reportContainer.DeleteReport();
-
-                    // Format the report in all of the desired ways.
-                    foreach (string reportFormat in reportFormats)
-                    {
-                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                            reportManager.Format(reportWriter, reportFormat, reportFormatOptions, subProgressMonitor);
-                    }
-
-                    // Save the full paths of the documents.
-                    foreach (string reportDocumentPath in reportWriter.ReportDocumentPaths)
-                        result.AddReportDocumentPath(Path.Combine(reportDirectory, reportDocumentPath));
-                }
-            });
-        }
-
-        /// <summary>
-        /// Shows the report documents enumerated in the launcher result.
-        /// </summary>
-        /// <param name="result">The result</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="result"/> is null</exception>
-        public void ShowReportDocuments(TestLauncherResult result)
-        {
-            if (result == null)
-                throw new ArgumentNullException("result");
-
-            foreach (string reportDocumentPath in result.ReportDocumentPaths)
-            {
-                try
-                {
-                    TestRunnerUtils.ShowReportDocument(reportDocumentPath);
-                }
-                catch (Exception ex)
-                {
-                    logger.Log(LogSeverity.Error, String.Format("Could not open report '{0}' for display.", reportDocumentPath), ex);
-                }
-            }
-        }
-
         #endregion
 
         #region Private Methods
+
+        private void GenerateReports(TestLauncherResult result, IReportManager reportManager)
+        {
+            if (reportFormats.Count == 0)
+                return;
+
+            RunWithProgress(delegate(IProgressMonitor progressMonitor)
+            {
+                result.GenerateReports(reportDirectory, GenerateReportName(result.Report), reportFormats,
+                    reportFormatOptions, reportManager, progressMonitor);
+            });
+        }
+
+        private void ShowReportDocuments(TestLauncherResult result)
+        {
+            if (result.ReportDocumentPaths.Count != 0)
+            {
+                logger.Log(LogSeverity.Important, "Displaying reports.");
+
+                if (! result.ShowReportDocuments())
+                    logger.Log(LogSeverity.Important, "There was an error opening the report documents.");
+            }
+        }
 
         private bool ValidateReportFormats(IReportManager reportManager)
         {
@@ -680,7 +652,7 @@ namespace Gallio.Runner
         /// </summary>
         private void VerifyAssemblies()
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Verifying assembly names.", 1))
                 {
@@ -735,7 +707,7 @@ namespace Gallio.Runner
 
         private void DoInitialize(ITestRunner runner)
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 runner.Initialize(testRunnerOptions, logger, progressMonitor);
             });
@@ -743,7 +715,7 @@ namespace Gallio.Runner
 
         private void DoLoad(ITestRunner runner)
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 runner.Load(testPackageConfig, progressMonitor);
             });
@@ -751,7 +723,7 @@ namespace Gallio.Runner
 
         private void DoExplore(ITestRunner runner)
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 runner.Explore(testExplorationOptions, progressMonitor);
             });
@@ -759,7 +731,7 @@ namespace Gallio.Runner
 
         private void DoRun(ITestRunner runner)
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 runner.Run(testExecutionOptions, progressMonitor);
             });
@@ -767,7 +739,7 @@ namespace Gallio.Runner
 
         private void DoUnload(ITestRunner runner)
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 runner.Unload(progressMonitor);
             });
@@ -775,16 +747,10 @@ namespace Gallio.Runner
 
         private void DoDispose(ITestRunner runner)
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 runner.Dispose(progressMonitor);
             });
-        }
-
-        private IReportContainer CreateReportContainer(Report report)
-        {
-            string reportName = GenerateReportName(report);
-            return new FileSystemReportContainer(reportDirectory, reportName);
         }
 
         private string GenerateReportName(Report report)
@@ -804,6 +770,36 @@ namespace Gallio.Runner
             TestLauncherResult result = new TestLauncherResult(report);
             result.SetResultCode(resultCode);
             return result;
+        }
+
+        private void RunWithProgress(TaskWithProgress task)
+        {
+            progressMonitorProvider.Run(progressMonitor =>
+            {
+                try
+                {
+                    bool wasCanceled;
+                    lock (cancelationSyncRoot)
+                    {
+                        wasCanceled = isCanceled;
+                        cancelableProgressMonitor = progressMonitor;
+                    }
+
+                    if (wasCanceled)
+                    {
+                        progressMonitor.Cancel();
+                    }
+                    else
+                    {
+                        task(progressMonitor);
+                    }
+                }
+                finally
+                {
+                    lock (cancelationSyncRoot)
+                        cancelableProgressMonitor = null;
+                }
+            });
         }
 
         #endregion

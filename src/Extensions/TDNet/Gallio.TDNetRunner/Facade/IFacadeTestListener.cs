@@ -14,17 +14,23 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.TDNetRunner.Facade
 {
     /// <summary>
-    /// A proxy of the ReSharper task runner interface.
+    /// <para>
+    /// A facade of the TestDriven.Net test listener.
+    /// </para>
     /// </summary>
     /// <remarks>
-    /// This proxy decouples Gallio's private AppDomain from the ReSharper interfaces.
+    /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
     /// </remarks>
-    internal interface IProxyTaskRunner
+    public interface IFacadeTestListener
     {
-        ProxyTaskResult Execute(IProxyTaskServer server, ProxyTask proxyTask);
+        void TestFinished(FacadeTestResult result);
+        void TestResultsUrl(string url);
+        void WriteLine(string text, FacadeCategory category);
     }
 }

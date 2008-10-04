@@ -16,112 +16,91 @@
 using System;
 using System.Reflection;
 using Gallio.Loader;
+using Gallio.Runtime.Logging;
 using Gallio.TDNetRunner.Core;
-using TestDriven.TestRunner.Framework;
+using Gallio.TDNetRunner.Facade;
+using Gallio.TDNetRunner.Properties;
 
 namespace Gallio.TDNetRunner
 {
     /// <summary>
     /// Gallio test runner for TestDriven.NET.
     /// </summary>
-    /// <remarks>
-    /// This class deliberately does not depend on any Gallio types outside of this
-    /// test runner assembly.  That's because the AppDomain the test runner is loaded
-    /// in also includes test assemblies which could contain a different version of
-    /// Gallio.  So we create our own AppDomain so that Gallio itself can deal with
-    /// the version conflicts.  Then we take some care not to directly refer to
-    /// TestDriven.Net types within our own AppDomain so we don't need to load TestDriven.Net
-    /// types.
-    /// </remarks>
-    [Serializable]
-    public class GallioTestRunner : ITestRunner, IDisposable
+    public class GallioTestRunner : BaseFacadeTestRunner
     {
         internal readonly static string testRunnerName = typeof(GallioTestRunner).FullName;
-
-        private IProxyTestRunner testRunner;
-
-        /// <summary>
-        /// Initializes the gallio test runner.
-        /// </summary>
-        public GallioTestRunner()
-        {
-        }
+        private IGallioTestRunner testRunner;
 
         /// <inheritdoc />
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (testRunner != null)
             {
-                testRunner.Dispose();
+                if (disposing)
+                    testRunner.Dispose();
+
                 testRunner = null;
             }
         }
 
         /// <inheritdoc />
-        public TestRunResult Run(ITestListener testListener, ITraceListener traceListener, string assemblyPath, string testPath)
+        protected override FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, string cref)
         {
-            if (testListener == null)
-                throw new ArgumentNullException("testListener");
-            if (traceListener == null)
-                throw new ArgumentNullException("traceListener");
-            if (assemblyPath == null)
-                throw new ArgumentNullException("assemblyPath");
+            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
+            testListener.WriteLine(String.Format(Resources.RunnerNameAndVersion + "\n",
+                appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision), FacadeCategory.Info);
 
-            GetTestRunner();
-
-            AdapterProxyTestListener proxyTestListner = new AdapterProxyTestListener(testListener, traceListener);
-            ProxyTestResult result = testRunner.Run(proxyTestListner, assemblyPath, testPath);
-
-            return ToTestRunResult(result);
+            EnsureTestRunnerIsCreated();
+            return testRunner.Run(testListener, assemblyPath, cref);
         }
 
         /// <inheritdoc />
-        public void Abort()
+        protected override void Abort()
         {
             if (testRunner != null)
-            {
                 testRunner.Abort();
-            }
         }
 
-        internal virtual IProxyTestRunner CreateTestRunner()
+        internal virtual IGallioTestRunner CreateTestRunner()
         {
             try
             {
                 IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
 
-                Type runnerType = typeof(RemoteProxyTestRunner);
-                return (IProxyTestRunner) environment.AppDomain.CreateInstanceAndUnwrap(
-                    runnerType.Assembly.FullName, runnerType.FullName);
+                AppDomain.CurrentDomain.AssemblyResolve += ResolveRunnerAssembly;
+
+                Type runnerType = typeof(RemoteGallioTestRunner);
+                object runner = environment.AppDomain.CreateInstanceAndUnwrap(runnerType.Assembly.FullName, runnerType.FullName);
+
+                return (IGallioTestRunner)runner;
             }
-            catch (InvalidCastException ex)
+            finally
             {
-                throw new ApplicationException("The Gallio test runner was unable to obtain a proxy for the test runner.  This usually happens because we are trying to run tests that are themselves linked to a Gallio.TDNetRunner assembly in a different folder than is registered with TestDriven.Net.", ex);
+                AppDomain.CurrentDomain.AssemblyResolve -= ResolveRunnerAssembly;
             }
         }
 
-        private void GetTestRunner()
+        private void EnsureTestRunnerIsCreated()
         {
             if (testRunner == null)
                 testRunner = CreateTestRunner();
         }
 
-        private static TestRunResult ToTestRunResult(ProxyTestResult result)
+        /// <summary>
+        /// <para>
+        /// This resolver is used to ensure that we can cast the test runner's transparent proxy to IGallioTestRunner.
+        /// </para>
+        /// <para>
+        /// TestDriven.Net initially loaded this assembly using Assembly.LoadFrom.  When the cast occurs, the runtime implicitly
+        /// tries to load the interface using Assembly.Load by fullname which does not normally consider anything loaded with LoadFrom.
+        /// So we introduce a resolver that recognizes when we are attempting to load this assembly by fullname and
+        /// just returns it.  Without it, an InvalidCastException will occur.
+        /// </para>
+        /// </summary>
+        private static Assembly ResolveRunnerAssembly(object sender, ResolveEventArgs e)
         {
-            if (result == null)
-                return null;
-
-            return new TestRunResult()
-            {
-                IsExecuted = result.IsExecuted,
-                IsFailure = result.IsFailure,
-                IsSuccess = result.IsSuccess,
-                Message = result.Message,
-                Name = result.Name,
-                StackTrace = result.StackTrace,
-                TestRunner = testRunnerName,
-                TotalTests = result.TotalTests
-            };
+            Assembly runnerAssembly = typeof(GallioTestRunner).Assembly;
+            return e.Name == runnerAssembly.FullName ? runnerAssembly : null;
         }
     }
 }

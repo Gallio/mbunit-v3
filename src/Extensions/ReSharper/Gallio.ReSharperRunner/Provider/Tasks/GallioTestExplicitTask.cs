@@ -15,6 +15,7 @@
 
 using System;
 using System.Xml;
+using Gallio.ReSharperRunner.Provider.Facade;
 
 namespace Gallio.ReSharperRunner.Provider.Tasks
 {
@@ -23,7 +24,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// It should always appear after <see cref="GallioTestRunTask" />.
     /// </summary>
     [Serializable]
-    public class GallioTestExplicitTask : GallioRemoteTask, IEquatable<GallioTestExplicitTask>
+    public class GallioTestExplicitTask : FacadeTask, IEquatable<GallioTestExplicitTask>
     {
         private readonly string testId;
 
@@ -35,7 +36,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         public GallioTestExplicitTask(XmlElement element)
             : base(element)
         {
-            testId = GetXmlAttribute(element, "TestId");
+            testId = element.GetAttribute("testId");
         }
 
         public string TestId
@@ -47,7 +48,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         {
             base.SaveXml(element);
 
-            SetXmlAttribute(element, "TestId", testId);
+            element.SetAttribute("testId", testId);
         }
 
         public bool Equals(GallioTestExplicitTask other)
@@ -63,22 +64,6 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         public override int GetHashCode()
         {
             return testId.GetHashCode();
-        }
-
-        internal override ProxyTask CreateProxyTask()
-        {
-            return new Proxy(testId);
-        }
-
-        [Serializable]
-        internal sealed class Proxy : ProxyTask
-        {
-            public Proxy(string testId)
-            {
-                TestId = testId;
-            }
-
-            public string TestId { get; private set; }
         }
     }
 }

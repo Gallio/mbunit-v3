@@ -58,7 +58,7 @@ namespace Gallio.TDNetRunner
             return Path.GetDirectoryName(GetAssemblyPath(typeof(EnvironmentManager).Assembly));
         }
 
-        private static string GetAssemblyPath(Assembly assembly)
+        internal static string GetAssemblyPath(Assembly assembly)
         {
             return new Uri(assembly.CodeBase).LocalPath;
         }

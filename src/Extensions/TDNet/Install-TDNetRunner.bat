@@ -13,8 +13,10 @@ set ICARUS_EXE=%SRCDIR%\Extensions\Icarus\bin\Gallio.Icarus.exe
 REM Point at copy in Tests so that the runner can run its own tests.
 REM Otherwise it gets confused by the presence of two runner dlls, one
 REM loaded using LoadFrom and the other accessible in the AppDomain.
-set TDNETRUNNER_DLL=%LOCALDIR%\Gallio.TDNetRunner.Tests\bin\Gallio.TDNetRunner.dll
+set TDNETRUNNER_DLL=%LOCALDIR%\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll
 set TDKEY=HKLM\Software\MutantDesign\TestDriven.Net\TestRunners
+
+call "%SRCDIR%\RegisterAssembliesForDebugging.bat"
 
 echo Installing the locally compiled Gallio test runner for TestDriven.Net.
 echo.
@@ -46,5 +48,6 @@ if /I not "%Answer%"=="N" goto :RETRY_PROMPT
 "%REG%" ADD %KEY% /V AssemblyPath /D %TDNETRUNNER_DLL% /F >nul
 "%REG%" ADD %KEY% /V TargetFrameworkAssemblyName /D %FRAMEWORK% /F >nul
 "%REG%" ADD %KEY% /V TypeName /D Gallio.TDNetRunner.GallioTestRunner /F >nul
+"%REG%" ADD %KEY% /T REG_DWORD /V Resident /D 1 /F >nul
 goto :EOF
 

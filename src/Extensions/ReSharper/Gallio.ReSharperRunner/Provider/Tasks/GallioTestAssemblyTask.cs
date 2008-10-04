@@ -15,6 +15,7 @@
 
 using System;
 using System.Xml;
+using Gallio.ReSharperRunner.Provider.Facade;
 
 namespace Gallio.ReSharperRunner.Provider.Tasks
 {
@@ -23,7 +24,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// It should always appear after <see cref="GallioTestRunTask" />.
     /// </summary>
     [Serializable]
-    public class GallioTestAssemblyTask : GallioRemoteTask, IEquatable<GallioTestAssemblyTask>
+    public class GallioTestAssemblyTask : FacadeTask, IEquatable<GallioTestAssemblyTask>
     {
         private readonly string assemblyLocation;
 
@@ -35,7 +36,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         public GallioTestAssemblyTask(XmlElement element)
             : base(element)
         {
-            assemblyLocation = GetXmlAttribute(element, "AssemblyLocation");
+            assemblyLocation = element.GetAttribute("assemblyLocation");
         }
 
         public string AssemblyLocation
@@ -47,7 +48,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         {
             base.SaveXml(element);
 
-            SetXmlAttribute(element, "AssemblyLocation", assemblyLocation);
+            element.SetAttribute("assemblyLocation", assemblyLocation);
         }
 
         public bool Equals(GallioTestAssemblyTask other)
@@ -63,22 +64,6 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         public override int GetHashCode()
         {
             return assemblyLocation.GetHashCode();
-        }
-
-        internal override ProxyTask CreateProxyTask()
-        {
-            return new Proxy(assemblyLocation);
-        }
-
-        [Serializable]
-        internal sealed class Proxy : ProxyTask
-        {
-            public Proxy(string assemblyLocation)
-            {
-                AssemblyLocation = assemblyLocation;
-            }
-
-            public string AssemblyLocation { get; private set; }
         }
     }
 }

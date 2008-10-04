@@ -15,13 +15,20 @@
 
 using System;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.ReSharperRunner.Provider.Facade
 {
+    /// <summary>
+    /// Specifies the result of task execution.
+    /// </summary>
+    /// <remarks>
+    /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </remarks>
     [Serializable]
-    internal enum ProxyTaskOutputType
+    public enum FacadeTaskResult
     {
-        StandardOutput,
-        StandardError,
-        DebugTrace
+        Success,
+        Skipped,
+        Error,
+        Exception
     }
 }

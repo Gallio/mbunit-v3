@@ -7,84 +7,108 @@
 
         <PropertyRef Id='VS90DEVENV'/>
 
+        <Property Id="TDNET_PRODUCT_VERSION"> 
+            <RegistrySearch Id='TDNet.ProductVersion.CU.x86' Type="raw" Win64="no"
+                Root='HKCU' Key='Software\MutantDesign\TestDriven.NET' Name="ProductVersion" />
+            <RegistrySearch Id='TDNet.ProductVersion.LM.x86' Type="raw" Win64="no"
+                Root='HKLM' Key='Software\MutantDesign\TestDriven.NET' Name="ProductVersion" />
+<?if $(sys.BUILDARCH) = "x64" ?>
+            <RegistrySearch Id='TDNet.ProductVersion.CU.x64' Type="raw" Win64="yes"
+                Root='HKCU' Key='Software\MutantDesign\TestDriven.NET' Name="ProductVersion" />
+            <RegistrySearch Id='TDNet.ProductVersion.LM.x64' Type="raw" Win64="yes"
+                Root='HKLM' Key='Software\MutantDesign\TestDriven.NET' Name="ProductVersion" />
+<?endif?>
+        </Property>
+
         <Property Id="TDNET_INSTALLDIR">
             <RegistrySearch Id='TDNet.InstallDir' Type="raw" Win64="no"
                 Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET' Name='InstallDir' />
         </Property>
 
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Component Id="Gallio.TDNetRunner.dll" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
-                <File Name="Gallio.TDNetRunner.dll" KeyPath="yes"
-                      Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.dll" />
-            </Component>
+            <Directory Id="TDNet" Name="TDNet">
+                <Component Id="Gallio.TDNetRunner.dll" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
+                    <File Name="Gallio.TDNetRunner.dll" KeyPath="yes"
+                          Assembly=".net" AssemblyApplication="Gallio.TDNetRunner.dll" />
+                </Component>
+                <Component Id="Gallio.TDNetRunner.plugin" Guid="{0ED4AF20-4647-4c53-9960-AB905E9DAA36}" Win64="no">
+                    <File Name="Gallio.TDNetRunner.plugin" KeyPath="yes" />
+                </Component>
 
-            <Component Id="TDNetApp.Icarus" Guid="0ebd2ab6-3341-4d25-a249-0af80fa32913" Win64="no">
-                <RegistryKey Action="createAndRemoveOnUninstall"
-                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Icarus">
-                    <RegistryValue Type='string' Value='10'/>
-                    <RegistryValue Type='string' Name='Application' Value='[#Gallio.Icarus.exe]'/>
-                </RegistryKey>
-            </Component>
+                <Component Id="TDNetApp.Icarus" Guid="0ebd2ab6-3341-4d25-a249-0af80fa32913" Win64="no">
+                    <RegistryKey Action="createAndRemoveOnUninstall"
+                        Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Icarus">
+                        <RegistryValue Type='string' Value='10'/>
+                        <RegistryValue Type='string' Name='Application' Value='[#Gallio.Icarus.exe]'/>
+                    </RegistryKey>
+                </Component>
 
-            <Component Id="TDNetRunner.CSUnit" Guid="69886d58-7ce0-4710-982a-5d8c6f9d66d2" Win64="no">
-                <RegistryKey Action="createAndRemoveOnUninstall"
-                    Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_CSUnit'>
-                    <RegistryValue Type='string' Value='20'/>
-                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
-                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
-                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='csUnit'/>
-                </RegistryKey>
-            </Component>
+                <Component Id="TDNetRunner.CSUnit" Guid="69886d58-7ce0-4710-982a-5d8c6f9d66d2" Win64="no">
+                    <RegistryKey Action="createAndRemoveOnUninstall"
+                        Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_CSUnit'>
+                        <RegistryValue Type='string' Value='20'/>
+                        <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                        <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                        <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='csUnit'/>
+                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+                    </RegistryKey>
+                </Component>
 
-            <Component Id="TDNetRunner.MbUnit_v3" Guid="315d8ad7-920c-4d75-907c-2f33501b5b86" Win64="no">
-                <RegistryKey Action="createAndRemoveOnUninstall"
-                    Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MbUnit'>
-                    <RegistryValue Type='string' Value='10'/>
-                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
-                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
-                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit'/>
-                </RegistryKey>
-            </Component>
+                <Component Id="TDNetRunner.MbUnit_v3" Guid="315d8ad7-920c-4d75-907c-2f33501b5b86" Win64="no">
+                    <RegistryKey Action="createAndRemoveOnUninstall"
+                        Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MbUnit'>
+                        <RegistryValue Type='string' Value='10'/>
+                        <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                        <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                        <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit'/>
+                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+                    </RegistryKey>
+                </Component>
 
-            <Component Id="TDNetRunner.MbUnit_v2" Guid="5be9bc6d-2852-443a-8d10-a390c313b107" Win64="no">
-                <RegistryKey Action="createAndRemoveOnUninstall"
-                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MbUnit2">
-                    <RegistryValue Type='string' Value='20'/>
-                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
-                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
-                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit.Framework'/>
-                </RegistryKey>
-            </Component>
+                <Component Id="TDNetRunner.MbUnit_v2" Guid="5be9bc6d-2852-443a-8d10-a390c313b107" Win64="no">
+                    <RegistryKey Action="createAndRemoveOnUninstall"
+                        Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MbUnit2">
+                        <RegistryValue Type='string' Value='20'/>
+                        <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                        <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                        <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit.Framework'/>
+                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+                    </RegistryKey>
+                </Component>
 
-            <Component Id="TDNetRunner.MSTest" Guid="7b5e80c3-6396-4c6d-a18b-ed884c3d98d7" Win64="no">
-                <RegistryKey Action="createAndRemoveOnUninstall"
-                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MSTest">
-                    <RegistryValue Type='string' Value='20'/>
-                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
-                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
-                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='Microsoft.VisualStudio.QualityTools.UnitTestFramework'/>
-                </RegistryKey>
-            </Component>
+                <Component Id="TDNetRunner.MSTest" Guid="7b5e80c3-6396-4c6d-a18b-ed884c3d98d7" Win64="no">
+                    <RegistryKey Action="createAndRemoveOnUninstall"
+                        Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_MSTest">
+                        <RegistryValue Type='string' Value='20'/>
+                        <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                        <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                        <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='Microsoft.VisualStudio.QualityTools.UnitTestFramework'/>
+                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+                    </RegistryKey>
+                </Component>
 
-            <Component Id="TDNetRunner.NUnit" Guid="3765c084-ef3f-46bb-b47a-b4cb9d1afaf5" Win64="no">
-                <RegistryKey Action="createAndRemoveOnUninstall"
-                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_NUnit">
-                    <RegistryValue Type='string' Value='20'/>
-                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
-                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
-                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='nunit.framework'/>
-                </RegistryKey>
-            </Component>
-
-            <Component Id="TDNetRunner.Xunit" Guid="648ce21a-3f03-48c4-a7c1-1591fd76258e" Win64="no">
-                <RegistryKey Action="createAndRemoveOnUninstall"
-                    Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Xunit">
-                    <RegistryValue Type='string' Value='20'/>
-                    <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
-                    <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
-                    <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='xunit'/>
-                </RegistryKey>
-            </Component>
+                <Component Id="TDNetRunner.NUnit" Guid="3765c084-ef3f-46bb-b47a-b4cb9d1afaf5" Win64="no">
+                    <RegistryKey Action="createAndRemoveOnUninstall"
+                        Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_NUnit">
+                        <RegistryValue Type='string' Value='20'/>
+                        <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                        <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                        <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='nunit.framework'/>
+                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+                    </RegistryKey>
+                </Component>
+    
+                <Component Id="TDNetRunner.Xunit" Guid="648ce21a-3f03-48c4-a7c1-1591fd76258e" Win64="no">
+                    <RegistryKey Action="createAndRemoveOnUninstall"
+                        Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Xunit">
+                        <RegistryValue Type='string' Value='20'/>
+                        <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
+                        <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
+                        <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='xunit'/>
+                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+                    </RegistryKey>
+                </Component>
+            </Directory>
         </DirectoryRef>
 
 <?if $(sys.BUILDARCH) = "x64" ?>
@@ -96,6 +120,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='csUnit'/>
+                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
                 </RegistryKey>
             </Component>
 
@@ -106,6 +131,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit'/>
+                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
                 </RegistryKey>
             </Component>
 
@@ -116,6 +142,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit.Framework'/>
+                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
                 </RegistryKey>
             </Component>
 
@@ -126,6 +153,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='Microsoft.VisualStudio.QualityTools.UnitTestFramework'/>
+                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
                 </RegistryKey>
             </Component>
 
@@ -136,6 +164,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='nunit.framework'/>
+                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
                 </RegistryKey>
             </Component>
             
@@ -146,9 +175,10 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='xunit'/>
+                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
                 </RegistryKey>
             </Component>
-	    
+
             <Component Id="TDNetApp.Icarus.x64" Guid="{974C35F3-74AF-44db-825A-7B57C00DD6F2}" Win64="yes">
                 <RegistryKey Action="createAndRemoveOnUninstall"
                     Root="HKLM" Key="SOFTWARE\MutantDesign\TestDriven.NET\TestRunners\Gallio_Icarus">
@@ -163,6 +193,7 @@
                  Description='Installs the TestDriven.Net add-in.'>
             <Condition Level='1'>TDNET_INSTALLDIR</Condition>
             <ComponentRef Id='Gallio.TDNetRunner.dll'/>
+            <ComponentRef Id='Gallio.TDNetRunner.plugin'/>
             <ComponentRef Id="TDNetApp.Icarus" />
 <?if $(sys.BUILDARCH) = "x64" ?>
             <ComponentRef Id="TDNetApp.Icarus.x64" />

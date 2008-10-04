@@ -18,7 +18,7 @@ using System.Reflection;
 using System.Security.Permissions;
 using JetBrains.ReSharper.TaskRunnerFramework;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.ReSharperRunner.Provider.Facade
 {
     /// <summary>
     /// Works around the fact that <see cref="TaskException" />

@@ -14,16 +14,20 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Gallio.TDNetRunner.Core
+namespace Gallio.TDNetRunner.Facade
 {
-    internal static class MessageCategory
+    /// <summary>
+    /// Specifies the outcome of a test run.
+    /// </summary>
+    /// <remarks>
+    /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
+    /// </remarks>
+    public enum FacadeTestRunState
     {
-        public const string Error = "Error";
-        public const string Warning = "Warning";
-        public const string Info = "Info";
-        public const string Debug = "Debug";
+        Success,
+        Failure,
+        Error,
+        NoTests
     }
 }

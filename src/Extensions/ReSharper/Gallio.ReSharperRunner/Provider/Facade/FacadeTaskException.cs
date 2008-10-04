@@ -14,32 +14,27 @@
 // limitations under the License.
 
 using System;
-using System.Xml;
-using JetBrains.ReSharper.TaskRunnerFramework;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.ReSharperRunner.Provider.Facade
 {
     /// <summary>
-    /// A remote task that is intended to be executed within the Gallio
-    /// runtime environment.
+    /// Describes details about an exception that occurred within a task.
     /// </summary>
+    /// <remarks>
+    /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
+    /// </remarks>
     [Serializable]
-    public abstract class GallioRemoteTask : RemoteTask
+    public class FacadeTaskException
     {
-        protected GallioRemoteTask()
-            : base(GallioTestProvider.ProviderId)
+        public FacadeTaskException(string type, string message, string stackTrace)
         {
+            Type = type;
+            Message = message;
+            StackTrace = stackTrace;
         }
 
-        protected GallioRemoteTask(XmlElement element) : base(element)
-        {
-        }
-
-        /// <summary>
-        /// Creates a proxy task that describes the remote task without
-        /// referring to any ReSharper assemblies.
-        /// </summary>
-        /// <returns>The proxy task</returns>
-        internal abstract ProxyTask CreateProxyTask();
+        public string Type { get; private set; }
+        public string Message { get; private set; }
+        public string StackTrace { get; private set; }
     }
 }

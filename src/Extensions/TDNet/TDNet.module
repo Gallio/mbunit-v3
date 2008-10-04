@@ -11,7 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Binary Include="Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll" />
+    <Binary Include="Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll">
+      <ImagePath>TDNet</ImagePath>
+    </Binary>
+    <Binary Include="Gallio.TDNetRunner\Gallio.TDNetRunner.plugin">
+      <ImagePath>TDNet</ImagePath>
+    </Binary>
   </ItemGroup>
 
   <ItemGroup>

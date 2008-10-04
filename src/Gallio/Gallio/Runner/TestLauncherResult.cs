@@ -15,7 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.Logging;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runner
 {
@@ -110,6 +114,76 @@ namespace Gallio.Runner
                 throw new ArgumentNullException(@"reportDocumentPath");
 
             reportDocumentPaths.Add(reportDocumentPath);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Generates reports of the desired forms.
+        /// </para>
+        /// <para>
+        /// This method adds the paths of the generated report documents to <see cref="ReportDocumentPaths" />.
+        /// </para>
+        /// </summary>
+        /// <param name="reportDirectory">The report directory</param>
+        /// <param name="reportName">The report name</param>
+        /// <param name="reportFormats">The report formats to generate</param>
+        /// <param name="reportFormatOptions">The report formatting options</param>
+        /// <param name="reportManager">The report manager</param>
+        /// <param name="progressMonitor">A progress monitor for the operation</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportDirectory"/>,
+        /// <paramref name="reportName"/>, <paramref name="reportFormats"/>, <paramref name="reportFormatOptions"/>,
+        /// <paramref name="reportManager"/>, or <paramref name="progressMonitor"/> is null.</exception>
+        public void GenerateReports(string reportDirectory, string reportName, IList<string> reportFormats,
+            NameValueCollection reportFormatOptions, IReportManager reportManager, IProgressMonitor progressMonitor)
+        {
+            if (reportDirectory == null)
+                throw new ArgumentNullException("reportDirectory");
+            if (reportName == null)
+                throw new ArgumentNullException("reportName");
+            if (reportFormats == null)
+                throw new ArgumentNullException("reportFormats");
+            if (reportFormatOptions == null)
+                throw new ArgumentNullException("reportFormatOptions");
+            if (reportManager == null)
+                throw new ArgumentNullException("reportManager");
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+
+            using (progressMonitor.BeginTask("Generating reports.", reportFormats.Count))
+            {
+                IReportContainer reportContainer = new FileSystemReportContainer(reportDirectory, reportName);
+                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+
+                // Delete the report if it exists already.
+                reportContainer.DeleteReport();
+
+                // Format the report in all of the desired ways.
+                foreach (string reportFormat in reportFormats)
+                {
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                        reportManager.Format(reportWriter, reportFormat, reportFormatOptions, subProgressMonitor);
+                }
+
+                // Save the full paths of the documents.
+                foreach (string reportDocumentPath in reportWriter.ReportDocumentPaths)
+                    AddReportDocumentPath(Path.Combine(reportDirectory, reportDocumentPath));
+            }
+        }
+
+        /// <summary>
+        /// Shows the report documents enumerated in the launcher result.
+        /// </summary>
+        /// <returns>True if the report documents were successfully opened</returns>
+        public bool ShowReportDocuments()
+        {
+            bool success = true;
+            foreach (string reportDocumentPath in reportDocumentPaths)
+            {
+                if (!TestRunnerUtils.ShowReportDocument(reportDocumentPath))
+                    success = false;
+            }
+
+            return success;
         }
     }
 }

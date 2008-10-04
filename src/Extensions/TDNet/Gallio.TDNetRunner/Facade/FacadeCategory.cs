@@ -14,15 +14,23 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.TDNetRunner.Facade
 {
-    [Serializable]
-    internal enum ProxyTaskResult
+    /// <summary>
+    /// Describes the type of message written to the test listener.
+    /// </summary>
+    /// <remarks>
+    /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
+    /// </remarks>
+    public enum FacadeCategory
     {
-        Success,
-        Skipped,
+        Debug,
+        Info,
+        Warning,
         Error,
-        Exception
+        Output
     }
 }

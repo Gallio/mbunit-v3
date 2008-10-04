@@ -18,7 +18,7 @@ using System.IO;
 using System.Reflection;
 using Gallio.Loader;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.ReSharperRunner.Provider
 {
     /// <summary>
     /// Manages a shared instance of a Gallio runtime environment.

@@ -15,24 +15,25 @@
 
 using System;
 using Gallio.Runtime.Logging;
+using Gallio.TDNetRunner.Facade;
 using Gallio.Utilities;
 
 namespace Gallio.TDNetRunner.Core
 {
     /// <summary>
     /// An <see cref="ILogger" /> implementation that writes messages to a
-    /// <see cref="IProxyTestListener" /> object.
+    /// <see cref="IFacadeTestListener" /> object.
     /// </summary>
-    internal class ProxyTestListenerLogger : BaseLogger
+    internal class TDNetLogger : BaseLogger
     {
-        private readonly IProxyTestListener testListener;
+        private readonly IFacadeTestListener testListener;
 
         /// <summary>
         /// Initializes a new instance of the TDNetLogger class.
         /// </summary>
         /// <param name="testListener">An ITestListener object where the
         /// messages will be written to.</param>
-        public ProxyTestListenerLogger(IProxyTestListener testListener)
+        public TDNetLogger(IFacadeTestListener testListener)
         {
             this.testListener = testListener;
         }
@@ -43,25 +44,25 @@ namespace Gallio.TDNetRunner.Core
             switch (severity)
             {
                 case LogSeverity.Error:
-                    testListener.WriteLine(message, MessageCategory.Error);
+                    testListener.WriteLine(message, FacadeCategory.Error);
                     break;
 
                 case LogSeverity.Warning:
-                    testListener.WriteLine(message, MessageCategory.Warning);
+                    testListener.WriteLine(message, FacadeCategory.Warning);
                     break;
 
                 case LogSeverity.Important:
                 case LogSeverity.Info:
-                    testListener.WriteLine(message, MessageCategory.Info);
+                    testListener.WriteLine(message, FacadeCategory.Info);
                     break;
 
                 case LogSeverity.Debug:
-                    testListener.WriteLine(message, MessageCategory.Debug);
+                    testListener.WriteLine(message, FacadeCategory.Debug);
                     break;
             }
 
             if (exception != null)
-                testListener.WriteLine(ExceptionUtils.SafeToString(exception), MessageCategory.Error);
+                testListener.WriteLine(ExceptionUtils.SafeToString(exception), FacadeCategory.Error);
         }
     }
 }

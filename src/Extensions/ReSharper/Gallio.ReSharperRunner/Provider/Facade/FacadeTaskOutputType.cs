@@ -15,24 +15,19 @@
 
 using System;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.ReSharperRunner.Provider.Facade
 {
     /// <summary>
-    /// A proxy of the ReSharper task server interface.
+    /// Specifies the type of output being emitted by a task.
     /// </summary>
     /// <remarks>
-    /// This proxy decouples Gallio's private AppDomain from the ReSharper interfaces.
+    /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
     /// </remarks>
-    internal interface IProxyTaskServer
+    [Serializable]
+    public enum FacadeTaskOutputType
     {
-        string SessionId { get; }
-
-        void TaskError(ProxyTask task, string message);
-        void TaskException(ProxyTask task, ProxyTaskException[] exceptions);
-        void TaskExplain(ProxyTask task, string explanation);
-        void TaskFinished(ProxyTask task, string message, ProxyTaskResult result);
-        void TaskOutput(ProxyTask task, string text, ProxyTaskOutputType outputType);
-        void TaskProgress(ProxyTask task, string message);
-        void TaskStarting(ProxyTask task);
+        StandardOutput,
+        StandardError,
+        DebugTrace
     }
 }

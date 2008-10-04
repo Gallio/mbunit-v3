@@ -15,20 +15,18 @@
 
 using System;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.TDNetRunner.Facade
 {
-    [Serializable]
-    internal class ProxyTaskException
+    /// <summary>
+    /// Specifies the outcome of a test.
+    /// </summary>
+    /// <remarks>
+    /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
+    /// </remarks>
+    public enum FacadeTestState
     {
-        public ProxyTaskException(string type, string message, string stackTrace)
-        {
-            Type = type;
-            Message = message;
-            StackTrace = stackTrace;
-        }
-
-        public string Type { get; private set; }
-        public string Message { get; private set; }
-        public string StackTrace { get; private set; }
+        Passed,
+        Failed,
+        Ignored
     }
 }

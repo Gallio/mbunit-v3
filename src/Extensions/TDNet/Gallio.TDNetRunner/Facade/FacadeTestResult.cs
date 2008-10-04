@@ -14,19 +14,25 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.TDNetRunner.Facade
 {
-    internal class RemoteProxyTaskRunner : MarshalByRefObject, IProxyTaskRunner
+    /// <summary>
+    /// Describes a test result.
+    /// </summary>
+    /// <remarks>
+    /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
+    /// </remarks>
+    [Serializable]
+    public class FacadeTestResult
     {
-        public ProxyTaskResult Execute(IProxyTaskServer server, ProxyTask proxyTask)
-        {
-            return proxyTask.Execute(server);
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            return null;
-        }
+        public FacadeTestState State { get; set; }
+        public string Message { get; set; }
+        public string Name { get; set; }
+        public string StackTrace { get; set; }
+        public TimeSpan TimeSpan { get; set; }
+        public int TotalTests { get; set; }
     }
 }

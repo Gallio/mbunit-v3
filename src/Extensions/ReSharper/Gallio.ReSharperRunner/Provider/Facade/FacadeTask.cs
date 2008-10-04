@@ -16,37 +16,48 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Xml;
 using Gallio.Collections;
 
-namespace Gallio.ReSharperRunner.Provider.Tasks
+namespace Gallio.ReSharperRunner.Provider.Facade
 {
     /// <summary>
     /// Describes a task that can be executed within the Gallio runtime environment.
     /// </summary>
     /// <remarks>
-    /// This proxy decouples Gallio's private AppDomain from the ReSharper interfaces.
+    /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
     /// </remarks>
     [Serializable]
-    internal abstract class ProxyTask
+    public abstract class FacadeTask
     {
-        private static int nextId;
-        private readonly int id;
-        private IList<ProxyTask> children;
+        private IList<FacadeTask> children;
 
         /// <summary>
-        /// Creates a proxy task.
+        /// Gets or sets an internal handle to the corresponding remote task.
         /// </summary>
-        protected ProxyTask()
+        internal int RemoteTaskHandle { get; set; }
+
+        /// <summary>
+        /// Creates a facade task.
+        /// </summary>
+        protected FacadeTask()
         {
-            id = ++nextId;
+        }
+
+        /// <summary>
+        /// Deserializes a facade task from Xml.
+        /// </summary>
+        /// <param name="element">The xml element</param>
+        protected FacadeTask(XmlElement element)
+        {
         }
 
         /// <summary>
         /// Gets the children of the task.
         /// </summary>
-        public IList<ProxyTask> Children
+        public IList<FacadeTask> Children
         {
-            get { return new ReadOnlyCollection<ProxyTask>(children ?? EmptyArray<ProxyTask>.Instance); }
+            get { return new ReadOnlyCollection<FacadeTask>(children ?? EmptyArray<FacadeTask>.Instance); }
         }
 
         /// <summary>
@@ -54,36 +65,31 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         /// </summary>
         /// <param name="server">The task server</param>
         /// <returns>The task result</returns>
-        public virtual ProxyTaskResult Execute(IProxyTaskServer server)
+        public virtual FacadeTaskResult Execute(IFacadeTaskServer server)
         {
             throw new NotSupportedException("This task is not executable.");
+        }
+
+        /// <summary>
+        /// Serializes a facade task to Xml.
+        /// </summary>
+        /// <param name="element">The xml element</param>
+        public virtual void SaveXml(XmlElement element)
+        {
         }
 
         /// <summary>
         /// Adds a child task.
         /// </summary>
         /// <param name="child">The child task</param>
-        public void AddChild(ProxyTask child)
+        public void AddChild(FacadeTask child)
         {
             if (child == null)
                 throw new ArgumentNullException("child");
 
             if (children == null)
-                children = new List<ProxyTask>();
+                children = new List<FacadeTask>();
             children.Add(child);
-        }
-
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            ProxyTask other = obj as ProxyTask;
-            return other != null && id == other.id;
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return id;
         }
     }
 }

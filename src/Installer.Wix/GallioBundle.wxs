@@ -25,8 +25,8 @@
             <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
 <?endif ?>
         </Upgrade>
-        <Condition Message="A later version of [ProductName] is already installed.">
-            NOT NEWERVERSIONDETECTED
+        <Condition Message="A more recent version of Gallio is already installed.">
+            NEWERVERSIONDETECTED
         </Condition>
         <Condition Message="An administrator must approve or install [ProductName].">
             Privileged

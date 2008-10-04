@@ -15,6 +15,7 @@
 
 using System;
 using System.Xml;
+using Gallio.ReSharperRunner.Provider.Facade;
 using JetBrains.ReSharper.TaskRunnerFramework;
 
 namespace Gallio.ReSharperRunner.Provider.Tasks
@@ -37,7 +38,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     /// </para>
     /// </remarks>
     [Serializable]
-    public class GallioTestRunTask : GallioRemoteTask, IEquatable<GallioTestRunTask>
+    public class GallioTestRunTask : FacadeTask, IEquatable<GallioTestRunTask>
     {
         /// <summary>
         /// Gets a shared instance of the task.
@@ -68,18 +69,9 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             return 0;
         }
 
-        internal override ProxyTask CreateProxyTask()
+        public override FacadeTaskResult Execute(IFacadeTaskServer server)
         {
-            return new Proxy();
-        }
-
-        [Serializable]
-        internal sealed class Proxy : ProxyTask
-        {
-            public override ProxyTaskResult Execute(IProxyTaskServer server)
-            {
-                return new GallioTestRunner(server).Run(this);
-            }
+            return new GallioTestRunner(server).Run(this);
         }
     }
 }

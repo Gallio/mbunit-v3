@@ -14,21 +14,17 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Gallio.TDNetRunner.Facade;
 
 namespace Gallio.TDNetRunner.Core
 {
-    [Serializable]
-    internal class ProxyTestResult
+    /// <summary>
+    /// Provides test execution facilities.
+    /// </summary>
+    public interface IGallioTestRunner : IDisposable
     {
-        public bool IsExecuted { get; set; }
-        public bool IsFailure { get; set; }
-        public bool IsSuccess { get; set; }
-        public string Message { get; set; }
-        public string Name { get; set; }
-        public string StackTrace { get; set; }
-        public TimeSpan TimeSpan { get; set; }
-        public int TotalTests { get; set; }
+        void Abort();
+
+        FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, string cref);
     }
 }

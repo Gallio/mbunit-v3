@@ -32,12 +32,12 @@ namespace Gallio.TDNetRunner.Tests
             this.action = action;
         }
 
-        internal override IProxyTestRunner CreateTestRunner()
+        internal override IGallioTestRunner CreateTestRunner()
         {
             return new StubbedProxyTestRunner() { Action = action };
         }
 
-        private class StubbedProxyTestRunner : RemoteProxyTestRunner
+        private class StubbedProxyTestRunner : RemoteGallioTestRunner
         {
             public RunLauncherDelegate Action { get; set; }
 

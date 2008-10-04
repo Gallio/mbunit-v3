@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using Gallio.Runtime;
 
 namespace Gallio.Runner
@@ -30,12 +31,21 @@ namespace Gallio.Runner
         /// application for the report's document type.
         /// </summary>
         /// <param name="reportDocumentPath">The path of the report</param>
-        public static void ShowReportDocument(string reportDocumentPath)
+        /// <returns>True if the report document was successfully opened</returns>
+        public static bool ShowReportDocument(string reportDocumentPath)
         {
             if (reportDocumentPath == null)
                 throw new ArgumentNullException("reportDocumentPath");
 
-            Process.Start(reportDocumentPath);
+            try
+            {
+                Process.Start(reportDocumentPath);
+                return true;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
