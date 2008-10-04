@@ -50,7 +50,7 @@
                         <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                         <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                         <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='csUnit'/>
-                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                     </RegistryKey>
                 </Component>
 
@@ -61,7 +61,7 @@
                         <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                         <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                         <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit'/>
-                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                     </RegistryKey>
                 </Component>
 
@@ -72,7 +72,7 @@
                         <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                         <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                         <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit.Framework'/>
-                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                     </RegistryKey>
                 </Component>
 
@@ -83,7 +83,7 @@
                         <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                         <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                         <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='Microsoft.VisualStudio.QualityTools.UnitTestFramework'/>
-                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                     </RegistryKey>
                 </Component>
 
@@ -94,7 +94,7 @@
                         <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                         <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                         <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='nunit.framework'/>
-                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                     </RegistryKey>
                 </Component>
     
@@ -105,7 +105,7 @@
                         <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                         <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                         <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='xunit'/>
-                        <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                     </RegistryKey>
                 </Component>
             </Directory>
@@ -120,7 +120,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='csUnit'/>
-                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                 </RegistryKey>
             </Component>
 
@@ -131,7 +131,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit'/>
-                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                 </RegistryKey>
             </Component>
 
@@ -142,7 +142,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='MbUnit.Framework'/>
-                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                 </RegistryKey>
             </Component>
 
@@ -153,7 +153,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='Microsoft.VisualStudio.QualityTools.UnitTestFramework'/>
-                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                 </RegistryKey>
             </Component>
 
@@ -164,7 +164,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='nunit.framework'/>
-                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                 </RegistryKey>
             </Component>
             
@@ -175,7 +175,7 @@
                     <RegistryValue Type='string' Name='AssemblyPath' Value='[#Gallio.TDNetRunner.dll]'/>
                     <RegistryValue Type='string' Name='TypeName' Value='Gallio.TDNetRunner.GallioTestRunner'/>
                     <RegistryValue Type='string' Name='TargetFrameworkAssemblyName' Value='xunit'/>
-                    <RegistryValue Type="dword" Name="Resident" Value="1"/>
+			<!-- <RegistryValue Type="dword" Name="Resident" Value="1"/> -->
                 </RegistryKey>
             </Component>
 
