@@ -12,11 +12,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//#define RESIDENT
 
 using System;
 using System.Reflection;
 using TestDriven.Framework;
+
+#if RESIDENT
 using TestDriven.Framework.Resident;
+#endif
 
 namespace Gallio.TDNetRunner.Facade
 {
@@ -26,7 +30,10 @@ namespace Gallio.TDNetRunner.Facade
     /// <remarks>
     /// This type is part of a facade that decouples the Gallio test runner from the TestDriven.Net interfaces.
     /// </remarks>
-    public abstract class BaseFacadeTestRunner : ITestRunner, IResidentTestRunner, IDisposable
+    public abstract class BaseFacadeTestRunner : ITestRunner, IDisposable
+#if RESIDENT
+        , IResidentTestRunner
+#endif
     {
         /// <inheritdoc />
         public void Dispose()
@@ -91,6 +98,7 @@ namespace Gallio.TDNetRunner.Facade
                 FacadeUtils.ToCref(member)));
         }
 
+#if RESIDENT
         TestRunState IResidentTestRunner.Run(ITestListener testListener, string assemblyFile, string cref)
         {
             if (testListener == null)
@@ -105,5 +113,6 @@ namespace Gallio.TDNetRunner.Facade
         {
             Abort();
         }
+#endif
     }
 }

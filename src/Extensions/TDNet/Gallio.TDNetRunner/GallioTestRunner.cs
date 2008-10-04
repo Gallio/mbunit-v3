@@ -16,7 +16,6 @@
 using System;
 using System.Reflection;
 using Gallio.Loader;
-using Gallio.Runtime.Logging;
 using Gallio.TDNetRunner.Core;
 using Gallio.TDNetRunner.Facade;
 using Gallio.TDNetRunner.Properties;

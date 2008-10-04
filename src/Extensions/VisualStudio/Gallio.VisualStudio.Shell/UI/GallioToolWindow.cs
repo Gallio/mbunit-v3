@@ -51,9 +51,9 @@ namespace Gallio.VisualStudio.Shell.UI
         }
 
         /// <summary>
-        /// 
+        /// Sets the content of the tool window.
         /// </summary>
-        /// <param name="content"></param>
+        /// <param name="content">The tool window content</param>
         public void SetContent(GallioToolWindowContent content)
         {
             Control.SetContent(content);

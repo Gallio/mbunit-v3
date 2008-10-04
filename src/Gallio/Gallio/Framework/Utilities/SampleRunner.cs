@@ -24,7 +24,6 @@ using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
-using Gallio.Framework;
 using Gallio.Model.Filters;
 
 namespace Gallio.Framework.Utilities
@@ -39,6 +38,14 @@ namespace Gallio.Framework.Utilities
     /// This utility class is intended to help write integration tests for test framework features.
     /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This class is NOT intended to be used for instructional purposes as a template for
+    /// creating a new test runner.  Do NOT copy this code and try to make a new test runner
+    /// out of it.  Instead, please examine the code for the Gallio Echo test runner and pay
+    /// attention to how it uses the <see cref="TestLauncher" />.
+    /// </para>
+    /// </remarks>
     public class SampleRunner
     {
         private readonly TestPackageConfig packageConfig;
