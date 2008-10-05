@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio;
 using Gallio.Model.Execution;
 
 namespace Gallio.Model
@@ -139,7 +138,26 @@ namespace Gallio.Model
         /// <summary>
         /// Gets the list of the dependencies of this test.
         /// </summary>
+        /// <remarks>
+        /// Some test frameworks may choose to ignore test dependencies or may impose their own dependency schemes.
+        /// </remarks>
         IList<ITest> Dependencies { get; }
+
+        /// <summary>
+        /// <para>
+        /// Gets or sets a number that defines an ordering for the test with respect to its siblings.
+        /// </para>
+        /// <para>
+        /// Unless compelled otherwise by test dependencies, tests with a lower order number than
+        /// their siblings will run before those siblings and tests with the same order number
+        /// as their siblings with run in an arbitrary sequence with respect to those siblings.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// Some test frameworks may choose to ignore test order or may impose their own ordering schemes.
+        /// </remarks>
+        /// <value>The test execution order with respect to siblings, initially zero.</value>
+        int Order { get; set; }
 
         /// <summary>
         /// Gets a <see cref="ITestController" /> <see cref="Func{T}" /> to run this tes

@@ -257,6 +257,63 @@ namespace Gallio.Tests.Model.Execution
             AssertCommandDependency("A2", "B");
         }
 
+        [Test]
+        public void IndependentTestsAreSortedByOrder()
+        {
+            model.RootTest.Name = "Root";
+
+            model.RootTest.AddChild(CreateTest("A", 1));
+            model.RootTest.Children[0].AddChild(CreateTest("A1", 2));
+            model.RootTest.Children[0].AddChild(CreateTest("A2", 0));
+            model.RootTest.Children[0].AddChild(CreateTest("A3", 1));
+
+            model.RootTest.AddChild(CreateTest("B", 0));
+            model.RootTest.Children[1].AddChild(CreateTest("B1", 0));
+
+            BuildCommands(new AnyFilter<ITest>());
+            AssertCommandStructure("Root", "B", "B1", "A", "A2", "A3", "A1");
+            AssertCommandExplicit("Root");
+        }
+
+        [Test]
+        public void IndependentTestsOfSameOrderAreSortedByName()
+        {
+            model.RootTest.Name = "Root";
+
+            model.RootTest.AddChild(CreateTest("B", 0));
+            model.RootTest.Children[0].AddChild(CreateTest("B1", 0));
+
+            model.RootTest.AddChild(CreateTest("A", 0));
+            model.RootTest.Children[1].AddChild(CreateTest("A3", 0));
+            model.RootTest.Children[1].AddChild(CreateTest("A1", 0));
+            model.RootTest.Children[1].AddChild(CreateTest("A2", 0));
+
+            BuildCommands(new AnyFilter<ITest>());
+            AssertCommandStructure("Root", "A", "A1", "A2", "A3", "B", "B1");
+            AssertCommandExplicit("Root");
+        }
+
+        [Test]
+        public void DependentTestsAreSortedByOrder()
+        {
+            model.RootTest.Name = "Root";
+
+            model.RootTest.AddChild(CreateTest("A", 1));
+            model.RootTest.Children[0].AddChild(CreateTest("A1", 2));
+            model.RootTest.Children[0].AddChild(CreateTest("A2", 0));
+            model.RootTest.Children[0].AddChild(CreateTest("A3", 1));
+
+            model.RootTest.AddChild(CreateTest("B", 0));
+            model.RootTest.Children[1].AddChild(CreateTest("B1", 0));
+
+            GetTest("A2").AddDependency(GetTest("A1"));
+            GetTest("A2").AddDependency(GetTest("A3"));
+
+            BuildCommands(new AnyFilter<ITest>());
+            AssertCommandStructure("Root", "B", "B1", "A", "A3", "A1", "A2");
+            AssertCommandExplicit("Root");
+        }
+
         private void BuildCommands(Filter<ITest> filter)
         {
             rootCommand = TestCommandFactory.BuildCommands(model, filter, Mocks.Stub<ITestContextManager>());
@@ -275,13 +332,13 @@ namespace Gallio.Tests.Model.Execution
 
             model.RootTest.Name = "Root";
 
-            model.RootTest.AddChild(CreateTest("A"));
-            model.RootTest.Children[0].AddChild(CreateTest("A1"));
-            model.RootTest.Children[0].AddChild(CreateTest("A2"));
-            model.RootTest.Children[0].AddChild(CreateTest("A3"));
+            model.RootTest.AddChild(CreateTest("A", 0));
+            model.RootTest.Children[0].AddChild(CreateTest("A1", 0));
+            model.RootTest.Children[0].AddChild(CreateTest("A2", 0));
+            model.RootTest.Children[0].AddChild(CreateTest("A3", 0));
 
-            model.RootTest.AddChild(CreateTest("B"));
-            model.RootTest.Children[1].AddChild(CreateTest("B1"));
+            model.RootTest.AddChild(CreateTest("B", 0));
+            model.RootTest.Children[1].AddChild(CreateTest("B1", 0));
         }
 
         private ITest GetTest(string name)
@@ -327,9 +384,9 @@ namespace Gallio.Tests.Model.Execution
                 "Missing dependency from '{0}' to '{1}'.", fromName, toName);
         }
 
-        private static ITest CreateTest(string name)
+        private static ITest CreateTest(string name, int order)
         {
-            return new BaseTest(name, null);
+            return new BaseTest(name, null) { Order = order };
         }
     }
 }

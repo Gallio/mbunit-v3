@@ -25,6 +25,8 @@ namespace Gallio.Model.Execution
     /// </summary>
     public static class TestCommandFactory
     {
+        private static readonly DefaultTestOrderStrategy testOrderStrategy = new DefaultTestOrderStrategy();
+
         /// <summary>
         /// Recursively builds a tree of test commands.
         /// </summary>
@@ -50,10 +52,10 @@ namespace Gallio.Model.Execution
             if (rootCommand == null)
                 return null;
 
-            MultiMap<ManagedTestCommand, ManagedTestCommand> orderedSiblings = new MultiMap<ManagedTestCommand, ManagedTestCommand>();
-            PopulateCommandDependencies(commands, orderedSiblings);
+            MultiMap<ManagedTestCommand, ManagedTestCommand> siblingDependencies = new MultiMap<ManagedTestCommand, ManagedTestCommand>();
+            PopulateCommandDependencies(commands, siblingDependencies);
 
-            SortChildren(rootCommand, orderedSiblings);
+            SortChildren(rootCommand, siblingDependencies);
             return rootCommand;
         }
 
@@ -107,25 +109,26 @@ namespace Gallio.Model.Execution
         }
 
         private static void PopulateCommandDependencies(Dictionary<ITest, ManagedTestCommand> commands,
-            MultiMap<ManagedTestCommand, ManagedTestCommand> orderedSiblings)
+            MultiMap<ManagedTestCommand, ManagedTestCommand> siblingDependencies)
         {
-            foreach (KeyValuePair<ITest, ManagedTestCommand> entry in commands)
+            foreach (KeyValuePair<ITest, ManagedTestCommand> sourceCommand in commands)
             {
-                foreach (ITest testDependency in entry.Key.Dependencies)
+                ITest source = sourceCommand.Key;
+                foreach (ITest target in source.Dependencies)
                 {
-                    ManagedTestCommand commandDependency;
-                    if (commands.TryGetValue(testDependency, out commandDependency))
+                    ManagedTestCommand targetCommand;
+                    if (commands.TryGetValue(target, out targetCommand))
                     {
-                        entry.Value.AddDependency(commandDependency);
+                        sourceCommand.Value.AddDependency(targetCommand);
 
-                        CreateOrderedEdgeForDependency(commands, orderedSiblings, entry.Key, testDependency);
+                        SetCommandDependency(commands, siblingDependencies, source, target);
                     }
                 }
             }
         }
 
-        private static void CreateOrderedEdgeForDependency(Dictionary<ITest, ManagedTestCommand> commands,
-            MultiMap<ManagedTestCommand, ManagedTestCommand> orderedSiblings,
+        private static void SetCommandDependency(Dictionary<ITest, ManagedTestCommand> commands,
+            MultiMap<ManagedTestCommand, ManagedTestCommand> siblingDependencies,
             ITest source, ITest target)
         {
             if (source == target)
@@ -150,10 +153,10 @@ namespace Gallio.Model.Execution
             while (sourceAncestor == targetAncestor);
 
             // In order to ensure that the dependency is evaluated in the right order,
-            // the current sourceAncestor must be executed before the current targetAncestor.
+            // the current sourceAncestor must be executed after the current targetAncestor.
             // So we create an edge from the sourceAncestor command to its sibling
-            // targetAncestor command.
-            orderedSiblings.Add(commands[sourceAncestor], commands[targetAncestor]);
+            // targetAncestor command upon which it depends.
+            siblingDependencies.Add(commands[sourceAncestor], commands[targetAncestor]);
         }
 
         private static Stack<ITest> CreateAncestorStack(ITest test)
@@ -169,25 +172,38 @@ namespace Gallio.Model.Execution
             return ancestors;
         }
 
-        private static void SortChildren(ManagedTestCommand parent, MultiMap<ManagedTestCommand, ManagedTestCommand> orderedSiblings)
+        private static void SortChildren(ManagedTestCommand parent, MultiMap<ManagedTestCommand, ManagedTestCommand> siblingDependencies)
         {
-            IList<ManagedTestCommand> children = parent.ChildrenToArray();
-            if (children.Count == 0)
+            ManagedTestCommand[] children = parent.ChildrenToArray();
+            if (children.Length == 0)
                 return;
 
-            // Perform a topological sort of the children using depth-first search.
+            // Clear the array of children since we are about to reshuffle them.
             parent.ClearChildren();
 
+            // Sort the children by order.  Because the topological sort emits vertices precisely
+            // in the ordert that it visits them (depth-first) it will preserve the relative ordering
+            // of independent vertices.  So we influence test execution order by pre-sorting.
+            // Dependencies will of course interfere with the ordering slightly.  However, if the
+            // user explicitly specifies orderings in dependency order then they'll indeed run in
+            // that specified order.  -- Jeff.
+            SortCommandsByOrder(children);
+
+            // Perform a topological sort of the children using depth-first search.
+            // Because at this stage a command only has dependencies on its siblings the depth-first search
+            // actually proceeds down the chain of sibling dependencies only; it does not follow
+            // traverse the whole test hierarchy.  -- Jeff.
             Dictionary<ManagedTestCommand, bool> visitedSet = new Dictionary<ManagedTestCommand, bool>();
             Stack<DepthFirstEntry> stack = new Stack<DepthFirstEntry>();
 
-            stack.Push(new DepthFirstEntry(null, children.GetEnumerator()));
+            stack.Push(new DepthFirstEntry(null, children));
             for (;;)
             {
                 DepthFirstEntry top = stack.Peek();
-                if (top.EdgeEnumerator.MoveNext())
+                if (top.DependencyEnumerator.MoveNext())
                 {
-                    ManagedTestCommand current = top.EdgeEnumerator.Current;
+                    ManagedTestCommand current = top.DependencyEnumerator.Current;
+
                     bool inProgressFlag;
                     if (visitedSet.TryGetValue(current, out inProgressFlag))
                     {
@@ -197,13 +213,27 @@ namespace Gallio.Model.Execution
                     }
                     else
                     {
-                        visitedSet[current] = true;
-                        stack.Push(new DepthFirstEntry(current, orderedSiblings[current].GetEnumerator()));
+                        IList<ManagedTestCommand> unorderedDependencies = siblingDependencies[current];
+                        if (unorderedDependencies.Count != 0)
+                        {
+                            visitedSet[current] = true;
+
+                            // We need to sort all visited children so that dependencies run in relative order.
+                            ManagedTestCommand[] dependencies = GenericUtils.ToArray(unorderedDependencies);
+                            SortCommandsByOrder(dependencies);
+
+                            stack.Push(new DepthFirstEntry(current, dependencies));
+                        }
+                        else
+                        {
+                            parent.AddChild(current);
+                            visitedSet[current] = false;
+                        }
                     }
                 }
                 else
                 {
-                    ManagedTestCommand current = top.Vertex;
+                    ManagedTestCommand current = top.Source;
                     if (current == null)
                         break;
 
@@ -215,18 +245,23 @@ namespace Gallio.Model.Execution
 
             // Recursively sort the children of this command.
             foreach (ManagedTestCommand child in children)
-                SortChildren(child, orderedSiblings);
+                SortChildren(child, siblingDependencies);
+        }
+
+        private static void SortCommandsByOrder(ManagedTestCommand[] commands)
+        {
+            Array.Sort(commands, (a, b) => testOrderStrategy.Compare(a.Test, b.Test));
         }
 
         private struct DepthFirstEntry
         {
-            public readonly ManagedTestCommand Vertex;
-            public readonly IEnumerator<ManagedTestCommand> EdgeEnumerator;
+            public readonly ManagedTestCommand Source;
+            public readonly IEnumerator<ManagedTestCommand> DependencyEnumerator;
 
-            public DepthFirstEntry(ManagedTestCommand vertex, IEnumerator<ManagedTestCommand> edgeEnumerator)
+            public DepthFirstEntry(ManagedTestCommand source, IEnumerable<ManagedTestCommand> dependencies)
             {
-                Vertex = vertex;
-                EdgeEnumerator = edgeEnumerator;
+                Source = source;
+                DependencyEnumerator = dependencies.GetEnumerator();
             }
         }
     }

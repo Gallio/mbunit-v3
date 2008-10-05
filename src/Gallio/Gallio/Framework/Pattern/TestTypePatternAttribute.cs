@@ -48,6 +48,19 @@ namespace Gallio.Framework.Pattern
         /// <seealso cref="InferTestType"/>
         public static readonly TestTypePatternAttribute AutomaticInstance = new AutomaticImpl();
 
+        /// <summary>
+        /// <para>
+        /// Gets or sets a number that defines an ordering for the test with respect to its siblings.
+        /// </para>
+        /// <para>
+        /// Unless compelled otherwise by test dependencies, tests with a lower order number than
+        /// their siblings will run before those siblings and tests with the same order number
+        /// as their siblings with run in an arbitrary sequence with respect to those siblings.
+        /// </para>
+        /// </summary>
+        /// <value>The test execution order with respect to siblings, initially zero.</value>
+        public int Order { get; set; }
+
         /// <inheritdoc />
         public override bool IsPrimary
         {
@@ -67,6 +80,8 @@ namespace Gallio.Framework.Pattern
             Validate(containingScope, type);
 
             PatternTest typeTest = CreateTest(containingScope, type);
+            typeTest.Order = Order;
+
             PatternEvaluationScope typeScope = containingScope.AddChildTest(typeTest);
             InitializeTest(typeScope, type);
             SetTestSemantics(typeTest, type);

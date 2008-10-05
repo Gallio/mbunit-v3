@@ -157,6 +157,7 @@
     <Compile Include="Framework\Text\DiffSet.cs" />
     <Compile Include="Framework\Text\Diff.cs" />
     <Compile Include="Framework\Text\DiffKind.cs" />
+    <Compile Include="Model\Execution\DefaultTestOrderStrategy.cs" />
     <Compile Include="Model\Logging\ITestLogStreamWritable.cs" />
     <Compile Include="Model\Logging\Marker.cs" />
     <Compile Include="Model\Logging\StructuredTestLogWriter.cs" />

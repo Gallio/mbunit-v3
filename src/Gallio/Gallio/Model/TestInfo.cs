@@ -89,6 +89,17 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
+        public int Order
+        {
+            get { return Source.Order; }
+        }
+        int ITest.Order
+        {
+            get { return Order; }
+            set { throw new NotSupportedException(); }
+        }
+
+        /// <inheritdoc />
         public ITest Parent
         {
             get

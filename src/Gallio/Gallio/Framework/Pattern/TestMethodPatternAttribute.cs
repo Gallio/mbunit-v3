@@ -17,7 +17,6 @@ using System;
 using Gallio.Framework.Data;
 using Gallio.Model;
 using Gallio.Reflection;
-using Gallio.Framework.Pattern;
 
 namespace Gallio.Framework.Pattern
 {
@@ -34,6 +33,19 @@ namespace Gallio.Framework.Pattern
     [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple=false, Inherited=true)]
     public abstract class TestMethodPatternAttribute : PatternAttribute
     {
+        /// <summary>
+        /// <para>
+        /// Gets or sets a number that defines an ordering for the test with respect to its siblings.
+        /// </para>
+        /// <para>
+        /// Unless compelled otherwise by test dependencies, tests with a lower order number than
+        /// their siblings will run before those siblings and tests with the same order number
+        /// as their siblings with run in an arbitrary sequence with respect to those siblings.
+        /// </para>
+        /// </summary>
+        /// <value>The test execution order with respect to siblings, initially zero.</value>
+        public int Order { get; set; }
+
         /// <inheritdoc />
         public override bool IsPrimary
         {
@@ -53,6 +65,8 @@ namespace Gallio.Framework.Pattern
             Validate(containingScope, method);
 
             PatternTest methodTest = CreateTest(containingScope, method);
+            methodTest.Order = Order;
+
             PatternEvaluationScope methodScope = containingScope.AddChildTest(methodTest);
             InitializeTest(methodScope, method);
             SetTestSemantics(methodTest, method);

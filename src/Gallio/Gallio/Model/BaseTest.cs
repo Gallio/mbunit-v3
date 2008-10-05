@@ -36,6 +36,7 @@ namespace Gallio.Model
         private readonly List<ITest> dependencies;
         private ITest parent;
         private bool isTestCase;
+        private int order;
 
         private string cachedId;
         private string cachedLocalId;
@@ -177,6 +178,13 @@ namespace Gallio.Model
         public IList<ITest> Dependencies
         {
             get { return dependencies.AsReadOnly(); }
+        }
+
+        /// <inheritdoc />
+        public int Order
+        {
+            get { return order; }
+            set { order = value; }
         }
 
         /// <inheritdoc />

@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//#define RESIDENT
+
 using System;
 using System.IO;
 using System.Reflection;
@@ -91,6 +93,7 @@ namespace Gallio.TDNetRunner.Tests
             Assert.Throws<ArgumentNullException>(() => tr.RunNamespace(MockRepository.GenerateStub<ITestListener>(), GetType().Assembly, null));
         }
 
+#if RESIDENT
         [Test]
         public void ResidentRunThrowsWhenTestListenerIsNull()
         {
@@ -186,6 +189,7 @@ namespace Gallio.TDNetRunner.Tests
 
             ((IResidentTestRunner)tr).Run(MockRepository.GenerateStub<ITestListener>(), assemblyPath, "N:" + @namespace);
         }
+#endif
 
         [Test]
         [Row(ResultCode.Canceled, TestRunState.Error)]

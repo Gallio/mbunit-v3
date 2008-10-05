@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using Gallio.Collections;
 
@@ -203,6 +204,18 @@ namespace Gallio.Model.Execution
             ManagedTestCommand[] array = new ManagedTestCommand[children.Count];
             children.CopyTo(array);
             return array;
+        }
+
+        /// <summary>
+        /// Returns a description of the test command for debugging purposes.
+        /// </summary>
+        /// <returns>A description of the test command</returns>
+        public override string ToString()
+        {
+            StringBuilder description = new StringBuilder(test.Name);
+            if (isExplicit)
+                description.Append(" (explicit)");
+            return description.ToString();
         }
     }
 }
