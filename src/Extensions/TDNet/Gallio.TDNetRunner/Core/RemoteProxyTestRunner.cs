@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
-using System.Reflection;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -29,7 +28,7 @@ using Gallio.TDNetRunner.Properties;
 
 namespace Gallio.TDNetRunner.Core
 {
-    public class RemoteGallioTestRunner : MarshalByRefObject, IGallioTestRunner
+    public class RemoteProxyTestRunner : MarshalByRefObject, IProxyTestRunner
     {
         private const string ShortReportType = @"html-condensed";
         private const string LongReportType = @"html";
@@ -37,7 +36,7 @@ namespace Gallio.TDNetRunner.Core
 
         private TestLauncher launcher;
 
-        public RemoteGallioTestRunner()
+        public RemoteProxyTestRunner()
         {
             launcher = new TestLauncher();
         }

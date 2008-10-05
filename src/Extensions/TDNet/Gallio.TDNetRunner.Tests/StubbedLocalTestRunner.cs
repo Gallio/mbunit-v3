@@ -20,9 +20,9 @@ using MbUnit.Framework;
 namespace Gallio.TDNetRunner.Tests
 {
     /// <summary>
-    /// Makes it possible to unit test the <see cref="GallioTestRunner" /> class.
+    /// Makes it possible to stub out the test execution portion of the test runner.
     /// </summary>
-    internal class StubbedTestRunner : GallioTestRunner
+    internal class StubbedLocalTestRunner : LocalProxyTestRunner
     {
         public delegate TestLauncherResult RunLauncherDelegate(TestLauncher launcher);
         private RunLauncherDelegate action;
@@ -32,12 +32,12 @@ namespace Gallio.TDNetRunner.Tests
             this.action = action;
         }
 
-        internal override IGallioTestRunner CreateTestRunner()
+        internal override IProxyTestRunner CreateRemoteProxyTestRunner()
         {
-            return new StubbedProxyTestRunner() { Action = action };
+            return new StubbedRemoteProxyTestRunner() { Action = action };
         }
 
-        private class StubbedProxyTestRunner : RemoteGallioTestRunner
+        private class StubbedRemoteProxyTestRunner : RemoteProxyTestRunner
         {
             public RunLauncherDelegate Action { get; set; }
 

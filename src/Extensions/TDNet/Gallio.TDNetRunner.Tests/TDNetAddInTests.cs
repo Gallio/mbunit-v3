@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//#define RESIDENT
-
 using System;
 using System.IO;
 using System.Reflection;
@@ -25,93 +23,104 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
+using Gallio.TDNetRunner.Facade;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using TestDriven.Framework;
 using TestDriven.Framework.Resident;
+using ITestRunner = TestDriven.Framework.ITestRunner;
 
 namespace Gallio.TDNetRunner.Tests
 {
     // TODO: Verify logged output
     [TestFixture]
-    [TestsOn(typeof(StubbedTestRunner))]
+    [TestsOn(typeof(StubbedLocalTestRunner))]
     public class TDNetAddInTests
     {
         [Test]
         public void RunAssemblyThrowsWhenTestListenerIsNull()
         {
-            TestDriven.Framework.ITestRunner tr = new StubbedTestRunner();
+            GallioTestRunner tr = new GallioTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
             Assert.Throws<ArgumentNullException>(() => tr.RunAssembly(null, GetType().Assembly));
         }
 
         [Test]
         public void RunAssemblyThrowsWhenAssemblyIsNull()
         {
-            TestDriven.Framework.ITestRunner tr = new StubbedTestRunner();
-            Assert.Throws<ArgumentNullException>(() => tr.RunAssembly(MockRepository.GenerateStub < ITestListener>(), null));
+            GallioTestRunner tr = new GallioTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
+            Assert.Throws<ArgumentNullException>(() => tr.RunAssembly(MockRepository.GenerateStub<ITestListener>(), null));
         }
 
         [Test]
         public void RunMemberThrowsWhenTestListenerIsNull()
         {
-            TestDriven.Framework.ITestRunner tr = new StubbedTestRunner();
+            GallioTestRunner tr = new GallioTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
             Assert.Throws<ArgumentNullException>(() => tr.RunMember(null, GetType().Assembly, GetType()));
         }
 
         [Test]
         public void RunMemberThrowsWhenAssemblyIsNull()
         {
-            TestDriven.Framework.ITestRunner tr = new StubbedTestRunner();
+            GallioTestRunner tr = new GallioTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
             Assert.Throws<ArgumentNullException>(() => tr.RunMember(MockRepository.GenerateStub<ITestListener>(), null, GetType()));
         }
 
         [Test]
         public void RunMemberThrowsWhenMemberIsNull()
         {
-            TestDriven.Framework.ITestRunner tr = new StubbedTestRunner();
+            GallioTestRunner tr = new GallioTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
             Assert.Throws<ArgumentNullException>(() => tr.RunMember(MockRepository.GenerateStub<ITestListener>(), GetType().Assembly, null));
         }
 
         [Test]
         public void RunNamespaceThrowsWhenTestListenerIsNull()
         {
-            TestDriven.Framework.ITestRunner tr = new StubbedTestRunner();
+            GallioTestRunner tr = new GallioTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
             Assert.Throws<ArgumentNullException>(() => tr.RunNamespace(null, GetType().Assembly, "Foo"));
         }
 
         [Test]
         public void RunNamespaceThrowsWhenAssemblyIsNull()
         {
-            TestDriven.Framework.ITestRunner tr = new StubbedTestRunner();
+            GallioTestRunner tr = new GallioTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
             Assert.Throws<ArgumentNullException>(() => tr.RunNamespace(MockRepository.GenerateStub<ITestListener>(), null, "Foo"));
         }
 
         [Test]
         public void RunNamespaceThrowsWhenMemberIsNull()
         {
-            TestDriven.Framework.ITestRunner tr = new StubbedTestRunner();
+            GallioTestRunner tr = new GallioTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
             Assert.Throws<ArgumentNullException>(() => tr.RunNamespace(MockRepository.GenerateStub<ITestListener>(), GetType().Assembly, null));
         }
 
-#if RESIDENT
         [Test]
         public void ResidentRunThrowsWhenTestListenerIsNull()
         {
-            IResidentTestRunner tr = new StubbedTestRunner();
+            GallioResidentTestRunner tr = new GallioResidentTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
             Assert.Throws<ArgumentNullException>(() => tr.Run(null, "Assembly.dll", "T:Foo"));
         }
 
         [Test]
         public void ResidentRunThrowsWhenAssemblyPathIsNull()
         {
-            IResidentTestRunner tr = new StubbedTestRunner();
+            GallioResidentTestRunner tr = new GallioResidentTestRunner();
+            tr.TestRunner = new StubbedLocalTestRunner();
             Assert.Throws<ArgumentNullException>(() => tr.Run(MockRepository.GenerateStub<ITestListener>(), null, "T:Foo"));
         }
 
         [Test]
         public void RunAssemblyPassesCorrectOptionsToTheLauncher()
         {
-            StubbedTestRunner tr = new StubbedTestRunner();
+            StubbedLocalTestRunner tr = new StubbedLocalTestRunner();
 
             Assembly assembly = typeof(TDNetAddInTests).Assembly;
             string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
@@ -123,13 +132,13 @@ namespace Gallio.TDNetRunner.Tests
                 return new TestLauncherResult(new Report());
             });
 
-            ((IResidentTestRunner)tr).Run(MockRepository.GenerateStub<ITestListener>(), assemblyPath, null);
+            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, null);
         }
 
         [Test]
         public void RunMemberWithTypePassesCorrectOptionsToTheLauncher()
         {
-            StubbedTestRunner tr = new StubbedTestRunner();
+            StubbedLocalTestRunner tr = new StubbedLocalTestRunner();
 
             Type type = typeof(TDNetAddInTests);
             Assembly assembly = type.Assembly;
@@ -143,13 +152,13 @@ namespace Gallio.TDNetRunner.Tests
                 return new TestLauncherResult(new Report());
             });
 
-            ((IResidentTestRunner)tr).Run(MockRepository.GenerateStub<ITestListener>(), assemblyPath, "T:" + type.FullName);
+            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, "T:" + type.FullName);
         }
 
         [Test]
         public void RunMemberWithMethodPassesCorrectOptionsToTheLauncher()
         {
-            StubbedTestRunner tr = new StubbedTestRunner();
+            StubbedLocalTestRunner tr = new StubbedLocalTestRunner();
 
             MethodBase method = Reflector.GetExecutingFunction().Resolve(true);
             Assembly assembly = method.DeclaringType.Assembly;
@@ -166,14 +175,14 @@ namespace Gallio.TDNetRunner.Tests
                 return new TestLauncherResult(new Report());
             });
 
-            ((IResidentTestRunner)tr).Run(MockRepository.GenerateStub<ITestListener>(), assemblyPath,
+            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath,
                 "M:" + method.DeclaringType.FullName + "." + method.Name);
         }
 
         [Test]
         public void RunNamespacePassesCorrectOptionsToTheLauncher()
         {
-            StubbedTestRunner tr = new StubbedTestRunner();
+            StubbedLocalTestRunner tr = new StubbedLocalTestRunner();
 
             Assembly assembly = typeof(TDNetAddInTests).Assembly;
             string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
@@ -187,20 +196,19 @@ namespace Gallio.TDNetRunner.Tests
                 return new TestLauncherResult(new Report());
             });
 
-            ((IResidentTestRunner)tr).Run(MockRepository.GenerateStub<ITestListener>(), assemblyPath, "N:" + @namespace);
+            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, "N:" + @namespace);
         }
-#endif
 
         [Test]
-        [Row(ResultCode.Canceled, TestRunState.Error)]
-        [Row(ResultCode.Failure, TestRunState.Failure)]
-        [Row(ResultCode.FatalException, TestRunState.Error)]
-        [Row(ResultCode.InvalidArguments, TestRunState.Error)]
-        [Row(ResultCode.NoTests, TestRunState.Success)]
-        [Row(ResultCode.Success, TestRunState.Success)]
-        public void RunReturnsCorrectResultCode(int resultCode, TestRunState expectedRunState)
+        [Row(ResultCode.Canceled, FacadeTestRunState.Error)]
+        [Row(ResultCode.Failure, FacadeTestRunState.Failure)]
+        [Row(ResultCode.FatalException, FacadeTestRunState.Error)]
+        [Row(ResultCode.InvalidArguments, FacadeTestRunState.Error)]
+        [Row(ResultCode.NoTests, FacadeTestRunState.Success)]
+        [Row(ResultCode.Success, FacadeTestRunState.Success)]
+        public void RunReturnsCorrectResultCode(int resultCode, FacadeTestRunState expectedRunState)
         {
-            StubbedTestRunner tr = new StubbedTestRunner();
+            StubbedLocalTestRunner tr = new StubbedLocalTestRunner();
 
             Assembly assembly = typeof(TDNetAddInTests).Assembly;
             string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
@@ -211,7 +219,7 @@ namespace Gallio.TDNetRunner.Tests
                 return result;
             });
 
-            TestRunState runResult = ((IResidentTestRunner)tr).Run(MockRepository.GenerateStub<ITestListener>(), assemblyPath, null);
+            FacadeTestRunState runResult = tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, null);
             Assert.AreEqual(expectedRunState, runResult);
         }
 

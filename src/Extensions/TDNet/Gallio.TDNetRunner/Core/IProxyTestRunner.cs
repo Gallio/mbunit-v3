@@ -21,7 +21,7 @@ namespace Gallio.TDNetRunner.Core
     /// <summary>
     /// Provides test execution facilities.
     /// </summary>
-    public interface IGallioTestRunner : IDisposable
+    public interface IProxyTestRunner : IDisposable
     {
         void Abort();
 

@@ -48,6 +48,6 @@ if /I not "%Answer%"=="N" goto :RETRY_PROMPT
 "%REG%" ADD %KEY% /V AssemblyPath /D %TDNETRUNNER_DLL% /F >nul
 "%REG%" ADD %KEY% /V TargetFrameworkAssemblyName /D %FRAMEWORK% /F >nul
 "%REG%" ADD %KEY% /V TypeName /D Gallio.TDNetRunner.GallioTestRunner /F >nul
-"%REG%" ADD %KEY% /T REG_DWORD /V Resident /D 1 /F >nul
+"%REG%" ADD %KEY% /V ResidentTypeName /D Gallio.TDNetRunner.GallioResidentTestRunner /F >nul
 goto :EOF
 

@@ -70,26 +70,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseTestRunner.cs" />
+    <Compile Include="Core\LocalProxyTestRunner.cs" />
     <Compile Include="Facade\AdapterFacadeTestListener.cs" />
-    <Compile Include="Facade\BaseFacadeTestRunner.cs" />
     <Compile Include="Facade\FacadeCategory.cs" />
     <Compile Include="Facade\FacadeTestResult.cs" />
     <Compile Include="Facade\FacadeTestRunState.cs" />
     <Compile Include="Facade\FacadeTestState.cs" />
     <Compile Include="EnvironmentManager.cs" />
     <Compile Include="Facade\FacadeUtils.cs" />
+    <Compile Include="GallioResidentTestRunner.cs" />
     <Compile Include="GallioTestRunner.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Facade\IFacadeTestListener.cs" />
-    <Compile Include="Core\IGallioTestRunner.cs" />
+    <Compile Include="Core\IProxyTestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Core\RemoteGallioTestRunner.cs" />
+    <Compile Include="Core\RemoteProxyTestRunner.cs" />
     <Compile Include="Core\TDNetLogger.cs" />
     <Compile Include="Core\TDNetExtension.cs" />
   </ItemGroup>
