@@ -32,6 +32,9 @@ namespace Gallio.Framework.Pattern
     /// <para>
     /// At most one attribute of this type may appear on any given class.
     /// </para>
+    /// <para>
+    /// A test type has a timeout of 10 minutes by default.
+    /// </para>
     /// </summary>
     /// <seealso cref="TestTypeDecoratorPatternAttribute"/>
     [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
@@ -81,6 +84,7 @@ namespace Gallio.Framework.Pattern
 
             PatternTest typeTest = CreateTest(containingScope, type);
             typeTest.Order = Order;
+            typeTest.Timeout = TimeSpan.FromMinutes(10);
 
             PatternEvaluationScope typeScope = containingScope.AddChildTest(typeTest);
             InitializeTest(typeScope, type);

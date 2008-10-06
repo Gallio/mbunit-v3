@@ -28,6 +28,10 @@ namespace MbUnit.Framework
     /// Output from the fixture, such as text written to the console, is captured
     /// by the framework and will be included in the test report.
     /// </para>
+    /// <para>
+    /// A test fixture has a timeout of 10 minutes by default.  This may be changed
+    /// using the <see cref="TimeoutAttribute" />.
+    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
