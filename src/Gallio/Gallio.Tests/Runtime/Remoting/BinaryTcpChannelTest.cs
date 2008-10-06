@@ -35,7 +35,7 @@ namespace Gallio.Tests.Runtime.Remoting
         [Test, ExpectedArgumentNullException]
         public void BinaryTcpClientChannelConstructorThrowsIfHostNameIsNull()
         {
-            new BinaryTcpClientChannel(null, 1);
+            new BinaryTcpClientChannel(null, 1, TimeSpan.FromSeconds(30));
         }
 
         [Test, ExpectedArgumentNullException]
@@ -53,7 +53,7 @@ namespace Gallio.Tests.Runtime.Remoting
 
                 host.GetHostService().Do<object, object>(RemoteCallback, null);
 
-                using (BinaryTcpClientChannel clientChannel = new BinaryTcpClientChannel("localhost", PortNumber))
+                using (BinaryTcpClientChannel clientChannel = new BinaryTcpClientChannel("localhost", PortNumber, TimeSpan.FromSeconds(30)))
                 {
                     TestService serviceProxy =
                         (TestService)clientChannel.GetService(typeof(TestService), ServiceName);

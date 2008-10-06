@@ -51,7 +51,7 @@ namespace Gallio.Host
         public void InitializeTcpChannel(int portNumber)
         {
             serverChannel = new BinaryTcpServerChannel("localhost", portNumber);
-            callbackChannel = new BinaryTcpClientChannel("localhost", portNumber);
+            callbackChannel = new BinaryTcpClientChannel("localhost", portNumber, null);
         }
 
         public bool SetOwnerProcess(int processId)

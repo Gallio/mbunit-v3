@@ -31,13 +31,14 @@ namespace Gallio.Runtime.Remoting
         /// </summary>
         /// <param name="hostName">The host name to connect to</param>
         /// <param name="portNumber">The port number to connect to</param>
+        /// <param name="requestTimeout">The request timeout or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostName"/> is null</exception>
-        public BinaryTcpClientChannel(string hostName, int portNumber)
-            : base(CreateChannel(hostName, portNumber), new Uri(@"tcp://" + hostName + ":" + portNumber))
+        public BinaryTcpClientChannel(string hostName, int portNumber, TimeSpan? requestTimeout)
+            : base(CreateChannel(hostName, portNumber, requestTimeout), new Uri(@"tcp://" + hostName + ":" + portNumber))
         {
         }
 
-        private static IChannel CreateChannel(string hostName, int portNumber)
+        private static IChannel CreateChannel(string hostName, int portNumber, TimeSpan? requestTimeout)
         {
             if (hostName == null)
                 throw new ArgumentNullException("hostName");
@@ -45,6 +46,7 @@ namespace Gallio.Runtime.Remoting
             IDictionary channelProperties = new Hashtable();
             channelProperties[@"name"] = @"tcp-client:" + hostName + ":" + portNumber;
             channelProperties[@"secure"] = true;
+            channelProperties[@"timeout"] = requestTimeout.HasValue ? (int)requestTimeout.Value.TotalMilliseconds : -1;
 
             return new TcpClientChannel(channelProperties, CreateClientChannelSinkProvider());
         }
