@@ -94,7 +94,6 @@
     <Compile Include="RunContextLogger.cs" />
     <Compile Include="TipShellExtension.cs" />
     <Compile Include="UI\ResultViewer.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\ResultViewer.Designer.cs">
       <DependentUpon>ResultViewer.cs</DependentUpon>

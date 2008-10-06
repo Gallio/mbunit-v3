@@ -28,13 +28,25 @@ using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Models
 {
-    public class TestTreeModel : TreeModel, ITestTreeModel, INotifyPropertyChanged
+    public class TestTreeModel : TreeModelBase, ITestTreeModel, INotifyPropertyChanged
     {
+        private TreeModel inner;
         private bool filterPassed, filterFailed, filterSkipped;
-        private readonly TestTreeSorter testTreeSorter = new TestTreeSorter();
+        private readonly TestTreeSorter testTreeSorter;
         private int passed, failed, skipped, inconclusive;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public TestTreeModel()
+        {
+            inner = new TreeModel();
+            testTreeSorter = new TestTreeSorter() { SortOrder = SortOrder.Ascending };
+
+            inner.NodesChanged += (sender, e) => OnNodesChanged(e);
+            inner.NodesInserted += (sender, e) => OnNodesInserted(e);
+            inner.NodesRemoved += (sender, e) => OnNodesRemoved(e);
+            inner.StructureChanged += (sender, e) => OnStructureChanged(e);
+        }
 
         public bool FilterPassed
         {
@@ -141,7 +153,7 @@ namespace Gallio.Icarus.Models
             return count;
         }
 
-        public new TestTreeNode Root
+        public TestTreeNode Root
         {
             get
             {
@@ -149,6 +161,16 @@ namespace Gallio.Icarus.Models
                     return (TestTreeNode)Nodes[0];
                 return null;
             }
+        }
+
+        public IList<Node> Nodes
+        {
+            get { return inner.Nodes; }
+        }
+
+        public TreePath GetPath(Node node)
+        {
+            return inner.GetPath(node);
         }
 
         public void ResetTestStatus()
@@ -303,33 +325,52 @@ namespace Gallio.Icarus.Models
                 PropertyChanged(this, e);
         }
 
-        public new IEnumerable GetChildren(TreePath treePath)
+        public override IEnumerable GetChildren(TreePath treePath)
         {
             if (testTreeSorter.SortOrder != SortOrder.None)
             {
                 ArrayList list = new ArrayList();
-                IEnumerable res = base.GetChildren(treePath);
+                IEnumerable res = inner.GetChildren(treePath);
                 if (res != null)
                 {
                     foreach (object obj in res)
                         list.Add(obj);
+
                     list.Sort(testTreeSorter);
                     return list;
                 }
                 return null;
             }
-            return base.GetChildren(treePath);
+
+            return inner.GetChildren(treePath);
+        }
+
+        public override bool IsLeaf(TreePath treePath)
+        {
+            Node node = FindNode(treePath);
+            if (node == null)
+                throw new ArgumentException("treePath");
+            return node.IsLeaf;
         }
 
         public void BuildTestTree(TestModelData testModelData, string treeViewCategory)
         {
             Nodes.Clear();
+
             TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id, TestKinds.Root);
             Nodes.Add(root);
+
             if (treeViewCategory == "Namespace")
                 PopulateNamespaceTree(testModelData.RootTest.Children, root);
             else
                 PopulateMetadataTree(treeViewCategory, testModelData.RootTest.Children, root);
+
+            OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+        }
+
+        public Node FindNode(TreePath path)
+        {
+            return inner.FindNode(path);
         }
 
         private static void PopulateNamespaceTree(IList<TestData> list, TestTreeNode parent)

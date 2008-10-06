@@ -525,10 +525,13 @@ namespace Gallio.Runner
 
         private void UnloadTestDomains(IProgressMonitor progressMonitor, double totalWork)
         {
-            progressMonitor.SetStatus("Unloading tests.");
+            if (testDriver != null)
+            {
+                progressMonitor.SetStatus("Unloading tests.");
 
-            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
-                testDriver.Unload(subProgressMonitor);
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
+                    testDriver.Unload(subProgressMonitor);
+            }
         }
 
         private void DisposeHost(IProgressMonitor progressMonitor, double totalWork)

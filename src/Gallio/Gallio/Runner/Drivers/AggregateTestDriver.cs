@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Remoting;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
@@ -113,7 +114,20 @@ namespace Gallio.Runner.Drivers
                         foreach (Partition partition in partitions)
                         {
                             using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workPerPartition))
-                                partition.TestDriver.Unload(subProgressMonitor);
+                            {
+                                try
+                                {
+                                    partition.TestDriver.Unload(subProgressMonitor);
+                                }
+                                catch (RemotingException)
+                                {
+                                    // Assume the driver is already dead.
+                                }
+                                catch (Exception ex)
+                                {
+                                    UnhandledExceptionPolicy.Report("An exception occurred while unloading a test driver.", ex);
+                                }
+                            }
                         }
                     }
                     finally
@@ -145,6 +159,10 @@ namespace Gallio.Runner.Drivers
                 try
                 {
                     partition.TestDriver.Dispose();
+                }
+                catch (RemotingException)
+                {
+                    // Assume the driver is already dead.
                 }
                 catch (Exception ex)
                 {

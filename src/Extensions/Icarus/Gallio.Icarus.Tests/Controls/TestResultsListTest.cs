@@ -140,18 +140,20 @@ namespace Gallio.Icarus.Tests.Controls
         public void OnColumnClick_Test()
         {
             columnSorter.SortColumn = 0;
-            Assert.AreEqual(SortOrder.None, columnSorter.Order);
-            OnColumnClick(new ColumnClickEventArgs(1));
+            columnSorter.Order = SortOrder.None;
+            OnColumnClick(new ColumnClickEventArgs(0));
             Assert.AreEqual(SortOrder.Ascending, columnSorter.Order);
         }
 
         [Test]
         public void OnColumnClick_Reverse_Test()
         {
-            columnSorter.SortColumn = 1;
+            columnSorter.SortColumn = 0;
             columnSorter.Order = SortOrder.Ascending;
-            OnColumnClick(new ColumnClickEventArgs(1));
+            OnColumnClick(new ColumnClickEventArgs(0));
             Assert.AreEqual(SortOrder.Descending, columnSorter.Order);
+            OnColumnClick(new ColumnClickEventArgs(0));
+            Assert.AreEqual(SortOrder.Ascending, columnSorter.Order);
         }
     }
 }
