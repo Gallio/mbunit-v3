@@ -49,6 +49,7 @@ namespace Gallio.Framework.Pattern
 
             this.dataContext = dataContext;
             testActions = new PatternTestActions();
+            timeout = TimeSpan.FromMinutes(1);
         }
 
         /// <summary>
@@ -59,6 +60,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/>
         /// represents a negative time span</exception>
+        /// <value>The timeout.  Default value is 1 minute.</value>
         public TimeSpan? Timeout
         {
             get { return timeout; }
