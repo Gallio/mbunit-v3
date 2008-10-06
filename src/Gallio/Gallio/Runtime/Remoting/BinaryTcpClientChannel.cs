@@ -45,7 +45,7 @@ namespace Gallio.Runtime.Remoting
 
             IDictionary channelProperties = new Hashtable();
             channelProperties[@"name"] = @"tcp-client:" + hostName + ":" + portNumber;
-            channelProperties[@"secure"] = true;
+            channelProperties[@"secure"] = false;
             channelProperties[@"timeout"] = requestTimeout.HasValue ? (int)requestTimeout.Value.TotalMilliseconds : -1;
 
             return new TcpClientChannel(channelProperties, CreateClientChannelSinkProvider());

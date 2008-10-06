@@ -46,7 +46,7 @@ namespace Gallio.Runtime.Remoting
             IDictionary channelProperties = new Hashtable();
             channelProperties[@"name"] = @"tcp-server:" + hostName + ":" + portNumber;
             channelProperties[@"port"] = portNumber;
-            channelProperties[@"secure"] = true;
+            channelProperties[@"secure"] = false;
             channelProperties[@"exclusiveAddressUse"] = true;
             channelProperties[@"rejectRemoteRequests"] = true;
 
