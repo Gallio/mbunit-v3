@@ -168,7 +168,7 @@ namespace Gallio.Runtime.Hosting
                 }
                 catch (Exception ex)
                 {
-                    UnhandledExceptionPolicy.Report("An exception occurred while disconnecting from the host service.", ex);
+                    Logger.Log(LogSeverity.Warning, "An exception occurred while disconnecting from the host service.", ex);
                 }
             }
 

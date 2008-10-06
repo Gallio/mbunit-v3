@@ -142,7 +142,7 @@ namespace Gallio.Runtime.Hosting
             {
                 if (!lastPingFailed)
                 {
-                    UnhandledExceptionPolicy.Report("Could not send Ping message to the remote host service.", ex);
+                    Logger.Log(LogSeverity.Warning, "Could not send Ping message to the remote host service.", ex);
                     lastPingFailed = true;
                 }
             }

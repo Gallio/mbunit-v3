@@ -34,7 +34,7 @@ namespace Gallio.Runner.Drivers
     public abstract class BaseTestDriver : LongLivedMarshalByRefObject, ITestDriver
     {
         private RuntimeSetup runtimeSetup;
-        private ILogger logger;
+        private ILogger logger = NullLogger.Instance;
         private bool initializedRuntime;
 
         /// <inheritdoc />
@@ -108,7 +108,7 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <summary>
-        /// Gets the logger, or null if not initialized.
+        /// Gets the logger, or a null logger instance if not initialized.
         /// </summary>
         protected ILogger Logger
         {
@@ -142,7 +142,7 @@ namespace Gallio.Runner.Drivers
                 initializedRuntime = false;
 
                 runtimeSetup = null;
-                logger = null;
+                logger = NullLogger.Instance;
 
                 RuntimeBootstrap.Shutdown();
             }

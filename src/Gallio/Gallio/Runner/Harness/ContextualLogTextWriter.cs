@@ -69,12 +69,35 @@ namespace Gallio.Runner.Harness
                 if (context == null)
                     return;
 
-                context.LogWriter[streamName].Write(value);
+                Write(context, value);
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report(String.Format("Could not write to the {0} log stream.", streamName), ex);
+                UnhandledExceptionPolicy.Report(String.Format("Could not write to the '{0}' log stream.\nMessage: '{1}'", streamName, value), ex);
             }
+        }
+
+        private void Write(ITestContext context, string value)
+        {
+            do
+            {
+                try
+                {
+                    if (!context.IsFinished && !context.LogWriter.IsClosed)
+                    {
+                        context.LogWriter[streamName].Write(value);
+                        return;
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                }
+
+                context = context.Parent;
+            }
+            while (context != null);
+
+            // If there is no active context, we just let the message fall into the bit bucket.
         }
 
         /// <inheritdoc />

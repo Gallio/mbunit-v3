@@ -130,7 +130,7 @@ namespace Gallio.Runtime.Hosting
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("Could not unload AppDomain.", ex);
+                Logger.Log(LogSeverity.Warning, "Could not unload AppDomain.", ex);
             }
             finally
             {
@@ -147,7 +147,7 @@ namespace Gallio.Runtime.Hosting
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("Could not reset working directory.", ex);
+                Logger.Log(LogSeverity.Warning, "Could not reset working directory.", ex);
             }
             finally
             {
@@ -164,7 +164,7 @@ namespace Gallio.Runtime.Hosting
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("Could not delete temporary configuration file.", ex);
+                Logger.Log(LogSeverity.Warning, "Could not delete temporary configuration file.", ex);
             }
             finally
             {

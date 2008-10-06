@@ -375,7 +375,8 @@ namespace Gallio.Runner
                 }
                 catch (Exception ex)
                 {
-                    UnhandledExceptionPolicy.Report("Failed to safely dispose the host.", ex);
+                    if (logger != null)
+                        logger.Log(LogSeverity.Warning, "Failed to safely dispose the host.", ex);
                     success = false;
                 }
 

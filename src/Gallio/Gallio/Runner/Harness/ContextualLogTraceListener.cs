@@ -15,8 +15,6 @@
 
 using System;
 using System.Diagnostics;
-using Gallio.Runtime;
-using Gallio.Model.Execution;
 
 namespace Gallio.Runner.Harness
 {
@@ -26,7 +24,7 @@ namespace Gallio.Runner.Harness
     /// </summary>
     public sealed class ContextualLogTraceListener : TraceListener
     {
-        private readonly string streamName;
+        private readonly ContextualLogTextWriter writer;
 
         /// <summary>
         /// Creates a trace listener that writes to the specified execution log stream.
@@ -34,7 +32,7 @@ namespace Gallio.Runner.Harness
         /// <param name="streamName">The execution log stream name</param>
         public ContextualLogTraceListener(string streamName)
         {
-            this.streamName = streamName;
+            writer = new ContextualLogTextWriter(streamName);
         }
 
         /// <inheritdoc />
@@ -44,19 +42,7 @@ namespace Gallio.Runner.Harness
                 return;
 
             WriteIndentIfNeeded();
-
-            try
-            {
-                ITestContext context = TestContextTrackerAccessor.GetInstance().CurrentContext;
-                if (context == null)
-                    return;
-
-                context.LogWriter[streamName].Write(message);
-            }
-            catch (Exception ex)
-            {
-                UnhandledExceptionPolicy.Report(String.Format("Could not write to the {0} log stream.", streamName), ex);
-            }
+            writer.Write(message);
         }
 
         /// <inheritdoc />

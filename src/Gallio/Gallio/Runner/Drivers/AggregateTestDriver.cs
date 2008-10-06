@@ -16,12 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.Remoting;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
-using Gallio.Runtime;
+using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runner.Drivers
@@ -32,6 +31,13 @@ namespace Gallio.Runner.Drivers
     public abstract class AggregateTestDriver : BaseTestDriver
     {
         private readonly List<Partition> partitions = new List<Partition>();
+
+        /// <summary>
+        /// Initializes an aggregate test driver.
+        /// </summary>
+        protected AggregateTestDriver()
+        {
+        }
 
         /// <inheritdoc />
         protected override void LoadImpl(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
@@ -119,13 +125,9 @@ namespace Gallio.Runner.Drivers
                                 {
                                     partition.TestDriver.Unload(subProgressMonitor);
                                 }
-                                catch (RemotingException)
-                                {
-                                    // Assume the driver is already dead.
-                                }
                                 catch (Exception ex)
                                 {
-                                    UnhandledExceptionPolicy.Report("An exception occurred while unloading a test driver.", ex);
+                                    Logger.Log(LogSeverity.Warning, "An exception occurred while unloading a test driver.", ex);
                                 }
                             }
                         }
@@ -160,13 +162,9 @@ namespace Gallio.Runner.Drivers
                 {
                     partition.TestDriver.Dispose();
                 }
-                catch (RemotingException)
-                {
-                    // Assume the driver is already dead.
-                }
                 catch (Exception ex)
                 {
-                    UnhandledExceptionPolicy.Report("An exception occurred while disposing a test driver.", ex);
+                    Logger.Log(LogSeverity.Warning, "An exception occurred while disposing a test driver.", ex);
                 }
             }
 
