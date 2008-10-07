@@ -20,14 +20,12 @@
         <Upgrade Id="{FAAF3C4B-8757-437A-A3D6-9D882DE7D088}">
             <UpgradeVersion Minimum="$(var.Version)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
 <?if $(var.Version) = "0.0.0.0" ?>
-            <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
+            <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
 <?else ?>
             <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
 <?endif ?>
         </Upgrade>
-        <Condition Message="A more recent version of Gallio is already installed.">
-            NEWERVERSIONDETECTED
-        </Condition>
+        <Condition Message="A more recent version of Gallio is already installed.">NOT NEWERVERSIONDETECTED</Condition>
         <Condition Message="An administrator must approve or install [ProductName].">
             Privileged
         </Condition>
