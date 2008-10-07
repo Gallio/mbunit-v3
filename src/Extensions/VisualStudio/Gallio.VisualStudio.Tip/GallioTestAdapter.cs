@@ -127,6 +127,7 @@ namespace Gallio.VisualStudio.Tip
                 }
 
                 testExecutionOptions.Filter = new IdFilter<ITest>(new OrFilter<string>(idFilters.ToArray()));
+                testExecutionOptions.ExactFilter = true;
 
                 RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
                 {

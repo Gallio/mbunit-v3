@@ -47,19 +47,19 @@ namespace Gallio.Tests.Model.Execution
         [Test, ExpectedArgumentNullException]
         public void TestModelCannotBeNull()
         {
-            TestCommandFactory.BuildCommands(null, Mocks.Stub<Filter<ITest>>(), Mocks.Stub<ITestContextManager>());
+            TestCommandFactory.BuildCommands(null, Mocks.Stub<Filter<ITest>>(), false, Mocks.Stub<ITestContextManager>());
         }
 
         [Test, ExpectedArgumentNullException]
         public void FilterCannotBeNull()
         {
-            TestCommandFactory.BuildCommands(model, null, Mocks.Stub<ITestContextManager>());
+            TestCommandFactory.BuildCommands(model, null, false, Mocks.Stub<ITestContextManager>());
         }
 
         [Test, ExpectedArgumentNullException]
         public void ContextManagerCannotBeNull()
         {
-            TestCommandFactory.BuildCommands(model, Mocks.Stub<Filter<ITest>>(), null);
+            TestCommandFactory.BuildCommands(model, Mocks.Stub<Filter<ITest>>(), false, null);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace Gallio.Tests.Model.Execution
         {
             PopulateModelWithTests();
 
-            BuildCommands(new NoneFilter<ITest>());
+            BuildCommands(new NoneFilter<ITest>(), false);
             Assert.IsNull(rootCommand);
         }
 
@@ -76,7 +76,7 @@ namespace Gallio.Tests.Model.Execution
         {
             PopulateModelWithTests();
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "A", "A1", "A2", "A3", "B", "B1");
             AssertCommandExplicit("Root");
         }
@@ -86,8 +86,18 @@ namespace Gallio.Tests.Model.Execution
         {
             PopulateModelWithTests();
 
-            BuildCommands(new NameFilter<ITest>(new EqualityFilter<string>("A")));
+            BuildCommands(new NameFilter<ITest>(new EqualityFilter<string>("A")), false);
             AssertCommandStructure("Root", "A", "A1", "A2", "A3");
+            AssertCommandExplicit("Root", "A");
+        }
+
+        [Test]
+        public void RootCommandIncludesExactlySpecifiedNodesWhenFilterIsExact()
+        {
+            PopulateModelWithTests();
+
+            BuildCommands(new NameFilter<ITest>(new EqualityFilter<string>("A")), true);
+            AssertCommandStructure("Root", "A");
             AssertCommandExplicit("Root", "A");
         }
 
@@ -96,7 +106,7 @@ namespace Gallio.Tests.Model.Execution
         {
             PopulateModelWithTests();
 
-            BuildCommands(new NameFilter<ITest>(new EqualityFilter<string>("A2")));
+            BuildCommands(new NameFilter<ITest>(new EqualityFilter<string>("A2")), false);
             AssertCommandStructure("Root", "A", "A2");
             AssertCommandExplicit("Root", "A", "A2");
         }
@@ -106,7 +116,7 @@ namespace Gallio.Tests.Model.Execution
         {
             PopulateModelWithTests();
 
-            BuildCommands(new NameFilter<ITest>(new RegexFilter(new Regex("A2|B"))));
+            BuildCommands(new NameFilter<ITest>(new RegexFilter(new Regex("A2|B"))), false);
             AssertCommandStructure("Root", "A", "A2", "B", "B1");
             AssertCommandExplicit("Root", "A", "A2", "B");
         }
@@ -117,7 +127,7 @@ namespace Gallio.Tests.Model.Execution
             PopulateModelWithTests();
             GetTest("A").AddDependency(GetTest("A"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
         }
 
         [Test, ExpectedException(typeof(ModelException))]
@@ -126,7 +136,7 @@ namespace Gallio.Tests.Model.Execution
             PopulateModelWithTests();
             GetTest("A1").AddDependency(GetTest("Root"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
         }
 
         [Test, ExpectedException(typeof(ModelException))]
@@ -135,7 +145,7 @@ namespace Gallio.Tests.Model.Execution
             PopulateModelWithTests();
             GetTest("Root").AddDependency(GetTest("A2"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
         }
 
         [Test, ExpectedException(typeof(ModelException))]
@@ -145,7 +155,7 @@ namespace Gallio.Tests.Model.Execution
             GetTest("A").AddDependency(GetTest("B"));
             GetTest("B").AddDependency(GetTest("A"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
         }
 
         [Test, ExpectedException(typeof(ModelException))]
@@ -155,7 +165,7 @@ namespace Gallio.Tests.Model.Execution
             GetTest("A1").AddDependency(GetTest("B1"));
             GetTest("B1").AddDependency(GetTest("A1"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
         }
 
         [Test, ExpectedException(typeof(ModelException))]
@@ -165,7 +175,7 @@ namespace Gallio.Tests.Model.Execution
             GetTest("A1").AddDependency(GetTest("B"));
             GetTest("B1").AddDependency(GetTest("A"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
         }
 
         [Test, ExpectedException(typeof(ModelException))]
@@ -175,7 +185,7 @@ namespace Gallio.Tests.Model.Execution
             GetTest("A1").AddDependency(GetTest("B"));
             GetTest("B1").AddDependency(GetTest("A1"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
         }
 
         [Test, ExpectedException(typeof(ModelException))]
@@ -186,7 +196,7 @@ namespace Gallio.Tests.Model.Execution
             GetTest("A2").AddDependency(GetTest("A3"));
             GetTest("A3").AddDependency(GetTest("A1"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
         }
 
         [Test]
@@ -195,7 +205,7 @@ namespace Gallio.Tests.Model.Execution
             PopulateModelWithTests();
             GetTest("A").AddDependency(GetTest("B"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "B", "B1", "A", "A1", "A2", "A3");
             AssertCommandExplicit("Root");
             AssertCommandDependency("A", "B");
@@ -209,7 +219,7 @@ namespace Gallio.Tests.Model.Execution
             GetTest("A2").AddDependency(GetTest("A3"));
             GetTest("A3").AddDependency(GetTest("A1"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "A", "A1", "A3", "A2", "B", "B1");
             AssertCommandExplicit("Root");
             AssertCommandDependency("A2", "A1");
@@ -225,7 +235,7 @@ namespace Gallio.Tests.Model.Execution
             GetTest("A2").AddDependency(GetTest("B1"));
             GetTest("A3").AddDependency(GetTest("A1"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "B", "B1", "A", "A2", "A1", "A3");
             AssertCommandExplicit("Root");
             AssertCommandDependency("A1", "A2");
@@ -239,7 +249,7 @@ namespace Gallio.Tests.Model.Execution
             PopulateModelWithTests();
             GetTest("A").AddDependency(GetTest("B1"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "B", "B1", "A", "A1", "A2", "A3");
             AssertCommandExplicit("Root");
             AssertCommandDependency("A", "B1");
@@ -251,7 +261,7 @@ namespace Gallio.Tests.Model.Execution
             PopulateModelWithTests();
             GetTest("A2").AddDependency(GetTest("B"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "B", "B1", "A", "A1", "A2", "A3");
             AssertCommandExplicit("Root");
             AssertCommandDependency("A2", "B");
@@ -270,7 +280,7 @@ namespace Gallio.Tests.Model.Execution
             model.RootTest.AddChild(CreateTest("B", 0));
             model.RootTest.Children[1].AddChild(CreateTest("B1", 0));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "B", "B1", "A", "A2", "A3", "A1");
             AssertCommandExplicit("Root");
         }
@@ -288,7 +298,7 @@ namespace Gallio.Tests.Model.Execution
             model.RootTest.Children[1].AddChild(CreateTest("A1", 0));
             model.RootTest.Children[1].AddChild(CreateTest("A2", 0));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "A", "A1", "A2", "A3", "B", "B1");
             AssertCommandExplicit("Root");
         }
@@ -309,14 +319,14 @@ namespace Gallio.Tests.Model.Execution
             GetTest("A2").AddDependency(GetTest("A1"));
             GetTest("A2").AddDependency(GetTest("A3"));
 
-            BuildCommands(new AnyFilter<ITest>());
+            BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "B", "B1", "A", "A3", "A1", "A2");
             AssertCommandExplicit("Root");
         }
 
-        private void BuildCommands(Filter<ITest> filter)
+        private void BuildCommands(Filter<ITest> filter, bool exactFilter)
         {
-            rootCommand = TestCommandFactory.BuildCommands(model, filter, Mocks.Stub<ITestContextManager>());
+            rootCommand = TestCommandFactory.BuildCommands(model, filter, exactFilter, Mocks.Stub<ITestContextManager>());
         }
 
         private void PopulateModelWithTests()

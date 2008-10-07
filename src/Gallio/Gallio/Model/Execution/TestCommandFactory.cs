@@ -32,13 +32,15 @@ namespace Gallio.Model.Execution
         /// </summary>
         /// <param name="testModel">The test model</param>
         /// <param name="filter">The filter for the test model</param>
+        /// <param name="exactFilter">If true, only the specified tests are included, otherwise children
+        /// of the selected tests are automatically included</param>
         /// <param name="contextManager">The test context manager</param>
         /// <returns>The root test command or null if none of the tests in
         /// the subtree including <paramref name="testModel"/> matched the filter</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/>,
         /// <paramref name="filter"/> or <paramref name="contextManager"/> is null</exception>
         /// <exception cref="ModelException">Thrown if an invalid test dependency is found</exception>
-        public static ITestCommand BuildCommands(TestModel testModel, Filter<ITest> filter, ITestContextManager contextManager)
+        public static ITestCommand BuildCommands(TestModel testModel, Filter<ITest> filter, bool exactFilter, ITestContextManager contextManager)
         {
             if (testModel == null)
                 throw new ArgumentNullException("testModel");
@@ -48,7 +50,7 @@ namespace Gallio.Model.Execution
                 throw new ArgumentNullException("contextManager");
 
             Dictionary<ITest, ManagedTestCommand> commands = new Dictionary<ITest, ManagedTestCommand>();
-            ManagedTestCommand rootCommand = CreateFilteredClosure(commands, testModel.RootTest, filter, contextManager);
+            ManagedTestCommand rootCommand = CreateFilteredClosure(commands, testModel.RootTest, filter, exactFilter, contextManager);
             if (rootCommand == null)
                 return null;
 
@@ -60,9 +62,10 @@ namespace Gallio.Model.Execution
         }
 
         private static ManagedTestCommand CreateFilteredClosure(Dictionary<ITest, ManagedTestCommand> commands,
-            ITest test, Filter<ITest> filter, ITestContextManager contextManager)
+            ITest test, Filter<ITest> filter, bool exactFilter, ITestContextManager contextManager)
         {
-            if (filter.IsMatch(test))
+            bool isMatch = filter.IsMatch(test);
+            if (isMatch && !exactFilter)
                 return CreateCommandSubtree(commands, test, true, contextManager);
 
             List<ManagedTestCommand> children = new List<ManagedTestCommand>(test.Children.Count);
@@ -70,7 +73,7 @@ namespace Gallio.Model.Execution
             bool hasExplicitChild = false;
             foreach (ITest child in test.Children)
             {
-                ManagedTestCommand childMonitor = CreateFilteredClosure(commands, child, filter, contextManager);
+                ManagedTestCommand childMonitor = CreateFilteredClosure(commands, child, filter, exactFilter, contextManager);
                 if (childMonitor != null)
                 {
                     children.Add(childMonitor);
@@ -80,8 +83,8 @@ namespace Gallio.Model.Execution
                 }
             }
 
-            if (children.Count != 0)
-                return CreateCommand(commands, test, children, hasExplicitChild, contextManager);
+            if (isMatch || children.Count != 0)
+                return CreateCommand(commands, test, children, isMatch || hasExplicitChild, contextManager);
 
             return null;
         }

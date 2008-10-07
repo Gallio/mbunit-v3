@@ -27,6 +27,7 @@ namespace Gallio.Model.Execution
         private Filter<ITest> filter = new AnyFilter<ITest>();
         private bool skipDynamicTests;
         private bool skipTestExecution;
+        private bool exactFilter;
 
         /// <summary>
         /// Gets or sets the filter.
@@ -43,6 +44,17 @@ namespace Gallio.Model.Execution
 
                 filter = value;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the filter exactly specifies all tests to select.
+        /// If false, then children of the selected tests are also included.
+        /// </summary>
+        /// <value>Defaults to false.</value>
+        public bool ExactFilter
+        {
+            get { return exactFilter; }
+            set { exactFilter = value; }
         }
 
         /// <summary>

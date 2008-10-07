@@ -123,6 +123,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 {
                     return new EqualityFilter<string>(testId);
                 })));
+            testExecutionOptions.ExactFilter = true;
 
             // Install the listeners.
             runner.Events.TestStepStarted += TestStepStarted;

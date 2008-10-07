@@ -142,6 +142,7 @@ namespace Gallio.Icarus.Services
         public void SetFilter(Filter<ITest> filter)
         {
             testExecutionOptions.Filter = filter;
+            testExecutionOptions.ExactFilter = true;
         }
 
         public void Unload()
