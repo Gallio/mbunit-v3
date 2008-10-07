@@ -71,6 +71,7 @@
             <Component Id="Gallio.Loader" Guid="{1b752f49-373c-4a57-8f72-eb97287d0d35}" Win64="no">
                 <!-- Install in the GAC -->
                 <File Name="Gallio.Loader.dll" KeyPath="yes" Assembly=".net" />
+                <File Name="Gallio.Loader.pdb" />
             </Component>
 
             <Directory Id="ReportsFolder" Name="Reports" />

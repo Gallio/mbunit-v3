@@ -370,7 +370,10 @@ div.gallio-report div.navigator
 
 .gallio-report .embeddedImage
 {
+	/* Nice idea in principle but IE will not navigate to the full-size embedded image
+     * (or to any other links) when the report is stored on the local filesystem.  -- Jeff.
 	max-width: 800px;
+    */
 }
 
 /* Sections */

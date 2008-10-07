@@ -67,9 +67,9 @@ namespace Gallio.Loader
         private static readonly string[] RootKeys = new[]
         {
             @"HKEY_CURRENT_USER\Software\Gallio.org\Gallio\3.0",
-            @"HKEY_CURRENT_USER\Wow6432Node\Software\Gallio.org\Gallio\3.0",
+            @"HKEY_CURRENT_USER\Software\Wow6432Node\Gallio.org\Gallio\3.0",
             @"HKEY_LOCAL_MACHINE\Software\Gallio.org\Gallio\3.0",
-            @"HKEY_LOCAL_MACHINE\Wow6432Node\Software\Gallio.org\Gallio\3.0"
+            @"HKEY_LOCAL_MACHINE\Software\Wow6432Node\Gallio.org\Gallio\3.0"
         };
 
         private const string GallioLoaderBootstrapTypeFullName = "Gallio.Runtime.Loader.GallioLoaderBootstrap";
