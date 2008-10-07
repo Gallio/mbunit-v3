@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+    <!--
+        <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
+            <Component Id="Gallio.Ambience.dll" Guid="{0CEA0DD8-D3BA-45f3-B607-7914A27D4967}" Win64="no">
+                <File Name="Gallio.Ambience.dll" KeyPath="yes" />
+                <File Name="Gallio.Ambience.pdb" />
+            </Component>
+	    
+            <Component Id="Gallio.Ambience.Service" Guid="{FE4999AD-A9CE-43df-95E9-844C3762B8C1}" Win64="no">
+                <File Name="Gallio.Ambience.Service.exe" KeyPath="yes" />
+                <File Name="Gallio.Ambience.Service.exe.config" />
+            </Component>
+        </DirectoryRef>
+	
+        <Feature Id="feat_Gallio.Ambience" Title="Ambience" Level="0" 
+            Description="Installs the Ambience test data storage tool.">
+
+            <ComponentRef Id="Gallio.Ambience.dll" />
+
+            <Feature Id="feat_Gallio.Ambience.Service" Title="Service" Level="0" 
+                Description="Installs the Ambience test data storage service.">
+                <ComponentRef Id="Gallio.Ambience.Service.exe" />
+            </Feature>
+        </Feature>
+    -->
+    </Fragment>
+</Wix>

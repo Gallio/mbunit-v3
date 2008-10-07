@@ -1,0 +1,22 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.Ambience\Gallio.Ambience.csproj" />
+    <CSharpProject Include="Gallio.Ambience.Service\Gallio.Ambience.Service.csproj" />
+    <CSharpProject Include="Gallio.Ambience.Tests\Gallio.Ambience.Tests.csproj" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Binary Include="Gallio.Ambience\bin\Gallio.Ambience.dll" />
+    <Binary Include="Gallio.Ambience\bin\Gallio.Ambience.pdb" />
+    <Binary Include="Gallio.Ambience.Service\bin\Gallio.Ambience.Service.exe" />
+    <Binary Include="Gallio.Ambience.Service\bin\Gallio.Ambience.Service.exe.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TestAssembly Include="Gallio.Ambience.Tests\bin\Gallio.Ambience.Tests.dll" />
+
+    <DocumentedAssembly Include="Gallio.Ambience\bin\Gallio.Ambience.dll" />
+  </ItemGroup>
+</Project>
