@@ -74,9 +74,9 @@
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
       <Name>MbUnit %28MbUnit\MbUnit%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gallio.Ambience.Service\Gallio.Ambience.Service.csproj">
+    <ProjectReference Include="..\Gallio.Ambience.Server\Gallio.Ambience.Server.csproj">
       <Project>{5C8C48E1-E384-4473-B5D7-74642FC8D178}</Project>
-      <Name>Gallio.Ambience.Service</Name>
+      <Name>Gallio.Ambience.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.Ambience\Gallio.Ambience.csproj">
       <Project>{540D39B1-FF3C-48E9-B3EF-EFADF556E80A}</Project>

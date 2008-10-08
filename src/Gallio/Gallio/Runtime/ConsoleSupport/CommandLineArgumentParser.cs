@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Properties;
 using Gallio.Collections;
@@ -163,6 +164,24 @@ namespace Gallio.Runtime.ConsoleSupport
                 output.PrintArgumentHelp(null, null, null, defaultArgument.Description, defaultArgument.ValueLabel, defaultArgument.ValueType);
                 output.NewLine();
             }
+        }
+
+        /// <summary>
+        /// Prints a user friendly usage string describing the command line argument syntax in a message box.
+        /// </summary>
+        /// <param name="caption">The message box caption</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="caption"/> is null</exception>
+        public void ShowUsageInMessageBox(string caption)
+        {
+            if (caption == null)
+                throw new ArgumentNullException("caption");
+
+            StringWriter writer = new StringWriter();
+            writer.WriteLine("Available options:");
+            writer.WriteLine();
+            ShowUsage(new CommandLineOutput(writer, 60));
+
+            MessageBox.Show(writer.ToString(), caption);
         }
 
         private void PopulateArgumentMap()

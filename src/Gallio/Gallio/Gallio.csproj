@@ -71,6 +71,7 @@
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -287,6 +288,7 @@
     <Compile Include="Runtime\Logging\ILogger.cs" />
     <Compile Include="Runtime\Logging\LogSeverity.cs" />
     <Compile Include="Runtime\Logging\NullLogger.cs" />
+    <Compile Include="Runtime\ProcessType.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorProvider.cs" />
     <Compile Include="Runtime\ProgressMonitoring\CancelableProgressMonitor.cs" />
@@ -496,6 +498,7 @@
     <Compile Include="Runner\Reports\TestOutcomeSummary.cs" />
     <Compile Include="Runner\StandardTestRunnerFactoryNames.cs" />
     <Compile Include="Runtime\RuntimeBootstrap.cs" />
+    <Compile Include="Runtime\ProcessTypeDetection.cs" />
     <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
     <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
     <Compile Include="Model\Logging\TestLogWriter.cs" />

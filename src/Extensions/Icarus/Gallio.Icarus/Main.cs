@@ -45,7 +45,7 @@ namespace Gallio.Icarus
         private bool showProgressMonitor = true;
 
         private string projectFileName = String.Empty;
-        private readonly Arguments arguments;
+        private readonly IcarusArguments arguments;
         
         // dock panel windows
         private readonly DeserializeDockContent deserializeDockContent;
@@ -78,7 +78,7 @@ namespace Gallio.Icarus
 
         internal Main(IProjectController projectController, ITestController testController, IRuntimeLogController runtimeLogController, 
             IExecutionLogController executionLogController, IReportController reportController, 
-            IAnnotationsController annotationsController, Arguments arguments)
+            IAnnotationsController annotationsController, IcarusArguments arguments)
         {
             this.projectController = projectController;
             projectController.AssemblyChanged += AssemblyChanged;

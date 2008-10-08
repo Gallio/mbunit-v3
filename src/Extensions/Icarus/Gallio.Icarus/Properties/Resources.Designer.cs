@@ -60,6 +60,15 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Gallio Icarus.
+        /// </summary>
+        internal static string ApplicationName {
+            get {
+                return ResourceManager.GetString("ApplicationName", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap Assembly {
             get {
                 object obj = ResourceManager.GetObject("Assembly", resourceCulture);

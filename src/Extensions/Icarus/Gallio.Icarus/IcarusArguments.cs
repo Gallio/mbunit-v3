@@ -17,7 +17,7 @@ using Gallio.Runtime.ConsoleSupport;
 
 namespace Gallio.Icarus
 {
-    public class Arguments
+    public class IcarusArguments
     {
         [DefaultCommandLineArgument(
             CommandLineArgumentFlags.MultipleUnique,

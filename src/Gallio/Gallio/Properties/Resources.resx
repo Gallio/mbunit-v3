@@ -243,4 +243,7 @@
   <data name="RemoteHost_RemoteException" xml:space="preserve">
     <value>The remote host service threw an exception or could not be reached.</value>
   </data>
+  <data name="ConsoleProgram_ApplicationTitleFormat" xml:space="preserve">
+    <value>{0} - Version {1}.{2}.{3} build {4}</value>
+  </data>
 </root>

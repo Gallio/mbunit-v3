@@ -20,6 +20,7 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Properties;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Reflection;
 using Gallio.Runner;
@@ -31,31 +32,42 @@ using Gallio.Icarus.Services;
 
 namespace Gallio.Icarus
 {
-    static class Program
+    /// <summary>
+    /// The Icarus program.
+    /// </summary>
+    public class IcarusProgram : ConsoleProgram<IcarusArguments>
     {
         /// <summary>
-        /// The main entry point for the application.
+        /// Creates an instance of the program.
         /// </summary>
-        [STAThread]
-        //[LoaderOptimization(LoaderOptimization.MultiDomain)]
-        // Disabled due to bug: http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=95157
-        public static void Main(string[] args)
+        public IcarusProgram()
         {
+            ApplicationName = Resources.ApplicationName;
+        }
+
+        /// <inheritdoc />
+        protected override int RunImpl(string[] args)
+        {
+            if (!ParseArguments(args))
+            {
+                ShowHelp();
+                return 1;
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            Arguments arguments = ParseArguments(args);
 
             RuntimeLogController runtimeLogController = new RuntimeLogController();
 
             IOptionsController optionsController = OptionsController.Instance;
 
             RuntimeSetup runtimeSetup = new RuntimeSetup
-                                            {
-                                                RuntimePath =
-                                                    Path.GetDirectoryName(
-                                                    AssemblyUtils.GetFriendlyAssemblyLocation(typeof (Program).Assembly))
-                                            };
+            {
+                RuntimePath =
+                    Path.GetDirectoryName(
+                    AssemblyUtils.GetFriendlyAssemblyLocation(typeof (IcarusProgram).Assembly))
+            };
+
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
@@ -80,22 +92,27 @@ namespace Gallio.Icarus
                 IAnnotationsController annotationsController = new AnnotationsController(testController);
 
                 Main main = new Main(projectController, testController, runtimeLogController, executionLogController, 
-                    reportController, annotationsController, arguments);
+                    reportController, annotationsController, Arguments);
 
                 testRunnerService.Initialize();
                 main.CleanUp += delegate { testRunnerService.Dispose(); };
 
                 Application.Run(main);
             }
+
+            return ResultCode.Success;
         }
 
-        private static Arguments ParseArguments(string[] args)
+        protected override void ShowHelp()
         {
-            // parse command line arguments
-            CommandLineArgumentParser argumentParser = new CommandLineArgumentParser(typeof(Arguments));
-            Arguments arguments = new Arguments();
-            argumentParser.Parse(args, arguments, delegate { });
-            return arguments;
+            ArgumentParser.ShowUsageInMessageBox(ApplicationTitle);
+        }
+
+        [STAThread]
+        //[LoaderOptimization(LoaderOptimization.MultiDomain)] // Disabled due to bug: http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=95157
+        internal static int Main(string[] args)
+        {
+            return new IcarusProgram().Run(NativeConsole.Instance, args);
         }
     }
 }

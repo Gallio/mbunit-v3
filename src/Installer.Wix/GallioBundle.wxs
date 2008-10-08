@@ -26,9 +26,7 @@
 <?endif ?>
         </Upgrade>
         <Condition Message="A more recent version of Gallio is already installed.">NOT NEWERVERSIONDETECTED</Condition>
-        <Condition Message="An administrator must approve or install [ProductName].">
-            Privileged
-        </Condition>
+        <Condition Message="An administrator must approve or install [ProductName].">Privileged</Condition>
 
         <!-- Check that Microsoft .NET Framework is installed (WinNetFxExtension) -->
         <PropertyRef Id="NETFRAMEWORK20"/>

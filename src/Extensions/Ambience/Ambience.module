@@ -3,15 +3,15 @@
   
   <ItemGroup>
     <CSharpProject Include="Gallio.Ambience\Gallio.Ambience.csproj" />
-    <CSharpProject Include="Gallio.Ambience.Service\Gallio.Ambience.Service.csproj" />
+    <CSharpProject Include="Gallio.Ambience.Server\Gallio.Ambience.Server.csproj" />
     <CSharpProject Include="Gallio.Ambience.Tests\Gallio.Ambience.Tests.csproj" />    
   </ItemGroup>
 
   <ItemGroup>
     <Binary Include="Gallio.Ambience\bin\Gallio.Ambience.dll" />
     <Binary Include="Gallio.Ambience\bin\Gallio.Ambience.pdb" />
-    <Binary Include="Gallio.Ambience.Service\bin\Gallio.Ambience.Service.exe" />
-    <Binary Include="Gallio.Ambience.Service\bin\Gallio.Ambience.Service.exe.config" />
+    <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe" />
+    <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config" />
   </ItemGroup>
 
   <ItemGroup>

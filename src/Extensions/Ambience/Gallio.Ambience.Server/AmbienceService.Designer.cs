@@ -1,4 +1,4 @@
-﻿namespace Gallio.Ambience.Service
+﻿namespace Gallio.Ambience.Server
 {
     partial class AmbienceService
     {
@@ -29,7 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+
+            this.ServiceName = "Gallio.Ambience";
         }
 
         #endregion

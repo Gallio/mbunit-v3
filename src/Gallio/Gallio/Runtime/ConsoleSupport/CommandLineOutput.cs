@@ -32,29 +32,30 @@ namespace Gallio.Runtime.ConsoleSupport
         private readonly TextWriter output;
         private int lineLength;
 
-        ///<summary>
+        /// <summary>
         /// Initializes new instance of CommandLineOutput.
-        ///</summary>
+        /// </summary>
         ///<param name="console">The console</param>
         public CommandLineOutput(IRichConsole console)
             : this(console.Out, console.Width)
         {
         }
 
-        ///<summary>
+        /// <summary>
         /// Initializes new instance of CommandLineOutput that outputs to specified stream.
-        ///</summary>
-        ///<param name="output"></param>
+        /// </summary>
+        /// <param name="output">Text writer</param>
         public CommandLineOutput(TextWriter output)
         {
             this.output = output;
             lineLength = 80;
         }
 
-        ///<summary>
-        ///</summary>
-        ///<param name="output"></param>
-        ///<param name="width"></param>
+        /// <summary>
+        /// Initializes new instance of CommandLineOutput that outputs to specified stream.
+        /// </summary>
+        /// <param name="output">Text writer</param>
+        /// <param name="width">The output width</param>
         public CommandLineOutput(TextWriter output, int width)
         {
             this.output = output;

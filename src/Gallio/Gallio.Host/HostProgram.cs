@@ -16,7 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
+using Gallio.Host.Properties;
 using Gallio.Reflection;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runtime.Hosting;
@@ -30,6 +30,14 @@ namespace Gallio.Host
     /// </summary>
     public sealed class HostProgram : ConsoleProgram<HostArguments>
     {
+        /// <summary>
+        /// Creates an instance of the program.
+        /// </summary>
+        public HostProgram()
+        {
+            ApplicationName = Resources.ApplicationName;
+        }
+
         /// <inheritdoc />
         protected override int RunImpl(string[] args)
         {

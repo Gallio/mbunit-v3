@@ -60,19 +60,19 @@ namespace Gallio.Echo.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Gallio Echo.
+        /// </summary>
+        internal static string ApplicationName {
+            get {
+                return ResourceManager.GetString("ApplicationName", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Icon GallioEcho {
             get {
                 object obj = ResourceManager.GetObject("GallioEcho", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Gallio Echo - Version {0}.{1}.{2} build {3}.
-        /// </summary>
-        internal static string MainClass_ApplicationTitle {
-            get {
-                return ResourceManager.GetString("MainClass_ApplicationTitle", resourceCulture);
             }
         }
         
@@ -122,7 +122,7 @@ namespace Gallio.Echo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.mbunit.com/.
+        ///   Looks up a localized string similar to http://www.gallio.org/.
         /// </summary>
         internal static string MainClass_MbUnitUrl {
             get {

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Properties;
 
 namespace Gallio.Runtime.ConsoleSupport
 {
@@ -29,6 +30,9 @@ namespace Gallio.Runtime.ConsoleSupport
         private TArguments arguments;
         private CommandLineArgumentParser argumentParser;
         private CommandLineOutput commandLineOutput;
+        private string applicationName;
+        private Version applicationVersion;
+        private string applicationTitle;
 
         /// <inheritdoc />
         public virtual void Dispose()
@@ -90,6 +94,72 @@ namespace Gallio.Runtime.ConsoleSupport
         }
 
         /// <summary>
+        /// Gets or sets the application name.
+        /// </summary>
+        /// <value>The name, by default this is the program assembly's name</value>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        protected string ApplicationName
+        {
+            get
+            {
+                if (applicationName == null)
+                    applicationName = GetType().Assembly.GetName().Name;
+                return applicationName;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                applicationName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the application version.
+        /// </summary>
+        /// <value>The version, by default this is the program assembly's version</value>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        protected Version ApplicationVersion
+        {
+            get
+            {
+                if (applicationVersion == null)
+                    applicationVersion = GetType().Assembly.GetName().Version;
+                return applicationVersion;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                applicationVersion = value;
+            }
+        }
+
+        /// <summary>
+        /// Get or sets the application title.
+        /// </summary>
+        /// <value>The title, by default this is constructed from the application's name and version</value>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        protected string ApplicationTitle
+        {
+            get
+            {
+                if (applicationTitle != null)
+                    return applicationTitle;
+
+                return string.Format(Resources.ConsoleProgram_ApplicationTitleFormat, ApplicationName,
+                    ApplicationVersion.Major, ApplicationVersion.Minor, ApplicationVersion.Build,
+                    ApplicationVersion.Revision);
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                applicationTitle = value;
+            }
+        }
+
+        /// <summary>
         /// Runs the program.
         /// </summary>
         /// <param name="console">The console</param>
@@ -111,6 +181,9 @@ namespace Gallio.Runtime.ConsoleSupport
 
             try
             {
+                if (!console.IsRedirected)
+                    console.Title = ApplicationTitle;
+
                 return RunImpl(args);
             }
             catch (Exception ex)

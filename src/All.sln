@@ -226,7 +226,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience", "Extensio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.Tests", "Extensions\Ambience\Gallio.Ambience.Tests\Gallio.Ambience.Tests.csproj", "{072D1424-9F12-46ED-AF07-7B2A5D20643F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.Service", "Extensions\Ambience\Gallio.Ambience.Service\Gallio.Ambience.Service.csproj", "{5C8C48E1-E384-4473-B5D7-74642FC8D178}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.Server", "Extensions\Ambience\Gallio.Ambience.Server\Gallio.Ambience.Server.csproj", "{5C8C48E1-E384-4473-B5D7-74642FC8D178}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

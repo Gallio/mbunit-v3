@@ -15,7 +15,6 @@
 
 using System;
 using System.IO;
-using System.Reflection;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Echo.Properties;
@@ -34,7 +33,13 @@ namespace Gallio.Echo
     /// </summary>
     public sealed class EchoProgram : ConsoleProgram<EchoArguments>
     {
-        private string applicationTitle;
+        /// <summary>
+        /// Creates an instance of the program.
+        /// </summary>
+        public EchoProgram()
+        {
+            ApplicationName = Resources.ApplicationName;
+        }
 
         /// <inheritdoc />
         protected override int HandleFatalException(Exception ex)
@@ -46,7 +51,6 @@ namespace Gallio.Echo
         /// <inheritdoc />
         protected override int RunImpl(string[] args)
         {
-            SetApplicationTitle();
             ShowBanner();
             InstallCancelHandler();
 
@@ -167,21 +171,11 @@ namespace Gallio.Echo
             Console.IsCancelationEnabled = true;
         }
 
-        private void SetApplicationTitle()
-        {
-            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
-            applicationTitle = string.Format(Resources.MainClass_ApplicationTitle,
-                appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
-
-            if (!Console.IsRedirected)
-                Console.Title = applicationTitle;
-        }
-
         private void ShowBanner()
         {
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(applicationTitle);
+            Console.WriteLine(ApplicationTitle);
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write(Resources.MainClass_GetTheLatestVersionBanner);
             Console.ForegroundColor = ConsoleColor.Blue;

@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>Readme</title>
+<Style>
+BODY, P, TD { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt; color: #666666 }
+H2,H3,H4,H5 { color: black; font-weight: bold; }
+H2 { font-size: 13pt; }
+H3 { font-size: 12pt; }
+H4 { font-size: 10pt; color: black; }
+</style>
+</head>
+<body bgcolor="#FFFFFF" color=#000000>
+    This folder contains binary release files in the following folders:
+    <br />
+    <ul>
+        <li>compact-2.0 </li>
+        <li>compact-3.5</li>
+        <li>net-2.0 </li>
+        <li>net-3.5</li>
+    </ul>
+    <br />
+    The "compact" folders contain the following files:
+    <br />
+    <br />
+    <table>
+        <tr>
+            <td style="width: 280px">Cecil.Flowanalysis.dll</td>
+            <td>bytecode analyzing library for Native Query optimization</td>
+        </tr>
+        <tr>
+            <td valign=top>Db4oBench.dll</td>
+            <td>IO benchmark library</td>
+        </tr>
+        <tr>
+            <td valign=top>Db4objects.Db4o.dll</td>
+            <td>db4o database engine</td>
+        </tr>
+        <tr>
+            <td valign=top>Db4objects.Db4o.Instrumentation.dll</td>
+            <td>bytecode instrumentation library, required for enhancements for Native Queries
+            and Transparent Activation</td>
+        </tr>
+        <tr>
+            <td>Db4objects.Db4o.NativeQueries.dll</td>
+            <td>Native Queries support library</td>
+        </tr>
+        <tr>
+            <td valign=top>Mono.Cecil.dll</td>
+            <td>
+                <a href="http://www.mono-project.com/Cecil" target=_blank>Mono Cecil</a> bytecode analyzing library, 
+                required for enhancements for Native Queries and Transparent Activation</td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    The "net" folders contain the following files in addition to the above:
+    <br />
+    <br />
+    <table>
+        <tr>
+            <td style="width: 280px; height: 18px;" valign=top>
+                Db4objects.Db4o.Linq.dll</td>
+            <td style="height: 18px">
+                LINQ support for db4o (requires .NET version 3.5)</td>
+        </tr>
+        <tr>
+            <td valign=top>
+                Db4oTool.exe</td>
+            <td>db4o commandline tool. For a list of options run it without parameters.</td>
+        </tr>
+        <tr>
+            <td valign=top>Db4oTool.MSBuild.dll</td>
+            <td>
+                MSBuild tasks for build-time enhancements for Transparent Activation and Native Queries</td>
+        </tr>
+        <tr>
+            <td>Mono.Getoptions.dll</td>
+            <td>required for Db4oTool.exe to parse parameters</td>
+        </tr>
+        <tr>
+            <td>Mono.Cecil.Pdb.dll</td>
+            <td>Mono Cecil pdb library</td>
+        </tr>
+    </table>
+</body>
+</html>
