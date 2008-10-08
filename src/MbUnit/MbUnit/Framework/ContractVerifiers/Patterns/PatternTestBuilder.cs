@@ -75,7 +75,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         public void Build(PatternEvaluationScope scope)
         {
             var test = new PatternTest(Name, null, scope.TestDataContext.CreateChild());
-            test.Metadata.Add(MetadataKeys.TestKind, TestKinds.Test);
+            test.Metadata.SetValue(MetadataKeys.TestKind, TestKinds.Test);
             test.IsTestCase = true;
             scope.AddChildTest(test);
 
