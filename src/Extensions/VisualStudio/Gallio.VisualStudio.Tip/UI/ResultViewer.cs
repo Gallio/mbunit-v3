@@ -28,7 +28,7 @@ namespace Gallio.VisualStudio.Tip.UI
     /// <summary>
     /// UI component which displays results details about a Gallio test.
     /// </summary>
-    public partial class ResultViewer : GallioToolWindowContent
+    public partial class ResultViewer : GallioToolWindowControl
     {
         /// <summary>
         /// Default constructor.

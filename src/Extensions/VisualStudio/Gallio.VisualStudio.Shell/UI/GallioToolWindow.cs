@@ -53,29 +53,29 @@ namespace Gallio.VisualStudio.Shell.UI
         /// <summary>
         /// Sets the content of the tool window.
         /// </summary>
-        /// <param name="content">The tool window content</param>
-        public void SetContent(GallioToolWindowContent content)
+        /// <param name="control">The tool window control.</param>
+        public void SetControl(GallioToolWindowControl control)
         {
-            Control.SetContent(content);
+            Container.SetControl(control);
         }
 
-        private GallioToolWindowControl control;
+        private GallioToolWindowControlContainer container;
 
         /// <summary>
         /// Gets the window that is associated with this window pane.
         /// </summary>
-        public GallioToolWindowControl Control
+        public GallioToolWindowControlContainer Container
         {
             get
             {
-                if (control == null)
+                if (container == null)
                 {
-                    control = new GallioToolWindowControl();
-                    control.Visible = true;
-                    control.ToolWindow = this;
+                    container = new GallioToolWindowControlContainer();
+                    container.Visible = true;
+                    container.ToolWindow = this;
                 }
 
-                return control;
+                return container;
             }
         }
 
@@ -86,7 +86,7 @@ namespace Gallio.VisualStudio.Shell.UI
         {
             get
             {
-                return Control;
+                return Container;
             }
         }
 

@@ -1,4 +1,4 @@
-// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,58 +15,45 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
 namespace Gallio.VisualStudio.Shell.UI
 {
     /// <summary>
-    /// Abstract base control class for tool windows.
+    /// Abstract base class for components embedded in a <see cref="GallioToolWindowControl"/>.
     /// </summary>
-    [ComVisible(true)]
-    public class GallioToolWindowControl : UserControl
+    public abstract class GallioToolWindowControl : UserControl, IShellComponent
     {
-        private GallioToolWindow toolWindow;
-
         /// <summary>
-        /// Gets the tool window.
+        /// Gets the shell associated with the component.
         /// </summary>
-        public GallioToolWindow ToolWindow
+        public IShell Shell
         {
-            get
-            {
-                return toolWindow;
-            }
-
-            internal set
-            {
-                toolWindow = value;
-            }
+            get;
+            private set;
         }
 
         /// <summary>
-        /// Sets the content of the control.
+        /// Default constructor.
+        /// (For the designer only)
         /// </summary>
-        public void SetContent(GallioToolWindowContent content)
+        protected GallioToolWindowControl()
         {
-            if (content == null)
-            {
-                throw new ArgumentNullException("content");
-            }
-
-            content.Dock = DockStyle.Fill;
-            content.Visible = true;
-            Controls.Clear();
-            Controls.Add(content);
         }
 
-        private void InitializeComponent()
+        /// <summary>
+        /// Constructs a user control.
+        /// </summary>
+        /// <param name="shell">The shell associated with the component.</param>
+        protected GallioToolWindowControl(IShell shell)
         {
-            this.SuspendLayout();
-            this.BackColor = System.Drawing.SystemColors.Window;
-            this.Name = "GallioToolWindowControl";
-            this.ResumeLayout(false);
+            if (shell == null)
+            {
+                throw new ArgumentNullException("shell");
+            }
+
+            this.Shell = shell;
         }
     }
 }

@@ -110,10 +110,10 @@
     <Compile Include="UI\GallioToolWindow.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\GallioToolWindowContent.cs">
+    <Compile Include="UI\GallioToolWindowControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\GallioToolWindowControl.cs">
+    <Compile Include="UI\GallioToolWindowControlContainer.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
@@ -134,8 +134,8 @@
       <LastGenOutput>VSPackage.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\GallioToolWindowControl.resx">
-      <DependentUpon>GallioToolWindowControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\GallioToolWindowControlContainer.resx">
+      <DependentUpon>GallioToolWindowControlContainer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
