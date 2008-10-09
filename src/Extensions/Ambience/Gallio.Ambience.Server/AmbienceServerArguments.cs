@@ -46,10 +46,10 @@ namespace Gallio.Ambience.Server
             CommandLineArgumentFlags.AtMostOnce,
             ShortName = "db",
             LongName = "database",
-            Description = "Specifies the directory where the database is stored.  Default is in Local Application Data.",
+            Description = "Specifies the database file name.  Default is a file called Default.db in the Gallio.Ambience subdirectory of Local Application Data.",
             ValueLabel = "path"
             )]
-        public string DatabaseFolder;
+        public string DatabasePath;
 
         [CommandLineArgument(
             CommandLineArgumentFlags.AtMostOnce,

@@ -58,5 +58,12 @@ namespace Gallio.Ambience
         /// </summary>
         /// <param name="obj">The object to store</param>
         void Store(object obj);
+
+        /// <summary>
+        /// <para>
+        /// Purges the entire contents of the container.  (Use with caution!)
+        /// </para>
+        /// </summary>
+        void Purge();
     }
 }

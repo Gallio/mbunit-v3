@@ -17,7 +17,6 @@ using System;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Gallio.Ambience.Impl;
 
 namespace Gallio.Ambience
 {
@@ -29,6 +28,7 @@ namespace Gallio.Ambience
     public class AmbienceServer : IDisposable
     {
         private readonly AmbienceServerConfiguration configuration;
+        private readonly string databasePath;
         private bool isDisposed;
         private IObjectServer db4oServer;
 
@@ -43,6 +43,7 @@ namespace Gallio.Ambience
                 throw new ArgumentNullException("configuration");
 
             this.configuration = configuration;
+            databasePath = Path.GetFullPath(configuration.DatabasePath);
         }
 
         /// <summary>
@@ -62,10 +63,10 @@ namespace Gallio.Ambience
         {
             ThrowIfDisposed();
 
-            Directory.CreateDirectory(configuration.DatabaseFolder);
+            Directory.CreateDirectory(Path.GetDirectoryName(databasePath));
 
             IConfiguration db4oConfig = Db4oFactory.NewConfiguration();
-            db4oServer = Db4oFactory.OpenServer(db4oConfig, DatabasePath, configuration.Port);
+            db4oServer = Db4oFactory.OpenServer(db4oConfig, databasePath, configuration.Port);
             db4oServer.GrantAccess(configuration.Credential.UserName, configuration.Credential.Password);
         }
 
@@ -96,11 +97,6 @@ namespace Gallio.Ambience
                 Stop();
                 isDisposed = true;
             }
-        }
-
-        private string DatabasePath
-        {
-            get { return Path.Combine(configuration.DatabaseFolder, Constants.DatabaseFileName); }
         }
 
         private void ThrowIfDisposed()

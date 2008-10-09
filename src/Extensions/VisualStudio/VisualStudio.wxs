@@ -103,7 +103,7 @@
             <ComponentRef Id="Gallio.VisualStudio.Shell.VS90.Registry"/>
             
 <?ifdef FEATURE_VISUALSTUDIO_TIP ?>
-            <Feature Id="feat_Gallio.VisualStudio.Tip" Title="Visual Studio Team System Test Runner" Level="2" Description="Test integration provider for Visual Studio Team System (Experimental!)">
+            <Feature Id="feat_Gallio.VisualStudio.Tip" Title="Visual Studio Team System Test Runner" Level="1" Description="Test integration provider for Visual Studio Team System">
                 <ComponentRef Id="Gallio.VisualStudio.Tip.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip.Proxy.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip.VS90.Registry"/>

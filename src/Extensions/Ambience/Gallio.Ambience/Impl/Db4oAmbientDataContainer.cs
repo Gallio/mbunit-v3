@@ -63,13 +63,19 @@ namespace Gallio.Ambience.Impl
         /// <inheritdoc />
         public void Delete(object obj)
         {
-            throw new System.NotImplementedException();
+            inner.Delete(obj);
         }
 
         /// <inheritdoc />
         public void Store(object obj)
         {
-            throw new System.NotImplementedException();
+            inner.Store(obj);
+        }
+
+        /// <inheritdoc />
+        public void Purge()
+        {
+            inner.Ext().Purge();
         }
     }
 }

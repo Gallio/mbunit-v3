@@ -8,8 +8,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Binary Include="Gallio.Ambience\bin\Gallio.Ambience.dll" />
-    <Binary Include="Gallio.Ambience\bin\Gallio.Ambience.pdb" />
     <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe" />
     <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config" />
   </ItemGroup>
@@ -18,5 +16,16 @@
     <TestAssembly Include="Gallio.Ambience.Tests\bin\Gallio.Ambience.Tests.dll" />
 
     <DocumentedAssembly Include="Gallio.Ambience\bin\Gallio.Ambience.dll" />
+    
+    <!-- Not ready for release.
+    <Feature Include="FEATURE_AMBIENCE" />
+    -->
   </ItemGroup>
+
+  <Target Name="AfterImage">
+    <Message Text="Running ILMerge on Gallio.Ambience.dll..."
+             Importance="High" />
+
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; &quot;Gallio.Ambience\bin\Db4objects.Db4o.dll&quot; &quot;Gallio.Ambience\bin\Db4objects.Db4o.Linq.dll&quot; &quot;Gallio.Ambience\bin\Cecil.FlowAnalysis.dll&quot; &quot;Gallio.Ambience\bin\Mono.Cecil.dll&quot; /internalize &quot;/out:$(ImageDir)\bin\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+  </Target>  
 </Project>

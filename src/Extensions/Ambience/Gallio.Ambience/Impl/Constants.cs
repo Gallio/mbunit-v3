@@ -36,10 +36,14 @@ namespace Gallio.Ambience.Impl
         /// <summary>
         /// Gets the default database file name.
         /// </summary>
-        public const string DatabaseFileName = "Gallio.Ambient.db4o";
+        public const string DefaultDatabaseFileName = "Default.db";
 
         public const string AnonymousUserName = "anonymous";
         public const string AnonymousPassword = "anonymous";
-        public static NetworkCredential AnonymousCredential = new NetworkCredential(AnonymousUserName, AnonymousPassword);
+
+        public static NetworkCredential CreateAnonymousCredential()
+        {
+            return new NetworkCredential(AnonymousUserName, AnonymousPassword);
+        }
     }
 }

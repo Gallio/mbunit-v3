@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
-    <!--
+<?ifdef FEATURE_AMBIENCE ?>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="Gallio.Ambience.dll" Guid="{0CEA0DD8-D3BA-45f3-B607-7914A27D4967}" Win64="no">
                 <File Name="Gallio.Ambience.dll" KeyPath="yes" />
@@ -24,6 +24,6 @@
                 <ComponentRef Id="Gallio.Ambience.Service.exe" />
             </Feature>
         </Feature>
-    -->
+<?endif?>
     </Fragment>
 </Wix>

@@ -55,8 +55,8 @@ namespace Gallio.Ambience.Server
             AmbienceServerConfiguration configuration = new AmbienceServerConfiguration();
             configuration.Port = Arguments.Port;
             configuration.Credential = new NetworkCredential(Arguments.UserName, Arguments.Password);
-            if (Arguments.DatabaseFolder != null)
-                configuration.DatabaseFolder = Arguments.DatabaseFolder;
+            if (Arguments.DatabasePath != null)
+                configuration.DatabasePath = Arguments.DatabasePath;
 
             if (ProcessTypeDetection.ProcessType == ProcessType.Service)
                 return RunAsService(configuration);

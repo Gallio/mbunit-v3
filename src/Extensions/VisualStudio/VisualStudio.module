@@ -51,8 +51,11 @@
     <TestAssembly Include="Gallio.VisualStudio.Tip.Tests\bin\Gallio.VisualStudio.Tip.Tests.dll" />
 
     <Feature Include="FEATURE_VISUALSTUDIO" />
-    <Feature Include="FEATURE_VISUALSTUDIO_SAIL" />
     <Feature Include="FEATURE_VISUALSTUDIO_TIP" />
+
+    <!-- Not ready for release.
+    <Feature Include="FEATURE_VISUALSTUDIO_SAIL" />
+    -->
   </ItemGroup>
 
   <Target Name="AfterImage"

@@ -28,7 +28,7 @@ namespace Gallio.Ambience
     {
         private string hostName = "localhost";
         private int port = Constants.DefaultPortNumber;
-        private NetworkCredential credential = Constants.AnonymousCredential;
+        private NetworkCredential credential = Constants.CreateAnonymousCredential();
 
         /// <summary>
         /// Gets or sets the Ambient server hostname.

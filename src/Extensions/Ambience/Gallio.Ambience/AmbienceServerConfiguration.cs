@@ -28,28 +28,28 @@ namespace Gallio.Ambience
     public class AmbienceServerConfiguration
     {
         private int port = Constants.DefaultPortNumber;
-        private NetworkCredential credential = Constants.AnonymousCredential;
-        private string databaseFolder;
+        private NetworkCredential credential = Constants.CreateAnonymousCredential();
+        private string databasePath;
 
         /// <summary>
-        /// Gets or sets the database folder.
+        /// Gets or sets the database file path.
         /// </summary>
-        /// <value>The database folder, the default is a file in the Gallio.Ambient subdirectory
-        /// of the Local Application Data folder.
+        /// <value>The database file path, the default is a file called Default.db
+        /// in the Gallio.Ambient subdirectory of the Local Application Data folder.
         /// </value>
-        public string DatabaseFolder
+        public string DatabasePath
         {
             get
             {
-                if (databaseFolder == null)
-                    databaseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Gallio.Ambient");
-                return databaseFolder;
+                if (databasePath == null)
+                    databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.DefaultDatabaseFileName);
+                return databasePath;
             }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
-                databaseFolder = value;
+                databasePath = value;
             }
         }
 
