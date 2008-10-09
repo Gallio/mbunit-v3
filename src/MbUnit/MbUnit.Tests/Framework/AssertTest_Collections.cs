@@ -41,7 +41,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void AreElementsEqual_with_custom_comparer()
         {
-            Assert.AreElementsEqual("12", "12", (expected, actual) => true);
+            Assert.AreElementsEqual("12", "34", (expected, actual) => expected + 2 == actual);
 
         }
 
@@ -90,7 +90,7 @@ namespace MbUnit.Tests.Framework
         [Test]
         public void AreElementsNotEqual_with_custom_comparer()
         {
-            Assert.AreElementsNotEqual("12", "12", (expected, actual) => false);
+            Assert.AreElementsNotEqual("12", "12", (expected, actual) => expected + 2 == actual);
         }
 
         [Test]
@@ -110,6 +110,50 @@ namespace MbUnit.Tests.Framework
         public void AreElementsNotEqual_fails_with_custom_message()
         {
             AssertionFailure[] failures = Capture(() => Assert.AreElementsNotEqual("2", "2", "{0} message", "custom"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        #endregion
+
+        #region AreElementsEqualIgnoringOrder
+        [Test]
+        public void AreElementsEqualIgnoringOrder_with_strings()
+        {
+            Assert.AreElementsEqualIgnoringOrder("122", "212");
+        }
+
+        [Test]
+        public void AreElementsEqualIgnoringOrder_with_different_types()
+        {
+            Assert.AreElementsEqualIgnoringOrder(new[] { 2, 2, 3, 1 }, new List<int> { 1, 3, 2, 2 });
+        }
+
+        [Test]
+        public void AreElementsEqualIgnoringOrder_with_custom_comparer()
+        {
+            Assert.AreElementsEqualIgnoringOrder("12", "43", (expected, actual) => expected + 2 == actual);
+        }
+
+        [Test]
+        public void AreElementsEqualIgnoringOrder_fails_when_excess_or_missing_elements()
+        {
+            AssertionFailure[] failures = Capture(()
+                => Assert.AreElementsEqualIgnoringOrder(new[] { 1, 2, 3, 2, 3, 1 }, new List<int> { 4, 2, 1, 1, 4, 1, 4 }));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("Expected elements to be equal but possibly in a different order.", failures[0].Description);
+            Assert.AreEqual("Equal Elements", failures[0].LabeledValues[0].Label);
+            Assert.AreEqual("[1, 1, 2]", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("Excess Elements", failures[0].LabeledValues[1].Label);
+            Assert.AreEqual("[1, 4, 4, 4]", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("Missing Elements", failures[0].LabeledValues[2].Label);
+            Assert.AreEqual("[2, 3, 3]", failures[0].LabeledValues[2].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void AreElementsEqualIgnoringOrder_fails_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() => Assert.AreElementsEqualIgnoringOrder("1", "2", "{0} message", "custom"));
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("custom message", failures[0].Message);
         }

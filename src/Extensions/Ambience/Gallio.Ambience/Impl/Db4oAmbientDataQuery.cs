@@ -24,7 +24,7 @@ namespace Gallio.Ambience.Impl
     /// Facade over <see cref="IDb4oLinqQuery{T}" />.
     /// </summary>
     /// <typeparam name="T">The query result type</typeparam>
-    internal class Db4oAmbientDataQuery<T> : IAmbientDataQuery<T>
+    internal sealed class Db4oAmbientDataQuery<T> : IAmbientDataQuery<T>
     {
         private readonly IDb4oLinqQuery<T> inner;
 
@@ -51,7 +51,7 @@ namespace Gallio.Ambience.Impl
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            return inner.GetEnumerator();
+            return new Db4oEnumeratorWrapper<T>(inner.GetEnumerator());
         }
 
         /// <inheritdoc />

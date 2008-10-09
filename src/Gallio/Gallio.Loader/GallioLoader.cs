@@ -90,7 +90,7 @@ namespace Gallio.Loader
         {
             this.runtimePath = runtimePath;
 
-            gallioAssembly = Assembly.LoadFrom(GetGallioDllPath(runtimePath));
+            gallioAssembly = LoadGallioAssembly();
             bootstrapType = gallioAssembly.GetType(GallioLoaderBootstrapTypeFullName);
         }
 
@@ -260,6 +260,18 @@ namespace Gallio.Loader
         {
             MethodInfo method = bootstrapType.GetMethod(BootstrapInstallAssemblyResolverMethodName);
             method.Invoke(null, new object[] { runtimePath });
+        }
+
+        private Assembly LoadGallioAssembly()
+        {
+            try
+            {
+                return Assembly.Load("Gallio");
+            }
+            catch (FileNotFoundException)
+            {
+                return Assembly.LoadFrom(GetGallioDllPath(runtimePath));
+            }
         }
 
         private static string FindRuntimePath()

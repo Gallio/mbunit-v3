@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Configuration;
+using Gallio.Ambience.Impl;
 
 namespace Gallio.Ambience
 {
@@ -79,12 +81,14 @@ namespace Gallio.Ambience
     {
         private static readonly object syncRoot = new object();
         private static AmbienceClient defaultClient;
+        private static AmbienceClientConfiguration defaultClientConfig;
 
         /// <summary>
         /// <para>
         /// Gets the default ambient data container.
         /// </para>
         /// </summary>
+        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
         public static IAmbientDataContainer Data
         {
             get
@@ -99,18 +103,35 @@ namespace Gallio.Ambience
         }
 
         /// <summary>
-        /// Gets the default client configuration.
+        /// Gets or sets the default client configuration.
         /// </summary>
-        /// <returns>The default client configuration</returns>
-        public static AmbienceClientConfiguration GetDefaultClientConfiguration()
+        /// <value>The default client configuration.  The initial value is populated from the contents
+        /// of the Ambience configuration section in the application's or test's configuration file.
+        /// See also <seealso cref="AmbienceSectionHandler"/>.</value>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public static AmbienceClientConfiguration DefaultClientConfiguration
         {
-            // TODO
-            return new AmbienceClientConfiguration();
+            get
+            {
+                if (defaultClientConfig == null)
+                {
+                    var section = AmbienceSectionHandler.GetSection();
+                    defaultClientConfig = section.DefaultClientConfiguration;
+                }
+
+                return defaultClientConfig;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                defaultClientConfig = value;
+            }
         }
 
         private static AmbienceClient ConnectDefaultClient()
         {
-            return AmbienceClient.Connect(GetDefaultClientConfiguration());
+            return AmbienceClient.Connect(DefaultClientConfiguration);
         }
     }
 }

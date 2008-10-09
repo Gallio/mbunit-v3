@@ -49,6 +49,8 @@ namespace Gallio.Ambience
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
+                if (value.Length == 0)
+                    throw new ArgumentException("Database path should not be empty.", "value");
                 databasePath = value;
             }
         }
@@ -57,10 +59,15 @@ namespace Gallio.Ambience
         /// Gets or sets the Ambient server port number.
         /// </summary>
         /// <value>The port number, defaults to 7822.</value>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the port number is not in the range 1..65535</exception>
         public int Port
         {
             get { return port; }
-            set { port = value; }
+            set
+            {
+                Validator.ValidatePortNumber(value);
+                port = value;
+            }
         }
 
         /// <summary>

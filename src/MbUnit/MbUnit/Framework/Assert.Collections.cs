@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Gallio;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
@@ -239,6 +240,180 @@ namespace MbUnit.Framework
                         .AddRawLabeledValue("Actual Sequence", actualSequence)
                         .ToAssertionFailure();
             });
+        }
+        #endregion
+
+        #region AreElementsEqualIgnoringOrder
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are equal but perhaps in a different order.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence)
+        {
+            AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, null, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are equal but perhaps in a different order.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs)
+        {
+            AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, null, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are equal but perhaps in a different order.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer)
+        {
+            AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, comparer, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are equal but perhaps in a different order.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        {
+            AssertionHelper.Verify(delegate
+            {
+                if (expectedSequence == null && actualSequence == null)
+                    return null;
+
+                if (expectedSequence == null || actualSequence == null)
+                {
+                    return new AssertionFailureBuilder(
+                        "Expected elements to be equal but one sequence was null and not the other.")
+                        .SetMessage(messageFormat, messageArgs)
+                        .AddRawLabeledValue("Expected Sequence", expectedSequence)
+                        .AddRawLabeledValue("Actual Sequence", actualSequence)
+                        .ToAssertionFailure();
+                }
+
+                if (comparer == null)
+                    comparer = ComparisonSemantics.Equals;
+
+                // Count the number of matching expected and actual elements.
+                MatchTable<T> table = new MatchTable<T>(comparer);
+                foreach (T expectedElement in expectedSequence)
+                    table.AddExpectedValue(expectedElement);
+
+                foreach (T actualElement in actualSequence)
+                    table.AddActualValue(actualElement);
+
+                // Find out what's different.
+                if (table.NonEqualCount == 0)
+                    return null;
+
+                var equalElements = new List<T>();
+                var excessElements = new List<T>();
+                var missingElements = new List<T>();
+                foreach (KeyValuePair<T, Pair<int, int>> item in table.Items)
+                {
+                    T element = item.Key;
+                    int expectedCount = item.Value.First;
+                    int actualCount = item.Value.Second;
+
+                    AddNTimes(equalElements, element, Math.Min(expectedCount, actualCount));
+                    AddNTimes(excessElements, element, actualCount - expectedCount);
+                    AddNTimes(missingElements, element, expectedCount - actualCount);
+                }
+
+                return new AssertionFailureBuilder(
+                    "Expected elements to be equal but possibly in a different order.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Equal Elements", equalElements)
+                    .AddRawLabeledValue("Excess Elements", excessElements)
+                    .AddRawLabeledValue("Missing Elements", missingElements)
+                    .ToAssertionFailure();
+            });
+        }
+
+        private static void AddNTimes<T>(List<T> list, T value, int count)
+        {
+            while (count-- > 0)
+                list.Add(value);
+        }
+
+        private sealed class MatchTable<T>
+        {
+            private readonly Func<T, T, bool> comparer;
+            private readonly List<KeyValuePair<T, Pair<int, int>>> items;
+            private int nonEqualCount;
+
+            public MatchTable(Func<T, T, bool> comparer)
+            {
+                this.comparer = comparer;
+                items = new List<KeyValuePair<T,Pair<int,int>>>();
+            }
+
+            public int NonEqualCount
+            {
+                get { return nonEqualCount; }
+            }
+
+            public IEnumerable<KeyValuePair<T, Pair<int, int>>> Items
+            {
+                get { return items; }
+            }
+
+            public void AddExpectedValue(T key)
+            {
+                Add(key, 1, 0);
+            }
+
+            public void AddActualValue(T key)
+            {
+                Add(key, 0, 1);
+            }
+
+            private void Add(T key, int expectedCount, int actualCount)
+            {
+                for (int i = 0; i < items.Count; i++)
+                {
+                    KeyValuePair<T, Pair<int, int>> item = items[i];
+                    if (comparer(item.Key, key))
+                    {
+                        Pair<int, int> oldCounters = items[i].Value;
+                        Pair<int, int> newCounters = new Pair<int,int>(oldCounters.First + expectedCount, oldCounters.Second + actualCount);
+                        items[i] = new KeyValuePair<T, Pair<int, int>>(item.Key, newCounters);
+
+                        if (newCounters.First == newCounters.Second)
+                            nonEqualCount -= 1;
+                        else if (oldCounters.First == oldCounters.Second)
+                            nonEqualCount += 1;
+
+                        return;
+                    }
+                }
+
+                items.Add(new KeyValuePair<T, Pair<int, int>>(key, new Pair<int,int>(expectedCount, actualCount)));
+                nonEqualCount += 1;
+            }
         }
         #endregion
 

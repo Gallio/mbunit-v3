@@ -17,6 +17,7 @@ using System;
 using System.Net;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 using Gallio.Ambience.Impl;
 
 namespace Gallio.Ambience
@@ -53,8 +54,14 @@ namespace Gallio.Ambience
         {
             if (container != null)
             {
-                container.Inner.Dispose();
-                container = null;
+                try
+                {
+                    container.Inner.Dispose();
+                }
+                finally
+                {
+                    container = null;
+                }
             }
         }
 
@@ -63,17 +70,24 @@ namespace Gallio.Ambience
         /// </summary>
         /// <param name="configuration">The client configuration</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="configuration"/> is null</exception>
+        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
         public static AmbienceClient Connect(AmbienceClientConfiguration configuration)
         {
             if (configuration == null)
                 throw new ArgumentNullException("configuration");
 
-            IConfiguration db4oConfig = Db4oFactory.NewConfiguration();
-            IObjectContainer db4oContainer = Db4oFactory.OpenClient(db4oConfig,
-                configuration.HostName, configuration.Port,
-                configuration.Credential.UserName, configuration.Credential.Password);
-
-            return new AmbienceClient(new Db4oAmbientDataContainer(db4oContainer));
+            try
+            {
+                IConfiguration db4oConfig = Db4oFactory.NewConfiguration();
+                IObjectContainer db4oContainer = Db4oFactory.OpenClient(db4oConfig,
+                    configuration.HostName, configuration.Port,
+                    configuration.Credential.UserName, configuration.Credential.Password);
+                return new AmbienceClient(new Db4oAmbientDataContainer(db4oContainer));
+            }
+            catch (Db4oException ex)
+            {
+                throw new AmbienceException("An error occurred while connecting to the server.", ex);
+            }
         }
 
         private void ThrowIfDisposed()

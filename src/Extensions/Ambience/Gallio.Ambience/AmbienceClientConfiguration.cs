@@ -35,6 +35,7 @@ namespace Gallio.Ambience
         /// </summary>
         /// <value>The hostname, defaults to "localhost".</value>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is empty</exception>
         public string HostName
         {
             get { return hostName; }
@@ -42,6 +43,8 @@ namespace Gallio.Ambience
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
+                if (value.Length == 0)
+                    throw new ArgumentException("Host name should not be empty.", "value");
                 hostName = value;
             }
         }
@@ -50,10 +53,15 @@ namespace Gallio.Ambience
         /// Gets or sets the Ambient server port number.
         /// </summary>
         /// <value>The port number, defaults to 7822.</value>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the port number is not in the range 1..65535</exception>
         public int Port
         {
             get { return port; }
-            set { port = value; }
+            set
+            {
+                Validator.ValidatePortNumber(value);
+                port = value;
+            }
         }
 
         /// <summary>

@@ -48,6 +48,7 @@
       <HintPath>..\libs\net-3.5\Db4objects.Db4o.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -56,26 +57,44 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmbienceClient.cs" />
+    <Compile Include="AmbienceSectionHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AmbienceException.cs" />
     <Compile Include="AmbienceServerConfiguration.cs" />
     <Compile Include="Ambient.cs" />
-    <Compile Include="AmbienceConfigurationSectionHandler.cs" />
     <Compile Include="AmbientDataContainerExtensions.cs" />
     <Compile Include="AmbientDataQueryExtensions.cs" />
     <Compile Include="IAmbientDataContainer.cs" />
     <Compile Include="IAmbientDataQuery.cs" />
     <Compile Include="AmbienceClientConfiguration.cs" />
-    <Compile Include="Impl\AmbientConfigurationSection.cs" />
+    <Compile Include="IAmbientDataSet.cs" />
+    <Compile Include="Impl\AmbienceConfigurationSection.cs" />
     <Compile Include="Impl\Constants.cs" />
     <Compile Include="Impl\Db4oAmbientDataContainer.cs" />
     <Compile Include="Impl\Db4oAmbientDataQuery.cs" />
+    <Compile Include="Impl\Db4oEnumeratorWrapper.cs" />
+    <Compile Include="Impl\Db4oListWrapper.cs" />
+    <Compile Include="Impl\Validator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AmbienceServer.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

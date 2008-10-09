@@ -14,9 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Gallio.Ambience
 {
@@ -33,7 +30,8 @@ namespace Gallio.Ambience
         /// </summary>
         /// <typeparam name="T">The object type</typeparam>
         /// <returns>The data set</returns>
-        IList<T> Query<T>();
+        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        IAmbientDataSet<T> Query<T>();
 
         /// <summary>
         /// Gets all objects of a particular type in the container that match a particular filtering criteria.
@@ -41,7 +39,8 @@ namespace Gallio.Ambience
         /// <typeparam name="T">The object type</typeparam>
         /// <param name="predicate">The filtering criteria</param>
         /// <returns>The data set</returns>
-        IList<T> Query<T>(Predicate<T> predicate);
+        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        IAmbientDataSet<T> Query<T>(Predicate<T> predicate);
 
         /// <summary>
         /// <para>
@@ -49,6 +48,7 @@ namespace Gallio.Ambience
         /// </para>
         /// </summary>
         /// <param name="obj">The object to delete</param>
+        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
         void Delete(object obj);
 
         /// <summary>
@@ -57,13 +57,15 @@ namespace Gallio.Ambience
         /// </para>
         /// </summary>
         /// <param name="obj">The object to store</param>
+        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
         void Store(object obj);
 
         /// <summary>
         /// <para>
-        /// Purges the entire contents of the container.  (Use with caution!)
+        /// Deletes all objects in the container.  (Use with caution!)
         /// </para>
         /// </summary>
-        void Purge();
+        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
+        void DeleteAll();
     }
 }

@@ -244,7 +244,7 @@ namespace Gallio.Tests.Reflection
 
                 Assert.IsNull(info.GetXmlDocumentation());
 
-                InterimAssert.AreElementsEqualIgnoringOrder(
+                Assert.AreElementsEqualIgnoringOrder(
                     target.GetReferencedAssemblies(),
                     info.GetReferencedAssemblies(),
                     delegate(AssemblyName expected, AssemblyName actual) { return expected.FullName == actual.FullName; });

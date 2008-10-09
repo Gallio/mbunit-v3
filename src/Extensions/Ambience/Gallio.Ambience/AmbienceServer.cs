@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 
 namespace Gallio.Ambience
 {
@@ -59,15 +60,23 @@ namespace Gallio.Ambience
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the server has already been started</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the server has been disposed</exception>
+        /// <exception cref="AmbienceException">Thrown if the operation failed</exception>
         public void Start()
         {
             ThrowIfDisposed();
 
             Directory.CreateDirectory(Path.GetDirectoryName(databasePath));
 
-            IConfiguration db4oConfig = Db4oFactory.NewConfiguration();
-            db4oServer = Db4oFactory.OpenServer(db4oConfig, databasePath, configuration.Port);
-            db4oServer.GrantAccess(configuration.Credential.UserName, configuration.Credential.Password);
+            try
+            {
+                IConfiguration db4oConfig = Db4oFactory.NewConfiguration();
+                db4oServer = Db4oFactory.OpenServer(db4oConfig, databasePath, configuration.Port);
+                db4oServer.GrantAccess(configuration.Credential.UserName, configuration.Credential.Password);
+            }
+            catch (Db4oException ex)
+            {
+                throw new AmbienceException("An error occurred while starting the server.", ex);
+            }
         }
 
         /// <summary>
@@ -81,8 +90,18 @@ namespace Gallio.Ambience
 
             if (db4oServer != null)
             {
-                db4oServer.Close();
-                db4oServer = null;
+                try
+                {
+                    db4oServer.Close();
+                }
+                catch (Db4oException ex)
+                {
+                    throw new AmbienceException("An error occurred while stopping the server.", ex);
+                }
+                finally
+                {
+                    db4oServer = null;
+                }
             }
         }
 
@@ -94,8 +113,14 @@ namespace Gallio.Ambience
         {
             if (disposing && ! isDisposed)
             {
-                Stop();
-                isDisposed = true;
+                try
+                {
+                    Stop();
+                }
+                finally
+                {
+                    isDisposed = true;
+                }
             }
         }
 

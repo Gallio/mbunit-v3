@@ -75,7 +75,7 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
-        /// Internal implementation of <see cref="Do"/>.
+        /// Internal implementation of <see cref="Do{TArg, TResult}"/>.
         /// </summary>
         /// <param name="func">The action to perform, not null</param>
         /// <param name="arg">The argument value, if any</param>

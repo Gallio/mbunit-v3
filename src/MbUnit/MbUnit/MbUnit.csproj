@@ -101,7 +101,6 @@
     <Compile Include="Framework\ExpectedExceptionAttribute.cs" />
     <Compile Include="Framework\IgnoreAttribute.cs" />
     <Compile Include="Framework\ImportanceAttribute.cs" />
-    <Compile Include="Framework\InterimAssert.cs" />
     <Compile Include="Framework\MetadataAttribute.cs" />
     <Compile Include="Framework\ParameterAttribute.cs" />
     <Compile Include="Framework\Reflection\AccessModifier.cs" />

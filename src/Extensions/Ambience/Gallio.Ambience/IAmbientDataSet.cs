@@ -14,22 +14,16 @@
 // limitations under the License.
 
 using System;
-using System.Configuration;
-using System.Xml;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Gallio.Ambience
 {
     /// <summary>
-    /// <para>
-    /// Recognizes and processes the &lt;ambience&gt; configuration section.
-    /// </para>
+    /// A data set containing Ambient objects.
     /// </summary>
-    public class AmbienceConfigurationSectionHandler : IConfigurationSectionHandler
+    public interface IAmbientDataSet<T> : IList<T>
     {
-        /// <inheritdoc />
-        public object Create(object parent, object configContext, XmlNode section)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

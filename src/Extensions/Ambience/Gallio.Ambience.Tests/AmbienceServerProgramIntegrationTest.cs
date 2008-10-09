@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using Gallio.Ambience.Server;
 using Gallio.Concurrency;
 using Gallio.Runtime;
@@ -46,7 +47,7 @@ namespace Gallio.Ambience.Tests
             AmbienceClient client = AmbienceClient.Connect(config);
             IAmbientDataContainer container = client.Container;
 
-            container.Purge();
+            container.DeleteAll();
 
             container.Store(new Item() { Name = "foo", Value = 42 });
             container.Store(new Item() { Name = "bar", Value = 40 });
@@ -63,13 +64,8 @@ namespace Gallio.Ambience.Tests
             string executablePath = Path.Combine(workingDirectory, "Gallio.Ambience.Server.exe");
 
             ProcessTask task = Tasks.StartProcessTask(executablePath, arguments, workingDirectory);
+            Thread.Sleep(5000);
             return task;
-        }
-
-        private class Item
-        {
-            public string Name { get; set; }
-            public int Value { get; set; }
         }
     }
 }

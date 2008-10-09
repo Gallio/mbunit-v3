@@ -14,17 +14,15 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 
 namespace Gallio.Ambience.Impl
 {
     /// <summary>
     /// Facade over <see cref="IObjectContainer" />.
     /// </summary>
-    internal class Db4oAmbientDataContainer : IAmbientDataContainer
+    internal sealed class Db4oAmbientDataContainer : IAmbientDataContainer
     {
         private readonly IObjectContainer inner;
 
@@ -49,33 +47,69 @@ namespace Gallio.Ambience.Impl
         }
 
         /// <inheritdoc />
-        public IList<T> Query<T>()
+        public IAmbientDataSet<T> Query<T>()
         {
-            return inner.Query<T>();
+            try
+            {
+                return new Db4oListWrapper<T>(inner.Query<T>());
+            }
+            catch (Db4oException ex)
+            {
+                throw new AmbienceException("An error occurred while executing a database query.", ex);
+            }
         }
 
         /// <inheritdoc />
-        public IList<T> Query<T>(Predicate<T> predicate)
+        public IAmbientDataSet<T> Query<T>(Predicate<T> predicate)
         {
-            return inner.Query<T>(predicate);
+            try
+            {
+                return new Db4oListWrapper<T>(inner.Query<T>(predicate));
+            }
+            catch (Db4oException ex)
+            {
+                throw new AmbienceException("An error occurred while executing a database query.", ex);
+            }
         }
 
         /// <inheritdoc />
         public void Delete(object obj)
         {
-            inner.Delete(obj);
+            try
+            {
+                inner.Delete(obj);
+            }
+            catch (Db4oException ex)
+            {
+                throw new AmbienceException("An error occurred while deleting an object from the database.", ex);
+            }
         }
 
         /// <inheritdoc />
         public void Store(object obj)
         {
-            inner.Store(obj);
+            try
+            {
+                inner.Store(obj);
+            }
+            catch (Db4oException ex)
+            {
+                throw new AmbienceException("An error occurred while storing an object in the database.", ex);
+            }
         }
 
         /// <inheritdoc />
-        public void Purge()
+        public void DeleteAll()
         {
-            inner.Ext().Purge();
+            try
+            {
+                foreach (object obj in inner.Query<object>())
+                    inner.Delete(obj);
+            }
+            catch (Db4oException ex)
+            {
+                throw new AmbienceException("An error occurred while purging the database.", ex);
+            }
         }
     }
 }
