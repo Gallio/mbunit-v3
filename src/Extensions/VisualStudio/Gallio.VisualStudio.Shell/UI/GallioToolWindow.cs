@@ -30,14 +30,25 @@ namespace Gallio.VisualStudio.Shell.UI
     public class GallioToolWindow : ToolWindowPane, IShellComponent
     {
     	/// <summary>
-		/// Default constructor. Calls base class with Package Instance
+		/// Default constructor. 
+        /// Calls base class with singleton package pnstance.
 		/// </summary>
         public GallioToolWindow()
-            : base(ShellAccessor.Shell.Package as IServiceProvider)
+            : this(ShellAccessor.Shell)
 		{
         }
 
-        private readonly IShell shell = ShellAccessor.Shell;
+        /// <summary>
+        /// Constructs tool window with the specified shell extension.
+        /// </summary>
+        /// <param name="shell">The shell extension.</param>
+        public GallioToolWindow(IShell shell)
+            : base(shell.Package as IServiceProvider)
+        {
+            this.shell = shell;
+        }
+
+        private readonly IShell shell;
 
         /// <summary>
         /// Gets the shell associated with the component.

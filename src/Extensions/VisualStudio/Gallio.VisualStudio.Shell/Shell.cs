@@ -32,7 +32,7 @@ namespace Gallio.VisualStudio.Shell
         private readonly DefaultActionManager actionManager;
         private readonly List<IShellExtension> extensions;
 
-        private ShellPackage package;
+        private IShellPackage package;
         private DTE2 dte;
         private AddIn addIn;
         private ShellAddInHandler addInHandler;
@@ -53,7 +53,7 @@ namespace Gallio.VisualStudio.Shell
         }
 
         /// <inheritdoc />
-        public ShellPackage Package
+        public IShellPackage Package
         {
             get { return package; }
         }
@@ -94,7 +94,7 @@ namespace Gallio.VisualStudio.Shell
             }
         }
 
-        internal void OnPackageInitialized(ShellPackage package)
+        internal void OnPackageInitialized(IShellPackage package)
         {
             if (package == null)
                 throw new ArgumentNullException("package");
@@ -130,7 +130,7 @@ namespace Gallio.VisualStudio.Shell
             actionManager.Exec(commandName, executeOption, ref variantIn, ref variantOut, ref handled);
         }
 
-        private void ConfigureShellServices(ShellPackage package, ShellAddInHandler addInHandler)
+        private void ConfigureShellServices(IShellPackage package, ShellAddInHandler addInHandler)
         {
             if (package == null || addInHandler == null)
             {

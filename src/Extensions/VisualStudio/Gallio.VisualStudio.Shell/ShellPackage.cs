@@ -44,7 +44,7 @@ namespace Gallio.VisualStudio.Shell
     [Guid(Guids.ShellPkgGuidString)]
     [ComVisible(true)]
     [ProvideToolWindow(typeof(GallioToolWindow))]
-    public sealed class ShellPackage : Package, IVsInstalledProduct
+    public sealed class ShellPackage : Package, IShellPackage
     {
         private Shell shell;
 

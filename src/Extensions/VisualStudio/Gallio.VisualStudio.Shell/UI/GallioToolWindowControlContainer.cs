@@ -27,6 +27,14 @@ namespace Gallio.VisualStudio.Shell.UI
     [ComVisible(true)]
     public class GallioToolWindowControlContainer : UserControl
     {
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public GallioToolWindowControlContainer()
+        {
+            InitializeComponent();
+        }
+
         private GallioToolWindow toolWindow;
 
         /// <summary>

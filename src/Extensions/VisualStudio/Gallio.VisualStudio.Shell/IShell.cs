@@ -40,7 +40,7 @@ namespace Gallio.VisualStudio.Shell
         /// <summary>
         /// Gets the package, or null if not initialized.
         /// </summary>
-        ShellPackage Package { get; }
+        IShellPackage Package { get; }
 
         /// <summary>
         /// Gets the add-in, or null if not initialized.
