@@ -55,9 +55,9 @@ namespace Gallio.Icarus
             this.annotationReference = new System.Windows.Forms.ColumnHeader();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.showErrorsToolStripButton = new ToolStripButton();
-            this.showWarningsToolStripButton = new ToolStripButton();
-            this.showInfoToolStripButton = new ToolStripButton();
+            this.showErrorsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
+            this.showWarningsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
+            this.showInfoToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();

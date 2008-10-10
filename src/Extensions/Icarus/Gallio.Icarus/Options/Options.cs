@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 
@@ -36,59 +38,57 @@ namespace Gallio.Icarus.Options
             optionCategoryTree.ExpandAll();
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        private void Options_FormClosed(object sender, FormClosedEventArgs e)
         {
-            controller.Cancel();
-            Close();
-        }
-
-        private void okButton_Click(object sender, EventArgs e)
-        {
-            controller.Save();
-            Close();
+            if (DialogResult == DialogResult.OK)
+            {
+                controller.Save();
+            }
+            else
+            {
+                controller.Cancel();
+            }
         }
 
         private void optionCategoryTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            switch (e.Node.Name)
+            var panels = new Dictionary<string, Type>
             {
-                case "appearance":
-                    AddPanel(new AppearanceOptions(controller));
-                    break;
-                case "colors":
-                    AddPanel(new ColorsOptions(controller));
-                    break;
-                case "pluginDirectories":
-                    AddPanel(new PluginDirectoriesOptions(controller));
-                    break;
-                case "startup":
-                    AddPanel(new StartupOptions(controller));
-                    break;
-                case "testExplorer":
-                    AddPanel(new TestExplorerOptions(controller));
-                    break;
-                default:
-                    ClearPanel();
-                    break;
+                { "appearance", typeof(AppearanceOptions) },
+                { "colors", typeof(ColorsOptions) },
+                { "pluginDirectories", typeof(PluginDirectoriesOptions) },
+                { "startup", typeof(StartupOptions) },
+                { "testExplorer", typeof(TestExplorerOptions) },
+            };
+
+            Type panelType;
+
+            if (panels.TryGetValue(e.Node.Name, out panelType))
+            {
+                AddPanel((Control)Activator.CreateInstance(panelType, controller));
+            }
+            else
+            {
+                ClearPanel();
             }
         }
 
         private void ClearPanel()
         {
-            if (Controls.ContainsKey(currentPanel))
-                Controls.RemoveByKey(currentPanel);
+            panelContainer.Controls.Clear();
         }
 
         private void AddPanel(Control optionPanel)
         {
             if (optionPanel == null)
+            {
                 throw new ArgumentNullException("optionPanel");
+            }
 
             ClearPanel();
-
-            Controls.Add(optionPanel);
+            panelContainer.Controls.Add(optionPanel);
             currentPanel = optionPanel.Name;
-            optionPanel.Location = new System.Drawing.Point(195, 15);
+            optionPanel.Dock = DockStyle.Fill;
         }
     }
 }

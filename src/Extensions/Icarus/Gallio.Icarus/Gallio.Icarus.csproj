@@ -403,7 +403,6 @@
     <Content Include="Resources\Assembly.ico" />
     <Content Include="Resources\Assembly.png" />
     <Content Include="Resources\ClearAll.ico" />
-    <None Include="Resources\ContractVerifierGroup.png" />
     <Content Include="Resources\cross.png" />
     <Content Include="Resources\document-save-as.png" />
     <Content Include="Resources\document-save.png" />
@@ -428,6 +427,7 @@
     <Content Include="Resources\OpenInVS.ico" />
     <Content Include="Resources\Options.ico" />
     <Content Include="Resources\PassMb.ico" />
+    <None Include="Resources\pillar.png" />
     <Content Include="Resources\Reload.ico" />
     <Content Include="Resources\Report.ico" />
     <Content Include="Resources\Sort.png" />

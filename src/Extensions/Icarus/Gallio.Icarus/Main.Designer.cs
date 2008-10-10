@@ -75,6 +75,8 @@ namespace Gallio.Icarus
             this.startTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,8 +98,6 @@ namespace Gallio.Icarus
             this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -362,6 +362,20 @@ namespace Gallio.Icarus
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
+            // reportToolStripMenuItem
+            // 
+            this.reportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewAsToolStripMenuItem});
+            this.reportToolStripMenuItem.Name = "reportToolStripMenuItem";
+            this.reportToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.reportToolStripMenuItem.Text = "Report";
+            // 
+            // viewAsToolStripMenuItem
+            // 
+            this.viewAsToolStripMenuItem.Name = "viewAsToolStripMenuItem";
+            this.viewAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.viewAsToolStripMenuItem.Text = "View As";
+            // 
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -372,8 +386,9 @@ namespace Gallio.Icarus
             // 
             // optionsMenuItem
             // 
+            this.optionsMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("optionsMenuItem.Image")));
             this.optionsMenuItem.Name = "optionsMenuItem";
-            this.optionsMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.optionsMenuItem.Size = new System.Drawing.Size(152, 22);
             this.optionsMenuItem.Text = "&Options...";
             this.optionsMenuItem.Click += new System.EventHandler(this.optionsMenuItem_Click);
             // 
@@ -557,20 +572,6 @@ namespace Gallio.Icarus
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(1003, 636);
             this.dockPanel.TabIndex = 8;
-            // 
-            // reportToolStripMenuItem
-            // 
-            this.reportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.viewAsToolStripMenuItem});
-            this.reportToolStripMenuItem.Name = "reportToolStripMenuItem";
-            this.reportToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.reportToolStripMenuItem.Text = "Report";
-            // 
-            // viewAsToolStripMenuItem
-            // 
-            this.viewAsToolStripMenuItem.Name = "viewAsToolStripMenuItem";
-            this.viewAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.viewAsToolStripMenuItem.Text = "View As";
             // 
             // Main
             // 

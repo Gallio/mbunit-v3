@@ -56,6 +56,7 @@ namespace Gallio.Icarus.Options
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.seperatorBar = new System.Windows.Forms.Label();
+            this.panelContainer = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // optionCategoryTree
@@ -82,7 +83,7 @@ namespace Gallio.Icarus.Options
             treeNode4,
             treeNode5,
             treeNode6});
-            this.optionCategoryTree.Size = new System.Drawing.Size(175, 350);
+            this.optionCategoryTree.Size = new System.Drawing.Size(175, 257);
             this.optionCategoryTree.TabIndex = 0;
             this.optionCategoryTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.optionCategoryTree_AfterSelect);
             // 
@@ -90,35 +91,43 @@ namespace Gallio.Icarus.Options
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(570, 376);
+            this.cancelButton.Location = new System.Drawing.Point(416, 283);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "&Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(489, 376);
+            this.okButton.Location = new System.Drawing.Point(335, 283);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 2;
             this.okButton.Text = "&OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // seperatorBar
             // 
             this.seperatorBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.seperatorBar.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.seperatorBar.Location = new System.Drawing.Point(195, 368);
+            this.seperatorBar.Location = new System.Drawing.Point(195, 275);
             this.seperatorBar.Name = "seperatorBar";
-            this.seperatorBar.Size = new System.Drawing.Size(450, 2);
+            this.seperatorBar.Size = new System.Drawing.Size(296, 2);
             this.seperatorBar.TabIndex = 5;
+            // 
+            // panelContainer
+            // 
+            this.panelContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelContainer.Location = new System.Drawing.Point(195, 12);
+            this.panelContainer.Name = "panelContainer";
+            this.panelContainer.Size = new System.Drawing.Size(296, 257);
+            this.panelContainer.TabIndex = 6;
             // 
             // Options
             // 
@@ -126,20 +135,22 @@ namespace Gallio.Icarus.Options
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(657, 411);
+            this.ClientSize = new System.Drawing.Size(503, 318);
+            this.Controls.Add(this.panelContainer);
             this.Controls.Add(this.seperatorBar);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.optionCategoryTree);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Options";
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Options";
             this.Load += new System.EventHandler(this.Options_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Options_FormClosed);
             this.ResumeLayout(false);
 
         }
@@ -150,5 +161,6 @@ namespace Gallio.Icarus.Options
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Label seperatorBar;
+        private System.Windows.Forms.Panel panelContainer;
     }
 }

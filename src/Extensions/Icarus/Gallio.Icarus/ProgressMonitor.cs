@@ -17,6 +17,7 @@ using System;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Utilities;
+using System.Text;
 
 namespace Gallio.Icarus
 {
@@ -35,17 +36,16 @@ namespace Gallio.Icarus
             testController.ProgressUpdate += testController_ProgressUpdate;
         }
 
-        void testController_ProgressUpdate(object sender, ProgressMonitoring.EventArgs.ProgressUpdateEventArgs e)
+        private void testController_ProgressUpdate(object sender, ProgressMonitoring.EventArgs.ProgressUpdateEventArgs e)
         {
-            Sync.Invoke(this, delegate
+            Sync.Invoke(this, () =>
             {
                 progressBar.Maximum = Convert.ToInt32(e.TotalWorkUnits);
                 progressBar.Value = Convert.ToInt32(e.CompletedWorkUnits);
-
                 Text = e.TaskName;
                 subTaskNameLabel.Text = e.SubTaskName;
-                progressLabel.Text = e.TotalWorkUnits > 0
-                    ? String.Format("{0:P}", (e.CompletedWorkUnits/e.TotalWorkUnits))
+                percentLabel.Text = (e.TotalWorkUnits > 0)
+                    ? String.Format("({0:P0})", e.CompletedWorkUnits / e.TotalWorkUnits)
                     : String.Empty;
             });
         }

@@ -73,9 +73,15 @@ namespace Gallio.Icarus
 
         private void AddListViewItem(AnnotationData annotationData, int imgIndex)
         {
-            ListViewItem lvi = new ListViewItem(annotationData.Message, imgIndex);
-            lvi.SubItems.AddRange(new[] { annotationData.Details, annotationData.CodeLocation.ToString(), 
-                        annotationData.CodeReference.ToString() });
+            var lvi = new ListViewItem(FilterText(annotationData.Message), imgIndex);
+            
+            lvi.SubItems.AddRange(new[] 
+            { 
+                FilterText(annotationData.Details), 
+                annotationData.CodeLocation.ToString(), 
+                annotationData.CodeReference.ToString() 
+            });
+
             lvi.Tag = annotationData;
             annotationsListView.Items.Add(lvi);
         }
@@ -85,6 +91,16 @@ namespace Gallio.Icarus
             foreach (ListViewItem lvi in annotationsListView.SelectedItems)
                 if (ParentForm != null)
                     ((Main)ParentForm).ShowSourceCode(((AnnotationData)lvi.Tag).CodeLocation);
+        }
+
+        private string FilterText(string text)
+        {
+            if (text != null)
+            {
+                return text.Replace("\n", " ");
+            }
+
+            return null;
         }
     }
 }

@@ -38,34 +38,29 @@ namespace Gallio.Icarus.Options
             this.skippedColorLabel = new System.Windows.Forms.Label();
             this.inconclusiveColor = new System.Windows.Forms.Label();
             this.inconclusiveColorLabel = new System.Windows.Forms.Label();
+            this.groupBoxStatusColors = new System.Windows.Forms.GroupBox();
             this.panel.SuspendLayout();
+            this.groupBoxStatusColors.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel
             // 
-            this.panel.Controls.Add(this.inconclusiveColor);
-            this.panel.Controls.Add(this.inconclusiveColorLabel);
-            this.panel.Controls.Add(this.skippedColor);
-            this.panel.Controls.Add(this.skippedColorLabel);
-            this.panel.Controls.Add(this.failedColor);
-            this.panel.Controls.Add(this.failedColorLabel);
-            this.panel.Controls.Add(this.passedColor);
-            this.panel.Controls.Add(this.passedColorLabel);
+            this.panel.Controls.Add(this.groupBoxStatusColors);
             // 
             // passedColorLabel
             // 
             this.passedColorLabel.AutoSize = true;
-            this.passedColorLabel.Location = new System.Drawing.Point(15, 15);
+            this.passedColorLabel.Location = new System.Drawing.Point(6, 23);
             this.passedColorLabel.Name = "passedColorLabel";
-            this.passedColorLabel.Size = new System.Drawing.Size(71, 13);
+            this.passedColorLabel.Size = new System.Drawing.Size(42, 13);
             this.passedColorLabel.TabIndex = 1;
-            this.passedColorLabel.Text = "Passed color:";
+            this.passedColorLabel.Text = "Passed";
             // 
             // passedColor
             // 
             this.passedColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.passedColor.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.passedColor.Location = new System.Drawing.Point(118, 14);
+            this.passedColor.Location = new System.Drawing.Point(90, 18);
             this.passedColor.Name = "passedColor";
             this.passedColor.Size = new System.Drawing.Size(100, 23);
             this.passedColor.TabIndex = 2;
@@ -75,7 +70,7 @@ namespace Gallio.Icarus.Options
             // 
             this.failedColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.failedColor.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.failedColor.Location = new System.Drawing.Point(118, 50);
+            this.failedColor.Location = new System.Drawing.Point(90, 46);
             this.failedColor.Name = "failedColor";
             this.failedColor.Size = new System.Drawing.Size(100, 23);
             this.failedColor.TabIndex = 4;
@@ -84,17 +79,17 @@ namespace Gallio.Icarus.Options
             // failedColorLabel
             // 
             this.failedColorLabel.AutoSize = true;
-            this.failedColorLabel.Location = new System.Drawing.Point(15, 51);
+            this.failedColorLabel.Location = new System.Drawing.Point(6, 51);
             this.failedColorLabel.Name = "failedColorLabel";
-            this.failedColorLabel.Size = new System.Drawing.Size(64, 13);
+            this.failedColorLabel.Size = new System.Drawing.Size(35, 13);
             this.failedColorLabel.TabIndex = 3;
-            this.failedColorLabel.Text = "Failed color:";
+            this.failedColorLabel.Text = "Failed";
             // 
             // skippedColor
             // 
             this.skippedColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.skippedColor.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.skippedColor.Location = new System.Drawing.Point(118, 122);
+            this.skippedColor.Location = new System.Drawing.Point(90, 102);
             this.skippedColor.Name = "skippedColor";
             this.skippedColor.Size = new System.Drawing.Size(100, 23);
             this.skippedColor.TabIndex = 6;
@@ -103,17 +98,17 @@ namespace Gallio.Icarus.Options
             // skippedColorLabel
             // 
             this.skippedColorLabel.AutoSize = true;
-            this.skippedColorLabel.Location = new System.Drawing.Point(15, 123);
+            this.skippedColorLabel.Location = new System.Drawing.Point(6, 107);
             this.skippedColorLabel.Name = "skippedColorLabel";
-            this.skippedColorLabel.Size = new System.Drawing.Size(75, 13);
+            this.skippedColorLabel.Size = new System.Drawing.Size(46, 13);
             this.skippedColorLabel.TabIndex = 5;
-            this.skippedColorLabel.Text = "Skipped color:";
+            this.skippedColorLabel.Text = "Skipped";
             // 
             // inconclusiveColor
             // 
             this.inconclusiveColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.inconclusiveColor.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.inconclusiveColor.Location = new System.Drawing.Point(118, 86);
+            this.inconclusiveColor.Location = new System.Drawing.Point(90, 74);
             this.inconclusiveColor.Name = "inconclusiveColor";
             this.inconclusiveColor.Size = new System.Drawing.Size(100, 23);
             this.inconclusiveColor.TabIndex = 8;
@@ -122,18 +117,38 @@ namespace Gallio.Icarus.Options
             // inconclusiveColorLabel
             // 
             this.inconclusiveColorLabel.AutoSize = true;
-            this.inconclusiveColorLabel.Location = new System.Drawing.Point(15, 87);
+            this.inconclusiveColorLabel.Location = new System.Drawing.Point(6, 79);
             this.inconclusiveColorLabel.Name = "inconclusiveColorLabel";
-            this.inconclusiveColorLabel.Size = new System.Drawing.Size(96, 13);
+            this.inconclusiveColorLabel.Size = new System.Drawing.Size(67, 13);
             this.inconclusiveColorLabel.TabIndex = 7;
-            this.inconclusiveColorLabel.Text = "Inconclusive color:";
+            this.inconclusiveColorLabel.Text = "Inconclusive";
+            // 
+            // groupBoxStatusColors
+            // 
+            this.groupBoxStatusColors.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxStatusColors.Controls.Add(this.passedColor);
+            this.groupBoxStatusColors.Controls.Add(this.skippedColorLabel);
+            this.groupBoxStatusColors.Controls.Add(this.inconclusiveColorLabel);
+            this.groupBoxStatusColors.Controls.Add(this.inconclusiveColor);
+            this.groupBoxStatusColors.Controls.Add(this.passedColorLabel);
+            this.groupBoxStatusColors.Controls.Add(this.failedColorLabel);
+            this.groupBoxStatusColors.Controls.Add(this.skippedColor);
+            this.groupBoxStatusColors.Controls.Add(this.failedColor);
+            this.groupBoxStatusColors.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxStatusColors.Name = "groupBoxStatusColors";
+            this.groupBoxStatusColors.Size = new System.Drawing.Size(444, 138);
+            this.groupBoxStatusColors.TabIndex = 9;
+            this.groupBoxStatusColors.TabStop = false;
+            this.groupBoxStatusColors.Text = "Status Colors";
             // 
             // ColorsOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Name = "ColorsOptions";
             this.panel.ResumeLayout(false);
-            this.panel.PerformLayout();
+            this.groupBoxStatusColors.ResumeLayout(false);
+            this.groupBoxStatusColors.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -148,6 +163,7 @@ namespace Gallio.Icarus.Options
         private System.Windows.Forms.Label skippedColorLabel;
         private System.Windows.Forms.Label failedColor;
         private System.Windows.Forms.Label failedColorLabel;
+        private System.Windows.Forms.GroupBox groupBoxStatusColors;
 
     }
 }

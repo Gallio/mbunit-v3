@@ -139,6 +139,13 @@ namespace Gallio.Icarus.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap pillar {
+            get {
+                object obj = ResourceManager.GetObject("pillar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon PropertyWindow {
             get {
                 object obj = ResourceManager.GetObject("PropertyWindow", resourceCulture);

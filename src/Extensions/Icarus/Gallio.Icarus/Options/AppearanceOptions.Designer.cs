@@ -33,34 +33,33 @@ namespace Gallio.Icarus.Options
             this.showProgressDialogs = new System.Windows.Forms.CheckBox();
             this.testProgressBarStyleLabel = new System.Windows.Forms.Label();
             this.testProgressBarStyle = new System.Windows.Forms.ComboBox();
+            this.groupBoxProgressFeedback = new System.Windows.Forms.GroupBox();
             this.panel.SuspendLayout();
+            this.groupBoxProgressFeedback.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel
             // 
-            this.panel.Controls.Add(this.testProgressBarStyle);
-            this.panel.Controls.Add(this.testProgressBarStyleLabel);
-            this.panel.Controls.Add(this.showProgressDialogs);
+            this.panel.Controls.Add(this.groupBoxProgressFeedback);
             // 
             // showProgressDialogs
             // 
             this.showProgressDialogs.AutoSize = true;
-            this.showProgressDialogs.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.showProgressDialogs.Location = new System.Drawing.Point(15, 13);
+            this.showProgressDialogs.Location = new System.Drawing.Point(6, 19);
             this.showProgressDialogs.Name = "showProgressDialogs";
             this.showProgressDialogs.Size = new System.Drawing.Size(135, 17);
             this.showProgressDialogs.TabIndex = 0;
-            this.showProgressDialogs.Text = "Show progress dialogs:";
+            this.showProgressDialogs.Text = "Show Progress Dialogs";
             this.showProgressDialogs.UseVisualStyleBackColor = true;
             // 
             // testProgressBarStyleLabel
             // 
             this.testProgressBarStyleLabel.AutoSize = true;
-            this.testProgressBarStyleLabel.Location = new System.Drawing.Point(15, 37);
+            this.testProgressBarStyleLabel.Location = new System.Drawing.Point(6, 47);
             this.testProgressBarStyleLabel.Name = "testProgressBarStyleLabel";
-            this.testProgressBarStyleLabel.Size = new System.Drawing.Size(116, 13);
+            this.testProgressBarStyleLabel.Size = new System.Drawing.Size(117, 13);
             this.testProgressBarStyleLabel.TabIndex = 1;
-            this.testProgressBarStyleLabel.Text = "Test progress bar style:";
+            this.testProgressBarStyleLabel.Text = "Test Progress Bar Style";
             // 
             // testProgressBarStyle
             // 
@@ -70,17 +69,32 @@ namespace Gallio.Icarus.Options
             this.testProgressBarStyle.Items.AddRange(new object[] {
             "Integration",
             "Unit"});
-            this.testProgressBarStyle.Location = new System.Drawing.Point(137, 37);
+            this.testProgressBarStyle.Location = new System.Drawing.Point(9, 65);
             this.testProgressBarStyle.Name = "testProgressBarStyle";
             this.testProgressBarStyle.Size = new System.Drawing.Size(178, 21);
             this.testProgressBarStyle.TabIndex = 2;
+            // 
+            // groupBoxProgressFeedback
+            // 
+            this.groupBoxProgressFeedback.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxProgressFeedback.Controls.Add(this.showProgressDialogs);
+            this.groupBoxProgressFeedback.Controls.Add(this.testProgressBarStyle);
+            this.groupBoxProgressFeedback.Controls.Add(this.testProgressBarStyleLabel);
+            this.groupBoxProgressFeedback.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxProgressFeedback.Name = "groupBoxProgressFeedback";
+            this.groupBoxProgressFeedback.Size = new System.Drawing.Size(444, 96);
+            this.groupBoxProgressFeedback.TabIndex = 3;
+            this.groupBoxProgressFeedback.TabStop = false;
+            this.groupBoxProgressFeedback.Text = "Progress Feedback";
             // 
             // AppearanceOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Name = "AppearanceOptions";
             this.panel.ResumeLayout(false);
-            this.panel.PerformLayout();
+            this.groupBoxProgressFeedback.ResumeLayout(false);
+            this.groupBoxProgressFeedback.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -90,6 +104,7 @@ namespace Gallio.Icarus.Options
         #endregion
         private System.Windows.Forms.ComboBox testProgressBarStyle;
         private System.Windows.Forms.Label testProgressBarStyleLabel;
+        private System.Windows.Forms.GroupBox groupBoxProgressFeedback;
 
     }
 }

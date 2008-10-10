@@ -578,7 +578,7 @@ namespace Gallio.Icarus
                     sb.Append(e.SubTaskName);
                 }
                 if (e.TotalWorkUnits > 0)
-                    sb.Append(String.Format(" ({0:P})", (e.CompletedWorkUnits/e.TotalWorkUnits)));
+                    sb.Append(String.Format(" ({0:P0})", (e.CompletedWorkUnits/e.TotalWorkUnits)));
                 toolStripStatusLabel.Text = sb.ToString();
             });
         }
