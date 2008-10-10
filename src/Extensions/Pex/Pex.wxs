@@ -13,7 +13,7 @@
             </Component>
         </DirectoryRef>
 
-        <Feature Id='feat_PexAdapter' Title='MbUnit v3 Pex' Level='0'
+        <Feature Id='feat_PexAdapter' Title='MbUnit v3 Pex' Level='0' AllowAdvertise="no"
             Description='Installs the MbUnit v3 Pex package.'>
             <Condition Level="1">PEX_INSTALLDIR</Condition>
             <ComponentRef Id="MbUnit.Pex.dll"/>

@@ -12,7 +12,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_NCoverIntegration2' Title='NCover v2 Integration' Level='1'
+        <Feature Id='feat_NCoverIntegration2' Title='NCover v2 Integration' Level='1' AllowAdvertise="no"
             Description='Provides integration with the NCover v2 code coverage tool (which must be installed separately).'>
             <ComponentRef Id="Gallio.NCoverIntegration2.dll"/>
         </Feature>

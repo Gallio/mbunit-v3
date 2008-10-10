@@ -20,19 +20,19 @@
         <Upgrade Id="{FAAF3C4B-8757-437A-A3D6-9D882DE7D088}">
             <UpgradeVersion Minimum="$(var.Version)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
 <?if $(var.Version) = "0.0.0.0" ?>
-            <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
+            <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
 <?else ?>
             <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
 <?endif ?>
         </Upgrade>
-        <Condition Message="A more recent version of Gallio is already installed.">NOT NEWERVERSIONDETECTED</Condition>
+        <Condition Message="Another version of Gallio is already installed.  It must be removed before this version can be installed.">NOT NEWERVERSIONDETECTED</Condition>
         <Condition Message="An administrator must approve or install [ProductName].">Privileged</Condition>
 
         <!-- Check that Microsoft .NET Framework is installed (WinNetFxExtension) -->
         <PropertyRef Id="NETFRAMEWORK20"/>
         <Condition Message="This application requires .NET Framework 2.0. Please install the .NET Framework then run the Gallio installer again.">
             <![CDATA[Installed OR NETFRAMEWORK20]]>
-        </Condition>        
+        </Condition>
 
         <!-- The files are all packaged in a single cab file inside the msi file -->
         <Media Id="1" EmbedCab="yes" Cabinet="Gallio.cab" />
@@ -64,6 +64,11 @@
                     <Directory Id="SamplesMenuFolder" Name="Samples" />
                 </Directory>
             </Directory>
+    
+            <!-- Local Application Data -->
+            <Directory Id="CommonAppDataFolder" Name="CommonAppData">
+	        <Directory Id="GallioCommonAppDataFolder" Name="Gallio" />
+	    </Directory>
         </Directory>
 
         <DirectoryRef Id="GallioMenuFolder">
@@ -131,7 +136,7 @@
             <FeatureRef Id='feat_MbUnit3.Templates.VS2008'/>
         </FeatureRef>
 
-        <Feature Id='feat_FrameworkAdapters' Title="Test Framework Adapters" Level="1" Display="6">
+        <Feature Id='feat_FrameworkAdapters' Title="Test Framework Adapters" Level="1" Display="6" AllowAdvertise="no">
             <FeatureRef Id='feat_CSUnitAdapter'/>
             <FeatureRef Id='feat_MbUnit2Adapter'/>
 <?ifdef FEATURE_MSTEST_ADAPTER ?>
@@ -141,7 +146,7 @@
             <FeatureRef Id='feat_XunitAdapter'/>
         </Feature>
 
-        <Feature Id='feat_Runners' Title='Test Runners' Level="1" Display="8">
+        <Feature Id='feat_Runners' Title='Test Runners' Level="1" Display="8" AllowAdvertise="no">
             <FeatureRef Id='feat_Gallio.Echo'/>
             <FeatureRef Id='feat_Gallio.Icarus'/>
             <FeatureRef Id='feat_Gallio.MsBuildTasks'/>
@@ -162,7 +167,10 @@
 <?endif?>
         </Feature>
 
-        <Feature Id='feat_ToolIntegration' Title='Tool Integration' Level="1" Display="10">
+        <Feature Id='feat_Tools' Title='Test Tools' Level="1" Display="10" AllowAdvertise="no">
+<?ifdef FEATURE_AMBIENCE ?>
+            <FeatureRef Id="feat_Gallio.Ambience"/>
+<?endif?>
             <FeatureRef Id='feat_Navigator'/>
             <FeatureRef Id='feat_NCoverIntegration'/>
 <?ifdef FEATURE_NCOVER_INTEGRATION_2 ?>
@@ -172,7 +180,7 @@
             <FeatureRef Id='feat_TypeMockIntegration'/>
         </Feature>
 
-        <Feature Id='feat_Docs' Title='Documentation' Level="1" Display="12">
+        <Feature Id='feat_Docs' Title='Documentation' Level="1" Display="12" AllowAdvertise="no">
 <?ifdef FEATURE_CHM_HELP ?>
             <FeatureRef Id='feat_Gallio.Help'/>
 <?endif?>
@@ -181,13 +189,13 @@
 <?endif?>
         </Feature>
 
-        <Feature Id="feat_Samples" Title='Samples' Level="1" Display="14">
+        <Feature Id="feat_Samples" Title='Samples' Level="1" Display="14" AllowAdvertise="no">
             <ComponentRef Id="SamplesMenuFolder.RemoveFolder"/>
             <FeatureRef Id='feat_Gallio.Samples'/>
             <FeatureRef Id='feat_MbUnit3.Samples'/>
         </Feature>
 
-        <Feature Id='feat_Extras' Title='Extras' Level="1" Display="16">
+        <Feature Id='feat_Extras' Title='Extras' Level="1" Display="16" AllowAdvertise="no">
             <FeatureRef Id='feat_CCNetExtensions'/>
         </Feature>
 

@@ -57,6 +57,8 @@
     <Binary Include="Gallio.Reports\xsl\*">
         <Folder>Reports\xsl</Folder>
     </Binary>
+    
+    <Content Include="libs\Mono.Cecil.license.html" />
   </ItemGroup>
 
   <ItemGroup>

@@ -30,7 +30,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_CSUnitAdapter' Title='csUnit Adapter' Level='1'
+        <Feature Id='feat_CSUnitAdapter' Title='csUnit Adapter' Level='1' AllowAdvertise="no"
             Description='Installs the csUnit adapter.  Enables Gallio to run csUnit tests.'>
             <ComponentRef Id="Gallio.CSUnitAdapter.dll"/>
             <ComponentRef Id="Gallio.CSUnitAdapter.plugin"/>

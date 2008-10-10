@@ -46,7 +46,7 @@ namespace Gallio.Ambience.Server
             CommandLineArgumentFlags.AtMostOnce,
             ShortName = "db",
             LongName = "database",
-            Description = "Specifies the database file name.  Default is a file called Default.db in the Gallio.Ambience subdirectory of Local Application Data.",
+            Description = "Specifies the database file name.  Default is a file called Default.db in the Gallio\\Gallio.Ambience subdirectory of Common Application Data.",
             ValueLabel = "path"
             )]
         public string DatabasePath;

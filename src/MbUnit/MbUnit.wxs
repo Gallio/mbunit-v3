@@ -30,7 +30,7 @@
             </Component>
         </DirectoryRef>
 
-        <Feature Id="feat_MbUnit3" Title="MbUnit v3" Level="1" Display="4"
+        <Feature Id="feat_MbUnit3" Title="MbUnit v3" Level="1" Display="4" AllowAdvertise="no"
                  Description="Installs the MbUnit v3 test framework components.">
             <ComponentRef Id='MbUnit.v3'/>
             <ComponentRef Id='MbUnit35.v3'/>

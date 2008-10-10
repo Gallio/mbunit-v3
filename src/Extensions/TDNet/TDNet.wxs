@@ -189,7 +189,7 @@
         </DirectoryRef>        
 <?endif?>        
 
-        <Feature Id='feat_Gallio.TDNet' Title='TestDriven.Net Runner' Level='0' AllowAdvertise='no' 
+        <Feature Id='feat_Gallio.TDNet' Title='TestDriven.Net Runner' Level='0' AllowAdvertise='no'
                  Description='Installs the TestDriven.Net add-in.'>
             <Condition Level='1'>TDNET_INSTALLDIR</Condition>
             <ComponentRef Id='Gallio.TDNetRunner.dll'/>

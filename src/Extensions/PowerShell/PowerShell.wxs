@@ -19,7 +19,7 @@
             </Component>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.PowerShellCommands" Title="PowerShell Commands" Level="0" 
+        <Feature Id="feat_Gallio.PowerShellCommands" Title="PowerShell Commands" Level="0" AllowAdvertise="no"
                  Description="Installs the PowerShell commands.">
             <Condition Level="1">POWERSHELL1.0</Condition>
             <ComponentRef Id="Gallio.PowerShellCommands.dll" />

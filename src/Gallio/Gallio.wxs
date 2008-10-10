@@ -15,6 +15,9 @@
             <Component Id="Gallio.License" Guid="{80dcc954-656f-45de-9bf2-bec6ff1d7c58}" Win64="no">
                 <File Id="Gallio.License.txt" Source="$(var.GallioTargetDir)\Gallio License.txt" KeyPath="yes" />
             </Component>
+            <Component Id="Mono.Cecil.License" Guid="{3AF29A1B-1DD9-4994-98DC-2F7B88F99A20}" Win64="no">
+                <File Id="Mono.Cecil.license.html" Source="$(var.GallioTargetDir)\Mono.Cecil.license.html" KeyPath="yes" />
+            </Component>
             <Component Id="Gallio.Credits" Guid="{7EFEC8C8-CB48-41b3-818C-9CAD85DBECC1}" Win64="no">
                 <File Id="Gallio.Credits.html" Source="$(var.GallioTargetDir)\Credits.html" KeyPath="yes" >
                     <Shortcut Id="Gallio.Credits.lnk" Name="Gallio Credits" Directory="GallioMenuFolder" Icon="Gallio.icon.exe" IconIndex="0" Advertise="yes" />
@@ -210,6 +213,7 @@
             <ComponentRef Id="Gallio.Host" />
             <ComponentRef Id="Gallio.Loader" />
             <ComponentRef Id="Gallio.License" />
+            <ComponentRef Id="Mono.Cecil.License" />
             <ComponentRef Id="Gallio.Website" />
             <ComponentRef Id="Gallio.Registry" />
             <ComponentRef Id="Apache.License" />
@@ -247,14 +251,14 @@
             <ComponentRef Id="GallioMenuFolder.RemoveFolder"/>
         </Feature>
 
-        <Feature Id="feat_Gallio.Help" Title="Standalone Help Docs" Level="1" Description="Installs the standalone help documentation CHM file.">
+        <Feature Id="feat_Gallio.Help" Title="Standalone Help Docs" Level="1" Description="Installs the standalone help documentation CHM file." AllowAdvertise="no">
             <ComponentRef Id="Gallio.chm" />
         </Feature>
 
         <PropertyRef Id='VS2005DEVENV'/>
         <PropertyRef Id='VS90DEVENV'/>
 
-        <Feature Id="feat_Gallio.VSHelp" Title="Visual Studio Help Docs" Level="0" 
+        <Feature Id="feat_Gallio.VSHelp" Title="Visual Studio Help Docs" Level="0" AllowAdvertise="no"
                  Description="Installs the integrated documentation for Visual Studio 2005 and/or Visual Studio 2008. Access with F1 Help.">
             <Condition Level="1">VS2005DEVENV OR VS90DEVENV</Condition>
             <ComponentRef Id="Gallio.Help.vs" />

@@ -7,7 +7,7 @@
                 <File Id="Gallio.NAntTasks.xml" />
             </Component>
         </DirectoryRef>
-        <Feature Id="feat_Gallio.NAntTasks" Title="NAnt Tasks" Level="1"
+        <Feature Id="feat_Gallio.NAntTasks" Title="NAnt Tasks" Level="1" AllowAdvertise="no"
                  Description="Installs the NAnt tasks.">
             <ComponentRef Id="Gallio.NAntTasks"/>
         </Feature>

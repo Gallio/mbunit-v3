@@ -24,7 +24,7 @@
             </Component>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.Samples" Title="Gallio Samples" Level="1"
+        <Feature Id="feat_Gallio.Samples" Title="Gallio Samples" Level="1" AllowAdvertise="no"
                  Description="Installs Gallio code samples.">
             <ComponentRef Id="SamplesMenuFolder.Gallio.RemoveFolder"/>
         </Feature>

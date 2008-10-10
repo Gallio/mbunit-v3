@@ -39,8 +39,8 @@
             // 
             // serviceInstaller
             // 
-            this.serviceInstaller.Description = "Stores test data for communication across test runs.";
-            this.serviceInstaller.DisplayName = "Gallio Ambience Server";
+            this.serviceInstaller.Description = "Stores persistent data shared across test runs.";
+            this.serviceInstaller.DisplayName = "Gallio Ambience Database server";
             this.serviceInstaller.ServiceName = "Gallio.Ambience";
             this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 

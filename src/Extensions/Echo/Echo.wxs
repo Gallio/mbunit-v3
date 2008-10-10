@@ -7,7 +7,7 @@
                 <File Name="Gallio.Echo.exe.config" />
             </Component>
         </DirectoryRef>
-        <Feature Id="feat_Gallio.Echo" Title="Echo (CLI Test Runner)" Level="1" 
+        <Feature Id="feat_Gallio.Echo" Title="Echo (CLI Test Runner)" Level="1" AllowAdvertise="no"
             Description="Installs the Gallio command-line test runner.">
             <ComponentRef Id="Gallio.Echo" />
         </Feature>

@@ -77,7 +77,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_CCNetExtensions' Title='CruiseControl.Net extensions' Level='1'
+        <Feature Id='feat_CCNetExtensions' Title='CruiseControl.Net extensions' Level='1' AllowAdvertise="no"
             Description='Installs additional resources to assist with CruiseControl.Net integration.'>
             <ComponentRef Id="CCNet.Gallio.WebDashboard.Plugin.dll"/>
             <ComponentRef Id="CCNet.Gallio.Report.css"/>

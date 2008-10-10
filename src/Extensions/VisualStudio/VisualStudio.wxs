@@ -95,7 +95,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.VisualStudio" Title="Visual Studio integration." Level="0" Description="Installs the pre-requisite packages for Visual Studio integration features.">
+        <Feature Id="feat_Gallio.VisualStudio" Title="Visual Studio Add-In" Level="0" Description="Installs the pre-requisite packages for Visual Studio integration features." AllowAdvertise="no">
             <Condition Level="1">VS90DEVENV</Condition>
 
 	    <ComponentRef Id="Gallio.VisualStudio.Interop.dll"/>
@@ -103,7 +103,7 @@
             <ComponentRef Id="Gallio.VisualStudio.Shell.VS90.Registry"/>
             
 <?ifdef FEATURE_VISUALSTUDIO_TIP ?>
-            <Feature Id="feat_Gallio.VisualStudio.Tip" Title="Visual Studio Team System Test Runner" Level="1" Description="Test integration provider for Visual Studio Team System">
+            <Feature Id="feat_Gallio.VisualStudio.Tip" Title="Visual Studio Team System Test Runner" Level="1" Description="Test integration provider for Visual Studio Team System" AllowAdvertise="no">
                 <ComponentRef Id="Gallio.VisualStudio.Tip.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip.Proxy.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip.VS90.Registry"/>
@@ -111,7 +111,7 @@
 <?endif?>
                 
 <?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
-            <Feature Id="feat_Gallio.VisualStudio.Sail" Title="Sail" Level="2" Description="Simple test runner add-in for Visual Studio (Experimental!)">
+            <Feature Id="feat_Gallio.VisualStudio.Sail" Title="Sail" Level="2" Description="Simple test runner add-in for Visual Studio (Experimental!)" AllowAdvertise="no">
                 <ComponentRef Id="Gallio.VisualStudio.Sail.dll"/>
                 <!--
                 <ComponentRef Id="Gallio.VisualStudio.Sail.VS90.Registry"/>

@@ -1,29 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer.Wix\Features.wxi ?>
+
     <Fragment>
 <?ifdef FEATURE_AMBIENCE ?>
+        <Property Id="GALLIO.AMBIENCE.STARTMODE" Value="Manual" Admin="yes" />
+
+        <DirectoryRef Id="INSTALLDIR">
+            <Component Id="Mono.GetOptions.License" Guid="{6FB09898-AABD-4d41-B786-97787CC1752B}" Win64="no">
+                <File Id="Mono.GetOptions.license.html" Source="$(var.GallioTargetDir)\Mono.GetOptions.license.html" KeyPath="yes" />
+            </Component>
+            <Component Id="Cecil.FlowAnalysis.License" Guid="{D9E6E5A9-6094-415c-848B-A023CFDC9C45}" Win64="no">
+                <File Id="Cecil.FlowAnalysis.license.html" Source="$(var.GallioTargetDir)\Cecil.FlowAnalysis.license.html" KeyPath="yes" />
+            </Component>
+            <Component Id="db4o.License" Guid="{FAC35C3D-4C6B-47c7-9702-718FE5BBFB30}" Win64="no">
+                <File Id="db4o.license.html" Source="$(var.GallioTargetDir)\db4o.license.html" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="Gallio.Ambience.dll" Guid="{0CEA0DD8-D3BA-45f3-B607-7914A27D4967}" Win64="no">
                 <File Name="Gallio.Ambience.dll" KeyPath="yes" />
                 <File Name="Gallio.Ambience.pdb" />
+
+                <CreateFolder Directory="GallioAmbienceCommonAppDataFolder">
+                  <Permission User="Administrators" GenericAll="yes" />
+                  <Permission User="NT AUTHORITY\NetworkService" GenericRead="yes" GenericWrite="yes" />
+                </CreateFolder>
             </Component>
-	    
-            <Component Id="Gallio.Ambience.Service" Guid="{FE4999AD-A9CE-43df-95E9-844C3762B8C1}" Win64="no">
-                <File Name="Gallio.Ambience.Service.exe" KeyPath="yes" />
-                <File Name="Gallio.Ambience.Service.exe.config" />
+            
+            <Component Id="Gallio.Ambience.Server.exe.Manual" Guid="{AA41B9E3-8C18-4615-81CA-8A932B0783EA}" Win64="no" Transitive="yes">
+                <Condition>GALLIO.AMBIENCE.STARTMODE = "Manual"</Condition>
+                <File Id="Gallio.Ambience.Server.exe.Manual" Name="Gallio.Ambience.Server.exe" KeyPath="yes" />
+                <File Id="Gallio.Ambience.Server.exe.config.Manual" Name="Gallio.Ambience.Server.exe.config" />
+
+                <ServiceInstall Id="svc_Gallio.Ambience.Service.Manual"
+                     Name="Gallio.Ambience"
+                     DisplayName="Gallio Ambience database server"
+                     Type="ownProcess"
+                     Start="demand"
+                     ErrorControl="normal"
+                     Description="Stores persistent data shared across test runs."
+                     Account="NT AUTHORITY\NetworkService" />
+
+                <ServiceControl Id="Gallio.Ambience.ServiceControl.Manual" Name="Gallio.Ambience" Stop="both" Remove="uninstall" Wait="yes" />
+            </Component>
+
+            <Component Id="Gallio.Ambience.Server.exe.Automatic" Guid="{9D5CB932-02C1-4bd1-A928-9F5CFA9EEEA7}" Win64="no" Transitive="yes">
+                <Condition>GALLIO.AMBIENCE.STARTMODE = "Automatic"</Condition>
+                <File Id="Gallio.Ambience.Server.exe.Automatic" Name="Gallio.Ambience.Server.exe" KeyPath="yes" />
+                <File Id="Gallio.Ambience.Server.exe.config.Automatic" Name="Gallio.Ambience.Server.exe.config" />
+
+                <ServiceInstall Id="svc_Gallio.Ambience.Service.Automatic"
+                     Name="Gallio.Ambience"
+                     DisplayName="Gallio Ambience database server"
+                     Type="ownProcess"
+                     Start="auto"
+                     ErrorControl="normal"
+                     Description="Stores persistent data shared across test runs."
+                     Account="NT AUTHORITY\NetworkService" />
+
+                <ServiceControl Id="Gallio.Ambience.ServiceControl.Automatic" Name="Gallio.Ambience" Start="install" Stop="both" Remove="uninstall" Wait="yes" />
             </Component>
         </DirectoryRef>
-	
-        <Feature Id="feat_Gallio.Ambience" Title="Ambience" Level="0" 
-            Description="Installs the Ambience test data storage tool.">
+
+        <DirectoryRef Id="GallioCommonAppDataFolder">
+            <Directory Id="GallioAmbienceCommonAppDataFolder" Name="Gallio.Ambience" />
+        </DirectoryRef>
+        
+        <Feature Id="feat_Gallio.Ambience" Title="Ambience" Level="1" AllowAdvertise="no"
+            Description="Installs the Ambience database client and server.  Stores persistent data shared across test runs.">
 
             <ComponentRef Id="Gallio.Ambience.dll" />
-
-            <Feature Id="feat_Gallio.Ambience.Service" Title="Service" Level="0" 
-                Description="Installs the Ambience test data storage service.">
-                <ComponentRef Id="Gallio.Ambience.Service.exe" />
-            </Feature>
+            <ComponentRef Id="Gallio.Ambience.Server.exe.Manual" />
+            <ComponentRef Id="Gallio.Ambience.Server.exe.Automatic" />
+            <ComponentRef Id="Mono.GetOptions.License" />
+            <ComponentRef Id="Cecil.FlowAnalysis.License" />
+            <ComponentRef Id="db4o.License" />
         </Feature>
-<?endif?>
+
+        <InstallUISequence>
+            <Custom Action="Set.Gallio.Ambience.StartMode.Automatic" After="CostFinalize">?Gallio.Ambience.Server.exe.Automatic &gt; 2</Custom>
+        </InstallUISequence>
+
+        <CustomAction Id="Set.Gallio.Ambience.StartMode.Automatic" Property="GALLIO.AMBIENCE.STARTMODE" Value="Automatic"></CustomAction>
     </Fragment>
+<?endif?>
 </Wix>

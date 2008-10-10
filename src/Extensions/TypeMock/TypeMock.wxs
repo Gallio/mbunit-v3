@@ -13,7 +13,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_TypeMockIntegration' Title='TypeMock.Net Integration' Level='1'
+        <Feature Id='feat_TypeMockIntegration' Title='TypeMock.Net Integration' Level='1' AllowAdvertise="no"
             Description='Provides integration with the TypeMock.Net mock object framework.'>
             <ComponentRef Id="Gallio.TypeMockIntegration.dll"/>
             <ComponentRef Id="TypeMock.Integration.dll"/>

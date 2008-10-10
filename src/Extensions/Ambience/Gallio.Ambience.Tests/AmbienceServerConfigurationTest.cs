@@ -68,8 +68,7 @@ namespace Gallio.Ambience.Tests
         public void DatabasePath_GetSet()
         {
             AmbienceServerConfiguration config = new AmbienceServerConfiguration();
-            Assert.AreEqual(Path.Combine(Environment.GetFolderPath(
-                Environment.SpecialFolder.LocalApplicationData), "Default.db"), config.DatabasePath);
+            Assert.AreEqual(Path.Combine(Constants.CommonAppDataFolderPath, Constants.DefaultDatabaseFileName), config.DatabasePath);
 
             config.DatabasePath = "somefile.db";
             Assert.AreEqual("somefile.db", config.DatabasePath);

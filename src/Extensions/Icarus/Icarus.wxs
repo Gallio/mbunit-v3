@@ -49,7 +49,7 @@
             </Component>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.Icarus" Title="Icarus (GUI Test Runner)" Level="1" 
+        <Feature Id="feat_Gallio.Icarus" Title="Icarus (GUI Test Runner)" Level="1" AllowAdvertise="no"
             Description="Installs the Gallio GUI-based test runner.">
             <ComponentRef Id="Gallio.Icarus.exe" />
 

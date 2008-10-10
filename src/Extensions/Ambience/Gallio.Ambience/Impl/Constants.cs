@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -40,6 +41,15 @@ namespace Gallio.Ambience.Impl
 
         public const string AnonymousUserName = "anonymous";
         public const string AnonymousPassword = "anonymous";
+
+        public static string CommonAppDataFolderPath
+        {
+            get
+            {
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                    @"Gallio\Gallio.Ambience");
+            }
+        }
 
         public static NetworkCredential CreateAnonymousCredential()
         {

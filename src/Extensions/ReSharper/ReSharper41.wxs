@@ -39,18 +39,18 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id="feat_Gallio.ReSharper.V41" Title="ReSharper v4.1 Plug-in" Level="0"
+        <Feature Id="feat_Gallio.ReSharper.V41" Title="ReSharper v4.1 Plug-in" Level="0" AllowAdvertise="no"
                  Description="Installs the ReSharper v4.1 plug-in.">
             <Condition Level="1">
                 RESHARPER_V41_VS8_INSTALLDIR or RESHARPER_V41_VS9_INSTALLDIR
             </Condition>
 
-            <Feature Id="feat_Gallio.ReSharper.V41.VS8" Title="Visual Studio 2005" Level="0">
+            <Feature Id="feat_Gallio.ReSharper.V41.VS8" Title="Visual Studio 2005" Level="0" AllowAdvertise="no">
                 <Condition Level="1">RESHARPER_V41_VS8_INSTALLDIR</Condition>
                 <ComponentRef Id="Gallio.ReSharperRunner.V41.VS8.dll"/>
             </Feature>
  
-            <Feature Id="feat_Gallio.ReSharper.V41.VS9" Title="Visual Studio 2008" Level="0">
+            <Feature Id="feat_Gallio.ReSharper.V41.VS9" Title="Visual Studio 2008" Level="0" AllowAdvertise="no">
                 <Condition Level="1">RESHARPER_V41_VS9_INSTALLDIR</Condition>
                 <ComponentRef Id="Gallio.ReSharperRunner.V41.VS9.dll"/>
             </Feature>

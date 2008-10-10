@@ -13,7 +13,7 @@
                 <File Name="Gallio.MsBuildTasks.xml" />
             </Component>
         </DirectoryRef>
-        <Feature Id="feat_Gallio.MsBuildTasks" Title="MSBuild Tasks"  Level="1"
+        <Feature Id="feat_Gallio.MsBuildTasks" Title="MSBuild Tasks" Level="1" AllowAdvertise="no"
                  Description="Installs the MSBuild tasks.">
             <ComponentRef Id="Gallio.MsBuildTasks"/>
         </Feature>

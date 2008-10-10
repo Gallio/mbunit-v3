@@ -35,14 +35,14 @@ namespace Gallio.Ambience
         /// Gets or sets the database file path.
         /// </summary>
         /// <value>The database file path, the default is a file called Default.db
-        /// in the Gallio.Ambient subdirectory of the Local Application Data folder.
+        /// in the Gallio.Ambient subdirectory of the Common Application Data folder.
         /// </value>
         public string DatabasePath
         {
             get
             {
                 if (databasePath == null)
-                    databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.DefaultDatabaseFileName);
+                    databasePath = Path.Combine(Constants.CommonAppDataFolderPath, Constants.DefaultDatabaseFileName);
                 return databasePath;
             }
             set

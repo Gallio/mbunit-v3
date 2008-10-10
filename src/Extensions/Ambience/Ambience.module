@@ -10,6 +10,10 @@
   <ItemGroup>
     <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe" />
     <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config" />
+
+    <Content Include="libs\db4o.license.html" />
+    <Content Include="libs\Cecil.FlowAnalysis.license.html" />
+    <Content Include="libs\Mono.GetOptions.license.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,9 +21,7 @@
 
     <DocumentedAssembly Include="Gallio.Ambience\bin\Gallio.Ambience.dll" />
     
-    <!-- Not ready for release.
     <Feature Include="FEATURE_AMBIENCE" />
-    -->
   </ItemGroup>
 
   <Target Name="AfterImage">

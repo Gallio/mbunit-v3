@@ -20,7 +20,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id="feat_MSTestAdapter" Title="MSTest Adapter" Level="0"
+        <Feature Id="feat_MSTestAdapter" Title="MSTest Adapter" Level="0" AllowAdvertise="no"
 	         Description="Installs the MSTest adapter.  Enables Gallio to run MSTest tests.">
             <Condition Level="1">VS2005DEVENV OR VS90DEVENV</Condition>
             <ComponentRef Id="Gallio.MSTestAdapter.dll" />

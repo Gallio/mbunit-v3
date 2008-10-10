@@ -27,7 +27,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_XunitAdapter' Title='Xunit Adapter' Level='1'
+        <Feature Id='feat_XunitAdapter' Title='Xunit Adapter' Level='1' AllowAdvertise="no"
             Description='Installs the Xunit plugin.  Enables Gallio to run Xunit tests.'>
             <ComponentRef Id="Gallio.XunitAdapter.dll"/>
             <ComponentRef Id="Gallio.XunitAdapter.plugin"/>
