@@ -180,6 +180,7 @@ namespace Gallio.Runtime.ConsoleSupport
                 {
                     try
                     {
+                        // Mono responds with a zero buffer with.
                         if (Console.BufferWidth <= 0)
                         {
                             redirectedFlag = 1;
@@ -188,6 +189,9 @@ namespace Gallio.Runtime.ConsoleSupport
                         {
                             redirectedFlag = -1;
                         }
+
+                        // .Net will throw an IOException here.
+                        GC.KeepAlive(Console.CursorVisible);
                     }
                     catch (IOException)
                     {
