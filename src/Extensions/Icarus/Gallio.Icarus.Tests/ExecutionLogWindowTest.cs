@@ -28,6 +28,8 @@ namespace Gallio.Icarus.Tests
             IExecutionLogController executionLogController = mocks.CreateMock<IExecutionLogController>();
             executionLogController.ExecutionLogUpdated += null;
             LastCall.IgnoreArguments();
+            executionLogController.ExecutionLogReset += null;
+            LastCall.IgnoreArguments();
             mocks.ReplayAll();
             ExecutionLogWindow executionLogWindow = new ExecutionLogWindow(executionLogController);
         }
