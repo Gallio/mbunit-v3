@@ -22,6 +22,10 @@ namespace Gallio.Ambience.Impl
     /// <summary>
     /// Facade over <see cref="IObjectContainer" />.
     /// </summary>
+    /// <todo>
+    /// Currently we immediately commit each transaction.  In the future we should provide
+    /// explicit transaction management for clients that desire it.
+    /// </todo>
     internal sealed class Db4oAmbientDataContainer : IAmbientDataContainer
     {
         private readonly IObjectContainer inner;
@@ -78,6 +82,7 @@ namespace Gallio.Ambience.Impl
             try
             {
                 inner.Delete(obj);
+                inner.Commit();
             }
             catch (Db4oException ex)
             {
@@ -91,6 +96,7 @@ namespace Gallio.Ambience.Impl
             try
             {
                 inner.Store(obj);
+                inner.Commit();
             }
             catch (Db4oException ex)
             {
@@ -105,6 +111,7 @@ namespace Gallio.Ambience.Impl
             {
                 foreach (object obj in inner.Query<object>())
                     inner.Delete(obj);
+                inner.Commit();
             }
             catch (Db4oException ex)
             {

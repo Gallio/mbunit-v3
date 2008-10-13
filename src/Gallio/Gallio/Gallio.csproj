@@ -288,6 +288,7 @@
     <Compile Include="Runtime\Logging\ILogger.cs" />
     <Compile Include="Runtime\Logging\LogSeverity.cs" />
     <Compile Include="Runtime\Logging\NullLogger.cs" />
+    <Compile Include="Runtime\Logging\TextLogger.cs" />
     <Compile Include="Runtime\ProcessType.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorProvider.cs" />

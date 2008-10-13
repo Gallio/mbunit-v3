@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Net;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -34,6 +35,8 @@ namespace Gallio.Ambience
         private AmbienceClient(Db4oAmbientDataContainer container)
         {
             this.container = container;
+
+            AppDomain.CurrentDomain.DomainUnload += HandleAppDomainUnload;
         }
 
         /// <summary>
@@ -52,6 +55,8 @@ namespace Gallio.Ambience
         /// <inheritdoc />
         public void Dispose()
         {
+            AppDomain.CurrentDomain.DomainUnload -= HandleAppDomainUnload;
+
             if (container != null)
             {
                 try
@@ -94,6 +99,14 @@ namespace Gallio.Ambience
         {
             if (container == null)
                 throw new ObjectDisposedException("The client has been disposed.");
+        }
+
+        private void HandleAppDomainUnload(object sender, EventArgs e)
+        {
+            // Make sure we clean up the client when unloading.
+            // If we don't do this, then Db4o may get stuck with some background threads
+            // blocked on socket reads that cannot be interrupted so the unload will fail.
+            Dispose();
         }
     }
 }

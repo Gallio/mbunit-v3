@@ -173,6 +173,7 @@
     <Compile Include="Runtime\Hosting\HostConfigurationTest.cs" />
     <Compile Include="Runtime\Hosting\LocalHostFactoryTest.cs" />
     <Compile Include="Runtime\Logging\EventLoggerTest.cs" />
+    <Compile Include="Runtime\Logging\TextLoggerTest.cs" />
     <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
     <Compile Include="Model\Execution\DefaultTestContextTrackerTest.cs" />

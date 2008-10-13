@@ -175,5 +175,46 @@ namespace Gallio.Ambience.Tests
 
             Assert.AreEqual(4, items.Count());
         }
+
+        [Test]
+        public void StoresAreAutoCommittedAndVisibleToOtherClients()
+        {
+            Ambient.Data.DeleteAll();
+            Ambient.Data.Store(new Item { Name = "A", Value = 1 });
+
+            using (AmbienceClient alternateClient = AmbienceClient.Connect(Ambient.DefaultClientConfiguration))
+            {
+                Assert.AreElementsEqual(new[] { new Item { Name = "A", Value = 1 } }, alternateClient.Container.Query<Item>());
+            }
+        }
+
+        [Test]
+        public void DeletesAreAutoCommittedAndVisibleToOtherClients()
+        {
+            Ambient.Data.DeleteAll();
+            Item a = new Item { Name = "A", Value = 1 };
+            Ambient.Data.Store(a);
+            Ambient.Data.Store(new Item { Name = "B", Value = 2 });
+            Ambient.Data.Delete(a);
+
+            using (AmbienceClient alternateClient = AmbienceClient.Connect(Ambient.DefaultClientConfiguration))
+            {
+                Assert.AreElementsEqual(new[] { new Item { Name = "B", Value = 2 } }, alternateClient.Container.Query<Item>());
+            }
+        }
+
+        [Test]
+        public void DeleteAllsAreAutoCommittedAndVisibleToOtherClients()
+        {
+            Ambient.Data.DeleteAll();
+            Ambient.Data.Store(new Item { Name = "A", Value = 1 });
+            Ambient.Data.Store(new Item { Name = "B", Value = 2 });
+            Ambient.Data.DeleteAll();
+
+            using (AmbienceClient alternateClient = AmbienceClient.Connect(Ambient.DefaultClientConfiguration))
+            {
+                Assert.AreElementsEqual(new Item[0], alternateClient.Container.Query<Item>());
+            }
+        }
     }
 }

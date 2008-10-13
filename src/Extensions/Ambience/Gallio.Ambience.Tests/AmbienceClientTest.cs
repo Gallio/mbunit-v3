@@ -15,9 +15,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Gallio.Ambience.Impl;
+using Gallio.Framework;
+using Gallio.Model.Logging;
+using Gallio.Runtime.Hosting;
+using Gallio.Runtime.Logging;
 using MbUnit.Framework;
 
 namespace Gallio.Ambience.Tests
@@ -73,6 +78,32 @@ namespace Gallio.Ambience.Tests
             {
                 Assert.IsInstanceOfType(typeof(Db4oAmbientDataContainer), client.Container);
             }
+        }
+
+        [Test]
+        public void ToleratesAppDomainUnload()
+        {
+            StringWriter logWriter = new StringWriter();
+            TextLogger logger = new TextLogger(logWriter);
+
+            using (IHost host = new IsolatedAppDomainHostFactory().CreateHost(new HostSetup(), logger))
+            {
+                HostAssemblyResolverHook.InstallCallback(host);
+
+                host.GetHostService().Do<object, object>(RemoteCallback, null);
+            }
+
+            Assert.AreEqual("", logWriter.ToString(),
+                "A dangling Db4o client may have caused the AppDomain.Unload to fail.  Check the DomainUnload event handling policy for the client.");
+        }
+
+        private static AmbienceClient rootedClient;
+
+        public static object RemoteCallback(object dummy)
+        {
+            rootedClient = AmbienceClient.Connect(new AmbienceClientConfiguration() { Port = PortNumber });
+            rootedClient.Container.DeleteAll();
+            return null;
         }
     }
 }
