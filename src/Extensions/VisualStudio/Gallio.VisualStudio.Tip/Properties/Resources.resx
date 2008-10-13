@@ -175,4 +175,10 @@
   <data name="GallioWebSiteUrl" xml:space="preserve">
     <value>http://www.gallio.org</value>
   </data>
+  <data name="Pending" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pending.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TestNotRunYet" xml:space="preserve">
+    <value>The test has not run yet.</value>
+  </data>
 </root>

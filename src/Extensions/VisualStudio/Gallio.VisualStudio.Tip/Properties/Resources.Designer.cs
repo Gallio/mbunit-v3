@@ -153,6 +153,13 @@ namespace Gallio.VisualStudio.Tip.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Pending {
+            get {
+                object obj = ResourceManager.GetObject("Pending", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Results.
         /// </summary>
@@ -204,6 +211,15 @@ namespace Gallio.VisualStudio.Tip.Properties {
         internal static string TestName {
             get {
                 return ResourceManager.GetString("TestName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The test has not run yet..
+        /// </summary>
+        internal static string TestNotRunYet {
+            get {
+                return ResourceManager.GetString("TestNotRunYet", resourceCulture);
             }
         }
         

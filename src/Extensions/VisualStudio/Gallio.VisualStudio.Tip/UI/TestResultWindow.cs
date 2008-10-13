@@ -62,7 +62,6 @@ namespace Gallio.VisualStudio.Tip.UI
         private void InitializeContent()
         {
             InitializeStatusHeader();
-            InitializeDataGrid();
             InitializeRunViewer();
         }
 
@@ -73,32 +72,15 @@ namespace Gallio.VisualStudio.Tip.UI
                 pictureBoxStatus.Image = Properties.Resources.Passed;
                 labelStatus.Text = Properties.Resources.TestHasPassed;
             }
+            else if (testStepRun == null)
+            {
+                pictureBoxStatus.Image = Properties.Resources.Pending;
+                labelStatus.Text = Properties.Resources.TestNotRunYet;
+            }
             else
             {
                 pictureBoxStatus.Image = Properties.Resources.Failed;
                 labelStatus.Text = Properties.Resources.TestHasFailed;
-            }
-        }
-
-        private void InitializeDataGrid()
-        {
-            dataGridView.Rows.Clear();
-            AddRow(Properties.Resources.TestName, testResult.TestName);
-            AddRow(Properties.Resources.Description, testResult.TestDescription);
-            AddRow(Properties.Resources.StartTime, testResult.StartTime.ToString());
-            AddRow(Properties.Resources.EndTime, testResult.EndTime.ToString());
-            AddRow(Properties.Resources.Duration, testResult.Duration.ToString());
-            AddRow(Properties.Resources.ComputerName, testResult.ComputerName);
-            AddRow(Properties.Resources.OutcomeText, testResult.OutcomeText);
-            AddRow(Properties.Resources.ErrorMessage, testResult.ErrorMessage);
-            AddRow(Properties.Resources.ErrorStackTrace, testResult.ErrorStackTrace);
-        }
-
-        private void AddRow(string name, string value)
-        {
-            if (!String.IsNullOrEmpty(value))
-            {
-                dataGridView.Rows.Add(name, value);
             }
         }
 

@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme - Debugging.txt" />
+    <None Include="Resources\Pending.png" />
     <None Include="Resources\Passed.png" />
     <None Include="Resources\Failed.png" />
     <None Include="Resources\Gallio.png" />
