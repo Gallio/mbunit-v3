@@ -23,15 +23,22 @@ namespace Gallio.VisualStudio.Tip
     /// </summary>
     public class TipShellExtension : BaseShellExtension
     {
+        /// <summary>
+        /// Returns true if the Tip extension has been initialized.
+        /// </summary>
+        public static bool IsInitialized { get; private set; }
+
         /// <inheritdoc />
         protected override void InitializeImpl()
         {
+            IsInitialized = true;
             Shell.ProfferVsService(typeof(SGallioTestService), () => new GallioTuip(this));
         }
 
         /// <inheritdoc />
         protected override void ShutdownImpl()
         {
+            IsInitialized = false;
         }
     }
 }

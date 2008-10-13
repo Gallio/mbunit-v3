@@ -43,7 +43,7 @@ namespace Gallio.VisualStudio.Shell
     [ProvideLoadKey("Standard", "3.0", "Gallio", "Gallio Project", VSPackageResourceIds.ProductLoadKeyId)]
     [Guid(Guids.ShellPkgGuidString)]
     [ComVisible(true)]
-    [ProvideToolWindow(typeof(GallioToolWindow))]
+    [ProvideToolWindow(typeof(ShellToolWindowPane))]
     public sealed class ShellPackage : Package, IShellPackage
     {
         private Shell shell;

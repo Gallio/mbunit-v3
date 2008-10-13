@@ -49,5 +49,19 @@ namespace Gallio.Loader
         /// <param name="path">The path of the hint directory to add</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
         void AddHintDirectory(string path);
+
+        /// <summary>
+        /// Resolves a runtime service.
+        /// </summary>
+        /// <typeparam name="T">The type of service to resolve</typeparam>
+        /// <returns>The resolved service</returns>
+        T Resolve<T>();
+
+        /// <summary>
+        /// Resolves a runtime service.
+        /// </summary>
+        /// <param name="serviceType">The type of service to resolve</param>
+        /// <returns>The resolved service</returns>
+        object Resolve(Type serviceType);
     }
 }

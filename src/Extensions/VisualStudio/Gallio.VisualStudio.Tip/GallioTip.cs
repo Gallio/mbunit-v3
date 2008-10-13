@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runtime;
@@ -43,6 +44,11 @@ namespace Gallio.VisualStudio.Tip
 
         public override ICollection Load(string location, ProjectData projectData, IWarningHandler warningHandler)
         {
+            // Skip loading if the extension is not fully initalized.
+            if (!TipShellExtension.IsInitialized)
+                return EmptyArray<TestElement>.Instance;
+
+            // Explore the tests.
             ITestPackageExplorerFactory explorerFactory = RuntimeAccessor.Instance.Resolve<ITestPackageExplorerFactory>();
             WarningLogger logger = new WarningLogger(warningHandler);
 

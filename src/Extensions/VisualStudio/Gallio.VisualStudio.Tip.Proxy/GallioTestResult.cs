@@ -15,17 +15,35 @@
 
 using System;
 using System.Runtime.Serialization;
+using System.Xml;
 using Microsoft.VisualStudio.TestTools.Common;
+using Microsoft.VisualStudio.TestTools.Common.Xml;
 
 namespace Gallio.VisualStudio.Tip
 {
-    // TODO: Save all step run details so that we can provide a custom result viewer.
+    /// <summary>
+    /// Represents a Gallio test result.
+    /// </summary>
+    /// <remarks>
+    /// Be VERY careful not to refer to any Gallio types that are not
+    /// in the Tip Proxy assembly.  They are not in the GAC, consequently Visual
+    /// Studio may be unable to load them when it needs to pass the test element instance
+    /// across a remoting channel.
+    /// </remarks>
+    /// <todo>
+    /// Include more result information.
+    /// </todo>
     [Serializable]
     public sealed class GallioTestResult : TestResult
     {
+        private const string TestStepRunXmlKey = "Gallio.TestStepRunXml";
+
+        private string testStepRunXml;
+
         public GallioTestResult(GallioTestResult result)
             : base(result)
         {
+            testStepRunXml = result.testStepRunXml;
         }
 
         public GallioTestResult(TestResult result)
@@ -41,6 +59,13 @@ namespace Gallio.VisualStudio.Tip
         private GallioTestResult(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            testStepRunXml = info.GetString(TestStepRunXmlKey);
+        }
+
+        public string TestStepRunXml
+        {
+            get { return testStepRunXml; }
+            set { testStepRunXml = value; }
         }
 
         public override object Clone()
@@ -62,6 +87,27 @@ namespace Gallio.VisualStudio.Tip
             m_startTime = startTime;
             m_endTime = endTime;
             m_duration = duration;
+        }
+
+        public override void Load(XmlElement element, XmlTestStoreParameters parameters)
+        {
+            base.Load(element, parameters);
+
+            testStepRunXml = XmlPersistenceUtils.LoadFromElement(element, TestStepRunXmlKey);
+        }
+
+        public override void Save(XmlElement element, XmlTestStoreParameters parameters)
+        {
+            base.Save(element, parameters);
+
+            XmlPersistenceUtils.SaveToElement(element, TestStepRunXmlKey, testStepRunXml);
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue(TestStepRunXmlKey, testStepRunXml);
         }
     }
 }

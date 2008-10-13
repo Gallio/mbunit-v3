@@ -71,6 +71,7 @@
       <HintPath>..\..\..\..\..\..\..\Program Files\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\stdole.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
@@ -85,7 +86,7 @@
     <Compile Include="Actions\ActionButtonStatus.cs" />
     <Compile Include="Actions\ActionButtonStyle.cs" />
     <Compile Include="Actions\ActionButtonType.cs" />
-    <Compile Include="Actions\DefaultActionManager.cs" />
+    <Compile Include="Actions\ShellActionManager.cs" />
     <Compile Include="Actions\IActionManager.cs" />
     <Compile Include="BaseShellExtension.cs" />
     <Compile Include="IShellPackage.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="ShellAccessor.cs" />
     <Compile Include="ShellAddInHandler.cs" />
     <Compile Include="ShellComponent.cs" />
+    <Compile Include="ShellException.cs" />
     <Compile Include="ShellPackage.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Interop\ImageConversionUtils.cs">
@@ -109,15 +111,17 @@
     </Compile>
     <Compile Include="Resources\VSPackageResourceIds.cs" />
     <Compile Include="Shell.cs" />
-    <Compile Include="UI\GallioToolWindow.cs">
+    <Compile Include="UI\IWindowManager.cs" />
+    <Compile Include="UI\ShellToolWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ShellToolWindowPane.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\GallioToolWindowControl.cs">
+    <Compile Include="UI\ShellToolWindowContainer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\GallioToolWindowControlContainer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="UI\ShellWindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.csproj">
@@ -136,8 +140,8 @@
       <LastGenOutput>VSPackage.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\GallioToolWindowControlContainer.resx">
-      <DependentUpon>GallioToolWindowControlContainer.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ShellToolWindowContainer.resx">
+      <DependentUpon>ShellToolWindowContainer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

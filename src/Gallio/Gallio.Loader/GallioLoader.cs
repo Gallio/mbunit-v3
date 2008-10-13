@@ -76,6 +76,7 @@ namespace Gallio.Loader
         private const string BootstrapInstallAssemblyResolverMethodName = "InstallAssemblyResolver";
         private const string BootstrapSetupRuntimeMethodName = "SetupRuntime";
         private const string BootstrapAddHintDirectoryMethodName = "AddHintDirectory";
+        private const string BootstrapResolveMethodName = "Resolve";
 
         private static readonly object syncRoot = new object();
 
@@ -248,6 +249,22 @@ namespace Gallio.Loader
 
             MethodInfo method = bootstrapType.GetMethod(BootstrapAddHintDirectoryMethodName);
             method.Invoke(null, new object[] { path });
+        }
+
+        /// <inheritdoc />
+        public T Resolve<T>()
+        {
+            return (T)Resolve(typeof(T));
+        }
+
+        /// <inheritdoc />
+        public object Resolve(Type serviceType)
+        {
+            if (serviceType == null)
+                throw new ArgumentNullException("serviceType");
+
+            MethodInfo method = bootstrapType.GetMethod(BootstrapResolveMethodName);
+            return method.Invoke(null, new object[] { serviceType });
         }
 
         /// <inheritdoc />

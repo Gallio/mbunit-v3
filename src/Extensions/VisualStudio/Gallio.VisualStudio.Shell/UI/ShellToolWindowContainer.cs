@@ -22,59 +22,59 @@ using System.Windows.Forms;
 namespace Gallio.VisualStudio.Shell.UI
 {
     /// <summary>
-    /// Abstract base control class for tool windows.
+    /// Container window for tool window contents.
     /// </summary>
     [ComVisible(true)]
-    public class GallioToolWindowControlContainer : UserControl
+    public class ShellToolWindowContainer : UserControl
     {
+        private ShellToolWindow toolWindow;
+
         /// <summary>
-        /// Default constructor.
+        /// Creates a container for a tool window.
         /// </summary>
-        public GallioToolWindowControlContainer()
+        public ShellToolWindowContainer()
         {
             InitializeComponent();
         }
 
-        private GallioToolWindow toolWindow;
+        /// <summary>
+        /// Gets the tool window pane.
+        /// </summary>
+        public ShellToolWindowPane ToolWindowPane { get; internal set; }
 
         /// <summary>
-        /// Gets the tool window.
+        /// Gets the tool window within the container.
         /// </summary>
-        public GallioToolWindow ToolWindow
+        public ShellToolWindow ToolWindow
         {
-            get
-            {
-                return toolWindow;
-            }
-
+            get { return toolWindow; }
             internal set
             {
+                Controls.Clear();
                 toolWindow = value;
-            }
-        }
 
-        /// <summary>
-        /// Sets the content of the control.
-        /// </summary>
-        public void SetControl(GallioToolWindowControl content)
-        {
-            if (content == null)
-            {
-                throw new ArgumentNullException("content");
+                if (toolWindow != null)
+                {
+                    toolWindow.Dock = DockStyle.Fill;
+                    Controls.Add(toolWindow);
+                }
             }
-
-            content.Dock = DockStyle.Fill;
-            content.Visible = true;
-            Controls.Clear();
-            Controls.Add(content);
         }
 
         private void InitializeComponent()
         {
             this.SuspendLayout();
+            // 
+            // ShellToolWindowContainer
+            // 
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.Name = "GallioToolWindowControlContainer";
+            this.Margin = new System.Windows.Forms.Padding(0);
+            this.Name = "ShellToolWindowContainer";
+            this.Size = new System.Drawing.Size(0, 0);
             this.ResumeLayout(false);
+
         }
     }
 }

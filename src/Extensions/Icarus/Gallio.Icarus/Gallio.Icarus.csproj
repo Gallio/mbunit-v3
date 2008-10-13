@@ -136,7 +136,6 @@
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
     <Compile Include="ProgressMonitoring\EventArgs\ProgressUpdateEventArgs.cs" />
     <Compile Include="Remoting\AssemblyWatcher.cs" />
-    <Compile Include="Reports\TestStepReportWriter.cs" />
     <Compile Include="Services\Interfaces\IReportService.cs" />
     <Compile Include="Services\Interfaces\ITestRunnerService.cs" />
     <Compile Include="Models\Interfaces\ITestTreeModel.cs" />
@@ -318,6 +317,10 @@
     <Compile Include="TaskManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
+      <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
+      <Name>Gallio.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
@@ -440,6 +443,9 @@
     <Content Include="Resources\tick.png" />
     <None Include="app.config" />
     <None Include="Resources\XmlFile.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Reports\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

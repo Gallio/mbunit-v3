@@ -36,7 +36,7 @@
             <extension>txt</extension>
             <contentType>text/plain</contentType>
             <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
-            <contentUri>plugin://Gallio.Reports/</contentUri>
+            <contentUri>plugin://Gallio.Reports/Resources/</contentUri>
             <xsltPath>xsl/Gallio-Report.txt.xsl</xsltPath>
             <resourcePaths>
               <array>
@@ -54,7 +54,7 @@
             <extension>html</extension>
             <contentType>text/html</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
-            <contentUri>plugin://Gallio.Reports/</contentUri>
+            <contentUri>plugin://Gallio.Reports/Resources/</contentUri>
             <xsltPath>xsl/Gallio-Report.html.xsl</xsltPath>
             <resourcePaths>
               <array>
@@ -75,7 +75,7 @@
             <extension>html</extension>
             <contentType>text/html</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
-            <contentUri>plugin://Gallio.Reports/</contentUri>
+            <contentUri>plugin://Gallio.Reports/Resources/</contentUri>
             <xsltPath>xsl/Gallio-Report.html-condensed.xsl</xsltPath>
             <resourcePaths>
               <array>
@@ -96,7 +96,7 @@
             <extension>xhtml</extension>
             <contentType>text/xhtml+xml</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
-            <contentUri>plugin://Gallio.Reports/</contentUri>
+            <contentUri>plugin://Gallio.Reports/Resources/</contentUri>
             <xsltPath>xsl/Gallio-Report.xhtml.xsl</xsltPath>
             <resourcePaths>
               <array>
@@ -117,7 +117,7 @@
             <extension>xhtml</extension>
             <contentType>text/xhtml+xml</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
-            <contentUri>plugin://Gallio.Reports/</contentUri>
+            <contentUri>plugin://Gallio.Reports/Resources/</contentUri>
             <xsltPath>xsl/Gallio-Report.xhtml-condensed.xsl</xsltPath>
             <resourcePaths>
               <array>

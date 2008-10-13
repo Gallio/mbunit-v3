@@ -21,12 +21,8 @@ namespace Gallio.Navigator
 {
     /// <summary>
     /// ActiveX control for navigation.
-    /// Also usable as a general-purpose COM control.
+    /// Also usable as a general-purpose COM component.
     /// </summary>
-    /// <remarks>
-    /// Be mindful of security!  This class could potentially be used by any web page
-    /// or program that allows access to ActiveX.
-    /// </remarks>
     [ComVisible(true)]
     [Guid("0DAA4E63-51CB-4ddf-988D-F1CBCE74B3E3")]
     [ClassInterface(ClassInterfaceType.None)]

@@ -26,10 +26,12 @@ namespace Gallio.Icarus
 
             executionLogController.ExecutionLogUpdated += delegate
             {
-                Sync.Invoke(this, delegate
-                {
-                    reportViewer.DocumentStream = executionLogController.ExecutionLog;
-                });
+                reportViewer.Show(executionLogController.TestStepRuns, executionLogController.TestModelData);
+            };
+
+            executionLogController.ExecutionLogReset += delegate
+            {
+                reportViewer.Clear();
             };
         }
     }

@@ -46,7 +46,7 @@ namespace Gallio.VisualStudio.Tip
 
             Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
             {
-                if (e.TestStepRun.Step.IsTestCase)
+                if (e.TestStepRun.Step.IsTestCase) // should we only include primary tests?
                 {
                     GallioTestElement gallioTestElement = GetTestElement(e.Test);
                     if (gallioTestElement != null)

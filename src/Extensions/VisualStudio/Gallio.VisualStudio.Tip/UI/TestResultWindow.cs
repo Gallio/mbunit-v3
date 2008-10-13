@@ -14,13 +14,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using Gallio.VisualStudio.Shell;
+using Gallio.Runner.Reports;
 using Gallio.VisualStudio.Shell.UI;
 
 namespace Gallio.VisualStudio.Tip.UI
@@ -28,38 +22,40 @@ namespace Gallio.VisualStudio.Tip.UI
     /// <summary>
     /// UI component which displays results details about a Gallio test.
     /// </summary>
-    public partial class ResultViewer : GallioToolWindowControl
+    public partial class TestResultWindow : ShellToolWindow
     {
+        private readonly GallioTestResult testResult;
+        private readonly TestStepRun testStepRun;
+
+        /// <summary>
+        /// Default constructor.  (Designer only)
+        /// </summary>
+        public TestResultWindow()
+        {
+            InitializeComponent();
+        }
+
         /// <summary>
         /// Default constructor.
-        /// (For the designer only)
         /// </summary>
-        public ResultViewer()
-        {
-            InitializeComponent();
-        }
-
-        private GallioTestResult testResult;
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="testResult">The Gallio test result.</param>
-        /// <param name="shell">The shell for the component.</param>
-        public ResultViewer(GallioTestResult testResult, IShell shell)
-            : base(shell)
+        /// <param name="testResult">The test result to be displayed</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testResult"/> is null</exception>
+        public TestResultWindow(GallioTestResult testResult)
         {
             if (testResult == null)
-            {
                 throw new ArgumentNullException("testResult");
-            }
 
             this.testResult = testResult;
+            testStepRun = GallioTestResultFactory.GetTestStepRun(testResult);
+
             InitializeComponent();
         }
 
-        private void ResultViewer_Load(object sender, EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
+            base.OnLoad(e);
+
+            Caption = String.Format("{0} [{1}]", testResult.TestName, Properties.Resources.Results);
             InitializeContent();
         }
 
@@ -67,6 +63,7 @@ namespace Gallio.VisualStudio.Tip.UI
         {
             InitializeStatusHeader();
             InitializeDataGrid();
+            InitializeRunViewer();
         }
 
         private void InitializeStatusHeader()
@@ -85,6 +82,7 @@ namespace Gallio.VisualStudio.Tip.UI
 
         private void InitializeDataGrid()
         {
+            dataGridView.Rows.Clear();
             AddRow(Properties.Resources.TestName, testResult.TestName);
             AddRow(Properties.Resources.Description, testResult.TestDescription);
             AddRow(Properties.Resources.StartTime, testResult.StartTime.ToString());
@@ -102,6 +100,12 @@ namespace Gallio.VisualStudio.Tip.UI
             {
                 dataGridView.Rows.Add(name, value);
             }
+        }
+
+        private void InitializeRunViewer()
+        {
+            if (testStepRun != null)
+                runViewer.Show(new[] { testStepRun });
         }
 
         private void pictureBoxGallioLogo_Click(object sender, EventArgs e)

@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -58,35 +59,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="img\Container.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="img\Fixture.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="img\FullStop.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="img\header-background.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="img\Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="css\Gallio-Report.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="xsl\Gallio-Report.html.xsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="xsl\Gallio-Report.xhtml.xsl" />
-    <Content Include="img\Test.png" />
-    <Content Include="img\Plus.gif" />
-    <Content Include="img\Minus.gif" />
-    <Content Include="img\MbUnitLogo.png" />
-    <Content Include="xsl\Gallio-Report.txt.xsl" />
-    <Content Include="js\Gallio-Report.js" />
-    <Content Include="xsl\Gallio-Report.html+xhtml.xsl" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -97,16 +69,30 @@
     <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="xsl\Gallio-Report.xhtml-condensed.xsl" />
-    <Content Include="xsl\Gallio-Report.html-condensed.xsl" />
-    <Content Include="xsl\Gallio-Report.ccnet-details-condensed.xsl" />
-    <Content Include="xsl\Gallio-Report.common.xsl" />
+    <Content Include="Resources\css\Gallio-Report.css" />
+    <Content Include="Resources\img\Container.png" />
+    <Content Include="Resources\img\Failed.gif" />
+    <Content Include="Resources\img\Fixture.png" />
+    <Content Include="Resources\img\FullStop.gif" />
+    <Content Include="Resources\img\GallioTestReportHeader.png" />
+    <Content Include="Resources\img\header-background.gif" />
+    <Content Include="Resources\img\Ignored.gif" />
+    <Content Include="Resources\img\Logo.png" />
+    <Content Include="Resources\img\Minus.gif" />
+    <Content Include="Resources\img\Passed.gif" />
+    <Content Include="Resources\img\Plus.gif" />
+    <Content Include="Resources\img\Test.png" />
+    <Content Include="Resources\js\Gallio-Report.js" />
+    <Content Include="Resources\xsl\Gallio-Report.ccnet-details-condensed.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.ccnet-details.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.common.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.html+xhtml.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.html-condensed.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.html.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.txt.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.xhtml-condensed.xsl" />
+    <Content Include="Resources\xsl\Gallio-Report.xhtml.xsl" />
     <Content Include="Gallio.Reports.plugin" />
-    <Content Include="img\Failed.gif" />
-    <Content Include="img\GallioTestReportHeader.png" />
-    <Content Include="img\Ignored.gif" />
-    <Content Include="img\Passed.gif" />
-    <Content Include="xsl\Gallio-Report.ccnet-details.xsl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

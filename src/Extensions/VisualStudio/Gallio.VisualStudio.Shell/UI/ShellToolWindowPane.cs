@@ -14,108 +14,110 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
+using Gallio.Utilities;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Gallio.VisualStudio.Shell.UI
 {
     /// <summary>
-    /// General purpose container for Gallio tool window.
+    /// <para>
+    /// General purpose container for tool windows.
+    /// </para>
+    /// <para>
+    /// This type cannot be subclassed because tool windows must be registered with
+    /// packages using a custom attribute on the package itself.
+    /// </para>
     /// </summary>
     [Guid("9C9191A4-CDFB-4931-9B96-6CC7CD0BC203")]
-    public class GallioToolWindow : ToolWindowPane, IShellComponent
+    [ComVisible(true)]
+    public sealed class ShellToolWindowPane : ToolWindowPane, IShellComponent
     {
-    	/// <summary>
-		/// Default constructor. 
-        /// Calls base class with singleton package pnstance.
+        private ShellToolWindowContainer toolWindowContainer;
+        private readonly IShell shell;
+
+        /// <summary>
+		/// Constructs the tool window.
 		/// </summary>
-        public GallioToolWindow()
+        public ShellToolWindowPane()
             : this(ShellAccessor.Shell)
 		{
         }
 
         /// <summary>
-        /// Constructs tool window with the specified shell extension.
+        /// Constructs the tool window.
         /// </summary>
-        /// <param name="shell">The shell extension.</param>
-        public GallioToolWindow(IShell shell)
-            : base(shell.Package as IServiceProvider)
+        /// <param name="shell">The shell</param>
+        public ShellToolWindowPane(IShell shell)
+            : base(shell.Package)
         {
             this.shell = shell;
         }
 
-        private readonly IShell shell;
+        /// <summary>
+        /// An event that is raised when the tool window is disposed.
+        /// </summary>
+        public event EventHandler Disposed;
 
         /// <summary>
         /// Gets the shell associated with the component.
         /// </summary>
         public IShell Shell
         {
+            get { return shell; }
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                EventHandlerUtils.SafeInvoke(Disposed, this, EventArgs.Empty);
+
+            base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// Gets the tool window container.
+        /// </summary>
+        public ShellToolWindowContainer ToolWindowContainer
+        {
             get
             {
-                return shell;
+                EnsureToolWindowContainer();
+                return toolWindowContainer;
             }
         }
 
         /// <summary>
-        /// Sets the content of the tool window.
-        /// </summary>
-        /// <param name="control">The tool window control.</param>
-        public void SetControl(GallioToolWindowControl control)
-        {
-            Container.SetControl(control);
-        }
-
-        private GallioToolWindowControlContainer container;
-
-        /// <summary>
-        /// Gets the window that is associated with this window pane.
-        /// </summary>
-        public GallioToolWindowControlContainer Container
-        {
-            get
-            {
-                if (container == null)
-                {
-                    container = new GallioToolWindowControlContainer();
-                    container.Visible = true;
-                    container.ToolWindow = this;
-                }
-
-                return container;
-            }
-        }
-
-        /// <summary>
-        /// Gets the window that is associated with this window pane.
+        /// Gets the tool window container.
         /// </summary>
         public override IWin32Window Window
         {
             get
             {
-                return Container;
+                return ToolWindowContainer;
             }
         }
 
         /// <summary>
-        /// Gets/sets the window caption.
+        /// Gets or sets the window caption.
         /// Due to a bug in the VS2008 SDK, <see cref="ToolWindowPane.Caption"/> does not work properly.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         public new string Caption
         {
             get
             {
                 object caption;
-                Frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out caption);
-                return (string)caption;
+                Frame.GetProperty((int) __VSFPROPID.VSFPROPID_Caption, out caption);
+                return (string) caption;
             }
-            
             set
             {
+                if (value == null)
+                    throw new ArgumentNullException("value");
                 Frame.SetProperty((int)__VSFPROPID.VSFPROPID_Caption, value);
             }
         }
@@ -129,7 +131,6 @@ namespace Gallio.VisualStudio.Shell.UI
             {
                 return (IVsWindowFrame)base.Frame;
             }
-
             set
             {
                 base.Frame = value;
@@ -158,6 +159,16 @@ namespace Gallio.VisualStudio.Shell.UI
         public void Close()
         {
             Frame.CloseFrame(0);
+        }
+
+        private void EnsureToolWindowContainer()
+        {
+            if (toolWindowContainer == null)
+            {
+                toolWindowContainer = new ShellToolWindowContainer();
+                toolWindowContainer.ToolWindowPane = this;
+                toolWindowContainer.Visible = true;
+            }
         }
     }
 }

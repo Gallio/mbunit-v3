@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.UI;
+
 namespace Gallio.Icarus
 {
     partial class ExecutionLogWindow
@@ -44,7 +46,7 @@ namespace Gallio.Icarus
         private void InitializeComponent()
         {
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.reportViewer = new System.Windows.Forms.WebBrowser();
+            this.reportViewer = new TestStepRunViewer();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.SuspendLayout();
@@ -55,7 +57,7 @@ namespace Gallio.Icarus
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.reportViewer);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(292, 248);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(267, 248);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -65,16 +67,13 @@ namespace Gallio.Icarus
             // 
             // reportViewer
             // 
-            this.reportViewer.AllowWebBrowserDrop = false;
             this.reportViewer.CausesValidation = false;
             this.reportViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.reportViewer.Location = new System.Drawing.Point(0, 0);
             this.reportViewer.MinimumSize = new System.Drawing.Size(20, 20);
             this.reportViewer.Name = "reportViewer";
-            this.reportViewer.ScriptErrorsSuppressed = true;
-            this.reportViewer.Size = new System.Drawing.Size(292, 248);
+            this.reportViewer.Size = new System.Drawing.Size(267, 248);
             this.reportViewer.TabIndex = 6;
-            this.reportViewer.WebBrowserShortcutsEnabled = false;
             // 
             // ExecutionLogWindow
             // 
@@ -97,7 +96,7 @@ namespace Gallio.Icarus
         #endregion
 
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-        private System.Windows.Forms.WebBrowser reportViewer;
+        private TestStepRunViewer reportViewer;
 
     }
 }

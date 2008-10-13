@@ -38,7 +38,7 @@ namespace Gallio.VisualStudio.Tip
     /// <para>
     /// The test adapter is started by VSTS and typically runs as a standalone process.
     /// If you are attempting to debug the adapter, be sure to attach the debugger
-    /// to the VSTS host process.
+    /// to the VSTS host process (VSTestHost.exe).
     /// </para>
     /// </remarks>
     public class GallioTestAdapter : ITestAdapter

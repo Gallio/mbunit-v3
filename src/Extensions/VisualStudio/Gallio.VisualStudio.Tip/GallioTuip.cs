@@ -18,12 +18,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using EnvDTE;
-using Gallio.Reflection;
-using Gallio.VisualStudio.Shell;
 using Gallio.VisualStudio.Shell.UI;
 using Gallio.VisualStudio.Tip.UI;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.Exceptions;
 using Microsoft.VisualStudio.TestTools.Vsip;
@@ -69,11 +65,14 @@ namespace Gallio.VisualStudio.Tip
         /// <param name="test">The test that the editor is being invoked for.</param>
         public void InvokeEditor(UIBlob uiBlob, ITestElement test)
         {
+            if (!TipShellExtension.IsInitialized)
+                return;
+
             GallioTestElement gallioTest = test as GallioTestElement;
 
             if (gallioTest != null)
             {
-                if (gallioTest.CodeLocation == CodeLocation.Unknown)
+                if (gallioTest.Path == null)
                 {
                     MessageBox.Show(
                         Properties.Resources.UnknownTestCodeLocation, 
@@ -83,22 +82,17 @@ namespace Gallio.VisualStudio.Tip
                 }
                 else
                 {
-                    ext.Shell.DTE.ItemOperations.OpenFile(
-                        gallioTest.CodeLocation.Path, 
-                        EnvDTE.Constants.vsDocumentKindText);
+                    Window window = ext.Shell.DTE.OpenFile(EnvDTE.Constants.vsViewKindCode, gallioTest.Path);
+
+                    TextSelection selection = window.Selection as TextSelection;
+                    if (gallioTest.Line != 0)
+                    {
+                        if (selection != null)
+                            selection.MoveToLineAndOffset(gallioTest.Line, Math.Max(1, gallioTest.Column), false);
+                    }
                 }
             }
         }
-
-        /// <summary>
-        /// The next window ID.
-        /// </summary>
-        private int nextWindowId = 1;
-
-        /// <summary>
-        /// Map of window ID by test ID.
-        /// </summary>
-        private Dictionary<TestResultId, int> windowMap = new Dictionary<TestResultId, int>();
 
         /// <summary>
         /// Invokes the test result viewer for the specified Gallio test.
@@ -106,28 +100,14 @@ namespace Gallio.VisualStudio.Tip
         /// <param name="result">The result of the unit test.</param>
         public void InvokeResultViewer(TestResultMessage result)
         {
+            if (!TipShellExtension.IsInitialized)
+                return;
+
             GallioTestResult gallioResult = result as GallioTestResult;
-            
             if (gallioResult != null)
             {
-                int windowId;
-
-                if (!windowMap.TryGetValue(gallioResult.Id, out windowId))
-                {
-                    windowId = nextWindowId++;
-                }
-
-                GallioToolWindow window = FindToolWindow(windowId, true);
-
-                if ((window == null) || (window.Frame == null))
-                {
-                    throw new EqtException(Properties.Resources.ResultWindowCouldNotBeCreated);
-                }
-
-                windowMap[result.Id] = windowId;
-                window.SetControl(new ResultViewer(gallioResult, ext.Shell));
-                window.Caption = String.Format("{0} [{1}]", result.TestName, Properties.Resources.Results);
-                window.Show();
+                TestResultWindow window = new TestResultWindow(gallioResult);
+                ext.Shell.WindowManager.OpenToolWindow(GetWindowId(gallioResult), window);
             }
         }
 
@@ -137,56 +117,45 @@ namespace Gallio.VisualStudio.Tip
         /// <param name="result"></param>
         public void CloseResultViewer(TestResultMessage result)
         {
+            if (!TipShellExtension.IsInitialized)
+                return;
+
             GallioTestResult gallioResult = result as GallioTestResult;
-
-            if ((gallioResult != null) &&
-                windowMap.ContainsKey(gallioResult.Id))
+            if (gallioResult != null)
             {
-                int windowId = windowMap[gallioResult.Id];
-                GallioToolWindow window = FindToolWindow(windowId, false);
-
-                if (window != null)
-                {
-                    window.Close();
-                }
+                ext.Shell.WindowManager.CloseToolWindow(GetWindowId(gallioResult));
             }
         }
 
-        /// <summary>
-        /// Gets the tool window corresponding to the specified type and ID.
-        /// </summary>
-        /// <param name="windowId">The tool window ID.</param>
-        /// <param name="createIfNotFound">If true, the tool window is created if it does not exist.</param>
-        /// <returns></returns>
-        private GallioToolWindow FindToolWindow(int windowId, bool createIfNotFound)
+        private static string GetWindowId(GallioTestResult result)
         {
-            return ext.Shell.Package.FindToolWindow(typeof(GallioToolWindow), windowId, createIfNotFound) as GallioToolWindow;
+            return "Gallio.VisualStudio.Tip.TestResult:" + result.Id.TestId;
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the properties of the test are read only.
         /// </summary>
-        /// <param name="test"></param>
-        /// <returns></returns>
+        /// <param name="test">The test</param>
+        /// <returns>True if the properties are read-only</returns>
         public bool IsTestPropertiesReadOnly(ITestElement test)
         {
             return true;
         }
         
         /// <summary>
-        /// 
+        /// Updates a custom test property.
         /// </summary>
-        /// <param name="test"></param>
-        /// <param name="propertyToChange"></param>
+        /// <param name="test">The test</param>
+        /// <param name="propertyToChange">The property to change</param>
         public void UpdateTestCustomProperty(ITestElement test, string propertyToChange)
         {
         }
 
         /// <summary>
-        /// 
+        /// Updates a test property.
         /// </summary>
-        /// <param name="test"></param>
-        /// <param name="propertyToChange"></param>
+        /// <param name="test">The test</param>
+        /// <param name="propertyToChange">The property to change</param>
         public void UpdateTestProperty(ITestElement test, System.ComponentModel.PropertyDescriptor propertyToChange)
         {
         }

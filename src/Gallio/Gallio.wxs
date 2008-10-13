@@ -70,27 +70,31 @@
                 <File Name="Gallio.Host.exe" KeyPath="yes" />
                 <File Name="Gallio.Host.exe.config" />
             </Component>
+            <Component Id="Gallio.Reports.dll" Guid="9e17b959-1768-4a2b-b750-99821b01dd53" Win64="no">
+                <File Name="Gallio.Reports.dll" KeyPath="yes" />
+                <File Name="Gallio.Reports.pdb" />
+                <File Name="Gallio.Reports.xml" />
+                <File Name="Gallio.Reports.plugin" />
+            </Component>
+            <Component Id="Gallio.UI.dll" Guid="{7CEEF55C-A9DD-4ce1-AD70-50CCEE425CE4}" Win64="no">
+                <File Name="Gallio.UI.dll" KeyPath="yes" />
+                <File Name="Gallio.UI.pdb" />
+                <File Name="Gallio.UI.xml" />
+                <File Name="Gallio.UI.plugin" />
+            </Component>
 
             <Component Id="Gallio.Loader" Guid="{1b752f49-373c-4a57-8f72-eb97287d0d35}" Win64="no">
                 <!-- Install in the GAC -->
                 <File Name="Gallio.Loader.dll" KeyPath="yes" Assembly=".net" />
 
-		<!-- TODO: Install the PDB in the GAC also.
+		<!-- TODO: Install the PDB and XML in the GAC also.
 		           This may require using a custom task. -->
             </Component>
 
-            <Directory Id="ReportsFolder" Name="Reports" />
+            <Directory Id="ResourcesFolder" Name="Resources" />
         </DirectoryRef>
 
-        <DirectoryRef Id="ReportsFolder" FileSource="$(var.GallioTargetDir)\bin\Reports\">
-            <Component Id="Gallio.Reports.dll" Guid="9e17b959-1768-4a2b-b750-99821b01dd53" Win64="no">
-                <File Name="Gallio.Reports.dll" KeyPath="yes" />
-                <File Name="Gallio.Reports.plugin" />
-            </Component>
-            <Component Id="Reports.Readme.txt" Guid="0377a725-f578-491b-a00c-ee67fae46fee" Win64="no">
-                <File Id="Reports.Readme.txt" Name="Readme.txt" KeyPath="yes" />
-            </Component>
-
+        <DirectoryRef Id="ResourcesFolder" FileSource="$(var.GallioTargetDir)\bin\Resources\">
             <Directory Id="Reports.css" Name="css">
                 <Component Id="Gallio.Report.css" Guid="65dc0971-e579-4226-b78a-1588d9f6977d" Win64="no">
                     <File Id="Gallio.Report.css" Name="Gallio-Report.css" KeyPath="yes" />
@@ -218,9 +222,8 @@
             <ComponentRef Id="Gallio.Registry" />
             <ComponentRef Id="Apache.License" />
             <ComponentRef Id="Gallio.Credits" />
-
+            <ComponentRef Id="Gallio.UI.dll"/>
             <ComponentRef Id="Gallio.Reports.dll"/>
-            <ComponentRef Id="Reports.Readme.txt"/>
 
             <ComponentRef Id="Gallio.Report.css"/>
             <ComponentRef Id="Gallio.Report.js"/>

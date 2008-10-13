@@ -55,5 +55,13 @@ namespace Gallio.Runtime.Loader
 
             AssemblyResolverBootstrap.AssemblyResolverManager.AddHintDirectory(path);
         }
+
+        public static object Resolve(Type serviceType)
+        {
+            if (serviceType == null)
+                throw new ArgumentNullException("serviceType");
+
+            return RuntimeAccessor.Instance.Resolve(serviceType);
+        }
     }
 }

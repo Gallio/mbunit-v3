@@ -94,8 +94,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\CodeModelReflectionPolicyTest.cs" />
-    <Compile Include="UI\GallioToolWindowControlContainerTest.cs" />
-    <Compile Include="UI\GallioToolWindowControlTest.cs" />
+    <Compile Include="UI\ShellToolWindowContainerTest.cs" />
+    <Compile Include="UI\ShellToolWindowTest.cs" />
     <Compile Include="VisualStudioTestHarness.cs" />
   </ItemGroup>
   <ItemGroup>

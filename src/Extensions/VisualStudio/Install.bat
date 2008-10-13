@@ -63,8 +63,8 @@ REM Register AddIn
 
 REM Register TIP
 "%REG%" ADD %VS_TEST_TYPE_KEY% /V NameId /D "#100" /F >nul
-"%REG%" ADD %VS_TEST_TYPE_KEY% /V TipProvider /D "Gallio.VisualStudio.Tip.GallioTipProxy, Gallio.VisualStudio.Tip.Proxy" /F >nul
-"%REG%" ADD %VS_TEST_TYPE_KEY% /V ServiceType /D "Gallio.VisualStudio.Tip.SGallioTestService, Gallio.VisualStudio.Tip.Proxy" /F >nul
+"%REG%" ADD %VS_TEST_TYPE_KEY% /V TipProvider /D "Gallio.VisualStudio.Tip.GallioTipProxy, Gallio.VisualStudio.Tip.Proxy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e" /F >nul
+"%REG%" ADD %VS_TEST_TYPE_KEY% /V ServiceType /D "Gallio.VisualStudio.Tip.SGallioTestService, Gallio.VisualStudio.Tip.Proxy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e" /F >nul
 
 "%REG%" ADD %VS_TEST_TYPE_KEY%\Extensions /V .dll /T REG_DWORD /D "101" /F >nul
 "%REG%" ADD %VS_TEST_TYPE_KEY%\Extensions /V .exe /T REG_DWORD /D "101" /F >nul

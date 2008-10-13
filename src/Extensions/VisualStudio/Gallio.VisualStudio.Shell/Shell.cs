@@ -18,6 +18,7 @@ using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
 using Gallio.VisualStudio.Shell.Actions;
+using Gallio.VisualStudio.Shell.UI;
 using Microsoft.VisualStudio.Shell.Interop;
 using Gallio.Runtime;
 using System.Collections.Generic;
@@ -29,7 +30,8 @@ namespace Gallio.VisualStudio.Shell
     /// </summary>
     public class Shell : IShell
     {
-        private readonly DefaultActionManager actionManager;
+        private readonly ShellActionManager actionManager;
+        private readonly ShellWindowManager windowManager;
         private readonly List<IShellExtension> extensions;
 
         private IShellPackage package;
@@ -42,7 +44,8 @@ namespace Gallio.VisualStudio.Shell
         /// </summary>
         public Shell()
         {
-            actionManager = new DefaultActionManager(this);
+            actionManager = new ShellActionManager();
+            windowManager = new ShellWindowManager();
             extensions = new List<IShellExtension>();
         }
 
@@ -71,10 +74,26 @@ namespace Gallio.VisualStudio.Shell
         }
 
         /// <inheritdoc />
+        public IWindowManager WindowManager
+        {
+            get { return windowManager; }
+        }
+
+        /// <inheritdoc />
+        public IServiceProvider VsServiceProvider
+        {
+            get
+            { 
+                if (package == null)
+                    throw new InvalidOperationException("The Visual Studio service provider is not available.");
+                return package;
+            }
+        }
+
+        /// <inheritdoc />
         public object GetVsService(Type serviceType)
         {
-            IServiceProvider serviceProvider = package;
-            return serviceProvider.GetService(serviceType);
+            return VsServiceProvider.GetService(serviceType);
         }
 
         /// <inheritdoc />
@@ -134,8 +153,7 @@ namespace Gallio.VisualStudio.Shell
         {
             if (package == null || addInHandler == null)
             {
-                ShutdownShellExtensions();
-                ShutdownShellServices();
+                Shutdown();
             }
 
             this.package = package;
@@ -147,19 +165,32 @@ namespace Gallio.VisualStudio.Shell
 
             if (package != null && addInHandler != null)
             {
-                InitializeShellServices();
-                InitializeShellExtensions();
+                Initialize();
             }
+        }
+
+        private void Initialize()
+        {
+            InitializeShellServices();
+            InitializeShellExtensions();
+        }
+
+        private void Shutdown()
+        {
+            ShutdownShellExtensions();
+            ShutdownShellServices();
         }
 
         private void InitializeShellServices()
         {
-            actionManager.Initialize();
+            actionManager.Initialize(this);
+            windowManager.Initialize(this);
         }
 
         private void ShutdownShellServices()
         {
             actionManager.Shutdown();
+            windowManager.Shutdown();
         }
 
         private void InitializeShellExtensions()

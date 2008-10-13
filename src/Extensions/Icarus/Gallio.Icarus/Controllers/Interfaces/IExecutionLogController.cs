@@ -14,14 +14,26 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using Gallio.Model.Serialization;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
     public interface IExecutionLogController
     {
-        Stream ExecutionLog { get; }
+        IList<TestStepRun> TestStepRuns { get; }
+        TestModelData TestModelData { get; }
 
+        /// <summary>
+        /// New test results have become available.
+        /// </summary>
         event EventHandler<System.EventArgs> ExecutionLogUpdated;
+
+        /// <summary>
+        /// A brand new test run is starting and old results should be discarded.
+        /// </summary>
+        event EventHandler<System.EventArgs> ExecutionLogReset;
     }
 }

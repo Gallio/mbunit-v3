@@ -14,15 +14,26 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Xml;
 using Gallio.VisualStudio.Tip.Resources;
 using Microsoft.VisualStudio.TestTools.Common;
 using System.Runtime.InteropServices;
-using Gallio.Reflection;
+using Microsoft.VisualStudio.TestTools.Common.Xml;
 
 namespace Gallio.VisualStudio.Tip
 {
+    /// <summary>
+    /// Represents a Gallio test element.
+    /// </summary>
+    /// <remarks>
+    /// Be VERY careful not to refer to any Gallio types that are not
+    /// in the Tip Proxy assembly.  They are not in the GAC, consequently Visual
+    /// Studio may be unable to load them when it needs to pass the test element instance
+    /// across a remoting channel.
+    /// </remarks>
     [Serializable]
     [Guid(Guids.GallioTestTypeGuidString)]
     public sealed class GallioTestElement : TestElement
@@ -33,7 +44,9 @@ namespace Gallio.VisualStudio.Tip
         private const string TypeNameKey = "Gallio.TypeName";
         private const string MemberNameKey = "Gallio.MemberName";
         private const string ParameterNameKey = "Gallio.ParameterName";
-        private const string CodeLocationKey = "Gallio.CodeLocation";
+        private const string PathKey = "Gallio.Path";
+        private const string LineKey = "Gallio.Line";
+        private const string ColumnKey = "Gallio.Column";
 
         [PersistenceElementName("gallioTestId")]
         private string gallioTestId;
@@ -53,8 +66,14 @@ namespace Gallio.VisualStudio.Tip
         [PersistenceElementName("parameterName")]
         private string parameterName;
 
-        [PersistenceElementName("codeLocation")]
-        private CodeLocation codeLocation;
+        [PersistenceElementName("path")]
+        private string path;
+
+        [PersistenceElementName("line")]
+        private int line;
+
+        [PersistenceElementName("column")]
+        private int column;
 
         public GallioTestElement(string id, string name, string description, string assemblyPath)
             : base(GenerateTestId(id), name, description, assemblyPath)
@@ -71,7 +90,9 @@ namespace Gallio.VisualStudio.Tip
             typeName = element.typeName;
             memberName = element.memberName;
             parameterName = element.parameterName;
-            codeLocation = element.codeLocation;
+            path = element.path;
+            line = element.line;
+            column = element.column;
         }
 
         private GallioTestElement(SerializationInfo info, StreamingContext context)
@@ -83,7 +104,9 @@ namespace Gallio.VisualStudio.Tip
             typeName = info.GetString(TypeNameKey);
             memberName = info.GetString(MemberNameKey);
             parameterName = info.GetString(ParameterNameKey);
-            codeLocation = (CodeLocation)info.GetValue(CodeLocationKey, typeof(CodeLocation));
+            path = info.GetString(PathKey);
+            line = info.GetInt32(LineKey);
+            column = info.GetInt32(ColumnKey);
         }
 
         public override object Clone()
@@ -146,7 +169,39 @@ namespace Gallio.VisualStudio.Tip
             info.AddValue(TypeNameKey, typeName);
             info.AddValue(MemberNameKey, memberName);
             info.AddValue(ParameterNameKey, parameterName);
-            info.AddValue(CodeLocationKey, codeLocation);
+            info.AddValue(PathKey, path);
+            info.AddValue(LineKey, line);
+            info.AddValue(ColumnKey, column);
+        }
+
+        public override void Load(XmlElement element, XmlTestStoreParameters parameters)
+        {
+            base.Load(element, parameters);
+
+            gallioTestId = XmlPersistenceUtils.LoadFromAttribute(element, GallioTestIdKey);
+            assemblyName = XmlPersistenceUtils.LoadFromAttribute(element, AssemblyNameKey);
+            namespaceName = XmlPersistenceUtils.LoadFromAttribute(element, NamespaceNameKey);
+            typeName = XmlPersistenceUtils.LoadFromAttribute(element, TypeNameKey);
+            memberName = XmlPersistenceUtils.LoadFromAttribute(element, MemberNameKey);
+            parameterName = XmlPersistenceUtils.LoadFromAttribute(element, ParameterNameKey);
+            path = XmlPersistenceUtils.LoadFromAttribute(element, PathKey);
+            line = Convert.ToInt32(XmlPersistenceUtils.LoadFromAttribute(element, LineKey), CultureInfo.InvariantCulture);
+            column = Convert.ToInt32(XmlPersistenceUtils.LoadFromAttribute(element, ColumnKey), CultureInfo.InvariantCulture);
+        }
+
+        public override void Save(XmlElement element, XmlTestStoreParameters parameters)
+        {
+            base.Save(element, parameters);
+
+            XmlPersistenceUtils.SaveToAttribute(element, GallioTestIdKey, gallioTestId);
+            XmlPersistenceUtils.SaveToAttribute(element, AssemblyNameKey, assemblyName);
+            XmlPersistenceUtils.SaveToAttribute(element, NamespaceNameKey, namespaceName);
+            XmlPersistenceUtils.SaveToAttribute(element, TypeNameKey, typeName);
+            XmlPersistenceUtils.SaveToAttribute(element, MemberNameKey, memberName);
+            XmlPersistenceUtils.SaveToAttribute(element, ParameterNameKey, parameterName);
+            XmlPersistenceUtils.SaveToAttribute(element, PathKey, path);
+            XmlPersistenceUtils.SaveToAttribute(element, LineKey, line.ToString(CultureInfo.InvariantCulture));
+            XmlPersistenceUtils.SaveToAttribute(element, ColumnKey, column.ToString(CultureInfo.InvariantCulture));
         }
 
         [PropertyWindow]
@@ -188,12 +243,34 @@ namespace Gallio.VisualStudio.Tip
         [LocalizedDescription(typeof(VSPackage), VSPackageResourceIds.LocationPropertyDescriptionKey)]
         [GroupingProperty]
         //[HelpKeyword("key")]
-        public CodeLocation CodeLocation
+        public string CodeLocation
         {
             get
             {
-                return codeLocation;
+                if (line != 0)
+                {
+                    if (column != 0)
+                        return String.Format("{0}({1},{2})", path, line, column);
+                    return String.Format("{0}({1})", path, line);
+                }
+
+                return path ?? "(unknown)";
             }
+        }
+
+        public string Path
+        {
+            get { return path; }
+        }
+
+        public int Line
+        {
+            get { return line; }
+        }
+
+        public int Column
+        {
+            get { return column; }
         }
 
         public void SetCodeReference(string assemblyName, string namespaceName, string typeName, string memberName, string parameterName)
@@ -205,9 +282,11 @@ namespace Gallio.VisualStudio.Tip
             this.parameterName = parameterName;
         }
 
-        public void SetCodeLocation(CodeLocation codeLocation)
+        public void SetCodeLocation(string path, int line, int column)
         {
-            this.codeLocation = codeLocation;
+            this.path = path;
+            this.line = line;
+            this.column = column;
         }
 
         private static TestId GenerateTestId(string testId)

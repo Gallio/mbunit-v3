@@ -37,7 +37,7 @@ namespace Gallio.VisualStudio.Tip
 
             testElement.SetCodeReference(test.CodeReference.AssemblyName, test.CodeReference.NamespaceName,
                 test.CodeReference.TypeName, test.CodeReference.MemberName, test.CodeReference.ParameterName);
-            testElement.SetCodeLocation(test.CodeLocation);
+            testElement.SetCodeLocation(test.CodeLocation.Path, test.CodeLocation.Line, test.CodeLocation.Column);
             return testElement;
         }
     }

@@ -14,11 +14,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using EnvDTE;
 using EnvDTE80;
 using Gallio.VisualStudio.Shell.Actions;
+using Gallio.VisualStudio.Shell.UI;
 
 namespace Gallio.VisualStudio.Shell
 {
@@ -38,6 +37,11 @@ namespace Gallio.VisualStudio.Shell
         IActionManager ActionManager { get; }
 
         /// <summary>
+        /// Gets the window manager.
+        /// </summary>
+        IWindowManager WindowManager { get; }
+
+        /// <summary>
         /// Gets the package, or null if not initialized.
         /// </summary>
         IShellPackage Package { get; }
@@ -46,6 +50,11 @@ namespace Gallio.VisualStudio.Shell
         /// Gets the add-in, or null if not initialized.
         /// </summary>
         AddIn AddIn { get; }
+
+        /// <summary>
+        /// Gets the Visual Studio service provider.
+        /// </summary>
+        IServiceProvider VsServiceProvider { get; }
 
         /// <summary>
         /// Gets a Visual Studio service.

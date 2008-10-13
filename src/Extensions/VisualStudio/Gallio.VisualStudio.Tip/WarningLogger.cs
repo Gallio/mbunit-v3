@@ -37,7 +37,7 @@ namespace Gallio.VisualStudio.Tip
                     ? message
                     : string.Concat(message, ExceptionUtils.SafeToString(exception));
 
-                warningHandler.Write(null, new WarningEventArgs(warning));
+                warningHandler.Write(this, new WarningEventArgs(warning));
             }
         }
     }

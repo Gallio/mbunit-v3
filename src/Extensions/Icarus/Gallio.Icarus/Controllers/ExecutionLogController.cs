@@ -15,15 +15,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Xml;
+using System.ComponentModel;
+using System.Threading;
+using Gallio.Collections;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
-using Gallio.Icarus.Reports;
-using Gallio.Model.Logging;
+using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
-using Gallio.Runtime;
+using Gallio.Runner.Reports;
 using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
@@ -31,107 +30,74 @@ namespace Gallio.Icarus.Controllers
     class ExecutionLogController : IExecutionLogController
     {
         private readonly ITestController testController;
-        private MemoryStream executionLog;
-        private readonly string executionLogFolder;
-        private readonly TaskManager taskManager = new TaskManager();
+        private readonly HashSet<string> selectedTestIds;
 
-        public event EventHandler<System.EventArgs> ExecutionLogUpdated;
-
-        public Stream ExecutionLog
-        {
-            get { return executionLog; }
-        }
-
-        public ExecutionLogController(ITestController testController, string executionLogFolder)
+        public ExecutionLogController(ITestController testController)
         {
             this.testController = testController;
-            this.executionLogFolder = executionLogFolder;
 
-            testController.SelectedTests.ListChanged += delegate { UpdateExecutionLog(); };
-            testController.TestStepFinished += testController_TestStepFinished;
+            testController.SelectedTests.ListChanged += ListChanged;
+            testController.TestStepFinished += TestStepFinished;
+            testController.RunStarted += RunStarted;
 
-            SetupExecutionLog();
+            selectedTestIds = new HashSet<string>();
+
+            TestStepRuns = new List<TestStepRun>();
+            Update();
         }
 
-        void testController_TestStepFinished(object sender, TestStepFinishedEventArgs e)
+        public event EventHandler<System.EventArgs> ExecutionLogReset;
+        public event EventHandler<System.EventArgs> ExecutionLogUpdated;
+
+        public IList<TestStepRun> TestStepRuns { get; private set; }
+
+        public TestModelData TestModelData { get; private set; }
+
+        private void RunStarted(object sender, System.EventArgs e)
         {
-            // store attachments as we go along
-            string attachmentDirectory = string.Empty;
-            if (e.TestStepRun.TestLog.Attachments.Count > 0)
-            {
-                attachmentDirectory = Path.Combine(executionLogFolder, FileUtils.EncodeFileName(e.TestStepRun.Step.Id));
-                if (!Directory.Exists(attachmentDirectory))
-                    Directory.CreateDirectory(attachmentDirectory);
-            }
+            TestModelData = null;
+            TestStepRuns.Clear();
 
-            foreach (AttachmentData attachmentData in e.TestStepRun.TestLog.Attachments)
-            {
-                string fileName = Path.Combine(attachmentDirectory, FileUtils.EncodeFileName(attachmentData.Name));
-                using (FileStream fs = File.Open(fileName, FileMode.Create, FileAccess.Write))
-                    attachmentData.SaveContents(fs, Encoding.Default);
-            }
-
-            UpdateExecutionLog();
+            EventHandlerUtils.SafeInvoke(ExecutionLogReset, true, System.EventArgs.Empty);
         }
 
-        void SetupExecutionLog()
+        private void ListChanged(object sender, ListChangedEventArgs e)
         {
-            if (!Directory.Exists(executionLogFolder))
-                Directory.CreateDirectory(executionLogFolder);
+            selectedTestIds.Clear();
 
-            // clear old attachments
-            DirectoryInfo di = new DirectoryInfo(executionLogFolder);
-            foreach (DirectoryInfo attachmentFolder in di.GetDirectories())
-                attachmentFolder.Delete(true);
+            foreach (TestTreeNode node in testController.SelectedTests)
+                selectedTestIds.Add(node.Name);
 
-            // copy resources
-            string contentLocalPath = RuntimeAccessor.Instance.MapUriToLocalPath(new Uri("plugin://Gallio.Reports/"));
-            foreach (string resourcePath in new[] { "css", "img" })
-            {
-                string sourceContentPath = Path.Combine(contentLocalPath, resourcePath);
-                string destContentPath = Path.GetFullPath(Path.Combine(executionLogFolder, resourcePath));
-                if (!Directory.Exists(destContentPath))
-                    Directory.CreateDirectory(destContentPath);
-                FileUtils.CopyAllIndirect(sourceContentPath, destContentPath, null,
-                    delegate(string sourceFilePath, string destFilePath)
-                    {
-                        using (Stream sourceStream = File.OpenRead(sourceFilePath))
-                        using (Stream destStream = File.Open(destFilePath, FileMode.CreateNew, FileAccess.Write))
-                        {
-                            FileUtils.CopyStreamContents(sourceStream, destStream);
-                        }
-                    });
-            }
+            Update();
         }
 
-        void UpdateExecutionLog()
+        private void TestStepFinished(object sender, TestStepFinishedEventArgs e)
         {
-            taskManager.StartTask(delegate
+            if (selectedTestIds.Contains(e.Test.Id))
+                Update();
+        }
+
+        private void Update()
+        {
+            // Do this work in the background to avoid a possible deadlock acquiring the report lock
+            // on the UI thread.
+            ThreadPool.QueueUserWorkItem(dummy =>
             {
                 testController.Report.Read(report =>
                 {
-                    if (report.TestPackageRun == null)
+                    TestModelData = report.TestModel;
+
+                    TestStepRuns.Clear();
+
+                    if (report.TestPackageRun != null)
                     {
-                        executionLog = null;
+                        foreach (TestStepRun run in report.TestPackageRun.AllTestStepRuns)
+                            if (selectedTestIds.Contains(run.Step.TestId))
+                                TestStepRuns.Add(run);
                     }
-                    else
-                    {
-                        MemoryStream memoryStream = new MemoryStream();
-                        XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
-                        TestStepReportWriter testStepReportWriter = new TestStepReportWriter(xmlTextWriter,
-                            executionLogFolder,
-                            report.TestModel);
-                        List<string> testIds = new List<string>();
-                        foreach (TestTreeNode testTreeNode in testController.SelectedTests)
-                            testIds.Add(testTreeNode.Name);
-                        if (testIds.Count == 0 && testController.Model.Root != null)
-                            testIds.Add(testController.Model.Root.Name);
-                        testStepReportWriter.RenderReport(testIds, report.TestPackageRun);
-                        memoryStream.Position = 0;
-                        executionLog = memoryStream;
-                    }
+
+                    EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, System.EventArgs.Empty);
                 });
-                EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, System.EventArgs.Empty);
             });
         }
     }

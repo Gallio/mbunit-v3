@@ -18,6 +18,7 @@
     <DocumentedAssembly Include="Gallio\bin\Gallio.dll" />
     <DocumentedAssembly Include="Gallio35\bin\Gallio35.dll" />
     <DocumentedAssembly Include="Gallio.Loader\bin\Gallio.Loader.dll" />
+    <DocumentedAssembly Include="Gallio.Reports\bin\Gallio.Reports.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,26 +37,25 @@
     <Binary Include="Gallio35\bin\Gallio35.pdb" />
     <Binary Include="Gallio35\Gallio35.plugin" />
     
-    <Binary Include="Gallio.Reports\bin\Gallio.Reports.dll">
-        <Folder>Reports</Folder>
-    </Binary>
-    <Binary Include="Gallio.Reports\Gallio.Reports.plugin">
-        <Folder>Reports</Folder>
-    </Binary>
-    <Binary Include="Gallio.Reports\Readme.txt">
-        <Folder>Reports</Folder>
-    </Binary>
+    <Binary Include="Gallio.UI\bin\Gallio.UI.dll" />
+    <Binary Include="Gallio.UI\bin\Gallio.UI.pdb" />
+    <Binary Include="Gallio.UI\bin\Gallio.UI.plugin" />
+    
+    <Binary Include="Gallio.Reports\bin\Gallio.Reports.dll" />
+    <Binary Include="Gallio.Reports\bin\Gallio.Reports.pdb" />
+    <Binary Include="Gallio.Reports\bin\Gallio.Reports.plugin" />
+
     <Binary Include="Gallio.Reports\css\*">
-        <Folder>Reports\css</Folder>
+        <Folder>Resources\css</Folder>
     </Binary>
     <Binary Include="Gallio.Reports\js\*">
-        <Folder>Reports\js</Folder>
+        <Folder>Resources\js</Folder>
     </Binary>
     <Binary Include="Gallio.Reports\img\*">
-        <Folder>Reports\img</Folder>
+        <Folder>Resources\img</Folder>
     </Binary>
     <Binary Include="Gallio.Reports\xsl\*">
-        <Folder>Reports\xsl</Folder>
+        <Folder>Resources\xsl</Folder>
     </Binary>
     
     <Content Include="libs\Mono.Cecil.license.html" />

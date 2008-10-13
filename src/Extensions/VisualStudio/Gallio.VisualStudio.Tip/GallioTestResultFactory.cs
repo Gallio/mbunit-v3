@@ -14,12 +14,17 @@
 // limitations under the License.
 
 using System;
+using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Runner.Reports;
+using Gallio.Utilities;
 using Microsoft.VisualStudio.TestTools.Common;
 using GallioTestOutcome = Gallio.Model.TestOutcome;
-using TestOutcome=Microsoft.VisualStudio.TestTools.Common.TestOutcome;
+using VSTestOutcome=Microsoft.VisualStudio.TestTools.Common.TestOutcome;
 
 namespace Gallio.VisualStudio.Tip
 {
@@ -48,34 +53,64 @@ namespace Gallio.VisualStudio.Tip
             }
 
             result.SetTimings(run.StartTime, run.EndTime, TimeSpan.FromSeconds(run.Result.Duration));
+            result.TestStepRunXml = TestStepRunToXml(run);
             return result;
         }
 
-        private static TestOutcome GetOutcome(GallioTestOutcome outcome)
+        /// <summary>
+        /// Gets the test step run associated with a test result, or null if it could not be loaded.
+        /// </summary>
+        public static TestStepRun GetTestStepRun(GallioTestResult result)
+        {
+            return TestStepRunFromXml(result.TestStepRunXml);
+        }
+
+        private static VSTestOutcome GetOutcome(GallioTestOutcome outcome)
         {
             if (outcome == GallioTestOutcome.Canceled)
-                return TestOutcome.Aborted;
+                return VSTestOutcome.Aborted;
             if (outcome == GallioTestOutcome.Error)
-                return TestOutcome.Error;
+                return VSTestOutcome.Error;
             if (outcome == GallioTestOutcome.Timeout)
-                return TestOutcome.Timeout;
+                return VSTestOutcome.Timeout;
             if (outcome == GallioTestOutcome.Ignored || outcome == GallioTestOutcome.Pending || outcome == GallioTestOutcome.Explicit)
-                return TestOutcome.NotRunnable;
+                return VSTestOutcome.NotRunnable;
 
             switch (outcome.Status)
             {
                 case TestStatus.Passed:
-                    return TestOutcome.Passed;
+                    return VSTestOutcome.Passed;
 
                 case TestStatus.Inconclusive:
-                    return TestOutcome.Inconclusive;
+                    return VSTestOutcome.Inconclusive;
 
                 case TestStatus.Skipped:
-                    return TestOutcome.NotExecuted;
+                    return VSTestOutcome.NotExecuted;
 
                 case TestStatus.Failed:
                 default:
-                    return TestOutcome.Failed;
+                    return VSTestOutcome.Failed;
+            }
+        }
+
+        private static string TestStepRunToXml(TestStepRun run)
+        {
+            StringWriter stringWriter = new StringWriter();
+            XmlSerializer serializer = new XmlSerializer(typeof(TestStepRun));
+            serializer.Serialize(stringWriter, run);
+            return stringWriter.ToString();
+        }
+
+        private static TestStepRun TestStepRunFromXml(string xml)
+        {
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(TestStepRun));
+                return (TestStepRun)serializer.Deserialize(new StringReader(xml));
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
     }

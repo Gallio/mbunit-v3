@@ -22,6 +22,7 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
+using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
@@ -35,96 +36,61 @@ namespace Gallio.Icarus.Tests.Controllers
     [MbUnit.Framework.Category("Controllers"), Author("Graham Hay")]
     class ExecutionLogControllerTest : MockTest
     {
-        private IEventRaiser eventRaiser;
-        private BindingList<TestTreeNode> list;
-        readonly string executionLogFolder = Path.Combine(Path.GetTempPath(), "ExecutionLog");
+        private IEventRaiser testRunStartedEventRaiser;
+        private IEventRaiser testRunFinishedEventRaiser;
+
+        private BindingList<TestTreeNode> selectedTests;
 
         [SetUp]
         public void SetUp()
         {
-            list = new BindingList<TestTreeNode>(new List<TestTreeNode>());
+            selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
         }
 
         [Test]
         public void TestStepFinished_Test()
         {
-            TestStepRun testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testId"));
+            TestStepRun testStepRun = new TestStepRun(new TestStepData("rootStep", "name", "fullName", "root"));
             testStepRun.TestLog = new StructuredTestLog();
             testStepRun.TestLog.Attachments.Add(new TextAttachment("name", "contentType", "text").ToAttachmentData());
-            TestStepFinishedEventArgs e = new TestStepFinishedEventArgs(new Report(), new TestData("id", "name", "fullName"), testStepRun);
+            TestStepFinishedEventArgs e = new TestStepFinishedEventArgs(new Report(), new TestData("root", "name", "fullName"), testStepRun);
             ITestController testController = SetupTestController();
             Report report = new Report();
             report.TestPackageRun = new TestPackageRun();
-            Expect.Call(testController.Report).Return(new LockBox<Report>(report)).Repeat.Any();
+            report.TestModel = new TestModelData(new TestData(new RootTest()));
+            report.TestPackageRun.RootTestStepRun = testStepRun;
+
+            SetupResult.For(testController.Report).Return(new LockBox<Report>(report));
             ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
-            Expect.Call(testController.Model).Return(testTreeModel).Repeat.Twice();
+            SetupResult.For(testController.Model).Return(testTreeModel);
             TestTreeNode root = new TestTreeNode("root", "root", "root");
-            Expect.Call(testTreeModel.Root).Return(root).Repeat.Twice();
+            SetupResult.For(testTreeModel.Root).Return(root);
             mocks.ReplayAll();
-            Directory.Delete(executionLogFolder, true);
-            ExecutionLogController executionLogController = new ExecutionLogController(testController, executionLogFolder);
-            bool finished = false;
-            executionLogController.ExecutionLogUpdated +=
-                delegate { finished = true; };
-            Assert.IsNull(executionLogController.ExecutionLog);
-            eventRaiser.Raise(testController, e);
-            int count = 0;
-            do
-            {
-                Thread.Sleep(100);
-                count++;
-            } while (!finished && count < 10);
-            Assert.IsNotNull(executionLogController.ExecutionLog);
-        }
 
-        [Test]
-        public void UpdateExecutionLog_Test()
-        {
-            ITestController testController = SetupTestController();
-            Report report = new Report();
-            report.TestPackageRun = new TestPackageRun();
-            Expect.Call(testController.Report).Return(new LockBox<Report>(report));
-            mocks.ReplayAll();
-            ExecutionLogController executionLogController = new ExecutionLogController(testController, executionLogFolder);
-            bool finished = false;
-            executionLogController.ExecutionLogUpdated += delegate { finished = true; };
-            list.Add(new TestTreeNode("text", "name", "nodeType"));
-            int count = 0;
-            do
-            {
-                Thread.Sleep(100);
-                count++;
-            } while (!finished && count < 10);
-            Assert.IsNotNull(executionLogController.ExecutionLog);
-        }
+            ExecutionLogController executionLogController = new ExecutionLogController(testController);
+            bool updated = false;
+            executionLogController.ExecutionLogUpdated += delegate { updated = true; };
 
-        [Test]
-        public void UpdateExecutionLog_Empty_Test()
-        {
-            ITestController testController = SetupTestController();
-            Report report = new Report();
-            Expect.Call(testController.Report).Return(new LockBox<Report>(report));
-            mocks.ReplayAll();
-            ExecutionLogController executionLogController = new ExecutionLogController(testController, executionLogFolder);
-            bool finished = false;
-            executionLogController.ExecutionLogUpdated += delegate { finished = true; };
-            list.Add(new TestTreeNode("text", "name", "nodeType"));
-            int count = 0;
-            do
-            {
-                Thread.Sleep(100);
-                count++;
-            } while (!finished && count < 10);
-            Assert.IsNull(executionLogController.ExecutionLog);
+            selectedTests.Add(root);
+            testRunStartedEventRaiser.Raise(testController, System.EventArgs.Empty);
+            testRunFinishedEventRaiser.Raise(testController, e);
+
+            Assert.AreEqual(true, updated);
+            Assert.AreSame(report.TestModel, executionLogController.TestModelData);
+            Assert.AreElementsEqual(new[] { testStepRun }, executionLogController.TestStepRuns);
         }
 
         ITestController SetupTestController()
         {
             ITestController testController = mocks.CreateMock<ITestController>();
-            Expect.Call(testController.SelectedTests).Return(list).Repeat.Any();
+            SetupResult.For(testController.SelectedTests).Return(selectedTests);
+
             testController.TestStepFinished += null;
-            eventRaiser = LastCall.IgnoreArguments().GetEventRaiser();
-            LastCall.IgnoreArguments();
+            testRunFinishedEventRaiser = LastCall.IgnoreArguments().GetEventRaiser();
+
+            testController.RunStarted += null;
+            testRunStartedEventRaiser = LastCall.IgnoreArguments().GetEventRaiser();
+
             return testController;
         }
     }

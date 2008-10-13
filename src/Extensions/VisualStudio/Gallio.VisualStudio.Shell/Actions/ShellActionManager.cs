@@ -24,18 +24,12 @@ namespace Gallio.VisualStudio.Shell.Actions
     /// <summary>
     /// Manages installation and removal of actions as well as action command dispatch.
     /// </summary>
-    public class DefaultActionManager : ShellComponent, IActionManager
+    internal class ShellActionManager : BaseShellExtension, IActionManager
     {
         private readonly Dictionary<Type, Action> installedActions;
         private readonly Dictionary<string, ActionButton> installedActionButtons;
 
-        /// <summary>
-        /// Initializes the action manager.
-        /// </summary>
-        /// <param name="shell">The shell</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="shell"/> is null</exception>
-        public DefaultActionManager(IShell shell)
-            : base(shell)
+        public ShellActionManager()
         {
             installedActions = new Dictionary<Type, Action>();
             installedActionButtons = new Dictionary<string, ActionButton>();
@@ -74,6 +68,21 @@ namespace Gallio.VisualStudio.Shell.Actions
             installedActionButtons.Add(command.Name, actionButton);
         }
 
+        protected override void InitializeImpl()
+        {
+            foreach (ActionButtonDescriptor descriptor in GetActionButtonDescriptors())
+                InstallActionButton(descriptor);
+        }
+
+        protected override void ShutdownImpl()
+        {
+            foreach (ActionButton actionButton in installedActionButtons.Values)
+                actionButton.VSCommand.Delete();
+
+            installedActionButtons.Clear();
+            installedActions.Clear();
+        }
+
         private CommandBar GetCommandBar(string commandPath)
         {
             string[] segments = commandPath.Split('\\');
@@ -96,21 +105,6 @@ namespace Gallio.VisualStudio.Shell.Actions
                     yield return attrib.GetDescriptor(type);
                 }
             }
-        }
-
-        internal void Initialize()
-        {
-            foreach (ActionButtonDescriptor descriptor in GetActionButtonDescriptors())
-                InstallActionButton(descriptor);
-        }
-
-        internal void Shutdown()
-        {
-            foreach (ActionButton actionButton in installedActionButtons.Values)
-                actionButton.VSCommand.Delete();
-
-            installedActionButtons.Clear();
-            installedActions.Clear();
         }
 
         internal void QueryStatus(string commandName, vsCommandStatusTextWanted neededText, ref vsCommandStatus statusOption, ref object commandText)

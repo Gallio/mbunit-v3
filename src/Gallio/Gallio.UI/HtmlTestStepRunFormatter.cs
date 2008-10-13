@@ -1,0 +1,509 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml;
+using Gallio.Collections;
+using Gallio.Model;
+using Gallio.Model.Logging;
+using Gallio.Model.Logging.Tags;
+using Gallio.Runner.Reports;
+using Gallio.Runtime;
+using Gallio.Runner.Caching;
+using Gallio.Model.Serialization;
+using Gallio.Utilities;
+
+namespace Gallio.UI
+{
+    /// <summary>
+    /// <para>
+    /// An optimized HTML renderer for individual test step runs and their descendants.
+    /// </para>
+    /// </summary>
+    internal class HtmlTestStepRunFormatter : IDisposable
+    {
+        private readonly HashSet<string> attachmentPaths;
+        private readonly TemporaryDiskCache cache;
+        private readonly IDiskCacheGroup cacheGroup;
+
+        private readonly Uri resourcesUrl;
+        private readonly Uri cssUrl;
+        private readonly Uri imgUrl;
+
+        public HtmlTestStepRunFormatter()
+        {
+            IRuntime runtime = RuntimeAccessor.Instance;
+            string resourcesPath = runtime.MapUriToLocalPath(new Uri("plugin://Gallio.Reports/Resources/"));
+            resourcesUrl = new Uri(resourcesPath);
+            cssUrl = new Uri(resourcesUrl, "css");
+            imgUrl = new Uri(resourcesUrl, "img");
+
+            cache = new TemporaryDiskCache("Gallio.UI");
+            cacheGroup = cache.Groups[Guid.NewGuid().ToString()];
+            attachmentPaths = new HashSet<string>();
+        }
+
+        public void Dispose()
+        {
+            Clear();
+        }
+
+        public void Clear()
+        {
+            if (cacheGroup != null)
+            {
+                cacheGroup.Delete();
+                attachmentPaths.Clear();
+            }
+        }
+
+        public MemoryStream Format(ICollection<TestStepRun> stepRuns, TestModelData modelData)
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream, Encoding.UTF8);
+
+            Format(writer, stepRuns, modelData);
+
+            stream.Position = 0;
+            return stream;
+        }
+
+        private void Format(TextWriter writer, IEnumerable<TestStepRun> stepRuns, TestModelData modelData)
+        {
+            TestStepReportWriter reportWriter = new TestStepReportWriter(this, writer, modelData);
+            reportWriter.RenderReport(stepRuns);
+        }
+
+        private void SaveAttachments(TestStepRun stepRun)
+        {
+            foreach (AttachmentData attachmentData in stepRun.TestLog.Attachments)
+                SaveAttachment(stepRun.Step.Id, attachmentData);
+        }
+
+        private void SaveAttachment(string stepId, AttachmentData attachmentData)
+        {
+            string attachmentPath = GetAttachmentPath(stepId, attachmentData.Name);
+            if (attachmentPaths.Contains(attachmentPath))
+                return;
+
+            attachmentPaths.Add(attachmentPath);
+
+            using (Stream fs = cacheGroup.OpenFile(attachmentPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                attachmentData.SaveContents(fs, Encoding.Default);
+        }
+
+        private FileInfo GetAttachmentFileInfo(string stepId, string attachmentName)
+        {
+            return cacheGroup.GetFileInfo(GetAttachmentPath(stepId, attachmentName));
+        }
+
+        private static string GetAttachmentPath(string stepId, string attachmentName)
+        {
+            return Path.Combine(FileUtils.EncodeFileName(stepId), FileUtils.EncodeFileName(attachmentName));
+        }
+
+        private static string PrintTextWithBreaks(string text)
+        {
+            return text.Replace("\r", "").Replace("\n", "<br />");
+        }
+
+        private sealed class TestStepReportWriter
+        {
+            private readonly HtmlTestStepRunFormatter formatter;
+            private readonly TextWriter writer;
+            readonly TestModelData testModelData;
+
+            public TestStepReportWriter(HtmlTestStepRunFormatter formatter, TextWriter writer, TestModelData testModelData)
+            {
+                this.formatter = formatter;
+                this.writer = writer;
+                this.testModelData = testModelData;
+            }
+
+            public void RenderReport(IEnumerable<TestStepRun> rootRuns)
+            {
+                writer.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\r\n");
+                writer.Write("<!-- saved from url=(0014)about:internet -->\r\n");
+
+                writer.Write("<html xml:lang=\"en\" lang=\"en\" dir=\"ltr\"><head>");
+                writer.Write("<title>Gallio Test Report</title>");
+                writer.Write(String.Format("<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}/Gallio-Report.css\" />", formatter.cssUrl));
+                writer.Write("</head><body class=\"gallio-report\" style=\"overflow: auto;\">");
+
+                writer.Write("<div id=\"Header\" class=\"header\"><div class=\"header-image\"></div></div>");
+
+                writer.Write("<div id=\"Content\" class=\"content\">");
+
+                Statistics statistics = new Statistics();
+                foreach (TestStepRun rootRun in rootRuns)
+                    AddStatistics(statistics, rootRun, false);
+
+                RenderNavigator(statistics, rootRuns);
+
+                writer.Write("<div id=\"Details\" class=\"section\"><div class=\"section-content\"><ul class=\"testStepRunContainer\">");
+
+                foreach (TestStepRun testStepRun in rootRuns)
+                    RenderTestStepRun(testStepRun, 1);
+
+                writer.Write("</ul></div></div></div></body></html>");
+                writer.Flush();
+            }
+
+            private static IEnumerable<TestStepRun> GetAllRuns(IEnumerable<TestStepRun> rootRuns)
+            {
+                foreach (TestStepRun run in rootRuns)
+                    foreach (TestStepRun item in run.AllTestStepRuns)
+                        yield return item;
+            }
+
+            private void RenderNavigator(Statistics statistics, IEnumerable<TestStepRun> rootRuns)
+            {
+                writer.Write("<div id=\"Navigator\" class=\"navigator\">");
+                writer.Write(string.Format("<a href=\"#\" title=\"{0}\" class=\"navigator-box {1}\"></a>", statistics.FormatTestCaseResultSummary(), StatusFromStatistics(statistics)));
+                writer.Write("<div class=\"navigator-stripes\">");
+
+                int count = 0;
+                foreach (TestStepRun testStepRun in GetAllRuns(rootRuns))
+                    count += 1;
+
+                int i = 0;
+                foreach (TestStepRun testStepRun in GetAllRuns(rootRuns))
+                {
+                    float position = i * 98 / count + 1;
+                    i++;
+
+                    if (testStepRun.Result.Outcome.Status == TestStatus.Passed ||
+                        (!testStepRun.Step.IsTestCase && testStepRun.Children.Count != 0))
+                        continue;
+
+                    writer.Write(string.Format("<a href=\"#testStepRun-{0}\" style=\"top: {1}%\"", testStepRun.Step.Id, position));
+                    string status = Enum.GetName(typeof(TestStatus), testStepRun.Result.Outcome.Status).ToLower();
+                    writer.Write(string.Format(" class=\"status-{0}\" title=\"{1} {0}\"></a>", status, testStepRun.Step.Name));
+                }
+
+                writer.Write("</div></div>");
+            }
+
+            private static string StatusFromStatistics(Statistics statistics)
+            {
+                if (statistics.FailedCount > 0)
+                    return "status-failed";
+                if (statistics.InconclusiveCount > 0)
+                    return "status-inconclusive";
+                return statistics.PassedCount > 0 ? "status-passed" : "status-skipped";
+            }
+
+            private void RenderTestStepRun(TestStepRun testStepRun, int nestingLevel)
+            {
+                formatter.SaveAttachments(testStepRun);
+
+                TestData testData = testModelData != null ? testModelData.GetTestById(testStepRun.Step.TestId) : null;
+
+                Statistics statistics = new Statistics();
+                AddStatistics(statistics, testStepRun, false);
+
+                writer.Write(string.Format("<li id=\"testStepRun-{0}\">", testStepRun.Step.Id));
+                writer.Write(string.Format("<span class=\"testStepRunHeading testStepRunHeading-Level{0}\"><b>{1}</b>",
+                    nestingLevel, PrintTextWithBreaks(testStepRun.Step.Name)));
+                RenderOutcomeBar(testStepRun.Result.Outcome, statistics, (testStepRun.Children.Count == 0));
+                writer.Write("</span>");
+
+                // stat panel
+                writer.Write(string.Format("<div id=\"detailPanel-{0}\" class=\"panel\">", testStepRun.Step.Id));
+                string testKind = testData != null ? testData.Metadata.GetValue(MetadataKeys.TestKind) : TestKinds.Test;
+                if (testKind == TestKinds.Assembly || testKind == TestKinds.Framework)
+                {
+                    writer.Write("<table class=\"statistics-table\"><tr class=\"alternate-row\">");
+                    writer.Write("<td class=\"statistics-label-cell\">Results:</td><td>");
+                    writer.Write(FormatStatistics(statistics));
+                    writer.Write("</td></tr><tr><td class=\"statistics-label-cell\">Duration:</td><td>");
+                    writer.Write(String.Format("{0}s", statistics.Duration));
+                    writer.Write(String.Format("</td></tr><tr class=\"alternate-row\"><td class=\"statistics-label-cell\">Assertions:</td><td>{0}",
+                        statistics.AssertCount));
+                    writer.Write("</td></tr></table>");
+                }
+                else
+                {
+                    writer.Write(String.Format("Duration: {0}s, Assertions: {1}.", statistics.Duration,
+                        statistics.AssertCount));
+                }
+
+                // metadata
+                RenderMetadata(testStepRun, testData);
+
+                // execution logs
+                writer.Write("<div class=\"testStepRun\">");
+                if (testStepRun.TestLog.Streams.Count > 0)
+                    RenderExecutionLogStreams(testStepRun);
+                writer.Write("</div>");
+
+                // child steps
+                if (testStepRun.Children.Count > 0)
+                {
+                    writer.Write("<ul class=\"testStepRunContainer\">");
+                    foreach (TestStepRun tsr in testStepRun.Children)
+                        RenderTestStepRun(tsr, (nestingLevel + 1));
+                    writer.Write("</ul>");
+                }
+                writer.Write("</div></li>");
+            }
+
+            private static string FormatStatistics(Statistics statistics)
+            {
+                return string.Format("{0} run, {1} passed, {2} failed, {3} inconclusive, {4} skipped", statistics.RunCount,
+                    statistics.PassedCount, statistics.FailedCount, statistics.InconclusiveCount, statistics.SkippedCount);
+            }
+
+            private void RenderOutcomeBar(TestOutcome testOutcome, Statistics statistics, bool small)
+            {
+                writer.Write("<table class=\"outcome-bar\"><tr><td>");
+                string status = Enum.GetName(typeof(TestStatus), testOutcome.Status).ToLower();
+                writer.Write(string.Format("<div class=\"outcome-bar status-{0}", status));
+                if (small)
+                    writer.Write(" condensed");
+                string title = testOutcome.Category ?? status;
+                writer.Write(string.Format("\" title=\"{0}\" /></td></tr></table>", title));
+
+                if (small)
+                    return;
+
+                writer.Write("<span class=\"outcome-icons\">");
+                writer.Write(string.Format("<img src=\"{0}/Passed.gif\" alt=\"Passed\" />{1}", formatter.imgUrl, statistics.PassedCount));
+                writer.Write(string.Format("<img src=\"{0}/Failed.gif\" alt=\"Failed\" />{1}", formatter.imgUrl, statistics.FailedCount));
+                writer.Write(string.Format("<img src=\"{0}/Ignored.gif\" alt=\"Inconclusive or Skipped\" />{1}", formatter.imgUrl,
+                    (statistics.InconclusiveCount + statistics.SkippedCount)));
+                writer.Write("</span>");
+            }
+
+            private void RenderMetadata(TestStepRun testStepRun, TestComponentData testData)
+            {
+                MetadataMap visibleEntries = testStepRun.Step.Metadata.Copy();
+
+                if (testData != null && testStepRun.Step.IsPrimary)
+                    visibleEntries.AddAll(testData.Metadata);
+
+                visibleEntries.Remove(MetadataKeys.TestKind);
+
+                if (visibleEntries.Keys.Count > 0)
+                {
+                    writer.Write("<ul class=\"metadata\">");
+                    foreach (string key in visibleEntries.Keys)
+                        RenderMetadataValues(key, visibleEntries[key]);
+                    writer.Write("</ul>");
+                }
+            }
+
+            private void RenderMetadataValues(string key, IList<string> values)
+            {
+                writer.Write(String.Format("<li>{0}: ", PrintTextWithBreaks(key)));
+                for (int i = 0; i < values.Count; i++)
+                {
+                    writer.Write(values[i]);
+                    if (i < (values.Count - 1))
+                        writer.Write(",");
+                }
+                writer.Write("</li>");
+            }
+
+            private void RenderExecutionLogStreams(TestStepRun testStepRun)
+            {
+                writer.Write(String.Format("<div id=\"log-{0}\" class=\"log\">", testStepRun.Step.Id));
+
+                foreach (StructuredTestLogStream executionLogStream in testStepRun.TestLog.Streams)
+                {
+                    writer.Write(String.Format("<div class=\"logStream logStream-{0}\">", executionLogStream.Name));
+                    writer.Write(String.Format("<span class=\"logStreamHeading\"><xsl:value-of select=\"{0}\" /></span>",
+                        executionLogStream.Name));
+                    writer.Write("<div class=\"logStreamBody\">");
+
+                    executionLogStream.Body.Accept(new RenderTagVisitor(formatter, writer, testStepRun));
+
+                    writer.Write("</div></div>");
+                }
+
+                if (testStepRun.TestLog.Attachments.Count > 0)
+                    RenderExecutionLogAttachmentList(testStepRun);
+
+                writer.Write("</div>");
+            }
+
+            private void RenderExecutionLogAttachmentList(TestStepRun testStepRun)
+            {
+                writer.Write("<div class=\"logAttachmentList\">Attachments: ");
+                for (int i = 0; i < testStepRun.TestLog.Attachments.Count; i++)
+                {
+                    AttachmentData attachmentData = testStepRun.TestLog.Attachments[i];
+                    string src = formatter.GetAttachmentFileInfo(testStepRun.Step.Id, attachmentData.Name).FullName;
+                    writer.Write(String.Format("<a href=\"{0}\">{1}</a>", src, attachmentData.Name));
+                    if (i < (testStepRun.TestLog.Attachments.Count - 1))
+                        writer.Write(", ");
+                }
+                writer.Write("</div>");
+            }
+
+            private static void AddStatistics(Statistics statistics, TestStepRun testStepRun, bool child)
+            {
+                if (!child)
+                {
+                    statistics.AssertCount += testStepRun.Result.AssertCount;
+                    statistics.Duration += testStepRun.Result.Duration;
+                }
+
+                if (testStepRun.Step.IsTestCase)
+                {
+                    switch (testStepRun.Result.Outcome.Status)
+                    {
+                        case TestStatus.Failed:
+                            statistics.FailedCount++;
+                            statistics.RunCount++;
+                            break;
+                        case TestStatus.Inconclusive:
+                            statistics.InconclusiveCount++;
+                            statistics.RunCount++;
+                            break;
+                        case TestStatus.Passed:
+                            statistics.PassedCount++;
+                            statistics.RunCount++;
+                            break;
+                        case TestStatus.Skipped:
+                            statistics.SkippedCount++;
+                            break;
+                    }
+                }
+
+                foreach (TestStepRun childRun in testStepRun.Children)
+                    AddStatistics(statistics, childRun, true);
+            }
+        }
+
+        private sealed class RenderTagVisitor : ITagVisitor
+        {
+            private readonly HtmlTestStepRunFormatter formatter;
+            private readonly TextWriter writer;
+            private readonly TestStepRun testStepRun;
+
+            public RenderTagVisitor(HtmlTestStepRunFormatter formatter, TextWriter writer, TestStepRun testStepRun)
+            {
+                this.formatter = formatter;
+                this.writer = writer;
+                this.testStepRun = testStepRun;
+            }
+
+            public void VisitBodyTag(BodyTag tag)
+            {
+                tag.AcceptContents(this);
+            }
+
+            public void VisitSectionTag(SectionTag tag)
+            {
+                writer.Write(String.Format("<div class=\"logStreamSection\"><span class=\"logStreamSectionHeading\">{0}</span><div>", tag.Name));
+
+                tag.AcceptContents(this);
+
+                writer.Write("</div></div>");
+            }
+
+            public void VisitMarkerTag(MarkerTag tag)
+            {
+                writer.Write("<span class=\"");
+                writer.Write(tag.Class);
+                writer.Write("\">");
+
+                switch (tag.Class)
+                {
+                    case Marker.CodeLocationClass:
+                        VisitCodeLocationMarkerTag(tag);
+                        break;
+
+                    case Marker.LinkClass:
+                        VisitLinkMarkerTag(tag);
+                        break;
+
+                    default:
+                        tag.AcceptContents(this);
+                        break;
+                }
+
+                writer.Write("</span>");
+            }
+
+            private void VisitCodeLocationMarkerTag(MarkerTag tag)
+            {
+                Marker marker = tag.Marker;
+                string path, line, column;
+                marker.Attributes.TryGetValue(Marker.CodeLocationPathAttrib, out path);
+                marker.Attributes.TryGetValue(Marker.CodeLocationLineNumberAttrib, out line);
+                marker.Attributes.TryGetValue(Marker.CodeLocationColumnNumberAttrib, out column);
+
+                if (path != null)
+                {
+                    writer.Write("<a href=\"gallio:navigateTo?path=");
+                    writer.Write(path);
+
+                    if (line != null)
+                    {
+                        writer.Write("&amp;line=");
+                        writer.Write(line);
+
+                        if (column != null)
+                        {
+                            writer.Write("&amp;column=");
+                            writer.Write(column);
+                        }
+                    }
+
+                    writer.Write("\">");
+                    tag.AcceptContents(this);
+                    writer.Write("</a>");
+                }
+                else
+                {
+                    tag.AcceptContents(this);
+                }
+            }
+
+            private void VisitLinkMarkerTag(MarkerTag tag)
+            {
+                Marker marker = tag.Marker;
+                string url;
+                marker.Attributes.TryGetValue(Marker.LinkUrlAttrib, out url);
+
+                if (url != null)
+                {
+                    writer.Write("<a href=\"");
+                    writer.Write(url);
+                    writer.Write("\">");
+                    tag.AcceptContents(this);
+                    writer.Write("</a>");
+                }
+                else
+                {
+                    tag.AcceptContents(this);
+                }
+            }
+
+            public void VisitEmbedTag(EmbedTag tag)
+            {
+                AttachmentData attachment = testStepRun.TestLog.GetAttachment(tag.AttachmentName);
+                if (attachment == null)
+                    return;
+
+                string src = formatter.GetAttachmentFileInfo(testStepRun.Step.Id, tag.AttachmentName).FullName;
+
+                if (attachment.ContentType.StartsWith("image/"))
+                {
+                    writer.Write(String.Format("<div class=\"logAttachmentEmbedding\"><img src=\"{0}\" alt=\"Attachment: {1}\" /></div>", src, attachment.Name));
+                }
+                else
+                {
+                    writer.Write(String.Format("Attachment: <a href=\"{0}\">{1}</a>", src, attachment.Name));
+                }
+            }
+
+            public void VisitTextTag(TextTag tag)
+            {
+                writer.Write(PrintTextWithBreaks(tag.Text));
+            }
+        }
+    }
+}

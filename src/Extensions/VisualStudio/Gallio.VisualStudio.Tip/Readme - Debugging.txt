@@ -4,18 +4,23 @@
 1. Configure the Gallio.MSTestRunner project debugging options as follows:
    * Start External Program: devenv.exe
 
-2. Compile the solution in Debug mode.  Note that if you just ran a build from
-   the command-line, you may have Release mode binaries in the project bin folders.
-   When in Debug mode, the Runtime applies special rules for locating plugin
-   binaries within the source tree.  When in Release mode, these rules are not
-   applied and you may encounter problems during debugging because important
-   plugins, such as test frameworks, might not be loaded.
+2. Compile the solution in Debug mode.
 
-3. Run the "Install-MSTestRunner.bat" batch file from the command-line to copy
-   the MSTestRunner files to the Visual Studio private assemblies folder.
+   Make sure that the Gallio.VisualStudio.Tip.Proxy assembly is NOT in the
+   bin folder of Gallio.VisualStudio.Tip.  If it ends up in there then there may
+   be assembly conflicts between it and the version loaded from the GAC.
+   
+   The Gallio.VisualStudio.Tip project is currently configured such that the
+   proxy assembly is not "copy local".  So this should all be fine out of the box.
+
+3. Run the "Install.bat" batch file from the command-line to
+   set registry keys and install assemblies in the GAC.
 
 4. Launch the Gallio.MSTestRunner project in debug mode.
 
 5. Load a suitable solution for testing such as the MbUnit.Samples.sln.
 
 6. Continue as usual.
+
+7. To debug certain scenarios you may need to attach to VSTestHost.exe
+   which is the test hosting process that Visual Studio creates.

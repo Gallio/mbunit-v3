@@ -496,8 +496,11 @@ namespace Gallio.Runner
             {
                 Report.Write(report =>
                 {
-                    report.TestPackageRun.EndTime = DateTime.Now;
-                    report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
+                    if (report.TestPackageRun != null)
+                    {
+                        report.TestPackageRun.EndTime = DateTime.Now;
+                        report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
+                    }
                 });
             }
         }

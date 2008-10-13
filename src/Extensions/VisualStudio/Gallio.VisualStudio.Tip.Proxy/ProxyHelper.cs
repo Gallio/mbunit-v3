@@ -17,8 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Loader;
-using Gallio.Runtime;
-using Gallio.Runtime.Logging;
 
 namespace Gallio.VisualStudio.Tip
 {
@@ -30,13 +28,9 @@ namespace Gallio.VisualStudio.Tip
         /// <returns>The target factory</returns>
         public static IProxyTargetFactory GetTargetFactory()
         {
-            GallioLoader.Initialize().SetupRuntime();
-            return ResolveProxyHandler().TargetFactory;
-        }
-
-        private static IProxyHandler ResolveProxyHandler()
-        {
-            return RuntimeAccessor.Instance.Resolve<IProxyHandler>();
+            IGallioLoader loader = GallioLoader.Initialize();
+            loader.SetupRuntime();
+            return loader.Resolve<IProxyHandler>().TargetFactory;
         }
     }
 }
