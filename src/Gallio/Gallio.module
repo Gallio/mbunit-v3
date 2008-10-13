@@ -12,6 +12,7 @@
     <CSharpProject Include="Gallio.Loader\Gallio.Loader.csproj" />
     <CSharpProject Include="Gallio.Reports\Gallio.Reports.csproj" />
     <CSharpProject Include="Gallio.Reports.Tests\Gallio.Reports.Tests.csproj" />
+    <CSharpProject Include="Gallio.UI\Gallio.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +20,7 @@
     <DocumentedAssembly Include="Gallio35\bin\Gallio35.dll" />
     <DocumentedAssembly Include="Gallio.Loader\bin\Gallio.Loader.dll" />
     <DocumentedAssembly Include="Gallio.Reports\bin\Gallio.Reports.dll" />
+    <DocumentedAssembly Include="Gallio.UI\bin\Gallio.UI.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,22 +41,22 @@
     
     <Binary Include="Gallio.UI\bin\Gallio.UI.dll" />
     <Binary Include="Gallio.UI\bin\Gallio.UI.pdb" />
-    <Binary Include="Gallio.UI\bin\Gallio.UI.plugin" />
+    <Binary Include="Gallio.UI\Gallio.UI.plugin" />
     
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.dll" />
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.pdb" />
-    <Binary Include="Gallio.Reports\bin\Gallio.Reports.plugin" />
+    <Binary Include="Gallio.Reports\Gallio.Reports.plugin" />
 
-    <Binary Include="Gallio.Reports\css\*">
+    <Binary Include="Gallio.Reports\Resources\css\*">
         <Folder>Resources\css</Folder>
     </Binary>
-    <Binary Include="Gallio.Reports\js\*">
+    <Binary Include="Gallio.Reports\Resources\js\*">
         <Folder>Resources\js</Folder>
     </Binary>
-    <Binary Include="Gallio.Reports\img\*">
+    <Binary Include="Gallio.Reports\Resources\img\*">
         <Folder>Resources\img</Folder>
     </Binary>
-    <Binary Include="Gallio.Reports\xsl\*">
+    <Binary Include="Gallio.Reports\Resources\xsl\*">
         <Folder>Resources\xsl</Folder>
     </Binary>
     
