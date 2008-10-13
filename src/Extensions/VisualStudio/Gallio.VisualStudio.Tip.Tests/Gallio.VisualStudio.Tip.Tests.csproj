@@ -61,6 +61,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
+      <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
+      <Name>Gallio.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.csproj">
       <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
       <Name>Gallio35</Name>

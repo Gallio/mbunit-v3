@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A90A40C4-4D48-4D0B-BE9B-432510EB1057}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -96,6 +96,10 @@
     <Compile Include="TestResultsTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
+      <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
+      <Name>Gallio.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.csproj">
       <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
       <Name>Gallio35</Name>
