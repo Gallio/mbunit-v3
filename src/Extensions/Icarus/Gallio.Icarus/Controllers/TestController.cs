@@ -116,14 +116,14 @@ namespace Gallio.Icarus.Controllers
             testRunnerService.Cancel();
         }
 
-        private TestModelData Explore()
+        private bool Explore()
         {
             Load();
 
             if (testModelData == null)
                 testModelData = testRunnerService.Explore();
 
-            return testModelData;
+            return testModelData != null;
         }
 
         public Filter<ITest> GetCurrentFilter()
@@ -157,7 +157,7 @@ namespace Gallio.Icarus.Controllers
                 EventHandlerUtils.SafeInvoke(LoadStarted, this, System.EventArgs.Empty);
 
                 Unload();
-                testModelData = Explore();
+                Explore();
                 if (!testPackageConfig.HostSetup.ShadowCopy)
                     Unload();
 
@@ -176,7 +176,8 @@ namespace Gallio.Icarus.Controllers
             {
                 testRunnerService.Unload();
                 testPackageLoaded = false;
-                testModelData = null;
+                // Note: we specifically do not null out the testModelData because
+                //       it can still be used for View Source operations later.
             }
 
             EventHandlerUtils.SafeInvoke(UnloadFinished, this, System.EventArgs.Empty);
@@ -197,7 +198,7 @@ namespace Gallio.Icarus.Controllers
 
                 testTreeModel.ResetTestStatus();
 
-                if (Explore() != null)
+                if (Explore())
                     testRunnerService.Run();
 
                 if (!testPackageConfig.HostSetup.ShadowCopy)
@@ -214,9 +215,13 @@ namespace Gallio.Icarus.Controllers
 
         public void ViewSourceCode(string testId)
         {
-            TestData testData = testModelData.GetTestById(testId);
-            if (testData != null)
-                EventHandlerUtils.SafeInvoke(ShowSourceCode, this, new ShowSourceCodeEventArgs(testData.CodeLocation));
+            if (testModelData != null)
+            {
+                TestData testData = testModelData.GetTestById(testId);
+                if (testData != null)
+                    EventHandlerUtils.SafeInvoke(ShowSourceCode, this,
+                        new ShowSourceCodeEventArgs(testData.CodeLocation));
+            }
         }
     }
 }
