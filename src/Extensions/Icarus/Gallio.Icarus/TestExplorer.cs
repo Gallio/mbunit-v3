@@ -137,7 +137,8 @@ namespace Gallio.Icarus
                 if (testTreeNode.NodeType == TestKinds.Namespace)
                 {
                     foreach (Node n in testTreeNode.Nodes)
-                        testController.SelectedTests.Add((TestTreeNode)n);
+                        if (n != null) // don't know how this happens yet -- JB
+                            testController.SelectedTests.Add((TestTreeNode)n);
                 }
                 else
                     testController.SelectedTests.Add(testTreeNode);

@@ -68,6 +68,9 @@ namespace Gallio.UI
         /// <param name="testModelData">The test model data, or null if not available</param>
         public void Show(ICollection<TestStepRun> testStepRuns, TestModelData testModelData)
         {
+            if (testStepRuns == null || testStepRuns.Contains(null))
+                throw new ArgumentNullException("testStepRuns");
+
             if (testStepRuns.Count == 0)
             {
                 ClearNoUpdate();
