@@ -28,6 +28,16 @@ namespace MbUnit.Framework
     /// on multiple concurrent threads.
     /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Each repetition of the test method will occur within its own individually labeled
+    /// test step so that it can be identified in the test report.
+    /// </para>
+    /// <para>
+    /// The setup and teardown methods will only be invoked once around the whole set of
+    /// repetitions rather than around each repetition.
+    /// </para>
+    /// </remarks>
     /// <seealso cref="RepeatAttribute"/>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public class ThreadedRepeatAttribute : TestDecoratorPatternAttribute

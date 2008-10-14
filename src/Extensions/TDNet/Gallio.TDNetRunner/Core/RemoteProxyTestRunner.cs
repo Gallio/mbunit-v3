@@ -251,6 +251,7 @@ namespace Gallio.TDNetRunner.Core
                     return FacadeTestRunState.Error;
 
                 case ResultCode.Failure:
+                case ResultCode.Canceled:
                     return FacadeTestRunState.Failure;
 
                 case ResultCode.NoTests:

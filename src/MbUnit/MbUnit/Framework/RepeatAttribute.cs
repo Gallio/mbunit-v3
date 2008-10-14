@@ -26,6 +26,16 @@ namespace MbUnit.Framework
     /// This attribute decorates a test method and causes it to be invoked repeatedly.
     /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Each repetition of the test method will occur within its own individually labeled
+    /// test step so that it can be identified in the test report.
+    /// </para>
+    /// <para>
+    /// The setup and teardown methods will only be invoked once around the whole set of
+    /// repetitions rather than around each repetition.
+    /// </para>
+    /// </remarks>
     /// <seealso cref="ThreadedRepeatAttribute"/>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public class RepeatAttribute : TestDecoratorPatternAttribute

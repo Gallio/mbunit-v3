@@ -489,17 +489,35 @@ namespace Gallio.Runner
             }
 
             ITestRunner runner = factory.CreateTestRunner();
+            TestLauncherResult result = new TestLauncherResult(new Report() { TestPackageConfig = TestPackageConfig });
             try
             {
-                DoRegisterExtensions(runner);
-                DoInitialize(runner);
+                try
+                {
+                    DoRegisterExtensions(runner);
+                    DoInitialize(runner);
+                }
+                catch (OperationCanceledException)
+                {
+                    result.SetResultCode(ResultCode.Canceled);
+                    return result;
+                }
 
-                return RunWithInitializedRunner(runner, reportManager);
+                result = RunWithInitializedRunner(runner, reportManager);
             }
             finally
             {
-                DoDispose(runner);
+                try
+                {
+                    DoDispose(runner);
+                }
+                catch (OperationCanceledException)
+                {
+                    result.SetResultCode(ResultCode.Canceled);
+                }
             }
+
+            return result;
         }
 
         private TestLauncherResult RunWithInitializedRunner(ITestRunner runner, IReportManager reportManager)
