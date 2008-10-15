@@ -107,7 +107,7 @@
     <Feature Include="FEATURE_CHM_HELP" />
 
     <File Include="$(ImageDir)\docs\Gallio.chm">
-      <DistPath>$(ApiDocsDir)</DistPath>
+      <DistPath>APIDocs\$(Version)</DistPath>
     </File>
   </ItemGroup>
 
