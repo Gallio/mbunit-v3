@@ -64,7 +64,7 @@ namespace Gallio.Ambience.Tests
             string executablePath = Path.Combine(workingDirectory, "Gallio.Ambience.Server.exe");
 
             ProcessTask task = Tasks.StartProcessTask(executablePath, arguments, workingDirectory);
-            Thread.Sleep(5000);
+            Thread.Sleep(10000);
             return task;
         }
     }
