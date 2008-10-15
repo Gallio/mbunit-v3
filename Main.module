@@ -116,7 +116,12 @@
              Importance="High" />
 
     <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHTMLOptions)" />
-    <RemoveDir Directories="$(ApiDocsDir)\$(Version)\html\ndoc_msdn_temp" />
+    <RemoveDir Directories="$(ApiDocsDir)\html\ndoc_msdn_temp" />
+
+    <!-- Replace the ndoc.js one with a new copy that contains a bugfix
+         for FireFox. -->
+    <Copy SourceFiles="$(ToolsDir)\NDoc2\ndoc.js"
+          DestinationFolder="$(ApiDocsDir)\html"/>
   </Target>
 
   <Target Name="BuildHxSDocs">

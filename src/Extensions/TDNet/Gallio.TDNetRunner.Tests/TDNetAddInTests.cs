@@ -200,7 +200,7 @@ namespace Gallio.TDNetRunner.Tests
         }
 
         [Test]
-        [Row(ResultCode.Canceled, FacadeTestRunState.Error)]
+        [Row(ResultCode.Canceled, FacadeTestRunState.Failure)]
         [Row(ResultCode.Failure, FacadeTestRunState.Failure)]
         [Row(ResultCode.FatalException, FacadeTestRunState.Error)]
         [Row(ResultCode.InvalidArguments, FacadeTestRunState.Error)]
