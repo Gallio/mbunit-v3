@@ -61,7 +61,7 @@
   <!-- DIST TARGETS -->
 
   <Target Name="AfterDist"
-          DependsOnTargets="BuildCHMDocs;BuildHxSDocs;BuildInstaller;BuildZip" />
+          DependsOnTargets="BuildCHMDocs;BuildHxSDocs;BuildInstaller;BuildZip;BuildHTMLDocs" />
 
 
   <!-- SUPPORT CODE: API DOCS -->
@@ -70,6 +70,8 @@
     <CopyrightText>Copyright 2005-2008 Gallio Project - http://www.gallio.org/</CopyrightText>
     <CopyrightHref>http://www.gallio.org/</CopyrightHref>
 
+    <APIDocsDir>$(DistDir)\APIDocs\$(Version)</APIDocsDir>
+
     <NDocCommonOptions>@(DocumentedAssembly->'"%(FullPath)"', ' ')</NDocCommonOptions>
 
     <NDocXMLOptions>$(NDocCommonOptions) -documenter=Intellisense "-OutputDirectory=$(ImageDir)\bin" -UseAssemblyShadowCache=False</NDocXMLOptions>
@@ -77,6 +79,8 @@
     <NDocCHMOptions>$(NDocCommonOptions) -documenter=MSDN-CHM "-OutputDirectory=$(ImageDir)\docs" -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocCHMOptions>
 
     <NDocHxSOptions>$(NDocCommonOptions) -documenter=MSDN-Help2 "-OutputDirectory=$(ImageDir)\docs\vs" -GenerateCollectionFiles=True -PlugInNamespace=ms.vsipcc -AllLinksWithinVSHelpCollection=True -HtmlHelpName=Gallio "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHxSOptions>
+    
+    <NDocHTMLOptions>$(NDocCommonOptions) -documenter=MSDN-Web "-OutputDirectory=$(APIDocsDir)\html" "-Title=Gallio API Documentation" -UseAssemblyShadowCache=False -AssemblyVersionInfo=AssemblyVersion "-CopyrightText=$(CopyrightText)" "-CopyrightHref=$(CopyrightHref)" -IncludeDefaultThreadSafety=False -CleanIntermediates=True</NDocHTMLOptions>
   </PropertyGroup>
 
   <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
@@ -101,7 +105,19 @@
   </Target>
   <ItemGroup Condition="Exists('$(HTMLHelpCompilerPath)')">
     <Feature Include="FEATURE_CHM_HELP" />
+
+    <File Include="$(ImageDir)\docs\Gallio.chm">
+      <DistPath>$(ApiDocsDir)</DistPath>
+    </File>
   </ItemGroup>
+
+  <Target Name="BuildHTMLDocs">
+    <Message Text="Building HTML Docs..."
+             Importance="High" />
+
+    <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocHTMLOptions)" />
+    <RemoveDir Directories="$(ApiDocsDir)\$(Version)\html\ndoc_msdn_temp" />
+  </Target>
 
   <Target Name="BuildHxSDocs">
     <Message Text="Building HxS Docs..."
