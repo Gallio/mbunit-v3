@@ -102,13 +102,13 @@
     <Exec Command="&quot;$(ToolsDir)\NDoc2\NDocConsole.exe&quot; $(NDocCHMOptions)"
           Condition="Exists('$(HTMLHelpCompilerPath)')" />
     <RemoveDir Directories="$(ImageDir)\docs\ndoc_msdn_temp" />
+    
+    <Copy SourceFiles="$(ImageDir)\docs\Gallio.chm"
+          DestinationFolder="$(APIDocsDir)"
+          Condition="Exists('$(HTMLHelpCompilerPath)')" />
   </Target>
   <ItemGroup Condition="Exists('$(HTMLHelpCompilerPath)')">
     <Feature Include="FEATURE_CHM_HELP" />
-
-    <File Include="$(ImageDir)\docs\Gallio.chm">
-      <DistPath>APIDocs\$(Version)</DistPath>
-    </File>
   </ItemGroup>
 
   <Target Name="BuildHTMLDocs">
