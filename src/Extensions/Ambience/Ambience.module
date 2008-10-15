@@ -8,6 +8,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Binary Include="Gallio.Ambience\Gallio.Ambience.plugin" />
+  
     <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe" />
     <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config" />
 

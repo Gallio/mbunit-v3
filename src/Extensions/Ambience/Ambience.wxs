@@ -22,6 +22,7 @@
             <Component Id="Gallio.Ambience.dll" Guid="{0CEA0DD8-D3BA-45f3-B607-7914A27D4967}" Win64="no">
                 <File Name="Gallio.Ambience.dll" KeyPath="yes" />
                 <File Name="Gallio.Ambience.pdb" />
+		<File Name="Gallio.Ambience.plugin" />
 
                 <CreateFolder Directory="GallioAmbienceCommonAppDataFolder">
                   <Permission User="Administrators" GenericAll="yes" />
