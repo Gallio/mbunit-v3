@@ -51,8 +51,6 @@
     <Compile Include="Framework\OldGenericAssert.cs" />
     <Compile Include="Framework\OldReflectionAssert.cs" />
     <Compile Include="Framework\OldStringAssert.cs" />
-    <Compile Include="Framework\RollBack2Attribute.cs" />
-    <Compile Include="Framework\RollBackAttribute.cs" />
     <Compile Include="Framework\RowTestAttribute.cs" />
     <Compile Include="Framework\OldSecurityAssert.cs" />
     <Compile Include="Framework\TestFixtureSetUpAttribute.cs" />
