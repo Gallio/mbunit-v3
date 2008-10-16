@@ -111,16 +111,14 @@ namespace Gallio.Ambience
         /// <param name="disposing">True if disposing</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && ! isDisposed)
+            try
             {
-                try
-                {
+                if (disposing && !isDisposed)
                     Stop();
-                }
-                finally
-                {
-                    isDisposed = true;
-                }
+            }
+            finally
+            {
+                isDisposed = true;
             }
         }
 

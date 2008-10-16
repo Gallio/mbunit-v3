@@ -36,6 +36,8 @@ namespace Gallio.Ambience.Tests
         [FixtureSetUp]
         public void SetUp()
         {
+            File.Delete("AmbienceClientTest.db");
+
             server = new AmbienceServer(new AmbienceServerConfiguration()
             {
                 Port = PortNumber,

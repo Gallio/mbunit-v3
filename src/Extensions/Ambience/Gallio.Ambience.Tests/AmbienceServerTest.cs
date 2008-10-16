@@ -58,14 +58,14 @@ namespace Gallio.Ambience.Tests
         [Test]
         public void ServerStoresDbInSpecifiedLocation()
         {
+            File.Delete("AmbienceClientTest.db");
+
             using (AmbienceServer server = new AmbienceServer(new AmbienceServerConfiguration()
             {
                 Port = PortNumber,
                 DatabasePath = "AmbienceClientTest.db"
             }))
             {
-                File.Delete("AmbienceClientTest.db");
-
                 server.Start();
 
                 Assert.IsTrue(File.Exists("AmbienceClientTest.db"));
@@ -75,15 +75,15 @@ namespace Gallio.Ambience.Tests
         [Test]
         public void ServerCreatesDbFolderWhenNeeded()
         {
+            if (Directory.Exists("DbFolder"))
+                Directory.Delete("DbFolder", true);
+
             using (AmbienceServer server = new AmbienceServer(new AmbienceServerConfiguration()
             {
                 Port = PortNumber,
                 DatabasePath = @"DbFolder\AmbienceClientTest.db"
             }))
             {
-                if (Directory.Exists("DbFolder"))
-                    Directory.Delete("DbFolder", true);
-
                 server.Start();
 
                 Assert.IsTrue(Directory.Exists("DbFolder"));
@@ -94,6 +94,8 @@ namespace Gallio.Ambience.Tests
         [Test]
         public void ServerGrantsAccessToAuthorizedUser()
         {
+            File.Delete("AmbienceClientTest.db");
+
             using (AmbienceServer server = new AmbienceServer(new AmbienceServerConfiguration()
             {
                 Port = PortNumber,
@@ -113,6 +115,8 @@ namespace Gallio.Ambience.Tests
         [Row("Unauth", "Password")]
         public void ServerDeniesAccessToUnauthorizedUser(string userName, string password)
         {
+            File.Delete("AmbienceClientTest.db");
+
             using (AmbienceServer server = new AmbienceServer(new AmbienceServerConfiguration()
             {
                 Port = PortNumber,

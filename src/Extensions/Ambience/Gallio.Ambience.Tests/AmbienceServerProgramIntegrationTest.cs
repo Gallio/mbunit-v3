@@ -36,6 +36,8 @@ namespace Gallio.Ambience.Tests
         [Test]
         public void AmbienceServerRunsWithSpecifiedOptions()
         {
+            File.Delete("IntegrationTest.db");
+
             ProcessTask task = StartAmbienceServer("/db:IntegrationTest.db /p:" + PortNumber + " /u:Test /pw:LetMeIn");
  
             var config = new AmbienceClientConfiguration()

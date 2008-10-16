@@ -31,5 +31,13 @@
              Importance="High" />
 
     <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; &quot;Gallio.Ambience\bin\Db4objects.Db4o.dll&quot; &quot;Gallio.Ambience\bin\Db4objects.Db4o.Linq.dll&quot; &quot;Gallio.Ambience\bin\Cecil.FlowAnalysis.dll&quot; &quot;Gallio.Ambience\bin\Mono.Cecil.dll&quot; /internalize &quot;/out:$(ImageDir)\bin\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
-  </Target>  
+
+    <!-- Replace the copy of Ambience used for the tests because otherwise
+         we get assembly conflicts when Db4o tries to communicate remotely
+	 with itself from an ILMerge'd context into a non-ILMerge'd context. -->
+    <Copy SourceFiles="$(ImageDir)\bin\Gallio.Ambience.dll"
+          DestinationFolder="Gallio.Ambience.Tests\bin" />
+    <Copy SourceFiles="$(ImageDir)\bin\Gallio.Ambience.dll"
+          DestinationFolder="Gallio.Ambience.Server\bin" />
+  </Target>
 </Project>
