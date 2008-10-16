@@ -75,6 +75,8 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunStartedEventRaiser.Raise(testController, System.EventArgs.Empty);
             testRunFinishedEventRaiser.Raise(testController, e);
 
+            Thread.Sleep(200); // wait for threadpool to run task
+
             Assert.AreEqual(true, updated);
             Assert.AreSame(report.TestModel, executionLogController.TestModelData);
             Assert.AreElementsEqual(new[] { testStepRun }, executionLogController.TestStepRuns);
