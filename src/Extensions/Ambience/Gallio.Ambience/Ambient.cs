@@ -22,8 +22,8 @@ namespace Gallio.Ambience
     /// <summary>
     /// <para>
     /// The Ambient object store is a shared lightweight repository for intermediate
-    /// test data.  It is used to pass information from one test to another or to store
-    /// it for subsequent analysis.
+    /// test data.  It is like a persistent whiteboard used to pass information from one test
+    /// to another or to store it for subsequent analysis.
     /// </para>
     /// <para>
     /// The Ambient object store may be used to model the persistent state of the
