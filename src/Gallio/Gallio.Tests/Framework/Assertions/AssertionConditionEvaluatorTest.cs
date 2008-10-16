@@ -105,5 +105,20 @@ namespace Gallio.Tests.Framework.Assertions
                 new AssertionFailure.LabeledValue("x", "42"),
             }, failure.LabeledValues);
         }
+
+        [Test]
+        public void FailureMessageIgnoresRepeatedOccurrencesOfAVariable()
+        {
+            int x = 42;
+            AssertionFailure failure = AssertionConditionEvaluator.Eval(() => x * 2 == x + 1, true, null);
+            Assert.IsNotNull(failure);
+
+            Assert.AreElementsEqual(new[] {
+                new AssertionFailure.LabeledValue("Condition", "x * 2 == x + 1"),
+                new AssertionFailure.LabeledValue("x * 2", "84"),
+                new AssertionFailure.LabeledValue("x + 1", "43"),
+                new AssertionFailure.LabeledValue("x", "42")
+            }, failure.LabeledValues);
+        }
     }
 }

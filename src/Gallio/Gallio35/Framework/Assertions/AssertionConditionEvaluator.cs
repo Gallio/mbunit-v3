@@ -142,41 +142,60 @@ namespace Gallio.Framework.Assertions
                 failureBuilder.AddRawLabeledValue("Condition", condition.Body);
 
                 var labeledTraces = new List<Trace>();
-                AddLabeledTraces(labeledTraces, trace, 0);
+                AddLabeledTraces(labeledTraces, trace);
+
+                var addedLabels = new System.Collections.Generic.HashSet<string>();
                 foreach (Trace labeledTrace in labeledTraces)
-                    failureBuilder.AddRawLabeledValue(Formatter.Instance.Format(labeledTrace.Expression), labeledTrace.Result);
+                {
+                    // Only include the first value associated with a unique label so if a variable
+                    // appears multiple times in an expression, only its value from the outermost
+                    // expression it appears is displayed.
+                    string label = Formatter.Instance.Format(labeledTrace.Expression);
+                    if (! addedLabels.Contains(label))
+                    {
+                        addedLabels.Add(label);
+                        failureBuilder.AddRawLabeledValue(label, labeledTrace.Result);
+                    }
+                }
 
                 return failureBuilder.ToAssertionFailure();
             }
 
-            private static void AddLabeledTraces(List<Trace> labeledTraces, Trace trace, int depth)
+            private static void AddLabeledTraces(List<Trace> labeledTraces, Trace trace)
             {
-                if (trace.Exception == null)
+                // Perform a breadth-first traversal of the expressions.
+                var traversalQueue = new Queue<Pair<Trace, int>>();
+                traversalQueue.Enqueue(new Pair<Trace, int>(trace, 0));
+
+                while (traversalQueue.Count != 0)
                 {
-                    Expression expr = trace.Expression;
-                    if (!(expr is ConstantExpression))
+                    Trace currentTrace = traversalQueue.Peek().First;
+                    int currentDepth = traversalQueue.Dequeue().Second;
+
+                    if (currentTrace.Exception == null)
                     {
-                        // We print the expressions at depth 1 but not the one at depth 0 because
-                        // at depth 0.  We know that the value was not equal to what we expected
-                        // so printing the value at depth 0 tells us nothing of interest.
-                        // To help determine the cause of this effect, we print the value of the
-                        // sub-expressions at depth 1.
-                        //
-                        // The exception to this rule is when the expression is a captured
-                        // variable or parameter.  We always print these values because they are
-                        // most instructive about the context in which the expression was being
-                        // evaluated.  For example, they may describe the value of a loop iteration
-                        // variable and other terms.
-                        if (depth == 1 || expr.IsCapturedVariableOrParameter())
+                        Expression expr = currentTrace.Expression;
+                        if (!(expr is ConstantExpression))
                         {
-                            if (!labeledTraces.Contains(trace))
-                                labeledTraces.Add(trace);
+                            // We print the expressions at depth 1 but not the one at depth 0 because
+                            // it will just be "false".  We know that the value was not equal to what we expected
+                            // so printing the value at depth 0 tells us nothing of interest.
+                            // Instead, to help determine the cause of this effect, we print the value of
+                            // the sub-expressions at depth 1.
+                            //
+                            // The exception to this rule is when the expression is a captured
+                            // variable or parameter.  We always print these values because they are
+                            // most instructive about the context in which the expression was being
+                            // evaluated.  For example, they may describe the value of a loop iteration
+                            // variable and other terms.
+                            if (currentDepth == 1 || expr.IsCapturedVariableOrParameter())
+                                labeledTraces.Add(currentTrace);
                         }
                     }
-                }
 
-                foreach (Trace child in trace.Children)
-                    AddLabeledTraces(labeledTraces, child, depth + 1);
+                    foreach (Trace child in currentTrace.Children)
+                        traversalQueue.Enqueue(new Pair<Trace,int>(child, currentDepth + 1));
+                }
             }
 
             private static bool IsTrivialExpression(Expression expr)
