@@ -40,7 +40,7 @@
                     <Condition Action="hide">not (&amp;feat_Gallio.Ambience &gt; 2 or (&amp;feat_Gallio.Ambience = -1 and !feat_Gallio.Ambience &gt; 2))</Condition>
                 </Control>
 
-                <Control Id="Gallio.Ambience.StartMode.ComboBox" Type="ComboBox" X="250" Y="75" Width="70" Height="20" Property="GALLIO.AMBIENCE.STARTMODE">
+                <Control Id="Gallio.Ambience.StartMode.ComboBox" Type="ComboBox" X="250" Y="75" Width="70" Height="20" Property="GALLIO.AMBIENCE.STARTMODE" ComboList="yes">
                     <ComboBox Property="GALLIO.AMBIENCE.STARTMODE">
                         <ListItem Value="Manual" />
                         <ListItem Value="Automatic" />
