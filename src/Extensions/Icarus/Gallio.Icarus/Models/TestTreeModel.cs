@@ -202,6 +202,9 @@ namespace Gallio.Icarus.Models
 
         public void UpdateTestStatus(TestData testData, TestStepRun testStepRun)
         {
+            if (Root == null)
+                return;
+
             List<TestTreeNode> nodes = Root.Find(testData.Id, true);
             foreach (TestTreeNode node in nodes)
             {
@@ -309,6 +312,9 @@ namespace Gallio.Icarus.Models
 
         private void ClearFilter(TestStatus testStatus)
         {
+            if (Root == null)
+                return;
+
             foreach (TestTreeNode filterNode in Root.Find(testStatus.ToString(), true))
             {
                 Node[] nodes = new Node[filterNode.Nodes.Count];
@@ -418,6 +424,9 @@ namespace Gallio.Icarus.Models
 
         private void PopulateMetadataTree(string key, IList<TestData> list, Node parent)
         {
+            if (Root == null)
+                return;
+
             for (int i = 0; i < list.Count; i++)
             {
                 TestData td = list[i];
@@ -475,6 +484,9 @@ namespace Gallio.Icarus.Models
 
         public void ApplyFilter(Filter<ITest> filter)
         {
+            if (Root == null)
+                return;
+
             if (filter is AnyFilter<ITest>)
             {
                 Root.CheckState = CheckState.Checked;
@@ -513,7 +525,7 @@ namespace Gallio.Icarus.Models
         public Filter<ITest> GetCurrentFilter()
         {
             Filter<ITest> filter;
-            if (Root.CheckState == CheckState.Checked)
+            if (Root == null || Root.CheckState == CheckState.Checked)
                 filter = new AnyFilter<ITest>();
             else
                 filter = Root.CheckState == CheckState.Unchecked

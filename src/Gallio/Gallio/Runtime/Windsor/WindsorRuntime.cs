@@ -54,6 +54,7 @@ namespace Gallio.Runtime.Windsor
 
         private WindsorContainer container;
         private string environmentFlag;
+        private ILogger logger;
 
         /// <summary>
         /// Initializes the runtime.
@@ -96,6 +97,8 @@ namespace Gallio.Runtime.Windsor
 
             ThrowIfDisposed();
 
+            this.logger = logger;
+
             container.Kernel.Resolver.AddSubResolver(new ArraySubDependencyResolver(container.Kernel));
             container.Kernel.AddComponentInstance(@"Core.Logger", typeof(ILogger), logger);
             container.Kernel.AddComponentInstance(@"Core.Runtime", typeof(IRuntime), this);
@@ -110,7 +113,7 @@ namespace Gallio.Runtime.Windsor
             {
                 if (ConfigurationManager.GetSection(GallioSectionHandler.SectionName) != null)
                     LoadConfigurationFromResource(AppDomain.CurrentDomain.BaseDirectory,
-                        new ConfigResource(GallioSectionHandler.SectionName), GallioSectionHandler.SectionName);
+                        new ConfigResource(GallioSectionHandler.SectionName), GallioSectionHandler.SectionName, "Root");
             }
 
             ConfigureForDebugging();
@@ -266,17 +269,17 @@ namespace Gallio.Runtime.Windsor
             assemblyResolverManager.AddHintDirectory(pluginPath);
             assemblyResolverManager.AddHintDirectory(Path.Combine(pluginPath, @"bin"));
 
-            // Load the configuration.
-            FileResource pluginManifestResource = new FileResource(configFile);
-            LoadConfigurationFromResource(pluginPath, pluginManifestResource, configFile);
-
             // Register the plugin path.
             string pluginName = Path.GetFileNameWithoutExtension(configFile);
             string contentPath = Path.GetDirectoryName(Path.GetFullPath(configFile));
             pluginPaths.Add(pluginName.ToLowerInvariant(), contentPath);
+
+            // Load the configuration.
+            FileResource pluginManifestResource = new FileResource(configFile);
+            LoadConfigurationFromResource(pluginPath, pluginManifestResource, configFile, pluginName);
         }
 
-        private void LoadConfigurationFromResource(string basePath, IResource resource, string resourceName)
+        private void LoadConfigurationFromResource(string basePath, IResource resource, string resourceName, string pluginName)
         {
             XmlElement rootElement;
             try
@@ -296,19 +299,11 @@ namespace Gallio.Runtime.Windsor
 
             XmlElement gallioElement = rootElement.SelectSingleNode(@"//" + GallioSectionHandler.SectionName) as XmlElement;
             if (gallioElement != null)
-                LoadConfigurationFromXml(basePath, gallioElement);
+                LoadConfigurationFromXml(basePath, gallioElement, pluginName);
         }
 
-        private void LoadConfigurationFromXml(string basePath, XmlElement gallioElement)
+        private void LoadConfigurationFromXml(string basePath, XmlElement gallioElement, string pluginName)
         {
-            XmlElement runtimeElement = gallioElement.SelectSingleNode("runtime") as XmlElement;
-            if (runtimeElement != null)
-            {
-                StaticContentResource resource = new StaticContentResource(runtimeElement.OuterXml);
-                XmlInterpreter configInterpreter = new XmlInterpreter(resource);
-                configInterpreter.ProcessResource(resource, container.Kernel.ConfigurationStore);
-            }
-
             XmlElement assembliesElement = gallioElement.SelectSingleNode("assemblies") as XmlElement;
             if (assembliesElement != null)
             {
@@ -316,25 +311,70 @@ namespace Gallio.Runtime.Windsor
                 {
                     string assemblyGac = assemblyElement.GetAttribute("gac");
                     if (!string.IsNullOrEmpty(assemblyGac))
-                        RegisterPluginAssemblyFromGac(basePath, assemblyGac);
+                    {
+                        if (!RegisterPluginAssemblyFromGac(basePath, assemblyGac))
+                        {
+                            logger.Log(LogSeverity.Debug,
+                                String.Format("Disabled plugin '{0}' because assembly '{1}' not found in the GAC.", pluginName, assemblyGac));
+                            return;
+                        }
+                    }
 
                     string assemblyFile = assemblyElement.GetAttribute("file");
                     if (!string.IsNullOrEmpty(assemblyFile))
-                        RegisterPluginAssemblyFromFile(basePath, assemblyFile);
+                    {
+                        if (!RegisterPluginAssemblyFromFile(basePath, assemblyFile))
+                        {
+                            logger.Log(LogSeverity.Debug,
+                                String.Format("Disabled plugin '{0}' because assembly '{1}' not found.", pluginName, assemblyFile));
+                            return;
+                        }
+                    }
                 }
+            }
+
+            XmlElement runtimeElement = gallioElement.SelectSingleNode("runtime") as XmlElement;
+            if (runtimeElement != null)
+            {
+                StaticContentResource resource = new StaticContentResource(runtimeElement.OuterXml);
+                XmlInterpreter configInterpreter = new XmlInterpreter(resource);
+                configInterpreter.ProcessResource(resource, container.Kernel.ConfigurationStore);
             }
         }
 
-        private void RegisterPluginAssemblyFromGac(string basePath, string assemblyName)
+        private bool RegisterPluginAssemblyFromGac(string basePath, string assemblyName)
         {
-            // TODO
+            try
+            {
+                Assembly.ReflectionOnlyLoad(MakeFullAssemblyNameForGAC(assemblyName));
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
         }
 
-        private void RegisterPluginAssemblyFromFile(string basePath, string assemblyFile)
+        private static string MakeFullAssemblyNameForGAC(string partialName)
+        {
+            // Assumes that the fullname should have the same version and public key token
+            // as the runtime.
+            AssemblyName result = typeof(WindsorRuntime).Assembly.GetName();
+            result.Name = partialName;
+            return result.FullName;
+        }
+
+        private bool RegisterPluginAssemblyFromFile(string basePath, string assemblyFile)
         {
             string assemblyPath = Path.Combine(basePath, assemblyFile);
             if (!File.Exists(assemblyPath))
+            {
+                // Also consider a "bin" path, for local debugging.
                 assemblyPath = Path.Combine(Path.Combine(basePath, "bin"), assemblyFile);
+
+                if (!File.Exists(assemblyPath))
+                    return false;
+            }
 
             AssemblyName assemblyName;
             try
@@ -353,6 +393,7 @@ namespace Gallio.Runtime.Windsor
             }
 
             pluginAssemblyPaths.Add(assemblyPath, assemblyName);
+            return true;
         }
 
         private void RunContainerInstaller()
