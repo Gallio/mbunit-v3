@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Xml.Serialization;
 using Gallio.Utilities;
@@ -32,6 +34,7 @@ namespace Gallio.Runtime.Hosting
         private string workingDirectory;
         private bool shadowCopy;
         private HostConfiguration configuration;
+        private ProcessorArchitecture processorArchitecture = ProcessorArchitecture.MSIL;
 
         /// <summary>
         /// Creates a default host setup.
@@ -120,6 +123,17 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
+        /// Gets or sets the processor architecture that the host should target, when supported.
+        /// </summary>
+        /// <value>The processor architecture, defaults to <see cref="System.Reflection.ProcessorArchitecture.MSIL" /></value>
+        [XmlAttribute("processorArchitecture")]
+        public ProcessorArchitecture ProcessorArchitecture
+        {
+            get { return processorArchitecture; }
+            set { processorArchitecture = value; }
+        }
+
+        /// <summary>
         /// Creates a copy of the host setup information.
         /// </summary>
         /// <returns>The copy</returns>
@@ -129,6 +143,7 @@ namespace Gallio.Runtime.Hosting
             copy.applicationBaseDirectory = applicationBaseDirectory;
             copy.workingDirectory = workingDirectory;
             copy.shadowCopy = shadowCopy;
+            copy.processorArchitecture = processorArchitecture;
 
             if (configuration != null)
                 copy.configuration = configuration.Copy();
@@ -143,8 +158,40 @@ namespace Gallio.Runtime.Hosting
         /// or null to use the current directory</param>
         public void Canonicalize(string baseDirectory)
         {
-            applicationBaseDirectory = FileUtils.CanonicalizePath(baseDirectory, applicationBaseDirectory);
+            applicationBaseDirectory = GetCanonicalApplicationBaseDirectory(baseDirectory);
             workingDirectory = FileUtils.CanonicalizePath(baseDirectory, workingDirectory);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Writes a temporary configuration file for the application to disk and returns its path.
+        /// The configuration file is created in the <see cref="ApplicationBaseDirectory" /> if it is not
+        /// null, otherwise it is created in the current user's temp directory.
+        /// </para>
+        /// <para>
+        /// The file should be deleted by the caller when no longer required.
+        /// </para>
+        /// </summary>
+        /// <returns>The full path of the configuration file that was written</returns>
+        /// <exception cref="IOException">Thrown if the configuration file could not be written</exception>
+        public string WriteTemporaryConfigurationFile()
+        {
+            string path = GetTemporaryConfigurationFilePath();
+            Configuration.WriteToFile(path);
+            return path;
+        }
+
+        private string GetTemporaryConfigurationFilePath()
+        {
+            if (applicationBaseDirectory == null)
+                return Path.GetTempFileName();
+
+            for (; ; )
+            {
+                string path = Path.Combine(GetCanonicalApplicationBaseDirectory(null), Hash64.CreateUniqueHash() + ".tmp.config");
+                if (!File.Exists(path))
+                    return path;
+            }
         }
 
         /// <inheritdoc />
@@ -160,7 +207,8 @@ namespace Gallio.Runtime.Hosting
                 && applicationBaseDirectory == other.applicationBaseDirectory
                 && workingDirectory == other.workingDirectory
                 && shadowCopy == other.shadowCopy
-                && Configuration.Equals(other.Configuration);
+                && Configuration.Equals(other.Configuration)
+                && processorArchitecture == other.processorArchitecture;
         }
 
         /// <inheritdoc />
@@ -169,7 +217,13 @@ namespace Gallio.Runtime.Hosting
             return (applicationBaseDirectory != null ? applicationBaseDirectory.GetHashCode() : 0)
                 ^ (workingDirectory != null ? workingDirectory.GetHashCode() : 0)
                 ^ Configuration.GetHashCode()
-                ^ shadowCopy.GetHashCode();
+                ^ (shadowCopy.GetHashCode() << 16)
+                ^ (processorArchitecture.GetHashCode() << 5);
+        }
+
+        private string GetCanonicalApplicationBaseDirectory(string baseDirectory)
+        {
+            return FileUtils.CanonicalizePath(baseDirectory, applicationBaseDirectory);
         }
     }
 }

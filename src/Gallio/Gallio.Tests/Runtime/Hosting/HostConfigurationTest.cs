@@ -50,5 +50,36 @@ namespace Gallio.Tests.Runtime.Hosting
 
             Assert.Contains(writer.ToString(), writer.Encoding.WebName);
         }
+
+        [Test]
+        public void WriteToThrowsIfTextWriterIsNull()
+        {
+            HostConfiguration config = new HostConfiguration();
+            Assert.Throws<ArgumentNullException>(() => config.WriteTo(null));
+        }
+
+        [Test]
+        public void WriteToFileThrowsIfPathIsNull()
+        {
+            HostConfiguration config = new HostConfiguration();
+            Assert.Throws<ArgumentNullException>(() => config.WriteToFile(null));
+        }
+
+        [Test]
+        public void WriteToFile()
+        {
+            HostConfiguration config = new HostConfiguration();
+            string path = Path.GetTempFileName();
+            try
+            {
+                config.WriteToFile(path);
+
+                Assert.Contains(File.ReadAllText(path), "<configuration>");
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
     }
 }

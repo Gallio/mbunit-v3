@@ -82,21 +82,23 @@ namespace MbUnit.Framework
 
         #region Private stuff
         /// <summary>
-        /// Always throws a <see cref="InvalidOperationException" />.
+        /// Always throws an <see cref="InvalidOperationException" />.
         /// Use <see cref="Assert.AreEqual{T}(T, T)" /> instead.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        private static new void Equals(object a, object b)
+        [Obsolete("Use Assert.AreEquals instead.")]
+        public static new void Equals(object a, object b)
         {
             throw new InvalidOperationException("Assert.Equals should not be used for assertions.  Use Assert.AreEqual instead.");
         }
 
         /// <summary>
-        /// Always throws a <see cref="InvalidOperationException" />.
+        /// Always throws an <see cref="InvalidOperationException" />.
         /// Use <see cref="Assert.AreSame{T}(T, T)" /> instead.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        private static new void ReferenceEquals(object a, object b)
+        [Obsolete("Use Assert.AreSame instead.")]
+        public static new void ReferenceEquals(object a, object b)
         {
             throw new InvalidOperationException("Assert.ReferenceEquals should not be used for assertions.  Use Assert.AreSame instead.");
         }

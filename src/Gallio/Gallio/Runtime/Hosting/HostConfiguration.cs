@@ -290,10 +290,11 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Overlays the <see cref="ConfigurationXml" /> with the additional configuration
         /// entries necessary to enable the features described by this instance and writes
-        /// the combined Xml configuration.
+        /// the combined Xml configuration to a <see cref="TextWriter" />.
         /// </summary>
         /// <param name="textWriter">The TextWriter where the Xml configuration will be written to.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="textWriter"/> is null.</exception>
+        /// <exception cref="IOException">Thrown if the configuration could not be written</exception>
         public void WriteTo(TextWriter textWriter)
         {
             if (textWriter == null)
@@ -312,6 +313,23 @@ namespace Gallio.Runtime.Hosting
             settings.Encoding = textWriter.Encoding;
             using (XmlWriter writer = XmlWriter.Create(textWriter, settings))
                 document.Save(writer);
+        }
+
+        /// <summary>
+        /// Overlays the <see cref="ConfigurationXml" /> with the additional configuration
+        /// entries necessary to enable the features described by this instance and writes
+        /// the combined Xml configuration to a file with the given path.
+        /// </summary>
+        /// <param name="path">The file path</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
+        /// <exception cref="IOException">Thrown if the configuration could not be written</exception>
+        public void WriteToFile(string path)
+        {
+            if (path == null)
+                throw new ArgumentNullException("path");
+
+            using (StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8))
+                WriteTo(writer);
         }
 
         /// <summary>

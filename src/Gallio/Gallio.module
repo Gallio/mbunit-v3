@@ -8,6 +8,7 @@
     <CSharpProject Include="Gallio\Gallio.csproj" />
     <CSharpProject Include="Gallio35\Gallio35.csproj" />
     <CSharpProject Include="Gallio.Host\Gallio.Host.csproj" />
+    <CSharpProject Include="Gallio.Host\Gallio.Host.x86.csproj" />
     <CSharpProject Include="Gallio.Tests\Gallio.Tests.csproj" />
     <CSharpProject Include="Gallio.Loader\Gallio.Loader.csproj" />
     <CSharpProject Include="Gallio.Reports\Gallio.Reports.csproj" />
@@ -31,6 +32,9 @@
 
     <Binary Include="Gallio.Host\bin\Gallio.Host.exe" />
     <Binary Include="Gallio.Host\Gallio.Host.exe.config" />
+
+    <Binary Include="Gallio.Host\bin\Gallio.Host.x86.exe" />
+    <Binary Include="Gallio.Host\Gallio.Host.x86.exe.config" />
 
     <Binary Include="Gallio.Loader\bin\Gallio.Loader.dll" />
     <Binary Include="Gallio.Loader\bin\Gallio.Loader.pdb" />

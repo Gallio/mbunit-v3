@@ -171,6 +171,7 @@
     <Compile Include="Runner\Workspaces\ResourcePathTests.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
     <Compile Include="Runtime\Hosting\HostConfigurationTest.cs" />
+    <Compile Include="Runtime\Hosting\HostSetupTest.cs" />
     <Compile Include="Runtime\Hosting\LocalHostFactoryTest.cs" />
     <Compile Include="Runtime\Logging\EventLoggerTest.cs" />
     <Compile Include="Runtime\Logging\TextLoggerTest.cs" />

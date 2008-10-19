@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using Gallio.Runtime.Logging;
@@ -44,8 +45,6 @@ namespace Gallio.Runtime.Hosting
     /// </summary>
     public class IsolatedProcessHost : RemoteHost
     {
-        private const string HostAppFileName = "Gallio.Host.exe";
-
         private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyPollInterval = TimeSpan.FromSeconds(0.5);
         private static readonly TimeSpan PingInterval = TimeSpan.FromSeconds(5);
@@ -58,6 +57,7 @@ namespace Gallio.Runtime.Hosting
         private readonly string runtimePath;
 
         private readonly string uniqueId;
+        private string temporaryConfigurationFilePath;
         private ProcessTask processTask;
         private IClientChannel clientChannel;
         private IServerChannel callbackChannel;
@@ -166,12 +166,7 @@ namespace Gallio.Runtime.Hosting
 
         private void StartProcess(string hostConnectionArguments)
         {
-            HostConfiguration editedHostConfiguration = HostSetup.Configuration.Copy();
-            editedHostConfiguration.AddAssemblyBinding(typeof(IsolatedProcessHost).Assembly, false);
-
-            string temporaryConfigurationFilePath = Path.GetTempFileName();
-            using (StreamWriter writer = new StreamWriter(temporaryConfigurationFilePath, false, Encoding.UTF8))
-                editedHostConfiguration.WriteTo(writer);
+            CreateTemporaryConfigurationFile();
 
             StringBuilder hostArguments = new StringBuilder();
             hostArguments.Append(hostConnectionArguments);
@@ -191,6 +186,21 @@ namespace Gallio.Runtime.Hosting
             processTask.Terminated += LogExitCode;
 
             processTask.Start();
+        }
+
+        private void CreateTemporaryConfigurationFile()
+        {
+            try
+            {
+                HostSetup patchedSetup = HostSetup.Copy();
+                patchedSetup.Configuration.AddAssemblyBinding(typeof(IsolatedProcessHost).Assembly, false);
+
+                temporaryConfigurationFilePath = patchedSetup.WriteTemporaryConfigurationFile();
+            }
+            catch (Exception ex)
+            {
+                throw new HostException("Could not write the temporary configuration file.", ex);
+            }
         }
 
         private void LogConsoleOutput(object sender, DataReceivedEventArgs e)
@@ -264,15 +274,40 @@ namespace Gallio.Runtime.Hosting
                 callbackChannel.Dispose();
                 callbackChannel = null;
             }
+
+            if (temporaryConfigurationFilePath != null)
+            {
+                File.Delete(temporaryConfigurationFilePath);
+                temporaryConfigurationFilePath = null;
+            }
         }
 
         private string GetInstalledHostProcessPath()
         {
-            string hostProcessPath = Path.Combine(runtimePath, HostAppFileName);
+            string hostProcessPath = Path.Combine(runtimePath, GetHostFileName(HostSetup.ProcessorArchitecture));
             if (!File.Exists(hostProcessPath))
                 throw new HostException(String.Format("Could not find the installed host application in '{0}'.", hostProcessPath));
 
             return hostProcessPath;
+        }
+
+        private static string GetHostFileName(ProcessorArchitecture processorArchitecture)
+        {
+            // TODO: Should find a way to verify that Amd64 / IA64 are supported.
+            switch (processorArchitecture)
+            {
+                case ProcessorArchitecture.None:
+                case ProcessorArchitecture.MSIL:
+                case ProcessorArchitecture.Amd64:
+                case ProcessorArchitecture.IA64:
+                    return "Gallio.Host.exe";
+
+                case ProcessorArchitecture.X86:
+                    return "Gallio.Host.x86.exe";
+
+                default:
+                    throw new ArgumentOutOfRangeException("processorArchitecture");
+            }
         }
     }
 }

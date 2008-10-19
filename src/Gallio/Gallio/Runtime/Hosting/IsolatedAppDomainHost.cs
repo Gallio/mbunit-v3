@@ -100,12 +100,17 @@ namespace Gallio.Runtime.Hosting
 
         private void CreateTemporaryConfigurationFile()
         {
-            HostConfiguration configuration = HostSetup.Configuration.Copy();
-            configuration.AddAssemblyBinding(typeof(IsolatedAppDomainHost).Assembly, false);
+            try
+            {
+                HostSetup patchedSetup = HostSetup.Copy();
+                patchedSetup.Configuration.AddAssemblyBinding(typeof(IsolatedAppDomainHost).Assembly, false);
 
-            temporaryConfigurationFilePath = Path.GetTempFileName();
-            using (StreamWriter writer = new StreamWriter(temporaryConfigurationFilePath, false, Encoding.UTF8))
-                configuration.WriteTo(writer);
+                temporaryConfigurationFilePath = patchedSetup.WriteTemporaryConfigurationFile();
+            }
+            catch (Exception ex)
+            {
+                throw new HostException("Could not write the temporary configuration file.", ex);
+            }
         }
 
         private void CreateAppDomain()
@@ -159,7 +164,7 @@ namespace Gallio.Runtime.Hosting
         {
             try
             {
-                if (temporaryConfigurationFilePath != null && File.Exists(temporaryConfigurationFilePath))
+                if (temporaryConfigurationFilePath != null)
                     File.Delete(temporaryConfigurationFilePath);
             }
             catch (Exception ex)

@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using Gallio.Framework;
 using Gallio.Model.Logging;
@@ -66,6 +68,40 @@ namespace Gallio.Tests.Runtime.Hosting
 
             t.Start();
             return null;
+        }
+
+        [Test]
+        public void LaunchesX86HostWhenDemandedByProcessorArchitecture()
+        {
+            HostSetup hostSetup = new HostSetup();
+            hostSetup.ProcessorArchitecture = ProcessorArchitecture.X86;
+
+            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(TestLog.Default)))
+            {
+                HostAssemblyResolverHook.InstallCallback(host);
+                string processName = host.GetHostService().Do<object, string>(GetHostProcessName, null);
+
+                Assert.Contains(processName, "Gallio.Host.x86.exe");
+            }
+        }
+
+        [Test]
+        public void LaunchesMSILHostByDefault()
+        {
+            HostSetup hostSetup = new HostSetup();
+
+            using (IHost host = Factory.CreateHost(hostSetup, new TestLogStreamLogger(TestLog.Default)))
+            {
+                HostAssemblyResolverHook.InstallCallback(host);
+                string processName = host.GetHostService().Do<object, string>(GetHostProcessName, null);
+
+                Assert.Contains(processName, "Gallio.Host.exe");
+            }
+        }
+
+        private static string GetHostProcessName(object dummy)
+        {
+            return Process.GetCurrentProcess().MainModule.FileName;
         }
     }
 }

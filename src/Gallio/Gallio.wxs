@@ -70,6 +70,10 @@
                 <File Name="Gallio.Host.exe" KeyPath="yes" />
                 <File Name="Gallio.Host.exe.config" />
             </Component>
+            <Component Id="Gallio.Host.x86" Guid="{9560EEA1-E472-4cc6-99DA-03CDCD370343}" Win64="no">
+                <File Name="Gallio.Host.x86.exe" KeyPath="yes" />
+                <File Name="Gallio.Host.x86.exe.config" />
+            </Component>
             <Component Id="Gallio.Reports.dll" Guid="9e17b959-1768-4a2b-b750-99821b01dd53" Win64="no">
                 <File Name="Gallio.Reports.dll" KeyPath="yes" />
                 <File Name="Gallio.Reports.pdb" />
@@ -215,6 +219,7 @@
             <ComponentRef Id="Gallio35" />
             <ComponentRef Id="Gallio.XmlSerializers" />
             <ComponentRef Id="Gallio.Host" />
+            <ComponentRef Id="Gallio.Host.x86" />
             <ComponentRef Id="Gallio.Loader" />
             <ComponentRef Id="Gallio.License" />
             <ComponentRef Id="Mono.Cecil.License" />
