@@ -60,7 +60,7 @@ namespace Gallio.Framework.Pattern
             if (!testCommand.AreDependenciesSatisfied())
             {
                 ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
-                TestLog.Warnings.WriteLine("Skipped due to an unsatisfied test dependency.");
+                context.LogWriter.Warnings.WriteLine("Skipped due to an unsatisfied test dependency.");
                 context.FinishStep(TestOutcome.Skipped, null);
                 return TestOutcome.Skipped;
             }
