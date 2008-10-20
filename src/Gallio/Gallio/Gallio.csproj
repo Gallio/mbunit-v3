@@ -207,9 +207,13 @@
     <Compile Include="Runner\Caching\TemporaryDiskCache.cs" />
     <Compile Include="Runner\Drivers\AggregateTestDriver.cs" />
     <Compile Include="Runner\Drivers\BaseTestDriver.cs" />
+    <Compile Include="Runner\Drivers\HostedTestDriverFactory.cs" />
+    <Compile Include="Runner\Drivers\ITestDriverFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Runner\Drivers\LocalTestDriver.cs" />
     <Compile Include="Runner\Drivers\ITestDriver.cs" />
-    <Compile Include="Runner\Drivers\MultiDomainTestDriver.cs" />
+    <Compile Include="Runner\Drivers\HostedTestDriver.cs" />
     <Compile Include="Runner\Drivers\ProxyTestDriver.cs" />
     <Compile Include="Runner\Events\DisposeFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\DisposeStartedEventArgs.cs" />
@@ -220,7 +224,7 @@
     <Compile Include="Runner\Extensions\TestRunnerExtension.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtils.cs" />
     <Compile Include="Runner\ReportTestListener.cs" />
-    <Compile Include="Runner\HostedTestRunner.cs" />
+    <Compile Include="Runner\DefaultTestRunner.cs" />
     <Compile Include="Runner\Events\InitializeFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\InitializeStartedEventArgs.cs" />
     <Compile Include="Runner\Events\ITestRunnerEvents.cs" />
@@ -426,6 +430,7 @@
     <Compile Include="Runtime\Hosting\IsolatedAppDomainHost.cs" />
     <Compile Include="Runtime\Hosting\IsolatedProcessHost.cs" />
     <Compile Include="Runtime\RuntimeDetection.cs" />
+    <Compile Include="Runtime\RuntimeException.cs" />
     <Compile Include="Runtime\RuntimeRegisteredComponentResolver.cs" />
     <Compile Include="Runtime\Hosting\HostConfiguration.cs" />
     <Compile Include="Runtime\Hosting\HostException.cs" />
@@ -491,7 +496,7 @@
     <Compile Include="Reflection\Impl\UnresolvedParameterInfo.cs" />
     <Compile Include="Reflection\Impl\UnresolvedPropertyInfo.cs" />
     <Compile Include="Reflection\Impl\UnresolvedType.cs" />
-    <Compile Include="Runner\HostedTestRunnerFactory.cs" />
+    <Compile Include="Runner\DefaultTestRunnerFactory.cs" />
     <Compile Include="Runner\DefaultTestRunnerManager.cs" />
     <Compile Include="Runner\ITestRunnerFactory.cs" />
     <Compile Include="Runner\ITestRunnerManager.cs" />

@@ -96,7 +96,7 @@ namespace Gallio.Runner
         /// </summary>
         public TestLauncher()
         {
-            testRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
+            testRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedProcess;
             testRunnerOptions = new TestRunnerOptions();
             testPackageConfig = new TestPackageConfig();
             testExplorationOptions = new TestExplorationOptions();
@@ -182,7 +182,7 @@ namespace Gallio.Runner
         /// the <see cref="ITestRunner" /> at test execution time.
         /// </para>
         /// <para>
-        /// The default value is <see cref="StandardTestRunnerFactoryNames.Local"/>.
+        /// The default value is <see cref="StandardTestRunnerFactoryNames.IsolatedProcess"/>.
         /// </para>
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>

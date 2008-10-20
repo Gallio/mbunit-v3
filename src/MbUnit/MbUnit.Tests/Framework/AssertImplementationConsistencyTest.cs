@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -31,6 +32,12 @@ namespace MbUnit.Tests.Framework
         private const string CustomMessageSuffix = "System.String, System.Object[])";
         private const string NoMessageSuffix = ")";
 
+        private static readonly IList<string> IgnoredNames = new ReadOnlyCollection<string>(new[]
+        { 
+            "Equals",
+            "ReferenceEquals"
+        });
+
         [Test]
         public void EachAssertHasFlavorsWithAndWithoutMessageFormatAndArgs()
         {
@@ -38,7 +45,8 @@ namespace MbUnit.Tests.Framework
             foreach (MethodInfo assertMethod in
                     typeof(TAssert).GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly))
             {
-                if (! assertMethod.Name.StartsWith("get_") && ! assertMethod.Name.StartsWith("set_"))
+                if (! assertMethod.Name.StartsWith("get_") && ! assertMethod.Name.StartsWith("set_")
+                    && ! IgnoredNames.Contains(assertMethod.Name))
                     asserts.Add(assertMethod.ToString());
             }
 

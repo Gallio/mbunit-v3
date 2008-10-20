@@ -24,7 +24,6 @@ using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
-using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -32,27 +31,22 @@ namespace Gallio.Runner
 {
     /// <summary>
     /// <para>
-    /// An implementation of <see cref="ITestRunner" /> that runs tests within
-    /// the context of particular <see cref="IHost" />.  The host is created
-    /// when the package is loaded and is disposed when the package is unloaded.
-    /// Consequently each new package runs in a new host.
+    /// An implementation of <see cref="ITestRunner" /> that runs tests using
+    /// a <see cref="ITestDriver" />.  The driver is created when the first package
+    /// is loaded and is disposed when the runner is disposed.  Consequently the test
+    /// driver may be reused for multiple test runs.
     /// </para>
     /// </summary>
-    public class HostedTestRunner : ITestRunner
+    public class DefaultTestRunner : ITestRunner
     {
-        private readonly IHostFactory hostFactory;
-        private readonly ITestFramework[] frameworks;
-        private readonly IRuntime runtime;
-
+        private readonly ITestDriverFactory testDriverFactory;
         private readonly TestRunnerEventDispatcher eventDispatcher;
-
         private readonly List<ITestRunnerExtension> extensions;
 
         private ILogger logger;
         private TestRunnerOptions options;
 
         private State state;
-        private IHost host;
         private LockBox<Report> report;
         private ITestDriver testDriver;
 
@@ -67,39 +61,22 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Creates a hosted test runner.
+        /// Creates a test runner.
         /// </summary>
-        /// <param name="hostFactory">The host factory</param>
-        /// <param name="frameworks">The test frameworks</param>
-        /// <param name="runtime">The runtime</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
-        /// <paramref name="frameworks"/> or <paramref name="runtime"/> is null</exception>
-        public HostedTestRunner(IHostFactory hostFactory, ITestFramework[] frameworks, IRuntime runtime)
+        /// <param name="testDriverFactory">The test driver factory</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/> is null</exception>
+        public DefaultTestRunner(ITestDriverFactory testDriverFactory)
         {
-            if (hostFactory == null)
-                throw new ArgumentNullException("hostFactory");
-            if (frameworks == null)
-                throw new ArgumentNullException("frameworks");
-            if (runtime == null)
-                throw new ArgumentNullException("runtime");
+            if (testDriverFactory == null)
+                throw new ArgumentNullException("testDriverFactory");
 
-            this.hostFactory = hostFactory;
-            this.frameworks = frameworks;
-            this.runtime = runtime;
+            this.testDriverFactory = testDriverFactory;
 
             eventDispatcher = new TestRunnerEventDispatcher();
             state = State.Created;
             extensions = new List<ITestRunnerExtension>();
 
             ResetReport();
-        }
-
-        /// <summary>
-        /// Gets the host, or null if no package has been loaded.
-        /// </summary>
-        protected IHost Host
-        {
-            get { return host; }
         }
 
         /// <summary>
@@ -195,7 +172,7 @@ namespace Gallio.Runner
                 {
                     eventDispatcher.NotifyInitializeStarted(new InitializeStartedEventArgs(options));
 
-                    DoInitialize(progressMonitor);
+                    DoInitialize(progressMonitor, 10);
                 }
                 catch (Exception ex)
                 {
@@ -229,7 +206,7 @@ namespace Gallio.Runner
                 {
                     eventDispatcher.NotifyLoadStarted(new LoadStartedEventArgs(testPackageConfig));
 
-                    DoLoad(testPackageConfig, progressMonitor);
+                    DoLoad(testPackageConfig, progressMonitor, 10);
                 }
                 catch (Exception ex)
                 {
@@ -262,7 +239,7 @@ namespace Gallio.Runner
                 {
                     eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(options));
 
-                    DoExplore(options, progressMonitor);
+                    DoExplore(options, progressMonitor, 10);
                 }
                 catch (Exception ex)
                 {
@@ -295,7 +272,7 @@ namespace Gallio.Runner
                 {
                     eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(options));
 
-                    DoRun(options, progressMonitor);
+                    DoRun(options, progressMonitor, 10);
                 }
                 catch (Exception ex)
                 {
@@ -326,7 +303,7 @@ namespace Gallio.Runner
                 {
                     eventDispatcher.NotifyUnloadStarted(new UnloadStartedEventArgs());
 
-                    DoUnload(progressMonitor);
+                    DoUnload(progressMonitor, 10);
                 }
                 catch (Exception ex)
                 {
@@ -370,7 +347,7 @@ namespace Gallio.Runner
                 {
                     eventDispatcher.NotifyDisposeStarted(new DisposeStartedEventArgs());
 
-                    DoDispose(progressMonitor);
+                    DoDispose(progressMonitor, 1);
                     success = true;
                 }
                 catch (Exception ex)
@@ -385,58 +362,34 @@ namespace Gallio.Runner
             }
         }
 
-        /// <summary>
-        /// Provides an opportunity for subclasses to configure the host.
-        /// </summary>
-        /// <param name="hostSetup">The host setup, not null</param>
-        protected virtual void ConfigureHost(HostSetup hostSetup)
+        private void DoInitialize(IProgressMonitor progressMonitor, double totalWork)
         {
+            progressMonitor.Worked(totalWork);
         }
 
-        /// <summary>
-        /// Provides an opportunity for subclasses to initialize the host once created.
-        /// </summary>
-        /// <param name="host">The host, not null</param>
-        protected virtual void InitializeHost(IHost host)
-        {
-        }
-
-        private void DoInitialize(IProgressMonitor progressMonitor)
-        {
-            progressMonitor.Worked(10);
-        }
-
-        private void DoLoad(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
+        private void DoLoad(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor, double totalWork)
         {
             Report = new LockBox<Report>(new Report() { TestPackageConfig = testPackageConfig });
 
-            InitializeHost(testPackageConfig.HostSetup, progressMonitor, 5);
-            LoadTestDomains(testPackageConfig, progressMonitor, 5);
+            InitializeTestDriver(progressMonitor, totalWork * 0.1);
+            LoadTestDomains(testPackageConfig, progressMonitor, totalWork * 0.9);
         }
 
-        private void InitializeHost(HostSetup packageHostSetup, IProgressMonitor progressMonitor, double totalWork)
+        private void InitializeTestDriver(IProgressMonitor progressMonitor, double totalWork)
         {
-            progressMonitor.SetStatus("Initializing the host environment.");
+            if (testDriver == null)
+            {
+                progressMonitor.SetStatus("Initializing the test driver.");
 
-            // Override the runtime path for development.
-            RuntimeSetup runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
-            if (runtimeSetup.InstallationConfiguration.IsDevelopmentRuntimePathValid())
-                runtimeSetup.RuntimePath = runtimeSetup.InstallationConfiguration.DevelopmentRuntimePath;
+                // Override the runtime path for development.
+                RuntimeSetup runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
+                if (runtimeSetup.InstallationConfiguration.IsDevelopmentRuntimePathValid())
+                    runtimeSetup.RuntimePath = runtimeSetup.InstallationConfiguration.DevelopmentRuntimePath;
 
-            // Configure the host's primary parameters.
-            HostSetup hostSetup = new HostSetup();
-            hostSetup.ApplicationBaseDirectory = RuntimeAccessor.RuntimePath;
-            hostSetup.WorkingDirectory = packageHostSetup.WorkingDirectory;
-            hostSetup.ShadowCopy = packageHostSetup.ShadowCopy;
-
-            ConfigureHost(hostSetup);
-
-            host = hostFactory.CreateHost(hostSetup, logger);
-
-            InitializeHost(host);
-
-            testDriver = new MultiDomainTestDriver(frameworks, host, runtime);
-            testDriver.Initialize(runtimeSetup, logger);
+                // Create test driver.
+                testDriver = testDriverFactory.CreateTestDriver();
+                testDriver.Initialize(runtimeSetup, logger);
+            }
 
             progressMonitor.Worked(totalWork);
         }
@@ -449,14 +402,14 @@ namespace Gallio.Runner
                 testDriver.Load(testPackageConfig, subProgressMonitor);
         }
 
-        private void DoExplore(TestExplorationOptions options, IProgressMonitor progressMonitor)
+        private void DoExplore(TestExplorationOptions options, IProgressMonitor progressMonitor, double totalWork)
         {
             Report.Read(report =>
             {
                 Report = new LockBox<Report>(new Report() { TestPackageConfig = report.TestPackageConfig });
             });
 
-            ExploreTestDomains(options, progressMonitor, 10);
+            ExploreTestDomains(options, progressMonitor, totalWork);
         }
 
         private void ExploreTestDomains(TestExplorationOptions options, IProgressMonitor progressMonitor, double totalWork)
@@ -472,7 +425,7 @@ namespace Gallio.Runner
             }
         }
 
-        private void DoRun(TestExecutionOptions options, IProgressMonitor progressMonitor)
+        private void DoRun(TestExecutionOptions options, IProgressMonitor progressMonitor, double totalWork)
         {
             Report.Read(report =>
             {
@@ -489,7 +442,7 @@ namespace Gallio.Runner
             {
                 using (ReportTestListener listener = new ReportTestListener(eventDispatcher, Report))
                 {
-                    RunTestDomains(options, listener, progressMonitor, 10);
+                    RunTestDomains(options, listener, progressMonitor, totalWork);
                 }
             }
             finally
@@ -513,18 +466,11 @@ namespace Gallio.Runner
                 testDriver.Run(options, listener, subProgressMonitor);
         }
 
-        private void DoUnload(IProgressMonitor progressMonitor)
+        private void DoUnload(IProgressMonitor progressMonitor, double totalWork)
         {
             ResetReport();
 
-            try
-            {
-                UnloadTestDomains(progressMonitor, 5);
-            }
-            finally
-            {
-                DisposeHost(progressMonitor, 5);
-            }
+            UnloadTestDomains(progressMonitor, totalWork);
         }
 
         private void UnloadTestDomains(IProgressMonitor progressMonitor, double totalWork)
@@ -538,33 +484,28 @@ namespace Gallio.Runner
             }
         }
 
-        private void DisposeHost(IProgressMonitor progressMonitor, double totalWork)
+        private void DoDispose(IProgressMonitor progressMonitor, double totalWork)
         {
-            progressMonitor.SetStatus("Shutting down the host environment.");
-
-            if (testDriver != null)
-            {
-                testDriver.Dispose();
-                testDriver = null;
-            }
-
-            if (host != null)
-            {
-                host.Dispose();
-                host = null;
-            }
-
-            progressMonitor.Worked(totalWork);
-        }
-
-        private void DoDispose(IProgressMonitor progressMonitor)
-        {
+            DisposeTestDriver(progressMonitor, totalWork);
             ResetReport();
         }
 
         private void ResetReport()
         {
             Report = new LockBox<Report>(new Report());
+        }
+
+        private void DisposeTestDriver(IProgressMonitor progressMonitor, double totalWork)
+        {
+            if (testDriver != null)
+            {
+                progressMonitor.SetStatus("Disposing the test driver.");
+
+                testDriver.Dispose();
+                testDriver = null;
+            }
+
+            progressMonitor.Worked(totalWork);
         }
 
         private void ThrowIfDisposed()

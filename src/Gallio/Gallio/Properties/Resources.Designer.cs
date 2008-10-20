@@ -446,5 +446,23 @@ namespace Gallio.Properties {
                 return ResourceManager.GetString("RootTest_RootTestName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not resolve service of type {0}..
+        /// </summary>
+        internal static string WindsorRuntime_CannotResolveServices {
+            get {
+                return ResourceManager.GetString("WindsorRuntime_CannotResolveServices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The runtime could not be initialized..
+        /// </summary>
+        internal static string WindsorRuntime_RuntimeCannotBeInitialized {
+            get {
+                return ResourceManager.GetString("WindsorRuntime_RuntimeCannotBeInitialized", resourceCulture);
+            }
+        }
     }
 }

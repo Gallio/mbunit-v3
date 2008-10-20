@@ -148,9 +148,9 @@ namespace Gallio.Echo
              CommandLineArgumentFlags.AtMostOnce,
              LongName = "runner",
              ValueLabel = "type",
-             Description = "Specifies the type of test runner to use.  See below for all supported types.  The default is '" + StandardTestRunnerFactoryNames.Local + "'"
+             Description = "Specifies the type of test runner to use.  See below for all supported types.  The default is '" + StandardTestRunnerFactoryNames.IsolatedProcess + "'"
              )]
-        public string RunnerType = StandardTestRunnerFactoryNames.Local;
+        public string RunnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.Multiple,

@@ -28,6 +28,7 @@ namespace Gallio.Loader
         /// <summary>
         /// Gets the Gallio runtime path.
         /// </summary>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         string RuntimePath { get; }
 
         /// <summary>
@@ -41,6 +42,7 @@ namespace Gallio.Loader
         /// yourself.
         /// </para>
         /// </summary>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         void SetupRuntime();
 
         /// <summary>
@@ -48,6 +50,7 @@ namespace Gallio.Loader
         /// </summary>
         /// <param name="path">The path of the hint directory to add</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is null</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         void AddHintDirectory(string path);
 
         /// <summary>
@@ -55,6 +58,7 @@ namespace Gallio.Loader
         /// </summary>
         /// <typeparam name="T">The type of service to resolve</typeparam>
         /// <returns>The resolved service</returns>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         T Resolve<T>();
 
         /// <summary>
@@ -62,6 +66,7 @@ namespace Gallio.Loader
         /// </summary>
         /// <param name="serviceType">The type of service to resolve</param>
         /// <returns>The resolved service</returns>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         object Resolve(Type serviceType);
     }
 }

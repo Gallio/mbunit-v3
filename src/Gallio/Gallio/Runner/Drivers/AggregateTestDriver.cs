@@ -44,7 +44,7 @@ namespace Gallio.Runner.Drivers
         {
             using (progressMonitor.BeginTask("Loading tests.", 2))
             {
-                DisposeDrivers();
+                Reset();
 
                 partitions.AddRange(CreatePartitions(testPackageConfig));
                 progressMonitor.Worked(1);
@@ -134,7 +134,7 @@ namespace Gallio.Runner.Drivers
                     }
                     finally
                     {
-                        DisposeDrivers();
+                        Reset();
                     }
                 }
             }
@@ -144,7 +144,7 @@ namespace Gallio.Runner.Drivers
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-                DisposeDrivers();
+                Reset();
         }
 
         /// <summary>
@@ -153,6 +153,17 @@ namespace Gallio.Runner.Drivers
         /// <param name="testPackageConfig">The test package configuration, not null</param>
         /// <returns>The partitions</returns>
         protected abstract IEnumerable<Partition> CreatePartitions(TestPackageConfig testPackageConfig);
+
+        /// <summary>
+        /// Resets the test driver between and after test loads.
+        /// </summary>
+        /// <remarks>
+        /// The base implementation disposes all test drivers in currently active partitions.
+        /// </remarks>
+        protected virtual void Reset()
+        {
+            DisposeDrivers();
+        }
 
         private void DisposeDrivers()
         {

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Loader;
 using Gallio.TDNetRunner.Facade;
 
 namespace Gallio.TDNetRunner.Core
@@ -23,8 +24,19 @@ namespace Gallio.TDNetRunner.Core
     /// </summary>
     public interface IProxyTestRunner : IDisposable
     {
+        /// <summary>
+        /// Aborts the test run.
+        /// </summary>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         void Abort();
 
+        /// <summary>
+        /// Runs the tests.
+        /// </summary>
+        /// <param name="testListener">The test listener</param>
+        /// <param name="assemblyPath">The test assembly</param>
+        /// <param name="cref">The code reference for the test to run</param>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, string cref);
     }
 }

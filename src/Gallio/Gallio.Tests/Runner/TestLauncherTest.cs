@@ -68,5 +68,11 @@ namespace Gallio.Tests.Runner
         {
             Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.Filter);
         }
+
+        [Test]
+        public void TestRunnerName()
+        {
+            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
+        }
     }
 }

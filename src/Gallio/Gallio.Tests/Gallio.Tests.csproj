@@ -165,6 +165,7 @@
     <Compile Include="Runner\Caching\DiskCacheExceptionTest.cs" />
     <Compile Include="Runner\Caching\SimpleDiskCacheTest.cs" />
     <Compile Include="Runner\Caching\TemporaryDiskCacheTest.cs" />
+    <Compile Include="Runner\Drivers\HostedTestDriverTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="Runner\Sessions\LocalTestSessionManagerTest.cs" />
@@ -192,6 +193,7 @@
     <Compile Include="Runtime\Hosting\IsolatedProcessHostTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Runtime\RuntimeExceptionTest.cs" />
     <Compile Include="Runtime\RuntimeAccessorTest.cs" />
     <Compile Include="Runtime\RuntimeRegisteredComponentResolverTest.cs" />
     <Compile Include="Integration\StubContextTest.cs" />
@@ -255,6 +257,14 @@
     <Compile Include="Runtime\UnhandledExceptionPolicyTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x64\MbUnit.TestResources.x64.csproj">
+      <Project>{192D2C12-9D5C-4D68-96BA-4CD28054E3BC}</Project>
+      <Name>MbUnit.TestResources.x64</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x86\MbUnit.TestResources.x86.csproj">
+      <Project>{45224C3F-B0F1-4D70-8516-B50100DEF79B}</Project>
+      <Name>MbUnit.TestResources.x86</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources\MbUnit.TestResources.csproj">
       <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
       <Name>MbUnit.TestResources</Name>

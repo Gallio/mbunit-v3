@@ -38,6 +38,7 @@ namespace Gallio.Runtime
         /// </summary>
         /// <param name="logger">The runtime logging service</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        /// <exception cref="RuntimeException">Thrown if the runtime could not be initialized</exception>
         void Initialize(ILogger logger);
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace Gallio.Runtime
         /// </summary>
         /// <param name="service">The service type</param>
         /// <returns>A component that implements the service</returns>
-        /// <exception cref="Exception">Thrown if the service could not be resolved</exception>
+        /// <exception cref="RuntimeException">Thrown if the service could not be resolved</exception>
         object Resolve(Type service);
 
         /// <summary>
@@ -53,6 +54,7 @@ namespace Gallio.Runtime
         /// </summary>
         /// <typeparam name="T">The service type</typeparam>
         /// <returns>A component that implements the service</returns>
+        /// <exception cref="RuntimeException">Thrown if the service could not be resolved</exception>
         T Resolve<T>();
 
         /// <summary>
@@ -60,6 +62,7 @@ namespace Gallio.Runtime
         /// </summary>
         /// <typeparam name="T">The service type</typeparam>
         /// <returns>An array of components that implement the service</returns>
+        /// <exception cref="RuntimeException">Thrown if the service could not be resolved</exception>
         T[] ResolveAll<T>();
 
         /// <summary>

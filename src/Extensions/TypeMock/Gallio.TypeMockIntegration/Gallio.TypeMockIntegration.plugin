@@ -13,11 +13,19 @@
 
         <component id="TypeMockIntegration.TypeMockTestRunnerFactory"
                    service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                   type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
+                   type="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
           <parameters>
-            <hostFactory>${TypeMockIntegration.TypeMockHostFactory}</hostFactory>
+            <testDriverFactory>${TypeMockIntegration.TypeMockTestDriverFactory}</testDriverFactory>
             <name>TypeMock</name>
             <description>Runs tests in an external process with TypeMock.Net.  TypeMock.Net v4 must be installed for this mode to work.</description>
+          </parameters>
+        </component>
+
+        <component id="TypeMockIntegration.TypeMockTestDriverFactory"
+                   service="Gallio.Runner.Drivers.ITestDriverFactory, Gallio"
+                   type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+          <parameters>
+            <hostFactory>${TypeMockIntegration.TypeMockHostFactory}</hostFactory>
           </parameters>
         </component>
       </components>

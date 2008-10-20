@@ -21,18 +21,12 @@ using Gallio.TDNetRunner.Properties;
 
 namespace Gallio.TDNetRunner.Core
 {
-    public class LocalProxyTestRunner : IProxyTestRunner
+    public class LocalProxyTestRunner : BaseProxyTestRunner
     {
         private IProxyTestRunner testRunner;
 
         /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        /// <inheritdoc />
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (testRunner != null)
             {
@@ -44,7 +38,7 @@ namespace Gallio.TDNetRunner.Core
         }
 
         /// <inheritdoc />
-        public FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, string cref)
+        protected override FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref)
         {
             Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
             testListener.WriteLine(String.Format(Resources.RunnerNameAndVersion + "\n",
@@ -55,7 +49,7 @@ namespace Gallio.TDNetRunner.Core
         }
 
         /// <inheritdoc />
-        public void Abort()
+        protected override void AbortImpl()
         {
             if (testRunner != null)
                 testRunner.Abort();

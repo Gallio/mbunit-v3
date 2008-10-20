@@ -14,50 +14,38 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
-using Gallio.Runtime;
-using Gallio.Runtime.Hosting;
+using Gallio.Runner.Drivers;
 
 namespace Gallio.Runner
 {
     /// <summary>
-    /// A <see cref="ITestRunnerFactory" /> for <see cref="HostedTestRunner" /> using
-    /// different implementations of <see cref="IHostFactory" />.
+    /// A <see cref="ITestRunnerFactory" /> for <see cref="DefaultTestRunner" /> using
+    /// different implementations of <see cref="ITestDriver" />.
     /// </summary>
-    public class HostedTestRunnerFactory : ITestRunnerFactory
+    public class DefaultTestRunnerFactory : ITestRunnerFactory
     {
-        private readonly IHostFactory hostFactory;
-        private readonly ITestFramework[] frameworks;
-        private readonly IRuntime runtime;
+        private readonly ITestDriverFactory testDriverFactory;
         private readonly string name;
         private readonly string description;
 
         /// <summary>
         /// Creates a test runner factory.
         /// </summary>
-        /// <param name="hostFactory">The host factory</param>
-        /// <param name="frameworks">The test frameworks</param>
-        /// <param name="runtime">The runtime</param>
+        /// <param name="testDriverFactory">The test driver factory</param>
         /// <param name="name">The test runner factory name</param>
         /// <param name="description">The test runner factory description</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
-        /// <paramref name="frameworks"/>, <paramref name="runtime"/>, <paramref name="name"/> or <paramref name="description"/> is null</exception>
-        public HostedTestRunnerFactory(IHostFactory hostFactory, ITestFramework[] frameworks, IRuntime runtime, string name, string description)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/>,
+        /// <paramref name="name"/> or <paramref name="description"/> is null</exception>
+        public DefaultTestRunnerFactory(ITestDriverFactory testDriverFactory, string name, string description)
         {
-            if (hostFactory == null)
-                throw new ArgumentNullException("hostFactory");
-            if (frameworks == null)
-                throw new ArgumentNullException("frameworks");
-            if (runtime == null)
-                throw new ArgumentNullException("runtime");
+            if (testDriverFactory == null)
+                throw new ArgumentNullException("testDriverFactory");
             if (name == null)
                 throw new ArgumentNullException("name");
             if (description == null)
                 throw new ArgumentNullException("description");
 
-            this.hostFactory = hostFactory;
-            this.frameworks = frameworks;
-            this.runtime = runtime;
+            this.testDriverFactory = testDriverFactory;
             this.name = name;
             this.description = description;
         }
@@ -77,7 +65,7 @@ namespace Gallio.Runner
         /// <inheritdoc />
         public ITestRunner CreateTestRunner()
         {
-            return new HostedTestRunner(hostFactory, frameworks, runtime);
+            return new DefaultTestRunner(testDriverFactory);
         }
     }
 }

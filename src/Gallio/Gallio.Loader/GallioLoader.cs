@@ -138,6 +138,8 @@ namespace Gallio.Loader
         /// its singleton reference.
         /// </summary>
         /// <returns>The loader</returns>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         public static IGallioLoader Initialize()
         {
             return Initialize(null);
@@ -150,6 +152,8 @@ namespace Gallio.Loader
         /// <param name="runtimePath">The runtime path from which to load Gallio,
         /// or null to determine it automatically</param>
         /// <returns>The loader</returns>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         public static IGallioLoader Initialize(string runtimePath)
         {
             lock (syncRoot)
@@ -159,10 +163,16 @@ namespace Gallio.Loader
                     if (runtimePath == null)
                         runtimePath = GetDefaultRuntimePath();
 
-                    GallioLoader loader = new GallioLoader(runtimePath);
-                    loader.InstallAssemblyResolver();
-
-                    instance = loader;
+                    try
+                    {
+                        GallioLoader loader = new GallioLoader(runtimePath);
+                        loader.InstallAssemblyResolver();
+                        instance = loader;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw SafeException.Wrap(ex);
+                    }
                 }
 
                 return instance;
@@ -176,6 +186,8 @@ namespace Gallio.Loader
         /// <param name="appDomain">The AppDomain in which to initialize the loader</param>
         /// <returns>The loader</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         public static IGallioLoader InitializeRemote(AppDomain appDomain)
         {
             return InitializeRemote(appDomain, null);
@@ -190,6 +202,8 @@ namespace Gallio.Loader
         /// or null to determine it automatically</param>
         /// <returns>The loader</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="appDomain"/> is null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         public static IGallioLoader InitializeRemote(AppDomain appDomain, string runtimePath)
         {
             if (appDomain == null)
@@ -212,9 +226,12 @@ namespace Gallio.Loader
         /// </para>
         /// </remarks>
         /// <returns>The remote environment</returns>
+        /// <exception cref="InvalidOperationException">Thrown if Gallio does not appear to be installed</exception>
+        /// <exception cref="SafeException">Thrown if the operation could not be performed</exception>
         public static IGallioRemoteEnvironment CreateRemoteEnvironment()
         {
             string runtimePath = GetDefaultRuntimePath();
+
             AppDomainSetup appDomainSetup = new AppDomainSetup();
             appDomainSetup.ApplicationName = "Gallio";
             appDomainSetup.ApplicationBase = runtimePath;
@@ -247,8 +264,15 @@ namespace Gallio.Loader
             if (path == null)
                 throw new ArgumentNullException("path");
 
-            MethodInfo method = bootstrapType.GetMethod(BootstrapAddHintDirectoryMethodName);
-            method.Invoke(null, new object[] { path });
+            try
+            {
+                MethodInfo method = bootstrapType.GetMethod(BootstrapAddHintDirectoryMethodName);
+                method.Invoke(null, new object[] { path });
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />
@@ -263,8 +287,15 @@ namespace Gallio.Loader
             if (serviceType == null)
                 throw new ArgumentNullException("serviceType");
 
-            MethodInfo method = bootstrapType.GetMethod(BootstrapResolveMethodName);
-            return method.Invoke(null, new object[] { serviceType });
+            try
+            {
+                MethodInfo method = bootstrapType.GetMethod(BootstrapResolveMethodName);
+                return method.Invoke(null, new object[] { serviceType });
+            }
+            catch (Exception ex)
+            {
+                throw SafeException.Wrap(ex);
+            }
         }
 
         /// <inheritdoc />

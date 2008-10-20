@@ -27,6 +27,7 @@ using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 using Gallio.Collections;
+using Gallio.Properties;
 using Gallio.Reflection;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
@@ -97,54 +98,84 @@ namespace Gallio.Runtime.Windsor
 
             ThrowIfDisposed();
 
-            this.logger = logger;
-
-            container.Kernel.Resolver.AddSubResolver(new ArraySubDependencyResolver(container.Kernel));
-            container.Kernel.AddComponentInstance(@"Core.Logger", typeof(ILogger), logger);
-            container.Kernel.AddComponentInstance(@"Core.Runtime", typeof(IRuntime), this);
-            container.Kernel.AddComponentInstance(@"Core.AssemblyResolverManager", typeof(IAssemblyResolverManager), assemblyResolverManager);
-
-            if (runtimeSetup.ConfigurationFilePath != null)
+            try
             {
-                if (File.Exists(runtimeSetup.ConfigurationFilePath))
-                    LoadConfigurationFromFile(runtimeSetup.ConfigurationFilePath);
+                this.logger = logger;
+
+                container.Kernel.Resolver.AddSubResolver(new ArraySubDependencyResolver(container.Kernel));
+                container.Kernel.AddComponentInstance(@"Core.Logger", typeof(ILogger), logger);
+                container.Kernel.AddComponentInstance(@"Core.Runtime", typeof(IRuntime), this);
+                container.Kernel.AddComponentInstance(@"Core.AssemblyResolverManager", typeof(IAssemblyResolverManager),
+                    assemblyResolverManager);
+
+                if (runtimeSetup.ConfigurationFilePath != null)
+                {
+                    if (File.Exists(runtimeSetup.ConfigurationFilePath))
+                        LoadConfigurationFromFile(runtimeSetup.ConfigurationFilePath);
+                }
+                else
+                {
+                    if (ConfigurationManager.GetSection(GallioSectionHandler.SectionName) != null)
+                        LoadConfigurationFromResource(AppDomain.CurrentDomain.BaseDirectory,
+                            new ConfigResource(GallioSectionHandler.SectionName), GallioSectionHandler.SectionName,
+                            "Root");
+                }
+
+                ConfigureForDebugging();
+
+                SetRuntimePath();
+                SetInstallationConfiguration();
+
+                ConfigureDefaultPluginDirectories();
+                ConfigurePluginDirectoriesFromSetup();
+                ConfigurePluginDirectoriesFromInstallationConfiguration();
+
+                LoadAllPluginConfiguration();
+                RunContainerInstaller();
             }
-            else
+            catch (Exception ex)
             {
-                if (ConfigurationManager.GetSection(GallioSectionHandler.SectionName) != null)
-                    LoadConfigurationFromResource(AppDomain.CurrentDomain.BaseDirectory,
-                        new ConfigResource(GallioSectionHandler.SectionName), GallioSectionHandler.SectionName, "Root");
+                throw new RuntimeException(Resources.WindsorRuntime_RuntimeCannotBeInitialized, ex);
             }
-
-            ConfigureForDebugging();
-
-            SetRuntimePath();
-            SetInstallationConfiguration();
-
-            ConfigureDefaultPluginDirectories();
-            ConfigurePluginDirectoriesFromSetup();
-            ConfigurePluginDirectoriesFromInstallationConfiguration();
-
-            LoadAllPluginConfiguration();
-            RunContainerInstaller();
         }
 
         /// <inheritdoc />
         public object Resolve(Type service)
         {
-            return container.Resolve(service);
+            try
+            {
+                return container.Resolve(service);
+            }
+            catch (Exception ex)
+            {
+                throw new RuntimeException(String.Format(Resources.WindsorRuntime_CannotResolveServices, service), ex);
+            }
         }
 
         /// <inheritdoc />
         public T Resolve<T>()
         {
-            return container.Resolve<T>();
+            try
+            {
+                return container.Resolve<T>();
+            }
+            catch (Exception ex)
+            {
+                throw new RuntimeException(String.Format(Resources.WindsorRuntime_CannotResolveServices, typeof(T)), ex);
+            }
         }
 
         /// <inheritdoc />
         public T[] ResolveAll<T>()
         {
-            return container.Kernel.ResolveServices<T>();
+            try
+            {
+                return container.Kernel.ResolveServices<T>();
+            }
+            catch (Exception ex)
+            {
+                throw new RuntimeException(String.Format(Resources.WindsorRuntime_CannotResolveServices, typeof(T)), ex);
+            }
         }
 
         /// <inheritdoc />

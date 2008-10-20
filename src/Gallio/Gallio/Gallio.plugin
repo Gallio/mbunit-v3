@@ -69,9 +69,9 @@
         
         <component id="Core.LocalTestRunnerFactory"
                    service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                   type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
+                   type="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
           <parameters>
-            <hostFactory>${Core.LocalHostFactory}</hostFactory>
+            <testDriverFactory>${Core.LocalTestDriverFactory}</testDriverFactory>
             <name>Local</name>
             <description>Runs tests locally within the same process as the test runner application.</description>
           </parameters>
@@ -79,21 +79,45 @@
 
         <component id="Core.IsolatedAppDomainTestRunnerFactory"
                    service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                   type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
+                   type="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
           <parameters>
-            <hostFactory>${Core.IsolatedAppDomainHostFactory}</hostFactory>
+            <testDriverFactory>${Core.IsolatedAppDomainTestDriverFactory}</testDriverFactory>
             <name>IsolatedAppDomain</name>
             <description>Runs tests within an isolated AppDomain of the same process as the test runner application.  The additional isolation provided is not generally required since tests typically run in their own isolated AppDomain nested within the test runner.</description>
           </parameters>
         </component>
         
-        <component id="Core.ProcessTestRunnerFactory"
+        <component id="Core.IsolatedProcessTestRunnerFactory"
                    service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                   type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
+                   type="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
           <parameters>
-            <hostFactory>${Core.IsolatedProcessHostFactory}</hostFactory>
+            <testDriverFactory>${Core.IsolatedProcessTestDriverFactory}</testDriverFactory>
             <name>IsolatedProcess</name>
             <description>Runs tests within an isolated process external to the test runner.  This mode protects the test runner application from faults that may occur during test execution.</description>
+          </parameters>
+        </component>
+
+        <component id="Core.LocalTestDriverFactory"
+                   service="Gallio.Runner.Drivers.ITestDriver, Gallio"
+                   type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+          <parameters>
+            <hostFactory>${Core.LocalHostFactory}</hostFactory>
+          </parameters>
+        </component>
+
+        <component id="Core.IsolatedAppDomainTestDriverFactory"
+                   service="Gallio.Runner.Drivers.ITestDriver, Gallio"
+                   type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+          <parameters>
+            <hostFactory>${Core.IsolatedAppDomainHostFactory}</hostFactory>
+          </parameters>
+        </component>
+
+        <component id="Core.IsolatedProcessTestDriverFactory"
+                   service="Gallio.Runner.Drivers.ITestDriver, Gallio"
+                   type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+          <parameters>
+            <hostFactory>${Core.IsolatedProcessHostFactory}</hostFactory>
           </parameters>
         </component>
 

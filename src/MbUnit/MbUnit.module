@@ -13,6 +13,8 @@
     <CSharpProject Include="MbUnit.Compatibility\MbUnit.Compatibility.csproj" />
     
     <CSharpProject Include="MbUnit.TestResources\MbUnit.TestResources.csproj" />
+    <CSharpProject Include="MbUnit.TestResources.x86\MbUnit.TestResources.x86.csproj" />
+    <CSharpProject Include="MbUnit.TestResources.x64\MbUnit.TestResources.x64.csproj" />
     <CSharpProject Include="MbUnit.Tests\MbUnit.Tests.csproj" />
   </ItemGroup>
 

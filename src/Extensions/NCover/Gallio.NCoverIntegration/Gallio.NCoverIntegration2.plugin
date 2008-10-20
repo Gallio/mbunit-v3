@@ -13,11 +13,19 @@
 
         <component id="NCoverIntegration2.NCoverTestRunnerFactory"
                    service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                   type="Gallio.Runner.HostedTestRunnerFactory, Gallio">
+                   type="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
           <parameters>
-            <hostFactory>${NCoverIntegration2.NCoverHostFactory}</hostFactory>
+            <testDriverFactory>${NCoverIntegration2.NCoverTestDriverFactory}</testDriverFactory>
             <name>NCover2</name>
             <description>Runs tests in an external process with NCover v2.  The NCover report is written to the current directory as a file named 'Coverage.xml'.  NCover v2 must be installed separately.</description>
+          </parameters>
+        </component>
+
+        <component id="NCoverIntegration2.NCoverTestDriverFactory"
+                   service="Gallio.Runner.Drivers.ITestDriverFactory, Gallio"
+                   type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+          <parameters>
+            <hostFactory>${NCoverIntegration2.NCoverHostFactory}</hostFactory>
           </parameters>
         </component>
       </components>

@@ -28,7 +28,7 @@ using Gallio.TDNetRunner.Properties;
 
 namespace Gallio.TDNetRunner.Core
 {
-    public class RemoteProxyTestRunner : MarshalByRefObject, IProxyTestRunner
+    public class RemoteProxyTestRunner : BaseProxyTestRunner, IProxyTestRunner
     {
         private const string ShortReportType = @"html-condensed";
         private const string LongReportType = @"html";
@@ -41,18 +41,18 @@ namespace Gallio.TDNetRunner.Core
             launcher = new TestLauncher();
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
             launcher = null;
         }
 
-        public void Abort()
+        protected override void AbortImpl()
         {
             if (launcher != null)
                 launcher.Cancel();
         }
 
-        public FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, string cref)
+        protected override FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref)
         {
             if (cref == null)
                 return RunAssembly(testListener, assemblyPath);
