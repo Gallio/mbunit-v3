@@ -16,7 +16,6 @@
 using System;
 using System.Xml;
 using Gallio.ReSharperRunner.Provider.Facade;
-using JetBrains.ReSharper.TaskRunnerFramework;
 
 namespace Gallio.ReSharperRunner.Provider.Tasks
 {

@@ -24,9 +24,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("A sample test assembly for Gallio Pattern Test Framework.")]
 [assembly: AssemblyConfiguration("Test")]
 [assembly: AssemblyCompany("MbUnit Project")]
-[assembly: AssemblyProduct("MbUnit")]
+[assembly: AssemblyProduct("Gallio")]
 [assembly: AssemblyCopyright("Copyright © 2005-2008 Gallio Project - http://www.gallio.org/")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("Gallio")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyInformationalVersion("1.2.3.4")]
 

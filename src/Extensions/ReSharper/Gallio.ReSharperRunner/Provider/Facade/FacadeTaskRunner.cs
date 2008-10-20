@@ -15,21 +15,30 @@
 
 using System;
 using System.Threading;
+using Gallio.Loader;
 using JetBrains.ReSharper.TaskRunnerFramework;
 
 namespace Gallio.ReSharperRunner.Provider.Facade
 {
     /// <summary>
+    /// <para>
     /// Runs remote tasks via the facade.
+    /// </para>
+    /// <para>
+    /// The implementation creates a facade for the ReSharper interfaces used
+    /// by Gallio then kicks off the work in a fresh AppDomain.  This ensures
+    /// that the Gallio runtime environment is not polluted with test assemblies
+    /// or ReSharper dependencies that may interfere with test execution.
+    /// </para>
     /// </summary>
     /// <remarks>
     /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
     /// </remarks>
-    public abstract class BaseFacadeTaskRunner : RecursiveRemoteTaskRunner
+    public class FacadeTaskRunner : RecursiveRemoteTaskRunner
     {
         private TaskResult executeResult;
 
-        public BaseFacadeTaskRunner(IRemoteTaskServer server)
+        public FacadeTaskRunner(IRemoteTaskServer server)
             : base(server)
         {
             executeResult = TaskResult.Error;
@@ -63,6 +72,15 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             executeResult = FacadeUtils.ToTaskResult(Execute(facadeTaskServer, facadeTask));
         }
 
-        protected abstract FacadeTaskResult Execute(IFacadeTaskServer server, FacadeTask task);
+        protected virtual FacadeTaskResult Execute(IFacadeTaskServer server, FacadeTask task)
+        {
+            IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
+
+            Type taskRunnerType = typeof(RemoteFacadeTaskRunner);
+            IRemoteFacadeTaskRunner taskRunner = (IRemoteFacadeTaskRunner)environment.AppDomain.CreateInstanceAndUnwrap(
+                taskRunnerType.Assembly.FullName, taskRunnerType.FullName);
+
+            return taskRunner.Execute(server, task);
+        }
     }
 }

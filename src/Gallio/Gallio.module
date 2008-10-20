@@ -30,10 +30,10 @@
     <Binary Include="Gallio\bin\Gallio.XmlSerializers.dll" />
     <Binary Include="Gallio\Gallio.plugin" />
 
-    <Binary Include="Gallio.Host\bin\Gallio.Host.exe" />
+    <Binary Include="Gallio.Host\bin\msil\Gallio.Host.exe" />
     <Binary Include="Gallio.Host\Gallio.Host.exe.config" />
 
-    <Binary Include="Gallio.Host\bin\Gallio.Host.x86.exe" />
+    <Binary Include="Gallio.Host\bin\x86\Gallio.Host.x86.exe" />
     <Binary Include="Gallio.Host\Gallio.Host.x86.exe.config" />
 
     <Binary Include="Gallio.Loader\bin\Gallio.Loader.dll" />

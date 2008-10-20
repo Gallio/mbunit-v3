@@ -66,7 +66,11 @@ namespace Gallio.Echo.Tests
         {
             string testAssemblyPath = AssemblyUtils.GetAssemblyLocalPath(typeof(SimpleTest).Assembly);
             string workingDirectory = Path.GetDirectoryName((AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)));
+#if DEBUG
             string executablePath = Path.Combine(workingDirectory, "Gallio.Echo.exe");
+#else
+            string executablePath = Path.Combine(RuntimeAccessor.Instance.GetRuntimeSetup().RuntimePath, "Gallio.Echo.exe");
+#endif
 
             ProcessTask task = Tasks.StartProcessTask(executablePath,
                 "\"" + testAssemblyPath + "\" /pd:\"" + RuntimeAccessor.RuntimePath + "\" " + options,

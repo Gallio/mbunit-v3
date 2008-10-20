@@ -308,7 +308,7 @@ namespace Gallio.ReSharperRunner.Provider
             /// </summary>
             public RemoteTaskRunnerInfo GetTaskRunnerInfo()
             {
-                return new RemoteTaskRunnerInfo(typeof(GallioTaskRunner));
+                return new RemoteTaskRunnerInfo(typeof(FacadeTaskRunner));
             }
 
             /// <summary>

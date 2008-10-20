@@ -132,7 +132,7 @@
     <Compile Include="Provider\Actions\GallioAction.cs" />
     <Compile Include="Provider\Actions\ShowReportAction.cs" />
     <Compile Include="Provider\Facade\AdapterFacadeTaskServer.cs" />
-    <Compile Include="Provider\Facade\BaseFacadeTaskRunner.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskRunner.cs" />
     <Compile Include="Provider\Facade\FacadeTaskWrapper.cs" />
     <Compile Include="Provider\Facade\FacadeUtils.cs" />
     <Compile Include="Provider\Facade\IFacadeTaskServer.cs" />
@@ -146,6 +146,8 @@
     <Compile Include="Provider\Daemons\ErrorAnnotationHighlighting.cs" />
     <Compile Include="Provider\Daemons\InfoAnnotationHighlighting.cs" />
     <Compile Include="Provider\Daemons\WarningAnnotationHighlighting.cs" />
+    <Compile Include="Provider\Facade\IRemoteFacadeTaskRunner.cs" />
+    <Compile Include="Provider\Facade\RemoteFacadeTaskRunner.cs" />
     <Compile Include="Provider\GallioTestElement.cs" />
     <Compile Include="Provider\GallioTestPresenter.cs" />
     <Compile Include="Provider\GallioTestProvider.cs" />
@@ -153,7 +155,6 @@
     <Compile Include="Provider\ReSharperExceptionDialogSuppressor.cs" />
     <Compile Include="Provider\SessionCache.cs" />
     <Compile Include="Provider\Tasks\GallioTestRunner.cs" />
-    <Compile Include="Provider\Tasks\GallioTaskRunner.cs" />
     <Compile Include="Provider\Tasks\GallioTestAssemblyTask.cs" />
     <Compile Include="Provider\Tasks\GallioTestExplicitTask.cs" />
     <Compile Include="Provider\Tasks\GallioTestItemTask.cs" />
