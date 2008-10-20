@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MbUnit.TestResources")]
-[assembly: AssemblyDescription("A sample test assembly for the MbUnit Test Framework.")]
+[assembly: AssemblyDescription("A sample test assembly for Gallio Pattern Test Framework.")]
 [assembly: AssemblyConfiguration("Test")]
 [assembly: AssemblyCompany("MbUnit Project")]
 [assembly: AssemblyProduct("MbUnit")]
