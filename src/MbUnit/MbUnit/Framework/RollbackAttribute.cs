@@ -49,6 +49,20 @@ namespace MbUnit.Framework
     /// semantics.  Just create a new subclass of <see cref="TestDecoratorAttribute" /> and override the
     /// <see cref="TestDecoratorAttribute.Execute" /> method to wrap test execution as required.
     /// </para>
+    /// <para>
+    /// Here are a few troubleshooting tips in case Rollback is not working properly for
+    /// your application:
+    /// <list type="bullet">
+    /// <item>Ensure that the subject under test enlists its work in the current "ambient"
+    /// transaction managed by the <see cref="TransactionManager" />.  Not all databases
+    /// support these transactions.</item>
+    /// <item>Ensure that the Distributed Transaction Coordinator service is enabled and
+    /// running if you are using COM+ transactions.</item>
+    /// <item>Ensure that the database is configured to enable distributed transactions.
+    /// This feature is sometimes disabled for performance reasons to prevent long-running
+    /// distributed transactions from locking database resources.</item>
+    /// </list>
+    /// </para>
     /// </remarks>
     /// <example>
     /// <para>
