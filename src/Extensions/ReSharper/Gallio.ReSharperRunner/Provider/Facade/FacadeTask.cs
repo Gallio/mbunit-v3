@@ -64,8 +64,9 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         /// Executes the task and its children recursively.
         /// </summary>
         /// <param name="server">The task server</param>
+        /// <param name="config">The task executor configuration</param>
         /// <returns>The task result</returns>
-        public virtual FacadeTaskResult Execute(IFacadeTaskServer server)
+        public virtual FacadeTaskResult Execute(IFacadeTaskServer server, FacadeTaskExecutorConfiguration config)
         {
             throw new NotSupportedException("This task is not executable.");
         }

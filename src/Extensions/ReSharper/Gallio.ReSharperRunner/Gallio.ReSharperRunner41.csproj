@@ -132,6 +132,7 @@
     <Compile Include="Provider\Actions\GallioAction.cs" />
     <Compile Include="Provider\Actions\ShowReportAction.cs" />
     <Compile Include="Provider\Facade\AdapterFacadeTaskServer.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskExecutorConfiguration.cs" />
     <Compile Include="Provider\Facade\FacadeTaskRunner.cs" />
     <Compile Include="Provider\Facade\FacadeTaskWrapper.cs" />
     <Compile Include="Provider\Facade\FacadeUtils.cs" />

@@ -48,6 +48,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
     internal sealed class GallioTestRunner
     {
         private readonly IFacadeTaskServer server;
+        private readonly FacadeTaskExecutorConfiguration config;
         private readonly string sessionId;
 
         private readonly HashSetOfString assemblyLocations;
@@ -55,9 +56,10 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         private readonly Dictionary<string, TestMonitor> testMonitors;
         private readonly HashSetOfString explicitTestIds;
 
-        public GallioTestRunner(IFacadeTaskServer server)
+        public GallioTestRunner(IFacadeTaskServer server, FacadeTaskExecutorConfiguration config)
         {
             this.server = server;
+            this.config = config;
             sessionId = server.SessionId;
 
             assemblyLocations = new HashSetOfString();
@@ -112,6 +114,9 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             // Set parameters.
             TestPackageConfig packageConfig = new TestPackageConfig();
             packageConfig.AssemblyFiles.AddRange(assemblyLocations);
+            packageConfig.HostSetup.ShadowCopy = config.ShadowCopy;
+            packageConfig.HostSetup.ApplicationBaseDirectory = config.AssemblyFolder;
+            packageConfig.HostSetup.WorkingDirectory = config.AssemblyFolder;
 
             TestRunnerOptions testRunnerOptions = new TestRunnerOptions();
 

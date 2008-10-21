@@ -122,6 +122,7 @@
     <Compile Include="Provider\Facade\AdapterFacadeTaskServer.cs" />
     <Compile Include="Provider\Facade\FacadeTask.cs" />
     <Compile Include="Provider\Facade\FacadeTaskException.cs" />
+    <Compile Include="Provider\Facade\FacadeTaskExecutorConfiguration.cs" />
     <Compile Include="Provider\Facade\FacadeTaskOutputType.cs" />
     <Compile Include="Provider\Facade\FacadeTaskResult.cs" />
     <Compile Include="Provider\Facade\FacadeTaskRunner.cs" />

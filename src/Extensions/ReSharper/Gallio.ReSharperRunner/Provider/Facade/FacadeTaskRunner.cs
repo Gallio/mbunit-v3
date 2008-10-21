@@ -68,11 +68,17 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         {
             AdapterFacadeTaskServer facadeTaskServer = new AdapterFacadeTaskServer(Server);
 
+            FacadeTaskExecutorConfiguration config = new FacadeTaskExecutorConfiguration()
+            {
+                ShadowCopy = TaskExecutor.Configuration.ShadowCopy,
+                AssemblyFolder = TaskExecutor.Configuration.AssemblyFolder
+            };
+
             FacadeTask facadeTask = facadeTaskServer.MapTasks(node);
-            executeResult = FacadeUtils.ToTaskResult(Execute(facadeTaskServer, facadeTask));
+            executeResult = FacadeUtils.ToTaskResult(Execute(facadeTaskServer, facadeTask, config));
         }
 
-        protected virtual FacadeTaskResult Execute(IFacadeTaskServer server, FacadeTask task)
+        protected virtual FacadeTaskResult Execute(IFacadeTaskServer server, FacadeTask task, FacadeTaskExecutorConfiguration config)
         {
             IGallioRemoteEnvironment environment = EnvironmentManager.GetSharedEnvironment();
 
@@ -80,7 +86,7 @@ namespace Gallio.ReSharperRunner.Provider.Facade
             IRemoteFacadeTaskRunner taskRunner = (IRemoteFacadeTaskRunner)environment.AppDomain.CreateInstanceAndUnwrap(
                 taskRunnerType.Assembly.FullName, taskRunnerType.FullName);
 
-            return taskRunner.Execute(server, task);
+            return taskRunner.Execute(server, task, config);
         }
     }
 }
