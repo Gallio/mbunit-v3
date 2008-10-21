@@ -263,8 +263,6 @@
 
     <Gallio Condition="'$(Runtime)'=='CLR'"
             Assemblies="@(TestAssembly)"
-            WorkingDirectory="$(TempDir)"
-            ApplicationBaseDirectory="$(BuildDir)"
             ReportDirectory="$(ReportDir)"
             ReportTypes="$(ReportTypes)"
             RunnerType="$(TestRunnerType)"
