@@ -135,6 +135,7 @@
     <Compile Include="Framework\AssertTest_Reflection.cs" />
     <Compile Include="Framework\AssertTest_Relations.cs" />
     <Compile Include="Framework\BaseAssertTest.cs" />
+    <Compile Include="Framework\IsolationTest.cs" />
     <Compile Include="Framework\RollbackAttributeTest.cs" />
     <None Include="MbUnit.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

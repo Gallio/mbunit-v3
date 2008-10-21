@@ -61,6 +61,7 @@
     <Compile Include="Framework\Assertions\AssertionFailureBuilderTest.cs" />
     <Compile Include="Framework\Assertions\AssertionFailureTest.cs" />
     <Compile Include="Framework\ComparisonSemanticsTest.cs" />
+    <Compile Include="Framework\Pattern\ProcessIsolationTest.cs" />
     <Compile Include="Framework\Text\SubstringTest.cs" />
     <Compile Include="Framework\Text\DiffSetTest.cs" />
     <Compile Include="Framework\Text\DiffTest.cs" />

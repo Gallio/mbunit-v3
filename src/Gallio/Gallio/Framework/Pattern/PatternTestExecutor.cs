@@ -101,50 +101,58 @@ namespace Gallio.Framework.Pattern
         {
             TestOutcome outcome = TestOutcome.Error;
 
-            DoWithTimeout(sandbox, test.Timeout, delegate
+            DoWithProcessIsolation(delegate
             {
-                DoWithApartmentState(test.ApartmentState, delegate
+                DoWithTimeout(sandbox, test.Timeout, delegate
                 {
-                    IPatternTestHandler testHandler = test.TestActions;
-
-                    if (testHandlerDecorator != null)
-                        outcome = testHandlerDecorator(sandbox, ref testHandler);
-                    else
-                        outcome = TestOutcome.Passed;
-
-                    if (outcome.Status == TestStatus.Passed)
+                    DoWithApartmentState(test.ApartmentState, delegate
                     {
-                        PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep, test.Name, test.CodeElement, true);
-                        PatternTestState testState = new PatternTestState(primaryTestStep, testHandler, converter, formatter, testCommand.IsExplicit);
+                        IPatternTestHandler testHandler = test.TestActions;
 
-                        bool invisible = true;
+                        if (testHandlerDecorator != null)
+                            outcome = testHandlerDecorator(sandbox, ref testHandler);
+                        else
+                            outcome = TestOutcome.Passed;
 
-                        outcome = outcome.CombineWith(DoBeforeTest(sandbox, testState));
                         if (outcome.Status == TestStatus.Passed)
                         {
-                            bool reusePrimaryTestStep = !testState.BindingContext.HasBindings;
-                            if (!reusePrimaryTestStep)
-                                primaryTestStep.IsTestCase = false;
+                            PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep, test.Name,
+                                test.CodeElement, true);
+                            PatternTestState testState = new PatternTestState(primaryTestStep, testHandler, converter,
+                                formatter, testCommand.IsExplicit);
 
-                            invisible = false;
-                            TestContext context = TestContext.PrepareContext(testCommand.StartStep(primaryTestStep), sandbox);
-                            testState.SetInContext(context);
+                            bool invisible = true;
 
-                            outcome = outcome.CombineWith(DoInitializeTest(context, testState));
-
+                            outcome = outcome.CombineWith(DoBeforeTest(sandbox, testState));
                             if (outcome.Status == TestStatus.Passed)
-                                outcome = outcome.CombineWith(RunTestInstances(testCommand, context, testState, reusePrimaryTestStep));
+                            {
+                                bool reusePrimaryTestStep = !testState.BindingContext.HasBindings;
+                                if (!reusePrimaryTestStep)
+                                    primaryTestStep.IsTestCase = false;
 
-                            outcome = outcome.CombineWith(DoDisposeTest(context, testState));
+                                invisible = false;
+                                TestContext context = TestContext.PrepareContext(
+                                    testCommand.StartStep(primaryTestStep), sandbox);
+                                testState.SetInContext(context);
 
-                            context.FinishStep(outcome);
+                                outcome = outcome.CombineWith(DoInitializeTest(context, testState));
+
+                                if (outcome.Status == TestStatus.Passed)
+                                    outcome =
+                                        outcome.CombineWith(RunTestInstances(testCommand, context, testState,
+                                            reusePrimaryTestStep));
+
+                                outcome = outcome.CombineWith(DoDisposeTest(context, testState));
+
+                                context.FinishStep(outcome);
+                            }
+
+                            outcome = outcome.CombineWith(DoAfterTest(sandbox, testState));
+
+                            if (invisible)
+                                PublishOutcomeFromInvisibleTest(testCommand, primaryTestStep, ref outcome);
                         }
-
-                        outcome = outcome.CombineWith(DoAfterTest(sandbox, testState));
-
-                        if (invisible)
-                            PublishOutcomeFromInvisibleTest(testCommand, primaryTestStep, ref outcome);
-                    }
+                    });
                 });
             });
 
@@ -561,6 +569,14 @@ namespace Gallio.Framework.Pattern
             TestLog.Failures.WriteException(ex, message);
             context.FinishStep(TestOutcome.Error, null);
             return TestOutcome.Error;
+        }
+
+        private static void DoWithProcessIsolation(Action action)
+        {
+            using (new ProcessIsolation())
+            {
+                action();
+            }
         }
 
         private static void DoWithTimeout(Sandbox sandbox, TimeSpan? timeout, Action action)
