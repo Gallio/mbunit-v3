@@ -98,7 +98,7 @@
         </component>
 
         <component id="Core.LocalTestDriverFactory"
-                   service="Gallio.Runner.Drivers.ITestDriver, Gallio"
+                   service="Gallio.Runner.Drivers.ITestDriverFactory, Gallio"
                    type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
           <parameters>
             <hostFactory>${Core.LocalHostFactory}</hostFactory>
@@ -106,7 +106,7 @@
         </component>
 
         <component id="Core.IsolatedAppDomainTestDriverFactory"
-                   service="Gallio.Runner.Drivers.ITestDriver, Gallio"
+                   service="Gallio.Runner.Drivers.ITestDriverFactory, Gallio"
                    type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
           <parameters>
             <hostFactory>${Core.IsolatedAppDomainHostFactory}</hostFactory>
@@ -114,7 +114,7 @@
         </component>
 
         <component id="Core.IsolatedProcessTestDriverFactory"
-                   service="Gallio.Runner.Drivers.ITestDriver, Gallio"
+                   service="Gallio.Runner.Drivers.ITestDriverFactory, Gallio"
                    type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
           <parameters>
             <hostFactory>${Core.IsolatedProcessHostFactory}</hostFactory>
