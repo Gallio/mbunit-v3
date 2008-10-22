@@ -190,6 +190,7 @@ namespace Gallio.CSUnitAdapter.Model
                 hostSetup.ApplicationBaseDirectory = Path.GetDirectoryName(assemblyPath);
                 hostSetup.WorkingDirectory = hostSetup.ApplicationBaseDirectory;
                 hostSetup.ShadowCopy = true;
+                hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.AppBase;
 
                 string configFile = assemblyPath + ".config";
                 if (File.Exists(configFile))

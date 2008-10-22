@@ -14,27 +14,36 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Xml.Serialization;
 
-namespace Gallio.ReSharperRunner.Provider.Facade
+namespace Gallio.Runtime.Hosting
 {
     /// <summary>
-    /// Specifies task execution configuration information.
+    /// <para>
+    /// Specifies where a <see cref="IHost" /> should store the temporary configuration file
+    /// it generates when it is being initialized.
+    /// </para>
     /// </summary>
-    /// <remarks>
-    /// This type is part of a facade that decouples the Gallio test runner from the ReSharper interfaces.
-    /// </remarks>
-    [Serializable]
-    public class FacadeTaskExecutorConfiguration
+    public enum ConfigurationFileLocation
     {
         /// <summary>
-        /// Gets or sets whether task assemblies should be shadow-copied.
+        /// Do not create a configuration file.
         /// </summary>
-        public bool ShadowCopy { get; set; }
+        [XmlEnum("none")]
+        None = 0,
 
         /// <summary>
-        /// Gets or sets the folder to use as the base directory for task assemblies.
-        /// Or null if the project's assembly should be used.
+        /// Stores the configuration file in the user's temporary directory.
         /// </summary>
-        public string AssemblyFolder { get; set; }
+        [XmlEnum("temp")]
+        Temp = 1,
+
+        /// <summary>
+        /// Stores the configuration file in the application base directory of the hosted components.
+        /// </summary>
+        [XmlEnum("appBase")]
+        AppBase = 2,
     }
 }

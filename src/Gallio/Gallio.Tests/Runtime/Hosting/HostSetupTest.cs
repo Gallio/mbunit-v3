@@ -28,10 +28,21 @@ namespace Gallio.Tests.Runtime.Hosting
     public class HostSetupTest
     {
         [Test]
-        public void WriteTemporaryConfigurationFile_UsesApplicationBaseDirectoryWhenSpecified()
+        public void WriteTemporaryConfigurationFile_ReturnsNullWhenNone()
+        {
+            HostSetup setup = new HostSetup();
+            setup.ConfigurationFileLocation = ConfigurationFileLocation.None;
+
+            Assert.IsNull(setup.WriteTemporaryConfigurationFile());
+        }
+
+        [Test]
+        public void WriteTemporaryConfigurationFile_UsesApplicationBaseDirectoryWhenRequested()
         {
             HostSetup setup = new HostSetup();
             setup.ApplicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            setup.ConfigurationFileLocation = ConfigurationFileLocation.AppBase;
+
             string path = setup.WriteTemporaryConfigurationFile();
             try
             {
@@ -46,9 +57,20 @@ namespace Gallio.Tests.Runtime.Hosting
         }
 
         [Test]
+        public void WriteTemporaryConfigurationFile_ThrowsIfApplicationBaseDirectoryMissingButRequested()
+        {
+            HostSetup setup = new HostSetup();
+            setup.ConfigurationFileLocation = ConfigurationFileLocation.AppBase;
+
+            Assert.Throws<InvalidOperationException>(() => setup.WriteTemporaryConfigurationFile());
+        }
+
+        [Test]
         public void WriteTemporaryConfigurationFile_UsesTempFolderByDefault()
         {
             HostSetup setup = new HostSetup();
+            setup.ConfigurationFileLocation = ConfigurationFileLocation.Temp;
+
             string path = setup.WriteTemporaryConfigurationFile();
             try
             {

@@ -105,7 +105,10 @@ namespace Gallio.Runner.Drivers
         protected override IEnumerable<Partition> CreatePartitions(TestPackageConfig testPackageConfig)
         {
             ICollection<TestDomainSetup> testDomains = GetTestDomains(testPackageConfig);
-            ProcessorArchitecture arch = GetCommonProcessorArchitecture(testDomains);
+
+            ProcessorArchitecture arch = testPackageConfig.HostSetup.ProcessorArchitecture;
+            if (arch == ProcessorArchitecture.None)
+                arch = GetCommonProcessorArchitecture(testDomains);
 
             remoteHost = CreateRemoteHost(testPackageConfig.HostSetup.WorkingDirectory,
                 testPackageConfig.HostSetup.ShadowCopy, arch);
@@ -129,6 +132,7 @@ namespace Gallio.Runner.Drivers
             hostSetup.WorkingDirectory = workingDirectory;
             hostSetup.ShadowCopy = shadowCopy;
             hostSetup.ProcessorArchitecture = arch;
+            hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.Temp;
 
             ConfigureHost(hostSetup);
 

@@ -242,6 +242,7 @@
     <Compile Include="Runner\Sessions\ITestSession.cs" />
     <Compile Include="Runner\Sessions\ITestSessionManager.cs" />
     <Compile Include="Runner\Sessions\LocalTestRun.cs" />
+    <Compile Include="Runtime\Hosting\ConfigurationFileLocation.cs" />
     <Compile Include="Runtime\Logging\EventLogger.cs" />
     <Compile Include="Runtime\Logging\LogMessageEventArgs.cs" />
     <Compile Include="Runner\Sessions\TestRunEventArgs.cs" />

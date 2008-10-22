@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using System.Xml.Serialization;
 using Gallio.Runtime.Hosting;
@@ -23,10 +24,12 @@ using Gallio.Utilities;
 namespace Gallio.Model
 {
     /// <summary>
+    /// <para>
     /// A test package configuration specifies the options used by a test runner to load tests
     /// into memory for execution.  The package may contain multiple test assemblies
     /// that are to be loaded together for test execution.  It can also be serialized as
     /// XML or using .Net remoting for persistence and remote operation.
+    /// </para>
     /// </summary>
     /// <remarks author="jeff">
     /// Someday a test package might allow other kinds of resources to be specified
@@ -88,6 +91,19 @@ namespace Gallio.Model
         /// <summary>
         /// Gets or sets the host setup parameters.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The defaults are as follows:
+        /// <list type="bullet">
+        /// <item>Use the test assembly directory as the application base directory and working directory.
+        /// (signaled by specifying null values in the host setup).</item>
+        /// <item>No shadow copying.</item>
+        /// <item>Store test assembly configuration files in the application base directory.</item>
+        /// <item>Use auto-detected processor architecture (signaled by specifying <see cref="ProcessorArchitecture.None" />
+        /// in the host setup).</item>
+        /// </list>
+        /// </para>
+        /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlElement("hostSetup", IsNullable = false)]
         public HostSetup HostSetup
@@ -95,7 +111,7 @@ namespace Gallio.Model
             get
             {
                 if (hostSetup == null)
-                    Interlocked.CompareExchange(ref hostSetup, new HostSetup(), null);
+                    Interlocked.CompareExchange(ref hostSetup, CreateDefaultHostSetup(), null);
                 return hostSetup;
             }
             set
@@ -104,6 +120,15 @@ namespace Gallio.Model
                     throw new ArgumentNullException("value");
                 hostSetup = value;
             }
+        }
+
+        private static HostSetup CreateDefaultHostSetup()
+        {
+            return new HostSetup
+            {
+                ConfigurationFileLocation = ConfigurationFileLocation.AppBase,
+                ProcessorArchitecture = ProcessorArchitecture.None
+            };
         }
 
         /// <summary>

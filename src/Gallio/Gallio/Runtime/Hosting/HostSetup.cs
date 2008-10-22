@@ -33,6 +33,7 @@ namespace Gallio.Runtime.Hosting
         private string applicationBaseDirectory;
         private string workingDirectory;
         private bool shadowCopy;
+        private ConfigurationFileLocation configurationFileLocation = ConfigurationFileLocation.Temp;
         private HostConfiguration configuration;
         private ProcessorArchitecture processorArchitecture = ProcessorArchitecture.MSIL;
 
@@ -94,11 +95,23 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Gets or sets whether assembly shadow copying is enabled.
         /// </summary>
+        /// <value>True if shadow copying is enabled.  Default is <c>false</c>.</value>
         [XmlAttribute("enableShadowCopy")]
         public bool ShadowCopy
         {
             get { return shadowCopy; }
             set { shadowCopy = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets where the host should write out the configuration file for the hosted components.
+        /// </summary>
+        /// <value>The configuration file location.  Default is <see cref="Hosting.ConfigurationFileLocation.Temp" />.</value>
+        [XmlAttribute("configurationFileLocation")]
+        public ConfigurationFileLocation ConfigurationFileLocation
+        {
+            get { return configurationFileLocation; }
+            set { configurationFileLocation = value; }
         }
 
         /// <summary>
@@ -125,7 +138,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Gets or sets the processor architecture that the host should target, when supported.
         /// </summary>
-        /// <value>The processor architecture, defaults to <see cref="System.Reflection.ProcessorArchitecture.MSIL" /></value>
+        /// <value>The processor architecture.  Default is <see cref="System.Reflection.ProcessorArchitecture.MSIL" /></value>
         [XmlAttribute("processorArchitecture")]
         public ProcessorArchitecture ProcessorArchitecture
         {
@@ -164,33 +177,49 @@ namespace Gallio.Runtime.Hosting
 
         /// <summary>
         /// <para>
-        /// Writes a temporary configuration file for the application to disk and returns its path.
-        /// The configuration file is created in the <see cref="ApplicationBaseDirectory" /> if it is not
-        /// null, otherwise it is created in the current user's temp directory.
+        /// Writes a temporary configuration file for the application to disk and returns its path
+        /// based on <see cref="ConfigurationFileLocation" />.  The file is created with a unique
+        /// name each time.
         /// </para>
         /// <para>
         /// The file should be deleted by the caller when no longer required.
         /// </para>
         /// </summary>
-        /// <returns>The full path of the configuration file that was written</returns>
+        /// <returns>The full path of the configuration file that was written, or null if no file was written</returns>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="ApplicationBaseDirectory"/>
+        /// is <c>null</c> but <see cref="ConfigurationFileLocation" /> is <see cref="Hosting.ConfigurationFileLocation.AppBase" />.</exception>
         /// <exception cref="IOException">Thrown if the configuration file could not be written</exception>
         public string WriteTemporaryConfigurationFile()
         {
             string path = GetTemporaryConfigurationFilePath();
-            Configuration.WriteToFile(path);
+            if (path != null)
+                Configuration.WriteToFile(path);
             return path;
         }
 
         private string GetTemporaryConfigurationFilePath()
         {
-            if (applicationBaseDirectory == null)
-                return Path.GetTempFileName();
-
-            for (; ; )
+            switch (ConfigurationFileLocation)
             {
-                string path = Path.Combine(GetCanonicalApplicationBaseDirectory(null), Hash64.CreateUniqueHash() + ".tmp.config");
-                if (!File.Exists(path))
-                    return path;
+                case ConfigurationFileLocation.None:
+                    return null;
+
+                case ConfigurationFileLocation.Temp:
+                    return Path.GetTempFileName();
+
+                case ConfigurationFileLocation.AppBase:
+                    if (applicationBaseDirectory == null)
+                        throw new InvalidOperationException("The configuration file was to be written to the application base directory but none was specified in the host setup.");
+
+                    for (; ; )
+                    {
+                        string path = Path.Combine(GetCanonicalApplicationBaseDirectory(null), Hash64.CreateUniqueHash() + ".tmp.config");
+                        if (!File.Exists(path))
+                            return path;
+                    }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
