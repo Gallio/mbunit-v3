@@ -14,18 +14,17 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
+using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Runtime.Hosting
 {
     [TestsOn(typeof(HostSetup))]
-    public class HostSetupTest
+    [VerifyEqualityContract(typeof(HostSetup), ImplementsOperatorOverloads = false)]
+    public class HostSetupTest : IEquivalenceClassProvider<HostSetup>
     {
         [Test]
         public void WriteTemporaryConfigurationFile_ReturnsNullWhenNone()
@@ -90,6 +89,47 @@ namespace Gallio.Tests.Runtime.Hosting
             Assert.AreEqual(ProcessorArchitecture.MSIL, setup.ProcessorArchitecture);
             setup.ProcessorArchitecture = ProcessorArchitecture.X86;
             Assert.AreEqual(ProcessorArchitecture.X86, setup.ProcessorArchitecture);
+        }
+
+        [Test]
+        public void Copy()
+        {
+            HostSetup setup = new HostSetup
+            {
+                ApplicationBaseDirectory = @"C:\AppBase",
+                Configuration = { ConfigurationXml = "<xml/>" },
+                ConfigurationFileLocation = ConfigurationFileLocation.AppBase,
+                ProcessorArchitecture = ProcessorArchitecture.Amd64,
+                ShadowCopy = true,
+                WorkingDirectory = @"C:\WorkingDir"
+            };
+
+            HostSetup copy = setup.Copy();
+
+            Assert.AreEqual(setup.ApplicationBaseDirectory, copy.ApplicationBaseDirectory);
+            Assert.AreEqual(setup.Configuration, copy.Configuration);
+            Assert.AreEqual(setup.ConfigurationFileLocation, copy.ConfigurationFileLocation);
+            Assert.AreEqual(setup.ProcessorArchitecture, copy.ProcessorArchitecture);
+            Assert.AreEqual(setup.ShadowCopy, copy.ShadowCopy);
+            Assert.AreEqual(setup.WorkingDirectory, copy.WorkingDirectory);
+        }
+
+        public EquivalenceClassCollection<HostSetup> GetEquivalenceClasses()
+        {
+            return EquivalenceClassCollection<HostSetup>.FromDistinctInstances(
+                new HostSetup { },
+                new HostSetup { ApplicationBaseDirectory = @"C:\AppBase" },
+                new HostSetup { ApplicationBaseDirectory = @"C:\AppBase-2" },
+                new HostSetup { Configuration = { ConfigurationXml = "<config/>" } },
+                new HostSetup { Configuration = { ConfigurationXml = "<config-2/>" } },
+                new HostSetup { ConfigurationFileLocation = ConfigurationFileLocation.AppBase },
+                new HostSetup { ConfigurationFileLocation = ConfigurationFileLocation.None },
+                new HostSetup { ProcessorArchitecture = ProcessorArchitecture.Amd64 },
+                new HostSetup { ProcessorArchitecture = ProcessorArchitecture.IA64 },
+                new HostSetup { ShadowCopy = true },
+                new HostSetup { WorkingDirectory = @"C:\WorkingDir" },
+                new HostSetup { WorkingDirectory = @"C:\WorkingDir-2" }
+            );
         }
     }
 }

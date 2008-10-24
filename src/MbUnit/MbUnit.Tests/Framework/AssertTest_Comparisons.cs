@@ -95,5 +95,70 @@ namespace MbUnit.Tests.Framework
 
         #endregion
 
+        #region AreApproximatelyEqual
+
+        [Test]
+        public void AreApproximatelyEqual_simple_test()
+        {
+            Assert.AreApproximatelyEqual(2.4, 2.5, 0.2);
+        }
+
+        [Test]
+        public void AreApproximatelyEqual_fail()
+        {
+            AssertionFailure[] failures = Capture(() =>
+                Assert.AreApproximatelyEqual(2.4, 2.5, 0.05));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("2.4", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("2.5", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("0.05", failures[0].LabeledValues[2].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void AreApproximatelyEqual_fail_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() =>
+                Assert.AreApproximatelyEqual(2.4, 2.5, 0.05, "{0} message", "custom"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("2.4", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("2.5", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("0.05", failures[0].LabeledValues[2].FormattedValue.ToString());
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        #endregion
+
+        #region AreNotApproximatelyEqual
+
+        [Test]
+        public void AreNotApproximatelyEqual_simple_test()
+        {
+            Assert.AreNotApproximatelyEqual(2.4, 2.5, 0.05);
+        }
+
+        [Test]
+        public void AreNotApproximatelyEqual_fail()
+        {
+            AssertionFailure[] failures = Capture(() =>
+                Assert.AreNotApproximatelyEqual(2.4, 2.5, 0.2));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("2.4", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("2.5", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("0.2", failures[0].LabeledValues[2].FormattedValue.ToString());
+        }
+
+        [Test]
+        public void AreNotApproximatelyEqual_fail_with_custom_message()
+        {
+            AssertionFailure[] failures = Capture(() =>
+                Assert.AreNotApproximatelyEqual(2.4, 2.5, 0.2, "{0} message", "custom"));
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("2.4", failures[0].LabeledValues[0].FormattedValue.ToString());
+            Assert.AreEqual("2.5", failures[0].LabeledValues[1].FormattedValue.ToString());
+            Assert.AreEqual("0.2", failures[0].LabeledValues[2].FormattedValue.ToString());
+            Assert.AreEqual("custom message", failures[0].Message);
+        }
+
+        #endregion
     }
 }

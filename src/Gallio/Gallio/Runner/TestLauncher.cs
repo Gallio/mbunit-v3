@@ -161,15 +161,17 @@ namespace Gallio.Runner
         /// Gets or sets the <see cref="RuntimeSetup" /> to use for automatically initializing
         /// the runtime during test execution or <c>null</c> if the runtime is already initialized.
         /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If this value if not <c>null</c> then the launcher will initialize the runtime
-        /// using this <see cref="RuntimeSetup" /> just prior to test execution and will
-        /// automatically shut down the runtime just afterwards.
+        /// using this <see cref="RuntimeSetup" /> (unless already initialized) just prior to
+        /// test execution and will automatically shut down the runtime just afterwards.
         /// </para>
         /// <para>
         /// The default value is <c>null</c> which assumes that the runtime is already initialized.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public RuntimeSetup RuntimeSetup
         {
             get { return runtimeSetup; }
@@ -422,16 +424,18 @@ namespace Gallio.Runner
         /// <para>
         /// Runs the test package as configured.
         /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If <see cref="RuntimeSetup" /> is non-<c>null</c>,
         /// initializes the runtime for the duration of this method then shuts it down automatically
         /// before returning.  Otherwise assumes the runtime has already been initialized and
         /// accesses it using <see cref="RuntimeAccessor" />.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// Runtimes cannot be nested.  So if the launcher is asked to initialize the runtime and
-        /// it has already been initialized then an exception will be thrown.
+        /// it has already been initialized, then it will not be initialized again.
+        /// </para>
         /// </remarks>
         /// <returns>A result object</returns>
         public TestLauncherResult Run()
@@ -465,7 +469,7 @@ namespace Gallio.Runner
 
         private IDisposable InitializeRuntimeIfNeeded()
         {
-            if (runtimeSetup != null)
+            if (runtimeSetup != null && ! RuntimeAccessor.IsInitialized)
             {
                 logger.Log(LogSeverity.Important, "Initializing the runtime and loading plugins.");
                 return RuntimeBootstrap.Initialize(runtimeSetup, logger);

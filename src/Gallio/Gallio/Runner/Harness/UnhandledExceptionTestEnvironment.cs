@@ -44,7 +44,7 @@ namespace Gallio.Runner.Harness
 
             private static void CorrelateUnhandledException(object sender, CorrelatedExceptionEventArgs e)
             {
-                ITestContext context = TestContextTrackerAccessor.GetInstance().CurrentContext;
+                ITestContext context = TestContextTrackerAccessor.Instance.CurrentContext;
                 if (context != null)
                     e.AddCorrelationMessage(String.Format("The exception occurred while test step '{0}' was running.", context.TestStep.FullName));
             }

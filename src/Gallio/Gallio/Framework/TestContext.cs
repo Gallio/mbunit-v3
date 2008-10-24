@@ -69,7 +69,7 @@ namespace Gallio.Framework
 
         private static ITestContextTracker ContextTracker
         {
-            get { return TestContextTrackerAccessor.GetInstance(); }
+            get { return TestContextTrackerAccessor.Instance; }
         }
 
         /// <summary>

@@ -225,7 +225,11 @@
         
         <component id="Core.XPathNavigableFormattingRule"
                    service="Gallio.Framework.Formatting.IFormattingRule, Gallio"
-                   type="Gallio.Framework.Formatting.XPathNavigableFormattingRule, Gallio" />        
+                   type="Gallio.Framework.Formatting.XPathNavigableFormattingRule, Gallio" />
+
+        <component id="Core.StructuralFormattingRule"
+                   service="Gallio.Framework.Formatting.IFormattingRule, Gallio"
+                   type="Gallio.Framework.Formatting.StructuralFormattingRule, Gallio" />
       </components>
     </runtime>
   </gallio>

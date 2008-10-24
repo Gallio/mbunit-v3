@@ -18,10 +18,16 @@ using Gallio.Runtime;
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// Static service locator class for <see cref="ITestContextTracker" />.
-    /// Handles the case where no <see cref="ITestContextTracker" /> is registered
-    /// with the <see cref="RuntimeAccessor" /> by returning a <see cref="StubTestContextTracker" />.
+    /// <para>
+    /// Static service locator for <see cref="ITestContextTracker" />.
+    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Handles the case where the runtime is not initialized by returning a
+    /// <see cref="StubTestContextTracker" />.
+    /// </para>
+    /// </remarks>
     public static class TestContextTrackerAccessor
     {
         private static ITestContextTracker cachedContextTracker;
@@ -32,19 +38,22 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
-        /// Gets the context tracker instance.
+        /// Gets the global test context tracker singleton.
         /// </summary>
-        public static ITestContextTracker GetInstance()
+        public static ITestContextTracker Instance
         {
-            if (cachedContextTracker == null)
+            get
             {
-                if (RuntimeAccessor.IsInitialized)
-                    cachedContextTracker = RuntimeAccessor.Instance.Resolve<ITestContextTracker>();
-                else
-                    cachedContextTracker = new StubTestContextTracker();
-            }
+                if (cachedContextTracker == null)
+                {
+                    if (RuntimeAccessor.IsInitialized)
+                        cachedContextTracker = RuntimeAccessor.Instance.Resolve<ITestContextTracker>();
+                    else
+                        cachedContextTracker = new StubTestContextTracker();
+                }
 
-            return cachedContextTracker;
+                return cachedContextTracker;
+            }
         }
     }
 }

@@ -21,16 +21,42 @@ using Gallio.Runtime;
 namespace Gallio.Framework.Formatting
 {
     /// <summary>
+    /// <para>
     /// Service locator for <see cref="IFormatter" />.
+    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Handles the case where the runtime is not initialized by returning a
+    /// <see cref="StubFormatter" />.
+    /// </para>
+    /// </remarks>
     public static class Formatter
     {
+        private static IFormatter cachedFormatter;
+
+        static Formatter()
+        {
+            RuntimeAccessor.InstanceChanged += delegate { cachedFormatter = null; };
+        }
+
         /// <summary>
         /// Gets the global formatter singleton.
         /// </summary>
         public static IFormatter Instance
         {
-            get { return RuntimeAccessor.Instance.Resolve<IFormatter>(); }
+            get
+            {
+                if (cachedFormatter == null)
+                {
+                    if (RuntimeAccessor.IsInitialized)
+                        cachedFormatter = RuntimeAccessor.Instance.Resolve<IFormatter>();
+                    else
+                        cachedFormatter = new StubFormatter();
+                }
+
+                return cachedFormatter;
+            }
         }
     }
 }

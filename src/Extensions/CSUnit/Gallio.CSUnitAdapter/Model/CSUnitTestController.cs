@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using csUnit.Core;
 using csUnit.Interfaces;
@@ -191,6 +192,7 @@ namespace Gallio.CSUnitAdapter.Model
                 hostSetup.WorkingDirectory = hostSetup.ApplicationBaseDirectory;
                 hostSetup.ShadowCopy = true;
                 hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.AppBase;
+                hostSetup.ProcessorArchitecture = AssemblyName.GetAssemblyName(assemblyPath).ProcessorArchitecture;
 
                 string configFile = assemblyPath + ".config";
                 if (File.Exists(configFile))

@@ -210,6 +210,80 @@ namespace Gallio.Tests.Framework
             ComparisonSemantics.Compare(new object(), new object());
         }
 
+        [Test]
+        [Row(typeof(int), 2, 1, 0, false)]
+        [Row(typeof(int), 1, 2, 0, false)]
+        [Row(typeof(int), 2, 1, 1, true)]
+        [Row(typeof(int), 1, 2, 1, true)]
+        [Row(typeof(int), 2, 1, 2, true)]
+        [Row(typeof(int), 1, 2, 2, true)]
+        [Row(typeof(double), 1.2, 1.24, 0.01, false)]
+        [Row(typeof(double), 1.24, 1.2, 0.01, false)]
+        [Row(typeof(double), 1.2, 1.24, 0.05, true)]
+        [Row(typeof(double), 1.24, 1.2, 0.05, true)]
+        [Row(typeof(float), -1.1f, -1.05f, 0.01f, false)]
+        [Row(typeof(float), -1.1f, -1.05f, 0.1f, true)]
+        [Row(typeof(decimal), 1.1, 1.05, 0.01, false)]
+        [Row(typeof(decimal), 1.1, 1.05, 0.1, true)]
+        public void ApproximatelyEqual_NumericTypes<T>(T left, T right, T delta, bool expectedResult)
+        {
+            Assert.AreEqual(expectedResult, ComparisonSemantics.ApproximatelyEqual(left, right, delta));
+        }
+
+        [Test]
+        public void ApproximatelyEqual_DateTime()
+        {
+            Assert.AreEqual(true, ComparisonSemantics.ApproximatelyEqual(
+                new DateTime(2008, 03, 14), new DateTime(2008, 03, 15), new TimeSpan(1, 0, 0, 0)));
+            Assert.AreEqual(true, ComparisonSemantics.ApproximatelyEqual(
+                new DateTime(2008, 03, 14), new DateTime(2008, 03, 15), new TimeSpan(2, 0, 0, 0)));
+            Assert.AreEqual(false, ComparisonSemantics.ApproximatelyEqual(
+                new DateTime(2008, 03, 14), new DateTime(2008, 03, 15), new TimeSpan(0, 23, 0, 0)));
+        }
+
+        [Test]
+        [Row(typeof(SByte), typeof(Int32))]
+        [Row(typeof(Byte), typeof(Int32))]
+        [Row(typeof(Int16), typeof(Int32))]
+        [Row(typeof(UInt16), typeof(Int32))]
+        [Row(typeof(Int32), typeof(Int32))]
+        [Row(typeof(UInt32), typeof(UInt32))]
+        [Row(typeof(Int64), typeof(Int64))]
+        [Row(typeof(UInt64), typeof(UInt64))]
+        [Row(typeof(Single), typeof(Single))]
+        [Row(typeof(Double), typeof(Double))]
+        [Row(typeof(Char), typeof(Int32))]
+        public void GetSubtractionFunc_IsDefinedForPrimitiveTypes<T, D>()
+        {
+            Assert.DoesNotThrow(() => ComparisonSemantics.GetSubtractionFunc<T, D>());
+        }
+
+        [Test]
+        public void GetSubtractionFunc_Double()
+        {
+            SubtractionFunc<double, double> differencer = ComparisonSemantics.GetSubtractionFunc<double, double>();
+            Assert.AreEqual(1.5, differencer(3.5, 2.0));
+        }
+
+        [Test]
+        public void GetSubtractionFunc_DateTime()
+        {
+            SubtractionFunc<DateTime, TimeSpan> differencer = ComparisonSemantics.GetSubtractionFunc<DateTime, TimeSpan>();
+            Assert.AreEqual(new TimeSpan(-1, 0, 0, 0), differencer(new DateTime(2008, 03, 14), new DateTime(2008, 03, 15)));
+        }
+
+        [Test]
+        public void GetSubtractionFunc_ThrowsIfNoOperator()
+        {
+            Assert.Throws<InvalidOperationException>(() => ComparisonSemantics.GetSubtractionFunc<Object, Object>());
+        }
+
+        [Test]
+        public void GetSubtractionFunc_ThrowsIfWrongDifferenceTyp()
+        {
+            Assert.Throws<InvalidOperationException>(() => ComparisonSemantics.GetSubtractionFunc<DateTime, Double>());
+        }
+
         private sealed class ComparableStub : IComparable
         {
             private readonly int value;

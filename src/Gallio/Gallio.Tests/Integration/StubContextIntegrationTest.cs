@@ -32,7 +32,7 @@ namespace Gallio.Tests.Integration
     [TestFixture]
     [TestsOn(typeof(StubTestContext))]
     [TestsOn(typeof(StubTestContextTracker))]
-    public class StubContextTest
+    public class StubContextIntegrationTest
     {
         [Test]
         public void StubContextIsUsedWhenRuntimeIsNotInitialized()

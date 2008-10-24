@@ -45,6 +45,28 @@ namespace Gallio.Framework
         private static readonly Type[] EqualsParams = new[] { typeof(object) };
         private static readonly Dictionary<Type, bool> SimpleEnumerableTypeCache = new Dictionary<Type, bool>();
 
+        private static readonly Dictionary<Type, Pair<Type, Delegate>> PrimitiveSubtractionFuncs = new Dictionary<Type, Pair<Type, Delegate>>();
+
+        static ComparisonSemantics()
+        {
+            AddPrimitiveDifferencer<SByte, Int32>((a, b) => a - b);
+            AddPrimitiveDifferencer<Byte, Int32>((a, b) => a - b);
+            AddPrimitiveDifferencer<Int16, Int32>((a, b) => a - b);
+            AddPrimitiveDifferencer<UInt16, Int32>((a, b) => a - b);
+            AddPrimitiveDifferencer<Int32, Int32>((a, b) => a - b);
+            AddPrimitiveDifferencer<UInt32, UInt32>((a, b) => a - b);
+            AddPrimitiveDifferencer<Int64, Int64>((a, b) => a - b);
+            AddPrimitiveDifferencer<UInt64, UInt64>((a, b) => a - b);
+            AddPrimitiveDifferencer<Single, Single>((a, b) => a - b);
+            AddPrimitiveDifferencer<Double, Double>((a, b) => a - b);
+            AddPrimitiveDifferencer<Char, Int32>((a, b) => a - b);
+        }
+
+        private static void AddPrimitiveDifferencer<T, D>(SubtractionFunc<T, D> subtractionFunc)
+        {
+            PrimitiveSubtractionFuncs.Add(typeof(T), new Pair<Type, Delegate>(typeof(D), subtractionFunc));
+        }
+
         #region Private stuff
         [EditorBrowsable(EditorBrowsableState.Never)]
         private static new void ReferenceEquals(object a, object b)
@@ -56,6 +78,8 @@ namespace Gallio.Framework
         /// <para>
         /// Returns true if two objects are the same.
         /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Rules applied:
         /// <list type="bullet">
@@ -63,7 +87,7 @@ namespace Gallio.Framework
         /// equal according to <see cref="Object.ReferenceEquals"/>.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="left">The left object, may be null</param>
         /// <param name="right">The right object, may be null</param>
         /// <returns>True if both objects are the same</returns>
@@ -79,11 +103,11 @@ namespace Gallio.Framework
         /// <para>
         /// Returns true if two objects are equal.
         /// </para>
-        /// <seealso cref="Equals{T}"/> for details.
         /// </summary>
         /// <param name="left">The left object, may be null</param>
         /// <param name="right">The right object, may be null</param>
         /// <returns>True if the objects are equal</returns>
+        /// <seealso cref="Equals{T}"/> for details.
         public new static bool Equals(object left, object right)
         {
             return Equals<object>(left, right);
@@ -93,6 +117,8 @@ namespace Gallio.Framework
         /// <para>
         /// Returns true if two objects are equal.
         /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Rules applied:
         /// <list type="bullet">
@@ -104,7 +130,7 @@ namespace Gallio.Framework
         /// <item>Otherwise uses <see cref="Object.Equals(Object)" /> to determine equality.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="left">The left object, may be null</param>
         /// <param name="right">The right object, may be null</param>
         /// <returns>True if the objects are equal</returns>
@@ -136,6 +162,8 @@ namespace Gallio.Framework
         /// <para>
         /// Compares two objects.
         /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// Rules applied:
         /// <list type="bullet">
@@ -150,8 +178,6 @@ namespace Gallio.Framework
         /// <item>Otherwise no deterministic comparison is possible so throws an exception.</item>
         /// </list>
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// The ordering of nulls is determined by <see cref="IComparable.CompareTo(Object)" /> except
         /// when comparing collections.  If one collection happens to be null but not the other then it
@@ -170,7 +196,7 @@ namespace Gallio.Framework
             if (Object.ReferenceEquals(left, right))
                 return 0;
             if (left == null)
-                return - Compare(right, left);
+                return -Compare(right, left);
 
             Type leftType = left.GetType();
             Type rightType = right != null ? right.GetType() : null;
@@ -215,7 +241,7 @@ namespace Gallio.Framework
             {
                 comparison = FindCompatibleGenericComparison<T>(rightType, leftType);
                 if (comparison != null)
-                    return - comparison(right, left);
+                    return -comparison(right, left);
             }
 
             // Give up.
@@ -232,7 +258,7 @@ namespace Gallio.Framework
                 {
                     Type argumentType = leftInterface.GetGenericArguments()[0];
                     if (rightType == null || argumentType.IsAssignableFrom(rightType))
-                        return (left, right) => (int) leftInterface.GetMethod("CompareTo").Invoke(left, new object[] { right });
+                        return (left, right) => (int)leftInterface.GetMethod("CompareTo").Invoke(left, new object[] { right });
                 }
             }
 
@@ -244,11 +270,13 @@ namespace Gallio.Framework
         /// Returns true if the specified type is a simple enumerable type.  A simple enumerable
         /// type is one that that does not override <see cref="Object.Equals(Object)"/>.
         /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The set of simple enumerable types includes arrays, lists, dictionaries and other
         /// standard collection types in the .Net framework.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="type">The object type</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
         public static bool IsSimpleEnumerableType(Type type)
@@ -256,7 +284,7 @@ namespace Gallio.Framework
             lock (SimpleEnumerableTypeCache)
             {
                 bool result;
-                if (! SimpleEnumerableTypeCache.TryGetValue(type, out result))
+                if (!SimpleEnumerableTypeCache.TryGetValue(type, out result))
                 {
                     result = IsSimpleEnumerableTypeUncached(type);
                     SimpleEnumerableTypeCache.Add(type, result);
@@ -297,6 +325,83 @@ namespace Gallio.Framework
                 return -1;
 
             return 0;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Returns true if two values are equal to within a specified delta.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The values are considered approximately equal if the absolute value of their difference
+        /// is less than or equal to the delta.
+        /// </para>
+        /// <para>
+        /// This method works with any comparable type that also supports a subtraction operator
+        /// including <see cref="Single" />, <see cref="Double" />, <see cref="Decimal" />,
+        /// <see cref="Int32" />, <see cref="DateTime" /> (using a <see cref="TimeSpan" /> delta),
+        /// and many others.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="TValue">The type of values to be compared</typeparam>
+        /// <typeparam name="TDifference">The type of the difference produced when the values are
+        /// subtracted, for numeric types this is the same as <typeparamref name="TValue"/> but it
+        /// may differ for other types</typeparam>
+        /// <param name="left">The expected value</param>
+        /// <param name="right">The actual value</param>
+        /// <param name="delta">The inclusive delta between the values</param>
+        /// <returns>True if the values are approximately equal</returns>
+        public static bool ApproximatelyEqual<TValue, TDifference>(TValue left, TValue right, TDifference delta)
+        {
+            SubtractionFunc<TValue, TDifference> subtractionFunc = GetSubtractionFunc<TValue, TDifference>();
+
+            int discriminator = Compare(left, right);
+            TDifference difference = discriminator < 0 ? subtractionFunc(right, left) : subtractionFunc(left, right);
+            return Compare(difference, delta) <= 0;
+        }
+
+        /// <summary>
+        /// Gets a function for subtracting values of a given type.
+        /// </summary>
+        /// <typeparam name="TValue">The type of values to be compared</typeparam>
+        /// <typeparam name="TDifference">The type of the difference produced when the values are
+        /// subtracted, for numeric types this is the same as <typeparamref name="TValue"/> but it
+        /// may differ for other types</typeparam>
+        /// <returns>The subtraction function</returns>
+        /// <exception cref="InvalidOperationException">Thrown if no subtraction function exists
+        /// or if the difference type is incorrect.</exception>
+        internal static SubtractionFunc<TValue, TDifference> GetSubtractionFunc<TValue, TDifference>()
+        {
+            Type valueType = typeof(TValue);
+            Type differenceType = typeof(TDifference);
+
+            Pair<Type, Delegate> subtractionInfo;
+            if (PrimitiveSubtractionFuncs.TryGetValue(valueType, out subtractionInfo))
+            {
+                CheckDifferenceType(valueType, differenceType, subtractionInfo.First);
+                return (SubtractionFunc<TValue, TDifference>)subtractionInfo.Second;
+            }
+            else
+            {
+                MethodInfo opSubtraction = valueType.GetMethod("op_Subtraction",
+                    BindingFlags.Static | BindingFlags.Public,
+                    null, new[] {valueType, valueType}, null);
+
+                if (opSubtraction != null)
+                {
+                    CheckDifferenceType(valueType, differenceType, opSubtraction.ReturnType);
+                    return (a, b) => (TDifference) opSubtraction.Invoke(null, new object[] {a, b});
+                }
+            }
+
+            throw new InvalidOperationException(String.Format("There is no defined subtraction operator for type {0}.", valueType));
+        }
+
+        private static void CheckDifferenceType(Type valueType, Type expectedDifferenceType, Type actualDifferenceType)
+        {
+            if (actualDifferenceType != expectedDifferenceType)
+                throw new InvalidOperationException(String.Format("The subtraction operator for type {0} returns a difference of type {1} but the caller expected a difference of type {2}.", valueType, actualDifferenceType, expectedDifferenceType));
         }
     }
 }

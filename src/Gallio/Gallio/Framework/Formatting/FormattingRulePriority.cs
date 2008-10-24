@@ -28,6 +28,19 @@ namespace Gallio.Framework.Formatting
         public const int Default = int.MinValue;
 
         /// <summary>
+        /// Generic rule priority.  Represents a generic rule that can represent objects
+        /// of any type structurally.
+        /// </summary>
+        /// <value>-20</value>
+        public const int Generic = -20;
+
+        /// <summary>
+        /// Fallback rule priority.  Represents a rule to be applied if the typical case fails.
+        /// </summary>
+        /// <value>-10</value>
+        public const int Fallback = -10;
+
+        /// <summary>
         /// Typical rule priority.  This is a good starting point for rule priorities.
         /// </summary>
         /// <value>0</value>

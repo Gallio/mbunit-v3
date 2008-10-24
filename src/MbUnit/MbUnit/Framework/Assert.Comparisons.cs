@@ -211,8 +211,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected values to be non-equal.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Unexpected Value", unexpectedValue)
-                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValuesWithDiffs("Unexpected Value", unexpectedValue, "Actual Value", actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -290,8 +289,7 @@ namespace MbUnit.Framework
 
                 return new AssertionFailureBuilder("Expected values to be referentially different.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Unexpected Value", unexpectedValue)
-                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValuesWithDiffs("Unexpected Value", unexpectedValue, "Actual Value", actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -425,6 +423,154 @@ namespace MbUnit.Framework
                 return new AssertionFailureBuilder("Expected value to be non-null.")
                     .SetMessage(messageFormat, messageArgs)
                     .AddRawActualValue(actualValue)
+                    .ToAssertionFailure();
+            });
+        }
+        #endregion
+
+        #region AreApproximatelyEqual
+        /// <summary>
+        /// Verifies that an actual value approximately equals some expected value
+        /// to within a specified delta.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The values are considered approximately equal if the absolute value of their difference
+        /// is less than or equal to the delta.
+        /// </para>
+        /// <para>
+        /// This method works with any comparable type that also supports a subtraction operator
+        /// including <see cref="Single" />, <see cref="Double" />, <see cref="Decimal" />,
+        /// <see cref="Int32" />, <see cref="DateTime" /> (using a <see cref="TimeSpan" /> delta),
+        /// and many others.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="TValue">The type of values to be compared</typeparam>
+        /// <typeparam name="TDifference">The type of the difference produced when the values are
+        /// subtracted, for numeric types this is the same as <typeparamref name="TValue"/> but it
+        /// may differ for other types</typeparam>
+        /// <param name="expectedValue">The expected value</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="delta">The inclusive delta between the values</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreApproximatelyEqual<TValue, TDifference>(TValue expectedValue, TValue actualValue, TDifference delta)
+        {
+            AreApproximatelyEqual(expectedValue, actualValue, delta, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an actual value approximately equals some expected value
+        /// to within a specified delta.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The values are considered approximately equal if the absolute value of their difference
+        /// is less than or equal to the delta.
+        /// </para>
+        /// <para>
+        /// This method works with any comparable type that also supports a subtraction operator
+        /// including <see cref="Single" />, <see cref="Double" />, <see cref="Decimal" />,
+        /// <see cref="Int32" />, <see cref="DateTime" /> (using a <see cref="TimeSpan" /> delta),
+        /// and many others.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="TValue">The type of values to be compared</typeparam>
+        /// <typeparam name="TDifference">The type of the difference produced when the values are
+        /// subtracted, for numeric types this is the same as <typeparamref name="TValue"/> but it
+        /// may differ for other types</typeparam>
+        /// <param name="expectedValue">The expected value</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="delta">The inclusive delta between the values</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreApproximatelyEqual<TValue, TDifference>(TValue expectedValue, TValue actualValue, TDifference delta,
+            string messageFormat, params object[] messageArgs)
+        {
+            AssertionHelper.Verify(delegate
+            {
+                if (ComparisonSemantics.ApproximatelyEqual(expectedValue, actualValue, delta))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected values to be approximately equal to within a delta.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawExpectedValue(expectedValue)
+                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Delta", delta)
+                    .ToAssertionFailure();
+            });
+        }
+        #endregion
+
+        #region AreNotApproximatelyEqual
+        /// <summary>
+        /// Verifies that an actual value does not approximately equal some unexpected value
+        /// to within a specified delta.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The values are considered approximately equal if the absolute value of their difference
+        /// is less than or equal to the delta.
+        /// </para>
+        /// <para>
+        /// This method works with any comparable type that also supports a subtraction operator
+        /// including <see cref="Single" />, <see cref="Double" />, <see cref="Decimal" />,
+        /// <see cref="Int32" />, <see cref="DateTime" /> (using a <see cref="TimeSpan" /> delta),
+        /// and many others.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="TValue">The type of values to be compared</typeparam>
+        /// <typeparam name="TDifference">The type of the difference produced when the values are
+        /// subtracted, for numeric types this is the same as <typeparamref name="TValue"/> but it
+        /// may differ for other types</typeparam>
+        /// <param name="unexpectedValue">The expected value</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="delta">The inclusive delta between the values</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreNotApproximatelyEqual<TValue, TDifference>(TValue unexpectedValue, TValue actualValue, TDifference delta)
+        {
+            AreNotApproximatelyEqual(unexpectedValue, actualValue, delta, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an actual value does not approximately equal some unexpected value
+        /// to within a specified delta.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The values are considered approximately equal if the absolute value of their difference
+        /// is less than or equal to the delta.
+        /// </para>
+        /// <para>
+        /// This method works with any comparable type that also supports a subtraction operator
+        /// including <see cref="Single" />, <see cref="Double" />, <see cref="Decimal" />,
+        /// <see cref="Int32" />, <see cref="DateTime" /> (using a <see cref="TimeSpan" /> delta),
+        /// and many others.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="TValue">The type of values to be compared</typeparam>
+        /// <typeparam name="TDifference">The type of the difference produced when the values are
+        /// subtracted, for numeric types this is the same as <typeparamref name="TValue"/> but it
+        /// may differ for other types</typeparam>
+        /// <param name="unexpectedValue">The expected value</param>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="delta">The inclusive delta between the values</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreNotApproximatelyEqual<TValue, TDifference>(TValue unexpectedValue, TValue actualValue, TDifference delta,
+            string messageFormat, params object[] messageArgs)
+        {
+            AssertionHelper.Verify(delegate
+            {
+                if (! ComparisonSemantics.ApproximatelyEqual(unexpectedValue, actualValue, delta))
+                    return null;
+
+                return new AssertionFailureBuilder("Expected values not to be approximately equal to within a delta.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Unexpected Value", unexpectedValue)
+                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Delta", delta)
                     .ToAssertionFailure();
             });
         }

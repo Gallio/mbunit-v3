@@ -141,8 +141,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
 
                         return new AssertionFailureBuilder("The equality operator should consider the left value " +
                             "and the right value " + (equalityExpected ? String.Empty : "not ") + "to be equal.")
-                            .AddRawLabeledValue("Left Value", x)
-                            .AddRawLabeledValue("Right Value", y)
+                            .AddRawLabeledValuesWithDiffs("Left Value", x, "Right Value", y)
                             .ToAssertionFailure();
                     });
 
@@ -153,8 +152,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
 
                         return new AssertionFailureBuilder("The equality operator should consider the left value " +
                             "and the right value " + (equalityExpected ? String.Empty : "not ") + "to be equal.")
-                            .AddRawLabeledValue("Left Value", y)
-                            .AddRawLabeledValue("Right Value", x)
+                            .AddRawLabeledValuesWithDiffs("Left Value", x, "Right Value", y)
                             .ToAssertionFailure();
                     });
                 }

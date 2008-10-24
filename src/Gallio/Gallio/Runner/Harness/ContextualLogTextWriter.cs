@@ -65,7 +65,7 @@ namespace Gallio.Runner.Harness
 
             try
             {
-                ITestContext context = TestContextTrackerAccessor.GetInstance().CurrentContext;
+                ITestContext context = TestContextTrackerAccessor.Instance.CurrentContext;
                 if (context == null)
                     return;
 

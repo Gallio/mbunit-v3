@@ -144,10 +144,15 @@
     <Compile Include="Framework\Formatting\SByteFormattingRule.cs" />
     <Compile Include="Framework\Formatting\SingleFormattingRule.cs" />
     <Compile Include="Framework\Formatting\StringFormattingRule.cs" />
+    <Compile Include="Framework\Formatting\StructuralFormattingRule.cs" />
+    <Compile Include="Framework\Formatting\StubFormatter.cs" />
     <Compile Include="Framework\Formatting\TypeFormattingRule.cs" />
     <Compile Include="Framework\Formatting\XPathNavigableFormattingRule.cs" />
     <Compile Include="Framework\ComparisonSemantics.cs" />
     <Compile Include="Framework\Pattern\ProcessIsolation.cs" />
+    <Compile Include="Framework\SubtractionFunc.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Framework\Text\DiffStyle.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="Model\Diagnostics\StackTraceData.cs" />

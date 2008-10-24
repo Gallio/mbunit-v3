@@ -61,6 +61,9 @@
     <Compile Include="Framework\Assertions\AssertionFailureBuilderTest.cs" />
     <Compile Include="Framework\Assertions\AssertionFailureTest.cs" />
     <Compile Include="Framework\ComparisonSemanticsTest.cs" />
+    <Compile Include="Framework\Formatting\StructuralFormattingRuleTest.cs" />
+    <Compile Include="Framework\Formatting\StubFormatterTest.cs" />
+    <Compile Include="Integration\StubFormatterIntegrationTest.cs" />
     <Compile Include="Framework\Pattern\ProcessIsolationTest.cs" />
     <Compile Include="Framework\Text\SubstringTest.cs" />
     <Compile Include="Framework\Text\DiffSetTest.cs" />
@@ -197,7 +200,7 @@
     <Compile Include="Runtime\RuntimeExceptionTest.cs" />
     <Compile Include="Runtime\RuntimeAccessorTest.cs" />
     <Compile Include="Runtime\RuntimeRegisteredComponentResolverTest.cs" />
-    <Compile Include="Integration\StubContextTest.cs" />
+    <Compile Include="Integration\StubContextIntegrationTest.cs" />
     <Compile Include="Framework\TestLogTest.cs" />
     <Compile Include="Model\Logging\TextualTestLogWriterTest.cs" />
     <Compile Include="Model\Execution\TestCommandFactoryTest.cs" />

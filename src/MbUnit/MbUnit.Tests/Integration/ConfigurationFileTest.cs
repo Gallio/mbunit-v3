@@ -15,6 +15,7 @@
 
 using System;
 using System.Configuration;
+using System.IO;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Reflection;
@@ -56,6 +57,13 @@ namespace MbUnit.Tests.Integration
             string value = ConfigurationManager.AppSettings["TestConfigurationSetting"];
             Assert.AreEqual("TestConfigurationValue", value);
             TestLog.WriteLine(value);
+        }
+
+        [Test]
+        public void ConfigFileIsInAppBase()
+        {
+            Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory,
+                Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
         }
     }
 }

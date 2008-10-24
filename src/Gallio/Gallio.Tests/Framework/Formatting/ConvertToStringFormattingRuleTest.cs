@@ -44,10 +44,22 @@ namespace Gallio.Tests.Framework.Formatting
         }
 
         [Test]
-        [Row(typeof(object), FormattingRulePriority.Default)]
-        public void GetPriority(Type type, int? expectedPriority)
+        [Row(typeof(object), 10000, FormattingRulePriority.Fallback, Description = "Object conversion with typical cost, default ToString.")]
+        [Row(typeof(object), 1000000, FormattingRulePriority.Default, Description = "Object conversion with default cost, default ToString.")]
+        [Row(typeof(object), 100000000, FormattingRulePriority.Default, Description = "Object conversion with maximum cost, default ToString.")]
+        [Row(typeof(string), 0, FormattingRulePriority.Fallback, Description = "Object conversion with zero cost, non-default ToString.")]
+        [Row(typeof(DateTime), 10000, FormattingRulePriority.Fallback, Description = "Object conversion with typical cost, non-default ToString.")]
+        [Row(typeof(DateTime), 1000000, FormattingRulePriority.Fallback, Description = "Object conversion with default cost, non-default ToString.")]
+        [Row(typeof(DateTime), 100000000, FormattingRulePriority.Fallback, Description = "Object conversion with maximum cost, non-default ToString.")]
+        public void GetPriority(Type type, int simulatedConversionCost, int? expectedPriority)
         {
-            ConvertToStringFormattingRule formattingRule = new ConvertToStringFormattingRule(Mocks.Stub<IConverter>());
+            IConverter converter = Mocks.CreateMock<IConverter>();
+            using (Mocks.Record())
+            {
+                Expect.Call(converter.GetConversionCost(type, typeof(string))).Return(new ConversionCost(simulatedConversionCost));
+            }
+
+            ConvertToStringFormattingRule formattingRule = new ConvertToStringFormattingRule(converter);
             Assert.AreEqual(expectedPriority, formattingRule.GetPriority(type));
         }
     }

@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
+using Gallio.Collections;
 using Gallio.Framework.Conversions;
 using Gallio.Utilities;
 
@@ -44,17 +46,27 @@ namespace Gallio.Framework.Formatting
         /// <inheritdoc />
         public int? GetPriority(Type type)
         {
+            if (converter.GetConversionCost(type, typeof(string)).CompareTo(ConversionCost.Default) < 0
+                || HasNonDefaultToString(type))
+                return FormattingRulePriority.Fallback;
+
             return FormattingRulePriority.Default;
         }
 
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
         {
-            string result = (string) converter.Convert(obj, typeof(string));
+            string result = (string) converter.Convert(obj, typeof (string));
             if (result == null)
                 return null;
 
             return string.Concat("{", StringUtils.ToUnquotedStringLiteral(result), "}");
+        }
+
+        private static bool HasNonDefaultToString(Type type)
+        {
+            MethodInfo toString = type.GetMethod("ToString", EmptyArray<Type>.Instance);
+            return toString != null && toString.DeclaringType != typeof(object);
         }
     }
 }
