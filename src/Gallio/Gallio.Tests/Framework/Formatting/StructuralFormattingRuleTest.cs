@@ -38,6 +38,36 @@ namespace Gallio.Tests.Framework.Formatting
         }
 
         [Test]
+        public void Format_ReentrantCallShouldPrintPlaceholderForObjectAndNotCauseStackOverflowException()
+        {
+            SampleObject value = new SampleObject();
+            value.AnotherProperty = value;
+
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject:  AnotherProperty = {...}, Field = {0}, Property = {0}, ReadOnlyProperty = {blah}}";
+            Assert.AreEqual(expectedResult, Formatter.Format(value));
+        }
+
+        [Test]
+        public void Format_ReentrantCallShouldStopAfterTwoLevels()
+        {
+            SampleObject value = new SampleObject
+            {
+                AnotherProperty = new SampleObject
+                {
+                    AnotherProperty = new SampleObject
+                    {
+                        Field = 3
+                    },
+                    Field = 2
+                },
+                Field = 1
+            };
+
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject:  AnotherProperty = {Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject:  AnotherProperty = {...}, Field = {2}, Property = {0}, ReadOnlyProperty = {blah}}, Field = {1}, Property = {0}, ReadOnlyProperty = {blah}}";
+            Assert.AreEqual(expectedResult, Formatter.Format(value));
+        }
+
+        [Test]
         [Row(typeof(SampleObject), FormattingRulePriority.Generic)]
         public void GetPriority(Type type, int? expectedPriority)
         {

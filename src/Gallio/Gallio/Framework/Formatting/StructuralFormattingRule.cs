@@ -16,7 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
+using Gallio.Collections;
+using System.Runtime.CompilerServices;
 
 namespace Gallio.Framework.Formatting
 {
@@ -36,6 +39,9 @@ namespace Gallio.Framework.Formatting
     /// </remarks>
     public class StructuralFormattingRule : IFormattingRule
     {
+        [ThreadStatic]
+        private static ReentranceState state;
+
         /// <inheritdoc />
         public int? GetPriority(Type type)
         {
@@ -44,6 +50,28 @@ namespace Gallio.Framework.Formatting
 
         /// <inheritdoc />
         public string Format(object obj, IFormatter formatter)
+        {
+            if (state == null)
+                state = new ReentranceState();
+
+            string result = null;
+            state.Enter(reentranceCount =>
+            {
+                if (reentranceCount >= 3 || state.Visited.Contains(obj))
+                {
+                    result = "{...}";
+                }
+                else
+                {
+                    state.Visited.Add(obj);
+                    result = FormatRecursive(obj, formatter);
+                }
+            });
+
+            return result;
+        }
+
+        private static string FormatRecursive(object obj, IFormatter formatter)
         {
             Type objType = obj.GetType();
 
@@ -91,6 +119,34 @@ namespace Gallio.Framework.Formatting
 
             result.Append('}');
             return result.ToString();
+        }
+
+        private sealed class ReentranceState
+        {
+            private readonly HashSet<object> visited = new HashSet<object>();
+            private int currentReentranceCount;
+
+            public HashSet<object> Visited
+            {
+                get { return visited; }
+            }
+
+            public void Enter(Action<int> action)
+            {
+                int oldReentranceCount = currentReentranceCount;
+                RuntimeHelpers.ExecuteCodeWithGuaranteedCleanup(delegate
+                {
+                    currentReentranceCount = oldReentranceCount + 1;
+                    action(currentReentranceCount);
+                }, Cleanup, oldReentranceCount);
+            }
+
+            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+            [PrePrepareMethod]
+            private void Cleanup(object oldReentranceCount, bool exceptionThrown)
+            {
+                currentReentranceCount = (int)oldReentranceCount;
+            }
         }
     }
 }
