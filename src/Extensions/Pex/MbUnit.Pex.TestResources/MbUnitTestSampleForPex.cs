@@ -70,11 +70,17 @@ namespace MbUnit.Pex.TestResources
             Console.WriteLine("TestCleanup");
         }
 
-        [PexMethod, PexExpectedTests(FailureCount = 1)]
+        [PexMethod]
         [SetUpTearDownRecorder]
-        public void VerifyAssemblySetupTearDown(int i)
+        public void VerifyAssemblySetupTearDown()
         {
-            Assert.IsTrue(i == 123);
+            Assert.IsTrue(true);
+        }
+
+        [PexMethod, PexExpectedTests(FailureCount = 1)]
+        public void FailedAssertion()
+        {
+            Assert.IsTrue(false);
         }
 
         private class SetUpTearDownRecorderAttribute : 

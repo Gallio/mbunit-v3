@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Framework;
 using Gallio.Framework.Assertions;
 using Gallio.Framework.Pattern;
 using Gallio.Reflection;
@@ -35,11 +36,14 @@ using Microsoft.Pex.Engine.TestFrameworks;
 using Microsoft.Pex.Framework.Instrumentation;
 using Microsoft.Pex.Framework.Suppression;
 
-[assembly: PexInstrumentAssembly(typeof(Assert))]
-[assembly: PexInstrumentAssembly(typeof(PatternTestFramework))]
-[assembly: PexSuppressStackFrameFromNamespace("Gallio")]
-[assembly: PexSuppressStackFrameFromNamespace("MbUnit")]
-[assembly: PexSuppressUninstrumentedMethodFromNamespace("Gallio", "MbUnit")]
+[assembly: PexSuppressStackFrameFromAssembly("Gallio")]
+[assembly: PexSuppressStackFrameFromAssembly("Gallio35")]
+[assembly: PexSuppressStackFrameFromAssembly("MbUnit")]
+[assembly: PexSuppressStackFrameFromAssembly("MbUnit35")]
+[assembly: PexSuppressUninstrumentedMethodFromAssembly("Gallio")]
+[assembly: PexSuppressUninstrumentedMethodFromAssembly("Gallio35")]
+[assembly: PexSuppressUninstrumentedMethodFromAssembly("MbUnit")]
+[assembly: PexSuppressUninstrumentedMethodFromAssembly("MbUnit35")]
 [assembly: MbUnitTestFramework(SetAsDefault = true)]
 
 namespace MbUnit.Pex
@@ -67,6 +71,8 @@ namespace MbUnit.Pex
         private static readonly Method IgnoreAttributeConstructorWithReason = Metadata<IgnoreAttribute>.Type.GetMethod(".ctor", Metadata<string>.Type);
         private static readonly Method ExpectedExceptionAttributeConstructorWithType = Metadata<ExpectedExceptionAttribute>.Type.GetMethod(".ctor", Metadata<Type>.Type);
         private static readonly Method AssertInconclusiveMethod = MetadataFromReflection.GetType(typeof(Assert)).GetMethod("Inconclusive", new TypeEx[] { SystemTypes.String });
+        private static readonly GenericMethod AssertAreEqualMethod = MetadataFromReflection.GetGenericMethod(Array.Find(typeof(Assert).GetMethods(),
+            method => method.Name == "AreEqual" && method.GetParameters().Length == 2 && method.IsGenericMethod));
 
         public MbUnitTestFramework(IPexComponent host)
             : base(host)
@@ -100,7 +106,12 @@ namespace MbUnit.Pex
 
         public override TypeName AssertionExceptionType
         {
-            get { return Metadata<AssertionException>.SerializableName; }
+            get { return Metadata<AssertionFailureException>.SerializableName; }
+        }
+
+        public override TypeName InconclusiveExceptionType
+        {
+            get { return Metadata<TestInconclusiveException>.SerializableName; }
         }
 
         public override void AddReferences(IManagedProject project)
@@ -160,6 +171,16 @@ namespace MbUnit.Pex
         {
             // FIXME: Does not handle custom test types.
             return method.IsDefined(Metadata<TestAttribute>.Type, true);
+        }
+
+        public override bool TryGetAssertAreEqual(IType type, out IMethod method)
+        {
+            TypeEx argType = type as TypeEx;
+            if (argType == null)
+                return base.TryGetAssertAreEqual(type, out method);
+
+            method = AssertAreEqualMethod.Instantiate(argType);
+            return true;
         }
 
         public override bool TryReadExpectedException(ICustomAttributeProviderEx target, out TypeEx exceptionType)
