@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="WixUI_Gallio.wxs" />
     <Compile Include="GallioBundle.wxs" />
+    <Compile Include="VSExtension2010.wxs" />
     <Compile Include="..\Gallio\Gallio.wxs">
       <Link>Gallio.wxs</Link>
     </Compile>
@@ -56,8 +57,14 @@
     <Compile Include="..\MbUnit\MbUnit.wxs">
       <Link>MbUnit.wxs</Link>
     </Compile>
-    <Compile Include="..\MbUnit\Templates\MbUnitTemplates.wxs">
-      <Link>MbUnitTemplates.wxs</Link>
+    <Compile Include="..\MbUnit\Templates\VS2005\MbUnitTemplatesVS2005.wxs">
+      <Link>MbUnitTemplatesVS2005.wxs</Link>
+    </Compile>
+    <Compile Include="..\MbUnit\Templates\VS2008\MbUnitTemplatesVS2008.wxs">
+      <Link>MbUnitTemplatesVS2008.wxs</Link>
+    </Compile>
+    <Compile Include="..\MbUnit\Templates\VS2010\MbUnitTemplatesVS2010.wxs">
+      <Link>MbUnitTemplatesVS2010.wxs</Link>
     </Compile>
     <Compile Include="..\MbUnit\Samples\MbUnitSamples.wxs">
       <Link>MbUnitSamples.wxs</Link>

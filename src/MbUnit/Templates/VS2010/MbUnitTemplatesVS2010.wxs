@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:VS="http://schemas.microsoft.com/wix/VSExtension">
+    <Fragment>
+        <!-- Pick up Visual Studio properties from WixVSExtension -->
+        <PropertyRef Id="VS100_ITEMTEMPLATES_DIR" />
+        <PropertyRef Id="VS100_PROJECTTEMPLATES_DIR" />
+
+        <DirectoryRef Id="TARGETDIR">
+
+            <Directory Id="VS100_ITEMTEMPLATES_DIR" Name="ItemTemplates.VS2010">
+                <Directory Id="VS2010.ItemTemplates.CS" Name="CSharp">
+                    <Component Id="VS2010.MbUnit3.TestFixtureTemplate.CSharp.zip" Guid="{4AF502C0-7A3C-4b09-9E0F-0FF135528314}" Win64="no">
+                        <File Id="VS2010.MbUnit3.TestFixtureTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2010\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip" KeyPath="yes" />
+                    </Component>
+                </Directory>
+                <Directory Id="VS2010.ItemTemplates.VB" Name="VisualBasic">
+                    <Component Id="VS2010.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Guid="{7CBA9F1A-4657-4e3e-AF35-B3B297D22D4E}" Win64="no">
+                        <File Id="VS2010.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2010\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip" KeyPath="yes" />
+                    </Component>
+                </Directory>
+            </Directory>
+
+            <Directory Id="VS100_PROJECTTEMPLATES_DIR" Name="ProjectTemplates.VS2010">
+                <Directory Id="VS2010.ProjectTemplates.CS" Name="CSharp">
+                    <Component Id="VS2010.MbUnit3.TestProjectTemplate.CSharp.zip" Guid="{26088F0D-9F9C-454e-BC5C-4FA3EB5CE24D}" Win64="no">
+                        <File Id="VS2010.MbUnit3.TestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2010\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip" KeyPath="yes" />
+                    </Component>
+                    <Component Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" Guid="{327C9465-F487-4a7f-B47F-978095DA4052}" Win64="no">
+                        <File Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2010\ProjectTemplates\CSharp\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" KeyPath="yes" />
+                        <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#">
+                            <RegistryValue Type="string" Name="Path" Value="CSharp" />
+                            <RegistryValue Type="string" Name="Template" Value="MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" />
+                            <RegistryValue Type="string" Name="TestFrameworkName" Value="MbUnit v3" />
+                            <RegistryValue Type="string" Name="AdditionalInfo" Value="http://www.mbunit.com/" />
+                        </RegistryKey>
+                    </Component>
+                </Directory>
+                <Directory Id="VS2010.ProjectTemplates.VB" Name="VisualBasic">
+                    <Component Id="VS2010.MbUnit3.TestProjectTemplate.VisualBasic.zip" Guid="{8DCBCA43-ABE2-40b0-9135-68AFB85D9304}" Win64="no">
+                        <File Id="VS2010.MbUnit3.TestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2010\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
+                    </Component>
+                    <Component Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" Guid="{C9F90C14-BCE5-41eb-A0B1-1DF24924DEC9}" Win64="no">
+                        <File Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2010\ProjectTemplates\VisualBasic\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
+                        <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB">
+                            <RegistryValue Type="string" Name="Path" Value="VisualBasic" />
+                            <RegistryValue Type="string" Name="Template" Value="MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" />
+                            <RegistryValue Type="string" Name="TestFrameworkName" Value="MbUnit v3" />
+                            <RegistryValue Type="string" Name="AdditionalInfo" Value="http://www.mbunit.com/" />
+                        </RegistryKey>
+                    </Component>
+                </Directory>
+            </Directory>
+
+        </DirectoryRef>
+
+        <Feature Id="feat_MbUnit3.Templates.VS2010" Title="Visual Studio 2010 Templates" Level="0" AllowAdvertise="no"
+                 Description="Installs the MbUnit v3 Visual Studio 2010 templates.">
+            <Condition Level="1">
+                VS100_ITEMTEMPLATES_DIR and VS100_PROJECTTEMPLATES_DIR
+            </Condition>
+            <ComponentRef Id="VS2010.MbUnit3.TestFixtureTemplate.CSharp.zip" />
+            <ComponentRef Id="VS2010.MbUnit3.TestFixtureTemplate.VisualBasic.zip" />
+            <ComponentRef Id="VS2010.MbUnit3.TestProjectTemplate.CSharp.zip" />
+            <ComponentRef Id="VS2010.MbUnit3.TestProjectTemplate.VisualBasic.zip" />
+            <ComponentRef Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" />
+            <ComponentRef Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" />
+        </Feature>
+    </Fragment>
+</Wix>

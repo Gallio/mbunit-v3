@@ -8,6 +8,9 @@
         <PropertyRef Id='VS90DEVENV'/>
         <PropertyRef Id='VS90_ROOT_FOLDER'/>
 
+        <PropertyRef Id='VS100DEVENV'/>
+        <PropertyRef Id='VS100_ROOT_FOLDER'/>
+
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="VisualStudio" Name="VisualStudio">
                 <Component Id="Gallio.VisualStudio.Interop.dll" Guid="{56E419A9-B033-4115-9BA5-D21137D6F052}" Win64="no">
@@ -23,6 +26,8 @@
                 </Component>
                 
                 <Component Id="Gallio.VisualStudio.Shell.VS90.Registry" Guid="{AE9CCDE1-FF9F-4519-96D8-F4E2609B1B40}" Win64="no">
+	            <Condition>VS90DEVENV</Condition>
+		
                     <!-- Register the product -->
                     <RegistryKey Id="Gallio.VisualStudio.Shell.VS90.Registry1" Action="createAndRemoveOnUninstall"
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\InstalledProducts\Gallio">
@@ -55,6 +60,41 @@
                     </RegistryKey>
                 </Component>
 
+                <Component Id="Gallio.VisualStudio.Shell.VS100.Registry" Guid="{8D0E001F-E927-4228-9B3D-093BFFBB6BFB}" Win64="no">
+	            <Condition>VS100DEVENV</Condition>
+		
+                    <!-- Register the product -->
+                    <RegistryKey Id="Gallio.VisualStudio.Shell.VS100.Registry1" Action="createAndRemoveOnUninstall"
+                                 Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\InstalledProducts\Gallio">
+                        <RegistryValue Type="string" Name="Package" Value="{9e600ffc-344d-4e6f-89c0-ded6afb42459}"/>
+                        <RegistryValue Type="integer" Name="UseInterface" Value="1"/>
+                    </RegistryKey>
+
+                    <!-- Register the package -->
+                    <RegistryKey Id="Gallio.VisualStudio.Shell.VS100.Registry2" Action="createAndRemoveOnUninstall"
+                                 Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\Packages\{9e600ffc-344d-4e6f-89c0-ded6afb42459}">
+                        <RegistryValue Type="string" Value="Gallio Shell Package"/>
+                        <RegistryValue Type="string" Name="InprocServer32" Value="[SystemFolder]mscoree.dll"/>
+                        <RegistryValue Type="string" Name="Class" Value="Gallio.VisualStudio.Shell.ShellPackage"/>
+                        <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.VisualStudio.Shell.dll]"/>
+                        <RegistryValue Type="integer" Name="ID" Value="1"/>
+                        <RegistryValue Type="string" Name="MinEdition" Value="Standard"/>
+                        <RegistryValue Type="string" Name="ProductVersion" Value="3.0"/>
+                        <RegistryValue Type="string" Name="ProductName" Value="Gallio"/>
+                        <RegistryValue Type="string" Name="CompanyName" Value="Gallio Project"/>
+                    </RegistryKey>
+                    <RegistryKey Id="Gallio.VisualStudio.Shell.VS100.Registry3" Action="createAndRemoveOnUninstall"
+                                 Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}">
+                        <RegistryValue Type="integer" Name="{9e600ffc-344d-4e6f-89c0-ded6afb42459}" Value="0"/>
+                    </RegistryKey>
+
+                    <!-- Register the add-in -->
+                    <RegistryKey Id="Gallio.VisualStudio.Shell.VS100.Registry4" Action="create"
+                                 Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\AutomationOptions\LookInFolders">
+                        <RegistryValue Type="string" Name="[VisualStudio]" Value="Gallio" />
+                    </RegistryKey>
+                </Component>
+
 <?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
                 <Component Id="Gallio.VisualStudio.Sail.dll" Guid="{05E499FA-1897-48d0-98DC-ED8B3E4AFFD3}" Win64="no">
                     <File Name="Gallio.VisualStudio.Sail.dll" KeyPath="yes" />
@@ -63,6 +103,11 @@
 		
                 <!--
                 <Component Id="Gallio.VisualStudio.Sail.VS90.Registry" Guid="{887DB38D-42DB-4dcc-9008-9DF0E6CBE8A4}">
+	            <Condition>VS90DEVENV</Condition>
+                </Component>
+
+                <Component Id="Gallio.VisualStudio.Sail.VS100.Registry" Guid="{01555D50-A066-44fe-B317-975617ACAF0E}">
+	            <Condition>VS100DEVENV</Condition>
                 </Component>
                 -->
 <?endif?>
@@ -79,9 +124,27 @@
                 </Component>
 
                 <Component Id="Gallio.VisualStudio.Tip.VS90.Registry" Guid="{E89197CF-A054-47ae-A1BE-2BB61588ACB1}" Win64="no">
+	            <Condition>VS90DEVENV</Condition>
+
                     <!-- Register the test types -->
                     <RegistryKey Id="Gallio.VisualStudio.Tip.VS90.Registry1" Action="createAndRemoveOnUninstall"
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}">
+                        <RegistryValue Type="string" Name="NameId" Value="#100"/>
+                        <RegistryValue Type="string" Name="TipProvider" Value="Gallio.VisualStudio.Tip.GallioTipProxy, !(bind.assemblyFullName.Gallio.VisualStudio.Tip.Proxy.dll)"/>
+                        <RegistryValue Type="string" Name="ServiceType" Value="Gallio.VisualStudio.Tip.SGallioTestService, !(bind.assemblyFullName.Gallio.VisualStudio.Tip.Proxy.dll)"/>
+                        <RegistryKey Key="Extensions">
+                            <RegistryValue Type="integer" Name=".dll" Value="101"/>
+                            <RegistryValue Type="integer" Name=".exe" Value="101"/>
+                        </RegistryKey>
+                    </RegistryKey>
+                </Component>
+		
+                <Component Id="Gallio.VisualStudio.Tip.VS100.Registry" Guid="{F4A5C61F-D5B4-40c6-9206-5EDE0D441515}" Win64="no">
+	            <Condition>VS100DEVENV</Condition>
+
+                    <!-- Register the test types -->
+                    <RegistryKey Id="Gallio.VisualStudio.Tip.VS100.Registry1" Action="createAndRemoveOnUninstall"
+                                 Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}">
                         <RegistryValue Type="string" Name="NameId" Value="#100"/>
                         <RegistryValue Type="string" Name="TipProvider" Value="Gallio.VisualStudio.Tip.GallioTipProxy, !(bind.assemblyFullName.Gallio.VisualStudio.Tip.Proxy.dll)"/>
                         <RegistryValue Type="string" Name="ServiceType" Value="Gallio.VisualStudio.Tip.SGallioTestService, !(bind.assemblyFullName.Gallio.VisualStudio.Tip.Proxy.dll)"/>
@@ -96,17 +159,19 @@
         </DirectoryRef>
 
         <Feature Id="feat_Gallio.VisualStudio" Title="Visual Studio Add-In" Level="0" Description="Installs the pre-requisite packages for Visual Studio integration features." AllowAdvertise="no">
-            <Condition Level="1">VS90DEVENV</Condition>
+            <Condition Level="1">VS90DEVENV or VS100DEVENV</Condition>
 
 	    <ComponentRef Id="Gallio.VisualStudio.Interop.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell.VS90.Registry"/>
+            <ComponentRef Id="Gallio.VisualStudio.Shell.VS100.Registry"/>
             
 <?ifdef FEATURE_VISUALSTUDIO_TIP ?>
             <Feature Id="feat_Gallio.VisualStudio.Tip" Title="Visual Studio Team System Test Runner" Level="1" Description="Test integration provider for Visual Studio Team System" AllowAdvertise="no">
                 <ComponentRef Id="Gallio.VisualStudio.Tip.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip.Proxy.dll"/>
                 <ComponentRef Id="Gallio.VisualStudio.Tip.VS90.Registry"/>
+                <ComponentRef Id="Gallio.VisualStudio.Tip.VS100.Registry"/>
             </Feature>
 <?endif?>
                 
@@ -115,6 +180,7 @@
                 <ComponentRef Id="Gallio.VisualStudio.Sail.dll"/>
                 <!--
                 <ComponentRef Id="Gallio.VisualStudio.Sail.VS90.Registry"/>
+                <ComponentRef Id="Gallio.VisualStudio.Sail.VS100.Registry"/>
                 -->
             </Feature>
 <?endif?>

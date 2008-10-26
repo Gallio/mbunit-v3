@@ -1,76 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:VS="http://schemas.microsoft.com/wix/VSExtension">
     <Fragment>
-
-        <!-- ==================================================================== -->
-
-        <!-- Pick up Visual Studio properties from WixVSExtension -->
-        <PropertyRef Id="VS2005_ITEMTEMPLATES_DIR" />
-        <PropertyRef Id="VS2005_PROJECTTEMPLATES_DIR" />
-
-        <DirectoryRef Id="TARGETDIR">
-
-            <Directory Id="VS2005_ITEMTEMPLATES_DIR" Name="ItemTemplates.VS2005">
-                <Directory Id="VS2005.ItemTemplates.CS" Name="CSharp">
-                    <Component Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" Guid="7BB50DCA-BFC5-4303-ACE3-5042927FAD55" Win64="no">
-                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip" KeyPath="yes" />
-                    </Component>
-                </Directory>
-                <Directory Id="VS2005.ItemTemplates.VB" Name="VisualBasic">
-                    <Component Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Guid="378B0392-A815-4672-94F6-E8CBA5E640FB" Win64="no">
-                            <File Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip" KeyPath="yes" />
-                    </Component>
-                </Directory>
-            </Directory>
-            <Directory Id="VS2005_PROJECTTEMPLATES_DIR" Name="ProjectTemplates.VS2005">
-                <Directory Id="VS2005.ProjectTemplates.CS" Name="CSharp">
-                    <Component Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" Guid="1F9437C7-BCD1-4327-BBFE-5C67088393A0" Win64="no">
-                        <File Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip" KeyPath="yes" />
-                    </Component>
-                </Directory>
-                <Directory Id="VS2005.ProjectTemplates.VB" Name="VisualBasic">
-                    <Component Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" Guid="{07CC045C-C889-4f4f-9AAD-47C49CD04C8E}" Win64="no">
-                        <File Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2005\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
-                    </Component>
-                </Directory>
-            </Directory>
-
-        </DirectoryRef>
-
-        <Feature Id="feat_MbUnit3.Templates.VS2005" Title="Visual Studio 2005 Templates" Level="0" AllowAdvertise="no"
-                 Description="Installs the MbUnit v3 Visual Studio 2005 templates.">
-            <Condition Level="1">                 
-                 VS2005_ITEMTEMPLATES_DIR and VS2005_PROJECTTEMPLATES_DIR
-            </Condition>
-            <ComponentRef Id="VS2005.MbUnit3.TestFixtureTemplate.CSharp.zip" />
-            <ComponentRef Id="VS2005.MbUnit3.TestFixtureTemplate.VisualBasic.zip" />
-            <ComponentRef Id="VS2005.MbUnit3.TestProjectTemplate.CSharp.zip" />
-            <ComponentRef Id="VS2005.MbUnit3.TestProjectTemplate.VisualBasic.zip" />
-        </Feature>
-
-        <!-- ==================================================================== -->
-
         <!-- Pick up Visual Studio properties from WixVSExtension -->
         <PropertyRef Id="VS90_ITEMTEMPLATES_DIR" />
         <PropertyRef Id="VS90_PROJECTTEMPLATES_DIR" />
 
         <DirectoryRef Id="TARGETDIR">
 
-            <Directory Id="VS90_ITEMTEMPLATES_DIR" Name="ItemTemplates.VS90">
-                <Directory Id="VS90.ItemTemplates.CS" Name="CSharp">
-                    <Component Id="VS90.MbUnit3.TestFixtureTemplate.CSharp.zip" Guid="45F61E32-1A5A-4bc0-922F-1162D145A884" Win64="no">
+            <Directory Id="VS90_ITEMTEMPLATES_DIR" Name="ItemTemplates.VS2008">
+                <Directory Id="VS2008.ItemTemplates.CS" Name="CSharp">
+                    <Component Id="VS2008.MbUnit3.TestFixtureTemplate.CSharp.zip" Guid="45F61E32-1A5A-4bc0-922F-1162D145A884" Win64="no">
                         <File Id="VS2008.MbUnit3.TestFixtureTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ItemTemplates\CSharp\MbUnit3.TestFixtureTemplate.CSharp.zip" KeyPath="yes" />
                     </Component>
                 </Directory>
-                <Directory Id="VS90.ItemTemplates.VB" Name="VisualBasic">
+                <Directory Id="VS2008.ItemTemplates.VB" Name="VisualBasic">
                     <Component Id="VS2008.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Guid="7EA51EA1-B9CC-4046-A06C-9209824D61B2" Win64="no">
                         <File Id="VS2008.MbUnit3.TestFixtureTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ItemTemplates\VisualBasic\MbUnit3.TestFixtureTemplate.VisualBasic.zip" KeyPath="yes" />
                     </Component>
                 </Directory>
             </Directory>
 
-            <Directory Id="VS90_PROJECTTEMPLATES_DIR" Name="ProjectTemplates.VS90">
-                <Directory Id="VS90.ProjectTemplates.CS" Name="CSharp">
+            <Directory Id="VS90_PROJECTTEMPLATES_DIR" Name="ProjectTemplates.VS2008">
+                <Directory Id="VS2008.ProjectTemplates.CS" Name="CSharp">
                     <Component Id="VS2008.MbUnit3.TestProjectTemplate.CSharp.zip" Guid="{00EB4409-61A2-4065-B019-7B97AA240825}" Win64="no">
                         <File Id="VS2008.MbUnit3.TestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\CSharp\MbUnit3.TestProjectTemplate.CSharp.zip" KeyPath="yes" />
                     </Component>
@@ -84,7 +35,7 @@
                         </RegistryKey>
                     </Component>
                 </Directory>
-                <Directory Id="VS90.ProjectTemplates.VB" Name="VisualBasic">
+                <Directory Id="VS2008.ProjectTemplates.VB" Name="VisualBasic">
                     <Component Id="VS2008.MbUnit3.TestProjectTemplate.VisualBasic.zip" Guid="{77546593-B0F5-40b9-A02F-FF1D89101498}" Win64="no">
                         <File Id="VS2008.MbUnit3.TestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2008\ProjectTemplates\VisualBasic\MbUnit3.TestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
                     </Component>
@@ -107,19 +58,12 @@
             <Condition Level="1">
                 VS90_ITEMTEMPLATES_DIR and VS90_PROJECTTEMPLATES_DIR
             </Condition>
-            <ComponentRef Id="VS90.MbUnit3.TestFixtureTemplate.CSharp.zip" />
+            <ComponentRef Id="VS2008.MbUnit3.TestFixtureTemplate.CSharp.zip" />
             <ComponentRef Id="VS2008.MbUnit3.TestFixtureTemplate.VisualBasic.zip" />
             <ComponentRef Id="VS2008.MbUnit3.TestProjectTemplate.CSharp.zip" />
             <ComponentRef Id="VS2008.MbUnit3.TestProjectTemplate.VisualBasic.zip" />
             <ComponentRef Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" />
             <ComponentRef Id="VS2008.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" />
         </Feature>
-
-        <!-- ==================================================================== -->
-
     </Fragment>
 </Wix>
-
-
-
-
