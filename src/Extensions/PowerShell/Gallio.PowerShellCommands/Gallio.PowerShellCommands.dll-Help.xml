@@ -76,7 +76,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="false" position="1">
           <maml:name>Assemblies</maml:name>
           <maml:description>
-            <maml:para>The list of relative or absolute paths of test assembly files to execute.</maml:para>
+            <maml:para>The list of comma-separated, relative or absolute paths of test assembly files to execute.</maml:para>
           </maml:description>
         </command:parameter>
         
@@ -207,7 +207,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="false" position="1">
         <maml:name>Assemblies</maml:name>
         <maml:description>
-          <maml:para>The list of relative or absolute paths of test assembly files to execute.</maml:para>
+          <maml:para>The list of comma-separated, relative or absolute paths of test assembly files to execute.</maml:para>
         </maml:description>
       </command:parameter>
 
@@ -331,7 +331,7 @@
         # Makes the Gallio commands available
         Add-PSSnapIn Gallio
         # Runs TestAssembly1.dll
-        Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll" -f Category:UnitTests -rd C:\build\reports -rf html
+        Run-Gallio "[Path-to-assembly1]\TestAssembly1.dll","[Path-to-assembly2]\TestAssembly2.dll" -f Category:UnitTests -rd C:\build\reports -rf html
       </command:example>
     </command:examples>
 
