@@ -103,22 +103,8 @@ namespace Gallio.Runtime.Hosting
             }
             catch (Exception ex)
             {
-                StringBuilder diagnostics = new StringBuilder();
-                if (processTask != null)
-                {
-                    int exitCode = processTask.ExitCode;
-                    diagnostics.AppendFormat("  Exit code: {0}", exitCode);
-
-                    string exitCodeDescription = processTask.ExitCodeDescription;
-                    if (exitCodeDescription != null)
-                        diagnostics.Append(" - ").Append(exitCodeDescription);
-
-                    diagnostics.Append(".  See log for more details.");
-                }
-
                 FreeResources(true);
-
-                throw new HostException("Error attaching to the host process." + diagnostics, ex);
+                throw new HostException("Error attaching to the host process.", ex);
             }
         }
 
@@ -228,7 +214,16 @@ namespace Gallio.Runtime.Hosting
         private void LogExitCode(object sender, EventArgs e)
         {
             ProcessTask processTask = (ProcessTask)sender;
-            Logger.Log(LogSeverity.Debug, String.Format("* Host process exit code: {0}", processTask.ExitCode));
+
+            StringBuilder diagnostics = new StringBuilder();
+            int exitCode = processTask.ExitCode;
+            diagnostics.AppendFormat("* Host process exited with code: {0}", exitCode);
+
+            string exitCodeDescription = processTask.ExitCodeDescription;
+            if (exitCodeDescription != null)
+                diagnostics.Append(" - ").Append(exitCodeDescription);
+
+            Logger.Log(exitCode < 0 ? LogSeverity.Error : LogSeverity.Info, diagnostics.ToString());
         }
 
         private void WaitUntilReady(IHostService hostService)
