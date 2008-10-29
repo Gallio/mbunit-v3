@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Gallio.Runtime.Logging;
@@ -102,9 +103,18 @@ namespace Gallio.Runtime.Hosting
             }
             catch (Exception ex)
             {
-                string diagnostics = "";
+                StringBuilder diagnostics = new StringBuilder();
                 if (processTask != null)
-                    diagnostics = String.Format("  Exit code: {0}.  See log for more details.", processTask.Result);
+                {
+                    int exitCode = processTask.ExitCode;
+                    diagnostics.AppendFormat("  Exit code: {0}", exitCode);
+
+                    string exitCodeDescription = processTask.ExitCodeDescription;
+                    if (exitCodeDescription != null)
+                        diagnostics.Append(" - ").Append(exitCodeDescription);
+
+                    diagnostics.Append(".  See log for more details.");
+                }
 
                 FreeResources(true);
 

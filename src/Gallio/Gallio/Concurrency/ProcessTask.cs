@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Gallio.Runtime;
 using Gallio.Utilities;
@@ -207,6 +208,28 @@ namespace Gallio.Concurrency
                 if (process == null || !process.HasExited)
                     return -1;
                 return process.ExitCode;
+            }
+        }
+
+        /// <summary>
+        /// Gets a description of the exit code, if available, or null otherwise.
+        /// </summary>
+        public string ExitCodeDescription
+        {
+            get
+            {
+                if (!RuntimeDetection.IsUsingMono)
+                {
+                    int exitCode = ExitCode;
+                    if (exitCode < -1)
+                    {
+                        Exception ex = Marshal.GetExceptionForHR(exitCode);
+                        if (ex != null && !ex.Message.Contains("HRESULT"))
+                            return ex.Message;
+                    }
+                }
+
+                return null;
             }
         }
 

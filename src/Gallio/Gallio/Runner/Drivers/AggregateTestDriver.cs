@@ -31,6 +31,7 @@ namespace Gallio.Runner.Drivers
     public abstract class AggregateTestDriver : BaseTestDriver
     {
         private readonly List<Partition> partitions = new List<Partition>();
+        private bool shutdownExceptionEncountered;
 
         /// <summary>
         /// Initializes an aggregate test driver.
@@ -127,7 +128,7 @@ namespace Gallio.Runner.Drivers
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.Log(LogSeverity.Warning, "An exception occurred while unloading a test driver.", ex);
+                                    LogShutdownException(ex, "An exception occurred while unloading a test driver.");
                                 }
                             }
                         }
@@ -137,6 +138,15 @@ namespace Gallio.Runner.Drivers
                         Reset();
                     }
                 }
+            }
+        }
+
+        private void LogShutdownException(Exception ex, string description)
+        {
+            if (!shutdownExceptionEncountered)
+            {
+                shutdownExceptionEncountered = true;
+                Logger.Log(LogSeverity.Warning, description, ex);
             }
         }
 
@@ -163,6 +173,7 @@ namespace Gallio.Runner.Drivers
         protected virtual void Reset()
         {
             DisposeDrivers();
+            shutdownExceptionEncountered = false;
         }
 
         private void DisposeDrivers()
@@ -175,7 +186,7 @@ namespace Gallio.Runner.Drivers
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(LogSeverity.Warning, "An exception occurred while disposing a test driver.", ex);
+                    LogShutdownException(ex, "An exception occurred while disposing a test driver.");
                 }
             }
 
