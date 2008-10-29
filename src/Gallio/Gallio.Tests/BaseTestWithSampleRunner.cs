@@ -68,7 +68,12 @@ namespace Gallio.Tests
                 if (attribs.Length != 0)
                 {
                     foreach (RunSampleAttribute attrib in attribs)
-                        runner.AddFixture(attrib.SampleType);
+                    {
+                        if (attrib.MethodName == null)
+                            runner.AddFixture(attrib.FixtureType);
+                        else
+                            runner.AddMethod(attrib.FixtureType, attrib.MethodName);
+                    }
 
                     runner.Run();
                 }

@@ -25,15 +25,9 @@ namespace MbUnit.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(ExplicitAttribute))]
+    [RunSample(typeof(ExplicitSample), "SelectedExplicitTest")]
     public class ExplicitTest : BaseTestWithSampleRunner
     {
-        [FixtureSetUp]
-        public void RunSample()
-        {
-            Runner.AddMethod(typeof(ExplicitSample), "SelectedExplicitTest");
-            Runner.Run();
-        }
-
         [Test]
         public void SelectedExplicitTestWillRun()
         {

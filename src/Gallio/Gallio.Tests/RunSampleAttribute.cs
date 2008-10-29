@@ -24,19 +24,31 @@ namespace Gallio.Tests
 {
     /// <summary>
     /// Used together with <see cref="BaseTestWithSampleRunner" /> to specify
-    /// a sample type to run.
+    /// a sample test to run.
     /// </summary>
     [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = true, Inherited = true)]
     public class RunSampleAttribute : Attribute
     {
-        public RunSampleAttribute(Type sampleType)
+        public RunSampleAttribute(Type fixtureType)
         {
-            if (sampleType == null)
-                throw new ArgumentNullException("sampleType");
+            if (fixtureType == null)
+                throw new ArgumentNullException("fixtureType");
 
-            SampleType = sampleType;
+            FixtureType = fixtureType;
         }
 
-        public Type SampleType { get; private set; }
+        public RunSampleAttribute(Type fixtureType, string methodName)
+        {
+            if (fixtureType == null)
+                throw new ArgumentNullException("fixtureType");
+            if (methodName == null)
+                throw new ArgumentNullException("methodName");
+
+            FixtureType = fixtureType;
+            MethodName = methodName;
+        }
+
+        public Type FixtureType { get; private set; }
+        public string MethodName { get; private set; }
     }
 }
