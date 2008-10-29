@@ -18,7 +18,7 @@ using System.IO;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Integration
@@ -27,14 +27,9 @@ namespace MbUnit.Tests.Integration
     /// Tests the test assembly working directory and application base directory defaults.
     /// </summary>
     [TestFixture]
-    public class WorkingDirectoryAndApplicationBaseTest : BaseSampleTest
+    [RunSample(typeof(WorkingDirectoryAndApplicationBaseSample))]
+    public class WorkingDirectoryAndApplicationBaseTest : BaseTestWithSampleRunner
     {
-        [FixtureSetUp]
-        public void RunSample()
-        {
-            RunFixtures(typeof(WorkingDirectoryAndApplicationBaseSample));
-        }
-
         [Test]
         public void WorkingDirectoryIsSameAsDirectoryContainingTestAssembly()
         {
@@ -50,23 +45,23 @@ namespace MbUnit.Tests.Integration
                 CodeReference.CreateFromMember(typeof(WorkingDirectoryAndApplicationBaseSample).GetMethod("ApplicationBaseIsSameAsDirectoryContainingTestAssembly")));
             Assert.AreEqual(TestOutcome.Passed, run.Result.Outcome);
         }
-    }
 
-    [TestFixture, Explicit("Sample")]
-    internal class WorkingDirectoryAndApplicationBaseSample
-    {
-        [Test]
-        public void WorkingDirectoryIsSameAsDirectoryContainingTestAssembly()
+        [TestFixture, Explicit("Sample")]
+        internal class WorkingDirectoryAndApplicationBaseSample
         {
-            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)),
-                Environment.CurrentDirectory);
-        }
+            [Test]
+            public void WorkingDirectoryIsSameAsDirectoryContainingTestAssembly()
+            {
+                Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)),
+                    Environment.CurrentDirectory);
+            }
 
-        [Test]
-        public void ApplicationBaseIsSameAsDirectoryContainingTestAssembly()
-        {
-            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)),
-                AppDomain.CurrentDomain.BaseDirectory);
+            [Test]
+            public void ApplicationBaseIsSameAsDirectoryContainingTestAssembly()
+            {
+                Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)),
+                    AppDomain.CurrentDomain.BaseDirectory);
+            }
         }
     }
 }

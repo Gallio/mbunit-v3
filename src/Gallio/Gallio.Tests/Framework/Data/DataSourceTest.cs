@@ -26,7 +26,7 @@ namespace Gallio.Tests.Framework.Data
     [TestFixture]
     [TestsOn(typeof(DataSource))]
     [DependsOn(typeof(MergedDataSetTest))]
-    public class DataSourceTest : BaseUnitTest
+    public class DataSourceTest : BaseTestWithMocks
     {
         private delegate bool CanBindDelegate(DataBinding binding);
         private delegate IEnumerable<IDataItem> GetItemsDelegate(ICollection<DataBinding> bindings, bool includeDynamicItems);

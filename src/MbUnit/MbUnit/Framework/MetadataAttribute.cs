@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Framework.Pattern;
 
@@ -24,6 +25,13 @@ namespace MbUnit.Framework
     /// or other test component.  The metadata can be used for documentation, classification
     /// or dynamic customization of tests.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Metadata appears in the test reports and can be used for filtering.  It is also
+    /// accessible at runtime by inspecting the properties of the current test in the
+    /// <see cref="TestContext" />.
+    /// </para>
+    /// </remarks>
     public class MetadataAttribute : MetadataPatternAttribute
     {
         private readonly string metadataKey;

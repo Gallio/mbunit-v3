@@ -28,13 +28,13 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(TypeFilter<ITestComponent>))]
-    public class TypeFilterTest : BaseUnitTest, ITypeFilterTest
+    public class TypeFilterTest : BaseTestWithMocks, ITypeFilterTest
     {
         [Test]
         [Row(true, typeof(TypeFilterTest), false)]
         [Row(true, typeof(TypeFilterTest), true)]
-        [Row(false, typeof(BaseUnitTest), false)]
-        [Row(true, typeof(BaseUnitTest), true)]
+        [Row(false, typeof(BaseTestWithMocks), false)]
+        [Row(true, typeof(BaseTestWithMocks), true)]
         [Row(false, typeof(ITypeFilterTest), false)]
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithAssemblyQualifiedName(bool expectedMatch, Type type, bool includeDerivedTypes)
@@ -47,8 +47,8 @@ namespace Gallio.Tests.Model.Filters
         [Test]
         [Row(true, typeof(TypeFilterTest), false)]
         [Row(true, typeof(TypeFilterTest), true)]
-        [Row(false, typeof(BaseUnitTest), false)]
-        [Row(true, typeof(BaseUnitTest), true)]
+        [Row(false, typeof(BaseTestWithMocks), false)]
+        [Row(true, typeof(BaseTestWithMocks), true)]
         [Row(false, typeof(ITypeFilterTest), false)]
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithFullName(bool expectedMatch, Type type, bool includeDerivedTypes)
@@ -61,8 +61,8 @@ namespace Gallio.Tests.Model.Filters
         [Test]
         [Row(true, typeof(TypeFilterTest), false)]
         [Row(true, typeof(TypeFilterTest), true)]
-        [Row(false, typeof(BaseUnitTest), false)]
-        [Row(true, typeof(BaseUnitTest), true)]
+        [Row(false, typeof(BaseTestWithMocks), false)]
+        [Row(true, typeof(BaseTestWithMocks), true)]
         [Row(false, typeof(ITypeFilterTest), false)]
         [Row(true, typeof(ITypeFilterTest), true)]
         public void IsMatchWithName(bool expectedMatch, Type type, bool includeDerivedTypes)
@@ -88,7 +88,7 @@ namespace Gallio.Tests.Model.Filters
             return component;
         }
 
-        private sealed class NestedTypeFilterTest : BaseUnitTest
+        private sealed class NestedTypeFilterTest : BaseTestWithMocks
         {
         }
     }

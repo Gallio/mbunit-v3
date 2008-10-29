@@ -18,20 +18,22 @@ using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Model;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.TestResources.Fixtures;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Integration
 {
     [TestFixture]
-    public class ContextOutcomeTest : BaseSampleTest
+    [RunSample(typeof(ContextOutcomePassingTestSample))]
+    [RunSample(typeof(ContextOutcomeFailingSetUpSample))]
+    [RunSample(typeof(ContextOutcomeFailingTestSample))]
+    [RunSample(typeof(ContextOutcomeFailingTearDownSample))]
+    public class ContextOutcomeTest : BaseTestWithSampleRunner
     {
         [Test]
         public void PassingTestOutcomeIsAlwaysPass()
         {
-            RunFixtures(typeof(ContextOutcomePassingTestSample));
-
             AssertTestResult("passed\npassed\npassed\n", TestStatus.Passed, typeof(ContextOutcomePassingTestSample), "Test");
             AssertFixtureResult("passed\n", TestStatus.Passed, typeof(ContextOutcomePassingTestSample));
         }
@@ -39,8 +41,6 @@ namespace MbUnit.Tests.Integration
         [Test]
         public void FailedSetUpTestOutcomeBecomesFailedAfterSetUp()
         {
-            RunFixtures(typeof(ContextOutcomeFailingSetUpSample));
-
             AssertTestResult("passed\nfailed\n", TestStatus.Failed, typeof(ContextOutcomeFailingSetUpSample), "Test");
             AssertFixtureResult("failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingSetUpSample));
         }
@@ -48,8 +48,6 @@ namespace MbUnit.Tests.Integration
         [Test]
         public void FailedTestOutcomeBecomesFailedAfterTest()
         {
-            RunFixtures(typeof(ContextOutcomeFailingTestSample));
-
             AssertTestResult("passed\npassed\nfailed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTestSample), "Test");
             AssertFixtureResult("failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTestSample));
         }
@@ -57,8 +55,6 @@ namespace MbUnit.Tests.Integration
         [Test]
         public void FailedTearDownOutcomeBecomesFailedAfterTearDown()
         {
-            RunFixtures(typeof(ContextOutcomeFailingTearDownSample));
-
             AssertTestResult("passed\npassed\npassed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTearDownSample), "Test");
             AssertFixtureResult("failed\n", TestStatus.Failed, typeof(ContextOutcomeFailingTearDownSample));
         }

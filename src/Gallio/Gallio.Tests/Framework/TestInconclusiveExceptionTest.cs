@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using Gallio.Framework;
+using Gallio.Model;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
@@ -23,5 +24,11 @@ namespace Gallio.Tests.Framework
     [VerifyExceptionContract(typeof(TestInconclusiveException))]
     public class TestInconclusiveExceptionTest
     {
+        [Test]
+        public void OutcomeIsInconclusive()
+        {
+            TestInconclusiveException ex = new TestInconclusiveException();
+            Assert.AreEqual(TestOutcome.Inconclusive, ex.Outcome);
+        }
     }
 }

@@ -109,7 +109,7 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
         private FacadeTaskResult RunTests()
         {
             ILogger logger = new ReSharperLogger();
-            ITestRunner runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.Local);
+            ITestRunner runner = TestRunnerUtils.CreateTestRunnerByName(StandardTestRunnerFactoryNames.IsolatedAppDomain);
 
             // Set parameters.
             TestPackageConfig packageConfig = new TestPackageConfig();

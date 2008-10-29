@@ -25,7 +25,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(ConcatenationMergeStrategy))]
-    public class ConcatenationMergeStrategyTest : BaseUnitTest
+    public class ConcatenationMergeStrategyTest : BaseTestWithMocks
     {
         [Test]
         public void CombinesItemsIntoASingleSequence()

@@ -25,7 +25,7 @@ namespace Gallio.Tests.Reflection.Impl
     [TestFixture]
     [Author("Jeff")]
     [TestsOn(typeof(XmlDocumentationUtils))]
-    public class XmlDocumentationUtilsTest : BaseUnitTest
+    public class XmlDocumentationUtilsTest : BaseTestWithMocks
     {
         [Test]
         [ExpectedArgumentNullException]

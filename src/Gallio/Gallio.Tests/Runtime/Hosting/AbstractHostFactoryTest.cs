@@ -25,7 +25,7 @@ using MbUnit.Framework;
 
 namespace Gallio.Tests.Runtime.Hosting
 {
-    public abstract class AbstractHostFactoryTest : BaseUnitTest
+    public abstract class AbstractHostFactoryTest : BaseTestWithMocks
     {
         public abstract IHostFactory Factory { get; }
 

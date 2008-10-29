@@ -260,7 +260,8 @@ namespace Gallio.Framework.Pattern
                     IDisposable dispose = testInstanceState.FixtureInstance as IDisposable;
                     if (dispose != null)
                     {
-                        TestContext.CurrentContext.Sandbox.Run(delegate { dispose.Dispose(); }, "Dispose Fixture");
+                        TestContext context = TestContext.CurrentContext;
+                        context.Sandbox.Run(context.LogWriter, delegate { dispose.Dispose(); }, "Dispose Fixture");
                     }
                 });
 

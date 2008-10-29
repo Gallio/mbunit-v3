@@ -26,7 +26,7 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(MetadataFilter<ITestComponent>))]
-    public class MetadataFilterTest : BaseUnitTest
+    public class MetadataFilterTest : BaseTestWithMocks
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]

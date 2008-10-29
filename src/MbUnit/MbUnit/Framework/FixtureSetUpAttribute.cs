@@ -22,10 +22,8 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// The fixture set up attribute is applied to a method that is to be invoked when
-    /// a fixture instance is being set up before any of its tests are executed.
-    /// </para>
+    /// Specifies a method that is to be invoked to set up the state of a fixture
+    /// before any of its tests are executed.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -40,6 +38,15 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public class FixtureSetUpAttribute : ContributionMethodPatternAttribute
     {
+        /// <inheritdoc />
+        protected override void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
+        {
+            base.Validate(containingScope, method);
+
+            if (method.Parameters.Count != 0)
+                ThrowUsageErrorException("A fixture set-up method must not have any parameters.");
+        }
+
         /// <inheritdoc />
         protected override void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
         {

@@ -22,11 +22,11 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Indicates that a test should only be run explicitly.
     /// The test will still appear in the test tree but it will not run and it will not appear
     /// in the test results unless it is explicitly selected for execution.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A test is considered to be explicitly selected when the filter used to run the tests
     /// matches the test or its descendants but none of its ancestors.  For example, if the filter
@@ -38,7 +38,7 @@ namespace MbUnit.Framework
     /// This attribute can be used to exclude from normal execution any tests that are
     /// particularly expensive or require manual supervision by an operator.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ExplicitAttribute : TestDecoratorPatternAttribute
     {

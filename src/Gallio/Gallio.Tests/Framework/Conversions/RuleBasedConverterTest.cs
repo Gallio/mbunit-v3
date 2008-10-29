@@ -25,7 +25,7 @@ namespace Gallio.Tests.Framework.Conversions
     [TestFixture]
     [TestsOn(typeof(RuleBasedConverter))]
     [DependsOn(typeof(BaseConverterTest))]
-    public class RuleBasedConverterTest : BaseUnitTest
+    public class RuleBasedConverterTest : BaseTestWithMocks
     {
         private delegate ConversionCost GetConversionCostDelegate(Type sourceType, Type targetType, IConverter converter);
 

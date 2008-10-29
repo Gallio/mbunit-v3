@@ -14,20 +14,19 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
-using Gallio.Model.Diagnostics;
-using Gallio.Model.Filters;
 using Gallio.Reflection;
 
 namespace MbUnit.Framework
 {
     /// <summary>
+    /// Specifies that a method represents a single test case within a fixture.
+    /// </summary>
+    /// <remarks>
     /// <para>
-    /// The test attribute is applied to a method that represents a single test
-    /// case within a fixture.  By default, if the method throws an unexpected exception,
+    /// By default, if the method throws an unexpected exception,
     /// the test will be deemed to have failed.  Otherwise, the test will pass.
     /// </para>
     /// <para>
@@ -41,11 +40,10 @@ namespace MbUnit.Framework
     /// information can also be logged during test execution using the <see cref="TestLog" />
     /// class.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// The method to which this attribute is applied must be declared by the
-    /// fixture class and must not have any parameters.  The method may be static.
+    /// fixture class.  The method may be static.  If it has parameters, then the
+    /// test is considered to be data-driven.
     /// </para>
     /// </remarks>
     /// <todo author="jeff">
@@ -57,47 +55,38 @@ namespace MbUnit.Framework
     public class TestAttribute : TestMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override void SetTestSemantics(PatternTest test, IMethodInfo method)
+        protected override object Execute(PatternTestInstanceState state)
         {
-            base.SetTestSemantics(test, method);
+            string expectedExceptionType = state.TestStep.Metadata.GetValue(MetadataKeys.ExpectedException)
+                ?? state.Test.Metadata.GetValue(MetadataKeys.ExpectedException);
 
-            test.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState state, Action<PatternTestInstanceState> action)
+            if (expectedExceptionType == null)
+                return base.Execute(state);
+
+            try
             {
-                string expectedExceptionType = state.TestStep.Metadata.GetValue(MetadataKeys.ExpectedException)
-                    ?? state.Test.Metadata.GetValue(MetadataKeys.ExpectedException);
+                base.Execute(state);
 
-                if (expectedExceptionType != null)
+                using (TestLog.Failures.BeginSection("Expected Exception"))
+                    TestLog.Failures.WriteLine("Expected an exception of type '{0}' but none was thrown.", expectedExceptionType);
+            }
+            catch (Exception ex)
+            {
+                Type exceptionType = ex.GetType();
+                if (ReflectionUtils.IsAssignableFrom(expectedExceptionType, exceptionType))
+                    return null;
+
+                if (ex is TestException)
+                    throw;
+
+                using (TestLog.Failures.BeginSection("Expected Exception"))
                 {
-                    try
-                    {
-                        action(state);
-
-                        using (TestLog.Failures.BeginSection("Expected Exception"))
-                            TestLog.Failures.WriteLine("Expected an exception of type '{0}' but none was thrown.", expectedExceptionType);
-                    }
-                    catch (Exception ex)
-                    {
-                        Type exceptionType = ex.GetType();
-                        if (ReflectionUtils.IsAssignableFrom(expectedExceptionType, exceptionType))
-                            return;
-
-                        if (ex is TestException)
-                            throw;
-
-                        using (TestLog.Failures.BeginSection("Expected Exception"))
-                        {
-                            TestLog.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
-                            TestLog.Failures.WriteException(ex);
-                        }
-                    }
-
-                    throw new SilentTestException(TestOutcome.Failed);
+                    TestLog.Failures.WriteLine("Expected an exception of type '{0}' but a different exception was thrown.", expectedExceptionType);
+                    TestLog.Failures.WriteException(ex);
                 }
-                else
-                {
-                    action(state);
-                }
-            });
+            }
+
+            throw new SilentTestException(TestOutcome.Failed);
         }
     }
 }

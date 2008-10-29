@@ -341,13 +341,9 @@ html
   <xsl:template match="g:testStepRun" mode="details">
     <xsl:if test="not($condensed) or g:result/g:outcome/@status!='passed'">
       <xsl:variable name="id" select="g:testStep/@id" />
-      <xsl:variable name="testId" select="g:testStep/@testId" />
-      <xsl:variable name="test" select="ancestor::g:report/g:testModel/descendant::g:test[@id = $testId]" />
       
-      <xsl:variable name="metadataEntriesFromTest" select="$test/g:metadata/g:entry" />
-      <xsl:variable name="metadataEntriesFromTestStep" select="g:testStep/g:metadata/g:entry" />
-      
-      <xsl:variable name="kind" select="$metadataEntriesFromTest[@key='TestKind']/g:value" />    
+      <xsl:variable name="metadataEntries" select="g:testStep/g:metadata/g:entry" />      
+      <xsl:variable name="kind" select="$metadataEntries[@key='TestKind']/g:value" />    
       <xsl:variable name="nestingLevel" select="count(ancestor::g:testStepRun)" />
       
       <xsl:variable name="statisticsRaw">
@@ -404,18 +400,9 @@ html
             </xsl:otherwise>
           </xsl:choose>
 
-          <xsl:choose>
-            <xsl:when test="g:testStep/@isPrimary='true'">
-              <xsl:call-template name="print-metadata-entries">
-                <xsl:with-param name="entries" select="$metadataEntriesFromTest|$metadataEntriesFromTestStep" />
-              </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:call-template name="print-metadata-entries">
-                <xsl:with-param name="entries" select="$metadataEntriesFromTestStep" />
-              </xsl:call-template>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:call-template name="print-metadata-entries">
+            <xsl:with-param name="entries" select="$metadataEntries" />
+          </xsl:call-template>
 
           <div id="testStepRun-{g:testStepRun/g:testStep/@id}" class="testStepRun">
             <xsl:apply-templates select="." mode="details-content" />

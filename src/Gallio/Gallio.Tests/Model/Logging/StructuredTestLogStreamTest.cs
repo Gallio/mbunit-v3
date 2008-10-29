@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gallio.Model.Logging;
+using Gallio.Model.Logging.Tags;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Model.Logging
@@ -25,5 +26,95 @@ namespace Gallio.Tests.Model.Logging
     [TestsOn(typeof(StructuredTestLogStream))]
     public class StructuredTestLogStreamTest
     {
+        [Test]
+        public void ConstructorThrowsIfNameIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new StructuredTestLogStream(null));
+        }
+
+        [Test]
+        public void ConstructorCreatesAnEmptyStream()
+        {
+            StructuredTestLogStream stream = new StructuredTestLogStream("name");
+            Assert.AreEqual("name", stream.Name);
+            Assert.IsEmpty(stream.Body.Contents);
+        }
+
+        [Test]
+        public void NameCanBeSetToNonNull()
+        {
+            StructuredTestLogStream stream = new StructuredTestLogStream("name");
+            stream.Name = "foo";
+            Assert.AreEqual("foo", stream.Name);
+        }
+
+        [Test]
+        public void NameCannotBeSetToNull()
+        {
+            StructuredTestLogStream stream = new StructuredTestLogStream("name");
+            Assert.Throws<ArgumentNullException>(() => stream.Name = null);
+        }
+
+        [Test]
+        public void BodyCanBeSetToNonNull()
+        {
+            BodyTag newBody = new BodyTag();
+
+            StructuredTestLogStream stream = new StructuredTestLogStream("name");
+            stream.Body = newBody;
+            Assert.AreSame(newBody, stream.Body);
+        }
+
+        [Test]
+        public void BodyCannotBeSetToNull()
+        {
+            StructuredTestLogStream stream = new StructuredTestLogStream("name");
+            Assert.Throws<ArgumentNullException>(() => stream.Body = null);
+        }
+
+        [Test]
+        public void WriteToThrowsIfWriterIsNull()
+        {
+            StructuredTestLogStream stream = new StructuredTestLogStream("name");
+            Assert.Throws<ArgumentNullException>(() => stream.WriteTo(null));
+        }
+
+        [Test]
+        public void WriteToReproducesTheBodyOfTheStream()
+        {
+            StructuredTestLogStream stream = new StructuredTestLogStream("name")
+            {
+                Body = new BodyTag()
+                {
+                    Contents =
+                    {
+                        new TextTag("text")
+                    }
+                }
+            };
+
+            StructuredTextWriter writer = new StructuredTextWriter();
+            stream.WriteTo(writer);
+            writer.Close();
+
+            Assert.AreEqual(stream.ToString(), writer.ToString());
+        }
+
+        [Test]
+        public void ToStringPrintsTheBody()
+        {
+            StructuredTestLogStream stream = new StructuredTestLogStream("name")
+            {
+                Body = new BodyTag()
+                {
+                    Contents =
+                    {
+                        new TextTag("text")
+                    }
+                }
+            };
+
+            Assert.AreEqual("text", stream.ToString());
+        }
     }
 }

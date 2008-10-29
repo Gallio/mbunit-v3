@@ -20,7 +20,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(BaseDataSet))]
-    public class BaseDataSetTest : BaseUnitTest
+    public class BaseDataSetTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void CanBindThrowsIfBindingIsNull()

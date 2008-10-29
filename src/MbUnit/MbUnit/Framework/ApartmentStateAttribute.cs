@@ -24,6 +24,8 @@ namespace MbUnit.Framework
     /// <para>
     /// Sets the apartment state to be used to run the decorated test.
     /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// If no apartment state is specified or if it is <see cref="System.Threading.ApartmentState.Unknown" />
     /// the test will inherit the apartment state of its parent.  Otherwise
@@ -34,7 +36,7 @@ namespace MbUnit.Framework
     /// apartment state.  Consequently the apartment state only needs to be overridden to run 
     /// a test in some mode that may differ from that which it would ordinarily inherit.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ApartmentStateAttribute : TestDecoratorPatternAttribute
     {

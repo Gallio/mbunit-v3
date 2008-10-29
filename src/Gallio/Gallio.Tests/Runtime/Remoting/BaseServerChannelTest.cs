@@ -24,7 +24,7 @@ namespace Gallio.Tests.Runtime.Remoting
     [TestFixture]
     [TestsOn(typeof(BaseServerChannel))]
     [DependsOn(typeof(BaseChannelTest))]
-    public class BaseServerChannelTest : BaseUnitTest
+    public class BaseServerChannelTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void RegisterServiceThrowsIfServiceNameIsNull()

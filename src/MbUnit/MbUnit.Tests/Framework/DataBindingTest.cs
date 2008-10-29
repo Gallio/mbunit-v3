@@ -19,7 +19,7 @@ using Gallio.Framework;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
@@ -31,7 +31,26 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(CombinatorialJoinAttribute))]
     [TestsOn(typeof(SequentialJoinAttribute))]
     [TestsOn(typeof(PairwiseJoinAttribute))]
-    public class DataBindingTest : BaseSampleTest
+    [RunSample(typeof(TypeParameterBindingInsideSample<>))]
+    [RunSample(typeof(TypeParameterBindingOutsideSample<>))]
+    [RunSample(typeof(ConstructorParameterBindingInsideSample))]
+    [RunSample(typeof(ConstructorParameterBindingOutsideSample))]
+    [RunSample(typeof(TypeParameterAndConstructorParameterBindingOutsideSample<>))]
+    [RunSample(typeof(FieldBindingSample))]
+    [RunSample(typeof(PropertyBindingSample))]
+    [RunSample(typeof(MethodParameterBindingInsideSample))]
+    [RunSample(typeof(MethodParameterBindingOutsideSample))]
+    [RunSample(typeof(ExplicitBindingByNameSample<>))]
+    [RunSample(typeof(ExplicitBindingByIndexSample<>))]
+    [RunSample(typeof(ImplicitBindingByNameSample<>))]
+    [RunSample(typeof(ImplicitBindingByIndexOnClassSample<,>))]
+    [RunSample(typeof(ImplicitBindingByIndexOnMethodSample))]
+    [RunSample(typeof(CombinatorialBindingOfClassAndMethodWithOrderingSample<>))]
+    [RunSample(typeof(CombinatorialBindingOfMethodWithMultipleDataSourcesAndOrderingSample))]
+    [RunSample(typeof(CombinatorialJoinStrategySample))]
+    [RunSample(typeof(SequentialJoinStrategySample))]
+    [RunSample(typeof(PairwiseJoinStrategySample))]
+    public class DataBindingTest : BaseTestWithSampleRunner
     {
         [Test]
         [Row(typeof(TypeParameterBindingInsideSample<>), "Test", new string[] { "System.Int32" })]
@@ -65,8 +84,6 @@ namespace MbUnit.Tests.Framework
         [Row(typeof(PairwiseJoinStrategySample), "Test", new string[] { "111", "100", "010", "001" })]
         public void VerifySampleOutput(Type fixtureType, string sampleName, string[] output)
         {
-            RunFixtures(fixtureType);
-
             IList<TestStepRun> runs = Runner.GetTestCaseRunsWithin(CodeReference.CreateFromType(fixtureType));
 
             Assert.AreEqual(output.Length, runs.Count, "Different number of runs than expected.");
@@ -74,7 +91,6 @@ namespace MbUnit.Tests.Framework
             for (int i = 0; i < output.Length; i++)
                 AssertLogContains(runs[i], output[i]);
         }
-
 
         [TestFixture, Explicit("Sample")]
         internal class TypeParameterBindingInsideSample<[Column(typeof(int))] T>
@@ -337,8 +353,8 @@ namespace MbUnit.Tests.Framework
         }
 
         [TestFixture, Explicit("Sample")]
-        [Row(typeof(string), "abc", Order=1)]
-        [Row(typeof(int), 123, Order=2)]
+        [Row(typeof(string), "abc", Order = 1)]
+        [Row(typeof(int), 123, Order = 2)]
         internal class CombinatorialBindingOfClassAndMethodWithOrderingSample<TOuter>
         {
             private readonly TOuter outerValue;
@@ -361,7 +377,7 @@ namespace MbUnit.Tests.Framework
         internal class CombinatorialBindingOfMethodWithMultipleDataSourcesAndOrderingSample
         {
             [Test]
-            [Row(typeof(string), "abc", SourceName="A", Order = 1)]
+            [Row(typeof(string), "abc", SourceName = "A", Order = 1)]
             [Row(typeof(int), 123, SourceName = "A", Order = 2)]
             [Row(typeof(string), "def", SourceName = "B", Order = 2)]
             [Row(typeof(int), 456, SourceName = "B", Order = 1)]

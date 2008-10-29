@@ -28,7 +28,7 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(MemberFilter<ITestComponent>))]
-    public class MemberFilterTest : BaseUnitTest
+    public class MemberFilterTest : BaseTestWithMocks
     {
         [Test]
         [Row(true, "A")]

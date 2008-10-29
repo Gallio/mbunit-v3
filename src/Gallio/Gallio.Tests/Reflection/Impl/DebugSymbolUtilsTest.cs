@@ -25,7 +25,7 @@ namespace Gallio.Tests.Reflection.Impl
 {
     [TestFixture]
     [TestsOn(typeof(DebugSymbolUtils))]
-    public class DebugSymbolUtilsTest : BaseUnitTest
+    public class DebugSymbolUtilsTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void GetSourceLocation_Method_ThrowsIfMethodIsNull()

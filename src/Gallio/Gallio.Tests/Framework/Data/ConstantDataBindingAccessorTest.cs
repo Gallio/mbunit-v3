@@ -21,7 +21,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(ConstantDataAccessor))]
-    public class ConstantDataBindingAccessorTest : BaseUnitTest
+    public class ConstantDataBindingAccessorTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void GetValueThrowsIfItemIsNull()

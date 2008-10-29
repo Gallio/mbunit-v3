@@ -23,20 +23,27 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
+    /// An abstract base class for implementing new test decorator behaviors.
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A test decorator applies actions to be performed around the initialization, setup,
     /// execution, teardown and disposal lifecycle of a test (in that order).
     /// </para>
     /// <para>
     /// This abstract class provides a convenient way to implement new test decorators
-    /// of your own.  If you need more control over how the test is decorated, you may
+    /// of your own.  To add new behavior to the decorator, override the appropriate
+    /// lifecycle methods, such as <see cref="Execute" />.
+    /// </para>
+    /// <para>
+    /// If you need more control over how the test is decorated, you may
     /// prefer subclassing <see cref="TestDecoratorPatternAttribute" /> directly instead.
     /// </para>
     /// <para>
     /// When multiple test decorators are applied to a test, they are installed
     /// in order according to the <see cref="DecoratorPatternAttribute.Order" /> property.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public abstract class TestDecoratorAttribute : TestDecoratorPatternAttribute
     {

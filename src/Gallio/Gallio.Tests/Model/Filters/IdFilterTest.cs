@@ -25,7 +25,7 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(IdFilter<ITestComponent>))]
-    public class IdFilterTest : BaseUnitTest
+    public class IdFilterTest : BaseTestWithMocks
     {
         [Test]
         [Row(true, "expectedValue")]

@@ -161,5 +161,21 @@ namespace Gallio.Model.Logging
         /// </summary>
         /// <returns>The attachment data</returns>
         public abstract AttachmentData ToAttachmentData();
+
+        /// <summary>
+        /// Recovers the attachment information from serializable attachment data.
+        /// </summary>
+        /// <param name="data">The attachment data</param>
+        /// <returns>The attachment</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="data"/> is null</exception>
+        public static Attachment FromAttachmentData(AttachmentData data)
+        {
+            if (data == null)
+                throw new ArgumentNullException("data");
+
+            if (data.Encoding == AttachmentEncoding.Text)
+                return new TextAttachment(data.Name, data.ContentType, data.GetText());
+            return new BinaryAttachment(data.Name, data.ContentType, data.GetBytes());
+        }
     }
 }

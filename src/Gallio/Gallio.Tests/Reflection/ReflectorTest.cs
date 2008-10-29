@@ -26,7 +26,7 @@ namespace Gallio.Tests.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(Reflector))]
-    public class ReflectorTest : BaseUnitTest
+    public class ReflectorTest : BaseTestWithMocks
     {
         [Test]
         public void Resolve_Unknown_ReturnsNull()

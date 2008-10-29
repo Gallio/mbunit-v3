@@ -76,8 +76,8 @@ namespace Gallio.UI
         }
 
         /// <summary>
-        /// Displays information about a set of test step runs, using additional information
-        /// from the test model.
+        /// Displays information about a set of test step runs, using additional
+        /// information from the test model when available.
         /// </summary>
         /// <param name="testStepRuns">The test step runs</param>
         /// <param name="testModelData">The test model data, or null if not available</param>

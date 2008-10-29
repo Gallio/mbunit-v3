@@ -103,7 +103,7 @@ namespace Gallio.Framework.Pattern
 
             DoWithProcessIsolation(delegate
             {
-                DoWithTimeout(sandbox, test.Timeout, delegate
+                sandbox.UseTimeout(test.Timeout, delegate
                 {
                     DoWithApartmentState(test.ApartmentState, delegate
                     {
@@ -116,8 +116,7 @@ namespace Gallio.Framework.Pattern
 
                         if (outcome.Status == TestStatus.Passed)
                         {
-                            PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep, test.Name,
-                                test.CodeElement, true);
+                            PatternTestStep primaryTestStep = new PatternTestStep(test, parentTestStep);
                             PatternTestState testState = new PatternTestState(primaryTestStep, testHandler, converter,
                                 formatter, testCommand.IsExplicit);
 
@@ -206,6 +205,7 @@ namespace Gallio.Framework.Pattern
                     {
                         testStep = new PatternTestStep(testState.Test, testState.PrimaryTestStep,
                             testState.Test.Name, testState.Test.CodeElement, false);
+                        testStep.Kind = testState.Test.Kind;
 
                         testStep.IsDynamic = bindingItem.IsDynamic;
                         bindingItem.PopulateMetadata(testStep.Metadata);
@@ -354,7 +354,7 @@ namespace Gallio.Framework.Pattern
         [TestEntryPoint]
         private static TestOutcome DoBeforeTest(Sandbox sandbox, PatternTestState testState)
         {
-            return sandbox.Run(delegate
+            return sandbox.Run(TestLog.Writer, delegate
             {
                 foreach (PatternTestParameter parameter in testState.Test.Parameters)
                 {
@@ -373,7 +373,7 @@ namespace Gallio.Framework.Pattern
             {
                 context.LifecyclePhase = LifecyclePhases.Initialize;
 
-                return context.Sandbox.Run(delegate
+                return context.Sandbox.Run(TestLog.Writer, delegate
                 {
                     testState.TestHandler.InitializeTest(testState);
                 }, "Initialize");
@@ -387,7 +387,7 @@ namespace Gallio.Framework.Pattern
             {
                 context.LifecyclePhase = LifecyclePhases.Dispose;
 
-                return context.Sandbox.Run(delegate
+                return context.Sandbox.Run(TestLog.Writer, delegate
                 {
                     testState.TestHandler.DisposeTest(testState);
                 }, "Dispose");
@@ -397,7 +397,7 @@ namespace Gallio.Framework.Pattern
         [TestEntryPoint]
         private static TestOutcome DoAfterTest(Sandbox sandbox, PatternTestState testState)
         {
-            return sandbox.Run(delegate
+            return sandbox.Run(TestLog.Writer, delegate
             {
                 testState.TestHandler.AfterTest(testState);
             }, "After Test");
@@ -406,7 +406,7 @@ namespace Gallio.Framework.Pattern
         [TestEntryPoint]
         private static TestOutcome DoDecorateTestInstance(Sandbox sandbox, PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
         {
-            return sandbox.Run(delegate
+            return sandbox.Run(TestLog.Writer, delegate
             {
                 testState.TestHandler.DecorateTestInstance(testState, decoratedTestInstanceActions);
             }, "Decorate Child Test");
@@ -415,7 +415,7 @@ namespace Gallio.Framework.Pattern
         [TestEntryPoint]
         private static TestOutcome DoBeforeTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
         {
-            return sandbox.Run(delegate
+            return sandbox.Run(TestLog.Writer, delegate
             {
                 if (testInstanceState.TestState.SlotBindingAccessors.Count != 0)
                 {
@@ -437,7 +437,7 @@ namespace Gallio.Framework.Pattern
             {
                 context.LifecyclePhase = LifecyclePhases.Initialize;
 
-                return context.Sandbox.Run(delegate
+                return context.Sandbox.Run(context.LogWriter, delegate
                 {
                     testInstanceState.TestInstanceHandler.InitializeTestInstance(testInstanceState);
                 }, "Initialize");
@@ -451,7 +451,7 @@ namespace Gallio.Framework.Pattern
             {
                 context.LifecyclePhase = LifecyclePhases.SetUp;
 
-                return context.Sandbox.Run(delegate
+                return context.Sandbox.Run(context.LogWriter, delegate
                 {
                     testInstanceState.TestInstanceHandler.SetUpTestInstance(testInstanceState);
                 }, "Set Up");
@@ -465,7 +465,7 @@ namespace Gallio.Framework.Pattern
             {
                 context.LifecyclePhase = LifecyclePhases.Execute;
 
-                return context.Sandbox.Run(delegate
+                return context.Sandbox.Run(context.LogWriter, delegate
                 {
                     testInstanceState.TestInstanceHandler.ExecuteTestInstance(testInstanceState);
                 }, null);
@@ -479,7 +479,7 @@ namespace Gallio.Framework.Pattern
             {
                 context.LifecyclePhase = LifecyclePhases.TearDown;
 
-                return context.Sandbox.Run(delegate
+                return context.Sandbox.Run(context.LogWriter, delegate
                 {
                     testInstanceState.TestInstanceHandler.TearDownTestInstance(testInstanceState);
                 }, "Tear Down");
@@ -493,7 +493,7 @@ namespace Gallio.Framework.Pattern
             {
                 context.LifecyclePhase = LifecyclePhases.Dispose;
 
-                return context.Sandbox.Run(delegate
+                return context.Sandbox.Run(context.LogWriter, delegate
                 {
                     testInstanceState.TestInstanceHandler.DisposeTestInstance(testInstanceState);
                 }, "Dispose");
@@ -503,7 +503,7 @@ namespace Gallio.Framework.Pattern
         [TestEntryPoint]
         private static TestOutcome DoAfterTestInstance(Sandbox sandbox, PatternTestInstanceState testInstanceState)
         {
-            return sandbox.Run(delegate
+            return sandbox.Run(TestLog.Writer, delegate
             {
                 testInstanceState.TestInstanceHandler.AfterTestInstance(testInstanceState);
             }, "After Test Instance");
@@ -512,7 +512,7 @@ namespace Gallio.Framework.Pattern
         [TestEntryPoint]
         private static TestOutcome DoDecorateChildTest(Sandbox sandbox, PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
         {
-            return sandbox.Run(delegate
+            return sandbox.Run(TestLog.Writer, delegate
             {
                 testInstanceState.TestInstanceHandler.DecorateChildTest(testInstanceState, decoratedChildTestActions);
             }, "Decorate Child Test");
@@ -558,11 +558,6 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private static void AbortSandboxDueToTimeout(Sandbox sandbox, TimeSpan timeout)
-        {
-            sandbox.Abort(TestOutcome.Timeout, String.Format("The test timed out after {0} seconds.", timeout.TotalSeconds));
-        }
-
         private static TestOutcome ReportTestError(ITestCommand testCommand, ITestStep parentTestStep, Exception ex, string message)
         {
             ITestContext context = testCommand.StartPrimaryChildStep(parentTestStep);
@@ -574,16 +569,6 @@ namespace Gallio.Framework.Pattern
         private static void DoWithProcessIsolation(Action action)
         {
             using (new ProcessIsolation())
-            {
-                action();
-            }
-        }
-
-        private static void DoWithTimeout(Sandbox sandbox, TimeSpan? timeout, Action action)
-        {
-            using (timeout.HasValue ?
-                new Timer(delegate { AbortSandboxDueToTimeout(sandbox, timeout.Value); }, null, (int)timeout.Value.TotalMilliseconds, Timeout.Infinite)
-                : null)
             {
                 action();
             }

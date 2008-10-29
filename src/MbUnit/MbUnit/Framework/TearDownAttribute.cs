@@ -23,8 +23,8 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// <para>
-    /// The tear down attribute is applied to a method that is to be invoked after
-    /// each test in a fixture executes.  The method will run once for each test.
+    /// Specifies a method that is to be invoked after each test in a fixture executes
+    /// to tear down the state of the test.  The method will run once for each test.
     /// </para>
     /// </summary>
     /// <remarks>

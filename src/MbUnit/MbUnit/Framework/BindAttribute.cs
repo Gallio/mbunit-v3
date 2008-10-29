@@ -25,6 +25,19 @@ namespace MbUnit.Framework
     /// by specifying a different data source, a binding path or an index.  At most
     /// one such attribute may appear on any given test parameter.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The bind attribute supports more complex data binding binding scenarios.
+    /// For example, in a typical use of <see cref="CsvDataAttribute" />, the binding
+    /// of test parameters to CSV columns is performed by name and by position.
+    /// This assumes that the CSV file either contains a header with columns that
+    /// are named the same as the test parameter or that the columns appear in the
+    /// same order as the test parameters.  Should this not be the case, we may
+    /// apply the <see cref="BindAttribute" /> to the test parameter to specify
+    /// an explicit column name (by setting the path) or column position (by
+    /// setting the index).
+    /// </para>
+    /// </remarks>
     public class BindAttribute : TestParameterDecoratorPatternAttribute
     {
         private string source;

@@ -27,7 +27,7 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(AssemblyFilter<ITestComponent>))]
-    public class AssemblyFilterTest : BaseUnitTest, ITypeFilterTest
+    public class AssemblyFilterTest : BaseTestWithMocks, ITypeFilterTest
     {
         private ITestComponent component;
 

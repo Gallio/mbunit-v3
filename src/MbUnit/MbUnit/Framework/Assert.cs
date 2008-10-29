@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio;
 using Gallio.Framework;
@@ -26,8 +25,11 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// <para>
-    /// Defines a set of assertions.
+    /// Defines a set of assertions that enable a test to verify the expected
+    /// behavior of the subject under test.
     /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Each assertion is generally provided in at least 4 flavors distinguished by overloads:
     /// <list type="bullet">
@@ -43,8 +45,6 @@ namespace MbUnit.Framework
     /// or other terms as appropriate.  In some cases where the role of a parameter is ambiguous,
     /// we may use designations such as "left" and "right" to distinguish the parameters.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// The Assert class does not provide direct support for old-style collection types such as <see cref="ICollection" />
     /// and <see cref="IEnumerable" />.  If you are using .Net 3.5 for your test projects, you may find the
@@ -116,7 +116,7 @@ namespace MbUnit.Framework
 
         #region Fail
         /// <summary>
-        /// Signals an assertion failure.
+        /// Signals an unconditional assertion failure.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -131,7 +131,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Signals an assertion failure with a particular message.
+        /// Signals an unconditional assertion failure with a particular message.
         /// </summary>
         /// <param name="messageFormat">The format of the assertion failure message</param>
         /// <param name="messageArgs">The arguments for the assertion failure message format string</param>
@@ -176,23 +176,23 @@ namespace MbUnit.Framework
 
         #region Multiple
         /// <summary>
+        /// Evaluates a block of code that contains multiple related assertions.
+        /// </summary>
+        /// <remarks>
         /// <para>
-        /// Executes an action delegate that contains multiple related assertions.
-        /// </para>
-        /// <para>
-        /// While the delegate runs, the behavior of assertions is change such that
+        /// While the action delegate runs, the behavior of assertions is change such that
         /// failures are captured but do not cause a <see cref="AssertionFailureException" />
         /// to be throw.  When the delegate returns, the previous assertion failure behavior
         /// is restored and any captured assertion failures are reported.  The net effect
         /// of this change is that the test can continue to run even after an assertion failure
         /// occurs which can help to provide more information about the problem.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// A multiple assertion block is useful for verifying the state of a single
         /// component with many parts that require several assertions to check.
         /// This feature can accelerate debugging because more diagnostic information
         /// become available at once.
+        /// </para>
         /// </remarks>
         /// <param name="action">The action to invoke</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
@@ -202,11 +202,11 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Evaluates a block of code that contains multiple related assertions.
+        /// </summary>
+        /// <remarks>
         /// <para>
-        /// Executes an action delegate that contains multiple related assertions.
-        /// </para>
-        /// <para>
-        /// While the delegate runs, the behavior of assertions is change such that
+        /// While the action delegate runs, the behavior of assertions is change such that
         /// failures are captured but do not cause a <see cref="AssertionFailureException" />
         /// to be throw.  When the delegate returns, the previous assertion failure behavior
         /// is restored and any captured assertion failures are reported.  The net effect
@@ -214,15 +214,11 @@ namespace MbUnit.Framework
         /// occurs which can help to provide more information about the problem.
         /// </para>
         /// <para>
-        /// If the block throws an exception other than an assertion failure, then it is
-        /// similarly recorded.
-        /// </para>
-        /// </summary>
-        /// <remarks>
         /// A multiple assertion block is useful for verifying the state of a single
         /// component with many parts that require several assertions to check.
         /// This feature can accelerate debugging because more diagnostic information
         /// become available at once.
+        /// </para>
         /// </remarks>
         /// <param name="action">The action to invoke</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>

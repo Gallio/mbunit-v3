@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Gallio.Model;
 using Gallio.Runner.Reports;
+using Gallio.Tests;
 using Gallio.Tests.Integration;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
@@ -26,50 +27,53 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 {
     [TestFixture]
     [TestsOn(typeof(VerifyExceptionContractAttribute))]
+    [RunSample(typeof(FullContractOnSerializedExceptionSample))]
+    [RunSample(typeof(FullContractOnUnserializedExceptionSample))]
+    [RunSample(typeof(PartialContractOnUnserializedExceptionSample))]
     public class VerifyExceptionContractAttributeTest : VerifyContractAttributeBaseTest
     {
         [Test]
-        [Row(typeof(FullContractOnSerializedExceptionSampleTest), "HasSerializableAttribute", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSerializedExceptionSampleTest), "HasSerializationConstructor", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSerializedExceptionSampleTest), "IsDefaultConstructorWellDefined", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSerializedExceptionSampleTest), "IsStandardMessageConstructorWellDefined", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSerializedExceptionSampleTest), "IsStandardMessageAndInnerExceptionConstructorWellDefined", TestStatus.Passed)]
-        [Row(typeof(FullContractOnUnserializedExceptionSampleTest), "HasSerializableAttribute", TestStatus.Failed)]
-        [Row(typeof(FullContractOnUnserializedExceptionSampleTest), "HasSerializationConstructor", TestStatus.Failed)]
-        [Row(typeof(FullContractOnUnserializedExceptionSampleTest), "IsDefaultConstructorWellDefined", TestStatus.Failed)]
-        [Row(typeof(FullContractOnUnserializedExceptionSampleTest), "IsStandardMessageConstructorWellDefined", TestStatus.Failed)]
-        [Row(typeof(FullContractOnUnserializedExceptionSampleTest), "IsStandardMessageAndInnerExceptionConstructorWellDefined", TestStatus.Failed)]
-        [Row(typeof(PartialContractOnUnserializedExceptionSampleTest), "HasSerializableAttribute", TestStatus.Inconclusive)]
-        [Row(typeof(PartialContractOnUnserializedExceptionSampleTest), "HasSerializationConstructor", TestStatus.Inconclusive)]
-        [Row(typeof(PartialContractOnUnserializedExceptionSampleTest), "IsDefaultConstructorWellDefined", TestStatus.Passed)]
-        [Row(typeof(PartialContractOnUnserializedExceptionSampleTest), "IsStandardMessageConstructorWellDefined", TestStatus.Passed)]
-        [Row(typeof(PartialContractOnUnserializedExceptionSampleTest), "IsStandardMessageAndInnerExceptionConstructorWellDefined", TestStatus.Passed)]
+        [Row(typeof(FullContractOnSerializedExceptionSample), "HasSerializableAttribute", TestStatus.Passed)]
+        [Row(typeof(FullContractOnSerializedExceptionSample), "HasSerializationConstructor", TestStatus.Passed)]
+        [Row(typeof(FullContractOnSerializedExceptionSample), "IsDefaultConstructorWellDefined", TestStatus.Passed)]
+        [Row(typeof(FullContractOnSerializedExceptionSample), "IsStandardMessageConstructorWellDefined", TestStatus.Passed)]
+        [Row(typeof(FullContractOnSerializedExceptionSample), "IsStandardMessageAndInnerExceptionConstructorWellDefined", TestStatus.Passed)]
+        [Row(typeof(FullContractOnUnserializedExceptionSample), "HasSerializableAttribute", TestStatus.Failed)]
+        [Row(typeof(FullContractOnUnserializedExceptionSample), "HasSerializationConstructor", TestStatus.Failed)]
+        [Row(typeof(FullContractOnUnserializedExceptionSample), "IsDefaultConstructorWellDefined", TestStatus.Failed)]
+        [Row(typeof(FullContractOnUnserializedExceptionSample), "IsStandardMessageConstructorWellDefined", TestStatus.Failed)]
+        [Row(typeof(FullContractOnUnserializedExceptionSample), "IsStandardMessageAndInnerExceptionConstructorWellDefined", TestStatus.Failed)]
+        [Row(typeof(PartialContractOnUnserializedExceptionSample), "HasSerializableAttribute", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnUnserializedExceptionSample), "HasSerializationConstructor", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnUnserializedExceptionSample), "IsDefaultConstructorWellDefined", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnUnserializedExceptionSample), "IsStandardMessageConstructorWellDefined", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnUnserializedExceptionSample), "IsStandardMessageAndInnerExceptionConstructorWellDefined", TestStatus.Passed)]
         public void VerifySampleExceptionContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("ExceptionContract", fixtureType, testMethodName, expectedTestStatus);
         }
 
-        [VerifyExceptionContract(typeof(SerializedExceptionSample),
+        [VerifyExceptionContract(typeof(SampleSerializedException),
             ImplementsSerialization = true,
-            ImplementsStandardConstructors = true),
-        Explicit]
-        private class FullContractOnSerializedExceptionSampleTest
+            ImplementsStandardConstructors = true)]
+        [Explicit]
+        internal class FullContractOnSerializedExceptionSample
         {
         }
 
-        [VerifyExceptionContract(typeof(UnserializedExceptionSample),
+        [VerifyExceptionContract(typeof(SampleUnserializedException),
             ImplementsSerialization = true,
-            ImplementsStandardConstructors = true),
-        Explicit]
-        private class FullContractOnUnserializedExceptionSampleTest
+            ImplementsStandardConstructors = true)]
+        [Explicit]
+        internal class FullContractOnUnserializedExceptionSample
         {
         }
 
-        [VerifyExceptionContract(typeof(UnserializedExceptionSample),
+        [VerifyExceptionContract(typeof(SampleUnserializedException),
             ImplementsSerialization = false,
-            ImplementsStandardConstructors = true),
-        Explicit]
-        private class PartialContractOnUnserializedExceptionSampleTest
+            ImplementsStandardConstructors = true)]
+        [Explicit]
+        internal class PartialContractOnUnserializedExceptionSample
         {
         }
 
@@ -78,23 +82,23 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         /// and supports serialization.
         /// </summary>
         [Serializable]
-        internal class SerializedExceptionSample : Exception, ISerializable
+        internal class SampleSerializedException : Exception, ISerializable
         {
-            public SerializedExceptionSample()
+            public SampleSerializedException()
             {
             }
 
-            public SerializedExceptionSample(string message)
+            public SampleSerializedException(string message)
                 : base(message)
             {
             }
 
-            public SerializedExceptionSample(string message, Exception innerException)
+            public SampleSerializedException(string message, Exception innerException)
                 : base(message, innerException)
             {
             }
 
-            protected SerializedExceptionSample(SerializationInfo info, StreamingContext context)
+            protected SampleSerializedException(SerializationInfo info, StreamingContext context)
                 : base(info, context)
             {
             }
@@ -109,18 +113,18 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         /// Sample exception which has the 3 recommended constructors
         /// but does not support serialization.
         /// </summary>
-        internal class UnserializedExceptionSample : Exception
+        internal class SampleUnserializedException : Exception
         {
-            public UnserializedExceptionSample()
+            public SampleUnserializedException()
             {
             }
 
-            public UnserializedExceptionSample(string message)
+            public SampleUnserializedException(string message)
                 : base(message)
             {
             }
 
-            public UnserializedExceptionSample(string message, Exception innerException)
+            public SampleUnserializedException(string message, Exception innerException)
                 : base(message, innerException)
             {
             }

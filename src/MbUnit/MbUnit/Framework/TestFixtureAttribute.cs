@@ -19,6 +19,9 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
+    /// Specifies that a class represents a test fixture.  This attribute is optional.
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The test fixture attribute is applied to a class that contains a suite
     /// of related test cases.  If an error occurs while initializing the fixture
@@ -32,8 +35,12 @@ namespace MbUnit.Framework
     /// A test fixture has a timeout of 10 minutes by default.  This may be changed
     /// using the <see cref="TimeoutAttribute" />.
     /// </para>
-    /// </summary>
-    /// <remarks>
+    /// <para>
+    /// This attribute may be omitted whenever a test fixture class contains at least
+    /// one test method or test parameter or when other MbUnit attributes are applied
+    /// to the test fixture class.  This is almost always the case unless for some reason
+    /// you have an empty fixture.
+    /// </para>
     /// <para>
     /// The class must have a public default constructor.  The class may not be static.
     /// </para>

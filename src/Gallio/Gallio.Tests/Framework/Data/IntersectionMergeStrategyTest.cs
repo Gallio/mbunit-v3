@@ -24,7 +24,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(IntersectionMergeStrategy))]
-    public class IntersectionMergeStrategyTest : BaseUnitTest
+    public class IntersectionMergeStrategyTest : BaseTestWithMocks
     {
         [Test]
         public void HandlesDegenerateCaseWithZeroProviders()

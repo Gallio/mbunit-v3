@@ -28,7 +28,7 @@ namespace Gallio.Tests.Runner.Sessions
     [TestsOn(typeof(LocalTestSessionManager))]
     public class LocalTestSessionManagerTest
     {
-        public class WhenSessionIsOpened : BaseUnitTest
+        public class WhenSessionIsOpened : BaseTestWithMocks
         {
             [Test]
             public void TheNewSessionInitiallyHasNoTestRuns()
@@ -60,7 +60,7 @@ namespace Gallio.Tests.Runner.Sessions
             }
         }
 
-        public class WhenSessionIsClosed : BaseUnitTest
+        public class WhenSessionIsClosed : BaseTestWithMocks
         {
             [Test]
             public void SessionManagerFiresAnEvent()

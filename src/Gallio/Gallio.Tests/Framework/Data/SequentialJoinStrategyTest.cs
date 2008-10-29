@@ -23,7 +23,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(SequentialJoinStrategy))]
-    public class SequentialJoinStrategyTest : BaseUnitTest
+    public class SequentialJoinStrategyTest : BaseTestWithMocks
     {
         [Test]
         public void JoinsItemsSequentiallyAndPadsWithNullsUntilExhausted()

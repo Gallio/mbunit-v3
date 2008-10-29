@@ -25,7 +25,7 @@ namespace Gallio.Tests
     /// All unit tests that require certain common facilities like Mock Objects
     /// inherit from this class.
     /// </summary>
-    public abstract class BaseUnitTest
+    public abstract class BaseTestWithMocks
     {
         private MockRepository mocks;
 

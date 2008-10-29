@@ -19,7 +19,7 @@ using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
@@ -31,12 +31,11 @@ namespace MbUnit.Tests.Framework
     /// </summary>
     [TestFixture]
     [TestsOn(typeof(TestTypePatternAttribute))]
-    public class AutomaticTestFixtureTest : BaseSampleTest
+    public class AutomaticTestFixtureTest : BaseTestWithSampleRunner
     {
         [FixtureSetUp]
-        public void RunSample()
+        public void ExploreAssembly()
         {
-            InitializeRunner();
             Runner.AddAssembly(typeof(AutomaticTestFixtureTest).Assembly);
             Runner.Explore();
         }

@@ -25,7 +25,7 @@ namespace Gallio.Tests.Framework.Data
     [TestFixture]
     [TestsOn(typeof(ScalarDataBinder))]
     [DependsOn(typeof(BaseDataBinderTest))]
-    public class ScalarDataBinderTest : BaseUnitTest
+    public class ScalarDataBinderTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfDataBindingIsNull()

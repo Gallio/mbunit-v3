@@ -22,7 +22,7 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(AnyFilter<object>))]
-    public class AnyFilterTest : BaseUnitTest
+    public class AnyFilterTest : BaseTestWithMocks
     {
         [Test]
         public void IsMatchReturnsTrue()

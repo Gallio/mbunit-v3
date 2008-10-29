@@ -24,7 +24,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(UnionMergeStrategy))]
-    public class UnionMergeStrategyTest : BaseUnitTest
+    public class UnionMergeStrategyTest : BaseTestWithMocks
     {
         [Test]
         public void EliminatesDuplicatesAndIncludesBadItems()

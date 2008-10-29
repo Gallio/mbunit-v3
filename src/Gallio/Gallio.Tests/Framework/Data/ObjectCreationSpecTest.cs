@@ -28,7 +28,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(ObjectCreationSpec))]
-    public class ObjectCreationSpecTest : BaseUnitTest
+    public class ObjectCreationSpecTest : BaseTestWithMocks
     {
         private const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
 

@@ -150,7 +150,16 @@
     <Compile Include="Framework\Assert.Exceptions.cs" />
     <Compile Include="Framework\Assert.Reflection.cs" />
     <Compile Include="Framework\Assert.Relations.cs" />
+    <Compile Include="Framework\StaticTestFactoryAttribute.cs" />
+    <Compile Include="Framework\Test.cs" />
+    <Compile Include="Framework\TestCase.cs" />
+    <Compile Include="Framework\DynamicTestFactoryAttribute.cs" />
     <Compile Include="Framework\RollbackAttribute.cs" />
+    <Compile Include="Framework\TestDefinition.cs" />
+    <Compile Include="Framework\TestFixtureReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\TestSuite.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

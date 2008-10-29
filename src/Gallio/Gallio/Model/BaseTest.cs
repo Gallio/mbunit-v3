@@ -58,19 +58,6 @@ namespace Gallio.Model
             Kind = TestKinds.Group;
         }
 
-        /// <summary>
-        /// Gets or sets the value of the <see cref="MetadataKeys.TestKind" />
-        /// metadata entry.  (This is a convenience method.)
-        /// </summary>
-        /// <value>
-        /// One of the <see cref="TestKinds" /> constants.
-        /// </value>
-        public string Kind
-        {
-            get { return Metadata.GetValue(MetadataKeys.TestKind); }
-            set { Metadata.SetValue(MetadataKeys.TestKind, value); }
-        }
-
         /// <inheritdoc />
         public override string Id
         {

@@ -19,46 +19,64 @@ using Gallio.Model.Logging;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Integration
+namespace Gallio.Tests
 {
     /// <summary>
     /// Abstract base class for integration tests based on test samples.
-    /// These tests work by launching a nested test runner to generate a report
-    /// from the execution of zero or more tests.  The test cases then verify
-    /// the contents of this report.
     /// </summary>
     /// <remarks>
-    /// For efficiency, it is recommended to run a whole bunch of fixtures as
-    /// part of the TestFixtureSetUp phase and then to verify the expected
-    /// results as separate test cases.
+    /// <para>
+    /// This fixture runs the samples specified by <see cref="RunSampleAttribute" />
+    /// then presents the results from the runner via the <see cref="Runner" /> and
+    /// <see cref="Report"/> properties.  Test cases should then verify the results
+    /// from the samples.
+    /// </para>
     /// </remarks>
-    public abstract class BaseSampleTest
+    public abstract class BaseTestWithSampleRunner
     {
-        private SampleRunner runner;
+        private readonly SampleRunner runner = new SampleRunner();
+        private static bool isSampleRunning;
 
+        /// <summary>
+        /// Gets the sample runner for the fixture.
+        /// </summary>
         public SampleRunner Runner
         {
             get { return runner; }
         }
 
+        /// <summary>
+        /// Gets the report for the tests that ran.
+        /// </summary>
         public Report Report
         {
             get { return Runner.Report; }
         }
 
-        protected void InitializeRunner()
+        [FixtureSetUp]
+        public void RunDeclaredSamples()
         {
-            runner = new SampleRunner();
-        }
+            // Protect the sample runner from re-entrance when we are asked to run
+            // samples that are defined in nested classes of the fixture.
+            if (isSampleRunning)
+                return;
 
-        protected void RunFixtures(params Type[] fixtureTypes)
-        {
-            InitializeRunner();
+            try
+            {
+                isSampleRunning = true;
+                object[] attribs = GetType().GetCustomAttributes(typeof(RunSampleAttribute), true);
+                if (attribs.Length != 0)
+                {
+                    foreach (RunSampleAttribute attrib in attribs)
+                        runner.AddFixture(attrib.SampleType);
 
-            foreach (Type fixtureType in fixtureTypes)
-                runner.AddFixture(fixtureType);
-
-            runner.Run();
+                    runner.Run();
+                }
+            }
+            finally
+            {
+                isSampleRunning = false;
+            }
         }
 
         protected static void AssertLogContains(TestStepRun run, string expectedOutput)

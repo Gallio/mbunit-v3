@@ -17,6 +17,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Gallio;
 using Gallio.Model;
+using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
 
 namespace Gallio.Framework
@@ -97,6 +98,7 @@ namespace Gallio.Framework
     /// </code>
     /// </para>
     /// </example>
+    [TestFrameworkInternal]
     public static class TestStep
     {
         /// <summary>
@@ -131,7 +133,35 @@ namespace Gallio.Framework
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static TestContext RunStep(string name, Action action)
         {
-            return TestContext.CurrentContext.RunStep(name, Reflector.GetCallingFunction(), action);
+            return TestContext.CurrentContext.RunStep(name, action, null, false, Reflector.GetCallingFunction());
+        }
+
+        /// <summary>
+        /// <para>
+        /// Performs an action as a new step within the current context and associates
+        /// it with the calling function.
+        /// </para>
+        /// <para>
+        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// enters the child context, performs the action, then exits the child context.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// This method may be called recursively to create nested steps or concurrently
+        /// to create parallel steps.
+        /// </remarks>
+        /// <param name="name">The name of the step</param>
+        /// <param name="action">The action to perform</param>
+        /// <param name="timeout">The step execution timeout, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
+        /// <paramref name="action"/> is null</exception>
+        /// <returns>The context of the step that ran</returns>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
+        /// <exception cref="Exception">Any exception thrown by the action</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static TestContext RunStep(string name, Action action, TimeSpan? timeout)
+        {
+            return TestContext.CurrentContext.RunStep(name, action, timeout, false, Reflector.GetCallingFunction());
         }
 
         /// <summary>
@@ -149,21 +179,23 @@ namespace Gallio.Framework
         /// to create parallel steps.
         /// </remarks>
         /// <param name="name">The name of the step</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
         /// <param name="action">The action to perform</param>
+        /// <param name="timeout">The step execution timeout, or null if none</param>
+        /// <param name="isTestCase">True if the step represents an independent test case</param>
+        /// <param name="codeElement">The associated code element, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="action"/> is null</exception>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the action</exception>
-        public static TestContext RunStep(string name, ICodeElementInfo codeElement, Action action)
+        public static TestContext RunStep(string name, Action action, TimeSpan? timeout, bool isTestCase, ICodeElementInfo codeElement)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            return TestContext.CurrentContext.RunStep(name, codeElement, action);
+            return TestContext.CurrentContext.RunStep(name, action, timeout, isTestCase, codeElement);
         }
 
         /// <summary>

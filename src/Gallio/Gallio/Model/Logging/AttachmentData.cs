@@ -38,7 +38,7 @@ namespace Gallio.Model.Logging
         private string name;
         private string contentType;
         private AttachmentEncoding encoding;
-        private AttachmentContentDisposition contentDisposition;
+        private AttachmentContentDisposition contentDisposition = AttachmentContentDisposition.Inline;
         private string serializedContents;
         private byte[] bytes;
         private string contentPath;
@@ -124,6 +124,7 @@ namespace Gallio.Model.Logging
         /// Gets or sets the content disposition of the attachment which
         /// indicates how the attachment has been stored.
         /// </summary>
+        /// <value>The content disposition, initially <see cref="AttachmentContentDisposition.Inline" /></value>
         [XmlAttribute("contentDisposition")]
         public AttachmentContentDisposition ContentDisposition
         {

@@ -22,7 +22,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(CombinatorialJoinStrategy))]
-    public class CombinatorialJoinStrategyTest : BaseUnitTest
+    public class CombinatorialJoinStrategyTest : BaseTestWithMocks
     {
         [Test]
         public void HandlesDegenerateCaseWithZeroProviders()

@@ -18,19 +18,18 @@ using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(ExplicitAttribute))]
-    public class ExplicitTest : BaseSampleTest
+    public class ExplicitTest : BaseTestWithSampleRunner
     {
         [FixtureSetUp]
         public void RunSample()
         {
-            InitializeRunner();
             Runner.AddMethod(typeof(ExplicitSample), "SelectedExplicitTest");
             Runner.Run();
         }
@@ -52,21 +51,21 @@ namespace MbUnit.Tests.Framework
                 CodeReference.CreateFromMember(typeof(ExplicitSample).GetMethod("UnselectedExplicitTest")));
             Assert.IsNull(run);
         }
-    }
 
-    [TestFixture, Explicit("Sample")]
-    internal class ExplicitSample
-    {
-        [Test, Explicit("Explicit")]
-        public void SelectedExplicitTest()
+        [TestFixture, Explicit("Sample")]
+        internal class ExplicitSample
         {
-            TestLog.WriteLine("Got here");
-        }
+            [Test, Explicit("Explicit")]
+            public void SelectedExplicitTest()
+            {
+                TestLog.WriteLine("Got here");
+            }
 
-        [Test, Explicit("Explicit")]
-        public void UnselectedExplicitTest()
-        {
-            TestLog.WriteLine("Got here");
+            [Test, Explicit("Explicit")]
+            public void UnselectedExplicitTest()
+            {
+                TestLog.WriteLine("Got here");
+            }
         }
     }
 }

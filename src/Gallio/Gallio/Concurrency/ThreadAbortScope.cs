@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using ThreadState=System.Threading.ThreadState;
 
 namespace Gallio.Concurrency
 {
@@ -63,6 +65,7 @@ namespace Gallio.Concurrency
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if an action is already running in this scope</exception>
         /// <exception cref="Exception">Any other exception thrown by <paramref name="action"/> itself</exception>
+        [DebuggerHidden]
         public ThreadAbortException Run(Action action)
         {
             if (action == null)
@@ -122,6 +125,7 @@ namespace Gallio.Concurrency
         /// Runs the action and guarantees that if an abort will occur, it must occur within this
         /// block and nowhere else.
         /// </summary>
+        [DebuggerHidden]
         private void RunWithThreadAbort(Action action)
         {
             try
@@ -162,6 +166,7 @@ namespace Gallio.Concurrency
         /// it to ensure that it gets delivered.  Otherwise the pending thread abort exception
         /// could occur outside of our special region.
         /// </summary>
+        [DebuggerHidden]
         private void WaitForThreadAbortIfAborting()
         {
             while (Thread.VolatileRead(ref state) == AbortingState

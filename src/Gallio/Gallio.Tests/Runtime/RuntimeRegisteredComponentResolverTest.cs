@@ -24,7 +24,7 @@ namespace Gallio.Tests.Runtime
 {
     [TestFixture]
     [TestsOn(typeof(RuntimeRegisteredComponentResolver<>))]
-    public class RuntimeRegisteredComponentResolverTest : BaseUnitTest
+    public class RuntimeRegisteredComponentResolverTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsExceptionWhenRuntimeArgumentIsNull()

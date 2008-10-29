@@ -22,11 +22,17 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Creates a dependency from this test assembly, test fixture or test method on some other test
-    /// fixture or test method.  If the other test fixture or test method fails then this test
-    /// will not run.  Moreover, the dependency forces this test to run after those it depends upon.
+    /// fixture or test method.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// If the other test fixture or test method fails then this test
+    /// will not run.  Moreover, the dependency forces this test to run after those
+    /// it depends upon.
+    /// </para>
+    /// <para>
     /// This attribute can be repeated multiple times if there are multiple dependencies.
+    /// </para>
     /// </remarks>
     public class DependsOnAttribute : TestDependencyPatternAttribute
     {
@@ -53,13 +59,11 @@ namespace MbUnit.Framework
         /// <param name="testMethodName">The dependent test method name</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testFixtureType"/> or <paramref name="testMethodName"/> is null</exception>
         public DependsOnAttribute(Type testFixtureType, string testMethodName)
+            : this(testFixtureType)
         {
-            if (testFixtureType == null)
-                throw new ArgumentNullException("testFixtureType");
             if (testMethodName == null)
                 throw new ArgumentNullException("testMethodName");
 
-            this.testFixtureType = testFixtureType;
             this.testMethodName = testMethodName;
         }
 

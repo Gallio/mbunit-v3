@@ -23,11 +23,16 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Creates a dependency from this test assembly, test fixture or test method on all tests
-    /// in some other test assembly.  If any test in the other test assembly test fails then this
-    /// test will not run.  Moreover, the dependency forces this test to run after those it depends upon.
+    /// in some other test assembly.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// If any test in the other test assembly test fails then this
+    /// test will not run.  Moreover, the dependency forces this test to run after those it depends upon.
+    /// </para>
+    /// <para>
     /// This attribute can be repeated multiple times if there are multiple dependencies.
+    /// </para>
     /// </remarks>
     public class DependsOnAssemblyAttribute : TestDependencyPatternAttribute
     {

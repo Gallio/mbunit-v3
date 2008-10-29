@@ -77,6 +77,7 @@ namespace Gallio.Model.Serialization
             testId = source.Test.Id;
             isPrimary = source.IsPrimary;
             isTestCase = source.IsTestCase;
+            isDynamic = source.IsDynamic;
 
             if (source.Parent != null)
                 parentId = source.Parent.Id;

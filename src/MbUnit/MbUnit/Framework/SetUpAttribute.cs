@@ -22,10 +22,8 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// The setup attribute is applied to a method that is to be invoked before
-    /// each test in a fixture executes.  The method will run once for each test.
-    /// </para>
+    /// Specifies a method that is to be invoked before each test in a fixture executes
+    /// to set up the state of the test.  The method will run once for each test.
     /// </summary>
     /// <remarks>
     /// <para>

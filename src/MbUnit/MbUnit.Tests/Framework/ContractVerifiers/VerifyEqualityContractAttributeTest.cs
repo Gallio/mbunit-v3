@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Gallio.Model;
 using Gallio.Runner.Reports;
+using Gallio.Tests;
 using Gallio.Tests.Integration;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
@@ -27,28 +28,30 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 {
     [TestFixture]
     [TestsOn(typeof(VerifyEqualityContractAttribute))]
+    [RunSample(typeof(FullContractOnEquatableSample))]
+    [RunSample(typeof(PartialContractOnEquatableSample))]
     public class VerifyEqualityContractAttributeTest : VerifyContractAttributeBaseTest
     {
         [Test]
-        [Row(typeof(FullContractOnSampleEquatableTest), "ObjectEquals", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSampleEquatableTest), "ObjectGetHashCode", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSampleEquatableTest), "EquatableEquals", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSampleEquatableTest), "OperatorEquals", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSampleEquatableTest), "OperatorNotEquals", TestStatus.Passed)]
-        [Row(typeof(PartialContractOnSampleEquatableTest), "ObjectEquals", TestStatus.Passed)]
-        [Row(typeof(PartialContractOnSampleEquatableTest), "ObjectGetHashCode", TestStatus.Passed)]
-        [Row(typeof(PartialContractOnSampleEquatableTest), "EquatableEquals", TestStatus.Passed)]
-        [Row(typeof(PartialContractOnSampleEquatableTest), "OperatorEquals", TestStatus.Inconclusive)]
-        [Row(typeof(PartialContractOnSampleEquatableTest), "OperatorNotEquals", TestStatus.Inconclusive)]
+        [Row(typeof(FullContractOnEquatableSample), "ObjectEquals", TestStatus.Passed)]
+        [Row(typeof(FullContractOnEquatableSample), "ObjectGetHashCode", TestStatus.Passed)]
+        [Row(typeof(FullContractOnEquatableSample), "EquatableEquals", TestStatus.Passed)]
+        [Row(typeof(FullContractOnEquatableSample), "OperatorEquals", TestStatus.Passed)]
+        [Row(typeof(FullContractOnEquatableSample), "OperatorNotEquals", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnEquatableSample), "ObjectEquals", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnEquatableSample), "ObjectGetHashCode", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnEquatableSample), "EquatableEquals", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnEquatableSample), "OperatorEquals", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnEquatableSample), "OperatorNotEquals", TestStatus.Inconclusive)]
         public void VerifySampleEqualityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("EqualityContract", fixtureType, testMethodName, expectedTestStatus);
         }
 
         [VerifyEqualityContract(typeof(SampleEquatable),
-            ImplementsOperatorOverloads = true),
-        Explicit]
-        private class FullContractOnSampleEquatableTest : IEquivalenceClassProvider<SampleEquatable>
+            ImplementsOperatorOverloads = true)]
+        [Explicit]
+        private class FullContractOnEquatableSample : IEquivalenceClassProvider<SampleEquatable>
         {
             public EquivalenceClassCollection<SampleEquatable> GetEquivalenceClasses()
             {
@@ -60,9 +63,9 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         }
 
         [VerifyEqualityContract(typeof(SampleEquatable),
-            ImplementsOperatorOverloads = false),
-        Explicit]
-        private class PartialContractOnSampleEquatableTest : IEquivalenceClassProvider<SampleEquatable>
+            ImplementsOperatorOverloads = false)]
+        [Explicit]
+        private class PartialContractOnEquatableSample : IEquivalenceClassProvider<SampleEquatable>
         {
             public EquivalenceClassCollection<SampleEquatable> GetEquivalenceClasses()
             {

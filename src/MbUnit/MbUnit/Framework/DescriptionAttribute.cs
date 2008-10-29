@@ -21,9 +21,17 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Associates a description with a test fixture, test method, test parameter
-    /// or other test component.  The description provides useful documentation to
-    /// users when browsing the tests.
+    /// or other test component.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The description provides documentation to users when browsing the tests.
+    /// However, it is not the only way.  If the test has associated XML documentation
+    /// comments and the compiler is generating an XML documentation file for the
+    /// test assembly, then MbUnit will automatically import the documentation and
+    /// make it available to the user as metadata.
+    /// </para>
+    /// </remarks>
     public class DescriptionAttribute : MetadataPatternAttribute
     {
         private readonly string description;

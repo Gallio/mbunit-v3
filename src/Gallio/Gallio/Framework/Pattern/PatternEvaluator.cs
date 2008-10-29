@@ -115,8 +115,25 @@ namespace Gallio.Framework.Pattern
         public IEnumerable<PatternEvaluationScope> GetScopes(ICodeElementInfo codeElement)
         {
             if (codeElement == null)
-                return EmptyArray<PatternEvaluationScope>.Instance;
+                throw new ArgumentNullException("codeElement");
+
             return registeredScopes[codeElement];
+        }
+
+        /// <summary>
+        /// Finds tests that are declared by the specified <see cref="ICodeElementInfo" />.
+        /// </summary>
+        /// <param name="codeElement">The code element</param>
+        /// <returns>The enumeration of scopes</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null</exception>
+        public IEnumerable<PatternTest> GetDeclaredTests(ICodeElementInfo codeElement)
+        {
+            if (codeElement == null)
+                throw new ArgumentNullException("codeElement");
+
+            foreach (PatternEvaluationScope scope in GetScopes(codeElement))
+                if (scope.IsTestDeclaration)
+                    yield return scope.Test;
         }
 
         /// <summary>
@@ -268,7 +285,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Registers a deferred action to be performed when <see cref="FinishModel" /> is called.
         /// </summary>
-        /// <param name="codeElement">The associated code element, use to report errors if the action throws an exception</param>
+        /// <param name="codeElement">The associated code element, used to report errors if the action throws an exception</param>
         /// <param name="action">The action to perform</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/>
         /// or <paramref name="action"/> is null</exception>

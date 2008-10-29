@@ -28,7 +28,7 @@ namespace Gallio.MSTestAdapter.Tests.Model
 {
     [TestsOn(typeof(MSTestController))]
     [Author("Julian", "julian.hidalgo@gallio.org")]
-    public class MSTestControllerTest : BaseUnitTest
+    public class MSTestControllerTest : BaseTestWithMocks
     {
         //IMSTestProcess stubbedProcess = null;
         //ITestCommand rootCommand = null;

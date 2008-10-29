@@ -22,16 +22,14 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// Tags a test method whose database operation must be executed within a transaction and rolled
+    /// Decorates a test method whose database operation must be executed within a transaction and rolled
     /// back when it has finished executing.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// By default, the attribute does not rollback changes performed during SetUp and TearDown.
     /// Set the <see cref="IncludeSetUpAndTearDown"/> to <c>true</c> to change this.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// The attribute uses a <see cref="TransactionScope" /> to set an ambient transaction that will
     /// be rolled back.  Assuming the subject under test enlists itself with this transaction then

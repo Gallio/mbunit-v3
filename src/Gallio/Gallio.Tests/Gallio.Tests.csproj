@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionChainTestForTwoParameters.cs" />
-    <Compile Include="BaseUnitTest.cs" />
+    <Compile Include="BaseTestWithMocks.cs" />
     <Compile Include="Collections\UserDataCollectionTest.cs" />
     <Compile Include="Concurrency\LockBoxTest.cs" />
     <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
@@ -63,6 +63,7 @@
     <Compile Include="Framework\ComparisonSemanticsTest.cs" />
     <Compile Include="Framework\Formatting\StructuralFormattingRuleTest.cs" />
     <Compile Include="Framework\Formatting\StubFormatterTest.cs" />
+    <Compile Include="Framework\SandboxTest.cs" />
     <Compile Include="Integration\StubFormatterIntegrationTest.cs" />
     <Compile Include="Framework\Pattern\ProcessIsolationTest.cs" />
     <Compile Include="Framework\Text\SubstringTest.cs" />
@@ -149,8 +150,11 @@
     <Compile Include="Host\HostExceptionTest.cs" />
     <Compile Include="Model\BaseTestExplorerTest.cs" />
     <Compile Include="Model\Filters\FilterParseExceptionTest.cs" />
+    <Compile Include="Model\Logging\AttachmentTest.cs" />
     <Compile Include="Model\Logging\MarkerTest.cs" />
     <Compile Include="Model\Logging\StructuredTestLogStreamTest.cs" />
+    <Compile Include="Model\Logging\StructuredTestLogTest.cs" />
+    <Compile Include="Model\Logging\StructuredTestLogWriterTest.cs" />
     <Compile Include="Model\Logging\StructuredTextTest.cs" />
     <Compile Include="Model\Logging\Tags\BaseTagTest.cs" />
     <Compile Include="Model\Logging\Tags\BinaryAttachmentTest.cs" />
@@ -174,6 +178,7 @@
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="Runner\Sessions\LocalTestSessionManagerTest.cs" />
     <Compile Include="Runner\Workspaces\ResourcePathTests.cs" />
+    <Compile Include="RunSampleAttribute.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
     <Compile Include="Runtime\Hosting\HostConfigurationTest.cs" />
     <Compile Include="Runtime\Hosting\HostSetupTest.cs" />
@@ -227,7 +232,7 @@
     <Compile Include="Runner\Reports\FileSystemReportContainerTest.cs" />
     <Compile Include="Runner\Reports\ReportAssert.cs" />
     <Compile Include="Model\ModelAssert.cs" />
-    <Compile Include="Integration\BaseSampleTest.cs" />
+    <Compile Include="BaseTestWithSampleRunner.cs" />
     <Compile Include="ActionChainTest.cs" />
     <Compile Include="Model\Filters\AndFilterTest.cs" />
     <Compile Include="Model\Filters\AnyFilterTest.cs" />

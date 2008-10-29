@@ -23,7 +23,7 @@ namespace Gallio.Tests.Framework.Formatting
 {
     [TestFixture]
     [TestsOn(typeof(ConvertToStringFormattingRule))]
-    public class ConvertToStringFormattingRuleTest : BaseUnitTest
+    public class ConvertToStringFormattingRuleTest : BaseTestWithMocks
     {
         [Test]
         [Row(null, null)]

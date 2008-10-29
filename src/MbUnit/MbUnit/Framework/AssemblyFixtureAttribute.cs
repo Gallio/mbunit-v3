@@ -22,6 +22,11 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// <para>
+    /// Declares that a class contains assembly-level setup and teardown methods.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// The assembly fixture attribute is applied to a class that contains setup and
     /// teardown methods that are to be applied at the assembly level.  Conceptually,
     /// the <see cref="AssemblyFixtureAttribute" /> adds new behavior to an assembly-level
@@ -46,8 +51,6 @@ namespace MbUnit.Framework
     /// fixture, it will cause all test fixtures within the assembly to run once for each combination
     /// of data values used.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// The class must have a public default constructor.  The class may not be static.
     /// </para>

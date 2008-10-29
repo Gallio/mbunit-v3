@@ -22,11 +22,10 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// The fixture initializer attribute is applied to a method that is to be
-    /// invoked after a fixture instance has been created to complete its
-    /// initialization.
-    /// </para>
+    /// Specifies a method that is to be invoked after a fixture instance has been
+    /// created to complete its initialization before test fixture setup runs.
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This attribute provides a mechanism for completing the initialization
     /// of a fixture if the work cannot be completed entirely within the
@@ -38,8 +37,6 @@ namespace MbUnit.Framework
     /// <see cref="FixtureInitializerAttribute" /> allows initialization to occur
     /// earlier in the test lifecycle than <see cref="FixtureSetUpAttribute" />.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// The attribute may be applied to multiple methods within a fixture, however
     /// the order in which they are processed is undefined.
@@ -52,6 +49,15 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public class FixtureInitializerAttribute : ContributionMethodPatternAttribute
     {
+        /// <inheritdoc />
+        protected override void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
+        {
+            base.Validate(containingScope, method);
+
+            if (method.Parameters.Count != 0)
+                ThrowUsageErrorException("A fixture initializer method must not have any parameters.");
+        }
+
         /// <inheritdoc />
         protected override void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
         {

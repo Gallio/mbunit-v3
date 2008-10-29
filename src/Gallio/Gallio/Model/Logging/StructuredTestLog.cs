@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Xml.Serialization;
 using Gallio.Model.Logging;
 using Gallio.Utilities;
@@ -69,8 +70,12 @@ namespace Gallio.Model.Logging
         /// </summary>
         /// <param name="name">The attachment name</param>
         /// <returns>The attachment or null if not found</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
         public AttachmentData GetAttachment(string name)
         {
+            if (name == null)
+                throw new ArgumentNullException("name");
+
             return attachments.Find(attachment => attachment.Name == name);
         }
 
@@ -79,9 +84,55 @@ namespace Gallio.Model.Logging
         /// </summary>
         /// <param name="name">The stream name</param>
         /// <returns>The stream or null if not found</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
         public StructuredTestLogStream GetStream(string name)
         {
+            if (name == null)
+                throw new ArgumentNullException("name");
+
             return streams.Find(stream => stream.Name == name);
+        }
+
+        /// <summary>
+        /// Writes the contents of the log to a test log writer.
+        /// </summary>
+        /// <param name="writer">The writer</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>
+        public void WriteTo(TestLogWriter writer)
+        {
+            if (writer == null)
+                throw new ArgumentNullException("writer");
+
+            foreach (AttachmentData attachment in attachments)
+                writer.Attach(Attachment.FromAttachmentData(attachment));
+
+            foreach (StructuredTestLogStream stream in streams)
+                stream.WriteTo(writer[stream.Name]);
+        }
+
+        /// <summary>
+        /// Formats the log to a string by concatenating all formatted streams and
+        /// displaying a "*** Stream Name ***" header for each stream name.
+        /// </summary>
+        /// <returns>The formatted text</returns>
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < streams.Count; i++)
+            {
+                if (i != 0)
+                    builder.Append('\n');
+
+                StructuredTestLogStream stream = streams[i];
+                builder.Append("*** ").Append(stream.Name).Append(" ***").Append("\n\n");
+
+                string contents = stream.ToString();
+                builder.Append(contents);
+                if (!contents.EndsWith("\n"))
+                    builder.Append('\n');
+            }
+
+            return builder.ToString();
         }
     }
 }

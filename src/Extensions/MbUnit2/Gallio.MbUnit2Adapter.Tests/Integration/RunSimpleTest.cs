@@ -18,21 +18,16 @@ using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Model;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using Gallio.MbUnit2Adapter.TestResources;
 using MbUnit.Framework;
 
 namespace Gallio.MbUnit2Adapter.Tests.Integration
 {
     [TestFixture]
-    public class RunSimpleTest : BaseSampleTest
+    [RunSample(typeof(SimpleTest))]
+    public class RunSimpleTest : BaseTestWithSampleRunner
     {
-        [FixtureSetUp]
-        public void RunSample()
-        {
-            RunFixtures(typeof(SimpleTest));
-        }
-
         [Test]
         public void PassTestPassed()
         {

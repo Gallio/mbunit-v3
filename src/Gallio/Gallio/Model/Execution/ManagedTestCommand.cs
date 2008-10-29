@@ -152,7 +152,8 @@ namespace Gallio.Model.Execution
         /// <inheritdoc />
         public ITestContext StartPrimaryChildStep(ITestStep parentTestStep)
         {
-            return StartStep(new BaseTestStep(test, parentTestStep));
+            BaseTestStep primaryStep = new BaseTestStep(test, parentTestStep);
+            return StartStep(primaryStep);
         }
 
         /// <summary>

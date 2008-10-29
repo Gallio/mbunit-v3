@@ -26,7 +26,7 @@ namespace Gallio.Tests.Framework.Data
     [TestFixture]
     [TestsOn(typeof(JoinedDataSet))]
     [DependsOn(typeof(BaseDataSetTest))]
-    public class JoinedDataSetTest : BaseUnitTest
+    public class JoinedDataSetTest : BaseTestWithMocks
     {
         private delegate IEnumerable<IList<IDataItem>> JoinDelegate(IList<IDataProvider> providers, IList<ICollection<DataBinding>> bindingsPerProvider,
             bool includeDynamicItems);

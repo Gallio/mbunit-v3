@@ -24,7 +24,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(PairwiseJoinStrategy))]
-    public class PairwiseJoinStrategyTest : BaseUnitTest
+    public class PairwiseJoinStrategyTest : BaseTestWithMocks
     {
         [Test]
         public void HandlesDegenerateCaseWithZeroProviders()

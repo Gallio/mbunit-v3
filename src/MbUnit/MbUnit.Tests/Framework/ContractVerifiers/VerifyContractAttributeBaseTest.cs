@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using Gallio.Model;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
@@ -28,7 +28,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     /// Abstract base class for integration tests 
     /// on the contract verifier attributes.
     /// </summary>
-    public abstract class VerifyContractAttributeBaseTest : BaseSampleTest
+    public abstract class VerifyContractAttributeBaseTest : BaseTestWithSampleRunner
     {
         /// <summary>
         /// Launch the test runner on the specified fixture, then 
@@ -42,8 +42,6 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         /// is specified, the test method is expected to not run.</param>
         protected void VerifySampleContract(string testPatternName, Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
-            RunFixtures(fixtureType);
-
             foreach (TestStepRun run in Report.TestPackageRun.AllTestStepRuns.Where(x =>
                 x.Step.IsPrimary && x.Step.FullName.EndsWith(
                 String.Format("/{0}/{1}/{2}/{3}", GetType().Name,

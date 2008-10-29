@@ -22,20 +22,19 @@ using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(ThreadedRepeatAttribute))]
-    public class ThreadedRepeatTest : BaseSampleTest
+    [RunSample(typeof(ThreadedRepeatSample))]
+    public class ThreadedRepeatTest : BaseTestWithSampleRunner
     {
         [Test]
         public void CheckSampleOutput()
         {
-            RunFixtures(typeof(ThreadedRepeatSample));
-
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(ThreadedRepeatSample).GetMethod("Test")));
 
             AssertLogContains(run, "9 of 10 threaded repetitions passed.");

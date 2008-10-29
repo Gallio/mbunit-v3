@@ -22,10 +22,8 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// The fixture tear down attribute is applied to a method that is to be invoked
-    /// when a fixture instance is being torn down after all of its tests have been executed.
-    /// </para>
+    /// Specifies a method that is to be invoked to tear down the state of a fixture
+    /// after all of its tests have been executed.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -40,6 +38,15 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.ContributionMethod, AllowMultiple = false, Inherited = true)]
     public class FixtureTearDownAttribute : ContributionMethodPatternAttribute
     {
+        /// <inheritdoc />
+        protected override void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
+        {
+            base.Validate(containingScope, method);
+
+            if (method.Parameters.Count != 0)
+                ThrowUsageErrorException("A fixture tear-down method must not have any parameters.");
+        }
+
         /// <inheritdoc />
         protected override void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
         {

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Gallio.Model;
 using Gallio.Runner.Reports;
+using Gallio.Tests;
 using Gallio.Tests.Integration;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
@@ -27,28 +28,30 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 {
     [TestFixture]
     [TestsOn(typeof(VerifyComparisonContractAttribute))]
+    [RunSample(typeof(FullContractOnComparableSample))]
+    [RunSample(typeof(PartialContractOnComparableSample))]
     public class VerifyComparisonContractAttributeTest : VerifyContractAttributeBaseTest
     {
         [Test]
-        [Row(typeof(FullContractOnSampleComparableTest), "ComparableCompareTo", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSampleComparableTest), "OperatorGreaterThan", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSampleComparableTest), "OperatorGreaterThanOrEqual", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSampleComparableTest), "OperatorLessThan", TestStatus.Passed)]
-        [Row(typeof(FullContractOnSampleComparableTest), "OperatorLessThanOrEqual", TestStatus.Passed)]
-        [Row(typeof(PartialContractOnSampleComparableTest), "ComparableCompareTo", TestStatus.Passed)]
-        [Row(typeof(PartialContractOnSampleComparableTest), "OperatorGreaterThan", TestStatus.Inconclusive)]
-        [Row(typeof(PartialContractOnSampleComparableTest), "OperatorGreaterThanOrEqual", TestStatus.Inconclusive)]
-        [Row(typeof(PartialContractOnSampleComparableTest), "OperatorLessThan", TestStatus.Inconclusive)]
-        [Row(typeof(PartialContractOnSampleComparableTest), "OperatorLessThanOrEqual", TestStatus.Inconclusive)]
+        [Row(typeof(FullContractOnComparableSample), "ComparableCompareTo", TestStatus.Passed)]
+        [Row(typeof(FullContractOnComparableSample), "OperatorGreaterThan", TestStatus.Passed)]
+        [Row(typeof(FullContractOnComparableSample), "OperatorGreaterThanOrEqual", TestStatus.Passed)]
+        [Row(typeof(FullContractOnComparableSample), "OperatorLessThan", TestStatus.Passed)]
+        [Row(typeof(FullContractOnComparableSample), "OperatorLessThanOrEqual", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnComparableSample), "ComparableCompareTo", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnComparableSample), "OperatorGreaterThan", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnComparableSample), "OperatorGreaterThanOrEqual", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnComparableSample), "OperatorLessThan", TestStatus.Inconclusive)]
+        [Row(typeof(PartialContractOnComparableSample), "OperatorLessThanOrEqual", TestStatus.Inconclusive)]
         public void VerifySampleEqualityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("ComparisonContract", fixtureType, testMethodName, expectedTestStatus);
         }
 
         [VerifyComparisonContract(typeof(SampleComparable),
-            ImplementsOperatorOverloads = true),
-        Explicit]
-        private class FullContractOnSampleComparableTest : IEquivalenceClassProvider<SampleComparable>
+            ImplementsOperatorOverloads = true)]
+        [Explicit]
+        internal class FullContractOnComparableSample : IEquivalenceClassProvider<SampleComparable>
         {
             public EquivalenceClassCollection<SampleComparable> GetEquivalenceClasses()
             {
@@ -60,9 +63,9 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         }
 
         [VerifyComparisonContract(typeof(SampleComparable),
-            ImplementsOperatorOverloads = false),
-        Explicit]
-        private class PartialContractOnSampleComparableTest : IEquivalenceClassProvider<SampleComparable>
+            ImplementsOperatorOverloads = false)]
+        [Explicit]
+        private class PartialContractOnComparableSample : IEquivalenceClassProvider<SampleComparable>
         {
             public EquivalenceClassCollection<SampleComparable> GetEquivalenceClasses()
             {

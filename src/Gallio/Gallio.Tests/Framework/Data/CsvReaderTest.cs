@@ -23,7 +23,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(CsvReader))]
-    public class CsvReaderTest : BaseUnitTest
+    public class CsvReaderTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfReaderIsNull()

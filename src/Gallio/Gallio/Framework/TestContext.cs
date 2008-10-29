@@ -20,6 +20,7 @@ using Gallio;
 using Gallio.Collections;
 using Gallio.Framework;
 using Gallio.Model;
+using Gallio.Model.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
 using Gallio.Reflection;
@@ -45,6 +46,7 @@ namespace Gallio.Framework
     /// </para>
     /// </summary>
     /// <seealso cref="Framework.TestStep"/>
+    [TestFrameworkInternal]
     public sealed class TestContext
     {
         private static readonly Key<TestContext> GallioFrameworkContextKey = new Key<TestContext>("Gallio.Framework.Context");
@@ -294,33 +296,6 @@ namespace Gallio.Framework
 
         /// <summary>
         /// <para>
-        /// Performs an action as a new step within the current context and associates
-        /// it with the calling function.
-        /// </para>
-        /// <para>
-        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
-        /// enters the child context, performs the action, then exits the child context.
-        /// </para>
-        /// </summary>
-        /// <remarks>
-        /// This method may be called recursively to create nested steps or concurrently
-        /// to create parallel steps.
-        /// </remarks>
-        /// <param name="name">The name of the step</param>
-        /// <param name="action">The action to perform</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
-        /// <paramref name="action"/> is null</exception>
-        /// <returns>The context of the step that ran</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="Exception">Any exception thrown by the action</exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public TestContext RunStep(string name, Action action)
-        {
-            return RunStep(name, Reflector.GetCallingFunction(), action);
-        }
-
-        /// <summary>
-        /// <para>
         /// Performs an action as a new step within the current context and associates it
         /// with the specified code reference.
         /// </para>
@@ -334,24 +309,30 @@ namespace Gallio.Framework
         /// to create parallel steps.
         /// </remarks>
         /// <param name="name">The name of the step</param>
-        /// <param name="codeElement">The associated code element, or null if none</param>
         /// <param name="action">The action to perform</param>
+        /// <param name="timeout">The step execution timeout, or null if none</param>
+        /// <param name="isTestCase">True if the step represents an independent test case</param>
+        /// <param name="codeElement">The associated code element, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
         /// <paramref name="action"/> is null</exception>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
         /// <exception cref="Exception">Any exception thrown by the action</exception>
-        public TestContext RunStep(string name, ICodeElementInfo codeElement, Action action)
+        public TestContext RunStep(string name, Action action, TimeSpan? timeout, bool isTestCase, ICodeElementInfo codeElement)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            TestContext childContext = StartChildStep(name, codeElement);
+            TestContext childContext = StartChildStep(name, codeElement, isTestCase);
+            TestOutcome outcome = TestOutcome.Error;
 
             childContext.LifecyclePhase = LifecyclePhases.Execute;
-            TestOutcome outcome = childContext.Sandbox.Run(action, null);
+            childContext.Sandbox.UseTimeout(timeout, delegate
+            {
+                outcome = childContext.Sandbox.Run(childContext.LogWriter, action, null);
+            });
 
             childContext.FinishStep(outcome);
             return childContext;
@@ -426,11 +407,15 @@ namespace Gallio.Framework
         /// </summary>
         /// <param name="name">The name of the step</param>
         /// <param name="codeElement">The code element, or null if none</param>
+        /// <param name="isTestCase">True if the step represents an independent test case</param>
         /// <returns>The context of the child step</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        internal TestContext StartChildStep(string name, ICodeElementInfo codeElement)
+        internal TestContext StartChildStep(string name, ICodeElementInfo codeElement, bool isTestCase)
         {
-            return PrepareContext(inner.StartChildStep(name, codeElement), Sandbox.CreateChild());
+            BaseTestStep testStep = new BaseTestStep(inner.TestStep.Test, inner.TestStep, name, codeElement, false);
+            testStep.IsTestCase = isTestCase;
+            testStep.IsDynamic = true;
+            return PrepareContext(inner.StartChildStep(testStep), Sandbox.CreateChild());
         }
 
         /// <summary>

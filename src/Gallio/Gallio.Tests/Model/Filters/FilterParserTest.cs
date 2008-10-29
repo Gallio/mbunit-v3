@@ -28,7 +28,7 @@ namespace Gallio.Tests.Model.Filters
     [TestFixture]
     [TestsOn(typeof(FilterParser<ITest>))]
     [Author("Julian Hidalgo")]
-    public class FilterParserTest : BaseUnitTest
+    public class FilterParserTest : BaseTestWithMocks
     {
         private ITest fixture1 = null;
         private ITest fixture2 = null;

@@ -19,9 +19,9 @@ using Gallio.Framework.Data;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Sets the join strategy of a test to be combinatorial.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The test will be executed using all possible combinations of values from each data source.
     /// </para>
@@ -29,8 +29,6 @@ namespace MbUnit.Framework
     /// If there are two data sources, A and B with values A1, A2, B1 and B2, then the test will
     /// be run four times with inputs: (A1, B1), (A1, B2), (A2, B1) and (A2, B2).
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// This is the default join strategy for tests.  So you do not need to specify this attribute
     /// unless you want to be explicit about selecting it.

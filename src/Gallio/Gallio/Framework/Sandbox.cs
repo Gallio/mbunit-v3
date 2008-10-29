@@ -40,6 +40,7 @@ namespace Gallio.Framework
     /// <remarks>
     /// This class is safe for use from multiple concurrent threads.
     /// </remarks>
+    [TestFrameworkInternal]
     public sealed class Sandbox : IDisposable
     {
         private Sandbox parent;
@@ -50,6 +51,7 @@ namespace Gallio.Framework
         private string abortMessage;
         private event EventHandler aborted;
         private bool alreadyLoggedAbortOnce;
+        private bool isDisposed;
 
         /// <summary>
         /// Creates a root sandbox.
@@ -60,18 +62,21 @@ namespace Gallio.Framework
 
         /// <summary>
         /// <para>
-        /// An event that is dispatched when <see cref="Abort" /> is called.
+        /// An event that is dispatched when <see cref="Abort(TestOutcome, string)" /> is called.
         /// </para>
         /// <para>
         /// If the sandbox has already been aborted then the event handler is immediately invoked.
         /// </para>
         /// </summary>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
         public event EventHandler Aborted
         {
             add
             {
                 lock (syncRoot)
                 {
+                    ThrowIfDisposed();
+
                     if (!abortOutcome.HasValue)
                     {
                         aborted += value;
@@ -84,44 +89,60 @@ namespace Gallio.Framework
             remove
             {
                 lock (syncRoot)
+                {
+                    ThrowIfDisposed();
+
                     aborted -= value;
+                }
             }
         }
 
         /// <summary>
-        /// Returns true if <see cref="Abort" /> was called.
+        /// Returns true if <see cref="Abort(TestOutcome, string)" /> was called.
         /// </summary>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
         public bool WasAborted
         {
             get
             {
                 lock (syncRoot)
+                {
+                    ThrowIfDisposed();
                     return abortOutcome.HasValue;
+                }
             }
         }
 
         /// <summary>
-        /// Returns the <see cref="TestOutcome" /> passed to the <see cref="Abort" />,
-        /// or null if <see cref="Abort" /> has not been called.
+        /// Returns the <see cref="TestOutcome" /> passed to <see cref="Abort(TestOutcome, string)" />,
+        /// or null if <see cref="Abort(TestOutcome, string)" /> has not been called.
         /// </summary>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
         public TestOutcome? AbortOutcome
         {
             get
             {
                 lock (syncRoot)
+                {
+                    ThrowIfDisposed();
                     return abortOutcome;
+                }
             }
         }
 
         /// <summary>
         /// Gets a message that will be logged when the sandbox is aborted, or null if none.
         /// </summary>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
         public string AbortMessage
         {
             get
             {
                 lock (syncRoot)
+                {
+                    ThrowIfDisposed();
                     return abortMessage;
+                }
             }
         }
 
@@ -131,18 +152,22 @@ namespace Gallio.Framework
         /// </para>
         /// <para>
         /// All currently executing actions are aborted with <see cref="TestOutcome.Error" />
-        /// if <see cref="Abort" /> has not already been called.
+        /// if <see cref="Abort(TestOutcome, string)" /> has not already been called.
         /// </para>
         /// </summary>
         public void Dispose()
         {
-            Abort(TestOutcome.Error, "The sandbox was disposed.");
+            Abort(TestOutcome.Error, "The sandbox was disposed.", false);
 
             Sandbox cachedParent;
             lock (syncRoot)
             {
+                if (isDisposed)
+                    return;
+
                 cachedParent = parent;
                 parent = null;
+                isDisposed = true;
             }
 
             if (cachedParent != null)
@@ -159,8 +184,11 @@ namespace Gallio.Framework
         /// </para>
         /// </summary>
         /// <returns>The child sandbox</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
         public Sandbox CreateChild()
         {
+            ThrowIfDisposed();
+
             Sandbox child = new Sandbox();
             child.parent = this;
             Aborted += child.HandleParentAborted;
@@ -173,18 +201,27 @@ namespace Gallio.Framework
         /// </para>
         /// <para>
         /// The abort is persistent and cannot be reverted.  Therefore once aborted, no further
-        /// test actions will be permitted to run.  Subsequent calls to <see cref="Abort" />
+        /// test actions will be permitted to run.  Subsequent calls to <see cref="Abort(TestOutcome, string)" />
         /// will have no effect.
         /// </para>
         /// </summary>
         /// <param name="outcome">The outcome to be returned from aborted actions</param>
         /// <param name="message">A message to be logged when the action is aborted, or null if none</param>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
         public void Abort(TestOutcome outcome, string message)
+        {
+            Abort(outcome, message, true);
+        }
+
+        private void Abort(TestOutcome outcome, string message, bool throwIfDisposed)
         {
             EventHandler cachedHandler;
             ThreadAbortScope[] cachedScopes;
             lock (syncRoot)
             {
+                if (throwIfDisposed)
+                    ThrowIfDisposed();
+
                 if (abortOutcome.HasValue)
                     return;
 
@@ -208,11 +245,41 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
+        /// Uses a specified timeout for all actions run within a block of code.
+        /// </summary>
+        /// <param name="timeout">The execution timeout or null if none</param>
+        /// <param name="action">The action to perform, protected by the timeout</param>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        public void UseTimeout(TimeSpan? timeout, Action action)
+        {
+            ThrowIfDisposed();
+
+            using (timeout.HasValue ? new Timer(delegate
+                {
+                    Abort(TestOutcome.Timeout,
+                        String.Format("The test timed out after {0} seconds.", timeout.Value.TotalSeconds),
+                        false);
+                }, null, (int) timeout.Value.TotalMilliseconds, Timeout.Infinite) : null)
+            {
+                action();
+            }
+        }
+
+        /// <summary>
         /// Runs a test action.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the action throws an exception or if the test action is aborted, then logs a
+        /// message to the <paramref name="testLogWriter"/>.  Exceptions of type <see cref="TestException" />
+        /// are handled specially since they may modify the effective outcome of the run.
+        /// If <see cref="TestException.ExcludeStackTrace" /> is <c>true</c> and <see cref="TestException.HasNonDefaultMessage" />
+        /// is <c>false</c> then the exception is effectively silent.  Therefore the action can modify
+        /// its outcome and cause messages to be logged by throwing a suitable exception such as
+        /// <see cref="TestException"/> or <see cref="SilentTestException" />.
         /// </para>
         /// <para>
-        /// If the <see cref="Abort" /> method is called or has already been called, the action
+        /// If the <see cref="Abort(TestOutcome, string)" /> method is called or has already been called, the action
         /// is aborted and the appropriate outcome is returned.  The abort is manifested as an
         /// asynchronous <see cref="ThreadAbortException" /> which should cause the action to
         /// terminate.  It may not terminate immediately, however.
@@ -226,16 +293,21 @@ namespace Gallio.Framework
         /// <item>If the action threw an different kind of exception, logs
         /// the exception and returns <see cref="TestOutcome.Failed"/>.</item>
         /// <item>If the action was aborted, returns <see cref="AbortOutcome" />.</item>
+        /// <item>If the action timed out, returns <see cref="TestOutcome.Timeout" />.</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
+        /// <param name="testLogWriter">The log writer for reporting failures</param>
         /// <param name="action">The action to run</param>
         /// <param name="description">A description of the action being performed,
         /// to be used as a log section name when reporting failures, or null if none</param>
         /// <returns>The outcome of the action</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        public TestOutcome Run(Action action, string description)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testLogWriter"/> or <paramref name="action"/> is null</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        public TestOutcome Run(TestLogWriter testLogWriter, Action action, string description)
         {
+            if (testLogWriter == null)
+                throw new ArgumentNullException("testLogWriter");
             if (action == null)
                 throw new ArgumentNullException("action");
 
@@ -244,6 +316,8 @@ namespace Gallio.Framework
             {
                 lock (syncRoot)
                 {
+                    ThrowIfDisposed();
+
                     if (!abortOutcome.HasValue)
                     {
                         if (scopes == null)
@@ -255,9 +329,9 @@ namespace Gallio.Framework
                 }
 
                 if (scope == null)
-                    return HandleAbort(description, null);
+                    return HandleAbort(testLogWriter, description, null);
 
-                return RunWithScope(scope, action, description);
+                return RunWithScope(testLogWriter, scope, action, description);
             }
             finally
             {
@@ -270,13 +344,13 @@ namespace Gallio.Framework
             }
         }
 
-        private TestOutcome RunWithScope(ThreadAbortScope scope, Action action, string description)
+        private TestOutcome RunWithScope(TestLogWriter testLogWriter, ThreadAbortScope scope, Action action, string description)
         {
             try
             {
                 ThreadAbortException ex = scope.Run(action);
                 if (ex != null)
-                    return HandleAbort(description, ex);
+                    return HandleAbort(testLogWriter, description, ex);
 
                 return TestOutcome.Passed;
             }
@@ -289,14 +363,14 @@ namespace Gallio.Framework
                     outcome = testException.Outcome;
 
                     if (testException.ExcludeStackTrace)
-                        LogMessage(description, outcome, testException.HasNonDefaultMessage ? testException.Message : null, null);
+                        LogMessage(testLogWriter, description, outcome, testException.HasNonDefaultMessage ? testException.Message : null, null);
                     else
-                        LogMessage(description, outcome, null, testException);
+                        LogMessage(testLogWriter, description, outcome, null, testException);
                 }
                 else
                 {
                     outcome = TestOutcome.Failed;
-                    LogMessage(description, outcome, null, ex);
+                    LogMessage(testLogWriter, description, outcome, null, ex);
                 }
 
                 return outcome;
@@ -309,23 +383,23 @@ namespace Gallio.Framework
             Abort(parent.AbortOutcome.Value, parent.AbortMessage);
         }
 
-        private TestOutcome HandleAbort(string actionDescription, ThreadAbortException ex)
+        private TestOutcome HandleAbort(TestLogWriter testLogWriter, string actionDescription, ThreadAbortException ex)
         {
             TestOutcome outcome = abortOutcome.Value;
             if (ex == null && alreadyLoggedAbortOnce)
                 return outcome;
 
             alreadyLoggedAbortOnce = true;
-            LogMessage(actionDescription, outcome, abortMessage, ex);
+            LogMessage(testLogWriter, actionDescription, outcome, abortMessage, ex);
             return outcome;
         }
 
-        private static void LogMessage(string actionDescription, TestOutcome outcome, string message, Exception ex)
+        private static void LogMessage(TestLogWriter testLogWriter, string actionDescription, TestOutcome outcome, string message, Exception ex)
         {
             if (string.IsNullOrEmpty(message) && ex == null)
                 return;
 
-            TestLogStreamWriter stream = GetLogStreamWriterForOutcome(outcome);
+            TestLogStreamWriter stream = GetLogStreamWriterForOutcome(testLogWriter, outcome);
             using (actionDescription != null ? stream.BeginSection(actionDescription) : null)
             {
                 if (! string.IsNullOrEmpty(message))
@@ -336,17 +410,23 @@ namespace Gallio.Framework
             }
         }
 
-        private static TestLogStreamWriter GetLogStreamWriterForOutcome(TestOutcome outcome)
+        private static TestLogStreamWriter GetLogStreamWriterForOutcome(TestLogWriter testLogWriter, TestOutcome outcome)
         {
             switch (outcome.Status)
             {
                 case TestStatus.Passed:
-                    return TestLog.Default;
+                    return testLogWriter.Default;
                 case TestStatus.Failed:
-                    return TestLog.Failures;
+                    return testLogWriter.Failures;
                 default:
-                    return TestLog.Warnings;
+                    return testLogWriter.Warnings;
             }
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (isDisposed)
+                throw new ObjectDisposedException("Sandbox was disposed.");
         }
     }
 }

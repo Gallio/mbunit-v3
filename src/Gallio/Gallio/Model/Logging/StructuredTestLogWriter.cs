@@ -40,7 +40,12 @@ namespace Gallio.Model.Logging
         /// Gets the test log under construction.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// The contents of the test log will change as more text is written.
+        /// However, it may be necessary to <see cref="TestLogWriter.Flush" />
+        /// or <see cref="TestLogWriter.Close" />
+        /// the writer for these changes to be observed.
+        /// </para>
         /// </remarks>
         public StructuredTestLog TestLog
         {

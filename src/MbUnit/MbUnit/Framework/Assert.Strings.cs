@@ -25,9 +25,15 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that a string contains some expected value.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
         /// <param name="actualValue">The actual value</param>
         /// <param name="expectedSubstring">The expected substring</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedSubstring"/> is null</exception>
         public static void Contains(string actualValue, string expectedSubstring)
         {
             Contains(actualValue, expectedSubstring, null);
@@ -36,16 +42,25 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that a string contains some expected value.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
         /// <param name="actualValue">The actual value</param>
         /// <param name="expectedSubstring">The expected substring</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedSubstring"/> is null</exception>
         public static void Contains(string actualValue, string expectedSubstring, string messageFormat, params object[] messageArgs)
         {
+            if (expectedSubstring == null)
+                throw new ArgumentNullException("expectedSubstring");
+
             AssertionHelper.Verify(delegate
             {
-                if (actualValue.Contains(expectedSubstring))
+                if (actualValue != null && actualValue.Contains(expectedSubstring))
                     return null;
 
                 return new AssertionFailureBuilder("Expected string to contain a particular substring.")
@@ -61,9 +76,15 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that a string does not contain some unexpected substring.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
         /// <param name="actualValue">The actual value</param>
         /// <param name="unexpectedSubstring">The unexpected substring</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedSubstring"/> is null</exception>
         public static void DoesNotContain(string actualValue, string unexpectedSubstring)
         {
             DoesNotContain(actualValue, unexpectedSubstring, null);
@@ -72,16 +93,25 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that a string does not contain some unexpected substring.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
         /// <param name="actualValue">The actual value</param>
         /// <param name="unexpectedSubstring">The unexpected substring</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedSubstring"/> is null</exception>
         public static void DoesNotContain(string actualValue, string unexpectedSubstring, string messageFormat, params object[] messageArgs)
         {
+            if (unexpectedSubstring == null)
+                throw new ArgumentNullException("unexpectedSubstring");
+
             AssertionHelper.Verify(delegate
             {
-                if (!actualValue.Contains(unexpectedSubstring))
+                if (actualValue != null && !actualValue.Contains(unexpectedSubstring))
                     return null;
 
                 return new AssertionFailureBuilder("Expected string to not contain a particular substring.")
@@ -180,65 +210,137 @@ namespace MbUnit.Framework
 
         #region FullMatch
         /// <summary>
-        /// Verifies that testValue matches regular expression pattern exactly.
+        /// Verifies that a string matches regular expression pattern exactly.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.Match(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void FullMatch(string testValue, string regexPattern)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void FullMatch(string actualValue, string regexPattern)
         {
-            FullMatch(testValue, regexPattern, null, null);
+            FullMatch(actualValue, regexPattern, RegexOptions.None, null, null);
         }
 
         /// <summary>
-        /// Verifies that testValue matches regular expression pattern exactly.
+        /// Verifies that a string matches regular expression pattern exactly.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.Match(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void FullMatch(string testValue, string regexPattern, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void FullMatch(string actualValue, string regexPattern, string messageFormat, params object[] messageArgs)
         {
-            FullMatch(testValue, new Regex(regexPattern), messageFormat, messageArgs);
+            FullMatch(actualValue, regexPattern, RegexOptions.None, messageFormat, messageArgs);
         }
 
         /// <summary>
-        /// Verifies that testValue matches regular expression pattern exactly.
+        /// Verifies that a string matches regular expression pattern exactly.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regEx">Regular expression</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.Match(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
+        /// <param name="regexOptions">The regular expression options</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void FullMatch(string testValue, Regex regEx)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void FullMatch(string actualValue, string regexPattern, RegexOptions regexOptions)
         {
-            FullMatch(testValue, regEx, null, null);
+            FullMatch(actualValue, regexPattern, regexOptions, null, null);
         }
 
         /// <summary>
-        /// Verifies that testValue matches regular expression pattern exactly.
+        /// Verifies that a string matches regular expression pattern exactly.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regEx">Regular expression</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.Match(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
+        /// <param name="regexOptions">The regular expression options</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void FullMatch(string testValue, Regex regEx, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void FullMatch(string actualValue, string regexPattern, RegexOptions regexOptions, string messageFormat, params object[] messageArgs)
         {
-            if (testValue == null)
-                throw new ArgumentNullException("testValue");
-            if (regEx == null)
-                throw new ArgumentNullException("regEx");
+            if (regexPattern == null)
+                throw new ArgumentNullException("regexPattern");
+
+            FullMatch(actualValue, new Regex(regexPattern, regexOptions), messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that a string matches regular expression pattern exactly.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.Match(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regex">The regular expression</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        public static void FullMatch(string actualValue, Regex regex)
+        {
+            FullMatch(actualValue, regex, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that a string matches regular expression pattern exactly.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.Match(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regex">The regular expression</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        public static void FullMatch(string actualValue, Regex regex, string messageFormat, params object[] messageArgs)
+        {
+            if (regex == null)
+                throw new ArgumentNullException("regex");
 
             AssertionHelper.Verify(delegate
             {
-                Match match = regEx.Match(testValue);
-                if (match.Success && testValue.Length.Equals(match.Length))
-                    return null;
+                if (actualValue != null)
+                {
+                    Match match = regex.Match(actualValue);
+                    if (match.Success && actualValue.Length.Equals(match.Length))
+                        return null;
+                }
 
-                return new AssertionFailureBuilder("Expected to have an exact match.")
+                return new AssertionFailureBuilder("Expected a string to exactly match a regular expression pattern.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Test Value", testValue)
-                    .AddRawLabeledValue("Regex Pattern", regEx.ToString())
+                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Regex Pattern", regex.ToString())
                     .ToAssertionFailure();
             });
         }
@@ -248,64 +350,133 @@ namespace MbUnit.Framework
         #region Like
 
         /// <summary>
-        /// Verifies that testValue matches regular expression pattern.
+        /// Verifies that a string contains a full or partial match of a regular expression pattern.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Like(string testValue, string regexPattern)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void Like(string actualValue, string regexPattern)
         {
-            Like(testValue, regexPattern, null, null);
+            Like(actualValue, regexPattern, RegexOptions.None, null, null);
         }
 
         /// <summary>
-        /// Verifies that testValue matches regular expression pattern.
+        /// Verifies that a string contains a full or partial match of a regular expression pattern.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Like(string testValue, string regexPattern, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void Like(string actualValue, string regexPattern, string messageFormat, params object[] messageArgs)
         {
-            Like(testValue, new Regex(regexPattern), messageFormat, messageArgs);
+            Like(actualValue, regexPattern, RegexOptions.None, messageFormat, messageArgs);
         }
 
         /// <summary>
-        /// Verifies that testValue matches regular expression pattern.
+        /// Verifies that a string contains a full or partial match of a regular expression pattern.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regEx">Regular expression</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
+        /// <param name="regexOptions">The regular expression options</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Like(string testValue, Regex regEx)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void Like(string actualValue, string regexPattern, RegexOptions regexOptions)
         {
-            Like(testValue, regEx, null, null);
+            Like(actualValue, regexPattern, regexOptions, null, null);
         }
 
         /// <summary>
-        /// Verifies that testValue matches regular expression pattern.
+        /// Verifies that a string contains a full or partial match of a regular expression pattern.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regEx">Regular expression</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
+        /// <param name="regexOptions">The regular expression options</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Like(string testValue, Regex regEx, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void Like(string actualValue, string regexPattern, RegexOptions regexOptions, string messageFormat, params object[] messageArgs)
         {
-            if (testValue == null)
-                throw new ArgumentNullException("testValue");
-            if (regEx == null)
-                throw new ArgumentNullException("regEx");
+            if (regexPattern == null)
+                throw new ArgumentNullException("regexPattern");
+
+            Like(actualValue, new Regex(regexPattern, regexOptions), messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that a string contains a full or partial match of a regular expression pattern.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regex">The regular expression</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        public static void Like(string actualValue, Regex regex)
+        {
+            Like(actualValue, regex, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that a string contains a full or partial match of a regular expression pattern.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regex">The regular expression</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        public static void Like(string actualValue, Regex regex, string messageFormat, params object[] messageArgs)
+        {
+            if (regex == null)
+                throw new ArgumentNullException("regex");
 
             AssertionHelper.Verify(delegate
             {
-                if (regEx.Match(testValue).Success)
+                if (actualValue != null && regex.IsMatch(actualValue))
                     return null;
 
-                return new AssertionFailureBuilder("Expected to match Regex pattern.")
+                return new AssertionFailureBuilder("Expected a string to contain a full or partial match of a regular expression pattern.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Test Value", testValue)
-                    .AddRawLabeledValue("Regex Pattern", regEx.ToString())
+                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Regex Pattern", regex.ToString())
                     .ToAssertionFailure();
             });
         }
@@ -315,64 +486,133 @@ namespace MbUnit.Framework
         #region NotLike
 
         /// <summary>
-        /// Verifies that testValue doesn't matches regular expression pattern.
+        /// Verifies that a string does not contain a full or partial match of a regular expression pattern.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void NotLike(string testValue, string regexPattern)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void NotLike(string actualValue, string regexPattern)
         {
-            NotLike(testValue, regexPattern, null, null);
+            NotLike(actualValue, regexPattern, RegexOptions.None, null, null);
         }
 
         /// <summary>
-        /// Verifies that testValue doesn't matches regular expression pattern.
+        /// Verifies that a string does not contain a full or partial match of a regular expression pattern.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regexPattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void NotLike(string testValue, string regexPattern, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void NotLike(string actualValue, string regexPattern, string messageFormat, params object[] messageArgs)
         {
-            NotLike(testValue, new Regex(regexPattern), messageFormat, messageArgs);
+            NotLike(actualValue, regexPattern, RegexOptions.None, messageFormat, messageArgs);
         }
 
         /// <summary>
-        /// Verifies that testValue doesn't matches regular expression pattern.
+        /// Verifies that a string does not contain a full or partial match of a regular expression pattern.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regEx">Regular expression</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
+        /// <param name="regexOptions">The regular expression options</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void NotLike(string testValue, Regex regEx)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void NotLike(string actualValue, string regexPattern, RegexOptions regexOptions)
         {
-            NotLike(testValue, regEx, null, null);
+            NotLike(actualValue, regexPattern, regexOptions, null, null);
         }
 
         /// <summary>
-        /// Verifies that testValue doesn't matches regular expression pattern.
+        /// Verifies that a string does not contain a full or partial match of a regular expression pattern.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="regEx">Regular expression</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string, string, RegexOptions)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regexPattern">The regular expression pattern</param>
+        /// <param name="regexOptions">The regular expression options</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void NotLike(string testValue, Regex regEx, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regexPattern"/> is null</exception>
+        public static void NotLike(string actualValue, string regexPattern, RegexOptions regexOptions, string messageFormat, params object[] messageArgs)
         {
-            if (testValue == null)
-                throw new ArgumentNullException("testValue");
-            if (regEx == null)
-                throw new ArgumentNullException("regEx");
+            if (regexPattern == null)
+                throw new ArgumentNullException("regexPattern");
+
+            NotLike(actualValue, new Regex(regexPattern, regexOptions), messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that a string does not contain a full or partial match of a regular expression pattern.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regex">The regular expression</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        public static void NotLike(string actualValue, Regex regex)
+        {
+            NotLike(actualValue, regex, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that a string does not contain a full or partial match of a regular expression pattern.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Regex.IsMatch(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="regex">The regular expression</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="regex"/> is null</exception>
+        public static void NotLike(string actualValue, Regex regex, string messageFormat, params object[] messageArgs)
+        {
+            if (regex == null)
+                throw new ArgumentNullException("regex");
 
             AssertionHelper.Verify(delegate
             {
-                if (!regEx.Match(testValue).Success)
+                if (actualValue != null && regex.IsMatch(actualValue))
                     return null;
 
-                return new AssertionFailureBuilder("Expected not to match Regex pattern.")
+                return new AssertionFailureBuilder("Expected a string to not contain a full or partial match of a regular expression pattern.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Test Value", testValue)
-                    .AddRawLabeledValue("Regex Pattern", regEx.ToString())
+                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Regex Pattern", regex.ToString())
                     .ToAssertionFailure();
             });
         }
@@ -382,43 +622,52 @@ namespace MbUnit.Framework
         #region StartsWith
 
         /// <summary>
-        /// Verifies that testValue starts with the specified pattern.
+        /// Verifies that a string starts with the specified text.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="pattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="String.StartsWith(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedText">The expected pattern</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void StartsWith(string testValue, string pattern)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null</exception>
+        public static void StartsWith(string actualValue, string expectedText)
         {
-            StartsWith(testValue, pattern, null, null);
+            StartsWith(actualValue, expectedText, null, null);
         }
 
         /// <summary>
-        /// Verifies that testValue starts with the specified pattern.
+        /// Verifies that a string starts with the specified text.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="pattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="String.StartsWith(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedText">The expected pattern</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void StartsWith(string testValue, string pattern, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null</exception>
+        public static void StartsWith(string actualValue, string expectedText, string messageFormat, params object[] messageArgs)
         {
-            if (testValue == null && pattern == null)
-                return;
-
-            if (testValue == null)
-                throw new ArgumentNullException("testValue");
-            if (pattern == null)
-                throw new ArgumentNullException("pattern");
+            if (expectedText == null)
+                throw new ArgumentNullException("expectedText");
 
             AssertionHelper.Verify(delegate
             {
-                if (testValue.StartsWith(pattern))
+                if (actualValue != null && actualValue.StartsWith(expectedText))
                     return null;
 
-                return new AssertionFailureBuilder("Expected to start with the specified pattern.")
+                return new AssertionFailureBuilder("Expected string to start with the specified text.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Test Value", testValue)
-                    .AddRawLabeledValue("Pattern", pattern)
+                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Expected Text", expectedText)
                     .ToAssertionFailure();
             });
         }
@@ -428,43 +677,52 @@ namespace MbUnit.Framework
         #region EndsWith
 
         /// <summary>
-        /// Verifies that testValue ends with the specified pattern.
+        /// Verifies that a string ends with the specified text.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="pattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="String.EndsWith(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedText">The expected pattern</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void EndsWith(string testValue, string pattern)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null</exception>
+        public static void EndsWith(string actualValue, string expectedText)
         {
-            EndsWith(testValue, pattern, null, null);
+            EndsWith(actualValue, expectedText, null, null);
         }
 
         /// <summary>
-        /// Verifies that testValue ends with the specified pattern.
+        /// Verifies that a string ends with the specified text.
         /// </summary>
-        /// <param name="testValue">The test value</param>
-        /// <param name="pattern">Regular expression pattern</param>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the string is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="String.EndsWith(string)"/>
+        /// <param name="actualValue">The actual value</param>
+        /// <param name="expectedText">The expected pattern</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void EndsWith(string testValue, string pattern, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedText"/> is null</exception>
+        public static void EndsWith(string actualValue, string expectedText, string messageFormat, params object[] messageArgs)
         {
-            if (testValue == null && pattern == null)
-                return;
-
-            if (testValue == null)
-                throw new ArgumentNullException("testValue");
-            if (pattern == null)
-                throw new ArgumentNullException("pattern");
+            if (expectedText == null)
+                throw new ArgumentNullException("expectedText");
 
             AssertionHelper.Verify(delegate
             {
-                if (testValue.EndsWith(pattern))
+                if (actualValue != null && actualValue.EndsWith(expectedText))
                     return null;
 
-                return new AssertionFailureBuilder("Expected to end with the specified pattern.")
+                return new AssertionFailureBuilder("Expected string to start with the specified text.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Test Value", testValue)
-                    .AddRawLabeledValue("Pattern", pattern)
+                    .AddRawActualValue(actualValue)
+                    .AddRawLabeledValue("Expected Text", expectedText)
                     .ToAssertionFailure();
             });
         }

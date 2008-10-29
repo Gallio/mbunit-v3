@@ -29,7 +29,7 @@ namespace Gallio.Tests.Model.Execution
 {
     [TestFixture]
     [TestsOn(typeof(TestCommandFactory))]
-    public class TestCommandFactoryTest : BaseUnitTest
+    public class TestCommandFactoryTest : BaseTestWithMocks
     {
         private TestModel model;
         private ITestCommand rootCommand;

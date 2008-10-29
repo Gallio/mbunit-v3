@@ -19,8 +19,8 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// Associates a <see cref="Framework.Importance" /> with a test fixture, test method, test parameter
-    /// or other test component.
+    /// Associates a <see cref="Framework.Importance" /> with a test fixture, test method,
+    /// test parameter or other test component.
     /// </summary>
     public class ImportanceAttribute : MetadataPatternAttribute
     {

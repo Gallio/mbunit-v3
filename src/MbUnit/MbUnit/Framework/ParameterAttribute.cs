@@ -23,13 +23,34 @@ namespace MbUnit.Framework
     /// Declares that a property, field, method parameter, constructor parameter,
     /// generic type parameter or generic method parameter represents a test parameter.
     /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This attribute is optional for a method parameter, constructor parameter,
     /// generic type parameter or generic method parameter.  For a property or field,
     /// this attribute is required unless the property or field has at least one associated data
     /// source, in which case the attribute can be omitted.
     /// </para>
-    /// </summary>
+    /// <para>
+    /// In other words, this attribute only needs to be specified on a property
+    /// or field that does not have an associated explicit data binding attribute.
+    /// This is typically the case when the parameter obtains its values from a
+    /// data source defined by the test fixture.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// [Header("Parameter1", "Parameter2")]
+    /// [Row(1, "a")]
+    /// [Row(2, "b")]
+    /// public class Fixture
+    /// {
+    ///     [TestParameter]
+    ///     public int Parameter1;
+    ///     
+    ///     [TestParameter]
+    ///     public string Parameter2 { get; set; }
+    /// }
+    /// </example>
     public class ParameterAttribute : TestParameterPatternAttribute
     {
     }

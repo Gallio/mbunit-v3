@@ -19,20 +19,15 @@ using Gallio.Model.Logging;
 using Gallio.NUnitAdapter.TestResources;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.Framework;
 
 namespace Gallio.NUnitAdapter.Tests.Integration
 {
     [TestFixture]
-    public class RunAddinsTest : BaseSampleTest
+    [RunSample(typeof(AddinsTest))]
+    public class RunAddinsTest : BaseTestWithSampleRunner
     {
-        [FixtureSetUp]
-        public void RunSample()
-        {
-            RunFixtures(typeof(AddinsTest));
-        }
-
         [Test]
         public void RowTest()
         {

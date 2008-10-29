@@ -25,7 +25,7 @@ namespace Gallio.Tests.Runtime.Remoting
 {
     [TestFixture]
     [TestsOn(typeof(BaseChannel))]
-    public class BaseChannelTest : BaseUnitTest
+    public class BaseChannelTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfChannelIsNull()

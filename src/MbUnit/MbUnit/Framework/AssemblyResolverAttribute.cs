@@ -21,8 +21,21 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
+    /// <para>
     /// Registers a custom assembly resolver.
+    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A custom assembly resolver allows a test assembly to augment the default
+    /// assembly loading policy with custom rules.
+    /// </para>
+    /// <para>
+    /// To create a custom assembly resolver, define a resolver class that implement
+    /// the <see cref="IAssemblyResolver"/> interface then apply the <see cref="AssemblyResolverAttribute" />
+    /// to the test assembly at the assembly level.
+    /// </para>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.TestAssembly, AllowMultiple=true)]
     public sealed class AssemblyResolverAttribute : TestAssemblyInitializationAttribute
     {

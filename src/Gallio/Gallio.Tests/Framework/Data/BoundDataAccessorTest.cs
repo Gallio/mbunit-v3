@@ -22,7 +22,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(BoundDataAccessor))]
-    public class BoundDataAccessorTest : BaseUnitTest
+    public class BoundDataAccessorTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfDataBindingIsNull()

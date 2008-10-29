@@ -59,6 +59,7 @@ namespace Gallio.Framework.Utilities
         {
             packageConfig = new TestPackageConfig();
             filters = new List<Filter<ITest>>();
+            TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
         }
 
         /// <summary>
@@ -90,6 +91,12 @@ namespace Gallio.Framework.Utilities
         {
             get { return packageConfig; }
         }
+
+        /// <summary>
+        /// Gets or sets the name of the test runner factory to use.
+        /// </summary>
+        /// <value>The test runner factory name, defaults to <see cref="StandardTestRunnerFactoryNames.Local" /></value>
+        public string TestRunnerFactoryName { get; set; }
 
         /// <summary>
         /// Adds a test assembly to the package configuration, if not already added.
@@ -253,7 +260,7 @@ namespace Gallio.Framework.Utilities
             launcher.TestPackageConfig = packageConfig;
             launcher.Logger = new TestLogStreamLogger(logStreamWriter);
             launcher.TestExecutionOptions.Filter = new OrFilter<ITest>(filters.ToArray());
-            launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
+            launcher.TestRunnerFactoryName = TestRunnerFactoryName;
 
             string reportDirectory = Path.GetTempPath();
             launcher.ReportDirectory = reportDirectory;

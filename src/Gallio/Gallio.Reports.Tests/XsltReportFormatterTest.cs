@@ -33,7 +33,7 @@ namespace Gallio.Reports.Tests
 {
     [TestFixture]
     [TestsOn(typeof(XsltReportFormatter))]
-    public class XsltReportFormatterTest : BaseUnitTest
+    public class XsltReportFormatterTest : BaseTestWithMocks
     {
         private delegate void SerializeReportDelegate(XmlWriter writer, AttachmentContentDisposition contentDisposition);
 

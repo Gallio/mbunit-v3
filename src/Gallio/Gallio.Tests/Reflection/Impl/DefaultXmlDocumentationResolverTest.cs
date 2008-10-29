@@ -27,7 +27,7 @@ namespace Gallio.Tests.Reflection.Impl
     [TestFixture]
     [Author("Jeff")]
     [TestsOn(typeof(DefaultXmlDocumentationResolver))]
-    public class DefaultXmlDocumentationResolverTest : BaseUnitTest
+    public class DefaultXmlDocumentationResolverTest : BaseTestWithMocks
     {
         private DefaultXmlDocumentationResolver resolver;
 

@@ -27,7 +27,7 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(NamespaceFilter<ITestComponent>))]
-    public class NamespaceFilterTest : BaseUnitTest
+    public class NamespaceFilterTest : BaseTestWithMocks
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]

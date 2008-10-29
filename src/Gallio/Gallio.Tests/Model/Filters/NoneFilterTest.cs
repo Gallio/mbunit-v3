@@ -22,7 +22,7 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(NoneFilter<object>))]
-    public class NoneFilterTest : BaseUnitTest
+    public class NoneFilterTest : BaseTestWithMocks
     {
         [Test]
         public void IsMatchReturnsFalse()

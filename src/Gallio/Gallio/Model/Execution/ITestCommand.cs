@@ -158,7 +158,8 @@ namespace Gallio.Model.Execution
         /// <para>
         /// This method is equivalent to calling <see cref="StartStep" />
         /// using a default implementation of <see cref="ITestStep" /> that is
-        /// initialized using <paramref name="parentTestStep" />.
+        /// initialized using <paramref name="parentTestStep" /> and the metadata
+        /// from the 
         /// </para>
         /// </summary>
         /// <param name="parentTestStep">The parent test step, or null if none</param>

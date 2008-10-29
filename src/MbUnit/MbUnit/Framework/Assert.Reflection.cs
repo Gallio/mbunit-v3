@@ -24,8 +24,14 @@ namespace MbUnit.Framework
     {
         #region IsAssignableFrom
         /// <summary>
-        /// Asserts that an object may be assigned a  value of a given Type.
+        /// Verifies that an object may be assigned to a variable of the specified type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Type.IsAssignableFrom"/>
         /// <param name="expectedType">The Type to compare with the object's Type</param>
         /// <param name="actualValue">The object under examination</param>
         public static void IsAssignableFrom(Type expectedType, object actualValue)
@@ -34,8 +40,14 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that an object may be assigned a  value of a given Type.
+        /// Verifies that an object may be assigned to a variable of the specified type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Type.IsAssignableFrom"/>
         /// <param name="expectedType">The Type to compare with the object's Type</param>
         /// <param name="actualValue">The object under examination</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
@@ -49,7 +61,7 @@ namespace MbUnit.Framework
 
             AssertionHelper.Verify(delegate
             {
-                if (actualValue.GetType().IsAssignableFrom(expectedType))
+                if (actualValue != null && actualValue.GetType().IsAssignableFrom(expectedType))
                     return null;
 
                 return new AssertionFailureBuilder("Expected the actual type to be assignable to the expected type.")
@@ -64,8 +76,14 @@ namespace MbUnit.Framework
 
         #region IsNotAssignableFrom
         /// <summary>
-        /// Asserts that an object may be assigned a  value of a given Type.
+        /// Verifies that an object may not be assigned to a variable of the specified type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Type.IsAssignableFrom"/>
         /// <param name="expectedType">The Type to compare with the object's Type</param>
         /// <param name="actualValue">The object under examination</param>
         public static void IsNotAssignableFrom(Type expectedType, object actualValue)
@@ -74,8 +92,14 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that an object may be assigned a  value of a given Type.
+        /// Verifies that an object may not be assigned to a variable of the specified type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Type.IsAssignableFrom"/>
         /// <param name="expectedType">The Type to compare with the object's Type</param>
         /// <param name="actualValue">The object under examination</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
@@ -89,7 +113,7 @@ namespace MbUnit.Framework
 
             AssertionHelper.Verify(delegate
             {
-                if (!actualValue.GetType().IsAssignableFrom(expectedType))
+                if (actualValue != null && !actualValue.GetType().IsAssignableFrom(expectedType))
                     return null;
 
                 return new AssertionFailureBuilder("Expected the actual type not to be assignable to the expected type.")
@@ -106,6 +130,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that an actual value is an instance of some expected type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
         /// <param name="expectedType">The expected type</param>
         /// <param name="actualValue">The actual value</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
@@ -118,6 +147,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that an actual value is an instance of some expected type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
         /// <param name="expectedType">The expected type</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
@@ -131,7 +165,7 @@ namespace MbUnit.Framework
 
             AssertionHelper.Verify(delegate
             {
-                if (expectedType.IsInstanceOfType(actualValue))
+                if (actualValue != null && expectedType.IsInstanceOfType(actualValue))
                     return null;
 
                 AssertionFailureBuilder builder = new AssertionFailureBuilder("Expected value to be an instance of a particular type.")
@@ -150,6 +184,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that an actual value is not an instance of some unexpected type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
         /// <param name="unexpectedType">The unexpected type</param>
         /// <param name="actualValue">The actual value</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
@@ -162,6 +201,11 @@ namespace MbUnit.Framework
         /// <summary>
         /// Verifies that an actual value is not an instance of some unexpected type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
         /// <param name="unexpectedType">The unexpected type</param>
         /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
@@ -175,7 +219,7 @@ namespace MbUnit.Framework
 
             AssertionHelper.Verify(delegate
             {
-                if (!unexpectedType.IsInstanceOfType(actualValue))
+                if (actualValue != null && !unexpectedType.IsInstanceOfType(actualValue))
                     return null;
 
                 AssertionFailureBuilder builder = new AssertionFailureBuilder("Expected value to not be an instance of a particular type.")

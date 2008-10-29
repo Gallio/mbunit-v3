@@ -22,9 +22,7 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// This attribute decorates a test method and causes it to be invoked repeatedly.
-    /// </para>
+    /// Decorates a test method and causes it to be invoked repeatedly.
     /// </summary>
     /// <remarks>
     /// <para>

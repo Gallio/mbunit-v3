@@ -21,11 +21,15 @@ using Gallio.Model;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// The abstract base type for MbUnit attributes that contribute values to data sources
+    /// An abstract base class for MbUnit attributes that contribute values to data sources
     /// along with metadata such a description or expected exception type.
-    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// You may define a new data source by creating a subclass of this attribute
+    /// and overriding <see cref="DataPatternAttribute.PopulateDataSource" />.
+    /// </para>
+    /// </remarks>
     /// <seealso cref="DataPatternAttribute"/> for more information about data binding attributes in general.
     public abstract class DataAttribute : DataPatternAttribute
     {

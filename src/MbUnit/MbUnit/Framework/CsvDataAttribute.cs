@@ -21,15 +21,15 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Provides data from Comma Separated Values contents.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// If the CSV document has a header, then it is interpreted as the names of the
     /// columns.  Columns with names in brackets, such as "[ExpectedException]",
     /// are interpreted as containing metadata values associated with the named key.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="CsvDataSet"/>
     public class CsvDataAttribute : ContentAttribute
     {

@@ -25,8 +25,20 @@ namespace MbUnit.Framework
     {
         #region Throws
         /// <summary>
-        /// Evaluates an action delegate and verifies that it throws an exception of a particular type.
+        /// Verifies that a block of code throws an exception of a particular type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the block of code throws a subtype of the expected exception type then
+        /// this method will still succeed.
+        /// </para>
+        /// <para>
+        /// This method returns the exception that was caught.  To verify additional
+        /// properties of the exception, such as the exception message, follow up this
+        /// assertion with additional ones that verify these properties of the exception object
+        /// that was returned.
+        /// </para>
+        /// </remarks>
         /// <typeparam name="TExpectedException">The expected type of exception</typeparam>
         /// <param name="action">The action delegate to evaluate</param>
         /// <returns>The exception that was thrown</returns>
@@ -39,8 +51,20 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Evaluates an action delegate and verifies that it throws an exception of a particular type.
+        /// Verifies that a block of code throws an exception of a particular type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the block of code throws a subtype of the expected exception type then
+        /// this method will still succeed.
+        /// </para>
+        /// <para>
+        /// This method returns the exception that was caught.  To verify additional
+        /// properties of the exception, such as the exception message, follow up this
+        /// assertion with additional ones that verify these properties of the exception object
+        /// that was returned.
+        /// </para>
+        /// </remarks>
         /// <typeparam name="TExpectedException">The expected type of exception</typeparam>
         /// <param name="action">The action delegate to evaluate</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
@@ -55,8 +79,20 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Evaluates an action delegate and verifies that it throws an exception of a particular type.
+        /// Verifies that a block of code throws an exception of a particular type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the block of code throws a subtype of the expected exception type then
+        /// this method will still succeed.
+        /// </para>
+        /// <para>
+        /// This method returns the exception that was caught.  To verify additional
+        /// properties of the exception, such as the exception message, follow up this
+        /// assertion with additional ones that verify these properties of the exception object
+        /// that was returned.
+        /// </para>
+        /// </remarks>
         /// <param name="expectedExceptionType">The expected exception type</param>
         /// <param name="action">The action delegate to evaluate</param>
         /// <returns>The exception that was thrown</returns>
@@ -69,8 +105,20 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Evaluates an action delegate and verifies that it throws an exception of a particular type.
+        /// Verifies that a block of code throws an exception of a particular type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the block of code throws a subtype of the expected exception type then
+        /// this method will still succeed.
+        /// </para>
+        /// <para>
+        /// This method returns the exception that was caught.  To verify additional
+        /// properties of the exception, such as the exception message, follow up this
+        /// assertion with additional ones that verify these properties of the exception object
+        /// that was returned.
+        /// </para>
+        /// </remarks>
         /// <param name="expectedExceptionType">The expected exception type</param>
         /// <param name="action">The action delegate to evaluate</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
@@ -119,8 +167,16 @@ namespace MbUnit.Framework
 
         #region DoesNotThrow
         /// <summary>
-        /// Evaluates an action delegate and verifies that it does not throw an exception of any type.
+        /// Verifies that a block of code does not throw an exception of any type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The purpose of this assertion is to improve the readability of tests
+        /// that only verify that an exception was not thrown.  Using this assertion
+        /// makes a positive and explicit statement that not throwing an exception
+        /// is itself the primary behavior that is being verified.
+        /// </para>
+        /// </remarks>
         /// <param name="action">The action delegate to evaluate</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
@@ -131,8 +187,16 @@ namespace MbUnit.Framework
 
 
         /// <summary>
-        /// Evaluates an action delegate and verifies that it does not throw an exception of any type.
+        /// Verifies that a block of code does not throw an exception of any type.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The purpose of this assertion is to improve the readability of tests
+        /// that only verify that an exception was not thrown.  Using this assertion
+        /// makes a positive and explicit statement that not throwing an exception
+        /// is itself the primary behavior that is being verified.
+        /// </para>
+        /// </remarks>
         /// <param name="action">The action delegate to evaluate</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>

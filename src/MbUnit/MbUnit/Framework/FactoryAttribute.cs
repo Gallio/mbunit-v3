@@ -25,8 +25,10 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Specifies a factory member that will provide values for a data-driven test.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// The factory may be an instance or static member of the fixture class or a
     /// static member of some other class.
     /// </para>
@@ -35,7 +37,7 @@ namespace MbUnit.Framework
     /// for more information about how the factory data set works and the kinds of
     /// factories that are supported.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public class FactoryAttribute : DataPatternAttribute
     {
         private readonly Type type;

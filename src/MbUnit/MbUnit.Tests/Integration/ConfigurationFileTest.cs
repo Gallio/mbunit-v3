@@ -20,7 +20,7 @@ using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Integration
@@ -29,14 +29,9 @@ namespace MbUnit.Tests.Integration
     /// Tests the test assembly configuration file integration.
     /// </summary>
     [TestFixture]
-    public class ConfigurationFileTest : BaseSampleTest
+    [RunSample(typeof(ConfigurationFileSample))]
+    public class ConfigurationFileTest : BaseTestWithSampleRunner
     {
-        [FixtureSetUp]
-        public void RunSample()
-        {
-            RunFixtures(typeof(ConfigurationFileSample));
-        }
-
         [Test]
         public void TestCanAccessItsAppSettings()
         {
@@ -46,24 +41,24 @@ namespace MbUnit.Tests.Integration
             Assert.AreEqual(TestOutcome.Passed, run.Result.Outcome);
             AssertLogContains(run, "TestConfigurationValue");
         }
-    }
 
-    [TestFixture, Explicit("Sample")]
-    internal class ConfigurationFileSample
-    {
-        [Test]
-        public void AppSettingsAreAccessible()
+        [TestFixture, Explicit("Sample")]
+        internal class ConfigurationFileSample
         {
-            string value = ConfigurationManager.AppSettings["TestConfigurationSetting"];
-            Assert.AreEqual("TestConfigurationValue", value);
-            TestLog.WriteLine(value);
-        }
+            [Test]
+            public void AppSettingsAreAccessible()
+            {
+                string value = ConfigurationManager.AppSettings["TestConfigurationSetting"];
+                Assert.AreEqual("TestConfigurationValue", value);
+                TestLog.WriteLine(value);
+            }
 
-        [Test]
-        public void ConfigFileIsInAppBase()
-        {
-            Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory,
-                Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+            [Test]
+            public void ConfigFileIsInAppBase()
+            {
+                Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory,
+                    Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+            }
         }
     }
 }

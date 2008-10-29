@@ -20,8 +20,12 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Declares that the associated test is expected to throw an <see cref="ArgumentOutOfRangeException" />.
-    /// The expected contents of the exception message may optionally be specified.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The expected contents of the exception message may optionally be specified.
+    /// </para>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ExpectedArgumentOutOfRangeExceptionAttribute : ExpectedExceptionAttribute
     {

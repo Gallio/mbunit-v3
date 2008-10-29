@@ -20,10 +20,14 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Sets the maximum amount of time that a test or fixture is permitted to run.
-    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The default timeout is 10 minutes for test fixtures and unlimited for
+    /// test methods (since their lifetime is bound by their containing fixture).
+    /// </para>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class TimeoutAttribute : TestDecoratorPatternAttribute
     {

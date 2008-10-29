@@ -53,10 +53,25 @@ namespace Gallio.Runner.Drivers
             this.runtime = runtime;
         }
 
+        /// <summary>
+        /// Specifies whether to share the app-domain among all test domains.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If false, creates a separate app-domain for each test domain.  Otherwise
+        /// shares the host's own app-domain across all test domains.
+        /// </para>
+        /// <para>
+        /// When this mode is enabled, any features that depend on test assembly
+        /// configuration will not work.
+        /// </para>
+        /// </remarks>
+        public bool ShareAppDomain { get; set; }
+
         /// <inheritdoc />
         public ITestDriver CreateTestDriver()
         {
-            return new HostedTestDriver(hostFactory, frameworks, runtime);
+            return new HostedTestDriver(hostFactory, frameworks, runtime, ShareAppDomain);
         }
     }
 }

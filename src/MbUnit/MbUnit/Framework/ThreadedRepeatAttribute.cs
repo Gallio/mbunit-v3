@@ -23,10 +23,8 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// This attribute decorates a test method and causes it to be invoked repeatedly
+    /// Decorates a test method and causes it to be invoked repeatedly
     /// on multiple concurrent threads.
-    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>

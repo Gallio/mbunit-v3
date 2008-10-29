@@ -21,6 +21,8 @@ namespace MbUnit.Framework
     /// <para>
     /// Sets the join strategy of a test to be pairwise.
     /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The test will be executed using values drawn from each data source and combined so
     /// that all possible pairings of values from each data source are produced.  This constraint vastly
@@ -35,8 +37,6 @@ namespace MbUnit.Framework
     /// Compare this with the eight times that a standard cross-product combinatorial join
     /// strategy would have required.
     /// </para>
-    /// </summary>
-    /// <remarks>
     /// <para>
     /// The algorithm used to compute pairwise coverings is approximate and might not find
     /// a minimal pairwise covering of values.  However, the relative size of a full combinatorial

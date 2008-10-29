@@ -18,21 +18,18 @@ using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Model;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.TestResources.Fixtures;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Integration
 {
     [TestFixture]
-    public class FixtureInheritanceTest : BaseSampleTest
+    [RunSample(typeof(FixtureInheritanceSample))]
+    [RunSample(typeof(DerivedFixture))]
+    [RunSample(typeof(FixtureInheritanceSample.NestedFixture))]
+    public class FixtureInheritanceTest : BaseTestWithSampleRunner
     {
-        [FixtureSetUp]
-        public void RunSample()
-        {
-            RunFixtures(typeof(FixtureInheritanceSample), typeof(DerivedFixture), typeof(FixtureInheritanceSample.NestedFixture));
-        }
-
         [Test]
         public void BaseTestOnBaseFixture()
         {

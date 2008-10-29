@@ -23,7 +23,7 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(NotFilter<object>))]
-    public class NotFilterTest : BaseUnitTest
+    public class NotFilterTest : BaseTestWithMocks
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]

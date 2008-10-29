@@ -24,11 +24,28 @@ namespace MbUnit.Framework
     /// <para>
     /// Provides a column of literal values as a data source.
     /// </para>
-    /// <para>
-    /// This attribute is equivalent to providing a sequence of values
-    /// using <see cref="RowAttribute" /> with 1 element in each.
-    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This attribute is a compact equivalent to providing a sequence of values
+    /// using <see cref="RowAttribute" /> with 1 element in each.  It is particularly
+    /// useful for specifying combinatorial tests.
+    /// </para>
+    /// <para>
+    /// By default, the column provided by the column data source is unnamed.
+    /// Use <see cref="HeaderAttribute" /> to provide an explicit name for the column.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// [Test]
+    /// public void ATest([Column(1, 2, 3)] int x, [Column("a", "b")] string y, [Column(0.1, 0.2)] double z)
+    /// {
+    ///     // This test will run 3 * 2 * 2 = 12 times with all combinations of
+    ///     // the values specified in the column for each parameter.  This test
+    ///     // is combinatorial because the values are assigned to each parameter
+    ///     // separately.
+    /// }
+    /// </example>
     /// <seealso cref="RowAttribute"/>
     [CLSCompliant(false)]
     public class ColumnAttribute : DataAttribute

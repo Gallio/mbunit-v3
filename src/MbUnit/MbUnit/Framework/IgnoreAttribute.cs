@@ -22,16 +22,16 @@ using Gallio.Framework.Pattern;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Indicates that a test is to be ignored by the framework and will not be run.
     /// The test will still appear in test reports along with the reason that it
     /// was ignored, if provided.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This attribute can be used to disable tests that are broken or expensive
     /// without commenting them out or removing them from the source code.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class IgnoreAttribute : TestDecoratorPatternAttribute
     {

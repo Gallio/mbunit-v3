@@ -166,11 +166,17 @@ namespace Gallio.Framework.Pattern
                         testInstanceState.TestStep.Name = spec.Format(testInstanceState.TestStep.Name, testInstanceState.Formatter);
                 });
 
-            test.TestInstanceActions.ExecuteTestInstanceChain.After(
-                delegate(PatternTestInstanceState testInstanceState)
-                {
-                    testInstanceState.InvokeTestMethod();
-                });
+            test.TestInstanceActions.ExecuteTestInstanceChain.After(state => Execute(state));
+        }
+
+        /// <summary>
+        /// Executes the test method.
+        /// </summary>
+        /// <param name="state">The test instance state, not null</param>
+        /// <returns>The test method result</returns>
+        protected virtual object Execute(PatternTestInstanceState state)
+        {
+            return state.InvokeTestMethod();
         }
 
         /// <summary>

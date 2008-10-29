@@ -20,20 +20,19 @@ using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using MbUnit.Framework;
 
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(RepeatAttribute))]
-    public class RepeatTest : BaseSampleTest
+    [RunSample(typeof(RepeatSample))]
+    public class RepeatTest : BaseTestWithSampleRunner
     {
         [Test]
         public void CheckSampleOutput()
         {
-            RunFixtures(typeof(RepeatSample));
-
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RepeatSample).GetMethod("Test")));
 
             AssertLogContains(run, "3 of 4 repetitions passed.");

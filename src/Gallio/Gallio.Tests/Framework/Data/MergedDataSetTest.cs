@@ -26,7 +26,7 @@ namespace Gallio.Tests.Framework.Data
     [TestFixture]
     [TestsOn(typeof(MergedDataSet))]
     [DependsOn(typeof(BaseDataSetTest))]
-    public class MergedDataSetTest : BaseUnitTest
+    public class MergedDataSetTest : BaseTestWithMocks
     {
         private delegate IEnumerable<IDataItem> MergeDelegate(IList<IDataProvider> providers, ICollection<DataBinding> bindings,
             bool includeDynamicItems);

@@ -178,24 +178,6 @@ namespace Gallio.Model.Execution
         ITestContext StartChildStep(ITestStep childStep);
 
         /// <summary>
-        /// <para>
-        /// Starts a child step of a test and returns its context.
-        /// </para>
-        /// <para>
-        /// This method is equivalent to calling <see cref="StartChildStep(ITestStep)" />
-        /// using a default implementation of <see cref="ITestStep" />
-        /// that is initialized with <paramref name="name"/> and <paramref name="codeElement"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="name">The name of the step</param>
-        /// <param name="codeElement">The code element, or null if none</param>
-        /// <returns>The context of the child step</returns>
-        /// <seealso cref="StartChildStep(ITestStep)"/>
-        /// <exception cref="InvalidOperationException">Thrown if the step has finished</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        ITestContext StartChildStep(string name, ICodeElementInfo codeElement);
-
-        /// <summary>
         /// Finishes a step and submits its final result.
         /// </summary>
         /// <remarks>

@@ -22,17 +22,17 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// Indicates that a test has pending prerequisites so it will not be run.
     /// The test will still appear in test reports along with an explanation of the
     /// reason it it pending, if provided.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// This attribute can be used to disable tests that cannot run because the
     /// subject under test is missing certain prerequisite functionality.  It may
     /// also serve as a placeholder for test that have yet to be implemented.
     /// </para>
-    /// </summary>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class PendingAttribute : TestDecoratorPatternAttribute
     {

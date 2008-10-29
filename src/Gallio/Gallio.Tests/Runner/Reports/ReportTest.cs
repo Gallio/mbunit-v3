@@ -28,7 +28,7 @@ namespace Gallio.Tests.Runner.Reports
 {
     [TestFixture]
     [TestsOn(typeof(Report))]
-    public class ReportTests : BaseUnitTest
+    public class ReportTests : BaseTestWithMocks
     {
         [Test]
         public void ReportTypeIsXmlSerializable()

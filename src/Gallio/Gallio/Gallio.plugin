@@ -102,6 +102,7 @@
                    type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
           <parameters>
             <hostFactory>${Core.LocalHostFactory}</hostFactory>
+            <ShareAppDomain>true</ShareAppDomain>
           </parameters>
         </component>
 
@@ -109,7 +110,8 @@
                    service="Gallio.Runner.Drivers.ITestDriverFactory, Gallio"
                    type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
           <parameters>
-            <hostFactory>${Core.IsolatedAppDomainHostFactory}</hostFactory>
+            <hostFactory>${Core.LocalHostFactory}</hostFactory>
+            <ShareAppDomain>false</ShareAppDomain>
           </parameters>
         </component>
 

@@ -36,6 +36,7 @@ namespace Gallio.Runner.Drivers
         private readonly IHostFactory hostFactory;
         private readonly ITestFramework[] frameworks;
         private readonly IRuntime runtime;
+        private readonly bool shareAppDomain;
 
         private IHost remoteHost;
         private Remote remote;
@@ -46,9 +47,10 @@ namespace Gallio.Runner.Drivers
         /// <param name="hostFactory">The host factory</param>
         /// <param name="frameworks">The test frameworks that should participate in test domain configuration</param>
         /// <param name="runtime">The Gallio runtime</param>
+        /// <param name="sharedAppDomain">If true, uses a shared app-domain for all test domains</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
         /// <paramref name="frameworks"/>, or <paramref name="runtime"/> is null</exception>
-        public HostedTestDriver(IHostFactory hostFactory, ITestFramework[] frameworks, IRuntime runtime)
+        public HostedTestDriver(IHostFactory hostFactory, ITestFramework[] frameworks, IRuntime runtime, bool sharedAppDomain)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
@@ -60,6 +62,7 @@ namespace Gallio.Runner.Drivers
             this.hostFactory = hostFactory;
             this.frameworks = frameworks;
             this.runtime = runtime;
+            this.shareAppDomain = sharedAppDomain;
         }
 
         /// <summary>
@@ -117,12 +120,18 @@ namespace Gallio.Runner.Drivers
 
             foreach (TestDomainSetup testDomain in testDomains)
             {
-                ILogger logger = new RemoteLogger(Logger);
-                ITestDriver testDriver = remote.CreateRemoteTestDriver(testDomain, logger);
-                testDriver.Initialize(RuntimeSetup, logger);
+                ITestDriver testDriver = CreateTestDriver(testDomain);
+                testDriver.Initialize(RuntimeSetup, Logger);
 
-                yield return new Partition(new ProxyTestDriver(testDriver), testDomain.TestPackageConfig);
+                yield return new Partition(testDriver, testDomain.TestPackageConfig);
             }
+        }
+
+        private ITestDriver CreateTestDriver(TestDomainSetup testDomain)
+        {
+            if (shareAppDomain)
+                return new LocalTestDriver();
+            return new ProxyTestDriver(remote.CreateRemoteTestDriver(testDomain, new RemoteLogger(Logger)));
         }
 
         private IHost CreateRemoteHost(string workingDirectory, bool shadowCopy, ProcessorArchitecture arch)

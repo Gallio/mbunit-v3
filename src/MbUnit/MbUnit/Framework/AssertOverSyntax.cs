@@ -37,8 +37,12 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Evaluates an assertion over pairs of values taken from two sequences.
-        /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion fails if the collections have different sizes or if one is null but not the other.
+        /// </para>
+        /// </remarks>
         /// <typeparam name="TLeftValue">The left value type</typeparam>
         /// <typeparam name="TRightValue">The right value type</typeparam>
         /// <param name="leftSequence">The left sequence, or null</param>
@@ -52,8 +56,12 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Evaluates an assertion over pairs of values taken from two sequence.
-        /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion fails if the collections have different sizes or if one is null but not the other.
+        /// </para>
+        /// </remarks>
         /// <typeparam name="TLeftValue">The left value type</typeparam>
         /// <typeparam name="TRightValue">The right value type</typeparam>
         /// <param name="leftSequence">The left sequence, or null</param>
@@ -132,8 +140,12 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Evaluates an assertion over key/value pairs with identical keys drawn from two dictionaries.
-        /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion fails if the collections have different sizes or if one is null but not the other.
+        /// </para>
+        /// </remarks>
         /// <typeparam name="TKey">The key type</typeparam>
         /// <typeparam name="TLeftValue">The expected value type</typeparam>
         /// <typeparam name="TRightValue">The expected value type</typeparam>
@@ -150,8 +162,12 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Evaluates an assertion over key/value pairs with identical keys drawn from two dictionaries.
-        /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion fails if the collections have different sizes or if one is null but not the other.
+        /// </para>
+        /// </remarks>
         /// <typeparam name="TKey">The key type</typeparam>
         /// <typeparam name="TLeftValue">The expected value type</typeparam>
         /// <typeparam name="TRightValue">The expected value type</typeparam>
@@ -168,8 +184,12 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Evaluates an assertion over key/value pairs with identical keys drawn from two dictionaries.
-        /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion fails if the collections have different sizes or if one is null but not the other.
+        /// </para>
+        /// </remarks>
         /// <typeparam name="TKey">The key type</typeparam>
         /// <typeparam name="TLeftValue">The expected value type</typeparam>
         /// <typeparam name="TRightValue">The expected value type</typeparam>
@@ -190,8 +210,12 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// Evaluates an assertion over key/value pairs with identical keys drawn from two dictionaries.
-        /// Fails if the collections have different sizes or if one is null but not the other.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion fails if the collections have different sizes or if one is null but not the other.
+        /// </para>
+        /// </remarks>
         /// <typeparam name="TKey">The key type</typeparam>
         /// <typeparam name="TLeftValue">The expected value type</typeparam>
         /// <typeparam name="TRightValue">The expected value type</typeparam>

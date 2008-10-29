@@ -24,7 +24,7 @@ namespace Gallio.Reports.Tests
 {
     [TestFixture]
     [TestsOn(typeof(XmlReportFormatter))]
-    public class XmlReportFormatterTest : BaseUnitTest
+    public class XmlReportFormatterTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void NameCannotBeNull()

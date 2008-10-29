@@ -96,7 +96,7 @@ namespace Gallio.Model.Logging
         }
 
         /// <summary>
-        /// Writes the structured text to a test log stream writer.
+        /// Writes the contents of the stream to a test log stream writer.
         /// </summary>
         /// <param name="writer">The writer</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="writer"/> is null</exception>

@@ -28,7 +28,7 @@ namespace Gallio.Tests.Framework.Data
     [TestsOn(typeof(ObjectDataBinder))]
     [DependsOn(typeof(BaseDataBinderTest))]
     [DependsOn(typeof(ObjectCreationSpecTest))]
-    public class ObjectDataBinderTest : BaseUnitTest
+    public class ObjectDataBinderTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfTypeIsNull()

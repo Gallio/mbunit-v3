@@ -30,7 +30,7 @@ namespace Gallio.Reports.Tests
 {
     [TestFixture]
     [TestsOn(typeof(MHtmlReportFormatter))]
-    public class MHtmlReportFormatterTest : BaseUnitTest
+    public class MHtmlReportFormatterTest : BaseTestWithMocks
     {
         private delegate void FormatDelegate(IReportWriter reportWriter, NameValueCollection formatterOptions, IProgressMonitor progressMonitor);
 

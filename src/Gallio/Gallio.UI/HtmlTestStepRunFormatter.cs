@@ -212,8 +212,6 @@ namespace Gallio.UI
             {
                 formatter.SaveAttachments(testStepRun);
 
-                TestData testData = testModelData != null ? testModelData.GetTestById(testStepRun.Step.TestId) : null;
-
                 Statistics statistics = new Statistics();
                 AddStatistics(statistics, testStepRun, false);
 
@@ -225,7 +223,7 @@ namespace Gallio.UI
 
                 // stat panel
                 writer.Write(string.Format("<div id=\"detailPanel-{0}\" class=\"panel\">", testStepRun.Step.Id));
-                string testKind = testData != null ? testData.Metadata.GetValue(MetadataKeys.TestKind) : TestKinds.Test;
+                string testKind = testStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind);
                 if (testKind == TestKinds.Assembly || testKind == TestKinds.Framework)
                 {
                     writer.Write("<table class=\"statistics-table\"><tr class=\"alternate-row\">");
@@ -244,7 +242,7 @@ namespace Gallio.UI
                 }
 
                 // metadata
-                RenderMetadata(testStepRun, testData);
+                RenderMetadata(testStepRun);
 
                 // execution logs
                 writer.Write("<div class=\"testStepRun\">");
@@ -290,13 +288,9 @@ namespace Gallio.UI
                 writer.Write("</span>");
             }
 
-            private void RenderMetadata(TestStepRun testStepRun, TestComponentData testData)
+            private void RenderMetadata(TestStepRun testStepRun)
             {
                 MetadataMap visibleEntries = testStepRun.Step.Metadata.Copy();
-
-                if (testData != null && testStepRun.Step.IsPrimary)
-                    visibleEntries.AddAll(testData.Metadata);
-
                 visibleEntries.Remove(MetadataKeys.TestKind);
 
                 if (visibleEntries.Keys.Count > 0)

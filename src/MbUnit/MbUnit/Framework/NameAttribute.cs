@@ -22,6 +22,14 @@ namespace MbUnit.Framework
     /// <summary>
     /// Overrides the name of a test or test parameter.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Use this attribute to specify a more descriptive or readable name than
+    /// the one chosen by default by MbUnit which is usually derived from the method,
+    /// class, field, property, or parameters name.  The test name specified by this
+    /// attribute can contain 
+    /// </para>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = false, Inherited = true)]
     public class NameAttribute : PatternAttribute
     {

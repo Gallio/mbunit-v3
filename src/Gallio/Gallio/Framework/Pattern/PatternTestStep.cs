@@ -26,8 +26,26 @@ namespace Gallio.Framework.Pattern
     public class PatternTestStep : BaseTestStep
     {
         /// <summary>
+        /// Creates a primary step using the same name, code element and metadata
+        /// as the test to which it belongs.
+        /// </summary>
+        /// <param name="test">The test to which the step belongs</param>
+        /// <param name="parent">The parent test step, or null if creating the root step</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        public PatternTestStep(PatternTest test, ITestStep parent)
+            : base(test, parent)
+        {
+        }
+
+        /// <summary>
         /// Creates a step.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If <paramref name="isPrimary"/> is true, then all metadata from the <paramref name="test"/>
+        /// is copied to the step.  Otherwise the new step will have no metadata initially.
+        /// </para>
+        /// </remarks>
         /// <param name="test">The test to which the step belongs</param>
         /// <param name="parent">The parent step, or null if creating a root step</param>
         /// <param name="name">The step name</param>

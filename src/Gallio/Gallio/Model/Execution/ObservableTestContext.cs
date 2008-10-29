@@ -223,12 +223,6 @@ namespace Gallio.Model.Execution
         }
 
         /// <inheritdoc />
-        public ITestContext StartChildStep(string name, ICodeElementInfo codeElement)
-        {
-            return StartChildStep(new BaseTestStep(testStep.Test, testStep, name, codeElement, false));
-        }
-
-        /// <inheritdoc />
         public void FinishStep(TestOutcome outcome, TimeSpan? actualDuration)
         {
             FinishStep(outcome, actualDuration, false);

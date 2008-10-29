@@ -19,7 +19,7 @@ using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Tests.Integration;
+using Gallio.Tests;
 using Gallio.Utilities;
 using MbUnit.Framework;
 
@@ -27,19 +27,11 @@ namespace MbUnit.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(CsvDataAttribute))]
-    public class CsvDataTest : BaseSampleTest
+    [RunSample(typeof(CsvDataSample))]
+    public class CsvDataTest : BaseTestWithSampleRunner
     {
-        [FixtureSetUp]
-        public void RunSample()
-        {
-            using (new CurrentDirectorySwitcher(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(CsvDataTest).Assembly))))
-            {
-                RunFixtures(typeof(CsvDataSample));
-            }
-        }
-
         [Test]
-        [Row("Inline", new string[] { "(abc, 123)", "(def, 456)"})]
+        [Row("Inline", new string[] { "(abc, 123)", "(def, 456)" })]
         [Row("InlineWithNonstandardSettings", new string[] { "(abc, 123)", "(def, 456)" })]
         [Row("ImplicitlyScopedResourceWithHeader", new string[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
         [Row("ExplicitlyScopedResourceWithHeader", new string[] { "Apples: 1.00", "Bananas: 1.50", "Cookies: 2.00" })]
@@ -74,51 +66,51 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual(@"..\Framework\CsvDataTest.csv(4)", run.Children[2].Step.Metadata.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual(@"Cookie Monster", run.Children[2].Step.Metadata.GetValue("ConsumedBy"));
         }
-    }
 
-    [TestFixture, Explicit("Sample")]
-    internal class CsvDataSample
-    {
-        [Test]
-        [CsvData(Contents="abc,123\ndef,456")]
-        public void Inline(string x, int y)
+        [TestFixture, Explicit("Sample")]
+        internal class CsvDataSample
         {
-            TestLog.WriteLine("({0}, {1})", x, y);
-        }
+            [Test]
+            [CsvData(Contents = "abc,123\ndef,456")]
+            public void Inline(string x, int y)
+            {
+                TestLog.WriteLine("({0}, {1})", x, y);
+            }
 
-        [Test]
-        [CsvData(Contents = "abc|123\n;Comment\ndef|456", FieldDelimiter='|', CommentPrefix=';')]
-        public void InlineWithNonstandardSettings(string x, int y)
-        {
-            TestLog.WriteLine("({0}, {1})", x, y);
-        }
+            [Test]
+            [CsvData(Contents = "abc|123\n;Comment\ndef|456", FieldDelimiter = '|', CommentPrefix = ';')]
+            public void InlineWithNonstandardSettings(string x, int y)
+            {
+                TestLog.WriteLine("({0}, {1})", x, y);
+            }
 
-        [Test]
-        [CsvData(ResourcePath="CsvDataTest.csv", HasHeader=true)]
-        public void ImplicitlyScopedResourceWithHeader(decimal price, string item)
-        {
-            TestLog.WriteLine("{0}: {1}", item, price);
-        }
+            [Test]
+            [CsvData(ResourcePath = "CsvDataTest.csv", HasHeader = true)]
+            public void ImplicitlyScopedResourceWithHeader(decimal price, string item)
+            {
+                TestLog.WriteLine("{0}: {1}", item, price);
+            }
 
-        [Test]
-        [CsvData(ResourceScope = typeof(CsvDataTest), ResourcePath = "CsvDataTest.csv", HasHeader = true)]
-        public void ExplicitlyScopedResourceWithHeader(decimal price, string item)
-        {
-            TestLog.WriteLine("{0}: {1}", item, price);
-        }
+            [Test]
+            [CsvData(ResourceScope = typeof(CsvDataTest), ResourcePath = "CsvDataTest.csv", HasHeader = true)]
+            public void ExplicitlyScopedResourceWithHeader(decimal price, string item)
+            {
+                TestLog.WriteLine("{0}: {1}", item, price);
+            }
 
-        [Test]
-        [CsvData(ResourcePath = @"MbUnit.Tests\Framework\CsvDataTest.csv", HasHeader = true)]
-        public void AbsolutelyScopedResourceWithHeader(decimal price, string item)
-        {
-            TestLog.WriteLine("{0}: {1}", item, price);
-        }
+            [Test]
+            [CsvData(ResourcePath = @"MbUnit.Tests\Framework\CsvDataTest.csv", HasHeader = true)]
+            public void AbsolutelyScopedResourceWithHeader(decimal price, string item)
+            {
+                TestLog.WriteLine("{0}: {1}", item, price);
+            }
 
-        [Test]
-        [CsvData(FilePath = @"..\Framework\CsvDataTest.csv", HasHeader = true)]
-        public void FileWithHeader(decimal price, string item)
-        {
-            TestLog.WriteLine("{0}: {1}", item, price);
+            [Test]
+            [CsvData(FilePath = @"..\Framework\CsvDataTest.csv", HasHeader = true)]
+            public void FileWithHeader(decimal price, string item)
+            {
+                TestLog.WriteLine("{0}: {1}", item, price);
+            }
         }
     }
 }

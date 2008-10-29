@@ -22,9 +22,13 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Declares that the associated test is expected to throw an exception of
-    /// a particular type.  The expected contents of the exception message may optionally
-    /// be specified.
+    /// a particular type.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The expected contents of the exception message may optionally be specified.
+    /// </para>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class ExpectedExceptionAttribute : TestMethodDecoratorPatternAttribute
     {

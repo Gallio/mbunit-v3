@@ -419,7 +419,7 @@ namespace MbUnit.Framework
 
         #region Contains
         /// <summary>
-        /// Asserts that <paramref name="expectedValue"/> is in the enumeration <paramref name="enumeration"/>.
+        /// Verifies that <paramref name="expectedValue"/> is in the enumeration <paramref name="enumeration"/>.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="enumeration">The enumeration of items</param>
@@ -431,7 +431,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that <paramref name="expectedValue"/> is in the enumeration <paramref name="enumeration"/>.
+        /// Verifies that <paramref name="expectedValue"/> is in the enumeration <paramref name="enumeration"/>.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="enumeration">The enumeration of items</param>
@@ -456,7 +456,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that <paramref name="expectedKey"/> is in the dictionary <paramref name="dictionary"/>.
+        /// Verifies that <paramref name="expectedKey"/> is in the dictionary <paramref name="dictionary"/>.
         /// </summary>
         /// <typeparam name="TKey">The type of key</typeparam>
         /// <typeparam name="TValue">The type of value</typeparam>
@@ -469,7 +469,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that <paramref name="expectedKey"/> is in the dictionary <paramref name="dictionary"/>.
+        /// Verifies that <paramref name="expectedKey"/> is in the dictionary <paramref name="dictionary"/>.
         /// </summary>
         /// <typeparam name="TKey">The type of key</typeparam>
         /// <typeparam name="TValue">The type of value</typeparam>
@@ -496,7 +496,7 @@ namespace MbUnit.Framework
 
         #region DoesNotContain
         /// <summary>
-        /// Asserts that <paramref name="unexpectedValue"/> is not in the enumeration <paramref name="enumeration"/>.
+        /// Verifies that <paramref name="unexpectedValue"/> is not in the enumeration <paramref name="enumeration"/>.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="enumeration">The enumeration of items</param>
@@ -508,7 +508,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that <paramref name="unexpectedValue"/> is not in the enumeration <paramref name="enumeration"/>.
+        /// Verifies that <paramref name="unexpectedValue"/> is not in the enumeration <paramref name="enumeration"/>.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="enumeration">The enumeration of items</param>
@@ -535,7 +535,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that <paramref name="unexpectedKey"/> is not in the dictionary <paramref name="dictionary"/>.
+        /// Verifies that <paramref name="unexpectedKey"/> is not in the dictionary <paramref name="dictionary"/>.
         /// </summary>
         /// <typeparam name="TKey">The type of key</typeparam>
         /// <typeparam name="TValue">The type of value</typeparam>
@@ -548,7 +548,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that <paramref name="unexpectedKey"/> is not in the dictionary <paramref name="dictionary"/>.
+        /// Verifies that <paramref name="unexpectedKey"/> is not in the dictionary <paramref name="dictionary"/>.
         /// </summary>
         /// <typeparam name="TKey">The type of key</typeparam>
         /// <typeparam name="TValue">The type of value</typeparam>

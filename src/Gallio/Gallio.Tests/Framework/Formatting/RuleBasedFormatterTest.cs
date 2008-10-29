@@ -23,7 +23,7 @@ namespace Gallio.Tests.Framework.Formatting
 {
     [TestFixture]
     [TestsOn(typeof(RuleBasedFormatter))]
-    public class RuleBasedFormatterTest : BaseUnitTest
+    public class RuleBasedFormatterTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfRuntimeIsNull()

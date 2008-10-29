@@ -38,13 +38,10 @@ namespace Gallio.Framework.Pattern
             scope.Evaluator.AddFinishModelAction(codeElement, delegate
             {
                 bool success = false;
-                foreach (PatternEvaluationScope dependentScope in scope.Evaluator.GetScopes(resolvedDependency))
+                foreach (PatternTest dependentTest in scope.Evaluator.GetDeclaredTests(resolvedDependency))
                 {
-                    if (dependentScope.IsTestDeclaration)
-                    {
-                        scope.Test.AddDependency(dependentScope.Test);
-                        success = true;
-                    }
+                    scope.Test.AddDependency(dependentTest);
+                    success = true;
                 }
 
                 if (! success)

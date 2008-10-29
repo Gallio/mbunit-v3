@@ -24,7 +24,7 @@ namespace Gallio.Tests.Model.Filters
 {
     [TestFixture]
     [TestsOn(typeof(OrFilter<object>))]
-    public class OrFilterTest : BaseUnitTest
+    public class OrFilterTest : BaseTestWithMocks
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]

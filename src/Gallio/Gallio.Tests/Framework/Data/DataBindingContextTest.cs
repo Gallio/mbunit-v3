@@ -23,7 +23,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(DataBindingContext))]
-    public class DataBindingContextTest : BaseUnitTest
+    public class DataBindingContextTest : BaseTestWithMocks
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfConverterIsNull()

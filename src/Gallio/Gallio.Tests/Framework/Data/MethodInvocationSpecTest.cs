@@ -28,7 +28,7 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(MethodInvocationSpec))]
-    public class MethodInvocationSpecTest : BaseUnitTest
+    public class MethodInvocationSpecTest : BaseTestWithMocks
     {
         private const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
         private const BindingFlags PublicStatic = BindingFlags.Public | BindingFlags.Static;

@@ -21,10 +21,14 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
     /// An abstract class for attributes that specify the join strategy of a test.
-    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// You may define a new join strategy by creating a subclass of this attribute
+    /// and overriding <see cref="GetJoinStrategy" />.
+    /// </para>
+    /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public abstract class JoinAttribute : PatternAttribute
     {

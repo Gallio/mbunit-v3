@@ -21,12 +21,18 @@ namespace MbUnit.Framework
 {
     /// <summary>
     /// Associates the name of the type under test with a test fixture, test method,
-    /// test parameter or other test component.  The type under test helps to describe
-    /// which type is primarily being exercised by the test so that we can quickly
-    /// identify which tests to run after making changes to a given type.
+    /// test parameter or other test component.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// Specifying the type under test helps to describe which type is primarily being exercised
+    /// by the test.  This way we can quickly identify which tests to run after making
+    /// changes to a given type.  We can also use the TestsOn metadata as a filter so
+    /// that we can tell the test runner to only run tests about a particular type.
+    /// </para>
+    /// <para>
     /// This attribute can be repeated multiple times if there are multiple types.
+    /// </para>
     /// </remarks>
     public class TestsOnAttribute : MetadataPatternAttribute
     {

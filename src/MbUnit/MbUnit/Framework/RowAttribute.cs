@@ -23,7 +23,29 @@ namespace MbUnit.Framework
     /// <summary>
     /// Provides a row of literal values as a data source.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The values specified in the row are used for data-driven testing purposes.
+    /// A row may specify zero or more values that are manipulated as a unit.  Typically
+    /// each row generates a single instance instance of a data-driven test.
+    /// </para>
+    /// <para>
+    /// By default, the columns provided by the row data source are unnamed.
+    /// Use <see cref="HeaderAttribute" /> to provide an explicit name for each column.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// [Test]
+    /// [Row(1, "a", 0.1)]
+    /// [Row(2, "b", 0.2)]
+    /// public void ATest(int x, string y, double z)
+    /// {
+    ///     // This test will run twice.  Once with x = 1, y = "a", and z = 0.1
+    ///     // then again with x = 2, y = "b", and z = 0.2.
+    /// }
+    /// </example>
     /// <seealso cref="ColumnAttribute"/>
+    /// <seealso cref="HeaderAttribute"/>
     [CLSCompliant(false)]
     public class RowAttribute : DataAttribute
     {

@@ -231,7 +231,7 @@ namespace Gallio.TDNetRunner.Tests
             Assert.IsInstanceOfType(typeof(FilteredLogger), launcher.Logger);
             Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
             Assert.IsFalse(launcher.ShowReports);
-            Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
+            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedAppDomain, launcher.TestRunnerFactoryName);
 
             Assert.IsNull(launcher.RuntimeSetup);
 
