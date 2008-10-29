@@ -273,9 +273,9 @@ namespace Gallio.Reflection
 
             for (Type type = candidateType; type != null; type = type.BaseType)
             {
-                if (candidateType.Name == searchTypeName
-                    || candidateType.FullName == searchTypeName
-                    || candidateType.AssemblyQualifiedName == searchTypeName)
+                if (type.Name == searchTypeName
+                    || type.FullName == searchTypeName
+                    || type.AssemblyQualifiedName == searchTypeName)
                     return true;
             }
 

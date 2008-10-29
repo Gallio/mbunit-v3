@@ -221,7 +221,7 @@ namespace Gallio.Runtime.Hosting
 
             string exitCodeDescription = processTask.ExitCodeDescription;
             if (exitCodeDescription != null)
-                diagnostics.Append(" - ").Append(exitCodeDescription);
+                diagnostics.Append(" (").Append(exitCodeDescription).Append(")");
 
             Logger.Log(exitCode < 0 ? LogSeverity.Error : LogSeverity.Info, diagnostics.ToString());
         }
