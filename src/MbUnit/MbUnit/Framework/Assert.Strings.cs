@@ -333,7 +333,7 @@ namespace MbUnit.Framework
                 if (actualValue != null)
                 {
                     Match match = regex.Match(actualValue);
-                    if (match.Success && actualValue.Length.Equals(match.Length))
+                    if (match.Success && actualValue.Length == match.Length)
                         return null;
                 }
 
@@ -606,7 +606,7 @@ namespace MbUnit.Framework
 
             AssertionHelper.Verify(delegate
             {
-                if (actualValue != null && regex.IsMatch(actualValue))
+                if (actualValue != null && ! regex.IsMatch(actualValue))
                     return null;
 
                 return new AssertionFailureBuilder("Expected a string to not contain a full or partial match of a regular expression pattern.")

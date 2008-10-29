@@ -277,8 +277,6 @@ namespace Gallio.Reflection
                     || candidateType.FullName == searchTypeName
                     || candidateType.AssemblyQualifiedName == searchTypeName)
                     return true;
-
-                candidateType = candidateType.BaseType;
             }
 
             foreach (Type interfaceType in candidateType.GetInterfaces())
