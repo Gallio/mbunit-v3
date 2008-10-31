@@ -252,4 +252,7 @@
   <data name="WindsorRuntime_RuntimeCannotBeInitialized" xml:space="preserve">
     <value>The runtime could not be initialized.</value>
   </data>
+  <data name="ThreadAbortScope_ReentranceException" xml:space="preserve">
+    <value>At most one action may be active within the scope at a time.</value>
+  </data>
 </root>

@@ -316,7 +316,9 @@ namespace Gallio.Framework.Pattern
                     return DoDecorateChildTest(childSandbox, testInstanceState, decoratedChildTestActions);
                 };
 
-                outcome = outcome.CombineWith(RunTest(childTestCommand, testInstanceState.TestStep, sandbox, testHandlerDecorator));
+                ITestContext context = TestContextTrackerAccessor.Instance.CurrentContext;
+                ITestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
+                outcome = outcome.CombineWith(RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator));
             }
 
             return outcome.Generalize();

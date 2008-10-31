@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Gallio.Collections;
 using Gallio.Utilities;
@@ -166,6 +167,16 @@ namespace Gallio.Concurrency
             }
         }
 
+        /// <summary>
+        /// Gets the list of all tasks that are currently running.
+        /// </summary>
+        /// <returns>The list of running tasks</returns>
+        public IList<Task> GetActiveTasks()
+        {
+            lock (this)
+                return new List<Task>(activeTasks);
+        }
+
         private void HandleTaskStarted(object sender, TaskEventArgs e)
         {
             EventHandler<TaskEventArgs> cachedChain;
@@ -189,14 +200,27 @@ namespace Gallio.Concurrency
 
         private void HandleTaskTerminated(object sender, TaskEventArgs e)
         {
-            EventHandler<TaskEventArgs> cachedChain;
-            lock (this)
+            try
             {
-                activeTasks.Remove(e.Task);
-                cachedChain = terminated;
-            }
+                EventHandler<TaskEventArgs> cachedChain;
+                lock (this)
+                {
+                    cachedChain = terminated;
+                }
 
-            EventHandlerUtils.SafeInvoke(cachedChain, this, e);
+                EventHandlerUtils.SafeInvoke(cachedChain, this, e);
+            }
+            finally
+            {
+                // Do this last to ensure that all event handlers have executed
+                // before we remove the task from the list.  This helps to ensure
+                // that JoinAll fully synchronizes with the task and with any
+                // final event-based processing that needs to occur.
+                lock (this)
+                {
+                    activeTasks.Remove(e.Task);
+                }
+            }
         }
     }
 }

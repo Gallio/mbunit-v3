@@ -55,6 +55,7 @@
     <Compile Include="BaseTestWithMocks.cs" />
     <Compile Include="Collections\UserDataCollectionTest.cs" />
     <Compile Include="Concurrency\LockBoxTest.cs" />
+    <Compile Include="Concurrency\ProcessTaskTest.cs" />
     <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
     <Compile Include="Framework\Assertions\AssertionConditionEvaluatorTest.cs" />
     <Compile Include="Framework\Assertions\AssertionContextTest.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Framework\Formatting\StructuralFormattingRuleTest.cs" />
     <Compile Include="Framework\Formatting\StubFormatterTest.cs" />
     <Compile Include="Framework\SandboxTest.cs" />
+    <Compile Include="Framework\TasksTest.cs" />
     <Compile Include="Integration\StubFormatterIntegrationTest.cs" />
     <Compile Include="Framework\Pattern\ProcessIsolationTest.cs" />
     <Compile Include="Framework\Text\SubstringTest.cs" />

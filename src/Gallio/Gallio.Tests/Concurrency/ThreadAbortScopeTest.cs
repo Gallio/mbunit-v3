@@ -37,7 +37,7 @@ namespace Gallio.Tests.Concurrency
         }
 
         [Test]
-        public void RunThrowsIfCalledReentrantly()
+        public void RunThrowsIfCalledReentrantlyOnSameThread()
         {
             ThreadAbortScope scope = new ThreadAbortScope();
 
@@ -47,6 +47,24 @@ namespace Gallio.Tests.Concurrency
                 {
                     scope.Run(delegate { });
                 });
+            });
+        }
+
+        [Test]
+        public void RunThrowsIfCalledReentrantlyOnDifferentThread()
+        {
+            ThreadAbortScope scope = new ThreadAbortScope();
+
+            scope.Run(delegate
+            {
+                Tasks.StartThreadTask("Reentrant Call to Scope.Run", () =>
+                {
+                    Assert.Throws<InvalidOperationException>(delegate
+                    {
+                        scope.Run(delegate { });
+                    });
+                });
+                Tasks.JoinAndVerify(TimeSpan.FromMilliseconds(500));
             });
         }
 
@@ -124,10 +142,13 @@ namespace Gallio.Tests.Concurrency
                 count += 1;
                 barrier.Set();
                 Thread.Sleep(5000);
-                count += 1;
+
+                count += 1; // should not run
             }));
 
             Assert.AreEqual(1, count);
+
+            Tasks.JoinAndVerify(TimeSpan.FromMilliseconds(100));
         }
 
         [Test]
@@ -144,11 +165,12 @@ namespace Gallio.Tests.Concurrency
         }
 
         [Test]
-        [Ignore("This test fails occasionally.  Exact cause is non-deterministic and has yet to be determined.")]
-        public void TryToAsynchronouslyHitARunningActionRandomlyInAllPossibleWays()
+        public void TryToAsynchronouslyHitARunningActionAtRandomTimes()
         {
+            const int Iterations = 100;
+
             // Like sitting ducks...
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < Iterations; i++)
             {
                 ThreadAbortScope scope = new ThreadAbortScope();
 
@@ -159,12 +181,99 @@ namespace Gallio.Tests.Concurrency
                 });
 
                 Stopwatch timeout = Stopwatch.StartNew();
-                while (scope.Run(delegate { }) == null)
+                while (scope.Run(delegate { Thread.SpinWait(i % 13); }) == null)
                 {
-                    if (timeout.ElapsedMilliseconds > 200)
+                    if (timeout.ElapsedMilliseconds > Iterations + 200)
                         Assert.Fail("The scope failed to stop the run.");
                 }
+
+                Tasks.JoinAndVerify(TimeSpan.FromMilliseconds(100));
             }
+        }
+
+        [Test]
+        public void ProtectThrowsIfActionIsNull()
+        {
+            ThreadAbortScope scope = new ThreadAbortScope();
+            Assert.Throws<ArgumentNullException>(() => scope.Protect(null));
+        }
+
+        [Test]
+        public void ProtectOutsideOfScopeJustRunsTheAction()
+        {
+            ThreadAbortScope scope = new ThreadAbortScope();
+
+            bool ran = false;
+            scope.Protect(() => ran = true);
+
+            Assert.IsTrue(ran, "Should have run the action.");
+        }
+
+        [Test]
+        public void ProtectInAnotherThreadJustRunsTheAction()
+        {
+            ThreadAbortScope scope = new ThreadAbortScope();
+
+            bool ran = false;
+
+            Tasks.StartThreadTask("Different thread", () =>
+            {
+                scope.Protect(() => ran = true);
+            });
+            Tasks.JoinAndVerify(TimeSpan.FromMilliseconds(100));
+
+            Assert.IsTrue(ran, "Should have run the action.");
+        }
+
+        [Test]
+        public void AbortFromWithinProtectedScopeDoesNotOccurUntilTheProtectedScopeExits()
+        {
+            bool ranToCompletion = false;
+            ThreadAbortScope scope = new ThreadAbortScope();
+            ThreadAbortException ex = scope.Run(() =>
+            {
+                scope.Protect(() =>
+                {
+                    scope.Abort();
+                    ranToCompletion = true;
+                });
+            });
+
+            Assert.IsNotNull(ex, "Should have aborted.");
+            Assert.IsTrue(ranToCompletion, "Should have run the action.");
+        }
+
+        [Test]
+        public void AbortWaitsUntilProtectedScopeEndsBeforeOccurring()
+        {
+            ThreadAbortScope scope = new ThreadAbortScope();
+
+            ManualResetEvent barrier = new ManualResetEvent(false);
+            Tasks.StartThreadTask("Background Abort", delegate
+            {
+                barrier.WaitOne();
+                scope.Abort();
+            });
+
+            int count = 0;
+            Assert.IsNotNull(scope.Run(delegate
+            {
+                count += 1;
+
+                scope.Protect(() =>
+                {
+                    count += 1;
+                    barrier.Set();
+                    Thread.Sleep(5000);
+                    count += 1;
+                });
+
+                count += 1; // should not run
+            }));
+
+            Assert.AreEqual(3, count);
+
+            Tasks.JoinAndVerify(TimeSpan.FromMilliseconds(100));
         }
     }
 }

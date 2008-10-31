@@ -448,6 +448,15 @@ namespace Gallio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to At most one action may be active within the scope at a time..
+        /// </summary>
+        internal static string ThreadAbortScope_ReentranceException {
+            get {
+                return ResourceManager.GetString("ThreadAbortScope_ReentranceException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not resolve service of type {0}..
         /// </summary>
         internal static string WindsorRuntime_CannotResolveServices {

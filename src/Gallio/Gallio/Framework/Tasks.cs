@@ -14,12 +14,15 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using Gallio;
 using Gallio.Collections;
 using Gallio.Concurrency;
 using Gallio.Framework;
 using Gallio.Model.Logging;
+using Gallio.Utilities;
 
 namespace Gallio.Framework
 {
@@ -38,7 +41,8 @@ namespace Gallio.Framework
         private static readonly Key<TaskContainer> ContainerKey = new Key<TaskContainer>("Tasks.Container");
         private static readonly Key<object> FailureFlagKey = new Key<object>("Tasks.Failure");
 
-        private static readonly TimeSpan DisposeTimeout = new TimeSpan(0, 0, 5);
+        private static readonly TimeSpan JoinBeforeAbortTimeout = new TimeSpan(0, 0, 3);
+        private static readonly TimeSpan JoinAfterAbortTimeout = new TimeSpan(0, 0, 2);
 
         /// <summary>
         /// Gets the task container for the current <see cref="TestContext" />.
@@ -51,6 +55,12 @@ namespace Gallio.Framework
         /// <summary>
         /// Adds a new task for the task manager to watch.
         /// </summary>
+        /// <para>
+        /// The task manager will track when the task starts and finishes, ensure
+        /// that the task is aborted when the test ends, report any exception thrown
+        /// by the task as a warning in the log, and include the task in the list of those
+        /// to join and/or verify.
+        /// </para>
         /// <param name="task">The task to watch</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="task"/> is null</exception>
         public static void WatchTask(Task task)
@@ -256,12 +266,37 @@ namespace Gallio.Framework
 
         private static void ReapTasks(TestContext context, TaskContainer container)
         {
-            container.AbortAll();
-
-            if (!container.JoinAll(DisposeTimeout))
+            if (!container.JoinAll(JoinBeforeAbortTimeout))
             {
-                context.LogWriter.Warnings.WriteLine("Some tasks failed to abort within {0} seconds!", DisposeTimeout.TotalSeconds);
+                LogMessageAboutActiveTasks(context, container,
+                    String.Format("Some tasks failed to complete within {0} seconds of test termination: ", JoinBeforeAbortTimeout.TotalSeconds));
+
+                container.AbortAll();
+
+                if (!container.JoinAll(JoinAfterAbortTimeout))
+                {
+                    LogMessageAboutActiveTasks(context, container,
+                        String.Format("Some tasks failed to abort within {0} seconds of test termination: ", (JoinBeforeAbortTimeout + JoinAfterAbortTimeout).TotalSeconds));
+                }
             }
+        }
+
+        private static void LogMessageAboutActiveTasks(TestContext context, TaskContainer container, string messagePrefix)
+        {
+            IList<Task> activeTasks = container.GetActiveTasks();
+            if (activeTasks.Count == 0)
+                return;
+
+            StringBuilder message = new StringBuilder(messagePrefix);
+
+            for (int i = 0; i < activeTasks.Count; i++)
+            {
+                if (i != 0)
+                    message.Append(", ");
+                message.Append(activeTasks[i].Name);
+            }
+
+            context.LogWriter.Warnings.WriteLine(message.ToString());
         }
 
         private static void RecordTaskResult(TestContext context, Task task)

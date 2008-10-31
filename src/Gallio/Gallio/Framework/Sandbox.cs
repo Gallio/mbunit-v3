@@ -15,7 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
+using Gallio.Collections;
 using Gallio.Concurrency;
 using Gallio.Model;
 using Gallio.Model.Diagnostics;
@@ -46,7 +48,7 @@ namespace Gallio.Framework
         private Sandbox parent;
 
         private readonly object syncRoot = new object();
-        private List<ThreadAbortScope> scopes;
+        private List<Pair<ThreadAbortScope, Thread>> scopesAndThreads;
         private TestOutcome? abortOutcome;
         private string abortMessage;
         private event EventHandler aborted;
@@ -228,8 +230,10 @@ namespace Gallio.Framework
                 abortOutcome = outcome;
                 abortMessage = message;
 
-                cachedScopes = scopes != null ? scopes.ToArray() : null;
-                scopes = null;
+                cachedScopes = scopesAndThreads != null
+                    ? GenericUtils.ConvertAllToArray(scopesAndThreads, pair => pair.First)
+                    : null;
+                scopesAndThreads = null;
 
                 cachedHandler = aborted;
                 aborted = null;
@@ -320,11 +324,11 @@ namespace Gallio.Framework
 
                     if (!abortOutcome.HasValue)
                     {
-                        if (scopes == null)
-                            scopes = new List<ThreadAbortScope>();
+                        if (scopesAndThreads == null)
+                            scopesAndThreads = new List<Pair<ThreadAbortScope, Thread>>();
 
                         scope = new ThreadAbortScope();
-                        scopes.Add(scope);
+                        scopesAndThreads.Add(new Pair<ThreadAbortScope, Thread>(scope, Thread.CurrentThread));
                     }
                 }
 
@@ -338,8 +342,14 @@ namespace Gallio.Framework
                 if (scope != null)
                 {
                     lock (syncRoot)
-                        if (scopes != null)
-                            scopes.Remove(scope);
+                    {
+                        if (scopesAndThreads != null)
+                        {
+                            for (int i = 0; i < scopesAndThreads.Count; i++)
+                                if (scopesAndThreads[i].First == scope)
+                                    scopesAndThreads.RemoveAt(i);
+                        }
+                    }
                 }
             }
         }
@@ -356,6 +366,13 @@ namespace Gallio.Framework
             }
             catch (Exception ex)
             {
+                // If the test itself threw a thread abort, not because we aborted it
+                // ourselves but most likely due to a bug in the test subject, then we
+                // prevent the abort from bubbling up any further.
+                if (ex is ThreadAbortException &&
+                    ! AppDomain.CurrentDomain.IsFinalizingForUnload())
+                    Thread.ResetAbort();
+
                 TestOutcome outcome;
                 TestException testException = ex as TestException;
                 if (testException != null)
@@ -375,6 +392,49 @@ namespace Gallio.Framework
 
                 return outcome;
             }
+        }
+
+        /// <summary>
+        /// Runs an action inside of a protected context wherein it cannot receive
+        /// a thread abort from this <see cref="Sandbox"/>.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method enables critical system code to be protected from aborts that
+        /// may affect the sandbox.  This call cannot be nested.
+        /// </para>
+        /// </remarks>
+        /// <param name="action">The action to run</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        [DebuggerHidden]
+        public void Protect(Action action)
+        {
+            if (action == null)
+                throw new ArgumentNullException("action");
+
+            ThreadAbortScope scope = FindActiveScopeForThread(Thread.CurrentThread);
+            if (scope != null)
+                scope.Protect(action);
+            else
+                action();
+        }
+
+        private ThreadAbortScope FindActiveScopeForThread(Thread currentThread)
+        {
+            lock (syncRoot)
+            {
+                // Choose the most recently added scope for the thread because if
+                // the sandbox is called re-entrantly then we can reasonably assume
+                // that Protect occurred in the outer scope.  Otherwise we'd be running
+                // code somewhat unsafely...
+                for (int i = scopesAndThreads.Count - 1; i >= 0; i--)
+                {
+                    if (scopesAndThreads[i].Second == currentThread)
+                        return scopesAndThreads[i].First;
+                }
+            }
+
+            return null;
         }
 
         private void HandleParentAborted(object sender, EventArgs e)

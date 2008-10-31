@@ -160,6 +160,7 @@
     <Compile Include="Model\Diagnostics\StackTraceFilter.cs" />
     <Compile Include="Model\Diagnostics\TestEntryPointAttribute.cs" />
     <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
+    <Compile Include="Model\Logging\FallbackTestLogWriter.cs" />
     <Compile Include="Model\Execution\ITestListener.cs" />
     <Compile Include="Framework\Text\DiffSet.cs" />
     <Compile Include="Framework\Text\Diff.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Model\Execution\DefaultTestOrderStrategy.cs" />
     <Compile Include="Model\Logging\ITestLogStreamWritable.cs" />
     <Compile Include="Model\Logging\Marker.cs" />
+    <Compile Include="Model\Logging\NullTestLogWriter.cs" />
     <Compile Include="Model\Logging\StructuredTestLogWriter.cs" />
     <Compile Include="Model\Logging\StructuredTestLog.cs" />
     <Compile Include="Model\Logging\AttachmentData.cs" />

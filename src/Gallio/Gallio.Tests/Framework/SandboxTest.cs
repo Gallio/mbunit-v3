@@ -115,6 +115,18 @@ namespace Gallio.Tests.Framework
         }
 
         [Test]
+        public void CanCatchThreadAbortException()
+        {
+            StructuredTestLogWriter writer = new StructuredTestLogWriter()
+                ;
+            Sandbox sandbox = new Sandbox();
+            Assert.AreEqual(TestOutcome.Failed, sandbox.Run(writer, delegate { Thread.CurrentThread.Abort(this); }, "Execute"));
+
+            Assert.Contains(writer.ToString(), "ThreadAbortException");
+            Assert.Contains(writer.ToString(), "Execute");
+        }
+
+        [Test]
         public void RunCanBeAbortedInProgress()
         {
             StructuredTestLogWriter writer = new StructuredTestLogWriter();
@@ -203,6 +215,37 @@ namespace Gallio.Tests.Framework
                 Assert.AreEqual(TestOutcome.Passed, outcome);
                 Assert.IsFalse(sandbox.WasAborted);
             }
+        }
+
+        [Test]
+        public void WhenSandboxEntersProtectedContext_AbortsAreDeferred()
+        {
+            StructuredTestLogWriter writer = new StructuredTestLogWriter();
+            bool completed = false;
+
+            Sandbox sandbox = new Sandbox();
+            ManualResetEvent barrier = new ManualResetEvent(false);
+
+            Tasks.StartThreadTask("Wake", () =>
+            {
+                barrier.WaitOne();
+                sandbox.Abort(TestOutcome.Canceled, "Canceled for testing purposes.");
+            });
+
+            TestOutcome outcome = sandbox.Run(writer, () =>
+            {
+                sandbox.Protect(() =>
+                {
+                    barrier.Set();
+                    Thread.Sleep(300);
+                    completed = true;
+                });
+                Thread.Sleep(300);
+            }, "Run Description");
+
+            Assert.IsTrue(completed);
+            Assert.AreEqual(TestOutcome.Canceled, outcome);
+            Assert.Contains(writer.ToString(), "Canceled for testing purposes.");
         }
 
         public class WhenAborted

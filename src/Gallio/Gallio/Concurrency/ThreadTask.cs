@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Gallio;
 using Gallio.Runtime;
@@ -25,7 +26,7 @@ namespace Gallio.Concurrency
     /// </summary>
     public class ThreadTask : Task
     {
-        private readonly Func<object> action;
+        private readonly Invoker invoker;
         private readonly ThreadAbortScope threadAbortScope = new ThreadAbortScope();
         private Thread thread;
         private ApartmentState apartmentState = ApartmentState.Unknown;
@@ -45,7 +46,7 @@ namespace Gallio.Concurrency
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            this.action = action;
+            invoker = new Invoker(action);
         }
 
         /// <summary>
@@ -62,11 +63,7 @@ namespace Gallio.Concurrency
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            this.action = delegate
-            {
-                action();
-                return null;
-            };
+            invoker = new Invoker(action);
         }
 
         /// <summary>
@@ -139,17 +136,14 @@ namespace Gallio.Concurrency
             return true;
         }
 
+        [DebuggerHidden, DebuggerStepThrough]
         private void Run()
         {
             try
             {
                 try
                 {
-                    object result = null;
-                    ThreadAbortException ex = threadAbortScope.Run(delegate
-                    {
-                        result = action();
-                    });
+                    ThreadAbortException ex = threadAbortScope.Run(invoker.Invoke);
 
                     if (ex != null)
                     {
@@ -157,7 +151,7 @@ namespace Gallio.Concurrency
                     }
                     else
                     {
-                        NotifyTerminated(TaskResult.CreateFromValue(result));
+                        NotifyTerminated(TaskResult.CreateFromValue(invoker.Result));
                     }
                 }
                 catch (Exception ex)
@@ -168,6 +162,34 @@ namespace Gallio.Concurrency
             catch (Exception ex)
             {
                 UnhandledExceptionPolicy.Report("An unhandled exception occurred in a thread task.", ex);
+            }
+        }
+
+        // Wraps the delegate in a manner that is compatible with ThreadStart such that
+        // we can apply [DebuggerHidden] and [DebuggerStepThrough] to ease debugging.
+        private sealed class Invoker
+        {
+            private readonly Delegate @delegate;
+            public object Result { get; set; }
+
+            public Invoker(Action action)
+            {
+                @delegate = action;
+            }
+
+            public Invoker(Func<object> action)
+            {
+                @delegate = action;
+            }
+
+            [DebuggerHidden, DebuggerStepThrough]
+            public void Invoke()
+            {
+                Action action = @delegate as Action;
+                if (action != null)
+                    action();
+                else
+                    Result = ((Func<object>)@delegate)();
             }
         }
     }
