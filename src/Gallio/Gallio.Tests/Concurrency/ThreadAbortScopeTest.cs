@@ -183,8 +183,8 @@ namespace Gallio.Tests.Concurrency
                 Stopwatch timeout = Stopwatch.StartNew();
                 while (scope.Run(delegate { Thread.SpinWait(i % 13); }) == null)
                 {
-                    if (timeout.ElapsedMilliseconds > Iterations + 200)
-                        Assert.Fail("The scope failed to stop the run.");
+                    if (timeout.ElapsedMilliseconds > Iterations + 500)
+                        Assert.Fail("The scope failed to stop the run during iteration {0}.", i);
                 }
 
                 Tasks.JoinAndVerify(TimeSpan.FromMilliseconds(100));
