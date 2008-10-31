@@ -165,11 +165,11 @@ namespace Gallio.Tests.Concurrency
         }
 
         [Test]
+        [Repeat(3)]
         public void TryToAsynchronouslyHitARunningActionAtRandomTimes()
         {
-            const int Iterations = 100;
+            const int Iterations = 50;
 
-            // Like sitting ducks...
             for (int i = 0; i < Iterations; i++)
             {
                 ThreadAbortScope scope = new ThreadAbortScope();

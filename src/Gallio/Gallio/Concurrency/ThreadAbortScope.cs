@@ -46,6 +46,11 @@ namespace Gallio.Concurrency
     public class ThreadAbortScope
     {
         /// <summary>
+        /// Maximum number of times to poll for a pending abort before giving up.
+        /// </summary>
+        private const int MaxThreadAbortPolls = 10;
+
+        /// <summary>
         /// Indicates that the thread scope is not currently running abortable code.
         /// It could either not be entered, or it could be entered and running a
         /// protected block.
@@ -58,13 +63,13 @@ namespace Gallio.Concurrency
         private const int RunningState = 1;
 
         /// <summary>
-        /// Indicates that <see cref="Thread.Abort(object)" /> has been requested but
-        /// perhaps not yet signaled.
+        /// Indicates that <see cref="Thread.Abort(object)" /> is about to occur.
         /// </summary>
-        private const int AbortRequestedState = 2;
+        private const int AbortPendingState = 2;
 
         /// <summary>
-        /// Indicates that the scope has been completely aborted.
+        /// Indicates that the scope has been aborted and a <see cref="Thread.Abort(object)" />
+        /// has already been issued if needed.
         /// </summary>
         private const int AbortedState = 3;
 
@@ -94,7 +99,7 @@ namespace Gallio.Concurrency
             if (Thread.VolatileRead(ref activeThread) == Thread.CurrentThread)
                 throw new InvalidOperationException(Resources.ThreadAbortScope_ReentranceException);
 
-            RuntimeHelpers.PrepareConstrainedRegions(); // must immediately precede try
+            RuntimeHelpers.PrepareConstrainedRegions(); // MUST IMMEDIATELY PRECEDE TRY
             try
             {
                 // Lock the scope for use by this thread only.
@@ -102,9 +107,9 @@ namespace Gallio.Concurrency
                     throw new InvalidOperationException(Resources.ThreadAbortScope_ReentranceException);
 
                 // Proceed.
-                return HandleThreadAbort(action);
+                return RunActionWithThreadAbort(action);
             }
-            finally
+            finally // THIS IS A CONSTRAINED REGION
             {
                 // Release the scope from this thread's control.
                 Interlocked.CompareExchange(ref activeThread, null, Thread.CurrentThread);
@@ -131,7 +136,7 @@ namespace Gallio.Concurrency
 
             bool mustResetToRunningState = false;
 
-            RuntimeHelpers.PrepareConstrainedRegions(); // must immediately precede try
+            RuntimeHelpers.PrepareConstrainedRegions(); // MUST IMMEDIATELY PRECEDE TRY
             try
             {
                 if (Thread.VolatileRead(ref activeThread) == Thread.CurrentThread)
@@ -148,7 +153,7 @@ namespace Gallio.Concurrency
 
                 action();
             }
-            finally
+            finally // THIS IS A CONSTRAINED REGION
             {
                 if (mustResetToRunningState)
                 {
@@ -174,27 +179,52 @@ namespace Gallio.Concurrency
                 if (oldState != RunningState)
                     return;
 
-                // If we're running, try to move to the aborting state.
-                // When successful, then actually perform the abort.
-                if (Interlocked.CompareExchange(ref state, AbortRequestedState, RunningState) == RunningState)
+                RuntimeHelpers.PrepareConstrainedRegions(); // MUST IMMEDIATELY PRECEDE TRY
+                try
                 {
-                    ((Thread) Thread.VolatileRead(ref activeThread)).Abort(this);
-                    return;
+                    // If we're running, try to move to the abort pending state.
+                    // When successful, then actually perform the abort.
+                    if (Interlocked.CompareExchange(ref state, AbortPendingState, RunningState) == RunningState)
+                    {
+                        ((Thread) Thread.VolatileRead(ref activeThread)).Abort(this);
+                        return;
+                    }
+                }
+                finally // THIS IS A CONSTRAINED REGION
+                {
+                    // Record the fact that the abort is no longer pending.  This is used
+                    // by the thread to detect whether it should continue waiting for a
+                    // pending abort or if that abort was lost somehow (reset by other code).
+                    Interlocked.CompareExchange(ref state, AbortedState, AbortPendingState);
                 }
             }
         }
 
         /// <summary>
-        /// Runs the action given that the current thread is now the active thread.
+        /// Runs the action on the current thread (which is the "active" thread) and guarantees
+        /// that if an abort will occur, it must occur within this block and nowhere else.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method ensures that an asynchronous thread abort will be triggered within
+        /// this block rather than anywhere else.
+        /// </para>
+        /// </remarks>
         [DebuggerHidden]
-        private ThreadAbortException HandleThreadAbort(Action action)
+        private ThreadAbortException RunActionWithThreadAbort(Action action)
         {
             try
             {
                 // Run the action.  If an abort occurs, it will occur within this block.
-                ConstrainThreadAbort(action);
-                return null;
+                try
+                {
+                    RunActionWithStateTransitions(action);
+                    return null;
+                }
+                finally
+                {
+                    WaitForThreadAbortIfAborting();
+                }
             }
             catch (ThreadAbortException ex)
             {
@@ -211,40 +241,26 @@ namespace Gallio.Concurrency
         }
 
         /// <summary>
-        /// Runs the action and guarantees that if an abort will occur, it must occur
-        /// within this block and nowhere else.
+        /// Runs the action with the appropriate transitions to/from the running state.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This method works by atomically modifying the state of the scope such that
-        /// it can only transition into <see cref="AbortRequestedState"/> 
-        /// </para>
-        /// </remarks>
         [DebuggerHidden]
-        private void ConstrainThreadAbort(Action action)
+        private void RunActionWithStateTransitions(Action action)
         {
+            RuntimeHelpers.PrepareConstrainedRegions(); // MUST IMMEDIATELY PRECEDE TRY
             try
             {
-                RuntimeHelpers.PrepareConstrainedRegions(); // must immediately precede try
-                try
-                {
-                    // Preempt the action if it has been previously aborted.
-                    int oldState = Interlocked.CompareExchange(ref state, RunningState, QuiescentState);
-                    if (oldState == AbortedState)
-                        Thread.CurrentThread.Abort(this);
+                // Preempt the action if it has been previously aborted.
+                int oldState = Interlocked.CompareExchange(ref state, RunningState, QuiescentState);
+                if (oldState == AbortedState)
+                    Thread.CurrentThread.Abort(this);
 
-                    // Run the action.
-                    action();
-                }
-                finally
-                {
-                    // Reset the state.
-                    Interlocked.CompareExchange(ref state, QuiescentState, RunningState);
-                }
+                // Run the action.
+                action();
             }
-            finally
+            finally // THIS IS A CONSTRAINED REGION
             {
-                WaitForThreadAbortIfAborting();
+                // Reset the state.
+                Interlocked.CompareExchange(ref state, QuiescentState, RunningState);
             }
         }
 
@@ -256,13 +272,28 @@ namespace Gallio.Concurrency
         [DebuggerHidden]
         private void WaitForThreadAbortIfAborting()
         {
-            while (Thread.VolatileRead(ref state) == AbortRequestedState)
+            // The polling limit is designed to work around a problem where the Thread.Abort
+            // method can hang without ever actually aborting the thread.  This way at least
+            // we make progress after a few milliseconds.
+            for (int i = 0; i < MaxThreadAbortPolls; i++)
             {
-                if (Thread.CurrentThread.ThreadState == ThreadState.AbortRequested)
-                    Thread.Sleep(0);
+                int currentState = Thread.VolatileRead(ref state);
+                if (currentState == AbortPendingState
+                    || Thread.CurrentThread.ThreadState == ThreadState.AbortRequested)
+                {
+                    Thread.Sleep(1);
+                }
+                else if (currentState == AbortedState)
+                {
+                    break;
+                }
                 else
-                    Thread.CurrentThread.Abort(this);
+                {
+                    return;
+                }
             }
+
+            Thread.CurrentThread.Abort(this);
         }
     }
 }

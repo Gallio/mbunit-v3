@@ -90,7 +90,8 @@ namespace Gallio.Tests.Framework
                 typeof(TasksSample).GetMethod("TaskThatTakesAVeryLongAmountOfTimeToCompleteAfterTheTestFinishes")));
 
             Assert.AreEqual(TestOutcome.Passed, run.Result.Outcome);
-            Assert.AreEqual("*** Log ***\n\nStarted.\n\n*** Warnings ***\n\nSome tasks failed to complete within 3 seconds of test termination: Task\n\nTask \'Task\' failed.\nSystem.Threading.ThreadAbortException: Thread was being aborted.\n   at System.Threading.Thread.AbortInternal()\n   at System.Threading.Thread.Abort(Object stateInfo)\n", run.TestLog.ToString());
+            Assert.Contains(run.TestLog.ToString(), "Started");
+            Assert.Contains(run.TestLog.ToString(), "Some tasks failed to complete within 3 seconds of test termination: Task");
         }
 
         [Test]
@@ -100,7 +101,7 @@ namespace Gallio.Tests.Framework
                 typeof(TasksSample).GetMethod("FailedTask")));
 
             Assert.AreEqual(TestOutcome.Passed, run.Result.Outcome);
-            Assert.AreEqual("*** Warnings ***\n\nTask \'Task\' failed.\nSystem.Exception: Boom!\n   at Gallio.Tests.Framework.TasksTest.TasksSample.<FailedTask>b__16() in C:\\Source\\MbUnit\\v3\\src\\Gallio\\Gallio.Tests\\Framework\\TasksTest.cs:line 118\n", run.TestLog.ToString());
+            Assert.Contains(run.TestLog.ToString(), "Boom!");
         }
 
         [Explicit("Sample")]
