@@ -9,17 +9,21 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition="$(VSIP100Installed)">
-      <PropertyGroup>
-        <AssemblySearchPaths>$(VSIP100Path);$(AssemblySearchPaths)</AssemblySearchPaths>
-      </PropertyGroup>
+    <When Condition="'$(Module)'==''">
+      <Choose>
+        <When Condition="$(VSIP100Installed)">
+          <PropertyGroup>
+            <AssemblySearchPaths>$(VSIP100Path);$(AssemblySearchPaths)</AssemblySearchPaths>
+          </PropertyGroup>
+        </When>
+        <Otherwise>
+          <PropertyGroup>
+            <BuildDependsOn>MissingVSIP100</BuildDependsOn>
+            <RebuildDependsOn>MissingVSIP100</RebuildDependsOn>
+          </PropertyGroup>
+        </Otherwise>
+      </Choose>
     </When>
-    <Otherwise>
-      <PropertyGroup>
-        <BuildDependsOn>MissingVSIP100</BuildDependsOn>
-        <RebuildDependsOn>MissingVSIP100</RebuildDependsOn>
-      </PropertyGroup>
-    </Otherwise>
   </Choose>
 
   <Target Name="MissingVSIP100">
