@@ -1,26 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="VisualStudio90.targets" />
+  <Import Project="VisualStudio100.targets" />
+
   <PropertyGroup>
-    <VSIPPath Condition="'$(VSIPPath)'=='' and '$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)'!=''">$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)\VisualStudioIntegration\Common\Assemblies</VSIPPath>
-
     <VSIPInstalled>false</VSIPInstalled>
-    <VSIPInstalled Condition="'$(VSIPPath)'!=''">true</VSIPInstalled>
+    <VSIPInstalled Condition="$(VSIP90Installed) or $(VSIP100Installed)">true</VSIPInstalled>
   </PropertyGroup>
-
-  <Choose>
-    <When Condition="$(VSIPInstalled)">
-      <PropertyGroup>
-        <AssemblySearchPaths>$(VSIPPath);$(AssemblySearchPaths)</AssemblySearchPaths>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <BuildDependsOn>MissingVSIP</BuildDependsOn>
-        <RebuildDependsOn>MissingVSIP</RebuildDependsOn>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-
-  <Target Name="MissingVSIP">
-    <Warning Text="Skipped build.  Visual Studio 2008 SDK is not installed or could not be located." />
-  </Target>
 </Project>

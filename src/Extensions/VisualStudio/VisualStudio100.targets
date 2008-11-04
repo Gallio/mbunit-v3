@@ -1,0 +1,28 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <VisualStudio100InstallDir>$(registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\10.0\@InstallDir)</VisualStudio100InstallDir>
+
+    <VSIP100Path Condition="'$(VSIP100Path)'=='' and '$(VisualStudio100InstallDir)'!=''">$(VisualStudio100InstallDir)\PrivateAssemblies;$(VisualStudio100InstallDir)\PublicAssemblies</VSIP100Path>
+
+    <VSIP100Installed>false</VSIP100Installed>
+    <VSIP100Installed Condition="'$(VSIP100Path)'!=''">true</VSIP100Installed>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="$(VSIP100Installed)">
+      <PropertyGroup>
+        <AssemblySearchPaths>$(VSIP100Path);$(AssemblySearchPaths)</AssemblySearchPaths>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <BuildDependsOn>MissingVSIP100</BuildDependsOn>
+        <RebuildDependsOn>MissingVSIP100</RebuildDependsOn>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Target Name="MissingVSIP100">
+    <Warning Text="Skipped build.  Visual Studio 2010 is not installed or could not be located." />
+  </Target>
+</Project>

@@ -18,22 +18,12 @@ using System;
 namespace Gallio
 {
     /// <summary>
-    /// Represents a delegate that decorates an action.
+    /// Represents a delegate that decorates a function.
     /// </summary>
-    /// <typeparam name="T">The type of object the action is performed upon</typeparam>
+    /// <typeparam name="T">The type of object the function is performed upon</typeparam>
+    /// <typeparam name="TResult">The type of the function result</typeparam>
     /// <param name="obj">The object to act upon</param>
-    /// <param name="action">The action to decorate which should be called in
+    /// <param name="func">The function to decorate which should be called in
     /// the middle of applying the decoration</param>
-    public delegate void ActionDecorator<T>(T obj, Action<T> action);
-
-    /// <summary>
-    /// Represents a delegate that decorates an action.
-    /// </summary>
-    /// <typeparam name="T1">The first argument type</typeparam>
-    /// <typeparam name="T2">The second argument type</typeparam>
-    /// <param name="arg1">The first argument</param>
-    /// <param name="arg2">The second argument</param>
-    /// <param name="action">The action to decorate which should be called in
-    /// the middle of applying the decoration</param>
-    public delegate void ActionDecorator<T1, T2>(T1 arg1, T2 arg2, Action<T1, T2> action);
+    public delegate TResult FuncDecorator<T, TResult>(T obj, Func<T, TResult> func);
 }

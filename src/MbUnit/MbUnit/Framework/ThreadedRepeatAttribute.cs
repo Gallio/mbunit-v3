@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio;
 using Gallio.Concurrency;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
@@ -32,8 +33,9 @@ namespace MbUnit.Framework
     /// test step so that it can be identified in the test report.
     /// </para>
     /// <para>
-    /// The setup and teardown methods will only be invoked once around the whole set of
-    /// repetitions rather than around each repetition.
+    /// The initialize, setup, teardown and dispose methods will are invoked around each
+    /// repetition of the test.  Be aware that this means that these invocations may
+    /// occur concurrently!
     /// </para>
     /// </remarks>
     /// <seealso cref="RepeatAttribute"/>
@@ -71,7 +73,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            scope.Test.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState state, Action<PatternTestInstanceState> inner)
+            scope.Test.TestInstanceActions.RunTestInstanceBodyChain.Around(delegate(PatternTestInstanceState state, Func<PatternTestInstanceState, TestOutcome> inner)
             {
                 TaskContainer container = new TaskContainer();
                 try
@@ -88,7 +90,9 @@ namespace MbUnit.Framework
                         {
                             TestContext threadContext = TestStep.RunStep(name, delegate
                             {
-                                inner(state);
+                                TestOutcome innerOutcome = inner(state);
+                                if (innerOutcome.Status != TestStatus.Passed)
+                                    throw new SilentTestException(innerOutcome);
                             });
 
                             threadOutcomes[index] = threadContext.Outcome;
@@ -124,8 +128,7 @@ namespace MbUnit.Framework
                     context.LogWriter.Default.WriteLine(String.Format("{0} of {1} threaded repetitions passed.",
                         passedCount, numThreads));
 
-                    if (outcome.Status != TestStatus.Passed)
-                        throw new SilentTestException(outcome);
+                    return outcome;
                 }
                 finally
                 {

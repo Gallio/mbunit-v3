@@ -33,6 +33,7 @@ namespace Gallio.Framework.Pattern
     /// <summary>
     /// Encapsulates the algorithm for recursively running a <see cref="PatternTest" />.
     /// </summary>
+    [TestFrameworkInternal]
     internal class PatternTestExecutor
     {
         public delegate TestOutcome PatternTestHandlerDecorator(Sandbox sandbox, ref IPatternTestHandler handler);
@@ -211,7 +212,21 @@ namespace Gallio.Framework.Pattern
                         bindingItem.PopulateMetadata(testStep.Metadata);
                     }
 
-                    PatternTestInstanceState testInstanceState = new PatternTestInstanceState(testStep, decoratedTestInstanceActions, testState, bindingItem);
+                    PatternTestInstanceState testInstanceState = null;
+                    TestAction body = () =>
+                    {
+                        TestOutcome innerOutcome = TestOutcome.Error;
+                        TestContext currentContext = TestContext.CurrentContext;
+
+                        currentContext.Sandbox.Protect(() =>
+                        {
+                            innerOutcome = RunTestInstanceWithContext(testCommand, currentContext, testInstanceState);
+                        });
+
+                        return innerOutcome;
+                    };
+
+                    testInstanceState = new PatternTestInstanceState(testStep, decoratedTestInstanceActions, testState, bindingItem, body);
 
                     outcome = outcome.CombineWith(DoBeforeTestInstance(primaryContext.Sandbox, testInstanceState));
                     if (outcome.Status == TestStatus.Passed)
@@ -225,7 +240,7 @@ namespace Gallio.Framework.Pattern
                         testInstanceState.SetInContext(context);
                         invisible = false;
 
-                        outcome = outcome.CombineWith(RunTestInstanceWithContext(testCommand, context, testInstanceState));
+                        outcome = outcome.CombineWith(DoRunTestInstanceBody(context, testInstanceState));
 
                         if (!reusePrimaryTestStep)
                             context.FinishStep(outcome);
@@ -518,6 +533,21 @@ namespace Gallio.Framework.Pattern
             {
                 testInstanceState.TestInstanceHandler.DecorateChildTest(testInstanceState, decoratedChildTestActions);
             }, "Decorate Child Test");
+        }
+
+        [TestEntryPoint]
+        private static TestOutcome DoRunTestInstanceBody(TestContext context, PatternTestInstanceState testInstanceState)
+        {
+            using (context.Enter())
+            {
+                TestOutcome outerOutcome = TestOutcome.Error;
+                TestOutcome sandboxOutcome = context.Sandbox.Run(TestLog.Writer, delegate
+                {
+                    outerOutcome = testInstanceState.TestInstanceHandler.RunTestInstanceBody(testInstanceState);
+                }, "Body");
+
+                return outerOutcome.CombineWith(sandboxOutcome);
+            }
         }
         #endregion
 

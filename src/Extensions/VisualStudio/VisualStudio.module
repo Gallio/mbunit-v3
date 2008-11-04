@@ -5,19 +5,14 @@
   <PropertyGroup>
     <MonoCompatible>false</MonoCompatible>
   </PropertyGroup>
-  
-  <ItemGroup>
+
+  <ItemGroup Condition="$(VSIPInstalled)">
     <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests.csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail.Tests.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip.Proxy.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip.Tests.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(VSIPInstalled)">
+    
     <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll">
         <Folder>VisualStudio</Folder>
     </Binary>
@@ -36,31 +31,64 @@
     <Binary Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.plugin">
       <Folder>VisualStudio</Folder>
     </Binary>
-    <Binary Include="Gallio.VisualStudio.Tip\bin\Gallio.VisualStudio.Tip.dll">
-      <Folder>VisualStudio</Folder>
-    </Binary>
-    <Binary Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip.plugin">
-      <Folder>VisualStudio</Folder>
-    </Binary>
-    <Binary Include="Gallio.VisualStudio.Tip.Proxy\bin\Gallio.VisualStudio.Tip.Proxy.dll">
-      <Folder>VisualStudio</Folder>
-    </Binary>
 
     <TestAssembly Include="Gallio.VisualStudio.Shell.Tests\bin\Gallio.VisualStudio.Shell.Tests.dll" />
     <TestAssembly Include="Gallio.VisualStudio.Sail.Tests\bin\Gallio.VisualStudio.Sail.Tests.dll" />
-    <TestAssembly Include="Gallio.VisualStudio.Tip.Tests\bin\Gallio.VisualStudio.Tip.Tests.dll" />
 
     <Feature Include="FEATURE_VISUALSTUDIO" />
-    <Feature Include="FEATURE_VISUALSTUDIO_TIP" />
-
     <!-- Not ready for release.
     <Feature Include="FEATURE_VISUALSTUDIO_SAIL" />
     -->
   </ItemGroup>
 
-  <Target Name="AfterImage"
-          Condition="$(VSIPInstalled)">
-    <FileUpdate Files="$(ImageDir)\bin\VisualStudio\Gallio.VisualStudio.Tip.plugin"
+  <ItemGroup Condition="$(VSIP90Installed)">
+    <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip90.Tests.csproj" />
+  
+    <Binary Include="Gallio.VisualStudio.Tip\bin\v9.0\Gallio.VisualStudio.Tip90.dll">
+      <Folder>VisualStudio\v9.0</Folder>
+    </Binary>
+    <Binary Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.plugin">
+      <Folder>VisualStudio\v9.0</Folder>
+    </Binary>
+    <Binary Include="Gallio.VisualStudio.Tip.Proxy\bin\v9.0\Gallio.VisualStudio.Tip90.Proxy.dll">
+      <Folder>VisualStudio\v9.0</Folder>
+    </Binary>
+
+    <TestAssembly Include="Gallio.VisualStudio.Tip.Tests\bin\v9.0\Gallio.VisualStudio.Tip90.Tests.dll" />
+
+    <Feature Include="FEATURE_VISUALSTUDIO_TIP_90" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(VSIP100Installed)">
+    <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip100.Proxy.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip100.Tests.csproj" />
+  
+    <Binary Include="Gallio.VisualStudio.Tip\bin\v10.0\Gallio.VisualStudio.Tip100.dll">
+      <Folder>VisualStudio\v10.0</Folder>
+    </Binary>
+    <Binary Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.plugin">
+      <Folder>VisualStudio\v10.0</Folder>
+    </Binary>
+    <Binary Include="Gallio.VisualStudio.Tip.Proxy\bin\v10.0\Gallio.VisualStudio.Tip100.Proxy.dll">
+      <Folder>VisualStudio\v10.0</Folder>
+    </Binary>
+
+    <TestAssembly Include="Gallio.VisualStudio.Tip.Tests\bin\v10.0\Gallio.VisualStudio.Tip100.Tests.dll" />
+
+    <Feature Include="FEATURE_VISUALSTUDIO_TIP_100" />
+  </ItemGroup>
+
+  <Target Name="AfterImage">
+    <FileUpdate Files="$(ImageDir)\bin\VisualStudio\v9.0\Gallio.VisualStudio.Tip90.plugin"
+                Condition="$(VSIP90Installed)"
+                Regex="0\.0\.0\.0"
+                ReplacementText="$(Version)" />
+
+    <FileUpdate Files="$(ImageDir)\bin\VisualStudio\v10.0\Gallio.VisualStudio.Tip100.plugin"
+                Condition="$(VSIP100Installed)"
                 Regex="0\.0\.0\.0"
                 ReplacementText="$(Version)" />
   </Target>

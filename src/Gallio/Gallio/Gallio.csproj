@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
-    <Compile Include="Collections\CollectionEqualityComparer.cs" />
+    <Compile Include="Collections\ArrayEqualityComparer.cs" />
     <Compile Include="Collections\HashSet.cs" />
     <Compile Include="Collections\Key.cs" />
     <Compile Include="Collections\ReadOnlyDictionary.cs" />
@@ -89,6 +89,8 @@
     <Compile Include="Concurrency\TaskResult.cs" />
     <Compile Include="Concurrency\ThreadAbortScope.cs" />
     <Compile Include="Concurrency\ThreadTask.cs" />
+    <Compile Include="FuncChain.cs" />
+    <Compile Include="FuncDecorator.cs" />
     <Compile Include="Framework\Assertions\AssertionContext.cs" />
     <Compile Include="Framework\Assertions\AssertionException.cs" />
     <Compile Include="Framework\Assertions\AssertionFailure.cs" />
@@ -150,6 +152,7 @@
     <Compile Include="Framework\Formatting\XPathNavigableFormattingRule.cs" />
     <Compile Include="Framework\ComparisonSemantics.cs" />
     <Compile Include="Framework\Pattern\ProcessIsolation.cs" />
+    <Compile Include="Framework\Pattern\TestAction.cs" />
     <Compile Include="Framework\SubtractionFunc.cs">
       <SubType>Code</SubType>
     </Compile>

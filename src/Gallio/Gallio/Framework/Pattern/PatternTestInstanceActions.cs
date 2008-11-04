@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model;
 using Gallio.Model.Diagnostics;
 
 namespace Gallio.Framework.Pattern
@@ -36,6 +37,7 @@ namespace Gallio.Framework.Pattern
         private readonly ActionChain<PatternTestInstanceState> disposeTestInstanceChain;
         private readonly ActionChain<PatternTestInstanceState> afterTestInstanceChain;
         private readonly ActionChain<PatternTestInstanceState, PatternTestActions> decorateChildTestChain;
+        private readonly FuncChain<PatternTestInstanceState, TestOutcome> runTestInstanceBodyChain;
 
         /// <summary>
         /// Creates a test instance actions object initially configured with empty action chains
@@ -51,6 +53,7 @@ namespace Gallio.Framework.Pattern
             disposeTestInstanceChain = new ActionChain<PatternTestInstanceState>();
             afterTestInstanceChain = new ActionChain<PatternTestInstanceState>();
             decorateChildTestChain = new ActionChain<PatternTestInstanceState, PatternTestActions>();
+            runTestInstanceBodyChain = new FuncChain<PatternTestInstanceState, TestOutcome>(state => state.RunBody());
         }
 
         /// <summary>
@@ -82,8 +85,8 @@ namespace Gallio.Framework.Pattern
             decorator.tearDownTestInstanceChain.Action = handler.TearDownTestInstance;
             decorator.disposeTestInstanceChain.Action = handler.DisposeTestInstance;
             decorator.afterTestInstanceChain.Action = handler.AfterTestInstance;
-
             decorator.decorateChildTestChain.Action = handler.DecorateChildTest;
+            decorator.runTestInstanceBodyChain.Func = handler.RunTestInstanceBody;
             return decorator;
         }
 
@@ -159,6 +162,15 @@ namespace Gallio.Framework.Pattern
             get { return decorateChildTestChain; }
         }
 
+        /// <summary>
+        /// Gets the chain of <see cref="IPatternTestInstanceHandler.RunTestInstanceBody" /> functions.
+        /// </summary>
+        /// <seealso cref="IPatternTestInstanceHandler.RunTestInstanceBody"/> for details about the semantics of these functions.
+        public FuncChain<PatternTestInstanceState, TestOutcome> RunTestInstanceBodyChain
+        {
+            get { return runTestInstanceBodyChain; }
+        }
+
         /// <inheritdoc />
         [TestEntryPoint]
         public void BeforeTestInstance(PatternTestInstanceState testInstanceState)
@@ -213,6 +225,13 @@ namespace Gallio.Framework.Pattern
         public void DecorateChildTest(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions)
         {
             decorateChildTestChain.Action(testInstanceState, decoratedChildTestActions);
+        }
+
+        /// <inheritdoc />
+        [TestEntryPoint]
+        public TestOutcome RunTestInstanceBody(PatternTestInstanceState testInstanceState)
+        {
+            return runTestInstanceBodyChain.Func(testInstanceState);
         }
     }
 }

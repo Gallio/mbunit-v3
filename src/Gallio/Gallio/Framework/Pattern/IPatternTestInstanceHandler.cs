@@ -18,12 +18,12 @@ using Gallio.Model;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// A pattern test instance handler provides the logic that implements the various
-    /// phases of the test instance execution lifecycle.  Each method represents the
-    /// behavior to be performed during a particular phase.
-    /// </para>
+    /// phases of the test instance execution lifecycle.
+    /// </summary>
+    /// <remarks>
     /// <para>
+    /// Each method represents the behavior to be performed during a particular phase.
     /// Different actions are permitted during each phase.  Consult the
     /// documentation the appropriate method if this interface for restrictions.
     /// </para>
@@ -32,16 +32,18 @@ namespace Gallio.Framework.Pattern
     /// due to exceptions or if there is no work to be done.
     /// <list type="bullet">
     /// <item><see cref="BeforeTestInstance" /></item>
+    /// <item>--- begin <see cref="RunTestInstanceBody" /> ---</item>
     /// <item><see cref="InitializeTestInstance" /></item>
     /// <item><see cref="SetUpTestInstance" /></item>
     /// <item><see cref="ExecuteTestInstance" /></item>
     /// <item><see cref="DecorateChildTest" /> before each child test</item>
     /// <item><see cref="TearDownTestInstance" /></item>
     /// <item><see cref="DisposeTestInstance" /></item>
+    /// <item>--- end <see cref="RunTestInstanceBody" /> ---</item>
     /// <item><see cref="AfterTestInstance" /></item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface IPatternTestInstanceHandler
     {
         /// <summary>
@@ -318,5 +320,21 @@ namespace Gallio.Framework.Pattern
         /// <param name="testInstanceState">The test instance state, never null</param>
         /// <param name="decoratedChildTestActions">The child test's actions to decorate, never null</param>
         void DecorateChildTest(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildTestActions);
+
+        /// <summary>
+        /// Runs the body of the test from the Initialize phase through the Dispose phase.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method is somewhat special in that it gives the test instance handler a chance to
+        /// encapsulate the context in which the test runs.  It can cause the test to run repeatedly,
+        /// or in another thread, or with some special execution context.  Of course, if it does any
+        /// of these things then it is responsible for properly cleaning up the test and responding
+        /// in a timely manner to abort events from the current test context's <see cref="Sandbox" />.
+        /// </para>
+        /// </remarks>
+        /// <param name="testInstanceState">The test instance state, never null</param>
+        /// <returns>The test outcome</returns>
+        TestOutcome RunTestInstanceBody(PatternTestInstanceState testInstanceState);
     }
 }

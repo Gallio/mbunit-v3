@@ -69,7 +69,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="primaryTestStep"/>,
         /// <paramref name="testHandler"/>, <paramref name="converter"/>
         /// or <paramref name="formatter"/> is null</exception>
-        public PatternTestState(PatternTestStep primaryTestStep,
+        internal PatternTestState(PatternTestStep primaryTestStep,
             IPatternTestHandler testHandler, IConverter converter, IFormatter formatter, bool isExplicit)
         {
             if (primaryTestStep == null)

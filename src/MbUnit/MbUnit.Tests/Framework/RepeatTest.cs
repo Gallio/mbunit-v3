@@ -27,48 +27,108 @@ namespace MbUnit.Tests.Framework
 {
     [TestFixture]
     [TestsOn(typeof(RepeatAttribute))]
-    [RunSample(typeof(RepeatSample))]
+    [RunSample(typeof(RepeatTestSample))]
+    [RunSample(typeof(RepeatFixtureSample))]
     public class RepeatTest : BaseTestWithSampleRunner
     {
         [Test]
-        public void CheckSampleOutput()
+        public void RunTestRepeatedly()
         {
-            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RepeatSample).GetMethod("Test")));
+            TestStepRun testRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(RepeatTestSample).GetMethod("Test")));
 
-            AssertLogContains(run, "3 of 4 repetitions passed.");
-            Assert.AreEqual(TestOutcome.Failed, run.Result.Outcome);
+            AssertLogContains(testRun, "3 of 4 repetitions passed.");
+            Assert.AreEqual(TestOutcome.Failed, testRun.Result.Outcome);
 
-            IList<TestStepRun> steps = run.Children;
-            Assert.AreEqual(4, steps.Count, "Expected 4 repetitions represented as steps.");
+            IList<TestStepRun> testSteps = testRun.Children;
+            Assert.AreEqual(4, testSteps.Count, "Expected 4 repetitions represented as steps.");
 
-            Assert.AreEqual("Repetition #1", steps[0].Step.Name);
-            AssertLogContains(steps[0], "Run #1");
-            Assert.AreEqual(TestOutcome.Passed, steps[0].Result.Outcome);
+            Assert.AreEqual("Repetition #1", testSteps[0].Step.Name);
+            AssertLogContains(testSteps[0], "Run: Repetition #1");
+            Assert.AreEqual(TestOutcome.Passed, testSteps[0].Result.Outcome);
 
-            Assert.AreEqual("Repetition #2", steps[1].Step.Name);
-            AssertLogContains(steps[1], "Run #2");
-            AssertLogContains(steps[1], "Boom", TestLogStreamNames.Failures);
-            Assert.AreEqual(TestOutcome.Failed, steps[1].Result.Outcome);
+            Assert.AreEqual("Repetition #2", testSteps[1].Step.Name);
+            AssertLogContains(testSteps[1], "Run: Repetition #2");
+            AssertLogContains(testSteps[1], "Boom", TestLogStreamNames.Failures);
+            Assert.AreEqual(TestOutcome.Failed, testSteps[1].Result.Outcome);
 
-            Assert.AreEqual("Repetition #3", steps[2].Step.Name);
-            AssertLogContains(steps[2], "Run #3");
-            Assert.AreEqual(TestOutcome.Passed, steps[2].Result.Outcome);
+            Assert.AreEqual("Repetition #3", testSteps[2].Step.Name);
+            AssertLogContains(testSteps[2], "Run: Repetition #3");
+            Assert.AreEqual(TestOutcome.Passed, testSteps[2].Result.Outcome);
 
-            Assert.AreEqual("Repetition #4", steps[3].Step.Name);
-            AssertLogContains(steps[3], "Run #4");
-            Assert.AreEqual(TestOutcome.Passed, steps[3].Result.Outcome);
+            Assert.AreEqual("Repetition #4", testSteps[3].Step.Name);
+            AssertLogContains(testSteps[3], "Run: Repetition #4");
+            Assert.AreEqual(TestOutcome.Passed, testSteps[3].Result.Outcome);
+        }
+
+        [Test]
+        public void RunFixtureRepeatedly()
+        {
+            TestStepRun fixtureRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromType(typeof(RepeatFixtureSample)));
+            AssertLogContains(fixtureRun, "3 of 4 repetitions passed.");
+            Assert.AreEqual(TestOutcome.Failed, fixtureRun.Result.Outcome);
+
+            IList<TestStepRun> fixtureSteps = fixtureRun.Children;
+            Assert.AreEqual(4, fixtureSteps.Count, "Expected 4 repetitions represented as steps.");
+
+            Assert.AreEqual("Repetition #1", fixtureSteps[0].Step.Name);
+            Assert.AreEqual(TestOutcome.Passed, fixtureSteps[0].Result.Outcome);
+
+            Assert.AreEqual(1, fixtureSteps[0].Children.Count);
+            Assert.AreEqual("Test", fixtureSteps[0].Children[0].Step.Name);
+            AssertLogContains(fixtureSteps[0].Children[0], "Run: Repetition #1");
+            Assert.AreEqual(TestOutcome.Passed, fixtureSteps[0].Children[0].Result.Outcome);
+
+            Assert.AreEqual("Repetition #2", fixtureSteps[1].Step.Name);
+            Assert.AreEqual(TestOutcome.Failed, fixtureSteps[1].Result.Outcome);
+
+            Assert.AreEqual(1, fixtureSteps[1].Children.Count);
+            Assert.AreEqual("Test", fixtureSteps[1].Children[0].Step.Name);
+            AssertLogContains(fixtureSteps[1].Children[0], "Run: Repetition #2");
+            AssertLogContains(fixtureSteps[1].Children[0], "Boom", TestLogStreamNames.Failures);
+            Assert.AreEqual(TestOutcome.Failed, fixtureSteps[1].Children[0].Result.Outcome);
+
+            Assert.AreEqual("Repetition #3", fixtureSteps[2].Step.Name);
+            Assert.AreEqual(TestOutcome.Passed, fixtureSteps[2].Result.Outcome);
+
+            Assert.AreEqual(1, fixtureSteps[2].Children.Count);
+            Assert.AreEqual("Test", fixtureSteps[2].Children[0].Step.Name);
+            AssertLogContains(fixtureSteps[2].Children[0], "Run: Repetition #3");
+            Assert.AreEqual(TestOutcome.Passed, fixtureSteps[2].Children[0].Result.Outcome);
+
+            Assert.AreEqual("Repetition #4", fixtureSteps[3].Step.Name);
+            Assert.AreEqual(TestOutcome.Passed, fixtureSteps[3].Result.Outcome);
+
+            Assert.AreEqual(1, fixtureSteps[3].Children.Count);
+            Assert.AreEqual("Test", fixtureSteps[3].Children[0].Step.Name);
+            AssertLogContains(fixtureSteps[3].Children[0], "Run: Repetition #4");
+            Assert.AreEqual(TestOutcome.Passed, fixtureSteps[3].Children[0].Result.Outcome);
         }
 
         [Explicit("Sample")]
-        internal class RepeatSample
+        internal class RepeatTestSample
         {
-            private int index;
-
             [Test, Repeat(4)]
             public void Test()
             {
-                TestLog.WriteLine("Run #{0}", ++index);
-                if (index == 2)
+                string name = TestContext.CurrentContext.TestStep.Name;
+
+                TestLog.WriteLine("Run: {0}", name);
+                if (name == "Repetition #2")
+                    Assert.Fail("Boom");
+            }
+        }
+
+        [Explicit("Sample")]
+        [Repeat(4)]
+        internal class RepeatFixtureSample
+        {
+            [Test]
+            public void Test()
+            {
+                string name = TestContext.CurrentContext.Parent.TestStep.Name;
+
+                TestLog.WriteLine("Run: {0}", name);
+                if (name == "Repetition #2")
                     Assert.Fail("Boom");
             }
         }

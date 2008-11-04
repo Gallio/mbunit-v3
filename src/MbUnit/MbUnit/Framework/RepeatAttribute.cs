@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio;
 using Gallio.Framework;
 using Gallio.Framework.Pattern;
 using Gallio.Model;
@@ -30,8 +31,8 @@ namespace MbUnit.Framework
     /// test step so that it can be identified in the test report.
     /// </para>
     /// <para>
-    /// The setup and teardown methods will only be invoked once around the whole set of
-    /// repetitions rather than around each repetition.
+    /// The initialize, setup, teardown and dispose methods will are invoked around each
+    /// repetition of the test.
     /// </para>
     /// </remarks>
     /// <seealso cref="ThreadedRepeatAttribute"/>
@@ -69,7 +70,7 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
         {
-            scope.Test.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState state, Action<PatternTestInstanceState> inner)
+            scope.Test.TestInstanceActions.RunTestInstanceBodyChain.Around(delegate(PatternTestInstanceState state, Func<PatternTestInstanceState, TestOutcome> inner)
             {
                 TestOutcome outcome = TestOutcome.Passed;
                 int passedCount = 0;
@@ -79,7 +80,9 @@ namespace MbUnit.Framework
                     string name = String.Format("Repetition #{0}", i + 1);
                     TestContext context = TestStep.RunStep(name, delegate
                     {
-                        inner(state);
+                        TestOutcome innerOutcome = inner(state);
+                        if (innerOutcome.Status != TestStatus.Passed)
+                            throw new SilentTestException(innerOutcome);
                     });
 
                     outcome = outcome.CombineWith(context.Outcome);
@@ -90,8 +93,7 @@ namespace MbUnit.Framework
                 TestLog.WriteLine(String.Format("{0} of {1} repetitions passed.",
                     passedCount, numRepetitions));
 
-                if (outcome.Status != TestStatus.Passed)
-                    throw new SilentTestException(outcome);
+                return outcome;
             });
         }
     }

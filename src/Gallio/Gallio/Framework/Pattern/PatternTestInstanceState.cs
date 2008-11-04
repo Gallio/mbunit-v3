@@ -20,6 +20,7 @@ using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Framework.Conversions;
 using Gallio.Framework.Formatting;
+using Gallio.Model;
 using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
 using Gallio.Utilities;
@@ -56,6 +57,7 @@ namespace Gallio.Framework.Pattern
         private readonly IDataItem bindingItem;
         private readonly Dictionary<ISlotInfo, object> slotValues;
         private readonly UserDataCollection data;
+        private readonly TestAction body;
 
         private Type fixtureType;
         private object fixtureInstance;
@@ -69,13 +71,14 @@ namespace Gallio.Framework.Pattern
         /// <param name="testInstanceHandler">The test instance handler</param>
         /// <param name="testState">The test state</param>
         /// <param name="bindingItem">The data item</param>
+        /// <param name="body">The body of the test instance</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testStep"/>,
         /// <paramref name="testInstanceHandler"/> or <paramref name="testState"/> or <paramref name="bindingItem"/> is null</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="testState"/> belongs to a
         /// different test from the <paramref name="testStep"/></exception>
-        public PatternTestInstanceState(PatternTestStep testStep, 
+        internal PatternTestInstanceState(PatternTestStep testStep, 
             IPatternTestInstanceHandler testInstanceHandler,
-            PatternTestState testState, IDataItem bindingItem)
+            PatternTestState testState, IDataItem bindingItem, TestAction body)
         {
             if (testStep == null)
                 throw new ArgumentNullException("testStep");
@@ -87,11 +90,14 @@ namespace Gallio.Framework.Pattern
                 throw new ArgumentException("The test state belongs to a different test from the test step.", "testState");
             if (bindingItem == null)
                 throw new ArgumentNullException("bindingItem");
+            if (body == null)
+                throw new ArgumentNullException("body");
 
             this.testStep = testStep;
             this.testInstanceHandler = testInstanceHandler;
             this.testState = testState;
             this.bindingItem = bindingItem;
+            this.body = body;
 
             slotValues = new Dictionary<ISlotInfo, object>();
             data = new UserDataCollection();
@@ -364,6 +370,16 @@ namespace Gallio.Framework.Pattern
                 return ExceptionUtils.InvokeMethodWithoutTargetInvocationException(testMethod, fixtureInstance, testArguments);
 
             return null;
+        }
+
+        /// <summary>
+        /// Runs the body of the test.
+        /// </summary>
+        /// <returns>The test outcome</returns>
+        [TestEntryPoint]
+        public TestOutcome RunBody()
+        {
+            return body();
         }
     }
 }
