@@ -33,7 +33,7 @@ namespace Gallio.Runner.Events
         /// <param name="test">The test data</param>
         /// <param name="testStepRun">The test step run</param>
         /// <param name="logStreamName">The log stream name</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report>"/>, <paramref name="test"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="test"/>
         /// <paramref name="testStepRun"/>, <paramref name="logStreamName"/> or <paramref name="text"/> is null</exception>
         protected TestStepLogStreamEventArgs(Report report, TestData test, TestStepRun testStepRun, string logStreamName)
             : base(report, test, testStepRun)

@@ -36,7 +36,7 @@ namespace Gallio.Runner.Events
         /// <param name="testStepRun">The test step run</param>
         /// <param name="metadataKey">The metadata key</param>
         /// <param name="metadataValue">The metadata value</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report>"/>, <paramref name="test"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="test"/>
         /// <paramref name="testStepRun"/>, <paramref name="metadataKey"/> or <paramref name="metadataValue" /> is null</exception>
         public TestStepMetadataAddedEventArgs(Report report, TestData test, TestStepRun testStepRun, string metadataKey, string metadataValue)
             : base(report, test, testStepRun)

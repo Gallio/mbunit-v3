@@ -34,7 +34,7 @@ namespace Gallio.Runner.Events
         /// <param name="testStepRun">The test step run</param>
         /// <param name="logStreamName">The log stream name</param>
         /// <param name="sectionName">The name of the section that was started</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report>"/>, <paramref name="test"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="test"/>
         /// <paramref name="testStepRun"/>, <paramref name="logStreamName"/>, or <paramref name="sectionName"/> is null</exception>
         public TestStepLogStreamBeginSectionEventArgs(Report report, TestData test, TestStepRun testStepRun, string logStreamName, string sectionName)
             : base(report, test, testStepRun, logStreamName)

@@ -2940,7 +2940,7 @@ namespace MbUnit.Framework
 
         #region In, NotIn
         /// <summary>
-        /// Asserts that <paramref name="test"/> is in the dic <paramref name="list"/>.
+        /// Asserts that <paramref name="test"/> is in the dic <paramref name="dic"/>.
         /// </summary>
         static public void In(Object test, IDictionary dic)
         {
@@ -2948,7 +2948,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that <paramref name="test"/> is in the dic <paramref name="list"/>.
+        /// Asserts that <paramref name="test"/> is in the dic <paramref name="dic"/>.
         /// </summary>
         static public void In(Object test, IDictionary dic, string message)
         {
@@ -2999,7 +2999,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that <paramref name="test"/> is <strong>not</strong> in the dic <paramref name="list"/>.
+        /// Asserts that <paramref name="test"/> is <strong>not</strong> in the dic <paramref name="dic"/>.
         /// </summary>
         static public void NotIn(Object test, IDictionary dic, string message)
         {
@@ -3010,7 +3010,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Asserts that <paramref name="test"/> is <strong>not</strong> in the dic <paramref name="list"/>.
+        /// Asserts that <paramref name="test"/> is <strong>not</strong> in the dic <paramref name="dic"/>.
         /// </summary>
         static public void NotIn(Object test, IDictionary dic)
         {

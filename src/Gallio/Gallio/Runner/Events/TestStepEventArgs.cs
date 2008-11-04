@@ -35,7 +35,7 @@ namespace Gallio.Runner.Events
         /// <param name="report">The report</param>
         /// <param name="test">The test data</param>
         /// <param name="testStepRun">The test step run</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report>"/>, <paramref name="test"/>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/>, <paramref name="test"/>
         /// or <paramref name="testStepRun"/> is null</exception>
         protected TestStepEventArgs(Report report, TestData test, TestStepRun testStepRun)
         {
