@@ -80,7 +80,6 @@
     <Compile Include="Framework\AssertionExceptionTest.cs" />
     <Compile Include="Framework\Reflection\ReflectionExceptionTest.cs" />
     <Compile Include="Framework\ThreadedRepeatTest.cs" />
-    <Compile Include="Framework\ThreadedRepeatAdditionalUseCasesTest.cs" />
     <Compile Include="Integration\ContextOutcomeTest.cs" />
     <Compile Include="Integration\FixtureInheritanceTest.cs" />
     <Compile Include="Integration\WorkingDirectoryAndApplicationBaseTest.cs" />
