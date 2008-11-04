@@ -33,7 +33,7 @@ namespace Gallio.Tests.Framework.Formatting
         public void Format(string simulatedConversionResult, string expectedResult)
         {
             object value = new object();
-            IConverter converter = Mocks.CreateMock<IConverter>();
+            IConverter converter = Mocks.StrictMock<IConverter>();
             using (Mocks.Record())
             {
                 Expect.Call(converter.Convert(value, typeof(string))).Return(simulatedConversionResult);
@@ -53,7 +53,7 @@ namespace Gallio.Tests.Framework.Formatting
         [Row(typeof(DateTime), 100000000, FormattingRulePriority.Fallback, Description = "Object conversion with maximum cost, non-default ToString.")]
         public void GetPriority(Type type, int simulatedConversionCost, int? expectedPriority)
         {
-            IConverter converter = Mocks.CreateMock<IConverter>();
+            IConverter converter = Mocks.StrictMock<IConverter>();
             using (Mocks.Record())
             {
                 Expect.Call(converter.GetConversionCost(type, typeof(string))).Return(new ConversionCost(simulatedConversionCost));

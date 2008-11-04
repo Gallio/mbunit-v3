@@ -26,7 +26,7 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void Constructor_Test()
         {
-            ITestController testController = mocks.CreateMock<ITestController>();
+            ITestController testController = mocks.StrictMock<ITestController>();
             Expect.Call(testController.TestFrameworks).Return(new List<string>(new[] {"test"}));
             mocks.ReplayAll();
             AboutDialog aboutDialog = new AboutDialog(testController);

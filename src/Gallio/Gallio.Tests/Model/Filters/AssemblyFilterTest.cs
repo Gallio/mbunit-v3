@@ -37,7 +37,7 @@ namespace Gallio.Tests.Model.Filters
             base.SetUp();
 
             ICodeElementInfo codeElement = Reflector.Wrap(typeof(TypeFilterTest));
-            component = Mocks.CreateMock<ITestComponent>();
+            component = Mocks.StrictMock<ITestComponent>();
             SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
         }

@@ -373,7 +373,7 @@ namespace Gallio.Tests.Reflection.Impl
         [Test]
         public void GetXmlDocumentation_ReturnsNullIfAssemblyIsDynamic()
         {
-            ILogger mockLogger = Mocks.CreateMock<ILogger>();
+            ILogger mockLogger = Mocks.StrictMock<ILogger>();
             Mocks.ReplayAll();
 
             // The mock logger's type can't possibly have documentation because it is dynamically generated.

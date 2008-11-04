@@ -30,7 +30,7 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void PopulateListView_Test()
         {
-            IAnnotationsController annotationsController = mocks.CreateMock<IAnnotationsController>();
+            IAnnotationsController annotationsController = mocks.StrictMock<IAnnotationsController>();
             BindingList<AnnotationData> annotations = new BindingList<AnnotationData>(new List<AnnotationData>(new[]
             {
                 new AnnotationData(AnnotationType.Warning, CodeLocation.Unknown, new CodeReference(), "message", "details"), 

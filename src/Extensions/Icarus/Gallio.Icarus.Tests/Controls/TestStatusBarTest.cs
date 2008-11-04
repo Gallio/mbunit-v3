@@ -129,7 +129,7 @@ namespace Gallio.Icarus.Tests.Controls
         public void OnPaint_Test()
         {
             MockRepository mockRepository = new MockRepository();
-            Graphics g = mockRepository.CreateMock<Graphics>();
+            Graphics g = mockRepository.StrictMock<Graphics>();
             using (mockRepository.Record())
             {
                 g.FillRectangle(new SolidBrush(Color.Black), new Rectangle());

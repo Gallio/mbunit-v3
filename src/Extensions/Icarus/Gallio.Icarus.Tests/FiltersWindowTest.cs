@@ -28,9 +28,9 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void Constructor_Test()
         {
-            IProjectController projectController = mocks.CreateMock<IProjectController>();
+            IProjectController projectController = mocks.StrictMock<IProjectController>();
             Expect.Call(projectController.TestFilters).Return(new BindingList<FilterInfo>(new List<FilterInfo>()));
-            ITestController testController = mocks.CreateMock<ITestController>();
+            ITestController testController = mocks.StrictMock<ITestController>();
             mocks.ReplayAll();
             FiltersWindow filtersWindow = new FiltersWindow(projectController, testController);
         }

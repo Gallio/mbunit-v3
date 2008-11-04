@@ -27,7 +27,7 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void Constructor_Test()
         {
-            IProjectController projectController = mocks.CreateMock<IProjectController>();
+            IProjectController projectController = mocks.StrictMock<IProjectController>();
             Expect.Call(projectController.HintDirectories).Return(new BindingList<string>(new List<string>()));
             mocks.ReplayAll();
             PropertiesWindow propertiesWindow = new PropertiesWindow(projectController);

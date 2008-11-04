@@ -25,10 +25,10 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void Constructor_Test()
         {
-            ITestController testController = mocks.CreateMock<ITestController>();
+            ITestController testController = mocks.StrictMock<ITestController>();
             testController.ProgressUpdate += null;
             LastCall.IgnoreArguments();
-            IOptionsController optionsController = mocks.CreateMock<IOptionsController>();
+            IOptionsController optionsController = mocks.StrictMock<IOptionsController>();
             mocks.ReplayAll();
             ProgressMonitor progressMonitor = new ProgressMonitor(testController, optionsController);
         }

@@ -45,7 +45,7 @@ namespace Gallio.Tests.Framework.Data
                 new DataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[] {
-                Mocks.CreateMock<IDataProvider>()
+                Mocks.StrictMock<IDataProvider>()
             };
 
             using (Mocks.Record())
@@ -80,14 +80,14 @@ namespace Gallio.Tests.Framework.Data
                 new DataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[] {
-                Mocks.CreateMock<IDataProvider>(),
-                Mocks.CreateMock<IDataProvider>(),
-                Mocks.CreateMock<IDataProvider>()
+                Mocks.StrictMock<IDataProvider>(),
+                Mocks.StrictMock<IDataProvider>(),
+                Mocks.StrictMock<IDataProvider>()
             };
 
             using (Mocks.Record())
             {
-                IDataItem badItem = Mocks.CreateMock<IDataItem>();
+                IDataItem badItem = Mocks.StrictMock<IDataItem>();
                 Expect.Call(badItem.GetValue(bindings[0])).Throw(new InvalidOperationException("Test exception"));
 
                 Expect.Call(providers[0].GetItems(bindings, true)).Return(new IDataItem[] {

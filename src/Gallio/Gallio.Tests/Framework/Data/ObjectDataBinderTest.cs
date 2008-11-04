@@ -66,7 +66,7 @@ namespace Gallio.Tests.Framework.Data
             DataSource source = new DataSource("data");
             source.AddDataSet(new ItemSequenceDataSet(new IDataItem[] { new ListDataItem<object>(new object[] { 42, typeof(int) }, null, false) }, 2));
 
-            IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();
+            IDataSourceResolver resolver = Mocks.StrictMock<IDataSourceResolver>();
             
             using (Mocks.Record())
             {

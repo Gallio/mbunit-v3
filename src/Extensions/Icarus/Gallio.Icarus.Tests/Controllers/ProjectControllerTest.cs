@@ -31,7 +31,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void AddAssemblies_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.CreateMock<IProjectTreeModel>();
+            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
             Project project = new Project();
             Expect.Call(projectTreeModel.Project).Return(project).Repeat.Times(4);
             mocks.ReplayAll();
@@ -47,7 +47,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void DeleteFilter_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.CreateMock<IProjectTreeModel>();
+            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
             Project project = new Project();
             Expect.Call(projectTreeModel.Project).Return(project).Repeat.Times(4);
             mocks.ReplayAll();
@@ -63,7 +63,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void GetFilter_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.CreateMock<IProjectTreeModel>();
+            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
             Project project = new Project();
             Expect.Call(projectTreeModel.Project).Return(project).Repeat.Times(3);
             mocks.ReplayAll();
@@ -78,7 +78,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void Model_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.CreateMock<IProjectTreeModel>();
+            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
             mocks.ReplayAll();
             ProjectController projectController = new ProjectController(projectTreeModel);
             Assert.AreEqual(projectTreeModel, projectController.Model);
@@ -87,7 +87,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void TestPackageConfig_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.CreateMock<IProjectTreeModel>();
+            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
             Project project = new Project();
             Expect.Call(projectTreeModel.Project).Return(project);
 
@@ -100,7 +100,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void TestFilters_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.CreateMock<IProjectTreeModel>();
+            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
 
             mocks.ReplayAll();
 
@@ -111,7 +111,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void HintDirectories_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.CreateMock<IProjectTreeModel>();
+            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
 
             mocks.ReplayAll();
 
@@ -122,7 +122,7 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ProjectFileName_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.CreateMock<IProjectTreeModel>();
+            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
             const string fileName = "fileName";
             Expect.Call(projectTreeModel.FileName).Return(fileName);
 

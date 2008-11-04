@@ -35,7 +35,7 @@ namespace Gallio.Tests.Runtime
         [Test]
         public void GetNamesDelegatesToTheRuntime()
         {
-            IRuntime runtime = Mocks.CreateMock<IRuntime>();
+            IRuntime runtime = Mocks.StrictMock<IRuntime>();
 
             using (Mocks.Record())
             {
@@ -60,7 +60,7 @@ namespace Gallio.Tests.Runtime
         [Test]
         public void ResolveDelegatesToTheRuntime()
         {
-            IRuntime runtime = Mocks.CreateMock<IRuntime>();
+            IRuntime runtime = Mocks.StrictMock<IRuntime>();
             DummyRegisteredComponent[] components = new DummyRegisteredComponent[]
             {
                 new DummyRegisteredComponent("abc"),

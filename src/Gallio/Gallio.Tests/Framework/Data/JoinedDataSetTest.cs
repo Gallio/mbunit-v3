@@ -59,8 +59,8 @@ namespace Gallio.Tests.Framework.Data
         {
             JoinedDataSet dataSet = new JoinedDataSet();
 
-            IDataSet dataSetWithTwoColumns = Mocks.CreateMock<IDataSet>();
-            IDataSet dataSetWithThreeColumns = Mocks.CreateMock<IDataSet>();
+            IDataSet dataSetWithTwoColumns = Mocks.StrictMock<IDataSet>();
+            IDataSet dataSetWithThreeColumns = Mocks.StrictMock<IDataSet>();
 
             using (Mocks.Record())
             {
@@ -202,7 +202,7 @@ namespace Gallio.Tests.Framework.Data
             results.Add(new IDataItem[] { dataSet1Items[0], dataSet2Items[0] });
             results.Add(new IDataItem[] { dataSet1Items[1], dataSet2Items[1] });
 
-            IJoinStrategy strategy = Mocks.CreateMock<IJoinStrategy>();
+            IJoinStrategy strategy = Mocks.StrictMock<IJoinStrategy>();
             dataSet.Strategy = strategy;
 
             DataBinding pathBinding = new DataBinding(null, "path");
@@ -279,8 +279,8 @@ namespace Gallio.Tests.Framework.Data
         {
             JoinedDataSet dataSet = new JoinedDataSet();
 
-            IDataSet dataSetWithTwoColumns = Mocks.CreateMock<IDataSet>();
-            IDataSet dataSetWithThreeColumns = Mocks.CreateMock<IDataSet>();
+            IDataSet dataSetWithTwoColumns = Mocks.StrictMock<IDataSet>();
+            IDataSet dataSetWithThreeColumns = Mocks.StrictMock<IDataSet>();
 
             using (Mocks.Record())
             {

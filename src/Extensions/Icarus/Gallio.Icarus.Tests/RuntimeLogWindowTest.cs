@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void LogMessage_Test()
         {
-            IRuntimeLogController runtimeLogController = mocks.CreateMock<IRuntimeLogController>();
+            IRuntimeLogController runtimeLogController = mocks.StrictMock<IRuntimeLogController>();
             runtimeLogController.LogMessage += null;
             IEventRaiser logMessage = LastCall.IgnoreArguments().GetEventRaiser();
             mocks.ReplayAll();

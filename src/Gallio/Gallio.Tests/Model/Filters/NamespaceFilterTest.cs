@@ -44,7 +44,7 @@ namespace Gallio.Tests.Model.Filters
         {
             ICodeElementInfo codeElement = type != null ? Reflector.Wrap(type) : null;
 
-            ITestComponent component = Mocks.CreateMock<ITestComponent>();
+            ITestComponent component = Mocks.StrictMock<ITestComponent>();
             SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
 

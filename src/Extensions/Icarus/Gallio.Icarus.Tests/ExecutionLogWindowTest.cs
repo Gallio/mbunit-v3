@@ -25,7 +25,7 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void Constructor_Test()
         {
-            IExecutionLogController executionLogController = mocks.CreateMock<IExecutionLogController>();
+            IExecutionLogController executionLogController = mocks.StrictMock<IExecutionLogController>();
             executionLogController.ExecutionLogUpdated += null;
             LastCall.IgnoreArguments();
             executionLogController.ExecutionLogReset += null;

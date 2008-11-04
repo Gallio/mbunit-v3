@@ -43,9 +43,9 @@ namespace Gallio.Tests.Framework.Conversions
 
             using (Mocks.Record())
             {
-                rules.Add(Mocks.CreateMock<IConversionRule>());
-                rules.Add(Mocks.CreateMock<IConversionRule>());
-                rules.Add(Mocks.CreateMock<IConversionRule>());
+                rules.Add(Mocks.StrictMock<IConversionRule>());
+                rules.Add(Mocks.StrictMock<IConversionRule>());
+                rules.Add(Mocks.StrictMock<IConversionRule>());
 
                 converter = new RuleBasedConverter(rules.ToArray());
 
@@ -68,8 +68,8 @@ namespace Gallio.Tests.Framework.Conversions
 
             using (Mocks.Record())
             {
-                rules.Add(Mocks.CreateMock<IConversionRule>());
-                rules.Add(Mocks.CreateMock<IConversionRule>());
+                rules.Add(Mocks.StrictMock<IConversionRule>());
+                rules.Add(Mocks.StrictMock<IConversionRule>());
 
                 converter = new RuleBasedConverter(rules.ToArray());
 
@@ -94,8 +94,8 @@ namespace Gallio.Tests.Framework.Conversions
 
             using (Mocks.Record())
             {
-                rules.Add(Mocks.CreateMock<IConversionRule>());
-                rules.Add(Mocks.CreateMock<IConversionRule>());
+                rules.Add(Mocks.StrictMock<IConversionRule>());
+                rules.Add(Mocks.StrictMock<IConversionRule>());
 
                 converter = new RuleBasedConverter(rules.ToArray());
 
@@ -120,7 +120,7 @@ namespace Gallio.Tests.Framework.Conversions
 
             using (Mocks.Record())
             {
-                rules.Add(Mocks.CreateMock<IConversionRule>());
+                rules.Add(Mocks.StrictMock<IConversionRule>());
 
                 converter = new RuleBasedConverter(rules.ToArray());
 
@@ -206,7 +206,7 @@ namespace Gallio.Tests.Framework.Conversions
 
             using (Mocks.Record())
             {
-                rules.Add(Mocks.CreateMock<IConversionRule>());
+                rules.Add(Mocks.StrictMock<IConversionRule>());
                 converter = new RuleBasedConverter(rules.ToArray());
 
                 Expect.Call(rules[0].GetConversionCost(typeof(int), typeof(double), converter)).Return(ConversionCost.Best);

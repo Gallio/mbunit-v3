@@ -40,7 +40,7 @@ namespace Gallio.Tests.Model.Filters
                 ? Reflector.Wrap((MemberInfo) GetType().GetMethod(memberName, BindingFlags.Static | BindingFlags.NonPublic))
                 : null;
 
-            ITestComponent component = Mocks.CreateMock<ITestComponent>();
+            ITestComponent component = Mocks.StrictMock<ITestComponent>();
             SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
 

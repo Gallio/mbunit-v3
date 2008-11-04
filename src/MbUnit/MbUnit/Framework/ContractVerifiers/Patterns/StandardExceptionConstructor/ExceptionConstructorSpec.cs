@@ -18,13 +18,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
-namespace MbUnit.Framework.ContractVerifiers.Patterns
+namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstructor
 {
     /// <summary>
-    /// Represents the specifications for invoking a exception constructor.
-    /// TODO: Remove that class once data-driven tests are supported.
+    /// Represents specifications for the invocation 
+    /// of an exception type constructor.
     /// </summary>
-    public sealed class ExceptionConstructorSpec
+    internal sealed class ExceptionConstructorSpec
     {
         private object[] parameters;
 
@@ -32,7 +32,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         /// Obtains an instance of the exception type based on
         /// the parameters specified in the specifications.
         /// </summary>
-        /// <param name="ctor"></param>
+        /// <param name="ctor">Information about the constructor.</param>
         /// <returns></returns>
         public Exception GetInstance(ConstructorInfo ctor)
         {

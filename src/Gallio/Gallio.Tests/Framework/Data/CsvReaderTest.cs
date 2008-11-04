@@ -111,7 +111,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void CloseClosesTheTextReader()
         {
-            TextReader mockTextReader = Mocks.CreateMock<TextReader>();
+            TextReader mockTextReader = Mocks.StrictMock<TextReader>();
             mockTextReader.Close();
 
             Mocks.ReplayAll();
@@ -123,7 +123,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void DisposeClosesTheTextReader()
         {
-            TextReader mockTextReader = Mocks.CreateMock<TextReader>();
+            TextReader mockTextReader = Mocks.StrictMock<TextReader>();
             mockTextReader.Close();
 
             Mocks.ReplayAll();

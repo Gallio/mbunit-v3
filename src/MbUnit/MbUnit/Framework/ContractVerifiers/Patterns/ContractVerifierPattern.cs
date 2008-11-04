@@ -1,38 +1,23 @@
-﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
-// Portions Copyright 2000-2004 Jonathan de Halleux
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Framework.Pattern;
+using Gallio.Model;
 using Gallio.Framework.Data;
 using Gallio.Reflection;
 using System.Collections;
 using Gallio.Framework.Assertions;
 using System.Reflection;
-using Gallio.Model;
 
 namespace MbUnit.Framework.ContractVerifiers.Patterns
 {
     /// <summary>
-    /// Abstract builder of pattern test for a contract verifier.
+    /// Abstract test pattern for contract verifiers.
     /// </summary>
-    public abstract class PatternTestBuilder
+    public abstract class ContractVerifierPattern
     {
         /// <summary>
-        /// Gets the name of the pattern test.
+        /// Gets the name of the test pattern.
         /// </summary>
         protected abstract string Name
         {
@@ -40,35 +25,13 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         }
 
         /// <summary>
-        /// Runs the pattern test action.
+        /// Runs the test pattern action.
         /// </summary>
-        protected abstract void Run(PatternTestInstanceState state);
+        /// <param name="state"></param>
+        protected internal abstract void Run(IContractVerifierPatternInstanceState state);
 
         /// <summary>
-        /// Constructs a pattern test builder.
-        /// </summary>
-        /// <param name="targetType">The tested type.</param>
-        protected PatternTestBuilder(Type targetType)
-        {
-            if (targetType == null)
-            {
-                throw new ArgumentNullException("targetType");
-            }
-
-            this.TargetType = targetType;
-        }
-
-        /// <summary>
-        /// Gets the target type.
-        /// </summary>
-        protected Type TargetType
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Builds the pattern test, then adds it 
+        /// Builds the test pattern, then adds it 
         /// to the evaluation scope as a new child test.
         /// </summary>
         /// <param name="scope">The scope of the test pattern.</param>
@@ -88,44 +51,48 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                 });
 
             test.TestInstanceActions.ExecuteTestInstanceChain.After(
-                new Action<PatternTestInstanceState>(Run));
+                state =>
+                {
+                    Run(new ContractVerifierPatternInstanceState(
+                        state.FixtureType, state.FixtureInstance));
+                });
         }
 
         /// <summary>
-        /// Helper method which returns a string describing the signature 
-        /// of a constructor.
-        /// Example: ".ctor(SerializationInfo, StreamingContext)"
+        /// Helper methods that builds a friendly displayable constructor signature.
         /// </summary>
-        /// <param name="parameters">The parameter types of the constructor.</param>
+        /// <param name="types">The parameter types of the constructor.</param>
         /// <returns></returns>
-        protected static string GetConstructorSignature(Type[] parameters)
+        protected static string GetConstructorSignature(IEnumerable<Type> types)
         {
             StringBuilder output = new StringBuilder(".ctor(");
+            bool first = true;
 
-            for (int i = 0; i < parameters.Length; i++)
+            foreach (var type in types)
             {
-                if (i != 0)
+                if (!first)
                 {
                     output.Append(", ");
                 }
 
-                output.Append(parameters[i].Name);
+                output.Append(type.Name);
+                first = false;
             }
 
-            output.Append(")");
-            return output.ToString();
+            return output.Append(")").ToString();
         }
 
         /// <summary>
         /// Casts the instance of the test fixture into a provider of equivalence classes, 
         /// then returns the resulting collection as an enumeration.
         /// </summary>
+        /// <param name="targetType">The target evaluated type.</param>
         /// <param name="fixtureType">The test fixture type.</param>
         /// <param name="fixtureInstance">The test fixture instance.</param>
         /// <returns></returns>
-        protected IEnumerable GetEquivalentClasses(Type fixtureType, object fixtureInstance)
+        protected static IEnumerable GetEquivalentClasses(Type targetType, Type fixtureType, object fixtureInstance)
         {
-            Type interfaceType = GetIEquivalenceClassProviderInterface(fixtureType);
+            Type interfaceType = GetIEquivalenceClassProviderInterface(targetType, fixtureType);
 
             AssertionHelper.Verify(() =>
             {
@@ -134,7 +101,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
 
                 return new AssertionFailureBuilder("Expected the contract verifier to implement a particular interface.")
                     .AddLabeledValue("Contract Verifier", "Equality")
-                    .AddLabeledValue("Expected Interface", "IEquivalentClassProvider<" + TargetType + ">")
+                    .AddLabeledValue("Expected Interface", "IEquivalentClassProvider<" + targetType.Name + ">")
                     .ToAssertionFailure();
             });
 
@@ -159,12 +126,13 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         /// Returns the target type as a generic IEquatable interface, or
         /// a null reference if it does not implement such an interface.
         /// </summary>
+        /// <param name="targetType">The target evaluated type.</param>
+        /// <param name="fixtureType">The test fixture type.</param>
         /// <returns>The interface type or a null reference.</returns>
-        protected Type GetIEquivalenceClassProviderInterface(Type fixtureType)
+        protected static Type GetIEquivalenceClassProviderInterface(Type targetType, Type fixtureType)
         {
             return GetInterface(fixtureType, typeof(IEquivalenceClassProvider<>)
-                .MakeGenericType(TargetType));
+                .MakeGenericType(targetType));
         }
-
     }
 }

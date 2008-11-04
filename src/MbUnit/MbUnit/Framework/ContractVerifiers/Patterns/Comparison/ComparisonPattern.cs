@@ -19,66 +19,36 @@ using System.Text;
 using Gallio.Framework.Pattern;
 using Gallio.Framework.Assertions;
 using System.Collections;
-using Gallio;
 using System.Reflection;
+using Gallio;
 
-namespace MbUnit.Framework.ContractVerifiers.Patterns
+namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
 {
     /// <summary>
-    /// Builder of pattern test for the contract verifiers.
-    /// The generated test verifies that all a comparison
-    /// operator/method works as expected.
+    /// General purpose test pattern for contract verifiers.
+    /// It verifies that a given method evaluating comparison between
+    /// two instances, returns the expected result according to
+    /// the equivalence class the objects belongs to.
     /// </summary>
-    /// <typeparam name="T">The type of the result returned by the comparison method/operator.</typeparam>
-    public class PatternTestBuilderCompares<T> : PatternTestBuilder
+    /// <typeparam name="T">The type of the results provided by
+    /// the comparison method. Usually a Int32 or a Boolean.</typeparam>
+    internal class ComparisonPattern<T> : ContractVerifierPattern
+        where T : struct
     {
-        private string friendlyName;
-        private MethodInfo comparisonMethod;
-        private string signatureDescription;
-        private Func<int, int, T> refers;
-        private Func<T, string> formatResult;
-        private Func<T, T> postProcess;
+        private ComparisonPatternSettings<T> settings;
 
         /// <summary>
-        /// Constructs a pattern test builder.
-        /// The resulting test verifies that the target type has
-        /// the specified attribute.
+        /// Constructor.
         /// </summary>
-        /// <param name="targetType">The target type.</param>
-        /// <param name="friendlyName">A friendly name for the equality operation.</param>
-        /// <param name="signatureDescription">A friendly signature description.</param>
-        /// <param name="comparisonMethod">The equality operation</param>
-        /// <param name="refers">An equivalent comparison method which gives the same results with Int32 parameters.</param>
-        /// <param name="formatResult">A function which formats the result into a friendly text.</param>
-        /// <param name="postProcess">Post-processor function for the result of the comparison method, in 
-        /// order to make it comparable with the result of the reference.</param>
-        public PatternTestBuilderCompares(Type targetType, string friendlyName,
-            string signatureDescription, MethodInfo comparisonMethod, Func<int, int, T> refers,
-            Func<T, string> formatResult, Func<T, T> postProcess)
-            : base(targetType)
+        /// <param name="settings">Settings.</param>
+        internal ComparisonPattern(ComparisonPatternSettings<T> settings)
         {
-            this.friendlyName = friendlyName;
-            this.comparisonMethod = comparisonMethod;
-            this.signatureDescription = signatureDescription;
-            this.refers = refers;
-            this.formatResult = formatResult;
-            this.postProcess = postProcess;
-        }
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
 
-        /// <summary>
-        /// Constructs a pattern test builder.
-        /// The resulting test verifies that the target type has
-        /// the specified attribute.
-        /// </summary>
-        /// <param name="targetType">The target type.</param>
-        /// <param name="friendlyName">A friendly name for the equality operation.</param>
-        /// <param name="signatureDescription">A friendly signature description.</param>
-        /// <param name="comparisonMethod">The equality operation</param>
-        /// <param name="refers">An equivalent comparison method which gives the same results with Int32 parameters.</param>
-        public PatternTestBuilderCompares(Type targetType, string friendlyName,
-            string signatureDescription, MethodInfo comparisonMethod, Func<int, int, T> refers)
-            : this(targetType, friendlyName, signatureDescription, comparisonMethod, refers, x => x.ToString(), x => x)
-        {
+            this.settings = settings;
         }
 
         /// <inheritdoc />
@@ -86,34 +56,34 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         {
             get
             {
-                return friendlyName;
+                return settings.Name;
             }
         }
 
         /// <inheritdoc />
-        protected override void Run(PatternTestInstanceState state)
+        protected internal override void Run(IContractVerifierPatternInstanceState state)
         {
             AssertionHelper.Verify(() =>
             {
-                if (comparisonMethod != null)
+                if (settings.ComparisonMethodInfo != null)
                     return null;
 
                 return new AssertionFailureBuilder("Comparison method/operator expected to be implemented.")
-                    .AddLabeledValue("Expected Method", signatureDescription)
+                    .AddLabeledValue("Expected Method", settings.SignatureDescription)
                     .ToAssertionFailure();
             });
 
             VerifyComparisonContract(state.FixtureType, state.FixtureInstance,
-                (a, b) => postProcess(comparisonMethod.IsStatic ?
-                        (T)comparisonMethod.Invoke(null, new object[] { a, b }) :
-                        (T)comparisonMethod.Invoke(a, new object[] { b })));
+                (a, b) => settings.PostProcesses(settings.ComparisonMethodInfo.IsStatic ?
+                        (T)settings.ComparisonMethodInfo.Invoke(null, new object[] { a, b }) :
+                        (T)settings.ComparisonMethodInfo.Invoke(a, new object[] { b })));
         }
 
         private void VerifyComparisonContract(Type fixtureType, object fixtureInstance, Func<object, object, T> compares)
         {
             // Get the equivalence classes before entering the multiple assertion block in
             // order to catch any missing implementation of IEquivalentClassProvider<T> before.
-            IEnumerable equivalenceClasses = GetEquivalentClasses(fixtureType, fixtureInstance);
+            IEnumerable equivalenceClasses = GetEquivalentClasses(settings.TargetType, fixtureType, fixtureInstance);
 
             Assert.Multiple(() =>
             {
@@ -124,9 +94,9 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                 {
                     int j = 0;
 
-                    foreach (object b in GetEquivalentClasses(fixtureType, fixtureInstance))
+                    foreach (object b in GetEquivalentClasses(settings.TargetType, fixtureType, fixtureInstance))
                     {
-                        CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, postProcess(refers(i, j)), compares);
+                        CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, settings.PostProcesses(settings.Refers(i, j)), compares);
                         j++;
                     }
 
@@ -141,7 +111,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
             {
                 VerifyNullReferenceComparison(x, compares);
 
-                if (comparisonMethod.IsStatic)
+                if (settings.ComparisonMethodInfo.IsStatic)
                 {
                     foreach (object y in b)
                     {
@@ -154,8 +124,8 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                             return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
                                 .AddRawLabeledValue("Left Value", x)
                                 .AddRawLabeledValue("Right Value", y)
-                                .AddLabeledValue("Expected Result", formatResult(expectedResult))
-                                .AddLabeledValue("Actual Result", formatResult(actualResult))
+                                .AddLabeledValue("Expected Result", settings.Formats(expectedResult))
+                                .AddLabeledValue("Actual Result", settings.Formats(actualResult))
                                 .ToAssertionFailure();
                         });
                     }
@@ -165,12 +135,12 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
 
         private void VerifyEqualityBetweenTwoNullReferences(Func<object, object, T> compares)
         {
-            if (!TargetType.IsValueType && comparisonMethod.IsStatic)
+            if (!settings.TargetType.IsValueType && settings.ComparisonMethodInfo.IsStatic)
             {
                 AssertionHelper.Verify(() =>
                 {
                     T actualResult;
-                    T expectedResult = postProcess(refers(0, 0));
+                    T expectedResult = settings.PostProcesses(settings.Refers(0, 0));
 
                     try
                     {
@@ -183,7 +153,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                         return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
                             .AddRawLabeledValue("Left Value", null)
                             .AddRawLabeledValue("Right Value", null)
-                            .AddLabeledValue("Expected Result", formatResult(expectedResult))
+                            .AddLabeledValue("Expected Result", settings.Formats(expectedResult))
                             .AddRawLabeledValue("Actual Result", exception.InnerException)
                             .ToAssertionFailure();
                     }
@@ -192,7 +162,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                         return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
                             .AddRawLabeledValue("Left Value", null)
                             .AddRawLabeledValue("Right Value", null)
-                            .AddLabeledValue("Expected Result", formatResult(expectedResult))
+                            .AddLabeledValue("Expected Result", settings.Formats(expectedResult))
                             .AddRawLabeledValue("Actual Result", exception)
                             .ToAssertionFailure();
                     }
@@ -200,8 +170,8 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                     return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
                         .AddRawLabeledValue("Left Value", null)
                         .AddRawLabeledValue("Right Value", null)
-                        .AddLabeledValue("Expected Result", formatResult(expectedResult))
-                        .AddLabeledValue("Actual Result", formatResult(actualResult))
+                        .AddLabeledValue("Expected Result", settings.Formats(expectedResult))
+                        .AddLabeledValue("Actual Result", settings.Formats(actualResult))
                         .ToAssertionFailure();
                 });
             }
@@ -209,29 +179,29 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
 
         private void VerifyNullReferenceComparison(object x, Func<object, object, T> compares)
         {
-            if (!TargetType.IsValueType)
+            if (!settings.TargetType.IsValueType)
             {
                 AssertionHelper.Verify(() =>
                 {
                     T actualResult = compares(x, null);
-                    T expectedResult = postProcess(refers(0, Int32.MinValue));
+                    T expectedResult = settings.PostProcesses(settings.Refers(0, Int32.MinValue));
                     if (expectedResult.Equals(actualResult))
                         return null;
 
                     return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
                         .AddRawLabeledValue("Left Value", x)
                         .AddRawLabeledValue("Right Value", null)
-                        .AddLabeledValue("Expected Result", formatResult(expectedResult))
-                        .AddLabeledValue("Actual Result", formatResult(actualResult))
+                        .AddLabeledValue("Expected Result", settings.Formats(expectedResult))
+                        .AddLabeledValue("Actual Result", settings.Formats(actualResult))
                         .ToAssertionFailure();
                 });
 
-                if (comparisonMethod.IsStatic)
+                if (settings.ComparisonMethodInfo.IsStatic)
                 {
                     AssertionHelper.Verify(() =>
                     {
                         T actualResult;
-                        T expectedResult = postProcess(refers(Int32.MinValue, 0));
+                        T expectedResult = settings.PostProcesses(settings.Refers(Int32.MinValue, 0));
 
                         try
                         {
@@ -244,7 +214,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                             return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
                                 .AddRawLabeledValue("Left Value", null)
                                 .AddRawLabeledValue("Right Value", x)
-                                .AddLabeledValue("Expected Result", formatResult(expectedResult))
+                                .AddLabeledValue("Expected Result", settings.Formats(expectedResult))
                                 .AddRawLabeledValue("Actual Result", exception.InnerException)
                                 .ToAssertionFailure();
                         }
@@ -253,7 +223,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                             return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
                                 .AddRawLabeledValue("Left Value", null)
                                 .AddRawLabeledValue("Right Value", x)
-                                .AddLabeledValue("Expected Result", formatResult(expectedResult))
+                                .AddLabeledValue("Expected Result", settings.Formats(expectedResult))
                                 .AddRawLabeledValue("Actual Result", exception)
                                 .ToAssertionFailure();
                         }
@@ -261,13 +231,12 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                         return new AssertionFailureBuilder("The comparison result between left and right values does not meet expectations.")
                             .AddRawLabeledValue("Left Value", null)
                             .AddRawLabeledValue("Right Value", x)
-                            .AddLabeledValue("Expected Result", formatResult(expectedResult))
-                            .AddLabeledValue("Actual Result", formatResult(actualResult))
+                            .AddLabeledValue("Expected Result", settings.Formats(expectedResult))
+                            .AddLabeledValue("Actual Result", settings.Formats(actualResult))
                             .ToAssertionFailure();
                     });
                 }
             }
         }
-
     }
 }

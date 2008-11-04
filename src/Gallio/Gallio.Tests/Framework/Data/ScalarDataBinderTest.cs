@@ -44,7 +44,7 @@ namespace Gallio.Tests.Framework.Data
         {
             ScalarDataBinder binder = new ScalarDataBinder( new DataBinding(0, null), "name");
 
-            IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();
+            IDataSourceResolver resolver = Mocks.StrictMock<IDataSourceResolver>();
 
             using (Mocks.Record())
             {
@@ -64,7 +64,7 @@ namespace Gallio.Tests.Framework.Data
             DataBinding binding = new DataBinding(0, null);
             ScalarDataBinder binder = new ScalarDataBinder(binding, "name");
 
-            IDataSourceResolver resolver = Mocks.CreateMock<IDataSourceResolver>();
+            IDataSourceResolver resolver = Mocks.StrictMock<IDataSourceResolver>();
             DataBindingContext context = new DataBindingContext(new NullConverter());
 
             DataSource source = new DataSource("name");

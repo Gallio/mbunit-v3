@@ -50,7 +50,7 @@ namespace Gallio.Navigator.Tests
         {
             MockRepository mocks = new MockRepository();
 
-            IGallioNavigator navigator = mocks.CreateMock<IGallioNavigator>();
+            IGallioNavigator navigator = mocks.StrictMock<IGallioNavigator>();
             using (mocks.Record())
             {
                 Expect.Call(navigator.NavigateTo(

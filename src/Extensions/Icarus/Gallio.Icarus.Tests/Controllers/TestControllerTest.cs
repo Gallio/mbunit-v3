@@ -38,7 +38,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunnerService.SetFilter(filter);
             LastCall.IgnoreArguments();
 
-            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
             testTreeModel.ApplyFilter(filter);
             LastCall.IgnoreArguments();
             
@@ -50,7 +50,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
         ITestRunnerService SetupTestRunnerService()
         {
-            ITestRunnerService testRunnerService = mocks.CreateMock<ITestRunnerService>();
+            ITestRunnerService testRunnerService = mocks.StrictMock<ITestRunnerService>();
             testRunnerService.TestStepFinished += delegate { };
             LastCall.IgnoreArguments();
             testRunnerService.ProgressUpdate += delegate { };
@@ -64,7 +64,7 @@ namespace Gallio.Icarus.Tests.Controllers
             ITestRunnerService testRunnerService = SetupTestRunnerService();
             testRunnerService.Cancel();
 
-            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
 
             mocks.ReplayAll();
 
@@ -77,7 +77,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             Filter<ITest> filter = new NoneFilter<ITest>();
 
-            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
             Expect.Call(testTreeModel.GetCurrentFilter()).Return(filter);
 
             ITestRunnerService testRunnerService = SetupTestRunnerService();
@@ -93,7 +93,7 @@ namespace Gallio.Icarus.Tests.Controllers
         public void Selected_Tests_Test()
         {
             ITestRunnerService testRunnerService = SetupTestRunnerService();
-            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
 
             mocks.ReplayAll();
 
@@ -105,7 +105,7 @@ namespace Gallio.Icarus.Tests.Controllers
         public void Model_Test()
         {
             ITestRunnerService testRunnerService = SetupTestRunnerService();
-            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
 
             mocks.ReplayAll();
 
@@ -119,7 +119,7 @@ namespace Gallio.Icarus.Tests.Controllers
             List<string> testFrameworks = new List<string>();
             ITestRunnerService testRunnerService = SetupTestRunnerService();
             Expect.Call(testRunnerService.TestFrameworks).Return(testFrameworks);
-            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
 
             mocks.ReplayAll();
 
@@ -131,7 +131,7 @@ namespace Gallio.Icarus.Tests.Controllers
         public void TestCount_Test()
         {
             ITestRunnerService testRunnerService = SetupTestRunnerService();
-            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
             const int testCount = 0;
             Expect.Call(testTreeModel.TestCount).Return(testCount);
 
@@ -146,7 +146,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             ITestRunnerService testRunnerService = SetupTestRunnerService();
             Expect.Call(testRunnerService.Report).Return(new LockBox<Report>(new Report()));
-            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
             testTreeModel.ResetTestStatus();
             mocks.ReplayAll();
             TestController testController = new TestController(testRunnerService, testTreeModel);

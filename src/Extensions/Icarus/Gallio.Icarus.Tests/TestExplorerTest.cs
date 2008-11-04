@@ -29,9 +29,9 @@ namespace Gallio.Icarus.Tests
         public void Constructor_Test()
         {
             const string treeViewCategory = "test";
-            IProjectController projectController = mocks.CreateMock<IProjectController>();
-            ITestController testController = mocks.CreateMock<ITestController>();
-            IOptionsController optionsController = mocks.CreateMock<IOptionsController>();
+            IProjectController projectController = mocks.StrictMock<IProjectController>();
+            ITestController testController = mocks.StrictMock<ITestController>();
+            IOptionsController optionsController = mocks.StrictMock<IOptionsController>();
             Expect.Call(optionsController.SelectedTreeViewCategories).Return(
                 new BindingList<string>(new List<string>(new[] {treeViewCategory})));
             Expect.Call(testController.Model).Return(new TestTreeModel()).Repeat.AtLeastOnce();

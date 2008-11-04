@@ -61,7 +61,7 @@ namespace Gallio.Icarus.Tests.Controllers
             report.TestPackageRun.RootTestStepRun = testStepRun;
 
             SetupResult.For(testController.Report).Return(new LockBox<Report>(report));
-            ITestTreeModel testTreeModel = mocks.CreateMock<ITestTreeModel>();
+            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
             SetupResult.For(testController.Model).Return(testTreeModel);
             TestTreeNode root = new TestTreeNode("root", "root", "root");
             SetupResult.For(testTreeModel.Root).Return(root);
@@ -84,7 +84,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
         ITestController SetupTestController()
         {
-            ITestController testController = mocks.CreateMock<ITestController>();
+            ITestController testController = mocks.StrictMock<ITestController>();
             SetupResult.For(testController.SelectedTests).Return(selectedTests);
 
             testController.TestStepFinished += null;

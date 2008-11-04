@@ -35,9 +35,9 @@ namespace Gallio.Tests.Framework.Data
             };
 
             IDataProvider[] providers = new IDataProvider[] {
-                Mocks.CreateMock<IDataProvider>(),
-                Mocks.CreateMock<IDataProvider>(),
-                Mocks.CreateMock<IDataProvider>()
+                Mocks.StrictMock<IDataProvider>(),
+                Mocks.StrictMock<IDataProvider>(),
+                Mocks.StrictMock<IDataProvider>()
             };
 
             IDataItem[][] itemsPerProvider = new IDataItem[][] {

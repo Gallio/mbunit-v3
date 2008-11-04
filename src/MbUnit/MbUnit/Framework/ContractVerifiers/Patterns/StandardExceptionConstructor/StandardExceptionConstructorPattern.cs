@@ -22,44 +22,29 @@ using System.Reflection;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace MbUnit.Framework.ContractVerifiers.Patterns
+namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstructor
 {
     /// <summary>
-    /// Builder of pattern test for the contract verifiers.
-    /// It generates a test which verifies that the target exception type has
-    /// the specified constructor. The constructor must initialize the exception 
-    /// properties as expected (Message, InnerException) and optionnaly preserve
-    /// those properties during a roundtrip serialization.
+    /// Test pattern for contract verifiers related to exceptions.
+    /// It verifies that the target exception type has the specified standard constructor,
+    /// and that it behaves as expected.
     /// </summary>
-    public class PatternTestBuilderStandardExceptionConstructor : PatternTestBuilder
+    internal class StandardExceptionConstructorPattern : ContractVerifierPattern
     {
-        private string friendlyName;
-        private bool checkForSerializationSupport;
-        private Type[] parameters;
-        private ExceptionConstructorSpec[] specs;
+        private StandardExceptionConstructorPatternSettings settings;
 
         /// <summary>
-        /// Constructs a pattern test builder.
-        /// It generates a test which verifies that the target exception type has
-        /// the specified constructor. The constructor must initialize the exception 
-        /// properties as expected (Message, InnerException) and optionnaly preserve
-        /// those properties during a roundtrip serialization.
+        /// Constructor.
         /// </summary>
-        /// <param name="targetType">The target type.</param>
-        /// <param name="checkForSerializationSupport">Determines whether the
-        /// exception properties are preserved during a serialization roundtrip.</param>
-        /// <param name="friendlyName">A friendly name for the constructor.</param>
-        /// <param name="parameters">The parameter types for the constructor</param>
-        /// <param name="specs">Specifications for instantiating sample exception instances.</param>
-        public PatternTestBuilderStandardExceptionConstructor(Type targetType,
-            bool checkForSerializationSupport, string friendlyName, Type[] parameters,
-            ExceptionConstructorSpec[] specs)
-            : base(targetType)
+        /// <param name="settings">Settings.</param>
+        internal StandardExceptionConstructorPattern(StandardExceptionConstructorPatternSettings settings)
         {
-            this.friendlyName = friendlyName;
-            this.checkForSerializationSupport = checkForSerializationSupport;
-            this.parameters = parameters;
-            this.specs = specs;
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            this.settings = settings;
         }
 
         /// <inheritdoc />
@@ -67,16 +52,16 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         {
             get
             {
-                return "Is" + friendlyName + "ConstructorWellDefined";
+                return settings.FriendlyName;
             }
         }
 
         /// <inheritdoc />
-        protected override void Run(PatternTestInstanceState state)
+        protected internal override void Run(IContractVerifierPatternInstanceState state)
         {
             ConstructorInfo ctor = GetConstructorInfo();
 
-            foreach (ExceptionConstructorSpec spec in specs)
+            foreach (var spec in settings.ConstructorSpecifications)
             {
                 Exception instance = spec.GetInstance(ctor);
 
@@ -88,7 +73,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                             return null;
 
                         return new AssertionFailureBuilder("The inner exception should be referentially identical to the exception provided in the constructor.")
-                            .AddRawLabeledValue("Exception Type", TargetType)
+                            .AddRawLabeledValue("Exception Type", settings.TargetExceptionType)
                             .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
                             .AddRawLabeledValue("Expected Inner Exception", spec.InnerException)
                             .ToAssertionFailure();
@@ -98,11 +83,11 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                     {
                         AssertionHelper.Verify(() =>
                         {
-                            if (instance.Message.Contains(TargetType.FullName))
+                            if (instance.Message.Contains(settings.TargetExceptionType.FullName))
                                 return null;
 
                             return new AssertionFailureBuilder("The exception message should to contain the exception type name.")
-                                .AddRawLabeledValue("Exception Type", TargetType)
+                                .AddRawLabeledValue("Exception Type", settings.TargetExceptionType)
                                 .AddLabeledValue("Actual Message", instance.Message)
                                 .ToAssertionFailure();
                         });
@@ -115,22 +100,25 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                                 return null;
 
                             return new AssertionFailureBuilder("Expected the exception message to be equal to a specific text.")
-                                .AddRawLabeledValue("Exception Type", TargetType)
+                                .AddRawLabeledValue("Exception Type", settings.TargetExceptionType)
                                 .AddLabeledValue("Actual Message", instance.Message)
                                 .AddLabeledValue("Expected Message", spec.Message)
                                 .ToAssertionFailure();
                         });
                     }
 
-                    if (checkForSerializationSupport)
+                    if (settings.CheckForSerializationSupport)
+                    {
                         AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                    }
                 });
             }
         }
 
         private ConstructorInfo GetConstructorInfo()
         {
-            ConstructorInfo ctor = TargetType.GetConstructor(parameters);
+            Type[] types = new List<Type>(settings.ParameterTypes).ToArray();
+            ConstructorInfo ctor = settings.TargetExceptionType.GetConstructor(types);
 
             AssertionHelper.Verify(() =>
             {
@@ -138,8 +126,8 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                     return null;
 
                 return new AssertionFailureBuilder("Expected the exception type to have a public constructor.")
-                    .AddRawLabeledValue("Exception Type", TargetType)
-                    .AddLabeledValue("Expected Signature", GetConstructorSignature(parameters))
+                    .AddRawLabeledValue("Exception Type", settings.TargetExceptionType)
+                    .AddLabeledValue("Expected Signature", GetConstructorSignature(settings.ParameterTypes))
                     .ToAssertionFailure();
             });
 
@@ -162,7 +150,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                     return null;
 
                 return new AssertionFailureBuilder("Expected the exception message to be preserved by round-trip serialization.")
-                    .AddRawLabeledValue("Exception Type", TargetType)
+                    .AddRawLabeledValue("Exception Type", settings.TargetExceptionType)
                     .AddLabeledValue("Expected Message", instance.Message)
                     .AddLabeledValue("Actual Message ", result.Message)
                     .ToAssertionFailure();
@@ -176,7 +164,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                         return null;
 
                     return new AssertionFailureBuilder("The inner exception should be preserved by round-trip serialization.")
-                        .AddRawLabeledValue("Exception Type", TargetType)
+                        .AddRawLabeledValue("Exception Type", settings.TargetExceptionType)
                         .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
                         .AddRawLabeledValue("Expected Inner Exception", result.InnerException)
                         .ToAssertionFailure();
@@ -191,7 +179,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                         return null;
 
                     return new AssertionFailureBuilder("The inner exception should be preserved by round-trip serialization.")
-                        .AddRawLabeledValue("Exception Type", TargetType)
+                        .AddRawLabeledValue("Exception Type", settings.TargetExceptionType)
                         .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
                         .AddRawLabeledValue("Expected Inner Exception", result.InnerException)
                         .ToAssertionFailure();

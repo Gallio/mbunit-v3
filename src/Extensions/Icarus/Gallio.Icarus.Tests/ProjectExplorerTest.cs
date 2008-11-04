@@ -27,7 +27,7 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void Constructor_Test()
         {
-            IProjectController projectController = mocks.CreateMock<IProjectController>();
+            IProjectController projectController = mocks.StrictMock<IProjectController>();
             Expect.Call(projectController.Model).Return(new ProjectTreeModel("fileName", new Project()));
             mocks.ReplayAll();
             ProjectExplorer projectExplorer = new ProjectExplorer(projectController);

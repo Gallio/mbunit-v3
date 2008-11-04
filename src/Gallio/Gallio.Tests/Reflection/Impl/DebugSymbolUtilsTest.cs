@@ -36,7 +36,7 @@ namespace Gallio.Tests.Reflection.Impl
         [Test]
         public void GetSourceLocation_Method_ReturnsUnknownIfAssemblyIsDynamic()
         {
-            ILogger mockLogger = Mocks.CreateMock<ILogger>();
+            ILogger mockLogger = Mocks.StrictMock<ILogger>();
             Mocks.ReplayAll();
 
             Assert.AreEqual(CodeLocation.Unknown, DebugSymbolUtils.GetSourceLocation(mockLogger.GetType().GetMethods()[0]));
@@ -61,7 +61,7 @@ namespace Gallio.Tests.Reflection.Impl
         [Test]
         public void GetSourceLocation_Type_ReturnsUnknownIfAssemblyIsDynamic()
         {
-            ILogger mockLogger = Mocks.CreateMock<ILogger>();
+            ILogger mockLogger = Mocks.StrictMock<ILogger>();
             Mocks.ReplayAll();
 
             Assert.AreEqual(CodeLocation.Unknown, DebugSymbolUtils.GetSourceLocation(mockLogger.GetType()));

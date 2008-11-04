@@ -19,25 +19,28 @@ using System.Text;
 using Gallio.Framework.Pattern;
 using Gallio.Framework.Assertions;
 
-namespace MbUnit.Framework.ContractVerifiers.Patterns
+namespace MbUnit.Framework.ContractVerifiers.Patterns.HasAttribute
 {
     /// <summary>
-    /// Builder of pattern test for the contract verifiers.
-    /// It generates a test that verifies that the target type has
-    /// the specified attribute.
+    /// General purpose test pattern for contract verifiers.
+    /// It verifies that the target evaluated type has the specified attribute.
     /// </summary>
-    /// <typeparam name="T">The searched attibute type.</typeparam>
-    public class PatternTestBuilderHasAttribute<T> : PatternTestBuilder where T : Attribute
+    internal class HasAttributePattern : ContractVerifierPattern
     {
+        private HasAttributePatternSettings settings;
+
         /// <summary>
-        /// Constructs a pattern test builder.
-        /// The resulting test verifies that the target type has
-        /// the specified attribute.
+        /// Constructor.
         /// </summary>
-        /// <param name="targetType">The target type.</param>
-        public PatternTestBuilderHasAttribute(Type targetType)
-            : base(targetType)
+        /// <param name="settings">Settings.</param>
+        internal HasAttributePattern(HasAttributePatternSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            this.settings = settings;
         }
 
         /// <inheritdoc />
@@ -45,21 +48,21 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         {
             get
             {
-                return "Has" + typeof(T).Name;
+                return "Has" + settings.AttributeType.Name;
             }
         }
 
         /// <inheritdoc />
-        protected override void Run(PatternTestInstanceState state)
+        protected internal override void Run(IContractVerifierPatternInstanceState state)
         {
             AssertionHelper.Verify(() =>
             {
-                if (TargetType.IsDefined(typeof(T), false))
+                if (settings.TargetType.IsDefined(settings.AttributeType, false))
                     return null;
 
                 return new AssertionFailureBuilder("Expected the exception type to be annotated by a particular attribute.")
-                    .AddRawLabeledValue("Exception Type", TargetType)
-                    .AddRawLabeledValue("Expected Attribute", typeof(T))
+                    .AddRawLabeledValue("Exception Type", settings.TargetType)
+                    .AddRawLabeledValue("Expected Attribute", settings.AttributeType)
                     .ToAssertionFailure();
             });
         }

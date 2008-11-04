@@ -54,7 +54,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void CanBindAppliesNoTranslationIfNoAliasesAreDefined()
         {
-            IDataSet dataSet = Mocks.CreateMock<IDataSet>();
+            IDataSet dataSet = Mocks.StrictMock<IDataSet>();
 
             using (Mocks.Record())
             {
@@ -80,7 +80,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void CanBindAppliesIndexAliasTranslation()
         {
-            IDataSet dataSet = Mocks.CreateMock<IDataSet>();
+            IDataSet dataSet = Mocks.StrictMock<IDataSet>();
 
             using (Mocks.Record())
             {
@@ -118,7 +118,7 @@ namespace Gallio.Tests.Framework.Data
             List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
             metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
 
-            IDataSet dataSet = Mocks.CreateMock<IDataSet>();
+            IDataSet dataSet = Mocks.StrictMock<IDataSet>();
 
             using (Mocks.Record())
             {
@@ -164,7 +164,7 @@ namespace Gallio.Tests.Framework.Data
         {
             List<KeyValuePair<string, string>> metadataPairs = new List<KeyValuePair<string, string>>();
             metadataPairs.Add(new KeyValuePair<string, string>("Foo", "Bar"));
-            IDataSet dataSet = Mocks.CreateMock<IDataSet>();
+            IDataSet dataSet = Mocks.StrictMock<IDataSet>();
 
             using (Mocks.Record())
             {

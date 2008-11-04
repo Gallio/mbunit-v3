@@ -19,41 +19,33 @@ using System.Text;
 using Gallio.Framework.Pattern;
 using Gallio.Framework.Assertions;
 using System.Collections;
-using Gallio;
 using System.Reflection;
+using Gallio;
 
-namespace MbUnit.Framework.ContractVerifiers.Patterns
+namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
 {
     /// <summary>
-    /// Builder of pattern test for the contract verifiers.
-    /// The generated test verifies that all an equality
-    /// operator/method works as expected.
+    /// General purpose test pattern for contract verifiers.
+    /// It verifies that a given method evaluating equality between
+    /// two instances, returns the expected result according to
+    /// the equivalence class the objects belongs to.
     /// </summary>
-    public class PatternTestBuilderEquals : PatternTestBuilder
+    internal class EqualityPattern : ContractVerifierPattern
     {
-        private string friendlyName;
-        private MethodInfo equalityMethod;
-        private string signatureDescription;
-        private bool inequality;
+        private EqualityPatternSettings settings;
 
         /// <summary>
-        /// Constructs a pattern test builder.
-        /// The resulting test verifies that the target type has
-        /// the specified attribute.
+        /// Constructor.
         /// </summary>
-        /// <param name="targetType">The target type.</param>
-        /// <param name="friendlyName">A friendly name for the equality operation.</param>
-        /// <param name="inequality">Indicates whether the method represents an inequality operation.</param>
-        /// <param name="signatureDescription">A friendly signature description.</param>
-        /// <param name="equalityMethod">The equality operation</param>
-        public PatternTestBuilderEquals(Type targetType, string friendlyName, 
-            bool inequality, string signatureDescription, MethodInfo equalityMethod)
-            : base(targetType)
+        /// <param name="settings">Settings.</param>
+        internal EqualityPattern(EqualityPatternSettings settings)
         {
-            this.friendlyName = friendlyName;
-            this.equalityMethod = equalityMethod;
-            this.signatureDescription = signatureDescription;
-            this.inequality = inequality;
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            this.settings = settings;
         }
 
         /// <inheritdoc />
@@ -61,20 +53,20 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         {
             get
             {
-                return friendlyName;
+                return settings.Name;
             }
         }
 
         /// <inheritdoc />
-        protected override void Run(PatternTestInstanceState state)
+        protected internal override void Run(IContractVerifierPatternInstanceState state)
         {
             AssertionHelper.Verify(() =>
             {
-                if (equalityMethod != null)
+                if (settings.EqualityMethodInfo != null)
                     return null;
 
                 return new AssertionFailureBuilder("Equality method expected to be implemented.")
-                    .AddLabeledValue("Expected Method", signatureDescription)
+                    .AddLabeledValue("Expected Method", settings.SignatureDescription)
                     .ToAssertionFailure();
             });
 
@@ -82,10 +74,10 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
             VerifyEqualityContract(state.FixtureType, state.FixtureInstance,
                 (a, b) =>
                 {
-                    bool output = equalityMethod.IsStatic ?
-                        (bool)equalityMethod.Invoke(null, new object[] { a, b }) :
-                        (bool)equalityMethod.Invoke(a, new object[] { b });
-                    return inequality ? !output : output;
+                    bool output = settings.EqualityMethodInfo.IsStatic ?
+                        (bool)settings.EqualityMethodInfo.Invoke(null, new object[] { a, b }) :
+                        (bool)settings.EqualityMethodInfo.Invoke(a, new object[] { b });
+                    return settings.Inequality ? !output : output;
                 });
         }
 
@@ -93,7 +85,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         {
             // Get the equivalence classes before entering the multiple assertion block in
             // order to catch any missing implementation of IEquivalentClassProvider<T> before.
-            IEnumerable equivalenceClasses = GetEquivalentClasses(fixtureType, fixtureInstance);
+            IEnumerable equivalenceClasses = GetEquivalentClasses(settings.TargetType, fixtureType, fixtureInstance);
 
             Assert.Multiple(() =>
             {
@@ -104,7 +96,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                 {
                     int j = 0;
 
-                    foreach (object b in GetEquivalentClasses(fixtureType, fixtureInstance))
+                    foreach (object b in GetEquivalentClasses(settings.TargetType, fixtureType, fixtureInstance))
                     {
                         CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, i == j, equals);
                         j++;
@@ -161,7 +153,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
 
         private void VerifyEqualityBetweenTwoNullReferences(Func<object, object, bool> equals)
         {
-            if (!TargetType.IsValueType && equalityMethod.IsStatic)
+            if (!settings.TargetType.IsValueType && settings.EqualityMethodInfo.IsStatic)
             {
                 AssertionHelper.Verify(() =>
                 {
@@ -203,7 +195,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
 
         private void VerifyNullReferenceEquality(object x, Func<object, object, bool> equals)
         {
-            if (!TargetType.IsValueType)
+            if (!settings.TargetType.IsValueType)
             {
                 AssertionHelper.Verify(() =>
                 {
@@ -218,7 +210,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                         .ToAssertionFailure();
                 });
 
-                if (equalityMethod.IsStatic)
+                if (settings.EqualityMethodInfo.IsStatic)
                 {
                     AssertionHelper.Verify(() =>
                     {

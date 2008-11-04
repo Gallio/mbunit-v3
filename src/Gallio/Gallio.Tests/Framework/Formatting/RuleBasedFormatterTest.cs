@@ -45,7 +45,7 @@ namespace Gallio.Tests.Framework.Formatting
             IFormattingRule rule;
             using (Mocks.Record())
             {
-                rule = Mocks.CreateMock<IFormattingRule>();
+                rule = Mocks.StrictMock<IFormattingRule>();
                 Expect.Call(rule.GetPriority(typeof(int))).Return(0);
                 Expect.Call(rule.Format(null, null)).IgnoreArguments().Return(useNull ? null : "");
             }
@@ -60,7 +60,7 @@ namespace Gallio.Tests.Framework.Formatting
             IFormattingRule rule;
             using (Mocks.Record())
             {
-                rule = Mocks.CreateMock<IFormattingRule>();
+                rule = Mocks.StrictMock<IFormattingRule>();
                 Expect.Call(rule.GetPriority(typeof(int))).Return(0);
                 Expect.Call(rule.Format(null, null)).IgnoreArguments().Throw(new ApplicationException("Boom!"));
             }
@@ -76,10 +76,10 @@ namespace Gallio.Tests.Framework.Formatting
             IFormattingRule rule2;
             using (Mocks.Record())
             {
-                rule1 = Mocks.CreateMock<IFormattingRule>();
+                rule1 = Mocks.StrictMock<IFormattingRule>();
                 Expect.Call(rule1.GetPriority(typeof(int))).Return(0);
 
-                rule2 = Mocks.CreateMock<IFormattingRule>();
+                rule2 = Mocks.StrictMock<IFormattingRule>();
                 Expect.Call(rule2.GetPriority(typeof(int))).Return(1);
 
                 Expect.Call(rule2.Format(null, null)).IgnoreArguments().Return("42");

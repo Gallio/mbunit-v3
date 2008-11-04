@@ -75,7 +75,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
         private void AddPatternTests(PatternEvaluationScope scope)
         {
-            foreach (PatternTestBuilder item in GetPatternTestBuilders())
+            foreach (var item in GetPatterns())
             {
                 item.Build(scope);
             }
@@ -85,7 +85,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// Provides builders of pattern tests for the contract verifier.
         /// </summary>
         /// <returns>An enumeration of pattern test builders.</returns>
-        protected abstract IEnumerable<PatternTestBuilder> GetPatternTestBuilders();
+        protected abstract IEnumerable<ContractVerifierPattern> GetPatterns();
 
         /// <summary>
         /// Gets the interface of a particular type if it is implemented by another type,

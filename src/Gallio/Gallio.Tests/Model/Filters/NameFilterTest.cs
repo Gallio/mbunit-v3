@@ -32,7 +32,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, "otherValue")]
         public void IsMatchCombinations(bool expectedMatch, string value)
         {
-            ITestComponent component = Mocks.CreateMock<ITestComponent>();
+            ITestComponent component = Mocks.StrictMock<ITestComponent>();
             SetupResult.For(component.Name).Return(value);
             Mocks.ReplayAll();
 

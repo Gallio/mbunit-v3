@@ -59,8 +59,8 @@ namespace Gallio.Tests.Framework.Data
         {
             MergedDataSet dataSet = new MergedDataSet();
 
-            IDataSet dataSetWithTwoColumns = Mocks.CreateMock<IDataSet>();
-            IDataSet dataSetWithThreeColumns = Mocks.CreateMock<IDataSet>();
+            IDataSet dataSetWithTwoColumns = Mocks.StrictMock<IDataSet>();
+            IDataSet dataSetWithThreeColumns = Mocks.StrictMock<IDataSet>();
 
             using (Mocks.Record())
             {
@@ -110,8 +110,8 @@ namespace Gallio.Tests.Framework.Data
             MergedDataSet dataSet = new MergedDataSet();
             DataBinding binding = new DataBinding(0, null);
 
-            IDataSet dataSetWithTwoColumns = Mocks.CreateMock<IDataSet>();
-            IDataSet dataSetWithThreeColumns = Mocks.CreateMock<IDataSet>();
+            IDataSet dataSetWithTwoColumns = Mocks.StrictMock<IDataSet>();
+            IDataSet dataSetWithThreeColumns = Mocks.StrictMock<IDataSet>();
 
             using (Mocks.Record())
             {
@@ -142,7 +142,7 @@ namespace Gallio.Tests.Framework.Data
             IDataSet provider = Mocks.Stub<IDataSet>();
             dataSet.AddDataSet(provider);
 
-            IMergeStrategy strategy = Mocks.CreateMock<IMergeStrategy>();
+            IMergeStrategy strategy = Mocks.StrictMock<IMergeStrategy>();
             dataSet.Strategy = strategy;
 
             IEnumerable<IDataItem> results = Mocks.Stub<IEnumerable<IDataItem>>();

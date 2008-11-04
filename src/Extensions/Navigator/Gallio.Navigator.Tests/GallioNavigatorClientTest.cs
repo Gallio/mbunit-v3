@@ -80,7 +80,7 @@ namespace Gallio.Navigator.Tests
             var mocks = new MockRepository();
             using (mocks.Record())
             {
-                client.Navigator = mocks.CreateMock<IGallioNavigator>();
+                client.Navigator = mocks.StrictMock<IGallioNavigator>();
 
                 Expect.Call(client.Navigator.NavigateTo(expectedPath, expectedLineNumber, expectedColumnNumber))
                     .Return(true);

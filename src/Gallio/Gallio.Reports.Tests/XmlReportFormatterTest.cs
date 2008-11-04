@@ -72,7 +72,7 @@ namespace Gallio.Reports.Tests
         public void FormatWritesTheReportWithTheDefaultAttachmentContentDispositionIfNoneSpecified()
         {
             IProgressMonitor progressMonitor = Mocks.Stub<IProgressMonitor>();
-            IReportWriter writer = Mocks.CreateMock<IReportWriter>();
+            IReportWriter writer = Mocks.StrictMock<IReportWriter>();
 
             using (Mocks.Record())
             {
@@ -92,7 +92,7 @@ namespace Gallio.Reports.Tests
         public void FormatWritesTheReportWithTheSpecifiedAttachmentContentDisposition()
         {
             IProgressMonitor progressMonitor = Mocks.Stub<IProgressMonitor>();
-            IReportWriter writer = Mocks.CreateMock<IReportWriter>();
+            IReportWriter writer = Mocks.StrictMock<IReportWriter>();
 
             using (Mocks.Record())
             {

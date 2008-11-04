@@ -126,9 +126,9 @@ namespace Gallio.Reports.Tests
         {
             string resourcePath = Path.Combine(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(GetType().Assembly)), @"..\Resources");
 
-            IRuntime runtime = Mocks.CreateMock<IRuntime>();
-            IReportWriter reportWriter = Mocks.CreateMock<IReportWriter>();
-            IReportContainer reportContainer = Mocks.CreateMock<IReportContainer>();
+            IRuntime runtime = Mocks.StrictMock<IRuntime>();
+            IReportWriter reportWriter = Mocks.StrictMock<IReportWriter>();
+            IReportContainer reportContainer = Mocks.StrictMock<IReportContainer>();
             IProgressMonitor progressMonitor = NullProgressMonitor.CreateInstance();
 
             string reportPath = Path.GetTempFileName();

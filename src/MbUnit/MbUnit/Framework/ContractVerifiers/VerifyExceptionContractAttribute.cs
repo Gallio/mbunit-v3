@@ -27,6 +27,9 @@ using System.IO;
 using Gallio.Framework.Data;
 using Gallio.Framework.Assertions;
 using MbUnit.Framework.ContractVerifiers.Patterns;
+using MbUnit.Framework.ContractVerifiers.Patterns.HasAttribute;
+using MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor;
+using MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstructor;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -164,63 +167,61 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<PatternTestBuilder> GetPatternTestBuilders()
+        protected override IEnumerable<ContractVerifierPattern> GetPatterns()
         {
             if (ImplementsSerialization)
             {
                 // Has Serializable attribute?
-                yield return new PatternTestBuilderHasAttribute<SerializableAttribute>(
-                    TargetType);
+                yield return new HasAttributePatternBuilder()
+                    .SetTargetType(TargetType)
+                    .SetAttributeType(typeof(SerializableAttribute))
+                    .ToPattern();
                 
                 // Has non-public serialization constructor?
-                yield return new PatternTestBuilderHasConstructor(
-                    TargetType, 
-                    "Serialization", 
-                    false, 
-                    typeof(SerializationInfo), typeof(StreamingContext));
+                yield return new HasConstructorPatternBuilder()
+                    .SetTargetType(TargetType)
+                    .SetName("Serialization")
+                    .SetParameterTypes(typeof(SerializationInfo), typeof(StreamingContext))
+                    .SetAccessibility(HasConstructorAccessibility.NonPublic)
+                    .ToPattern();
             }
 
             if (ImplementsStandardConstructors)
             {
                 // Is public default constructor well defined?
-                yield return new PatternTestBuilderStandardExceptionConstructor(
-                    TargetType, 
-                    ImplementsSerialization,
-                    "Default",
-                    EmptyArray<Type>.Instance,
-                    new ExceptionConstructorSpec[] 
-                    {
-                        new ExceptionConstructorSpec()
-                    });
+                yield return new StandardExceptionConstructorPatternBuilder()
+                    .SetTargetExceptionType(TargetType)
+                    .SetFriendlyName("Default")
+                    .SetCheckForSerializationSupport(ImplementsSerialization)
+                    .SetConstructorSpecifications(new ExceptionConstructorSpec())
+                    .ToPattern();
 
                 // Is public single parameter constructor (message) well defined?
-                yield return new PatternTestBuilderStandardExceptionConstructor(
-                    TargetType,
-                    ImplementsSerialization,
-                    "Message",
-                    new Type[] { typeof(string) },
-                    new ExceptionConstructorSpec[] 
-                    {
+                yield return new StandardExceptionConstructorPatternBuilder()
+                    .SetTargetExceptionType(TargetType)
+                    .SetFriendlyName("Message")
+                    .SetCheckForSerializationSupport(ImplementsSerialization)
+                    .SetParameterTypes(typeof(string))
+                    .SetConstructorSpecifications(
                         new ExceptionConstructorSpec(null),
                         new ExceptionConstructorSpec(String.Empty),
-                        new ExceptionConstructorSpec("A message")
-                    });
+                        new ExceptionConstructorSpec("A message"))
+                    .ToPattern();
 
                 // Is public two parameters constructor (message and inner exception) well defined?
-                yield return new PatternTestBuilderStandardExceptionConstructor(
-                    TargetType,
-                    ImplementsSerialization,
-                    "MessageAndInnerException",
-                    new Type[] { typeof(string), typeof(Exception) },
-                    new ExceptionConstructorSpec[] 
-                    {
+                yield return new StandardExceptionConstructorPatternBuilder()
+                    .SetTargetExceptionType(TargetType)
+                    .SetFriendlyName("MessageAndInnerException")
+                    .SetCheckForSerializationSupport(ImplementsSerialization)
+                    .SetParameterTypes(typeof(string), typeof(Exception))
+                    .SetConstructorSpecifications(
                         new ExceptionConstructorSpec(null, null),
                         new ExceptionConstructorSpec(String.Empty, null),
                         new ExceptionConstructorSpec("A message", null),
                         new ExceptionConstructorSpec(null, new Exception()),
                         new ExceptionConstructorSpec(String.Empty, new Exception()),
-                        new ExceptionConstructorSpec("A message", new Exception())
-                    });
+                        new ExceptionConstructorSpec("A message", new Exception()))
+                    .ToPattern();
             }
         }
     }

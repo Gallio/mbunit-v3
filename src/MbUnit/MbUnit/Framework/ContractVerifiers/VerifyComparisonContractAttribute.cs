@@ -22,6 +22,7 @@ using Gallio.Reflection;
 using Gallio.Framework.Assertions;
 using MbUnit.Framework.ContractVerifiers.Patterns;
 using System.Collections.Generic;
+using MbUnit.Framework.ContractVerifiers.Patterns.Comparison;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -176,47 +177,59 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<PatternTestBuilder> GetPatternTestBuilders()
+        protected override IEnumerable<ContractVerifierPattern> GetPatterns()
         {
             // Is IComparable.CompareTo implementation OK?
-            yield return new PatternTestBuilderCompares<int>(
-                TargetType, "ComparableCompareTo",
-                "public bool CompareTo(" + TargetType.Name + ")",
-                GetIComparableInterface().GetMethod("CompareTo", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, new Type[] { TargetType }, null),
-                (i, j) => i.CompareTo(j),
-                x => (x == 0) ? "0" : ((x > 0) ? "A Positive Value" : "A Negative Value"),
-                x => Math.Sign(x));
+            yield return new ComparisonPatternBuilder<int>()
+                .SetTargetType(TargetType)
+                .SetName("ComparableCompareTo")
+                .SetSignatureDescription(String.Format("public bool CompareTo({0})", TargetType.Name))
+                .SetComparisonMethodInfo(GetIComparableInterface().GetMethod("CompareTo", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, new Type[] { TargetType }, null))
+                .SetFunctionRefers((i, j) => i.CompareTo(j))
+                .SetFunctionFormats(x => (x == 0) ? "0" : ((x > 0) ? "A Positive Value" : "A Negative Value"))
+                .SetFunctionPostProcesses(x => Math.Sign(x))
+                .ToPattern();
 
             if (ImplementsOperatorOverloads)
             {
                 // Is "Greater Than" operator overload implementation OK?
-                yield return new PatternTestBuilderCompares<bool>(
-                    TargetType, "OperatorGreaterThan",
-                    "static bool operator >(" + TargetType.Name + ", " + TargetType.Name + ")",
-                    TargetType.GetMethod("op_GreaterThan", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null),
-                    (i, j) => i > j);
+                yield return new ComparisonPatternBuilder<bool>()
+                    .SetTargetType(TargetType)
+                    .SetName("OperatorGreaterThan")
+                    .SetSignatureDescription(String.Format("static bool operator >({0}, {0})", TargetType.Name))
+                    .SetComparisonMethodInfo(TargetType.GetMethod("op_GreaterThan", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null))
+                    .SetFunctionRefers((i, j) => i > j)
+                    .ToPattern();
 
                 // Is "Greater Than Or Equal" operator overload implementation OK?
-                yield return new PatternTestBuilderCompares<bool>(
-                    TargetType, "OperatorGreaterThanOrEqual",
-                    "static bool operator >=(" + TargetType.Name + ", " + TargetType.Name + ")",
-                    TargetType.GetMethod("op_GreaterThanOrEqual", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null),
-                    (i, j) => i >= j);
+                yield return new ComparisonPatternBuilder<bool>()
+                   .SetTargetType(TargetType)
+                   .SetName("OperatorGreaterThanOrEqual")
+                   .SetSignatureDescription(String.Format("static bool operator >=({0}, {0})", TargetType.Name))
+                   .SetComparisonMethodInfo(TargetType.GetMethod("op_GreaterThanOrEqual", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null))
+                   .SetFunctionRefers((i, j) => i >= j)
+                   .ToPattern();
 
                 // Is "Less Than" operator overload implementation OK?
-                yield return new PatternTestBuilderCompares<bool>(
-                    TargetType, "OperatorLessThan",
-                    "static bool operator <(" + TargetType.Name + ", " + TargetType.Name + ")",
-                    TargetType.GetMethod("op_LessThan", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null),
-                    (i, j) => i < j);
+                yield return new ComparisonPatternBuilder<bool>()
+                    .SetTargetType(TargetType)
+                    .SetName("OperatorLessThan")
+                    .SetSignatureDescription(String.Format("static bool operator <({0}, {0})", TargetType.Name))
+                    .SetComparisonMethodInfo(TargetType.GetMethod("op_LessThan", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null))
+                    .SetFunctionRefers((i, j) => i < j)
+                    .ToPattern();
 
                 // Is "Less Than Or Equal" operator overload implementation OK?
-                yield return new PatternTestBuilderCompares<bool>(
-                    TargetType, "OperatorLessThanOrEqual",
-                    "static bool operator <=(" + TargetType.Name + ", " + TargetType.Name + ")",
-                    TargetType.GetMethod("op_LessThanOrEqual", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null),
-                    (i, j) => i <= j);
+                yield return new ComparisonPatternBuilder<bool>()
+                    .SetTargetType(TargetType)
+                    .SetName("OperatorLessThanOrEqual")
+                    .SetSignatureDescription(String.Format("static bool operator <=({0}, {0})", TargetType.Name))
+                    .SetComparisonMethodInfo(TargetType.GetMethod("op_LessThanOrEqual", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null))
+                    .SetFunctionRefers((i, j) => i <= j)
+                    .ToPattern();
             }
+
+            yield break;
         }
 
         private Type GetIComparableInterface()

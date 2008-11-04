@@ -41,10 +41,10 @@ namespace Gallio.Tests.Model.Filters
         [SetUp]
         public override void SetUp()
         {
-            fixture1 = Mocks.CreateMock<ITest>();
-            fixture2 = Mocks.CreateMock<ITest>();
-            fixture3 = Mocks.CreateMock<ITest>();
-            fixture4 = Mocks.CreateMock<ITest>();
+            fixture1 = Mocks.StrictMock<ITest>();
+            fixture2 = Mocks.StrictMock<ITest>();
+            fixture3 = Mocks.StrictMock<ITest>();
+            fixture4 = Mocks.StrictMock<ITest>();
 
             ICodeElementInfo codeElement1 = Reflector.Wrap(typeof(SimpleTest));
             SetupResult.For(fixture1.CodeElement).Return(codeElement1);

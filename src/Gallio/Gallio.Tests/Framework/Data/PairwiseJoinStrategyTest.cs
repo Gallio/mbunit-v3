@@ -44,7 +44,7 @@ namespace Gallio.Tests.Framework.Data
             };
 
             IDataProvider[] providers = new IDataProvider[] {
-                Mocks.CreateMock<IDataProvider>()
+                Mocks.StrictMock<IDataProvider>()
             };
 
             IDataItem[][] itemsPerProvider = new IDataItem[][] {
@@ -78,8 +78,8 @@ namespace Gallio.Tests.Framework.Data
             };
 
             IDataProvider[] providers = new IDataProvider[] {
-                Mocks.CreateMock<IDataProvider>(),
-                Mocks.CreateMock<IDataProvider>()
+                Mocks.StrictMock<IDataProvider>(),
+                Mocks.StrictMock<IDataProvider>()
             };
 
             IDataItem[][] itemsPerProvider = new IDataItem[][] {
@@ -120,7 +120,7 @@ namespace Gallio.Tests.Framework.Data
             DataBinding[][] bindingsPerProvider = new DataBinding[dimensions][];
             for (int i = 0; i < dimensions; i++)
             {
-                providers[i] = Mocks.CreateMock<IDataProvider>();
+                providers[i] = Mocks.StrictMock<IDataProvider>();
                 bindingsPerProvider[i] = new DataBinding[] { binding };
 
                 IDataItem[] providerItems = new IDataItem[counts[i]];

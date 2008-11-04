@@ -29,6 +29,8 @@ using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Assertions;
 using MbUnit.Framework.ContractVerifiers.Patterns;
+using MbUnit.Framework.ContractVerifiers.Patterns.ObjectHashCode;
+using MbUnit.Framework.ContractVerifiers.Patterns.Equality;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -186,32 +188,47 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<PatternTestBuilder> GetPatternTestBuilders()
+        protected override IEnumerable<ContractVerifierPattern> GetPatterns()
         {
             // Is Object equality method OK?
-            yield return new PatternTestBuilderEquals(TargetType, 
-                "ObjectEquals", false, "bool Equals(Object)", 
-                TargetType.GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(object) }, null));
+            yield return new EqualityPatternBuilder()
+                .SetTargetType(TargetType)
+                .SetName("ObjectEquals")
+                .SetSignatureDescription("bool Equals(Object)")
+                .SetEqualityMethodInfo(TargetType.GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(object) }, null))
+                .ToPattern();
             
             // Is Object hash code calculcation well implemented?
-            yield return new PatternTestBuilderGetHashCode(TargetType);
+            yield return new ObjectHashCodePatternBuilder()
+                .SetTargetType(TargetType)
+                .ToPattern();
 
             // Is IEquatable equality method OK?
-            yield return new PatternTestBuilderEquals(TargetType, 
-                "EquatableEqual", false, "bool Equals(" + TargetType.Name + ")", 
-                GetIEquatableInterface().GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { TargetType }, null));
+            yield return new EqualityPatternBuilder()
+                .SetTargetType(TargetType)
+                .SetName("EquatableEqual")
+                .SetSignatureDescription(String.Format("bool Equals({0})", TargetType.Name))
+                .SetEqualityMethodInfo(GetIEquatableInterface().GetMethod("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { TargetType }, null))
+                .ToPattern();
 
             if (ImplementsOperatorOverloads)
             {
                 // Is equality operator overload OK?
-                yield return new PatternTestBuilderEquals(TargetType,
-                    "OperatorEquals", false, "static bool operator ==(" + TargetType.Name + ", " + TargetType.Name + ")",
-                    TargetType.GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null));
+                yield return new EqualityPatternBuilder()
+                    .SetTargetType(TargetType)
+                    .SetName("OperatorEquals")
+                    .SetSignatureDescription(String.Format("static bool operator ==({0}, {0})", TargetType.Name))
+                    .SetEqualityMethodInfo(TargetType.GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null))
+                    .ToPattern();
 
                 // Is inequality operator overload OK?
-                yield return new PatternTestBuilderEquals(TargetType,
-                    "OperatorNotEquals", true, "static bool operator !=(" + TargetType.Name + ", " + TargetType.Name + ")",
-                    TargetType.GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null));
+                yield return new EqualityPatternBuilder()
+                   .SetTargetType(TargetType)
+                   .SetName("OperatorNotEquals")
+                   .SetSignatureDescription(String.Format("static bool operator !=({0}, {0})", TargetType.Name))
+                   .SetEqualityMethodInfo(TargetType.GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { TargetType, TargetType }, null))
+                   .SetInequality(true)
+                   .ToPattern();
             }
         }
 

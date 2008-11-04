@@ -41,7 +41,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void GetValueCallsRowsGetValueWithTheBinding()
         {
-            IDataItem item = Mocks.CreateMock<IDataItem>();
+            IDataItem item = Mocks.StrictMock<IDataItem>();
 
             DataBinding binding = new DataBinding(0, null);
 

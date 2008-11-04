@@ -44,10 +44,10 @@ namespace Gallio.MSTestAdapter.Tests.Model
         [SetUp]
         public override void SetUp()
         {
-            //stubbedProcess = Mocks.CreateMock<IMSTestProcess>();
-            //rootCommand = Mocks.CreateMock<ITestCommand>();
-            //rootTest = Mocks.CreateMock<ITest>();
-            //parentStep = Mocks.CreateMock<ITestStep>();
+            //stubbedProcess = Mocks.StrictMock<IMSTestProcess>();
+            //rootCommand = Mocks.StrictMock<ITestCommand>();
+            //rootTest = Mocks.StrictMock<ITest>();
+            //parentStep = Mocks.StrictMock<ITestStep>();
             //progressMonitor = Mocks.Stub<IProgressMonitor>();
             //assemblyCodeElement = Mocks.Stub<IAssemblyInfo>();
             //SetupResult.For(assemblyCodeElement.Name).Throw(new Exception());//.Return("FakeAssemly.dll");

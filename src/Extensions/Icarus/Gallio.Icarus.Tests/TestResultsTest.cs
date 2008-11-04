@@ -38,13 +38,13 @@ namespace Gallio.Icarus.Tests
         [SetUp]
         public void SetUp()
         {
-            testController = mocks.CreateMock<ITestController>();
+            testController = mocks.StrictMock<ITestController>();
             testController.TestStepFinished += null;
             testStepFinished = LastCall.IgnoreArguments().GetEventRaiser();
             Expect.Call(testController.SelectedTests).Return(new BindingList<TestTreeNode>(new List<TestTreeNode>()));
             testController.RunStarted += null;
             runStarted = LastCall.IgnoreArguments().GetEventRaiser();
-            optionsController = mocks.CreateMock<IOptionsController>();
+            optionsController = mocks.StrictMock<IOptionsController>();
         }
 
         [Test]

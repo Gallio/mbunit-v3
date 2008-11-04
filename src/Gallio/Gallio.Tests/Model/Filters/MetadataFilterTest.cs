@@ -46,7 +46,7 @@ namespace Gallio.Tests.Model.Filters
             foreach (string value in values)
                 metadata.Add("key", value);
 
-            ITestComponent component = Mocks.CreateMock<ITestComponent>();
+            ITestComponent component = Mocks.StrictMock<ITestComponent>();
             SetupResult.For(component.Metadata).Return(metadata);
             Mocks.ReplayAll();
 

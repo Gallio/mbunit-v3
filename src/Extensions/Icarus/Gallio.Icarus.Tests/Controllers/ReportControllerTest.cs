@@ -85,7 +85,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
         IReportService SetupReportService()
         {
-            IReportService reportService = mocks.CreateMock<IReportService>();
+            IReportService reportService = mocks.StrictMock<IReportService>();
             reportService.ProgressUpdate += null;
             progressUpdate = LastCall.IgnoreArguments().GetEventRaiser();
             return reportService;

@@ -34,9 +34,9 @@ namespace Gallio.Tests.Framework.Data
                 new DataBinding(0, null)
             };
             IDataProvider[] providers = new IDataProvider[] {
-                Mocks.CreateMock<IDataProvider>(),
-                Mocks.CreateMock<IDataProvider>(),
-                Mocks.CreateMock<IDataProvider>()
+                Mocks.StrictMock<IDataProvider>(),
+                Mocks.StrictMock<IDataProvider>(),
+                Mocks.StrictMock<IDataProvider>()
             };
 
             using (Mocks.Record())

@@ -82,7 +82,7 @@ namespace Gallio.Tests.Model.Filters
         private ITestComponent GetMockComponentForType(Type type)
         {
             ICodeElementInfo codeElement = Reflector.Wrap(type);
-            ITestComponent component = Mocks.CreateMock<ITestComponent>();
+            ITestComponent component = Mocks.StrictMock<ITestComponent>();
             SetupResult.For(component.CodeElement).Return(codeElement);
             Mocks.ReplayAll();
             return component;

@@ -55,9 +55,9 @@ namespace Gallio.Reports.Tests
         [Test]
         public void FormatWritesTheArchivedReport()
         {
-            IReportWriter reportWriter = Mocks.CreateMock<IReportWriter>();
-            IReportContainer reportContainer = Mocks.CreateMock<IReportContainer>();
-            IReportFormatter htmlReportFormatter = Mocks.CreateMock<IReportFormatter>();
+            IReportWriter reportWriter = Mocks.StrictMock<IReportWriter>();
+            IReportContainer reportContainer = Mocks.StrictMock<IReportContainer>();
+            IReportFormatter htmlReportFormatter = Mocks.StrictMock<IReportFormatter>();
             IProgressMonitor progressMonitor = NullProgressMonitor.CreateInstance();
             NameValueCollection options = new NameValueCollection();
 
