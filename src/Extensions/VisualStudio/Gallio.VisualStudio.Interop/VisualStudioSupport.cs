@@ -29,13 +29,14 @@ namespace Gallio.VisualStudio.Interop
     /// </summary>
     public static class VisualStudioSupport
     {
+        private const string VisualStudio10DTEProgId = "VisualStudio.DTE.10.0";
         private const string VisualStudio9DTEProgId = "VisualStudio.DTE.9.0";
         private const string VisualStudio8DTEProgId = "VisualStudio.DTE.8.0";
         private const string VisualStudio7DTEProgId = "VisualStudio.DTE";
 
         private static readonly string[] VisualStudioDTEProgIds = new[]
         {
-            VisualStudio9DTEProgId, VisualStudio8DTEProgId, VisualStudio7DTEProgId
+            VisualStudio10DTEProgId, VisualStudio9DTEProgId, VisualStudio8DTEProgId, VisualStudio7DTEProgId
         };
 
         /// <summary>
