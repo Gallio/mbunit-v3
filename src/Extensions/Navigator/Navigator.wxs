@@ -10,6 +10,7 @@
 		
                 <Component Id="Gallio.Navigator.exe" Guid="{AF22A32E-D8AA-40a2-8E14-07A70C52F46F}" Win64="no">
                     <File Name="Gallio.Navigator.exe" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.Navigator.exe" />
+                    <File Name="Gallio.Navigator.exe.config" />
                 </Component>
 		
                 <Component Id="Navigator.Readme.txt" Guid="{AA7095B2-D4F7-480a-ADCD-DE5B46C10BA2}" Win64="no">

@@ -84,6 +84,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Gallio.Navigator.exe.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\UrlHandlerIcon.ico" />
     <Content Include="Readme.txt" />
   </ItemGroup>

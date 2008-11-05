@@ -18,6 +18,9 @@
     <Binary Include="Gallio.Navigator\bin\Gallio.VisualStudio.Interop.dll">
         <Folder>Navigator</Folder>
     </Binary>
+    <Binary Include="Gallio.Navigator\Gallio.Navigator.exe.config">
+        <Folder>Navigator</Folder>
+    </Binary>
     <Binary Include="Gallio.Navigator\Readme.txt">
         <Folder>Navigator</Folder>
     </Binary>
