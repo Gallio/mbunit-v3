@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(VSIPInstalled)">
-    <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail.Tests.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail.Tests$(ProjectVariant).csproj" />
     
     <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll">
         <Folder>VisualStudio</Folder>
@@ -42,9 +42,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(VSIP90Installed)">
-    <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip90.Tests.csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip90.Tests$(ProjectVariant).csproj" />
   
     <Binary Include="Gallio.VisualStudio.Tip\bin\v9.0\Gallio.VisualStudio.Tip90.dll">
       <Folder>VisualStudio\v9.0</Folder>
@@ -61,10 +61,10 @@
     <Feature Include="FEATURE_VISUALSTUDIO_TIP_90" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(VSIP100Installed)">
-    <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip100.Proxy.csproj" />
-    <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip100.Tests.csproj" />
+  <ItemGroup Condition="$(VSIP100Installed) and '$(Variant)'=='DotNet40'">
+    <CSharpProject Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip100.Proxy$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip100.Tests$(ProjectVariant).csproj" />
   
     <Binary Include="Gallio.VisualStudio.Tip\bin\v10.0\Gallio.VisualStudio.Tip100.dll">
       <Folder>VisualStudio\v10.0</Folder>
@@ -88,7 +88,7 @@
                 ReplacementText="$(Version)" />
 
     <FileUpdate Files="$(ImageDir)\bin\VisualStudio\v10.0\Gallio.VisualStudio.Tip100.plugin"
-                Condition="$(VSIP100Installed)"
+                Condition="$(VSIP100Installed) and '$(Variant)'=='DotNet40'"
                 Regex="0\.0\.0\.0"
                 ReplacementText="$(Version)" />
   </Target>

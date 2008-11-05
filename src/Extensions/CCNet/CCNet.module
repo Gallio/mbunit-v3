@@ -6,7 +6,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="CCNet.Gallio.WebDashboard.Plugin\CCNet.Gallio.WebDashboard.Plugin.csproj" />
+    <CSharpProject Include="CCNet.Gallio.WebDashboard.Plugin\CCNet.Gallio.WebDashboard.Plugin$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

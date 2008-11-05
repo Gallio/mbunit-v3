@@ -7,9 +7,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration2.csproj" />
+    <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration2$(ProjectVariant).csproj" />
 
-    <CSharpProject Include="Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration2.Tests.csproj" />
+    <CSharpProject Include="Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration2.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(NCover2Installed)">

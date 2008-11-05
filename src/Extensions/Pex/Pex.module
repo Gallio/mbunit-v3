@@ -7,10 +7,10 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="MbUnit.Pex\MbUnit.Pex.csproj" />
+    <CSharpProject Include="MbUnit.Pex\MbUnit.Pex$(ProjectVariant).csproj" />
 
-    <CSharpProject Include="MbUnit.Pex.TestResources\MbUnit.Pex.TestResources.csproj" />
-    <CSharpProject Include="MbUnit.Pex.Tests\MbUnit.Pex.Tests.csproj" />
+    <CSharpProject Include="MbUnit.Pex.TestResources\MbUnit.Pex.TestResources$(ProjectVariant).csproj" />
+    <CSharpProject Include="MbUnit.Pex.Tests\MbUnit.Pex.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(PexInstalled)">

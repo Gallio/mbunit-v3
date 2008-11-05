@@ -2,9 +2,9 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.csproj" />
+    <CSharpProject Include="Gallio.TeamCityIntegration\Gallio.TeamCityIntegration$(ProjectVariant).csproj" />
 
-    <CSharpProject Include="Gallio.TeamCityIntegration.Tests\Gallio.TeamCityIntegration.Tests.csproj" />
+    <CSharpProject Include="Gallio.TeamCityIntegration.Tests\Gallio.TeamCityIntegration.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

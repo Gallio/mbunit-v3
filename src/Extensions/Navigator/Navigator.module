@@ -6,9 +6,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.Navigator\Gallio.Navigator.csproj" />
+    <CSharpProject Include="Gallio.Navigator\Gallio.Navigator$(ProjectVariant).csproj" />
 
-    <CSharpProject Include="Gallio.Navigator.Tests\Gallio.Navigator.Tests.csproj" />
+    <CSharpProject Include="Gallio.Navigator.Tests\Gallio.Navigator.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

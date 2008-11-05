@@ -32,6 +32,9 @@
     <Content Include="Credits.html" />
     
     <Extra Include="$(ToolsDir)\H2Reg\H2Reg.*" />
+
+    <Feature Include="NO_ILMERGE" Condition="'$(NoILMerge)'=='true'" />
+    <Feature Include="NO_NDOC" Condition="'$(NoNDoc)'=='true'" />
   </ItemGroup>
 
   <!-- CLEAN TARGETS -->
@@ -84,7 +87,11 @@
   </PropertyGroup>
 
   <!-- Produce clean Intellisense docs with "inheritdoc" accounted for. -->
-  <Target Name="BuildXMLDocs">
+  <Target Name="BuildXMLDocs"
+          DependsOnTargets="BuildXMLDocs_NDoc;BuildXMLDocs_NoNDoc" />
+
+  <Target Name="BuildXMLDocs_NDoc"
+          Condition="'$(NoNDoc)'!='true'">
     <Message Text="Building XML Docs..."
              Importance="High" />
 
@@ -92,7 +99,14 @@
     <Delete Files="$(ImageDir)\bin\ndoc_qa.log;$(ImageDir)\bin\ndoc_build.log" />
   </Target>
 
-  <Target Name="BuildCHMDocs">
+  <Target Name="BuildXMLDocs_NoNDoc"
+          Condition="'$(NoNDoc)'=='true'">
+    <Copy SourceFiles="@(DocumentedAssembly->'%(RootDir)%(Directory)%(Filename).xml')"
+          DestinationFolder="$(ImageDir)\bin" />
+  </Target>
+
+  <Target Name="BuildCHMDocs"
+          Condition="'$(NoNDoc)'!='true'">
     <Message Text="Building CHM Docs..."
              Importance="High" />
 
@@ -107,11 +121,12 @@
           DestinationFolder="$(APIDocsDir)"
           Condition="Exists('$(HTMLHelpCompilerPath)')" />
   </Target>
-  <ItemGroup Condition="Exists('$(HTMLHelpCompilerPath)')">
+  <ItemGroup Condition="'$(NoNDoc)'!='true' and Exists('$(HTMLHelpCompilerPath)')">
     <Feature Include="FEATURE_CHM_HELP" />
   </ItemGroup>
 
-  <Target Name="BuildHTMLDocs">
+  <Target Name="BuildHTMLDocs"
+          Condition="'$(NoNDoc)'!='true'">
     <Message Text="Building HTML Docs..."
              Importance="High" />
 
@@ -124,7 +139,8 @@
           DestinationFolder="$(ApiDocsDir)\html"/>
   </Target>
 
-  <Target Name="BuildHxSDocs">
+  <Target Name="BuildHxSDocs"
+          Condition="'$(NoNDoc)'!='true'">
     <Message Text="Building HxS Docs..."
              Importance="High" />
 
@@ -137,7 +153,7 @@
           Condition="Exists('$(VSIPSDKHelpPath)')" />
     <RemoveDir Directories="$(ImageDir)\docs\vs\ndoc_htmlhelp2_temp" />
   </Target>
-  <ItemGroup Condition="Exists('$(VSIPSDKHelpPath)')">
+  <ItemGroup Condition="'$(NoNDoc)'!='true' and Exists('$(VSIPSDKHelpPath)')">
     <Feature Include="FEATURE_VS_HELP" />
   </ItemGroup>
 

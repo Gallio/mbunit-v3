@@ -6,9 +6,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.csproj" />
+    <CSharpProject Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration$(ProjectVariant).csproj" />
 
-    <CSharpProject Include="Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration.Tests.csproj" />
+    <CSharpProject Include="Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

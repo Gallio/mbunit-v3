@@ -8,14 +8,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <CSharpProject Include="MbUnit\MbUnit.csproj" />
-    <CSharpProject Include="MbUnit35\MbUnit35.csproj" />
-    <CSharpProject Include="MbUnit.Compatibility\MbUnit.Compatibility.csproj" />
+    <CSharpProject Include="MbUnit\MbUnit$(ProjectVariant).csproj" />
+    <CSharpProject Include="MbUnit35\MbUnit35$(ProjectVariant).csproj" />
+    <CSharpProject Include="MbUnit.Compatibility\MbUnit.Compatibility$(ProjectVariant).csproj" />
     
-    <CSharpProject Include="MbUnit.TestResources\MbUnit.TestResources.csproj" />
-    <CSharpProject Include="MbUnit.TestResources.x86\MbUnit.TestResources.x86.csproj" />
-    <CSharpProject Include="MbUnit.TestResources.x64\MbUnit.TestResources.x64.csproj" />
-    <CSharpProject Include="MbUnit.Tests\MbUnit.Tests.csproj" />
+    <CSharpProject Include="MbUnit.TestResources\MbUnit.TestResources$(ProjectVariant).csproj" />
+    <CSharpProject Include="MbUnit.TestResources.x86\MbUnit.TestResources.x86$(ProjectVariant).csproj" />
+    <CSharpProject Include="MbUnit.TestResources.x64\MbUnit.TestResources.x64$(ProjectVariant).csproj" />
+    <CSharpProject Include="MbUnit.Tests\MbUnit.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

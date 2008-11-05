@@ -2,8 +2,8 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.NAntTasks\Gallio.NAntTasks.csproj" />
-    <CSharpProject Include="Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests.csproj" />
+    <CSharpProject Include="Gallio.NAntTasks\Gallio.NAntTasks$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,9 +2,9 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.Echo\Gallio.Echo.csproj" />
+    <CSharpProject Include="Gallio.Echo\Gallio.Echo$(ProjectVariant).csproj" />
     
-    <CSharpProject Include="Gallio.Echo.Tests\Gallio.Echo.Tests.csproj" />    
+    <CSharpProject Include="Gallio.Echo.Tests\Gallio.Echo.Tests$(ProjectVariant).csproj" />    
   </ItemGroup>
 
   <ItemGroup>

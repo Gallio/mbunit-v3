@@ -2,8 +2,8 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.Icarus\Gallio.Icarus.csproj" />
-    <CSharpProject Include="Gallio.Icarus.Tests\Gallio.Icarus.Tests.csproj" />
+    <CSharpProject Include="Gallio.Icarus\Gallio.Icarus$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Icarus.Tests\Gallio.Icarus.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

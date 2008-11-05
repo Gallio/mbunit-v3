@@ -1,0 +1,192 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MbUnit</RootNamespace>
+    <AssemblyName>MbUnit</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1734</NoWarn>
+    <DocumentationFile>bin\MbUnit.xml</DocumentationFile>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1734</NoWarn>
+    <DocumentationFile>bin\MbUnit.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\MbUnitTestFrameworkExtension.cs" />
+    <Compile Include="Framework\AnnotationAttribute.cs" />
+    <Compile Include="Framework\ApartmentStateAttribute.cs" />
+    <Compile Include="Framework\AssemblyFixtureAttribute.cs" />
+    <Compile Include="Framework\BindAttribute.cs" />
+    <Compile Include="Framework\ColumnAttribute.cs" />
+    <Compile Include="Framework\CombinatorialJoinAttribute.cs" />
+    <Compile Include="Framework\ContractVerifiers\EquivalenceClass.cs" />
+    <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollection.cs" />
+    <Compile Include="Framework\ContractVerifiers\IEquivalenceClassProvider.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyComparisonContractAttribute.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyContractAttribute.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyEqualityContractAttribute.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyExceptionContractAttribute.cs" />
+    <Compile Include="Framework\CsvDataAttribute.cs" />
+    <Compile Include="Framework\DataAttribute.cs" />
+    <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />
+    <Compile Include="Framework\DependsOnAttribute.cs" />
+    <Compile Include="Framework\ExplicitAttribute.cs" />
+    <Compile Include="Framework\ContentAttribute.cs" />
+    <Compile Include="Framework\FactoryAttribute.cs" />
+    <Compile Include="Framework\HeaderAttribute.cs" />
+    <Compile Include="Framework\FixtureInitializerAttribute.cs" />
+    <Compile Include="Framework\JoinAttribute.cs" />
+    <Compile Include="Framework\MultipleAssertsAttribute.cs" />
+    <Compile Include="Framework\NameAttribute.cs" />
+    <Compile Include="Framework\Assert.cs" />
+    <Compile Include="Framework\AssertOverSyntax.cs" />
+    <Compile Include="Framework\PairwiseJoinAttribute.cs" />
+    <Compile Include="Framework\PendingAttribute.cs" />
+    <Compile Include="Framework\Reflection\ReflectionException.cs" />
+    <Compile Include="Framework\RepeatAttribute.cs" />
+    <Compile Include="Framework\RowAttribute.cs" />
+    <Compile Include="Framework\MixinAttribute.cs" />
+    <Compile Include="Framework\AssemblyResolverAttribute.cs" />
+    <Compile Include="Framework\AuthorAttribute.cs" />
+    <Compile Include="Framework\CategoryAttribute.cs" />
+    <Compile Include="Framework\DescriptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedArgumentExceptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedArgumentNullExceptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedArgumentOutOfRangeExceptionAttribute.cs" />
+    <Compile Include="Framework\ExpectedExceptionAttribute.cs" />
+    <Compile Include="Framework\IgnoreAttribute.cs" />
+    <Compile Include="Framework\ImportanceAttribute.cs" />
+    <Compile Include="Framework\MetadataAttribute.cs" />
+    <Compile Include="Framework\ParameterAttribute.cs" />
+    <Compile Include="Framework\Reflection\AccessModifier.cs" />
+    <Compile Include="Framework\Reflection\MemberType.cs" />
+    <Compile Include="Framework\Reflection\Reflector.cs" />
+    <Compile Include="Framework\SequentialJoinAttribute.cs" />
+    <Compile Include="Framework\SetUpAttribute.cs" />
+    <Compile Include="Framework\Assert.Strings.cs" />
+    <Compile Include="Framework\TearDownAttribute.cs" />
+    <Compile Include="Framework\TestAttribute.cs" />
+    <Compile Include="Framework\TestDecoratorAttribute.cs" />
+    <Compile Include="Framework\TestFixtureAttribute.cs" />
+    <Compile Include="Framework\FixtureSetUpAttribute.cs" />
+    <Compile Include="Framework\FixtureTearDownAttribute.cs" />
+    <Compile Include="Framework\Importance.cs" />
+    <Compile Include="Framework\TestsOnAttribute.cs" />
+    <Compile Include="Framework\ThreadedRepeatAttribute.cs" />
+    <Compile Include="Framework\TimeoutAttribute.cs" />
+    <Compile Include="Framework\Xml\XmlSerializationAssert.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MbUnit.plugin" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Gallio\Gallio\Gallio.vs2010.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Framework\Assert.Collections.cs" />
+    <Compile Include="Framework\Assert.Comparisons.cs" />
+    <Compile Include="Framework\Assert.Exceptions.cs" />
+    <Compile Include="Framework\Assert.Reflection.cs" />
+    <Compile Include="Framework\Assert.Relations.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\Comparison\ComparisonPattern.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\Comparison\ComparisonPatternBuilder.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\Comparison\ComparisonPatternSettings.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\ContractVerifierPattern.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\ContractVerifierPatternBuilder.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\ContractVerifierPatternInstanceState.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\Equality\EqualityPattern.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\Equality\EqualityPatternBuilder.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\Equality\EqualityPatternSettings.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\HasAttribute\HasAttributePatternSettings.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\HasAttribute\HasAttributePattern.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\HasAttribute\HasAttributePatternBuilder.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\HasConstructor\HasConstructorAccessibility.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\HasConstructor\HasConstructorPattern.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\HasConstructor\HasConstructorPatternBuilder.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\HasConstructor\HasConstructorPatternSettings.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\IContractVerifierPatternInstanceState.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\ObjectHashCode\ObjectHashCodePattern.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\ObjectHashCode\ObjectHashCodePatternBuilder.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\ObjectHashCode\ObjectHashCodePatternSettings.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\ExceptionConstructorSpec.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\StandardExceptionConstructorPattern.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\StandardExceptionConstructorPatternBuilder.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\StandardExceptionConstructorPatternSettings.cs" />
+    <Compile Include="Framework\StaticTestFactoryAttribute.cs" />
+    <Compile Include="Framework\Test.cs" />
+    <Compile Include="Framework\TestCase.cs" />
+    <Compile Include="Framework\DynamicTestFactoryAttribute.cs" />
+    <Compile Include="Framework\RollbackAttribute.cs" />
+    <Compile Include="Framework\TestDefinition.cs" />
+    <Compile Include="Framework\TestFixtureReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\TestSuite.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

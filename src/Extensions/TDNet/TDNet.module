@@ -6,8 +6,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.TDNetRunner\Gallio.TDNetRunner.csproj" />
-    <CSharpProject Include="Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests.csproj" />
+    <CSharpProject Include="Gallio.TDNetRunner\Gallio.TDNetRunner$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

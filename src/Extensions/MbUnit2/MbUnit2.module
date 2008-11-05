@@ -2,10 +2,10 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter.csproj" />
+    <CSharpProject Include="Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter$(ProjectVariant).csproj" />
     
-    <CSharpProject Include="Gallio.MbUnit2Adapter.TestResources\Gallio.MbUnit2Adapter.TestResources.csproj" />
-    <CSharpProject Include="Gallio.MbUnit2Adapter.Tests\Gallio.MbUnit2Adapter.Tests.csproj" />    
+    <CSharpProject Include="Gallio.MbUnit2Adapter.TestResources\Gallio.MbUnit2Adapter.TestResources$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.MbUnit2Adapter.Tests\Gallio.MbUnit2Adapter.Tests$(ProjectVariant).csproj" />    
   </ItemGroup>
 
   <ItemGroup>

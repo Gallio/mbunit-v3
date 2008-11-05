@@ -5,15 +5,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <CSharpProject Include="Gallio\Gallio.csproj" />
-    <CSharpProject Include="Gallio35\Gallio35.csproj" />
-    <CSharpProject Include="Gallio.Host\Gallio.Host.csproj" />
-    <CSharpProject Include="Gallio.Host\Gallio.Host.x86.csproj" />
-    <CSharpProject Include="Gallio.Tests\Gallio.Tests.csproj" />
-    <CSharpProject Include="Gallio.Loader\Gallio.Loader.csproj" />
-    <CSharpProject Include="Gallio.Reports\Gallio.Reports.csproj" />
-    <CSharpProject Include="Gallio.Reports.Tests\Gallio.Reports.Tests.csproj" />
-    <CSharpProject Include="Gallio.UI\Gallio.UI.csproj" />
+    <CSharpProject Include="Gallio\Gallio$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio35\Gallio35$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Host\Gallio.Host$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Host\Gallio.Host.x86$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Tests\Gallio.Tests$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Loader\Gallio.Loader$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Reports\Gallio.Reports$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Reports.Tests\Gallio.Reports.Tests$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.UI\Gallio.UI$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -76,10 +76,28 @@
     <TestAssembly Include="Gallio.Reports.Tests\bin\Gallio.Reports.Tests.dll" />
   </ItemGroup>
 
-  <Target Name="AfterImage">
+  <ItemGroup>
+    <GallioMergeDependency Include="Gallio\bin\Castle.Core.dll" />
+    <GallioMergeDependency Include="Gallio\bin\Castle.MicroKernel.dll" />
+    <GallioMergeDependency Include="Gallio\bin\Castle.Windsor.dll" />
+    <GallioMergeDependency Include="Gallio\bin\Castle.DynamicProxy2.dll" />
+    <GallioMergeDependency Include="Gallio\bin\Mono.Cecil.dll" />
+  </ItemGroup>
+
+  <Target Name="AfterImage"
+          DependsOnTargets="GallioImage_ILMerge;GallioImage_NoILMerge" />
+
+  <Target Name="GallioImage_ILMerge"
+          Condition="'$(NoILMerge)'!='true'">
     <Message Text="Running ILMerge on Gallio.dll..."
              Importance="High" />
 
-    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; &quot;Gallio\bin\Castle.Core.dll&quot; &quot;Gallio\bin\Castle.MicroKernel.dll&quot; &quot;Gallio\bin\Castle.Windsor.dll&quot; &quot;Gallio\bin\Castle.DynamicProxy2.dll&quot; &quot;Gallio\bin\Mono.Cecil.dll&quot; /internalize &quot;/out:$(ImageDir)\bin\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; @(GallioMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ImageDir)\bin\Gallio.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+  </Target>
+
+  <Target Name="GallioImage_NoILMerge"
+          Condition="'$(NoILMerge)'=='true'">
+    <Copy SourceFiles="Gallio\bin\Gallio.dll;Gallio\bin\Gallio.pdb;@(GallioMergeDependency)"
+          DestinationFolder="$(ImageDir)\bin" />
   </Target>
 </Project>

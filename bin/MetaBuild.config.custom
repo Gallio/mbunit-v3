@@ -29,4 +29,6 @@
    !-->
 
   <Import Project="Gallio.BuildSemantics.addin" />
+  <Import Project="Gallio.DotNet40.addin"
+          Condition="'$(Variant)'=='DotNet40'" />
 </Project>

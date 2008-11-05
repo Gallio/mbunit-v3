@@ -1,13 +1,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
   
-  <ItemGroup>
-    <CSharpProject Include="Gallio.Ambience\Gallio.Ambience.csproj" />
-    <CSharpProject Include="Gallio.Ambience.Server\Gallio.Ambience.Server.csproj" />
-    <CSharpProject Include="Gallio.Ambience.Tests\Gallio.Ambience.Tests.csproj" />    
-  </ItemGroup>
+  <ItemGroup Condition="'$(NoILMerge)'!='true'">
+    <CSharpProject Include="Gallio.Ambience\Gallio.Ambience$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Ambience.Server\Gallio.Ambience.Server$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.Ambience.Tests\Gallio.Ambience.Tests$(ProjectVariant).csproj" />
 
-  <ItemGroup>
     <Binary Include="Gallio.Ambience\Gallio.Ambience.plugin" />
   
     <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe" />
@@ -16,9 +14,7 @@
     <Content Include="libs\db4o.license.html" />
     <Content Include="libs\Cecil.FlowAnalysis.license.html" />
     <Content Include="libs\Mono.GetOptions.license.html" />
-  </ItemGroup>
 
-  <ItemGroup>
     <TestAssembly Include="Gallio.Ambience.Tests\bin\Gallio.Ambience.Tests.dll" />
 
     <DocumentedAssembly Include="Gallio.Ambience\bin\Gallio.Ambience.dll" />
@@ -26,11 +22,22 @@
     <Feature Include="FEATURE_AMBIENCE" />
   </ItemGroup>
 
-  <Target Name="AfterImage">
+  <Target Name="AfterImage"
+          DependsOnTargets="AmbienceImage_ILMerge;AmbienceImage_NoILMerge" />
+
+  <ItemGroup>
+    <AmbienceMergeDependency Include="Gallio.Ambience\bin\Db4objects.Db4o.dll" />
+    <AmbienceMergeDependency Include="Gallio.Ambience\bin\Db4objects.Db4o.Linq.dll" />
+    <AmbienceMergeDependency Include="Gallio.Ambience\bin\Cecil.FlowAnalysis.dll" />
+    <AmbienceMergeDependency Include="Gallio.Ambience\bin\Mono.Cecil.dll" />
+  </ItemGroup>
+
+  <Target Name="AmbienceImage_ILMerge"
+          Condition="'$(NoILMerge)'!='true'">
     <Message Text="Running ILMerge on Gallio.Ambience.dll..."
              Importance="High" />
 
-    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; &quot;Gallio.Ambience\bin\Db4objects.Db4o.dll&quot; &quot;Gallio.Ambience\bin\Db4objects.Db4o.Linq.dll&quot; &quot;Gallio.Ambience\bin\Cecil.FlowAnalysis.dll&quot; &quot;Gallio.Ambience\bin\Mono.Cecil.dll&quot; /internalize &quot;/out:$(ImageDir)\bin\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
+    <Exec Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio.Ambience\bin\Gallio.Ambience.dll&quot; @(AmbienceMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ImageDir)\bin\Gallio.Ambience.dll&quot; &quot;/keyfile:$(SourceDir)\Key.snk&quot;" />
 
     <!-- Replace the copy of Ambience used for the tests because otherwise
          we get assembly conflicts when Db4o tries to communicate remotely
@@ -39,5 +46,13 @@
           DestinationFolder="Gallio.Ambience.Tests\bin" />
     <Copy SourceFiles="$(ImageDir)\bin\Gallio.Ambience.dll"
           DestinationFolder="Gallio.Ambience.Server\bin" />
+  </Target>
+
+  <Target Name="AmbienceImage_NoILMerge"
+          Condition="'$(NoILMerge)'=='true'">
+<!-- Cannot work because there will be conflicting versions of Mono.Cecil.dll
+    <Copy SourceFiles="Gallio.Ambience\bin\Gallio.Ambience.dll;@(AmbienceMergeDependency)"
+          DestinationFolder="$(ImageDir)\bin" />
+-->
   </Target>
 </Project>

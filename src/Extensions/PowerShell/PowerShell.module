@@ -6,8 +6,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands.csproj" />
-    <CSharpProject Include="Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests.csproj" />
+    <CSharpProject Include="Gallio.PowerShellCommands\Gallio.PowerShellCommands$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

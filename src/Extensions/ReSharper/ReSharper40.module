@@ -7,8 +7,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner40.csproj" />
-    <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner40.Tests.csproj" />
+    <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner40$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner40.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(ReSharper40Installed)">

@@ -4,8 +4,8 @@
   <ItemGroup>
     <ModuleReference Include="..\MbUnit.module" />
 
-    <CSharpProject Include="MbUnit.Samples\MbUnit.Samples.csproj" />
-    <CSharpProject Include="MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration.csproj" />
+    <CSharpProject Include="MbUnit.Samples\MbUnit.Samples$(ProjectVariant).csproj" />
+    <CSharpProject Include="MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration$(ProjectVariant).csproj" />
 
     <ExcludedFile Include="*.module" />
     <ExcludedFile Include="*.wxs" />

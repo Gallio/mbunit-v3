@@ -6,9 +6,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration.csproj" />
+    <CSharpProject Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration$(ProjectVariant).csproj" />
 
-    <CSharpProject Include="Gallio.TypeMockIntegration.Tests\Gallio.TypeMockIntegration.Tests.csproj" />
+    <CSharpProject Include="Gallio.TypeMockIntegration.Tests\Gallio.TypeMockIntegration.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,8 +6,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.MSBuildTasks\Gallio.MSBuildTasks.csproj" />
-    <CSharpProject Include="Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests.csproj" />
+    <CSharpProject Include="Gallio.MSBuildTasks\Gallio.MSBuildTasks$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>
