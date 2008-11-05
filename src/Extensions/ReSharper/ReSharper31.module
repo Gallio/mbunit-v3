@@ -5,13 +5,11 @@
   <PropertyGroup>
     <MonoCompatible>false</MonoCompatible>
   </PropertyGroup>
-  
-  <ItemGroup>
+
+  <ItemGroup Condition="'$(DotNet40)'!='true' and $(ReSharper31Installed)">
     <CSharpProject Include="Gallio.ReSharperRunner\Gallio.ReSharperRunner31$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner31.Tests$(ProjectVariant).csproj" />
-  </ItemGroup>
 
-  <ItemGroup Condition="$(ReSharper31Installed)">
     <Binary Include="Gallio.ReSharperRunner\bin\v3.1\Gallio.ReSharperRunner31.dll">
       <Folder>ReSharper\v3.1</Folder>
     </Binary>

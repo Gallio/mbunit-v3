@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <?if NET35?>
+  <?define USE_GALLIO35?>
+  <?elsif NET40?>
+  <?define USE_GALLIO35?>
+  <?end?>
+
+  <?if USE_GALLIO35?>
   <gallio>
     <assemblies>
       <assembly file="Gallio35.dll" />

@@ -27,7 +27,7 @@
                     </Component>
                     <Component Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" Guid="{327C9465-F487-4a7f-B47F-978095DA4052}" Win64="no">
                         <File Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2010\ProjectTemplates\CSharp\MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" KeyPath="yes" />
-                        <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\C#">
+                        <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\MVC\TestProjectTemplates\MbUnit3\C#">
                             <RegistryValue Type="string" Name="Path" Value="CSharp" />
                             <RegistryValue Type="string" Name="Template" Value="MbUnit3.MvcWebApplicationTestProjectTemplate.CSharp.zip" />
                             <RegistryValue Type="string" Name="TestFrameworkName" Value="MbUnit v3" />
@@ -41,7 +41,7 @@
                     </Component>
                     <Component Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" Guid="{C9F90C14-BCE5-41eb-A0B1-1DF24924DEC9}" Win64="no">
                         <File Id="VS2010.MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" Source="$(var.GallioTargetDir)\extras\Templates\VS2010\ProjectTemplates\VisualBasic\MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" KeyPath="yes" />
-                        <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\MVC\TestProjectTemplates\MbUnit3\VB">
+                        <RegistryKey Action="createAndRemoveOnUninstall" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\MVC\TestProjectTemplates\MbUnit3\VB">
                             <RegistryValue Type="string" Name="Path" Value="VisualBasic" />
                             <RegistryValue Type="string" Name="Template" Value="MbUnit3.MvcWebApplicationTestProjectTemplate.VisualBasic.zip" />
                             <RegistryValue Type="string" Name="TestFrameworkName" Value="MbUnit v3" />

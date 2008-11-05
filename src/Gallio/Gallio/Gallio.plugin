@@ -3,6 +3,13 @@
   <gallio>
     <assemblies>
       <assembly file="Gallio.dll" />
+      <?if NET40?> <!-- ILMerge not supported for .Net 4.0 yet. -->      
+      <assembly file="Castle.Core.dll" />
+      <assembly file="Castle.DynamicProxy2.dll" />
+      <assembly file="Castle.MicroKernel.dll" />
+      <assembly file="Castle.Windsor.dll" />
+      <assembly file="Mono.Cecil.dll" />
+      <?end?>
     </assemblies>
 
     <runtime>

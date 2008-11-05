@@ -53,8 +53,17 @@ namespace Gallio.VisualStudio.Shell
         {
             base.Initialize();
 
+            // Do not initialize the shell package fully when running devenv /setup.
+            if (IsRunningPackageSetup)
+                return;
+
             shell = ShellAccessor.GetShellInternal(true);
             shell.OnPackageInitialized(this);
+        }
+
+        private bool IsRunningPackageSetup
+        {
+            get { return GetService(typeof(SDTE)) == null; }
         }
 
         /// <inheritdoc />

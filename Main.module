@@ -35,6 +35,7 @@
 
     <Feature Include="NO_ILMERGE" Condition="'$(NoILMerge)'=='true'" />
     <Feature Include="NO_NDOC" Condition="'$(NoNDoc)'=='true'" />
+    <Feature Include="DOTNET40" Condition="'$(DotNet40)'=='true'" />
   </ItemGroup>
 
   <!-- CLEAN TARGETS -->

@@ -516,6 +516,7 @@
     <Compile Include="Runner\StandardTestRunnerFactoryNames.cs" />
     <Compile Include="Runtime\RuntimeBootstrap.cs" />
     <Compile Include="Runtime\ProcessTypeDetection.cs" />
+    <Compile Include="Runtime\RuntimeVersion.cs" />
     <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
     <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
     <Compile Include="Model\Logging\TestLogWriter.cs" />

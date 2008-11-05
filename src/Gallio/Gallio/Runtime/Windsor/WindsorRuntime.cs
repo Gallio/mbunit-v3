@@ -436,14 +436,17 @@ namespace Gallio.Runtime.Windsor
         {
             if (environmentFlag == null)
             {
-                try
+                switch (RuntimeDetection.GetRuntimeVersion())
                 {
-                    Assembly.Load("System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
-                    environmentFlag = "NET35";
-                }
-                catch (FileNotFoundException)
-                {
-                    environmentFlag = "NET20";
+                    case RuntimeVersion.DotNet40:
+                        environmentFlag = "NET40";
+                        break;
+                    case RuntimeVersion.DotNet35:
+                        environmentFlag = "NET35";
+                        break;
+                    default:
+                        environmentFlag = "NET20";
+                        break;
                 }
             }
 

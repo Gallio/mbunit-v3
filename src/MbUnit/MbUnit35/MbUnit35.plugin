@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <?if NET35?>
+  <?define USE_MBUNIT35?>
+  <?elsif NET40?>
+  <?define USE_MBUNIT35?>
+  <?end?>
+
+  <?if USE_MBUNIT35?>
   <gallio>
     <assemblies>
       <assembly file="MbUnit35.dll" />

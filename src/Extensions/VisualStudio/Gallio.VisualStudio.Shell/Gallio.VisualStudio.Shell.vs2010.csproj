@@ -156,7 +156,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Gallio.VisualStudio.Shell.addin">
+    <None Include="Gallio.VisualStudio.Shell.vs2010.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Gallio.VisualStudio.Shell.vs2008.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Gallio.VisualStudio.Shell.plugin" />

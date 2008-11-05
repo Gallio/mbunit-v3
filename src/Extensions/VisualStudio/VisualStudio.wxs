@@ -4,6 +4,7 @@
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <?include ..\..\Installer.Wix\Features.wxi ?>
 
+<?ifdef FEATURE_VISUALSTUDIO ?>
     <Fragment>
         <PropertyRef Id='VS90DEVENV'/>
         <PropertyRef Id='VS90_ROOT_FOLDER'/>
@@ -22,9 +23,15 @@
                     <File Name="Gallio.VisualStudio.Shell.dll" KeyPath="yes" 
                           Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Shell.dll" />
                     <File Name="Gallio.VisualStudio.Shell.plugin" />
-                    <File Name="Gallio.VisualStudio.Shell.addin" />
+<?ifdef FEATURE_VISUALSTUDIO_90?>
+                    <File Name="Gallio.VisualStudio.Shell.vs2008.addin" />
+<?endif?>
+<?ifdef FEATURE_VISUALSTUDIO_100?>
+                    <File Name="Gallio.VisualStudio.Shell.vs2010.addin" />
+<?endif?>
                 </Component>
                 
+<?ifdef FEATURE_VISUALSTUDIO_90?>
                 <Component Id="Gallio.VisualStudio.Shell.VS90.Registry" Guid="{AE9CCDE1-FF9F-4519-96D8-F4E2609B1B40}" Win64="no">
 
                     <!-- Register the product -->
@@ -58,7 +65,9 @@
                         <RegistryValue Type="string" Name="[VisualStudio]" Value="Gallio" />
                     </RegistryKey>
                 </Component>
+<?endif?>
 
+<?ifdef FEATURE_VISUALSTUDIO_100?>
                 <Component Id="Gallio.VisualStudio.Shell.VS100.Registry" Guid="{8D0E001F-E927-4228-9B3D-093BFFBB6BFB}" Win64="no">
 
                     <!-- Register the product -->
@@ -92,6 +101,7 @@
                         <RegistryValue Type="string" Name="[VisualStudio]" Value="Gallio" />
                     </RegistryKey>
                 </Component>
+<?endif?>
 
 <?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
                 <Component Id="Gallio.VisualStudio.Sail.dll" Guid="{05E499FA-1897-48d0-98DC-ED8B3E4AFFD3}" Win64="no">
@@ -108,6 +118,7 @@
                 -->
 <?endif?>
                 
+<?ifdef FEATURE_VISUALSTUDIO_90?>
                 <Directory Id="VisualStudio.VS90" Name="v9.0">
 <?ifdef FEATURE_VISUALSTUDIO_TIP_90 ?>
                     <Component Id="Gallio.VisualStudio.Tip90.dll" Guid="{03BC061B-BCEC-4e3f-BC65-EEE2BCDA30E9}" Win64="no">
@@ -136,7 +147,9 @@
                     </Component>
 <?endif?>
                 </Directory>
+<?endif?>
 
+<?ifdef FEATURE_VISUALSTUDIO_100?>
                 <Directory Id="VisualStudio.VS100" Name="v10.0">
 <?ifdef FEATURE_VISUALSTUDIO_TIP_100 ?>
                     <Component Id="Gallio.VisualStudio.Tip100.dll" Guid="{80A66CE1-C874-41d7-A641-125D077616A3}" Win64="no">
@@ -153,7 +166,7 @@
 
                         <!-- Register the test types -->
                         <RegistryKey Id="Gallio.VisualStudio.Tip100.Registry1" Action="createAndRemoveOnUninstall"
-                                     Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}">
+                                     Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\EnterpriseTools\QualityTools\TestTypes\{F3589083-259C-4054-87F7-75CDAD4B08E5}">
                             <RegistryValue Type="string" Name="NameId" Value="#100"/>
                             <RegistryValue Type="string" Name="TipProvider" Value="Gallio.VisualStudio.Tip.GallioTipProxy, !(bind.assemblyFullName.Gallio.VisualStudio.Tip100.Proxy.dll)"/>
                             <RegistryValue Type="string" Name="ServiceType" Value="Gallio.VisualStudio.Tip.SGallioTestService, !(bind.assemblyFullName.Gallio.VisualStudio.Tip100.Proxy.dll)"/>
@@ -166,8 +179,10 @@
 <?endif?>
                 </Directory>
             </Directory>
+<?endif?>
         </DirectoryRef>
 
+<?ifdef FEATURE_VISUALSTUDIO_90?>
         <Feature Id="feat_Gallio.VisualStudio.VS90" Title="Visual Studio 2008 Add-In" Level="0" Description="Installs the pre-requisite packages for Visual Studio 2008 integration features." AllowAdvertise="no">
             <Condition Level="1">VS90DEVENV</Condition>
 
@@ -192,7 +207,9 @@
             </Feature>
 <?endif?>
         </Feature>
+<?endif?>
 
+<?ifdef FEATURE_VISUALSTUDIO_100?>
         <Feature Id="feat_Gallio.VisualStudio.VS100" Title="Visual Studio 2010 Add-In (Beta)" Level="0" Description="Installs the pre-requisite packages for Visual Studio 2010 integration features." AllowAdvertise="no">
             <Condition Level="1">VS100DEVENV</Condition>
 
@@ -217,5 +234,7 @@
             </Feature>
 <?endif?>
         </Feature>
+<?endif?>
     </Fragment>
+<?endif?>
 </Wix>

@@ -40,6 +40,26 @@ namespace Gallio.Runtime
         }
 
         /// <summary>
+        /// Gets the .Net runtime version installed and currently running.
+        /// </summary>
+        /// <returns>The runtime version</returns>
+        public static RuntimeVersion GetRuntimeVersion()
+        {
+            if (typeof(object).Assembly.GetName().Version.Major == 4)
+                return RuntimeVersion.DotNet40;
+
+            try
+            {
+                Assembly.Load("System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+                return RuntimeVersion.DotNet35;
+            }
+            catch (FileNotFoundException)
+            {
+                return RuntimeVersion.DotNet20;
+            }
+        }
+
+        /// <summary>
         /// When using Mono, creates <see cref="ProcessStartInfo" /> that re-enters the Mono runtime
         /// if the executable is .Net otherwise creates a standard process start info.
         /// </summary>

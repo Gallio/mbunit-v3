@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <?include ..\..\Installer.Wix\Features.wxi ?>
+    
+<?ifdef FEATURE_RESHARPER_RUNNER_41?>
     <Fragment>
         <!-- Locate the R# InstallDir. -->
         <Property Id="RESHARPER_V41_VS8_INSTALLDIR"> 
@@ -56,4 +59,5 @@
             </Feature>
         </Feature>
     </Fragment>
+<?endif?>
 </Wix>

@@ -3,5 +3,6 @@
     <ProjectVariant>.vs2010</ProjectVariant>
     <NoILMerge>true</NoILMerge>
     <NoNDoc>true</NoNDoc>
+    <DotNet40>true</DotNet40>
   </PropertyGroup>
 </Project>

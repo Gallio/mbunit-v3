@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+    <?include Features.wxi ?>
+
     <Product
         Id="*"
         Name="Gallio $(var.Version)"
@@ -98,9 +100,20 @@
         <InstallExecuteSequence>
             <FindRelatedProducts Before="LaunchConditions" />
             <RemoveExistingProducts After="InstallValidate" />
+
             <Custom Action="VS2005Setup" Before="InstallFinalize"><![CDATA[(&feat_MbUnit3.Templates.VS2005 > 1) AND VS2005DEVENV <> ""]]></Custom>
+    
+<?ifdef FEATURE_VISUALSTUDIO_90?>
             <Custom Action="VS90Setup" Before="InstallFinalize"><![CDATA[(&feat_Gallio.VisualStudio.VS90 > 1 OR &feat_MbUnit3.Templates.VS2008 > 1) AND VS90DEVENV <> ""]]></Custom>
+<?else?>
+            <Custom Action="VS90Setup" Before="InstallFinalize"><![CDATA[(&feat_MbUnit3.Templates.VS2008 > 1) AND VS90DEVENV <> ""]]></Custom>
+<?endif?>
+
+<?ifdef FEATURE_VISUALSTUDIO_100?>
             <Custom Action="VS100Setup" Before="InstallFinalize"><![CDATA[(&feat_Gallio.VisualStudio.VS100 > 1 OR &feat_MbUnit3.Templates.VS2010 > 1) AND VS100DEVENV <> ""]]></Custom>
+<?else?>
+            <Custom Action="VS100Setup" Before="InstallFinalize"><![CDATA[(&feat_MbUnit3.Templates.VS2010 > 1) AND VS100DEVENV <> ""]]></Custom>
+<?endif?>
         </InstallExecuteSequence>
 
         <InstallUISequence>
@@ -112,8 +125,6 @@
             <ProgressText Action="VS90Setup" Template="[1]">Updating Visual Studio 2008 registration ...</ProgressText>
             <ProgressText Action="VS100Setup" Template="[1]">Updating Visual Studio 2010 registration ...</ProgressText>
         </UI>
-
-        <?include Features.wxi ?>
 
         <!-- Define the features in the bundle -->
 	
@@ -166,8 +177,10 @@
             <FeatureRef Id='feat_Gallio.ReSharper.V41'/>
 <?endif?>
             <FeatureRef Id='feat_Gallio.TDNet'/>
-<?ifdef FEATURE_VISUALSTUDIO ?>
+<?ifdef FEATURE_VISUALSTUDIO_90 ?>
             <FeatureRef Id='feat_Gallio.VisualStudio.VS90'/>
+<?endif?>
+<?ifdef FEATURE_VISUALSTUDIO_100 ?>
             <FeatureRef Id='feat_Gallio.VisualStudio.VS100'/>
 <?endif?>
         </Feature>
