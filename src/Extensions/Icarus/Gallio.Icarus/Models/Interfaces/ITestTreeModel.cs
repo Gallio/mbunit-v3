@@ -13,14 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.ObjectModel;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.ProgressMonitoring;
+using System.Threading;
 
 namespace Gallio.Icarus.Models.Interfaces
 {
@@ -37,13 +37,14 @@ namespace Gallio.Icarus.Models.Interfaces
         int Failed { get; }
         int Skipped { get; }
         int Inconclusive { get; }
+        SynchronizationContext SynchronizationContext { get; set; }
 
-        void ApplyFilter(Filter<ITest> filter);
-        void BuildTestTree(TestModelData testModelData, string treeViewCategory);
+        void ApplyFilter(Filter<ITest> filter, IProgressMonitor progressMonitor);
+        void BuildTestTree(TestModelData testModelData, string treeViewCategory, IProgressMonitor progressMonitor);
         Node FindNode(TreePath path);
-        Filter<ITest> GetCurrentFilter();
+        Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor);
         TreePath GetPath(Node node);
-        void ResetTestStatus();
+        void ResetTestStatus(IProgressMonitor progressMonitor);
         void UpdateTestStatus(TestData testData, TestStepRun testStepRun);
     }
 }

@@ -16,6 +16,7 @@
 using System;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus.ProgressMonitoring
 {
@@ -51,11 +52,7 @@ namespace Gallio.Icarus.ProgressMonitoring
         protected override IProgressMonitorPresenter GetPresenter()
         {
             ProgressMonitorPresenter presenter = new ProgressMonitorPresenter();
-            presenter.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e)
-            {
-                if (ProgressUpdate != null)
-                    ProgressUpdate(this, e);
-            };
+            presenter.ProgressUpdate += ((sender, e) => EventHandlerUtils.SafeInvoke(ProgressUpdate, this, e));
             return presenter;
         }
     }

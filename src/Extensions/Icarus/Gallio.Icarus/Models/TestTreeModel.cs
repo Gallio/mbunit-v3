@@ -25,28 +25,18 @@ using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.ProgressMonitoring;
+using System.Threading;
 
 namespace Gallio.Icarus.Models
 {
     public class TestTreeModel : TreeModelBase, ITestTreeModel, INotifyPropertyChanged
     {
-        private TreeModel inner;
+        private readonly TreeModel inner;
         private bool filterPassed, filterFailed, filterSkipped;
         private readonly TestTreeSorter testTreeSorter;
-        private int passed, failed, skipped, inconclusive;
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public TestTreeModel()
-        {
-            inner = new TreeModel();
-            testTreeSorter = new TestTreeSorter() { SortOrder = SortOrder.Ascending };
-
-            inner.NodesChanged += (sender, e) => OnNodesChanged(e);
-            inner.NodesInserted += (sender, e) => OnNodesInserted(e);
-            inner.NodesRemoved += (sender, e) => OnNodesRemoved(e);
-            inner.StructureChanged += (sender, e) => OnStructureChanged(e);
-        }
 
         public bool FilterPassed
         {
@@ -123,24 +113,25 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public int Passed
-        {
-            get { return passed; }
-        }
+        public int Passed { get; private set; }
 
-        public int Failed
-        {
-            get { return failed; }
-        }
+        public int Failed { get; private set; }
 
-        public int Skipped
-        {
-            get { return skipped; }
-        }
+        public int Skipped { get; private set; }
 
-        public int Inconclusive
+        public int Inconclusive { get; private set; }
+
+        public SynchronizationContext SynchronizationContext { get; set; }
+
+        public TestTreeModel()
         {
-            get { return inconclusive; }
+            inner = new TreeModel();
+            testTreeSorter = new TestTreeSorter { SortOrder = SortOrder.Ascending };
+
+            inner.NodesChanged += (sender, e) => OnNodesChanged(e);
+            inner.NodesInserted += (sender, e) => OnNodesInserted(e);
+            inner.NodesRemoved += (sender, e) => OnNodesRemoved(e);
+            inner.StructureChanged += (sender, e) => OnStructureChanged(e);
         }
 
         private static int CountTests(Node node)
@@ -173,15 +164,15 @@ namespace Gallio.Icarus.Models
             return inner.GetPath(node);
         }
 
-        public void ResetTestStatus()
+        public void ResetTestStatus(IProgressMonitor progressMonitor)
         {
-            passed = 0;
+            Passed = 0;
             OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
-            failed = 0;
+            Failed = 0;
             OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
-            skipped = 0;
+            Skipped = 0;
             OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
-            inconclusive = 0;
+            Inconclusive = 0;
             OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
 
             foreach (Node node in Nodes)
@@ -218,19 +209,19 @@ namespace Gallio.Icarus.Models
             switch (testStepRun.Result.Outcome.Status)
             {
                 case TestStatus.Passed:
-                    passed++;
+                    Passed++;
                     OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
                     break;
                 case TestStatus.Failed:
-                    failed++;
+                    Failed++;
                     OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
                     break;
                 case TestStatus.Skipped:
-                    skipped++;
+                    Skipped++;
                     OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
                     break;
                 case TestStatus.Inconclusive:
-                    inconclusive++;
+                    Inconclusive++;
                     OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
                     break;
             }
@@ -302,8 +293,7 @@ namespace Gallio.Icarus.Models
                 filterNode = nodes[0];
             else
             {
-                filterNode = new TestTreeNode(text, key, nodeType);
-                filterNode.TestStatus = testStatus;
+                filterNode = new TestTreeNode(text, key, nodeType) {TestStatus = testStatus};
                 node.Parent.Nodes.Add(filterNode);
             }
             node.Parent.Nodes.Remove(node);
@@ -327,8 +317,14 @@ namespace Gallio.Icarus.Models
 
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, e);
+            if (SynchronizationContext == null)
+                return;
+
+            SynchronizationContext.Post(delegate
+            {
+                if (PropertyChanged != null)
+                    PropertyChanged(this, e);
+            }, null);
         }
 
         public override IEnumerable GetChildren(TreePath treePath)
@@ -359,7 +355,7 @@ namespace Gallio.Icarus.Models
             return node.IsLeaf;
         }
 
-        public void BuildTestTree(TestModelData testModelData, string treeViewCategory)
+        public void BuildTestTree(TestModelData testModelData, string treeViewCategory, IProgressMonitor progressMonitor)
         {
             Nodes.Clear();
 
@@ -439,10 +435,8 @@ namespace Gallio.Icarus.Models
                     case TestKinds.Test:
                         IList<string> metadata = td.Metadata[key];
                         if (metadata.Count == 0)
-                        {
-                            metadata = new List<string>();
-                            metadata.Add("None");
-                        }
+                            metadata = new List<string> {"None"};
+
                         foreach (string m in metadata)
                         {
                             // find metadata node (or add if it doesn't exist)
@@ -466,9 +460,12 @@ namespace Gallio.Icarus.Models
                             else
                             {
                                 // test
-                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
-                                ttnode.SourceCodeAvailable = (td.CodeLocation != CodeLocation.Unknown);
-                                ttnode.IsTest = td.IsTestCase;
+                                TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind)
+                                                          {
+                                                              SourceCodeAvailable =
+                                                                  (td.CodeLocation != CodeLocation.Unknown),
+                                                              IsTest = td.IsTestCase
+                                                          };
                                 if (m != "None")
                                     metadataNode.Nodes.Add(ttnode);
                                 else
@@ -482,22 +479,25 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public void ApplyFilter(Filter<ITest> filter)
+        public void ApplyFilter(Filter<ITest> filter, IProgressMonitor progressMonitor)
         {
-            if (Root == null)
-                return;
-
-            if (filter is AnyFilter<ITest>)
+            using (progressMonitor.BeginTask("Applying filter.", 100))
             {
-                Root.CheckState = CheckState.Checked;
+                if (Root == null)
+                    return;
+
+                if (filter is AnyFilter<ITest>)
+                {
+                    Root.CheckState = CheckState.Checked;
+                    Root.UpdateStateOfRelatedNodes();
+                    return;
+                }
+
+                Root.CheckState = CheckState.Unchecked;
                 Root.UpdateStateOfRelatedNodes();
-                return;
+
+                RecursivelyApplyFilter(filter);
             }
-
-            Root.CheckState = CheckState.Unchecked;
-            Root.UpdateStateOfRelatedNodes();
-
-            RecursivelyApplyFilter(filter);
         }
 
         private void RecursivelyApplyFilter(Filter<ITest> filter)
@@ -522,7 +522,7 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public Filter<ITest> GetCurrentFilter()
+        public Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor)
         {
             Filter<ITest> filter;
             if (Root == null || Root.CheckState == CheckState.Checked)

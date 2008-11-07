@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models.Interfaces;
@@ -24,14 +25,18 @@ using Gallio.Icarus.Remoting;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
 using NDepend.Helpers.FileDirectoryPath;
+using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
     public class ProjectController : IProjectController, INotifyPropertyChanged
     {
         private readonly IProjectTreeModel projectTreeModel;
+        private readonly IFileSystem fileSystem;
+        private readonly IXmlSerialization xmlSerialization;
         private readonly BindingList<FilterInfo> testFilters;
         private readonly List<FilterInfo> testFiltersList = new List<FilterInfo>();
         private readonly BindingList<string> hintDirectories;
@@ -66,9 +71,18 @@ namespace Gallio.Icarus.Controllers
             get { return projectTreeModel.FileName; }
         }
 
-        public ProjectController(IProjectTreeModel projectTreeModel)
+        public SynchronizationContext SynchronizationContext
+        {
+            get;
+            set;
+        }
+
+        public ProjectController(IProjectTreeModel projectTreeModel, IFileSystem fileSystem, 
+            IXmlSerialization xmlSerialization)
         {
             this.projectTreeModel = projectTreeModel;
+            this.fileSystem = fileSystem;
+            this.xmlSerialization = xmlSerialization;
 
             testFilters = new BindingList<FilterInfo>(testFiltersList);
             testFilters.ListChanged += testFilters_ListChanged;
@@ -79,13 +93,13 @@ namespace Gallio.Icarus.Controllers
             assemblyWatcher.AssemblyChangedEvent += assemblyWatcher_AssemblyChangedEvent;
         }
 
-        void testFilters_ListChanged(object sender, ListChangedEventArgs e)
+        private void testFilters_ListChanged(object sender, ListChangedEventArgs e)
         {
             projectTreeModel.Project.TestFilters.Clear();
             projectTreeModel.Project.TestFilters.AddRange(testFiltersList);
         }
 
-        void hintDirectories_ListChanged(object sender, ListChangedEventArgs e)
+        private void hintDirectories_ListChanged(object sender, ListChangedEventArgs e)
         {
             projectTreeModel.Project.TestPackageConfig.HintDirectories.Clear();
             projectTreeModel.Project.TestPackageConfig.HintDirectories.AddRange(hintDirectoriesList);
@@ -97,44 +111,54 @@ namespace Gallio.Icarus.Controllers
             EventHandlerUtils.SafeInvoke(AssemblyChanged, this, new AssemblyChangedEventArgs(assemblyName));
         }
 
-        public void AddAssemblies(IList<string> assemblies)
+        public void AddAssemblies(IList<string> assemblies, IProgressMonitor progressMonitor)
         {
-            IList<string> validAssemblies = new List<string>();
-            foreach (string assembly in assemblies)
+            using (progressMonitor.BeginTask("Adding assemblies", (assemblies.Count + 2)))
             {
-                if (File.Exists(assembly))
-                    validAssemblies.Add(assembly);
+                IList<string> validAssemblies = new List<string>();
+                foreach (string assembly in assemblies)
+                {
+                    if (File.Exists(assembly))
+                        validAssemblies.Add(assembly);
+                    progressMonitor.Worked(1);
+                }
+                projectTreeModel.Project.TestPackageConfig.AssemblyFiles.AddRange(validAssemblies);
+                progressMonitor.Worked(1);
+                assemblyWatcher.Add(validAssemblies);
             }
-            projectTreeModel.Project.TestPackageConfig.AssemblyFiles.AddRange(validAssemblies);
-            assemblyWatcher.Add(validAssemblies);
         }
 
-        public void DeleteFilter(FilterInfo filterInfo)
+        public void DeleteFilter(FilterInfo filterInfo, IProgressMonitor progressMonitor)
         {
-            testFilters.Remove(filterInfo);
+            using (progressMonitor.BeginTask("Deleting filter", 1))
+                testFilters.Remove(filterInfo);
         }
 
-        public Filter<ITest> GetFilter(string filterName)
+        public Filter<ITest> GetFilter(string filterName, IProgressMonitor progressMonitor)
         {
-            foreach (FilterInfo filterInfo in projectTreeModel.Project.TestFilters)
+            using (progressMonitor.BeginTask("Getting filter", 1))
             {
-                if (filterInfo.FilterName == filterName)
-                    return FilterUtils.ParseTestFilter(filterInfo.Filter);
+                foreach (FilterInfo filterInfo in projectTreeModel.Project.TestFilters)
+                {
+                    if (filterInfo.FilterName == filterName)
+                        return FilterUtils.ParseTestFilter(filterInfo.Filter);
+                }
+                return null;
             }
-            return null;
         }
 
-        public void RemoveAllAssemblies()
+        public void RemoveAllAssemblies(IProgressMonitor progressMonitor)
         {
             projectTreeModel.Project.TestPackageConfig.AssemblyFiles.Clear();
         }
 
-        public void RemoveAssembly(string fileName)
+        public void RemoveAssembly(string fileName, IProgressMonitor progressMonitor)
         {
             projectTreeModel.Project.TestPackageConfig.AssemblyFiles.Remove(fileName);
         }
 
-        public void SaveFilter(string filterName, Filter<ITest> filter){
+        public void SaveFilter(string filterName, Filter<ITest> filter, IProgressMonitor progressMonitor)
+        {
             foreach (FilterInfo filterInfo in testFilters)
             {
                 if (filterInfo.FilterName != filterName)
@@ -170,14 +194,14 @@ namespace Gallio.Icarus.Controllers
             project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
         }
 
-        public void OpenProject(string projectName)
+        public void OpenProject(string projectName, IProgressMonitor progressMonitor)
         {
             // fail fast
-            if (!File.Exists(projectName))
+            if (!fileSystem.FileExists(projectName))
                 throw new ArgumentException(String.Format("Project file {0} does not exist.", projectName));
 
             // deserialize project
-            Project project = XmlSerializationUtils.LoadFromXml<Project>(projectName);
+            Project project = xmlSerialization.LoadFromXml<Project>(projectName);
             ConvertFromRelativePaths(project, Path.GetDirectoryName(projectName));
             
             projectTreeModel.FileName = projectName;
@@ -214,7 +238,7 @@ namespace Gallio.Icarus.Controllers
             project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
         }
 
-        public void NewProject()
+        public void NewProject(IProgressMonitor progressMonitor)
         {
             projectTreeModel.FileName = Paths.DefaultProject;
             projectTreeModel.Project = new Project();
@@ -224,17 +248,17 @@ namespace Gallio.Icarus.Controllers
             PublishUpdates();
         }
 
-        public void SaveProject(string projectName)
+        public void SaveProject(string projectName, IProgressMonitor progressMonitor)
         {
-            if (projectName == string.Empty)
+            if (string.IsNullOrEmpty(projectName))
             {
                 // create folder (if necessary)
-                if (!Directory.Exists(Paths.IcarusAppDataFolder))
-                    Directory.CreateDirectory(Paths.IcarusAppDataFolder);
+                if (!fileSystem.DirectoryExists(Paths.IcarusAppDataFolder))
+                    fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
                 projectName = Paths.DefaultProject;
             }
             ConvertToRelativePaths(projectTreeModel.Project, Path.GetDirectoryName(projectName));
-            XmlSerializationUtils.SaveToXml(projectTreeModel.Project, projectName);
+            xmlSerialization.SaveToXml(projectTreeModel.Project, projectName);
         }
 
         private void PublishUpdates()
@@ -251,8 +275,20 @@ namespace Gallio.Icarus.Controllers
                 hintDirectories.Add(hintDirectory);
             hintDirectories.ListChanged += hintDirectories_ListChanged;
 
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs("TestPackageConfig"));
+            OnPropertyChanged(new PropertyChangedEventArgs("TestPackageConfig"));
         }
+
+        protected void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            if (SynchronizationContext == null)
+                return;
+
+            SynchronizationContext.Post(delegate
+            {
+                if (PropertyChanged != null)
+                    PropertyChanged(this, e);
+            }, null);
+        }
+
     }
 }

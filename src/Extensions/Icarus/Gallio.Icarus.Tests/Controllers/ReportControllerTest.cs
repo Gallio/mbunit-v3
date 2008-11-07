@@ -17,45 +17,30 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Gallio.Icarus.Controllers;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
     [Category("Controllers")]
     class ReportControllerTest : MockTest
     {
-        private IEventRaiser progressUpdate;
-
         [Test]
         public void GenerateReport_Test()
         {
             Report report = new Report();
             IReportService reportService = SetupReportService();
-            Expect.Call(reportService.SaveReportAs(report, string.Empty, "xml")).Return(string.Empty);
+            Expect.Call(reportService.SaveReportAs(report, string.Empty, "xml", null)).Return(string.Empty);
             LastCall.IgnoreArguments();
+            IProgressMonitor progressMonitor = mocks.StrictMock<IProgressMonitor>();
             mocks.ReplayAll();
             ReportController reportController = new ReportController(reportService);
             string reportDirectory = Path.Combine(Path.GetTempPath(), "GallioReport");
-            reportController.GenerateReport(report, reportDirectory);
+            reportController.GenerateReport(report, reportDirectory, progressMonitor);
             Thread.Sleep(100);
-        }
-
-        [Test]
-        public void ProgressUpdate_Test()
-        {
-            IReportService reportService = SetupReportService();
-            mocks.ReplayAll();
-            ReportController reportController = new ReportController(reportService);
-            bool flag = false;
-            reportController.ProgressUpdate += delegate { flag = true; };
-            Assert.IsFalse(flag);
-            progressUpdate.Raise(reportController, new ProgressUpdateEventArgs("taskName", "subTaskName", 0, 0));
-            Assert.IsTrue(flag);
         }
 
         [Test]
@@ -75,19 +60,18 @@ namespace Gallio.Icarus.Tests.Controllers
             Report report = new Report();
             const string reportType = "test";
             IReportService reportService = SetupReportService();
-            Expect.Call(reportService.SaveReportAs(report, string.Empty, reportType)).Return(string.Empty);
+            Expect.Call(reportService.SaveReportAs(report, string.Empty, reportType, null)).Return(string.Empty);
             LastCall.IgnoreArguments();
+            IProgressMonitor progressMonitor = mocks.StrictMock<IProgressMonitor>();
             mocks.ReplayAll();
             ReportController reportController = new ReportController(reportService);
-            reportController.ShowReport(report, reportType);
-            Thread.Sleep(200);
+            reportController.ShowReport(report, reportType, progressMonitor);
+            Thread.Sleep(500);
         }
 
         IReportService SetupReportService()
         {
             IReportService reportService = mocks.StrictMock<IReportService>();
-            reportService.ProgressUpdate += null;
-            progressUpdate = LastCall.IgnoreArguments().GetEventRaiser();
             return reportService;
         }
     }

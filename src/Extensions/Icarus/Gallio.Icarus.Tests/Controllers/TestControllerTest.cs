@@ -21,6 +21,7 @@ using Gallio.Icarus.Services.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -33,19 +34,26 @@ namespace Gallio.Icarus.Tests.Controllers
         public void ApplyFilter_Test()
         {
             Filter<ITest> filter = new NoneFilter<ITest>();
-
             ITestRunnerService testRunnerService = SetupTestRunnerService();
-            testRunnerService.SetFilter(filter);
+            testRunnerService.SetFilter(filter, null);
             LastCall.IgnoreArguments();
 
-            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-            testTreeModel.ApplyFilter(filter);
+            var testTreeModel = mocks.StrictMock<ITestTreeModel>();
+            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
             LastCall.IgnoreArguments();
-            
+            Expect.Call(progressMonitor.BeginTask("Applying filter", 3)).Return(
+                new ProgressMonitorTaskCookie(progressMonitor));
+            progressMonitor.SetStatus("Parsing filter");
+            progressMonitor.Worked(1);
+            testTreeModel.ApplyFilter(filter, progressMonitor);
+            LastCall.IgnoreArguments();
+            Expect.Call(progressMonitor.CreateSubProgressMonitor(1)).Return(
+                (IProgressMonitor)mocks.Stub(typeof(IProgressMonitor))).Repeat
+                .Times(2);
+            progressMonitor.Done();
             mocks.ReplayAll();
-
-            TestController testController = new TestController(testRunnerService, testTreeModel);
-            testController.ApplyFilter(filter.ToFilterExpr());
+            var testController = new TestController(testRunnerService, testTreeModel);
+            testController.ApplyFilter(filter.ToFilterExpr(), progressMonitor);
         }
 
         ITestRunnerService SetupTestRunnerService()
@@ -53,40 +61,27 @@ namespace Gallio.Icarus.Tests.Controllers
             ITestRunnerService testRunnerService = mocks.StrictMock<ITestRunnerService>();
             testRunnerService.TestStepFinished += delegate { };
             LastCall.IgnoreArguments();
-            testRunnerService.ProgressUpdate += delegate { };
-            LastCall.IgnoreArguments();
             return testRunnerService;
-        }
-
-        [Test]
-        public void Cancel_Test()
-        {
-            ITestRunnerService testRunnerService = SetupTestRunnerService();
-            testRunnerService.Cancel();
-
-            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-
-            mocks.ReplayAll();
-
-            TestController testController = new TestController(testRunnerService, testTreeModel);
-            testController.Cancel();
         }
 
         [Test]
         public void GetCurrentFilter_Test_AnyFilter()
         {
             Filter<ITest> filter = new NoneFilter<ITest>();
-
             ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-            Expect.Call(testTreeModel.GetCurrentFilter()).Return(filter);
-
+            Expect.Call(testTreeModel.GetCurrentFilter(null)).Return(filter).IgnoreArguments();
             ITestRunnerService testRunnerService = SetupTestRunnerService();
-            testRunnerService.SetFilter(filter);
-
+            testRunnerService.SetFilter(filter, null);
+            LastCall.IgnoreArguments();
+            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
+            Expect.Call(progressMonitor.BeginTask("Getting current filter", 2)).Return(
+                new ProgressMonitorTaskCookie(progressMonitor));
+            Expect.Call(progressMonitor.CreateSubProgressMonitor(1)).Return((IProgressMonitor)mocks.Stub(
+                typeof(IProgressMonitor))).Repeat.Times(2);
+            progressMonitor.Done();
             mocks.ReplayAll();
-
             TestController testController = new TestController(testRunnerService, testTreeModel);
-            Assert.AreEqual(filter, testController.GetCurrentFilter());
+            Assert.AreEqual(filter, testController.GetCurrentFilter(progressMonitor));
         }
 
         [Test]
@@ -147,10 +142,17 @@ namespace Gallio.Icarus.Tests.Controllers
             ITestRunnerService testRunnerService = SetupTestRunnerService();
             Expect.Call(testRunnerService.Report).Return(new LockBox<Report>(new Report()));
             ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-            testTreeModel.ResetTestStatus();
+            testTreeModel.ResetTestStatus(null);
+            LastCall.IgnoreArguments();
+            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
+            Expect.Call(progressMonitor.BeginTask("Resetting tests", 2)).Return(
+                new ProgressMonitorTaskCookie(progressMonitor));
+            Expect.Call(progressMonitor.CreateSubProgressMonitor(1)).Return((IProgressMonitor)mocks.Stub(
+                typeof(IProgressMonitor)));
+            progressMonitor.Done();
             mocks.ReplayAll();
             TestController testController = new TestController(testRunnerService, testTreeModel);
-            testController.ResetTests();
+            testController.ResetTests(progressMonitor);
         }
     }
 }

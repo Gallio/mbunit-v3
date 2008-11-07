@@ -14,10 +14,12 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Properties;
@@ -29,6 +31,7 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Icarus.Services;
+using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus
 {
@@ -76,7 +79,8 @@ namespace Gallio.Icarus
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
                 IProjectTreeModel projectTreeModel = new ProjectTreeModel(Paths.DefaultProject, new Project());
-                IProjectController projectController = new ProjectController(projectTreeModel);
+                IProjectController projectController = new ProjectController(projectTreeModel, new FileSystem(), 
+                    new XmlSerialization());
                 
                 ITestRunner testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(
                     optionsController.TestRunnerFactory);
@@ -90,8 +94,33 @@ namespace Gallio.Icarus
 
                 IAnnotationsController annotationsController = new AnnotationsController(testController);
 
-                Main main = new Main(projectController, testController, runtimeLogController, executionLogController, 
-                    reportController, annotationsController, Arguments);
+                IMediator mediator = Mediator.Mediator.Instance;
+                mediator.ProjectController = projectController;
+                mediator.TestController = testController;
+                mediator.ReportController = reportController;
+
+                Main main = new Main(mediator, runtimeLogController, executionLogController, annotationsController);
+                main.Load += delegate
+                {
+                    List<string> assemblyFiles = new List<string>();
+                    if (Arguments != null && Arguments.Assemblies.Length > 0)
+                    {
+                        foreach (string assembly in assemblyFiles)
+                        {
+                            if (!File.Exists(assembly))
+                                continue;
+
+                            if (Path.GetExtension(assembly) == ".gallio")
+                            {
+                                mediator.OpenProject(assembly);
+                                break;
+                            }
+                            mediator.AddAssemblies(assemblyFiles);
+                        }
+                    }
+                    else if (optionsController.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
+                        mediator.OpenProject(Paths.DefaultProject);
+                };
 
                 testRunnerService.Initialize();
                 main.CleanUp += delegate { testRunnerService.Dispose(); };

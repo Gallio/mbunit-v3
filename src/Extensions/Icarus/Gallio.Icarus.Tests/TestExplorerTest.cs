@@ -16,7 +16,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Models;
+using Gallio.Icarus.Mediator.Interfaces;
+using Gallio.Icarus.Models.Interfaces;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -29,24 +30,17 @@ namespace Gallio.Icarus.Tests
         public void Constructor_Test()
         {
             const string treeViewCategory = "test";
-            IProjectController projectController = mocks.StrictMock<IProjectController>();
-            ITestController testController = mocks.StrictMock<ITestController>();
-            IOptionsController optionsController = mocks.StrictMock<IOptionsController>();
+            var mediator = mocks.StrictMock<IMediator>();
+            var testController = (ITestController) mocks.Stub(typeof (ITestController));
+            Expect.Call(testController.Model).Return((ITestTreeModel) mocks.Stub(typeof (ITestTreeModel))).Repeat.AtLeastOnce();
+            Expect.Call(mediator.TestController).Return(testController).Repeat.AtLeastOnce();
+            var optionsController = mocks.StrictMock<IOptionsController>();
             Expect.Call(optionsController.SelectedTreeViewCategories).Return(
                 new BindingList<string>(new List<string>(new[] {treeViewCategory})));
-            Expect.Call(testController.Model).Return(new TestTreeModel()).Repeat.AtLeastOnce();
-            testController.LoadStarted += null;
             LastCall.IgnoreArguments();
-            testController.LoadFinished += null;
-            LastCall.IgnoreArguments();
-            testController.RunStarted += null;
-            LastCall.IgnoreArguments();
-            testController.RunFinished += null;
-            LastCall.IgnoreArguments();
-            testController.TreeViewCategory = treeViewCategory;
-            testController.Reload();
+            mediator.Reload();
             mocks.ReplayAll();
-            TestExplorer testExplorer = new TestExplorer(projectController, testController, optionsController);
+            TestExplorer testExplorer = new TestExplorer(mediator, optionsController);
         }
     }
 }

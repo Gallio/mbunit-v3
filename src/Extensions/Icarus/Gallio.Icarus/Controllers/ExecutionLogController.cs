@@ -81,24 +81,21 @@ namespace Gallio.Icarus.Controllers
         {
             // Do this work in the background to avoid a possible deadlock acquiring the report lock
             // on the UI thread.
-            ThreadPool.QueueUserWorkItem(dummy =>
+            ThreadPool.QueueUserWorkItem(dummy => testController.Report.Read(report =>
             {
-                testController.Report.Read(report =>
+                TestModelData = report.TestModel;
+
+                TestStepRuns.Clear();
+
+                if (report.TestPackageRun != null)
                 {
-                    TestModelData = report.TestModel;
+                    foreach (TestStepRun run in report.TestPackageRun.AllTestStepRuns)
+                        if (selectedTestIds.Contains(run.Step.TestId))
+                            TestStepRuns.Add(run);
+                }
 
-                    TestStepRuns.Clear();
-
-                    if (report.TestPackageRun != null)
-                    {
-                        foreach (TestStepRun run in report.TestPackageRun.AllTestStepRuns)
-                            if (selectedTestIds.Contains(run.Step.TestId))
-                                TestStepRuns.Add(run);
-                    }
-
-                    EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, System.EventArgs.Empty);
-                });
-            });
+                EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, System.EventArgs.Empty);
+            }));
         }
     }
 }

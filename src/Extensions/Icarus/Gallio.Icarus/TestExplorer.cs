@@ -17,6 +17,7 @@ using System;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Model;
 
@@ -24,14 +25,11 @@ namespace Gallio.Icarus
 {
     public partial class TestExplorer : DockWindow
     {
-        private readonly IProjectController projectController;
-        private readonly ITestController testController;
+        private readonly IMediator mediator;
 
-        public TestExplorer(IProjectController projectController, ITestController testController, 
-            IOptionsController optionsController)
+        public TestExplorer(IMediator mediator, IOptionsController optionsController)
         {
-            this.projectController = projectController;
-            this.testController = testController;
+            this.mediator = mediator;
 
             InitializeComponent();
 
@@ -42,27 +40,27 @@ namespace Gallio.Icarus
             }
             treeViewComboBox.SelectedIndex = 0;
 
-            testTree.Model = testController.Model;
+            testTree.Model = mediator.TestController.Model;
 
-            testController.LoadStarted += delegate { testTree.EditEnabled = false; };
-            testController.LoadFinished += delegate
+            mediator.TestController.LoadStarted += delegate { testTree.EditEnabled = false; };
+            mediator.TestController.LoadFinished += delegate
             {
                 testTree.EditEnabled = true;
                 testTree.ExpandAll();
             };
 
-            testController.RunStarted += delegate { testTree.EditEnabled = false; };
-            testController.RunFinished += delegate { testTree.EditEnabled = true; };
+            mediator.TestController.RunStarted += delegate { testTree.EditEnabled = false; };
+            mediator.TestController.RunFinished += delegate { testTree.EditEnabled = true; };
 
-            filterPassedTestsToolStripMenuItem.DataBindings.Add("Checked", testController, "Model.FilterPassed", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterPassedTestsToolStripButton.DataBindings.Add("Checked", testController, "Model.FilterPassed", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterFailedTestsToolStripMenuItem.DataBindings.Add("Checked", testController, "Model.FilterFailed", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterFailedTestsToolStripButton.DataBindings.Add("Checked", testController, "Model.FilterFailed", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterSkippedTestsToolStripMenuItem.DataBindings.Add("Checked", testController, "Model.FilterSkipped", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterSkippedTestsToolStripButton.DataBindings.Add("Checked", testController, "Model.FilterSkipped", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterPassedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterPassed", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterPassedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterPassed", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterFailedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterFailed", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterFailedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterFailed", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterSkippedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterSkipped", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterSkippedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterSkipped", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            sortAscToolStripButton.DataBindings.Add("Checked", testController, "Model.SortAsc", false, DataSourceUpdateMode.OnPropertyChanged);
-            sortDescToolStripButton.DataBindings.Add("Checked", testController, "Model.SortDesc", false, DataSourceUpdateMode.OnPropertyChanged);
+            sortAscToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.SortAsc", false, DataSourceUpdateMode.OnPropertyChanged);
+            sortDescToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.SortDesc", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -71,18 +69,18 @@ namespace Gallio.Icarus
                 return;
 
             TestTreeNode node = (TestTreeNode)testTree.SelectedNode.Tag;
-            projectController.RemoveAssembly(node.Name);
+            mediator.RemoveAssembly(node.Name);
         }
 
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            testController.TreeViewCategory = (string)treeViewComboBox.SelectedItem;
-            testController.Reload();
+            mediator.TestController.TreeViewCategory = (string)treeViewComboBox.SelectedItem;
+            mediator.Reload();
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
         {
-            testController.ResetTests();
+            mediator.ResetTests();
         }
 
         private void expandAllMenuItem_Click(object sender, EventArgs e)
@@ -97,7 +95,7 @@ namespace Gallio.Icarus
 
         private void viewSourceCodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            testController.ViewSourceCode(((TestTreeNode)testTree.SelectedNode.Tag).Name);
+            mediator.ViewSourceCode(((TestTreeNode)testTree.SelectedNode.Tag).Name);
         }
 
         private void expandPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -123,12 +121,12 @@ namespace Gallio.Icarus
 
         private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            projectController.RemoveAllAssemblies();
+            mediator.RemoveAllAssemblies();
         }
 
         private void testTree_SelectionChanged(object sender, EventArgs e)
         {
-            testController.SelectedTests.Clear();
+            mediator.TestController.SelectedTests.Clear();
             if (testTree.SelectedNode != null)
             {
                 TestTreeNode testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
@@ -138,10 +136,10 @@ namespace Gallio.Icarus
                 {
                     foreach (Node n in testTreeNode.Nodes)
                         if (n != null) // don't know how this happens yet -- JB
-                            testController.SelectedTests.Add((TestTreeNode)n);
+                            mediator.TestController.SelectedTests.Add((TestTreeNode)n);
                 }
                 else
-                    testController.SelectedTests.Add(testTreeNode);
+                    mediator.TestController.SelectedTests.Add(testTreeNode);
             }
             else
             {

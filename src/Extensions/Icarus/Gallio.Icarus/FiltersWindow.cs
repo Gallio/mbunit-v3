@@ -30,24 +30,22 @@
 
 using System;
 using System.Windows.Forms;
-using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus
 {
     public partial class FiltersWindow : DockWindow
     {
-        private readonly IProjectController projectController;
-        private readonly ITestController testController;
+        private readonly IMediator mediator;
 
-        public FiltersWindow(IProjectController projectController, ITestController testController)
+        public FiltersWindow(IMediator mediator)
         {
-            this.projectController = projectController;
-            this.testController = testController;
+            this.mediator = mediator;
 
             InitializeComponent();
 
-            filtersListBox.DataSource = projectController.TestFilters;
+            filtersListBox.DataSource = mediator.ProjectController.TestFilters;
             filtersListBox.DisplayMember = "FilterName";
         }
 
@@ -58,7 +56,7 @@ namespace Gallio.Icarus
 
         private void removeFilterButton_Click(object sender, EventArgs e)
         {
-            projectController.DeleteFilter((FilterInfo)filtersListBox.SelectedItem);
+            mediator.DeleteFilter((FilterInfo)filtersListBox.SelectedItem);
         }
 
         private void filterNameTextBox_TextChanged(object sender, EventArgs e)
@@ -77,15 +75,14 @@ namespace Gallio.Icarus
             }
             else
             {
-                projectController.SaveFilter(filterNameTextBox.Text, testController.GetCurrentFilter());
+                mediator.SaveFilter(filterNameTextBox.Text);
                 filterNameTextBox.Clear();
             }
         }
 
         private void applyFilterButton_Click(object sender, EventArgs e)
         {
-            FilterInfo filterInfo = (FilterInfo)filtersListBox.SelectedItem;
-            testController.ApplyFilter(filterInfo.Filter);
+            mediator.ApplyFilter(((FilterInfo)filtersListBox.SelectedItem).Filter);
         }
     }
 }

@@ -14,60 +14,57 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Concurrency;
 using Gallio.Runtime;
 
 namespace Gallio.Icarus
 {
-    internal sealed class TaskManager
+    public sealed class TaskManager
     {
         private Task currentWorkerTask;
+        private readonly Queue<Action> queue = new Queue<Action>();
+
+        public bool TaskRunning
+        {
+            get { return (currentWorkerTask != null); }
+        }
 
         public void StartTask(Action action)
         {
-            lock (this)
-            {
-                AbortTask();
+            queue.Enqueue(action);
 
-                Task workerTask = new ThreadTask("Icarus Worker", action);
-                currentWorkerTask = workerTask;
-
-                workerTask.Terminated += delegate
-                {
-                    if (!workerTask.IsAborted)
-                    {
-                        if (workerTask.Result.Exception != null)
-                            UnhandledExceptionPolicy.Report("An exception occurred in a background task.", currentWorkerTask.Result.Exception);
-                    }
-
-                    lock (this)
-                    {
-                        if (currentWorkerTask == workerTask)
-                            currentWorkerTask = null;
-                    }
-                };
-
-                workerTask.Start();
-            }
+            if (currentWorkerTask == null)
+                RunTask();
         }
 
-        public void AbortTask()
+        private void RunTask()
         {
-            lock (this)
+            Action action = queue.Dequeue();
+
+            Task workerTask = new ThreadTask("Icarus Worker", action);
+            currentWorkerTask = workerTask;
+
+            workerTask.Terminated += delegate
             {
-                if (currentWorkerTask == null)
-                    return;
+                if (!workerTask.IsAborted)
+                {
+                    if (workerTask.Result.Exception != null && !(workerTask.Result.Exception is OperationCanceledException))
+                        UnhandledExceptionPolicy.Report("An exception occurred in a background task.",
+                            currentWorkerTask.Result.Exception);
+                }
 
-                // Allow the task a moment to finish if it is short-lived.
-                currentWorkerTask.Join(TimeSpan.FromMilliseconds(1));
+                lock (this)
+                {
+                    if (currentWorkerTask == workerTask)
+                        currentWorkerTask = null;
+                }
 
-                // Alright, kill it and wait a bit to ensure it's dead.
-                // But if it's hung, don't worry about it.
-                currentWorkerTask.Abort();
-                currentWorkerTask.Join(TimeSpan.FromMilliseconds(500));
+                if (queue.Count > 0)
+                    RunTask();
+            };
 
-                currentWorkerTask = null;
-            }
+            workerTask.Start();
         }
     }
 }

@@ -16,30 +16,27 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Concurrency;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Services.Interfaces
 {
     public interface ITestRunnerService : IDisposable
     {
-        event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
         event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
 
         LockBox<Report> Report { get; }
         IList<string> TestFrameworks { get; }
 
+        TestModelData Explore(IProgressMonitor progressMonitor);
         void Initialize();
-        void Load(TestPackageConfig testpackage);
-        TestModelData Explore();
-        void Run();
-        void Unload();
-
-        void SetFilter(Filter<ITest> filter);
-        void Cancel();
+        void Load(TestPackageConfig testpackage, IProgressMonitor progressMonitor);
+        void Run(IProgressMonitor progressMonitor);
+        void SetFilter(Filter<ITest> filter, IProgressMonitor progressMonitor);
+        void Unload(IProgressMonitor progressMonitor);
     }
 }

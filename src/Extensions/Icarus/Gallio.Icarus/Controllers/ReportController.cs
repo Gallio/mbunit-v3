@@ -19,10 +19,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
-using Gallio.Utilities;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -30,19 +29,10 @@ namespace Gallio.Icarus.Controllers
     {
         readonly IReportService reportService;
         const string reportNameFormat = "test-report-{0}-{1}";
-        readonly TaskManager taskManager = new TaskManager();
-
-        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
 
         public ReportController(IReportService reportService)
         {
             this.reportService = reportService;
-
-            // bubble progress up
-            reportService.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e)
-            {
-                EventHandlerUtils.SafeInvoke(ProgressUpdate, this, e);
-            };
         }
 
         public IList<string> ReportTypes
@@ -50,13 +40,10 @@ namespace Gallio.Icarus.Controllers
             get { return reportService.ReportTypes; }
         }
 
-        public void GenerateReport(Report report, string reportDirectory)
+        public void GenerateReport(Report report, string reportDirectory, IProgressMonitor progressMonitor)
         {
-            taskManager.StartTask(delegate
-            {
-                string fileName = Path.Combine(reportDirectory, GenerateReportName(report));
-                reportService.SaveReportAs(report, fileName, "xml");
-            });
+            string fileName = Path.Combine(reportDirectory, GenerateReportName(report));
+            reportService.SaveReportAs(report, fileName, "xml", progressMonitor);
         }
 
         private static string GenerateReportName(Report report)
@@ -68,14 +55,11 @@ namespace Gallio.Icarus.Controllers
                 reportTime.ToString(@"HHmmss"));
         }
 
-        public void ShowReport(Report report, string reportType)
+        public void ShowReport(Report report, string reportType, IProgressMonitor progressMonitor)
         {
-            taskManager.StartTask(delegate
-            {
-                string fileName = reportService.SaveReportAs(report, Path.GetTempFileName(), reportType);
-                if (!string.IsNullOrEmpty(fileName))
-                    Process.Start(fileName);
-            });
+            string fileName = reportService.SaveReportAs(report, Path.GetTempFileName(), reportType, progressMonitor);
+            if (!string.IsNullOrEmpty(fileName))
+                Process.Start(fileName);
         }
     }
 }

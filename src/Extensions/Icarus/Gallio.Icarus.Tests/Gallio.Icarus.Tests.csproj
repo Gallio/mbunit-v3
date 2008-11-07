@@ -62,8 +62,8 @@
     <Compile Include="AboutDialogTest.cs" />
     <Compile Include="AnnotationsWindowTest.cs" />
     <Compile Include="CodeWindowTest.cs" />
+    <Compile Include="Controllers\AnnotationsControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
-    <Compile Include="Controllers\OptionsControllerTest.cs" />
     <Compile Include="Controllers\ProjectControllerTest.cs" />
     <Compile Include="Controllers\ReportControllerTest.cs" />
     <Compile Include="Controllers\TestControllerTest.cs" />
@@ -81,7 +81,6 @@
     <Compile Include="ExecutionLogWindowTest.cs" />
     <Compile Include="FiltersWindowTest.cs" />
     <Compile Include="MockTest.cs" />
-    <Compile Include="ProgressMonitorTest.cs" />
     <Compile Include="ProjectExplorerTest.cs" />
     <Compile Include="PropertiesWindowTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,6 +91,7 @@
     </Compile>
     <Compile Include="ReloadDialogTest.cs" />
     <Compile Include="RuntimeLogWindowTest.cs" />
+    <Compile Include="TaskManagerTest.cs" />
     <Compile Include="TestExplorerTest.cs" />
     <Compile Include="TestResultsTest.cs" />
   </ItemGroup>

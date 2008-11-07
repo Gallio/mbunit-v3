@@ -14,19 +14,21 @@
 // limitations under the License.
 
 using Aga.Controls.Tree;
-using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Mediator.Interfaces;
 
 namespace Gallio.Icarus
 {
     public partial class ProjectExplorer : DockWindow
     {
-        private readonly IProjectController projectController;
+        private readonly IMediator mediator;
 
-        public ProjectExplorer(IProjectController projectController)
+        public ProjectExplorer(IMediator mediator)
         {
-            this.projectController = projectController;
+            this.mediator = mediator;
+
             InitializeComponent();
-            projectTree.Model = projectController.Model;
+
+            projectTree.Model = mediator.ProjectController.Model;
             projectTree.ExpandAll();
         }
 
@@ -72,12 +74,12 @@ namespace Gallio.Icarus
 
             Node node = (Node)projectTree.SelectedNode.Tag;
             string fileName = (string)node.Tag;
-            projectController.RemoveAssembly(fileName);
+            mediator.RemoveAssembly(fileName);
         }
 
         private void removeAssembliesToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            projectController.RemoveAllAssemblies();
+            mediator.RemoveAllAssemblies();
         }
 
         private void addAssembliesToolStripMenuItem_Click(object sender, System.EventArgs e)
@@ -88,7 +90,7 @@ namespace Gallio.Icarus
 
         private void projectTree_DoubleClick(object sender, System.EventArgs e)
         {
-            if (projectTree.SelectedNode != null && ((Node)projectTree.SelectedNode.Tag).Text == "Properties")
+            if (projectTree.SelectedNode != null && ((Node) projectTree.SelectedNode.Tag).Text == "Properties")
                 if (ParentForm != null)
                     ((Main)ParentForm).ShowWindow("propertiesToolStripMenuItem");
         }

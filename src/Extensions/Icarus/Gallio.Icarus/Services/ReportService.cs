@@ -13,25 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using Gallio.Icarus.ProgressMonitoring;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Services
 {
     class ReportService : IReportService
     {
-        readonly IReportManager reportManager;
-        readonly ProgressMonitorProvider progressMonitorProvider = new ProgressMonitorProvider();
-
-        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
+        private readonly IReportManager reportManager;
 
         public IList<string> ReportTypes
         {
@@ -41,41 +34,32 @@ namespace Gallio.Icarus.Services
         public ReportService(IReportManager reportManager)
         {
             this.reportManager = reportManager;
-
-            // hook up progress monitor
-            progressMonitorProvider.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e)
-            {
-                EventHandlerUtils.SafeInvoke(ProgressUpdate, this, e);
-            };
         }
 
-        public string SaveReportAs(Report report, string fileName, string format)
+        public string SaveReportAs(Report report, string fileName, string format, IProgressMonitor progressMonitor)
         {
             string file = string.Empty;
-
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            using (progressMonitor.BeginTask("Generating report.", 100))
             {
-                using (progressMonitor.BeginTask("Generating report.", 100))
-                {
-                    string folderName = Path.GetDirectoryName(fileName);
-                    IReportContainer reportContainer = new FileSystemReportContainer(folderName,
-                        Path.GetFileNameWithoutExtension(fileName));
-                    IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
+                string folderName = Path.GetDirectoryName(fileName);
+                IReportContainer reportContainer = new FileSystemReportContainer(folderName,
+                    Path.GetFileNameWithoutExtension(fileName));
+                IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
 
-                    // Delete the report if it already exists
-                    reportContainer.DeleteReport();
+                // Delete the report if it already exists
+                reportContainer.DeleteReport();
 
-                    // Format the report
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(100))
-                        reportManager.Format(reportWriter, format, new NameValueCollection(), subProgressMonitor);
+                progressMonitor.Worked(10);
 
-                    if (reportWriter.ReportDocumentPaths.Count > 0)
-                        file = Path.Combine(folderName, reportWriter.ReportDocumentPaths[0]);
+                // Format the report
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
+                    reportManager.Format(reportWriter, format, new NameValueCollection(), subProgressMonitor);
 
-                    progressMonitor.SetStatus("Report saved.");
-                }
-            });
-            
+                if (reportWriter.ReportDocumentPaths.Count > 0)
+                    file = Path.Combine(folderName, reportWriter.ReportDocumentPaths[0]);
+
+                progressMonitor.SetStatus("Report saved.");
+            }
             return file;
         }
     }

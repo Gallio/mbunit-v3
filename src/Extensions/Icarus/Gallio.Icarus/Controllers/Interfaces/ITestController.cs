@@ -20,11 +20,11 @@ using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
@@ -37,24 +37,23 @@ namespace Gallio.Icarus.Controllers.Interfaces
         IList<string> TestFrameworks { get; }
         int TestCount { get; }
 
-        event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
         event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
+        event EventHandler<ShowSourceCodeEventArgs> ShowSourceCode;
+
         event EventHandler RunStarted;
         event EventHandler RunFinished;
         event EventHandler LoadStarted;
         event EventHandler LoadFinished;
         event EventHandler UnloadStarted;
         event EventHandler UnloadFinished;
-        event EventHandler<ShowSourceCodeEventArgs> ShowSourceCode;
 
-        void ApplyFilter(string filter);
-        void Cancel();
-        Filter<ITest> GetCurrentFilter();
-        void Reload();
-        void Reload(TestPackageConfig config);
-        void ResetTests();
-        void RunTests();
-        void UnloadTestPackage();
-        void ViewSourceCode(string testId);
+        void ApplyFilter(string filter, IProgressMonitor progressMonitor);
+        Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor);
+        void Reload(IProgressMonitor progressMonitor);
+        void Reload(TestPackageConfig config, IProgressMonitor progressMonitor);
+        void ResetTests(IProgressMonitor progressMonitor);
+        void RunTests(IProgressMonitor progressMonitor);
+        void UnloadTestPackage(IProgressMonitor progressMonitor);
+        void ViewSourceCode(string testId, IProgressMonitor progressMonitor);
     }
 }

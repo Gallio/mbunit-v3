@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {

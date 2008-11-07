@@ -21,13 +21,13 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
@@ -41,10 +41,8 @@ namespace Gallio.Icarus.Controllers
         private TestPackageConfig testPackageConfig;
         private bool testPackageLoaded;
         private TestModelData testModelData;
-        private readonly TaskManager taskManager = new TaskManager();
 
         public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
-        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
         public event EventHandler<ShowSourceCodeEventArgs> ShowSourceCode;
         
         public event EventHandler RunStarted;
@@ -96,128 +94,167 @@ namespace Gallio.Icarus.Controllers
                 EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
             };
 
-            testRunnerService.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e)
-            {
-                EventHandlerUtils.SafeInvoke(ProgressUpdate, this, e);
-            };
-
             selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
         }
 
-        public void ApplyFilter(string filter)
+        public void ApplyFilter(string filter, IProgressMonitor progressMonitor)
         {
-            Filter<ITest> f = FilterUtils.ParseTestFilter(filter);
-            testTreeModel.ApplyFilter(f);
-            testRunnerService.SetFilter(f);
+            using (progressMonitor.BeginTask("Applying filter", 3))
+            {
+                progressMonitor.SetStatus("Parsing filter");
+                Filter<ITest> f = FilterUtils.ParseTestFilter(filter);
+                progressMonitor.Worked(1);
+
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    testTreeModel.ApplyFilter(f, subProgressMonitor);
+
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    testRunnerService.SetFilter(f, subProgressMonitor);
+            }
         }
 
-        public void Cancel()
+        private bool Explore(IProgressMonitor progressMonitor)
         {
-            testRunnerService.Cancel();
+            using (progressMonitor.BeginTask("Exploring test package", 2))
+            {
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    Load(subProgressMonitor);
+
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    if (testModelData == null)
+                        testModelData = testRunnerService.Explore(subProgressMonitor);
+             
+                return testModelData != null;
+            }
         }
 
-        private bool Explore()
+        public Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor)
         {
-            Load();
+            using (progressMonitor.BeginTask("Getting current filter", 2))
+            {
+                Filter<ITest> filter;
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    filter = testTreeModel.GetCurrentFilter(subProgressMonitor);
 
-            if (testModelData == null)
-                testModelData = testRunnerService.Explore();
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    testRunnerService.SetFilter(filter, subProgressMonitor);
 
-            return testModelData != null;
+                return filter;
+            }
         }
 
-        public Filter<ITest> GetCurrentFilter()
+        private void Load(IProgressMonitor progressMonitor)
         {
-            Filter<ITest> filter = testTreeModel.GetCurrentFilter();
-            testRunnerService.SetFilter(filter);
-            return filter;
+            using (progressMonitor.BeginTask("Loading test package", 1))
+            {
+                if (testPackageLoaded)
+                    return;
+
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    testRunnerService.Load(testPackageConfig, subProgressMonitor);
+
+                testPackageLoaded = true;
+                testModelData = null;
+            }
         }
 
-        private void Load()
-        {
-            if (testPackageLoaded)
-                return;
-            testRunnerService.Load(testPackageConfig);
-
-            testPackageLoaded = true;
-            testModelData = null;
-        }
-
-        public void Reload()
+        public void Reload(IProgressMonitor progressMonitor)
         {
             if (testPackageConfig != null)
-                Reload(testPackageConfig);
+                Reload(testPackageConfig, progressMonitor);
         }
 
-        public void Reload(TestPackageConfig config)
+        public void Reload(TestPackageConfig config, IProgressMonitor progressMonitor)
         {
-            testPackageConfig = config;
-            taskManager.StartTask(delegate
+            using (progressMonitor.BeginTask("Reloading test package", 4))
             {
+                testPackageConfig = config;
                 EventHandlerUtils.SafeInvoke(LoadStarted, this, System.EventArgs.Empty);
 
-                Unload();
-                Explore();
-                if (!testPackageConfig.HostSetup.ShadowCopy)
-                    Unload();
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    Unload(subProgressMonitor);
 
-                testRunnerService.Report.Read(report => testTreeModel.BuildTestTree(
-                    report.TestModel, treeViewCategory));
-                
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    Explore(subProgressMonitor);
+
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    if (!testPackageConfig.HostSetup.ShadowCopy)
+                        Unload(subProgressMonitor);
+
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    testRunnerService.Report.Read(report => testTreeModel.BuildTestTree(
+                        report.TestModel, treeViewCategory, subProgressMonitor));
+
                 EventHandlerUtils.SafeInvoke(LoadFinished, this, System.EventArgs.Empty);
-            });
-        }
-        
-        private void Unload()
-        {
-            EventHandlerUtils.SafeInvoke(UnloadStarted, this, System.EventArgs.Empty);
-
-            if (testPackageLoaded)
-            {
-                testRunnerService.Unload();
-                testPackageLoaded = false;
-                // Note: we specifically do not null out the testModelData because
-                //       it can still be used for View Source operations later.
             }
-
-            EventHandlerUtils.SafeInvoke(UnloadFinished, this, System.EventArgs.Empty);
         }
 
-        public void ResetTests()
+        private void Unload(IProgressMonitor progressMonitor)
         {
-            testTreeModel.ResetTestStatus();
+            using (progressMonitor.BeginTask("Unloading test package", 1))
+            {
+                EventHandlerUtils.SafeInvoke(UnloadStarted, this, System.EventArgs.Empty);
 
-            testRunnerService.Report.Write(report => report.TestPackageRun = null);
+                if (testPackageLoaded)
+                {
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                        testRunnerService.Unload(subProgressMonitor);
+                    testPackageLoaded = false;
+                    // Note: we specifically do not null out the testModelData because
+                    //       it can still be used for View Source operations later.
+                }
+
+                EventHandlerUtils.SafeInvoke(UnloadFinished, this, System.EventArgs.Empty);
+            }
         }
 
-        public void RunTests()
+        public void ResetTests(IProgressMonitor progressMonitor)
         {
-            taskManager.StartTask(delegate
+            using (progressMonitor.BeginTask("Resetting tests", 2))
+            {
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    testTreeModel.ResetTestStatus(subProgressMonitor);
+
+                testRunnerService.Report.Write(report => report.TestPackageRun = null);
+            }
+        }
+
+        public void RunTests(IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.BeginTask("Running tests", 100))
             {
                 EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
 
-                testTreeModel.ResetTestStatus();
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                    testTreeModel.ResetTestStatus(subProgressMonitor);
 
-                if (Explore())
-                    testRunnerService.Run();
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+                    if (Explore(subProgressMonitor))
+                        using (IProgressMonitor subSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
+                            testRunnerService.Run(subSubProgressMonitor);
 
-                if (!testPackageConfig.HostSetup.ShadowCopy)
-                    Unload();
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                    if (!testPackageConfig.HostSetup.ShadowCopy)
+                        Unload(subProgressMonitor);
 
                 EventHandlerUtils.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
-            });
+            }
         }
 
-        public void UnloadTestPackage()
+        public void UnloadTestPackage(IProgressMonitor progressMonitor)
         {
-            taskManager.StartTask(Unload);
+            Unload(progressMonitor);
         }
 
-        public void ViewSourceCode(string testId)
+        public void ViewSourceCode(string testId, IProgressMonitor progressMonitor)
         {
-            if (testModelData != null)
+            using (progressMonitor.BeginTask("View source code", 1))
             {
+                if (testModelData == null)
+                    return;
+
                 TestData testData = testModelData.GetTestById(testId);
+
                 if (testData != null)
                     EventHandlerUtils.SafeInvoke(ShowSourceCode, this,
                         new ShowSourceCodeEventArgs(testData.CodeLocation));

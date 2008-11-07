@@ -44,8 +44,8 @@ namespace Gallio.Icarus.Tests
             Expect.Call(annotationsController.ShowInfo).Return(true);
             Expect.Call(annotationsController.InfoText).Return("InfoText");
             mocks.ReplayAll();
-            AnnotationsWindow annotationsWindow = new AnnotationsWindow(annotationsController);
-            annotations.Add(new AnnotationData(AnnotationType.Error, CodeLocation.Unknown, new CodeReference(), "message", "details"));
+            using (AnnotationsWindow annotationsWindow = new AnnotationsWindow(annotationsController))
+                annotations.Add(new AnnotationData(AnnotationType.Error, CodeLocation.Unknown, new CodeReference(), "message", "details"));
         }
     }
 }

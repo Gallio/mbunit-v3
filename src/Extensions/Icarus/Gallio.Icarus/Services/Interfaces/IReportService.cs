@@ -13,10 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Runner.Reports;
+using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Services.Interfaces
 {
@@ -24,8 +23,6 @@ namespace Gallio.Icarus.Services.Interfaces
     {
         IList<string> ReportTypes { get; }
 
-        event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
-
-        string SaveReportAs(Report report, string fileName, string format);
+        string SaveReportAs(Report report, string fileName, string format, IProgressMonitor progressMonitor);
     }
 }

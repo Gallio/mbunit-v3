@@ -69,6 +69,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.2.2939.18829, Culture=neutral, processorArchitecture=MSIL">
@@ -131,6 +132,8 @@
     <Compile Include="Controls\ToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Mediator\Interfaces\IMediator.cs" />
+    <Compile Include="Mediator\Mediator.cs" />
     <Compile Include="Models\Interfaces\IProjectTreeModel.cs" />
     <Compile Include="Controllers\Interfaces\IRuntimeLogController.cs" />
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
@@ -192,12 +195,6 @@
     </Compile>
     <Compile Include="ProjectExplorer.Designer.cs">
       <DependentUpon>ProjectExplorer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ProgressMonitor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProgressMonitor.Designer.cs">
-      <DependentUpon>ProgressMonitor.cs</DependentUpon>
     </Compile>
     <Compile Include="ReloadDialog.cs">
       <SubType>Form</SubType>
@@ -287,9 +284,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Gallio.Icarus.exe.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -315,6 +309,11 @@
       <DependentUpon>TestResults.cs</DependentUpon>
     </Compile>
     <Compile Include="TaskManager.cs" />
+    <Compile Include="Utilities\EncryptionUtil.cs" />
+    <Compile Include="Utilities\FileSystem.cs" />
+    <Compile Include="Utilities\IFileSystem.cs" />
+    <Compile Include="Utilities\IXmlSerialization.cs" />
+    <Compile Include="Utilities\XmlSerialization.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
@@ -390,10 +389,6 @@
       <DependentUpon>ProjectExplorer.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProgressMonitor.resx">
-      <DependentUpon>ProgressMonitor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="ReloadDialog.resx">
       <DependentUpon>ReloadDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -441,7 +436,6 @@
     <Content Include="Resources\Test.png" />
     <Content Include="Resources\text-x-python.png" />
     <Content Include="Resources\tick.png" />
-    <None Include="app.config" />
     <None Include="Resources\XmlFile.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

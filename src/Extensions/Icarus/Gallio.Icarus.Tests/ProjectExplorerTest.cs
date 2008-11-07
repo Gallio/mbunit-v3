@@ -14,8 +14,7 @@
 // limitations under the License.
 
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Models;
-using Gallio.Runner.Projects;
+using Gallio.Icarus.Mediator.Interfaces;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -27,10 +26,11 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void Constructor_Test()
         {
-            IProjectController projectController = mocks.StrictMock<IProjectController>();
-            Expect.Call(projectController.Model).Return(new ProjectTreeModel("fileName", new Project()));
+            var mediator = mocks.StrictMock<IMediator>();
+            var projectController = (IProjectController) mocks.Stub(typeof (IProjectController));
+            Expect.Call(mediator.ProjectController).Return(projectController);
             mocks.ReplayAll();
-            ProjectExplorer projectExplorer = new ProjectExplorer(projectController);
+            ProjectExplorer projectExplorer = new ProjectExplorer(mediator);
         }
     }
 }

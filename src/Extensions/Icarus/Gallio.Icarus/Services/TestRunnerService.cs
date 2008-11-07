@@ -16,8 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Concurrency;
-using Gallio.Icarus.ProgressMonitoring;
-using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Execution;
@@ -39,11 +37,8 @@ namespace Gallio.Icarus.Services
         private readonly TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
         private readonly TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
 
-        private readonly ProgressMonitorProvider progressMonitorProvider = new ProgressMonitorProvider();
-
         private LockBox<Report>? previousReportFromUnloadedPackage;
 
-        public event EventHandler<ProgressUpdateEventArgs> ProgressUpdate;
         public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
 
         public LockBox<Report> Report
@@ -65,22 +60,13 @@ namespace Gallio.Icarus.Services
         public TestRunnerService(ITestRunner testRunner)
         {
             this.testRunner = testRunner;
-
-            this.testRunner.Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
-            {
-                EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
-            };
-
-            // hook up progress monitor
-            progressMonitorProvider.ProgressUpdate += delegate(object sender, ProgressUpdateEventArgs e)
-            {
-                EventHandlerUtils.SafeInvoke(ProgressUpdate, this, e);
-            };
+            this.testRunner.Events.TestStepFinished += ((sender, e) =>
+                EventHandlerUtils.SafeInvoke(TestStepFinished, this, e));
         }
 
         public void Initialize()
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            NullProgressMonitorProvider.Instance.Run(delegate(IProgressMonitor progressMonitor)
             {
                 TestRunnerOptions options = new TestRunnerOptions();
                 ILogger logger = RuntimeAccessor.Logger;
@@ -90,70 +76,90 @@ namespace Gallio.Icarus.Services
 
         public void Dispose()
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            NullProgressMonitorProvider.Instance.Run(delegate(IProgressMonitor progressMonitor)
             {
                 if (testRunner != null)
                     testRunner.Dispose(progressMonitor);
             });
         }
 
-        public void Load(TestPackageConfig testPackageConfig)
+        public void Load(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
         {
-            Unload();
-            previousReportFromUnloadedPackage = null;
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
 
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            using (progressMonitor.BeginTask("Loading test package.", 2))
             {
-                if (testRunner != null)
-                    testRunner.Load(testPackageConfig, progressMonitor);
-            });
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    Unload(subProgressMonitor);
+                previousReportFromUnloadedPackage = null;
+
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                {
+                    if (testRunner != null)
+                        testRunner.Load(testPackageConfig, subProgressMonitor);
+                }
+            }
         }
 
-        public TestModelData Explore()
+        public TestModelData Explore(IProgressMonitor progressMonitor)
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+
+            using (progressMonitor.BeginTask("Exploring test package.", 100))
             {
-                if (testRunner != null)
-                    testRunner.Explore(testExplorationOptions, progressMonitor);
-            });
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
+                    if (testRunner != null)
+                        testRunner.Explore(testExplorationOptions, subProgressMonitor);
 
-            // We extract the test model from the report.
-            // This is safe because the test model should not change after explore is finished.
-            TestModelData testModelData = null;
-            Report.Read(report => testModelData = report.TestModel);
-            return testModelData;
+                using (progressMonitor.CreateSubProgressMonitor(50))
+                {
+                    // We extract the test model from the report.
+                    // This is safe because the test model should not change after explore is finished.
+                    TestModelData testModelData = null;
+                    Report.Read(report => testModelData = report.TestModel);
+                    return testModelData;
+                }
+            }
         }
 
-        public void Run()
+        public void Run(IProgressMonitor progressMonitor)
         {
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+
+            using (progressMonitor.BeginTask("Running tests.", 1))
             {
-                if (testRunner != null)
-                    testRunner.Run(testExecutionOptions, progressMonitor);
-            });
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    if (testRunner != null)
+                        testRunner.Run(testExecutionOptions, subProgressMonitor);
+            }
         }
 
-        public void Cancel()
+        public void SetFilter(Filter<ITest> filter, IProgressMonitor progressMonitor)
         {
-            if (progressMonitorProvider.ProgressMonitor != null)
-                progressMonitorProvider.ProgressMonitor.Cancel();
-        }
-
-        public void SetFilter(Filter<ITest> filter)
-        {
-            testExecutionOptions.Filter = filter;
-            testExecutionOptions.ExactFilter = true;
-        }
-
-        public void Unload()
-        {
-            previousReportFromUnloadedPackage = testRunner.Report;
-
-            progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            using (progressMonitor.BeginTask("Setting test filter.", 2))
             {
-                if (testRunner != null)
-                    testRunner.Unload(progressMonitor);
-            });
+                testExecutionOptions.Filter = filter;
+                progressMonitor.Worked(1);
+                testExecutionOptions.ExactFilter = true;
+            }
+        }
+
+        public void Unload(IProgressMonitor progressMonitor)
+        {
+            if (progressMonitor == null)
+                throw new ArgumentNullException("progressMonitor");
+
+            using (progressMonitor.BeginTask("Unloading test package.", 1))
+            {
+                previousReportFromUnloadedPackage = testRunner.Report;
+
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    if (testRunner != null)
+                        testRunner.Unload(subProgressMonitor);
+            }
         }
     }
 }

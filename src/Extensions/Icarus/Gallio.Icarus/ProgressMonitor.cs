@@ -24,12 +24,10 @@ namespace Gallio.Icarus
     public partial class ProgressMonitor : Form
     {
         private readonly ITestController testController;
-        private readonly IOptionsController optionsController;
 
-        public ProgressMonitor(ITestController testController, IOptionsController optionsController)
+        public ProgressMonitor()
         {
             this.testController = testController;
-            this.optionsController = optionsController;
 
             InitializeComponent();
 
