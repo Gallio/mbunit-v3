@@ -284,15 +284,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\TestRunnerService.cs" />
     <Compile Include="Settings.cs" />
@@ -412,6 +403,9 @@
     <Content Include="Resources\Fixture.png" />
     <Content Include="Resources\folder_open.png" />
     <Content Include="Resources\Graph.png" />
+    <None Include="Gallio.Icarus.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Group.png" />
     <Content Include="Resources\help-browser.png" />
     <Content Include="Resources\LinkToMBU.png" />
