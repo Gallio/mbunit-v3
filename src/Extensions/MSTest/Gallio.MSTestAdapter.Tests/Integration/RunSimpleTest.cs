@@ -1,4 +1,4 @@
-// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +14,15 @@
 // limitations under the License.
 
 using System;
+using Gallio.MSTestAdapter.TestResources;
+using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Tests;
 using MbUnit.Framework;
-using Gallio.Model;
-using Gallio.XunitAdapter.TestResources;
 
-namespace Gallio.XunitAdapter.Tests.Integration
+namespace Gallio.MSTestAdapter.Tests.Integration
 {
     [TestFixture]
     [RunSample(typeof(SimpleTest))]
@@ -32,9 +32,6 @@ namespace Gallio.XunitAdapter.Tests.Integration
         public void PassTestPassed()
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Pass")));
-            Assert.AreEqual("Pass", run.Step.Name);
-            Assert.IsTrue(run.Step.IsPrimary);
-            Assert.IsFalse(run.Step.IsDynamic);
             Assert.AreEqual(TestStatus.Passed, run.Result.Outcome.Status);
         }
 
@@ -42,9 +39,6 @@ namespace Gallio.XunitAdapter.Tests.Integration
         public void FailTestFailed()
         {
             TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(SimpleTest).GetMethod("Fail")));
-            Assert.AreEqual("Fail", run.Step.Name);
-            Assert.IsTrue(run.Step.IsPrimary);
-            Assert.IsFalse(run.Step.IsDynamic);
             Assert.AreEqual(TestStatus.Failed, run.Result.Outcome.Status);
             Assert.Contains(run.TestLog.GetStream(TestLogStreamNames.Failures).ToString(), "Boom");
         }

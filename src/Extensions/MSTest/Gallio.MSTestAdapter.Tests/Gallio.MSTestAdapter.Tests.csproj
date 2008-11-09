@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{45C971C1-3E47-47C8-B0B2-AEA866BA089A}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -48,10 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\MSTestControllerTest.cs" />
+    <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Model\MSTestExplorerTest.cs" />
     <Compile Include="Model\MSTestFrameworkTest.cs" />
-    <Compile Include="Model\MSTestTest.cs" />
     <Compile Include="Model\StubbedMSTestController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -84,9 +83,6 @@
       <Project>{8FC20489-148C-4220-AA3B-0BA8B6BC2AC7}</Project>
       <Name>Gallio.MSTestAdapter</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Integration\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\MSTest.targets" />

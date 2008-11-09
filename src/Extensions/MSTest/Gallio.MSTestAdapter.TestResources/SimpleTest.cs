@@ -38,7 +38,7 @@ namespace Gallio.MSTestAdapter.TestResources
         [TestMethod]
         public void Fail()
         {
-            Assert.AreEqual(1, 0);
+            Assert.Fail("Boom");
         }
     }
 }

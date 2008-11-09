@@ -196,8 +196,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{158A45EB-FBE2-4F6C-8804-5A913D56CC9B}"
 	ProjectSection(SolutionItems) = preProject
 		ApplyLicenseBoilerplate.bat = ApplyLicenseBoilerplate.bat
-		RegisterAssembliesForDebugging.bat = RegisterAssembliesForDebugging.bat
-		UnregisterAssembliesForDebugging.bat = UnregisterAssembliesForDebugging.bat
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamCity", "TeamCity", "{17F8A2B9-E015-4267-A177-C2C9693B7C3E}"

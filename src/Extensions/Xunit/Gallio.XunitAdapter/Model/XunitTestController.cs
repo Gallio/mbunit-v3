@@ -191,10 +191,28 @@ namespace Gallio.XunitAdapter.Model
                 return false;
             }
 
+            if (xunitTestCommands.Count == 0)
+                return true;
+
+            if (xunitTestCommands.Count == 1)
+                return RunTestCommands(testCommand, testClassCommand, xunitTestCommands, parentTestStep, true);
+
+            // Introduce a common primary test step for theories.
+            ITestContext primaryTestContext = testCommand.StartPrimaryChildStep(parentTestStep);
+            bool result = RunTestCommands(testCommand, testClassCommand, xunitTestCommands, primaryTestContext.TestStep, false);
+            primaryTestContext.FinishStep(result ? TestOutcome.Passed : TestOutcome.Failed, null);
+            return result;
+        }
+
+        private static bool RunTestCommands(ITestCommand testCommand, XunitTestClassCommand testClassCommand,
+            IEnumerable<XunitTestCommand> xunitTestCommands, ITestStep parentTestStep, bool isPrimary)
+        {
             bool passed = true;
             foreach (XunitTestCommand xunitTestCommand in xunitTestCommands)
             {
-                BaseTestStep testStep = new BaseTestStep(testCommand.Test, parentTestStep);
+                BaseTestStep testStep = new BaseTestStep(testCommand.Test, parentTestStep,
+                    testCommand.Test.Name, testCommand.Test.CodeElement, isPrimary);
+                testStep.IsDynamic = !isPrimary;
                 if (xunitTestCommand.Name != null)
                     testStep.Name = xunitTestCommand.Name;
 
