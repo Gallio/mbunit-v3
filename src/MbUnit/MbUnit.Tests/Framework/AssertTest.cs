@@ -33,7 +33,7 @@ namespace MbUnit.Tests.Framework
             AssertionFailure[] failures = Capture(Assert.Fail);
             Assert.AreEqual(1, failures.Length);
             Assert.AreEqual("An assertion failed.", failures[0].Description);
-            Assert.AreEqual("", failures[0].Message);
+            Assert.IsNull(failures[0].Message);
         }
 
         [Test]
