@@ -72,6 +72,9 @@
     <Compile Include="..\Extensions\Ambience\Ambience.wxs">
       <Link>Ambience.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\AutoCAD\AutoCAD.wxs">
+      <Link>AutoCAD.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\Echo\Echo.wxs">
       <Link>Echo.wxs</Link>
     </Compile>

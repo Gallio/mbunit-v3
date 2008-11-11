@@ -1,0 +1,32 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <CSharpProject Include="Gallio.AutoCAD\Gallio.AutoCAD.csproj" />
+    <CSharpProject Include="Gallio.AutoCAD.Plugin\Gallio.AutoCAD.Plugin.csproj" />
+    <CSharpProject Include="Gallio.AutoCAD.Tests\Gallio.AutoCAD.Tests.csproj" />
+    
+    <Binary Include="Gallio.AutoCAD\bin\Gallio.AutoCAD.dll">
+      <Folder>AutoCAD</Folder>
+    </Binary>
+    <Binary Include="Gallio.AutoCAD\Gallio.AutoCAD.plugin">
+      <Folder>AutoCAD</Folder>
+    </Binary>
+    <Binary Include="Gallio.AutoCAD.Plugin\bin\Gallio.AutoCAD.Plugin.dll">
+      <Folder>AutoCAD</Folder>
+    </Binary>
+    <Binary Include="libs\objectarx_license.doc">
+      <Folder>AutoCAD</Folder>
+    </Binary>
+
+    <File Include="libs\objectarx_license.doc" />
+
+    <TestAssembly Include="Gallio.AutoCAD.Tests\bin\Gallio.AutoCAD.Tests.dll" />
+
+    <Feature Include="FEATURE_AUTOCAD" />
+  </ItemGroup>
+</Project>

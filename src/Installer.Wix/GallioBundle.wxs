@@ -186,6 +186,9 @@
         </Feature>
 
         <Feature Id='feat_Tools' Title='Test Tools' Level="1" Display="10" AllowAdvertise="no">
+<?ifdef FEATURE_AUTOCAD ?>
+            <FeatureRef Id='feat_Gallio.AutoCAD'/>
+<?endif?>
 <?ifdef FEATURE_AMBIENCE ?>
             <FeatureRef Id="feat_Gallio.Ambience"/>
 <?endif?>
