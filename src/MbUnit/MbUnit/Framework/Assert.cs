@@ -127,7 +127,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Fail()
         {
-            Fail(string.Empty);
+            Fail(null);
         }
 
         /// <summary>
