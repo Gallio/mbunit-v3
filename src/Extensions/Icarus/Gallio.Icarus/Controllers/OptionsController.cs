@@ -24,12 +24,15 @@ using Gallio.Runner;
 using Gallio.Runtime;
 using Gallio.Utilities;
 using Gallio.Model;
+using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
-    internal class OptionsController : IOptionsController
+    public sealed class OptionsController : IOptionsController
     {
         private Settings settings;
+        private readonly IFileSystem fileSystem;
+        private readonly IXmlSerialization xmlSerialization;
 
         private readonly BindingList<string> pluginDirectories;
         private readonly BindingList<string> selectedTreeViewCategories;
@@ -116,8 +119,14 @@ namespace Gallio.Icarus.Controllers
             set { settings.SkippedColor = value.ToArgb(); }
         }
 
-        private OptionsController()
+        private OptionsController() : this(new FileSystem(), new XmlSerialization())
+        { }
+
+        private OptionsController(IFileSystem fileSystem, IXmlSerialization xmlSerialization)
         {
+            this.fileSystem = fileSystem;
+            this.xmlSerialization = xmlSerialization;
+
             Load();
 
             pluginDirectories = new BindingList<string>(settings.PluginDirectories);
@@ -140,10 +149,11 @@ namespace Gallio.Icarus.Controllers
 
         private void Load()
         {
-            settings = LoadSettings() ?? new Settings();
+            settings = LoadSettings(Paths.SettingsFile) ?? new Settings();
 
             if (settings.TreeViewCategories.Count == 0)
-                settings.TreeViewCategories.AddRange(new[] { "Namespace", "AuthorName", "CategoryName", "Importance", "TestsOn" });
+                settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, MetadataKeys.CategoryName, 
+                    MetadataKeys.Importance, MetadataKeys.TestsOn });
 
             unselectedTreeViewCategoriesList.Clear();
             foreach (FieldInfo fi in typeof(MetadataKeys).GetFields())
@@ -153,16 +163,16 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        private static Settings LoadSettings()
+        private Settings LoadSettings(string fileName)
         {
             try
             {
-                if (File.Exists(Paths.SettingsFile))
-                    return XmlSerializationUtils.LoadFromXml<Settings>(Paths.SettingsFile);
+                if (fileSystem.FileExists(fileName))
+                    return xmlSerialization.LoadFromXml<Settings>(fileName);
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("An exception occurred while loading settings.", ex);
+                UnhandledExceptionPolicy.Report("An exception occurred while loading Icarus settings file.", ex);
             }
             return null;    
         }
@@ -171,11 +181,11 @@ namespace Gallio.Icarus.Controllers
         {
             try
             {
-                XmlSerializationUtils.SaveToXml(settings, Paths.SettingsFile);
+                xmlSerialization.SaveToXml(settings, Paths.SettingsFile);
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("An exception occurred while saving the report.", ex);
+                UnhandledExceptionPolicy.Report("An exception occurred while saving Icarus settings file.", ex);
             }
         }
 

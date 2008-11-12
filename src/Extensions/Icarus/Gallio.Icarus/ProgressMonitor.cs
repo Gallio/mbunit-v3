@@ -15,23 +15,21 @@
 
 using System;
 using System.Windows.Forms;
-using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Utilities;
-using System.Text;
 
 namespace Gallio.Icarus
 {
     public partial class ProgressMonitor : Form
     {
-        private readonly ITestController testController;
+        private readonly IMediator mediator;
 
-        public ProgressMonitor()
+        public ProgressMonitor(IMediator mediator)
         {
-            this.testController = testController;
+            this.mediator = mediator;
+            mediator.ProgressMonitorProvider.ProgressUpdate += testController_ProgressUpdate;
 
             InitializeComponent();
-
-            testController.ProgressUpdate += testController_ProgressUpdate;
         }
 
         private void testController_ProgressUpdate(object sender, ProgressMonitoring.EventArgs.ProgressUpdateEventArgs e)
@@ -43,14 +41,14 @@ namespace Gallio.Icarus
                 Text = e.TaskName;
                 subTaskNameLabel.Text = e.SubTaskName;
                 percentLabel.Text = (e.TotalWorkUnits > 0)
-                    ? String.Format("({0:P0})", e.CompletedWorkUnits / e.TotalWorkUnits)
+                    ? String.Format("({0:P0})", e.CompletedWorkUnits/e.TotalWorkUnits)
                     : String.Empty;
             });
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            testController.Cancel();
+            mediator.Cancel();
         }
 
         private void runInBackgroundButton_Click(object sender, EventArgs e)

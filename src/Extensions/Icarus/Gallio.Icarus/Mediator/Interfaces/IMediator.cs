@@ -15,6 +15,7 @@ namespace Gallio.Icarus.Mediator.Interfaces
 
         void AddAssemblies(IList<string> assemblyFiles);
         void ApplyFilter(string filter);
+        void Cancel();
         void DeleteFilter(FilterInfo filterInfo);
         void GenerateReport();
         void NewProject();

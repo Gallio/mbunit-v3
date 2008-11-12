@@ -71,7 +71,19 @@ namespace Gallio.Icarus.Controllers
             get { return projectTreeModel.FileName; }
         }
 
+        public List<string> CollapsedNodes
+        {
+            get;
+            set;
+        }
+
         public SynchronizationContext SynchronizationContext
+        {
+            get;
+            set;
+        }
+
+        public string TreeViewCategory
         {
             get;
             set;
@@ -91,6 +103,10 @@ namespace Gallio.Icarus.Controllers
             hintDirectories.ListChanged += hintDirectories_ListChanged;
 
             assemblyWatcher.AssemblyChangedEvent += assemblyWatcher_AssemblyChangedEvent;
+
+            // default tree view category
+            TreeViewCategory = "Namespace";
+            CollapsedNodes = new List<string>();
         }
 
         private void testFilters_ListChanged(object sender, ListChangedEventArgs e)
@@ -196,21 +212,35 @@ namespace Gallio.Icarus.Controllers
 
         public void OpenProject(string projectName, IProgressMonitor progressMonitor)
         {
-            // fail fast
-            if (!fileSystem.FileExists(projectName))
-                throw new ArgumentException(String.Format("Project file {0} does not exist.", projectName));
+            using (progressMonitor.BeginTask("Loading project file", 100))
+            {
+                // fail fast
+                if (!fileSystem.FileExists(projectName))
+                    throw new ArgumentException(String.Format("Project file {0} does not exist.", projectName));
 
-            // deserialize project
-            Project project = xmlSerialization.LoadFromXml<Project>(projectName);
-            ConvertFromRelativePaths(project, Path.GetDirectoryName(projectName));
-            
-            projectTreeModel.FileName = projectName;
-            projectTreeModel.Project = project;
+                // deserialize project
+                var project = xmlSerialization.LoadFromXml<Project>(projectName);
+                ConvertFromRelativePaths(project, Path.GetDirectoryName(projectName));
 
-            assemblyWatcher.Clear();
-            assemblyWatcher.Add(project.TestPackageConfig.AssemblyFiles);
+                progressMonitor.Worked(50);
 
-            PublishUpdates();
+                projectTreeModel.FileName = projectName;
+                projectTreeModel.Project = project;
+
+                assemblyWatcher.Clear();
+                assemblyWatcher.Add(project.TestPackageConfig.AssemblyFiles);
+
+                PublishUpdates();
+            }
+
+            string projectUserOptionsFile = projectName + ".user";
+            if (fileSystem.FileExists(projectUserOptionsFile))
+            {
+                UserOptions userOptions = xmlSerialization.LoadFromXml<UserOptions>(projectUserOptionsFile);
+                TreeViewCategory = userOptions.TreeViewCategory;
+                OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
+                CollapsedNodes = userOptions.CollapsedNodes;
+            }
         }
 
         private static void ConvertFromRelativePaths(Project project, string directory)
@@ -240,25 +270,38 @@ namespace Gallio.Icarus.Controllers
 
         public void NewProject(IProgressMonitor progressMonitor)
         {
-            projectTreeModel.FileName = Paths.DefaultProject;
-            projectTreeModel.Project = new Project();
+            using (progressMonitor.BeginTask("Creating new project", 100))
+            {
+                projectTreeModel.FileName = Paths.DefaultProject;
+                projectTreeModel.Project = new Project();
 
-            assemblyWatcher.Clear();
+                assemblyWatcher.Clear();
 
-            PublishUpdates();
+                PublishUpdates();
+            }
         }
 
         public void SaveProject(string projectName, IProgressMonitor progressMonitor)
         {
-            if (string.IsNullOrEmpty(projectName))
+            using (progressMonitor.BeginTask("Saving project", 100))
             {
-                // create folder (if necessary)
-                if (!fileSystem.DirectoryExists(Paths.IcarusAppDataFolder))
-                    fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
-                projectName = Paths.DefaultProject;
+                if (string.IsNullOrEmpty(projectName))
+                {
+                    // create folder (if necessary)
+                    if (!fileSystem.DirectoryExists(Paths.IcarusAppDataFolder))
+                        fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
+                    projectName = Paths.DefaultProject;
+                }
+                ConvertToRelativePaths(projectTreeModel.Project, Path.GetDirectoryName(projectName));
+                progressMonitor.Worked(10);
+                xmlSerialization.SaveToXml(projectTreeModel.Project, projectName);
             }
-            ConvertToRelativePaths(projectTreeModel.Project, Path.GetDirectoryName(projectName));
-            xmlSerialization.SaveToXml(projectTreeModel.Project, projectName);
+
+            string projectUserOptionsFile = projectName + ".user";
+            UserOptions userOptions = new UserOptions();
+            userOptions.TreeViewCategory = TreeViewCategory;
+            userOptions.CollapsedNodes = CollapsedNodes;
+            xmlSerialization.SaveToXml(userOptions, projectUserOptionsFile);
         }
 
         private void PublishUpdates()
@@ -289,6 +332,5 @@ namespace Gallio.Icarus.Controllers
                     PropertyChanged(this, e);
             }, null);
         }
-
     }
 }

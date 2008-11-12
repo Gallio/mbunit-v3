@@ -46,7 +46,7 @@ namespace Gallio.Icarus
         private void InitializeComponent()
         {
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.reportViewer = new TestStepRunViewer();
+            this.reportViewer = new Gallio.UI.TestStepRunViewer();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.SuspendLayout();
@@ -57,7 +57,7 @@ namespace Gallio.Icarus
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.reportViewer);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(267, 248);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(292, 248);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -67,12 +67,15 @@ namespace Gallio.Icarus
             // 
             // reportViewer
             // 
+            this.reportViewer.AutoScroll = true;
+            this.reportViewer.AutoSize = true;
+            this.reportViewer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.reportViewer.CausesValidation = false;
             this.reportViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.reportViewer.Location = new System.Drawing.Point(0, 0);
             this.reportViewer.MinimumSize = new System.Drawing.Size(20, 20);
             this.reportViewer.Name = "reportViewer";
-            this.reportViewer.Size = new System.Drawing.Size(267, 248);
+            this.reportViewer.Size = new System.Drawing.Size(292, 248);
             this.reportViewer.TabIndex = 6;
             // 
             // ExecutionLogWindow
@@ -84,9 +87,10 @@ namespace Gallio.Icarus
             this.Name = "ExecutionLogWindow";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.TabText = "Execution log";
-            this.Text = "Execution log";
+            this.TabText = "Execution Log";
+            this.Text = "Execution Log";
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
+            this.toolStripContainer1.ContentPanel.PerformLayout();
             this.toolStripContainer1.ResumeLayout(false);
             this.toolStripContainer1.PerformLayout();
             this.ResumeLayout(false);

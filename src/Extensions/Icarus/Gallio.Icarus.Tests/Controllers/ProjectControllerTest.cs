@@ -14,20 +14,21 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    [Category("Controllers"), Author("Graham Hay")]
+    [MbUnit.Framework.Category("Controllers"), Author("Graham Hay")]
     class ProjectControllerTest : MockTest
     {
         [Test]
@@ -175,17 +176,21 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void NewProject_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
-            projectTreeModel.FileName = Paths.DefaultProject;
-            projectTreeModel.Project = new Project();
-            LastCall.IgnoreArguments();
-            Expect.Call(projectTreeModel.Project).Return(new Project()).Repeat.Twice();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
-            IProgressMonitor progressMonitor = mocks.StrictMock<IProgressMonitor>();
+            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
+            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
             mocks.ReplayAll();
             ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            projectController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
+            {
+                Assert.AreEqual("TestPackageConfig", e.PropertyName);
+            };
             projectController.NewProject(progressMonitor);
+            Assert.AreEqual(Paths.DefaultProject, projectTreeModel.FileName);
+            Assert.AreEqual(0, projectController.HintDirectories.Count);
+            Assert.AreEqual(0, projectController.TestFilters.Count);
         }
 
         [Test]
@@ -250,6 +255,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
             var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
+            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
             var projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
             const string projectName = "projectName";
             projectController.SaveProject(projectName, progressMonitor);
@@ -265,6 +271,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
             var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
+            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
             var projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
             projectController.SaveProject(string.Empty, progressMonitor);
             xmlSerialization.AssertWasCalled(x => x.SaveToXml(project, Paths.DefaultProject));

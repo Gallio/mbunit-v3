@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -137,6 +137,12 @@
     <Compile Include="Models\Interfaces\IProjectTreeModel.cs" />
     <Compile Include="Controllers\Interfaces\IRuntimeLogController.cs" />
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
+    <Compile Include="ProgressMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProgressMonitor.Designer.cs">
+      <DependentUpon>ProgressMonitor.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProgressMonitoring\EventArgs\ProgressUpdateEventArgs.cs" />
     <Compile Include="Remoting\AssemblyWatcher.cs" />
     <Compile Include="Services\Interfaces\IReportService.cs" />
@@ -300,6 +306,7 @@
       <DependentUpon>TestResults.cs</DependentUpon>
     </Compile>
     <Compile Include="TaskManager.cs" />
+    <Compile Include="UserOptions.cs" />
     <Compile Include="Utilities\EncryptionUtil.cs" />
     <Compile Include="Utilities\FileSystem.cs" />
     <Compile Include="Utilities\IFileSystem.cs" />
@@ -374,6 +381,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Options\StartupOptions.resx">
       <DependentUpon>StartupOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressMonitor.resx">
+      <DependentUpon>ProgressMonitor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ProjectExplorer.resx">

@@ -37,7 +37,6 @@ namespace Gallio.Icarus.Controllers
         private readonly ITestRunnerService testRunnerService;
         private readonly BindingList<TestTreeNode> selectedTests;
         private readonly ITestTreeModel testTreeModel;
-        private string treeViewCategory = string.Empty;
         private TestPackageConfig testPackageConfig;
         private bool testPackageLoaded;
         private TestModelData testModelData;
@@ -54,8 +53,8 @@ namespace Gallio.Icarus.Controllers
         
         public string TreeViewCategory
         {
-            get { return treeViewCategory; }
-            set { treeViewCategory = value; }
+            get;
+            set;
         }
 
         public LockBox<Report> Report
@@ -166,13 +165,14 @@ namespace Gallio.Icarus.Controllers
 
         public void Reload(TestPackageConfig config, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Reloading test package", 4))
+            using (progressMonitor.BeginTask("Reloading test package", 100))
             {
                 testPackageConfig = config;
-                EventHandlerUtils.SafeInvoke(LoadStarted, this, System.EventArgs.Empty);
 
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     Unload(subProgressMonitor);
+
+                EventHandlerUtils.SafeInvoke(LoadStarted, this, System.EventArgs.Empty);
 
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     Explore(subProgressMonitor);
@@ -183,7 +183,7 @@ namespace Gallio.Icarus.Controllers
 
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     testRunnerService.Report.Read(report => testTreeModel.BuildTestTree(
-                        report.TestModel, treeViewCategory, subProgressMonitor));
+                        report.TestModel, TreeViewCategory, subProgressMonitor));
 
                 EventHandlerUtils.SafeInvoke(LoadFinished, this, System.EventArgs.Empty);
             }
@@ -230,12 +230,14 @@ namespace Gallio.Icarus.Controllers
 
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
                     if (Explore(subProgressMonitor))
+                    {
                         using (IProgressMonitor subSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
                             testRunnerService.Run(subSubProgressMonitor);
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    if (!testPackageConfig.HostSetup.ShadowCopy)
-                        Unload(subProgressMonitor);
+                        using (IProgressMonitor subSubSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                            if (testPackageConfig != null && !testPackageConfig.HostSetup.ShadowCopy)
+                                Unload(subSubSubProgressMonitor);
+                    }
 
                 EventHandlerUtils.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
             }

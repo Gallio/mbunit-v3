@@ -37,30 +37,31 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void ExceptionHandling_Test()
         {
-            Exception ex = new Exception();
+            Exception ex = new Exception("This exception is testing the UnhandledExceptionPolicy framework. PLEASE IGNORE IT!");
             bool flag = false;
-            UnhandledExceptionPolicy.ReportUnhandledException += delegate(object sender, CorrelatedExceptionEventArgs e)
+            EventHandler<CorrelatedExceptionEventArgs> eh = delegate(object sender, CorrelatedExceptionEventArgs e)
             {
                 if (e.Message.StartsWith("An exception occurred in a background task."))
                     flag = true;
             };
+            UnhandledExceptionPolicy.ReportUnhandledException += eh;
             taskManager.StartTask(delegate { throw ex; });
             Thread.Sleep(200);
             Assert.IsTrue(flag);
+            UnhandledExceptionPolicy.ReportUnhandledException -= eh;
         }
 
         [Test]
         public void OperationCanceled_Test()
         {
-            bool flag = false;
-            UnhandledExceptionPolicy.ReportUnhandledException += delegate(object sender, CorrelatedExceptionEventArgs e)
+            EventHandler<CorrelatedExceptionEventArgs> eh = delegate(object sender, CorrelatedExceptionEventArgs e)
             {
-                if (e.Message.StartsWith("An exception occurred in a background task."))
-                    flag = true;
+                Assert.Fail();
             };
+            UnhandledExceptionPolicy.ReportUnhandledException += eh;
             taskManager.StartTask(delegate { throw new OperationCanceledException(); });
-            Thread.Sleep(100);
-            Assert.IsFalse(flag);
+            Thread.Sleep(200);
+            UnhandledExceptionPolicy.ReportUnhandledException -= eh;
         }
 
         [Test]

@@ -66,5 +66,10 @@ namespace Gallio.Icarus
 
             workerTask.Start();
         }
+
+        public void Stop()
+        {
+            queue.Clear();
+        }
     }
 }

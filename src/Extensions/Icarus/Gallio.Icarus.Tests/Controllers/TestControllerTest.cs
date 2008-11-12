@@ -24,10 +24,11 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
 using Rhino.Mocks;
+using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    [Category("Controllers"), Author("Graham Hay")]
+    [Category("Controllers"), Author("Graham Hay"), TestsOn(typeof(TestController))]
     class TestControllerTest : MockTest
     {
         [Test]
@@ -153,6 +154,70 @@ namespace Gallio.Icarus.Tests.Controllers
             mocks.ReplayAll();
             TestController testController = new TestController(testRunnerService, testTreeModel);
             testController.ResetTests(progressMonitor);
+        }
+
+        [Test]
+        public void Reload_Test()
+        {
+            var testRunnerService = MockRepository.GenerateStub<ITestRunnerService>();
+            testRunnerService.Stub(x => x.Report).Return(new LockBox<Report>(new Report()));
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
+            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
+            progressMonitor.Stub(x => x.CreateSubProgressMonitor(Arg<double>.Is.Anything)).Return(progressMonitor);
+            var testController = new TestController(testRunnerService, testTreeModel);
+            bool loadStarted = false;
+            testController.LoadStarted += delegate { loadStarted = true; };
+            bool loadFinished = false;
+            testController.LoadFinished += delegate { loadFinished = true; };
+            testController.Reload(new TestPackageConfig(), progressMonitor);
+            Assert.IsTrue(loadStarted);
+            Assert.IsTrue(loadFinished);
+        }
+
+        [Test]
+        public void Report_Test()
+        {
+            var report = new LockBox<Report>();
+            var testRunnerService = MockRepository.GenerateStub<ITestRunnerService>();
+            testRunnerService.Stub(x => x.Report).Return(report);
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var testController = new TestController(testRunnerService, testTreeModel);
+            Assert.AreEqual(report, testController.Report);
+        }
+
+        [Test]
+        public void TreeViewCategory_Test()
+        {
+            var testRunnerService = MockRepository.GenerateStub<ITestRunnerService>();
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var testController = new TestController(testRunnerService, testTreeModel);
+            Assert.IsNull(testController.TreeViewCategory);
+            const string treeViewCategory = "test";
+            testController.TreeViewCategory = treeViewCategory;
+            Assert.AreEqual(treeViewCategory, testController.TreeViewCategory);
+        }
+
+        [Test]
+        public void RunTests_Test()
+        {
+            var testRunnerService = MockRepository.GenerateStub<ITestRunnerService>();
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
+            testRunnerService.Stub(x => x.Explore(progressMonitor)).Return(new TestModelData(new TestData("id", "name", "fullName")));
+            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
+            progressMonitor.Stub(x => x.CreateSubProgressMonitor(Arg<double>.Is.Anything)).Return(progressMonitor).Repeat.Any();
+            var testController = new TestController(testRunnerService, testTreeModel);
+            bool runStarted = false;
+            bool runFinished = false;
+            testController.RunStarted += delegate { runStarted = true; };
+            testController.RunFinished += delegate { runFinished = true; };
+            testController.RunTests(progressMonitor);
+            Assert.IsTrue(runStarted);
+            testTreeModel.AssertWasCalled(x => x.ResetTestStatus(Arg<IProgressMonitor>.Is.Anything));
+            testRunnerService.AssertWasCalled(x => x.Load(Arg<TestPackageConfig>.Is.Anything, Arg.Is(progressMonitor)));
+            testRunnerService.AssertWasCalled(x => x.Run(progressMonitor));
+            Assert.IsTrue(runFinished);
         }
     }
 }

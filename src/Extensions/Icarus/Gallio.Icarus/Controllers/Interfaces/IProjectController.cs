@@ -34,6 +34,8 @@ namespace Gallio.Icarus.Controllers.Interfaces
         BindingList<string> HintDirectories { get; }
         string ProjectFileName { get; }
         SynchronizationContext SynchronizationContext { get; set; }
+        List<string> CollapsedNodes { get; set; }
+        string TreeViewCategory { get; set; }
 
         event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
 

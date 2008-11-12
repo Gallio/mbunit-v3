@@ -19,145 +19,161 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
 using Gallio.Runner;
 using MbUnit.Framework;
+using System.Reflection;
+using System;
+using Gallio.Icarus.Utilities;
+using Rhino.Mocks;
+using Gallio.Runtime;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
     class OptionsControllerTest
     {
-        private readonly string settingsBackup = Paths.SettingsFile + ".bak";
+        private OptionsController optionsController = null;
+        private IFileSystem fileSystem = null;
+        private IXmlSerialization xmlSerialization = null;
 
-        [FixtureSetUp]
-        public void FixtureSetUp()
+        [SetUp]
+        public void SetUp()
         {
-            if (!File.Exists(Paths.SettingsFile))
-                return;
-            File.Copy(Paths.SettingsFile, settingsBackup, true);
-            File.Delete(Paths.SettingsFile);
-        }
-
-        [FixtureTearDown]
-        public void FixtureTearDown()
-        {
-            if (!File.Exists(settingsBackup))    
-                return;
-            if (File.Exists(Paths.SettingsFile))
-                File.Delete(Paths.SettingsFile);
-            File.Copy(settingsBackup, Paths.SettingsFile);
-            File.Delete(settingsBackup);
+            ConstructorInfo ci = typeof(OptionsController).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, 
+                null, new Type[] { typeof(IFileSystem), typeof(IXmlSerialization) }, null);
+            Assert.IsNotNull(ci);
+            fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
+            fileSystem.Stub(x => x.FileExists(Paths.SettingsFile)).Return(true);
+            xmlSerialization.Stub(x => x.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings());
+            optionsController = (OptionsController)ci.Invoke(new object[] { fileSystem, xmlSerialization });
         }
 
         [Test]
         public void RestorePreviousSettings_Test()
         {
-            Assert.IsTrue(OptionsController.Instance.RestorePreviousSettings);
-            OptionsController.Instance.RestorePreviousSettings = false;
-            Assert.IsFalse(OptionsController.Instance.RestorePreviousSettings);
+            Assert.IsTrue(optionsController.RestorePreviousSettings);
+            optionsController.RestorePreviousSettings = false;
+            Assert.IsFalse(optionsController.RestorePreviousSettings);
         }
 
         [Test]
         public void PluginDirectories_Test()
         {
-            Assert.AreEqual(0, OptionsController.Instance.PluginDirectories.Count);
-            OptionsController.Instance.PluginDirectories.Add("test");
-            Assert.AreEqual(1, OptionsController.Instance.PluginDirectories.Count);
-            Assert.AreEqual("test", OptionsController.Instance.PluginDirectories[0]);
+            Assert.AreEqual(0, optionsController.PluginDirectories.Count);
+            optionsController.PluginDirectories.Add("test");
+            Assert.AreEqual(1, optionsController.PluginDirectories.Count);
+            Assert.AreEqual("test", optionsController.PluginDirectories[0]);
         }
 
         [Test]
         public void TestRunnerFactory_Test()
         {
-            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, OptionsController.Instance.TestRunnerFactory);
-            OptionsController.Instance.TestRunnerFactory = StandardTestRunnerFactoryNames.Local;
-            Assert.AreEqual(StandardTestRunnerFactoryNames.Local, OptionsController.Instance.TestRunnerFactory);
+            Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, optionsController.TestRunnerFactory);
+            optionsController.TestRunnerFactory = StandardTestRunnerFactoryNames.Local;
+            Assert.AreEqual(StandardTestRunnerFactoryNames.Local, optionsController.TestRunnerFactory);
         }
 
         [Test]
         public void AlwaysReloadAssemblies_Test()
         {
-            Assert.IsFalse(OptionsController.Instance.AlwaysReloadAssemblies);
-            OptionsController.Instance.AlwaysReloadAssemblies = true;
-            Assert.IsTrue(OptionsController.Instance.AlwaysReloadAssemblies);
+            Assert.IsFalse(optionsController.AlwaysReloadAssemblies);
+            optionsController.AlwaysReloadAssemblies = true;
+            Assert.IsTrue(optionsController.AlwaysReloadAssemblies);
         }
 
         [Test]
         public void ShowProgressDialogs_Test()
         {
-            Assert.IsTrue(OptionsController.Instance.ShowProgressDialogs);
-            OptionsController.Instance.ShowProgressDialogs = false;
-            Assert.IsFalse(OptionsController.Instance.ShowProgressDialogs);
+            Assert.IsTrue(optionsController.ShowProgressDialogs);
+            optionsController.ShowProgressDialogs = false;
+            Assert.IsFalse(optionsController.ShowProgressDialogs);
         }
 
         [Test]
         public void TestStatusBarStyle_Test()
         {
-            Assert.AreEqual(TestStatusBarStyles.Integration, OptionsController.Instance.TestStatusBarStyle);
-            OptionsController.Instance.TestStatusBarStyle = TestStatusBarStyles.UnitTest;
-            Assert.AreEqual(TestStatusBarStyles.UnitTest, OptionsController.Instance.TestStatusBarStyle);
+            Assert.AreEqual(TestStatusBarStyles.Integration, optionsController.TestStatusBarStyle);
+            optionsController.TestStatusBarStyle = TestStatusBarStyles.UnitTest;
+            Assert.AreEqual(TestStatusBarStyles.UnitTest, optionsController.TestStatusBarStyle);
         }
 
         [Test]
         public void FailedColor_Test()
         {
-            Assert.AreEqual(Color.Red.ToArgb(), OptionsController.Instance.FailedColor.ToArgb());
-            OptionsController.Instance.FailedColor = Color.Black;
-            Assert.AreEqual(Color.Black.ToArgb(), OptionsController.Instance.FailedColor.ToArgb());
+            Assert.AreEqual(Color.Red.ToArgb(), optionsController.FailedColor.ToArgb());
+            optionsController.FailedColor = Color.Black;
+            Assert.AreEqual(Color.Black.ToArgb(), optionsController.FailedColor.ToArgb());
         }
 
         [Test]
         public void PassedColor_Test()
         {
-            Assert.AreEqual(Color.Green.ToArgb(), OptionsController.Instance.PassedColor.ToArgb());
-            OptionsController.Instance.PassedColor = Color.Black;
-            Assert.AreEqual(Color.Black.ToArgb(), OptionsController.Instance.PassedColor.ToArgb());
+            Assert.AreEqual(Color.Green.ToArgb(), optionsController.PassedColor.ToArgb());
+            optionsController.PassedColor = Color.Black;
+            Assert.AreEqual(Color.Black.ToArgb(), optionsController.PassedColor.ToArgb());
         }
 
         [Test]
         public void InconclusiveColor_Test()
         {
-            Assert.AreEqual(Color.Gold.ToArgb(), OptionsController.Instance.InconclusiveColor.ToArgb());
-            OptionsController.Instance.InconclusiveColor = Color.Black;
-            Assert.AreEqual(Color.Black.ToArgb(), OptionsController.Instance.InconclusiveColor.ToArgb());
+            Assert.AreEqual(Color.Gold.ToArgb(), optionsController.InconclusiveColor.ToArgb());
+            optionsController.InconclusiveColor = Color.Black;
+            Assert.AreEqual(Color.Black.ToArgb(), optionsController.InconclusiveColor.ToArgb());
         }
 
         [Test]
         public void SkippedColor_Test()
         {
-            Assert.AreEqual(Color.SlateGray.ToArgb(), OptionsController.Instance.SkippedColor.ToArgb());
-            OptionsController.Instance.SkippedColor = Color.Black;
-            Assert.AreEqual(Color.Black.ToArgb(), OptionsController.Instance.SkippedColor.ToArgb());
+            Assert.AreEqual(Color.SlateGray.ToArgb(), optionsController.SkippedColor.ToArgb());
+            optionsController.SkippedColor = Color.Black;
+            Assert.AreEqual(Color.Black.ToArgb(), optionsController.SkippedColor.ToArgb());
         }
 
         [Test]
         public void SelectedTreeViewCategories_Test()
         {
-            Assert.AreEqual(5, OptionsController.Instance.SelectedTreeViewCategories.Count);
-        }
-
-        [Test]
-        public void Cancel_Test()
-        {
-            OptionsController.Instance.Cancel();
-        }
-
-        [Test]
-        public void Save_Test()
-        {
-            Assert.IsFalse(File.Exists(Paths.SettingsFile));
-            OptionsController.Instance.Save();
-            Assert.IsTrue(File.Exists(Paths.SettingsFile));
-            File.Delete(Paths.SettingsFile);
+            Assert.AreEqual(5, optionsController.SelectedTreeViewCategories.Count);
         }
 
         [Test]
         public void TestRunnerFactories_Test()
         {
-            Assert.AreEqual(3, OptionsController.Instance.TestRunnerFactories.Length);
+            Assert.AreEqual(3, optionsController.TestRunnerFactories.Length);
         }
 
         [Test]
         public void UnselectedTreeViewCategories_Test()
         {
-            Assert.AreEqual(20, OptionsController.Instance.UnselectedTreeViewCategories.Count);
+            Assert.AreEqual(20, optionsController.UnselectedTreeViewCategories.Count);
+        }
+
+        [Test]
+        public void Cancel_Test()
+        {
+            string fileName = Paths.SettingsFile;
+            fileSystem.Stub(x => x.FileExists(fileName)).Return(true);
+            xmlSerialization.Expect(x => x.LoadFromXml<Settings>(fileName)).Return(new Settings());
+            optionsController.Cancel();
+            xmlSerialization.VerifyAllExpectations();
+        }
+
+        [Test]
+        public void Save_Test()
+        {
+            optionsController.Save();
+            xmlSerialization.AssertWasCalled(x => x.SaveToXml(Arg<Settings>.Is.Anything, Arg.Is(Paths.SettingsFile)));
+        }
+
+        [Test]
+        public void Save_Exception_Test()
+        {
+            Exception ex = new Exception("This exception is testing the UnhandledExceptionPolicy framework. PLEASE IGNORE IT!");
+            xmlSerialization.Stub(x => x.SaveToXml(Arg<Settings>.Is.Anything, Arg.Is(Paths.SettingsFile))).Throw(ex);
+            EventHandler<CorrelatedExceptionEventArgs> eh = delegate(object sender, CorrelatedExceptionEventArgs e)
+            {
+                Assert.AreEqual(ex, e.Exception);
+            };
+            UnhandledExceptionPolicy.ReportUnhandledException += eh;
+            optionsController.Save();
+            UnhandledExceptionPolicy.ReportUnhandledException -= eh;
         }
     }
 }

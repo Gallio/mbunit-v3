@@ -1,0 +1,73 @@
+﻿using System;
+using System.Drawing;
+using MbUnit.Framework;
+using Gallio.Icarus.Controllers;
+using Gallio.Runtime.Logging;
+using Gallio.Icarus.Controllers.EventArgs;
+using System.Threading;
+using System.Collections.Generic;
+using Gallio.Utilities;
+
+namespace Gallio.Icarus.Tests.Controllers
+{
+    public class RuntimeLogControllerTest : RuntimeLogController
+    {
+        // can't use Color.SomeColor in a RowTest :(
+        private Dictionary<LogSeverity, Color> colors = new Dictionary<LogSeverity, Color>();
+
+        [FixtureSetUp]
+        public void FixtureSetUp()
+        {
+            colors.Add(LogSeverity.Error, Color.Red);
+            colors.Add(LogSeverity.Warning, Color.Gold);
+            colors.Add(LogSeverity.Important, Color.Black);
+            colors.Add(LogSeverity.Info, Color.Gray);
+            colors.Add(LogSeverity.Debug, Color.DarkGray);
+        }
+
+        [Test]
+        [Row(LogSeverity.Error)]
+        [Row(LogSeverity.Warning)]
+        [Row(LogSeverity.Important)]
+        [Row(LogSeverity.Info)]
+        [Row(LogSeverity.Debug)]
+        public void LogImpl_Test(LogSeverity logSeverity)
+        {
+            const string message = "message";
+            EventHandler<RuntimeLogEventArgs> eh = delegate(object sender, RuntimeLogEventArgs e)
+            {
+                Assert.AreEqual(message, e.Message);
+                Assert.AreEqual(colors[logSeverity], e.Color);
+            };
+            LogMessage += eh;
+            LogImpl(logSeverity, message, null);
+            LogMessage -= eh;
+        }
+
+        [Test]
+        public void LogImpl_Exception_Test()
+        {
+            LogSeverity logSeverity = LogSeverity.Error;
+            Exception ex = new Exception();
+            string message = "message";
+            string exceptionMessage = ExceptionUtils.SafeToString(ex);
+            bool firstPass = true;
+            EventHandler<RuntimeLogEventArgs> eh = delegate(object sender, RuntimeLogEventArgs e)
+            {
+                if (firstPass)
+                {
+                    Assert.AreEqual(message, e.Message);
+                    firstPass = false;
+                }
+                else
+                {
+                    Assert.AreEqual(exceptionMessage, e.Message);
+                }
+                Assert.AreEqual(colors[logSeverity], e.Color);
+            };
+            LogMessage += eh;
+            LogImpl(logSeverity, message, ex);
+            LogMessage -= eh;
+        }
+    }
+}

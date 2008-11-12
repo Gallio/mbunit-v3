@@ -20,26 +20,24 @@ using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models.Interfaces;
 using MbUnit.Framework;
 using Rhino.Mocks;
+using Gallio.Icarus.Models;
 
 namespace Gallio.Icarus.Tests
 {
     [MbUnit.Framework.Category("Views")]
-    class TestExplorerTest : MockTest
+    class TestExplorerTest
     {
         [Test]
         public void Constructor_Test()
         {
-            const string treeViewCategory = "test";
-            var mediator = mocks.StrictMock<IMediator>();
-            var testController = (ITestController) mocks.Stub(typeof (ITestController));
-            Expect.Call(testController.Model).Return((ITestTreeModel) mocks.Stub(typeof (ITestTreeModel))).Repeat.AtLeastOnce();
-            Expect.Call(mediator.TestController).Return(testController).Repeat.AtLeastOnce();
-            var optionsController = mocks.StrictMock<IOptionsController>();
-            Expect.Call(optionsController.SelectedTreeViewCategories).Return(
-                new BindingList<string>(new List<string>(new[] {treeViewCategory})));
-            LastCall.IgnoreArguments();
-            mediator.Reload();
-            mocks.ReplayAll();
+            var mediator = MockRepository.GenerateStub<IMediator>();
+            var projectController = MockRepository.GenerateStub<IProjectController>();
+            projectController.TreeViewCategory = "Namespace";
+            mediator.ProjectController = projectController;
+            var testController = MockRepository.GenerateStub<ITestController>();
+            mediator.TestController = testController;
+            testController.Stub(x => x.Model).Return(new TestTreeModel());
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
             TestExplorer testExplorer = new TestExplorer(mediator, optionsController);
         }
     }

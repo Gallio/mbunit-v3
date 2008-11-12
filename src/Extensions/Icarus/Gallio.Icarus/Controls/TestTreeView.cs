@@ -19,6 +19,7 @@ using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Model;
+using System.Collections.Generic;
 
 namespace Gallio.Icarus.Controls
 {
@@ -30,6 +31,20 @@ namespace Gallio.Icarus.Controls
         {
             get { return nodeCheckBox.EditEnabled; }
             set { nodeCheckBox.EditEnabled = value; }
+        }
+
+        public List<string> CollapsedNodes
+        {
+            get
+            {
+                List<string> collapsedNodes = new List<string>();
+                foreach (TreeNodeAdv treeNode in AllNodes)
+                {
+                    if (!treeNode.IsExpanded)
+                        collapsedNodes.Add(((TestTreeNode)treeNode.Tag).Name);
+                }
+                return collapsedNodes;
+            }
         }
 
         public TestTreeView()
@@ -114,6 +129,16 @@ namespace Gallio.Icarus.Controls
                 Expand(node.Parent);
 
             node.Expand();
+        }
+
+        public void CollapseNodes(IList<string> nodes)
+        {
+            ExpandAll();
+            foreach (TreeNodeAdv treeNode in AllNodes)
+            {
+                if (treeNode.IsExpanded && nodes.Contains(((TestTreeNode)treeNode.Tag).Name))
+                    treeNode.Collapse();
+            }
         }
     }
 }

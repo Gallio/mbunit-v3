@@ -54,6 +54,8 @@ namespace Gallio.Icarus
         private readonly ExecutionLogWindow executionLogWindow;
         private readonly AnnotationsWindow annotationsWindow;
 
+        private readonly ProgressMonitor progressMonitor;
+
         private string ProjectFileName
         {
             set
@@ -85,7 +87,7 @@ namespace Gallio.Icarus
             optionsController = OptionsController.Instance;
 
             mediator.ProgressMonitorProvider.ProgressUpdate += ProgressUpdate;
-            //progressMonitor = new ProgressMonitor(progressMonitorProvider, optionsController);
+            progressMonitor = new ProgressMonitor(mediator);
 
             InitializeComponent();
 
@@ -107,7 +109,7 @@ namespace Gallio.Icarus
             // set up delay timer for progress monitor
             timer.Interval = 1000;
             timer.AutoReset = false;
-            //timer.Elapsed += delegate { Sync.Invoke(this, () => progressMonitor.Show(this)); };
+            timer.Elapsed += delegate { Sync.Invoke(this, () => progressMonitor.Show(this)); };
 
             SetupReportMenus();
         }
@@ -228,6 +230,9 @@ namespace Gallio.Icarus
             startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
             stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
 
+            // no need for progress dialog
+            showProgressMonitor = false;
+
             mediator.RunTests();
         }
 
@@ -238,6 +243,7 @@ namespace Gallio.Icarus
 
         public void Reload()
         {
+            testExplorer.SaveState();
             mediator.Reload();
         }
 
@@ -318,12 +324,7 @@ namespace Gallio.Icarus
 
         private void stopButton_Click(object sender, EventArgs e)
         {
-            Cancel();
-        }
-
-        private void Cancel()
-        {
-            //TODO: Cancel?
+            mediator.Cancel();
         }
 
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -349,7 +350,7 @@ namespace Gallio.Icarus
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Cancel();
+            mediator.Cancel();
         }
 
         private void startTestsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -386,20 +387,26 @@ namespace Gallio.Icarus
         {
             if (e.CloseReason == CloseReason.ApplicationExitCall)
                 return;
-            
+
+            // we'll close once we've tidied up
             e.Cancel = true;
+            // shut down any running operations
+            mediator.Cancel();
+            // save the current state of the test tree
+            testExplorer.SaveState();
             mediator.TestController.UnloadFinished += CleanUpOnClose;
+            // unload the current test package
             mediator.Unload();
         }
 
         private void CleanUpOnClose(object sender, EventArgs e)
         {
-            mediator.SaveFilter("AutoSave");
             mediator.SaveProject(string.Empty);
 
             // save dock panel config
             dockPanel.SaveAsXml(Paths.DockConfigFile);
 
+            // dispose of the test runner service
             EventHandlerUtils.SafeInvoke(CleanUp, this, EventArgs.Empty);
             UnhandledExceptionPolicy.ReportUnhandledException -= ReportUnhandledException;
 
@@ -461,7 +468,7 @@ namespace Gallio.Icarus
                 }
             }
             if (reload)
-                mediator.Reload();
+                Reload();
         }
 
         void testController_LoadFinished(object sender, EventArgs e)
@@ -493,26 +500,23 @@ namespace Gallio.Icarus
         {
             Sync.Invoke(this, delegate
             {
-                if (e.TaskName == "Running the tests.")
-                    showProgressMonitor = false;
-
-                //if (e.TotalWorkUnits > 0 && !progressMonitor.Visible && showProgressMonitor && optionsController.ShowProgressDialogs)
-                //{
-                //    timer.Enabled = true;
-                //    progressMonitor.Cursor = Cursors.WaitCursor;
-                //}
-                //else
-                //{
-                //    timer.Enabled = false;
-                //    progressMonitor.Hide();
-                //    progressMonitor.Cursor = Cursors.Default;
-                //    showProgressMonitor = true;
-                //}
+                if (e.TotalWorkUnits > 0 && !progressMonitor.Visible && showProgressMonitor && optionsController.ShowProgressDialogs)
+                {
+                    timer.Enabled = true;
+                    progressMonitor.Cursor = Cursors.WaitCursor;
+                }
+                else if (e.TotalWorkUnits == 0)
+                {
+                    timer.Enabled = false;
+                    progressMonitor.Hide();
+                    progressMonitor.Cursor = Cursors.Default;
+                    showProgressMonitor = true;
+                }
 
                 toolStripProgressBar.Maximum = Convert.ToInt32(e.TotalWorkUnits);
                 toolStripProgressBar.Value = Convert.ToInt32(e.CompletedWorkUnits);
 
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append(e.TaskName);
                 if (!string.IsNullOrEmpty(e.SubTaskName))
                 {

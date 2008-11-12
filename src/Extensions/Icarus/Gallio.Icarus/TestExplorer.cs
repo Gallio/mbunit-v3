@@ -20,12 +20,15 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Model;
+using Aga.Controls.Tree.NodeControls;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
     public partial class TestExplorer : DockWindow
     {
         private readonly IMediator mediator;
+        private bool updateFlag = false;
 
         public TestExplorer(IMediator mediator, IOptionsController optionsController)
         {
@@ -35,32 +38,38 @@ namespace Gallio.Icarus
 
             if (treeViewComboBox.ComboBox != null)
             {
+                updateFlag = true;
                 treeViewComboBox.ComboBox.BindingContext = BindingContext;
                 treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories;
+                treeViewComboBox.ComboBox.DataBindings.Add("SelectedItem", mediator.ProjectController, "TreeViewCategory");
+                updateFlag = false;
             }
-            treeViewComboBox.SelectedIndex = 0;
 
             testTree.Model = mediator.TestController.Model;
 
             mediator.TestController.LoadStarted += delegate { testTree.EditEnabled = false; };
-            mediator.TestController.LoadFinished += delegate
-            {
-                testTree.EditEnabled = true;
-                testTree.ExpandAll();
-            };
+            mediator.TestController.LoadFinished += delegate { RestoreState(); };
 
             mediator.TestController.RunStarted += delegate { testTree.EditEnabled = false; };
             mediator.TestController.RunFinished += delegate { testTree.EditEnabled = true; };
 
-            filterPassedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterPassed", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterPassedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterPassed", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterFailedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterFailed", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterFailedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterFailed", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterSkippedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterSkipped", false, DataSourceUpdateMode.OnPropertyChanged);
-            filterSkippedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterSkipped", false, DataSourceUpdateMode.OnPropertyChanged);
+            filterPassedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterPassed", 
+                false, DataSourceUpdateMode.OnPropertyChanged);
+            filterPassedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterPassed", 
+                false, DataSourceUpdateMode.OnPropertyChanged);
+            filterFailedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterFailed", 
+                false, DataSourceUpdateMode.OnPropertyChanged);
+            filterFailedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterFailed", 
+                false, DataSourceUpdateMode.OnPropertyChanged);
+            filterSkippedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterSkipped", 
+                false, DataSourceUpdateMode.OnPropertyChanged);
+            filterSkippedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterSkipped", 
+                false, DataSourceUpdateMode.OnPropertyChanged);
 
-            sortAscToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.SortAsc", false, DataSourceUpdateMode.OnPropertyChanged);
-            sortDescToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.SortDesc", false, DataSourceUpdateMode.OnPropertyChanged);
+            sortAscToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.SortAsc", 
+                false, DataSourceUpdateMode.OnPropertyChanged);
+            sortDescToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.SortDesc", 
+                false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -75,7 +84,11 @@ namespace Gallio.Icarus
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             mediator.TestController.TreeViewCategory = (string)treeViewComboBox.SelectedItem;
-            mediator.Reload();
+            if (!updateFlag)
+            {
+                SaveState();
+                mediator.Reload();
+            }
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
@@ -146,6 +159,19 @@ namespace Gallio.Icarus
                 removeAssemblyToolStripMenuItem.Enabled = false;
                 viewSourceCodeToolStripMenuItem.Enabled = false;
             }
+        }
+
+        internal void SaveState()
+        {
+            mediator.SaveFilter("AutoSave");
+            mediator.ProjectController.TreeViewCategory = (string)treeViewComboBox.SelectedItem;
+            mediator.ProjectController.CollapsedNodes = testTree.CollapsedNodes;
+        }
+
+        private void RestoreState()
+        {
+            testTree.EditEnabled = true;
+            testTree.CollapseNodes(mediator.ProjectController.CollapsedNodes);
         }
     }
 }
