@@ -235,9 +235,14 @@ namespace Gallio.Framework.Data
             if (!declaringType.ContainsGenericParameters)
                 return member;
 
+            Module desiredModule = member.Module;
+            int desiredMetadataToken = member.MetadataToken;
             MemberInfo[] resolvedMembers = resolvedType.FindMembers(member.MemberType,
                 BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static,
-                delegate(MemberInfo candidate, object dummy) { return candidate.MetadataToken == member.MetadataToken; },
+                delegate(MemberInfo candidate, object dummy) {
+                    return candidate.Module == desiredModule
+                        && candidate.MetadataToken == desiredMetadataToken;
+                },
                 null);
 
             if (resolvedMembers.Length != 1)

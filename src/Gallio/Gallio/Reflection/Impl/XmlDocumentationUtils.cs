@@ -131,11 +131,14 @@ namespace Gallio.Reflection.Impl
             {
                 Type genericTypeDefn = property.DeclaringType.GetGenericTypeDefinition();
                 int desiredMetadataToken = property.MetadataToken;
+                Module desiredModule = property.Module;
+
                 PropertyInfo unboundProperty = Array.Find(genericTypeDefn.GetProperties(BindingFlags.DeclaredOnly
                     | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static),
                     delegate(PropertyInfo candidate)
                     {
-                        return candidate.MetadataToken == desiredMetadataToken;
+                        return candidate.Module == desiredModule
+                            && candidate.MetadataToken == desiredMetadataToken;
                     });
                     
                 if (unboundProperty == null)

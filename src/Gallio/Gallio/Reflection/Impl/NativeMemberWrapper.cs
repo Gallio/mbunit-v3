@@ -74,6 +74,7 @@ namespace Gallio.Reflection.Impl
             //       So we have to settle for comparing their metadata tokens and declaring types instead.
             NativeMemberWrapper<TTarget> other = obj as NativeMemberWrapper<TTarget>;
             return other != null
+                && Target.Module == other.Target.Module
                 && Target.MetadataToken == other.Target.MetadataToken
                 && CompareDeclaringTypeWorkaround(Target.DeclaringType, other.Target.DeclaringType);
         }
