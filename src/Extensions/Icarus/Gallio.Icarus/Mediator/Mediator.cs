@@ -22,6 +22,14 @@ namespace Gallio.Icarus.Mediator
 
         public IReportController ReportController { get; set; }
 
+        public IExecutionLogController ExecutionLogController { get; set; }
+
+        public IAnnotationsController AnnotationsController { get; set; }
+
+        public IRuntimeLogController RuntimeLogController { get; set; }
+
+        public IOptionsController OptionsController { get; set; }
+
         public ProgressMonitorProvider ProgressMonitorProvider
         {
             get { return progressMonitorProvider; }
@@ -157,6 +165,12 @@ namespace Gallio.Icarus.Mediator
                         RestoreFilter(subProgressMonitor);
                 }
             }));
+        }
+
+        public void RefreshTestTree()
+        {
+            progressMonitorProvider.Run(progressMonitor => 
+                TestController.RefreshTestTree(progressMonitor));
         }
 
         private void RestoreFilter(IProgressMonitor progressMonitor)

@@ -30,7 +30,7 @@ namespace Gallio.Icarus
         private readonly IMediator mediator;
         private bool updateFlag = false;
 
-        public TestExplorer(IMediator mediator, IOptionsController optionsController)
+        public TestExplorer(IMediator mediator)
         {
             this.mediator = mediator;
 
@@ -40,7 +40,7 @@ namespace Gallio.Icarus
             {
                 updateFlag = true;
                 treeViewComboBox.ComboBox.BindingContext = BindingContext;
-                treeViewComboBox.ComboBox.DataSource = optionsController.SelectedTreeViewCategories;
+                treeViewComboBox.ComboBox.DataSource = mediator.OptionsController.SelectedTreeViewCategories;
                 treeViewComboBox.ComboBox.DataBindings.Add("SelectedItem", mediator.ProjectController, "TreeViewCategory");
                 updateFlag = false;
             }
@@ -48,7 +48,11 @@ namespace Gallio.Icarus
             testTree.Model = mediator.TestController.Model;
 
             mediator.TestController.LoadStarted += delegate { testTree.EditEnabled = false; };
-            mediator.TestController.LoadFinished += delegate { RestoreState(); };
+            mediator.TestController.LoadFinished += delegate
+            {
+                testTree.EditEnabled = true;
+                RestoreState();
+            };
 
             mediator.TestController.RunStarted += delegate { testTree.EditEnabled = false; };
             mediator.TestController.RunFinished += delegate { testTree.EditEnabled = true; };
@@ -87,7 +91,8 @@ namespace Gallio.Icarus
             if (!updateFlag)
             {
                 SaveState();
-                mediator.Reload();
+                mediator.RefreshTestTree();
+                RestoreState();
             }
         }
 
@@ -170,7 +175,6 @@ namespace Gallio.Icarus
 
         private void RestoreState()
         {
-            testTree.EditEnabled = true;
             testTree.CollapseNodes(mediator.ProjectController.CollapsedNodes);
         }
     }

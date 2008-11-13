@@ -176,19 +176,11 @@ namespace Gallio.Icarus.Models
             OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
 
             foreach (Node node in Nodes)
-                ResetTestStatus(node);
+                ((TestTreeNode)node).Reset();
+
+            OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new object[] { }));
 
             FilterTree();
-        }
-
-        private static void ResetTestStatus(Node node)
-        {
-            TestTreeNode testTreeNode = (TestTreeNode) node;
-            testTreeNode.TestStatus = TestStatus.Skipped;
-            testTreeNode.ClearTestStepRuns();
-            
-            foreach (Node n in node.Nodes)
-                ResetTestStatus(n);
         }
 
         public void UpdateTestStatus(TestData testData, TestStepRun testStepRun)

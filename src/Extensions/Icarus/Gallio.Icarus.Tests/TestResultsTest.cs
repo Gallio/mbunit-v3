@@ -14,57 +14,31 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Models;
+using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
+using Gallio.Icarus.Models;
+using System.Collections.Generic;
 
 namespace Gallio.Icarus.Tests
 {
-    [MbUnit.Framework.Category("Views")]
-    class TestResultsTest : MockTest
+    [Category("Views")]
+    class TestResultsTest
     {
-        private ITestController testController;
-        private IOptionsController optionsController;
-        private IEventRaiser testStepFinished;
-        private IEventRaiser runStarted;
-
-        [SetUp]
-        public void SetUp()
-        {
-            testController = mocks.StrictMock<ITestController>();
-            testController.TestStepFinished += null;
-            testStepFinished = LastCall.IgnoreArguments().GetEventRaiser();
-            Expect.Call(testController.SelectedTests).Return(new BindingList<TestTreeNode>(new List<TestTreeNode>()));
-            testController.RunStarted += null;
-            runStarted = LastCall.IgnoreArguments().GetEventRaiser();
-            optionsController = mocks.StrictMock<IOptionsController>();
-        }
-
         [Test]
-        public void UpdateTestResults_Test()
+        public void Constructor_Test()
         {
-            Expect.Call(testController.Model).Return(new TestTreeModel());
-            mocks.ReplayAll();
-            TestResults testResults = new TestResults(testController, optionsController);
-            testStepFinished.Raise(testController,
-                new TestStepFinishedEventArgs(new Report(), new TestData("id", "name", "fullName"),
-                    new TestStepRun(new TestStepData("id", "name", "fullName", "testId"))));
-        }
-
-        [Test]
-        public void Reset_Test()
-        {
-            Expect.Call(testController.TestCount).Return(0);
-            mocks.ReplayAll();
-            TestResults testResults = new TestResults(testController, optionsController);
-            runStarted.Raise(testController, EventArgs.Empty);
+            var mediator = MockRepository.GenerateStub<IMediator>();
+            var testController = MockRepository.GenerateStub<ITestController>();
+            testController.Stub(x => x.SelectedTests).Return(new System.ComponentModel.BindingList<TestTreeNode>(new List<TestTreeNode>()));
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            mediator.TestController = testController;
+            mediator.OptionsController = optionsController;
+            TestResults testResults = new TestResults(mediator);
         }
     }
 }

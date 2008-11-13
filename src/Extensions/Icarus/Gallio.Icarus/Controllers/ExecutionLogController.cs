@@ -73,7 +73,7 @@ namespace Gallio.Icarus.Controllers
 
         private void TestStepFinished(object sender, TestStepFinishedEventArgs e)
         {
-            if (selectedTestIds.Contains(e.Test.Id))
+            if (selectedTestIds.Count == 0 || selectedTestIds.Contains(e.Test.Id))
                 Update();
         }
 
@@ -89,8 +89,11 @@ namespace Gallio.Icarus.Controllers
 
                 if (report.TestPackageRun != null)
                 {
+                    // only update log if the test is selected in the tree or, 
+                    // if no tests are selected, if it is the root.
                     foreach (TestStepRun run in report.TestPackageRun.AllTestStepRuns)
-                        if (selectedTestIds.Contains(run.Step.TestId))
+                        if (selectedTestIds.Contains(run.Step.TestId) || 
+                            (selectedTestIds.Count == 0 && run.Step.TestId == testController.Model.Root.Name))
                             TestStepRuns.Add(run);
                 }
 

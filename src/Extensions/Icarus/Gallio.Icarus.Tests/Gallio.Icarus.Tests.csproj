@@ -83,6 +83,7 @@
     <Compile Include="ExecutionLogWindowTest.cs" />
     <Compile Include="FiltersWindowTest.cs" />
     <Compile Include="MockTest.cs" />
+    <Compile Include="Models\ProjectTreeModelTest.cs" />
     <Compile Include="ProjectExplorerTest.cs" />
     <Compile Include="PropertiesWindowTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,7 +96,8 @@
     <Compile Include="RuntimeLogWindowTest.cs" />
     <Compile Include="TaskManagerTest.cs" />
     <Compile Include="TestExplorerTest.cs" />
-    <Compile Include="TestResultsTest.cs" />
+    <Compile Include="TestResultsTest.cs">
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
@@ -131,7 +133,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Options\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

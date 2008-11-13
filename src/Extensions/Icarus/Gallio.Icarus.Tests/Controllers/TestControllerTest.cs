@@ -140,20 +140,21 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ResetTests_Test()
         {
-            ITestRunnerService testRunnerService = SetupTestRunnerService();
-            Expect.Call(testRunnerService.Report).Return(new LockBox<Report>(new Report()));
-            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-            testTreeModel.ResetTestStatus(null);
-            LastCall.IgnoreArguments();
-            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            Expect.Call(progressMonitor.BeginTask("Resetting tests", 2)).Return(
-                new ProgressMonitorTaskCookie(progressMonitor));
-            Expect.Call(progressMonitor.CreateSubProgressMonitor(1)).Return((IProgressMonitor)mocks.Stub(
-                typeof(IProgressMonitor)));
-            progressMonitor.Done();
-            mocks.ReplayAll();
-            TestController testController = new TestController(testRunnerService, testTreeModel);
+            var testRunnerService = MockRepository.GenerateStub<ITestRunnerService>();
+            testRunnerService.Stub(x => x.Report).Return(new LockBox<Report>(new Report()));
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var testController = new TestController(testRunnerService, testTreeModel);
+            var progressMonitor = MockProgressMonitor();
             testController.ResetTests(progressMonitor);
+            testTreeModel.AssertWasCalled(x => x.ResetTestStatus(progressMonitor));
+        }
+
+        IProgressMonitor MockProgressMonitor()
+        {
+            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
+            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
+            progressMonitor.Stub(x => x.CreateSubProgressMonitor(Arg<double>.Is.Anything)).Return(progressMonitor).Repeat.Any();
+            return progressMonitor;
         }
 
         [Test]

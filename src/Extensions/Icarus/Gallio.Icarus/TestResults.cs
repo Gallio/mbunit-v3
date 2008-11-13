@@ -19,6 +19,7 @@ using Gallio.Icarus.Models;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Utilities;
+using Gallio.Icarus.Mediator.Interfaces;
 
 namespace Gallio.Icarus
 {
@@ -28,12 +29,13 @@ namespace Gallio.Icarus
 
         public int TotalTests
         {
+            get { return testProgressStatusBar.Total; }
             set { testProgressStatusBar.Total = value; }
         }
 
-        public TestResults(ITestController testController, IOptionsController optionsController)
+        public TestResults(IMediator mediator)
         {
-            this.testController = testController;
+            this.testController = mediator.TestController;
 
             InitializeComponent();
 
@@ -41,11 +43,11 @@ namespace Gallio.Icarus
             testController.SelectedTests.ListChanged += delegate { Sync.Invoke(this, UpdateTestResults); };
             testController.RunStarted += delegate { Reset(); };
 
-            testProgressStatusBar.DataBindings.Add("Mode", optionsController, "TestStatusBarStyle");
-            testProgressStatusBar.DataBindings.Add("PassedColor", optionsController, "PassedColor");
-            testProgressStatusBar.DataBindings.Add("FailedColor", optionsController, "FailedColor");
-            testProgressStatusBar.DataBindings.Add("InconclusiveColor", optionsController, "InconclusiveColor");
-            testProgressStatusBar.DataBindings.Add("SkippedColor", optionsController, "SkippedColor");
+            testProgressStatusBar.DataBindings.Add("Mode", mediator.OptionsController, "TestStatusBarStyle");
+            testProgressStatusBar.DataBindings.Add("PassedColor", mediator.OptionsController, "PassedColor");
+            testProgressStatusBar.DataBindings.Add("FailedColor", mediator.OptionsController, "FailedColor");
+            testProgressStatusBar.DataBindings.Add("InconclusiveColor", mediator.OptionsController, "InconclusiveColor");
+            testProgressStatusBar.DataBindings.Add("SkippedColor", mediator.OptionsController, "SkippedColor");
             
             testProgressStatusBar.DataBindings.Add("Passed", testController, "Model.Passed");
             testProgressStatusBar.DataBindings.Add("Failed", testController, "Model.Failed");
@@ -53,7 +55,7 @@ namespace Gallio.Icarus
             testProgressStatusBar.DataBindings.Add("Inconclusive", testController, "Model.Inconclusive");
         }
 
-        void UpdateTestResults()
+        protected void UpdateTestResults()
         {
             testResultsList.BeginUpdate();
             testResultsList.Items.Clear();

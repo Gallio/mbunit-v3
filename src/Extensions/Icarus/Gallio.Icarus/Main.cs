@@ -34,7 +34,6 @@ namespace Gallio.Icarus
 {
     public partial class Main : Form
     {
-        private readonly IOptionsController optionsController;
         private readonly IMediator mediator;
 
         private readonly Timer timer = new Timer();
@@ -73,8 +72,7 @@ namespace Gallio.Icarus
 
         public event EventHandler<EventArgs> CleanUp;
 
-        public Main(IMediator mediator, IRuntimeLogController runtimeLogController, IExecutionLogController executionLogController, 
-            IAnnotationsController annotationsController)
+        public Main(IMediator mediator)
         {
             this.mediator = mediator;
 
@@ -84,8 +82,6 @@ namespace Gallio.Icarus
             mediator.TestController.LoadFinished += testController_LoadFinished;
             mediator.TestController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
             
-            optionsController = OptionsController.Instance;
-
             mediator.ProgressMonitorProvider.ProgressUpdate += ProgressUpdate;
             progressMonitor = new ProgressMonitor(mediator);
 
@@ -93,15 +89,15 @@ namespace Gallio.Icarus
 
             UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
 
-            testExplorer = new TestExplorer(mediator, optionsController);
+            testExplorer = new TestExplorer(mediator);
             projectExplorer = new ProjectExplorer(mediator);
-            testResults = new TestResults(mediator.TestController, optionsController);
-            runtimeLogWindow = new RuntimeLogWindow(runtimeLogController);
+            testResults = new TestResults(mediator);
+            runtimeLogWindow = new RuntimeLogWindow(mediator.RuntimeLogController);
             aboutDialog = new AboutDialog(mediator.TestController);
             propertiesWindow = new PropertiesWindow(mediator.ProjectController);
             filtersWindow = new FiltersWindow(mediator);
-            executionLogWindow = new ExecutionLogWindow(executionLogController);
-            annotationsWindow = new AnnotationsWindow(annotationsController);
+            executionLogWindow = new ExecutionLogWindow(mediator.ExecutionLogController);
+            annotationsWindow = new AnnotationsWindow(mediator.AnnotationsController);
 
             // used by dock window framework to re-assemble layout
             deserializeDockContent = GetContentFromPersistString;
@@ -306,7 +302,7 @@ namespace Gallio.Icarus
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
-            using (Options.Options options = new Options.Options(optionsController))
+            using (Options.Options options = new Options.Options(mediator.OptionsController))
             {
                 options.ShowDialog();
             }
@@ -454,7 +450,7 @@ namespace Gallio.Icarus
         private void AssemblyChanged(object sender, AssemblyChangedEventArgs e)
         {
             bool reload = false;
-            if (optionsController.AlwaysReloadAssemblies)
+            if (mediator.OptionsController.AlwaysReloadAssemblies)
                 reload = true;
             else
             {
@@ -463,7 +459,7 @@ namespace Gallio.Icarus
                     if (reloadDialog.ShowDialog() == DialogResult.OK)
                     {
                         reload = true;
-                        optionsController.AlwaysReloadAssemblies = reloadDialog.AlwaysReloadTests;
+                        mediator.OptionsController.AlwaysReloadAssemblies = reloadDialog.AlwaysReloadTests;
                     }
                 }
             }
@@ -500,7 +496,7 @@ namespace Gallio.Icarus
         {
             Sync.Invoke(this, delegate
             {
-                if (e.TotalWorkUnits > 0 && !progressMonitor.Visible && showProgressMonitor && optionsController.ShowProgressDialogs)
+                if (e.TotalWorkUnits > 0 && !progressMonitor.Visible && showProgressMonitor && mediator.OptionsController.ShowProgressDialogs)
                 {
                     timer.Enabled = true;
                     progressMonitor.Cursor = Cursors.WaitCursor;

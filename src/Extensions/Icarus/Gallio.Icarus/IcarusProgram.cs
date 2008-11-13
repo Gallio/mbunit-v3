@@ -78,28 +78,23 @@ namespace Gallio.Icarus
             
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                IProjectTreeModel projectTreeModel = new ProjectTreeModel(Paths.DefaultProject, new Project());
-                IProjectController projectController = new ProjectController(projectTreeModel, new FileSystem(), 
-                    new XmlSerialization());
-                
                 ITestRunner testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(
                     optionsController.TestRunnerFactory);
                 ITestRunnerService testRunnerService = new TestRunnerService(testRunner);
-                ITestController testController = new TestController(testRunnerService, new TestTreeModel());
                 
-                IExecutionLogController executionLogController = new ExecutionLogController(testController);
-
                 IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
-                IReportController reportController = new ReportController(new ReportService(reportManager));
-
-                IAnnotationsController annotationsController = new AnnotationsController(testController);
 
                 IMediator mediator = Mediator.Mediator.Instance;
-                mediator.ProjectController = projectController;
-                mediator.TestController = testController;
-                mediator.ReportController = reportController;
+                mediator.ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, 
+                    new Project()), new FileSystem(), new XmlSerialization());
+                mediator.TestController = new TestController(testRunnerService, new TestTreeModel());
+                mediator.ReportController = new ReportController(new ReportService(reportManager));
+                mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController);
+                mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
+                mediator.RuntimeLogController = runtimeLogController;
+                mediator.OptionsController = optionsController;
 
-                Main main = new Main(mediator, runtimeLogController, executionLogController, annotationsController);
+                Main main = new Main(mediator);
                 main.Load += delegate
                 {
                     List<string> assemblyFiles = new List<string>();

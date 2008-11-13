@@ -55,8 +55,7 @@ namespace Gallio.Icarus.Models
             this.project = project;
             this.fileName = fileName;
 
-            projectRoot = new Node("Default");
-            projectRoot.Text = Path.GetFileNameWithoutExtension(fileName);
+            projectRoot = new Node(Path.GetFileNameWithoutExtension(fileName));
             
             properties = new Node("Properties");
             projectRoot.Nodes.Add(properties);

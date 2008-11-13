@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -91,10 +91,12 @@
       <DependentUpon>CodeWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AnnotationsController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\ExecutionLogController.cs" />
     <Compile Include="Controllers\Interfaces\IAnnotationsController.cs" />
+    <Compile Include="Controllers\Interfaces\IErrorController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ReportController.cs" />

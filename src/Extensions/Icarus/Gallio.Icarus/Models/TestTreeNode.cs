@@ -300,9 +300,15 @@ namespace Gallio.Icarus.Models
                 TestStatus = testStepRun.Result.Outcome.Status;
         }
 
-        public void ClearTestStepRuns()
+        public void Reset()
         {
+            testStatus = TestStatus.Skipped;
+            testStatusIcon = GetTestStatusIcon(TestStatus.Skipped);
+
             testStepRuns.Clear();
+
+            foreach (Node n in Nodes)
+                ((TestTreeNode)n).Reset();
         }
     }
 }

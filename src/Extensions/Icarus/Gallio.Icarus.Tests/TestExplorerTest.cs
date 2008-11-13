@@ -34,11 +34,12 @@ namespace Gallio.Icarus.Tests
             var projectController = MockRepository.GenerateStub<IProjectController>();
             projectController.TreeViewCategory = "Namespace";
             mediator.ProjectController = projectController;
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            mediator.OptionsController = optionsController;
             var testController = MockRepository.GenerateStub<ITestController>();
             mediator.TestController = testController;
             testController.Stub(x => x.Model).Return(new TestTreeModel());
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            TestExplorer testExplorer = new TestExplorer(mediator, optionsController);
+            TestExplorer testExplorer = new TestExplorer(mediator);
         }
     }
 }

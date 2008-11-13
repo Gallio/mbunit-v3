@@ -49,6 +49,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
 
         void ApplyFilter(string filter, IProgressMonitor progressMonitor);
         Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor);
+        void RefreshTestTree(IProgressMonitor progressMonitor);
         void Reload(IProgressMonitor progressMonitor);
         void Reload(TestPackageConfig config, IProgressMonitor progressMonitor);
         void ResetTests(IProgressMonitor progressMonitor);
