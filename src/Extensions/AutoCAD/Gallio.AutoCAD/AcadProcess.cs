@@ -73,10 +73,22 @@ namespace Gallio.AutoCAD
             string portName = String.Concat(RemoteAcadTestDriver.ServiceName, ".", Hash64.CreateUniqueHash().ToString());
 
             // Load the AutoCAD plugin.
-            SendCommand(new NetLoadCommand()
+            string pluginFileName = GetAcadPluginFileName();
+            bool pluginIsLoaded = false;
+            for (var stopwatch = Stopwatch.StartNew(); !pluginIsLoaded && stopwatch.Elapsed < ReadyTimeout; )
             {
-                AssemblyPath = GetAcadPluginFileName()
-            });
+                SendCommand(new NetLoadCommand()
+                {
+                    AssemblyPath = pluginFileName
+                });
+                Thread.Sleep(200);
+                processTask.Process.Refresh();
+                pluginIsLoaded = ModuleIsLoaded(processTask.Process, pluginFileName);
+            }
+            if (!pluginIsLoaded)
+            {
+                throw new TimeoutException("Unable to load AutoCAD plugin.");
+            }
 
             // Create the remote endpoint. This will block on acad.exe's UI thread.
             //
@@ -92,6 +104,16 @@ namespace Gallio.AutoCAD
 
             clientChannel = new BinaryIpcClientChannel(portName);
             serverChannel = new BinaryIpcServerChannel(portName + ".Callback");
+        }
+
+        private static bool ModuleIsLoaded(Process process, string fileName)
+        {
+            foreach (ProcessModule module in process.Modules)
+            {
+                if (module.FileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
         }
 
         /// <inheritdoc/>

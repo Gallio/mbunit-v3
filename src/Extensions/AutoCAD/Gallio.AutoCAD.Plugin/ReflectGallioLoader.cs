@@ -9,7 +9,6 @@ namespace Gallio.AutoCAD.Plugin
     /// </summary>
     internal class ReflectGallioLoader
     {
-        private const string GallioLoaderDll = "Gallio.Loader.dll";
         private const string GallioLoaderTypeName = "Gallio.Loader.GallioLoader";
         private const string IGallioLoaderTypeName = "Gallio.Loader.IGallioLoader";
         
@@ -30,11 +29,28 @@ namespace Gallio.AutoCAD.Plugin
 
         public static ReflectGallioLoader Initialize(string runtimePath)
         {
-            Assembly assembly = Assembly.LoadFrom(Path.Combine(runtimePath, GallioLoaderDll));
+            Assembly assembly = GetLoaderAssembly(runtimePath);
             Type gallioLoaderType = assembly.GetType(GallioLoaderTypeName, true);
             MethodInfo initializeMethod = GetMethod(gallioLoaderType, InitializeMethodName, InitializeBindingFlags, InitializeArgumentTypes);
             object actualLoader = initializeMethod.Invoke(null, new object[] { runtimePath });
             return new ReflectGallioLoader(actualLoader);
+        }
+
+        private static Assembly GetLoaderAssembly(string runtimePath)
+        {
+            try
+            {
+                // We're assuming here that the full assembly names for Gallio.Loader.dll
+                // and Gallio.dll will share everything except the simple name portion.
+                AssemblyName gallioDll = AssemblyName.GetAssemblyName(Path.Combine(runtimePath, "Gallio.dll"));
+                AssemblyName gallioLoaderDll = new AssemblyName(gallioDll.FullName);
+                gallioLoaderDll.Name = "Gallio.Loader";
+                return Assembly.Load(gallioLoaderDll.FullName); // Need to use the full name to probe the GAC.
+            }
+            catch (FileNotFoundException)
+            {
+                return Assembly.LoadFrom(Path.Combine(runtimePath, "Gallio.Loader.dll"));
+            }
         }
 
         public void SetupRuntime()
