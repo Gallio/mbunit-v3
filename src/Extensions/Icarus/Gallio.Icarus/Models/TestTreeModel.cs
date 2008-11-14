@@ -195,27 +195,27 @@ namespace Gallio.Icarus.Models
                 Filter(node);
             }
 
-            if (!testStepRun.Step.IsPrimary || !testStepRun.Step.IsTestCase)
-                return;
-
-            switch (testStepRun.Result.Outcome.Status)
+            if (testStepRun.Step.IsPrimary && (testStepRun.Step.IsTestCase || testData.IsTestCase))
             {
-                case TestStatus.Passed:
-                    Passed++;
-                    OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
-                    break;
-                case TestStatus.Failed:
-                    Failed++;
-                    OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
-                    break;
-                case TestStatus.Skipped:
-                    Skipped++;
-                    OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
-                    break;
-                case TestStatus.Inconclusive:
-                    Inconclusive++;
-                    OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
-                    break;
+                switch (testStepRun.Result.Outcome.Status)
+                {
+                    case TestStatus.Passed:
+                        Passed++;
+                        OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
+                        break;
+                    case TestStatus.Failed:
+                        Failed++;
+                        OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
+                        break;
+                    case TestStatus.Skipped:
+                        Skipped++;
+                        OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
+                        break;
+                    case TestStatus.Inconclusive:
+                        Inconclusive++;
+                        OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
+                        break;
+                }
             }
         }
 

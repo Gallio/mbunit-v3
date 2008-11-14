@@ -21,7 +21,6 @@ using System.IO;
 using System.Reflection;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner;
-using Gallio.Runtime;
 using Gallio.Utilities;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
@@ -33,6 +32,7 @@ namespace Gallio.Icarus.Controllers
         private Settings settings;
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerialization xmlSerialization;
+        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
         private readonly BindingList<string> pluginDirectories;
         private readonly BindingList<string> selectedTreeViewCategories;
@@ -119,13 +119,16 @@ namespace Gallio.Icarus.Controllers
             set { settings.SkippedColor = value.ToArgb(); }
         }
 
-        private OptionsController() : this(new FileSystem(), new XmlSerialization())
+        private OptionsController() : this(new FileSystem(), new XmlSerialization(), 
+            new UnhandledExceptionPolicy())
         { }
 
-        private OptionsController(IFileSystem fileSystem, IXmlSerialization xmlSerialization)
+        internal OptionsController(IFileSystem fileSystem, IXmlSerialization xmlSerialization, 
+            IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
             this.fileSystem = fileSystem;
             this.xmlSerialization = xmlSerialization;
+            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
 
             Load();
 
@@ -172,7 +175,7 @@ namespace Gallio.Icarus.Controllers
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("An exception occurred while loading Icarus settings file.", ex);
+                unhandledExceptionPolicy.Report("An exception occurred while loading Icarus settings file.", ex);
             }
             return null;    
         }
@@ -185,7 +188,7 @@ namespace Gallio.Icarus.Controllers
             }
             catch (Exception ex)
             {
-                UnhandledExceptionPolicy.Report("An exception occurred while saving Icarus settings file.", ex);
+                unhandledExceptionPolicy.Report("An exception occurred while saving Icarus settings file.", ex);
             }
         }
 

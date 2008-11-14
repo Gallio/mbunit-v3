@@ -5,17 +5,21 @@ using System.Text;
 using MbUnit.Framework;
 using System.Threading;
 using Gallio.Runtime;
+using Gallio.Icarus.Utilities;
+using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests
 {
     class TaskManagerTest
     {
         private TaskManager taskManager;
+        private IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
         [SetUp]
         public void SetUp()
         {
-            taskManager = new TaskManager();
+            unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            taskManager = new TaskManager(unhandledExceptionPolicy);
         }
 
         [Test]
@@ -37,31 +41,20 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void ExceptionHandling_Test()
         {
-            Exception ex = new Exception("This exception is testing the UnhandledExceptionPolicy framework. PLEASE IGNORE IT!");
-            bool flag = false;
-            EventHandler<CorrelatedExceptionEventArgs> eh = delegate(object sender, CorrelatedExceptionEventArgs e)
-            {
-                if (e.Message.StartsWith("An exception occurred in a background task."))
-                    flag = true;
-            };
-            UnhandledExceptionPolicy.ReportUnhandledException += eh;
+            Exception ex = new Exception();
             taskManager.StartTask(delegate { throw ex; });
             Thread.Sleep(200);
-            Assert.IsTrue(flag);
-            UnhandledExceptionPolicy.ReportUnhandledException -= eh;
+            unhandledExceptionPolicy.AssertWasCalled(x => 
+                x.Report("An exception occurred in a background task.", ex));
         }
 
         [Test]
         public void OperationCanceled_Test()
         {
-            EventHandler<CorrelatedExceptionEventArgs> eh = delegate(object sender, CorrelatedExceptionEventArgs e)
-            {
-                Assert.Fail();
-            };
-            UnhandledExceptionPolicy.ReportUnhandledException += eh;
             taskManager.StartTask(delegate { throw new OperationCanceledException(); });
             Thread.Sleep(200);
-            UnhandledExceptionPolicy.ReportUnhandledException -= eh;
+            unhandledExceptionPolicy.AssertWasNotCalled(x => 
+                x.Report(Arg<string>.Is.Anything, Arg<Exception>.Is.Anything));
         }
 
         [Test]

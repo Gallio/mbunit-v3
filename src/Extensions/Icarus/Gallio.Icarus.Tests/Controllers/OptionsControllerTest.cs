@@ -23,7 +23,6 @@ using System.Reflection;
 using System;
 using Gallio.Icarus.Utilities;
 using Rhino.Mocks;
-using Gallio.Runtime;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
@@ -32,18 +31,17 @@ namespace Gallio.Icarus.Tests.Controllers
         private OptionsController optionsController = null;
         private IFileSystem fileSystem = null;
         private IXmlSerialization xmlSerialization = null;
+        private IUnhandledExceptionPolicy unhandledExceptionPolicy = null;
 
         [SetUp]
         public void SetUp()
         {
-            ConstructorInfo ci = typeof(OptionsController).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, 
-                null, new Type[] { typeof(IFileSystem), typeof(IXmlSerialization) }, null);
-            Assert.IsNotNull(ci);
             fileSystem = MockRepository.GenerateStub<IFileSystem>();
             xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
+            unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
             fileSystem.Stub(x => x.FileExists(Paths.SettingsFile)).Return(true);
             xmlSerialization.Stub(x => x.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings());
-            optionsController = (OptionsController)ci.Invoke(new object[] { fileSystem, xmlSerialization });
+            optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
         }
 
         [Test]
@@ -165,15 +163,12 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void Save_Exception_Test()
         {
-            Exception ex = new Exception("This exception is testing the UnhandledExceptionPolicy framework. PLEASE IGNORE IT!");
-            xmlSerialization.Stub(x => x.SaveToXml(Arg<Settings>.Is.Anything, Arg.Is(Paths.SettingsFile))).Throw(ex);
-            EventHandler<CorrelatedExceptionEventArgs> eh = delegate(object sender, CorrelatedExceptionEventArgs e)
-            {
-                Assert.AreEqual(ex, e.Exception);
-            };
-            UnhandledExceptionPolicy.ReportUnhandledException += eh;
+            Exception ex = new Exception();
+            xmlSerialization.Stub(x => x.SaveToXml(Arg<Settings>.Is.Anything, 
+                Arg.Is(Paths.SettingsFile))).Throw(ex);
             optionsController.Save();
-            UnhandledExceptionPolicy.ReportUnhandledException -= eh;
+            unhandledExceptionPolicy.AssertWasCalled(x => 
+                x.Report("An exception occurred while saving Icarus settings file.", ex));
         }
     }
 }

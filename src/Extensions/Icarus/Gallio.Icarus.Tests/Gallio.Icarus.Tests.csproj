@@ -94,6 +94,7 @@
     </Compile>
     <Compile Include="ReloadDialogTest.cs" />
     <Compile Include="RuntimeLogWindowTest.cs" />
+    <Compile Include="Services\TestRunnerServiceTest.cs" />
     <Compile Include="TaskManagerTest.cs" />
     <Compile Include="TestExplorerTest.cs" />
     <Compile Include="TestResultsTest.cs">

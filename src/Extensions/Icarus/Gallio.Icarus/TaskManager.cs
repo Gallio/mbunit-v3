@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Concurrency;
-using Gallio.Runtime;
+using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus
 {
@@ -24,10 +24,19 @@ namespace Gallio.Icarus
     {
         private Task currentWorkerTask;
         private readonly Queue<Action> queue = new Queue<Action>();
+        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
         public bool TaskRunning
         {
             get { return (currentWorkerTask != null); }
+        }
+
+        public TaskManager() : this(new UnhandledExceptionPolicy())
+        { }
+
+        public TaskManager(IUnhandledExceptionPolicy unhandledExceptionPolicy)
+        {
+            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
         }
 
         public void StartTask(Action action)
@@ -50,7 +59,7 @@ namespace Gallio.Icarus
                 if (!workerTask.IsAborted)
                 {
                     if (workerTask.Result.Exception != null && !(workerTask.Result.Exception is OperationCanceledException))
-                        UnhandledExceptionPolicy.Report("An exception occurred in a background task.",
+                        unhandledExceptionPolicy.Report("An exception occurred in a background task.",
                             currentWorkerTask.Result.Exception);
                 }
 

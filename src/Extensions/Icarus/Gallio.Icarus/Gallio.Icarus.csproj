@@ -312,7 +312,9 @@
     <Compile Include="Utilities\EncryptionUtil.cs" />
     <Compile Include="Utilities\FileSystem.cs" />
     <Compile Include="Utilities\IFileSystem.cs" />
+    <Compile Include="Utilities\IUnhandledExceptionPolicy.cs" />
     <Compile Include="Utilities\IXmlSerialization.cs" />
+    <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
     <Compile Include="Utilities\XmlSerialization.cs" />
   </ItemGroup>
   <ItemGroup>
