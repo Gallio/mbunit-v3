@@ -277,8 +277,19 @@ namespace Gallio.Runner.Reports
                 return;
 
             testCount += 1;
+            AddOutcome(testStepRun.Result.Outcome);
+        }
 
-            TestOutcome outcome = testStepRun.Result.Outcome;
+        /// <summary>
+        /// Updates the test outcome statistics counters with an the outcome of a test.
+        /// </summary>
+        /// <remarks>
+        /// Does not update the test or step count.
+        /// </remarks>
+        /// <param name="outcome">The test outcome</param>
+        public void AddOutcome(TestOutcome outcome)
+        {
+
             switch (outcome.Status)
             {
                 case TestStatus.Skipped:

@@ -19,6 +19,9 @@ using System.Diagnostics;
 using Gallio.Concurrency;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Logging;
+using Gallio.Model.Serialization;
+using Gallio.Reflection;
 using Gallio.Runner.Drivers;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
@@ -26,6 +29,7 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Utilities;
 
 namespace Gallio.Runner
 {
@@ -420,7 +424,17 @@ namespace Gallio.Runner
             {
                 Report.Write(report =>
                 {
-                    report.TestModel = testDriver.Explore(options, subProgressMonitor);
+                    try
+                    {
+                        report.TestModel = testDriver.Explore(options, subProgressMonitor);
+                    }
+                    catch (Exception ex)
+                    {
+                        report.TestModel = new TestModelData(new TestData(new RootTest()));
+
+                        report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error, CodeLocation.Unknown, CodeReference.Unknown,
+                            "Failed to explore the tests.", ExceptionUtils.SafeToString(ex)));
+                    }
                 });
             }
         }
@@ -444,6 +458,20 @@ namespace Gallio.Runner
                 {
                     RunTestDomains(options, listener, progressMonitor, totalWork);
                 }
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogSeverity.Error, "*** A fatal error occurred during test execution! ***\n\n"
+                            + "Test results may be missing or inaccurate.\n\n"
+                            + "This error may be caused by an unrecoverable failure of the test process.  "
+                            + "For example, the most recently executed test may have encountered a StackOverflowException "
+                            + "and been forcibly terminated by the runtime.  To pinpoint the problem, try running the "
+                            + "tests again with the debugger attached.", ex);
+
+                Report.Write(report =>
+                {
+                    report.TestPackageRun.Statistics.AddOutcome(TestOutcome.Error);
+                });
             }
             finally
             {

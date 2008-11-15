@@ -101,7 +101,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static Exception Throws(Type expectedExceptionType, Action action)
         {
-            return Throws(expectedExceptionType, action);
+            return Throws(expectedExceptionType, action, null);
         }
 
         /// <summary>
