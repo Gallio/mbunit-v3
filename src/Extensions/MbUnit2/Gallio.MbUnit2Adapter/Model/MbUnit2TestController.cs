@@ -454,9 +454,7 @@ namespace Gallio.MbUnit2Adapter.Model
                     }
                     if (reportRun.Exception != null)
                     {
-                        ReportException ex = reportRun.Exception;
-                        testContext.LogWriter.Failures.WriteException(
-                            new ExceptionData(ex.Type ?? "", ex.Message ?? "", ex.StackTrace ?? "", null), "Exception");
+                        testContext.LogWriter.Failures.WriteException(GetExceptionDataFromReportException(reportRun.Exception), "Exception");
                     }
 
                     // Finish up...
@@ -509,6 +507,12 @@ namespace Gallio.MbUnit2Adapter.Model
                     default:
                         throw new ArgumentException("Unsupported report run result.", "reportRunResult");
                 }
+            }
+
+            private static ExceptionData GetExceptionDataFromReportException(ReportException ex)
+            {
+                return new ExceptionData(ex.Type ?? "", ex.Message ?? "", ex.StackTrace ?? "",
+                    ex.Exception != null ? GetExceptionDataFromReportException(ex.Exception) : null);
             }
         }
     }

@@ -117,9 +117,14 @@ namespace Gallio.UI
             return Path.Combine(FileUtils.EncodeFileName(stepId), FileUtils.EncodeFileName(attachmentName));
         }
 
-        private static string PrintTextWithBreaks(string text)
+        private static string HtmlEncodeWithLineBreaks(string text)
         {
-            return text.Replace("\r", "").Replace("\n", "<br />");
+            return HtmlEncode(text).Replace("\r", "").Replace("\n", "<br />");
+        }
+
+        public static string HtmlEncode(string str)
+        {
+            return str.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
         }
 
         private sealed class TestStepReportWriter
@@ -174,7 +179,7 @@ namespace Gallio.UI
             private void RenderNavigator(Statistics statistics, IEnumerable<TestStepRun> rootRuns)
             {
                 writer.Write("<div id=\"Navigator\" class=\"navigator\">");
-                writer.Write(string.Format("<a href=\"#\" title=\"{0}\" class=\"navigator-box {1}\"></a>", statistics.FormatTestCaseResultSummary(), StatusFromStatistics(statistics)));
+                writer.Write(string.Format("<a href=\"#Details\" title=\"{0}\" class=\"navigator-box {1}\"></a>", statistics.FormatTestCaseResultSummary(), StatusFromStatistics(statistics)));
                 writer.Write("<div class=\"navigator-stripes\">");
 
                 int count = 0;
@@ -193,7 +198,7 @@ namespace Gallio.UI
 
                     writer.Write(string.Format("<a href=\"#testStepRun-{0}\" style=\"top: {1}%\"", testStepRun.Step.Id, position));
                     string status = Enum.GetName(typeof(TestStatus), testStepRun.Result.Outcome.Status).ToLower();
-                    writer.Write(string.Format(" class=\"status-{0}\" title=\"{1} {0}\"></a>", status, testStepRun.Step.Name));
+                    writer.Write(string.Format(" class=\"status-{0}\" title=\"{1} {0}\"></a>", status, HtmlEncode(testStepRun.Step.Name)));
                 }
 
                 writer.Write("</div></div>");
@@ -217,7 +222,7 @@ namespace Gallio.UI
 
                 writer.Write(string.Format("<li id=\"testStepRun-{0}\">", testStepRun.Step.Id));
                 writer.Write(string.Format("<span class=\"testStepRunHeading testStepRunHeading-Level{0}\"><b>{1}</b>",
-                    nestingLevel, PrintTextWithBreaks(testStepRun.Step.Name)));
+                    nestingLevel, HtmlEncode(testStepRun.Step.Name)));
                 RenderOutcomeBar(testStepRun.Result.Outcome, statistics, (testStepRun.Children.Count == 0));
                 writer.Write("</span>");
 
@@ -230,14 +235,14 @@ namespace Gallio.UI
                     writer.Write("<td class=\"statistics-label-cell\">Results:</td><td>");
                     writer.Write(FormatStatistics(statistics));
                     writer.Write("</td></tr><tr><td class=\"statistics-label-cell\">Duration:</td><td>");
-                    writer.Write(String.Format("{0}s", statistics.Duration));
+                    writer.Write(String.Format("{0:0.000}s", statistics.Duration));
                     writer.Write(String.Format("</td></tr><tr class=\"alternate-row\"><td class=\"statistics-label-cell\">Assertions:</td><td>{0}",
                         statistics.AssertCount));
                     writer.Write("</td></tr></table>");
                 }
                 else
                 {
-                    writer.Write(String.Format("Duration: {0}s, Assertions: {1}.", statistics.Duration,
+                    writer.Write(String.Format("Duration: {0:0.000}s, Assertions: {1}.", statistics.Duration,
                         statistics.AssertCount));
                 }
 
@@ -275,7 +280,7 @@ namespace Gallio.UI
                 if (small)
                     writer.Write(" condensed");
                 string title = testOutcome.Category ?? status;
-                writer.Write(string.Format("\" title=\"{0}\" /></td></tr></table>", title));
+                writer.Write(string.Format("\" title=\"{0}\" /></td></tr></table>", HtmlEncode(title)));
 
                 if (small)
                     return;
@@ -304,10 +309,10 @@ namespace Gallio.UI
 
             private void RenderMetadataValues(string key, IList<string> values)
             {
-                writer.Write(String.Format("<li>{0}: ", PrintTextWithBreaks(key)));
+                writer.Write(String.Format("<li>{0}: ", HtmlEncodeWithLineBreaks(key)));
                 for (int i = 0; i < values.Count; i++)
                 {
-                    writer.Write(values[i]);
+                    writer.Write(HtmlEncodeWithLineBreaks(values[i]));
                     if (i < (values.Count - 1))
                         writer.Write(",");
                 }
@@ -320,9 +325,9 @@ namespace Gallio.UI
 
                 foreach (StructuredTestLogStream executionLogStream in testStepRun.TestLog.Streams)
                 {
-                    writer.Write(String.Format("<div class=\"logStream logStream-{0}\">", executionLogStream.Name));
+                    writer.Write(String.Format("<div class=\"logStream logStream-{0}\">", HtmlEncode(executionLogStream.Name)));
                     writer.Write(String.Format("<span class=\"logStreamHeading\"><xsl:value-of select=\"{0}\" /></span>",
-                        executionLogStream.Name));
+                        HtmlEncode(executionLogStream.Name)));
                     writer.Write("<div class=\"logStreamBody\">");
 
                     executionLogStream.Body.Accept(new RenderTagVisitor(formatter, writer, testStepRun));
@@ -343,7 +348,7 @@ namespace Gallio.UI
                 {
                     AttachmentData attachmentData = testStepRun.TestLog.Attachments[i];
                     string src = formatter.GetAttachmentFileInfo(testStepRun.Step.Id, attachmentData.Name).FullName;
-                    writer.Write(String.Format("<a href=\"{0}\">{1}</a>", src, attachmentData.Name));
+                    writer.Write(String.Format("<a href=\"{0}\">{1}</a>", HtmlEncode(src), HtmlEncode(attachmentData.Name)));
                     if (i < (testStepRun.TestLog.Attachments.Count - 1))
                         writer.Write(", ");
                 }
@@ -405,7 +410,7 @@ namespace Gallio.UI
 
             public void VisitSectionTag(SectionTag tag)
             {
-                writer.Write(String.Format("<div class=\"logStreamSection\"><span class=\"logStreamSectionHeading\">{0}</span><div>", tag.Name));
+                writer.Write(String.Format("<div class=\"logStreamSection\"><span class=\"logStreamSectionHeading\">{0}</span><div>", HtmlEncode(tag.Name)));
 
                 tag.AcceptContents(this);
 
@@ -415,7 +420,7 @@ namespace Gallio.UI
             public void VisitMarkerTag(MarkerTag tag)
             {
                 writer.Write("<span class=\"");
-                writer.Write(tag.Class);
+                writer.Write(HtmlEncode(tag.Class));
                 writer.Write("\">");
 
                 switch (tag.Class)
@@ -447,7 +452,7 @@ namespace Gallio.UI
                 if (path != null)
                 {
                     writer.Write("<a href=\"gallio:navigateTo?path=");
-                    writer.Write(path);
+                    writer.Write(HtmlEncode(path));
 
                     if (line != null)
                     {
@@ -480,7 +485,7 @@ namespace Gallio.UI
                 if (url != null)
                 {
                     writer.Write("<a href=\"");
-                    writer.Write(url);
+                    writer.Write(HtmlEncode(url));
                     writer.Write("\">");
                     tag.AcceptContents(this);
                     writer.Write("</a>");
@@ -501,17 +506,17 @@ namespace Gallio.UI
 
                 if (attachment.ContentType.StartsWith("image/"))
                 {
-                    writer.Write(String.Format("<div class=\"logAttachmentEmbedding\"><img src=\"{0}\" alt=\"Attachment: {1}\" /></div>", src, attachment.Name));
+                    writer.Write(String.Format("<div class=\"logAttachmentEmbedding\"><img src=\"{0}\" alt=\"Attachment: {1}\" /></div>", HtmlEncode(src), HtmlEncode(attachment.Name)));
                 }
                 else
                 {
-                    writer.Write(String.Format("Attachment: <a href=\"{0}\">{1}</a>", src, attachment.Name));
+                    writer.Write(String.Format("Attachment: <a href=\"{0}\">{1}</a>", HtmlEncode(src), HtmlEncode(attachment.Name)));
                 }
             }
 
             public void VisitTextTag(TextTag tag)
             {
-                writer.Write(PrintTextWithBreaks(tag.Text));
+                writer.Write(HtmlEncodeWithLineBreaks(tag.Text));
             }
         }
     }

@@ -92,7 +92,7 @@ namespace Gallio.Loader
             this.runtimePath = runtimePath;
 
             gallioAssembly = LoadGallioAssembly();
-            bootstrapType = gallioAssembly.GetType(GallioLoaderBootstrapTypeFullName);
+            bootstrapType = gallioAssembly.GetType(GallioLoaderBootstrapTypeFullName, true);
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace Gallio.Loader
         /// <inheritdoc />
         public void SetupRuntime()
         {
-            MethodInfo method = bootstrapType.GetMethod(BootstrapSetupRuntimeMethodName);
+            MethodInfo method = GetBootstrapMethod(BootstrapSetupRuntimeMethodName);
             method.Invoke(null, new object[] { runtimePath });
         }
 
@@ -266,7 +266,7 @@ namespace Gallio.Loader
 
             try
             {
-                MethodInfo method = bootstrapType.GetMethod(BootstrapAddHintDirectoryMethodName);
+                MethodInfo method = GetBootstrapMethod(BootstrapAddHintDirectoryMethodName);
                 method.Invoke(null, new object[] { path });
             }
             catch (Exception ex)
@@ -289,7 +289,7 @@ namespace Gallio.Loader
 
             try
             {
-                MethodInfo method = bootstrapType.GetMethod(BootstrapResolveMethodName);
+                MethodInfo method = GetBootstrapMethod(BootstrapResolveMethodName);
                 return method.Invoke(null, new object[] { serviceType });
             }
             catch (Exception ex)
@@ -306,7 +306,7 @@ namespace Gallio.Loader
 
         private void InstallAssemblyResolver()
         {
-            MethodInfo method = bootstrapType.GetMethod(BootstrapInstallAssemblyResolverMethodName);
+            MethodInfo method = GetBootstrapMethod(BootstrapInstallAssemblyResolverMethodName);
             method.Invoke(null, new object[] { runtimePath });
         }
 
@@ -320,6 +320,14 @@ namespace Gallio.Loader
             {
                 return Assembly.LoadFrom(GetGallioDllPath(runtimePath));
             }
+        }
+
+        private MethodInfo GetBootstrapMethod(string methodName)
+        {
+            MethodInfo method = bootstrapType.GetMethod(methodName);
+            if (method == null)
+                throw new InvalidOperationException(String.Format("Could not resolve method '{0}' on bootstrap type.", methodName));
+            return method;
         }
 
         private static string FindRuntimePath()
