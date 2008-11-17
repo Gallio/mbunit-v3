@@ -118,17 +118,6 @@ namespace Gallio.TeamCityIntegration.Tests
         }
 
         [Test]
-        public void TestStepStarted_NonPrimary()
-        {
-            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(
-                new Report(),
-                new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = false })));
-
-            Assert.AreEqual("", log.ToString());
-        }
-
-        [Test]
         public void TestStepStarted_Root()
         {
             dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(
@@ -137,6 +126,28 @@ namespace Gallio.TeamCityIntegration.Tests
                 new TestStepRun(new TestStepData("id", "root", "", "id") { IsPrimary = true })));
 
             Assert.AreEqual("", log.ToString());
+        }
+
+        [Test]
+        public void TestStepStarted_NonPrimaryNonTestCase()
+        {
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(
+                new Report(),
+                new TestData("id", "testName", "testFullName"),
+                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = false, IsTestCase = false })));
+
+            Assert.AreEqual("", log.ToString());
+        }
+
+        [Test]
+        public void TestStepStarted_NonPrimaryTestCase()
+        {
+            dispatcher.NotifyTestStepStarted(new TestStepStartedEventArgs(
+                new Report(),
+                new TestData("id", "testName", "testFullName"),
+                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = false, IsTestCase = true })));
+
+            Assert.AreEqual("##teamcity[testStarted name='stepFullName' captureStandardOutput=\'false\']\n", log.ToString());
         }
 
         [Test]
@@ -162,23 +173,23 @@ namespace Gallio.TeamCityIntegration.Tests
         }
 
         [Test]
-        public void TestStepFinished_NonPrimary()
-        {
-            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
-                new Report(),
-                new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = false })));
-
-            Assert.AreEqual("", log.ToString());
-        }
-
-        [Test]
         public void TestStepFinished_Root()
         {
             dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
                 new Report(),
                 new TestData("id", "root", "testFullName"),
                 new TestStepRun(new TestStepData("id", "root", "", "id") { IsPrimary = true })));
+
+            Assert.AreEqual("", log.ToString());
+        }
+
+        [Test]
+        public void TestStepFinished_NonPrimaryNonTestCase()
+        {
+            dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
+                new Report(),
+                new TestData("id", "testName", "testFullName"),
+                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = false, IsTestCase = false })));
 
             Assert.AreEqual("", log.ToString());
         }
@@ -195,12 +206,12 @@ namespace Gallio.TeamCityIntegration.Tests
         }
 
         [Test]
-        public void TestStepFinished_PrimaryTestCase_Passed()
+        public void TestStepFinished_TestCase_Passed([Column(true, false)] bool primary)
         {
             dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
                 new Report(),
                 new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = true }) {
+                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true }) {
                     Result = new TestResult() { Outcome = TestOutcome.Passed, Duration = 0.3 },
                     TestLog = ComprehensiveTestLog
                 }));
@@ -211,12 +222,12 @@ namespace Gallio.TeamCityIntegration.Tests
         }
 
         [Test]
-        public void TestStepFinished_PrimaryTestCase_Failed()
+        public void TestStepFinished_TestCase_Failed([Column(true, false)] bool primary)
         {
             dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
                 new Report(),
                 new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = true })
+                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
                 {
                     Result = new TestResult() { Outcome = new TestOutcome(TestStatus.Failed, "myError"), Duration = 0.3 },
                     TestLog = ComprehensiveTestLog
@@ -229,12 +240,12 @@ namespace Gallio.TeamCityIntegration.Tests
         }
 
         [Test]
-        public void TestStepFinished_PrimaryTestCase_Ignored()
+        public void TestStepFinished_TestCase_Ignored([Column(true, false)] bool primary)
         {
             dispatcher.NotifyTestStepFinished(new TestStepFinishedEventArgs(
                 new Report(),
                 new TestData("id", "testName", "testFullName"),
-                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = true, IsTestCase = true })
+                new TestStepRun(new TestStepData("id", "stepName", "stepFullName", "id") { IsPrimary = primary, IsTestCase = true })
                 {
                     Result = new TestResult() { Outcome = TestOutcome.Ignored, Duration = 0.3 },
                     TestLog = ComprehensiveTestLog

@@ -74,91 +74,85 @@ namespace Gallio.TeamCityIntegration
 
             Events.TestStepStarted += delegate(object sender, TestStepStartedEventArgs e)
             {
-                if (e.TestStepRun.Step.IsPrimary)
+                string name = e.TestStepRun.Step.FullName;
+                if (name.Length != 0)
                 {
-                    string name = e.TestStepRun.Step.FullName;
-                    if (name.Length != 0)
+                    if (e.TestStepRun.Step.IsTestCase)
                     {
-                        if (e.TestStepRun.Step.IsTestCase)
-                        {
-                            writer.WriteTestStarted(name, false);
-                        }
-                        else
-                        {
-                            writer.WriteTestSuiteStarted(name);
-                        }
+                        writer.WriteTestStarted(name, false);
+                    }
+                    else if (e.TestStepRun.Step.IsPrimary)
+                    {
+                        writer.WriteTestSuiteStarted(name);
                     }
                 }
             };
 
             Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
             {
-                if (e.TestStepRun.Step.IsPrimary)
+                string name = e.TestStepRun.Step.FullName;
+                if (name.Length != 0)
                 {
-                    string name = e.TestStepRun.Step.FullName;
-                    if (name.Length != 0)
+                    if (e.TestStepRun.Step.IsTestCase)
                     {
-                        if (e.TestStepRun.Step.IsTestCase)
+                        TestOutcome outcome = e.TestStepRun.Result.Outcome;
+
+                        var outputText = new StringBuilder();
+                        var errorText = new StringBuilder();
+                        var warningText = new StringBuilder();
+                        var failureText = new StringBuilder();
+
+                        foreach (StructuredTestLogStream stream in e.TestStepRun.TestLog.Streams)
                         {
-                            TestOutcome outcome = e.TestStepRun.Result.Outcome;
-
-                            var outputText = new StringBuilder();
-                            var errorText = new StringBuilder();
-                            var warningText = new StringBuilder();
-                            var failureText = new StringBuilder();
-
-                            foreach (StructuredTestLogStream stream in e.TestStepRun.TestLog.Streams)
+                            switch (stream.Name)
                             {
-                                switch (stream.Name)
-                                {
-                                    default:
-                                    case TestLogStreamNames.ConsoleInput:
-                                    case TestLogStreamNames.ConsoleOutput:
-                                    case TestLogStreamNames.DebugTrace:
-                                    case TestLogStreamNames.Default:
-                                        AppendWithSeparator(outputText, stream.ToString());
-                                        break;
+                                default:
+                                case TestLogStreamNames.ConsoleInput:
+                                case TestLogStreamNames.ConsoleOutput:
+                                case TestLogStreamNames.DebugTrace:
+                                case TestLogStreamNames.Default:
+                                    AppendWithSeparator(outputText, stream.ToString());
+                                    break;
 
-                                    case TestLogStreamNames.ConsoleError:
-                                        AppendWithSeparator(errorText, stream.ToString());
-                                        break;
+                                case TestLogStreamNames.ConsoleError:
+                                    AppendWithSeparator(errorText, stream.ToString());
+                                    break;
 
-                                    case TestLogStreamNames.Failures:
-                                        AppendWithSeparator(failureText, stream.ToString());
-                                        break;
+                                case TestLogStreamNames.Failures:
+                                    AppendWithSeparator(failureText, stream.ToString());
+                                    break;
 
-                                    case TestLogStreamNames.Warnings:
-                                        AppendWithSeparator(warningText, stream.ToString());
-                                        break;
-                                }
+                                case TestLogStreamNames.Warnings:
+                                    AppendWithSeparator(warningText, stream.ToString());
+                                    break;
                             }
-
-                            if (outcome.Status != TestStatus.Skipped && warningText.Length != 0)
-                                AppendWithSeparator(errorText, warningText.ToString());
-                            if (outcome.Status != TestStatus.Failed && failureText.Length != 0)
-                                AppendWithSeparator(errorText, failureText.ToString());
-
-                            if (outputText.Length != 0)
-                                writer.WriteTestStdOut(name, outputText.ToString());
-                            if (errorText.Length != 0)
-                                writer.WriteTestStdErr(name, errorText.ToString());
-
-                            // TODO: Handle inconclusive.
-                            if (outcome.Status == TestStatus.Failed)
-                            {
-                                writer.WriteTestFailed(name, outcome.ToString(), failureText.ToString());
-                            }
-                            else if (outcome.Status == TestStatus.Skipped)
-                            {
-                                writer.WriteTestIgnored(name, warningText.ToString());
-                            }
-
-                            writer.WriteTestFinished(name, TimeSpan.FromSeconds(e.TestStepRun.Result.Duration));
                         }
-                        else
+
+                        if (outcome.Status != TestStatus.Skipped && warningText.Length != 0)
+                            AppendWithSeparator(errorText, warningText.ToString());
+                        if (outcome.Status != TestStatus.Failed && failureText.Length != 0)
+                            AppendWithSeparator(errorText, failureText.ToString());
+
+                        if (outputText.Length != 0)
+                            writer.WriteTestStdOut(name, outputText.ToString());
+                        if (errorText.Length != 0)
+                            writer.WriteTestStdErr(name, errorText.ToString());
+
+                        // TODO: Handle inconclusive.
+                        if (outcome.Status == TestStatus.Failed)
                         {
-                            writer.WriteTestSuiteFinished(name);
+                            writer.WriteTestFailed(name, outcome.ToString(), failureText.ToString());
                         }
+                        else if (outcome.Status == TestStatus.Skipped)
+                        {
+                            writer.WriteTestIgnored(name, warningText.ToString());
+                        }
+
+                        writer.WriteTestFinished(name, TimeSpan.FromSeconds(e.TestStepRun.Result.Duration));
+                    }
+                    else if (e.TestStepRun.Step.IsPrimary)
+                    {
+                        writer.WriteTestSuiteFinished(name);
                     }
                 }
             };
