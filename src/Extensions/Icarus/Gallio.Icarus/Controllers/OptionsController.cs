@@ -19,20 +19,29 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner;
+using Gallio.Runtime;
 using Gallio.Utilities;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
+using UnhandledExceptionPolicy=Gallio.Icarus.Utilities.UnhandledExceptionPolicy;
 
 namespace Gallio.Icarus.Controllers
 {
+    // TODO: This type should be refactored to separate the settings from the data required by
+    //       the controller.  We have a problem where we need an OptionsController to get the
+    //       plugin directories to initialize the runtime, but then we cannot provide the
+    //       test runner manager until the runtime has been initialized.  Moreover, there's no
+    //       reason we couldn't change the runner type at runtime.
     public sealed class OptionsController : IOptionsController
     {
         private Settings settings;
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerialization xmlSerialization;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
+        private ITestRunnerManager testRunnerManager;
 
         private readonly BindingList<string> pluginDirectories;
         private readonly BindingList<string> selectedTreeViewCategories;
@@ -73,10 +82,7 @@ namespace Gallio.Icarus.Controllers
         {
             get
             {
-                List<string> items = new List<string>();
-                foreach (FieldInfo fi in typeof(StandardTestRunnerFactoryNames).GetFields())
-                    items.Add(fi.Name);
-                return items.ToArray();
+                return GenericUtils.ToArray(testRunnerManager.GetFactoryNames());
             }
         }
 
@@ -119,11 +125,7 @@ namespace Gallio.Icarus.Controllers
             set { settings.SkippedColor = value.ToArgb(); }
         }
 
-        private OptionsController() : this(new FileSystem(), new XmlSerialization(), 
-            new UnhandledExceptionPolicy())
-        { }
-
-        internal OptionsController(IFileSystem fileSystem, IXmlSerialization xmlSerialization, 
+        public OptionsController(IFileSystem fileSystem, IXmlSerialization xmlSerialization,
             IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
             this.fileSystem = fileSystem;
@@ -137,17 +139,9 @@ namespace Gallio.Icarus.Controllers
             unselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
         }
 
-        internal static OptionsController Instance
+        public void SetTestRunnerManager(ITestRunnerManager testRunnerManager)
         {
-            get { return Nested.instance; }
-        }
-
-        private class Nested
-        {
-            static Nested()
-            { }
-
-            internal static readonly OptionsController instance = new OptionsController();
+            this.testRunnerManager = testRunnerManager;
         }
 
         private void Load()

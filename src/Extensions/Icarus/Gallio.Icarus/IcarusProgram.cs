@@ -62,14 +62,15 @@ namespace Gallio.Icarus
 
             RuntimeLogController runtimeLogController = new RuntimeLogController();
 
-            IOptionsController optionsController = OptionsController.Instance;
-
             RuntimeSetup runtimeSetup = new RuntimeSetup
             {
                 RuntimePath =
                     Path.GetDirectoryName(
                     AssemblyUtils.GetFriendlyAssemblyLocation(typeof (IcarusProgram).Assembly))
             };
+
+            OptionsController optionsController = new OptionsController(new FileSystem(), new XmlSerialization(),
+                new Utilities.UnhandledExceptionPolicy());
 
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
@@ -78,7 +79,11 @@ namespace Gallio.Icarus
             
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                ITestRunner testRunner = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>().CreateTestRunner(
+                IRuntime runtime = RuntimeAccessor.Instance;
+
+                optionsController.SetTestRunnerManager(runtime.Resolve<ITestRunnerManager>());
+
+                ITestRunner testRunner = runtime.Resolve<ITestRunnerManager>().CreateTestRunner(
                     optionsController.TestRunnerFactory);
                 ITestRunnerService testRunnerService = new TestRunnerService(testRunner);
                 

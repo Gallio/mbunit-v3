@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using Gallio.Runtime;
 
@@ -46,12 +47,24 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public ITestRunner CreateTestRunner(string factoryName)
+        public IList<string> GetFactoryNames()
+        {
+            return factoryResolver.GetNames();
+        }
+
+        /// <inheritdoc />
+        public ITestRunnerFactory GetFactory(string factoryName)
         {
             if (factoryName == null)
                 throw new ArgumentNullException(@"factoryName");
 
-            ITestRunnerFactory factory = FactoryResolver.Resolve(factoryName);
+            return factoryResolver.Resolve(factoryName);
+        }
+
+        /// <inheritdoc />
+        public ITestRunner CreateTestRunner(string factoryName)
+        {
+            ITestRunnerFactory factory = GetFactory(factoryName);
             if (factory == null)
                 throw new InvalidOperationException(String.Format("There is no test runner factory named '{0}'.", factoryName));
 

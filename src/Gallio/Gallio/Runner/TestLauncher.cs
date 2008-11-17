@@ -485,7 +485,7 @@ namespace Gallio.Runner
                 return CreateResult(ResultCode.InvalidArguments);
 
             ITestRunnerManager manager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
-            ITestRunnerFactory factory = manager.FactoryResolver.Resolve(testRunnerFactoryName);
+            ITestRunnerFactory factory = manager.GetFactory(testRunnerFactoryName);
             if (factory == null)
             {
                 logger.Log(LogSeverity.Error, String.Format("Unrecognized test runner factory name: '{0}'.", testRunnerFactoryName));

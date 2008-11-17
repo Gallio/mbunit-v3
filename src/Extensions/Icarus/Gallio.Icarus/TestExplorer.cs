@@ -36,6 +36,8 @@ namespace Gallio.Icarus
 
             InitializeComponent();
 
+            testTree.OptionsController = mediator.OptionsController;
+
             if (treeViewComboBox.ComboBox != null)
             {
                 updateFlag = true;

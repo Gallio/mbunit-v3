@@ -78,24 +78,27 @@ namespace Gallio.Icarus.Controls
             NodeControls.Add(nodeTextBox);
         }
 
-        private static void nodeTextBox_DrawText(object sender, DrawEventArgs e)
+        public IOptionsController OptionsController { get; set; }
+
+        private void nodeTextBox_DrawText(object sender, DrawEventArgs e)
         {
-            IOptionsController optionsController = OptionsController.Instance;
+            if (OptionsController == null)
+                return;
 
             TestTreeNode node = (TestTreeNode)e.Node.Tag;
             switch (node.TestStatus)
             {
                 case TestStatus.Passed:
-                    e.TextColor = optionsController.PassedColor;
+                    e.TextColor = OptionsController.PassedColor;
                     break;
                 case TestStatus.Failed:
-                    e.TextColor = optionsController.FailedColor;
+                    e.TextColor = OptionsController.FailedColor;
                     break;
                 case TestStatus.Skipped:
-                    e.TextColor = optionsController.SkippedColor;
+                    e.TextColor = OptionsController.SkippedColor;
                     break;
                 case TestStatus.Inconclusive:
-                    e.TextColor = optionsController.InconclusiveColor;
+                    e.TextColor = OptionsController.InconclusiveColor;
                     break;
             }
         }

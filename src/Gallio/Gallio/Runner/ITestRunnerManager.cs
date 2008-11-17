@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Runtime;
 
 namespace Gallio.Runner
@@ -30,6 +31,20 @@ namespace Gallio.Runner
         /// <see cref="ITestRunnerFactory" /> components by name.
         /// </summary>
         IRegisteredComponentResolver<ITestRunnerFactory> FactoryResolver { get; }
+
+        /// <summary>
+        /// Gets the names of all supported test runner factories.
+        /// </summary>
+        /// <returns>The names of all runner factories</returns>
+        IList<string> GetFactoryNames();
+
+        /// <summary>
+        /// Gets the factory by name, or null if none.
+        /// </summary>
+        /// <param name="factoryName">The name of the test runner factory, matched case-insensitively</param>
+        /// <returns>The test runner</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryName"/> is null</exception>
+        ITestRunnerFactory GetFactory(string factoryName);
 
         /// <summary>
         /// Creates a test runner.

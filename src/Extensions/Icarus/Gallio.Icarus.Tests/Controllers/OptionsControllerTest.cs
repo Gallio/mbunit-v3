@@ -28,10 +28,11 @@ namespace Gallio.Icarus.Tests.Controllers
 {
     class OptionsControllerTest
     {
-        private OptionsController optionsController = null;
-        private IFileSystem fileSystem = null;
-        private IXmlSerialization xmlSerialization = null;
-        private IUnhandledExceptionPolicy unhandledExceptionPolicy = null;
+        private OptionsController optionsController;
+        private IFileSystem fileSystem;
+        private IXmlSerialization xmlSerialization;
+        private IUnhandledExceptionPolicy unhandledExceptionPolicy;
+        private ITestRunnerManager testRunnerManager;
 
         [SetUp]
         public void SetUp()
@@ -39,9 +40,14 @@ namespace Gallio.Icarus.Tests.Controllers
             fileSystem = MockRepository.GenerateStub<IFileSystem>();
             xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
             unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            testRunnerManager = MockRepository.GenerateStub<ITestRunnerManager>();
+
             fileSystem.Stub(x => x.FileExists(Paths.SettingsFile)).Return(true);
             xmlSerialization.Stub(x => x.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings());
+            testRunnerManager.Stub(x => x.GetFactoryNames()).Return(new[] { "Local", "IsolatedAppDomain", "IsolatedProcess" });
+
             optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
+            optionsController.SetTestRunnerManager(testRunnerManager);
         }
 
         [Test]
