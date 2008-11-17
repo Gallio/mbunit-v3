@@ -51,7 +51,7 @@
                 <Environment Id="Gallio.Path" Name="Path" Value="[INSTALLDIR]bin" Action="set" Part="last" Separator=";" />
 		
                 <!-- Unregister development keys -->
-                <RemoveRegistryValue HKLM="HKLM" Key="SOFTWARE\Gallio.org\Gallio\3.0" Name="DevelopmentRuntimePath"/>
+                <RemoveRegistryValue Root="HKLM" Key="SOFTWARE\Gallio.org\Gallio\3.0" Name="DevelopmentRuntimePath"/>
             </Component>
         </DirectoryRef>
 
