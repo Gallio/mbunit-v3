@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <OldVersion Include="3.0.0.285" />
+    <OldVersion Include="3.0.4.485" />
 
     <LibCheckDependency Include="$(SourceDir)\Extensions\NAnt\libs\NAnt.Core.dll" />
     <LibCheckDependency Include="$(SourceDir)\Extensions\TDNet\libs\TestDriven.Framework.dll" /> <!-- This is really bogus because we don't even want to analyze this assembly.  Problem is that LibCheck doesn't filter by assembly, it filters by module after it has actually loaded each assembly first -->
