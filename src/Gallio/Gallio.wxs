@@ -37,6 +37,7 @@
                     <RegistryKey Key="3.0" Action="createAndRemoveOnUninstall">
                         <RegistryValue Type="string" Name="Version" Value="[ProductVersion]"/>
                         <RegistryValue Type="string" Name="InstallationFolder" Value="[INSTALLDIR]"/>
+                        <RegistryValue Name="DevelopmentRuntimePath" Action="remove"/>
                         <RegistryKey Key="AdditionalPluginDirectories" Action="createAndRemoveOnUninstall"/>
                     </RegistryKey>
                 </RegistryKey>
