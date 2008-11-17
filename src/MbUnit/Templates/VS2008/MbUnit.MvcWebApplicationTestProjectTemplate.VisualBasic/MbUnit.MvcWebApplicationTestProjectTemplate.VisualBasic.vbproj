@@ -38,7 +38,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Gallio" />
+    <Reference Include="Gallio35" />
     <Reference Include="MbUnit" />
+    <Reference Include="MbUnit35" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
