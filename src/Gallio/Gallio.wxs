@@ -37,7 +37,6 @@
                     <RegistryKey Key="3.0" Action="createAndRemoveOnUninstall">
                         <RegistryValue Type="string" Name="Version" Value="[ProductVersion]"/>
                         <RegistryValue Type="string" Name="InstallationFolder" Value="[INSTALLDIR]"/>
-                        <RegistryValue Name="DevelopmentRuntimePath" Action="remove"/>
                         <RegistryKey Key="AdditionalPluginDirectories" Action="createAndRemoveOnUninstall"/>
                     </RegistryKey>
                 </RegistryKey>
@@ -50,6 +49,9 @@
 
                 <!-- Add the Gallio bin folder to the path -->
                 <Environment Id="Gallio.Path" Name="Path" Value="[INSTALLDIR]bin" Action="set" Part="last" Separator=";" />
+		
+                <!-- Unregister development keys -->
+                <RemoveRegistryValue HKLM="HKLM" Key="SOFTWARE\Gallio.org\Gallio\3.0" Name="DevelopmentRuntimePath"/>
             </Component>
         </DirectoryRef>
 
