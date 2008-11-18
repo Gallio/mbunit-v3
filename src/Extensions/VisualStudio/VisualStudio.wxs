@@ -13,6 +13,17 @@
         <PropertyRef Id='VS100_ROOT_FOLDER'/>
 
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
+            <Directory Id="VS90_ROOT_FOLDER">
+                <Directory Id="VS90.Common7" Name="Common7">
+                    <Directory Id="VS90.Common7.IDE" Name="IDE" />
+                </Directory>
+            </Directory>
+            <Directory Id="VS100_ROOT_FOLDER">
+                <Directory Id="VS100.Common7" Name="Common7">
+                    <Directory Id="VS100.Common7.IDE" Name="IDE" />
+                </Directory>
+            </Directory>
+
             <Directory Id="VisualStudio" Name="VisualStudio">
                 <Component Id="Gallio.VisualStudio.Interop.dll" Guid="{56E419A9-B033-4115-9BA5-D21137D6F052}" Win64="no">
                     <File Name="Gallio.VisualStudio.Interop.dll" KeyPath="yes" 
@@ -66,13 +77,7 @@
                     </RegistryKey>
 
                     <!-- Remove a file created by the VSIP SDK that prevents the splash screen from being updated correctly. -->
-                    <Directory Id="VS90_ROOT_FOLDER">
-                        <Directory Id="VS90.Common7">
-                            <Directory Id="VS90.Common7.IDE">
-                                <RemoveFile Id="Gallio.VisualStudio.Shell.VS90.SplashFix" On="both" Name="vs000223.dat" />
-                            </Directory>
-                        </Directory>
-                    </Directory>
+                    <RemoveFile Id="Gallio.VisualStudio.Shell.VS90.SplashFix" On="both" Name="vs000223.dat" Directory="VS90.Common7.IDE" />
                 </Component>
 <?endif?>
 
@@ -111,13 +116,7 @@
                     </RegistryKey>
 
                     <!-- Remove a file created by the VSIP SDK that prevents the splash screen from being updated correctly. -->
-                    <Directory Id="VS100_ROOT_FOLDER">
-                        <Directory Id="VS100.Common7">
-                            <Directory Id="VS100.Common7.IDE">
-                                <RemoveFile Id="Gallio.VisualStudio.Shell.VS100.SplashFix" On="both" Name="vs000223.dat" />
-                            </Directory>
-                        </Directory>
-                    </Directory>
+                    <RemoveFile Id="Gallio.VisualStudio.Shell.VS100.SplashFix" On="both" Name="vs000223.dat" Directory="VS100.Common7.IDE" />
                 </Component>
 <?endif?>
 

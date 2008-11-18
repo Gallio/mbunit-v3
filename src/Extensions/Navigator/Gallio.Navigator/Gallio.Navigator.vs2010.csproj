@@ -96,7 +96,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.vs2010.csproj">
       <Project>{B6912CC5-1E73-46E0-8F09-7F135924E3E2}</Project>
-      <Name>Gallio.VisualStudio.Interop</Name>
+      <Name>Gallio.VisualStudio.Interop.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

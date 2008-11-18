@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>10.0.11001</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{22DB6C17-5E90-42C8-9621-E8BAB32EB656}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -65,23 +65,23 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio35\Gallio35.vs2010.csproj">
       <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35</Name>
+      <Name>Gallio35.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\MbUnit\MbUnit35\MbUnit35.vs2010.csproj">
       <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
-      <Name>MbUnit35</Name>
+      <Name>MbUnit35.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\MbUnit\MbUnit\MbUnit.vs2010.csproj">
       <Project>{A9B54755-56B7-48C1-8941-BB69FCEFFF32}</Project>
-      <Name>MbUnit %28MbUnit\MbUnit%29</Name>
+      <Name>MbUnit.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gallio.Navigator\Gallio.Navigator.vs2010.csproj">
       <Project>{9863B9FA-1DE6-48D5-A84D-FB8FE2025303}</Project>
-      <Name>Gallio.Navigator</Name>
+      <Name>Gallio.Navigator.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

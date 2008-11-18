@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>10.0.11001</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3A5CA3C2-628D-4EAA-884B-95BB8C90C01C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -86,7 +86,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj">
       <Project>{67FB2969-E6BF-4754-91AA-B6075F8E67EE}</Project>
-      <Name>Gallio.Loader</Name>
+      <Name>Gallio.Loader.vs2010</Name>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

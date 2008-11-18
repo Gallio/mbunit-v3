@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>10.0.11001</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -75,6 +75,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.2.2939.18829, Culture=neutral, processorArchitecture=MSIL">
@@ -96,10 +97,12 @@
       <DependentUpon>CodeWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AnnotationsController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\ExecutionLogController.cs" />
     <Compile Include="Controllers\Interfaces\IAnnotationsController.cs" />
+    <Compile Include="Controllers\Interfaces\IErrorController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -137,6 +140,8 @@
     <Compile Include="Controls\ToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Mediator\Interfaces\IMediator.cs" />
+    <Compile Include="Mediator\Mediator.cs" />
     <Compile Include="Models\Interfaces\IProjectTreeModel.cs" />
     <Compile Include="Controllers\Interfaces\IRuntimeLogController.cs" />
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
@@ -296,15 +301,6 @@
     <None Include="Gallio.Icarus.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\TestRunnerService.cs" />
     <Compile Include="Settings.cs" />
@@ -321,15 +317,23 @@
       <DependentUpon>TestResults.cs</DependentUpon>
     </Compile>
     <Compile Include="TaskManager.cs" />
+    <Compile Include="UserOptions.cs" />
+    <Compile Include="Utilities\EncryptionUtil.cs" />
+    <Compile Include="Utilities\FileSystem.cs" />
+    <Compile Include="Utilities\IFileSystem.cs" />
+    <Compile Include="Utilities\IUnhandledExceptionPolicy.cs" />
+    <Compile Include="Utilities\IXmlSerialization.cs" />
+    <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
+    <Compile Include="Utilities\XmlSerialization.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.vs2010.csproj">
       <Project>{36B1F505-995B-41E7-AAC9-1E845B08F2D7}</Project>
-      <Name>Gallio.UI</Name>
+      <Name>Gallio.UI.vs2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -447,7 +451,6 @@
     <Content Include="Resources\Test.png" />
     <Content Include="Resources\text-x-python.png" />
     <Content Include="Resources\tick.png" />
-    <None Include="app.config" />
     <None Include="Resources\XmlFile.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

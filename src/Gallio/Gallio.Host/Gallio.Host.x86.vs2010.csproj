@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>10.0.11001</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{36C8287D-C6CD-472A-BA6B-81B1CFFD5B13}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -69,7 +69,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Gallio\Gallio.vs2010.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
-      <Name>Gallio %28Gallio\Gallio%29</Name>
+      <Name>Gallio.vs2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

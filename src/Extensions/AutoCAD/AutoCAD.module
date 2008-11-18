@@ -6,9 +6,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <CSharpProject Include="Gallio.AutoCAD\Gallio.AutoCAD.csproj" />
-    <CSharpProject Include="Gallio.AutoCAD.Plugin\Gallio.AutoCAD.Plugin.csproj" />
-    <CSharpProject Include="Gallio.AutoCAD.Tests\Gallio.AutoCAD.Tests.csproj" />
+    <CSharpProject Include="Gallio.AutoCAD\Gallio.AutoCAD$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.AutoCAD.Plugin\Gallio.AutoCAD.Plugin$(ProjectVariant).csproj" />
+    <CSharpProject Include="Gallio.AutoCAD.Tests\Gallio.AutoCAD.Tests$(ProjectVariant).csproj" />
     
     <Binary Include="Gallio.AutoCAD\bin\Gallio.AutoCAD.dll">
       <Folder>AutoCAD</Folder>

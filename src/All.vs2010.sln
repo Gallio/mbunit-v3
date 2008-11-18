@@ -80,167 +80,175 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Navigator", "Navigator", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ambience", "Ambience", "{ACA40816-EB16-49AB-8DCD-1C23A188BD57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo", "Extensions\Echo\Gallio.Echo\Gallio.Echo.vs2010.csproj", "{22AE34D9-185F-41A7-A48D-205BE68B1F7D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo.vs2010", "Extensions\Echo\Gallio.Echo\Gallio.Echo.vs2010.csproj", "{22AE34D9-185F-41A7-A48D-205BE68B1F7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus", "Extensions\Icarus\Gallio.Icarus\Gallio.Icarus.vs2010.csproj", "{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus.vs2010", "Extensions\Icarus\Gallio.Icarus\Gallio.Icarus.vs2010.csproj", "{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo.Tests", "Extensions\Echo\Gallio.Echo.Tests\Gallio.Echo.Tests.vs2010.csproj", "{299970D4-781F-4778-BCF2-F53AE7D8B060}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Echo.Tests.vs2010", "Extensions\Echo\Gallio.Echo.Tests\Gallio.Echo.Tests.vs2010.csproj", "{299970D4-781F-4778-BCF2-F53AE7D8B060}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus.Tests", "Extensions\Icarus\Gallio.Icarus.Tests\Gallio.Icarus.Tests.vs2010.csproj", "{A90A40C4-4D48-4D0B-BE9B-432510EB1057}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Icarus.Tests.vs2010", "Extensions\Icarus\Gallio.Icarus.Tests\Gallio.Icarus.Tests.vs2010.csproj", "{A90A40C4-4D48-4D0B-BE9B-432510EB1057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio", "Gallio\Gallio\Gallio.vs2010.csproj", "{6CAB7735-05DA-480D-9A04-50615B00F886}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.vs2010", "Gallio\Gallio\Gallio.vs2010.csproj", "{6CAB7735-05DA-480D-9A04-50615B00F886}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Tests", "Gallio\Gallio.Tests\Gallio.Tests.vs2010.csproj", "{111FD89D-58A1-4445-B4A4-8A50D65DB714}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Tests.vs2010", "Gallio\Gallio.Tests\Gallio.Tests.vs2010.csproj", "{111FD89D-58A1-4445-B4A4-8A50D65DB714}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit", "MbUnit\MbUnit\MbUnit.vs2010.csproj", "{A9B54755-56B7-48C1-8941-BB69FCEFFF32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.vs2010", "MbUnit\MbUnit\MbUnit.vs2010.csproj", "{A9B54755-56B7-48C1-8941-BB69FCEFFF32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Tests", "MbUnit\MbUnit.Tests\MbUnit.Tests.vs2010.csproj", "{321FD171-880D-472E-9912-EC844889E11A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Tests.vs2010", "MbUnit\MbUnit.Tests\MbUnit.Tests.vs2010.csproj", "{321FD171-880D-472E-9912-EC844889E11A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples", "MbUnit\Samples\MbUnit.Samples\MbUnit.Samples.vs2010.csproj", "{12850856-0A27-4E50-9116-5A3B19C7D779}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples.vs2010", "MbUnit\Samples\MbUnit.Samples\MbUnit.Samples.vs2010.csproj", "{12850856-0A27-4E50-9116-5A3B19C7D779}"
 	ProjectSection(ProjectDependencies) = postProject
 		{6CAB7735-05DA-480D-9A04-50615B00F886} = {6CAB7735-05DA-480D-9A04-50615B00F886}
 		{A9B54755-56B7-48C1-8941-BB69FCEFFF32} = {A9B54755-56B7-48C1-8941-BB69FCEFFF32}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility", "MbUnit\MbUnit.Compatibility\MbUnit.Compatibility.vs2010.csproj", "{F588B51F-786A-48E2-950E-636062F9C302}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Compatibility.vs2010", "MbUnit\MbUnit.Compatibility\MbUnit.Compatibility.vs2010.csproj", "{F588B51F-786A-48E2-950E-636062F9C302}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Host", "Gallio\Gallio.Host\Gallio.Host.vs2010.csproj", "{35FFAF24-1019-4BE2-901D-02E627C757DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Host.vs2010", "Gallio\Gallio.Host\Gallio.Host.vs2010.csproj", "{35FFAF24-1019-4BE2-901D-02E627C757DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources", "MbUnit\MbUnit.TestResources\MbUnit.TestResources.vs2010.csproj", "{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources.vs2010", "MbUnit\MbUnit.TestResources\MbUnit.TestResources.vs2010.csproj", "{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter", "Extensions\Xunit\Gallio.XunitAdapter\Gallio.XunitAdapter.vs2010.csproj", "{F2619506-4CA0-4B5B-AAA8-733784C49476}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter.vs2010", "Extensions\Xunit\Gallio.XunitAdapter\Gallio.XunitAdapter.vs2010.csproj", "{F2619506-4CA0-4B5B-AAA8-733784C49476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter.Tests", "Extensions\Xunit\Gallio.XunitAdapter.Tests\Gallio.XunitAdapter.Tests.vs2010.csproj", "{606ED147-23B2-461B-A5DD-9A6CD998F6AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter.Tests.vs2010", "Extensions\Xunit\Gallio.XunitAdapter.Tests\Gallio.XunitAdapter.Tests.vs2010.csproj", "{606ED147-23B2-461B-A5DD-9A6CD998F6AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter.TestResources", "Extensions\Xunit\Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter.TestResources.vs2010.csproj", "{70015C50-93E8-4D17-86B0-69F030911C98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.XunitAdapter.TestResources.vs2010", "Extensions\Xunit\Gallio.XunitAdapter.TestResources\Gallio.XunitAdapter.TestResources.vs2010.csproj", "{70015C50-93E8-4D17-86B0-69F030911C98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter", "Extensions\NUnit\Gallio.NUnitAdapter\Gallio.NUnitAdapter.vs2010.csproj", "{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter.vs2010", "Extensions\NUnit\Gallio.NUnitAdapter\Gallio.NUnitAdapter.vs2010.csproj", "{6C54EE4A-65D5-4133-A89D-9F57C6ADB2C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter.Tests", "Extensions\NUnit\Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter.Tests.vs2010.csproj", "{7CB9DB43-2428-40C7-A926-AD3C2687A646}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter.Tests.vs2010", "Extensions\NUnit\Gallio.NUnitAdapter.Tests\Gallio.NUnitAdapter.Tests.vs2010.csproj", "{7CB9DB43-2428-40C7-A926-AD3C2687A646}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnit2Adapter", "Extensions\MbUnit2\Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter.vs2010.csproj", "{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnit2Adapter.vs2010", "Extensions\MbUnit2\Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter.vs2010.csproj", "{0393BF1B-3E61-4AF9-B0E3-B9E77C60C67A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnit2Adapter.Tests", "Extensions\MbUnit2\Gallio.MbUnit2Adapter.Tests\Gallio.MbUnit2Adapter.Tests.vs2010.csproj", "{050A5A14-3F4D-4407-AA40-C45E14FE1FF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnit2Adapter.Tests.vs2010", "Extensions\MbUnit2\Gallio.MbUnit2Adapter.Tests\Gallio.MbUnit2Adapter.Tests.vs2010.csproj", "{050A5A14-3F4D-4407-AA40-C45E14FE1FF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnit2Adapter.TestResources", "Extensions\MbUnit2\Gallio.MbUnit2Adapter.TestResources\Gallio.MbUnit2Adapter.TestResources.vs2010.csproj", "{886B1BB9-AB7A-45EC-B38B-DE36CABCE505}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MbUnit2Adapter.TestResources.vs2010", "Extensions\MbUnit2\Gallio.MbUnit2Adapter.TestResources\Gallio.MbUnit2Adapter.TestResources.vs2010.csproj", "{886B1BB9-AB7A-45EC-B38B-DE36CABCE505}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner31", "Extensions\ReSharper\Gallio.ReSharperRunner\Gallio.ReSharperRunner31.vs2010.csproj", "{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner31.vs2010", "Extensions\ReSharper\Gallio.ReSharperRunner\Gallio.ReSharperRunner31.vs2010.csproj", "{E20A7E4C-B05B-41B0-AAD5-DF7BB9AD64C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner31.Tests", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner31.Tests.vs2010.csproj", "{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner31.Tests.vs2010", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner31.Tests.vs2010.csproj", "{56CC7030-DFF6-4FED-991B-641CFC5CFDCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner", "Extensions\TDNet\Gallio.TDNetRunner\Gallio.TDNetRunner.vs2010.csproj", "{00C93D01-6A43-4AAA-9E6E-5936B985B497}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.vs2010", "Extensions\TDNet\Gallio.TDNetRunner\Gallio.TDNetRunner.vs2010.csproj", "{00C93D01-6A43-4AAA-9E6E-5936B985B497}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.Tests", "Extensions\TDNet\Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests.vs2010.csproj", "{EBB6130D-3D29-4313-BAA9-1076BB8572AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TDNetRunner.Tests.vs2010", "Extensions\TDNet\Gallio.TDNetRunner.Tests\Gallio.TDNetRunner.Tests.vs2010.csproj", "{EBB6130D-3D29-4313-BAA9-1076BB8572AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSBuildTasks", "Extensions\MSBuild\Gallio.MSBuildTasks\Gallio.MSBuildTasks.vs2010.csproj", "{B3601484-0AB7-424F-BA81-A8CC809AB41A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSBuildTasks.vs2010", "Extensions\MSBuild\Gallio.MSBuildTasks\Gallio.MSBuildTasks.vs2010.csproj", "{B3601484-0AB7-424F-BA81-A8CC809AB41A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSBuildTasks.Tests", "Extensions\MSBuild\Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests.vs2010.csproj", "{9803265F-B0AF-4171-A770-0871CD2A593E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSBuildTasks.Tests.vs2010", "Extensions\MSBuild\Gallio.MSBuildTasks.Tests\Gallio.MSBuildTasks.Tests.vs2010.csproj", "{9803265F-B0AF-4171-A770-0871CD2A593E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NAntTasks", "Extensions\NAnt\Gallio.NAntTasks\Gallio.NAntTasks.vs2010.csproj", "{9D1FCE3D-7597-46DC-B661-83112269CD1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NAntTasks.vs2010", "Extensions\NAnt\Gallio.NAntTasks\Gallio.NAntTasks.vs2010.csproj", "{9D1FCE3D-7597-46DC-B661-83112269CD1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NAntTasks.Tests", "Extensions\NAnt\Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests.vs2010.csproj", "{2EADCB02-CB78-480F-992D-7CCB48ACEF38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NAntTasks.Tests.vs2010", "Extensions\NAnt\Gallio.NAntTasks.Tests\Gallio.NAntTasks.Tests.vs2010.csproj", "{2EADCB02-CB78-480F-992D-7CCB48ACEF38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands", "Extensions\PowerShell\Gallio.PowerShellCommands\Gallio.PowerShellCommands.vs2010.csproj", "{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands.vs2010", "Extensions\PowerShell\Gallio.PowerShellCommands\Gallio.PowerShellCommands.vs2010.csproj", "{AA029EE0-D199-41D1-8D97-BDC5945B3CDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands.Tests", "Extensions\PowerShell\Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests.vs2010.csproj", "{52E0A229-CE15-4B72-8ACF-F17DCB929A64}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.PowerShellCommands.Tests.vs2010", "Extensions\PowerShell\Gallio.PowerShellCommands.Tests\Gallio.PowerShellCommands.Tests.vs2010.csproj", "{52E0A229-CE15-4B72-8ACF-F17DCB929A64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCNet.Gallio.WebDashboard.Plugin", "Extensions\CCNet\CCNet.Gallio.WebDashboard.Plugin\CCNet.Gallio.WebDashboard.Plugin.vs2010.csproj", "{6E257D26-EAEA-4680-BC7A-34210A74E928}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCNet.Gallio.WebDashboard.Plugin.vs2010", "Extensions\CCNet\CCNet.Gallio.WebDashboard.Plugin\CCNet.Gallio.WebDashboard.Plugin.vs2010.csproj", "{6E257D26-EAEA-4680-BC7A-34210A74E928}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NCoverIntegration", "Extensions\NCover\Gallio.NCoverIntegration\Gallio.NCoverIntegration.vs2010.csproj", "{47D0414C-AE6E-4885-9D03-45B12E5A9BCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NCoverIntegration.vs2010", "Extensions\NCover\Gallio.NCoverIntegration\Gallio.NCoverIntegration.vs2010.csproj", "{47D0414C-AE6E-4885-9D03-45B12E5A9BCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NCoverIntegration.Tests", "Extensions\NCover\Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration.Tests.vs2010.csproj", "{6F31E7BC-AD9B-4B83-B88D-9471DCF64A7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NCoverIntegration.Tests.vs2010", "Extensions\NCover\Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration.Tests.vs2010.csproj", "{6F31E7BC-AD9B-4B83-B88D-9471DCF64A7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TypeMockIntegration", "Extensions\TypeMock\Gallio.TypeMockIntegration\Gallio.TypeMockIntegration.vs2010.csproj", "{094147F6-756E-4F3D-A80C-23DC05F13242}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TypeMockIntegration.vs2010", "Extensions\TypeMock\Gallio.TypeMockIntegration\Gallio.TypeMockIntegration.vs2010.csproj", "{094147F6-756E-4F3D-A80C-23DC05F13242}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TypeMockIntegration.Tests", "Extensions\TypeMock\Gallio.TypeMockIntegration.Tests\Gallio.TypeMockIntegration.Tests.vs2010.csproj", "{2A4AD33D-F6C2-4652-BD8C-ABF673B43FDE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TypeMockIntegration.Tests.vs2010", "Extensions\TypeMock\Gallio.TypeMockIntegration.Tests\Gallio.TypeMockIntegration.Tests.vs2010.csproj", "{2A4AD33D-F6C2-4652-BD8C-ABF673B43FDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestAdapter", "Extensions\MSTest\Gallio.MSTestAdapter\Gallio.MSTestAdapter.vs2010.csproj", "{8FC20489-148C-4220-AA3B-0BA8B6BC2AC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestAdapter.vs2010", "Extensions\MSTest\Gallio.MSTestAdapter\Gallio.MSTestAdapter.vs2010.csproj", "{8FC20489-148C-4220-AA3B-0BA8B6BC2AC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestAdapter.Tests", "Extensions\MSTest\Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests.vs2010.csproj", "{45C971C1-3E47-47C8-B0B2-AEA866BA089A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestAdapter.Tests.vs2010", "Extensions\MSTest\Gallio.MSTestAdapter.Tests\Gallio.MSTestAdapter.Tests.vs2010.csproj", "{45C971C1-3E47-47C8-B0B2-AEA866BA089A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter.TestResources", "Extensions\NUnit\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter.TestResources.vs2010.csproj", "{42CC86A2-B9A9-447F-97DD-D6809D78A8EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NUnitAdapter.TestResources.vs2010", "Extensions\NUnit\Gallio.NUnitAdapter.TestResources\Gallio.NUnitAdapter.TestResources.vs2010.csproj", "{42CC86A2-B9A9-447F-97DD-D6809D78A8EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestAdapter.TestResources", "Extensions\MSTest\Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources.vs2010.csproj", "{7AC1E83D-6979-48B5-8370-32F61A54B317}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.MSTestAdapter.TestResources.vs2010", "Extensions\MSTest\Gallio.MSTestAdapter.TestResources\Gallio.MSTestAdapter.TestResources.vs2010.csproj", "{7AC1E83D-6979-48B5-8370-32F61A54B317}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Pex", "Extensions\Pex\MbUnit.Pex\MbUnit.Pex.vs2010.csproj", "{91C7FF20-4E69-403A-A3DE-D36E169FF565}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Pex.vs2010", "Extensions\Pex\MbUnit.Pex\MbUnit.Pex.vs2010.csproj", "{91C7FF20-4E69-403A-A3DE-D36E169FF565}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Pex.Tests", "Extensions\Pex\MbUnit.Pex.Tests\MbUnit.Pex.Tests.vs2010.csproj", "{240D1D86-E9F3-416A-ACCE-395E927E8B96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Pex.Tests.vs2010", "Extensions\Pex\MbUnit.Pex.Tests\MbUnit.Pex.Tests.vs2010.csproj", "{240D1D86-E9F3-416A-ACCE-395E927E8B96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Pex.TestResources", "Extensions\Pex\MbUnit.Pex.TestResources\MbUnit.Pex.TestResources.vs2010.csproj", "{4915D007-1BD1-4E57-A719-50B2716B2A1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Pex.TestResources.vs2010", "Extensions\Pex\MbUnit.Pex.TestResources\MbUnit.Pex.TestResources.vs2010.csproj", "{4915D007-1BD1-4E57-A719-50B2716B2A1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Loader", "Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj", "{67FB2969-E6BF-4754-91AA-B6075F8E67EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Loader.vs2010", "Gallio\Gallio.Loader\Gallio.Loader.vs2010.csproj", "{67FB2969-E6BF-4754-91AA-B6075F8E67EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner40", "Extensions\ReSharper\Gallio.ReSharperRunner\Gallio.ReSharperRunner40.vs2010.csproj", "{48880439-9299-4D32-8D31-47F56D83D7A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner40.vs2010", "Extensions\ReSharper\Gallio.ReSharperRunner\Gallio.ReSharperRunner40.vs2010.csproj", "{48880439-9299-4D32-8D31-47F56D83D7A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner40.Tests", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner40.Tests.vs2010.csproj", "{76031E03-3807-4F76-A93C-6056D669AAEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner40.Tests.vs2010", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner40.Tests.vs2010.csproj", "{76031E03-3807-4F76-A93C-6056D669AAEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio35", "Gallio\Gallio35\Gallio35.vs2010.csproj", "{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio35.vs2010", "Gallio\Gallio35\Gallio35.vs2010.csproj", "{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit35", "MbUnit\MbUnit35\MbUnit35.vs2010.csproj", "{D147F5CC-0166-4B9C-B095-F905220090FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit35.vs2010", "MbUnit\MbUnit35\MbUnit35.vs2010.csproj", "{D147F5CC-0166-4B9C-B095-F905220090FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NCoverIntegration2", "Extensions\NCover\Gallio.NCoverIntegration\Gallio.NCoverIntegration2.vs2010.csproj", "{8336F05F-2741-48DD-B78A-64B0B79F1BE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NCoverIntegration2.vs2010", "Extensions\NCover\Gallio.NCoverIntegration\Gallio.NCoverIntegration2.vs2010.csproj", "{8336F05F-2741-48DD-B78A-64B0B79F1BE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NCoverIntegration2.Tests", "Extensions\NCover\Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration2.Tests.vs2010.csproj", "{CA32C2B5-FCCB-4651-9F01-9868B261C2DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.NCoverIntegration2.Tests.vs2010", "Extensions\NCover\Gallio.NCoverIntegration.Tests\Gallio.NCoverIntegration2.Tests.vs2010.csproj", "{CA32C2B5-FCCB-4651-9F01-9868B261C2DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.CSUnitAdapter", "Extensions\CSUnit\Gallio.CSUnitAdapter\Gallio.CSUnitAdapter.vs2010.csproj", "{5274A22B-7BCC-42B3-9B6C-0220DE8789AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.CSUnitAdapter.vs2010", "Extensions\CSUnit\Gallio.CSUnitAdapter\Gallio.CSUnitAdapter.vs2010.csproj", "{5274A22B-7BCC-42B3-9B6C-0220DE8789AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.CSUnitAdapter.Tests", "Extensions\CSUnit\Gallio.CSUnitAdapter.Tests\Gallio.CSUnitAdapter.Tests.vs2010.csproj", "{05250B22-B9FE-4B0E-9D64-1306A9BAD973}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.CSUnitAdapter.Tests.vs2010", "Extensions\CSUnit\Gallio.CSUnitAdapter.Tests\Gallio.CSUnitAdapter.Tests.vs2010.csproj", "{05250B22-B9FE-4B0E-9D64-1306A9BAD973}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.CSUnitAdapter.TestResources", "Extensions\CSUnit\Gallio.CSUnitAdapter.TestResources\Gallio.CSUnitAdapter.TestResources.vs2010.csproj", "{8EE3C638-38C4-4F9E-8246-C2549F74CD8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.CSUnitAdapter.TestResources.vs2010", "Extensions\CSUnit\Gallio.CSUnitAdapter.TestResources\Gallio.CSUnitAdapter.TestResources.vs2010.csproj", "{8EE3C638-38C4-4F9E-8246-C2549F74CD8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner41", "Extensions\ReSharper\Gallio.ReSharperRunner\Gallio.ReSharperRunner41.vs2010.csproj", "{4A3F8946-0124-4282-86D5-1A9E9A0FE83C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner41.vs2010", "Extensions\ReSharper\Gallio.ReSharperRunner\Gallio.ReSharperRunner41.vs2010.csproj", "{4A3F8946-0124-4282-86D5-1A9E9A0FE83C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner41.Tests", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner41.Tests.vs2010.csproj", "{BA294887-CBB1-4BAC-A9D6-009459AFE519}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.ReSharperRunner41.Tests.vs2010", "Extensions\ReSharper\Gallio.ReSharperRunner.Tests\Gallio.ReSharperRunner41.Tests.vs2010.csproj", "{BA294887-CBB1-4BAC-A9D6-009459AFE519}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports", "Gallio\Gallio.Reports\Gallio.Reports.vs2010.csproj", "{399C33BF-A9F7-4390-8F9C-8EECF7814123}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports.vs2010", "Gallio\Gallio.Reports\Gallio.Reports.vs2010.csproj", "{399C33BF-A9F7-4390-8F9C-8EECF7814123}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports.Tests", "Gallio\Gallio.Reports.Tests\Gallio.Reports.Tests.vs2010.csproj", "{94830E9B-3191-4AE5-A921-D27060A3BE65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Reports.Tests.vs2010", "Gallio\Gallio.Reports.Tests\Gallio.Reports.Tests.vs2010.csproj", "{94830E9B-3191-4AE5-A921-D27060A3BE65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples.VSTSIntegration", "MbUnit\Samples\MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration.vs2010.csproj", "{51FD0718-1728-4062-9649-5561C6035ACA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.Samples.VSTSIntegration.vs2010", "MbUnit\Samples\MbUnit.Samples.VSTSIntegration\MbUnit.Samples.VSTSIntegration.vs2010.csproj", "{51FD0718-1728-4062-9649-5561C6035ACA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell", "Extensions\VisualStudio\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.csproj", "{80983DC5-71B6-49CD-BA5F-305D29A65D05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.csproj", "{80983DC5-71B6-49CD-BA5F-305D29A65D05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail", "Extensions\VisualStudio\Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.vs2010.csproj", "{7BE8C909-6E33-42C6-AC7F-CC523CB438D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.vs2010.csproj", "{7BE8C909-6E33-42C6-AC7F-CC523CB438D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail.Tests", "Extensions\VisualStudio\Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail.Tests.vs2010.csproj", "{7609B681-E196-4AFB-AD64-6C5A9E5A160D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Sail.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail.Tests.vs2010.csproj", "{7609B681-E196-4AFB-AD64-6C5A9E5A160D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell.Tests", "Extensions\VisualStudio\Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests.vs2010.csproj", "{E7145C4E-1937-48E5-A8BC-415E97FBD293}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Shell.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests.vs2010.csproj", "{E7145C4E-1937-48E5-A8BC-415E97FBD293}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TeamCityIntegration", "Extensions\TeamCity\Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.vs2010.csproj", "{793C19C2-E78F-4A1E-A26C-9417F1C2DF5D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TeamCityIntegration.vs2010", "Extensions\TeamCity\Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.vs2010.csproj", "{793C19C2-E78F-4A1E-A26C-9417F1C2DF5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TeamCityIntegration.Tests", "Extensions\TeamCity\Gallio.TeamCityIntegration.Tests\Gallio.TeamCityIntegration.Tests.vs2010.csproj", "{F1CD36C5-5617-49E6-83A1-815900F48148}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.TeamCityIntegration.Tests.vs2010", "Extensions\TeamCity\Gallio.TeamCityIntegration.Tests\Gallio.TeamCityIntegration.Tests.vs2010.csproj", "{F1CD36C5-5617-49E6-83A1-815900F48148}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Navigator", "Extensions\Navigator\Gallio.Navigator\Gallio.Navigator.vs2010.csproj", "{9863B9FA-1DE6-48D5-A84D-FB8FE2025303}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Navigator.vs2010", "Extensions\Navigator\Gallio.Navigator\Gallio.Navigator.vs2010.csproj", "{9863B9FA-1DE6-48D5-A84D-FB8FE2025303}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Navigator.Tests", "Extensions\Navigator\Gallio.Navigator.Tests\Gallio.Navigator.Tests.vs2010.csproj", "{22DB6C17-5E90-42C8-9621-E8BAB32EB656}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Navigator.Tests.vs2010", "Extensions\Navigator\Gallio.Navigator.Tests\Gallio.Navigator.Tests.vs2010.csproj", "{22DB6C17-5E90-42C8-9621-E8BAB32EB656}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Interop", "Extensions\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.vs2010.csproj", "{B6912CC5-1E73-46E0-8F09-7F135924E3E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Interop.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.vs2010.csproj", "{B6912CC5-1E73-46E0-8F09-7F135924E3E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience", "Extensions\Ambience\Gallio.Ambience\Gallio.Ambience.vs2010.csproj", "{540D39B1-FF3C-48E9-B3EF-EFADF556E80A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.vs2010", "Extensions\Ambience\Gallio.Ambience\Gallio.Ambience.vs2010.csproj", "{540D39B1-FF3C-48E9-B3EF-EFADF556E80A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.Tests", "Extensions\Ambience\Gallio.Ambience.Tests\Gallio.Ambience.Tests.vs2010.csproj", "{072D1424-9F12-46ED-AF07-7B2A5D20643F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.Tests.vs2010", "Extensions\Ambience\Gallio.Ambience.Tests\Gallio.Ambience.Tests.vs2010.csproj", "{072D1424-9F12-46ED-AF07-7B2A5D20643F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.Server", "Extensions\Ambience\Gallio.Ambience.Server\Gallio.Ambience.Server.vs2010.csproj", "{5C8C48E1-E384-4473-B5D7-74642FC8D178}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Ambience.Server.vs2010", "Extensions\Ambience\Gallio.Ambience.Server\Gallio.Ambience.Server.vs2010.csproj", "{5C8C48E1-E384-4473-B5D7-74642FC8D178}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.UI", "Gallio\Gallio.UI\Gallio.UI.vs2010.csproj", "{36B1F505-995B-41E7-AAC9-1E845B08F2D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.UI.vs2010", "Gallio\Gallio.UI\Gallio.UI.vs2010.csproj", "{36B1F505-995B-41E7-AAC9-1E845B08F2D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Host.x86", "Gallio\Gallio.Host\Gallio.Host.x86.vs2010.csproj", "{36C8287D-C6CD-472A-BA6B-81B1CFFD5B13}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.Host.x86.vs2010", "Gallio\Gallio.Host\Gallio.Host.x86.vs2010.csproj", "{36C8287D-C6CD-472A-BA6B-81B1CFFD5B13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources.x86", "MbUnit\MbUnit.TestResources.x86\MbUnit.TestResources.x86.vs2010.csproj", "{45224C3F-B0F1-4D70-8516-B50100DEF79B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources.x86.vs2010", "MbUnit\MbUnit.TestResources.x86\MbUnit.TestResources.x86.vs2010.csproj", "{45224C3F-B0F1-4D70-8516-B50100DEF79B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources.x64", "MbUnit\MbUnit.TestResources.x64\MbUnit.TestResources.x64.vs2010.csproj", "{192D2C12-9D5C-4D68-96BA-4CD28054E3BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbUnit.TestResources.x64.vs2010", "MbUnit\MbUnit.TestResources.x64\MbUnit.TestResources.x64.vs2010.csproj", "{192D2C12-9D5C-4D68-96BA-4CD28054E3BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip90", "Extensions\VisualStudio\Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.vs2010.csproj", "{F3678999-969B-4CA5-B326-6732C26D97B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip90.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.vs2010.csproj", "{F3678999-969B-4CA5-B326-6732C26D97B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip90.Proxy", "Extensions\VisualStudio\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy.vs2010.csproj", "{3A5CA3C2-628D-4EAA-884B-95BB8C90C01C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip90.Proxy.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip90.Proxy.vs2010.csproj", "{3A5CA3C2-628D-4EAA-884B-95BB8C90C01C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip90.Tests", "Extensions\VisualStudio\Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip90.Tests.vs2010.csproj", "{66E6622C-CA7F-4234-A227-B262033B3976}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip90.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip90.Tests.vs2010.csproj", "{66E6622C-CA7F-4234-A227-B262033B3976}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip100", "Extensions\VisualStudio\Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.vs2010.csproj", "{8885AB3A-C27D-467C-A83A-0D33E47A93AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip100.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.vs2010.csproj", "{8885AB3A-C27D-467C-A83A-0D33E47A93AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip100.Proxy", "Extensions\VisualStudio\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip100.Proxy.vs2010.csproj", "{43613F1C-B173-469E-AC06-15E60FC5BBAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip100.Proxy.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Tip.Proxy\Gallio.VisualStudio.Tip100.Proxy.vs2010.csproj", "{43613F1C-B173-469E-AC06-15E60FC5BBAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip100.Tests", "Extensions\VisualStudio\Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip100.Tests.vs2010.csproj", "{D17696EB-296F-4274-9C76-97133A4F8497}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.VisualStudio.Tip100.Tests.vs2010", "Extensions\VisualStudio\Gallio.VisualStudio.Tip.Tests\Gallio.VisualStudio.Tip100.Tests.vs2010.csproj", "{D17696EB-296F-4274-9C76-97133A4F8497}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AutoCAD", "AutoCAD", "{A5307D24-4526-47EF-9500-A6CEAF654533}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.AutoCAD.vs2010", "Extensions\AutoCAD\Gallio.AutoCAD\Gallio.AutoCAD.vs2010.csproj", "{F7F0D285-79D0-452A-A791-84B174C1546E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.AutoCAD.Plugin.vs2010", "Extensions\AutoCAD\Gallio.AutoCAD.Plugin\Gallio.AutoCAD.Plugin.vs2010.csproj", "{AFBC884C-F0A5-4ABE-B8E7-C7DD585134F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallio.AutoCAD.Tests.vs2010", "Extensions\AutoCAD\Gallio.AutoCAD.Tests\Gallio.AutoCAD.Tests.vs2010.csproj", "{249CBFC1-FB73-4569-984B-D844EBA59F67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -564,6 +572,18 @@ Global
 		{D17696EB-296F-4274-9C76-97133A4F8497}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D17696EB-296F-4274-9C76-97133A4F8497}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D17696EB-296F-4274-9C76-97133A4F8497}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7F0D285-79D0-452A-A791-84B174C1546E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7F0D285-79D0-452A-A791-84B174C1546E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7F0D285-79D0-452A-A791-84B174C1546E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7F0D285-79D0-452A-A791-84B174C1546E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFBC884C-F0A5-4ABE-B8E7-C7DD585134F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFBC884C-F0A5-4ABE-B8E7-C7DD585134F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFBC884C-F0A5-4ABE-B8E7-C7DD585134F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFBC884C-F0A5-4ABE-B8E7-C7DD585134F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{249CBFC1-FB73-4569-984B-D844EBA59F67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{249CBFC1-FB73-4569-984B-D844EBA59F67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{249CBFC1-FB73-4569-984B-D844EBA59F67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{249CBFC1-FB73-4569-984B-D844EBA59F67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -607,6 +627,7 @@ Global
 		{17F8A2B9-E015-4267-A177-C2C9693B7C3E} = {5228D234-E4B0-467B-B6C8-FF06B0A98FAF}
 		{25B3E188-1727-4549-BFC1-30702994BDBE} = {5228D234-E4B0-467B-B6C8-FF06B0A98FAF}
 		{ACA40816-EB16-49AB-8DCD-1C23A188BD57} = {5228D234-E4B0-467B-B6C8-FF06B0A98FAF}
+		{A5307D24-4526-47EF-9500-A6CEAF654533} = {5228D234-E4B0-467B-B6C8-FF06B0A98FAF}
 		{520F7B99-3CD9-495A-B410-656864ADD813} = {1D245366-4B41-498E-A42A-4B722428437E}
 		{6E257D26-EAEA-4680-BC7A-34210A74E928} = {1D245366-4B41-498E-A42A-4B722428437E}
 		{F2619506-4CA0-4B5B-AAA8-733784C49476} = {5DBFFBA7-DAFC-42E9-BBB5-4752E84C8290}
@@ -674,5 +695,8 @@ Global
 		{540D39B1-FF3C-48E9-B3EF-EFADF556E80A} = {ACA40816-EB16-49AB-8DCD-1C23A188BD57}
 		{072D1424-9F12-46ED-AF07-7B2A5D20643F} = {ACA40816-EB16-49AB-8DCD-1C23A188BD57}
 		{5C8C48E1-E384-4473-B5D7-74642FC8D178} = {ACA40816-EB16-49AB-8DCD-1C23A188BD57}
+		{F7F0D285-79D0-452A-A791-84B174C1546E} = {A5307D24-4526-47EF-9500-A6CEAF654533}
+		{AFBC884C-F0A5-4ABE-B8E7-C7DD585134F5} = {A5307D24-4526-47EF-9500-A6CEAF654533}
+		{249CBFC1-FB73-4569-984B-D844EBA59F67} = {A5307D24-4526-47EF-9500-A6CEAF654533}
 	EndGlobalSection
 EndGlobal
