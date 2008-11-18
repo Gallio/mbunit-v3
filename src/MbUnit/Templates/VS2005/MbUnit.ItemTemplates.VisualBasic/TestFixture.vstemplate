@@ -5,7 +5,7 @@
     <Description>An MbUnit v3 test fixture</Description>
     <Icon>Template.ico</Icon>
     <ProjectType>VisualBasic</ProjectType>
-    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <SortOrder>80</SortOrder>
     <DefaultName>TestFixture.vb</DefaultName>
   </TemplateData>
   <TemplateContent>

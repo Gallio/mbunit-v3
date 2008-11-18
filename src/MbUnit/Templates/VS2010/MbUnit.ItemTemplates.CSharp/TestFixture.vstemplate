@@ -5,8 +5,10 @@
     <Description>An MbUnit v3 test fixture</Description>
     <Icon>Template.ico</Icon>
     <ProjectType>CSharp</ProjectType>
-    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <SortOrder>80</SortOrder>
     <DefaultName>TestFixture.cs</DefaultName>
+    <TemplateGroupID>TestProject-V1</TemplateGroupID>
+    <TemplateID>TestProject-V1-MbUnitTestFixture</TemplateID>
   </TemplateData>
   <TemplateContent>
 		<References>
