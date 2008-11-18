@@ -285,6 +285,7 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Saving project", 100))
             {
+                // if no project name is specified, use the default project
                 if (string.IsNullOrEmpty(projectName))
                 {
                     // create folder (if necessary)
@@ -292,16 +293,22 @@ namespace Gallio.Icarus.Controllers
                         fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
                     projectName = Paths.DefaultProject;
                 }
+
                 ConvertToRelativePaths(projectTreeModel.Project, Path.GetDirectoryName(projectName));
                 progressMonitor.Worked(10);
                 xmlSerialization.SaveToXml(projectTreeModel.Project, projectName);
-            }
+                progressMonitor.Worked(40);
+                ConvertFromRelativePaths(projectTreeModel.Project, Path.GetDirectoryName(projectName));
+                progressMonitor.Worked(10);
 
-            string projectUserOptionsFile = projectName + ".user";
-            UserOptions userOptions = new UserOptions();
-            userOptions.TreeViewCategory = TreeViewCategory;
-            userOptions.CollapsedNodes = CollapsedNodes;
-            xmlSerialization.SaveToXml(userOptions, projectUserOptionsFile);
+                progressMonitor.SetStatus("Saving user options");
+                string projectUserOptionsFile = projectName + ".user";
+                UserOptions userOptions = new UserOptions();
+                userOptions.TreeViewCategory = TreeViewCategory;
+                userOptions.CollapsedNodes = CollapsedNodes;
+                progressMonitor.Worked(10);
+                xmlSerialization.SaveToXml(userOptions, projectUserOptionsFile);
+            }
         }
 
         private void PublishUpdates()
