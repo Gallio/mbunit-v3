@@ -65,9 +65,14 @@
                         <RegistryValue Type="string" Name="[VisualStudio]" Value="Gallio" />
                     </RegistryKey>
 
-		    <!-- Remove a file created by the VSIP SDK that prevents the splash screen from being updated correctly. -->
-		    <RemoveFile Id="Gallio.VisualStudio.Shell.VS90.SplashFix" On="both"
-		                Directory="[VS90_ROOT_FOLDER]\Common7\IDE" Name="vs000223.dat" />
+                    <!-- Remove a file created by the VSIP SDK that prevents the splash screen from being updated correctly. -->
+                    <Directory Id="VS90_ROOT_FOLDER">
+                        <Directory Id="VS90.Common7">
+                            <Directory Id="VS90.Common7.IDE">
+                                <RemoveFile Id="Gallio.VisualStudio.Shell.VS90.SplashFix" On="both" Name="vs000223.dat" />
+                            </Directory>
+                        </Directory>
+                    </Directory>
                 </Component>
 <?endif?>
 
@@ -105,9 +110,14 @@
                         <RegistryValue Type="string" Name="[VisualStudio]" Value="Gallio" />
                     </RegistryKey>
 
-		    <!-- Remove a file created by the VSIP SDK that prevents the splash screen from being updated correctly. -->
-		    <RemoveFile Id="Gallio.VisualStudio.Shell.VS100.SplashFix" On="both"
-		                Directory="[VS100_ROOT_FOLDER]\Common7\IDE" Name="vs000223.dat" />
+                    <!-- Remove a file created by the VSIP SDK that prevents the splash screen from being updated correctly. -->
+                    <Directory Id="VS100_ROOT_FOLDER">
+                        <Directory Id="VS100.Common7">
+                            <Directory Id="VS100.Common7.IDE">
+                                <RemoveFile Id="Gallio.VisualStudio.Shell.VS100.SplashFix" On="both" Name="vs000223.dat" />
+                            </Directory>
+                        </Directory>
+                    </Directory>
                 </Component>
 <?endif?>
 
