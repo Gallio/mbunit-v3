@@ -299,7 +299,8 @@ namespace Gallio.Icarus.Mediator
 
         public void Cancel()
         {
-            progressMonitorProvider.ProgressMonitor.Cancel();
+            if (progressMonitorProvider.ProgressMonitor != null)
+                progressMonitorProvider.ProgressMonitor.Cancel();
             taskManager.Stop();
         }
     }
