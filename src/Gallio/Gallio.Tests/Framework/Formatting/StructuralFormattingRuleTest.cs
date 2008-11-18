@@ -33,7 +33,7 @@ namespace Gallio.Tests.Framework.Formatting
                 AnotherProperty = null
             };
 
-            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject:  AnotherProperty = null, Field = {42}, Property = {101}, ReadOnlyProperty = {blah}}";
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: AnotherProperty = null, Field = {42}, Property = {101}, ReadOnlyProperty = {blah}}";
             Assert.AreEqual(expectedResult, Formatter.Format(value));
         }
 
@@ -43,7 +43,7 @@ namespace Gallio.Tests.Framework.Formatting
             SampleObject value = new SampleObject();
             value.AnotherProperty = value;
 
-            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject:  AnotherProperty = {...}, Field = {0}, Property = {0}, ReadOnlyProperty = {blah}}";
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: AnotherProperty = {...}, Field = {0}, Property = {0}, ReadOnlyProperty = {blah}}";
             Assert.AreEqual(expectedResult, Formatter.Format(value));
         }
 
@@ -63,7 +63,7 @@ namespace Gallio.Tests.Framework.Formatting
                 Field = 1
             };
 
-            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject:  AnotherProperty = {Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject:  AnotherProperty = {...}, Field = {2}, Property = {0}, ReadOnlyProperty = {blah}}, Field = {1}, Property = {0}, ReadOnlyProperty = {blah}}";
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: AnotherProperty = {Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: AnotherProperty = {...}, Field = {2}, Property = {0}, ReadOnlyProperty = {blah}}, Field = {1}, Property = {0}, ReadOnlyProperty = {blah}}";
             Assert.AreEqual(expectedResult, Formatter.Format(value));
         }
 

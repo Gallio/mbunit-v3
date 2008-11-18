@@ -109,9 +109,8 @@ namespace Gallio.Framework.Formatting
                 }
 
                 if (i != 0)
-                    result.Append(',');
+                    result.Append(", ");
 
-                result.Append(' ');
                 result.Append(accessors[i].Key);
                 result.Append(" = ");
                 result.Append(formatter.Format(value));
