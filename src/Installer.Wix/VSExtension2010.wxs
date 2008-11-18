@@ -6,7 +6,7 @@
     <!-- Adapted from VS2008 definitions in VSExtension.wxs
          of the Wix v3.0 wixlibs. -->
 
-    <!-- Visual Studio 2018 -->
+    <!-- Visual Studio 2010 -->
     <Fragment>
         <Property Id="VS100DEVENV" Secure="yes">
             <RegistrySearch Id="VS100DevEnvSearch" Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\Setup\VS" Name="EnvironmentPath" Type="raw" />

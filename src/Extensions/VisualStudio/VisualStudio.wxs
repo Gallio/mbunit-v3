@@ -64,6 +64,10 @@
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\9.0\AutomationOptions\LookInFolders">
                         <RegistryValue Type="string" Name="[VisualStudio]" Value="Gallio" />
                     </RegistryKey>
+
+		    <!-- Remove a file created by the VSIP SDK that prevents the splash screen from being updated correctly. -->
+		    <RemoveFile Id="Gallio.VisualStudio.Shell.VS90.SplashFix" On="both"
+		                Directory="[VS90_ROOT_FOLDER]\Common7\IDE" Name="vs000223.dat" />
                 </Component>
 <?endif?>
 
@@ -100,6 +104,10 @@
                                  Root="HKLM" Key="SOFTWARE\Microsoft\VisualStudio\10.0\AutomationOptions\LookInFolders">
                         <RegistryValue Type="string" Name="[VisualStudio]" Value="Gallio" />
                     </RegistryKey>
+
+		    <!-- Remove a file created by the VSIP SDK that prevents the splash screen from being updated correctly. -->
+		    <RemoveFile Id="Gallio.VisualStudio.Shell.VS100.SplashFix" On="both"
+		                Directory="[VS100_ROOT_FOLDER]\Common7\IDE" Name="vs000223.dat" />
                 </Component>
 <?endif?>
 
