@@ -42,5 +42,11 @@ namespace Gallio.MbUnit2Adapter.Tests.Integration
             Assert.AreEqual(TestOutcome.Failed, run.Result.Outcome);
             Assert.Contains(run.TestLog.GetStream(TestLogStreamNames.Failures).ToString(), "Boom");
         }
+
+        [Test]
+        public void AssemblyFailed_Test()
+        {
+            Assert.AreEqual(TestOutcome.Failed, Runner.Report.TestPackageRun.RootTestStepRun.Result.Outcome);
+        }
     }
 }

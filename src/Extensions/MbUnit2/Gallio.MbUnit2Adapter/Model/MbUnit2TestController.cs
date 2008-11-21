@@ -180,7 +180,7 @@ namespace Gallio.MbUnit2Adapter.Model
 
             public TestOutcome Run()
             {
-                assemblyTestOutcome = TestOutcome.Skipped;
+                assemblyTestOutcome = TestOutcome.Passed;
 
                 if (assemblyTestCommand != null)
                 {
@@ -381,8 +381,11 @@ namespace Gallio.MbUnit2Adapter.Model
                 ITestContext assemblyTestContext = activeTestContexts[assemblyTestCommand];
                 activeTestContexts.Remove(assemblyTestCommand);
 
-                assemblyTestContext.FinishStep(outcome, null);
-                assemblyTestOutcome = outcome;
+                // only update status if more severe
+                if (outcome.Status > assemblyTestOutcome.Status)
+                    assemblyTestOutcome = outcome;
+
+                assemblyTestContext.FinishStep(assemblyTestOutcome, null);
             }
 
             private void HandleFixtureStart(Fixture fixture)
@@ -482,9 +485,14 @@ namespace Gallio.MbUnit2Adapter.Model
                     Abort();
             }
 
-            private static void FinishStepWithReportRunResult(ITestContext testContext, ReportRunResult reportRunResult)
+            private void FinishStepWithReportRunResult(ITestContext testContext, ReportRunResult reportRunResult)
             {
-                testContext.FinishStep(GetOutcomeFromReportRunResult(reportRunResult), null);
+                TestOutcome outcome = GetOutcomeFromReportRunResult(reportRunResult);
+                testContext.FinishStep(outcome, null);
+
+                // only update assembly status if more severe
+                if (outcome.Status > assemblyTestOutcome.Status)
+                    assemblyTestOutcome = outcome;
             }
 
             private static TestOutcome GetOutcomeFromReportRunResult(ReportRunResult reportRunResult)
