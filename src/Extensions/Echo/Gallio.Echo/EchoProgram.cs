@@ -115,6 +115,9 @@ namespace Gallio.Echo
             launcher.EchoResults = !Arguments.NoEchoResults;
             launcher.ShowReports = Arguments.ShowReports;
 
+            if (Arguments.RunTimeLimitInSeconds >= 0)
+                launcher.RunTimeLimit = TimeSpan.FromSeconds(Arguments.RunTimeLimitInSeconds);
+
             TestLauncherResult result = launcher.Run();
             DisplayResultSummary(result);
 

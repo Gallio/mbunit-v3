@@ -66,6 +66,7 @@ namespace Gallio.PowerShellCommands
         private SwitchParameter doNotRun;
         private SwitchParameter ignoreAnnotations;
         private SwitchParameter noEchoResults;
+        private TimeSpan? runTimeLimit;
 
         #endregion
 
@@ -383,6 +384,17 @@ namespace Gallio.PowerShellCommands
             set { noEchoResults = value; }
         }
 
+        /// <summary>
+        /// Sets the maximum amount of time (in seconds) the tests can run 
+        /// before they are canceled. The default is an infinite time to run. 
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("rtl", "run-time-limit")]
+        public double RunTimeLimit
+        {
+            set { runTimeLimit = TimeSpan.FromSeconds(value); }
+        }
+
         #endregion
 
         #region Protected Methods
@@ -443,6 +455,7 @@ namespace Gallio.PowerShellCommands
             launcher.DoNotRun = doNotRun.IsPresent;
             launcher.IgnoreAnnotations = ignoreAnnotations.IsPresent;
             launcher.EchoResults = !noEchoResults.IsPresent;
+            launcher.RunTimeLimit = runTimeLimit;
 
             launcher.TestRunnerFactoryName = runnerType;
             if (runnerExtensions != null)

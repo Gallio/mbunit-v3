@@ -27,6 +27,7 @@ using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Model;
 using Gallio.Runner.Reports;
+using System.Threading;
 
 namespace Gallio.Runner
 {
@@ -76,6 +77,7 @@ namespace Gallio.Runner
         private bool echoResults;
         private bool doNotRun;
         private bool ignoreAnnotations;
+        private TimeSpan? runTimeLimit;
 
         private string reportDirectory;
         private string reportNameFormat;
@@ -404,6 +406,18 @@ namespace Gallio.Runner
             set { ignoreAnnotations = value; }
         }
 
+        /// <summary>
+        /// <para>
+        /// Gets or sets the maximum amount of time the tests can run before they are canceled.
+        /// </para>
+        /// <para>The default value is <c>null</c>, meaning an infinite time.</para>
+        /// </summary>
+        public TimeSpan? RunTimeLimit
+        {
+            get { return runTimeLimit; }
+            set { runTimeLimit = value; }
+        }
+
         #region Public Methods
 
         /// <summary>
@@ -443,6 +457,16 @@ namespace Gallio.Runner
             Canonicalize(null);
             DisplayConfiguration();
 
+            Timer runTimeTimer = null;
+            if (runTimeLimit != null)
+            {                
+                runTimeTimer = new Timer(delegate
+                {
+                    Cancel();
+                    logger.Log(LogSeverity.Warning, "Run time limit reached! Canceled test run.");
+                }, null, (int)runTimeLimit.Value.TotalMilliseconds, Timeout.Infinite);
+            }
+
             Stopwatch stopWatch = Stopwatch.StartNew();
             logger.Log(LogSeverity.Important, String.Format("Start time: {0}", DateTime.Now.ToShortTimeString()));
             try
@@ -463,7 +487,10 @@ namespace Gallio.Runner
                 logger.Log(LogSeverity.Important,
                     String.Format("Stop time: {0} (Total execution time: {1:#0.000} seconds)",
                         DateTime.Now.ToShortTimeString(),
-                        stopWatch.Elapsed.TotalSeconds));
+                        stopWatch.Elapsed.TotalSeconds));                
+
+                if (runTimeTimer != null)
+                    runTimeTimer.Dispose();
             }
         }
 

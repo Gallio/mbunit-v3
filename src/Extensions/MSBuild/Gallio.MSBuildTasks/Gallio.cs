@@ -97,6 +97,7 @@ namespace Gallio.MSBuildTasks
         private bool doNotRun;
         private bool ignoreAnnotations;
         private bool echoResults = true;
+        private TimeSpan? runTimeLimit;
 
         private int exitCode;
 
@@ -391,6 +392,15 @@ namespace Gallio.MSBuildTasks
         }
 
         /// <summary>
+        /// Sets the maximum amount of time (in seconds) the tests can run
+        /// before they are canceled. The default is an infinite time to run.
+        /// </summary>
+        public double RunTimeLimit
+        {
+            set { runTimeLimit = TimeSpan.FromSeconds(value); }
+        }
+
+        /// <summary>
         /// Gets the exit code of the tests execution.
         /// </summary>
         /// <remarks>
@@ -679,6 +689,7 @@ namespace Gallio.MSBuildTasks
             launcher.ShowReports = showReports;
             launcher.DoNotRun = doNotRun;
             launcher.IgnoreAnnotations = ignoreAnnotations;
+            launcher.RunTimeLimit = runTimeLimit;
 
             launcher.RuntimeSetup = new RuntimeSetup();
 

@@ -57,6 +57,7 @@ namespace Gallio.MSBuildTasks.Tests
                 Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
                 Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
                 Assert.IsFalse(launcher.ShowReports);
+                Assert.IsNull(launcher.RunTimeLimit);
 
                 Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, launcher.TestRunnerFactoryName);
                 Assert.AreEqual(1, launcher.TestRunnerExtensions.Count);
@@ -93,6 +94,7 @@ namespace Gallio.MSBuildTasks.Tests
             task.ReportTypes = new string[] { "XML", "Html" };
             task.ReportNameFormat = "report";
             task.ShowReports = true;
+            task.RunTimeLimit = 7200; // seconds
 
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
             task.RunnerExtensions = new string[] { "DebugExtension,Gallio" };
@@ -117,6 +119,7 @@ namespace Gallio.MSBuildTasks.Tests
                 Assert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
+                Assert.AreEqual(TimeSpan.FromMinutes(120), launcher.RunTimeLimit);
 
                 Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
                 Assert.AreEqual(0, launcher.TestRunnerExtensions.Count);

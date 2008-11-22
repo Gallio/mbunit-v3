@@ -108,6 +108,7 @@ namespace Gallio.NAntTasks
         private bool doNotRun;
         private bool ignoreAnnotations;
         private bool echoResults = true;
+        private TimeSpan? runTimeLimit;
 
         #endregion
 
@@ -374,6 +375,16 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
+        /// Sets the maximum amount of time (in seconds) the tests can run 
+        /// before they are canceled. The default is an infinite time to run. 
+        /// </summary>
+        [TaskAttribute("run-time-limit", Required = false)]
+        public double RunTimeLimit
+        {
+            set { runTimeLimit = TimeSpan.FromSeconds(value); }
+        }
+
+        /// <summary>
         /// Sets the name of a NAnt property in which the exit code of the tests execution
         /// should be stored.
         /// </summary>
@@ -485,6 +496,7 @@ namespace Gallio.NAntTasks
             launcher.DoNotRun = doNotRun;
             launcher.IgnoreAnnotations = ignoreAnnotations;
             launcher.EchoResults = echoResults;
+            launcher.RunTimeLimit = runTimeLimit;
 
             launcher.TestRunnerFactoryName = runnerType;
             if (runnerExtensions != null)

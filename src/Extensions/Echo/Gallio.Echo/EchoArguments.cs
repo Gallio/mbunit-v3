@@ -206,6 +206,15 @@ namespace Gallio.Echo
              )]
         public bool IgnoreAnnotations;
 
+        [CommandLineArgument(
+            CommandLineArgumentFlags.AtMostOnce,
+            ShortName = "rtl",
+            LongName = "run-time-limit",
+            Description = "Maximum amount of time (in seconds) the tests can run before they are canceled. The default is an infinite time to run.",
+            ValueLabel = "limit"
+            )]
+        public double RunTimeLimitInSeconds = -1;
+
         #endregion
 
         public override string ToString()
@@ -245,6 +254,8 @@ namespace Gallio.Echo
             sw.WriteLine("Verbosity: {0}", Verbosity);
             sw.WriteLine("No Echo Results: {0}", NoEchoResults);
             sw.WriteLine("Save Test Model: {0}", DoNotRun);
+            
+            sw.WriteLine("RunTimeLimit: {0}", (RunTimeLimitInSeconds >= 0) ? RunTimeLimitInSeconds + " seconds" : "infinte");
             return sw.ToString();
         }
     }
