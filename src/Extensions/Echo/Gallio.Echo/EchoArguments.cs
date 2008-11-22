@@ -213,7 +213,7 @@ namespace Gallio.Echo
             Description = "Maximum amount of time (in seconds) the tests can run before they are canceled. The default is an infinite time to run.",
             ValueLabel = "limit"
             )]
-        public double RunTimeLimitInSeconds = -1;
+        public int RunTimeLimitInSeconds = -1;
 
         #endregion
 
