@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include ..\..\Installer.Wix\Features.wxi ?>
+    
     <Fragment>
+<?ifdef FEATURE_MBUNIT_PEX ?>
         <!-- indicates wheter Pex was installed -->
         <Property Id="PEX_INSTALLDIR" Secure="yes">
             <RegistrySearch Id="PexConsoleSearch" Type="raw" Win64="no"
@@ -18,5 +21,6 @@
             <Condition Level="1">PEX_INSTALLDIR</Condition>
             <ComponentRef Id="MbUnit.Pex.dll"/>
         </Feature>
+<?endif?>
     </Fragment>
 </Wix>
