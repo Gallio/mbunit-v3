@@ -27,6 +27,7 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(FactoryAttribute))]
     [RunSample(typeof(FactoryOnGenericTestClass<>))]
     [RunSample(typeof(SimpleUseCases))]
+    [RunSample(typeof(GenericUseCases<>))]
     public class FactoryTest : BaseTestWithSampleRunner
     {
         [Test]
@@ -44,7 +45,37 @@ namespace MbUnit.Tests.Framework
             "InstanceMethod: System.Int32, 123",
             "InstanceMethod: System.String, abc",
         })]
+        [Row(typeof(GenericUseCases<>), "InstanceFactoryTest", new string[]
+        {
+            "InstanceField: System.Int32, 123",
+            "InstanceField: System.String, abc",
+            "InstanceProperty: System.Int32, 123",
+            "InstanceProperty: System.String, abc",
+            "InstanceMethod: System.Int32, 123",
+            "InstanceMethod: System.String, abc",
+        })]
         [Row(typeof(SimpleUseCases), "StaticFactoryTest", new string[]
+        {
+            "StaticField: System.Int32, 123",
+            "StaticField: System.String, abc",
+            "StaticProperty: System.Int32, 123",
+            "StaticProperty: System.String, abc",
+            "StaticMethod: System.Int32, 123",
+            "StaticMethod: System.String, abc",
+            "StaticField: System.Int32, 123",
+            "StaticField: System.String, abc",
+            "StaticProperty: System.Int32, 123",
+            "StaticProperty: System.String, abc",
+            "StaticMethod: System.Int32, 123",
+            "StaticMethod: System.String, abc",
+            "ExternalField: System.Int32, 123",
+            "ExternalField: System.String, abc",
+            "ExternalProperty: System.Int32, 123",
+            "ExternalProperty: System.String, abc",
+            "ExternalMethod: System.Int32, 123",
+            "ExternalMethod: System.String, abc",
+        })]
+        [Row(typeof(GenericUseCases<>), "StaticFactoryTest", new string[]
         {
             "StaticField: System.Int32, 123",
             "StaticField: System.String, abc",
@@ -108,18 +139,18 @@ namespace MbUnit.Tests.Framework
         {
             public IEnumerable<object[]> FactoryInstanceField;
             public static IEnumerable<object[]> FactoryStaticField = new object[][]
-        {
-            new object[] { typeof(int), 123, "StaticField" },
-            new object[] { typeof(string), "abc", "StaticField" }
-        };
+            {
+                new object[] { typeof(int), 123, "StaticField" },
+                new object[] { typeof(string), "abc", "StaticField" }
+            };
 
             public SimpleUseCases()
             {
                 FactoryInstanceField = new object[][]
-            {
-                new object[] { typeof(int), 123, this, "InstanceField" },
-                new object[] { typeof(string), "abc", this, "InstanceField" }
-            };
+                {
+                    new object[] { typeof(int), 123, this, "InstanceField" },
+                    new object[] { typeof(string), "abc", this, "InstanceField" }
+                };
             }
 
             public IEnumerable<object[]> FactoryInstanceProperty
@@ -178,13 +209,89 @@ namespace MbUnit.Tests.Framework
             }
         }
 
+        [Explicit("Sample")]
+        [Row(typeof(int))]
+        internal class GenericUseCases<TOuter>
+        {
+            public IEnumerable<object[]> FactoryInstanceField;
+            public static IEnumerable<object[]> FactoryStaticField = new object[][]
+            {
+                new object[] { typeof(int), 123, "StaticField" },
+                new object[] { typeof(string), "abc", "StaticField" }
+            };
+
+            public GenericUseCases()
+            {
+                FactoryInstanceField = new object[][]
+                {
+                    new object[] { typeof(int), 123, this, "InstanceField" },
+                    new object[] { typeof(string), "abc", this, "InstanceField" }
+                };
+            }
+
+            public IEnumerable<object[]> FactoryInstanceProperty
+            {
+                get
+                {
+                    yield return new object[] { typeof(int), 123, this, "InstanceProperty" };
+                    yield return new object[] { typeof(string), "abc", this, "InstanceProperty" };
+                }
+            }
+
+            public static IEnumerable<object[]> FactoryStaticProperty
+            {
+                get
+                {
+                    yield return new object[] { typeof(int), 123, "StaticProperty" };
+                    yield return new object[] { typeof(string), "abc", "StaticProperty" };
+                }
+            }
+
+            public IEnumerable<object[]> FactoryInstanceMethod()
+            {
+                yield return new object[] { typeof(int), 123, this, "InstanceMethod" };
+                yield return new object[] { typeof(string), "abc", this, "InstanceMethod" };
+            }
+
+            public static IEnumerable<object[]> FactoryStaticMethod()
+            {
+                yield return new object[] { typeof(int), 123, "StaticMethod" };
+                yield return new object[] { typeof(string), "abc", "StaticMethod" };
+            }
+
+            [Test]
+            [Factory("FactoryInstanceField", Order = 1)]
+            [Factory("FactoryInstanceProperty", Order = 2)]
+            [Factory("FactoryInstanceMethod", Order = 3)]
+            public void InstanceFactoryTest<T>(T value, GenericUseCases<TOuter> instance, string source)
+            {
+                Assert.AreSame(this, instance);
+                TestLog.WriteLine("{0}: {1}, {2}", source, typeof(T), value);
+            }
+
+            [Test]
+            [Factory("FactoryStaticField", Order = 1)]
+            [Factory("FactoryStaticProperty", Order = 2)]
+            [Factory("FactoryStaticMethod", Order = 3)]
+            [Factory(typeof(SimpleUseCases), "FactoryStaticField", Order = 4)]
+            [Factory(typeof(SimpleUseCases), "FactoryStaticProperty", Order = 5)]
+            [Factory(typeof(SimpleUseCases), "FactoryStaticMethod", Order = 6)]
+            [Factory(typeof(ExternalFactories), "Field", Order = 7)]
+            [Factory(typeof(ExternalFactories), "Property", Order = 8)]
+            [Factory(typeof(ExternalFactories), "Method", Order = 9)]
+            public void StaticFactoryTest<T>(T value, string source)
+            {
+                TestLog.WriteLine("{0}: {1}, {2}", source, typeof(T), value);
+            }
+        }
+
         internal static class ExternalFactories
         {
             public static IEnumerable<object[]> Field = new object[][]
-        {
-            new object[] { typeof(int), 123, "ExternalField" },
-            new object[] { typeof(string), "abc", "ExternalField" }
-        };
+            {
+                new object[] { typeof(int), 123, "ExternalField" },
+                new object[] { typeof(string), "abc", "ExternalField" }
+            };
 
             public static IEnumerable<object[]> Property
             {

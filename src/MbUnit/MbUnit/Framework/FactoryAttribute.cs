@@ -168,7 +168,10 @@ namespace MbUnit.Framework
                 return delegate
                 {
                     object fixtureInstance = GetFixtureInstance(factoryMethod.IsStatic);
-                    return (IEnumerable) factoryMethod.Resolve(true).Invoke(fixtureInstance, null);
+                    MethodInfo method = type != null ? factoryMethod.Resolve(true) : GetFixtureType().GetMethod(memberName, bindingFlags);
+                    if (method == null)
+                        throw new TestFailedException(String.Format("Could not find factory method '{0}' on fixture.", memberName));
+                    return (IEnumerable) method.Invoke(fixtureInstance, null);
                 };
             }
 
@@ -178,7 +181,10 @@ namespace MbUnit.Framework
                 return delegate
                 {
                     object fixtureInstance = GetFixtureInstance(factoryProperty.GetMethod.IsStatic);
-                    return (IEnumerable)factoryProperty.Resolve(true).GetValue(fixtureInstance, null);
+                    PropertyInfo property = type != null ? factoryProperty.Resolve(true) : GetFixtureType().GetProperty(memberName, bindingFlags);
+                    if (property == null)
+                        throw new TestFailedException(String.Format("Could not find factory property '{0}' on fixture.", memberName));
+                    return (IEnumerable)property.GetValue(fixtureInstance, null);
                 };
             }
 
@@ -188,7 +194,10 @@ namespace MbUnit.Framework
                 return delegate
                 {
                     object fixtureInstance = GetFixtureInstance(factoryField.IsStatic);
-                    return (IEnumerable)factoryField.Resolve(true).GetValue(fixtureInstance);
+                    FieldInfo field = type != null ? factoryField.Resolve(true) : GetFixtureType().GetField(memberName, bindingFlags);
+                    if (field == null)
+                        throw new TestFailedException(String.Format("Could not find factory field '{0}' on fixture.", memberName));
+                    return (IEnumerable)field.GetValue(fixtureInstance);
                 };
             }
 
@@ -196,16 +205,26 @@ namespace MbUnit.Framework
                 memberName, factoryOwner));
         }
 
+        private Type GetFixtureType()
+        {
+            return GetCurrentTestInstanceState().FixtureType;
+        }
+
         private object GetFixtureInstance(bool isStatic)
         {
             if (isStatic)
                 return null;
 
+            return GetCurrentTestInstanceState().FixtureInstance;
+        }
+
+        private PatternTestInstanceState GetCurrentTestInstanceState()
+        {
             PatternTestInstanceState state = PatternTestInstanceState.FromContext(TestContext.CurrentContext);
             if (state == null || state.FixtureInstance == null)
                 throw new InvalidOperationException(String.Format("Cannot invoke factory '{0}' because it is non-static and there is no fixture instance available for this test.", memberName));
 
-            return state.FixtureInstance;
+            return state;
         }
     }
 }

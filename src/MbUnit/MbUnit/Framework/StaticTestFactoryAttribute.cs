@@ -80,6 +80,10 @@ namespace MbUnit.Framework
                 ThrowUsageErrorException("A static test factory method must be static.");
             if (method.Parameters.Count != 0)
                 ThrowUsageErrorException("A static test factory method must not have any parameters.");
+            if (method.ContainsGenericParameters)
+                ThrowUsageErrorException("A static test factory method must not be generic.");
+            if (method.DeclaringType.ContainsGenericParameters)
+                ThrowUsageErrorException("A static test factory method must not be declared on a generic type.");
         }
 
         /// <inheritdoc />

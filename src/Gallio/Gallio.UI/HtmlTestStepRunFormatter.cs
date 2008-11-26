@@ -419,7 +419,7 @@ namespace Gallio.UI
 
             public void VisitMarkerTag(MarkerTag tag)
             {
-                writer.Write("<span class=\"");
+                writer.Write("<span class=\"logStreamMarker-");
                 writer.Write(HtmlEncode(tag.Class));
                 writer.Write("\">");
 
