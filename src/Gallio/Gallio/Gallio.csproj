@@ -88,6 +88,7 @@
     <Compile Include="Concurrency\TaskResult.cs" />
     <Compile Include="Concurrency\ThreadAbortScope.cs" />
     <Compile Include="Concurrency\ThreadTask.cs" />
+    <Compile Include="Framework\Pattern\PatternTestGlobals.cs" />
     <Compile Include="FuncChain.cs" />
     <Compile Include="FuncDecorator.cs" />
     <Compile Include="Framework\Assertions\AssertionContext.cs" />

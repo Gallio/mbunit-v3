@@ -33,6 +33,7 @@ namespace Gallio.Framework.Pattern
         private readonly PatternTestActions testActions;
         private TimeSpan? timeout;
         private ApartmentState apartmentState = ApartmentState.Unknown;
+        private bool isParallelizable;
 
         /// <summary>
         /// Initializes a test initially without a parent.
@@ -72,9 +73,9 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
         /// Gets or sets the apartment state to be used to run the test.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If the apartment state is <see cref="System.Threading.ApartmentState.Unknown" />
         /// the test will inherit the apartment state of its parent.  Otherwise
@@ -85,7 +86,7 @@ namespace Gallio.Framework.Pattern
         /// apartment state.  Consequently the apartment state only needs to be overridden to run 
         /// a test in some mode that may differ from that which it would ordinarily inherit.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <value>
         /// The default value of this property is <see cref="System.Threading.ApartmentState.Unknown" />.
         /// </value>
@@ -93,6 +94,18 @@ namespace Gallio.Framework.Pattern
         {
             get { return apartmentState; }
             set { apartmentState = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the test is parallelizable.
+        /// </summary>
+        /// <value>
+        /// True if the test is parallelizable.  The default value of this property is <c>false</c>.
+        /// </value>
+        public bool IsParallelizable
+        {
+            get { return isParallelizable; }
+            set { isParallelizable = value; }
         }
 
         /// <summary>

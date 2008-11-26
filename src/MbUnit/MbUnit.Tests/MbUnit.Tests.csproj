@@ -152,6 +152,7 @@
     <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\StandardExceptionConstructorPatternTest.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\StandardExceptionConstructorPatternBuilderTest.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\StandardExceptionConstructorPatternSettingsTest.cs" />
+    <Compile Include="Framework\ParallelizableTest.cs" />
     <Compile Include="Framework\TestFixtureReferenceTest.cs" />
     <Compile Include="Framework\TestSuiteTest.cs" />
     <Compile Include="Framework\IsolationTest.cs" />

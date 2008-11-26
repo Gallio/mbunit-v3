@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Gallio.Collections;
 using Gallio.Concurrency;
 using Gallio.Framework.Data;
 using Gallio.Framework.Conversions;
@@ -316,9 +317,8 @@ namespace Gallio.Framework.Pattern
         private TestOutcome RunTestChildren(ITestCommand testCommand, Sandbox sandbox,
             PatternTestInstanceState testInstanceState)
         {
-            TestOutcome outcome = TestOutcome.Passed;
-
-            foreach (ITestCommand childTestCommand in testCommand.Children)
+            TestPlan plan = new TestPlan(testCommand.Children);
+            return plan.Run(childTestCommand =>
             {
                 if (progressMonitor.IsCanceled)
                     return TestOutcome.Canceled;
@@ -333,10 +333,8 @@ namespace Gallio.Framework.Pattern
 
                 ITestContext context = TestContextTrackerAccessor.Instance.CurrentContext;
                 ITestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
-                outcome = outcome.CombineWith(RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator));
-            }
-
-            return outcome.Generalize();
+                return RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator);
+            });
         }
 
         private static void UpdateInterimOutcome(TestContext context, ref TestOutcome outcome, TestOutcome newOutcome)
@@ -622,6 +620,109 @@ namespace Gallio.Framework.Pattern
             else
             {
                 action();
+            }
+        }
+
+        private sealed class TestPlan
+        {
+            private readonly List<IList<ITestCommand>> batches;
+
+            public TestPlan(IEnumerable<ITestCommand> commands)
+            {
+                batches = new List<IList<ITestCommand>>();
+
+                PopulateBatches(commands);
+            }
+
+            public TestOutcome Run(Func<ITestCommand, TestOutcome> executionCallback)
+            {
+                TestOutcome outcome = TestOutcome.Passed;
+
+                foreach (IList<ITestCommand> batch in batches)
+                {
+                    if (batch.Count == 1)
+                    {
+                        outcome = outcome.CombineWith(executionCallback(batch[0]));
+                    }
+                    else if (batch.Count > 1)
+                    {
+                        TaskContainer taskContainer = new TaskContainer();
+                        AutoResetEvent finishedOne = new AutoResetEvent(false);
+
+                        taskContainer.TaskTerminated += delegate { finishedOne.Set(); };
+
+                        foreach (ITestCommand command in batch)
+                        {
+                            ITestCommand boundCommand = command;
+
+                            while (taskContainer.GetActiveTasks().Count >= PatternTestGlobals.DegreeOfParallelism)
+                                finishedOne.WaitOne();
+
+                            Task task = Tasks.StartThreadTask(String.Format("Parallel Test: {0}", command.Test.Name), () =>
+                            {
+                                outcome = outcome.CombineWith(executionCallback(boundCommand));
+                            });
+
+                            taskContainer.Watch(task);
+                        }
+
+                        taskContainer.JoinAll(null);
+                    }
+                }
+
+                return outcome.Generalize();
+            }
+
+            private void PopulateBatches(IEnumerable<ITestCommand> commands)
+            {
+                foreach (Pair<IList<ITestCommand>, IList<ITestCommand>> splits in SplitBatchesForParallelism(commands))
+                {
+                    if (splits.First.Count > 0)
+                        batches.Add(splits.First);
+
+                    foreach (ITestCommand command in splits.Second)
+                        batches.Add(new[] { command });
+                }
+            }
+        
+            private IEnumerable<Pair<IList<ITestCommand>, IList<ITestCommand>>> SplitBatchesForParallelism(IEnumerable<ITestCommand> commands)
+            {
+                List<ITestCommand> parallel = null, sequential = null;
+
+                int currentOrder = int.MinValue;
+                foreach (ITestCommand command in commands)
+                {
+                    if (command.Test.Order != currentOrder)
+                    {
+                        if (parallel != null)
+                        {
+                            yield return new Pair<IList<ITestCommand>, IList<ITestCommand>>(parallel, sequential);
+                            parallel = null;
+                            sequential = null;
+                        }
+
+                        currentOrder = command.Test.Order;
+                    }
+
+                    if (parallel == null)
+                    {
+                        parallel = new List<ITestCommand>();
+                        sequential = new List<ITestCommand>();
+                    }
+
+                    PatternTest test = command.Test as PatternTest;
+                    if (test != null && test.IsParallelizable && command.Dependencies.Count == 0)
+                    {
+                        parallel.Add(command);
+                    }
+                    else
+                    {
+                        sequential.Add(command);
+                    }
+                }
+
+                if (parallel != null)
+                    yield return new Pair<IList<ITestCommand>, IList<ITestCommand>>(parallel, sequential);
             }
         }
     }
