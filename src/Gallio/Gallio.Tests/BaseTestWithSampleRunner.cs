@@ -93,5 +93,15 @@ namespace Gallio.Tests
         {
             Assert.Contains(run.TestLog.GetStream(streamName).ToString(), expectedOutput);
         }
+
+        protected static void AssertLogDoesNotContain(TestStepRun run, string expectedOutput)
+        {
+            AssertLogDoesNotContain(run, expectedOutput, TestLogStreamNames.Default);
+        }
+
+        protected static void AssertLogDoesNotContain(TestStepRun run, string expectedOutput, string streamName)
+        {
+            Assert.DoesNotContain(run.TestLog.GetStream(streamName).ToString(), expectedOutput);
+        }
     }
 }

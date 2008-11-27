@@ -33,17 +33,23 @@ namespace MbUnit.Tests.Framework
     public class ParallelizableTest : BaseTestWithSampleRunner
     {
         [Test]
-        public void NonParallizableTestsShouldRunIndependently()
+        public void ParallelizedTests()
         {
-            AssertLogContains(GetTestStepRun("Five"), "1\nFive\n0");
-            AssertLogContains(GetTestStepRun("Six"), "1\nSix\n0");
-            AssertLogContains(GetTestStepRun("Nine"), "1\nNine\n0");
-        }
+            Assert.IsTrue(
+                WasParallel("One") || WasParallel("Two") || WasParallel("Three") || WasParallel("Four"),
+                "Expected at least one of the set of parallelizable tests to run in parallel with another one.");
 
-        [Test]
-        public void ParallelizableTestsWithNoSiblingsShouldRunIndependently()
-        {
-            AssertLogContains(GetTestStepRun("Ten"), "1\nTen\n0");
+            Assert.IsTrue(
+                WasParallel("Seven") || WasParallel("Eight"),
+                "Expected at least one of the set of parallelizable tests to run in parallel with another one.");
+
+            Assert.IsFalse(
+                WasParallel("Five") || WasParallel("Six") || WasParallel("Nine"),
+                "Expected none of the non-parallelizable tests to run in parallel with any other ones.");
+
+            Assert.IsFalse(
+                WasParallel("Ten"),
+                "Expected the parallelizable but standalone to run on its own since there are no other tests of the same order.");
         }
 
         [Test]
@@ -63,27 +69,6 @@ namespace MbUnit.Tests.Framework
             Assert.LessThanOrEqualTo(batch5.Second, batch6.First);
         }
 
-        [Test]
-        public void AtLeastOnePairOfParallelizableTestsShouldHaveRunInParallel()
-        {
-            string[] names = new[] { "One", "Two", "Three", "Four" };
-
-            foreach (string outerName in names)
-            {
-                TestStepRun outerRun = GetTestStepRun(outerName);
-
-                foreach (string innerName in names)
-                {
-                    TestStepRun innerRun = GetTestStepRun(innerName);
-
-                    if (innerRun.StartTime > outerRun.StartTime && innerRun.StartTime < outerRun.EndTime)
-                        return; // found an example of a test that ran in parallel
-                }
-            }
-
-            Assert.Fail("Expected at least one pair of parallelizable tests to run concurrently during the same period of time but there were no such examples were found.");
-        }
-
         private Pair<DateTime, DateTime> GetEarliestAndLatestStartAndEndTimes(params string[] testNames)
         {
             DateTime startTime = DateTime.MaxValue;
@@ -99,6 +84,11 @@ namespace MbUnit.Tests.Framework
             }
 
             return new Pair<DateTime, DateTime>(startTime, endTime);
+        }
+
+        private bool WasParallel(string testName)
+        {
+            return GetTestStepRun(testName).TestLog.ToString().Contains("Detected a parallel");
         }
 
         private TestStepRun GetTestStepRun(string testName)
@@ -117,13 +107,19 @@ namespace MbUnit.Tests.Framework
             [SetUp]
             public void IncrementAndWriteCounterOnEntry()
             {
-                TestLog.WriteLine(Interlocked.Increment(ref counter));
+                int newCount = Interlocked.Increment(ref counter);
+                TestLog.WriteLine(newCount);
+                if (newCount != 1)
+                    TestLog.WriteLine("Detected a parallel test during SetUp.");
             }
 
             [TearDown]
             public void DecrementAndWriteCounterOnExit()
             {
-                TestLog.WriteLine(Interlocked.Decrement(ref counter));
+                int newCount = Interlocked.Decrement(ref counter);
+                TestLog.WriteLine(newCount);
+                if (newCount != 0)
+                    TestLog.WriteLine("Detected a parallel test during TearDown.");
             }
 
             [Test, Parallelizable]
