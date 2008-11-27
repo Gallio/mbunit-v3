@@ -3,6 +3,9 @@
     <Fragment>
         <DirectoryRef Id="extraFolder" FileSource="$(var.GallioTargetDir)\extras\">
             <Directory Id="CCNet" Name="CCNet">
+                <Component Id="CCNet.Docs" Guid="{735B640A-D57A-4193-906F-7B102BE5E321}" Win64="no">
+                    <File Name="How to use Gallio with CruiseControl.Net.txt" KeyPath="yes" />
+                </Component>
                 <Directory Id="webdashboard" Name="webdashboard">
                     <Directory Id="webdashboard.bin" Name="bin">
                         <Component Id="CCNet.Gallio.WebDashboard.Plugin.dll" Guid="{04852E1E-D257-4731-A417-46B17C307B82}" Win64="no">
@@ -79,6 +82,7 @@
 
         <Feature Id='feat_CCNetExtensions' Title='CruiseControl.Net extensions' Level='1' AllowAdvertise="no"
             Description='Installs additional resources to assist with CruiseControl.Net integration.'>
+            <ComponentRef Id="CCNet.Docs"/>
             <ComponentRef Id="CCNet.Gallio.WebDashboard.Plugin.dll"/>
             <ComponentRef Id="CCNet.Gallio.Report.css"/>
             <ComponentRef Id="CCNet.Gallio.Report.js"/>
