@@ -27,8 +27,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </para>
     /// <para>
     /// Equivalent classes are used by some contract verifiers such as 
-    /// <see cref="VerifyEqualityContractAttribute"/> and
-    /// <see cref="VerifyComparisonContractAttribute"/> to check for 
+    /// <see cref="VerifyEqualityContract{T}"/>  to check for 
     /// the correct implementation of object equality or comparison.
     /// </para>
     /// <para>
@@ -86,8 +85,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </para>
         /// <para>
         /// Equivalent classes are used by some contract verifiers such as 
-        /// <see cref="VerifyEqualityContractAttribute"/> and
-        /// <see cref="VerifyComparisonContractAttribute"/> to check for 
+        /// <see cref="VerifyEqualityContract{T}"/>  to check for 
         /// the correct implementation of object equality or comparison.
         /// </para>
         /// </summary>
@@ -122,8 +120,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </para>
         /// <para>
         /// Equivalent classes are used by some contract verifiers such as 
-        /// <see cref="VerifyEqualityContractAttribute"/> and
-        /// <see cref="VerifyComparisonContractAttribute"/> to check for 
+        /// <see cref="VerifyEqualityContract{T}"/>  to check for 
         /// the correct implementation of object equality or comparison.
         /// </para>
         /// </summary>

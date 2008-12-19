@@ -19,37 +19,17 @@ using System.Collections.Generic;
 namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstructor
 {
     /// <summary>
-    /// Builder for the test pattern <see cref="StandardExceptionConstructorPattern"/>
+    /// Builder for the test pattern <see cref="StandardExceptionConstructorPattern{TException}"/>
     /// </summary>
-    internal class StandardExceptionConstructorPatternBuilder : ContractVerifierPatternBuilder
+    /// <typeparam name="TException">The target custom exception type.</typeparam>
+    internal class StandardExceptionConstructorPatternBuilder<TException> : ContractVerifierPatternBuilder
+        where TException : Exception
     {
-        private Type targetExceptionType;
         private bool checkForSerializationSupport = true;
         private string friendlyName = String.Empty;
         private List<Type> parameterTypes = new List<Type>();
         private List<ExceptionConstructorSpec> constructorSpecifications = new List<ExceptionConstructorSpec>();
 
-        /// <summary>
-        /// Sets the target exception type.
-        /// </summary>
-        /// <param name="targetExceptionType">The target exception type.</param>
-        /// <returns>A reference to the builder itself.</returns>
-        internal StandardExceptionConstructorPatternBuilder SetTargetExceptionType(Type targetExceptionType)
-        {
-            if (targetExceptionType == null)
-            {
-                throw new ArgumentNullException("targetExceptionType");
-            }
-
-            if (!typeof(Exception).IsAssignableFrom(targetExceptionType))
-            {
-                throw new ArgumentException("The specified type must derive from System.Exception.", "targetExceptionType");
-            }
-
-            this.targetExceptionType = targetExceptionType;
-            return this;
-        }
-       
         /// <summary>
         /// Sets the value indicates whether the test pattern must include some
         /// verifications regarding serialization support as well.
@@ -57,7 +37,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstruct
         /// </summary>
         /// <param name="enabled">True to activate serialization support verifications; false otherwise.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal StandardExceptionConstructorPatternBuilder SetCheckForSerializationSupport(bool enabled)
+        internal StandardExceptionConstructorPatternBuilder<TException> SetCheckForSerializationSupport(bool enabled)
         {
             this.checkForSerializationSupport = enabled;
             return this;
@@ -68,7 +48,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstruct
         /// </summary>
         /// <param name="friendlyName">A friendly name.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal StandardExceptionConstructorPatternBuilder SetFriendlyName(string friendlyName)
+        internal StandardExceptionConstructorPatternBuilder<TException> SetFriendlyName(string friendlyName)
         {
             if (friendlyName == null)
             {
@@ -85,7 +65,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstruct
         /// <param name="parameterTypes">An array of types definining the types
         /// of the constructor parameters.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal StandardExceptionConstructorPatternBuilder SetParameterTypes(params Type[] parameterTypes)
+        internal StandardExceptionConstructorPatternBuilder<TException> SetParameterTypes(params Type[] parameterTypes)
         {
             if (parameterTypes == null)
             {
@@ -101,7 +81,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstruct
         /// </summary>
         /// <param name="constructorSpecifications">An array of parameter specifications.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal StandardExceptionConstructorPatternBuilder SetConstructorSpecifications(params ExceptionConstructorSpec[] constructorSpecifications)
+        internal StandardExceptionConstructorPatternBuilder<TException> SetConstructorSpecifications(params ExceptionConstructorSpec[] constructorSpecifications)
         {
             if (constructorSpecifications == null)
             {
@@ -115,14 +95,9 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstruct
         /// <inheritdoc />
         public override ContractVerifierPattern ToPattern()
         {
-            if (targetExceptionType == null)
-            {
-                throw new InvalidOperationException("The exception target type must be specified.");
-            }
-
-            return new StandardExceptionConstructorPattern(
+            return new StandardExceptionConstructorPattern<TException>(
                 new StandardExceptionConstructorPatternSettings(
-                    targetExceptionType, checkForSerializationSupport, friendlyName,
+                    checkForSerializationSupport, friendlyName,
                     parameterTypes, constructorSpecifications));
         }
     }

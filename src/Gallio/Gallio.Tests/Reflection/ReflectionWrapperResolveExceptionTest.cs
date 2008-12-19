@@ -20,10 +20,13 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Reflection
 {
-    // TODO: Implement tests for special constructors.
     [TestsOn(typeof(ReflectionWrapperResolveException))]
-    [VerifyExceptionContract(typeof(ReflectionWrapperResolveException), ImplementsStandardConstructors=false)]
     public class ReflectionWrapperResolveExceptionTest
     {
+        [ContractVerifier]
+        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<ReflectionWrapperResolveException>()
+        {
+            ImplementsStandardConstructors = false
+        };
     }
 }

@@ -46,19 +46,15 @@ namespace MbUnit.Samples.ContractVerifiers
 
         public static bool operator ==(SampleEquatable left, SampleEquatable right)
         {
-            return
-                (((object)left == null) && ((object)right == null)) ||
-                (((object)left != null) && left.Equals(right));
+            return (Object.ReferenceEquals(left, null)
+                && Object.ReferenceEquals(right, null))
+                || (!Object.ReferenceEquals(left, null) &&
+                left.Equals(right));
         }
 
         public static bool operator !=(SampleEquatable left, SampleEquatable right)
         {
             return !(left == right);
-        }
-
-        public override string ToString()
-        {
-            return "SampleEquatable(" + value + ")";
         }
     }
 }

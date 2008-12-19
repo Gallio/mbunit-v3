@@ -22,14 +22,15 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
 {
     /// <summary>
     /// Data container which exposes necessary data required to
-    /// run the test pattern <see cref="EqualityPattern"/>.
+    /// run the test pattern <see cref="EqualityPattern{T}"/>.
     /// </summary>
     internal class EqualityPatternSettings
     {
         /// <summary>
-        /// Gets the target evaluated type.
+        /// Information about a property of the contract verifier
+        /// providing a collection of equivalence classes.
         /// </summary>
-        public Type TargetType
+        public PropertyInfo EquivalentClassSource
         {
             get;
             private set;
@@ -73,21 +74,17 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
 
         /// <summary>
         /// Constructs the data container which exposes necessary data required to
-        /// run the test pattern <see cref="EqualityPattern"/>.
+        /// run the test pattern <see cref="EqualityPattern{T}"/>.
         /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
         /// <param name="equalityMethodInfo">Information about the equality method.</param>
         /// <param name="signatureDescription">A friendly description of the equality method signature.</param>
         /// <param name="inequality">Indicates whether the method represents an inequality operation.</param>
         /// <param name="name">A friendly name for the test pattern.</param>
-        public EqualityPatternSettings(Type targetType, MethodInfo equalityMethodInfo,
-            string signatureDescription, bool inequality, string name)
+        /// <param name="equivalenceClassSource">Information about a property of the 
+        /// contract verifier providing a collection of equivalence classes.</param>
+        public EqualityPatternSettings(MethodInfo equalityMethodInfo, string signatureDescription, 
+            bool inequality, string name, PropertyInfo equivalenceClassSource)
         {
-            if (targetType == null)
-            {
-                throw new ArgumentNullException("targetType");
-            }
-
             if (name == null)
             {
                 throw new ArgumentNullException("friendlyName");
@@ -98,11 +95,16 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
                 throw new ArgumentNullException("signatureDescription");
             }
 
-            this.TargetType = targetType;
+            if (equivalenceClassSource == null)
+            {
+                throw new ArgumentNullException("equivalenceClassSource");
+            }
+
             this.SignatureDescription = signatureDescription;
             this.EqualityMethodInfo = equalityMethodInfo;
             this.Inequality = inequality;
             this.Name = name;
+            this.EquivalentClassSource = equivalenceClassSource;
         }
     }
 }

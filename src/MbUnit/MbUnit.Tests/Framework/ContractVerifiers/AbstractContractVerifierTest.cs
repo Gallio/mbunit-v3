@@ -26,26 +26,25 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 {
     /// <summary>
     /// Abstract base class for integration tests 
-    /// on the contract verifier attributes.
+    /// on the contract verifiers.
     /// </summary>
-    public abstract class VerifyContractAttributeBaseTest : BaseTestWithSampleRunner
+    public abstract class AbstractContractVerifierTest : BaseTestWithSampleRunner
     {
         /// <summary>
-        /// Launch the test runner on the specified fixture, then 
-        /// verify that the specified test method has been run or not, and
+        /// verifies that the specified test method has been run or not, and
         /// that it gave the expected result.
         /// </summary>
-        /// <param name="testPatternName">Name of test pattern for the tested contract verifier.</param>
+        /// <param name="groupName">Name of the group which contains the test method.</param>
         /// <param name="fixtureType">Type of the sample fixture which must be run.</param>
         /// <param name="testMethodName">Name of evaluated test method.</param>
         /// <param name="expectedTestStatus">Expected test status. If <see cref="TestStatus.Inconclusive" />
         /// is specified, the test method is expected to not run.</param>
-        protected void VerifySampleContract(string testPatternName, Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
+        protected void VerifySampleContract(string groupName, Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             foreach (TestStepRun run in Report.TestPackageRun.AllTestStepRuns.Where(x =>
                 x.Step.IsPrimary && x.Step.FullName.EndsWith(
                 String.Format("/{0}/{1}/{2}/{3}", GetType().Name,
-                fixtureType.Name, testPatternName, testMethodName))))
+                fixtureType.Name, groupName, testMethodName))))
             {
                 if (expectedTestStatus == TestStatus.Inconclusive)
                 {

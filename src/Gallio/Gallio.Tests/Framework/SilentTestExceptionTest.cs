@@ -21,8 +21,12 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Framework
 {
     [TestsOn(typeof(SilentTestException))]
-    [VerifyExceptionContract(typeof(SilentTestException), ImplementsStandardConstructors=false)]
     public class SilentTestExceptionTest
     {
+        [ContractVerifier]
+        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<TestInconclusiveException>()
+        {
+            ImplementsStandardConstructors = false
+        };
     }
 }

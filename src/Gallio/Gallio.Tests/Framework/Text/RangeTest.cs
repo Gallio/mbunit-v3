@@ -24,17 +24,18 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Framework.Text
 {
     [TestsOn(typeof(Range))]
-    [VerifyEqualityContract(typeof(Range))]
-    public class RangeTest : IEquivalenceClassProvider<Range>
+    public class RangeTest
     {
-        public EquivalenceClassCollection<Range> GetEquivalenceClasses()
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<Range>()
         {
-            return EquivalenceClassCollection<Range>.FromDistinctInstances(
+            ImplementsOperatorOverloads = false,
+            EquivalenceClasses = EquivalenceClassCollection<Range>.FromDistinctInstances(
                 new Range(0, 0),
                 new Range(1, 1),
                 new Range(0, 1),
-                new Range(1, 0));
-        }
+                new Range(1, 0))
+        };
 
         [Test]
         public void ConstructorInitializesProperties()

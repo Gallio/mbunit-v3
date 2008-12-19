@@ -22,7 +22,7 @@ using MbUnit.Framework.Xml;
 
 namespace Gallio.Tests.Model.Logging.Tags
 {
-    public abstract class BaseTagTest<T> : IEquivalenceClassProvider<T>
+    public abstract class BaseTagTest<T>
         where T : Tag, ICloneable<T>
     {
         public abstract EquivalenceClassCollection<T> GetEquivalenceClasses();

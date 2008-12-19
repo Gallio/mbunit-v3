@@ -20,18 +20,19 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Model.Logging.Tags
 {
-    [VerifyEqualityContract(typeof(TextAttachment), ImplementsOperatorOverloads = false)]
-    public class TextAttachmentTest : IEquivalenceClassProvider<TextAttachment>
+    public class TextAttachmentTest
     {
-        public EquivalenceClassCollection<TextAttachment> GetEquivalenceClasses()
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<TextAttachment>()
         {
-            return EquivalenceClassCollection<TextAttachment>.FromDistinctInstances(
+            ImplementsOperatorOverloads = false,
+            EquivalenceClasses = EquivalenceClassCollection<TextAttachment>.FromDistinctInstances(
                 new TextAttachment("abc", MimeTypes.PlainText, "text"),
                 new TextAttachment("def", MimeTypes.PlainText, "text"),
                 new TextAttachment("abc", MimeTypes.Xml, "text"),
-                new TextAttachment("abc", MimeTypes.PlainText, "blah"));
-        }
-
+                new TextAttachment("abc", MimeTypes.PlainText, "blah"))
+        };
+        
         [Test]
         public void NullAttachmentNamePicksAUniqueOne()
         {

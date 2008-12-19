@@ -22,19 +22,10 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstruct
 {
     /// <summary>
     /// Data container which exposes necessary data required to run the test 
-    /// pattern <see cref="StandardExceptionConstructorPattern"/>.
+    /// pattern <see cref="StandardExceptionConstructorPattern{TException}"/>.
     /// </summary>
     internal class StandardExceptionConstructorPatternSettings
     {
-        /// <summary>
-        /// Gets the target exception type.
-        /// </summary>
-        public Type TargetExceptionType
-        {
-            get;
-            private set;
-        }
-
         /// <summary>
         /// Determines whether the test pattern must include
         /// verifications about serialization support too.
@@ -74,23 +65,17 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstruct
 
         /// <summary>
         /// Constructs the data container which exposes necessary data required to
-        /// run the test pattern <see cref="StandardExceptionConstructorPattern"/>.
+        /// run the test pattern <see cref="StandardExceptionConstructorPattern{TException}"/>.
         /// </summary>
-        /// <param name="targetExceptionType">The target exception type.</param>
         /// <param name="checkForSerializationSupport">Inclusion of verifications about serialization support.</param>
         /// <param name="friendlyName">A friendly name for the pattern test.</param>
         /// <param name="parameterTypes">The parameter types of the searched constructor.</param>
         /// <param name="constructorSpecifications">The parameter specifications for constructor invocations.</param>
         public StandardExceptionConstructorPatternSettings(
-            Type targetExceptionType, bool checkForSerializationSupport, string friendlyName, 
+            bool checkForSerializationSupport, string friendlyName, 
             IEnumerable<Type> parameterTypes,
             IEnumerable<ExceptionConstructorSpec> constructorSpecifications)
         {
-            if (targetExceptionType == null)
-            {
-                throw new ArgumentNullException("targetExceptionType");
-            }
-
             if (friendlyName == null)
             {
                 throw new ArgumentNullException("friendlyName");
@@ -106,7 +91,6 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.StandardExceptionConstruct
                 throw new ArgumentNullException("constructorSpecifications");
             }
 
-            this.TargetExceptionType = targetExceptionType;
             this.CheckForSerializationSupport = checkForSerializationSupport;
             this.FriendlyName = String.Format("Is{0}ConstructorWellDefined", friendlyName);
             this.ParameterTypes = new ReadOnlyCollection<Type>(new List<Type>(parameterTypes));

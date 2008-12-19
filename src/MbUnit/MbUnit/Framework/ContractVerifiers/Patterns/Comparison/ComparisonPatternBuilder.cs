@@ -20,36 +20,22 @@ using Gallio;
 namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
 {
     /// <summary>
-    /// Builder for the test pattern <see cref="ComparisonPattern{T}"/>
+    /// Builder for the test pattern <see cref="ComparisonPattern{TTarget, TResult}"/>
     /// </summary>
-    /// <typeparam name="T">The type of the results provided by
-    /// the comparison method. Usually a Int32 or a Boolean.</typeparam>
-    internal class ComparisonPatternBuilder<T> : ContractVerifierPatternBuilder 
-        where T : struct
+    /// <typeparam name="TTarget">The target comparable type.</typeparam>
+    /// <typeparam name="TResult">The type of the results provided by the comparison method. 
+    /// Usually a Int32 or a Boolean.</typeparam>
+    internal class ComparisonPatternBuilder<TTarget, TResult> : ContractVerifierPatternBuilder 
+        where TTarget : IComparable<TTarget>
+        where TResult : struct
     {
-        private Type targetType;
         private MethodInfo comparisonMethodInfo;
         private string signatureDescription;
-        private Func<int, int, T> refers;
-        private Func<T, string> formats = x => x.ToString();
-        private Func<T, T> postProcesses = x => x;
+        private Func<int, int, TResult> refers;
+        private Func<TResult, string> formats = x => x.ToString();
+        private Func<TResult, TResult> postProcesses = x => x;
         private string name;
-
-        /// <summary>
-        /// Sets the target evaluated type.
-        /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
-        /// <returns>A reference to the builder itself.</returns>
-        internal ComparisonPatternBuilder<T> SetTargetType(Type targetType)
-        {
-            if (targetType == null)
-            {
-                throw new ArgumentNullException("targetType");
-            }
-
-            this.targetType = targetType;
-            return this;
-        }
+        private PropertyInfo equivalenceClassSource;
 
         /// <summary>
         /// Sets the reflection descriptor for the comparison method.
@@ -57,7 +43,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
         /// <param name="comparisonMethodInfo">The reflection descriptor
         /// for the comparison method.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal ComparisonPatternBuilder<T> SetComparisonMethodInfo(MethodInfo comparisonMethodInfo)
+        internal ComparisonPatternBuilder<TTarget, TResult> SetComparisonMethodInfo(MethodInfo comparisonMethodInfo)
         {
             this.comparisonMethodInfo = comparisonMethodInfo;
             return this;
@@ -69,7 +55,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
         /// </summary>
         /// <param name="signatureDescription">A friendly signature text.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal ComparisonPatternBuilder<T> SetSignatureDescription(string signatureDescription)
+        internal ComparisonPatternBuilder<TTarget, TResult> SetSignatureDescription(string signatureDescription)
         {
             if (signatureDescription == null)
             {
@@ -86,7 +72,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
         /// </summary>
         /// <param name="refers">An equivalent comparison function.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal ComparisonPatternBuilder<T> SetFunctionRefers(Func<int, int, T> refers)
+        internal ComparisonPatternBuilder<TTarget, TResult> SetFunctionRefers(Func<int, int, TResult> refers)
         {
             if (refers == null)
             {
@@ -102,7 +88,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
         /// </summary>
         /// <param name="formats">An formatting function.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal ComparisonPatternBuilder<T> SetFunctionFormats(Func<T, string> formats)
+        internal ComparisonPatternBuilder<TTarget, TResult> SetFunctionFormats(Func<TResult, string> formats)
         {
             if (formats == null)
             {
@@ -119,7 +105,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
         /// </summary>
         /// <param name="postProcesses">An post-processing function.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal ComparisonPatternBuilder<T> SetFunctionPostProcesses(Func<T, T> postProcesses)
+        internal ComparisonPatternBuilder<TTarget, TResult> SetFunctionPostProcesses(Func<TResult, TResult> postProcesses)
         {
             if (postProcesses == null)
             {
@@ -135,7 +121,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
         /// </summary>
         /// <param name="name">A friendly signature text.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal ComparisonPatternBuilder<T> SetName(string name)
+        internal ComparisonPatternBuilder<TTarget, TResult> SetName(string name)
         {
             if (name == null)
             {
@@ -146,14 +132,26 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
             return this;
         }
 
+        /// <summary>
+        /// Sets the source of equivalence classes.
+        /// </summary>
+        /// <param name="equivalenceClassSource">Information about the contract verifier
+        /// property providing a collection of equivalence classes.</param>
+        /// <returns>A reference to the builder itself.</returns>
+        internal ComparisonPatternBuilder<TTarget, TResult> SetEquivalenceClassSource(PropertyInfo equivalenceClassSource)
+        {
+            if (equivalenceClassSource == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+
+            this.equivalenceClassSource = equivalenceClassSource;
+            return this;
+        }
+
         /// <inheritdoc />
         public override ContractVerifierPattern ToPattern()
         {
-            if (targetType == null)
-            {
-                throw new InvalidOperationException("A target type must be specified.");
-            }
-
             if (refers == null)
             {
                 throw new InvalidOperationException("A reference function must be specified.");
@@ -169,9 +167,14 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
                 throw new InvalidOperationException("A signature description must be specified.");
             }
 
-            return new ComparisonPattern<T>(new ComparisonPatternSettings<T>(
-                targetType, comparisonMethodInfo, signatureDescription, refers, 
-                formats, postProcesses, name));
+            if (equivalenceClassSource == null)
+            {
+                throw new InvalidOperationException("The source of equivalence classes must be specified.");
+            }
+
+            return new ComparisonPattern<TTarget, TResult>(new ComparisonPatternSettings<TResult>(
+                comparisonMethodInfo, signatureDescription, refers, 
+                formats, postProcesses, name, equivalenceClassSource));
         }
     }
 }

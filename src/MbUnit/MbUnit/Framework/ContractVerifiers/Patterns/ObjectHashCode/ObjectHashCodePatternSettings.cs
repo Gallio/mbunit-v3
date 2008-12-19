@@ -16,19 +16,21 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 namespace MbUnit.Framework.ContractVerifiers.Patterns.ObjectHashCode
 {
     /// <summary>
     /// Data container which exposes necessary data required to
-    /// run the test pattern <see cref="ObjectHashCodePattern"/>.
+    /// run the test pattern <see cref="ObjectHashCodePattern{T}"/>.
     /// </summary>
     internal class ObjectHashCodePatternSettings
     {
         /// <summary>
-        /// Gets the target evaluated type.
+        /// Information about a property of the contract verifier
+        /// providing a collection of equivalence classes.
         /// </summary>
-        public Type TargetType
+        public PropertyInfo EquivalenceClassSource
         {
             get;
             private set;
@@ -36,17 +38,18 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.ObjectHashCode
 
         /// <summary>
         /// Constructs the data container which exposes necessary data required to
-        /// run the test pattern <see cref="ObjectHashCodePattern"/>.
+        /// run the test pattern <see cref="ObjectHashCodePattern{T}"/>.
         /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
-        public ObjectHashCodePatternSettings(Type targetType)
+        /// <param name="equivalenceClassSource">Information about a property of the 
+        /// contract verifier providing a collection of equivalence classes.</param>
+        public ObjectHashCodePatternSettings(PropertyInfo equivalenceClassSource)
         {
-            if (targetType == null)
+            if (equivalenceClassSource == null)
             {
-                throw new ArgumentNullException("targetType");
+                throw new ArgumentNullException("equivalenceClassSource");
             }
 
-            this.TargetType = targetType;
+            this.EquivalenceClassSource = equivalenceClassSource;
         }
     }
 }

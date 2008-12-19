@@ -30,18 +30,20 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
     /// two instances, returns the expected result according to
     /// the equivalence class the objects belongs to.
     /// </summary>
-    /// <typeparam name="T">The type of the results provided by
+    /// <typeparam name="TTarget">The target comparable type.</typeparam>
+    /// <typeparam name="TResult">The type of the results provided by
     /// the comparison method. Usually a Int32 or a Boolean.</typeparam>
-    internal class ComparisonPattern<T> : ContractVerifierPattern
-        where T : struct
+    internal class ComparisonPattern<TTarget, TResult> : ContractVerifierPattern
+        where TTarget : IComparable<TTarget>
+        where TResult : struct
     {
-        private ComparisonPatternSettings<T> settings;
+        private ComparisonPatternSettings<TResult> settings;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="settings">Settings.</param>
-        internal ComparisonPattern(ComparisonPatternSettings<T> settings)
+        internal ComparisonPattern(ComparisonPatternSettings<TResult> settings)
         {
             if (settings == null)
             {
@@ -73,17 +75,17 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
                     .ToAssertionFailure();
             });
 
-            VerifyComparisonContract(state.FixtureType, state.FixtureInstance,
+            VerifyComparisonContract(state,
                 (a, b) => settings.PostProcesses(settings.ComparisonMethodInfo.IsStatic ?
-                        (T)settings.ComparisonMethodInfo.Invoke(null, new object[] { a, b }) :
-                        (T)settings.ComparisonMethodInfo.Invoke(a, new object[] { b })));
+                        (TResult)settings.ComparisonMethodInfo.Invoke(null, new object[] { a, b }) :
+                        (TResult)settings.ComparisonMethodInfo.Invoke(a, new object[] { b })));
         }
 
-        private void VerifyComparisonContract(Type fixtureType, object fixtureInstance, Func<object, object, T> compares)
+        private void VerifyComparisonContract(IContractVerifierPatternInstanceState state, Func<object, object, TResult> compares)
         {
             // Get the equivalence classes before entering the multiple assertion block in
             // order to catch any missing implementation of IEquivalentClassProvider<T> before.
-            IEnumerable equivalenceClasses = GetEquivalentClasses(settings.TargetType, fixtureType, fixtureInstance);
+            IEnumerable equivalenceClasses = GetEquivalentClasses(settings.EquivalenceClassSource, state);
 
             Assert.Multiple(() =>
             {
@@ -94,7 +96,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
                 {
                     int j = 0;
 
-                    foreach (object b in GetEquivalentClasses(settings.TargetType, fixtureType, fixtureInstance))
+                    foreach (object b in GetEquivalentClasses(settings.EquivalenceClassSource, state))
                     {
                         CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, settings.PostProcesses(settings.Refers(i, j)), compares);
                         j++;
@@ -105,7 +107,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
             });
         }
 
-        private void CompareEquivalentInstances(IEnumerable a, IEnumerable b, T expectedResult, Func<object, object, T> compares)
+        private void CompareEquivalentInstances(IEnumerable a, IEnumerable b, TResult expectedResult, Func<object, object, TResult> compares)
         {
             foreach (object x in a)
             {
@@ -117,7 +119,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
                     {
                         AssertionHelper.Verify(() =>
                         {
-                            T actualResult = compares(x, y);
+                            TResult actualResult = compares(x, y);
                             if (expectedResult.Equals(actualResult))
                                 return null;
 
@@ -133,14 +135,14 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
             }
         }
 
-        private void VerifyEqualityBetweenTwoNullReferences(Func<object, object, T> compares)
+        private void VerifyEqualityBetweenTwoNullReferences(Func<object, object, TResult> compares)
         {
-            if (!settings.TargetType.IsValueType && settings.ComparisonMethodInfo.IsStatic)
+            if (!typeof(TTarget).IsValueType && settings.ComparisonMethodInfo.IsStatic)
             {
                 AssertionHelper.Verify(() =>
                 {
-                    T actualResult;
-                    T expectedResult = settings.PostProcesses(settings.Refers(0, 0));
+                    TResult actualResult;
+                    TResult expectedResult = settings.PostProcesses(settings.Refers(0, 0));
 
                     try
                     {
@@ -177,14 +179,14 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
             }
         }
 
-        private void VerifyNullReferenceComparison(object x, Func<object, object, T> compares)
+        private void VerifyNullReferenceComparison(object x, Func<object, object, TResult> compares)
         {
-            if (!settings.TargetType.IsValueType)
+            if (!typeof(TTarget).IsValueType)
             {
                 AssertionHelper.Verify(() =>
                 {
-                    T actualResult = compares(x, null);
-                    T expectedResult = settings.PostProcesses(settings.Refers(0, Int32.MinValue));
+                    TResult actualResult = compares(x, null);
+                    TResult expectedResult = settings.PostProcesses(settings.Refers(0, Int32.MinValue));
                     if (expectedResult.Equals(actualResult))
                         return null;
 
@@ -200,8 +202,8 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
                 {
                     AssertionHelper.Verify(() =>
                     {
-                        T actualResult;
-                        T expectedResult = settings.PostProcesses(settings.Refers(Int32.MinValue, 0));
+                        TResult actualResult;
+                        TResult expectedResult = settings.PostProcesses(settings.Refers(Int32.MinValue, 0));
 
                         try
                         {

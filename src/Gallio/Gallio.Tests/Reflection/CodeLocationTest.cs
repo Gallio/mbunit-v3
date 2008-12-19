@@ -26,9 +26,25 @@ namespace Gallio.Tests.Reflection
 {
     [TestFixture]
     [TestsOn(typeof(CodeLocation))]
-    [VerifyEqualityContract(typeof(CodeLocation))]
-    public class CodeLocationTest : IEquivalenceClassProvider<CodeLocation>
+    public class CodeLocationTest
     {
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<CodeLocation>()
+        {
+            EquivalenceClasses = new EquivalenceClassCollection<CodeLocation>(
+                new EquivalenceClass<CodeLocation>(
+                    CodeLocation.Unknown,
+                    new CodeLocation()),
+                new EquivalenceClass<CodeLocation>(
+                    new CodeLocation("path", 123, 9)),
+                new EquivalenceClass<CodeLocation>(
+                    new CodeLocation("other path", 123, 9)),
+                new EquivalenceClass<CodeLocation>(
+                    new CodeLocation("path", 456, 9)),
+                new EquivalenceClass<CodeLocation>(
+                    new CodeLocation("path", 123, 10)))
+        };
+
         [Test]
         public void UnknownIsDefinedWithANullPath()
         {
@@ -124,22 +140,6 @@ namespace Gallio.Tests.Reflection
                 stream.Position = 0;
                 return (CodeLocation)formatter.Deserialize(stream);
             }
-        }
-
-        public EquivalenceClassCollection<CodeLocation> GetEquivalenceClasses()
-        {
-            return new EquivalenceClassCollection<CodeLocation>(
-                new EquivalenceClass<CodeLocation>(
-                    CodeLocation.Unknown,
-                    new CodeLocation()),
-                new EquivalenceClass<CodeLocation>(
-                    new CodeLocation("path", 123, 9)),
-                new EquivalenceClass<CodeLocation>(
-                    new CodeLocation("other path", 123, 9)),
-                new EquivalenceClass<CodeLocation>(
-                    new CodeLocation("path", 456, 9)),
-                new EquivalenceClass<CodeLocation>(
-                    new CodeLocation("path", 123, 10)));
         }
     }
 }

@@ -20,8 +20,12 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Framework.Pattern
 {
     [TestsOn(typeof(PatternUsageErrorException))]
-    [VerifyExceptionContract(typeof(PatternUsageErrorException), ImplementsStandardConstructors=false)]
     public class PatternUsageErrorExceptionTest
     {
+        [ContractVerifier]
+        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<PatternUsageErrorException>()
+        {
+            ImplementsStandardConstructors = false
+        };
     }
 }

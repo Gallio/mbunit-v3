@@ -21,48 +21,16 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasAttribute
 {
     /// <summary>
     /// Data container which exposes necessary data required to
-    /// run the test pattern <see cref="HasAttributePattern"/>.
+    /// run the test pattern <see cref="HasAttributePattern{TTarget, TAttribute}"/>.
     /// </summary>
     internal class HasAttributePatternSettings
     {
         /// <summary>
-        /// Gets the target evaluated type.
-        /// </summary>
-        public Type TargetType
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the attribute type.
-        /// </summary>
-        public Type AttributeType
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
         /// Constructs the data container which exposes necessary data required to
-        /// run the test pattern <see cref="HasAttributePattern"/>.
+        /// run the test pattern <see cref="HasAttributePattern{TTarget, TAttribute}"/>.
         /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
-        /// <param name="attributeType">The attribute type.</param>
-        public HasAttributePatternSettings(Type targetType, Type attributeType)
+        public HasAttributePatternSettings()
         {
-            if (targetType == null)
-            {
-                throw new ArgumentNullException("targetType");
-            }
-
-            if (attributeType == null)
-            {
-                throw new ArgumentNullException("attributeType");
-            }
-
-            this.TargetType = targetType;
-            this.AttributeType = attributeType;
         }
     }
 }

@@ -19,18 +19,26 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Model.Logging.Tags
 {
-    [VerifyEqualityContract(typeof(MarkerTag), ImplementsOperatorOverloads = false)]
     public class MarkerTagTest : BaseTagTest<MarkerTag>
     {
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<MarkerTag>()
+        {
+            ImplementsOperatorOverloads = false,
+            EquivalenceClasses = equivalenceClasses
+        };
+    
         public override EquivalenceClassCollection<MarkerTag> GetEquivalenceClasses()
         {
-            return EquivalenceClassCollection<MarkerTag>.FromDistinctInstances(
+            return equivalenceClasses;
+        }
+
+        private static readonly EquivalenceClassCollection<MarkerTag> equivalenceClasses
+            = EquivalenceClassCollection<MarkerTag>.FromDistinctInstances(
                 new MarkerTag(Marker.AssertionFailure),
                 new MarkerTag(Marker.Highlight),
                 new MarkerTag(Marker.AssertionFailure.WithAttribute("x", "y")),
-                new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text") } },
-                new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text"), new TextTag("more") } }
-                );
-        }
-    }
+                new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text") }},
+                new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text"), new TextTag("more") }});
+}
 }

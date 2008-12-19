@@ -24,20 +24,20 @@ namespace Gallio.Tests.Runner.Workspaces
 {
     [TestFixture]
     [TestsOn(typeof(ResourcePath))]
-    [VerifyEqualityContract(typeof(ResourcePath))]
-    public class ResourcePathTests : IEquivalenceClassProvider<ResourcePath>
+    public class ResourcePathTests
     {
-        /// <inheritdoc />
-        public EquivalenceClassCollection<ResourcePath> GetEquivalenceClasses()
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<ResourcePath>()
         {
-            return EquivalenceClassCollection<ResourcePath>.FromDistinctInstances(
+            ImplementsOperatorOverloads = false,
+            EquivalenceClasses = EquivalenceClassCollection<ResourcePath>.FromDistinctInstances(
                 ResourcePath.Empty,
                 ResourcePath.Root,
                 new ResourcePath(@"\foo"),
                 new ResourcePath(@"\bar"),
                 new ResourcePath(@"foo"),
-                new ResourcePath(@"bar"));
-        }
+                new ResourcePath(@"bar"))
+        };
 
         [Test]
         [ExpectedArgumentNullException]

@@ -14,42 +14,46 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 
 namespace MbUnit.Framework.ContractVerifiers.Patterns.ObjectHashCode
 {
     /// <summary>
-    /// Builder for the test pattern <see cref="ObjectHashCodePattern"/>
+    /// Builder for the test pattern <see cref="ObjectHashCodePattern{T}"/>
     /// </summary>
-    internal class ObjectHashCodePatternBuilder : ContractVerifierPatternBuilder
+    /// <typeparam name="TTarget">The target equatable type.</typeparam>
+    internal class ObjectHashCodePatternBuilder<TTarget> : ContractVerifierPatternBuilder
+        where TTarget : IEquatable<TTarget>
     {
-        private Type targetType;
+        private PropertyInfo equivalenceClassSource;
 
         /// <summary>
-        /// Sets the target evaluated type.
+        /// Sets the source of equivalence classes.
         /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
+        /// <param name="equivalenceClassSource">Information about the contract verifier
+        /// property providing a collection of equivalence classes.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal ObjectHashCodePatternBuilder SetTargetType(Type targetType)
+        internal ObjectHashCodePatternBuilder<TTarget> SetEquivalenceClassSource(PropertyInfo equivalenceClassSource)
         {
-            if (targetType == null)
+            if (equivalenceClassSource == null)
             {
-                throw new ArgumentNullException("targetType");
+                throw new ArgumentNullException("source");
             }
 
-            this.targetType = targetType;
+            this.equivalenceClassSource = equivalenceClassSource;
             return this;
         }
 
         /// <inheritdoc />
         public override ContractVerifierPattern ToPattern()
         {
-            if (targetType == null)
+            if (equivalenceClassSource == null)
             {
-                throw new InvalidOperationException("The evaluated target type must be specified.");
+                throw new InvalidOperationException("The source of equivalence classes must be specified.");
             }
 
-            return new ObjectHashCodePattern(
-                new ObjectHashCodePatternSettings(targetType));
+            return new ObjectHashCodePattern<TTarget>(
+                new ObjectHashCodePatternSettings(equivalenceClassSource));
         }
     }
 }

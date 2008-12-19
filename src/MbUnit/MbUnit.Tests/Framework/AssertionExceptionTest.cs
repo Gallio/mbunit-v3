@@ -21,8 +21,9 @@ using MbUnit.Framework.ContractVerifiers;
 namespace MbUnit.Tests.Framework
 {
     [TestsOn(typeof(AssertionException))]
-    [VerifyExceptionContract(typeof(AssertionException))]
     public class AssertionExceptionTest
     {
+        [ContractVerifier]
+        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<AssertionException>();
     }
 }

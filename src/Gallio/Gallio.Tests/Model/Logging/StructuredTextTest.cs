@@ -23,8 +23,7 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Model.Logging
 {
     [TestsOn(typeof(StructuredText))]
-    [VerifyEqualityContract(typeof(StructuredText))]
-    public class StructuredTextTest : IEquivalenceClassProvider<StructuredText>
+    public class StructuredTextTest
     {
         private static readonly StructuredText Example = new StructuredText(new BodyTag()
         {
@@ -38,15 +37,15 @@ namespace Gallio.Tests.Model.Logging
                 }
         }, new Attachment[] { new TextAttachment("attachment", MimeTypes.PlainText, "text") });
 
-        public EquivalenceClassCollection<StructuredText> GetEquivalenceClasses()
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<StructuredText>()
         {
-            return EquivalenceClassCollection<StructuredText>.FromDistinctInstances(
+            EquivalenceClasses = EquivalenceClassCollection<StructuredText>.FromDistinctInstances(
                 new StructuredText("lalalala"),
                 new StructuredText(new BodyTag() { Contents = { new TextTag("blah") }}),
                 new StructuredText(new BodyTag() { Contents = { new TextTag("blah") }},
-                    new[] { new TextAttachment("abc", MimeTypes.PlainText, "blah") })
-                );
-        }
+                new[] { new TextAttachment("abc", MimeTypes.PlainText, "blah") }))
+        };
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorWithTextThrowsIfStringIsNull()

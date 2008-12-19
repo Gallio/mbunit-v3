@@ -21,8 +21,9 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Model
 {
     [TestsOn(typeof(ModelException))]
-    [VerifyExceptionContract(typeof(ModelException))]
     public class ModelExceptionTest
     {
+        [ContractVerifier]
+        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<ModelException>();
     }
 }

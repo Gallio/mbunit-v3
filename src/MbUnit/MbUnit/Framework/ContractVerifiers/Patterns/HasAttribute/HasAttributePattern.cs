@@ -25,7 +25,11 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasAttribute
     /// General purpose test pattern for contract verifiers.
     /// It verifies that the target evaluated type has the specified attribute.
     /// </summary>
-    internal class HasAttributePattern : ContractVerifierPattern
+    /// <typeparam name="TTarget">The target type to test.</typeparam>
+    /// <typeparam name="TAttribute">The expected attribute type to find.</typeparam>
+    internal class HasAttributePattern<TTarget, TAttribute> : ContractVerifierPattern
+        where TTarget : class
+        where TAttribute : Attribute
     {
         private HasAttributePatternSettings settings;
 
@@ -48,7 +52,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasAttribute
         {
             get
             {
-                return "Has" + settings.AttributeType.Name;
+                return "Has" + typeof(TAttribute).Name;
             }
         }
 
@@ -57,12 +61,12 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasAttribute
         {
             AssertionHelper.Verify(() =>
             {
-                if (settings.TargetType.IsDefined(settings.AttributeType, false))
+                if (typeof(TTarget).IsDefined(typeof(TAttribute), false))
                     return null;
 
                 return new AssertionFailureBuilder("Expected the exception type to be annotated by a particular attribute.")
-                    .AddRawLabeledValue("Exception Type", settings.TargetType)
-                    .AddRawLabeledValue("Expected Attribute", settings.AttributeType)
+                    .AddRawLabeledValue("Exception Type", typeof(TTarget))
+                    .AddRawLabeledValue("Expected Attribute", typeof(TAttribute))
                     .ToAssertionFailure();
             });
         }

@@ -19,38 +19,22 @@ using System.Collections.Generic;
 namespace MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor
 {
     /// <summary>
-    /// Builder for the test pattern <see cref="HasConstructorPattern"/>
+    /// Builder for the test pattern <see cref="HasConstructorPattern{TTarget}"/>
     /// </summary>
-    internal class HasConstructorPatternBuilder : ContractVerifierPatternBuilder
+    /// <typeparam name="TTarget"></typeparam>
+    internal class HasConstructorPatternBuilder<TTarget> : ContractVerifierPatternBuilder
     {
-        private Type targetType;
         private HasConstructorAccessibility accessibility = HasConstructorAccessibility.Public;
         private string name = String.Empty;
         private List<Type> parameterTypes = new List<Type>();
 
-        /// <summary>
-        /// Sets the target evaluated type.
-        /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
-        /// <returns>A reference to the builder itself.</returns>
-        internal HasConstructorPatternBuilder SetTargetType(Type targetType)
-        {
-            if (targetType == null)
-            {
-                throw new ArgumentNullException("targetType");
-            }
-
-            this.targetType = targetType;
-            return this;
-        }
-       
         /// <summary>
         /// Sets the accessibility of the searched constructor.
         /// If not specified, the default value is <see cref="HasConstructorAccessibility.Public"/>
         /// </summary>
         /// <param name="accessibility">The accessibility of searched constructor.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal HasConstructorPatternBuilder SetAccessibility(HasConstructorAccessibility accessibility)
+        internal HasConstructorPatternBuilder<TTarget> SetAccessibility(HasConstructorAccessibility accessibility)
         {
             this.accessibility = accessibility;
             return this;
@@ -61,7 +45,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor
         /// </summary>
         /// <param name="name">A friendly name.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal HasConstructorPatternBuilder SetName(string name)
+        internal HasConstructorPatternBuilder<TTarget> SetName(string name)
         {
             if (name == null)
             {
@@ -78,7 +62,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor
         /// <param name="parameterTypes">An array of types definining the types
         /// of the constructor parameters.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal HasConstructorPatternBuilder SetParameterTypes(params Type[] parameterTypes)
+        internal HasConstructorPatternBuilder<TTarget> SetParameterTypes(params Type[] parameterTypes)
         {
             if (parameterTypes == null)
             {
@@ -92,13 +76,8 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor
         /// <inheritdoc />
         public override ContractVerifierPattern ToPattern()
         {
-            if (targetType == null)
-            {
-                throw new InvalidOperationException("The evaluated target type must be specified.");
-            }
-
-            return new HasConstructorPattern(
-                new HasConstructorPatternSettings(targetType, accessibility, name, parameterTypes));
+            return new HasConstructorPattern<TTarget>(
+                new HasConstructorPatternSettings(accessibility, name, parameterTypes));
         }
     }
 }

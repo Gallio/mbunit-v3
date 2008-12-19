@@ -18,78 +18,19 @@ using System;
 namespace MbUnit.Framework.ContractVerifiers.Patterns.HasAttribute
 {
     /// <summary>
-    /// Builder for the test pattern <see cref="HasAttributePattern"/>
+    /// Builder for the test pattern <see cref="HasAttributePattern{TTarget, TAttribute}"/>
     /// </summary>
-    internal class HasAttributePatternBuilder : ContractVerifierPatternBuilder
+    /// <typeparam name="TTarget">The target type to test.</typeparam>
+    /// <typeparam name="TAttribute">The expected attribute type to find.</typeparam>
+    internal class HasAttributePatternBuilder<TTarget, TAttribute> : ContractVerifierPatternBuilder
+        where TTarget : class
+        where TAttribute : Attribute
     {
-        private Type targetType;
-        private Type attributeType;
-
-        /// <summary>
-        /// Sets the target evaluated type.
-        /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
-        /// <returns>A reference to the builder itself.</returns>
-        internal HasAttributePatternBuilder SetTargetType(Type targetType)
-        {
-            if (targetType == null)
-            {
-                throw new ArgumentNullException("targetType");
-            }
-
-            this.targetType = targetType;
-            return this;
-        }
-       
-        /// <summary>
-        /// Sets the attribute type.
-        /// </summary>
-        /// <param name="attributeType">The attribute type. It must be
-        /// derived from <see cref="System.Attribute"/>.</param>
-        /// <returns>A reference to the builder itself.</returns>
-        internal HasAttributePatternBuilder SetAttributeType(Type attributeType)
-        {
-            if (attributeType == null)
-            {
-                throw new ArgumentNullException("attributeType");
-            }
-
-            if (!typeof(Attribute).IsAssignableFrom(attributeType))
-            {
-                throw new ArgumentException("The type must derive from System.Attribute.", "attributeType");
-            }
-
-            this.attributeType = attributeType;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the attribute type.
-        /// </summary>
-        /// <typeparam name="T">The attribute type. It must be
-        /// derived from <see cref="System.Attribute"/>.</typeparam>
-        /// <returns>A reference to the builder itself.</returns>
-        internal HasAttributePatternBuilder SetAttributeType<T>() where T : Attribute
-        {
-            this.attributeType = typeof(T);
-            return this;
-        }
-
         /// <inheritdoc />
         public override ContractVerifierPattern ToPattern()
         {
-            if (targetType == null)
-            {
-                throw new InvalidOperationException("The evaluated target type must be specified.");
-            }
-
-            if (attributeType == null)
-            {
-                throw new InvalidOperationException("The attribute type must be specified.");
-            }
-
-            return new HasAttributePattern(
-                new HasAttributePatternSettings(targetType, attributeType));
+            return new HasAttributePattern<TTarget, TAttribute>(
+                new HasAttributePatternSettings());
         }
     }
 }

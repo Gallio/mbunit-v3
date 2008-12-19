@@ -21,8 +21,9 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Runner
 {
     [TestsOn(typeof(RunnerException))]
-    [VerifyExceptionContract(typeof(RunnerException))]
     public class RunnerExceptionTest 
     {
+        [ContractVerifier]
+        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<RunnerException>();
     }
 }

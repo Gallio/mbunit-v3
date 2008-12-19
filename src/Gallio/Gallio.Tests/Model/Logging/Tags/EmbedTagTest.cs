@@ -21,16 +21,24 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Model.Logging.Tags
 {
-    [VerifyEqualityContract(typeof(EmbedTag), ImplementsOperatorOverloads = false)]
     public class EmbedTagTest : BaseTagTest<EmbedTag>
     {
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<EmbedTag>()
+        {
+            ImplementsOperatorOverloads = false,
+            EquivalenceClasses = equivalenceClasses
+        };
+
         public override EquivalenceClassCollection<EmbedTag> GetEquivalenceClasses()
         {
-            return EquivalenceClassCollection<EmbedTag>.FromDistinctInstances(
-                new EmbedTag("attachment1"),
-                new EmbedTag("attachment2")
-                );
+            return equivalenceClasses;
         }
+
+        private static EquivalenceClassCollection<EmbedTag> equivalenceClasses = 
+             EquivalenceClassCollection<EmbedTag>.FromDistinctInstances(
+                new EmbedTag("attachment1"),
+                new EmbedTag("attachment2"));
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfAttachmentIsNull()

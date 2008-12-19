@@ -25,12 +25,10 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
-    [TestFixture]
-    [TestsOn(typeof(VerifyExceptionContractAttribute))]
     [RunSample(typeof(FullContractOnSerializedExceptionSample))]
     [RunSample(typeof(FullContractOnUnserializedExceptionSample))]
     [RunSample(typeof(PartialContractOnUnserializedExceptionSample))]
-    public class VerifyExceptionContractAttributeTest : VerifyContractAttributeBaseTest
+    public class VerifyExceptionContractTest : AbstractContractVerifierTest
     {
         [Test]
         [Row(typeof(FullContractOnSerializedExceptionSample), "HasSerializableAttribute", TestStatus.Passed)]
@@ -50,31 +48,37 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(PartialContractOnUnserializedExceptionSample), "IsStandardMessageAndInnerExceptionConstructorWellDefined", TestStatus.Passed)]
         public void VerifySampleExceptionContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
-            VerifySampleContract("ExceptionContract", fixtureType, testMethodName, expectedTestStatus);
+            VerifySampleContract("ExceptionTests", fixtureType, testMethodName, expectedTestStatus);
         }
 
-        [VerifyExceptionContract(typeof(SampleSerializedException),
-            ImplementsSerialization = true,
-            ImplementsStandardConstructors = true)]
         [Explicit]
         internal class FullContractOnSerializedExceptionSample
         {
+            public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<SampleSerializedException>()
+            {
+                ImplementsSerialization = true,
+                ImplementsStandardConstructors = true
+            };
         }
 
-        [VerifyExceptionContract(typeof(SampleUnserializedException),
-            ImplementsSerialization = true,
-            ImplementsStandardConstructors = true)]
         [Explicit]
         internal class FullContractOnUnserializedExceptionSample
         {
+            public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<SampleUnserializedException>()
+            {
+                ImplementsSerialization = true,
+                ImplementsStandardConstructors = true
+            };
         }
 
-        [VerifyExceptionContract(typeof(SampleUnserializedException),
-            ImplementsSerialization = false,
-            ImplementsStandardConstructors = true)]
         [Explicit]
         internal class PartialContractOnUnserializedExceptionSample
         {
+            public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<SampleUnserializedException>()
+            {
+                ImplementsSerialization = false,
+                ImplementsStandardConstructors = true
+            };
         }
 
         /// <summary>

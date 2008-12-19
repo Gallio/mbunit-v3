@@ -21,13 +21,15 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Framework
 {
     [TestsOn(typeof(TestInconclusiveException))]
-    [VerifyExceptionContract(typeof(TestInconclusiveException))]
     public class TestInconclusiveExceptionTest
     {
+        [ContractVerifier]
+        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<TestInconclusiveException>();
+
         [Test]
         public void OutcomeIsInconclusive()
         {
-            TestInconclusiveException ex = new TestInconclusiveException();
+            var ex = new TestInconclusiveException();
             Assert.AreEqual(TestOutcome.Inconclusive, ex.Outcome);
         }
     }

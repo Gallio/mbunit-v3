@@ -26,7 +26,8 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor
     /// General purpose test pattern for contract verifiers.
     /// It verifies that the target evaluated type has the specified attribute.
     /// </summary>
-    internal class HasConstructorPattern : ContractVerifierPattern
+    /// <typeparam name="TTarget">The target type to test.</typeparam>
+    internal class HasConstructorPattern<TTarget> : ContractVerifierPattern
     {
         private HasConstructorPatternSettings settings;
 
@@ -58,13 +59,13 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor
         {
             AssertionHelper.Verify(() =>
             {
-                if (settings.TargetType.GetConstructor(BindingFlags.Instance | 
+                if (typeof(TTarget).GetConstructor(BindingFlags.Instance | 
                     settings.Accessibility.BindingFlags, null, 
                     new List<Type>(settings.ParameterTypes).ToArray(), null) != null)
                     return null;
 
                 return new AssertionFailureBuilder("Expected the type to have a " + settings.Accessibility.Name + " constructor.")
-                    .AddRawLabeledValue("Type", settings.TargetType)
+                    .AddRawLabeledValue("Type", typeof(TTarget))
                     .AddLabeledValue("Expected Signature", GetConstructorSignature())
                     .ToAssertionFailure();
             });

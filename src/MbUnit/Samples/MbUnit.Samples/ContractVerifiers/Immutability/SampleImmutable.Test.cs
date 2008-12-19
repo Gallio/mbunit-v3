@@ -14,16 +14,15 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model.Filters;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
+using System.Runtime.Serialization;
 
-namespace Gallio.Tests.Model.Filters
+namespace MbUnit.Samples.ContractVerifiers
 {
-    [TestsOn(typeof(FilterParseException))]
-    public class FilterParseExceptionTest
+    public class SampleImmutableTest
     {
         [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<FilterParseException>();
+        public readonly IContractVerifier ImmutabilityTests = new VerifyImmutabilityContract<SampleImmutable>();
     }
 }

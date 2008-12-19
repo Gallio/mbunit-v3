@@ -15,25 +15,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using MbUnit.Framework;
+using Gallio.Framework.Pattern;
 using MbUnit.Framework.ContractVerifiers.Patterns;
 
-namespace MbUnit.Tests.Framework.ContractVerifiers.Patterns
+namespace MbUnit.Framework.ContractVerifiers
 {
-    [TestFixture]
-    public class ContractVerifierPatternInstanceStateTest
+    /// <summary>
+    /// Field-level contract verifier.
+    /// </summary>
+    public interface IContractVerifier
     {
-        [Test]
-        public void ConstructsOk(
-            [Column(null, typeof(object))] Type fixtureType,
-            [Column(true,false)] bool nullInstance)
-        {
-            var fixtureInstance = nullInstance ? null : new object();
-            var state = new ContractVerifierPatternInstanceState(fixtureType, fixtureInstance);
-            Assert.AreEqual(fixtureType, state.FixtureType);
-            Assert.AreSame(fixtureInstance, state.FixtureInstance);
-        }
+        /// <summary>
+        /// Provides builders of pattern tests for the contract verifier.
+        /// </summary>
+        /// <returns>An enumeration of pattern test builders.</returns>
+        IEnumerable<ContractVerifierPattern> GetContractPatterns();
     }
 }

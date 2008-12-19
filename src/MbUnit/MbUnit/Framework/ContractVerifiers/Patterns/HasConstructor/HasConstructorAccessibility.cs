@@ -22,7 +22,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor
 {
     /// <summary>
     /// Required accessibility for the constructor searched
-    /// by the <see cref="HasConstructorPattern"/>.
+    /// by the <see cref="HasConstructorPattern{TTarget}"/>.
     /// </summary>
     internal class HasConstructorAccessibility
     {

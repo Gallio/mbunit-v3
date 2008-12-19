@@ -41,5 +41,13 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         {
             get;
         }
+                
+        /// <summary>
+        /// The name of the field defined as a contract verifier.
+        /// </summary>
+        string FieldVerifierName
+        {
+            get;
+        }
     }
 }

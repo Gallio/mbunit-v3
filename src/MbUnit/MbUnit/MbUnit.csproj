@@ -59,11 +59,6 @@
     <Compile Include="Framework\CombinatorialJoinAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClass.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollection.cs" />
-    <Compile Include="Framework\ContractVerifiers\IEquivalenceClassProvider.cs" />
-    <Compile Include="Framework\ContractVerifiers\VerifyComparisonContractAttribute.cs" />
-    <Compile Include="Framework\ContractVerifiers\VerifyContractAttribute.cs" />
-    <Compile Include="Framework\ContractVerifiers\VerifyEqualityContractAttribute.cs" />
-    <Compile Include="Framework\ContractVerifiers\VerifyExceptionContractAttribute.cs" />
     <Compile Include="Framework\CsvDataAttribute.cs" />
     <Compile Include="Framework\DataAttribute.cs" />
     <Compile Include="Framework\DependsOnAssemblyAttribute.cs" />
@@ -142,6 +137,9 @@
     <Compile Include="Framework\Assert.Exceptions.cs" />
     <Compile Include="Framework\Assert.Reflection.cs" />
     <Compile Include="Framework\Assert.Relations.cs" />
+    <Compile Include="Framework\ContractVerifiers\AbstractContractVerifier.cs" />
+    <Compile Include="Framework\ContractVerifiers\ContractVerifierAttribute.cs" />
+    <Compile Include="Framework\ContractVerifiers\IContractVerifier.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\Comparison\ComparisonPattern.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\Comparison\ComparisonPatternBuilder.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\Comparison\ComparisonPatternSettings.cs" />
@@ -159,6 +157,9 @@
     <Compile Include="Framework\ContractVerifiers\Patterns\HasConstructor\HasConstructorPatternBuilder.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\HasConstructor\HasConstructorPatternSettings.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\IContractVerifierPatternInstanceState.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\MemberRecursion\MemberRecursionPattern.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\MemberRecursion\MemberRecursionPatternBuilder.cs" />
+    <Compile Include="Framework\ContractVerifiers\Patterns\MemberRecursion\MemberRecursionPatternSettings.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\ObjectHashCode\ObjectHashCodePattern.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\ObjectHashCode\ObjectHashCodePatternBuilder.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\ObjectHashCode\ObjectHashCodePatternSettings.cs" />
@@ -166,6 +167,10 @@
     <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\StandardExceptionConstructorPattern.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\StandardExceptionConstructorPatternBuilder.cs" />
     <Compile Include="Framework\ContractVerifiers\Patterns\StandardExceptionConstructor\StandardExceptionConstructorPatternSettings.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyComparisonContract.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyEqualityContract.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyExceptionContract.cs" />
+    <Compile Include="Framework\ContractVerifiers\VerifyImmutabilityContract.cs" />
     <Compile Include="Framework\ParallelizableAttribute.cs" />
     <Compile Include="Framework\StaticTestFactoryAttribute.cs" />
     <Compile Include="Framework\Test.cs" />

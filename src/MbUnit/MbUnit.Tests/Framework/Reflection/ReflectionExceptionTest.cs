@@ -22,8 +22,9 @@ using MbUnit.Framework.Reflection;
 namespace MbUnit.Tests.Framework.Reflection
 {
     [TestsOn(typeof(AssertionException))]
-    [VerifyExceptionContract(typeof(ReflectionException))]
     public class ReflectionExceptionTest
     {
+        [ContractVerifier]
+        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<ReflectionException>();
     }
 }

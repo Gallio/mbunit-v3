@@ -30,7 +30,9 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
     /// two instances, returns the expected result according to
     /// the equivalence class the objects belongs to.
     /// </summary>
-    internal class EqualityPattern : ContractVerifierPattern
+    /// <typeparam name="TTarget">The target equatable type.</typeparam>
+    internal class EqualityPattern<TTarget> : ContractVerifierPattern
+        where TTarget : IEquatable<TTarget>
     {
         private EqualityPatternSettings settings;
 
@@ -70,8 +72,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
                     .ToAssertionFailure();
             });
 
-
-            VerifyEqualityContract(state.FixtureType, state.FixtureInstance,
+            VerifyEqualityContract(state,
                 (a, b) =>
                 {
                     bool output = settings.EqualityMethodInfo.IsStatic ?
@@ -81,22 +82,20 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
                 });
         }
 
-        private void VerifyEqualityContract(Type fixtureType, object fixtureInstance, Func<object, object, bool> equals)
+        private void VerifyEqualityContract(IContractVerifierPatternInstanceState state, Func<object, object, bool> equals)
         {
-            // Get the equivalence classes before entering the multiple assertion block in
-            // order to catch any missing implementation of IEquivalentClassProvider<T> before.
-            IEnumerable equivalenceClasses = GetEquivalentClasses(settings.TargetType, fixtureType, fixtureInstance);
+            IEnumerable equivalentClasses = GetEquivalentClasses(settings.EquivalentClassSource, state);
 
             Assert.Multiple(() =>
             {
                 VerifyEqualityBetweenTwoNullReferences(equals);
                 int i = 0;
 
-                foreach (object a in equivalenceClasses)
+                foreach (object a in equivalentClasses)
                 {
                     int j = 0;
 
-                    foreach (object b in GetEquivalentClasses(settings.TargetType, fixtureType, fixtureInstance))
+                    foreach (object b in GetEquivalentClasses(settings.EquivalentClassSource, state))
                     {
                         CompareEquivalentInstances((IEnumerable)a, (IEnumerable)b, i == j, equals);
                         j++;
@@ -153,7 +152,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
 
         private void VerifyEqualityBetweenTwoNullReferences(Func<object, object, bool> equals)
         {
-            if (!settings.TargetType.IsValueType && settings.EqualityMethodInfo.IsStatic)
+            if (!typeof(TTarget).IsValueType && settings.EqualityMethodInfo.IsStatic)
             {
                 AssertionHelper.Verify(() =>
                 {
@@ -195,7 +194,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
 
         private void VerifyNullReferenceEquality(object x, Func<object, object, bool> equals)
         {
-            if (!settings.TargetType.IsValueType)
+            if (!typeof(TTarget).IsValueType)
             {
                 AssertionHelper.Verify(() =>
                 {

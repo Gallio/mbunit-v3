@@ -19,19 +19,18 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace MbUnit.Samples.ContractVerifiers
 {
-    [TestFixture]
-    [VerifyEqualityContract(typeof(SampleEquatable), 
-        ImplementsOperatorOverloads = true)]
-    public class SampleEquatableTest : IEquivalenceClassProvider<SampleEquatable>
+    public class SampleEquatableTest
     {
-        public EquivalenceClassCollection<SampleEquatable> GetEquivalenceClasses()
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<SampleEquatable>()
         {
-            return EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(
+            ImplementsOperatorOverloads = true, // Optional (default is true)
+            EquivalenceClasses = EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(
                 new SampleEquatable(1),
                 new SampleEquatable(2),
                 new SampleEquatable(3),
                 new SampleEquatable(4),
-                new SampleEquatable(5));
-        }
+                new SampleEquatable(5)),
+        };
     }
 }

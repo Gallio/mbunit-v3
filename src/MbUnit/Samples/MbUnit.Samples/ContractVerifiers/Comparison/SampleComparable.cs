@@ -30,34 +30,37 @@ namespace MbUnit.Samples.ContractVerifiers
 
         public int CompareTo(SampleComparable other)
         {
-            return Object.ReferenceEquals(other, null) ? Int32.MaxValue : value.CompareTo(other.value);
+            return Object.ReferenceEquals(other, null) 
+                ? Int32.MaxValue 
+                : value.CompareTo(other.value);
         }
 
         public static bool operator >=(SampleComparable left, SampleComparable right)
         {
-            return (Object.ReferenceEquals(left, null) && Object.ReferenceEquals(right, null)) ||
-                (!Object.ReferenceEquals(left, null) && (left.CompareTo(right) >= 0));
+            return (Object.ReferenceEquals(left, null) 
+                && Object.ReferenceEquals(right, null)) 
+                || (!Object.ReferenceEquals(left, null) 
+                && (left.CompareTo(right) >= 0));
         }
 
         public static bool operator <=(SampleComparable left, SampleComparable right)
         {
-            return Object.ReferenceEquals(left, null) || (left.CompareTo(right) <= 0);
+            return Object.ReferenceEquals(left, null) 
+                || (left.CompareTo(right) <= 0);
         }
 
         public static bool operator >(SampleComparable left, SampleComparable right)
         {
-            return !Object.ReferenceEquals(left, null) && (left.CompareTo(right) > 0);
+            return !Object.ReferenceEquals(left, null) 
+                && (left.CompareTo(right) > 0);
         }
 
         public static bool operator <(SampleComparable left, SampleComparable right)
         {
-            return (!Object.ReferenceEquals(left, null) || !Object.ReferenceEquals(right, null)) &&
-                (Object.ReferenceEquals(left, null) || (left.CompareTo(right) < 0));
-        }
-
-        public override string ToString()
-        {
-            return "SampleComparable(" + value + ")";
+            return (!Object.ReferenceEquals(left, null) 
+                || !Object.ReferenceEquals(right, null)) 
+                && (Object.ReferenceEquals(left, null) 
+                || (left.CompareTo(right) < 0));
         }
     }
 }

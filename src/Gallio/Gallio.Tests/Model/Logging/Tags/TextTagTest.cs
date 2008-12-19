@@ -20,18 +20,26 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Model.Logging.Tags
 {
-    [VerifyEqualityContract(typeof(TextTag), ImplementsOperatorOverloads = false)]
     public class TextTagTest : BaseTagTest<TextTag>
     {
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<TextTag>()
+        {
+            ImplementsOperatorOverloads = false,
+            EquivalenceClasses = equivalenceClasses
+        };
+
         public override EquivalenceClassCollection<TextTag> GetEquivalenceClasses()
         {
-            return EquivalenceClassCollection<TextTag>.FromDistinctInstances(
+            return equivalenceClasses;
+        }
+
+        private static readonly EquivalenceClassCollection<TextTag> equivalenceClasses
+            = EquivalenceClassCollection<TextTag>.FromDistinctInstances(
                 new TextTag(""),
                 new TextTag("text"),
                 new TextTag("other"),
-                new TextTag("   \nsomething\nwith  embedded  newlines and significant whitespace to\nencode\n  ")
-                );
-        }
+                new TextTag("   \nsomething\nwith  embedded  newlines and significant whitespace to\nencode\n  "));
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfTextIsNull()

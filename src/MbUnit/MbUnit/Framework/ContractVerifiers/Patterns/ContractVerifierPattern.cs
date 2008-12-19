@@ -50,7 +50,8 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         /// to the evaluation scope as a new child test.
         /// </summary>
         /// <param name="scope">The scope of the test pattern.</param>
-        public void Build(PatternEvaluationScope scope)
+        /// <param name="fieldVerifierName">The name of the field defined as a contract verifier.</param>
+        public void Build(PatternEvaluationScope scope, string fieldVerifierName)
         {
             var test = new PatternTest(Name, null, scope.TestDataContext.CreateChild());
             test.Metadata.SetValue(MetadataKeys.TestKind, TestKinds.Test);
@@ -69,7 +70,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
                 state =>
                 {
                     Run(new ContractVerifierPatternInstanceState(
-                        state.FixtureType, state.FixtureInstance));
+                        state.FixtureType, state.FixtureInstance, fieldVerifierName));
                 });
         }
 
@@ -98,56 +99,41 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         }
 
         /// <summary>
+        /// Returns the instance of the contract verifier field.
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        protected static AbstractContractVerifier GetFieldInstance(IContractVerifierPatternInstanceState state)
+        {
+            var fieldInfo = state.FixtureType.GetField(state.FieldVerifierName);
+            return (AbstractContractVerifier)fieldInfo.GetValue(state.FixtureInstance);
+        }
+
+        /// <summary>
         /// Casts the instance of the test fixture into a provider of equivalence classes, 
         /// then returns the resulting collection as an enumeration.
         /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
-        /// <param name="fixtureType">The test fixture type.</param>
-        /// <param name="fixtureInstance">The test fixture instance.</param>
+        /// <param name="equivalentClassSource"></param>
+        /// <param name="state"></param>
         /// <returns></returns>
-        protected static IEnumerable GetEquivalentClasses(Type targetType, Type fixtureType, object fixtureInstance)
+        protected static IEnumerable GetEquivalentClasses(PropertyInfo equivalentClassSource, IContractVerifierPatternInstanceState state)
         {
-            Type interfaceType = GetIEquivalenceClassProviderInterface(targetType, fixtureType);
+            var field = GetFieldInstance(state);
+            var equivalentClasses = (IEnumerable)equivalentClassSource.GetValue(field, null);
 
             AssertionHelper.Verify(() =>
             {
-                if (interfaceType != null)
+                if (equivalentClasses != null)
                     return null;
 
-                return new AssertionFailureBuilder("Expected the contract verifier to implement a particular interface.")
-                    .AddLabeledValue("Contract Verifier", "Equality")
-                    .AddLabeledValue("Expected Interface", "IEquivalentClassProvider<" + targetType.Name + ">")
+                return new AssertionFailureBuilder("The contract verifier needs " +
+                    "a valid collection of equivalence instance classes. Please " +
+                    "first initialize the appropriate property.")
+                    .AddLabeledValue("Property", equivalentClassSource.Name)
                     .ToAssertionFailure();
             });
 
-            return (IEnumerable)interfaceType.InvokeMember("GetEquivalenceClasses",
-                BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod,
-                null, fixtureInstance, null);
-        }
-
-        /// <summary>
-        /// Gets the interface of a particular type if it is implemented by another type,
-        /// otherwise returns null.
-        /// </summary>
-        /// <param name="implementationType">The implementation type</param>
-        /// <param name="interfaceType">The interface type</param>
-        /// <returns>The interface type or null if it is not implemented by the implementation type</returns>
-        protected static Type GetInterface(Type implementationType, Type interfaceType)
-        {
-            return interfaceType.IsAssignableFrom(implementationType) ? interfaceType : null;
-        }
-
-        /// <summary>
-        /// Returns the target type as a generic IEquatable interface, or
-        /// a null reference if it does not implement such an interface.
-        /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
-        /// <param name="fixtureType">The test fixture type.</param>
-        /// <returns>The interface type or a null reference.</returns>
-        protected static Type GetIEquivalenceClassProviderInterface(Type targetType, Type fixtureType)
-        {
-            return GetInterface(fixtureType, typeof(IEquivalenceClassProvider<>)
-                .MakeGenericType(targetType));
+            return equivalentClasses;
         }
     }
 }

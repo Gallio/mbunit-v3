@@ -19,39 +19,25 @@ using System.Reflection;
 namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
 {
     /// <summary>
-    /// Builder for the test pattern <see cref="EqualityPattern"/>
+    /// Builder for the test pattern <see cref="EqualityPattern{T}"/>
     /// </summary>
-    internal class EqualityPatternBuilder : ContractVerifierPatternBuilder
+    /// <typeparam name="TTarget">The target equatable type.</typeparam>
+    internal class EqualityPatternBuilder<TTarget> : ContractVerifierPatternBuilder
+        where TTarget : IEquatable<TTarget>
     {
-        private Type targetType;
         private MethodInfo equalityMethodInfo;
         private string signatureDescription;
         private bool inequality;
         private string name;
+        private PropertyInfo equivalenceClassSource;
 
-        /// <summary>
-        /// Sets the target evaluated type.
-        /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
-        /// <returns>A reference to the builder itself.</returns>
-        internal EqualityPatternBuilder SetTargetType(Type targetType)
-        {
-            if (targetType == null)
-            {
-                throw new ArgumentNullException("targetType");
-            }
-
-            this.targetType = targetType;
-            return this;
-        }
-       
         /// <summary>
         /// Sets the reflection descriptor for the equality method.
         /// </summary>
         /// <param name="equalityMethodInfo">The reflection descriptor
         /// for the equality method.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal EqualityPatternBuilder SetEqualityMethodInfo(MethodInfo equalityMethodInfo)
+        internal EqualityPatternBuilder<TTarget> SetEqualityMethodInfo(MethodInfo equalityMethodInfo)
         {
             this.equalityMethodInfo = equalityMethodInfo;
             return this;
@@ -63,7 +49,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
         /// </summary>
         /// <param name="signatureDescription">A friendly signature text.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal EqualityPatternBuilder SetSignatureDescription(string signatureDescription)
+        internal EqualityPatternBuilder<TTarget> SetSignatureDescription(string signatureDescription)
         {
             if (signatureDescription == null)
             {
@@ -79,7 +65,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
         /// </summary>
         /// <param name="name">A friendly signature text.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal EqualityPatternBuilder SetName(string name)
+        internal EqualityPatternBuilder<TTarget> SetName(string name)
         {
             if (name == null)
             {
@@ -96,20 +82,32 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
         /// </summary>
         /// <param name="inequality">True if the method represents an inequality operation; otherwise, false.</param>
         /// <returns>A reference to the builder itself.</returns>
-        internal EqualityPatternBuilder SetInequality(bool inequality)
+        internal EqualityPatternBuilder<TTarget> SetInequality(bool inequality)
         {
             this.inequality = inequality;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the source of equivalence classes.
+        /// </summary>
+        /// <param name="equivalenceClassSource">Information about the contract verifier
+        /// property providing a collection of equivalence classes.</param>
+        /// <returns>A reference to the builder itself.</returns>
+        internal EqualityPatternBuilder<TTarget> SetEquivalenceClassSource(PropertyInfo equivalenceClassSource)
+        {
+            if (equivalenceClassSource == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+
+            this.equivalenceClassSource = equivalenceClassSource;
             return this;
         }
 
         /// <inheritdoc />
         public override ContractVerifierPattern ToPattern()
         {
-            if (targetType == null)
-            {
-                throw new InvalidOperationException("The evaluated target type must be specified.");
-            }
-
             if (name == null)
             {
                 throw new InvalidOperationException("A friendly name for the test pattern must be specified.");
@@ -120,8 +118,13 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Equality
                 throw new InvalidOperationException("A signature description must be specified.");
             }
 
-            return new EqualityPattern(new EqualityPatternSettings(
-                targetType, equalityMethodInfo, signatureDescription, inequality, name));
+            if (equivalenceClassSource == null)
+            {
+                throw new InvalidOperationException("The source of equivalence classes must be specified.");
+            }
+
+            return new EqualityPattern<TTarget>(new EqualityPatternSettings(
+                equalityMethodInfo, signatureDescription, inequality, name, equivalenceClassSource));
         }
     }
 }

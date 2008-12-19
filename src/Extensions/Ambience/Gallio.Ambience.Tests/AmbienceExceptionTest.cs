@@ -18,11 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MbUnit.Framework.ContractVerifiers;
+using MbUnit.Framework;
 
 namespace Gallio.Ambience.Tests
 {
-    [VerifyExceptionContract(typeof(AmbienceException))]
+    [TestsOn(typeof(AmbienceException))]
     public class AmbienceExceptionTest
     {
+        [ContractVerifier]
+        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<AmbienceException>();
     }
 }

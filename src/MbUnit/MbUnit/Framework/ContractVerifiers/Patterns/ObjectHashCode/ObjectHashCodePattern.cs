@@ -27,7 +27,9 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.ObjectHashCode
     /// It verifies that the target returns the same hash code
     /// for all the equivalent instances.
     /// </summary>
-    internal class ObjectHashCodePattern : ContractVerifierPattern
+    /// <typeparam name="TTarget">The target equatable type.</typeparam>
+    internal class ObjectHashCodePattern<TTarget> : ContractVerifierPattern
+        where TTarget : IEquatable<TTarget>
     {
         private ObjectHashCodePatternSettings settings;
 
@@ -57,29 +59,29 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.ObjectHashCode
         /// <inheritdoc />
         protected internal override void Run(IContractVerifierPatternInstanceState state)
         {
-            IEnumerator enumerator1 = GetEquivalentClasses(settings.TargetType, state.FixtureType, state.FixtureInstance).GetEnumerator();
-            IEnumerator enumerator2 = GetEquivalentClasses(settings.TargetType, state.FixtureType, state.FixtureInstance).GetEnumerator();
+            IEnumerator enumerator1 = GetEquivalentClasses(settings.EquivalenceClassSource, state).GetEnumerator();
+            IEnumerator enumerator2 = GetEquivalentClasses(settings.EquivalenceClassSource, state).GetEnumerator();
 
             Assert.Multiple(() =>
             {
                 while (enumerator1.MoveNext() && enumerator2.MoveNext())
                 {
-                    foreach (object x in (IEnumerable)enumerator1.Current)
-                        foreach (object y in (IEnumerable)enumerator2.Current)
+                    foreach (TTarget x in (IEnumerable)enumerator1.Current)
+                    foreach (TTarget y in (IEnumerable)enumerator2.Current)
+                    {
+                        AssertionHelper.Verify(() =>
                         {
-                            AssertionHelper.Verify(() =>
-                            {
-                                if (x.GetHashCode() == y.GetHashCode())
-                                    return null;
+                            if (x.GetHashCode() == y.GetHashCode())
+                                return null;
 
-                                return new AssertionFailureBuilder("The hash codes returned by two equal instances together should be identical.")
-                                    .AddRawLabeledValue("First object instance", x)
-                                    .AddRawLabeledValue("First hash code", x.GetHashCode())
-                                    .AddRawLabeledValue("Second object instance", y)
-                                    .AddRawLabeledValue("Second hash code", y.GetHashCode())
-                                    .ToAssertionFailure();
-                            });
-                        }
+                            return new AssertionFailureBuilder("The hash codes returned by two equal instances together should be identical.")
+                                .AddRawLabeledValue("First object instance", x)
+                                .AddRawLabeledValue("First hash code", x.GetHashCode())
+                                .AddRawLabeledValue("Second object instance", y)
+                                .AddRawLabeledValue("Second hash code", y.GetHashCode())
+                                .ToAssertionFailure();
+                        });
+                    }
                 }
             });
         }

@@ -1,4 +1,4 @@
-// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,23 +14,19 @@
 // limitations under the License.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Gallio.Model;
-using Gallio.Runner.Reports;
-using Gallio.Tests;
-using Gallio.Tests.Integration;
+using System.Linq;
+using System.Text;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
+using Gallio.Tests;
+using Gallio.Model;
 
 namespace MbUnit.Tests.Framework.ContractVerifiers
 {
-    [TestFixture]
-    [TestsOn(typeof(VerifyEqualityContractAttribute))]
     [RunSample(typeof(FullContractOnEquatableSample))]
     [RunSample(typeof(PartialContractOnEquatableSample))]
-    public class VerifyEqualityContractAttributeTest : VerifyContractAttributeBaseTest
+    public class VerifyEqualityContractTest : AbstractContractVerifierTest
     {
         [Test]
         [Row(typeof(FullContractOnEquatableSample), "ObjectEquals", TestStatus.Passed)]
@@ -45,41 +41,45 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(PartialContractOnEquatableSample), "OperatorNotEquals", TestStatus.Inconclusive)]
         public void VerifySampleEqualityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
-            VerifySampleContract("EqualityContract", fixtureType, testMethodName, expectedTestStatus);
+            VerifySampleContract("EqualityTests", fixtureType, testMethodName, expectedTestStatus);
         }
 
-        [VerifyEqualityContract(typeof(SampleEquatable),
-            ImplementsOperatorOverloads = true)]
         [Explicit]
-        private class FullContractOnEquatableSample : IEquivalenceClassProvider<SampleEquatable>
+        private class FullContractOnEquatableSample
         {
-            public EquivalenceClassCollection<SampleEquatable> GetEquivalenceClasses()
+            [ContractVerifier]
+            public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<SampleEquatable>()
             {
-                return EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(
-                    new SampleEquatable(123),
-                    new SampleEquatable(456),
-                    new SampleEquatable(789));
-            }
+                EquivalenceClasses = 
+                    EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(
+                        new SampleEquatable(123),
+                        new SampleEquatable(456),
+                        new SampleEquatable(789)),
+                
+                ImplementsOperatorOverloads = true
+            };
         }
 
-        [VerifyEqualityContract(typeof(SampleEquatable),
-            ImplementsOperatorOverloads = false)]
         [Explicit]
-        private class PartialContractOnEquatableSample : IEquivalenceClassProvider<SampleEquatable>
+        private class PartialContractOnEquatableSample
         {
-            public EquivalenceClassCollection<SampleEquatable> GetEquivalenceClasses()
+            [ContractVerifier]
+            public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<SampleEquatable>()
             {
-                return EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(
-                    new SampleEquatable(123),
-                    new SampleEquatable(456),
-                    new SampleEquatable(789));
-            }
+                EquivalenceClasses =
+                    EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(
+                        new SampleEquatable(123),
+                        new SampleEquatable(456),
+                        new SampleEquatable(789)),
+
+                ImplementsOperatorOverloads = false
+            };
         }
 
         /// <summary>
         /// Sample equatable type.
         /// </summary>
-        internal class SampleEquatable : IEquatable<SampleEquatable>
+        private class SampleEquatable : IEquatable<SampleEquatable>
         {
             private int value;
 
@@ -115,5 +115,6 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
                 return !(left == right);
             }
         }
+
     }
 }

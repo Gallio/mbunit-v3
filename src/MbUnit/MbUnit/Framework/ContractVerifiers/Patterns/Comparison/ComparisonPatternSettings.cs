@@ -23,21 +23,23 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
 {
     /// <summary>
     /// Data container which exposes necessary data required to
-    /// run the test pattern <see cref="ComparisonPattern{T}"/>.
+    /// run the test pattern <see cref="ComparisonPattern{TTarget, TResult}"/>.
     /// </summary>
-    /// <typeparam name="T">The type of the results provided by
+    /// <typeparam name="TResult">The type of the results provided by
     /// the comparison method. Usually a Int32 or a Boolean.</typeparam>
-    internal class ComparisonPatternSettings<T> where T : struct
+    internal class ComparisonPatternSettings<TResult>
+        where TResult : struct
     {
         /// <summary>
-        /// Gets the target evaluated type.
+        /// Information about a property of the contract verifier
+        /// providing a collection of equivalence classes.
         /// </summary>
-        public Type TargetType
+        public PropertyInfo EquivalenceClassSource
         {
             get;
             private set;
         }
-
+        
         /// <summary>
         /// Gets information about the comparison method.
         /// </summary>
@@ -60,7 +62,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
         /// Gets an equivalent comparison method which gives the same 
         /// results with Int32 parameters.
         /// </summary>
-        public Func<int, int, T> Refers
+        public Func<int, int, TResult> Refers
         {
             get;
             private set;
@@ -69,7 +71,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
         /// <summary>
         /// Gets a function which formats the result into a friendly text.
         /// </summary>
-        public Func<T, string> Formats
+        public Func<TResult, string> Formats
         {
             get;
             private set;
@@ -79,7 +81,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
         /// Gets a post-processor function for the result of the comparison method, 
         /// in order to make it comparable with the result of the reference.
         /// </summary>
-        public Func<T, T> PostProcesses
+        public Func<TResult, TResult> PostProcesses
         {
             get;
             private set;
@@ -96,24 +98,21 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
 
         /// <summary>
         /// Constructs the data container which exposes necessary data required to
-        /// run the test pattern <see cref="ComparisonPattern{T}"/>.
+        /// run the test pattern <see cref="ComparisonPattern{TTarget, TResult}"/>.
         /// </summary>
-        /// <param name="targetType">The target evaluated type.</param>
         /// <param name="comparisonMethodInfo">Information about the comparison method.</param>
         /// <param name="signatureDescription">A friendly description of the equality method signature.</param>
         /// <param name="refers"></param>
         /// <param name="formats"></param>
         /// <param name="postProcesses"></param>
         /// <param name="name">A friendly name for the test pattern.</param>
-        public ComparisonPatternSettings(Type targetType, MethodInfo comparisonMethodInfo,
-            string signatureDescription, Func<int, int, T> refers,
-            Func<T, string> formats, Func<T, T> postProcesses, string name)
+        /// <param name="equivalenceClassSource">Information about a property of the 
+        /// contract verifier providing a collection of equivalence classes.</param>
+        public ComparisonPatternSettings(MethodInfo comparisonMethodInfo,
+            string signatureDescription, Func<int, int, TResult> refers,
+            Func<TResult, string> formats, Func<TResult, TResult> postProcesses, string name,
+            PropertyInfo equivalenceClassSource)
         {
-            if (targetType == null)
-            {
-                throw new ArgumentNullException("targetType");
-            }
-            
             if (refers == null)
             {
                 throw new ArgumentNullException("refers");
@@ -139,13 +138,18 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.Comparison
                 throw new ArgumentNullException("friendlyName");
             }
 
-            this.TargetType = targetType;
+            if (equivalenceClassSource == null)
+            {
+                throw new ArgumentNullException("equivalenceClassSource");
+            }
+
             this.SignatureDescription = signatureDescription;
             this.Refers = refers;
             this.Formats = formats;
             this.PostProcesses = postProcesses;
             this.Name = name;
             this.ComparisonMethodInfo = comparisonMethodInfo;
+            this.EquivalenceClassSource = equivalenceClassSource;
         }
     }
 }

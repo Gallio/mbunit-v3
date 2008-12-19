@@ -1,4 +1,4 @@
-﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,29 +14,33 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MbUnit.Framework;
-using MbUnit.Framework.ContractVerifiers.Patterns.ObjectHashCode;
+using MbUnit.Framework.ContractVerifiers;
+using System.Runtime.Serialization;
 
-namespace MbUnit.Tests.Framework.ContractVerifiers.ObjectHashCode
+namespace MbUnit.Samples.ContractVerifiers
 {
-    [TestFixture]
-    public class ObjectHashCodePatternSettingsTest
+    public class SampleImmutable
     {
-        [Test]
-        [ExpectedArgumentNullException]
-        public void ConstructsWithNullTargetType()
-        {
-            new ObjectHashCodePatternSettings(null);
-        }
+        private readonly int number;
+        private readonly string text;
+        private readonly ImmutableFoo foo;
 
-        [Test]
-        public void ConstructsOk()
+        public SampleImmutable(int number, string text, ImmutableFoo foo)
         {
-            var settings = new ObjectHashCodePatternSettings(typeof(object));
-            Assert.AreEqual(typeof(object), settings.TargetType);
+            this.number = number;
+            this.text = text;
+            this.foo = foo;
+        }
+    }
+
+    public class ImmutableFoo
+    {
+        private readonly double number;
+
+        public ImmutableFoo(double number)
+        {
+            this.number = number;
         }
     }
 }

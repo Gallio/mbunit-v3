@@ -16,25 +16,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Collections.ObjectModel;
+using Gallio;
+using Gallio.Framework.Assertions;
+using System.Reflection;
 
-namespace MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor
+namespace MbUnit.Framework.ContractVerifiers.Patterns.MemberRecursion
 {
     /// <summary>
     /// Data container which exposes necessary data required to
-    /// run the test pattern <see cref="HasConstructorPattern{TTarget}"/>.
+    /// run the test pattern <see cref="MemberRecursionPattern{TTarget, TMemberInfo}"/>.
     /// </summary>
-    internal class HasConstructorPatternSettings
+    /// <typeparam name="TMemberInfo"></typeparam>
+    internal class MemberRecursionPatternSettings<TMemberInfo>
+        where TMemberInfo : MemberInfo
     {
-        /// <summary>
-        /// Gets the required constructor accessibility.
-        /// </summary>
-        public HasConstructorAccessibility Accessibility
-        {
-            get;
-            private set;
-        }
-
         /// <summary>
         /// Gets a friendly name used to build the full pattern test name.
         /// </summary>
@@ -45,37 +40,47 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.HasConstructor
         }
 
         /// <summary>
-        /// Gets the parameter types for the searched constructor.
+        /// 
         /// </summary>
-        public IEnumerable<Type> ParameterTypes
+        public BindingFlags BindingFlags
         {
             get;
             private set;
         }
 
         /// <summary>
-        /// Constructs the data container which exposes necessary data required to
-        /// run the test pattern <see cref="HasConstructorPattern{TTarget}"/>.
+        /// Gets the assertion function to run recursively over each member.
         /// </summary>
-        /// <param name="accessibility">The required accessibility.</param>
-        /// <param name="name">A friendly name for the pattern test.</param>
-        /// <param name="parameterTypes">The parameter types.</param>
-        public HasConstructorPatternSettings(HasConstructorAccessibility accessibility, 
-            string name, IEnumerable<Type> parameterTypes)
+        public Func<TMemberInfo, AssertionFailure> AssertionFunc
+        {
+            get;
+            private set;
+        }
+
+
+        /// <summary>
+        /// Constructs the data container which exposes necessary data required to
+        /// run the test pattern <see cref="MemberRecursionPattern{TTarget, TMemberInfo}"/>.
+        /// </summary>
+        /// <param name="name">A friendly name used to build the full pattern test name.</param>
+        /// <param name="bindingFlags"></param>
+        /// <param name="assertionFunc">The assertion function to run recursively over each member.</param>
+        public MemberRecursionPatternSettings(string name, BindingFlags bindingFlags,
+            Func<TMemberInfo, AssertionFailure> assertionFunc)
         {
             if (name == null)
             {
                 throw new ArgumentNullException("friendlyName");
             }
 
-            if (parameterTypes == null)
+            if (assertionFunc == null)
             {
-                throw new ArgumentNullException("parameterTypes");
+                throw new ArgumentNullException("assertionFunc");
             }
 
-            this.Accessibility = accessibility;
-            this.Name = String.Format("Has{0}Constructor", name);
-            this.ParameterTypes = new ReadOnlyCollection<Type>(new List<Type>(parameterTypes));
+            this.Name = name;
+            this.BindingFlags = bindingFlags;
+            this.AssertionFunc = assertionFunc;
         }
     }
 }

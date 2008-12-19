@@ -21,18 +21,17 @@ using MbUnit.Framework.ContractVerifiers;
 namespace Gallio.Tests.Framework.Text
 {
     [TestsOn(typeof(Diff))]
-    [VerifyEqualityContract(typeof(Diff))]
-    public class DiffTest : IEquivalenceClassProvider<Diff>
+    public class DiffTest
     {
-        public EquivalenceClassCollection<Diff> GetEquivalenceClasses()
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<Diff>()
         {
-            return EquivalenceClassCollection<Diff>.FromDistinctInstances(
+            EquivalenceClasses = EquivalenceClassCollection<Diff>.FromDistinctInstances(
                 new Diff(DiffKind.Change, new Range(0, 10), new Range(0, 10)),
                 new Diff(DiffKind.NoChange, new Range(0, 10), new Range(0, 10)),
                 new Diff(DiffKind.Change, new Range(0, 9), new Range(0, 10)),
-                new Diff(DiffKind.Change, new Range(0, 9), new Range(0, 9))
-            );
-        }
+                new Diff(DiffKind.Change, new Range(0, 9), new Range(0, 9)))
+        };
 
         [Test]
         public void ConstructorInitializesProperties()

@@ -21,19 +21,18 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Model.Logging
 {
-    [VerifyEqualityContract(typeof(Marker))]
-    public class MarkerTest : IEquivalenceClassProvider<Marker>
+    public class MarkerTest
     {
-        public EquivalenceClassCollection<Marker> GetEquivalenceClasses()
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<Marker>()
         {
-            return EquivalenceClassCollection<Marker>.FromDistinctInstances(
+            EquivalenceClasses = EquivalenceClassCollection<Marker>.FromDistinctInstances(
                 Marker.AssertionFailure,
                 Marker.DiffAddition,
                 Marker.AssertionFailure.WithAttribute("a", "x"),
                 Marker.AssertionFailure.WithAttribute("a", "y"),
-                Marker.AssertionFailure.WithAttribute("a", "x").WithAttribute("b", "y")
-                );
-        }
+                Marker.AssertionFailure.WithAttribute("a", "x").WithAttribute("b", "y"))
+        };
 
         [Test]
         [Row(null, ExpectedException=typeof(ArgumentNullException))]

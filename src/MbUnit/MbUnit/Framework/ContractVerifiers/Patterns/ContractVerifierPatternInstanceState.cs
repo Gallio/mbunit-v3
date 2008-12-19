@@ -45,14 +45,25 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns
         }
 
         /// <summary>
+        /// The name of the field defined as a contract verifier.
+        /// </summary>
+        public string FieldVerifierName
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="fixtureType">Gets the test fixture type or null if none.</param>
         /// <param name="fixtureInstance">Gets the test fixture instance or null if none.</param>
-        public ContractVerifierPatternInstanceState(Type fixtureType, object fixtureInstance)
+        /// <param name="fieldVerifierName">The name of the field defined as a contract verifier.</param>
+        public ContractVerifierPatternInstanceState(Type fixtureType, object fixtureInstance, string fieldVerifierName)
         {
             this.FixtureType = fixtureType;
             this.FixtureInstance = fixtureInstance;
+            this.FieldVerifierName = fieldVerifierName;
         }
     }
 }

@@ -21,22 +21,21 @@ namespace Gallio.Tests.Framework.Data
 {
     [TestFixture]
     [TestsOn(typeof(DataBinding))]
-    [VerifyEqualityContract(typeof(DataBinding), ImplementsOperatorOverloads=false)]
-    public class DataBindingTest : IEquivalenceClassProvider<DataBinding>
+    public class DataBindingTest
     {
-        public EquivalenceClassCollection<DataBinding> GetEquivalenceClasses()
+        [ContractVerifier]
+        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<DataBinding>()
         {
-            return EquivalenceClassCollection<DataBinding>.FromDistinctInstances(
+            ImplementsOperatorOverloads = false,
+            EquivalenceClasses = EquivalenceClassCollection<DataBinding>.FromDistinctInstances(
                 new DataBinding(null, null),
                 new DataBinding(0, null),
                 new DataBinding(1, null),
                 new DataBinding(null, "path"),
                 new DataBinding(null, "path2"),
                 new DataBinding(0, "path"),
-                new DataBinding(1, "path2")
-                );
-        }
-
+                new DataBinding(1, "path2"))
+        };
 
         [Test]
         public void ConstructorWithPathAndIndex()

@@ -49,6 +49,14 @@
                             <File Id="MbUnit3.Samples.SampleException.Test.cs" Name="SampleException.Test.cs" KeyPath="yes" />
                         </Component>
                     </Directory>                    
+                    <Directory Id="MbUnit3.Samples.ContractVerifiers.Immutability" Name="Exception">
+                        <Component Id="MbUnit3.Samples.SampleImmutable.cs" Guid="{2CABEEF4-55A7-43ad-B180-6D1D7443ED52}" Win64="no">
+                            <File Id="MbUnit3.Samples.SampleImmutable.cs" Name="SampleImmutable.cs" KeyPath="yes" />
+                        </Component>
+                        <Component Id="MbUnit3.Samples.SampleImmutable.Test.cs" Guid="{31761834-3B23-45b7-8E41-3F1DFCBE5B32}" Win64="no">
+                            <File Id="MbUnit3.Samples.SampleImmutable.Test.cs" Name="SampleImmutable.Test.cs" KeyPath="yes" />
+                        </Component>
+                    </Directory>                    
                 </Directory>
                 <Component Id="MbUnit3.Samples.csproj" Guid="{89A17A8E-6EB6-4847-B1D6-1C5039A7AF03}" Win64="no">
                     <File Id="MbUnit3.Samples.csproj" Name="MbUnit.Samples.csproj" KeyPath="yes" />
