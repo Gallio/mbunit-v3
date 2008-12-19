@@ -165,6 +165,8 @@
             <ComponentRef Id="MbUnit3.Samples.SampleEquatable.Test.cs" />
             <ComponentRef Id="MbUnit3.Samples.SampleException.cs" />
             <ComponentRef Id="MbUnit3.Samples.SampleException.Test.cs" />
+            <ComponentRef Id="MbUnit3.Samples.SampleImmutable.cs" />
+            <ComponentRef Id="MbUnit3.Samples.SampleImmutable.Test.cs" />
             <ComponentRef Id="MbUnit3.Samples.csproj" />
             <ComponentRef Id="MbUnit3.Samples.RichTestLogDemo.cs" />
             <ComponentRef Id="MbUnit3.Samples.WatiNDemo.cs" />
