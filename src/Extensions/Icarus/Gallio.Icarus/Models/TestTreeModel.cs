@@ -188,35 +188,40 @@ namespace Gallio.Icarus.Models
             if (Root == null)
                 return;
 
-            List<TestTreeNode> nodes = Root.Find(testData.Id, true);
-            foreach (TestTreeNode node in nodes)
+            var nodes = Root.Find(testData.Id, true);
+            foreach (var node in nodes)
             {
                 node.AddTestStepRun(testStepRun);
                 Filter(node);
             }
 
-            if (testStepRun.Step.IsPrimary && (testStepRun.Step.IsTestCase || testData.IsTestCase))
+            if (!testStepRun.Step.IsPrimary || (!testStepRun.Step.IsTestCase && !testData.IsTestCase))
+                return;
+
+            switch (testStepRun.Result.Outcome.Status)
             {
-                switch (testStepRun.Result.Outcome.Status)
-                {
-                    case TestStatus.Passed:
-                        Passed++;
-                        OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
-                        break;
-                    case TestStatus.Failed:
-                        Failed++;
-                        OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
-                        break;
-                    case TestStatus.Skipped:
-                        Skipped++;
-                        OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
-                        break;
-                    case TestStatus.Inconclusive:
-                        Inconclusive++;
-                        OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
-                        break;
-                }
+                case TestStatus.Passed:
+                    Passed++;
+                    break;
+                case TestStatus.Failed:
+                    Failed++;
+                    break;
+                case TestStatus.Skipped:
+                    Skipped++;
+                    break;
+                case TestStatus.Inconclusive:
+                    Inconclusive++;
+                    break;
             }
+        }
+
+        public void Notify()
+        {
+            OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new object[] {}));
+            OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
         }
 
         private void FilterTree()

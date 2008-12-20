@@ -13,32 +13,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Collections.Generic;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
-using Gallio.Model.Serialization;
-using Gallio.Runner.Events;
-using Gallio.Runner.Reports;
+using Gallio.Icarus.Models;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using Gallio.Icarus.Models;
-using System.Collections.Generic;
 
 namespace Gallio.Icarus.Tests
 {
     [Category("Views")]
-    class TestResultsTest
+    public class TestResultsTest
     {
         [Test]
         public void Constructor_Test()
         {
             var mediator = MockRepository.GenerateStub<IMediator>();
             var testController = MockRepository.GenerateStub<ITestController>();
-            testController.Stub(x => x.SelectedTests).Return(new System.ComponentModel.BindingList<TestTreeNode>(new List<TestTreeNode>()));
+            testController.Stub(x => x.SelectedTests).Return(
+                new System.ComponentModel.BindingList<TestTreeNode>(new List<TestTreeNode>()));
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            optionsController.Stub(x => x.UpdateDelay).Return(1);
             mediator.TestController = testController;
             mediator.OptionsController = optionsController;
-            TestResults testResults = new TestResults(mediator);
+            var testResults = new TestResults(mediator);
         }
     }
 }

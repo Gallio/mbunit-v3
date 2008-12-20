@@ -27,7 +27,6 @@ namespace Gallio.Icarus.Models
     public class TestTreeNode : Node
     {
         private TestStatus testStatus = TestStatus.Skipped;
-        private bool sourceCodeAvailable, isTest;
         private readonly string name;
         private readonly string nodeType;
         protected Image nodeTypeIcon, testStatusIcon;
@@ -51,21 +50,12 @@ namespace Gallio.Icarus.Models
                 testStatus = value;
                 testStatusIcon = GetTestStatusIcon(value);
                 UpdateParentTestStatus();
-                NotifyModel();
             }
         }
 
-        public bool SourceCodeAvailable
-        {
-            get { return sourceCodeAvailable; }
-            set { sourceCodeAvailable = value; }
-        }
+        public bool SourceCodeAvailable { get; set; }
 
-        public bool IsTest
-        {
-            get { return isTest; }
-            set { isTest = value; }
-        }
+        public bool IsTest { get; set; }
 
         /// <summary>
         /// Returns the 'combined' state for all siblings of a node.
@@ -83,9 +73,9 @@ namespace Gallio.Icarus.Models
                 // The parent has more than one child.  Walk through parent's child
                 // nodes to determine the state of all this node's siblings,
                 // including this node.
-                foreach (Node node in Parent.Nodes)
+                foreach (var node in Parent.Nodes)
                 {
-                    TestTreeNode child = node as TestTreeNode;
+                    var child = node as TestTreeNode;
                     if (child != null && CheckState != child.CheckState)
                         return CheckState.Indeterminate;
                 }
@@ -100,19 +90,19 @@ namespace Gallio.Icarus.Models
                 if (Parent == null || Parent.Nodes.Count == 1)
                     return TestStatus;
 
-                TestStatus ts = TestStatus.Skipped;
-                foreach (Node node in Parent.Nodes)
+                var ts = TestStatus.Skipped;
+                foreach (var node in Parent.Nodes)
                 {
-                    TestTreeNode child = node as TestTreeNode;
-                    if (child != null)
-                    {
-                        if (child.TestStatus == TestStatus.Failed)
-                            return TestStatus.Failed;
-                        if (child.TestStatus == TestStatus.Inconclusive)
-                            ts = TestStatus.Inconclusive;
-                        if (child.TestStatus == TestStatus.Passed && ts != TestStatus.Inconclusive)
-                            ts = TestStatus.Passed;
-                    }
+                    var child = node as TestTreeNode;
+                    if (child == null)
+                        continue;
+
+                    if (child.TestStatus == TestStatus.Failed)
+                        return TestStatus.Failed;
+                    if (child.TestStatus == TestStatus.Inconclusive)
+                        ts = TestStatus.Inconclusive;
+                    if (child.TestStatus == TestStatus.Passed && ts != TestStatus.Inconclusive)
+                        ts = TestStatus.Passed;
                 }
                 return ts;
             }
@@ -173,13 +163,13 @@ namespace Gallio.Icarus.Models
 
         public List<TestTreeNode> Find(string key, bool searchChildren)
         {
-            List<TestTreeNode> nodes = new List<TestTreeNode>();
+            var nodes = new List<TestTreeNode>();
 
             if (Name == key)
                 nodes.Add(this);
 
             // always search one level deep...
-            foreach (Node n in Nodes)
+            foreach (var n in Nodes)
                 nodes.AddRange(Find(key, searchChildren, n));
 
             return nodes;
@@ -187,19 +177,17 @@ namespace Gallio.Icarus.Models
 
         private static List<TestTreeNode> Find(string key, bool searchChildren, Node node)
         {
-            List<TestTreeNode> nodes = new List<TestTreeNode>();
+            var nodes = new List<TestTreeNode>();
             if (node is TestTreeNode)
             {
-                TestTreeNode ttnode = (TestTreeNode)node;
+                var ttnode = (TestTreeNode)node;
                 if (ttnode.Name == key)
                     nodes.Add(ttnode);
 
                 // continue down the tree if necessary
                 if (searchChildren)
-                {
-                    foreach (Node n in node.Nodes)
-                        nodes.AddRange(Find(key, searchChildren, n));
-                }
+                    foreach (var n in node.Nodes)
+                        nodes.AddRange(Find(key, true, n));
             }
             return nodes;
         }
@@ -222,15 +210,14 @@ namespace Gallio.Icarus.Models
         /// </summary>
         private void UpdateChildNodeState()
         {
-            foreach (Node node in Nodes)
+            foreach (var node in Nodes)
             {
                 // It is possible node is not a ThreeStateTreeNode, so check first.
-                TestTreeNode child = node as TestTreeNode;
-                if (child != null)
-                {
-                    child.CheckState = CheckState;
-                    child.UpdateChildNodeState();
-                }
+                var child = node as TestTreeNode;
+                if (child == null)
+                    continue;
+                child.CheckState = CheckState;
+                child.UpdateChildNodeState();
             }
         }
 
@@ -249,29 +236,27 @@ namespace Gallio.Icarus.Models
             // state.  However, if not in an indeterminate state, then still need
             // to evaluate the state of all the siblings of this node, including the state
             // of this node before setting the state of the parent of this instance.
-            TestTreeNode parent = Parent as TestTreeNode;
-            if (parent != null)
-            {
-                CheckState state;
+            var parent = Parent as TestTreeNode;
+            if (parent == null)
+                return;
+            CheckState state;
 
-                // Determine the new state
-                if (!isStartingPoint && (CheckState == CheckState.Indeterminate))
-                    state = CheckState.Indeterminate;
-                else
-                    state = SiblingsState;
+            // Determine the new state
+            if (!isStartingPoint && (CheckState == CheckState.Indeterminate))
+                state = CheckState.Indeterminate;
+            else
+                state = SiblingsState;
 
-                // Update parent state if not the same.
-                if (parent.CheckState != state)
-                {
-                    parent.CheckState = state;
-                    parent.UpdateParentNodeState(false);
-                }
-            }
+            // Update parent state if not the same.
+            if (parent.CheckState == state)
+                return;
+            parent.CheckState = state;
+            parent.UpdateParentNodeState(false);
         }
 
         private void UpdateParentTestStatus()
         {
-            TestTreeNode parent = Parent as TestTreeNode;
+            var parent = Parent as TestTreeNode;
             if (parent != null)
                 parent.TestStatus = SiblingTestStatus;
         }
@@ -307,7 +292,7 @@ namespace Gallio.Icarus.Models
 
             testStepRuns.Clear();
 
-            foreach (Node n in Nodes)
+            foreach (var n in Nodes)
                 ((TestTreeNode)n).Reset();
         }
     }

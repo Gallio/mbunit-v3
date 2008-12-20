@@ -18,10 +18,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
-using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Properties;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Reflection;
@@ -60,16 +58,16 @@ namespace Gallio.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            RuntimeLogController runtimeLogController = new RuntimeLogController();
+            var runtimeLogController = new RuntimeLogController();
 
-            RuntimeSetup runtimeSetup = new RuntimeSetup
+            var runtimeSetup = new RuntimeSetup
             {
                 RuntimePath =
                     Path.GetDirectoryName(
                     AssemblyUtils.GetFriendlyAssemblyLocation(typeof (IcarusProgram).Assembly))
             };
 
-            OptionsController optionsController = new OptionsController(new FileSystem(), new XmlSerialization(),
+            var optionsController = new OptionsController(new FileSystem(), new XmlSerialization(),
                 new Utilities.UnhandledExceptionPolicy());
 
             // Set the installation path explicitly to ensure that we do not encounter problems
@@ -79,33 +77,33 @@ namespace Gallio.Icarus
             
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                IRuntime runtime = RuntimeAccessor.Instance;
+                var runtime = RuntimeAccessor.Instance;
 
                 optionsController.SetTestRunnerManager(runtime.Resolve<ITestRunnerManager>());
 
-                ITestRunner testRunner = runtime.Resolve<ITestRunnerManager>().CreateTestRunner(
+                var testRunner = runtime.Resolve<ITestRunnerManager>().CreateTestRunner(
                     optionsController.TestRunnerFactory);
                 ITestRunnerService testRunnerService = new TestRunnerService(testRunner);
                 
-                IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+                var reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
 
                 IMediator mediator = Mediator.Mediator.Instance;
                 mediator.ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, 
                     new Project()), new FileSystem(), new XmlSerialization());
                 mediator.TestController = new TestController(testRunnerService, new TestTreeModel());
                 mediator.ReportController = new ReportController(new ReportService(reportManager));
-                mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController);
+                mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController, optionsController);
                 mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
                 mediator.RuntimeLogController = runtimeLogController;
                 mediator.OptionsController = optionsController;
 
-                Main main = new Main(mediator);
+                var main = new Main(mediator);
                 main.Load += delegate
                 {
-                    List<string> assemblyFiles = new List<string>();
+                    var assemblyFiles = new List<string>();
                     if (Arguments != null && Arguments.Assemblies.Length > 0)
                     {
-                        foreach (string assembly in assemblyFiles)
+                        foreach (var assembly in assemblyFiles)
                         {
                             if (!File.Exists(assembly))
                                 continue;

@@ -33,6 +33,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         Color FailedColor { get; set; }
         Color InconclusiveColor { get; set; }
         Color SkippedColor { get; set; }
+        double UpdateDelay { get; }
 
         void Save();
         void Cancel();

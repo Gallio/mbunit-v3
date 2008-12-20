@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Timers;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
-using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Utilities;
 using Gallio.Icarus.Mediator.Interfaces;
@@ -25,7 +25,8 @@ namespace Gallio.Icarus
 {
     public partial class TestResults : DockWindow
     {
-        readonly ITestController testController;
+        private readonly ITestController testController;
+        private readonly Timer timer = new Timer();
 
         public int TotalTests
         {
@@ -35,12 +36,12 @@ namespace Gallio.Icarus
 
         public TestResults(IMediator mediator)
         {
-            this.testController = mediator.TestController;
+            testController = mediator.TestController;
 
             InitializeComponent();
 
-            testController.TestStepFinished += delegate { Sync.Invoke(this, UpdateTestResults); };
-            testController.SelectedTests.ListChanged += delegate { Sync.Invoke(this, UpdateTestResults); };
+            testController.TestStepFinished += delegate { timer.Enabled = true; };
+            testController.SelectedTests.ListChanged += delegate { timer.Enabled = true; };
             testController.RunStarted += delegate { Reset(); };
 
             testProgressStatusBar.DataBindings.Add("Mode", mediator.OptionsController, "TestStatusBarStyle");
@@ -53,6 +54,10 @@ namespace Gallio.Icarus
             testProgressStatusBar.DataBindings.Add("Failed", testController, "Model.Failed");
             testProgressStatusBar.DataBindings.Add("Skipped", testController, "Model.Skipped");
             testProgressStatusBar.DataBindings.Add("Inconclusive", testController, "Model.Inconclusive");
+
+            timer.Interval = mediator.OptionsController.UpdateDelay;
+            timer.AutoReset = false;
+            timer.Elapsed += delegate { Sync.Invoke(this, UpdateTestResults); };
         }
 
         protected void UpdateTestResults()

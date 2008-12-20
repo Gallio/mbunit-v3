@@ -56,6 +56,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Aga.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="ICSharpCode.TextEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\ICSharpCode.TextEditor.dll</HintPath>
@@ -91,6 +92,7 @@
       <DependentUpon>CodeWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AnnotationsController.cs" />
+    <Compile Include="Controllers\DebuggerController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
@@ -325,6 +327,10 @@
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj">
+      <Project>{B6912CC5-1E73-46E0-8F09-7F135924E3E2}</Project>
+      <Name>Gallio.VisualStudio.Interop</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

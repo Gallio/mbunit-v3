@@ -19,11 +19,12 @@ using System.ComponentModel;
 using System.Threading;
 using Gallio.Collections;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Models;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Utilities;
+using Timer = System.Timers.Timer;
+using Gallio.Icarus.Mediator.Interfaces;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -31,8 +32,9 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly ITestController testController;
         private readonly HashSet<string> selectedTestIds;
+        private readonly Timer timer = new Timer();
 
-        public ExecutionLogController(ITestController testController)
+        public ExecutionLogController(ITestController testController, IOptionsController optionsController)
         {
             this.testController = testController;
 
@@ -44,6 +46,10 @@ namespace Gallio.Icarus.Controllers
 
             TestStepRuns = new List<TestStepRun>();
             Update();
+
+            timer.Interval = optionsController.UpdateDelay;
+            timer.AutoReset = false;
+            timer.Elapsed += delegate { Update(); };
         }
 
         public event EventHandler<System.EventArgs> ExecutionLogReset;
@@ -65,16 +71,16 @@ namespace Gallio.Icarus.Controllers
         {
             selectedTestIds.Clear();
 
-            foreach (TestTreeNode node in testController.SelectedTests)
+            foreach (var node in testController.SelectedTests)
                 selectedTestIds.Add(node.Name);
 
-            Update();
+            timer.Enabled = true;
         }
 
         private void TestStepFinished(object sender, TestStepFinishedEventArgs e)
         {
             if (selectedTestIds.Count == 0 || selectedTestIds.Contains(e.Test.Id))
-                Update();
+                timer.Enabled = true;
         }
 
         private void Update()
@@ -91,7 +97,7 @@ namespace Gallio.Icarus.Controllers
                 {
                     // only update log if the test is selected in the tree or, 
                     // if no tests are selected, if it is the root.
-                    foreach (TestStepRun run in report.TestPackageRun.AllTestStepRuns)
+                    foreach (var run in report.TestPackageRun.AllTestStepRuns)
                         if (selectedTestIds.Contains(run.Step.TestId) || 
                             (selectedTestIds.Count == 0 && run.Step.TestId == testController.Model.Root.Name))
                             TestStepRuns.Add(run);

@@ -44,6 +44,7 @@ namespace Gallio.Icarus.Models.Interfaces
         Node FindNode(TreePath path);
         Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor);
         TreePath GetPath(Node node);
+        void Notify();
         void ResetTestStatus(IProgressMonitor progressMonitor);
         void UpdateTestStatus(TestData testData, TestStepRun testStepRun);
     }

@@ -17,16 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Reflection;
 using Gallio.Collections;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner;
-using Gallio.Runtime;
-using Gallio.Utilities;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
-using UnhandledExceptionPolicy=Gallio.Icarus.Utilities.UnhandledExceptionPolicy;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -123,6 +119,11 @@ namespace Gallio.Icarus.Controllers
         {
             get { return Color.FromArgb(settings.SkippedColor); }
             set { settings.SkippedColor = value.ToArgb(); }
+        }
+
+        public double UpdateDelay
+        {
+            get { return 1000; }
         }
 
         public OptionsController(IFileSystem fileSystem, IXmlSerialization xmlSerialization,

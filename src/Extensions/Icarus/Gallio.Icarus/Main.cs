@@ -19,9 +19,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Reflection;
@@ -29,6 +27,7 @@ using Gallio.Runtime;
 using Gallio.Utilities;
 using WeifenLuo.WinFormsUI.Docking;
 using Timer = System.Timers.Timer;
+using Gallio.Icarus.Controllers;
 
 namespace Gallio.Icarus
 {
@@ -113,12 +112,12 @@ namespace Gallio.Icarus
         private void SetupReportMenus()
         {
             // add a menu item for each report type (Report -> View As)
-            List<string> reportTypes = new List<string>();
+            var reportTypes = new List<string>();
             reportTypes.AddRange(mediator.ReportController.ReportTypes);
             reportTypes.Sort();
             foreach (string reportType in reportTypes)
             {
-                ToolStripMenuItem menuItem = new ToolStripMenuItem { Text = reportType };
+                var menuItem = new ToolStripMenuItem { Text = reportType };
                 menuItem.Click += delegate { mediator.ShowReport(menuItem.Text); };
                 viewAsToolStripMenuItem.DropDownItems.Add(menuItem);
             }
@@ -138,7 +137,7 @@ namespace Gallio.Icarus
                     return;
                 }
             }
-            CodeWindow codeWindow = new CodeWindow(codeLocation);
+            var codeWindow = new CodeWindow(codeLocation);
             codeWindow.Show(dockPanel, DockState.Document);
         }
 
@@ -523,6 +522,12 @@ namespace Gallio.Icarus
                     sb.Append(String.Format(" ({0:P0})", (e.CompletedWorkUnits/e.TotalWorkUnits)));
                 toolStripStatusLabel.Text = sb.ToString();
             });
+        }
+
+        private void startWithDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DebuggerController.Attach();
+            StartTests();
         }
     }
 }

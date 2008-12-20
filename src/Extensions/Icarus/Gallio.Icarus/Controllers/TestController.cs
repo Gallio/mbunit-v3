@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Timers;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -40,6 +41,7 @@ namespace Gallio.Icarus.Controllers
         private TestPackageConfig testPackageConfig;
         private bool testPackageLoaded;
         private TestModelData testModelData;
+        private readonly Timer timer = new Timer();
 
         public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
         public event EventHandler<ShowSourceCodeEventArgs> ShowSourceCode;
@@ -87,13 +89,18 @@ namespace Gallio.Icarus.Controllers
             this.testRunnerService = testRunnerService;
             this.testTreeModel = testTreeModel;
 
-            testRunnerService.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
+            testRunnerService.TestStepFinished += ((sender, e) =>
             {
+                timer.Enabled = true;
                 testTreeModel.UpdateTestStatus(e.Test, e.TestStepRun);
                 EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
-            };
+            });
 
             selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
+
+            timer.Interval = 1000;
+            timer.AutoReset = false;
+            timer.Elapsed += delegate { testTreeModel.Notify(); };
         }
 
         public void ApplyFilter(string filter, IProgressMonitor progressMonitor)
@@ -101,10 +108,10 @@ namespace Gallio.Icarus.Controllers
             using (progressMonitor.BeginTask("Applying filter", 3))
             {
                 progressMonitor.SetStatus("Parsing filter");
-                Filter<ITest> f = FilterUtils.ParseTestFilter(filter);
+                var f = FilterUtils.ParseTestFilter(filter);
                 progressMonitor.Worked(1);
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     testTreeModel.ApplyFilter(f, subProgressMonitor);
 
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
@@ -116,10 +123,10 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Exploring test package", 2))
             {
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     Load(subProgressMonitor);
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     if (testModelData == null)
                         testModelData = testRunnerService.Explore(subProgressMonitor);
              
@@ -132,10 +139,10 @@ namespace Gallio.Icarus.Controllers
             using (progressMonitor.BeginTask("Getting current filter", 2))
             {
                 Filter<ITest> filter;
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     filter = testTreeModel.GetCurrentFilter(subProgressMonitor);
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     testRunnerService.SetFilter(filter, subProgressMonitor);
 
                 return filter;
@@ -149,7 +156,7 @@ namespace Gallio.Icarus.Controllers
                 if (testPackageLoaded)
                     return;
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
                     testRunnerService.Load(testPackageConfig, subProgressMonitor);
 
                 testPackageLoaded = true;
@@ -169,19 +176,19 @@ namespace Gallio.Icarus.Controllers
             {
                 testPackageConfig = config;
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
                     Unload(subProgressMonitor);
 
                 EventHandlerUtils.SafeInvoke(LoadStarted, this, System.EventArgs.Empty);
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(40))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(40))
                     Explore(subProgressMonitor);
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
                     if (!testPackageConfig.HostSetup.ShadowCopy)
                         Unload(subProgressMonitor);
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(40))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(40))
                     RefreshTestTree(subProgressMonitor);
 
                 EventHandlerUtils.SafeInvoke(LoadFinished, this, System.EventArgs.Empty);
@@ -205,7 +212,7 @@ namespace Gallio.Icarus.Controllers
 
                 if (testPackageLoaded)
                 {
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
+                    using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
                         testRunnerService.Unload(subProgressMonitor);
                     testPackageLoaded = false;
                     // Note: we specifically do not null out the testModelData because
@@ -220,7 +227,7 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Resetting tests", 100))
             {
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(75))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(75))
                     testTreeModel.ResetTestStatus(subProgressMonitor);
 
                 testRunnerService.Report.Write(report => report.TestPackageRun = null);
@@ -233,16 +240,16 @@ namespace Gallio.Icarus.Controllers
             {
                 EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                     testTreeModel.ResetTestStatus(subProgressMonitor);
 
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
                     if (Explore(subProgressMonitor))
                     {
-                        using (IProgressMonitor subSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
+                        using (var subSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
                             testRunnerService.Run(subSubProgressMonitor);
 
-                        using (IProgressMonitor subSubSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                        using (var subSubSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                             if (testPackageConfig != null && !testPackageConfig.HostSetup.ShadowCopy)
                                 Unload(subSubSubProgressMonitor);
                     }
@@ -263,7 +270,7 @@ namespace Gallio.Icarus.Controllers
                 if (testModelData == null)
                     return;
 
-                TestData testData = testModelData.GetTestById(testId);
+                var testData = testModelData.GetTestById(testId);
 
                 if (testData != null)
                     EventHandlerUtils.SafeInvoke(ShowSourceCode, this, 

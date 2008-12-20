@@ -98,6 +98,7 @@ namespace Gallio.Icarus
             this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.startWithDebuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -329,6 +330,7 @@ namespace Gallio.Icarus
             // 
             this.testsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startTestsToolStripMenuItem,
+            this.startWithDebuggerToolStripMenuItem,
             this.stopTestsToolStripMenuItem,
             this.resetToolStripMenuItem});
             this.testsToolStripMenuItem.Name = "testsToolStripMenuItem";
@@ -341,7 +343,7 @@ namespace Gallio.Icarus
             this.startTestsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("startTestsToolStripMenuItem.Image")));
             this.startTestsToolStripMenuItem.Name = "startTestsToolStripMenuItem";
             this.startTestsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.startTestsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.startTestsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.startTestsToolStripMenuItem.Text = "Start";
             this.startTestsToolStripMenuItem.Click += new System.EventHandler(this.startTestsToolStripMenuItem_Click);
             // 
@@ -351,14 +353,14 @@ namespace Gallio.Icarus
             this.stopTestsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("stopTestsToolStripMenuItem.Image")));
             this.stopTestsToolStripMenuItem.Name = "stopTestsToolStripMenuItem";
             this.stopTestsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
-            this.stopTestsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.stopTestsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.stopTestsToolStripMenuItem.Text = "Stop";
             this.stopTestsToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
@@ -373,7 +375,7 @@ namespace Gallio.Icarus
             // viewAsToolStripMenuItem
             // 
             this.viewAsToolStripMenuItem.Name = "viewAsToolStripMenuItem";
-            this.viewAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.viewAsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.viewAsToolStripMenuItem.Text = "View As";
             // 
             // toolsToolStripMenuItem
@@ -388,7 +390,7 @@ namespace Gallio.Icarus
             // 
             this.optionsMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("optionsMenuItem.Image")));
             this.optionsMenuItem.Name = "optionsMenuItem";
-            this.optionsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optionsMenuItem.Size = new System.Drawing.Size(134, 22);
             this.optionsMenuItem.Text = "&Options...";
             this.optionsMenuItem.Click += new System.EventHandler(this.optionsMenuItem_Click);
             // 
@@ -463,7 +465,7 @@ namespace Gallio.Icarus
             this.helpToolbarButton});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(258, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(256, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
@@ -573,6 +575,14 @@ namespace Gallio.Icarus
             this.dockPanel.Size = new System.Drawing.Size(1003, 636);
             this.dockPanel.TabIndex = 8;
             // 
+            // startWithDebuggerToolStripMenuItem
+            // 
+            this.startWithDebuggerToolStripMenuItem.Name = "startWithDebuggerToolStripMenuItem";
+            this.startWithDebuggerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
+            this.startWithDebuggerToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.startWithDebuggerToolStripMenuItem.Text = "Start With Debugger";
+            this.startWithDebuggerToolStripMenuItem.Click += new System.EventHandler(this.startWithDebuggerToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -660,6 +670,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem startWithDebuggerToolStripMenuItem;
     }
 }
 
