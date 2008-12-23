@@ -28,14 +28,14 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     [RunSample(typeof(ImmutableSampleTest))]
     [RunSample(typeof(NonReadOnlyMutableSampleTest))]
     [RunSample(typeof(IndirectMutableSampleTest))]
-    [RunSample(typeof(SetterMutableSampleTest))]
+    [RunSample(typeof(AutoImplementedPropertyMutableSampleTest))]
     public class VerifyImmutabilityContractTest : AbstractContractVerifierTest
     {
         [Test]
         [Row(typeof(ImmutableSampleTest), "AreReadOnlyFields", TestStatus.Passed)]
         [Row(typeof(NonReadOnlyMutableSampleTest), "AreReadOnlyFields", TestStatus.Failed)]
         [Row(typeof(IndirectMutableSampleTest), "AreReadOnlyFields", TestStatus.Failed)]
-        [Row(typeof(SetterMutableSampleTest), "AreReadOnlyFields", TestStatus.Failed)]
+        [Row(typeof(AutoImplementedPropertyMutableSampleTest), "AreReadOnlyFields", TestStatus.Failed)]
         public void VerifySampleImmutabilityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("ImmutabilityTests", fixtureType, testMethodName, expectedTestStatus);
@@ -63,10 +63,17 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         }
 
         [Explicit]
-        internal class SetterMutableSampleTest
+        internal class AutoImplementedPropertyMutableSampleTest
         {
             [ContractVerifier]
-            public readonly IContractVerifier ImmutabilityTests = new VerifyImmutabilityContract<SetterMutableSample>();
+            public readonly IContractVerifier ImmutabilityTests = new VerifyImmutabilityContract<AutoImplementedPropertyMutableSample>();
+        }
+
+        internal enum SampleEnumeration
+        {
+            One,
+            Two,
+            Three,
         }
 
         internal class ImmutableSample
@@ -74,12 +81,14 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             private readonly double number;
             private readonly string text;
             private readonly ImmutableSubSample foo;
+            private readonly SampleEnumeration digit;
 
-            public ImmutableSample(int number, string text, ImmutableSubSample foo)
+            public ImmutableSample(int number, string text, ImmutableSubSample foo, SampleEnumeration digit)
             {
                 this.number = number;
                 this.text = text;
                 this.foo = foo;
+                this.digit = digit;
             }
         }
 
@@ -117,12 +126,12 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             }
         }
 
-        internal class SetterMutableSample
+        internal class AutoImplementedPropertyMutableSample
         {
             public double Number
             {
                 get;
-                set;
+                private set;
             }
         }
     }

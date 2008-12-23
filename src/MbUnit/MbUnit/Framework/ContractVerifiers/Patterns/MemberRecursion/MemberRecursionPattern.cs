@@ -89,7 +89,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.MemberRecursion
 
         private void CheckType(Type type, ICollection<Type> visitedTypes)
         {
-            if (!visitedTypes.Contains(type))
+            if (!visitedTypes.Contains(type) && !type.IsEnum)
             {
                 visitedTypes.Add(type);
 
