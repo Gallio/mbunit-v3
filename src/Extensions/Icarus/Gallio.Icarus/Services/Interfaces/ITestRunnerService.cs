@@ -19,6 +19,7 @@ using Gallio.Concurrency;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
@@ -27,10 +28,12 @@ namespace Gallio.Icarus.Services.Interfaces
 {
     public interface ITestRunnerService : IDisposable
     {
+        event EventHandler<LoadFinishedEventArgs> LoadFinished;
         event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
 
         LockBox<Report> Report { get; }
         IList<string> TestFrameworks { get; }
+        ITestRunner TestRunner { get; set; }
 
         TestModelData Explore(IProgressMonitor progressMonitor);
         void Initialize();

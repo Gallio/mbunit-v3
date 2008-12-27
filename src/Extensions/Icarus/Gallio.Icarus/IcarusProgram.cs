@@ -15,9 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Properties;
@@ -38,6 +40,9 @@ namespace Gallio.Icarus
     /// </summary>
     public class IcarusProgram : ConsoleProgram<IcarusArguments>
     {
+        private ITestRunnerService testRunnerService;
+        private ITestController testController;
+
         /// <summary>
         /// Creates an instance of the program.
         /// </summary>
@@ -67,8 +72,18 @@ namespace Gallio.Icarus
                     AssemblyUtils.GetFriendlyAssemblyLocation(typeof (IcarusProgram).Assembly))
             };
 
+            testRunnerService = new TestRunnerService();
             var optionsController = new OptionsController(new FileSystem(), new XmlSerialization(),
                 new Utilities.UnhandledExceptionPolicy());
+            // create & initialize a test runner whenever the test runner factory is changed
+            optionsController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName != "TestRunnerFactory")
+                    return;
+
+                CreateTestRunner(optionsController.TestRunnerFactory);
+            };
+            optionsController.Load();
 
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
@@ -77,25 +92,22 @@ namespace Gallio.Icarus
             
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                var runtime = RuntimeAccessor.Instance;
+                testController = new TestController(testRunnerService, new TestTreeModel());
+                CreateTestRunner(optionsController.TestRunnerFactory);
 
-                optionsController.SetTestRunnerManager(runtime.Resolve<ITestRunnerManager>());
-
-                var testRunner = runtime.Resolve<ITestRunnerManager>().CreateTestRunner(
-                    optionsController.TestRunnerFactory);
-                ITestRunnerService testRunnerService = new TestRunnerService(testRunner);
-                
                 var reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
 
-                IMediator mediator = Mediator.Mediator.Instance;
+                IMediator mediator = new Mediator.Mediator();
                 mediator.ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, 
                     new Project()), new FileSystem(), new XmlSerialization());
-                mediator.TestController = new TestController(testRunnerService, new TestTreeModel());
+                mediator.TestController = testController;
                 mediator.ReportController = new ReportController(new ReportService(reportManager));
                 mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController, optionsController);
                 mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
                 mediator.RuntimeLogController = runtimeLogController;
                 mediator.OptionsController = optionsController;
+                mediator.DebuggerController = new DebuggerController(mediator.ProjectController, testRunnerService, 
+                    optionsController);
 
                 var main = new Main(mediator);
                 main.Load += delegate
@@ -119,14 +131,18 @@ namespace Gallio.Icarus
                     else if (optionsController.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
                         mediator.OpenProject(Paths.DefaultProject);
                 };
-
-                testRunnerService.Initialize();
                 main.CleanUp += delegate { testRunnerService.Dispose(); };
-
                 Application.Run(main);
             }
 
             return ResultCode.Success;
+        }
+
+        private void CreateTestRunner(string factoryName)
+        {
+            ITestRunnerManager testRunnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
+            ITestRunner testRunner = testRunnerManager.CreateTestRunner(factoryName);
+            testController.SetTestRunner(testRunner);
         }
 
         protected override void ShowHelp()

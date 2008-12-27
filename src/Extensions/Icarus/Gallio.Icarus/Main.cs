@@ -27,7 +27,6 @@ using Gallio.Runtime;
 using Gallio.Utilities;
 using WeifenLuo.WinFormsUI.Docking;
 using Timer = System.Timers.Timer;
-using Gallio.Icarus.Controllers;
 
 namespace Gallio.Icarus
 {
@@ -216,10 +215,10 @@ namespace Gallio.Icarus
 
         private void startButton_Click(object sender, EventArgs e)
         {
-            StartTests();
+            StartTests(false);
         }
 
-        private void StartTests()
+        private void StartTests(bool attachDebugger)
         {
             // enable/disable buttons
             startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
@@ -228,7 +227,7 @@ namespace Gallio.Icarus
             // no need for progress dialog
             showProgressMonitor = false;
 
-            mediator.RunTests();
+            mediator.RunTests(attachDebugger);
         }
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
@@ -350,7 +349,7 @@ namespace Gallio.Icarus
 
         private void startTestsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StartTests();
+            StartTests(false);
         }
 
         private void showOnlineHelpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -526,8 +525,7 @@ namespace Gallio.Icarus
 
         private void startWithDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DebuggerController.Attach();
-            StartTests();
+            StartTests(true);
         }
     }
 }

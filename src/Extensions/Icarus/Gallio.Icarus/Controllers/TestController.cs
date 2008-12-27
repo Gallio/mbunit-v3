@@ -26,6 +26,7 @@ using Gallio.Icarus.Services.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
@@ -256,6 +257,13 @@ namespace Gallio.Icarus.Controllers
 
                 EventHandlerUtils.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
             }
+        }
+
+        public void SetTestRunner(ITestRunner testRunner)
+        {
+            testRunnerService.TestRunner = testRunner;
+            testPackageLoaded = false;            
+            testRunnerService.Initialize();
         }
 
         public void UnloadTestPackage(IProgressMonitor progressMonitor)

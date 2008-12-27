@@ -25,7 +25,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         bool ShowProgressDialogs { get; set; }
         bool RestorePreviousSettings { get; set; }
         string TestRunnerFactory { get; set; }
-        string[] TestRunnerFactories { get; }
         BindingList<string> PluginDirectories { get; }
         BindingList<string> SelectedTreeViewCategories { get; }
         BindingList<string> UnselectedTreeViewCategories { get; }
@@ -35,7 +34,8 @@ namespace Gallio.Icarus.Controllers.Interfaces
         Color SkippedColor { get; set; }
         double UpdateDelay { get; }
 
-        void Save();
         void Cancel();
+        void Load();
+        void Save();
     }
 }

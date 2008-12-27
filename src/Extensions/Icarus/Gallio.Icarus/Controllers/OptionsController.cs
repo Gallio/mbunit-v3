@@ -18,30 +18,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
-using Gallio.Collections;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Runner;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
-    // TODO: This type should be refactored to separate the settings from the data required by
-    //       the controller.  We have a problem where we need an OptionsController to get the
-    //       plugin directories to initialize the runtime, but then we cannot provide the
-    //       test runner manager until the runtime has been initialized.  Moreover, there's no
-    //       reason we couldn't change the runner type at runtime.
-    public sealed class OptionsController : IOptionsController
+    public sealed class OptionsController : IOptionsController, INotifyPropertyChanged
     {
         private Settings settings;
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerialization xmlSerialization;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
-        private ITestRunnerManager testRunnerManager;
 
-        private readonly BindingList<string> pluginDirectories;
-        private readonly BindingList<string> selectedTreeViewCategories;
-        private readonly BindingList<string> unselectedTreeViewCategories;
         private readonly List<string> unselectedTreeViewCategoriesList = new List<string>();
 
         public bool AlwaysReloadAssemblies
@@ -71,31 +60,18 @@ namespace Gallio.Icarus.Controllers
         public string TestRunnerFactory
         {
             get { return settings.TestRunnerFactory; }
-            set { settings.TestRunnerFactory = value; }
-        }
-
-        public string[] TestRunnerFactories
-        {
-            get
+            set
             {
-                return GenericUtils.ToArray(testRunnerManager.GetFactoryNames());
+                settings.TestRunnerFactory = value;
+                OnPropertyChanged("TestRunnerFactory");
             }
         }
 
-        public BindingList<string> PluginDirectories
-        {
-            get { return pluginDirectories; }
-        }
+        public BindingList<string> PluginDirectories { get; private set; }
 
-        public BindingList<string> SelectedTreeViewCategories
-        {
-            get { return selectedTreeViewCategories; }
-        }
+        public BindingList<string> SelectedTreeViewCategories { get; private set; }
 
-        public BindingList<string> UnselectedTreeViewCategories
-        {
-            get { return unselectedTreeViewCategories; }
-        }
+        public BindingList<string> UnselectedTreeViewCategories { get; private set; }
 
         public Color PassedColor
         {
@@ -132,20 +108,9 @@ namespace Gallio.Icarus.Controllers
             this.fileSystem = fileSystem;
             this.xmlSerialization = xmlSerialization;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
-
-            Load();
-
-            pluginDirectories = new BindingList<string>(settings.PluginDirectories);
-            selectedTreeViewCategories = new BindingList<string>(settings.TreeViewCategories);
-            unselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
         }
 
-        public void SetTestRunnerManager(ITestRunnerManager testRunnerManager)
-        {
-            this.testRunnerManager = testRunnerManager;
-        }
-
-        private void Load()
+        public void Load()
         {
             settings = LoadSettings(Paths.SettingsFile) ?? new Settings();
 
@@ -159,6 +124,10 @@ namespace Gallio.Icarus.Controllers
                 if (!settings.TreeViewCategories.Contains(fi.Name))
                     unselectedTreeViewCategoriesList.Add(fi.Name);
             }
+
+            PluginDirectories = new BindingList<string>(settings.PluginDirectories);
+            SelectedTreeViewCategories = new BindingList<string>(settings.TreeViewCategories);
+            UnselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
         }
 
         private Settings LoadSettings(string fileName)
@@ -190,6 +159,14 @@ namespace Gallio.Icarus.Controllers
         public void Cancel()
         {
             Load();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

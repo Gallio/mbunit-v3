@@ -23,6 +23,7 @@ namespace Gallio.Icarus.Mediator.Interfaces
     public interface IMediator
     {
         IAnnotationsController AnnotationsController { get; set; }
+        IDebuggerController DebuggerController { get; set; }
         IExecutionLogController ExecutionLogController { get; set; }
         IOptionsController OptionsController { get; set; }
         ProgressMonitorProvider ProgressMonitorProvider { get; }
@@ -44,7 +45,7 @@ namespace Gallio.Icarus.Mediator.Interfaces
         void RemoveAllAssemblies();
         void RemoveAssembly(string fileName);
         void ResetTests();
-        void RunTests();
+        void RunTests(bool attachDebugger);
         void SaveFilter(string filterName);
         void SaveProject(string projectFileName);
         void ShowReport(string reportFormat);

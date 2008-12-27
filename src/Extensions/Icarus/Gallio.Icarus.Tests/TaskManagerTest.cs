@@ -14,12 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MbUnit.Framework;
 using System.Threading;
-using Gallio.Runtime;
 using Gallio.Icarus.Utilities;
 using Rhino.Mocks;
 
@@ -40,15 +36,15 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void StartTask_Test()
         {
-            bool flag = true;
+            bool[] flag = {true};
             taskManager.StartTask(delegate
             {
                 do
                 { }
-                while (flag);
+                while (flag[0]);
             });
             Assert.IsTrue(taskManager.TaskRunning);
-            flag = false;
+            flag[0] = false;
             Thread.Sleep(100);
             Assert.IsFalse(taskManager.TaskRunning);
         }

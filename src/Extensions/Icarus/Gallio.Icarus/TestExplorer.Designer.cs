@@ -74,8 +74,8 @@ namespace Gallio.Icarus
             this.filterPassedTestsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.filterFailedTestsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.filterSkippedTestsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
-            this.sortDescToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.sortAscToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
+            this.sortDescToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.testTreeMenuStrip.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -85,6 +85,7 @@ namespace Gallio.Icarus
             // 
             // testTree
             // 
+            this.testTree.AllowDrop = true;
             this.testTree.BackColor = System.Drawing.SystemColors.Window;
             this.testTree.ContextMenuStrip = this.testTreeMenuStrip;
             this.testTree.DefaultToolTipProvider = null;
@@ -95,6 +96,7 @@ namespace Gallio.Icarus
             this.testTree.Location = new System.Drawing.Point(0, 0);
             this.testTree.Model = null;
             this.testTree.Name = "testTree";
+            this.testTree.OptionsController = null;
             this.testTree.SelectedNode = null;
             this.testTree.Size = new System.Drawing.Size(281, 248);
             this.testTree.TabIndex = 5;
@@ -290,7 +292,7 @@ namespace Gallio.Icarus
             this.sortDescToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(278, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(248, 25);
             this.toolStrip1.TabIndex = 5;
             // 
             // treeViewComboBox
@@ -330,16 +332,6 @@ namespace Gallio.Icarus
             this.filterSkippedTestsToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.filterSkippedTestsToolStripButton.Text = "Filter inconclusive tests";
             // 
-            // sortDescToolStripButton
-            // 
-            this.sortDescToolStripButton.CheckOnClick = true;
-            this.sortDescToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.sortDescToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("sortDescToolStripButton.Image")));
-            this.sortDescToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.sortDescToolStripButton.Name = "sortDescToolStripButton";
-            this.sortDescToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.sortDescToolStripButton.Text = "Sort tree (desc)";
-            // 
             // sortAscToolStripButton
             // 
             this.sortAscToolStripButton.CheckOnClick = true;
@@ -350,8 +342,19 @@ namespace Gallio.Icarus
             this.sortAscToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.sortAscToolStripButton.Text = "Sort tree (asc)";
             // 
+            // sortDescToolStripButton
+            // 
+            this.sortDescToolStripButton.CheckOnClick = true;
+            this.sortDescToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.sortDescToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("sortDescToolStripButton.Image")));
+            this.sortDescToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.sortDescToolStripButton.Name = "sortDescToolStripButton";
+            this.sortDescToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.sortDescToolStripButton.Text = "Sort tree (desc)";
+            // 
             // TestExplorer
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(281, 273);

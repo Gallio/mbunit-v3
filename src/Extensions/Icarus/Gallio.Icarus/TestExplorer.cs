@@ -14,21 +14,21 @@
 // limitations under the License.
 
 using System;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Model;
-using Aga.Controls.Tree.NodeControls;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
-    public partial class TestExplorer : DockWindow
+    public partial class TestExplorer : DockWindow, IMessageFilter
     {
         private readonly IMediator mediator;
-        private bool updateFlag = false;
+        private readonly bool updateFlag;
+        private const int WM_DROPFILES = 563;
 
         public TestExplorer(IMediator mediator)
         {
@@ -90,12 +90,13 @@ namespace Gallio.Icarus
         private void treeViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             mediator.TestController.TreeViewCategory = (string)treeViewComboBox.SelectedItem;
-            if (!updateFlag)
-            {
-                SaveState();
-                mediator.RefreshTestTree();
-                RestoreState();
-            }
+            
+            if (updateFlag)
+                return;
+
+            SaveState();
+            mediator.RefreshTestTree();
+            RestoreState();
         }
 
         private void resetTestsMenuItem_Click(object sender, EventArgs e)
@@ -178,6 +179,28 @@ namespace Gallio.Icarus
         private void RestoreState()
         {
             testTree.CollapseNodes(mediator.ProjectController.CollapsedNodes);
+        }
+
+        [DllImport("shell32.dll")]
+        private static extern int DragQueryFile(IntPtr hdrop, int ifile, StringBuilder fname, int fnsize);
+        [DllImport("shell32.dll")]
+        private static extern void DragFinish(IntPtr hdrop);
+
+        public bool PreFilterMessage(ref Message m)
+        {
+            if (m.Msg == WM_DROPFILES)
+            {
+                int nFiles = DragQueryFile(m.WParam, -1, null, 0);
+                for (int i = 0; i < nFiles; ++i)
+                {
+                    StringBuilder sb = new StringBuilder(256);
+                    DragQueryFile(m.WParam, i, sb, 256);
+                    mediator.AddAssemblies(new[] { sb.ToString() });
+                }
+                DragFinish(m.WParam);
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -13,13 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
-using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Model;
-using System.Collections.Generic;
 
 namespace Gallio.Icarus.Controls
 {
@@ -49,31 +48,39 @@ namespace Gallio.Icarus.Controls
 
         public TestTreeView()
         {
-            nodeCheckBox = new NodeCheckBox();
-            nodeCheckBox.DataPropertyName = "CheckState";
-            nodeCheckBox.LeftMargin = 0;
-            nodeCheckBox.ParentColumn = null;
-            nodeCheckBox.ThreeState = true;
+            nodeCheckBox = new NodeCheckBox
+                               {
+                                   DataPropertyName = "CheckState",
+                                   LeftMargin = 0,
+                                   ParentColumn = null,
+                                   ThreeState = true
+                               };
             NodeControls.Add(nodeCheckBox);
 
-            NodeIcon nodeTypeIcon = new NodeIcon();
-            nodeTypeIcon.DataPropertyName = "NodeTypeIcon";
-            nodeTypeIcon.LeftMargin = 1;
-            nodeTypeIcon.ParentColumn = null;
+            NodeIcon nodeTypeIcon = new NodeIcon
+                                        {
+                                            DataPropertyName = "NodeTypeIcon",
+                                            LeftMargin = 1,
+                                            ParentColumn = null
+                                        };
             NodeControls.Add(nodeTypeIcon);
 
-            NodeIcon testStateIcon = new NodeIcon();
-            testStateIcon.DataPropertyName = "TestStatusIcon";
-            testStateIcon.LeftMargin = 1;
-            testStateIcon.ParentColumn = null;
+            NodeIcon testStateIcon = new NodeIcon
+                                         {
+                                             DataPropertyName = "TestStatusIcon",
+                                             LeftMargin = 1,
+                                             ParentColumn = null
+                                         };
             NodeControls.Add(testStateIcon);
 
-            NodeTextBox nodeTextBox = new NodeTextBox();
-            nodeTextBox.DataPropertyName = "Text";
-            nodeTextBox.IncrementalSearchEnabled = true;
-            nodeTextBox.EditEnabled = false;
-            nodeTextBox.LeftMargin = 3;
-            nodeTextBox.ParentColumn = null;
+            NodeTextBox nodeTextBox = new NodeTextBox
+                                          {
+                                              DataPropertyName = "Text",
+                                              IncrementalSearchEnabled = true,
+                                              EditEnabled = false,
+                                              LeftMargin = 3,
+                                              ParentColumn = null
+                                          };
             nodeTextBox.DrawText += nodeTextBox_DrawText;
             NodeControls.Add(nodeTextBox);
         }

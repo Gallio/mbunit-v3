@@ -14,15 +14,13 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
 namespace Gallio.Icarus.Utilities
 {
     public class FileSystem : IFileSystem
     {
-        string userDataPath = null;
+        string userDataPath;
 
         public string UserDataPath
         {

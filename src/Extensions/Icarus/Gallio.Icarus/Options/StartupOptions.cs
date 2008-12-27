@@ -13,7 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Collections;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Runner;
+using Gallio.Runtime;
 
 namespace Gallio.Icarus.Options
 {
@@ -25,7 +28,11 @@ namespace Gallio.Icarus.Options
 
             restorePreviousSession.DataBindings.Add("Checked", optionsController, "RestorePreviousSettings");
 
-            testRunnerFactories.Items.AddRange(optionsController.TestRunnerFactories);
+            // retrieve list of possible factories
+            ITestRunnerManager testRunnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
+            string[] factories = GenericUtils.ToArray(testRunnerManager.GetFactoryNames());
+
+            testRunnerFactories.Items.AddRange(factories);
             testRunnerFactories.DataBindings.Add("Text", optionsController, "TestRunnerFactory");
         }
     }

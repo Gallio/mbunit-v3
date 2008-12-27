@@ -37,6 +37,8 @@ namespace Gallio.Icarus.Mediator
 
         public IReportController ReportController { get; set; }
 
+        public IDebuggerController DebuggerController { get; set; }
+
         public IExecutionLogController ExecutionLogController { get; set; }
 
         public IAnnotationsController AnnotationsController { get; set; }
@@ -53,22 +55,6 @@ namespace Gallio.Icarus.Mediator
         public TaskManager TaskManager
         {
             get { return taskManager; }
-        }
-
-        private Mediator()
-        { }
-
-        internal static Mediator Instance
-        {
-            get { return Nested.instance; }
-        }
-
-        private class Nested
-        {
-            static Nested()
-            { }
-
-            internal static readonly Mediator instance = new Mediator();
         }
 
         public void AddAssemblies(IList<string> assemblyFiles)
@@ -234,22 +220,35 @@ namespace Gallio.Icarus.Mediator
                 TestController.ResetTests(progressMonitor)));
         }
 
-        public void RunTests()
+        public void RunTests(bool attachDebugger)
         {
             taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Running tests.", 100))
                 {
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    using (IProgressMonitor subSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                    // save current filter as last run
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    using (IProgressMonitor subSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                         ProjectController.SaveFilter("LastRun", TestController.GetCurrentFilter(subProgressMonitor),
                             subSubProgressMonitor);
 
+                    // stop if user has canceled
                     if (progressMonitor.IsCanceled)
                         throw new OperationCanceledException();
 
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
+                    // attach debugger (if necessary)
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                        if (attachDebugger)
+                            DebuggerController.Attach(subProgressMonitor);
+
+                    // run the tests
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(96))
                         TestController.RunTests(subProgressMonitor);
+
+                    // detach the debugger (if necessary)
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                        if (attachDebugger)
+                            DebuggerController.Detach(subProgressMonitor);
                 }
             }));    
         }

@@ -73,6 +73,7 @@ namespace Gallio.Icarus
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startWithDebuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,7 +99,6 @@ namespace Gallio.Icarus
             this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.startWithDebuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -343,9 +343,17 @@ namespace Gallio.Icarus
             this.startTestsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("startTestsToolStripMenuItem.Image")));
             this.startTestsToolStripMenuItem.Name = "startTestsToolStripMenuItem";
             this.startTestsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.startTestsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.startTestsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.startTestsToolStripMenuItem.Text = "Start";
             this.startTestsToolStripMenuItem.Click += new System.EventHandler(this.startTestsToolStripMenuItem_Click);
+            // 
+            // startWithDebuggerToolStripMenuItem
+            // 
+            this.startWithDebuggerToolStripMenuItem.Name = "startWithDebuggerToolStripMenuItem";
+            this.startWithDebuggerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
+            this.startWithDebuggerToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.startWithDebuggerToolStripMenuItem.Text = "Start With Debugger";
+            this.startWithDebuggerToolStripMenuItem.Click += new System.EventHandler(this.startWithDebuggerToolStripMenuItem_Click);
             // 
             // stopTestsToolStripMenuItem
             // 
@@ -353,14 +361,14 @@ namespace Gallio.Icarus
             this.stopTestsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("stopTestsToolStripMenuItem.Image")));
             this.stopTestsToolStripMenuItem.Name = "stopTestsToolStripMenuItem";
             this.stopTestsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
-            this.stopTestsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.stopTestsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.stopTestsToolStripMenuItem.Text = "Stop";
             this.stopTestsToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
@@ -566,6 +574,7 @@ namespace Gallio.Icarus
             // dockPanel
             // 
             this.dockPanel.ActiveAutoHideContent = null;
+            this.dockPanel.AllowDrop = true;
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.DockLeftPortion = 0.33;
             this.dockPanel.DockRightPortion = 0.33;
@@ -575,16 +584,9 @@ namespace Gallio.Icarus
             this.dockPanel.Size = new System.Drawing.Size(1003, 636);
             this.dockPanel.TabIndex = 8;
             // 
-            // startWithDebuggerToolStripMenuItem
-            // 
-            this.startWithDebuggerToolStripMenuItem.Name = "startWithDebuggerToolStripMenuItem";
-            this.startWithDebuggerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
-            this.startWithDebuggerToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.startWithDebuggerToolStripMenuItem.Text = "Start With Debugger";
-            this.startWithDebuggerToolStripMenuItem.Click += new System.EventHandler(this.startWithDebuggerToolStripMenuItem_Click);
-            // 
             // Main
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1003, 707);

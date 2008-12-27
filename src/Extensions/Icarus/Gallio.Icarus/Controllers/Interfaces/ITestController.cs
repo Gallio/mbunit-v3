@@ -22,6 +22,7 @@ using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
+using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
@@ -54,6 +55,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         void Reload(TestPackageConfig config, IProgressMonitor progressMonitor);
         void ResetTests(IProgressMonitor progressMonitor);
         void RunTests(IProgressMonitor progressMonitor);
+        void SetTestRunner(ITestRunner testRunner);
         void UnloadTestPackage(IProgressMonitor progressMonitor);
         void ViewSourceCode(string testId, IProgressMonitor progressMonitor);
     }

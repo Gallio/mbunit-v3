@@ -25,7 +25,6 @@ using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
-using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
 
@@ -33,12 +32,13 @@ namespace Gallio.Icarus.Services
 {
     public class TestRunnerService : ITestRunnerService
     {
-        private readonly ITestRunner testRunner;
+        private ITestRunner testRunner;
         private readonly TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
         private readonly TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
 
         private LockBox<Report>? previousReportFromUnloadedPackage;
 
+        public event EventHandler<LoadFinishedEventArgs> LoadFinished;
         public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
 
         public LockBox<Report> Report
@@ -57,21 +57,18 @@ namespace Gallio.Icarus.Services
             }
         }
 
-        public TestRunnerService(ITestRunner testRunner)
+        public ITestRunner TestRunner
         {
-            this.testRunner = testRunner;
-            this.testRunner.Events.TestStepFinished += ((sender, e) =>
-                EventHandlerUtils.SafeInvoke(TestStepFinished, this, e));
-        }
-
-        public void Initialize()
-        {
-            NullProgressMonitorProvider.Instance.Run(delegate(IProgressMonitor progressMonitor)
+            get { return testRunner; }
+            set
             {
-                TestRunnerOptions options = new TestRunnerOptions();
-                ILogger logger = RuntimeAccessor.Logger;
-                testRunner.Initialize(options, logger, progressMonitor);
-            });
+                testRunner = value;
+
+                testRunner.Events.LoadFinished += ((sender, e) =>
+                    EventHandlerUtils.SafeInvoke(LoadFinished, this, e));
+                testRunner.Events.TestStepFinished += ((sender, e) =>
+                    EventHandlerUtils.SafeInvoke(TestStepFinished, this, e));
+            }
         }
 
         public void Dispose()
@@ -100,6 +97,13 @@ namespace Gallio.Icarus.Services
                         testRunner.Load(testPackageConfig, subProgressMonitor);
                 }
             }
+        }
+
+        public void Initialize()
+        {
+            NullProgressMonitorProvider.Instance.Run(progressMonitor =>
+                testRunner.Initialize(new TestRunnerOptions(), RuntimeAccessor.Logger,
+                progressMonitor));
         }
 
         public TestModelData Explore(IProgressMonitor progressMonitor)
