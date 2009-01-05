@@ -63,6 +63,7 @@ namespace MbUnit.Framework.ContractVerifiers.Patterns.MemberRecursion
         {
             var visitedTypes = new List<Type>
             {   
+                typeof(Boolean),
                 typeof(Int16),
                 typeof(Int32),
                 typeof(Int64),
