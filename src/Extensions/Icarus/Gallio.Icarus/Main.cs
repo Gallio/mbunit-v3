@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -359,7 +361,7 @@ namespace Gallio.Icarus
 
         private static void ShowOnlineHelp()
         {
-            System.Diagnostics.Process.Start("http://docs.mbunit.com");
+            Process.Start(ConfigurationManager.AppSettings["OnlineHelpURL"]);
         }
 
         private void helpToolbarButton_Click(object sender, EventArgs e)
