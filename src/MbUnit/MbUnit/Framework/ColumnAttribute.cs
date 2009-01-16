@@ -123,7 +123,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void PopulateDataSource(PatternEvaluationScope scope, DataSource dataSource, ICodeElementInfo codeElement)
+        protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
             dataSource.AddDataSet(new ValueSequenceDataSet(values, GetMetadata(), false));
         }

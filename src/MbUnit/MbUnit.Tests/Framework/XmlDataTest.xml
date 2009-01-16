@@ -1,0 +1,20 @@
+﻿<data>
+  <item name="Apples">
+    <price>1.00</price>
+    <metadata xmlns="http://www.gallio.org/">
+      <entry key="ConsumedBy" value="Worm"/>
+    </metadata>
+  </item>
+  <item name="Bananas">
+    <price>1.50</price>
+    <metadata xmlns="http://www.gallio.org/">
+      <entry key="ConsumedBy" value="Monkey"/>
+    </metadata>
+  </item>
+  <item name="Cookies">
+    <price>2.00</price>
+    <metadata xmlns="http://www.gallio.org/">
+      <entry key="ConsumedBy" value="Cookie Monster"/>
+    </metadata>
+  </item>
+</data>

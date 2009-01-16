@@ -61,11 +61,11 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override ICodeElementInfo GetDependency(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override ICodeElementInfo GetDependency(IPatternScope scope, ICodeElementInfo codeElement)
         {
             try
             {
-                return scope.Evaluator.ReflectionPolicy.LoadAssembly(new AssemblyName(testAssemblyName));
+                return scope.TestModelBuilder.ReflectionPolicy.LoadAssembly(new AssemblyName(testAssemblyName));
             }
             catch (Exception ex)
             {

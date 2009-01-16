@@ -185,7 +185,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             base.Validate(scope, codeElement);
 

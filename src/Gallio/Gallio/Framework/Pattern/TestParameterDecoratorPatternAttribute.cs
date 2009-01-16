@@ -27,12 +27,12 @@ namespace Gallio.Framework.Pattern
     public abstract class TestParameterDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
             ISlotInfo slot = codeElement as ISlotInfo;
             Validate(scope, slot);
 
-            scope.AddDecorator(Order, delegate
+            scope.TestParameterBuilder.AddDeferredAction(codeElement, Order, delegate
             {
                 DecorateTestParameter(scope, slot);
             });
@@ -44,7 +44,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="scope">The scope</param>
         /// <param name="slot">The slot</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope scope, ISlotInfo slot)
+        protected virtual void Validate(IPatternScope scope, ISlotInfo slot)
         {
             if (!scope.IsTestParameterDeclaration || slot == null)
                 ThrowUsageErrorException("This attribute can only be used on a test parameter.");
@@ -61,7 +61,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="slotScope">The slot scope</param>
         /// <param name="slot">The slot</param>
-        protected virtual void DecorateTestParameter(PatternEvaluationScope slotScope, ISlotInfo slot)
+        protected virtual void DecorateTestParameter(IPatternScope slotScope, ISlotInfo slot)
         {
         }
     }

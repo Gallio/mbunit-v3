@@ -25,7 +25,7 @@ namespace Gallio.Ambience.Tests
     [TestsOn(typeof(AmbienceException))]
     public class AmbienceExceptionTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<AmbienceException>();
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<AmbienceException>();
     }
 }

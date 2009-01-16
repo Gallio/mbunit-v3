@@ -87,9 +87,9 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            scope.TestModel.AddAnnotation(new Annotation(type, codeElement, message, details));
+            scope.TestModelBuilder.AddAnnotation(new Annotation(type, codeElement, message, details));
         }
     }
 }

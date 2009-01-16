@@ -40,7 +40,7 @@ namespace Gallio.Model
 
         private string cachedId;
         private string cachedLocalId;
-        private string baselineLocalId;
+        private string localIdHint;
 
         /// <summary>
         /// Initializes a test initially without a parent.
@@ -83,19 +83,19 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Gets or sets an initial approximation of a <see cref="LocalId" />, or null if none.
+        /// Gets or sets a suggested <see cref="LocalId" /> hint, or null if none.
         /// The value returned by this method will be checked for uniqueness and amended as necessary
         /// to produce a truly unique <see cref="LocalId" />.
         /// </summary>
         /// <value>
         /// The default value of this property is <c>null</c> which causes the <see cref="ITestComponent.Name" />
-        /// property to be used as the baseline local id.
+        /// property to be used as the local id hint.
         /// </value>
-        /// <returns>The local id</returns>
-        public string BaselineLocalId
+        /// <returns>The local id hint</returns>
+        public string LocalIdHint
         {
-            get { return baselineLocalId; }
-            set { baselineLocalId = value; }
+            get { return localIdHint; }
+            set { localIdHint = value; }
         }
 
         /// <inheritdoc />
@@ -130,7 +130,7 @@ namespace Gallio.Model
             {
                 if (cachedLocalId == null)
                 {
-                    string root = baselineLocalId ?? Name;
+                    string root = localIdHint ?? Name;
                     cachedLocalId = root;
 
                     int suffix = 0;

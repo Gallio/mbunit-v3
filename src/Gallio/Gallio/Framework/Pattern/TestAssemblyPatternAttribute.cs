@@ -48,19 +48,19 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public override bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return true;
         }
 
         /// <inheritdoc />
-        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             IAssemblyInfo assembly = codeElement as IAssemblyInfo;
             Validate(containingScope, assembly);
 
-            PatternTest assemblyTest = CreateAssemblyTest(containingScope, assembly);
-            PatternEvaluationScope assemblyScope = containingScope.AddChildTest(assemblyTest);
+            IPatternScope assemblyScope = containingScope.CreateChildTestScope(assembly.Name, assembly);
+            assemblyScope.TestBuilder.Kind = TestKinds.Assembly;
 
             InitializeAssemblyTest(assemblyScope, assembly);
 
@@ -69,7 +69,7 @@ namespace Gallio.Framework.Pattern
             else
                 PopulateChildrenImmediately(assemblyScope, assembly);
 
-            assemblyScope.ApplyDecorators();
+            assemblyScope.TestBuilder.ApplyDeferredActions();
         }
 
         /// <summary>
@@ -78,23 +78,10 @@ namespace Gallio.Framework.Pattern
         /// <param name="containingScope">The containing scope</param>
         /// <param name="assembly">The assembly</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope containingScope, IAssemblyInfo assembly)
+        protected virtual void Validate(IPatternScope containingScope, IAssemblyInfo assembly)
         {
             if (!containingScope.CanAddChildTest || assembly == null)
                 ThrowUsageErrorException("This attribute can only be used on a test assembly.");
-        }
-
-        /// <summary>
-        /// Creates a test for an assembly.
-        /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="assembly">The assembly</param>
-        /// <returns>The test</returns>
-        protected virtual PatternTest CreateAssemblyTest(PatternEvaluationScope containingScope, IAssemblyInfo assembly)
-        {
-            PatternTest test = new PatternTest(assembly.Name, assembly, containingScope.TestDataContext.CreateChild());
-            test.Kind = TestKinds.Assembly;
-            return test;
         }
 
         /// <summary>
@@ -102,9 +89,12 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="assemblyScope">The assembly scope</param>
         /// <param name="assembly">The assembly</param>
-        protected virtual void InitializeAssemblyTest(PatternEvaluationScope assemblyScope, IAssemblyInfo assembly)
+        protected virtual void InitializeAssemblyTest(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
-            ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyScope.Test.Metadata);
+            MetadataMap metadata = new MetadataMap();
+            ModelUtils.PopulateMetadataFromAssembly(assembly, metadata);
+            foreach (var pair in metadata.Pairs)
+                assemblyScope.TestBuilder.AddMetadata(pair.Key, pair.Value);
 
             assemblyScope.Process(assembly);
         }
@@ -117,7 +107,7 @@ namespace Gallio.Framework.Pattern
         /// </remarks>
         /// <param name="assemblyScope">The assembly scope</param>
         /// <param name="assembly">The assembly</param>
-        protected virtual void PopulateChildrenImmediately(PatternEvaluationScope assemblyScope, IAssemblyInfo assembly)
+        protected virtual void PopulateChildrenImmediately(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
             foreach (ITypeInfo type in assembly.GetTypes())
             {
@@ -128,16 +118,16 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// Prepares to populate the children of the assembly test on demand by
-        /// adding actions to <see cref="PatternEvaluationScope.PopulateChildrenChain" />.
+        /// adding a deferred populator with <see cref="IPatternScope.AddDeferredComponentPopulator" />.
         /// </summary>
         /// <param name="assemblyScope">The assembly scope</param>
         /// <param name="assembly">The assembly</param>
-        protected virtual void PrepareToPopulateChildrenOnDemand(PatternEvaluationScope assemblyScope, IAssemblyInfo assembly)
+        protected virtual void PrepareToPopulateChildrenOnDemand(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
             HashSet<ITypeInfo> populatedTypes = new HashSet<ITypeInfo>();
-            assemblyScope.PopulateChildrenChain.After(delegate(ICodeElementInfo childCodeElement)
+            assemblyScope.AddDeferredComponentPopulator(childCodeElementHint =>
             {
-                ITypeInfo type = childCodeElement as ITypeInfo;
+                ITypeInfo type = childCodeElementHint as ITypeInfo;
                 if (type != null && ! type.IsNested && !populatedTypes.Contains(type) && assembly.Equals(type.Assembly))
                 {
                     populatedTypes.Add(type);

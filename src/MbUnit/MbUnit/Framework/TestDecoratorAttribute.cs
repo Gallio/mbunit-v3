@@ -116,13 +116,13 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
             // Note: We do this as a test instance decorator to ensure that all of
             //       the setup actions registered by the test or its containing fixture
             //       can be wrapped because this is the last possible opportunity for new
             //       actions to be added.
-            scope.Test.TestActions.DecorateTestInstanceChain.After(delegate(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
+            scope.TestBuilder.TestActions.DecorateTestInstanceChain.After(delegate(PatternTestState testState, PatternTestInstanceActions decoratedTestInstanceActions)
             {
                 WrapDefaultAction(decoratedTestInstanceActions.InitializeTestInstanceChain, Initialize);
                 WrapDefaultAction(decoratedTestInstanceActions.SetUpTestInstanceChain, SetUp);

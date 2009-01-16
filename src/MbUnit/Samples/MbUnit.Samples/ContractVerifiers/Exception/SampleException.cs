@@ -14,14 +14,12 @@
 // limitations under the License.
 
 using System;
-using MbUnit.Framework;
-using MbUnit.Framework.ContractVerifiers;
 using System.Runtime.Serialization;
 
-namespace MbUnit.Samples.ContractVerifiers
+namespace MbUnit.Samples.ContractVerifiers.Exception
 {
     [Serializable]
-    public class SampleException : Exception, ISerializable
+    public class SampleException : System.Exception
     {
         public SampleException()
         {
@@ -31,7 +29,7 @@ namespace MbUnit.Samples.ContractVerifiers
         {
         }
 
-        public SampleException(string message, Exception innerException) 
+        public SampleException(string message, System.Exception innerException) 
             : base(message, innerException)
         {
         }
@@ -39,11 +37,6 @@ namespace MbUnit.Samples.ContractVerifiers
         protected SampleException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
         }
     }
 }

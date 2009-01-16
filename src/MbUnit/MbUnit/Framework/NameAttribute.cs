@@ -57,11 +57,11 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
             Validate(scope, codeElement);
 
-            scope.TestComponent.SetName(name);
+            scope.TestComponentBuilder.Name = name;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace MbUnit.Framework
         /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (!scope.IsTestDeclaration && !scope.IsTestParameterDeclaration)
                 ThrowUsageErrorException("This attribute can only be used on a test or test parameter.");

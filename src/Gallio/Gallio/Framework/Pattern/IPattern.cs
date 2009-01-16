@@ -14,18 +14,16 @@
 // limitations under the License.
 
 using Gallio.Reflection;
-using Gallio.Framework.Pattern;
 
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
     /// <para>
-    /// A <see cref="IPattern" /> defines a composable rule for building
-    /// <see cref="PatternTest" /> and <see cref="PatternTestParameter" /> objects
+    /// A <see cref="IPattern" /> defines a composable rule for building up a test model
     /// using reflection.
     /// </para>
     /// <para>
-    /// The general idea is that a pattern applies contributions to a <see cref="PatternEvaluationScope" />
+    /// The general idea is that a pattern applies contributions to a <see cref="IPatternScope" />
     /// that represents the state of the pattern interpretation process.  A primary pattern
     /// adds contributions to its containing scope with the <see cref="Consume"/> method.  All
     /// patterns (primary and non-primary) add further contributions to the pattern's own
@@ -100,7 +98,7 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
         /// and report an error message to the user as an annotation that describes how the
         /// pattern was misapplied.</exception>
-        bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement);
+        bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement);
 
         /// <summary>
         /// <para>
@@ -129,19 +127,20 @@ namespace Gallio.Framework.Pattern
         /// </remarks>
         /// <param name="containingScope">The containing scope</param>
         /// <param name="codeElement">The code element to process</param>
-        /// <param name="skipChildren">If true, skips generating child tests.  Instead the children may
-        /// be populated on demand using <see cref="PatternEvaluationScope.PopulateChildrenChain" />.  The implementation
+        /// <param name="skipChildren">If true, skips generating child test components.
+        /// Instead the children may be populated on demand using
+        /// <see cref="IPatternScope.AddDeferredComponentPopulator" />.  The implementation
         /// may safely ignore the value of this flag so long as subsequent attempts to populate children on
         /// demand are idempotent (do nothing or have no adverse side-effects).</param>
         /// <seealso cref="IsPrimary"/>
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
         /// and report an error message to the user as an annotation that describes how the
         /// pattern was misapplied.</exception>
-        void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren);
+        void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren);
 
         /// <summary>
         /// <para>
-        /// Processes a code element and applies contributes to the scope of this pattern.
+        /// Processes a code element and applies its contributions to the scope of this pattern.
         /// The scope will typically have been introduced by the <see cref="Consume" /> method
         /// of a primary pattern applied to this code element.
         /// </para>
@@ -161,6 +160,6 @@ namespace Gallio.Framework.Pattern
         /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
         /// and report an error message to the user as an annotation that describes how the
         /// pattern was misapplied.</exception>
-        void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement);
+        void Process(IPatternScope scope, ICodeElementInfo codeElement);
     }
 }

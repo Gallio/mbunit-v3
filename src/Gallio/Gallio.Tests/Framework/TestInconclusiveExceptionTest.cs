@@ -23,8 +23,8 @@ namespace Gallio.Tests.Framework
     [TestsOn(typeof(TestInconclusiveException))]
     public class TestInconclusiveExceptionTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<TestInconclusiveException>();
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<TestInconclusiveException>();
 
         [Test]
         public void OutcomeIsInconclusive()

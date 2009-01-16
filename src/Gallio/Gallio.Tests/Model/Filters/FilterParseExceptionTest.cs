@@ -23,7 +23,7 @@ namespace Gallio.Tests.Model.Filters
     [TestsOn(typeof(FilterParseException))]
     public class FilterParseExceptionTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<FilterParseException>();
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<FilterParseException>();
     }
 }

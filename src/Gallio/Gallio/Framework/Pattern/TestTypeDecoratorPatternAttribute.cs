@@ -22,7 +22,7 @@ namespace Gallio.Framework.Pattern
     /// <summary>
     /// <para>
     /// A test type decorator pattern attribute applies decorations to an
-    /// existing type-level <see cref="PatternTest" />.
+    /// existing test declared at the type-level.
     /// </para>
     /// </summary>
     /// <seealso cref="TestTypePatternAttribute"/>
@@ -30,12 +30,12 @@ namespace Gallio.Framework.Pattern
     public abstract class TestTypeDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
             ITypeInfo type = codeElement as ITypeInfo;
             Validate(scope, type);
 
-            scope.AddDecorator(Order, delegate
+            scope.TestBuilder.AddDeferredAction(codeElement, Order, delegate
             {
                 DecorateTest(scope, type);
             });
@@ -47,7 +47,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="scope">The scope</param>
         /// <param name="type">The type</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope scope, ITypeInfo type)
+        protected virtual void Validate(IPatternScope scope, ITypeInfo type)
         {
             if (!scope.IsTestDeclaration || type == null)
                 ThrowUsageErrorException("This attribute can only be used on a test type.");
@@ -55,7 +55,7 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Applies decorations to a type-level <see cref="PatternTest" />.
+        /// Applies decorations to a type-level test.
         /// </para>
         /// <para>
         /// A typical use of this method is to augment the test with additional metadata
@@ -64,7 +64,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="typeScope">The type scope</param>
         /// <param name="type">The type</param>
-        protected virtual void DecorateTest(PatternEvaluationScope typeScope, ITypeInfo type)
+        protected virtual void DecorateTest(IPatternScope typeScope, ITypeInfo type)
         {
         }
     }

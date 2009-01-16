@@ -25,8 +25,8 @@ namespace Gallio.Tests.Model.Logging.Tags
 {
     public class SectionTagTest : BaseTagTest<SectionTag>
     {
-        [ContractVerifier]
-        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<SectionTag>()
+        [VerifyContract]
+        public readonly IContract EqualityTests = new EqualityContract<SectionTag>()
         {
             ImplementsOperatorOverloads = false,
             EquivalenceClasses = equivalenceClasses

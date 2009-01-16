@@ -23,7 +23,7 @@ namespace Gallio.Tests.Runner
     [TestsOn(typeof(RunnerException))]
     public class RunnerExceptionTest 
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<RunnerException>();
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<RunnerException>();
     }
 }

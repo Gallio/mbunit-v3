@@ -18,11 +18,11 @@ using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using System.Runtime.Serialization;
 
-namespace MbUnit.Samples.ContractVerifiers
+namespace MbUnit.Samples.ContractVerifiers.Immutability
 {
     public class SampleImmutableTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ImmutabilityTests = new VerifyImmutabilityContract<SampleImmutable>();
+        [VerifyContract]
+        public readonly IContract ImmutabilityTests = new ImmutabilityContract<SampleImmutable>();
     }
 }

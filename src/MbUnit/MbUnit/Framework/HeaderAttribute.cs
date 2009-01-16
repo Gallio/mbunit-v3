@@ -77,7 +77,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void PopulateDataSource(PatternEvaluationScope scope, DataSource dataSource, ICodeElementInfo codeElement)
+        protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
             for (int i = 0; i < columnNames.Length; i++)
                 dataSource.AddIndexAlias(columnNames[i], i);

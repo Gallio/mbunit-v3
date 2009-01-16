@@ -28,8 +28,8 @@ namespace Gallio.Tests.Reflection
     [TestsOn(typeof(CodeLocation))]
     public class CodeLocationTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<CodeLocation>()
+        [VerifyContract]
+        public readonly IContract EqualityTests = new EqualityContract<CodeLocation>()
         {
             EquivalenceClasses = new EquivalenceClassCollection<CodeLocation>(
                 new EquivalenceClass<CodeLocation>(

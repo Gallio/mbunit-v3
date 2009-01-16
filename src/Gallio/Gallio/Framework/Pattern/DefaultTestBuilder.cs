@@ -1,0 +1,153 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using Gallio.Model;
+using Gallio.Reflection;
+
+namespace Gallio.Framework.Pattern
+{
+    /// <summary>
+    /// Default implementation of a test model builder.
+    /// </summary>
+    public class DefaultTestBuilder : BaseTestComponentBuilder, ITestBuilder
+    {
+        private readonly PatternTest test;
+
+        /// <summary>
+        /// Creates a test builder.
+        /// </summary>
+        /// <param name="testModelBuilder">The test model builder</param>
+        /// <param name="test">The underlying test</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModelBuilder"/>
+        /// or <paramref name="test"/> is null</exception>
+        public DefaultTestBuilder(ITestModelBuilder testModelBuilder, PatternTest test)
+            : base(testModelBuilder)
+        {
+            if (test == null)
+                throw new ArgumentNullException("test");
+
+            this.test = test;
+        }
+
+        /// <inheritdoc />
+        public string Kind
+        {
+            get { return test.Kind; }
+            set { test.Kind = value; }
+        }
+
+        /// <inheritdoc />
+        public ApartmentState ApartmentState
+        {
+            get { return test.ApartmentState; }
+            set { test.ApartmentState = value; }
+        }
+
+        /// <inheritdoc />
+        public TimeSpan? Timeout
+        {
+            get { return test.Timeout; }
+            set { test.Timeout = value; }
+        }
+
+        /// <inheritdoc />
+        public bool IsTestCase
+        {
+            get { return test.IsTestCase; }
+            set { test.IsTestCase = value; }
+        }
+
+        /// <inheritdoc />
+        public bool IsParallelizable
+        {
+            get { return test.IsParallelizable; }
+            set { test.IsParallelizable = value; }
+        }
+
+        /// <inheritdoc />
+        public int Order
+        {
+            get { return test.Order; }
+            set { test.Order = value; }
+        }
+
+        /// <inheritdoc />
+        public string LocalId
+        {
+            get { return test.LocalId; }
+        }
+
+        /// <inheritdoc />
+        public string LocalIdHint
+        {
+            get { return test.LocalIdHint; }
+            set { test.LocalIdHint = value; }
+        }
+
+        /// <inheritdoc />
+        public PatternTestActions TestActions
+        {
+            get { return test.TestActions; }
+        }
+
+        /// <inheritdoc />
+        public PatternTestInstanceActions TestInstanceActions
+        {
+            get { return test.TestInstanceActions; }
+        }
+
+        /// <inheritdoc />
+        public ITestBuilder CreateChild(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (dataContextBuilder == null)
+                throw new ArgumentNullException("dataContextBuilder");
+
+            PatternTest childTest = new PatternTest(name, codeElement, dataContextBuilder.ToPatternTestDataContext());
+            test.AddChild(childTest);
+            return new DefaultTestBuilder(GetTestModelBuilder(), childTest);
+        }
+
+        /// <inheritdoc />
+        public ITestParameterBuilder CreateParameter(string name, ICodeElementInfo codeElement, ITestDataContextBuilder dataContextBuilder)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (dataContextBuilder == null)
+                throw new ArgumentNullException("dataContextBuilder");
+
+            PatternTestParameter testParameter = new PatternTestParameter(name, codeElement, dataContextBuilder.ToPatternTestDataContext());
+            test.AddParameter(testParameter);
+            return new DefaultTestParameterBuilder(GetTestModelBuilder(), testParameter);
+        }
+
+        /// <inheritdoc />
+        public void AddDependency(ITest testDependency)
+        {
+            if (testDependency == null)
+                throw new ArgumentNullException("testDependency");
+
+            test.AddDependency(testDependency);
+        }
+
+        /// <inheritdoc />
+        public void SetExpectedExceptionType(string typeName)
+        {
+            AddMetadata(MetadataKeys.ExpectedException, typeName);
+        }
+
+        /// <inheritdoc />
+        public PatternTest ToTest()
+        {
+            return test;
+        }
+
+        /// <inheritdoc />
+        protected sealed override IPatternTestComponent GetTestComponent()
+        {
+            return test;
+        }
+    }
+}

@@ -117,29 +117,30 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void BuildStaticTest(PatternEvaluationScope containingScope, ICodeElementInfo declaringCodeElement)
+        protected override void BuildStaticTest(IPatternScope containingScope, ICodeElementInfo declaringCodeElement)
         {
-            PatternTest test = new PatternTest(Name, CodeElement ?? declaringCodeElement, containingScope.TestDataContext.CreateChild());
-            test.Kind = Kind;
-            test.Timeout = Timeout;
-            test.IsTestCase = IsTestCase;
-            test.Metadata.AddAll(Metadata);
+            IPatternScope childTestScope = containingScope.CreateChildTestScope(Name, CodeElement ?? declaringCodeElement);
+            childTestScope.TestBuilder.Kind = Kind;
+            childTestScope.TestBuilder.Timeout = Timeout;
+            childTestScope.TestBuilder.IsTestCase = IsTestCase;
 
-            test.TestInstanceActions.SetUpTestInstanceChain.Before(state => OnSetupSelf());
-            test.TestInstanceActions.ExecuteTestInstanceChain.After(state => OnExecuteSelf());
-            test.TestInstanceActions.TearDownTestInstanceChain.After(state => OnTearDownSelf());
+            foreach (var pair in Metadata.Pairs)
+                childTestScope.TestBuilder.AddMetadata(pair.Key, pair.Value);
 
-            test.TestInstanceActions.DecorateChildTestChain.After((outerState, decoratedChildActions) =>
+            childTestScope.TestBuilder.TestInstanceActions.SetUpTestInstanceChain.Before(state => OnSetupSelf());
+            childTestScope.TestBuilder.TestInstanceActions.ExecuteTestInstanceChain.After(state => OnExecuteSelf());
+            childTestScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(state => OnTearDownSelf());
+
+            childTestScope.TestBuilder.TestInstanceActions.DecorateChildTestChain.After((outerState, decoratedChildActions) =>
                 decoratedChildActions.TestInstanceActions.SetUpTestInstanceChain.Before(innerState => OnSetupChild()));
-            test.TestInstanceActions.DecorateChildTestChain.After((outerState, decoratedChildActions) =>
+            childTestScope.TestBuilder.TestInstanceActions.DecorateChildTestChain.After((outerState, decoratedChildActions) =>
                 decoratedChildActions.TestInstanceActions.TearDownTestInstanceChain.After(innerState => OnTearDownChild()));
 
-            PatternEvaluationScope childScope = containingScope.AddChildTest(test);
-            BuildStaticTests(GetChildren(), childScope, declaringCodeElement);
+            BuildStaticTests(GetChildren(), childTestScope, declaringCodeElement);
         }
 
         /// <inheritdoc />
-        [TestFrameworkInternal]
+        [TestEntryPoint]
         protected override TestOutcome RunDynamicTest(ICodeElementInfo declaringCodeElement, Action setUp, Action tearDown)
         {
             return TestStep.RunStep(Name, () =>

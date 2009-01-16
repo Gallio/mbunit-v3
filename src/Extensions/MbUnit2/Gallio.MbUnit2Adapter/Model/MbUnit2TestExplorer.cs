@@ -109,7 +109,7 @@ namespace Gallio.MbUnit2Adapter.Model
         {
             BaseTest frameworkTest = new BaseTest(
                 String.Format(Resources.MbUnit2TestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-            frameworkTest.BaselineLocalId = Resources.MbUnit2TestFramework_FrameworkName;
+            frameworkTest.LocalIdHint = Resources.MbUnit2TestFramework_FrameworkName;
             frameworkTest.Kind = TestKinds.Framework;
 
             return frameworkTest;

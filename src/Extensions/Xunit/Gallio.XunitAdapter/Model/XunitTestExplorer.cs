@@ -99,7 +99,7 @@ namespace Gallio.XunitAdapter.Model
         private static ITest CreateFrameworkTest(Version frameworkVersion)
         {
             BaseTest frameworkTest = new BaseTest(String.Format(Resources.XunitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-            frameworkTest.BaselineLocalId = Resources.XunitTestFramework_XunitFrameworkName;
+            frameworkTest.LocalIdHint = Resources.XunitTestFramework_XunitFrameworkName;
             frameworkTest.Kind = TestKinds.Framework;
 
             return frameworkTest;

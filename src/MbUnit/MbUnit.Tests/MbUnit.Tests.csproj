@@ -130,17 +130,20 @@
     <Compile Include="Framework\AssertTest_Reflection.cs" />
     <Compile Include="Framework\AssertTest_Relations.cs" />
     <Compile Include="Framework\BaseAssertTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\AbstractContractVerifierTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\VerifyComparisonContractTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\VerifyEqualityContractTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\VerifyExceptionContractTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\VerifyImmutabilityContractTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\AbstractContractTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\ComparisonContractTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\EqualityContractTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\ExceptionContractTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\ImmutabilityContractTest.cs" />
+    <Compile Include="Framework\MixinTest.cs" />
+    <Compile Include="Framework\XmlDataTest.cs" />
     <Compile Include="Framework\ParallelizableTest.cs" />
     <Compile Include="Framework\TestFixtureReferenceTest.cs" />
     <Compile Include="Framework\TestSuiteTest.cs" />
     <Compile Include="Framework\IsolationTest.cs" />
     <Compile Include="Framework\RollbackAttributeTest.cs" />
     <Compile Include="Framework\TestCaseTest.cs" />
+    <EmbeddedResource Include="Framework\XmlDataTest.xml" />
     <None Include="MbUnit.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

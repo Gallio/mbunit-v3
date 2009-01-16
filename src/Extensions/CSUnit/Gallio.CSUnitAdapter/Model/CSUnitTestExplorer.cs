@@ -248,7 +248,7 @@ namespace Gallio.CSUnitAdapter.Model
             string name = String.Format(Resources.CSUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion);
 
             BaseTest frameworkTest = new BaseTest(name, null);
-            frameworkTest.BaselineLocalId = Resources.CSUnitTestFramework_FrameworkName;
+            frameworkTest.LocalIdHint = Resources.CSUnitTestFramework_FrameworkName;
             frameworkTest.Kind = TestKinds.Framework;
 
             return frameworkTest;
@@ -257,7 +257,7 @@ namespace Gallio.CSUnitAdapter.Model
         private static ITest CreateAssemblyTest(IAssemblyInfo assembly, string assemblyLocation, Action<ITest> consumer)
         {
             CSUnitAssemblyTest assemblyTest = new CSUnitAssemblyTest(assembly, assemblyLocation);
-            assemblyTest.BaselineLocalId = assembly.Name; // used to do reverse lookup
+            assemblyTest.LocalIdHint = assembly.Name; // used to do reverse lookup
             assemblyTest.Kind = TestKinds.Assembly;
 
             PopulateAssemblyMetadata(assembly, assemblyTest.Metadata);
@@ -271,7 +271,7 @@ namespace Gallio.CSUnitAdapter.Model
         private static ITest CreateFixtureFromType(ITypeInfo fixtureType, Action<ITest> consumer)
         {
             CSUnitTest fixtureTest = new CSUnitTest(fixtureType.Name, fixtureType);
-            fixtureTest.BaselineLocalId = fixtureType.FullName; // used to do reverse lookup
+            fixtureTest.LocalIdHint = fixtureType.FullName; // used to do reverse lookup
             fixtureTest.Kind = TestKinds.Fixture;
 
             PopulateFixtureMetadata(fixtureType, fixtureTest.Metadata);
@@ -285,7 +285,7 @@ namespace Gallio.CSUnitAdapter.Model
         private static ITest CreateTestFromMethod(IMethodInfo methodType, Action<BaseTest> consumer)
         {
             CSUnitTest method = new CSUnitTest(methodType.Name, methodType);
-            method.BaselineLocalId = methodType.DeclaringType.FullName + @"." + methodType.Name; // used to do reverse lookup
+            method.LocalIdHint = methodType.DeclaringType.FullName + @"." + methodType.Name; // used to do reverse lookup
             method.Kind = TestKinds.Test;
             method.IsTestCase = true;
 

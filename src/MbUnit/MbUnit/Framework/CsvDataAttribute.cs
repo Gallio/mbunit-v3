@@ -30,6 +30,38 @@ namespace MbUnit.Framework
     /// are interpreted as containing metadata values associated with the named key.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <para>
+    /// This example reads data from an Embedded Resource called Data.csv within the
+    /// same namespace as the test fixture.
+    /// </para>
+    /// <para>
+    /// Data files:
+    /// </para>
+    /// <code>
+    /// Item, Quantity, UnitPrice, [Category]
+    /// Bananas, 3, 0.85, Produce
+    /// Cookies, 10, 0.10, Snacks
+    /// # Comment: mmmm!
+    /// Shortbread, 1, 2.25, Snacks
+    /// </code>
+    /// <para>
+    /// A simple test.
+    /// </para>
+    /// <code>
+    /// public class AccountingTests
+    /// {
+    ///     [Test]
+    ///     [CsvData(ResourcePath = "Data.csv")]
+    ///     public void ShoppingCartTotalWithSingleItem(string item, decimal unitPrice, decimal quantity)
+    ///     {
+    ///         ShoppingCart shoppingCart = new ShoppingCart();
+    ///         shoppingCart.Add(item, unitprice, quantity);
+    ///         Assert.AreEqual(unitPrice * quantity, shoppingCart.TotalCost);
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     /// <seealso cref="CsvDataSet"/>
     public class CsvDataAttribute : ContentAttribute
     {
@@ -83,7 +115,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void PopulateDataSource(PatternEvaluationScope scope, DataSource dataSource, ICodeElementInfo codeElement)
+        protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
             CsvDataSet dataSet = new CsvDataSet(delegate { return OpenTextReader(codeElement); }, IsDynamic);
             dataSet.DataLocationName = GetDataLocationName();

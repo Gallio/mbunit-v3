@@ -14,65 +14,65 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework.Pattern;
+using Gallio.Reflection;
 
-#if false // NOT IMPLEMENTED YET
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// The mixin attribute combines tests, test parameters, setup/teardown methods,
-    /// data sources and other test elements declared by a target mixin class into a
-    /// host test.  The target mixin class is incorporated as a surrogate
-    /// of the host test and participates in all phases of the test lifecycle
-    /// including data binding, setup/teardown and test execution.
-    /// </para>
-    /// <para>
-    /// At runtime, an instance of the target class is created and injected
-    /// into the host by way of the property, field, constructor parameter or method
-    /// parameter to which the mixin attribute was applied.
-    /// </para>
+    /// Declares a mixin which can be linked into another test fixture or mixin to incorporate
+    /// additional functionality.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Mixins provide an reuse mechanism for common test behaviors in a similar
-    /// but more general manner than abstract test fixtures.
+    /// A mixin specifies common testing behaviors that can subsequently be
+    /// linked into test fixtures as a unit of reuse.
     /// </para>
     /// <para>
-    /// In many cases, it may be simpler to create an abstract class and to define
-    /// your fixtures as concrete subclasses.  However, using abstract classes has
-    /// the undesirable effect of constraining the composition of separately-defined
-    /// orthogonal behaviors because of the lack of multiple inheritance.
+    /// The linking mechanism works by defining a field or property of the mixin's
+    /// type on the test fixture which is to acquire new functionality.
+    /// Unlike abstract test fixture base class, multiple mixins can be linked into
+    /// a single test fixture.  It is also possible to create composite mixins
+    /// that express the behavior of multiple mixins taken together.
     /// </para>
     /// <para>
-    /// Mixins make it easy to create a library of reusable test components that
-    /// can be combined at will by end-users.
+    /// A mixin typically expresses a single test infrastructure concern.  For example,
+    /// preparing an empty database, starting / stopping a server, checking common
+    /// interface contracts, creating a mock object repository, or providing access to
+    /// a web browser for integration testing.
     /// </para>
-    /// </remarks>
     /// <example>
     /// <para>
-    /// This code defines a mixin class that encapsulates a browser initialization
-    /// concern.  During the setup phase, the browser is initialized, during teardown
-    /// it is disposed.  If an error occurred during test execution, the mixin also
-    /// captures a screenshot that it incorporates into the log.  Finally, all tests
-    /// that use the BrowserMixin are included in the "Web Tests" category.
+    /// The following code sample code defines a mixin class that encapsulates a
+    /// browser initialization concern.  During the setup phase the browser is
+    /// initialized and during teardown it is disposed.  If an error occurred during
+    /// test execution, the mixin also captures a screenshot that it writes to
+    /// the log.  Finally, all test fixtures that use the BrowserMixin are
+    /// automatically included in the "Web Tests" category.
     /// </para>
     /// <code>
+    /// // A test fixture that uses a BrowserMixin will be placed in the "Web Tests" category.
+    /// [Mixin]
     /// [Category("Web Tests")]
     /// public class BrowserMixin
     /// {
     ///     private Browser browser;
     ///     
+    ///     // Gets the web browser instance.
     ///     public Browser Browser
     ///     {
     ///         get { return browser; }
     ///     }
     /// 
+    ///     // This setup action will create a new instance of the browser before each test runs.
     ///     [SetUp]
     ///     public void SetUp()
     ///     {
     ///         browser = new Browser();
     ///     }
     ///     
+    ///     // This teardown action will take a screenshot if the test failed then
+    ///     // dispose them browser after each test runs.
     ///     [TearDown]
     ///     public void TearDown()
     ///     {
@@ -80,8 +80,8 @@ namespace MbUnit.Framework
     ///         {
     ///             if (Context.CurrentContext.Outcome != TestOutcome.Success)
     ///             {
-    ///                 using (Log.BeginSection("Last screen prior to test failure.");
-    ///                     Log.EmbedImage(browser.TakeScreenshot());
+    ///                 using (TestLog.BeginSection("Last screen prior to test failure.");
+    ///                     TestLog.EmbedImage(browser.TakeScreenshot());
     ///             }
     /// 
     ///             browser.Dispose();
@@ -91,23 +91,27 @@ namespace MbUnit.Framework
     /// }
     /// </code>
     /// <para>
-    /// The following test fixture class uses the BrowserMixin as part of its tests
-    /// by injecting it as a field.
+    /// The following test fixture class uses the example BrowserMixin define above as
+    /// part of its tests.  The mixin is linked in via a field.
     /// </para>
     /// <code>
     /// [TestFixture]
-    /// public class HostTestFixture
+    /// public class HomePageTests
     /// {
-    ///     [Mixin]
-    ///     public BrowserMixin mixin;
+    ///     // Specifies that we want to include the browser mixin into the fixture.
+    ///     // The field assignment ensures that the a BrowserMixin object will be created
+    ///     // and ready for use when the fixture itself is instantiated.
+    ///     [LinkMixin]
+    ///     public BrowserMixin browserMixin = new BrowserMixin();
     ///     
+    ///     // Convenience propoerty to access the web browser provided by the mixin.
     ///     public Browser Browser
     ///     {
-    ///         get { return mixin.Browser; }
+    ///         get { return browserMixin.Browser; }
     ///     }
     ///     
     ///     [Test]
-    ///     public void ATest()
+    ///     public void Search()
     ///     {
     ///         Browser.GoTo("http://www.google.com");
     ///         Browser.TextField(Find.ByName("q")).TypeText("MbUnit");
@@ -117,50 +121,25 @@ namespace MbUnit.Framework
     ///     }
     /// }
     /// </code>
-    /// <para>
-    /// Other injection possibilities are:
-    /// </para>
-    /// <code>
-    /// // Inject as a field.
-    /// public BrowserMixin mixin;
-    /// 
-    /// // Inject as a property.
-    /// [Mixin]
-    /// public BrowserMixin Mixin { get; set; }
-    /// 
-    /// // Inject as a constructor parameter.
-    /// public HostTestFixture([Mixin] BrowserMixin mixin) { ... }
-    /// 
-    /// // Inject as a test method parameter.
-    /// [Test]
-    /// public void ATest([Mixin] BrowserMixin mixin) { ... }
-    /// </code>
     /// </example>
-    public class MixinAttribute
+    /// </remarks>
+    [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
+    public class MixinAttribute : TestTypePatternAttribute
     {
-        private readonly Type mixinType;
-
-        /// <summary>
-        /// Injects a mixin to use as the value of a fixture property, field, constructor
-        /// parameter or test method parameter.
-        /// </summary>
-        /// <param name="mixinType">The mixin type</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="mixinType"/> is null</exception>
-        public MixinAttribute(Type mixinType)
+        /// <inheritdoc />
+        public override bool IsPrimary
         {
-            if (mixinType == null)
-                throw new ArgumentNullException("mixinType");
-
-            this.mixinType = mixinType;
+            get { return true; }
         }
 
-        /// <summary>
-        /// Gets the mixin type.
-        /// </summary>
-        public Type MixinType
+        /// <inheritdoc />
+        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
-            get { return mixinType; }
+            ITypeInfo type = codeElement as ITypeInfo;
+            Validate(containingScope, type);
+
+            ConsumeMembers(containingScope, type);
+            ConsumeNestedTypes(containingScope, type);
         }
     }
 }
-#endif

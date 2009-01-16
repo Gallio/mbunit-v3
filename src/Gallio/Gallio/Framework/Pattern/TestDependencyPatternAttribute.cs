@@ -30,22 +30,22 @@ namespace Gallio.Framework.Pattern
     public abstract class TestDependencyPatternAttribute : PatternAttribute
     {
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
             Validate(scope, codeElement);
 
             ICodeElementInfo resolvedDependency = GetDependency(scope, codeElement);
-            scope.Evaluator.AddFinishModelAction(codeElement, delegate
+            scope.TestModelBuilder.AddDeferredAction(codeElement, int.MaxValue, delegate
             {
                 bool success = false;
                 foreach (PatternTest dependentTest in scope.Evaluator.GetDeclaredTests(resolvedDependency))
                 {
-                    scope.Test.AddDependency(dependentTest);
+                    scope.TestBuilder.AddDependency(dependentTest);
                     success = true;
                 }
 
                 if (! success)
-                    scope.TestModel.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement,
+                    scope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement,
                         "Was unable to resolve a test dependency."));
             });
         }
@@ -56,7 +56,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (!scope.IsTestDeclaration)
                 ThrowUsageErrorException("This attribute can only be used on a test.");
@@ -68,6 +68,6 @@ namespace Gallio.Framework.Pattern
         /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element</param>
         /// <returns>The code element representing the dependency</returns>
-        protected abstract ICodeElementInfo GetDependency(PatternEvaluationScope scope, ICodeElementInfo codeElement);
+        protected abstract ICodeElementInfo GetDependency(IPatternScope scope, ICodeElementInfo codeElement);
     }
 }

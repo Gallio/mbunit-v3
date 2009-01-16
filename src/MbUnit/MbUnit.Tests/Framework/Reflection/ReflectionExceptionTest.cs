@@ -24,7 +24,7 @@ namespace MbUnit.Tests.Framework.Reflection
     [TestsOn(typeof(AssertionException))]
     public class ReflectionExceptionTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<ReflectionException>();
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<ReflectionException>();
     }
 }

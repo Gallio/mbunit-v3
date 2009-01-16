@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 
@@ -22,8 +23,8 @@ namespace Gallio.Framework.Pattern
     /// <summary>
     /// <para>
     /// The <see cref="PatternAttribute" /> class is the base class for all pattern test framework
-    /// attributes.  It associates a code element with a <see cref="PatternTest" /> for building
-    /// <see cref="PatternTestParameter" /> and <see cref="PatternAttribute" /> objects using reflection.
+    /// attributes.  It associates a code element with a <see cref="IPattern" /> for building
+    /// up parts of the test model using reflection.
     /// </para>
     /// <para>
     /// Subclasses of <see cref="IPattern" /> define simpler interfaces for implementing
@@ -33,6 +34,7 @@ namespace Gallio.Framework.Pattern
     /// </summary>
     /// <seealso cref="IPattern"/>
     /// <seealso cref="PatternTestFramework"/>
+    [TestFrameworkInternal]
     public abstract class PatternAttribute : Attribute, IPattern
     {
         /// <inheritdoc />
@@ -42,18 +44,18 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public virtual bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public virtual bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public virtual void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public virtual void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
         }
 
         /// <inheritdoc />
-        public virtual void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public virtual void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
         }
 

@@ -23,8 +23,8 @@ namespace Gallio.Tests.Framework.Data
     [TestsOn(typeof(DataBinding))]
     public class DataBindingTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<DataBinding>()
+        [VerifyContract]
+        public readonly IContract EqualityTests = new EqualityContract<DataBinding>()
         {
             ImplementsOperatorOverloads = false,
             EquivalenceClasses = EquivalenceClassCollection<DataBinding>.FromDistinctInstances(

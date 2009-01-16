@@ -14,9 +14,8 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
+using System.Collections.Generic;
 using Gallio.Reflection;
-using Gallio.Framework.Pattern;
 
 namespace Gallio.Framework.Pattern
 {
@@ -26,20 +25,20 @@ namespace Gallio.Framework.Pattern
     /// </para>
     /// <para>
     /// A metadata attribute is similar to a decorator but more restrictive.  Metadata does
-    /// not modify the structure of a test directly.  Instead it introduces additional entries
-    /// in the <see cref="MetadataMap" /> collection that are useful for classification,
-    /// filtering, reporting, documentation or other purposes.
+    /// not modify the structure of a test directly.  Instead it introduces additional metadata
+    /// key / value pairs for classification, filtering, reporting, documentation or other purposes.
     /// </para>
     /// </summary>
     [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public abstract class MetadataPatternAttribute : PatternAttribute
     {
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
             Validate(scope, codeElement);
 
-            Apply(scope.TestComponent.Metadata);
+            foreach (KeyValuePair<string, string> pair in GetMetadata())
+                scope.TestComponentBuilder.AddMetadata(pair.Key, pair.Value);
         }
 
         /// <summary>
@@ -48,16 +47,16 @@ namespace Gallio.Framework.Pattern
         /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (!scope.IsTestDeclaration && !scope.IsTestParameterDeclaration)
                 ThrowUsageErrorException("This attribute can only be used on a test or test parameter.");
         }
 
         /// <summary>
-        /// Applies metadata contributions the metadata map of a test component.
+        /// Gets the metadata key / value pairs to be added to the test component.
         /// </summary>
-        /// <param name="metadata">The metadata map</param>
-        protected abstract void Apply(MetadataMap metadata);
+        /// <returns>The metadata entries</returns>
+        protected abstract IEnumerable<KeyValuePair<string, string>> GetMetadata();
     }
 }

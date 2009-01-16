@@ -15,16 +15,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.XPath;
 using Gallio.Model;
+using Gallio.Utilities;
 
 namespace Gallio.Framework.Data
 {
     /// <summary>
-    /// <para>
     /// An XML data set selects nodes from an XML document using XPath
     /// expressions.  The selected nodes are returned as <see cref="XPathNavigator" /> objects.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// Two XPath expressions are used.
     /// <list type="bullet">
@@ -44,12 +46,34 @@ namespace Gallio.Framework.Data
     /// </item>
     /// </list>
     /// </para>
-    /// </summary>
+    /// <example>
+    /// <para>
+    /// The XML may contain metadata at the row level by adding metadata elements in the
+    /// http://www.gallio.org/ namespace containing metadata entries.  In the following example,
+    /// the row values would be selected using an Item Path of "//row" and a Binding Path of "@value".
+    /// Additionally, some rows would have metadata as specified.
+    /// </para>
+    /// <code>
+    /// <![CDATA[
+    /// <data>
+    ///   <row value="somevalue">
+    ///     <metadata xmlns="http://www.gallio.org/">
+    ///       <entry key="Description" value="A row..." />
+    ///       <entry key="Author" value="Me" />
+    ///     </metadata>
+    ///   </row>
+    ///   <row value="anothervalue" />
+    /// </data>
+    /// ]]>
+    /// </code>
+    /// </example>
+    /// </remarks>
     public class XmlDataSet : BaseDataSet
     {
         private readonly Func<IXPathNavigable> documentProvider;
         private readonly string itemPath;
         private readonly bool isDynamic;
+        private string dataLocationName;
 
         /// <summary>
         /// Creates an XML data set.
@@ -68,6 +92,24 @@ namespace Gallio.Framework.Data
             this.documentProvider = documentProvider;
             this.itemPath = itemPath;
             this.isDynamic = isDynamic;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the name of the location that is providing the data, or null if none.
+        /// </para>
+        /// <para>
+        /// The data location name and line number are exposed as
+        /// <see cref="MetadataKeys.DataLocation" /> metadata when provided.
+        /// </para>
+        /// </summary>
+        /// <value>
+        /// The default value is null.
+        /// </value>
+        public string DataLocationName
+        {
+            get { return dataLocationName; }
+            set { dataLocationName = value; }
         }
 
         /// <inheritdoc />
@@ -104,7 +146,26 @@ namespace Gallio.Framework.Data
                 IXPathNavigable document = documentProvider();
 
                 foreach (XPathNavigator navigator in document.CreateNavigator().Select(itemPath))
-                    yield return new Item(navigator, isDynamic);
+                {
+                    yield return new Item(navigator, GetMetadata(navigator), isDynamic);
+                }
+            }
+        }
+
+        private IEnumerable<KeyValuePair<string, string>> GetMetadata(XPathNavigator navigator)
+        {
+            if (dataLocationName != null)
+                yield return new KeyValuePair<string, string>(MetadataKeys.DataLocation, dataLocationName);
+
+            foreach (XPathNavigator metadataNavigator in navigator.SelectChildren("metadata", XmlSerializationUtils.GallioNamespace))
+            {
+                foreach (XPathNavigator entryNavigator in metadataNavigator.SelectChildren("entry", XmlSerializationUtils.GallioNamespace))
+                {
+                    string key = entryNavigator.GetAttribute("key", string.Empty);
+                    string value = entryNavigator.GetAttribute("value", string.Empty);
+                    if (key != null && value != null)
+                        yield return new KeyValuePair<string, string>(key, value);
+                }
             }
         }
 
@@ -112,8 +173,8 @@ namespace Gallio.Framework.Data
         {
             private readonly XPathNavigator navigator;
 
-            public Item(XPathNavigator navigator, bool isDynamic)
-                : base(null, isDynamic)
+            public Item(XPathNavigator navigator, IEnumerable<KeyValuePair<string, string>> metadata, bool isDynamic)
+                : base(metadata, isDynamic)
             {
                 this.navigator = navigator;
             }

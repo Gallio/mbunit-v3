@@ -62,7 +62,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void BuildStaticTest(PatternEvaluationScope containingScope, ICodeElementInfo declaringCodeElement)
+        protected override void BuildStaticTest(IPatternScope containingScope, ICodeElementInfo declaringCodeElement)
         {
             containingScope.Evaluator.Consume(containingScope, Reflector.Wrap(testFixtureType), false, TestTypePatternAttribute.AutomaticInstance);
         }

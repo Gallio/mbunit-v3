@@ -22,7 +22,7 @@ namespace Gallio.Tests.Framework.Data
     [TestsOn(typeof(DataBindingException))]
     public class DataBindingExceptionTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<DataBindingException>();
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<DataBindingException>();
     }
 }

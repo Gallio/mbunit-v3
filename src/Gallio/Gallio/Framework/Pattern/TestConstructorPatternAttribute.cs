@@ -20,8 +20,8 @@ namespace Gallio.Framework.Pattern
 {
     /// <summary>
     /// <para>
-    /// Declares that a constructor is used to provide paramters to a <see cref="PatternTest" />.
-    /// Subclasses of this attribute can control what happens with the method.
+    /// Declares that a constructor is used to provide test fixture parameters.
+    /// Subclasses of this attribute can control what happens with the constructor.
     /// </para>
     /// <para>
     /// At most one attribute of this type may appear on any given constructor.
@@ -43,13 +43,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             IConstructorInfo constructor = codeElement as IConstructorInfo;
             Validate(containingScope, constructor);
 
-            PatternTestDataContext dataContext = containingScope.TestDataContext.CreateChild();
-            PatternEvaluationScope dataContextScope = containingScope.EnterTestDataContext(dataContext);
+            IPatternScope dataContextScope = containingScope.CreateChildTestDataContextScope(codeElement);
 
             InitializeDataContext(dataContextScope, constructor);
         }
@@ -60,7 +59,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="containingScope">The containing scope</param>
         /// <param name="constructor">The constructor</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope containingScope, IConstructorInfo constructor)
+        protected virtual void Validate(IPatternScope containingScope, IConstructorInfo constructor)
         {
             if (!containingScope.CanAddTestParameter || constructor == null)
                 ThrowUsageErrorException("This attribute can only be used on a test type constructor.");
@@ -75,11 +74,11 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="dataContextScope">The data context scope</param>
         /// <param name="constructor">The constructor</param>
-        protected virtual void InitializeDataContext(PatternEvaluationScope dataContextScope, IConstructorInfo constructor)
+        protected virtual void InitializeDataContext(IPatternScope dataContextScope, IConstructorInfo constructor)
         {
             ITypeInfo declaringType = constructor.DeclaringType;
             if (declaringType.IsGenericTypeDefinition)
-                dataContextScope.TestDataContext.ImplicitDataBindingIndexOffset = declaringType.GenericArguments.Count;
+                dataContextScope.TestDataContextBuilder.ImplicitDataBindingIndexOffset = declaringType.GenericArguments.Count;
 
             foreach (IParameterInfo parameter in constructor.Parameters)
                 dataContextScope.Consume(parameter, false, DefaultConstructorParameterPattern);

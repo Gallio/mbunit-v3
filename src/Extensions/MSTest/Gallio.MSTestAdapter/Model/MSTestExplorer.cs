@@ -93,7 +93,7 @@ namespace Gallio.MSTestAdapter.Model
         {
             //TODO: Use resource strings
             BaseTest frameworkTest = new BaseTest(String.Format("MSTest v{0}", frameworkVersion), null);
-            frameworkTest.BaselineLocalId = "MSTest";
+            frameworkTest.LocalIdHint = "MSTest";
             frameworkTest.Kind = TestKinds.Framework;
 
             return frameworkTest;

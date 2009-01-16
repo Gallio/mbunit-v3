@@ -60,7 +60,7 @@ namespace Gallio.Tests.Host
         [Test]
         public void HostProgramTerminatesWhenItsOwnerProcessTerminates()
         {
-            ProcessTask ownerProcess = StartHost("/ipc-port:HostIntegrationTest-Owner /timeout:10");
+            ProcessTask ownerProcess = StartHost("/ipc-port:HostIntegrationTest-Owner /timeout:30");
             int ownerProcessId = ownerProcess.Process.Id;
 
             ProcessTask task = StartHost("/ipc-port:HostIntegrationTest /owner-process:" + ownerProcessId);

@@ -25,7 +25,7 @@ namespace Gallio.MSTestAdapter.Wrapper
 {
     /// <summary>
     /// An MSTest command implementation that is designed to allow MSTest tests
-    /// to run in the debugger with no additional process isolationd.
+    /// to run in the debugger with no additional process isolation.
     /// </summary>
     internal class DebugMSTestCommand : IMSTestCommand
     {
@@ -130,6 +130,11 @@ namespace Gallio.MSTestAdapter.Wrapper
                     if (outputTempFile != null)
                         File.Delete(outputTempFile);
                 }
+            }
+
+            public override object InitializeLifetimeService()
+            {
+                return null;
             }
 
             [DllImport("kernel32.dll", SetLastError = true)]

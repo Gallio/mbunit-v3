@@ -17,7 +17,7 @@ using System;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
-namespace MbUnit.Samples.ContractVerifiers
+namespace MbUnit.Samples.ContractVerifiers.Comparison
 {
     public class SampleComparable : IComparable<SampleComparable>
     {

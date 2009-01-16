@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Framework.Pattern;
@@ -72,9 +73,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void Apply(MetadataMap metadata)
+        protected override IEnumerable<KeyValuePair<string, string>> GetMetadata()
         {
-            metadata.Add(metadataKey, metadataValue);
+            yield return new KeyValuePair<string, string>(metadataKey, metadataValue);
         }
     }
 }

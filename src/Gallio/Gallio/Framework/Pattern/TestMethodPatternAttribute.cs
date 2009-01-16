@@ -22,7 +22,7 @@ namespace Gallio.Framework.Pattern
 {
     /// <summary>
     /// <para>
-    /// Declares that a method represents a <see cref="PatternTest" />.
+    /// Declares that a method represents a test.
     /// Subclasses of this attribute can control what happens with the method.
     /// </para>
     /// <para>
@@ -53,25 +53,26 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public override bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return true;
         }
 
         /// <inheritdoc />
-        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             IMethodInfo method = codeElement as IMethodInfo;
             Validate(containingScope, method);
 
-            PatternTest methodTest = CreateTest(containingScope, method);
-            methodTest.Order = Order;
+            IPatternScope methodScope = containingScope.CreateChildTestScope(method.Name, method);
+            methodScope.TestBuilder.Kind = TestKinds.Test;
+            methodScope.TestBuilder.IsTestCase = true;
+            methodScope.TestBuilder.Order = Order;
 
-            PatternEvaluationScope methodScope = containingScope.AddChildTest(methodTest);
             InitializeTest(methodScope, method);
-            SetTestSemantics(methodTest, method);
+            SetTestSemantics(methodScope.TestBuilder, method);
 
-            methodScope.ApplyDecorators();
+            methodScope.TestBuilder.ApplyDeferredActions();
         }
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="containingScope">The containing scope</param>
         /// <param name="method">The method</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
+        protected virtual void Validate(IPatternScope containingScope, IMethodInfo method)
         {
             if (!containingScope.CanAddChildTest || method == null)
                 ThrowUsageErrorException("This attribute can only be used on a test method within a test type.");
@@ -89,29 +90,15 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Creates a test for a method.
-        /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="method">The method</param>
-        /// <returns>The test</returns>
-        protected virtual PatternTest CreateTest(PatternEvaluationScope containingScope, IMethodInfo method)
-        {
-            PatternTest test = new PatternTest(method.Name, method, containingScope.TestDataContext.CreateChild());
-            test.Kind = TestKinds.Test;
-            test.IsTestCase = true;
-            return test;
-        }
-
-        /// <summary>
         /// Initializes a test for a method after it has been added to the test model.
         /// </summary>
         /// <param name="methodScope">The method scope</param>
         /// <param name="method">The method</param>
-        protected virtual void InitializeTest(PatternEvaluationScope methodScope, IMethodInfo method)
+        protected virtual void InitializeTest(IPatternScope methodScope, IMethodInfo method)
         {
             string xmlDocumentation = method.GetXmlDocumentation();
             if (xmlDocumentation != null)
-                methodScope.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                methodScope.TestBuilder.AddMetadata(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
             methodScope.Process(method);
 
@@ -127,8 +114,7 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Applies semantic actions to the <see cref="PatternTest.TestActions" /> member of a 
-        /// test to set the test's runtime behavior.
+        /// Applies semantic actions to a test to estalish its runtime behavior.
         /// </para>
         /// <para>
         /// This method is called after <see cref="InitializeTest" />.
@@ -150,11 +136,11 @@ namespace Gallio.Framework.Pattern
         /// You can override this method to change the semantics as required.
         /// </para>
         /// </remarks>
-        /// <param name="test">The test</param>
+        /// <param name="testBuilder">The test builder</param>
         /// <param name="method">The test method</param>
-        protected virtual void SetTestSemantics(PatternTest test, IMethodInfo method)
+        protected virtual void SetTestSemantics(ITestBuilder testBuilder, IMethodInfo method)
         {
-            test.TestInstanceActions.BeforeTestInstanceChain.After(
+            testBuilder.TestInstanceActions.BeforeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     MethodInvocationSpec spec = testInstanceState.GetTestMethodInvocationSpec(method);
@@ -166,7 +152,7 @@ namespace Gallio.Framework.Pattern
                         testInstanceState.TestStep.Name = spec.Format(testInstanceState.TestStep.Name, testInstanceState.Formatter);
                 });
 
-            test.TestInstanceActions.ExecuteTestInstanceChain.After(state => Execute(state));
+            testBuilder.TestInstanceActions.ExecuteTestInstanceChain.After(state => Execute(state));
         }
 
         /// <summary>

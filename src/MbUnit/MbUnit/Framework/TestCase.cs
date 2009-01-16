@@ -66,7 +66,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestFrameworkInternal]
+        [TestEntryPoint]
         protected override void OnExecuteSelf()
         {
             Execute();

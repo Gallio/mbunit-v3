@@ -34,12 +34,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             IMethodInfo method = codeElement as IMethodInfo;
             Validate(containingScope, method);
 
-            containingScope.AddDecorator(Order, delegate
+            containingScope.TestComponentBuilder.AddDeferredAction(codeElement, Order, delegate
             {
                 DecorateContainingScope(containingScope, method);
             });
@@ -51,7 +51,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="containingScope">The containing scope</param>
         /// <param name="method">The method</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
+        protected virtual void Validate(IPatternScope containingScope, IMethodInfo method)
         {
             if (! containingScope.IsTestDeclaration || method == null)
                 ThrowUsageErrorException(String.Format("This attribute can only be used on a method within a test type."));
@@ -59,12 +59,12 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Applies decorations to the containing <see cref="PatternTest" />.
+        /// Applies decorations to the containing test.
         /// </para>
         /// </summary>
         /// <param name="containingScope">The containing scope</param>
         /// <param name="method">The method to process</param>
-        protected virtual void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
+        protected virtual void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
         }
     }

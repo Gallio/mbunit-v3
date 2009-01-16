@@ -35,13 +35,13 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public override bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return evaluator.IsTest(codeElement, DefaultAssemblyPattern);
         }
 
         /// <inheritdoc />
-        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             IAssemblyInfo assembly = codeElement as IAssemblyInfo;
             if (assembly != null)

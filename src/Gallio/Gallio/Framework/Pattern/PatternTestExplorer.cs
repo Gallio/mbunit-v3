@@ -32,9 +32,10 @@ namespace Gallio.Framework.Pattern
     {
         private readonly IPatternTestFrameworkExtension[] extensions;
 
-        private readonly PatternEvaluator evaluator;
+        private readonly ITestModelBuilder testModelBuilder;
+        private readonly IPatternEvaluator evaluator;
         private readonly Dictionary<IAssemblyInfo, bool> assemblies;
-        private readonly Dictionary<string, PatternEvaluationScope> frameworkScopes;
+        private readonly Dictionary<string, IPatternScope> frameworkScopes;
 
         /// <summary>
         /// Creates a test explorer.
@@ -51,9 +52,10 @@ namespace Gallio.Framework.Pattern
 
             this.extensions = extensions;
 
-            evaluator = new PatternEvaluator(testModel, DeclarativePatternResolver.Instance);
+            testModelBuilder = new DefaultTestModelBuilder(testModel);
+            evaluator = new DefaultPatternEvaluator(testModelBuilder, DeclarativePatternResolver.Instance);
             assemblies = new Dictionary<IAssemblyInfo, bool>();
-            frameworkScopes = new Dictionary<string, PatternEvaluationScope>();
+            frameworkScopes = new Dictionary<string, IPatternScope>();
         }
 
         /// <inheritdoc />
@@ -67,17 +69,16 @@ namespace Gallio.Framework.Pattern
         {
             if (BuildAssemblyTest(assembly, false))
             {
-                foreach (PatternEvaluationScope scope in evaluator.GetScopes(assembly))
-                    scope.PopulateChildrenChain.Action(null);
+                foreach (IPatternScope scope in evaluator.GetScopes(assembly))
+                    scope.PopulateDeferredComponents(null);
 
                 assemblies[assembly] = true;
             }
 
             if (consumer != null)
             {
-                foreach (PatternEvaluationScope scope in evaluator.GetScopes(assembly))
-                    if (scope.IsTestDeclaration)
-                        consumer(scope.Test);
+                foreach (IPatternScope scope in evaluator.GetDeclaredTests(assembly))
+                    consumer(scope.TestBuilder.ToTest());
             }
         }
 
@@ -88,22 +89,21 @@ namespace Gallio.Framework.Pattern
 
             if (! BuildAssemblyTest(assembly, true))
             {
-                foreach (PatternEvaluationScope scope in evaluator.GetScopes(assembly))
-                    scope.PopulateChildrenChain.Action(type);
+                foreach (IPatternScope scope in evaluator.GetScopes(assembly))
+                    scope.PopulateDeferredComponents(type);
             }
             
             if (consumer != null)
             {
-                foreach (PatternEvaluationScope scope in evaluator.GetScopes(type))
-                    if (scope.IsTestDeclaration)
-                        consumer(scope.Test);
+                foreach (IPatternScope scope in evaluator.GetDeclaredTests(type))
+                    consumer(scope.TestBuilder.ToTest());
             }
         }
 
         /// <inheritdoc />
         public override void FinishModel()
         {
-            evaluator.FinishModel();
+            testModelBuilder.ApplyDeferredActions();
         }
 
         private bool BuildAssemblyTest(IAssemblyInfo assembly, bool skipChildren)
@@ -120,7 +120,7 @@ namespace Gallio.Framework.Pattern
 
             if (!fullyPopulated)
             {
-                PatternEvaluationScope frameworkScope = BuildFrameworkTest(tools);
+                IPatternScope frameworkScope = BuildFrameworkTest(tools);
 
                 InitializeAssembly(frameworkScope, assembly);
 
@@ -130,29 +130,28 @@ namespace Gallio.Framework.Pattern
             return fullyPopulated;
         }
 
-        private PatternEvaluationScope BuildFrameworkTest(IList<ToolInfo> tools)
+        private IPatternScope BuildFrameworkTest(IList<ToolInfo> tools)
         {
             string id = BuildFrameworkTestId(tools);
 
-            PatternEvaluationScope frameworkScope;
+            IPatternScope frameworkScope;
             if (!frameworkScopes.TryGetValue(id, out frameworkScope))
             {
-                PatternTest topLevelTest = new PatternTest(BuildFrameworkTestName(tools), null, new PatternTestDataContext(null));
-                topLevelTest.Kind = TestKinds.Framework;
-                topLevelTest.BaselineLocalId = id;
+                frameworkScope = evaluator.CreateTopLevelTestScope(BuildFrameworkTestName(tools), null);
+                frameworkScope.TestBuilder.Kind = TestKinds.Framework;
+                frameworkScope.TestBuilder.LocalIdHint = id;
 
                 // Define the anonymous data source on the top-level test as a backstop
                 // for data bindings without associated data sources.
-                topLevelTest.DataContext.DefineDataSource("");
+                frameworkScope.TestDataContextBuilder.DefineDataSource("");
 
-                frameworkScope = evaluator.AddTest(topLevelTest);
                 frameworkScopes.Add(id, frameworkScope);
             }
 
             return frameworkScope;
         }
 
-        private static void InitializeAssembly(PatternEvaluationScope frameworkScope, IAssemblyInfo assembly)
+        private static void InitializeAssembly(IPatternScope frameworkScope, IAssemblyInfo assembly)
         {
             foreach (TestAssemblyInitializationAttribute attrib in AttributeUtils.GetAttributes<TestAssemblyInitializationAttribute>(assembly, false))
             {
@@ -162,7 +161,7 @@ namespace Gallio.Framework.Pattern
                 }
                 catch (Exception ex)
                 {
-                    frameworkScope.Evaluator.PublishExceptionAsAnnotation(assembly, ex);
+                    frameworkScope.TestModelBuilder.PublishExceptionAsAnnotation(assembly, ex);
                 }
             }
         }

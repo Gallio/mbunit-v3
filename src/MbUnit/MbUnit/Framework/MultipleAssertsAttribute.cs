@@ -38,9 +38,9 @@ namespace MbUnit.Framework
     public class MultipleAssertsAttribute : TestMethodDecoratorPatternAttribute
     {
         /// <inheritdoc />
-        protected override void DecorateMethodTest(PatternEvaluationScope methodScope, IMethodInfo method)
+        protected override void DecorateMethodTest(IPatternScope methodScope, IMethodInfo method)
         {
-            methodScope.Test.TestInstanceActions.ExecuteTestInstanceChain.Around(WithMultiple);
+            methodScope.TestBuilder.TestInstanceActions.ExecuteTestInstanceChain.Around(WithMultiple);
         }
 
         [TestEntryPoint]

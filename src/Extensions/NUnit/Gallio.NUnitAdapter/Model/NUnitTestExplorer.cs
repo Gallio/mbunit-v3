@@ -85,7 +85,7 @@ namespace Gallio.NUnitAdapter.Model
         private static ITest CreateFrameworkTest(Version frameworkVersion)
         {
             BaseTest frameworkTest = new BaseTest(String.Format(Resources.NUnitTestExplorer_FrameworkNameWithVersionFormat, frameworkVersion), null);
-            frameworkTest.BaselineLocalId = Resources.NUnitTestFramework_NUnitFrameworkName;
+            frameworkTest.LocalIdHint = Resources.NUnitTestFramework_NUnitFrameworkName;
             frameworkTest.Kind = TestKinds.Framework;
 
             return frameworkTest;

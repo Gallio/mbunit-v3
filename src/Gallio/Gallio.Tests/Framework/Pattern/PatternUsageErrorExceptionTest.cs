@@ -22,8 +22,8 @@ namespace Gallio.Tests.Framework.Pattern
     [TestsOn(typeof(PatternUsageErrorException))]
     public class PatternUsageErrorExceptionTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<PatternUsageErrorException>()
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<PatternUsageErrorException>()
         {
             ImplementsStandardConstructors = false
         };

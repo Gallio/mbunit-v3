@@ -22,19 +22,19 @@ namespace Gallio.Framework.Pattern
     /// <summary>
     /// <para>
     /// A test decorator pattern attribute applies decorations to an
-    /// existing method-level <see cref="PatternTest" />.
+    /// existing test declared at the method-level.
     /// </para>
     /// </summary>
     [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple = true, Inherited = true)]
     public abstract class TestMethodDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
             IMethodInfo method = codeElement as IMethodInfo;
             Validate(scope, method);
 
-            scope.AddDecorator(Order, delegate
+            scope.TestBuilder.AddDeferredAction(codeElement, Order, delegate
             {
                 DecorateMethodTest(scope, method);
             });
@@ -46,7 +46,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="scope">The scope</param>
         /// <param name="method">The method</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope scope, IMethodInfo method)
+        protected virtual void Validate(IPatternScope scope, IMethodInfo method)
         {
             if (!scope.IsTestDeclaration || method == null)
                 ThrowUsageErrorException("This attribute can only be used on a test method.");
@@ -54,7 +54,7 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Applies decorations to a method-level <see cref="PatternTest" />.
+        /// Applies decorations to a method-level test.
         /// </para>
         /// <para>
         /// A typical use of this method is to augment the test with additional metadata
@@ -63,7 +63,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="methodScope">The method scope</param>
         /// <param name="method">The method</param>
-        protected virtual void DecorateMethodTest(PatternEvaluationScope methodScope, IMethodInfo method)
+        protected virtual void DecorateMethodTest(IPatternScope methodScope, IMethodInfo method)
         {
         }
     }

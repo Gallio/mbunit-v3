@@ -55,6 +55,7 @@ namespace Gallio.Framework.Pattern
         private readonly IPatternTestInstanceHandler testInstanceHandler;
         private readonly PatternTestState testState;
         private readonly IDataItem bindingItem;
+        private readonly Dictionary<PatternTestParameter, object> testParameterValues;
         private readonly Dictionary<ISlotInfo, object> slotValues;
         private readonly UserDataCollection data;
         private readonly TestAction body;
@@ -99,6 +100,7 @@ namespace Gallio.Framework.Pattern
             this.bindingItem = bindingItem;
             this.body = body;
 
+            testParameterValues = new Dictionary<PatternTestParameter, object>();
             slotValues = new Dictionary<ISlotInfo, object>();
             data = new UserDataCollection();
         }
@@ -272,6 +274,19 @@ namespace Gallio.Framework.Pattern
         public IDictionary<ISlotInfo, object> SlotValues
         {
             get { return slotValues; }
+        }
+
+        /// <summary>
+        /// Gets a mutable dictionary of values assigned to test parameters.
+        /// </summary>
+        /// <remarks>
+        /// The contents of the dictionary are initialized by the framework as part of the
+        /// test parameter binding phase for the test instance, just before the "before test instance"
+        /// actions run.
+        /// </remarks>
+        public IDictionary<PatternTestParameter, object> TestParameterValues
+        {
+            get { return testParameterValues; }
         }
 
         /// <summary>

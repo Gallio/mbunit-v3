@@ -86,7 +86,7 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="containingScope"/>, <paramref name="declaringCodeElement"/>
         /// or <paramref name="tests"/> is null or contains a null</exception>
         /// <seealso cref="StaticTestFactoryAttribute" />
-        public static void BuildStaticTests(IEnumerable<Test> tests, PatternEvaluationScope containingScope, ICodeElementInfo declaringCodeElement)
+        public static void BuildStaticTests(IEnumerable<Test> tests, IPatternScope containingScope, ICodeElementInfo declaringCodeElement)
         {
             if (containingScope == null)
                 throw new ArgumentNullException("containingScope");
@@ -140,7 +140,7 @@ namespace MbUnit.Framework
         /// <param name="containingScope">The containing pattern evaluation scope</param>
         /// <param name="declaringCodeElement">The code element that represents the scope in which the test was defined</param>
         /// <seealso cref="StaticTestFactoryAttribute" />
-        protected abstract void BuildStaticTest(PatternEvaluationScope containingScope, ICodeElementInfo declaringCodeElement);
+        protected abstract void BuildStaticTest(IPatternScope containingScope, ICodeElementInfo declaringCodeElement);
 
         /// <summary>
         /// Runs a dynamic test during test execution.

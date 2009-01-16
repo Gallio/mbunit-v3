@@ -23,8 +23,8 @@ namespace Gallio.Tests.Framework
     [TestsOn(typeof(SilentTestException))]
     public class SilentTestExceptionTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<TestInconclusiveException>()
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<TestInconclusiveException>()
         {
             ImplementsStandardConstructors = false
         };

@@ -68,21 +68,21 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
             string message = "The test was ignored.";
             if (reason.Length != 0)
                 message += "\nReason: " + reason;
             
-            scope.Test.Metadata.Add(MetadataKeys.IgnoreReason, reason);
+            scope.TestBuilder.AddMetadata(MetadataKeys.IgnoreReason, reason);
 
-            scope.Test.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
+            scope.TestBuilder.TestActions.InitializeTestChain.Before(delegate(PatternTestState state)
             {
                 if (! state.IsExplicit)
                     throw new SilentTestException(TestOutcome.Ignored, message);
             });
 
-            scope.TestModel.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement, message));
+            scope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Warning, codeElement, message));
         }
     }
 }

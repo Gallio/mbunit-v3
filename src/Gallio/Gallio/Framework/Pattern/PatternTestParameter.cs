@@ -28,25 +28,36 @@ namespace Gallio.Framework.Pattern
     public class PatternTestParameter : BaseTestParameter, IPatternTestComponent
     {
         private readonly PatternTestDataContext dataContext;
+        private readonly PatternTestParameterActions testParameterActions;
         private IDataBinder binder;
 
         /// <summary>
         /// Creates a test pattern parameter.
         /// </summary>
         /// <param name="name">The name of the test parameter</param>
-        /// <param name="slot">The slot represented by the parameter</param>
+        /// <param name="codeElement">The code element (usually a slot) represented by the parameter, or null if none</param>
         /// <param name="dataContext">The data context of the test parameter</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="slot"/> or <paramref name="dataContext"/> is null</exception>
-        public PatternTestParameter(string name, ISlotInfo slot, PatternTestDataContext dataContext)
-            : base(name, slot)
+        /// <paramref name="codeElement"/> or <paramref name="dataContext"/> is null</exception>
+        public PatternTestParameter(string name, ICodeElementInfo codeElement, PatternTestDataContext dataContext)
+            : base(name, codeElement)
         {
-            if (slot == null)
-                throw new ArgumentNullException("slot");
+            if (codeElement == null)
+                throw new ArgumentNullException("codeElement");
             if (dataContext == null)
                 throw new ArgumentNullException("dataContext");
 
             this.dataContext = dataContext;
+
+            testParameterActions = new PatternTestParameterActions();
+        }
+
+        /// <summary>
+        /// Gets the set of actions that describe the behavior of the test parameter.
+        /// </summary>
+        public PatternTestParameterActions TestParameterActions
+        {
+            get { return testParameterActions; }
         }
 
         /// <summary>
@@ -55,14 +66,6 @@ namespace Gallio.Framework.Pattern
         new public PatternTest Owner
         {
             get { return (PatternTest) base.Owner; }
-        }
-
-        /// <summary>
-        /// Gets the associated slot.
-        /// </summary>
-        public ISlotInfo Slot
-        {
-            get { return (ISlotInfo) CodeElement; }
         }
 
         /// <summary>

@@ -68,9 +68,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            scope.Test.TestInstanceActions.RunTestInstanceBodyChain.Around(delegate(PatternTestInstanceState state, Func<PatternTestInstanceState, TestOutcome> inner)
+            scope.TestBuilder.TestInstanceActions.RunTestInstanceBodyChain.Around(delegate(PatternTestInstanceState state, Func<PatternTestInstanceState, TestOutcome> inner)
             {
                 TestOutcome outcome = TestOutcome.Passed;
                 int passedCount = 0;

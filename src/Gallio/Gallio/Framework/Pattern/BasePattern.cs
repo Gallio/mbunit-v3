@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 
@@ -22,6 +23,7 @@ namespace Gallio.Framework.Pattern
     /// Abstract base implementation of <see cref="IPattern" /> with do-nothing
     /// implementations.
     /// </summary>
+    [TestFrameworkInternal]
     public abstract class BasePattern : IPattern
     {
         /// <inheritdoc />
@@ -31,18 +33,18 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public virtual bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public virtual bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public virtual void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public virtual void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
         }
 
         /// <inheritdoc />
-        public virtual void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public virtual void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
         }
     }

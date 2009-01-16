@@ -18,12 +18,12 @@ using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using System.Runtime.Serialization;
 
-namespace MbUnit.Samples.ContractVerifiers
+namespace MbUnit.Samples.ContractVerifiers.Exception
 {
     public class SampleExceptionTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<SampleException>()
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<SampleException>()
         {
             ImplementsSerialization = true, // Optional (default is true)
             ImplementsStandardConstructors = true // Optional (default is true)

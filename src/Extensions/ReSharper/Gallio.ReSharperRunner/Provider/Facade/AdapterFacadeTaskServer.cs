@@ -137,5 +137,11 @@ namespace Gallio.ReSharperRunner.Provider.Facade
         {
             server.TaskStarting(GetRemoteTask(task));
         }
+
+        /// <inheritdoc />
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
     }
 }

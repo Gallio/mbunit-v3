@@ -56,16 +56,15 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             ISlotInfo slot = codeElement as ISlotInfo;
             Validate(containingScope, slot);
 
-            PatternTestParameter testParameter = CreateTestParameter(containingScope, slot);
-            PatternEvaluationScope testParameterScope = containingScope.AddTestParameter(testParameter);
+            IPatternScope testParameterScope = containingScope.CreateTestParameterScope(slot.Name, slot);
             InitializeTestParameter(testParameterScope, slot);
 
-            testParameterScope.ApplyDecorators();
+            testParameterScope.TestParameterBuilder.ApplyDeferredActions();
         }
 
         /// <summary>
@@ -74,22 +73,10 @@ namespace Gallio.Framework.Pattern
         /// <param name="containingScope">The containing scope</param>
         /// <param name="slot">The slot</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope containingScope, ISlotInfo slot)
+        protected virtual void Validate(IPatternScope containingScope, ISlotInfo slot)
         {
             if (!containingScope.CanAddTestParameter || slot == null)
                 ThrowUsageErrorException("This attribute can only be used on a test parameter.");
-        }
-
-        /// <summary>
-        /// Creates a test parameter.
-        /// </summary>
-        /// <param name="containingScope">The containing scope</param>
-        /// <param name="slot">The slot</param>
-        /// <returns>The test parameter</returns>
-        protected virtual PatternTestParameter CreateTestParameter(PatternEvaluationScope containingScope, ISlotInfo slot)
-        {
-            PatternTestParameter testParameter = new PatternTestParameter(slot.Name, slot, containingScope.TestDataContext.CreateChild());
-            return testParameter;
         }
 
         /// <summary>
@@ -97,7 +84,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="testParameterScope">The test parameter scope</param>
         /// <param name="slot">The slot</param>
-        protected virtual void InitializeTestParameter(PatternEvaluationScope testParameterScope, ISlotInfo slot)
+        protected virtual void InitializeTestParameter(IPatternScope testParameterScope, ISlotInfo slot)
         {
             int index = slot.Position;
             IParameterInfo parameter = slot as IParameterInfo;
@@ -112,11 +99,16 @@ namespace Gallio.Framework.Pattern
                 if (method != null && method.IsGenericMethodDefinition)
                     index += method.GenericArguments.Count;
             }
-            testParameterScope.TestDataContext.ImplicitDataBindingIndexOffset = index;
+            testParameterScope.TestDataContextBuilder.ImplicitDataBindingIndexOffset = index;
 
             string xmlDocumentation = slot.GetXmlDocumentation();
             if (xmlDocumentation != null)
-                testParameterScope.TestParameter.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                testParameterScope.TestParameterBuilder.AddMetadata(MetadataKeys.XmlDocumentation, xmlDocumentation);
+
+            testParameterScope.TestParameterBuilder.TestParameterActions.BindTestParameterChain.After((state, value) =>
+            {
+                state.SlotValues.Add(slot, value);
+            });
 
             testParameterScope.Process(slot);
         }
@@ -127,7 +119,7 @@ namespace Gallio.Framework.Pattern
 
         private sealed class AutomaticImpl : TestParameterPatternAttribute
         {
-            public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+            public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
             {
                 if (containingScope.Evaluator.HasPatterns(codeElement))
                     base.Consume(containingScope, codeElement, skipChildren);

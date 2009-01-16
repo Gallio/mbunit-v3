@@ -21,8 +21,8 @@ namespace Gallio.Framework.Pattern
 {
     /// <summary>
     /// <para>
-    /// A test decorator pattern attribute applies decorations to an
-    /// existing assembly, type or method level <see cref="PatternTest" />.
+    /// A test decorator pattern attribute applies decorations to a test defined by an
+    /// assembly, type, or method.
     /// </para>
     /// </summary>
     /// <seealso cref="TestTypePatternAttribute"/>
@@ -30,11 +30,11 @@ namespace Gallio.Framework.Pattern
     public abstract class TestDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
             Validate(scope, codeElement);
 
-            scope.AddDecorator(Order, delegate
+            scope.TestBuilder.AddDeferredAction(codeElement, Order, delegate
             {
                 DecorateTest(scope, codeElement);
             });
@@ -46,7 +46,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (!scope.IsTestDeclaration)
                 ThrowUsageErrorException("This attribute can only be used on a test.");
@@ -54,7 +54,7 @@ namespace Gallio.Framework.Pattern
 
         /// <summary>
         /// <para>
-        /// Applies decorations to a method or type-level <see cref="PatternTest" />.
+        /// Applies decorations to a test.
         /// </para>
         /// <para>
         /// A typical use of this method is to augment the test with additional metadata
@@ -63,7 +63,7 @@ namespace Gallio.Framework.Pattern
         /// </summary>
         /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element</param>
-        protected virtual void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected virtual void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
         }
     }

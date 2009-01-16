@@ -99,7 +99,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override ICodeElementInfo GetDependency(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override ICodeElementInfo GetDependency(IPatternScope scope, ICodeElementInfo codeElement)
         {
             ITypeInfo resolvedFixtureType;
             if (testFixtureType != null)

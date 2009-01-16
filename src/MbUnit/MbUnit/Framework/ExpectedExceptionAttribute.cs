@@ -81,9 +81,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateMethodTest(PatternEvaluationScope methodScope, IMethodInfo method)
+        protected override void DecorateMethodTest(IPatternScope methodScope, IMethodInfo method)
         {
-            methodScope.Test.Metadata.Add(MetadataKeys.ExpectedException, exceptionType.FullName);
+            methodScope.TestBuilder.AddMetadata(MetadataKeys.ExpectedException, exceptionType.FullName);
         }
     }
 }

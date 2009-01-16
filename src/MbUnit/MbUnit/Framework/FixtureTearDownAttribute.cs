@@ -39,7 +39,7 @@ namespace MbUnit.Framework
     public class FixtureTearDownAttribute : ContributionMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
+        protected override void Validate(IPatternScope containingScope, IMethodInfo method)
         {
             base.Validate(containingScope, method);
 
@@ -48,9 +48,9 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
-            containingScope.Test.TestInstanceActions.TearDownTestInstanceChain.After(
+            containingScope.TestBuilder.TestInstanceActions.TearDownTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     testInstanceState.InvokeFixtureMethod(method, EmptyArray<KeyValuePair<ISlotInfo, object>>.Instance);

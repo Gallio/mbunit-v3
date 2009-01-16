@@ -39,9 +39,9 @@ namespace MbUnit.Framework
     public sealed class SetUpAttribute : ContributionMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
-            containingScope.Test.TestInstanceActions.DecorateChildTestChain.After(
+            containingScope.TestBuilder.TestInstanceActions.DecorateChildTestChain.After(
                 delegate(PatternTestInstanceState testInstanceState, PatternTestActions decoratedChildActions)
                 {
                     decoratedChildActions.TestInstanceActions.SetUpTestInstanceChain.Before(delegate

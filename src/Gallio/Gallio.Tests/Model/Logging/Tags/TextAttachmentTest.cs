@@ -22,8 +22,8 @@ namespace Gallio.Tests.Model.Logging.Tags
 {
     public class TextAttachmentTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<TextAttachment>()
+        [VerifyContract]
+        public readonly IContract EqualityTests = new EqualityContract<TextAttachment>()
         {
             ImplementsOperatorOverloads = false,
             EquivalenceClasses = EquivalenceClassCollection<TextAttachment>.FromDistinctInstances(

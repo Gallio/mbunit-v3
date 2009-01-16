@@ -75,11 +75,11 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            scope.Test.Metadata.Add(MetadataKeys.ExplicitReason, reason);
+            scope.TestBuilder.AddMetadata(MetadataKeys.ExplicitReason, reason);
 
-            scope.Test.TestActions.BeforeTestChain.Before(delegate(PatternTestState state)
+            scope.TestBuilder.TestActions.BeforeTestChain.Before(delegate(PatternTestState state)
             {
                 if (!state.IsExplicit)
                     throw new SilentTestException(TestOutcome.Explicit);

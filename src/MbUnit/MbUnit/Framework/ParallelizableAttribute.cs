@@ -47,9 +47,9 @@ namespace MbUnit.Framework
     public class ParallelizableAttribute : TestDecoratorPatternAttribute
     {
         /// <inheritdoc />
-        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            scope.Test.IsParallelizable = true;
+            scope.TestBuilder.IsParallelizable = true;
         }
     }
 }

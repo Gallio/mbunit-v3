@@ -79,13 +79,13 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
             Validate(scope, codeElement);
 
-            scope.AddDecorator(Order, delegate
+            scope.TestComponentBuilder.AddDeferredAction(codeElement, Order, delegate
             {
-                PopulateDataSource(scope, scope.TestDataContext.DefineDataSource(sourceName), codeElement);
+                PopulateDataSource(scope, scope.TestDataContextBuilder.DefineDataSource(sourceName), codeElement);
             });
         }
 
@@ -95,7 +95,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
         }
 
@@ -105,7 +105,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="scope">The scope</param>
         /// <param name="dataSource">The data source</param>
         /// <param name="codeElement">The code element</param>
-        protected virtual void PopulateDataSource(PatternEvaluationScope scope, DataSource dataSource, ICodeElementInfo codeElement)
+        protected virtual void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
         }
     }

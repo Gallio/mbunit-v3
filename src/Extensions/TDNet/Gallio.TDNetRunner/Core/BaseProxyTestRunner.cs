@@ -68,5 +68,10 @@ namespace Gallio.TDNetRunner.Core
         protected abstract void Dispose(bool disposing);
         protected abstract void AbortImpl();
         protected abstract FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref);
+
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
     }
 }

@@ -63,38 +63,38 @@ namespace MbUnit.Framework
     public class AssemblyFixtureAttribute : TestTypePatternAttribute
     {
         /// <inheritdoc />
-        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             ITypeInfo type = codeElement as ITypeInfo;
             Validate(containingScope, type);
 
-            PatternTest assemblyTest = containingScope.Test;
+            ITestBuilder assemblyTest = containingScope.TestBuilder;
             InitializeTest(containingScope, type);
             SetTestSemantics(assemblyTest, type);
         }
 
         /// <inheritdoc />
-        protected override void Validate(PatternEvaluationScope containingScope, ITypeInfo type)
+        protected override void Validate(IPatternScope containingScope, ITypeInfo type)
         {
             base.Validate(containingScope, type);
 
-            if (containingScope.Test.Kind != TestKinds.Assembly)
+            if (containingScope.TestBuilder.Kind != TestKinds.Assembly)
                 ThrowUsageErrorException("This attribute can only be used on a non-nested class.");
         }
 
         /// <inheritdoc />
-        protected override void SetTestSemantics(PatternTest test, ITypeInfo type)
+        protected override void SetTestSemantics(ITestBuilder testBuilder, ITypeInfo type)
         {
-            test.Timeout = null;
+            testBuilder.Timeout = null;
 
-            test.TestActions.TestInstanceActions.BeforeTestInstanceChain.After(
+            testBuilder.TestActions.TestInstanceActions.BeforeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     if (testInstanceState.FixtureType != null)
                         ThrowUsageErrorException("There appears to already be a fixture defined for the assembly.");
                 });
 
-            base.SetTestSemantics(test, type);
+            base.SetTestSemantics(testBuilder, type);
         }
     }
 }

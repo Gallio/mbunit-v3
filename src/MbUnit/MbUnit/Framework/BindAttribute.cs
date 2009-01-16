@@ -99,10 +99,10 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateTestParameter(PatternEvaluationScope slotScope, ISlotInfo slot)
+        protected override void DecorateTestParameter(IPatternScope slotScope, ISlotInfo slot)
         {
             DataBinding binding = new DataBinding(index, path);
-            slotScope.TestParameter.Binder = new ScalarDataBinder(binding, source ?? @"");
+            slotScope.TestParameterBuilder.Binder = new ScalarDataBinder(binding, source ?? @"");
         }
     }
 }

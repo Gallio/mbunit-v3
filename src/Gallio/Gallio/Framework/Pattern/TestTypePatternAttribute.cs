@@ -20,13 +20,12 @@ using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Model;
 using Gallio.Reflection;
-using Gallio.Framework.Pattern;
 
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
     /// <para>
-    /// Declares that a type represents an <see cref="PatternTest" />.
+    /// Declares that a type represents an test.
     /// Subclasses of this attribute can control what happens with the type.
     /// </para>
     /// <para>
@@ -71,26 +70,26 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
-        public override bool IsTest(PatternEvaluator evaluator, ICodeElementInfo codeElement)
+        public override bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return true;
         }
 
         /// <inheritdoc />
-        public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+        public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             ITypeInfo type = codeElement as ITypeInfo;
             Validate(containingScope, type);
 
-            PatternTest typeTest = CreateTest(containingScope, type);
-            typeTest.Order = Order;
-            typeTest.Timeout = TimeSpan.FromMinutes(10);
-
-            PatternEvaluationScope typeScope = containingScope.AddChildTest(typeTest);
+            IPatternScope typeScope = containingScope.CreateChildTestScope(type.Name, type);
+            typeScope.TestBuilder.Kind = TestKinds.Fixture;
+            typeScope.TestBuilder.Order = Order;
+            typeScope.TestBuilder.Timeout = TimeSpan.FromMinutes(10);
+                
             InitializeTest(typeScope, type);
-            SetTestSemantics(typeTest, type);
+            SetTestSemantics(typeScope.TestBuilder, type);
 
-            typeScope.ApplyDecorators();
+            typeScope.TestBuilder.ApplyDeferredActions();
         }
 
         /// <summary>
@@ -99,25 +98,12 @@ namespace Gallio.Framework.Pattern
         /// <param name="containingScope">The containing scope</param>
         /// <param name="type">The type</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope containingScope, ITypeInfo type)
+        protected virtual void Validate(IPatternScope containingScope, ITypeInfo type)
         {
             if (!containingScope.CanAddChildTest || type == null)
                 ThrowUsageErrorException("This attribute can only be used on a test type within a test assembly.");
             if (!type.IsClass || type.ElementType != null)
                 ThrowUsageErrorException("This attribute can only be used on a class.");
-        }
-
-        /// <summary>
-        /// Creates a test for a type.
-        /// </summary>
-        /// <param name="constainingScope">The containing scope</param>
-        /// <param name="type">The type</param>
-        /// <returns>The test</returns>
-        protected virtual PatternTest CreateTest(PatternEvaluationScope constainingScope, ITypeInfo type)
-        {
-            PatternTest test = new PatternTest(type.Name, type, constainingScope.TestDataContext.CreateChild());
-            test.Kind = TestKinds.Fixture;
-            return test;
         }
 
         /// <summary>
@@ -135,11 +121,11 @@ namespace Gallio.Framework.Pattern
         /// </remarks>
         /// <param name="typeScope">The type scope</param>
         /// <param name="type">The type</param>
-        protected virtual void InitializeTest(PatternEvaluationScope typeScope, ITypeInfo type)
+        protected virtual void InitializeTest(IPatternScope typeScope, ITypeInfo type)
         {
             string xmlDocumentation = type.GetXmlDocumentation();
             if (xmlDocumentation != null)
-                typeScope.Test.Metadata.Add(MetadataKeys.XmlDocumentation, xmlDocumentation);
+                typeScope.TestBuilder.AddMetadata(MetadataKeys.XmlDocumentation, xmlDocumentation);
 
             typeScope.Process(type);
 
@@ -149,6 +135,18 @@ namespace Gallio.Framework.Pattern
                     typeScope.Consume(parameter, false, DefaultGenericParameterPattern);
             }
 
+            ConsumeMembers(typeScope, type);
+            ConsumeConstructors(typeScope, type);
+            ConsumeNestedTypes(typeScope, type);
+        }
+
+        /// <summary>
+        /// Consumes type members including fields, properties, methods and events.
+        /// </summary>
+        /// <param name="typeScope">The scope to be used as the containing scope</param>
+        /// <param name="type">The type whose members are to be consumed</param>
+        protected void ConsumeMembers(IPatternScope typeScope, ITypeInfo type)
+        {
             BindingFlags bindingFlags = GetMemberBindingFlags(type);
 
             // TODO: We should probably process groups of members in sorted order working outwards
@@ -164,7 +162,15 @@ namespace Gallio.Framework.Pattern
 
             foreach (IEventInfo @event in CodeElementSorter.SortMembersByDeclaringType(type.GetEvents(bindingFlags)))
                 typeScope.Consume(@event, false, DefaultEventPattern);
+        }
 
+        /// <summary>
+        /// Consumes type constructors.
+        /// </summary>
+        /// <param name="typeScope">The scope to be used as the containing scope</param>
+        /// <param name="type">The type whose constructors are to be consumed</param>
+        protected void ConsumeConstructors(IPatternScope typeScope, ITypeInfo type)
+        {
             // Note: We only consider instance members of concrete types because abstract types
             //       cannot be instantiated so the members cannot be accessed.  An abstract type
             //       might yet be a static test fixture so we still consider its static members.
@@ -180,25 +186,22 @@ namespace Gallio.Framework.Pattern
                     break;
                 }
             }
-
-            ConsumeNestedTypes(typeScope, type);
         }
 
         /// <summary>
         /// Consumes nested types.
         /// </summary>
+        /// <param name="typeScope">The scope to be used as the containing scope</param>
         /// <param name="type">The type whose nested types are to be consumed</param>
-        /// <param name="scope">The scope to be used as the containing scope for nested types</param>
-        protected void ConsumeNestedTypes(PatternEvaluationScope scope, ITypeInfo type)
+        protected void ConsumeNestedTypes(IPatternScope typeScope, ITypeInfo type)
         {
             foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
-                scope.Consume(nestedType, false, DefaultNestedTypePattern);
+                typeScope.Consume(nestedType, false, DefaultNestedTypePattern);
         }
 
         /// <summary>
         /// <para>
-        /// Applies semantic actions to the <see cref="PatternTest.TestActions" /> member of a 
-        /// test to set the test's runtime behavior.
+        /// Applies semantic actions to a test to estalish its runtime behavior.
         /// </para>
         /// <para>
         /// This method is called after <see cref="InitializeTest" />.
@@ -227,11 +230,11 @@ namespace Gallio.Framework.Pattern
         /// You can override this method to change the semantics as required.
         /// </para>
         /// </remarks>
-        /// <param name="test">The test</param>
+        /// <param name="testBuilder">The test builder</param>
         /// <param name="type">The test type</param>
-        protected virtual void SetTestSemantics(PatternTest test, ITypeInfo type)
+        protected virtual void SetTestSemantics(ITestBuilder testBuilder, ITypeInfo type)
         {
-            test.TestInstanceActions.BeforeTestInstanceChain.After(
+            testBuilder.TestInstanceActions.BeforeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     ObjectCreationSpec spec = testInstanceState.GetFixtureObjectCreationSpec(type);
@@ -243,7 +246,7 @@ namespace Gallio.Framework.Pattern
                         testInstanceState.TestStep.Name = spec.Format(testInstanceState.TestStep.Name, testInstanceState.Formatter);
                 });
 
-            test.TestInstanceActions.InitializeTestInstanceChain.After(
+            testBuilder.TestInstanceActions.InitializeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     if (!type.IsAbstract && !type.IsInterface)
@@ -254,7 +257,7 @@ namespace Gallio.Framework.Pattern
                     }
                 });
 
-            test.TestInstanceActions.DisposeTestInstanceChain.After(
+            testBuilder.TestInstanceActions.DisposeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {
                     IDisposable dispose = testInstanceState.FixtureInstance as IDisposable;
@@ -265,12 +268,12 @@ namespace Gallio.Framework.Pattern
                     }
                 });
 
-            test.TestInstanceActions.DecorateChildTestChain.After(
+            testBuilder.TestInstanceActions.DecorateChildTestChain.After(
                 delegate(PatternTestInstanceState testInstanceState, PatternTestActions decoratedTestActions)
                 {
                     decoratedTestActions.TestInstanceActions.BeforeTestInstanceChain.Before(delegate(PatternTestInstanceState childTestInstanceState)
                     {
-                        IMethodInfo method = childTestInstanceState.Test.CodeElement as IMethodInfo;
+                        IMemberInfo method = childTestInstanceState.Test.CodeElement as IMemberInfo;
                         if (method != null && (type.Equals(method.DeclaringType) || type.IsSubclassOf(method.DeclaringType)))
                         {
                             childTestInstanceState.FixtureType = testInstanceState.FixtureType;
@@ -381,7 +384,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="evaluator">The pattern evaluator</param>
         /// <param name="type">The type</param>
         /// <returns>True if the type is likely a test type</returns>
-        protected virtual bool InferTestType(PatternEvaluator evaluator, ITypeInfo type)
+        protected virtual bool InferTestType(IPatternEvaluator evaluator, ITypeInfo type)
         {
             if (evaluator.HasPatterns(type))
                 return true;
@@ -395,7 +398,7 @@ namespace Gallio.Framework.Pattern
                 || (type.IsGenericTypeDefinition && HasCodeElementWithPattern(evaluator, type.GenericArguments));
         }
 
-        private static bool HasCodeElementWithPattern<T>(PatternEvaluator evaluator, IEnumerable<T> elements)
+        private static bool HasCodeElementWithPattern<T>(IPatternEvaluator evaluator, IEnumerable<T> elements)
             where T : ICodeElementInfo
         {
             foreach (T element in elements)
@@ -406,7 +409,7 @@ namespace Gallio.Framework.Pattern
 
         private sealed class AutomaticImpl : TestTypePatternAttribute
         {
-            public override void Consume(PatternEvaluationScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+            public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
             {
                 ITypeInfo type = codeElement as ITypeInfo;
                 if (type != null)

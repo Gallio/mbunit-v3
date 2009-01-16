@@ -97,7 +97,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestFrameworkInternal]
+        [TestEntryPoint]
         protected override void OnSetupSelf()
         {
             if (SuiteSetUp != null)
@@ -105,7 +105,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestFrameworkInternal]
+        [TestEntryPoint]
         protected override void OnTearDownSelf()
         {
             if (SuiteTearDown != null)
@@ -113,7 +113,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestFrameworkInternal]
+        [TestEntryPoint]
         protected override void OnSetupChild()
         {
             if (SetUp != null)
@@ -121,7 +121,7 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        [TestFrameworkInternal]
+        [TestEntryPoint]
         protected override void OnTearDownChild()
         {
             if (TearDown != null)

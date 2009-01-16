@@ -17,12 +17,12 @@ using System;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
-namespace MbUnit.Samples.ContractVerifiers
+namespace MbUnit.Samples.ContractVerifiers.Equality
 {
     public class SampleEquatableTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier EqualityTests = new VerifyEqualityContract<SampleEquatable>()
+        [VerifyContract]
+        public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>()
         {
             ImplementsOperatorOverloads = true, // Optional (default is true)
             EquivalenceClasses = EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(

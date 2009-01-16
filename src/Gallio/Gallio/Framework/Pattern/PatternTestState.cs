@@ -19,6 +19,7 @@ using Gallio.Collections;
 using Gallio.Framework.Data;
 using Gallio.Framework.Conversions;
 using Gallio.Framework.Formatting;
+using Gallio.Model;
 using Gallio.Reflection;
 
 namespace Gallio.Framework.Pattern
@@ -55,7 +56,7 @@ namespace Gallio.Framework.Pattern
         private readonly bool isExplicit;
 
         private readonly DataBindingContext bindingContext;
-        private readonly Dictionary<ISlotInfo, IDataAccessor> slotBindingAccessors;
+        private readonly Dictionary<PatternTestParameter, IDataAccessor> testParameterDataAccessors;
         private readonly UserDataCollection data;
 
         /// <summary>
@@ -88,7 +89,7 @@ namespace Gallio.Framework.Pattern
             this.isExplicit = isExplicit;
 
             bindingContext = new DataBindingContext(converter);
-            slotBindingAccessors = new Dictionary<ISlotInfo, IDataAccessor>();
+            testParameterDataAccessors = new Dictionary<PatternTestParameter, IDataAccessor>();
             data = new UserDataCollection();
         }
 
@@ -185,31 +186,17 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// <para>
-        /// Gets a mutable dictionary of slots and their binding accessors.
-        /// </para>
-        /// <para>
-        /// The dictionary maps slots to accessors that will provide values for those
-        /// slots when building test instances.  The accessor will be applied to
-        /// <see cref="IDataItem"/>s produced iteratively by the
-        /// <see cref="BindingContext" /> of this test state.
-        /// </para>
+        /// Gets a mutable dictionary of data accessors that will provide
+        /// values assigned to test parameters given a data binding item.
         /// </summary>
         /// <remarks>
-        /// <para>
-        /// The slots should be valid for the type of test in question.  For example,
-        /// a test fixture supports constructor parameters, generic type parameters,
-        /// fields and properies declared by the test fixture type.  Likewise a test method
-        /// supports method parameters and generic method parameters declared by the test
-        /// method.  Other novel kinds of tests might additional capabilities.
-        /// </para>
-        /// <para>
-        /// A <see cref="IDataAccessor" /> must not be null.
-        /// </para>
+        /// The contents of the dictionary are initialized by the framework as part of the
+        /// test parameter binding phase for the test instance, just before the "before test"
+        /// actions run.
         /// </remarks>
-        public IDictionary<ISlotInfo, IDataAccessor> SlotBindingAccessors
+        public IDictionary<PatternTestParameter, IDataAccessor> TestParameterDataAccessors
         {
-            get { return slotBindingAccessors; }
+            get { return testParameterDataAccessors; }
         }
     }
 }

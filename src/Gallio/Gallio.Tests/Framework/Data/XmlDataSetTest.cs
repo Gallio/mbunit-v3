@@ -19,6 +19,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Gallio.Collections;
 using Gallio.Framework.Data;
+using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
@@ -128,6 +129,30 @@ namespace Gallio.Tests.Framework.Data
             {
                 new DataBinding(null, ".")
             }, items[0].GetBindingsForInformalDescription());
+        }
+
+        [Test]
+        public void ProducesMetadata()
+        {
+            XmlDocument document = new XmlDocument();
+            document.LoadXml("<root><rows><row a=\"42\" b=\"x\"><metadata xmlns=\"http://www.gallio.org/\"><entry key=\"Metadata\" value=\"abc\"/></metadata></row><row a=\"53\" b=\"y\"><metadata xmlns=\"http://www.gallio.org/\"><entry key=\"Metadata\" value=\"def\"/></metadata></row></rows></root>");
+
+            XmlDataSet dataSet = new XmlDataSet(delegate { return document; }, "//row", false);
+            dataSet.DataLocationName = "<inline>";
+            Assert.AreEqual("<inline>", dataSet.DataLocationName);
+
+            DataBinding binding = new DataBinding(null, "@a");
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(new DataBinding[] { binding }, true));
+
+            Assert.AreEqual("42", ((XPathNavigator)items[0].GetValue(binding)).Value);
+            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
+            Assert.AreEqual("<inline>", map.GetValue(MetadataKeys.DataLocation));
+            Assert.AreEqual("abc", map.GetValue("Metadata"));
+
+            Assert.AreEqual("53", ((XPathNavigator)items[1].GetValue(binding)).Value);
+            map = DataItemUtils.GetMetadata(items[1]);
+            Assert.AreEqual("<inline>", map.GetValue(MetadataKeys.DataLocation));
+            Assert.AreEqual("def", map.GetValue("Metadata"));
         }
     }
 }

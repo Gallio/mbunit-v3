@@ -23,7 +23,7 @@ namespace Gallio.Framework.Pattern
     /// <para>
     /// Each method represents the behavior to be performed during a particular phase.
     /// Different actions are permitted during each phase.  Consult the
-    /// documentation the appropriate method if this interface for restrictions.
+    /// documentation the appropriate method of this interface for restrictions.
     /// </para>
     /// <para>
     /// The phases generally run in the following order.  Some phases may be skipped
@@ -62,7 +62,6 @@ namespace Gallio.Framework.Pattern
         /// <para>
         /// The following actions are typically performed during this phase:
         /// <list type="bullet">
-        /// <item>Adding or changing slot binding accessors via <see cref="PatternTestState.SlotBindingAccessors"/>.</item>
         /// <item>Configuring the <see cref="PatternTestState.PrimaryTestStep"/> in anticipation of test execution.</item>
         /// <item>Accessing user data via <see cref="PatternTestState.Data" />.</item>
         /// <item>Skipping the test by throwing an appropriate <see cref="SilentTestException" />.</item>

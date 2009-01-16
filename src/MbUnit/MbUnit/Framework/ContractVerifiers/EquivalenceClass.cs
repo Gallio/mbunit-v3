@@ -31,7 +31,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </para>
     /// <para>
     /// Equivalent classes are used by some contract verifiers such as 
-    /// <see cref="VerifyEqualityContract{T}"/> to check for 
+    /// <see cref="EqualityContract{TTarget}"/> to check for 
     /// the correct implementation of object equality or comparison.
     /// </para>
     /// </summary>

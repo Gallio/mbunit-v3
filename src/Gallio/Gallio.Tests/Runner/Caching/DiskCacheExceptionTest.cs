@@ -23,7 +23,7 @@ namespace Gallio.Tests.Runner.Caching
     [TestsOn(typeof(DiskCacheException))]
     public class DiskCacheExceptionTest
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<DiskCacheException>();
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<DiskCacheException>();
     }
 }

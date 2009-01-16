@@ -289,7 +289,7 @@ namespace Gallio.Tests.Framework
                 abortedSandbox.Run(writer, () => actionWasRun = true, "Description");
 
                 Assert.IsFalse(actionWasRun, "The action should not be run because the sandbox already aborted.");
-                Assert.AreEqual("", writer.ToString());
+                Assert.AreEqual("*** Warnings ***\n\nDescription\nAbort message.\n", writer.ToString());
             }
         }
     }

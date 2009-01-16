@@ -137,14 +137,14 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void PopulateDataSource(PatternEvaluationScope scope, DataSource dataSource, ICodeElementInfo codeElement)
+        protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
             Func<IEnumerable> factory = CreateFactory(scope);
             FactoryDataSet dataSet = new FactoryDataSet(factory, kind, columnCount);
             dataSource.AddDataSet(dataSet);
         }
 
-        private Func<IEnumerable> CreateFactory(PatternEvaluationScope scope)
+        private Func<IEnumerable> CreateFactory(IPatternScope scope)
         {
             BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static |
                 BindingFlags.FlattenHierarchy;
@@ -155,7 +155,7 @@ namespace MbUnit.Framework
             }
             else
             {
-                factoryOwner = ReflectionUtils.GetType(scope.Test.CodeElement);
+                factoryOwner = ReflectionUtils.GetType(scope.TestBuilder.CodeElement);
                 if (factoryOwner == null)
                     throw new PatternUsageErrorException(
                         "Cannot infer the declaring type of the factory member.  Provide the declaring type to the [Factory] attribute constructor instead.");

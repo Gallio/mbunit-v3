@@ -25,9 +25,9 @@ namespace Gallio.ReSharperRunner.Tests
 {
     public class RunWithGuardedReadLockAttribute : TestDecoratorPatternAttribute
     {
-        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            scope.Test.TestInstanceActions.DecorateChildTestChain.After(delegate(PatternTestInstanceState state, PatternTestActions actions)
+            scope.TestBuilder.TestInstanceActions.DecorateChildTestChain.After(delegate(PatternTestInstanceState state, PatternTestActions actions)
             {
                 actions.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState childState, Action<PatternTestInstanceState> inner)
                 {

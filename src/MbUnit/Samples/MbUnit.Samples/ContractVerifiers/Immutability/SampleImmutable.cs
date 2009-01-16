@@ -18,7 +18,7 @@ using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using System.Runtime.Serialization;
 
-namespace MbUnit.Samples.ContractVerifiers
+namespace MbUnit.Samples.ContractVerifiers.Immutability
 {
     public class SampleImmutable
     {

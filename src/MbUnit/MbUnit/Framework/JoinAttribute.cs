@@ -33,12 +33,12 @@ namespace MbUnit.Framework
     public abstract class JoinAttribute : PatternAttribute
     {
         /// <inheritdoc />
-        public override void Process(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        public override void Process(IPatternScope scope, ICodeElementInfo codeElement)
         {
             Validate(scope, codeElement);
 
             IJoinStrategy strategy = GetJoinStrategy();
-            scope.Test.TestActions.BeforeTestChain.Before(delegate(PatternTestState state)
+            scope.TestBuilder.TestActions.BeforeTestChain.Before(delegate(PatternTestState state)
             {
                 state.BindingContext.Strategy = strategy;
             });
@@ -50,7 +50,7 @@ namespace MbUnit.Framework
         /// <param name="scope">The scope</param>
         /// <param name="codeElement">The code element</param>
         /// <exception cref="PatternUsageErrorException">Thrown if the attribute is being used incorrectly</exception>
-        protected virtual void Validate(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected virtual void Validate(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (!scope.IsTestDeclaration)
                 ThrowUsageErrorException("This attribute can only be used on a test.");

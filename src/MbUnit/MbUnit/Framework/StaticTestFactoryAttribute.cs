@@ -72,7 +72,7 @@ namespace MbUnit.Framework
     public class StaticTestFactoryAttribute : ContributionMethodPatternAttribute
     {
         /// <inheritdoc />
-        protected override void Validate(PatternEvaluationScope containingScope, IMethodInfo method)
+        protected override void Validate(IPatternScope containingScope, IMethodInfo method)
         {
             base.Validate(containingScope, method);
 
@@ -87,12 +87,12 @@ namespace MbUnit.Framework
         }
 
         /// <inheritdoc />
-        protected override void DecorateContainingScope(PatternEvaluationScope containingScope, IMethodInfo method)
+        protected override void DecorateContainingScope(IPatternScope containingScope, IMethodInfo method)
         {
             MethodInfo factoryMethod = method.Resolve(false);
             if (factoryMethod == null)
             {
-                containingScope.TestModel.AddAnnotation(new Annotation(AnnotationType.Info, method,
+                containingScope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Info, method,
                     "This test runner does not fully support static test factory methods "
                     + "because the code that defines the factory cannot be resolved "
                     + "at test exploration time.  Consider using dynamic test factory "
@@ -103,7 +103,7 @@ namespace MbUnit.Framework
             IEnumerable<Test> tests = factoryMethod.Invoke(null, null) as IEnumerable<Test>;
             if (tests == null)
             {
-                containingScope.TestModel.AddAnnotation(new Annotation(AnnotationType.Error, method,
+                containingScope.TestModelBuilder.AddAnnotation(new Annotation(AnnotationType.Error, method,
                     "Expected the static test factory method to return a value that is assignable "
                     + "to type IEnumerable<Test>."));
                 return;

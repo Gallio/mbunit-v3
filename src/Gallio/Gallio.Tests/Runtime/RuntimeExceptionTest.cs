@@ -24,7 +24,7 @@ namespace Gallio.Tests.Runtime
     [TestsOn(typeof(RuntimeException))]
     public class RuntimeExceptionTest 
     {
-        [ContractVerifier]
-        public readonly IContractVerifier ExceptionTests = new VerifyExceptionContract<RuntimeException>();
+        [VerifyContract]
+        public readonly IContract ExceptionTests = new ExceptionContract<RuntimeException>();
     }
 }

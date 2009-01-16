@@ -16,13 +16,14 @@
 using System;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
+using Gallio.Runtime.Remoting;
 
 namespace Gallio.Model.Execution
 {
     /// <summary>
     /// Wraps a test listener so that it can be accessed remotely.
     /// </summary>
-    public class RemoteTestListener : MarshalByRefObject, ITestListener
+    public class RemoteTestListener : LongLivedMarshalByRefObject, ITestListener
     {
         private readonly ITestListener listener;
 

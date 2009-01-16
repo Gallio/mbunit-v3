@@ -114,16 +114,16 @@ namespace MbUnit.Framework
         public bool IncludeSetUpAndTearDown { get; set; }
 
         /// <inheritdoc />
-        protected override void DecorateTest(PatternEvaluationScope scope, ICodeElementInfo codeElement)
+        protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
             if (IncludeSetUpAndTearDown)
             {
-                scope.Test.TestInstanceActions.BeforeTestInstanceChain.Before(delegate(PatternTestInstanceState state)
+                scope.TestBuilder.TestInstanceActions.BeforeTestInstanceChain.Before(delegate(PatternTestInstanceState state)
                 {
                     state.Data.SetValue(TransactionScopeKey, CreateAndEnterTransactionScope(state));
                 });
 
-                scope.Test.TestInstanceActions.AfterTestInstanceChain.After(delegate(PatternTestInstanceState state)
+                scope.TestBuilder.TestInstanceActions.AfterTestInstanceChain.After(delegate(PatternTestInstanceState state)
                 {
                     TransactionScope transactionScope;
                     if (state.Data.TryGetValue(TransactionScopeKey, out transactionScope))
@@ -132,7 +132,7 @@ namespace MbUnit.Framework
             }
             else
             {
-                scope.Test.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState state, Action<PatternTestInstanceState> inner)
+                scope.TestBuilder.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState state, Action<PatternTestInstanceState> inner)
                 {
                     using (CreateAndEnterTransactionScope(state))
                     {

@@ -374,7 +374,7 @@ namespace Gallio.Framework.Pattern
                 foreach (PatternTestParameter parameter in testState.Test.Parameters)
                 {
                     IDataAccessor accessor = parameter.Binder.Register(testState.BindingContext, parameter.DataContext);
-                    testState.SlotBindingAccessors.Add(new KeyValuePair<ISlotInfo, IDataAccessor>(parameter.Slot, accessor));
+                    testState.TestParameterDataAccessors.Add(parameter, accessor);
                 }
 
                 testState.TestHandler.BeforeTest(testState);
@@ -415,6 +415,8 @@ namespace Gallio.Framework.Pattern
             return sandbox.Run(TestLog.Writer, delegate
             {
                 testState.TestHandler.AfterTest(testState);
+
+                testState.TestParameterDataAccessors.Clear();
             }, "After Test");
         }
 
@@ -432,13 +434,15 @@ namespace Gallio.Framework.Pattern
         {
             return sandbox.Run(TestLog.Writer, delegate
             {
-                if (testInstanceState.TestState.SlotBindingAccessors.Count != 0)
+                foreach (KeyValuePair<PatternTestParameter, IDataAccessor> accessorPair in testInstanceState.TestState.TestParameterDataAccessors)
                 {
-                    foreach (KeyValuePair<ISlotInfo, IDataAccessor> entry in testInstanceState.TestState.SlotBindingAccessors)
-                    {
-                        object value = Bind(entry.Value, testInstanceState.BindingItem, testInstanceState.Formatter);
-                        testInstanceState.SlotValues.Add(entry.Key, value);
-                    }
+                    object value = Bind(accessorPair.Value, testInstanceState.BindingItem, testInstanceState.Formatter);
+                    testInstanceState.TestParameterValues.Add(accessorPair.Key, value);
+                }
+
+                foreach (KeyValuePair<PatternTestParameter, object> dataPair in testInstanceState.TestParameterValues)
+                {
+                    dataPair.Key.TestParameterActions.BindTestParameter(testInstanceState, dataPair.Value);
                 }
 
                 testInstanceState.TestInstanceHandler.BeforeTestInstance(testInstanceState);
@@ -521,6 +525,13 @@ namespace Gallio.Framework.Pattern
             return sandbox.Run(TestLog.Writer, delegate
             {
                 testInstanceState.TestInstanceHandler.AfterTestInstance(testInstanceState);
+
+                foreach (KeyValuePair<PatternTestParameter, object> dataPair in testInstanceState.TestParameterValues)
+                {
+                    dataPair.Key.TestParameterActions.UnbindTestParameter(testInstanceState, dataPair.Value);
+                }
+
+                testInstanceState.TestParameterValues.Clear();
             }, "After Test Instance");
         }
 
