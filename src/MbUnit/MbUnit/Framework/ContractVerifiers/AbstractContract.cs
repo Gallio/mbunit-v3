@@ -17,12 +17,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Framework.Assertions;
+using Gallio.Model.Diagnostics;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
     /// Abstract base class for contracts.
     /// </summary>
+    [TestFrameworkInternal]
     public abstract class AbstractContract : IContract
     {
         /// <inheritdoc />

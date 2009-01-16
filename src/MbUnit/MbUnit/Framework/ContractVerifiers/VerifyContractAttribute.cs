@@ -115,7 +115,9 @@ namespace MbUnit.Framework.ContractVerifiers
                 if (contract == null)
                     throw new TestFailedException(String.Format("The field '{0}' must contain an instance of type IContract that describes a contract to be verified.", field.Name));
 
-                Test.RunDynamicTests(contract.GetContractVerificationTests(), field, null, null);
+                TestOutcome outcome = Test.RunDynamicTests(contract.GetContractVerificationTests(), field, null, null);
+                if (outcome != TestOutcome.Passed)
+                    throw new SilentTestException(outcome);
             });
         }
     }

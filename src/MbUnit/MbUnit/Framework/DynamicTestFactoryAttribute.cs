@@ -94,7 +94,10 @@ namespace MbUnit.Framework
                 throw new TestFailedException("Expected the dynamic test factory method to "
                     + "return a value that is assignable to type IEnumerable<Test>.");
 
-            Test.RunDynamicTests(tests, state.Test.CodeElement, null, null);
+            TestOutcome outcome = Test.RunDynamicTests(tests, state.Test.CodeElement, null, null);
+            if (outcome != TestOutcome.Passed)
+                throw new SilentTestException(outcome);
+
             return tests;
         }
     }

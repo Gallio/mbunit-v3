@@ -192,13 +192,15 @@ namespace MbUnit.Framework.ContractVerifiers
                 yield return CreateEqualityTest("OperatorEquals",
                     typeof(TTarget).GetMethod("op_Equality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(TTarget), typeof(TTarget) }, null),
                     String.Format("static bool operator ==({0}, {0})", 
-                    typeof(TTarget).Name), (leftIndex, rightIndex) => leftIndex == rightIndex);
+                    typeof(TTarget).Name),
+                    (leftIndex, rightIndex) => leftIndex == rightIndex);
 
                 // Is inequality operator overload OK?
                 yield return CreateEqualityTest("OperatorNotEquals",
                     typeof(TTarget).GetMethod("op_Inequality", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(TTarget), typeof(TTarget) }, null),
                     String.Format("static bool operator !=({0}, {0})", 
-                    typeof(TTarget).Name), (leftIndex, rightIndex) => leftIndex != rightIndex);
+                    typeof(TTarget).Name),
+                    (leftIndex, rightIndex) => leftIndex != rightIndex);
             }
         }
 
@@ -218,11 +220,8 @@ namespace MbUnit.Framework.ContractVerifiers
                     }
 
                     int leftIndex = 0;
-
                     foreach (EquivalenceClass<TTarget> leftClass in EquivalenceClasses)
                     {
-                        int rightIndex = 0;
-
                         foreach (TTarget leftValue in leftClass)
                         {
                             if (!typeof(TTarget).IsValueType)
@@ -235,6 +234,7 @@ namespace MbUnit.Framework.ContractVerifiers
                                 }
                             }
 
+                            int rightIndex = 0;
                             foreach (EquivalenceClass<TTarget> rightClass in EquivalenceClasses)
                             {
                                 foreach (TTarget rightValue in rightClass)
