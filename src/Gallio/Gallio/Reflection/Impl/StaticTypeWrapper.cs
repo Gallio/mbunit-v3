@@ -310,24 +310,22 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public bool IsAssignableFrom(ITypeInfo type)
         {
-            if (type != null)
-            {
-                throw new NotImplementedException("IsAssignableFrom not implemented for static types yet.");
-            }
+            if (type == null)
+                return false;
 
-            return false;
+            throw new NotImplementedException("IsAssignableFrom not implemented for static types yet.");
         }
 
         /// <inheritdoc />
         public bool IsSubclassOf(ITypeInfo type)
         {
-            if (type != null)
+            if (type == null)
+                return false;
+
+            for (ITypeInfo baseType = BaseType; baseType != null; baseType = baseType.BaseType)
             {
-                for (ITypeInfo baseType = BaseType; baseType != null; baseType = baseType.BaseType)
-                {
-                    if (baseType.Equals(type) || baseType.AssemblyQualifiedName == type.AssemblyQualifiedName)
-                        return true;
-                }
+                if (baseType.Equals(type) || baseType.AssemblyQualifiedName == type.AssemblyQualifiedName)
+                    return true;
             }
 
             return false;

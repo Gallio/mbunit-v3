@@ -273,11 +273,18 @@ namespace Gallio.Framework.Pattern
                 {
                     decoratedTestActions.TestInstanceActions.BeforeTestInstanceChain.Before(delegate(PatternTestInstanceState childTestInstanceState)
                     {
-                        IMemberInfo method = childTestInstanceState.Test.CodeElement as IMemberInfo;
-                        if (method != null && (type.Equals(method.DeclaringType) || type.IsSubclassOf(method.DeclaringType)))
+                        IMemberInfo member = childTestInstanceState.Test.CodeElement as IMemberInfo;
+                        if (member != null)
                         {
-                            childTestInstanceState.FixtureType = testInstanceState.FixtureType;
-                            childTestInstanceState.FixtureInstance = testInstanceState.FixtureInstance;
+                            ITypeInfo memberDeclaringType = member.DeclaringType;
+                            if (memberDeclaringType != null)
+                            {
+                                if (type.Equals(memberDeclaringType) || type.IsSubclassOf(memberDeclaringType))
+                                {
+                                    childTestInstanceState.FixtureType = testInstanceState.FixtureType;
+                                    childTestInstanceState.FixtureInstance = testInstanceState.FixtureInstance;
+                                }
+                            }
                         }
                     });
                 });

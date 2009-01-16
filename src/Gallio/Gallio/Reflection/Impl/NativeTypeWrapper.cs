@@ -285,11 +285,17 @@ namespace Gallio.Reflection.Impl
 
         public bool IsAssignableFrom(ITypeInfo type)
         {
+            if (type == null)
+                return false;
+
             return Target.IsAssignableFrom(type.Resolve(false));
         }
 
         public bool IsSubclassOf(ITypeInfo type)
         {
+            if (type == null)
+                return false;
+
             return Target.IsSubclassOf(type.Resolve(false));
         }
 

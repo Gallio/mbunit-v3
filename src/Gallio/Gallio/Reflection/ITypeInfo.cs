@@ -309,15 +309,16 @@ namespace Gallio.Reflection
         /// <summary>
         /// Returns true if variables of this type can be assigned with values of the specified type.
         /// </summary>
-        /// <param name="type">The other type</param>
-        /// <returns>True if this type is assignable from the other type</returns>
+        /// <param name="type">The other type, or null if none</param>
+        /// <returns>True if the other type is not null and this type is assignable from the other type</returns>
         bool IsAssignableFrom(ITypeInfo type);
 
         /// <summary>
         /// Returns true if this type is a subclass of the specified type.
         /// </summary>
-        /// <param name="type">The other type</param>
-        /// <returns>True if this type is a subclass of the other type, and is not the same as the other type</returns>
+        /// <param name="type">The other type, or null if none</param>
+        /// <returns>True if the other type is not null, this type is a subclass of the other type,
+        /// and this type not the same as the other type</returns>
         bool IsSubclassOf(ITypeInfo type);
 
         /// <summary>
