@@ -280,7 +280,7 @@ html
             </xsl:otherwise>
           </xsl:choose>
 
-          <a href="#testStepRun-{$id}">
+          <a class="crossref" href="#testStepRun-{$id}">
             <xsl:attribute name="onclick">
               <xsl:text>expand([</xsl:text>
               <xsl:for-each select="ancestor-or-self::g:testStepRun">
@@ -364,7 +364,16 @@ html
           </xsl:call-template>
           -->
 
-          <xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="g:testStep/@name" /></xsl:call-template>
+          <xsl:call-template name="code-location-link">
+            <xsl:with-param name="path" select="g:testStep/g:codeLocation/@path" />
+            <xsl:with-param name="line" select="g:testStep/g:codeLocation/@line" />
+            <xsl:with-param name="column" select="g:testStep/g:codeLocation/@column" />
+            <xsl:with-param name="content">
+              <xsl:call-template name="print-text-with-breaks">
+                <xsl:with-param name="text" select="g:testStep/@name" />
+              </xsl:call-template>
+            </xsl:with-param>
+          </xsl:call-template>
 
           <xsl:call-template name="outcome-bar">
             <xsl:with-param name="outcome" select="g:result/g:outcome" />
@@ -532,7 +541,7 @@ html
           </xsl:call-template>
         </xsl:when>
         <xsl:when test="@class = 'Link'">
-          <a href="{g:attributes/g:attribute[@name = 'url']/@value}">
+          <a class="crossref" href="{g:attributes/g:attribute[@name = 'url']/@value}">
             <xsl:apply-templates select="g:contents" mode="stream">
               <xsl:with-param name="attachments" select="$attachments" />
             </xsl:apply-templates>
@@ -720,13 +729,13 @@ html
 
     <xsl:choose>
       <xsl:when test="$path and $line > 0 and $column > 0">
-        <a href="gallio:navigateTo?path={$path}&amp;line={$line}&amp;column={$column}"><xsl:value-of select="$content"/></a>
+        <a class="crossref" href="gallio:navigateTo?path={$path}&amp;line={$line}&amp;column={$column}"><xsl:value-of select="$content"/></a>
       </xsl:when>
       <xsl:when test="$path and $line > 0">
-        <a href="gallio:navigateTo?path={$path}&amp;line={$line}"><xsl:value-of select="$content"/></a>
+        <a class="crossref" href="gallio:navigateTo?path={$path}&amp;line={$line}"><xsl:value-of select="$content"/></a>
       </xsl:when>
       <xsl:when test="$path">
-        <a href="gallio:navigateTo?path={$path}"><xsl:value-of select="$content"/></a>
+        <a class="crossref" href="gallio:navigateTo?path={$path}"><xsl:value-of select="$content"/></a>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$content"/>

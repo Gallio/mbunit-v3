@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -22,6 +23,7 @@ using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Logging;
 using Gallio.Model.Logging.Tags;
+using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runner.Caching;
@@ -127,6 +129,35 @@ namespace Gallio.UI
             return str.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
         }
 
+        private static void WriteCodeLocationLink(TextWriter writer, CodeLocation location, Action contents)
+        {
+            if (location.Path != null)
+            {
+                writer.Write("<a class=\"crossref\" href=\"gallio:navigateTo?path=");
+                writer.Write(HtmlEncode(location.Path));
+
+                if (location.Line != 0)
+                {
+                    writer.Write("&amp;line=");
+                    writer.Write(location.Line.ToString(CultureInfo.InvariantCulture));
+
+                    if (location.Column != 0)
+                    {
+                        writer.Write("&amp;column=");
+                        writer.Write(location.Column.ToString(CultureInfo.InvariantCulture));
+                    }
+                }
+
+                writer.Write("\">");
+                contents();
+                writer.Write("</a>");
+            }
+            else
+            {
+                contents();
+            }
+        }
+
         private sealed class TestStepReportWriter
         {
             private readonly HtmlTestStepRunFormatter formatter;
@@ -221,8 +252,10 @@ namespace Gallio.UI
                 AddStatistics(statistics, testStepRun, false);
 
                 writer.Write(string.Format("<li id=\"testStepRun-{0}\">", testStepRun.Step.Id));
-                writer.Write(string.Format("<span class=\"testStepRunHeading testStepRunHeading-Level{0}\"><b>{1}</b>",
-                    nestingLevel, HtmlEncode(testStepRun.Step.Name)));
+                writer.Write(string.Format("<span class=\"testStepRunHeading testStepRunHeading-Level{0}\">",
+                    nestingLevel));
+                WriteCodeLocationLink(writer, testStepRun.Step.CodeLocation, () => writer.Write(HtmlEncode(testStepRun.Step.Name)));
+
                 RenderOutcomeBar(testStepRun.Result.Outcome, statistics, (testStepRun.Children.Count == 0));
                 writer.Write("</span>");
 
@@ -449,31 +482,11 @@ namespace Gallio.UI
                 marker.Attributes.TryGetValue(Marker.CodeLocationLineNumberAttrib, out line);
                 marker.Attributes.TryGetValue(Marker.CodeLocationColumnNumberAttrib, out column);
 
-                if (path != null)
-                {
-                    writer.Write("<a href=\"gallio:navigateTo?path=");
-                    writer.Write(HtmlEncode(path));
+                CodeLocation location = new CodeLocation(path,
+                    line != null ? int.Parse(line, CultureInfo.InvariantCulture) : 0,
+                    column != null ? int.Parse(column, CultureInfo.InvariantCulture) : 0);
 
-                    if (line != null)
-                    {
-                        writer.Write("&amp;line=");
-                        writer.Write(line);
-
-                        if (column != null)
-                        {
-                            writer.Write("&amp;column=");
-                            writer.Write(column);
-                        }
-                    }
-
-                    writer.Write("\">");
-                    tag.AcceptContents(this);
-                    writer.Write("</a>");
-                }
-                else
-                {
-                    tag.AcceptContents(this);
-                }
+                WriteCodeLocationLink(writer, location, () => tag.AcceptContents(this));
             }
 
             private void VisitLinkMarkerTag(MarkerTag tag)
@@ -484,7 +497,7 @@ namespace Gallio.UI
 
                 if (url != null)
                 {
-                    writer.Write("<a href=\"");
+                    writer.Write("<a class=\"crossref\" href=\"");
                     writer.Write(HtmlEncode(url));
                     writer.Write("\">");
                     tag.AcceptContents(this);
