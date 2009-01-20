@@ -70,7 +70,7 @@ namespace CCNet.Gallio.WebDashboard.Plugin
 
         private static XPathNavigator FindTestStepNode(XPathNavigator rootNavigator, IXmlNamespaceResolver resolver, string stepId)
         {
-            foreach (XPathNavigator testStepNavigator in rootNavigator.Select(@"//g:report/g:packageRun/descendant::g:testStepRun/g:testStep", resolver))
+            foreach (XPathNavigator testStepNavigator in rootNavigator.Select(@"//g:report/g:testPackageRun/descendant::g:testStepRun/g:testStep", resolver))
             {
                 if (testStepNavigator.GetAttribute(@"id", "") == stepId)
                     return testStepNavigator;
