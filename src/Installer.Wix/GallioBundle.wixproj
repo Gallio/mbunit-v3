@@ -93,6 +93,9 @@
     <Compile Include="..\Extensions\ReSharper\ReSharper41.wxs">
       <Link>ReSharper41.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\ReSharper\ReSharper45.wxs">
+      <Link>ReSharper45.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\TDNet\TDNet.wxs">
       <Link>TDNet.wxs</Link>
     </Compile>
