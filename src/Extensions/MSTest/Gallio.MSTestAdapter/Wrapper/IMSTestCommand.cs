@@ -15,6 +15,7 @@
 
 using System.IO;
 using Gallio.Runtime.Logging;
+using System;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {

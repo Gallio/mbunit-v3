@@ -23,22 +23,20 @@ namespace Gallio.MSTestAdapter.Wrapper
     /// <summary>
     /// An MSTest command implementation that runs MSTest as a separate process.
     /// </summary>
-    internal class StandaloneMSTestCommand : IMSTestCommand
+    internal class StandaloneMSTestCommand : BaseMSTestCommand
     {
-        public static readonly StandaloneMSTestCommand Instance = new StandaloneMSTestCommand();
-
-        private StandaloneMSTestCommand()
+        public StandaloneMSTestCommand(Version frameworkVersion)
+            : base(frameworkVersion)
         {
         }
 
-        public int Run(string workingDirectory, MSTestCommandArguments args,
+        public override int Run(string workingDirectory, MSTestCommandArguments args,
             TextWriter outputWriter, TextWriter errorWriter)
         {
-            string executable = MSTestResolver.FindDefaultMSTestPath();
-            if (executable == null)
+            if (ExecutablePath == null)
                 return -1;
 
-            ProcessTask task = new ProcessTask(executable, args.ToString(), workingDirectory);
+            ProcessTask task = new ProcessTask(ExecutablePath, args.ToString(), workingDirectory);
             task.ConsoleOutputDataReceived += MakeRedirector(outputWriter);
             task.ConsoleErrorDataReceived += MakeRedirector(errorWriter);
 

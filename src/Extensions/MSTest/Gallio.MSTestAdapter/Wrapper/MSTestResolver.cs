@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using System.IO;
 using Microsoft.Win32;
 
@@ -22,15 +23,17 @@ namespace Gallio.MSTestAdapter.Wrapper
     /// <summary>
     /// Provides services for resolving the path of the MSTest installation.
     /// </summary>
-    public static class MSTestResolver
+    internal static class MSTestResolver
     {
         /// <summary>
-        /// Finds the default (most recent version of MSTest).
+        /// Finds the path of the version of MSTest asociated with a given framework version.
         /// </summary>
-        /// <returns>The full path of the MSTest.exe program, or null if not found</returns>
-        public static string FindDefaultMSTestPath()
+        /// <param name="frameworkVersion">The version number of the Microsoft.VisualStudio.QualityTools.UnitTestFramework assembly</param>
+        /// <returns>The full path of hte MSTest.exe program, or null if not found</returns>
+        public static string FindMSTestPathForFrameworkVersion(Version frameworkVersion)
         {
-            return FindMSTestPath("9.0") ?? FindMSTestPath("8.0");
+            return FindMSTestPathForVisualStudioVersion(String.Format(CultureInfo.InvariantCulture,
+                "{0}.{1}", frameworkVersion.Major, frameworkVersion.Minor));
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace Gallio.MSTestAdapter.Wrapper
         /// <param name="visualStudioVersion">The visual studio version
         /// (eg. "8.0" or "9.0")</param>
         /// <returns>The full path of the MSTest.exe program, or null if not found</returns>
-        public static string FindMSTestPath(string visualStudioVersion)
+        public static string FindMSTestPathForVisualStudioVersion(string visualStudioVersion)
         {
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(
                 @"SOFTWARE\Microsoft\VisualStudio\" + visualStudioVersion))

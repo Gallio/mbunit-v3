@@ -14,21 +14,27 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Execution;
 using Gallio.Reflection;
 
 namespace Gallio.MSTestAdapter.Model
 {
     internal class MSTestAssembly : MSTest
     {
+        private readonly Version frameworkVersion;
+
         /// <summary>
         /// Creates an object to represent an MSTest assembly.
         /// </summary>
         /// <param name="name">The name of the component</param>
         /// <param name="codeElement">The point of definition, or null if none</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> is null</exception>
-        public MSTestAssembly(string name, ICodeElementInfo codeElement) 
+        /// <param name="frameworkVersion">The version number of the Microsoft.VisualStudio.QualityTools.UnitTestFramework assembly</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>, or
+        /// <paramref name="frameworkVersion" /> is null</exception>
+        public MSTestAssembly(string name, ICodeElementInfo codeElement, Version frameworkVersion) 
             : base(name, codeElement)
         {
+            this.frameworkVersion = frameworkVersion;
         }
 
         /// <summary>
@@ -37,6 +43,12 @@ namespace Gallio.MSTestAdapter.Model
         public string AssemblyFilePath
         {
             get { return ((IAssemblyInfo)CodeElement).Path; }
+        }
+
+        /// <inheritdoc />
+        public override Func<ITestController> TestControllerFactory
+        {
+            get { return () => MSTestController.CreateController(frameworkVersion); }
         }
     }
 }

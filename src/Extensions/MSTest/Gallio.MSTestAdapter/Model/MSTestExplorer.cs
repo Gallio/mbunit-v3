@@ -47,7 +47,7 @@ namespace Gallio.MSTestAdapter.Model
             if (frameworkVersion != null)
             {
                 ITest frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
-                ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest, true);
+                ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest, frameworkVersion, true);
                 if (consumer != null)
                     consumer(assemblyTest);
             }
@@ -61,7 +61,7 @@ namespace Gallio.MSTestAdapter.Model
             if (frameworkVersion != null)
             {
                 ITest frameworkTest = GetFrameworkTest(frameworkVersion, TestModel.RootTest);
-                ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest, false);
+                ITest assemblyTest = GetAssemblyTest(assembly, frameworkTest, frameworkVersion, false);
 
                 ITest typeTest = TryGetTypeTest(type, assemblyTest);
                 if (typeTest != null && consumer != null)
@@ -99,12 +99,12 @@ namespace Gallio.MSTestAdapter.Model
             return frameworkTest;
         }
 
-        private ITest GetAssemblyTest(IAssemblyInfo assembly, ITest frameworkTest, bool populateRecursively)
+        private ITest GetAssemblyTest(IAssemblyInfo assembly, ITest frameworkTest, Version frameworkVersion, bool populateRecursively)
         {
             ITest assemblyTest;
             if (!assemblyTests.TryGetValue(assembly, out assemblyTest))
             {
-                assemblyTest = CreateAssemblyTest(assembly);
+                assemblyTest = CreateAssemblyTest(assembly, frameworkVersion);
                 frameworkTest.AddChild(assemblyTest);
                 assemblyTests.Add(assembly, assemblyTest);
             }
@@ -118,9 +118,9 @@ namespace Gallio.MSTestAdapter.Model
             return assemblyTest;
         }
 
-        private static ITest CreateAssemblyTest(IAssemblyInfo assembly)
+        private static ITest CreateAssemblyTest(IAssemblyInfo assembly, Version frameworkVersion)
         {
-            MSTestAssembly assemblyTest = new MSTestAssembly(assembly.Name, assembly);
+            MSTestAssembly assemblyTest = new MSTestAssembly(assembly.Name, assembly, frameworkVersion);
             assemblyTest.Kind = TestKinds.Assembly;
 
             ModelUtils.PopulateMetadataFromAssembly(assembly, assemblyTest.Metadata);

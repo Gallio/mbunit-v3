@@ -49,11 +49,11 @@ namespace Gallio.MSTestAdapter.Model
             this.diskCache = diskCache;
         }
 
-        public static MSTestController CreateController()
+        public static MSTestController CreateController(Version frameworkVersion)
         {
             var command = Debugger.IsAttached 
-                ? (IMSTestCommand) DebugMSTestCommand.Instance
-                : StandaloneMSTestCommand.Instance;
+                ? (IMSTestCommand) new DebugMSTestCommand(frameworkVersion)
+                : new StandaloneMSTestCommand(frameworkVersion);
 
             return new MSTestController(command, new TemporaryDiskCache());
         }

@@ -41,12 +41,6 @@ namespace Gallio.MSTestAdapter.Model
             PopulateGuid();
         }
 
-        /// <inheritdoc />
-        public override Func<ITestController> TestControllerFactory
-        {
-            get { return MSTestController.CreateController; }
-        }
-
         /// <summary>
         /// Gets the name MSTest uses to refer to the test.
         /// </summary>

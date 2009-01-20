@@ -27,29 +27,27 @@ namespace Gallio.MSTestAdapter.Wrapper
     /// An MSTest command implementation that is designed to allow MSTest tests
     /// to run in the debugger with no additional process isolation.
     /// </summary>
-    internal class DebugMSTestCommand : IMSTestCommand
+    internal class DebugMSTestCommand : BaseMSTestCommand
     {
-        public static readonly DebugMSTestCommand Instance = new DebugMSTestCommand();
-
-        private DebugMSTestCommand()
+        public DebugMSTestCommand(Version frameworkVersion)
+            : base(frameworkVersion)
         {
         }
 
         /// <inheritdoc />
-        public int Run(string workingDirectory, MSTestCommandArguments args,
+        public override int Run(string workingDirectory, MSTestCommandArguments args,
             TextWriter outputWriter, TextWriter errorWriter)
         {
-            string executable = MSTestResolver.FindDefaultMSTestPath();
-            if (executable == null)
+            if (ExecutablePath == null)
                 return -1;
-            string baseDir = Path.GetDirectoryName(executable);
+            string baseDir = Path.GetDirectoryName(ExecutablePath);
 
             using (new CurrentDirectorySwitcher(workingDirectory))
             {
                 AppDomain appDomain = null;
                 try
                 {
-                    appDomain = AppDomainUtils.CreateAppDomain("MSTest", baseDir, executable + @".config", false);
+                    appDomain = AppDomainUtils.CreateAppDomain("MSTest", baseDir, ExecutablePath + @".config", false);
 
                     var extendedArgs = args.Copy();
                     extendedArgs.NoIsolation = true;
@@ -58,7 +56,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                     Launcher launcher = (Launcher) appDomain.CreateInstanceFromAndUnwrap(
                         AssemblyUtils.GetFriendlyAssemblyLocation(launcherType.Assembly),
                         launcherType.FullName);
-                    return launcher.Run(outputWriter, executable, extendedArgs.ToStringArray());
+                    return launcher.Run(outputWriter, ExecutablePath, extendedArgs.ToStringArray());
                 }
                 finally
                 {
