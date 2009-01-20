@@ -59,7 +59,7 @@ namespace Gallio.ReSharperRunner.Tests
         }
 
 #if ! RESHARPER_31 && ! RESHARPER_40
-        public override void  InitializeComponents()
+        public override void InitializeComponents()
         {
             // As of ReSharper v4.1, the way the images are loaded has changed somewhat.
             // Instead of always loading from JetBrains.ReSharper.Resources, the images are resolved
@@ -70,7 +70,7 @@ namespace Gallio.ReSharperRunner.Tests
             //
             // Another approach might be to hack the ApplicationConfiguration object after the
             // AllAssembliesXml has been loaded. -- Jeff.
-            ImageLoader.ImageId.AssembliesEligibleDefault[0] = typeof(GlobalSettings).Assembly;
+            ImageLoader.ImageId.AssembliesEligibleDefault[0] = typeof(JetBrains.ReSharper.GlobalSettings).Assembly;
 
             base.InitializeComponents();
         }
