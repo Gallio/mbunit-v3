@@ -132,6 +132,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GallioTestShell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\BuiltInMetadataAssemblyResolver.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicyTest.cs" />

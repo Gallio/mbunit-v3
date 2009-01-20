@@ -35,7 +35,11 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             {
                 Assembly assembly = Assembly.Load(name);
                 assemblyLocation = AssemblyUtils.GetAssemblyLocalPath(assembly);
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
                 return MetadataProvider.GetFromFile(assemblyLocation);
+#else
+                return MetadataProvider.Instance.GetFromFile(assemblyLocation);
+#endif
             }
             catch
             {

@@ -40,7 +40,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
         {
             DaemonStageProcessResult result = new DaemonStageProcessResult();
             result.FullyRehighlighted = true;
-            result.Highlighting = GetHighlightings();
+            result.Highlightings = GetHighlightings();
 
             return result;
         }

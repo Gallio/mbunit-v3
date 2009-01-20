@@ -1,43 +1,103 @@
 ﻿<?xml version="1.0"?>
 <AllAssemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Product="JetBrains.ReSharper" xmlns="urn:shemas-jetbrains-com:all-assemblies-xml">
-	<KnownConfigurations>
-	</KnownConfigurations>
-	<KnownEditions>
-	</KnownEditions>
-	<Assemblies>
-    <Assembly Name="JetBrains.Platform.ReSharper.Interop.WinApi" Configurations="" MsiComponentGuid="{FF37F08D-5311-4D5D-856F-454DDFB30F1E}" />
-    <Assembly Name="JetBrains.Platform.ReSharper.Shell" Configurations="" MsiComponentGuid="{1DBABDA4-6449-43D5-962B-6493BE183C8D}" />
-    <Assembly Name="JetBrains.Platform.ReSharper.UI" Configurations=""  MsiComponentGuid="{0178CCD4-5A17-4998-8023-C8778E1813ED}"/>
-    <Assembly Name="JetBrains.Platform.ReSharper.UI.Avalon" Configurations=""  MsiComponentGuid="{5C6535A5-D23C-4979-A09B-A6D6DFF871A0}"/>
-    <Assembly Name="JetBrains.Platform.ReSharper.Util" Configurations="" MsiComponentGuid="{C3F8647A-A598-4852-980A-AEF86D47DDF1}"/>
-    <Assembly Name="JetBrains.Platform.ReSharper.Metadata" Configurations="" MsiComponentGuid="{B4D85CFB-16E2-43A5-85F4-9F807E624034}" />
-    <Assembly Name="JetBrains.Platform.ReSharper.ActionManagement" Configurations="" MsiComponentGuid="{1C54DEF1-756E-431E-878F-8A46B311EB5E}"/>
-    <Assembly Name="JetBrains.Platform.ReSharper.ProjectModel" Configurations=""  MsiComponentGuid="{D1E8FF1C-3A03-4808-BF17-32DC525DA9C9}"/>
-    <Assembly Name="JetBrains.Platform.ReSharper.DocumentModel" Configurations="" MsiComponentGuid="{7CFCC25C-ADAB-470A-9E47-E568B09FE041}" />
-    <Assembly Name="JetBrains.Platform.ReSharper.DocumentManager" Configurations="" MsiComponentGuid="{068ECD1B-A30E-42CA-923E-E850398A464D}" />
-    <Assembly Name="JetBrains.Platform.ReSharper.IDE" Configurations=""  MsiComponentGuid="{5519E2CB-2BC9-472C-B5B3-A65EB53869AC}"/>
-    <Assembly Name="JetBrains.Platform.ReSharper.TextControl" Configurations=""  MsiComponentGuid="{BED96E4F-8403-4C98-AA30-7077905F0DA8}"/>
-    <Assembly Name="JetBrains.Platform.ReSharper.VSIntegration" Configurations=""  MsiComponentGuid="{6C14B66F-DE6E-4156-A365-C34BD86E70F8}" />
-    <Assembly Name="JetBrains.Platform.ReSharper.ActivityTracking" Configurations=""  MsiComponentGuid="{9ADCAA23-1140-4D15-B930-EB00F398CC53}" />
-    <Assembly Name="JetBrains.Annotations" Configurations=""  MsiComponentGuid="{69061016-B6D4-4260-AFF0-23F7A6F46981}" />
-    <Assembly Name="JetBrains.Platform.CommonServices" Configurations=""  MsiComponentGuid="{5F7B4664-B8A9-4BE8-9B62-DB895808B334}" />
-    <Assembly Name="JetBrains.ReSharper.CommonActions" Configurations="" MsiComponentGuid="{105B0D3F-0300-4BEC-BDF2-079FEC76E579}" />
-    
-		<Assembly Name="JetBrains.ReSharper.Psi" Configurations="" MsiComponentGuid="{BACCDAC4-B43A-4D5D-8937-12840E9699C6}" />
-		<Assembly Name="JetBrains.ReSharper.Psi.CSharp" Configurations="" MsiComponentGuid="{D33C58C7-C349-4EEA-82CF-A1D49D8AC33E}" />
-		<Assembly Name="JetBrains.ReSharper.SolutionBuilder" Configurations="" MsiComponentGuid="{E9ACE02C-A6BF-4ACC-9A1C-1A17A32003B3}" />
-    <Assembly Name="JetBrains.ReSharper.SolutionBuilder.VS" Configurations="" MsiComponentGuid="{2E4B8772-15ED-48F7-A584-8AE3F209EDD2}" />
+  <KnownConfigurations>
+    <KnownConfiguration Name="Test" Description="The shell for running tests."/>
+  </KnownConfigurations>
+  <KnownEditions>
+  </KnownEditions>
+  <Assemblies>
+    <!---->
+    <!-- JetBrains .NET Platform. -->
+    <Assembly Name="JetBrains.Platform.ReSharper.Interop.WinApi" Configurations="" MsiComponentGuid="{3D96623F-9F4F-4FFD-B03C-84AB247FF9AC}" HasXmlSerializers="false"/>
+    <Assembly Name="JetBrains.Platform.ReSharper.Shell" Configurations="" MsiComponentGuid="{87A693AD-BAF2-4BF6-8D26-32760D94E325}" HasXmlSerializers="false"/>
+    <Assembly Name="JetBrains.Platform.ReSharper.UI" Configurations="" MsiComponentGuid="{4CBF3447-D3B4-4C2E-B3BA-15A1C2308694}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.UI.Avalon" Configurations="" MsiComponentGuid="{93090835-571C-4C1A-B702-0F8014B0B11B}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.Util" Configurations="" MsiComponentGuid="{F06514D7-46B8-481C-8E85-C2D6AD14D83B}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.Metadata" Configurations="" MsiComponentGuid="{A8860875-89A9-4634-B1F6-8A49424B13E8}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.ActionManagement" Configurations="" MsiComponentGuid="{93EC2712-E6BD-4F91-8F32-73F10E5EFD43}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.ProjectModel" Configurations="" MsiComponentGuid="{05C82FB1-C774-4E82-8CAE-F90FC13B5940}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.DocumentModel" Configurations="" MsiComponentGuid="{6BCAFC63-732D-4B6F-B5AF-7241308CB111}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.DocumentManager" Configurations="" MsiComponentGuid="{B31DDD16-C406-42BD-98BF-AE5E472E5BAE}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.IDE" Configurations="" MsiComponentGuid="{5D741198-4C66-4800-BC2B-A80C6ED77620}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.TextControl" Configurations="" MsiComponentGuid="{8BBC32D3-F1E7-44E8-87F2-AEB545203F32}" />
+    <Assembly Name="JetBrains.Platform.CommonServices" Configurations="" MsiComponentGuid="{A1DA021F-37AB-4FAE-A01D-18C08603DB8B}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.ActivityTracking" Configurations="" MsiComponentGuid="{994DE1C8-230C-4087-8DD1-81B3D8790719}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.VSIntegration" Configurations="" MsiComponentGuid="{F525E9A3-B9DF-4175-9BF9-6C3383C88CBE}" ComSelfRegister="false" />
+    <Assembly Name="JetBrains.Annotations" Configurations="" MsiComponentGuid="{E64A8665-CEBF-456E-8535-2C4D262B41B0}" ComSelfRegister="false" />
+    <Assembly Name="JetBrains.Platform.ReSharper.AbstractTreeBuilder" Configurations="" MsiComponentGuid="{0A0A1C21-7E44-4855-8425-7E948E49A28C}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.Satellite" Configurations="Test" MsiComponentGuid="{8FCE49AF-0F74-4854-933D-6AF82D17299E}" />
+    <!---->
+    <!-- R#-specific. -->
+
+    <Assembly Name="JetBrains.ReSharper.Psi" Configurations="" MsiComponentGuid="{BACCDAC4-B43A-4D5D-8937-12840E9699C6}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.CSharp" Configurations="" MsiComponentGuid="{D33C58C7-C349-4EEA-82CF-A1D49D8AC33E}" />
+
+    <Assembly Name="JetBrains.ReSharper.Psi.Services" Configurations="" MsiComponentGuid="{4AC4A2AC-8BD3-4099-8F5C-77AC29BE8168}" />
+    <Assembly Name="JetBrains.ReSharper.Psi.Services.CSharp" Configurations="" MsiComponentGuid="{DAC4F35A-8089-4BE8-BC2F-D017DDA35FD9}" />
+
+    <Assembly Name="JetBrains.ReSharper.CodeInsight.Services" Configurations="" MsiComponentGuid="{28D424E4-DC85-4595-A20A-B24916DF8338}" />
+
+    <Assembly Name="JetBrains.ReSharper.Feature.Services" Configurations="" MsiComponentGuid="{9E1DB446-43C3-4FDB-9DFA-36124A6747BD}" />
+    <Assembly Name="JetBrains.ReSharper.Feature.Services.CSharp" Configurations="" MsiComponentGuid="{352DF8FA-25B5-4852-9606-1E98D41E52F3}" />
+
+    <Assembly Name="JetBrains.ReSharper.Features.Common" Configurations="" MsiComponentGuid="{BD86F4C7-4CF9-44F6-93E8-2ED4EC72D840}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Intellisense" Configurations="" MsiComponentGuid="{C4CAED51-D738-4E30-87FB-030B681C9C9B}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Browsing" Configurations="" MsiComponentGuid="{E67BAC24-0D3E-4405-8B22-964F05177DA3}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Analyses" Configurations="" MsiComponentGuid="{1485BA40-9F87-4261-94C9-15A3389CEAF1}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Finding" Configurations="" MsiComponentGuid="{BD213D7B-9395-4E04-A6BC-30DC54C6F86F}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Altering" Configurations="" MsiComponentGuid="{67F7550E-8E5F-471A-A141-CAC66FE265E1}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Environment" Configurations="" MsiComponentGuid="{E8C292D2-3DD6-4A23-84AE-26D49ADFD331}" />
+    <Assembly Name="JetBrains.ReSharper.Features.Internal" Configurations="" MsiComponentGuid="{A27A0C29-EF9D-4BCD-9317-726981A655D8}" />
+
+    <Assembly Name="JetBrains.ReSharper.TodoExplorer" Configurations="" MsiComponentGuid="{47F4EF59-FCC5-493F-BFA7-9F14A214CC43}" />
     <Assembly Name="JetBrains.ReSharper.UnitTestExplorer" Configurations="" MsiComponentGuid="{6934FD6C-580F-438C-AFD0-466377AFDC48}" />
-		<Assembly Name="JetBrains.ReSharper.TaskRunnerFramework" Configurations="" MsiComponentGuid="{32005CDB-EF63-4A92-A115-61AAF0943D0D}" />
+    <Assembly Name="JetBrains.ReSharper.TaskRunnerFramework" Configurations="" MsiComponentGuid="{32005CDB-EF63-4A92-A115-61AAF0943D0D}" />
+
+    <Assembly Name="JetBrains.ReSharper.Daemon" Configurations="" MsiComponentGuid="{CA1939B6-2ECB-4AB4-893F-FD014C7A8CFE}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.Specific" Configurations="" MsiComponentGuid="{76CC26F5-1D4F-4A07-9C8B-2246E123CCB8}" />
+    <Assembly Name="JetBrains.ReSharper.Daemon.CSharp" Configurations="" MsiComponentGuid="{81507274-F342-401F-8333-9AA37802E459}" />
+    <Assembly Name="JetBrains.ReSharper.SolutionAnalysis" Configurations="" MsiComponentGuid="{D8F9E219-B7CF-4186-B3C9-153DFA8FDDA3}" />
+
+    <Assembly Name="JetBrains.ReSharper.Intentions" Configurations="" MsiComponentGuid="{B7C82E82-F2D3-4694-815E-CBEEED2FB265}" />
+    <Assembly Name="JetBrains.ReSharper.Intentions.CSharp" Configurations="" MsiComponentGuid="{28D23EC4-9AC1-4F6B-B5A1-68D7C66E6B27}" />
+
+    <Assembly Name="JetBrains.ReSharper.NewRefactorings" Configurations="" MsiComponentGuid="{14DD0AE6-FC9B-4148-A5DA-B4E2ABA8B73B}" />
+    <Assembly Name="JetBrains.ReSharper.Refactorings.CSharp" Configurations="" MsiComponentGuid="{03DA90D2-5CE0-4380-8C34-325D4A0BA47E}" />
+
+    <Assembly Name="JetBrains.ReSharper.LiveTemplates" Configurations="" MsiComponentGuid="{565EC92E-3415-4EFE-9774-FF3F2A2753DA}" />
+    <Assembly Name="JetBrains.ReSharper.LiveTemplates.CSharp" Configurations="" MsiComponentGuid="{344EFD52-DAC0-45EA-9561-635F1CB0BD45}" />
+
+    <Assembly Name="JetBrains.ReSharper.Asp" Configurations="" MsiComponentGuid="{871A6D95-A075-437D-B64F-018F22086B94}" />
+    <Assembly Name="JetBrains.ReSharper.BuildScriptSupport" Configurations="" MsiComponentGuid="{100C546A-EEAF-4D14-8B44-2C8E8F3DD6A9}" />
 
     <Assembly Name="JetBrains.ReSharper.Resources" Configurations="" MsiComponentGuid="{226EF1C6-A740-429F-8FE3-85F81310577F}" />
+    <Assembly Name="JetBrains.ReSharper.ExternalProcessStorage" Configurations="" MsiComponentGuid="{D2CCA6F4-FD83-4B61-8096-3025EA687201}" />
     <Assembly Name="JetBrains.ReSharper.VS" Configurations="" MsiComponentGuid="{D6F68554-510A-435E-ABE2-6D4E6AD619FE}" ComSelfRegister="false" />
     <Assembly Name="JetBrains.ReSharper.VSI" Configurations="" MsiComponentGuid="{90C8AAEB-7749-4F94-AB71-CFDC347430D7}" />
+
+    <Assembly Name="JetBrains.ReSharper.TestFramework" Configurations="" MsiComponentGuid="{AD52ECC8-4042-4FAE-881B-A50554E08725}" />
+    <Assembly Name="JetBrains.ReSharper.SolutionBuilder" Configurations="" MsiComponentGuid="{E9ACE02C-A6BF-4ACC-9A1C-1A17A32003B3}" />
+    <Assembly Name="JetBrains.ReSharper.SolutionBuilder.VS" Configurations="" MsiComponentGuid="{2E4B8772-15ED-48F7-A584-8AE3F209EDD2}" />
+
+    <Assembly Name="JetBrains.ReSharper.DependencyChecker" Configurations="" MsiComponentGuid="{32B17CB3-3F97-430E-8B3D-E225CC53CE0E}" />
+
+    <!-- Executables. -->
+    <Assembly Name="JetBrains.ReSharper.TaskRunner" Configurations="" MsiComponentGuid="{32D64BE5-D953-4E41-B6C9-CF34FFC0AB0A}" HasAppConfig="false" />
+    <!-- Note: JetBrains.ReSharper.TaskRunner is marked as having no AppConfig because it will be patched with BindingRedirections and installed as an installation-data-file, see InstallBindingRedirectionsConfigFileAttribute assembly attribute. -->
+    <Assembly Name="JetBrains.ReSharper.ExternalProcessStorage.Process" Configurations="" MsiComponentGuid="{DF321D9E-1E02-4472-952A-6650088B65BD}" />
+    <!-- Note: IntegrationTestsFramework should not be added to either config. It's a plugin. -->
+
+    <!-- Supports writing tests for the plugins. -->
+    <!--
+                <Assembly Name="JetBrains.ReSharper.TestFramework" Configurations="" MsiComponentGuid="{E611FF04-C4B9-4831-A6EA-6637E13971C5}" />
+                        -->
   </Assemblies>
   <PlatformReferences>
-    <Reference Name="VsWebSite.Interop" MsiComponentGuid="{6CC94CF3-1333-4C37-8B7B-4EA8B76BDB1B}" Configurations="" />
-    <Reference Name="Microsoft.VisualStudio.Shell.Interop" MsiComponentGuid="{4766CB27-A079-4F34-9031-41D0F86A51EE}" Configurations="" />
   </PlatformReferences>
-	<ProductReferences/>
-	<GacReferences/>
+
+  <ProductReferences>
+  </ProductReferences>
+
+  <GacReferences>
+  </GacReferences>
 </AllAssemblies>
