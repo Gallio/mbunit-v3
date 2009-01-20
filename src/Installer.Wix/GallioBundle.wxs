@@ -176,6 +176,9 @@
 <?ifdef FEATURE_RESHARPER_RUNNER_41 ?>
             <FeatureRef Id='feat_Gallio.ReSharper.V41'/>
 <?endif?>
+<?ifdef FEATURE_RESHARPER_RUNNER_45 ?>
+            <FeatureRef Id='feat_Gallio.ReSharper.V45'/>
+<?endif?>
             <FeatureRef Id='feat_Gallio.TDNet'/>
 <?ifdef FEATURE_VISUALSTUDIO_90 ?>
             <FeatureRef Id='feat_Gallio.VisualStudio.VS90'/>

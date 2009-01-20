@@ -1,0 +1,43 @@
+﻿<?xml version="1.0"?>
+<AllAssemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Product="JetBrains.ReSharper" xmlns="urn:shemas-jetbrains-com:all-assemblies-xml">
+	<KnownConfigurations>
+	</KnownConfigurations>
+	<KnownEditions>
+	</KnownEditions>
+	<Assemblies>
+    <Assembly Name="JetBrains.Platform.ReSharper.Interop.WinApi" Configurations="" MsiComponentGuid="{FF37F08D-5311-4D5D-856F-454DDFB30F1E}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.Shell" Configurations="" MsiComponentGuid="{1DBABDA4-6449-43D5-962B-6493BE183C8D}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.UI" Configurations=""  MsiComponentGuid="{0178CCD4-5A17-4998-8023-C8778E1813ED}"/>
+    <Assembly Name="JetBrains.Platform.ReSharper.UI.Avalon" Configurations=""  MsiComponentGuid="{5C6535A5-D23C-4979-A09B-A6D6DFF871A0}"/>
+    <Assembly Name="JetBrains.Platform.ReSharper.Util" Configurations="" MsiComponentGuid="{C3F8647A-A598-4852-980A-AEF86D47DDF1}"/>
+    <Assembly Name="JetBrains.Platform.ReSharper.Metadata" Configurations="" MsiComponentGuid="{B4D85CFB-16E2-43A5-85F4-9F807E624034}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.ActionManagement" Configurations="" MsiComponentGuid="{1C54DEF1-756E-431E-878F-8A46B311EB5E}"/>
+    <Assembly Name="JetBrains.Platform.ReSharper.ProjectModel" Configurations=""  MsiComponentGuid="{D1E8FF1C-3A03-4808-BF17-32DC525DA9C9}"/>
+    <Assembly Name="JetBrains.Platform.ReSharper.DocumentModel" Configurations="" MsiComponentGuid="{7CFCC25C-ADAB-470A-9E47-E568B09FE041}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.DocumentManager" Configurations="" MsiComponentGuid="{068ECD1B-A30E-42CA-923E-E850398A464D}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.IDE" Configurations=""  MsiComponentGuid="{5519E2CB-2BC9-472C-B5B3-A65EB53869AC}"/>
+    <Assembly Name="JetBrains.Platform.ReSharper.TextControl" Configurations=""  MsiComponentGuid="{BED96E4F-8403-4C98-AA30-7077905F0DA8}"/>
+    <Assembly Name="JetBrains.Platform.ReSharper.VSIntegration" Configurations=""  MsiComponentGuid="{6C14B66F-DE6E-4156-A365-C34BD86E70F8}" />
+    <Assembly Name="JetBrains.Platform.ReSharper.ActivityTracking" Configurations=""  MsiComponentGuid="{9ADCAA23-1140-4D15-B930-EB00F398CC53}" />
+    <Assembly Name="JetBrains.Annotations" Configurations=""  MsiComponentGuid="{69061016-B6D4-4260-AFF0-23F7A6F46981}" />
+    <Assembly Name="JetBrains.Platform.CommonServices" Configurations=""  MsiComponentGuid="{5F7B4664-B8A9-4BE8-9B62-DB895808B334}" />
+    <Assembly Name="JetBrains.ReSharper.CommonActions" Configurations="" MsiComponentGuid="{105B0D3F-0300-4BEC-BDF2-079FEC76E579}" />
+    
+		<Assembly Name="JetBrains.ReSharper.Psi" Configurations="" MsiComponentGuid="{BACCDAC4-B43A-4D5D-8937-12840E9699C6}" />
+		<Assembly Name="JetBrains.ReSharper.Psi.CSharp" Configurations="" MsiComponentGuid="{D33C58C7-C349-4EEA-82CF-A1D49D8AC33E}" />
+		<Assembly Name="JetBrains.ReSharper.SolutionBuilder" Configurations="" MsiComponentGuid="{E9ACE02C-A6BF-4ACC-9A1C-1A17A32003B3}" />
+    <Assembly Name="JetBrains.ReSharper.SolutionBuilder.VS" Configurations="" MsiComponentGuid="{2E4B8772-15ED-48F7-A584-8AE3F209EDD2}" />
+    <Assembly Name="JetBrains.ReSharper.UnitTestExplorer" Configurations="" MsiComponentGuid="{6934FD6C-580F-438C-AFD0-466377AFDC48}" />
+		<Assembly Name="JetBrains.ReSharper.TaskRunnerFramework" Configurations="" MsiComponentGuid="{32005CDB-EF63-4A92-A115-61AAF0943D0D}" />
+
+    <Assembly Name="JetBrains.ReSharper.Resources" Configurations="" MsiComponentGuid="{226EF1C6-A740-429F-8FE3-85F81310577F}" />
+    <Assembly Name="JetBrains.ReSharper.VS" Configurations="" MsiComponentGuid="{D6F68554-510A-435E-ABE2-6D4E6AD619FE}" ComSelfRegister="false" />
+    <Assembly Name="JetBrains.ReSharper.VSI" Configurations="" MsiComponentGuid="{90C8AAEB-7749-4F94-AB71-CFDC347430D7}" />
+  </Assemblies>
+  <PlatformReferences>
+    <Reference Name="VsWebSite.Interop" MsiComponentGuid="{6CC94CF3-1333-4C37-8B7B-4EA8B76BDB1B}" Configurations="" />
+    <Reference Name="Microsoft.VisualStudio.Shell.Interop" MsiComponentGuid="{4766CB27-A079-4F34-9031-41D0F86A51EE}" Configurations="" />
+  </PlatformReferences>
+	<ProductReferences/>
+	<GacReferences/>
+</AllAssemblies>
