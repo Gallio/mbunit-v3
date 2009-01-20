@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{41CE8757-1908-45df-B2D7-D630942C18CD}</ProjectGuid>
+    <ProjectGuid>{41CE8757-1908-45DF-B2D7-D630942C18CD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gallio.ReSharperRunner</RootNamespace>
@@ -86,11 +86,16 @@
     <Reference Include="JetBrains.Platform.ReSharper.VSIntegration, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="JetBrains.ReSharper.CodeView, Version=4.0.783.45, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="JetBrains.ReSharper.Daemon, Version=3.1.584.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Feature.Services, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v4.5\Bin\JetBrains.ReSharper.Feature.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.ReSharper.Features.Common, Version=4.5.1153.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files\JetBrains\ReSharper\v4.5\Bin\JetBrains.ReSharper.Features.Common.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.ReSharper.Psi, Version=3.0.517.8, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -191,6 +196,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme - Debugging.txt" />
+    <None Include="Resources\GallioIcon.png" />
+    <None Include="Resources\Test.ico" />
     <EmbeddedResource Include="Resources\Report.png" />
     <EmbeddedResource Include="Resources\Actions.xml" />
     <None Include="Reflection\Known Limitations and Workarounds.txt" />

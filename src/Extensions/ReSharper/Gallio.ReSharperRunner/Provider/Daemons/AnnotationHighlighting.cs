@@ -79,5 +79,12 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
             get { return true; }
         }
 #endif
+
+#if RESHARPER_45
+        public bool IsValid()
+        {
+            return true;
+        }
+#endif
     }
 }

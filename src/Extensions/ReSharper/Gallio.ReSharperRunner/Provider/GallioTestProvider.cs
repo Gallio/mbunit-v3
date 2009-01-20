@@ -15,9 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Gallio.Loader;
 using Gallio.Model;
 using Gallio.Reflection;
+using Gallio.ReSharperRunner.Properties;
 using Gallio.ReSharperRunner.Provider;
 using Gallio.ReSharperRunner.Provider.Facade;
 using Gallio.ReSharperRunner.Reflection;
@@ -129,6 +131,22 @@ namespace Gallio.ReSharperRunner.Provider
             get { return shim.ID; }
         }
 
+#if RESHARPER_45
+        public Image Icon
+        {
+            get { return shim.Icon; }
+        }
+
+        public string Name
+        {
+            get { return shim.Name; }
+        }
+
+        public ProviderCustomOptionsControl GetCustomOptionsControl(ISolution solution)
+        {
+            return shim.GetCustomOptionsControl(solution);
+        }
+#endif
 
         internal sealed class Shim
         {
@@ -424,6 +442,34 @@ namespace Gallio.ReSharperRunner.Provider
             {
                 get { return ProviderId; }
             }
+
+#if RESHARPER_45
+            /// <summary>
+            /// Gets the icon to display in the Options panel or null to use the default.
+            /// </summary>
+            public Image Icon
+            {
+                get { return Resources.ProviderIcon; }
+            }
+
+            /// <summary>
+            /// Gets the name to display in the Options panel.
+            /// </summary>
+            public string Name
+            {
+                get { return Resources.ProviderName; }
+            }
+
+            /// <summary>
+            /// Gets a custom options panel control or null if none.
+            /// </summary>
+            /// <param name="solution">The solution</param>
+            /// <returns>The control, or null if none</returns>
+            public ProviderCustomOptionsControl GetCustomOptionsControl(ISolution solution)
+            {
+                return null;
+            }
+#endif
 
             private sealed class ConsumerAdapter
             {

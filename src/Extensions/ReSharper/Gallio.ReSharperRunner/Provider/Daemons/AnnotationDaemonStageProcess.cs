@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.ReSharperRunner.Provider.Daemons;
 using Gallio.ReSharperRunner.Reflection;
@@ -34,11 +35,24 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
             this.process = process;
         }
 
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
         public DaemonStageProcessResult Execute()
         {
             DaemonStageProcessResult result = new DaemonStageProcessResult();
             result.FullyRehighlighted = true;
+            result.Highlighting = GetHighlightings();
 
+            return result;
+        }
+#else
+        public void Execute(Action<DaemonStageResult> committer)
+        {
+            committer(new DaemonStageResult(GetHighlightings()));
+        }
+#endif
+
+        private HighlightingInfo[] GetHighlightings()
+        {
             IProjectFile projectFile = process.ProjectFile;
             ProjectFileState state = ProjectFileState.GetFileState(projectFile);
             if (state != null)
@@ -58,10 +72,10 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
                     }
                 }
 
-                result.Highlightings = highlightings.ToArray();
+                return highlightings.ToArray();
             }
 
-            return result;
+            return EmptyArray<HighlightingInfo>.Instance;
         }
     }
 }

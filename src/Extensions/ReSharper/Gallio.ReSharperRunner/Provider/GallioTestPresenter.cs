@@ -15,7 +15,6 @@
 
 using System.Drawing;
 using Gallio.Model;
-using Gallio.ReSharperRunner.Provider;
 using JetBrains.CommonControls;
 using JetBrains.ReSharper.UnitTestExplorer;
 using JetBrains.UI.TreeView;
@@ -23,9 +22,12 @@ using JetBrains.UI.TreeView;
 #if RESHARPER_31
 using JetBrains.ReSharper.TreeModelBrowser;
 using JetBrains.Util.DataStructures.TreeModel;
-#else
+#elif RESHARPER_40 || RESHARPER_41
 using JetBrains.TreeModels;
 using JetBrains.ReSharper.CodeView.TreePsiBrowser;
+#else
+using JetBrains.TreeModels;
+using JetBrains.ReSharper.Features.Common.TreePsiBrowser;
 #endif
 
 namespace Gallio.ReSharperRunner.Provider

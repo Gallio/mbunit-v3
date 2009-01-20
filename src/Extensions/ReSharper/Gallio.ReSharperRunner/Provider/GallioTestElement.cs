@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.ReSharperRunner.Reflection;
@@ -101,7 +102,7 @@ namespace Gallio.ReSharperRunner.Provider
             if (declaredElement != null && declaredElement.IsValid())
                 return declaredElement.GetProjectFiles();
 
-            return EmptyArrays.ProjectFiles;
+            return EmptyArray<IProjectFile>.Instance;
         }
 #endif
 

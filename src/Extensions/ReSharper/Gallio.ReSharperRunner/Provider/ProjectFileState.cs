@@ -39,7 +39,7 @@ namespace Gallio.ReSharperRunner.Provider
         /// <param name="annotations">The annotations</param>
         public ProjectFileState(IList<Annotation> annotations)
         {
-            this.annotations = new ReadOnlyCollection<Annotation>(annotations);
+            this.annotations = new System.Collections.ObjectModel.ReadOnlyCollection<Annotation>(annotations);
         }
 
         /// <summary>

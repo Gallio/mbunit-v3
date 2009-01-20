@@ -24,6 +24,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using Gallio.Collections;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.Impl.Caches2;
 using JetBrains.ReSharper.Psi.Impl.Special;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
@@ -238,8 +239,16 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override IEnumerable<StaticAttributeWrapper> GetAssemblyCustomAttributes(StaticAssemblyWrapper assembly)
         {
             IModule moduleHandle = (IModule) assembly.Handle;
+
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             foreach (IAttributeInstance attrib in psiManager.GetModuleAttributes(moduleHandle).AttributeInstances)
                 yield return new StaticAttributeWrapper(this, attrib);
+#else
+            CacheManagerEx cacheManager = CacheManagerEx.GetInstance(psiManager.Solution);
+            IPsiModule psiModule = GetPsiModule(moduleHandle);
+            foreach (IAttributeInstance attrib in cacheManager.GetModuleAttributes(psiModule).AttributeInstances)
+                yield return new StaticAttributeWrapper(this, attrib);
+#endif
         }
 
         protected override AssemblyName GetAssemblyName(StaticAssemblyWrapper assembly)
@@ -378,13 +387,26 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private IDeclarationsCache GetAssemblyDeclarationsCache(IModule moduleHandle)
         {
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             IProject projectHandle = moduleHandle as IProject;
             if (projectHandle != null)
                 return psiManager.GetDeclarationsCache(DeclarationsCacheScope.ProjectScope(projectHandle, false), true);
 
             IAssembly assemblyHandle = (IAssembly) moduleHandle;
             return psiManager.GetDeclarationsCache(DeclarationsCacheScope.LibraryScope(assemblyHandle, false), true);
+#else
+            IPsiModule psiModule = GetPsiModule(moduleHandle);
+            return psiManager.GetDeclarationsCache(DeclarationsScopeFactory.ModuleScope(psiModule, false), true);
+#endif
         }
+
+#if RESHARPER_45
+        private IPsiModule GetPsiModule(IModule moduleHandle)
+        {
+            return PsiModuleManager.GetInstance(psiManager.Solution).GetPrimaryPsiModule(moduleHandle);
+        }
+#endif
+
         #endregion
 
         #region Attributes
@@ -541,7 +563,12 @@ namespace Gallio.ReSharperRunner.Reflection
                 return CodeLocation.Unknown;
 
             ReSharperDocumentRange range = decl[0].GetDocumentRange();
-            if (!range.IsValid)
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
+            bool isValid = range.IsValid;
+#else
+            bool isValid = range.IsValid();
+#endif
+            if (isValid)
                 return CodeLocation.Unknown;
 
             string filename = decl[0].GetProjectFile().Location.FullPath;
@@ -758,7 +785,15 @@ namespace Gallio.ReSharperRunner.Reflection
 
             // TODO: This won't provide access to any parameter attributes.  How should we retrieve them?
             IType type = methodHandle.ReturnType;
-            return type != null ? new StaticParameterWrapper(this, new Parameter(methodHandle, type, null), method) : null;
+            if (type == null)
+                return null;
+
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
+            var parameter = new Parameter(methodHandle, type, null);
+#else
+            var parameter = new Parameter(methodHandle, 0, type, null);
+#endif
+            return new StaticParameterWrapper(this, parameter, method);
         }
         #endregion
 

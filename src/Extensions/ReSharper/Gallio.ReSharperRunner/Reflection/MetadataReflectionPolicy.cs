@@ -791,8 +791,14 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private IDeclarationsCache GetDeclarationsCache()
         {
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             return PsiManager.GetInstance(contextProject.GetSolution()).
                 GetDeclarationsCache(DeclarationsCacheScope.ProjectScope(contextProject, true), true);
+#else
+            IPsiModule module = PsiModuleManager.GetInstance(contextProject.GetSolution()).GetPsiModule(contextProject.ProjectFile);
+            return PsiManager.GetInstance(contextProject.GetSolution()).
+                GetDeclarationsCache(DeclarationsScopeFactory.ModuleScope(module, true), true);
+#endif
         }
 
         internal ITypeElement GetDeclaredElementWithLock(IMetadataTypeInfo type)
