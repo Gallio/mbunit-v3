@@ -50,13 +50,13 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             [VerifyContract]
             public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>()
             {
-                EquivalenceClasses = 
-                    EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(
-                        new SampleEquatable(123),
-                        new SampleEquatable(456),
-                        new SampleEquatable(789)),
-                
-                ImplementsOperatorOverloads = true
+                ImplementsOperatorOverloads = true,
+                EquivalenceClasses = new EquivalenceClassCollection<SampleEquatable>
+                {
+                    { new SampleEquatable(123) },
+                    { new SampleEquatable(456) },
+                    { new SampleEquatable(789) }
+                }                
             };
         }
 
@@ -66,13 +66,13 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             [VerifyContract]
             public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>()
             {
-                EquivalenceClasses =
-                    EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(
-                        new SampleEquatable(123),
-                        new SampleEquatable(456),
-                        new SampleEquatable(789)),
-
-                ImplementsOperatorOverloads = false
+                ImplementsOperatorOverloads = false,
+                EquivalenceClasses = new EquivalenceClassCollection<SampleEquatable>
+                {
+                    { new SampleEquatable(123) },
+                    { new SampleEquatable(456) },
+                    { new SampleEquatable(789) }
+                }
             };
         }
 

@@ -31,18 +31,14 @@ namespace Gallio.Tests.Reflection
         [VerifyContract]
         public readonly IContract EqualityTests = new EqualityContract<CodeLocation>()
         {
-            EquivalenceClasses = new EquivalenceClassCollection<CodeLocation>(
-                new EquivalenceClass<CodeLocation>(
-                    CodeLocation.Unknown,
-                    new CodeLocation()),
-                new EquivalenceClass<CodeLocation>(
-                    new CodeLocation("path", 123, 9)),
-                new EquivalenceClass<CodeLocation>(
-                    new CodeLocation("other path", 123, 9)),
-                new EquivalenceClass<CodeLocation>(
-                    new CodeLocation("path", 456, 9)),
-                new EquivalenceClass<CodeLocation>(
-                    new CodeLocation("path", 123, 10)))
+            EquivalenceClasses = new EquivalenceClassCollection<CodeLocation>
+            {
+                { CodeLocation.Unknown, new CodeLocation() },
+                { new CodeLocation("path", 123, 9) },
+                { new CodeLocation("other path", 123, 9) },
+                { new CodeLocation("path", 456, 9) },
+                { new CodeLocation("path", 123, 10) }
+            }
         };
 
         [Test]

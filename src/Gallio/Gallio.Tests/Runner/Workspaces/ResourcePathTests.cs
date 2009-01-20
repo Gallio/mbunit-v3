@@ -27,16 +27,18 @@ namespace Gallio.Tests.Runner.Workspaces
     public class ResourcePathTests
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<ResourcePath>()
+        public readonly IContract EqualityTests = new EqualityContract<ResourcePath>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = EquivalenceClassCollection<ResourcePath>.FromDistinctInstances(
-                ResourcePath.Empty,
-                ResourcePath.Root,
-                new ResourcePath(@"\foo"),
-                new ResourcePath(@"\bar"),
-                new ResourcePath(@"foo"),
-                new ResourcePath(@"bar"))
+            EquivalenceClasses = new EquivalenceClassCollection<ResourcePath>
+            {
+                { ResourcePath.Empty },
+                { ResourcePath.Root },
+                { new ResourcePath(@"\foo") },
+                { new ResourcePath(@"\bar") },
+                { new ResourcePath(@"foo") },
+                { new ResourcePath(@"bar") }
+            }
         };
 
         [Test]

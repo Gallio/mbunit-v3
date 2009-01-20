@@ -34,12 +34,13 @@ namespace Gallio.Tests.Model.Logging.Tags
             return equivalenceClasses;
         }
 
-        private static readonly EquivalenceClassCollection<TextTag> equivalenceClasses
-            = EquivalenceClassCollection<TextTag>.FromDistinctInstances(
-                new TextTag(""),
-                new TextTag("text"),
-                new TextTag("other"),
-                new TextTag("   \nsomething\nwith  embedded  newlines and significant whitespace to\nencode\n  "));
+        private static readonly EquivalenceClassCollection<TextTag> equivalenceClasses = new EquivalenceClassCollection<TextTag>
+        {
+            { new TextTag("") },
+            { new TextTag("text") },
+            { new TextTag("other") },
+            { new TextTag("   \nsomething\nwith  embedded  newlines and significant whitespace to\nencode\n  ") }
+        };
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfTextIsNull()

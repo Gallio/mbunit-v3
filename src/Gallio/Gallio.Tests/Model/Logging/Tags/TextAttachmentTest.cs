@@ -23,14 +23,16 @@ namespace Gallio.Tests.Model.Logging.Tags
     public class TextAttachmentTest
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<TextAttachment>()
+        public readonly IContract EqualityTests = new EqualityContract<TextAttachment>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = EquivalenceClassCollection<TextAttachment>.FromDistinctInstances(
-                new TextAttachment("abc", MimeTypes.PlainText, "text"),
-                new TextAttachment("def", MimeTypes.PlainText, "text"),
-                new TextAttachment("abc", MimeTypes.Xml, "text"),
-                new TextAttachment("abc", MimeTypes.PlainText, "blah"))
+            EquivalenceClasses = new EquivalenceClassCollection<TextAttachment>
+            {
+                { new TextAttachment("abc", MimeTypes.PlainText, "text") },
+                { new TextAttachment("def", MimeTypes.PlainText, "text") },
+                { new TextAttachment("abc", MimeTypes.Xml, "text") },
+                { new TextAttachment("abc", MimeTypes.PlainText, "blah") }
+            }
         };
         
         [Test]

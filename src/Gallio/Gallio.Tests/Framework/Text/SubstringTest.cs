@@ -27,13 +27,24 @@ namespace Gallio.Tests.Framework.Text
     public class SubstringTest
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<Substring>()
+        public readonly IContract EqualityTests = new EqualityContract<Substring>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = new EquivalenceClassCollection<Substring>(
-                new EquivalenceClass<Substring>(new Substring("bcd"), new Substring("abcde", new Range(1, 3))),
-                new EquivalenceClass<Substring>(new Substring(""), new Substring("abcde", new Range(3, 0))),
-                new EquivalenceClass<Substring>(new Substring("12345"), new Substring("9912345", new Range(2, 5))))
+            EquivalenceClasses = new EquivalenceClassCollection<Substring>
+            {
+                {
+                    new Substring("bcd"), 
+                    new Substring("abcde", new Range(1, 3))
+                },
+                {
+                    new Substring(""), 
+                    new Substring("abcde", new Range(3, 0))
+                },
+                {
+                    new Substring("12345"), 
+                    new Substring("9912345", new Range(2, 5))
+                }
+            }
         };
 
         [Test, ExpectedArgumentNullException]

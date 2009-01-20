@@ -37,11 +37,12 @@ namespace Gallio.Tests.Model.Logging.Tags
             return equivalenceClasses;
         }
 
-        private static EquivalenceClassCollection<ContainerTag> equivalenceClasses = 
-            EquivalenceClassCollection<ContainerTag>.FromDistinctInstances(
-                new BodyTag(),
-                new BodyTag() { Contents = { new TextTag("text") } },
-                new BodyTag() { Contents = { new TextTag("text"), new TextTag("more") } });
+        private static EquivalenceClassCollection<ContainerTag> equivalenceClasses = new EquivalenceClassCollection<ContainerTag>
+        {
+            { new BodyTag() },
+            { new BodyTag { Contents = { new TextTag("text") }}},
+            { new BodyTag { Contents = { new TextTag("text"), new TextTag("more") }}}
+        };
 
         [Test, ExpectedArgumentNullException]
         public void AcceptContentsThrowsIfVisitorIsNull()

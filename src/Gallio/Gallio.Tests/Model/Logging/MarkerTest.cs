@@ -24,14 +24,16 @@ namespace Gallio.Tests.Model.Logging
     public class MarkerTest
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<Marker>()
+        public readonly IContract EqualityTests = new EqualityContract<Marker>
         {
-            EquivalenceClasses = EquivalenceClassCollection<Marker>.FromDistinctInstances(
-                Marker.AssertionFailure,
-                Marker.DiffAddition,
-                Marker.AssertionFailure.WithAttribute("a", "x"),
-                Marker.AssertionFailure.WithAttribute("a", "y"),
-                Marker.AssertionFailure.WithAttribute("a", "x").WithAttribute("b", "y"))
+            EquivalenceClasses = new EquivalenceClassCollection<Marker>
+            {
+                { Marker.AssertionFailure },
+                { Marker.DiffAddition },
+                { Marker.AssertionFailure.WithAttribute("a", "x") },
+                { Marker.AssertionFailure.WithAttribute("a", "y") },
+                { Marker.AssertionFailure.WithAttribute("a", "x").WithAttribute("b", "y") }
+            }
         };
 
         [Test]

@@ -52,12 +52,13 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             [VerifyContract]
             public readonly IContract ComparisonTests = new ComparisonContract<SampleComparable>()
             {
-                EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>(
-                    new EquivalenceClass<SampleComparable>(new SampleComparable(123), new SampleComparable(123)),
-                    new EquivalenceClass<SampleComparable>(new SampleComparable(456)),
-                    new EquivalenceClass<SampleComparable>(new SampleComparable(789))),
-
-                ImplementsOperatorOverloads = true
+                ImplementsOperatorOverloads = true,
+                EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>
+                {
+                    { new SampleComparable(123), new SampleComparable(123) },
+                    { new SampleComparable(456) },
+                    { new SampleComparable(789) },
+                }
             };
         }
 
@@ -67,12 +68,13 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             [VerifyContract]
             public readonly IContract ComparisonTests = new ComparisonContract<SampleComparable>()
             {
-                EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>(
-                    new EquivalenceClass<SampleComparable>(new SampleComparable(123), new SampleComparable(123)),
-                    new EquivalenceClass<SampleComparable>(new SampleComparable(456)),
-                    new EquivalenceClass<SampleComparable>(new SampleComparable(789))),
-
-                ImplementsOperatorOverloads = false
+                ImplementsOperatorOverloads = false,
+                EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>
+                {
+                    { new SampleComparable(123), new SampleComparable(123) },
+                    { new SampleComparable(456) },
+                    { new SampleComparable(789) },
+                }
             };
         }
 

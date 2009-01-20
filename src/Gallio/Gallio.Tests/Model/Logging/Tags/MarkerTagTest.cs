@@ -33,12 +33,13 @@ namespace Gallio.Tests.Model.Logging.Tags
             return equivalenceClasses;
         }
 
-        private static readonly EquivalenceClassCollection<MarkerTag> equivalenceClasses
-            = EquivalenceClassCollection<MarkerTag>.FromDistinctInstances(
-                new MarkerTag(Marker.AssertionFailure),
-                new MarkerTag(Marker.Highlight),
-                new MarkerTag(Marker.AssertionFailure.WithAttribute("x", "y")),
-                new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text") }},
-                new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text"), new TextTag("more") }});
-}
+        private static readonly EquivalenceClassCollection<MarkerTag> equivalenceClasses = new EquivalenceClassCollection<MarkerTag>
+        {
+            { new MarkerTag(Marker.AssertionFailure) },
+            { new MarkerTag(Marker.Highlight) },
+            { new MarkerTag(Marker.AssertionFailure.WithAttribute("x", "y")) },
+            { new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text") }}},
+            { new MarkerTag(Marker.Highlight) { Contents = { new TextTag("text"), new TextTag("more") }}}
+        };
+    }
 }

@@ -22,14 +22,16 @@ namespace Gallio.Tests.Model.Logging.Tags
     public class BinaryAttachmentTest
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<BinaryAttachment>()
+        public readonly IContract EqualityTests = new EqualityContract<BinaryAttachment>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = EquivalenceClassCollection<BinaryAttachment>.FromDistinctInstances(
-                new BinaryAttachment("abc", MimeTypes.PlainText, new byte[] { 1, 2, 3 }),
-                new BinaryAttachment("def", MimeTypes.PlainText, new byte[] { 1, 2, 3 }),
-                new BinaryAttachment("abc", MimeTypes.Xml, new byte[] { 1, 2, 3 }),
-                new BinaryAttachment("abc", MimeTypes.PlainText, new byte[] { 1, 2 }))
+            EquivalenceClasses = new EquivalenceClassCollection<BinaryAttachment>
+            {
+                { new BinaryAttachment("abc", MimeTypes.PlainText, new byte[] { 1, 2, 3 }) },
+                { new BinaryAttachment("def", MimeTypes.PlainText, new byte[] { 1, 2, 3 }) },
+                { new BinaryAttachment("abc", MimeTypes.Xml, new byte[] { 1, 2, 3 }) },
+                { new BinaryAttachment("abc", MimeTypes.PlainText, new byte[] { 1, 2 }) }
+            }
         };
 
         [Test]

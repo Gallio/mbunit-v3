@@ -24,19 +24,21 @@ namespace Gallio.Tests.Framework.Text
     public class DiffTest
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<Diff>()
+        public readonly IContract EqualityTests = new EqualityContract<Diff>
         {
-            EquivalenceClasses = EquivalenceClassCollection<Diff>.FromDistinctInstances(
-                new Diff(DiffKind.Change, new Range(0, 10), new Range(0, 10)),
-                new Diff(DiffKind.NoChange, new Range(0, 10), new Range(0, 10)),
-                new Diff(DiffKind.Change, new Range(0, 9), new Range(0, 10)),
-                new Diff(DiffKind.Change, new Range(0, 9), new Range(0, 9)))
+            EquivalenceClasses = new EquivalenceClassCollection<Diff>
+            {
+                { new Diff(DiffKind.Change, new Range(0, 10), new Range(0, 10)) },
+                { new Diff(DiffKind.NoChange, new Range(0, 10), new Range(0, 10)) },
+                { new Diff(DiffKind.Change, new Range(0, 9), new Range(0, 10)) },
+                { new Diff(DiffKind.Change, new Range(0, 9), new Range(0, 9)) },
+            }
         };
 
         [Test]
         public void ConstructorInitializesProperties()
         {
-            Diff diff = new Diff(DiffKind.Change, new Range(1, 3), new Range(2, 4));
+            var diff = new Diff(DiffKind.Change, new Range(1, 3), new Range(2, 4));
             Assert.AreEqual(DiffKind.Change, diff.Kind);
             Assert.AreEqual(new Range(1, 3), diff.LeftRange);
             Assert.AreEqual(new Range(2, 4), diff.RightRange);

@@ -37,10 +37,11 @@ namespace Gallio.Tests.Model.Logging.Tags
             return equivalenceClasses;
         }
 
-        private static EquivalenceClassCollection<Tag> equivalenceClasses = 
-             EquivalenceClassCollection<Tag>.FromDistinctInstances(
-                new BodyTag(),
-                new BodyTag() { Contents = { new TextTag("text") } },
-                new BodyTag() { Contents = { new TextTag("text"), new TextTag("more") } });
+        private static EquivalenceClassCollection<Tag> equivalenceClasses = new EquivalenceClassCollection<Tag>
+        {
+            { new BodyTag() },
+            { new BodyTag { Contents = { new TextTag("text") }}},
+            { new BodyTag { Contents = { new TextTag("text"), new TextTag("more") }}}
+        };
     }
 }

@@ -26,22 +26,24 @@ namespace Gallio.Tests.Runtime.Hosting
     public class HostSetupTest
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<HostSetup>()
+        public readonly IContract EqualityTests = new EqualityContract<HostSetup>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = EquivalenceClassCollection<HostSetup>.FromDistinctInstances(
-                new HostSetup { },
-                new HostSetup { ApplicationBaseDirectory = @"C:\AppBase" },
-                new HostSetup { ApplicationBaseDirectory = @"C:\AppBase-2" },
-                new HostSetup { Configuration = { ConfigurationXml = "<config/>" } },
-                new HostSetup { Configuration = { ConfigurationXml = "<config-2/>" } },
-                new HostSetup { ConfigurationFileLocation = ConfigurationFileLocation.AppBase },
-                new HostSetup { ConfigurationFileLocation = ConfigurationFileLocation.None },
-                new HostSetup { ProcessorArchitecture = ProcessorArchitecture.Amd64 },
-                new HostSetup { ProcessorArchitecture = ProcessorArchitecture.IA64 },
-                new HostSetup { ShadowCopy = true },
-                new HostSetup { WorkingDirectory = @"C:\WorkingDir" },
-                new HostSetup { WorkingDirectory = @"C:\WorkingDir-2" })
+            EquivalenceClasses = new EquivalenceClassCollection<HostSetup>
+            {
+                { new HostSetup { }},
+                { new HostSetup { ApplicationBaseDirectory = @"C:\AppBase" }},
+                { new HostSetup { ApplicationBaseDirectory = @"C:\AppBase-2" }},
+                { new HostSetup { Configuration = { ConfigurationXml = "<config/>" }}},
+                { new HostSetup { Configuration = { ConfigurationXml = "<config-2/>" }}},
+                { new HostSetup { ConfigurationFileLocation = ConfigurationFileLocation.AppBase }},
+                { new HostSetup { ConfigurationFileLocation = ConfigurationFileLocation.None }},
+                { new HostSetup { ProcessorArchitecture = ProcessorArchitecture.Amd64 }},
+                { new HostSetup { ProcessorArchitecture = ProcessorArchitecture.IA64 }},
+                { new HostSetup { ShadowCopy = true }},
+                { new HostSetup { WorkingDirectory = @"C:\WorkingDir" }},
+                { new HostSetup { WorkingDirectory = @"C:\WorkingDir-2" }}
+            }
         };
 
         [Test]

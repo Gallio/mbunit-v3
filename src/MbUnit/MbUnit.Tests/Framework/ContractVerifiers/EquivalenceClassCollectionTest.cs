@@ -25,68 +25,27 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     [TestFixture]
     public class EquivalenceClassCollectionTest
     {
-        [Test, ExpectedArgumentNullException]
-        public void ConstructsWithNullInitializer()
+        [Test]
+        public void ConstructsEmpty()
         {
-            new EquivalenceClassCollection<object>(null);
+            var collection = new EquivalenceClassCollection<object>();
+            Assert.IsEmpty(collection.EquivalenceClasses);
         }
 
         [Test]
-        public void ConstructsWithInitializerHavingNullElement()
+        public void ConstructWithListInitializer()
         {
-            EquivalenceClass<object> class1 = new EquivalenceClass<object>(new object());
-            Assert.Throws<ArgumentException>(() => new EquivalenceClassCollection<object>(class1, null));
-        }
+            var collection = new EquivalenceClassCollection<int>
+            {
+                {1, 2, 3},
+                {4, 5, 6, 7},
+                {8, 9}
+            };
 
-        [Test]
-        public void ConstructWithEmptyInitializer()
-        {
-            EquivalenceClassCollection<object> collection = new EquivalenceClassCollection<object>(EmptyArray<EquivalenceClass<object>>.Instance);
-            Assert.AreEqual(0, collection.EquivalenceClasses.Count);
-            Assert.AreEqual(0, collection.Count());
-        }
-
-        [Test]
-        public void ConstructsOk()
-        {
-            EquivalenceClass<object> class1 = new EquivalenceClass<object>(new object());
-            EquivalenceClass<object> class2 = new EquivalenceClass<object>(new object());
-
-            EquivalenceClassCollection<object> collection = new EquivalenceClassCollection<object>(class1, class2);
-            Assert.AreElementsEqual(new[] { class1, class2 }, collection.EquivalenceClasses);
-            Assert.AreElementsEqual(new[] { class1, class2 }, collection.ToArray());
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void ConstructsFromDistinctInstancesWithNullInitializerForValueType()
-        {
-            EquivalenceClassCollection<int>.FromDistinctInstances(null);
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void ConstructsFromDistinctInstancesWithNullInitializerForNullableType()
-        {
-            EquivalenceClassCollection<int?>.FromDistinctInstances(null);
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void ConstructsFromDistinctInstancesWithNullInitializerForReferenceType()
-        {
-            EquivalenceClassCollection<object>.FromDistinctInstances(null);
-        }
-
-        [Test]
-        public void ConstructsFromDistinctInstancesOk()
-        {
-            object instance1 = new object();
-            object instance2 = new object();
-            object instance3 = new object();
-
-            EquivalenceClassCollection<object> collection = EquivalenceClassCollection<object>.FromDistinctInstances(instance1, instance2, instance3);
-            Assert.Over.Pairs(new[] { instance1, instance2, instance3 }, collection.EquivalenceClasses,
-                (instance, @class) => Assert.AreElementsEqual(new[] { instance }, @class.EquivalentInstances));
-            Assert.Over.Pairs(new[] { instance1, instance2, instance3 }, collection.ToArray(),
-                (instance, @class) => Assert.AreElementsEqual(new[] { instance }, @class.EquivalentInstances));
+            Assert.AreEqual(3, collection.Count());
+            Assert.AreElementsEqual(new[] { 1, 2, 3 }, collection.ElementAt(0));
+            Assert.AreElementsEqual(new[] { 4, 5, 6, 7 }, collection.ElementAt(1));
+            Assert.AreElementsEqual(new[] { 8, 9 }, collection.ElementAt(2));
         }
     }
 }

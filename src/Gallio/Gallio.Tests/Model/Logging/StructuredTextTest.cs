@@ -40,11 +40,12 @@ namespace Gallio.Tests.Model.Logging
         [VerifyContract]
         public readonly IContract EqualityTests = new EqualityContract<StructuredText>()
         {
-            EquivalenceClasses = EquivalenceClassCollection<StructuredText>.FromDistinctInstances(
-                new StructuredText("lalalala"),
-                new StructuredText(new BodyTag() { Contents = { new TextTag("blah") }}),
-                new StructuredText(new BodyTag() { Contents = { new TextTag("blah") }},
-                new[] { new TextAttachment("abc", MimeTypes.PlainText, "blah") }))
+            EquivalenceClasses = new EquivalenceClassCollection<StructuredText>
+            {
+                { new StructuredText("lalalala") },
+                { new StructuredText(new BodyTag { Contents = { new TextTag("blah") }}) },
+                { new StructuredText(new BodyTag { Contents = { new TextTag("blah") }}, new[] { new TextAttachment("abc", MimeTypes.PlainText, "blah") }) }
+            }
         };
 
         [Test, ExpectedArgumentNullException]

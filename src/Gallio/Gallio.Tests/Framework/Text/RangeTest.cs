@@ -27,14 +27,16 @@ namespace Gallio.Tests.Framework.Text
     public class RangeTest
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<Range>()
+        public readonly IContract EqualityTests = new EqualityContract<Range>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = EquivalenceClassCollection<Range>.FromDistinctInstances(
-                new Range(0, 0),
-                new Range(1, 1),
-                new Range(0, 1),
-                new Range(1, 0))
+            EquivalenceClasses = new EquivalenceClassCollection<Range>
+            {
+                { new Range(0, 0) },
+                { new Range(1, 1) },
+                { new Range(0, 1) },
+                { new Range(1, 0) }
+            }
         };
 
         [Test]

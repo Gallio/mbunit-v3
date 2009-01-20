@@ -35,10 +35,11 @@ namespace Gallio.Tests.Model.Logging.Tags
             return equivalenceClasses;
         }
 
-        private static EquivalenceClassCollection<EmbedTag> equivalenceClasses = 
-             EquivalenceClassCollection<EmbedTag>.FromDistinctInstances(
-                new EmbedTag("attachment1"),
-                new EmbedTag("attachment2"));
+        private static EquivalenceClassCollection<EmbedTag> equivalenceClasses = new EquivalenceClassCollection<EmbedTag>
+        {
+            { new EmbedTag("attachment1") },
+            { new EmbedTag("attachment2") },
+        };
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsIfAttachmentIsNull()
