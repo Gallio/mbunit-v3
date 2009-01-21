@@ -107,15 +107,17 @@ namespace MbUnit.Framework.ContractVerifiers
     /// public class SampleEquatableTest
     /// {
     ///     [VerifyContract]
-    ///     public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>()
+    ///     public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>
     ///     {
     ///         ImplementsOperatorOverloads = true, // Optional (default is true)
-    ///         EquivalenceClasses = EquivalenceClassCollection<SampleEquatable>.FromDistinctInstances(
-    ///             new SampleEquatable(1),
-    ///             new SampleEquatable(2),
-    ///             new SampleEquatable(3),
-    ///             new SampleEquatable(4),
-    ///             new SampleEquatable(5)),
+    ///         EquivalenceClasses = new EquivalenceClassCollection<SampleEquatable>
+    ///         {
+    ///             { new SampleEquatable(1) },
+    ///             { new SampleEquatable(2) },
+    ///             { new SampleEquatable(3) },
+    ///             { new SampleEquatable(4) },
+    ///             { new SampleEquatable(5) }
+    ///         }
     ///     };
     /// }
     /// ]]></code>
