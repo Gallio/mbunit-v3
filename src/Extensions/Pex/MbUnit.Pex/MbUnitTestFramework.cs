@@ -114,15 +114,15 @@ namespace MbUnit.Pex
             get { return Metadata<TestInconclusiveException>.SerializableName; }
         }
 
-        public override void AddReferences(IManagedProject project)
+        public override IIndexable<ShortAssemblyName> References
         {
-            AddReferenceToAssembly(project, GallioAssembly);
-            AddReferenceToAssembly(project, MbUnitAssembly);
-        }
-
-        private static void AddReferenceToAssembly(IManagedProject project, Assembly assembly)
-        {
-            project.AddReference(assembly.GetName().Name, AssemblyUtils.GetFriendlyAssemblyLocation(assembly), null);
+            get
+            {
+                return Indexable.Array(
+                    ShortAssemblyName.FromAssembly(GallioAssembly),
+                    ShortAssemblyName.FromAssembly(MbUnitAssembly)
+                    );
+            }
         }
 
         public override void MarkTestClass(TypeDefinitionBuilder type)
