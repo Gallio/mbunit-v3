@@ -31,16 +31,25 @@ namespace MbUnit.Framework.ContractVerifiers
     /// the correct implementation of object equality or comparison.
     /// </para>
     /// <para>
-    /// Use the list initializer to create a collection of equivalence classes which contain a variable 
-    /// number of object instances.
+    /// Use the default constructor followed by a list initializer to create a 
+    /// collection of equivalence classes which contains a variable number of object instances.
     /// <example>
     /// <code><![CDATA[
     /// var collection = new EquivalenceClassCollection<Foo>
     /// {
-    ///     { new Foo(7, 2) },
-    ///     { new Foo(25, 2), new Foo(10, 5) },
-    ///     { new Foo(3, 4), new Foo(2, 6), new Foo(1, 12) }
+    ///     { new Foo(1), new Foo("One") },
+    ///     { new Foo(2), new Foo("Two") },
+    ///     { new Foo(3), new Foo("Three") }
     /// };
+    /// ]]></code>
+    /// </example>
+    /// </para>
+    /// <para>
+    /// Use the single-parameter constructor to create a collection of equivalence classes 
+    /// which contains one single object instance each.
+    /// <example>
+    /// <code><![CDATA[
+    /// var collection = new EquivalenceClassCollection<Foo>(new Foo(1), new Foo(2), new Foo(3));
     /// ]]></code>
     /// </example>
     /// </para>
@@ -56,6 +65,41 @@ namespace MbUnit.Framework.ContractVerifiers
         public EquivalenceClassCollection()
         {
             equivalenceClasses = new List<EquivalenceClass<T>>();
+        }
+
+        /// <summary>
+        /// <para>
+        /// Constructs a collection of equivalence classes from the specified distinct object instances.
+        /// </para>
+        /// <para>
+        /// The resulting collection contains as many equivalence class as provided instances. Each equivalence
+        /// class contains one single object. To construct a collection with equivalence classes containing
+        /// several equivalent instances, use preferably the default constructor followed by a list initializer.
+        /// <example>
+        /// <code><![CDATA[
+        /// var collection = new EquivalenceClassCollection<Foo>
+        /// {
+        ///     { new Foo(1), new Foo("One") },
+        ///     { new Foo(2), new Foo("Two") },
+        ///     { new Foo(3), new Foo("Three") }
+        /// };
+        /// ]]></code>
+        /// </example>
+        /// </para>
+        /// </summary>
+        /// <param name="distinctInstances">An enumeration of distinct instances.</param>
+        public EquivalenceClassCollection(IEnumerable<T> distinctInstances)
+            : this()
+        {
+            if (distinctInstances == null)
+            {
+                throw new ArgumentNullException("distinctInstances");
+            }
+
+            foreach (T instance in distinctInstances)
+            {
+                Add(instance);
+            }
         }
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     public class EquivalenceClassCollectionTest
     {
         [Test]
-        public void ConstructsEmpty()
+        public void ConstructEmpty()
         {
             var collection = new EquivalenceClassCollection<object>();
             Assert.IsEmpty(collection.EquivalenceClasses);
@@ -46,6 +46,30 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             Assert.AreElementsEqual(new[] { 1, 2, 3 }, collection.ElementAt(0));
             Assert.AreElementsEqual(new[] { 4, 5, 6, 7 }, collection.ElementAt(1));
             Assert.AreElementsEqual(new[] { 8, 9 }, collection.ElementAt(2));
+        }
+
+        [Test]
+        [ExpectedArgumentNullException]
+        public void ConstructWithNullParameter()
+        {
+            new EquivalenceClassCollection<object>(null);
+        }
+
+        [Test]
+        [ExpectedArgumentException]
+        public void ConstructWithParameterHavingNullInstance()
+        {
+            new EquivalenceClassCollection<object>(new object[] { new object(), new object(), null });
+        }
+
+        [Test]
+        public void ConstructWithParameter()
+        {
+            var collection = new EquivalenceClassCollection<int>(new[] { 1, 2, 3 });
+            Assert.AreEqual(3, collection.Count());
+            Assert.AreElementsEqual(new[] { 1 }, collection.ElementAt(0));
+            Assert.AreElementsEqual(new[] { 2 }, collection.ElementAt(1));
+            Assert.AreElementsEqual(new[] { 3 }, collection.ElementAt(2));
         }
     }
 }
