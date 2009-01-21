@@ -50,14 +50,14 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         internal class FullContractOnComparableSample
         {
             [VerifyContract]
-            public readonly IContract ComparisonTests = new ComparisonContract<SampleComparable>()
+            public readonly IContract ComparisonTests = new ComparisonContract<SampleComparable>
             {
                 ImplementsOperatorOverloads = true,
                 EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>
                 {
-                    { new SampleComparable(123), new SampleComparable(123) },
+                    { new SampleComparable(123), new SampleComparable(123), new SampleComparable(123) },
                     { new SampleComparable(456) },
-                    { new SampleComparable(789) },
+                    { new SampleComparable(789), new SampleComparable(789) },
                 }
             };
         }
@@ -66,14 +66,14 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         private class PartialContractOnComparableSample
         {
             [VerifyContract]
-            public readonly IContract ComparisonTests = new ComparisonContract<SampleComparable>()
+            public readonly IContract ComparisonTests = new ComparisonContract<SampleComparable>
             {
                 ImplementsOperatorOverloads = false,
                 EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>
                 {
-                    { new SampleComparable(123), new SampleComparable(123) },
+                    { new SampleComparable(123), new SampleComparable(123), new SampleComparable(123) },
                     { new SampleComparable(456) },
-                    { new SampleComparable(789) },
+                    { new SampleComparable(789), new SampleComparable(789) },
                 }
             };
         }
