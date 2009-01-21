@@ -64,7 +64,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             }
             else
             {
-                Assert.IsTrue(found, "No test method named '{0}' found.");
+                Assert.IsTrue(found, "No test method named '{0}' found.", testMethodName);
             }
         }
     }

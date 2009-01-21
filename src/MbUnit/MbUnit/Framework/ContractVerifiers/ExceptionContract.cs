@@ -329,7 +329,10 @@ namespace MbUnit.Framework.ContractVerifiers
                             });
                         }
 
-                        AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                        if (ImplementsSerialization)
+                        {
+                            AssertMessageAndInnerExceptionPreservedByRoundTripSerialization(instance);
+                        }
                     });
                 }
             });

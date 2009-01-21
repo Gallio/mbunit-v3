@@ -32,10 +32,10 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     public class ImmutabilityContractTest : AbstractContractTest
     {
         [Test]
-        [Row(typeof(ImmutableSampleTest), "AreReadOnlyFields", TestStatus.Passed)]
-        [Row(typeof(NonReadOnlyMutableSampleTest), "AreReadOnlyFields", TestStatus.Failed)]
-        [Row(typeof(IndirectMutableSampleTest), "AreReadOnlyFields", TestStatus.Failed)]
-        [Row(typeof(AutoImplementedPropertyMutableSampleTest), "AreReadOnlyFields", TestStatus.Failed)]
+        [Row(typeof(ImmutableSampleTest), "AreAllFieldsReadOnly", TestStatus.Passed)]
+        [Row(typeof(NonReadOnlyMutableSampleTest), "AreAllFieldsReadOnly", TestStatus.Failed)]
+        [Row(typeof(IndirectMutableSampleTest), "AreAllFieldsReadOnly", TestStatus.Failed)]
+        [Row(typeof(AutoImplementedPropertyMutableSampleTest), "AreAllFieldsReadOnly", TestStatus.Failed)]
         public void VerifySampleImmutabilityContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("ImmutabilityTests", fixtureType, testMethodName, expectedTestStatus);

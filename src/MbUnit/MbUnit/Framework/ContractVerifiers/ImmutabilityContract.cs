@@ -136,6 +136,8 @@ namespace MbUnit.Framework.ContractVerifiers
                             .AddRawLabeledValue("Field Name", fieldInfo.Name)
                             .ToAssertionFailure();
                     });
+
+                    VerifyMemberTypes(fieldInfo.FieldType, visitedTypes);
                 }
             }
         }
