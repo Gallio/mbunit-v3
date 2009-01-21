@@ -115,15 +115,17 @@ namespace MbUnit.Framework.ContractVerifiers
     /// public class SampleComparableTest
     /// {
     ///     [VerifyContract]
-    ///     public readonly IContract EqualityTests = new ComparisonContract<SampleComparable>()
+    ///     public readonly IContract EqualityTests = new ComparisonContract<SampleComparable>
     ///     {
     ///         ImplementsOperatorOverloads = true, // Optional (default is true)
-    ///         EquivalenceClasses = EquivalenceClassCollection<SampleComparable>.FromDistinctInstances(
-    ///             new SampleComparable(1),
-    ///             new SampleComparable(2),
-    ///             new SampleComparable(3),
-    ///             new SampleComparable(4),
-    ///             new SampleComparable(5)),
+    ///         EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>
+    ///         {
+    ///             { new SampleComparable(1) },
+    ///             { new SampleComparable(2) },
+    ///             { new SampleComparable(3) },
+    ///             { new SampleComparable(4) },
+    ///             { new SampleComparable(5) }
+    ///         }
     ///     };
     /// }
     /// ]]></code>
@@ -232,8 +234,6 @@ namespace MbUnit.Framework.ContractVerifiers
 
                     foreach (EquivalenceClass<TTarget> leftClass in EquivalenceClasses)
                     {
-                        int rightIndex = 0;
-
                         foreach (TTarget leftValue in leftClass)
                         {
                             if (!typeof (TTarget).IsValueType)
@@ -246,6 +246,8 @@ namespace MbUnit.Framework.ContractVerifiers
                                         referenceComparer);
                                 }
                             }
+
+                            int rightIndex = 0;
 
                             foreach (EquivalenceClass<TTarget> rightClass in EquivalenceClasses)
                             {
