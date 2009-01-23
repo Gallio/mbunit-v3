@@ -25,7 +25,7 @@ namespace MbUnit.Samples.ContractVerifiers.Comparison
         public readonly IContract EqualityTests = new ComparisonContract<SampleComparable>
         {
             ImplementsOperatorOverloads = true, // Optional (default is true)
-            EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>
+            EquivalenceClasses =
             {
                 { new SampleComparable(1) },
                 { new SampleComparable(2) },

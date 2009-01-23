@@ -30,7 +30,7 @@ namespace Gallio.Tests.Framework.Text
         public readonly IContract EqualityTests = new EqualityContract<Range>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = new EquivalenceClassCollection<Range>
+            EquivalenceClasses =
             {
                 { new Range(0, 0) },
                 { new Range(1, 1) },

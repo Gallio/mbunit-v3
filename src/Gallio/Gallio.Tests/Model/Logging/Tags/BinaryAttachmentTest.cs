@@ -25,7 +25,7 @@ namespace Gallio.Tests.Model.Logging.Tags
         public readonly IContract EqualityTests = new EqualityContract<BinaryAttachment>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = new EquivalenceClassCollection<BinaryAttachment>
+            EquivalenceClasses =
             {
                 { new BinaryAttachment("abc", MimeTypes.PlainText, new byte[] { 1, 2, 3 }) },
                 { new BinaryAttachment("def", MimeTypes.PlainText, new byte[] { 1, 2, 3 }) },

@@ -29,7 +29,7 @@ namespace Gallio.Tests.Runtime.Hosting
         public readonly IContract EqualityTests = new EqualityContract<HostSetup>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = new EquivalenceClassCollection<HostSetup>
+            EquivalenceClasses =
             {
                 { new HostSetup { }},
                 { new HostSetup { ApplicationBaseDirectory = @"C:\AppBase" }},

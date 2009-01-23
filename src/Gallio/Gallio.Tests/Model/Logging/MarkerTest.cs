@@ -26,7 +26,7 @@ namespace Gallio.Tests.Model.Logging
         [VerifyContract]
         public readonly IContract EqualityTests = new EqualityContract<Marker>
         {
-            EquivalenceClasses = new EquivalenceClassCollection<Marker>
+            EquivalenceClasses =
             {
                 { Marker.AssertionFailure },
                 { Marker.DiffAddition },

@@ -53,7 +53,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             public readonly IContract ComparisonTests = new ComparisonContract<SampleComparable>
             {
                 ImplementsOperatorOverloads = true,
-                EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>
+                EquivalenceClasses =
                 {
                     { new SampleComparable(123), new SampleComparable(123), new SampleComparable(123) },
                     { new SampleComparable(456) },
@@ -69,7 +69,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             public readonly IContract ComparisonTests = new ComparisonContract<SampleComparable>
             {
                 ImplementsOperatorOverloads = false,
-                EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>
+                EquivalenceClasses =
                 {
                     { new SampleComparable(123), new SampleComparable(123), new SampleComparable(123) },
                     { new SampleComparable(456) },

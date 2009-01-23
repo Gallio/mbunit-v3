@@ -26,7 +26,7 @@ namespace Gallio.Tests.Model.Logging.Tags
         public readonly IContract EqualityTests = new EqualityContract<TextAttachment>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = new EquivalenceClassCollection<TextAttachment>
+            EquivalenceClasses =
             {
                 { new TextAttachment("abc", MimeTypes.PlainText, "text") },
                 { new TextAttachment("def", MimeTypes.PlainText, "text") },

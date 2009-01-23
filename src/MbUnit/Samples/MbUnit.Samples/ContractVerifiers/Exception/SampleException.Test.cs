@@ -23,7 +23,7 @@ namespace MbUnit.Samples.ContractVerifiers.Exception
     public class SampleExceptionTest
     {
         [VerifyContract]
-        public readonly IContract ExceptionTests = new ExceptionContract<SampleException>()
+        public readonly IContract ExceptionTests = new ExceptionContract<SampleException>
         {
             ImplementsSerialization = true, // Optional (default is true)
             ImplementsStandardConstructors = true // Optional (default is true)

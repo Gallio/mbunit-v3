@@ -48,10 +48,10 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         private class FullContractOnEquatableSample
         {
             [VerifyContract]
-            public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>()
+            public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>
             {
                 ImplementsOperatorOverloads = true,
-                EquivalenceClasses = new EquivalenceClassCollection<SampleEquatable>
+                EquivalenceClasses =
                 {
                     { new SampleEquatable(123) },
                     { new SampleEquatable(456) },
@@ -64,10 +64,10 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         private class PartialContractOnEquatableSample
         {
             [VerifyContract]
-            public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>()
+            public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>
             {
                 ImplementsOperatorOverloads = false,
-                EquivalenceClasses = new EquivalenceClassCollection<SampleEquatable>
+                EquivalenceClasses =
                 {
                     { new SampleEquatable(123) },
                     { new SampleEquatable(456) },

@@ -27,7 +27,7 @@ namespace Gallio.Tests.Framework.Data
         public readonly IContract EqualityTests = new EqualityContract<DataBinding>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = new EquivalenceClassCollection<DataBinding>
+            EquivalenceClasses =
             {
                 { new DataBinding(null, null) },
                 { new DataBinding(0, null) },

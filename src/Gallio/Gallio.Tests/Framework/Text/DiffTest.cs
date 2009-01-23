@@ -26,7 +26,7 @@ namespace Gallio.Tests.Framework.Text
         [VerifyContract]
         public readonly IContract EqualityTests = new EqualityContract<Diff>
         {
-            EquivalenceClasses = new EquivalenceClassCollection<Diff>
+            EquivalenceClasses =
             {
                 { new Diff(DiffKind.Change, new Range(0, 10), new Range(0, 10)) },
                 { new Diff(DiffKind.NoChange, new Range(0, 10), new Range(0, 10)) },

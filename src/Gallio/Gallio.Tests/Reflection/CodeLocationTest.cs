@@ -29,9 +29,9 @@ namespace Gallio.Tests.Reflection
     public class CodeLocationTest
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<CodeLocation>()
+        public readonly IContract EqualityTests = new EqualityContract<CodeLocation>
         {
-            EquivalenceClasses = new EquivalenceClassCollection<CodeLocation>
+            EquivalenceClasses =
             {
                 { CodeLocation.Unknown, new CodeLocation() },
                 { new CodeLocation("path", 123, 9) },

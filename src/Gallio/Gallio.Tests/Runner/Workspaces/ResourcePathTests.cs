@@ -30,7 +30,7 @@ namespace Gallio.Tests.Runner.Workspaces
         public readonly IContract EqualityTests = new EqualityContract<ResourcePath>
         {
             ImplementsOperatorOverloads = false,
-            EquivalenceClasses = new EquivalenceClassCollection<ResourcePath>
+            EquivalenceClasses =
             {
                 { ResourcePath.Empty },
                 { ResourcePath.Root },

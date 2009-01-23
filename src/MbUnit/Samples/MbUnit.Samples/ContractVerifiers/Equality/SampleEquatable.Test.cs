@@ -22,10 +22,10 @@ namespace MbUnit.Samples.ContractVerifiers.Equality
     public class SampleEquatableTest
     {
         [VerifyContract]
-        public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>()
+        public readonly IContract EqualityTests = new EqualityContract<SampleEquatable>
         {
             ImplementsOperatorOverloads = true, // Optional (default is true)
-            EquivalenceClasses = new EquivalenceClassCollection<SampleEquatable>
+            EquivalenceClasses =
             {
                 { new SampleEquatable(1) },
                 { new SampleEquatable(2) },

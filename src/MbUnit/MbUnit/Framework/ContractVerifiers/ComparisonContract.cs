@@ -118,7 +118,7 @@ namespace MbUnit.Framework.ContractVerifiers
     ///     public readonly IContract EqualityTests = new ComparisonContract<SampleComparable>
     ///     {
     ///         ImplementsOperatorOverloads = true, // Optional (default is true)
-    ///         EquivalenceClasses = new EquivalenceClassCollection<SampleComparable>
+    ///         EquivalenceClasses =
     ///         {
     ///             { new SampleComparable(1) },
     ///             { new SampleComparable(2) },
@@ -142,6 +142,7 @@ namespace MbUnit.Framework.ContractVerifiers
         public ComparisonContract()
         {
             this.ImplementsOperatorOverloads = true;
+            this.EquivalenceClasses = new EquivalenceClassCollection<TTarget>();
         }
 
         /// <summary>
