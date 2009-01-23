@@ -13,6 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 using Gallio.Model.Logging;
 using Gallio.Model.Logging.Tags;
 using MbUnit.Framework;
@@ -46,6 +50,44 @@ namespace Gallio.Tests.Model.Logging.Tags
         public void ConstructorThrowsIfTextIsNull()
         {
             new TextTag(null);
+        }
+
+        [Test]
+        [Row(
+            "",
+            "<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<text xmlns=\"http://www.gallio.org/\" />",
+            Description = "Empty text")]
+        [Row(
+            " ",
+            "<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<text xmlns=\"http://www.gallio.org/\"><![CDATA[ ]]></text>",
+            Description = "Single space")]
+        [Row(
+            "\n",
+            "<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<text xmlns=\"http://www.gallio.org/\"><![CDATA[\n]]></text>",
+            Description = "Single newline")]
+        [Row(
+            "text",
+            "<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<text xmlns=\"http://www.gallio.org/\"><![CDATA[text]]></text>",
+            Description = "Single word")]
+        [Row(
+            "abc ]]> def ]]> ghi",
+            "<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<text xmlns=\"http://www.gallio.org/\"><![CDATA[abc ]]>]]&gt;<![CDATA[ def ]]>]]&gt;<![CDATA[ ghi]]></text>",
+            Description = "Embedded CDATA terminator")]
+        public void RoundTripToXml(string text, string expectedXml)
+        {
+            TextTag originalTag = new TextTag(text);
+
+            XmlSerializer serializer = new XmlSerializer(typeof(TextTag));
+            StringWriter writer = new StringWriter();
+
+            serializer.Serialize(writer, originalTag);
+
+            string xml = writer.ToString();
+            Assert.AreEqual(expectedXml, xml);
+
+            TextTag deserializedTag = (TextTag) serializer.Deserialize(new StringReader(xml));
+
+            Assert.AreEqual(text, deserializedTag.Text);
         }
     }
 }

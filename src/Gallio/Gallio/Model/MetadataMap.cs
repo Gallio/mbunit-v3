@@ -32,6 +32,7 @@ namespace Gallio.Model
     /// </summary>
     [Serializable]
     [XmlRoot("metadata", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlSchemaProvider("ProvideXmlSchema")]
     public sealed class MetadataMap : IMultiMap<string, string>, IXmlSerializable
     {
         private IMultiMap<string, string> contents;
@@ -277,9 +278,62 @@ namespace Gallio.Model
         #endregion
 
         #region Xml Serialization
+        /// <summary>
+        /// Provides the Xml schema for this element.
+        /// </summary>
+        /// <param name="schemas">The schema set</param>
+        /// <returns>The schema type of the element</returns>
+        public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
+        {
+            schemas.Add(new XmlSchema()
+            {
+                TargetNamespace = XmlSerializationUtils.GallioNamespace,
+                Items =
+                {
+                    new XmlSchemaComplexType()
+                    {
+                        Name = "MetadataMap",
+                        Particle = new XmlSchemaSequence()
+                        {
+                            Items = 
+                            {
+                                new XmlSchemaElement()
+                                {
+                                    Name = "entry",
+                                    IsNillable = false,
+                                    MinOccursString = "0",
+                                    MaxOccursString = "unbounded",
+                                    SchemaType = new XmlSchemaComplexType()
+                                    {
+                                        Attributes =
+                                        {
+                                            new XmlSchemaAttribute()
+                                            {
+                                                Name = "key",
+                                                Use = XmlSchemaUse.Required,
+                                                SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema")
+                                            },
+                                            new XmlSchemaAttribute()
+                                            {
+                                                Name = "value",
+                                                Use = XmlSchemaUse.Required,
+                                                SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            return new XmlQualifiedName("MetadataMap", XmlSerializationUtils.GallioNamespace);
+        }
+
         XmlSchema IXmlSerializable.GetSchema()
         {
-            return null;
+            throw new NotSupportedException();
         }
 
         void IXmlSerializable.ReadXml(XmlReader reader)

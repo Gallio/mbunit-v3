@@ -24,30 +24,28 @@ using Gallio.Utilities;
 namespace Gallio.MSTestAdapter.Wrapper
 {
     /// <summary>
-    /// An MSTest command implementation that is designed to allow MSTest tests
-    /// to run in the debugger with no additional process isolation.
+    /// Runs MSTest in-process in separate AppDomain (without process isolation)
+    /// to enable debugging.
     /// </summary>
-    internal class DebugMSTestCommand : BaseMSTestCommand
+    internal sealed class DebugMSTestCommand : MSTestCommand
     {
-        public DebugMSTestCommand(Version frameworkVersion)
-            : base(frameworkVersion)
+        private DebugMSTestCommand()
         {
         }
 
-        /// <inheritdoc />
-        public override int Run(string workingDirectory, MSTestCommandArguments args,
-            TextWriter outputWriter, TextWriter errorWriter)
+        public static readonly DebugMSTestCommand Instance = new DebugMSTestCommand();
+
+        public override int Run(string executablePath, string workingDirectory,
+            MSTestCommandArguments args, TextWriter writer)
         {
-            if (ExecutablePath == null)
-                return -1;
-            string baseDir = Path.GetDirectoryName(ExecutablePath);
+            string baseDir = Path.GetDirectoryName(executablePath);
 
             using (new CurrentDirectorySwitcher(workingDirectory))
             {
                 AppDomain appDomain = null;
                 try
                 {
-                    appDomain = AppDomainUtils.CreateAppDomain("MSTest", baseDir, ExecutablePath + @".config", false);
+                    appDomain = AppDomainUtils.CreateAppDomain("MSTest", baseDir, executablePath + @".config", false);
 
                     var extendedArgs = args.Copy();
                     extendedArgs.NoIsolation = true;
@@ -56,7 +54,7 @@ namespace Gallio.MSTestAdapter.Wrapper
                     Launcher launcher = (Launcher) appDomain.CreateInstanceFromAndUnwrap(
                         AssemblyUtils.GetFriendlyAssemblyLocation(launcherType.Assembly),
                         launcherType.FullName);
-                    return launcher.Run(outputWriter, ExecutablePath, extendedArgs.ToStringArray());
+                    return launcher.Run(writer, executablePath, extendedArgs.ToStringArray());
                 }
                 finally
                 {
@@ -66,7 +64,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             }
         }
 
-        // MSBuild uses Console.OpenStandardOutput() to get a reference to the
+        // MSTest uses Console.OpenStandardOutput() to get a reference to the
         // real standard output stream.  This makes it difficult to redirect output
         // elsewhere during debugging.  Annoyingly it also causes a console
         // window to appear and it may cause other output to become garbled.

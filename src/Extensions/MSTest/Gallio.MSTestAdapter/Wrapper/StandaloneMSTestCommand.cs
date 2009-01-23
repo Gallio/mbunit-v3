@@ -21,24 +21,22 @@ using Gallio.Concurrency;
 namespace Gallio.MSTestAdapter.Wrapper
 {
     /// <summary>
-    /// An MSTest command implementation that runs MSTest as a separate process.
+    /// Runs MSTest as a separate process.
     /// </summary>
-    internal class StandaloneMSTestCommand : BaseMSTestCommand
+    internal sealed class StandaloneMSTestCommand : MSTestCommand
     {
-        public StandaloneMSTestCommand(Version frameworkVersion)
-            : base(frameworkVersion)
+        private StandaloneMSTestCommand()
         {
         }
 
-        public override int Run(string workingDirectory, MSTestCommandArguments args,
-            TextWriter outputWriter, TextWriter errorWriter)
-        {
-            if (ExecutablePath == null)
-                return -1;
+        public static readonly StandaloneMSTestCommand Instance = new StandaloneMSTestCommand();
 
-            ProcessTask task = new ProcessTask(ExecutablePath, args.ToString(), workingDirectory);
-            task.ConsoleOutputDataReceived += MakeRedirector(outputWriter);
-            task.ConsoleErrorDataReceived += MakeRedirector(errorWriter);
+        public override int Run(string executablePath, string workingDirectory,
+            MSTestCommandArguments args, TextWriter writer)
+        {
+            ProcessTask task = new ProcessTask(executablePath, args.ToString(), workingDirectory);
+            task.ConsoleOutputDataReceived += MakeRedirector(writer);
+            task.ConsoleErrorDataReceived += MakeRedirector(writer);
 
             task.Run(null);
 

@@ -53,21 +53,23 @@ namespace Gallio.Tests.Reflection.Impl
         }
 
         [Test]
-        public void GetSourceLocationForMethod_ThrowsIfAssemblyFileDoesNotExist()
+        public void GetSourceLocationForMethod_ReturnsUnknownIfAssemblyFileDoesNotExist()
         {
-            new ComDebugSymbolResolver().GetSourceLocationForMethod("NoSuchAssembly", 0);
+            CodeLocation codeLocation = new ComDebugSymbolResolver().GetSourceLocationForMethod("NoSuchAssembly", 0);
+            Assert.AreEqual(CodeLocation.Unknown, codeLocation);
         }
 
         [Test]
-        public void GetSourceLocationForMethod_ThrowsIfAssemblyExistsButThereIsNoPDB()
+        public void GetSourceLocationForMethod_ReturnsUnknownIfAssemblyExistsButThereIsNoPDB()
         {
-            new ComDebugSymbolResolver().GetSourceLocationForMethod(typeof(ILogger).Assembly.Location, 0);
+            CodeLocation codeLocation = new ComDebugSymbolResolver().GetSourceLocationForMethod(typeof(ILogger).Assembly.Location, 0);
+            Assert.AreEqual(CodeLocation.Unknown, codeLocation);
         }
 
         [Test]
-        public void GetSourceLocationForMethod_ThrowsIfMethodTokenNotValid()
+        public void GetSourceLocationForMethod_ReturnsUnknownIfMethodTokenNotValid()
         {
-            new ComDebugSymbolResolver().GetSourceLocationForMethod(GetType().Assembly.Location, 0);
+            CodeLocation codeLocation = new ComDebugSymbolResolver().GetSourceLocationForMethod(GetType().Assembly.Location, 0);
         }
 
         private CodeLocation GetSourceLocationForMethod(string methodName)

@@ -58,7 +58,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="ISymWrapper" />
     <Reference Include="Mono.Cecil, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Mono.Cecil.dll</HintPath>

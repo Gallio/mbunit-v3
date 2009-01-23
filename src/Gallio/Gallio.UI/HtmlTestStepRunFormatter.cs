@@ -119,14 +119,58 @@ namespace Gallio.UI
             return Path.Combine(FileUtils.EncodeFileName(stepId), FileUtils.EncodeFileName(attachmentName));
         }
 
-        private static string HtmlEncodeWithLineBreaks(string text)
+        public static void WriteHtmlEncoded(TextWriter writer, string text)
         {
-            return HtmlEncode(text).Replace("\r", "").Replace("\n", "<br />");
+            WriteHtmlEncodedImpl(writer, text, false);
         }
 
-        public static string HtmlEncode(string str)
+        public static void WriteHtmlEncodedWithBreaks(TextWriter writer, string text)
         {
-            return str.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
+            WriteHtmlEncodedImpl(writer, text, true);
+        }
+
+        private static void WriteHtmlEncodedImpl(TextWriter writer, string text, bool withBreaks)
+        {
+            foreach (char c in text)
+            {
+                switch (c)
+                {
+                    case '&':
+                        writer.Write("&amp;");
+                        break;
+
+                    case '<':
+                        writer.Write("&lt;");
+                        break;
+
+                    case '>':
+                        writer.Write("&gt;");
+                        break;
+
+                    case '"':
+                        writer.Write("&quot;");
+                        break;
+
+                    case '\r':
+                        break;
+
+                    case '\n':
+                        if (withBreaks)
+                            writer.Write("<br/>");
+                        break;
+
+                    case ' ':
+                        if (withBreaks)
+                            writer.Write("&nbsp;<wbr/>"); // do not allow spaces to be collapsed
+                        else
+                            writer.Write(' ');
+                        break;
+
+                    default:
+                        writer.Write(c);
+                        break;
+                }
+            }
         }
 
         private static void WriteCodeLocationLink(TextWriter writer, CodeLocation location, Action contents)
@@ -134,7 +178,7 @@ namespace Gallio.UI
             if (location.Path != null)
             {
                 writer.Write("<a class=\"crossref\" href=\"gallio:navigateTo?path=");
-                writer.Write(HtmlEncode(location.Path));
+                WriteHtmlEncoded(writer, location.Path);
 
                 if (location.Line != 0)
                 {
@@ -178,7 +222,9 @@ namespace Gallio.UI
 
                 writer.Write("<html xml:lang=\"en\" lang=\"en\" dir=\"ltr\"><head>");
                 writer.Write("<title>Gallio Test Report</title>");
-                writer.Write(String.Format("<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}/Gallio-Report.css\" />", formatter.cssUrl));
+                writer.Write("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+                WriteHtmlEncoded(writer, formatter.cssUrl.ToString());
+                writer.Write("/Gallio-Report.css\" />");
                 writer.Write("</head><body class=\"gallio-report\" style=\"overflow: auto;\">");
 
                 writer.Write("<div id=\"Header\" class=\"header\"><div class=\"header-image\"></div></div>");
@@ -210,7 +256,11 @@ namespace Gallio.UI
             private void RenderNavigator(Statistics statistics, IEnumerable<TestStepRun> rootRuns)
             {
                 writer.Write("<div id=\"Navigator\" class=\"navigator\">");
-                writer.Write(string.Format("<a href=\"#Details\" title=\"{0}\" class=\"navigator-box {1}\"></a>", statistics.FormatTestCaseResultSummary(), StatusFromStatistics(statistics)));
+                writer.Write("<a href=\"#Details\" title=\"");
+                WriteHtmlEncoded(writer, statistics.FormatTestCaseResultSummary());
+                writer.Write("\" class=\"navigator-box ");
+                writer.Write(StatusCssClassFromStatistics(statistics));
+                writer.Write("\"></a>");
                 writer.Write("<div class=\"navigator-stripes\">");
 
                 int count = 0;
@@ -227,15 +277,26 @@ namespace Gallio.UI
                         (!testStepRun.Step.IsTestCase && testStepRun.Children.Count != 0))
                         continue;
 
-                    writer.Write(string.Format("<a href=\"#testStepRun-{0}\" style=\"top: {1}%\"", testStepRun.Step.Id, position));
+                    writer.Write("<a href=\"#testStepRun-");
+                    WriteHtmlEncoded(writer, testStepRun.Step.Id);
+                    writer.Write("\" style=\"top: ");
+                    writer.Write(position.ToString(CultureInfo.InvariantCulture));
+                    writer.Write("%\"");
+
                     string status = Enum.GetName(typeof(TestStatus), testStepRun.Result.Outcome.Status).ToLower();
-                    writer.Write(string.Format(" class=\"status-{0}\" title=\"{1} {0}\"></a>", status, HtmlEncode(testStepRun.Step.Name)));
+                    writer.Write(" class=\"status-");
+                    writer.Write(status);
+                    writer.Write("\" title=\"");
+                    WriteHtmlEncoded(writer, testStepRun.Step.Name);
+                    writer.Write(" ");
+                    writer.Write(status);
+                    writer.Write("\"></a>");
                 }
 
                 writer.Write("</div></div>");
             }
 
-            private static string StatusFromStatistics(Statistics statistics)
+            private static string StatusCssClassFromStatistics(Statistics statistics)
             {
                 if (statistics.FailedCount > 0)
                     return "status-failed";
@@ -251,16 +312,24 @@ namespace Gallio.UI
                 Statistics statistics = new Statistics();
                 AddStatistics(statistics, testStepRun, false);
 
-                writer.Write(string.Format("<li id=\"testStepRun-{0}\">", testStepRun.Step.Id));
-                writer.Write(string.Format("<span class=\"testStepRunHeading testStepRunHeading-Level{0}\">",
-                    nestingLevel));
-                WriteCodeLocationLink(writer, testStepRun.Step.CodeLocation, () => writer.Write(HtmlEncode(testStepRun.Step.Name)));
+                writer.Write("<li id=\"testStepRun-");
+                WriteHtmlEncoded(writer, testStepRun.Step.Id);
+                writer.Write("\">");
+
+                writer.Write("<span class=\"testStepRunHeading testStepRunHeading-Level");
+                writer.Write(nestingLevel.ToString(CultureInfo.InvariantCulture));
+                writer.Write("\">");
+
+                WriteCodeLocationLink(writer, testStepRun.Step.CodeLocation, () => WriteHtmlEncoded(writer, testStepRun.Step.Name));
 
                 RenderOutcomeBar(testStepRun.Result.Outcome, statistics, (testStepRun.Children.Count == 0));
                 writer.Write("</span>");
 
                 // stat panel
-                writer.Write(string.Format("<div id=\"detailPanel-{0}\" class=\"panel\">", testStepRun.Step.Id));
+                writer.Write("<div id=\"detailPanel-");
+                WriteHtmlEncoded(writer, testStepRun.Step.Id);
+                writer.Write("\" class=\"panel\">");
+
                 string testKind = testStepRun.Step.Metadata.GetValue(MetadataKeys.TestKind);
                 if (testKind == TestKinds.Assembly || testKind == TestKinds.Framework)
                 {
@@ -268,9 +337,9 @@ namespace Gallio.UI
                     writer.Write("<td class=\"statistics-label-cell\">Results:</td><td>");
                     writer.Write(FormatStatistics(statistics));
                     writer.Write("</td></tr><tr><td class=\"statistics-label-cell\">Duration:</td><td>");
-                    writer.Write(String.Format("{0:0.000}s", statistics.Duration));
-                    writer.Write(String.Format("</td></tr><tr class=\"alternate-row\"><td class=\"statistics-label-cell\">Assertions:</td><td>{0}",
-                        statistics.AssertCount));
+                    writer.Write(statistics.Duration.ToString("0.000"));
+                    writer.Write("s</td></tr><tr class=\"alternate-row\"><td class=\"statistics-label-cell\">Assertions:</td><td>");
+                    writer.Write(statistics.AssertCount);
                     writer.Write("</td></tr></table>");
                 }
                 else
@@ -309,20 +378,35 @@ namespace Gallio.UI
             {
                 writer.Write("<table class=\"outcome-bar\"><tr><td>");
                 string status = Enum.GetName(typeof(TestStatus), testOutcome.Status).ToLower();
-                writer.Write(string.Format("<div class=\"outcome-bar status-{0}", status));
+                writer.Write("<div class=\"outcome-bar status-");
+                writer.Write(status);
                 if (small)
                     writer.Write(" condensed");
                 string title = testOutcome.Category ?? status;
-                writer.Write(string.Format("\" title=\"{0}\" /></td></tr></table>", HtmlEncode(title)));
+                writer.Write("\" title=\"");
+                WriteHtmlEncoded(writer, title);
+                writer.Write("\" /></td></tr></table>");
 
                 if (small)
                     return;
 
                 writer.Write("<span class=\"outcome-icons\">");
-                writer.Write(string.Format("<img src=\"{0}/Passed.gif\" alt=\"Passed\" />{1}", formatter.imgUrl, statistics.PassedCount));
-                writer.Write(string.Format("<img src=\"{0}/Failed.gif\" alt=\"Failed\" />{1}", formatter.imgUrl, statistics.FailedCount));
-                writer.Write(string.Format("<img src=\"{0}/Ignored.gif\" alt=\"Inconclusive or Skipped\" />{1}", formatter.imgUrl,
-                    (statistics.InconclusiveCount + statistics.SkippedCount)));
+
+                writer.Write("<img src=\"");
+                WriteHtmlEncoded(writer, formatter.imgUrl.ToString());
+                writer.Write("/Passed.gif\" alt=\"Passed\" />");
+                writer.Write(statistics.PassedCount);
+
+                writer.Write("<img src=\"");
+                WriteHtmlEncoded(writer, formatter.imgUrl.ToString());
+                writer.Write("/Failed.gif\" alt=\"Failed\" />");
+                writer.Write(statistics.FailedCount);
+
+                writer.Write("<img src=\"");
+                WriteHtmlEncoded(writer, formatter.imgUrl.ToString());
+                writer.Write("/Ignored.gif\" alt=\"Inconclusive or Skipped\" />");
+                writer.Write(statistics.InconclusiveCount + statistics.SkippedCount);
+
                 writer.Write("</span>");
             }
 
@@ -342,25 +426,34 @@ namespace Gallio.UI
 
             private void RenderMetadataValues(string key, IList<string> values)
             {
-                writer.Write(String.Format("<li>{0}: ", HtmlEncodeWithLineBreaks(key)));
+                writer.Write("<li>");
+                WriteHtmlEncodedWithBreaks(writer, key);
+                writer.Write(": ");
+
                 for (int i = 0; i < values.Count; i++)
                 {
-                    writer.Write(HtmlEncodeWithLineBreaks(values[i]));
+                    WriteHtmlEncodedWithBreaks(writer, values[i]);
+
                     if (i < (values.Count - 1))
-                        writer.Write(",");
+                        writer.Write(", ");
                 }
                 writer.Write("</li>");
             }
 
             private void RenderExecutionLogStreams(TestStepRun testStepRun)
             {
-                writer.Write(String.Format("<div id=\"log-{0}\" class=\"log\">", testStepRun.Step.Id));
+                writer.Write("<div id=\"log-");
+                WriteHtmlEncoded(writer, testStepRun.Step.Id);
+                writer.Write("\" class=\"log\">");
 
                 foreach (StructuredTestLogStream executionLogStream in testStepRun.TestLog.Streams)
                 {
-                    writer.Write(String.Format("<div class=\"logStream logStream-{0}\">", HtmlEncode(executionLogStream.Name)));
-                    writer.Write(String.Format("<span class=\"logStreamHeading\"><xsl:value-of select=\"{0}\" /></span>",
-                        HtmlEncode(executionLogStream.Name)));
+                    writer.Write("<div class=\"logStream logStream-");
+                    WriteHtmlEncoded(writer, executionLogStream.Name);
+                    writer.Write("\">");
+                    writer.Write("<span class=\"logStreamHeading\"><xsl:value-of select=\"");
+                    WriteHtmlEncoded(writer, executionLogStream.Name);
+                    writer.Write("\" /></span>");
                     writer.Write("<div class=\"logStreamBody\">");
 
                     executionLogStream.Body.Accept(new RenderTagVisitor(formatter, writer, testStepRun));
@@ -381,7 +474,11 @@ namespace Gallio.UI
                 {
                     AttachmentData attachmentData = testStepRun.TestLog.Attachments[i];
                     string src = formatter.GetAttachmentFileInfo(testStepRun.Step.Id, attachmentData.Name).FullName;
-                    writer.Write(String.Format("<a href=\"{0}\">{1}</a>", HtmlEncode(src), HtmlEncode(attachmentData.Name)));
+                    writer.Write("<a href=\"");
+                    WriteHtmlEncoded(writer, src);
+                    writer.Write("\">");
+                    WriteHtmlEncoded(writer, attachmentData.Name);
+                    writer.Write("</a>");
                     if (i < (testStepRun.TestLog.Attachments.Count - 1))
                         writer.Write(", ");
                 }
@@ -443,7 +540,9 @@ namespace Gallio.UI
 
             public void VisitSectionTag(SectionTag tag)
             {
-                writer.Write(String.Format("<div class=\"logStreamSection\"><span class=\"logStreamSectionHeading\">{0}</span><div>", HtmlEncode(tag.Name)));
+                writer.Write("<div class=\"logStreamSection\"><span class=\"logStreamSectionHeading\">");
+                WriteHtmlEncoded(writer, tag.Name);
+                writer.Write("</span><div>");
 
                 tag.AcceptContents(this);
 
@@ -453,7 +552,7 @@ namespace Gallio.UI
             public void VisitMarkerTag(MarkerTag tag)
             {
                 writer.Write("<span class=\"logStreamMarker-");
-                writer.Write(HtmlEncode(tag.Class));
+                WriteHtmlEncoded(writer, tag.Class);
                 writer.Write("\">");
 
                 switch (tag.Class)
@@ -498,7 +597,7 @@ namespace Gallio.UI
                 if (url != null)
                 {
                     writer.Write("<a class=\"crossref\" href=\"");
-                    writer.Write(HtmlEncode(url));
+                    WriteHtmlEncoded(writer, url);
                     writer.Write("\">");
                     tag.AcceptContents(this);
                     writer.Write("</a>");
@@ -519,17 +618,25 @@ namespace Gallio.UI
 
                 if (attachment.ContentType.StartsWith("image/"))
                 {
-                    writer.Write(String.Format("<div class=\"logAttachmentEmbedding\"><img src=\"{0}\" alt=\"Attachment: {1}\" /></div>", HtmlEncode(src), HtmlEncode(attachment.Name)));
+                    writer.Write("<div class=\"logAttachmentEmbedding\"><img src=\"");
+                    WriteHtmlEncoded(writer, src);
+                    writer.Write("\" alt=\"Attachment: ");
+                    WriteHtmlEncoded(writer, attachment.Name);
+                    writer.Write("\" /></div>");
                 }
                 else
                 {
-                    writer.Write(String.Format("Attachment: <a href=\"{0}\">{1}</a>", HtmlEncode(src), HtmlEncode(attachment.Name)));
+                    writer.Write("Attachment: <a href=\"");
+                    WriteHtmlEncoded(writer, src);
+                    writer.Write("\">");
+                    WriteHtmlEncoded(writer, attachment.Name);
+                    writer.Write("</a>");
                 }
             }
 
             public void VisitTextTag(TextTag tag)
             {
-                writer.Write(HtmlEncodeWithLineBreaks(tag.Text));
+                WriteHtmlEncodedWithBreaks(writer, tag.Text);
             }
         }
     }

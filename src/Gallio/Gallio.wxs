@@ -61,6 +61,7 @@
                 <File Name="Gallio.plugin" />
                 <File Name="Gallio.pdb" />
 		<File Name="Gallio.xml" />
+		<File Name="Gallio-Report.xsd" />
 <?ifdef NO_ILMERGE ?>
                 <File Name="Castle.Core.dll" />
 		<File Name="Castle.MicroKernel.dll" />

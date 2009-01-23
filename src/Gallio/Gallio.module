@@ -85,7 +85,7 @@
   </ItemGroup>
 
   <Target Name="AfterImage"
-          DependsOnTargets="GallioImage_ILMerge;GallioImage_NoILMerge" />
+          DependsOnTargets="GallioImage_ILMerge;GallioImage_NoILMerge;GallioImage_XSD" />
 
   <Target Name="GallioImage_ILMerge"
           Condition="'$(NoILMerge)'!='true'">
@@ -99,5 +99,15 @@
           Condition="'$(NoILMerge)'=='true'">
     <Copy SourceFiles="Gallio\bin\Gallio.dll;Gallio\bin\Gallio.pdb;@(GallioMergeDependency)"
           DestinationFolder="$(ImageDir)\bin" />
+  </Target>
+
+  <Target Name="GallioImage_XSD">
+    <GetFrameworkSdkPath>
+      <Output TaskParameter="Path" PropertyName="SdkPath" />
+    </GetFrameworkSdkPath>
+
+    <Exec Command="&quot;$(SdkPath)&quot;\bin\xsd.exe &quot;$(ImageDir)\bin\Gallio.dll&quot; /o:&quot;$(TempDir)&quot; /nologo /type:Gallio.Runner.Reports.Report" />
+    <Copy SourceFiles="$(TempDir)\schema0.xsd"
+          DestinationFiles="$(ImageDir)\bin\Gallio-Report.xsd" />
   </Target>
 </Project>

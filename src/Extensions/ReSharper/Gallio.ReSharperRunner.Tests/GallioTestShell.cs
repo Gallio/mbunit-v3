@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.IO;
 using System.Reflection;
 using Gallio.Reflection;
@@ -30,9 +31,6 @@ using JetBrains.Shell.Test;
 using JetBrains.Application;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Test;
-#if RESHARPER_40 || RESHARPER_41
-using Resources;
-#endif
 #endif
 
 namespace Gallio.ReSharperRunner.Tests
@@ -61,6 +59,14 @@ namespace Gallio.ReSharperRunner.Tests
 #if ! RESHARPER_31 && ! RESHARPER_40
         public override void InitializeComponents()
         {
+            // In ReSharper v4.5, the test assembly resolver expects to find
+            // "Platform\test\data" and "Platform\test\assemblies" folders within bin.
+#if ! RESHARPER_41
+            string binDir = new Uri(typeof(TestAssemblyReferenceResolver).Assembly.CodeBase).LocalPath;
+            Directory.CreateDirectory(Path.Combine(binDir, @"..\Platform\test\data"));
+            Directory.CreateDirectory(Path.Combine(binDir, @"..\Platform\test\assemblies"));
+#endif
+
             // As of ReSharper v4.1, the way the images are loaded has changed somewhat.
             // Instead of always loading from JetBrains.ReSharper.Resources, the images are resolved
             // from the "ConfigurationAssembly", which is the one that contains "AllAssemblies.xml".

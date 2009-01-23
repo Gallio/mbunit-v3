@@ -35,6 +35,13 @@ namespace Gallio.Runner.Reports
         private TestPackageRun testPackageRun;
 
         /// <summary>
+        /// Creates an empty report.
+        /// </summary>
+        public Report()
+        {
+        }
+
+        /// <summary>
         /// Gets or sets the test package configuration, or null if none.
         /// </summary>
         [XmlElement("testPackageConfig", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]

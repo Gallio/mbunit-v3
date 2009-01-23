@@ -51,7 +51,6 @@
     <Compile Include="Integration\RunSimpleTest.cs" />
     <Compile Include="Model\MSTestExplorerTest.cs" />
     <Compile Include="Model\MSTestFrameworkTest.cs" />
-    <Compile Include="Model\StubbedMSTestController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

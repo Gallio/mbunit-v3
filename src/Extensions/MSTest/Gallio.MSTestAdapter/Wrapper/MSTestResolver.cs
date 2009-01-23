@@ -26,21 +26,9 @@ namespace Gallio.MSTestAdapter.Wrapper
     internal static class MSTestResolver
     {
         /// <summary>
-        /// Finds the path of the version of MSTest asociated with a given framework version.
-        /// </summary>
-        /// <param name="frameworkVersion">The version number of the Microsoft.VisualStudio.QualityTools.UnitTestFramework assembly</param>
-        /// <returns>The full path of hte MSTest.exe program, or null if not found</returns>
-        public static string FindMSTestPathForFrameworkVersion(Version frameworkVersion)
-        {
-            return FindMSTestPathForVisualStudioVersion(String.Format(CultureInfo.InvariantCulture,
-                "{0}.{1}", frameworkVersion.Major, frameworkVersion.Minor));
-        }
-
-        /// <summary>
         /// Finds the path of a particular version of MSTest.
         /// </summary>
-        /// <param name="visualStudioVersion">The visual studio version
-        /// (eg. "8.0" or "9.0")</param>
+        /// <param name="visualStudioVersion">The visual studio version (eg. "8.0" or "9.0")</param>
         /// <returns>The full path of the MSTest.exe program, or null if not found</returns>
         public static string FindMSTestPathForVisualStudioVersion(string visualStudioVersion)
         {

@@ -31,6 +31,7 @@ namespace Gallio.Reflection
     /// </remarks>
     [Serializable]
     [XmlRoot("codeLocation", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlSchemaProvider("ProvideXmlSchema")]
     public struct CodeLocation : IEquatable<CodeLocation>, IXmlSerializable, ISerializable
     {
         private string path;
@@ -160,9 +161,52 @@ namespace Gallio.Reflection
         // Note: We implement our own Xml serialization so that the code location object can still appear to be immutable.
         // since we don't need any property setters unlike if we were using [XmlAttribute] attributes.
 
+        /// <summary>
+        /// Provides the Xml schema for this element.
+        /// </summary>
+        /// <param name="schemas">The schema set</param>
+        /// <returns>The schema type of the element</returns>
+        public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
+        {
+            schemas.Add(new XmlSchema()
+            {
+                TargetNamespace = XmlSerializationUtils.GallioNamespace,
+                Items =
+                {
+                    new XmlSchemaComplexType()
+                    {
+                        Name = "CodeLocation",
+                        Attributes =
+                        {
+                            new XmlSchemaAttribute()
+                            {
+                                Name = "path",
+                                Use = XmlSchemaUse.Optional,
+                                SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema")
+                            },
+                            new XmlSchemaAttribute()
+                            {
+                                Name = "line",
+                                Use = XmlSchemaUse.Optional,
+                                SchemaTypeName = new XmlQualifiedName("int", "http://www.w3.org/2001/XMLSchema")
+                            },
+                            new XmlSchemaAttribute()
+                            {
+                                Name = "column",
+                                Use = XmlSchemaUse.Optional,
+                                SchemaTypeName = new XmlQualifiedName("int", "http://www.w3.org/2001/XMLSchema")
+                            }
+                        }
+                    }
+                }
+            });
+
+            return new XmlQualifiedName("CodeLocation", XmlSerializationUtils.GallioNamespace);
+        }
+
         XmlSchema IXmlSerializable.GetSchema()
         {
-            return null;
+            throw new NotSupportedException();
         }
 
         void IXmlSerializable.ReadXml(XmlReader reader)

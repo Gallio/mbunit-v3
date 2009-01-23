@@ -35,6 +35,7 @@ namespace Gallio.Model
     /// </summary>
     [Serializable]
     [XmlRoot("outcome", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlSchemaProvider("ProvideXmlSchema")]
     public struct TestOutcome : IXmlSerializable, IEquatable<TestOutcome>
     {
         private TestStatus status;
@@ -292,9 +293,47 @@ namespace Gallio.Model
         #region Xml Serialization
         /* Note: We implement out own Xml serialization so that the outcome object can still appear to be immutable.
                  since we don't need any property setters unlike if we were using [XmlAttribute] attributes. */
+
+        /// <summary>
+        /// Provides the Xml schema for this element.
+        /// </summary>
+        /// <param name="schemas">The schema set</param>
+        /// <returns>The schema type of the element</returns>
+        public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
+        {
+            schemas.Add(new XmlSchema()
+            {
+                TargetNamespace = XmlSerializationUtils.GallioNamespace,
+                Items =
+                {
+                    new XmlSchemaComplexType()
+                    {
+                        Name = "TestOutcome",
+                        Attributes =
+                        {
+                            new XmlSchemaAttribute()
+                            {
+                                Name = "status",
+                                Use = XmlSchemaUse.Required,
+                                SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema")
+                            },
+                            new XmlSchemaAttribute()
+                            {
+                                Name = "value",
+                                Use = XmlSchemaUse.Optional,
+                                SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema")
+                            }
+                        }
+                    }
+                }
+            });
+
+            return new XmlQualifiedName("TestOutcome", XmlSerializationUtils.GallioNamespace);
+        }
+
         XmlSchema IXmlSerializable.GetSchema()
         {
-            return null;
+            throw new NotSupportedException();
         }
 
         void IXmlSerializable.ReadXml(XmlReader reader)

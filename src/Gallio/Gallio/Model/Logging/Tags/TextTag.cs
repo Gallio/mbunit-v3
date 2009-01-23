@@ -26,6 +26,7 @@ namespace Gallio.Model.Logging.Tags
     /// </summary>
     [Serializable]
     [XmlRoot("text", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlSchemaProvider("ProvideXmlSchema")]
     public sealed class TextTag : Tag, IXmlSerializable, ICloneable<TextTag>, IEquatable<TextTag>
     {
         private string text;
@@ -107,9 +108,19 @@ namespace Gallio.Model.Logging.Tags
         }
 
         #region Xml Serialization
+        /// <summary>
+        /// Provides the Xml schema for this element.
+        /// </summary>
+        /// <param name="schemas">The schema set</param>
+        /// <returns>The schema type of the element</returns>
+        public static XmlQualifiedName ProvideXmlSchema(XmlSchemaSet schemas)
+        {
+            return new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema");
+        }
+
         XmlSchema IXmlSerializable.GetSchema()
         {
-            return null;
+            throw new NotSupportedException();
         }
 
         void IXmlSerializable.ReadXml(XmlReader reader)
@@ -128,13 +139,19 @@ namespace Gallio.Model.Logging.Tags
             }
         }
 
+        private static readonly string[] CDataSplits = new[] { "]]>" };
         void IXmlSerializable.WriteXml(XmlWriter writer)
         {
-            // encode text with linefeeds so that they do not get lost during Xml whitespace stripping
-            if (text.Contains("\n"))
-                writer.WriteCData(text);
-            else
-                writer.WriteValue(text);
+            // encode text in CDATA to preserve significant whitespace including linefeeds
+            string[] splits = text.Split(CDataSplits, StringSplitOptions.None);
+            for (int i = 0; i < splits.Length; i++)
+            {
+                if (splits[i].Length != 0)
+                    writer.WriteCData(splits[i]);
+
+                if (i != splits.Length - 1)
+                    writer.WriteString(CDataSplits[0]);
+            }
         }
         #endregion
     }
