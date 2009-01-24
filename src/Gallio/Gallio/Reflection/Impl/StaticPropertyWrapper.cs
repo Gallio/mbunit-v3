@@ -29,6 +29,9 @@ namespace Gallio.Reflection.Impl
     {
         private readonly Memoizer<PropertyAttributes> propertyAttributesMemoizer = new Memoizer<PropertyAttributes>();
         private readonly Memoizer<IList<StaticParameterWrapper>> indexParametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
+        private readonly Memoizer<StaticMethodWrapper> getMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private readonly Memoizer<StaticMethodWrapper> setMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private readonly Memoizer<ITypeInfo> valueTypeMemoizer = new Memoizer<ITypeInfo>();
 
         /// <summary>
         /// Creates a wrapper.
@@ -78,7 +81,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public StaticMethodWrapper GetMethod
         {
-            get { return Policy.GetPropertyGetMethod(this); }
+            get { return getMethodMemoizer.Memoize(() => Policy.GetPropertyGetMethod(this)); }
         }
         IMethodInfo IPropertyInfo.GetMethod
         {
@@ -88,7 +91,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public StaticMethodWrapper SetMethod
         {
-            get { return Policy.GetPropertySetMethod(this); }
+            get { return setMethodMemoizer.Memoize(() => Policy.GetPropertySetMethod(this)); }
         }
         IMethodInfo IPropertyInfo.SetMethod
         {
@@ -140,7 +143,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public ITypeInfo ValueType
         {
-            get { return Substitution.Apply(Policy.GetPropertyType(this)); }
+            get { return valueTypeMemoizer.Memoize(() => Substitution.Apply(Policy.GetPropertyType(this))); }
         }
 
         /// <inheritdoc />

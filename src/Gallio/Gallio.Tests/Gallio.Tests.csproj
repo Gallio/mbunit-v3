@@ -264,6 +264,8 @@
     <Compile Include="Utilities\CurrentDirectorySwitcherTest.cs" />
     <Compile Include="Utilities\ExceptionUtilsTest.cs" />
     <Compile Include="Runtime\CorrelatedExceptionEventArgsTest.cs" />
+    <Compile Include="Utilities\KeyedMemoizerTest.cs" />
+    <Compile Include="Utilities\MemoizerTest.cs" />
     <Compile Include="Utilities\MimeTypesTest.cs" />
     <Compile Include="Framework\Text\RangeTest.cs" />
     <Compile Include="Utilities\StringUtilsTest.cs" />

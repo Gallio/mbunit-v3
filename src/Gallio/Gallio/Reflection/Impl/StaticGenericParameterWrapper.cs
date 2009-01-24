@@ -28,6 +28,7 @@ namespace Gallio.Reflection.Impl
     {
         private readonly Memoizer<GenericParameterAttributes> genericParameterAttributesMemoizer = new Memoizer<GenericParameterAttributes>();
         private readonly Memoizer<IList<ITypeInfo>> constraintsMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private readonly Memoizer<int> positionMemoizer = new Memoizer<int>();
 
         private readonly StaticMethodWrapper declaringMethod;
 
@@ -186,7 +187,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public int Position
         {
-            get { return Policy.GetGenericParameterPosition(this); }
+            get { return positionMemoizer.Memoize(() => Policy.GetGenericParameterPosition(this)); }
         }
 
         /// <inheritdoc />

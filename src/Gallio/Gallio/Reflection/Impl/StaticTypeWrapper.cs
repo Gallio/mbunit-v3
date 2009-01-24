@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Collections;
+using Gallio.Utilities;
 
 namespace Gallio.Reflection.Impl
 {
@@ -25,6 +26,8 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public abstract class StaticTypeWrapper : StaticMemberWrapper, IResolvableTypeInfo
     {
+        private readonly KeyedMemoizer<bool, Type> resolveMemoizer = new KeyedMemoizer<bool, Type>();
+
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
@@ -390,7 +393,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public Type Resolve(bool throwOnError)
         {
-            return Resolve(null, throwOnError);
+            return resolveMemoizer.Memoize(throwOnError, () => Resolve(null, throwOnError));
         }
 
         /// <inheritdoc />

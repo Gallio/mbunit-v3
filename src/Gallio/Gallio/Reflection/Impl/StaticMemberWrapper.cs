@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Reflection.Impl
 {
@@ -25,6 +26,8 @@ namespace Gallio.Reflection.Impl
     public abstract class StaticMemberWrapper : StaticCodeElementWrapper, IMemberInfo
     {
         private readonly StaticDeclaredTypeWrapper declaringType;
+        private readonly Memoizer<string> nameMemoizer = new Memoizer<string>();
+        private readonly Memoizer<CodeLocation> codeLocationMemoizer = new Memoizer<CodeLocation>();
 
         /// <summary>
         /// Creates a wrapper.
@@ -60,7 +63,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override string Name
         {
-            get { return Policy.GetMemberName(this); }
+            get { return nameMemoizer.Memoize(() => Policy.GetMemberName(this)); }
         }
 
         /// <summary>
@@ -90,15 +93,19 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override CodeLocation GetCodeLocation()
         {
-            CodeLocation location = Policy.GetMemberSourceLocation(this);
-            if (location == CodeLocation.Unknown && declaringType != null)
+            return codeLocationMemoizer.Memoize(() =>
             {
-                location = DeclaringType.GetCodeLocation();
-                if (location != CodeLocation.Unknown)
-                    location = new CodeLocation(location.Path, 0, 0);
-            }
+                CodeLocation
+                    location = Policy.GetMemberSourceLocation(this);
+                if (location == CodeLocation.Unknown && declaringType != null)
+                {
+                    location = DeclaringType.GetCodeLocation();
+                    if (location != CodeLocation.Unknown)
+                        location = new CodeLocation(location.Path, 0, 0);
+                }
 
-            return location;
+                return location;
+            });
         }
 
         /// <inheritdoc />

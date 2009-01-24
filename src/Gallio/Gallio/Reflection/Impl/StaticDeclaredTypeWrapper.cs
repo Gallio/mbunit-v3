@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -29,11 +30,16 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticDeclaredTypeWrapper : StaticTypeWrapper
     {
+        private readonly Memoizer<StaticAssemblyWrapper> assemblyMemoizer = new Memoizer<StaticAssemblyWrapper>();
         private readonly Memoizer<TypeAttributes> typeAttriutesMemoizer = new Memoizer<TypeAttributes>();
         private readonly Memoizer<IList<ITypeInfo>> genericArgumentsMemoizer = new Memoizer<IList<ITypeInfo>>();
         private readonly Memoizer<IList<StaticGenericParameterWrapper>> genericParametersMemoizer = new Memoizer<IList<StaticGenericParameterWrapper>>();
         private readonly Memoizer<string> fullNameMemoizer = new Memoizer<string>();
+        private readonly Memoizer<string> namespaceNameMemoizer = new Memoizer<string>();
         private readonly Memoizer<string> signatureMemoizer = new Memoizer<string>();
+        private readonly Memoizer<StaticDeclaredTypeWrapper> baseTypeMemoizer = new Memoizer<StaticDeclaredTypeWrapper>();
+        private readonly Memoizer<IList<ITypeInfo>> interfacesMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private readonly Memoizer<StaticDeclaredTypeWrapper> genericTypeDefinitionMemoizer = new Memoizer<StaticDeclaredTypeWrapper>();
 
         private readonly StaticTypeSubstitution substitution;
 
@@ -77,13 +83,13 @@ namespace Gallio.Reflection.Impl
         }
         private StaticAssemblyWrapper AssemblyInternal
         {
-            get { return Policy.GetTypeAssembly(this); }
+            get { return assemblyMemoizer.Memoize(() => Policy.GetTypeAssembly(this)); }
         }
 
         /// <inheritdoc />
         public override string NamespaceName
         {
-            get { return Policy.GetTypeNamespace(this); }
+            get { return namespaceNameMemoizer.Memoize(() => Policy.GetTypeNamespace(this)); }
         }
 
         /// <summary>
@@ -93,8 +99,11 @@ namespace Gallio.Reflection.Impl
         {
             get
             {
-                StaticDeclaredTypeWrapper baseType = Policy.GetTypeBaseType(this);
-                return baseType != null ? baseType.ComposeSubstitution(Substitution) : null;
+                return baseTypeMemoizer.Memoize(() =>
+                {
+                    StaticDeclaredTypeWrapper baseType = Policy.GetTypeBaseType(this);
+                    return baseType != null ? baseType.ComposeSubstitution(Substitution) : null;
+                });
             }
         }
 
@@ -109,26 +118,29 @@ namespace Gallio.Reflection.Impl
         {
             get
             {
-                List<StaticDeclaredTypeWrapper> result = new List<StaticDeclaredTypeWrapper>();
-                Queue<StaticDeclaredTypeWrapper> queue = new Queue<StaticDeclaredTypeWrapper>();
-                queue.Enqueue(this);
-
-                foreach (StaticDeclaredTypeWrapper type in GetAllBaseTypes())
-                    queue.Enqueue(type);
-
-                while (queue.Count != 0)
+                return interfacesMemoizer.Memoize(() =>
                 {
-                    foreach (StaticDeclaredTypeWrapper @interface in Policy.GetTypeInterfaces(queue.Dequeue()))
+                    List<StaticDeclaredTypeWrapper> result = new List<StaticDeclaredTypeWrapper>();
+                    Queue<StaticDeclaredTypeWrapper> queue = new Queue<StaticDeclaredTypeWrapper>();
+                    queue.Enqueue(this);
+
+                    foreach (StaticDeclaredTypeWrapper type in GetAllBaseTypes())
+                        queue.Enqueue(type);
+
+                    while (queue.Count != 0)
                     {
-                        if (!result.Contains(@interface))
+                        foreach (StaticDeclaredTypeWrapper @interface in Policy.GetTypeInterfaces(queue.Dequeue()))
                         {
-                            queue.Enqueue(@interface);
-                            result.Add(@interface);
+                            if (!result.Contains(@interface))
+                            {
+                                queue.Enqueue(@interface);
+                                result.Add(@interface);
+                            }
                         }
                     }
-                }
 
-                return Substitution.ApplyAll(result);
+                    return new ReadOnlyCollection<ITypeInfo>(Substitution.ApplyAll(result));
+                });
             }
         }
 
@@ -177,14 +189,17 @@ namespace Gallio.Reflection.Impl
         {
             get
             {
-                if (!IsGenericType)
-                    return null;
+                return genericTypeDefinitionMemoizer.Memoize(() =>
+                {
+                    if (!IsGenericType)
+                        return null;
 
-                if (IsGenericTypeDefinition)
-                    return this;
+                    if (IsGenericTypeDefinition)
+                        return this;
 
-                return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType,
-                    DeclaringType != null ? DeclaringType.Substitution : StaticTypeSubstitution.Empty);
+                    return new StaticDeclaredTypeWrapper(Policy, Handle, DeclaringType,
+                        DeclaringType != null ? DeclaringType.Substitution : StaticTypeSubstitution.Empty);
+                });
             }
         }
 

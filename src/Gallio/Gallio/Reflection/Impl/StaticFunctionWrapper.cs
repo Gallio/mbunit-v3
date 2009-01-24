@@ -29,6 +29,7 @@ namespace Gallio.Reflection.Impl
     {
         private readonly Memoizer<MethodAttributes> methodAttributesMemoizer = new Memoizer<MethodAttributes>();
         private readonly Memoizer<IList<StaticParameterWrapper>> parametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
+        private readonly Memoizer<CallingConventions> callingConventionMemoizer = new Memoizer<CallingConventions>();
 
         /// <summary>
         /// Creates a wrapper.
@@ -60,7 +61,8 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public CallingConventions CallingConvention
         {
-            get { return Policy.GetFunctionCallingConvention(this); }
+            get { return callingConventionMemoizer.Memoize(
+                () => Policy.GetFunctionCallingConvention(this)); }
         }
 
         /// <inheritdoc />

@@ -538,11 +538,12 @@
     <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
     <Compile Include="Model\Logging\TestLogWriter.cs" />
     <Compile Include="Triple.cs" />
+    <Compile Include="Utilities\Memoizer.cs" />
     <Compile Include="Utilities\CurrentDirectorySwitcher.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
     <Compile Include="Collections\LazyCache.cs" />
     <Compile Include="Model\Diagnostics\ExceptionData.cs" />
-    <Compile Include="Utilities\Memoizer.cs" />
+    <Compile Include="Utilities\KeyedMemoizer.cs" />
     <Compile Include="Runtime\UnhandledExceptionPolicy.cs" />
     <Compile Include="Reflection\Impl\DebugSymbolUtils.cs" />
     <Compile Include="Reflection\Impl\ComDebugSymbolResolver.cs" />

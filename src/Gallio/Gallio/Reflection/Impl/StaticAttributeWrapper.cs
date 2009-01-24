@@ -26,7 +26,11 @@ namespace Gallio.Reflection.Impl
     public sealed class StaticAttributeWrapper : StaticWrapper, IAttributeInfo
     {
         private readonly Memoizer<IConstructorInfo> constructorMemoizer = new Memoizer<IConstructorInfo>();
-        private readonly Memoizer<object> resolveMemoizer = new Memoizer<object>();
+        private readonly KeyedMemoizer<bool, object> resolveMemoizer = new KeyedMemoizer<bool, object>();
+        private readonly Memoizer<IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>>> fieldArgumentsMemoizer
+            = new Memoizer<IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>>>();
+        private readonly Memoizer<IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>>> propertyArgumentsMemoizer
+            = new Memoizer<IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>>>();
 
         /// <summary>
         /// Creates a wrapper.
@@ -50,10 +54,7 @@ namespace Gallio.Reflection.Impl
         {
             get
             {
-                return constructorMemoizer.Memoize(delegate
-                {
-                    return Policy.GetAttributeConstructor(this);
-                });
+                return constructorMemoizer.Memoize(() => Policy.GetAttributeConstructor(this));
             }
         }
 
@@ -63,7 +64,7 @@ namespace Gallio.Reflection.Impl
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            foreach (KeyValuePair<StaticFieldWrapper, ConstantValue> entry in Policy.GetAttributeFieldArguments(this))
+            foreach (KeyValuePair<StaticFieldWrapper, ConstantValue> entry in FieldArguments)
                 if (entry.Key.Name == name)
                     return entry.Value;
 
@@ -80,7 +81,7 @@ namespace Gallio.Reflection.Impl
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            foreach (KeyValuePair<StaticPropertyWrapper, ConstantValue> entry in Policy.GetAttributePropertyArguments(this))
+            foreach (KeyValuePair<StaticPropertyWrapper, ConstantValue> entry in PropertyArguments)
                 if (entry.Key.Name == name)
                     return entry.Value;
 
@@ -102,7 +103,7 @@ namespace Gallio.Reflection.Impl
         {
             get
             {
-                foreach (KeyValuePair<StaticFieldWrapper, ConstantValue> entry in Policy.GetAttributeFieldArguments(this))
+                foreach (KeyValuePair<StaticFieldWrapper, ConstantValue> entry in FieldArguments)
                     yield return new KeyValuePair<IFieldInfo, ConstantValue>(entry.Key, entry.Value);
             }
         }
@@ -112,18 +113,34 @@ namespace Gallio.Reflection.Impl
         {
             get
             {
-                foreach (KeyValuePair<StaticPropertyWrapper, ConstantValue> entry in Policy.GetAttributePropertyArguments(this))
+                foreach (KeyValuePair<StaticPropertyWrapper, ConstantValue> entry in PropertyArguments)
                     yield return new KeyValuePair<IPropertyInfo, ConstantValue>(entry.Key, entry.Value);
+            }
+        }
+
+        private IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>> FieldArguments
+        {
+            get
+            {
+                return fieldArgumentsMemoizer.Memoize(() =>
+                    new List<KeyValuePair<StaticFieldWrapper, ConstantValue>>(Policy.GetAttributeFieldArguments(this)));
+            }
+        }
+
+        private IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>> PropertyArguments
+        {
+            get
+            {
+                return propertyArgumentsMemoizer.Memoize(() =>
+                    new List<KeyValuePair<StaticPropertyWrapper, ConstantValue>>(Policy.GetAttributePropertyArguments(this)));
             }
         }
 
         /// <inheritdoc />
         public object Resolve(bool throwOnError)
         {
-            return resolveMemoizer.Memoize(delegate
-            {
-                return ReflectorAttributeUtils.CreateAttribute(this, throwOnError);
-            });
+            return resolveMemoizer.Memoize(throwOnError, () =>
+                ReflectorAttributeUtils.CreateAttribute(this, throwOnError));
         }
 
         /// <inheritdoc />

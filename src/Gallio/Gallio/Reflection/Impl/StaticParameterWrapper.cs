@@ -28,6 +28,9 @@ namespace Gallio.Reflection.Impl
     public sealed class StaticParameterWrapper : StaticCodeElementWrapper, IParameterInfo
     {
         private readonly Memoizer<ParameterAttributes> parameterAttributesMemoizer = new Memoizer<ParameterAttributes>();
+        private readonly Memoizer<string> nameMemoizer = new Memoizer<string>();
+        private readonly Memoizer<int> positionMemoizer = new Memoizer<int>();
+
         private readonly StaticMemberWrapper member;
 
         /// <summary>
@@ -68,7 +71,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public override string Name
         {
-            get { return Policy.GetParameterName(this); }
+            get { return nameMemoizer.Memoize(() => Policy.GetParameterName(this)); }
         }
 
         /// <inheritdoc />
@@ -126,7 +129,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public int Position
         {
-            get { return Policy.GetParameterPosition(this); }
+            get { return positionMemoizer.Memoize(() => Policy.GetParameterPosition(this)); }
         }
 
         /// <inheritdoc />

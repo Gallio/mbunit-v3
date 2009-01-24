@@ -28,6 +28,11 @@ namespace Gallio.Reflection.Impl
     public sealed class StaticEventWrapper : StaticReflectedMemberWrapper, IEventInfo
     {
         private readonly Memoizer<EventAttributes> eventAttributesMemoizer = new Memoizer<EventAttributes>();
+        private readonly Memoizer<StaticMethodWrapper> raiseMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private readonly Memoizer<StaticMethodWrapper> addMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private readonly Memoizer<StaticMethodWrapper> removeMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private readonly Memoizer<ITypeInfo> eventHandlerTypeMemoizer = new Memoizer<ITypeInfo>();
+        private readonly KeyedMemoizer<bool, EventInfo> resolveMemoizer = new KeyedMemoizer<bool, EventInfo>();
 
         /// <summary>
         /// Creates a wrapper.
@@ -65,7 +70,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public StaticMethodWrapper AddMethod
         {
-            get { return Policy.GetEventAddMethod(this); }
+            get { return addMethodMemoizer.Memoize(() => Policy.GetEventAddMethod(this)); }
         }
         IMethodInfo IEventInfo.AddMethod
         {
@@ -75,7 +80,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public StaticMethodWrapper RaiseMethod
         {
-            get { return Policy.GetEventRaiseMethod(this); }
+            get { return raiseMethodMemoizer.Memoize(() => Policy.GetEventRaiseMethod(this)); }
         }
         IMethodInfo IEventInfo.RaiseMethod
         {
@@ -85,7 +90,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public StaticMethodWrapper RemoveMethod
         {
-            get { return Policy.GetEventRemoveMethod(this); }
+            get { return removeMethodMemoizer.Memoize(() => Policy.GetEventRemoveMethod(this)); }
         }
         IMethodInfo IEventInfo.RemoveMethod
         {
@@ -95,7 +100,8 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public ITypeInfo EventHandlerType
         {
-            get { return Substitution.Apply(Policy.GetEventHandlerType(this)); }
+            get { return eventHandlerTypeMemoizer.Memoize(() =>
+                Substitution.Apply(Policy.GetEventHandlerType(this))); }
         }
 
         /// <summary>
@@ -154,7 +160,8 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public EventInfo Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveEvent(this, throwOnError);
+            return resolveMemoizer.Memoize(throwOnError,
+                () => ReflectorResolveUtils.ResolveEvent(this, throwOnError));
         }
 
         /// <inheritdoc />

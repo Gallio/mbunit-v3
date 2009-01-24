@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Utilities;
 
 namespace Gallio.Reflection.Impl
 {
@@ -41,6 +42,8 @@ namespace Gallio.Reflection.Impl
     /// </remarks>
     public abstract class StaticReflectionPolicy : BaseReflectionPolicy
     {
+        private KeyedMemoizer<ITypeInfo, AttributeUsageAttribute> attributeUsageMemoizer = new KeyedMemoizer<ITypeInfo, AttributeUsageAttribute>();
+
         #region Wrapper Comparisons
         /// <summary>
         /// Determines if two wrappers represent the same object.
@@ -454,6 +457,45 @@ namespace Gallio.Reflection.Impl
         /// <param name="genericParameter">The generic parameter, not null</param>
         /// <returns>The generic parameter constraints</returns>
         protected internal abstract IList<StaticTypeWrapper> GetGenericParameterConstraints(StaticGenericParameterWrapper genericParameter);
+        #endregion
+
+        #region Internal Helpers
+        internal AttributeUsageAttribute GetAttributeUsage(ITypeInfo attributeType)
+        {
+            return attributeUsageMemoizer.Memoize(attributeType, () =>
+            {
+                AttributeUsageAttribute attributeUsage;
+
+                if (attributeType.FullName == @"System.AttributeUsageAttribute")
+                {
+                    // Note: Avoid indefinite recursion when determining whether AttributeUsageAttribute itself is inheritable.
+                    attributeUsage = new AttributeUsageAttribute(AttributeTargets.Class);
+                    attributeUsage.Inherited = true;
+                }
+                else
+                {
+                    try
+                    {
+                        attributeUsage = AttributeUtils.GetAttribute<AttributeUsageAttribute>(attributeType, true);
+                    }
+                    catch (TargetParameterCountException)
+                    {
+                        // This is a hack to work around the fact that ReSharper does not correctly handle
+                        // attribute parameters with enum values.  In particular, this affects the first
+                        // parameter of AttributeUsageAttribute. -- Jeff.
+                        attributeUsage = null;
+                    }
+
+                    if (attributeUsage == null)
+                    {
+                        attributeUsage = new AttributeUsageAttribute(AttributeTargets.All);
+                        attributeUsage.Inherited = true;
+                    }
+                }
+
+                return attributeUsage;
+            });
+        }
         #endregion
     }
 }

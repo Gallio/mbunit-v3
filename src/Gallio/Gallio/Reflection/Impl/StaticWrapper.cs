@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Utilities;
 
 namespace Gallio.Reflection.Impl
 {
@@ -29,6 +30,8 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public abstract class StaticWrapper : IEquatable<StaticWrapper>
     {
+        private readonly Memoizer<int> hashCodeMemoizer = new Memoizer<int>();
+
         private readonly StaticReflectionPolicy policy;
         private readonly object handle;
 
@@ -92,7 +95,7 @@ namespace Gallio.Reflection.Impl
         /// <inhertdoc />
         public override int GetHashCode()
         {
-            return policy.GetHashCode(this);
+            return hashCodeMemoizer.Memoize(() => policy.GetHashCode(this));
         }
     }
 }

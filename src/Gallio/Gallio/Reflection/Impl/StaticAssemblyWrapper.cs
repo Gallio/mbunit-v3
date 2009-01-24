@@ -15,8 +15,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using Gallio.Collections;
+using Gallio.Utilities;
 
 namespace Gallio.Reflection.Impl
 {
@@ -25,6 +27,14 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticAssemblyWrapper : StaticCodeElementWrapper, IAssemblyInfo
     {
+        private readonly Memoizer<AssemblyName> assemblyNameMemoizer = new Memoizer<AssemblyName>();
+        private readonly Memoizer<string> assemblyPathMemoizer = new Memoizer<string>();
+        private readonly Memoizer<IList<AssemblyName>> referencedAssembliesMemoizer = new Memoizer<IList<AssemblyName>>();
+        private readonly Memoizer<IList<ITypeInfo>> exportedTypesMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private readonly Memoizer<IList<ITypeInfo>> typesMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private readonly KeyedMemoizer<string, ITypeInfo> getTypeMemoizer = new KeyedMemoizer<string, ITypeInfo>();
+        private readonly KeyedMemoizer<bool, Assembly> resolveMemoizer = new KeyedMemoizer<bool, Assembly>();
+
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
@@ -57,7 +67,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public string Path
         {
-            get { return Policy.GetAssemblyPath(this); }
+            get { return assemblyPathMemoizer.Memoize(() => Policy.GetAssemblyPath(this)); }
         }
 
         /// <inheritdoc />
@@ -75,25 +85,28 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public AssemblyName GetName()
         {
-            return Policy.GetAssemblyName(this);
+            return assemblyNameMemoizer.Memoize(() => Policy.GetAssemblyName(this));
         }
 
         /// <inheritdoc />
         public IList<AssemblyName> GetReferencedAssemblies()
         {
-            return Policy.GetAssemblyReferences(this);
+            return referencedAssembliesMemoizer.Memoize(() =>
+                new ReadOnlyCollection<AssemblyName>(Policy.GetAssemblyReferences(this)));
         }
 
         /// <inheritdoc />
         public IList<ITypeInfo> GetExportedTypes()
         {
-            return new CovariantList<StaticDeclaredTypeWrapper, ITypeInfo>(Policy.GetAssemblyExportedTypes(this));
+            return exportedTypesMemoizer.Memoize(() =>
+                new CovariantList<StaticDeclaredTypeWrapper, ITypeInfo>(Policy.GetAssemblyExportedTypes(this)));
         }
 
         /// <inheritdoc />
         public IList<ITypeInfo> GetTypes()
         {
-            return new CovariantList<StaticDeclaredTypeWrapper, ITypeInfo>(Policy.GetAssemblyTypes(this));
+            return typesMemoizer.Memoize(() =>
+                new CovariantList<StaticDeclaredTypeWrapper, ITypeInfo>(Policy.GetAssemblyTypes(this)));
         }
 
         /// <inheritdoc />
@@ -102,13 +115,15 @@ namespace Gallio.Reflection.Impl
             if (typeName == null)
                 throw new ArgumentNullException("typeName");
 
-            return Policy.GetAssemblyType(this, typeName);
+            return getTypeMemoizer.Memoize(typeName, () =>
+                Policy.GetAssemblyType(this, typeName));
         }
 
         /// <inheritdoc />
         public Assembly Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveAssembly(this, true, throwOnError);
+            return resolveMemoizer.Memoize(throwOnError, () =>
+                ReflectorResolveUtils.ResolveAssembly(this, true, throwOnError));
         }
 
         /// <inheritdoc />

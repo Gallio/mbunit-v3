@@ -29,6 +29,8 @@ namespace Gallio.Reflection.Impl
         private readonly Memoizer<IList<ITypeInfo>> genericArgumentsMemoizer = new Memoizer<IList<ITypeInfo>>();
         private readonly Memoizer<IList<StaticGenericParameterWrapper>> genericParametersMemoizer = new Memoizer<IList<StaticGenericParameterWrapper>>();
         private readonly Memoizer<IParameterInfo> returnParameterMemoizer = new Memoizer<IParameterInfo>();
+        private readonly Memoizer<StaticMethodWrapper> genericMethodDefinitionMemoizer = new Memoizer<StaticMethodWrapper>();
+        private readonly Memoizer<MethodInfo> resolveMemoizer = new Memoizer<MethodInfo>();
 
         private readonly StaticTypeSubstitution substitution;
 
@@ -107,13 +109,17 @@ namespace Gallio.Reflection.Impl
         {
             get
             {
-                if (!IsGenericMethod)
-                    return null;
+                return genericMethodDefinitionMemoizer.Memoize(() =>
+                {
+                    if (!IsGenericMethod)
+                        return null;
 
-                if (IsGenericMethodDefinition)
-                    return this;
+                    if (IsGenericMethodDefinition)
+                        return this;
 
-                return new StaticMethodWrapper(Policy, Handle, DeclaringType, ReflectedType, DeclaringType.Substitution);
+                    return new StaticMethodWrapper(Policy, Handle, DeclaringType, ReflectedType,
+                        DeclaringType.Substitution);
+                });
             }
         }
         IMethodInfo IMethodInfo.GenericMethodDefinition
@@ -251,7 +257,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public MethodInfo Resolve(bool throwOnError)
         {
-            return ReflectorResolveUtils.ResolveMethod(this, throwOnError);
+            return resolveMemoizer.Memoize(() => ReflectorResolveUtils.ResolveMethod(this, throwOnError));
         }
 
         /// <inheritdoc />

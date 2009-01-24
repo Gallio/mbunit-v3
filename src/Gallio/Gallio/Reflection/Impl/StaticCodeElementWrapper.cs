@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Gallio.Collections;
+using Gallio.Utilities;
 
 namespace Gallio.Reflection.Impl
 {
@@ -26,6 +27,8 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public abstract class StaticCodeElementWrapper : StaticWrapper, ICodeElementInfo
     {
+        private readonly Memoizer<IEnumerable<IAttributeInfo>> allCustomAttributesMemoizer = new Memoizer<IEnumerable<IAttributeInfo>>();
+
         /// <summary>
         /// Creates a wrapper.
         /// </summary>
@@ -83,7 +86,7 @@ namespace Gallio.Reflection.Impl
 
                         if (attributeUsage == null)
                         {
-                            attributeUsage = GetAttributeUsage(inheritedAttributeType);
+                            attributeUsage = Policy.GetAttributeUsage(inheritedAttributeType);
                             attributeUsages[inheritedAttributeType] = attributeUsage;
                         }
 
@@ -249,44 +252,18 @@ namespace Gallio.Reflection.Impl
 
         private IEnumerable<IAttributeInfo> GetAllCustomAttributes()
         {
-            foreach (StaticAttributeWrapper attrib in GetCustomAttributes())
-                yield return attrib;
-            foreach (Attribute attrib in GetPseudoCustomAttributes())
-                yield return Reflector.Wrap(attrib);
-        }
-
-        private static AttributeUsageAttribute GetAttributeUsage(ITypeInfo attributeType)
-        {
-            AttributeUsageAttribute attributeUsage;
-
-            if (attributeType.FullName == @"System.AttributeUsageAttribute")
+            return allCustomAttributesMemoizer.Memoize(() =>
             {
-                // Note: Avoid indefinite recursion when determining whether AttributeUsageAttribute itself is inheritable.
-                attributeUsage = new AttributeUsageAttribute(AttributeTargets.Class);
-                attributeUsage.Inherited = true;
-            }
-            else
-            {
-                try
-                {
-                    attributeUsage = AttributeUtils.GetAttribute<AttributeUsageAttribute>(attributeType, true);
-                }
-                catch (TargetParameterCountException)
-                {
-                    // This is a hack to work around the fact that ReSharper does not correctly handle
-                    // attribute parameters with enum values.  In particular, this affects the first
-                    // parameter of AttributeUsageAttribute. -- Jeff.
-                    attributeUsage = null;
-                }
+                List<IAttributeInfo> attributes = new List<IAttributeInfo>();
 
-                if (attributeUsage == null)
-                {
-                    attributeUsage = new AttributeUsageAttribute(AttributeTargets.All);
-                    attributeUsage.Inherited = true;
-                }
-            }
+                foreach (StaticAttributeWrapper attributeWrapper in GetCustomAttributes())
+                    attributes.Add(attributeWrapper);
 
-            return attributeUsage;
+                foreach (Attribute attribute in GetPseudoCustomAttributes())
+                    attributes.Add(Reflector.Wrap(attribute));
+
+                return attributes;
+            });
         }
     }
 }

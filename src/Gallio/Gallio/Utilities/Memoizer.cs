@@ -20,6 +20,9 @@ namespace Gallio.Utilities
     /// <summary>
     /// A structure that memoizes the result of some computation for later reuse.
     /// </summary>
+    /// <remarks>
+    /// Not thread safe.
+    /// </remarks>
     /// <typeparam name="T">The value type</typeparam>
     public struct Memoizer<T>
     {
