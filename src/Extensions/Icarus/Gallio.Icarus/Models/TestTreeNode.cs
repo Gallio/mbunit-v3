@@ -16,9 +16,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Aga.Controls.Tree;
-
 using Gallio.Model;
 using Gallio.Runner.Reports;
 
@@ -154,7 +152,7 @@ namespace Gallio.Icarus.Models
                 case "FilterFailed":
                     nodeTypeIcon = Properties.Resources.FilterFailed;
                     break;
-                case "FilterSkipped":
+                case "FilterInconclusive":
                     nodeTypeIcon = Properties.Resources.FilterSkipped;
                     break;
                 // TODO: Icons for metadata etc...

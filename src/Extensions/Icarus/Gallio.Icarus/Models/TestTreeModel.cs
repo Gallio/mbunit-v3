@@ -33,7 +33,7 @@ namespace Gallio.Icarus.Models
     public class TestTreeModel : TreeModelBase, ITestTreeModel, INotifyPropertyChanged
     {
         private readonly TreeModel inner;
-        private bool filterPassed, filterFailed, filterSkipped;
+        private bool filterPassed, filterFailed, filterInconclusive;
         private readonly TestTreeSorter testTreeSorter;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -66,12 +66,12 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public bool FilterSkipped
+        public bool FilterInconclusive
         {
-            get { return filterSkipped; }
+            get { return filterInconclusive; }
             set
             {
-                filterSkipped = value;
+                filterInconclusive = value;
                 if (value)
                     FilterTree();
                 else
@@ -232,7 +232,7 @@ namespace Gallio.Icarus.Models
 
         private bool Filter(Node n)
         {
-            if (n is TestTreeNode && (filterPassed || filterFailed || filterSkipped))
+            if (n is TestTreeNode && (filterPassed || filterFailed || filterInconclusive))
             {
                 TestTreeNode node = (TestTreeNode)n;
                 
@@ -248,10 +248,10 @@ namespace Gallio.Icarus.Models
                                 return false;
                             }
                             break;
-                        case TestStatus.Skipped:
-                            if (filterSkipped)
+                        case TestStatus.Inconclusive:
+                            if (filterInconclusive)
                             {
-                                FilterNode(node, "Skipped", TestStatus.Skipped, "FilterSkipped");
+                                FilterNode(node, "Inconclusive", TestStatus.Inconclusive, "FilterInconclusive");
                                 return false;
                             }
                             break;
@@ -352,7 +352,8 @@ namespace Gallio.Icarus.Models
             return node.IsLeaf;
         }
 
-        public void BuildTestTree(TestModelData testModelData, string treeViewCategory, IProgressMonitor progressMonitor)
+        public void BuildTestTree(TestModelData testModelData, string treeViewCategory, 
+            IProgressMonitor progressMonitor)
         {
             Nodes.Clear();
 

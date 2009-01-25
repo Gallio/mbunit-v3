@@ -14,8 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Mediator.Interfaces;
@@ -24,11 +22,10 @@ using Gallio.Model;
 
 namespace Gallio.Icarus
 {
-    public partial class TestExplorer : DockWindow, IMessageFilter
+    public partial class TestExplorer : DockWindow
     {
         private readonly IMediator mediator;
         private readonly bool updateFlag;
-        private const int WM_DROPFILES = 563;
 
         public TestExplorer(IMediator mediator)
         {
@@ -67,9 +64,9 @@ namespace Gallio.Icarus
                 false, DataSourceUpdateMode.OnPropertyChanged);
             filterFailedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterFailed", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
-            filterSkippedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterSkipped", 
+            filterInconclusiveTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterInconclusive", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
-            filterSkippedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterSkipped", 
+            filterInconclusiveTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterInconclusive", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
 
             sortAscToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.SortAsc", 
@@ -181,26 +178,17 @@ namespace Gallio.Icarus
             testTree.CollapseNodes(mediator.ProjectController.CollapsedNodes);
         }
 
-        [DllImport("shell32.dll")]
-        private static extern int DragQueryFile(IntPtr hdrop, int ifile, StringBuilder fname, int fnsize);
-        [DllImport("shell32.dll")]
-        private static extern void DragFinish(IntPtr hdrop);
-
-        public bool PreFilterMessage(ref Message m)
+        private void testTree_DragDrop(object sender, DragEventArgs e)
         {
-            if (m.Msg == WM_DROPFILES)
-            {
-                int nFiles = DragQueryFile(m.WParam, -1, null, 0);
-                for (int i = 0; i < nFiles; ++i)
-                {
-                    StringBuilder sb = new StringBuilder(256);
-                    DragQueryFile(m.WParam, i, sb, 256);
-                    mediator.AddAssemblies(new[] { sb.ToString() });
-                }
-                DragFinish(m.WParam);
-                return true;
-            }
-            return false;
+            // only handle FileDrop data
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                return;
+             
+            // Assign the file names to a string array, in 
+            // case the user has selected multiple files.
+            string[] files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+            
+            mediator.AddAssemblies(files);
         }
     }
 }

@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using Aga.Controls.Tree;
-using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
@@ -28,7 +27,7 @@ namespace Gallio.Icarus.Models.Interfaces
     {
         bool FilterPassed { get; set; }
         bool FilterFailed { get; set; }
-        bool FilterSkipped { get; set; }
+        bool FilterInconclusive { get; set; }
         int TestCount { get; }
         TestTreeNode Root { get; }
         bool SortAsc { get; set; }

@@ -106,7 +106,7 @@ namespace Gallio.Icarus.Properties {
         
         internal static System.Drawing.Bitmap FilterSkipped {
             get {
-                object obj = ResourceManager.GetObject("FilterSkipped", resourceCulture);
+                object obj = ResourceManager.GetObject("FilterInconclusive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

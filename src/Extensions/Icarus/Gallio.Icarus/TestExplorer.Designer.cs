@@ -59,7 +59,7 @@ namespace Gallio.Icarus
             this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.filterPassedTestsToolStripMenuItem = new Gallio.Icarus.Controls.ToolStripMenuItem();
             this.filterFailedTestsToolStripMenuItem = new Gallio.Icarus.Controls.ToolStripMenuItem();
-            this.filterSkippedTestsToolStripMenuItem = new Gallio.Icarus.Controls.ToolStripMenuItem();
+            this.filterInconclusiveTestsToolStripMenuItem = new Gallio.Icarus.Controls.ToolStripMenuItem();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.resetTestsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -73,7 +73,7 @@ namespace Gallio.Icarus
             this.treeViewComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.filterPassedTestsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.filterFailedTestsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
-            this.filterSkippedTestsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
+            this.filterInconclusiveTestsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.sortAscToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.sortDescToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.testTreeMenuStrip.SuspendLayout();
@@ -101,6 +101,7 @@ namespace Gallio.Icarus
             this.testTree.Size = new System.Drawing.Size(281, 248);
             this.testTree.TabIndex = 5;
             this.testTree.SelectionChanged += new System.EventHandler(this.testTree_SelectionChanged);
+            this.testTree.DragDrop += new System.Windows.Forms.DragEventHandler(this.testTree_DragDrop);
             // 
             // testTreeMenuStrip
             // 
@@ -176,7 +177,7 @@ namespace Gallio.Icarus
             this.filterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.filterPassedTestsToolStripMenuItem,
             this.filterFailedTestsToolStripMenuItem,
-            this.filterSkippedTestsToolStripMenuItem});
+            this.filterInconclusiveTestsToolStripMenuItem});
             this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
             this.filterToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.filterToolStripMenuItem.Text = "Filter";
@@ -197,13 +198,13 @@ namespace Gallio.Icarus
             this.filterFailedTestsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.filterFailedTestsToolStripMenuItem.Text = "Failed";
             // 
-            // filterSkippedTestsToolStripMenuItem
+            // filterInconclusiveTestsToolStripMenuItem
             // 
-            this.filterSkippedTestsToolStripMenuItem.CheckOnClick = true;
-            this.filterSkippedTestsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("filterSkippedTestsToolStripMenuItem.Image")));
-            this.filterSkippedTestsToolStripMenuItem.Name = "filterSkippedTestsToolStripMenuItem";
-            this.filterSkippedTestsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-            this.filterSkippedTestsToolStripMenuItem.Text = "Skipped";
+            this.filterInconclusiveTestsToolStripMenuItem.CheckOnClick = true;
+            this.filterInconclusiveTestsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("filterInconclusiveTests.Image")));
+            this.filterInconclusiveTestsToolStripMenuItem.Name = "filterInconclusiveTestsToolStripMenuItem";
+            this.filterInconclusiveTestsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.filterInconclusiveTestsToolStripMenuItem.Text = "Inconclusive";
             // 
             // toolStripSeparator9
             // 
@@ -264,9 +265,11 @@ namespace Gallio.Icarus
             // 
             // toolStripContainer1
             // 
+            this.toolStripContainer1.AllowDrop = true;
             // 
             // toolStripContainer1.ContentPanel
             // 
+            this.toolStripContainer1.ContentPanel.AllowDrop = true;
             this.toolStripContainer1.ContentPanel.Controls.Add(this.testTree);
             this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(281, 248);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -287,7 +290,7 @@ namespace Gallio.Icarus
             this.treeViewComboBox,
             this.filterPassedTestsToolStripButton,
             this.filterFailedTestsToolStripButton,
-            this.filterSkippedTestsToolStripButton,
+            this.filterInconclusiveTestsToolStripButton,
             this.sortAscToolStripButton,
             this.sortDescToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
@@ -322,15 +325,15 @@ namespace Gallio.Icarus
             this.filterFailedTestsToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.filterFailedTestsToolStripButton.Text = "Filter failed tests";
             // 
-            // filterSkippedTestsToolStripButton
+            // filterInconclusiveTestsToolStripButton
             // 
-            this.filterSkippedTestsToolStripButton.CheckOnClick = true;
-            this.filterSkippedTestsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.filterSkippedTestsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("filterSkippedTestsToolStripButton.Image")));
-            this.filterSkippedTestsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.filterSkippedTestsToolStripButton.Name = "filterSkippedTestsToolStripButton";
-            this.filterSkippedTestsToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.filterSkippedTestsToolStripButton.Text = "Filter inconclusive tests";
+            this.filterInconclusiveTestsToolStripButton.CheckOnClick = true;
+            this.filterInconclusiveTestsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.filterInconclusiveTestsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("filterInconclusiveTests.Image")));
+            this.filterInconclusiveTestsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.filterInconclusiveTestsToolStripButton.Name = "filterInconclusiveTestsToolStripButton";
+            this.filterInconclusiveTestsToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.filterInconclusiveTestsToolStripButton.Text = "Filter inconclusive tests";
             // 
             // sortAscToolStripButton
             // 
@@ -382,7 +385,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripComboBox treeViewComboBox;
         private ToolStripButton filterPassedTestsToolStripButton;
-        private ToolStripButton filterSkippedTestsToolStripButton;
+        private ToolStripButton filterInconclusiveTestsToolStripButton;
         private ToolStripButton filterFailedTestsToolStripButton;
         private System.Windows.Forms.ContextMenuStrip testTreeMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem expandAllMenuItem;
@@ -400,7 +403,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem viewSourceCodeToolStripMenuItem;
         private ToolStripMenuItem filterPassedTestsToolStripMenuItem;
         private ToolStripMenuItem filterFailedTestsToolStripMenuItem;
-        private ToolStripMenuItem filterSkippedTestsToolStripMenuItem;
+        private ToolStripMenuItem filterInconclusiveTestsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem assembliesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addAssembliesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem;
