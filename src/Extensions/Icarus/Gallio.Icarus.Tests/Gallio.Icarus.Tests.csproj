@@ -84,6 +84,7 @@
     <Compile Include="FiltersWindowTest.cs" />
     <Compile Include="MockTest.cs" />
     <Compile Include="Models\ProjectTreeModelTest.cs" />
+    <Compile Include="Models\TestTreeModelTest.cs" />
     <Compile Include="ProjectExplorerTest.cs" />
     <Compile Include="PropertiesWindowTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
