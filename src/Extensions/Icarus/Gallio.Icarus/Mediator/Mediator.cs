@@ -292,8 +292,7 @@ namespace Gallio.Icarus.Mediator
 
         public void ViewSourceCode(string testId)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
-                TestController.ViewSourceCode(testId, progressMonitor)));
+            TestController.ViewSourceCode(testId, NullProgressMonitor.CreateInstance());
         }
 
         public void Cancel()
