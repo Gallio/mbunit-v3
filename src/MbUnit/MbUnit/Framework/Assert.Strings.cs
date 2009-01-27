@@ -719,7 +719,7 @@ namespace MbUnit.Framework
                 if (actualValue != null && actualValue.EndsWith(expectedText))
                     return null;
 
-                return new AssertionFailureBuilder("Expected string to start with the specified text.")
+                return new AssertionFailureBuilder("Expected string to end with the specified text.")
                     .SetMessage(messageFormat, messageArgs)
                     .AddRawActualValue(actualValue)
                     .AddRawLabeledValue("Expected Text", expectedText)

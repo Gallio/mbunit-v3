@@ -315,7 +315,7 @@ namespace MbUnit.Tests.Framework
         {
             AssertionFailure[] failures = AssertTest.Capture(() => Assert.EndsWith("mbTest", "jb"));
             Assert.AreEqual(1, failures.Length);
-            Assert.AreEqual("Expected string to start with the specified text.", failures[0].Description);
+            Assert.AreEqual("Expected string to end with the specified text.", failures[0].Description);
             Assert.AreEqual("Actual Value", failures[0].LabeledValues[0].Label);
             Assert.AreEqual("\"mbTest\"", failures[0].LabeledValues[0].FormattedValue.ToString());
             Assert.AreEqual("Expected Text", failures[0].LabeledValues[1].Label);
