@@ -27,7 +27,7 @@ namespace Gallio.Framework.Pattern
         /// <summary>
         /// Valid attribute targets for tests.
         /// </summary>
-        public const AttributeTargets Test = TestAssembly | TestType | TestMethod;
+        public const AttributeTargets Test = TestAssembly | TestType | TestMethod | TestContract;
 
         /// <summary>
         /// Valid attribute targets for test assemblies.
@@ -69,5 +69,10 @@ namespace Gallio.Framework.Pattern
         /// Valid attribute targets for contribution methods.
         /// </summary>
         public const AttributeTargets ContributionMethod = AttributeTargets.Method;
+
+        /// <summary>
+        /// Valid attribute targets for test contracts.
+        /// </summary>
+        public const AttributeTargets TestContract = AttributeTargets.Field;
     }
 }
