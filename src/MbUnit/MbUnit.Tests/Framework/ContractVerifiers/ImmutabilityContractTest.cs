@@ -82,13 +82,16 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             private readonly string text;
             private readonly ImmutableSubSample foo;
             private readonly SampleEnumeration digit;
+            private readonly Func<int> function;
 
-            public ImmutableSample(int number, string text, ImmutableSubSample foo, SampleEnumeration digit)
+            public ImmutableSample(int number, string text, ImmutableSubSample foo, 
+                SampleEnumeration digit, Func<int> function)
             {
                 this.number = number;
                 this.text = text;
                 this.foo = foo;
                 this.digit = digit;
+                this.function = function;
             }
         }
 

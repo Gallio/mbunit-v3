@@ -119,7 +119,9 @@ namespace MbUnit.Framework.ContractVerifiers
 
         private static void VerifyMemberTypes(Type type, ICollection<Type> visitedTypes)
         {
-            if (!visitedTypes.Contains(type) && !type.IsEnum)
+            if (!visitedTypes.Contains(type) && 
+                !type.IsEnum && 
+                !typeof(Delegate).IsAssignableFrom(type))
             {
                 visitedTypes.Add(type);
 
