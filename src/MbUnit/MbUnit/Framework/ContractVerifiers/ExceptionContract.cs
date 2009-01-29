@@ -301,14 +301,13 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             AssertionHelper.Verify(() =>
                             {
-                                if (instance.Message.Contains(typeof(TException).FullName))
+                                if (instance.Message != null)
                                     return null;
 
                                 return
                                     new AssertionFailureBuilder(
-                                        "The exception message should to contain the exception type name.")
+                                        "The exception message should not be null.")
                                         .AddRawLabeledValue("Exception Type", typeof (TException))
-                                        .AddLabeledValue("Actual Message", instance.Message)
                                         .ToAssertionFailure();
                             });
                         }

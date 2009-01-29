@@ -28,6 +28,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
     [RunSample(typeof(FullContractOnSerializedExceptionSample))]
     [RunSample(typeof(FullContractOnUnserializedExceptionSample))]
     [RunSample(typeof(PartialContractOnUnserializedExceptionSample))]
+    [RunSample(typeof(PartialContractOnMissingBaseCallExceptionSample))]
     public class ExceptionContractTest : AbstractContractTest
     {
         [Test]
@@ -46,6 +47,9 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(PartialContractOnUnserializedExceptionSample), "DefaultConstructor", TestStatus.Passed)]
         [Row(typeof(PartialContractOnUnserializedExceptionSample), "MessageConstructor", TestStatus.Passed)]
         [Row(typeof(PartialContractOnUnserializedExceptionSample), "MessageAndInnerExceptionConstructor", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnMissingBaseCallExceptionSample), "DefaultConstructor", TestStatus.Passed)]
+        [Row(typeof(PartialContractOnMissingBaseCallExceptionSample), "MessageConstructor", TestStatus.Failed)]
+        [Row(typeof(PartialContractOnMissingBaseCallExceptionSample), "MessageAndInnerExceptionConstructor", TestStatus.Passed)]
         public void VerifySampleExceptionContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
         {
             VerifySampleContract("ExceptionTests", fixtureType, testMethodName, expectedTestStatus);
@@ -55,7 +59,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         internal class FullContractOnSerializedExceptionSample
         {
             [VerifyContract]
-            public readonly IContract ExceptionTests = new ExceptionContract<SampleSerializedException>()
+            public readonly IContract ExceptionTests = new ExceptionContract<SampleSerializedException>
             {
                 ImplementsSerialization = true,
                 ImplementsStandardConstructors = true
@@ -66,7 +70,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         internal class FullContractOnUnserializedExceptionSample
         {
             [VerifyContract]
-            public readonly IContract ExceptionTests = new ExceptionContract<SampleUnserializedException>()
+            public readonly IContract ExceptionTests = new ExceptionContract<SampleUnserializedException>
             {
                 ImplementsSerialization = true,
                 ImplementsStandardConstructors = true
@@ -77,7 +81,18 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         internal class PartialContractOnUnserializedExceptionSample
         {
             [VerifyContract]
-            public readonly IContract ExceptionTests = new ExceptionContract<SampleUnserializedException>()
+            public readonly IContract ExceptionTests = new ExceptionContract<SampleUnserializedException>
+            {
+                ImplementsSerialization = false,
+                ImplementsStandardConstructors = true
+            };
+        }
+
+        [Explicit]
+        internal class PartialContractOnMissingBaseCallExceptionSample
+        {
+            [VerifyContract]
+            public readonly IContract ExceptionTests = new ExceptionContract<SampleMissingBaseCallException>
             {
                 ImplementsSerialization = false,
                 ImplementsStandardConstructors = true
@@ -128,6 +143,27 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
 
             public SampleUnserializedException(string message, Exception innerException)
                 : base(message, innerException)
+            {
+            }
+        }
+
+        /// <summary>
+        /// Sample exception which has the 3 recommended constructors
+        /// but does not support serialization.
+        /// </summary>
+        internal class SampleMissingBaseCallException : Exception
+        {
+            public SampleMissingBaseCallException()
+            {
+            }
+
+            public SampleMissingBaseCallException(string message)
+                // : base(message) (Missing!)
+            {
+            }
+
+            public SampleMissingBaseCallException(string message, Exception innerException)
+                 : base(message, innerException)
             {
             }
         }
