@@ -134,7 +134,7 @@ namespace Gallio.Icarus.Controllers
                 IList<string> validAssemblies = new List<string>();
                 foreach (string assembly in assemblies)
                 {
-                    if (File.Exists(assembly))
+                    if (fileSystem.FileExists(assembly))
                         validAssemblies.Add(assembly);
                     progressMonitor.Worked(1);
                 }
@@ -234,35 +234,36 @@ namespace Gallio.Icarus.Controllers
             }
 
             string projectUserOptionsFile = projectName + ".user";
-            if (fileSystem.FileExists(projectUserOptionsFile))
-            {
-                UserOptions userOptions = xmlSerialization.LoadFromXml<UserOptions>(projectUserOptionsFile);
-                TreeViewCategory = userOptions.TreeViewCategory;
-                OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
-                CollapsedNodes = userOptions.CollapsedNodes;
-            }
+            if (!fileSystem.FileExists(projectUserOptionsFile))
+                return;
+
+            UserOptions userOptions = xmlSerialization.LoadFromXml<UserOptions>(projectUserOptionsFile);
+            TreeViewCategory = userOptions.TreeViewCategory;
+            OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
+            CollapsedNodes = userOptions.CollapsedNodes;
         }
 
-        private static void ConvertFromRelativePaths(Project project, string directory)
+        private void ConvertFromRelativePaths(Project project, string directory)
         {
             IList<string> assemblyList = new List<string>();
             foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
             {
+                string assemblyPath = assembly;
                 if (!Path.IsPathRooted(assembly))
                 {
                     try
                     {
                         FilePathRelative filePath = new FilePathRelative(assembly);
                         DirectoryPathAbsolute directoryPath = new DirectoryPathAbsolute(directory);
-                        assemblyList.Add(filePath.GetAbsolutePathFrom(directoryPath).Path);
+                        assemblyPath = filePath.GetAbsolutePathFrom(directoryPath).Path;
                     }
                     catch
                     {
-                        assemblyList.Add(assembly);
+                        assemblyPath = assembly;
                     }
                 }
-                else
-                    assemblyList.Add(assembly);
+                if (fileSystem.FileExists(assemblyPath))
+                    assemblyList.Add(assemblyPath);
             }
             project.TestPackageConfig.AssemblyFiles.Clear();
             project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
@@ -303,9 +304,11 @@ namespace Gallio.Icarus.Controllers
 
                 progressMonitor.SetStatus("Saving user options");
                 string projectUserOptionsFile = projectName + ".user";
-                UserOptions userOptions = new UserOptions();
-                userOptions.TreeViewCategory = TreeViewCategory;
-                userOptions.CollapsedNodes = CollapsedNodes;
+                UserOptions userOptions = new UserOptions
+                                              {
+                                                  TreeViewCategory = TreeViewCategory,
+                                                  CollapsedNodes = CollapsedNodes
+                                              };
                 progressMonitor.Worked(10);
                 xmlSerialization.SaveToXml(userOptions, projectUserOptionsFile);
             }
