@@ -34,22 +34,20 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void AddAssemblies_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             Project project = new Project();
-            Expect.Call(projectTreeModel.Project).Return(project).Repeat.Times(4);
+            projectTreeModel.Project = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
-            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            Expect.Call(progressMonitor.BeginTask("Adding assemblies", 3)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.Worked(1);
-            progressMonitor.Worked(1);
-            progressMonitor.Done();
-            mocks.ReplayAll();
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
-            Assert.AreEqual(0, projectController.TestPackageConfig.AssemblyFiles.Count);
             string fileName = Assembly.GetExecutingAssembly().Location;
             List<string> list = new List<string>(new[] { fileName });
+            fileSystem.Stub(fs => fs.FileExists(fileName)).Return(true);
+            var xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+
+            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            Assert.AreEqual(0, projectController.TestPackageConfig.AssemblyFiles.Count);
             projectController.AddAssemblies(list, progressMonitor);
+            
             Assert.AreEqual(1, projectController.TestPackageConfig.AssemblyFiles.Count);
             Assert.AreEqual(fileName, projectController.TestPackageConfig.AssemblyFiles[0]);
         }

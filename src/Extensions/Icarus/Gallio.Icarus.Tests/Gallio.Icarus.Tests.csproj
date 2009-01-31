@@ -82,6 +82,7 @@
     </Compile>
     <Compile Include="ExecutionLogWindowTest.cs" />
     <Compile Include="FiltersWindowTest.cs" />
+    <Compile Include="MockProgressMonitor.cs" />
     <Compile Include="MockTest.cs" />
     <Compile Include="Models\ProjectTreeModelTest.cs" />
     <Compile Include="Models\TestTreeModelTest.cs" />
