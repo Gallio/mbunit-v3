@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using MbUnit.Framework;
@@ -21,15 +22,17 @@ using Rhino.Mocks;
 namespace Gallio.Icarus.Tests
 {
     [Category("Views")]
-    class ProjectExplorerTest : MockTest
+    class ProjectExplorerTest
     {
         [Test]
         public void Constructor_Test()
         {
-            var mediator = mocks.StrictMock<IMediator>();
-            var projectController = (IProjectController) mocks.Stub(typeof (IProjectController));
-            Expect.Call(mediator.ProjectController).Return(projectController);
-            mocks.ReplayAll();
+            var mediator = MockRepository.GenerateStub<IMediator>();
+            var projectController = MockRepository.GenerateStub<IProjectController>();
+            mediator.ProjectController = projectController;
+            var reportController = MockRepository.GenerateStub<IReportController>();
+            reportController.Stub(rc => rc.ReportTypes).Return(new List<string>());
+            mediator.ReportController = reportController;
             ProjectExplorer projectExplorer = new ProjectExplorer(mediator);
         }
     }

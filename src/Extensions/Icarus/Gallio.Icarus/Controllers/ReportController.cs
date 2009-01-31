@@ -15,11 +15,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Services.Interfaces;
+using Gallio.Icarus.Utilities;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -27,17 +27,34 @@ namespace Gallio.Icarus.Controllers
 {
     class ReportController : IReportController
     {
-        readonly IReportService reportService;
-        const string reportNameFormat = "test-report-{0}-{1}";
+        private readonly IReportService reportService;
+        private const string reportNameFormat = "test-report-{0}-{1}";
+        private readonly IFileSystem fileSystem;
 
-        public ReportController(IReportService reportService)
+        public ReportController(IReportService reportService, IFileSystem fileSystem)
         {
             this.reportService = reportService;
+            this.fileSystem = fileSystem;
         }
 
         public IList<string> ReportTypes
         {
             get { return reportService.ReportTypes; }
+        }
+
+        public void DeleteReport(string fileName, IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.BeginTask("Deleting report", 100))
+            {
+                try
+                {
+                    fileSystem.DeleteFile(fileName);
+                }
+                catch (Exception ex)
+                {
+                    Runtime.UnhandledExceptionPolicy.Report("Error deleting report", ex);
+                }
+            }
         }
 
         public void GenerateReport(Report report, string reportDirectory, IProgressMonitor progressMonitor)
@@ -55,11 +72,14 @@ namespace Gallio.Icarus.Controllers
                 reportTime.ToString(@"HHmmss"));
         }
 
-        public void ShowReport(Report report, string reportType, IProgressMonitor progressMonitor)
+        public string ShowReport(Report report, string reportType, IProgressMonitor progressMonitor)
         {
-            string fileName = reportService.SaveReportAs(report, Path.GetTempFileName(), reportType, progressMonitor);
-            if (!string.IsNullOrEmpty(fileName))
-                Process.Start(fileName);
+            return reportService.SaveReportAs(report, Path.GetTempFileName(), reportType, progressMonitor);
+        }
+
+        public string ConvertSavedReport(string fileName, string format, IProgressMonitor progressMonitor)
+        {
+            return reportService.ConvertSavedReport(fileName, format, progressMonitor);
         }
     }
 }

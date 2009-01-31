@@ -314,6 +314,12 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
+        public void RefreshTree(IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.BeginTask("Refreshing reports list", 100))
+                projectTreeModel.Refresh();
+        }
+
         private void PublishUpdates()
         {
             testFilters.ListChanged -= testFilters_ListChanged;

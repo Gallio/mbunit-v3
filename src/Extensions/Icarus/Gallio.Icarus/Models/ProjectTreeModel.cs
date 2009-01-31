@@ -108,5 +108,10 @@ namespace Gallio.Icarus.Models
             Node n = treePath.LastNode as Node;
             return (n != projectRoot && n != assemblies) && n != reports;
         }
+
+        public void Refresh()
+        {
+            OnStructureChanged(new TreePathEventArgs());
+        }
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
@@ -21,6 +22,7 @@ using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
+using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 using System;
 
@@ -83,10 +85,34 @@ namespace Gallio.Icarus.Mediator
                 TestController.ApplyFilter(filter, progressMonitor)));
         }
 
+        public void ConvertSavedReport(string fileName, string format)
+        {
+            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                string fn = ReportController.ConvertSavedReport(fileName, format, progressMonitor);
+                if (!string.IsNullOrEmpty(fn) && File.Exists(fn))
+                    Process.Start(fn);
+            }));
+        }
+
         public void DeleteFilter(FilterInfo filterInfo)
         {
             taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
                 ProjectController.DeleteFilter(filterInfo, progressMonitor)));
+        }
+
+        public void DeleteReport(string fileName)
+        {
+            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            {
+                using (progressMonitor.BeginTask("Deleting report", 100))
+                {
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(80))
+                        ReportController.DeleteReport(fileName, subProgressMonitor);
+                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(20))
+                        ProjectController.RefreshTree(subProgressMonitor);
+                }
+            }));
         }
 
         public void GenerateReport()
@@ -280,8 +306,13 @@ namespace Gallio.Icarus.Mediator
 
         public void ShowReport(string reportFormat)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => TestController.Report.Read(report => 
-                ReportController.ShowReport(report, reportFormat, progressMonitor))));
+            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => TestController.Report.Read(
+                delegate(Report report)
+                {
+                    string fileName = ReportController.ShowReport(report, reportFormat, progressMonitor);
+                    if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
+                        Process.Start(fileName);
+                })));
         }
 
         public void Unload()

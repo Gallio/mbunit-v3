@@ -23,6 +23,7 @@ namespace Gallio.Icarus.Services.Interfaces
     {
         IList<string> ReportTypes { get; }
 
+        string ConvertSavedReport(string fileName, string format, IProgressMonitor progressMonitor);
         string SaveReportAs(Report report, string fileName, string format, IProgressMonitor progressMonitor);
     }
 }

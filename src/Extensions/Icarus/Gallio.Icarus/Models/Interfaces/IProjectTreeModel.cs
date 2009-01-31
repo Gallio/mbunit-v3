@@ -22,5 +22,7 @@ namespace Gallio.Icarus.Models.Interfaces
     {
         string FileName { get; set; }
         Project Project { get; set; }
+
+        void Refresh();
     }
 }

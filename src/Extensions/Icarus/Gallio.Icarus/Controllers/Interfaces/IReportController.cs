@@ -23,7 +23,9 @@ namespace Gallio.Icarus.Controllers.Interfaces
     {
         IList<string> ReportTypes { get; }
 
+        string ConvertSavedReport(string fileName, string format, IProgressMonitor progressMonitor);
+        void DeleteReport(string fileName, IProgressMonitor progressMonitor);
         void GenerateReport(Report report, string reportDirectory, IProgressMonitor progressMonitor);
-        void ShowReport(Report report, string reportType, IProgressMonitor progressMonitor);
+        string ShowReport(Report report, string reportType, IProgressMonitor progressMonitor);
     }
 }

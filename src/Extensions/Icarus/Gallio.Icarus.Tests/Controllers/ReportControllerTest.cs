@@ -18,6 +18,7 @@ using System.IO;
 using System.Threading;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Services.Interfaces;
+using Gallio.Icarus.Utilities;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
@@ -26,18 +27,18 @@ using Rhino.Mocks;
 namespace Gallio.Icarus.Tests.Controllers
 {
     [Category("Controllers")]
-    class ReportControllerTest : MockTest
+    class ReportControllerTest
     {
         [Test]
         public void GenerateReport_Test()
         {
             Report report = new Report();
-            IReportService reportService = SetupReportService();
-            Expect.Call(reportService.SaveReportAs(report, string.Empty, "xml", null)).Return(string.Empty);
-            LastCall.IgnoreArguments();
-            IProgressMonitor progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            mocks.ReplayAll();
-            ReportController reportController = new ReportController(reportService);
+            var reportService = MockRepository.GenerateMock<IReportService>();
+            reportService.Stub(rs => rs.SaveReportAs(Arg.Is(report), Arg<string>.Is.Anything, Arg.Is("xml"), 
+                Arg<IProgressMonitor>.Is.Anything)).Return(string.Empty);
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            ReportController reportController = new ReportController(reportService, fileSystem);
             string reportDirectory = Path.Combine(Path.GetTempPath(), "GallioReport");
             reportController.GenerateReport(report, reportDirectory, progressMonitor);
             Thread.Sleep(100);
@@ -46,33 +47,27 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ReportTypes_Test()
         {
-            IReportService reportService = SetupReportService();
-            List<string> list = new List<string>(new[] {"test"});
-            Expect.Call(reportService.ReportTypes).Return(list);
-            mocks.ReplayAll();
-            ReportController reportController = new ReportController(reportService);
+            var reportService = MockRepository.GenerateMock<IReportService>();
+            var list = new List<string>(new[] {"test"});
+            reportService.Stub(rs => rs.ReportTypes).Return(list);
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var reportController = new ReportController(reportService, fileSystem);
             Assert.AreEqual(list, reportController.ReportTypes);
         }
 
         [Test]
         public void ShowReport_Test()
         {
-            Report report = new Report();
+            var report = new Report();
             const string reportType = "test";
-            IReportService reportService = SetupReportService();
-            Expect.Call(reportService.SaveReportAs(report, string.Empty, reportType, null)).Return(string.Empty);
-            LastCall.IgnoreArguments();
-            IProgressMonitor progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            mocks.ReplayAll();
-            ReportController reportController = new ReportController(reportService);
+            var reportService = MockRepository.GenerateMock<IReportService>();
+            reportService.Stub(rs => rs.SaveReportAs(Arg.Is(report), Arg<string>.Is.Anything, Arg.Is("xml"),
+                Arg<IProgressMonitor>.Is.Anything)).Return(string.Empty);
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var reportController = new ReportController(reportService, fileSystem);
             reportController.ShowReport(report, reportType, progressMonitor);
             Thread.Sleep(500);
-        }
-
-        IReportService SetupReportService()
-        {
-            IReportService reportService = mocks.StrictMock<IReportService>();
-            return reportService;
         }
     }
 }

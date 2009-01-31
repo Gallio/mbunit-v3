@@ -36,7 +36,9 @@ namespace Gallio.Icarus.Mediator.Interfaces
         void AddAssemblies(IList<string> assemblyFiles);
         void ApplyFilter(string filter);
         void Cancel();
+        void ConvertSavedReport(string fileName, string format);
         void DeleteFilter(FilterInfo filterInfo);
+        void DeleteReport(string fileName);
         void GenerateReport();
         void NewProject();
         void OpenProject(string fileName);

@@ -39,7 +39,7 @@ namespace Gallio.Icarus.Services
         public string SaveReportAs(Report report, string fileName, string format, IProgressMonitor progressMonitor)
         {
             string file = string.Empty;
-            using (progressMonitor.BeginTask("Generating report.", 100))
+            using (progressMonitor.BeginTask("Generating report", 100))
             {
                 string folderName = Path.GetDirectoryName(fileName);
                 IReportContainer reportContainer = new FileSystemReportContainer(folderName,
@@ -57,10 +57,23 @@ namespace Gallio.Icarus.Services
 
                 if (reportWriter.ReportDocumentPaths.Count > 0)
                     file = Path.Combine(folderName, reportWriter.ReportDocumentPaths[0]);
-
-                progressMonitor.SetStatus("Report saved.");
             }
             return file;
+        }
+
+        public string ConvertSavedReport(string fileName, string format, IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.BeginTask("Converting saved report", 100))
+            {
+                IReportReader reportReader = reportManager.CreateReportReader(new FileSystemReportContainer(
+                    Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName)));
+                Report report;
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(20))
+                    report = reportReader.LoadReport(true, subProgressMonitor);
+                string tempFilePath = Path.GetTempFileName();
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(80))
+                    return SaveReportAs(report, tempFilePath, format, subProgressMonitor);
+            }
         }
     }
 }

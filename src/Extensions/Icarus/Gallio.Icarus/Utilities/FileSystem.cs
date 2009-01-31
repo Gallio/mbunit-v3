@@ -88,11 +88,11 @@ namespace Gallio.Icarus.Utilities
 
         public void DeleteFile(string path)
         {
-            if (File.Exists(path))
-            {
-                SetAttributes(path, FileAttributes.Normal);
-                File.Delete(path);
-            }
+            if (!File.Exists(path))
+                return;
+
+            SetAttributes(path, FileAttributes.Normal);
+            File.Delete(path);
         }
 
         public bool DirectoryExists(string path)
