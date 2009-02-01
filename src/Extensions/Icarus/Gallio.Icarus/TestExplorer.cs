@@ -113,6 +113,11 @@ namespace Gallio.Icarus
 
         private void viewSourceCodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            ViewSourceCode();
+        }
+
+        private void ViewSourceCode()
+        {
             mediator.ViewSourceCode(((TestTreeNode)testTree.SelectedNode.Tag).Name);
         }
 
@@ -189,6 +194,11 @@ namespace Gallio.Icarus
             string[] files = (string[]) e.Data.GetData(DataFormats.FileDrop);
             
             mediator.AddAssemblies(files);
+        }
+
+        private void testTree_DoubleClick(object sender, EventArgs e)
+        {
+            ViewSourceCode();
         }
     }
 }

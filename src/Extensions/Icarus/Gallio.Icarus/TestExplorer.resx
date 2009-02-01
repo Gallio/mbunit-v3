@@ -117,14 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="testTreeMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  <metadata name="testTreeMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>232, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="filterInconclusiveTestsToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAMlJREFUOE+tkqES
+        hCAURf1Bs8XIJ5DIRivRZDXZ+A+jlUY1390TCMyuO+AsMwzl3fPuu4+u+/fZ913btn3cZVk0z7Nu+yGS
+        uqoLrABBrhXnusKN974Z4JwrXazrWg0ZhuF7FiklxRhFkACZlTtNk4wxQtj3/X2QiK7rEqDzPHUch0II
+        YkRrrcZx/L0JkqUjkAzATXYApOrbZCc4YL0IGaFKnItYE915sd4kppjOOGD+5u4ZQJhk8ghADgB4HwFw
+        wW8jwOr0m4N6C155v0jYJINNEAAAAABJRU5ErkJggg==
+</value>
   </data>
-  <data name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>129, 16</value>
-  </data>
-  <data name="filterInconclusiveTests.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  </metadata>
+  <data name="filterInconclusiveTestsToolStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAMlJREFUOE+tkqES
@@ -138,13 +148,13 @@
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAYRJREFUOE9jYIAC
-        r/qTEg4F+79axiwSg4nhoKuxinsWHVzlmr39v1X4tFI8BhgD5f4DsROGGrfcrffsE9c9NA7ueYnHgC1Q
-        A46hqHEtOOjkmr3+u2X8fA3jgM7/lpEzA7AYArMd5AJUV7hmbj/tmLzullnYpGkmgc1fzEMmHcRiQCNQ
-        zBuq2RVId4HVhIauYrZP2f7RPmuLBIhvETnD19i/479Z9HQtHF4B2Y4ALplbj5mFdv6wCJucYuwzk8vY
+        r/qTEvYF+79axiwSg4nhoKuxinsWHVzlmr39v1X4tFI8BhgD5f4DsROGGrfcrffsE9c9NA7ueYnHgC1Q
+        A46hqHEtOOjkmr3+u2X8fA3jgM7/lpEzA7AYArMd5AJUV7hmbj/tmLzullnYpGkmgY1fzEMmHcRiQCNQ
+        zBuq2RVId4HVhIauYrZP2f7RPmuLBIhvETnD19i/479Z9HQtHF4B2Y4ALplbj5mFtv+wCJucYuwzk8vY
         vf09yABj//aLRBlAIMqwSaO6AKRickTe2smh6TunRxbOnRpVsGuiq9fFHiONFKJdMNk9cBtI8eyIZPGp
         Hh4varWU7uFxGaYLprm6glPfzMDYmXX6qv/r9dXCSDIApHhOeJbzJHff/3V6qqsIhAumC0AapkbnP+gy
-        VHvRaq4jDuJPcXTUJjoMpoVl9fbb2/3vMNJIBWma6GEj2mmosZQoA6a4+2o3GCt9KVJT+lqrpzK7yUBl
-        RbGW3KtqXeW5RBlARjpA0QIATcGGcuri1FgAAAAASUVORK5CYII=
+        VHvRaq4jDuJPcXTUJjoMpoVl9fbb2/3vMNJIBWma6GEj2mmosZQoA6a4+2rXGyt9KVJT+lqrpzK7yUBl
+        RbGW3KtqXeW5RBlARjpA0QIAPkmGbGo3GYoAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="sortDescToolStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -160,10 +170,9 @@
         md1koLKiWEvuVbWu8lwcXqkmI+pxawEA+PiMCtHQmpoAAAAASUVORK5CYII=
 </value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.TrayHeight" type="System.Int32, mscorlib">
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>85</value>
-  </data>
+  </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAcAEBAAAAEACABoBQAAdgAAABAQAAABACAAaAQAAN4FAAAgIAAAAQAIAKgIAABGCgAAICAAAAEA
