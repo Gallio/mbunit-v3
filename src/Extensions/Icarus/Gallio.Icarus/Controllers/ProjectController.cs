@@ -27,7 +27,6 @@ using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
-using NDepend.Helpers.FileDirectoryPath;
 using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers
@@ -185,43 +184,11 @@ namespace Gallio.Icarus.Controllers
             testFilters.Add(new FilterInfo(filterName, filter.ToFilterExpr()));
         }
 
-        private static void ConvertToRelativePaths(Project project, string directory)
-        {
-            IList<string> assemblyList = new List<string>();
-            foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
-            {
-                if (Path.IsPathRooted(assembly))
-                {
-                    try
-                    {
-                        FilePathAbsolute filePath = new FilePathAbsolute(assembly);
-                        DirectoryPathAbsolute directoryPath = new DirectoryPathAbsolute(directory);
-                        assemblyList.Add(filePath.GetPathRelativeFrom(directoryPath).Path);
-                    }
-                    catch
-                    {
-                        assemblyList.Add(assembly);
-                    }
-                }
-                else
-                    assemblyList.Add(assembly);
-            }
-            project.TestPackageConfig.AssemblyFiles.Clear();
-            project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
-        }
-
         public void OpenProject(string projectName, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Loading project file", 100))
             {
-                // fail fast
-                if (!fileSystem.FileExists(projectName))
-                    throw new ArgumentException(String.Format("Project file {0} does not exist.", projectName));
-
-                // deserialize project
-                var project = xmlSerialization.LoadFromXml<Project>(projectName);
-                ConvertFromRelativePaths(project, Path.GetDirectoryName(projectName));
-
+                Project project = ProjectUtils.LoadProject(projectName);
                 progressMonitor.Worked(50);
 
                 projectTreeModel.FileName = projectName;
@@ -241,32 +208,6 @@ namespace Gallio.Icarus.Controllers
             TreeViewCategory = userOptions.TreeViewCategory;
             OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
             CollapsedNodes = userOptions.CollapsedNodes;
-        }
-
-        private void ConvertFromRelativePaths(Project project, string directory)
-        {
-            IList<string> assemblyList = new List<string>();
-            foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
-            {
-                string assemblyPath = assembly;
-                if (!Path.IsPathRooted(assembly))
-                {
-                    try
-                    {
-                        FilePathRelative filePath = new FilePathRelative(assembly);
-                        DirectoryPathAbsolute directoryPath = new DirectoryPathAbsolute(directory);
-                        assemblyPath = filePath.GetAbsolutePathFrom(directoryPath).Path;
-                    }
-                    catch
-                    {
-                        assemblyPath = assembly;
-                    }
-                }
-                if (fileSystem.FileExists(assemblyPath))
-                    assemblyList.Add(assemblyPath);
-            }
-            project.TestPackageConfig.AssemblyFiles.Clear();
-            project.TestPackageConfig.AssemblyFiles.AddRange(assemblyList);
         }
 
         public void NewProject(IProgressMonitor progressMonitor)
@@ -294,13 +235,10 @@ namespace Gallio.Icarus.Controllers
                         fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
                     projectName = Paths.DefaultProject;
                 }
+                progressMonitor.Worked(10);
 
-                ConvertToRelativePaths(projectTreeModel.Project, Path.GetDirectoryName(projectName));
-                progressMonitor.Worked(10);
-                xmlSerialization.SaveToXml(projectTreeModel.Project, projectName);
-                progressMonitor.Worked(40);
-                ConvertFromRelativePaths(projectTreeModel.Project, Path.GetDirectoryName(projectName));
-                progressMonitor.Worked(10);
+                ProjectUtils.SaveProject(projectTreeModel.Project, projectName);
+                progressMonitor.Worked(50);
 
                 progressMonitor.SetStatus("Saving user options");
                 string projectUserOptionsFile = projectName + ".user";
@@ -310,6 +248,7 @@ namespace Gallio.Icarus.Controllers
                                                   CollapsedNodes = CollapsedNodes
                                               };
                 progressMonitor.Worked(10);
+
                 xmlSerialization.SaveToXml(userOptions, projectUserOptionsFile);
             }
         }

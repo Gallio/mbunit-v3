@@ -60,15 +60,16 @@
                 <File Name="Gallio.dll" KeyPath="yes" />
                 <File Name="Gallio.plugin" />
                 <File Name="Gallio.pdb" />
-		<File Name="Gallio.xml" />
-		<File Id="Gallio.Report.xsd" Name="Gallio-Report.xsd" />
-<?ifdef NO_ILMERGE ?>
-                <File Name="Castle.Core.dll" />
-		<File Name="Castle.MicroKernel.dll" />
-                <File Name="Castle.Windsor.dll" />
-		<File Name="Castle.DynamicProxy2.dll" />
-		<File Name="Mono.Cecil.dll" />
-<?endif ?>
+				<File Name="Gallio.xml" />
+				<File Id="Gallio.Report.xsd" Name="Gallio-Report.xsd" />
+				<?ifdef NO_ILMERGE ?>
+					<File Name="Castle.Core.dll" />
+					<File Name="Castle.MicroKernel.dll" />
+					<File Name="Castle.Windsor.dll" />
+					<File Name="Castle.DynamicProxy2.dll" />
+					<File Name="Mono.Cecil.dll" />
+					<File Name="NDepend.Helpers.FileDirectoryPath.dll" />
+				<?endif ?>
             </Component>
             <Component Id="Gallio35" Guid="{015c2236-433f-45f4-86d8-88b87f7fad26}" Win64="no">
                 <File Name="Gallio35.dll" KeyPath="yes" />

@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Runner.Projects;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Echo.Properties;
@@ -95,7 +96,23 @@ namespace Gallio.Echo
             launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = Arguments.ApplicationBaseDirectory;
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = Arguments.WorkingDirectory;
 
-            launcher.TestPackageConfig.AssemblyFiles.AddRange(Arguments.Assemblies);
+            // add assemblies to testpackageconfig
+            foreach (string assembly in Arguments.Assemblies)
+            {
+                if (!File.Exists(assembly))
+                    continue;
+
+                if (Path.GetExtension(assembly) == ".gallio")
+                {
+                    if (Arguments.Assemblies.Length > 1)
+                        throw new ArgumentException("Please don't mix and match gallio project files and assemblies!");
+
+                    Project project = ProjectUtils.LoadProject(assembly);
+                    launcher.TestPackageConfig = project.TestPackageConfig;
+                    break;
+                }
+                launcher.TestPackageConfig.AssemblyFiles.Add(assembly);
+            }
             launcher.TestPackageConfig.HintDirectories.AddRange(Arguments.HintDirectories);
 
             launcher.ReportDirectory = Arguments.ReportDirectory;
@@ -151,15 +168,14 @@ namespace Gallio.Echo
                 case Verbosity.Quiet:
                     minSeverity = LogSeverity.Warning;
                     break;
-                default:
-                case Verbosity.Normal:
-                    minSeverity = LogSeverity.Important;
-                    break;
                 case Verbosity.Verbose:
                     minSeverity = LogSeverity.Info;
                     break;
                 case Verbosity.Debug:
                     minSeverity = LogSeverity.Debug;
+                    break;
+                default:
+                    minSeverity = LogSeverity.Important;
                     break;
             }
 

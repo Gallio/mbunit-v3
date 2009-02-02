@@ -15,6 +15,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Reflection;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Models.Interfaces;
@@ -252,12 +253,12 @@ namespace Gallio.Icarus.Tests.Controllers
             projectTreeModel.Project = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
-            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
-            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
             const string projectName = "projectName";
             projectController.SaveProject(projectName, progressMonitor);
-            xmlSerialization.AssertWasCalled(x => x.SaveToXml(project, projectName));
+            xmlSerialization.AssertWasCalled(x => x.SaveToXml(Arg<UserOptions>.Is.Anything, 
+                Arg.Is(projectName + ".user")));
         }
 
         [Test]
@@ -268,11 +269,14 @@ namespace Gallio.Icarus.Tests.Controllers
             projectTreeModel.Project = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
-            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
-            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
             projectController.SaveProject(string.Empty, progressMonitor);
-            xmlSerialization.AssertWasCalled(x => x.SaveToXml(project, Paths.DefaultProject));
+
+            fileSystem.AssertWasCalled(fs => fs.DirectoryExists(Paths.IcarusAppDataFolder));
+            fileSystem.AssertWasCalled(fs => fs.CreateDirectory(Paths.IcarusAppDataFolder));
+            xmlSerialization.AssertWasCalled(xs => xs.SaveToXml(Arg<UserOptions>.Is.Anything, 
+                Arg.Is(Paths.DefaultProject + ".user")));
         }
     }
 }

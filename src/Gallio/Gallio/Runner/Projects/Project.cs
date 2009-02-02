@@ -29,37 +29,26 @@ namespace Gallio.Runner.Projects
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public sealed class Project
     {
-        private TestPackageConfig testPackageConfig;
-        private List<FilterInfo> testFilters;
-
         /// <summary>
         /// Creates an empty project.
         /// </summary>
         public Project()
         {
-            testPackageConfig = new TestPackageConfig();
-            testFilters = new List<FilterInfo>();
+            TestPackageConfig = new TestPackageConfig();
+            TestFilters = new List<FilterInfo>();
         }
 
         /// <summary>
         /// The test package.
         /// </summary>
-        [XmlElement("testPackageConfig", IsNullable=false)]
-        public TestPackageConfig TestPackageConfig
-        {
-            get { return testPackageConfig; }
-            set { testPackageConfig = value; }
-        }
+        [XmlElement("testPackageConfig", IsNullable = false)]
+        public TestPackageConfig TestPackageConfig { get; set; }
 
         /// <summary>
         /// A list of test filters for the project.
         /// </summary>
-        [XmlArray("testFilters", IsNullable=false)]
-        [XmlArrayItem("testFilter", typeof(FilterInfo), IsNullable=false)]
-        public List<FilterInfo> TestFilters
-        {
-            get { return testFilters; }
-            set { testFilters = value; }
-        }
+        [XmlArray("testFilters", IsNullable = false)]
+        [XmlArrayItem("testFilter", typeof (FilterInfo), IsNullable = false)]
+        public List<FilterInfo> TestFilters { get; set; }
     }
 }
