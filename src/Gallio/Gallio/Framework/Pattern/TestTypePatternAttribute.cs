@@ -24,17 +24,19 @@ using Gallio.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// Declares that a type represents an test.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// Subclasses of this attribute can control what happens with the type.
     /// </para>
     /// <para>
     /// At most one attribute of this type may appear on any given class.
     /// </para>
     /// <para>
-    /// A test type has a timeout of 10 minutes by default.
+    /// A test type has no timeout by default.
     /// </para>
-    /// </summary>
+    /// </remarks>
     /// <seealso cref="TestTypeDecoratorPatternAttribute"/>
     [AttributeUsage(PatternAttributeTargets.TestType, AllowMultiple = false, Inherited = true)]
     public class TestTypePatternAttribute : PatternAttribute
@@ -84,7 +86,6 @@ namespace Gallio.Framework.Pattern
             IPatternScope typeScope = containingScope.CreateChildTestScope(type.Name, type);
             typeScope.TestBuilder.Kind = TestKinds.Fixture;
             typeScope.TestBuilder.Order = Order;
-            typeScope.TestBuilder.Timeout = TimeSpan.FromMinutes(10);
                 
             InitializeTest(typeScope, type);
             SetTestSemantics(typeScope.TestBuilder, type);

@@ -21,14 +21,19 @@ using Gallio.Reflection;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// <para>
     /// Declares that a method represents a test.
+    /// </summary>
+    /// <remarks>
+    /// <para>
     /// Subclasses of this attribute can control what happens with the method.
     /// </para>
     /// <para>
     /// At most one attribute of this type may appear on any given method.
     /// </para>
-    /// </summary>
+    /// <para>
+    /// A test method has a timeout of 10 minutes by default.
+    /// </para>
+    /// </remarks>
     /// <seealso cref="TestMethodDecoratorPatternAttribute"/>
     [AttributeUsage(PatternAttributeTargets.TestMethod, AllowMultiple=false, Inherited=true)]
     public abstract class TestMethodPatternAttribute : PatternAttribute
@@ -68,6 +73,7 @@ namespace Gallio.Framework.Pattern
             methodScope.TestBuilder.Kind = TestKinds.Test;
             methodScope.TestBuilder.IsTestCase = true;
             methodScope.TestBuilder.Order = Order;
+            methodScope.TestBuilder.Timeout = TimeSpan.FromMinutes(10);
 
             InitializeTest(methodScope, method);
             SetTestSemantics(methodScope.TestBuilder, method);

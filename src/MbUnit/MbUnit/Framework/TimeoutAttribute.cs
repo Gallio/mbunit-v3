@@ -24,8 +24,7 @@ namespace MbUnit.Framework
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The default timeout is 10 minutes for test fixtures and unlimited for
-    /// test methods (since their lifetime is bound by their containing fixture).
+    /// The default timeout is unlimited for test fixtures and 10 minutes for test methods.
     /// </para>
     /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]

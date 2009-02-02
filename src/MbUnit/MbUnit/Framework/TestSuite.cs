@@ -27,6 +27,10 @@ namespace MbUnit.Framework
     /// </summary>
     /// <remarks>
     /// <para>
+    /// A test suite has no timeout by default.  This may be changed
+    /// setting the <see cref="TestDefinition.Timeout" /> property.
+    /// </para>
+    /// <para>
     /// Refer to the examples on the <see cref="Test" /> class for more information.
     /// </para>
     /// </remarks>

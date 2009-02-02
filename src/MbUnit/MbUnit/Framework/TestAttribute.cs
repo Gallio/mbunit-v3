@@ -41,6 +41,10 @@ namespace MbUnit.Framework
     /// class.
     /// </para>
     /// <para>
+    /// A test method has a timeout of 10 minutes by default.  This may be changed
+    /// using the <see cref="TimeoutAttribute" />.
+    /// </para>
+    /// <para>
     /// The method to which this attribute is applied must be declared by the
     /// fixture class.  The method may be static.  If it has parameters, then the
     /// test is considered to be data-driven.

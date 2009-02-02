@@ -32,7 +32,7 @@ namespace MbUnit.Framework
     /// by the framework and will be included in the test report.
     /// </para>
     /// <para>
-    /// A test fixture has a timeout of 10 minutes by default.  This may be changed
+    /// A test fixture has no timeout by default.  This may be changed
     /// using the <see cref="TimeoutAttribute" />.
     /// </para>
     /// <para>

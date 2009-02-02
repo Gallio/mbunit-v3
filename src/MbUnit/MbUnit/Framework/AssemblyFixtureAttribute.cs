@@ -85,8 +85,6 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void SetTestSemantics(ITestBuilder testBuilder, ITypeInfo type)
         {
-            testBuilder.Timeout = null;
-
             testBuilder.TestActions.TestInstanceActions.BeforeTestInstanceChain.After(
                 delegate(PatternTestInstanceState testInstanceState)
                 {

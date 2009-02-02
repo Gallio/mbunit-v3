@@ -26,6 +26,10 @@ namespace MbUnit.Framework
     /// </summary>
     /// <remarks>
     /// <para>
+    /// A test case has a timeout of 10 minutes by default.  This may be changed
+    /// setting the <see cref="TestDefinition.Timeout" /> property.
+    /// </para>
+    /// <para>
     /// Refer to the examples on the <see cref="Test" /> class for more information.
     /// </para>
     /// </remarks>
@@ -46,6 +50,7 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException("execute");
 
             Execute = execute;
+            Timeout = TimeSpan.FromMinutes(10);
         }
 
         /// <summary>
