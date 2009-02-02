@@ -31,7 +31,6 @@ namespace Gallio.Icarus
         private string testRunnerFactory = StandardTestRunnerFactoryNames.IsolatedProcess;
         private bool restorePreviousSettings = true;
         private readonly List<string> pluginDirectories = new List<string>();
-        private bool alwaysReloadAssemblies;
         private bool showProgressDialogs = true;
         private string testStatusBarStyle = TestStatusBarStyles.Integration;
         private int passedColor = Color.Green.ToArgb();
@@ -55,11 +54,7 @@ namespace Gallio.Icarus
         }
 
         [XmlElement("alwaysReloadTests")]
-        public bool AlwaysReloadAssemblies
-        {
-            get { return alwaysReloadAssemblies; }
-            set { alwaysReloadAssemblies = value; }
-        }
+        public bool AlwaysReloadAssemblies { get; set; }
 
         [XmlElement("showProgressDialogs")]
         public bool ShowProgressDialogs
@@ -116,5 +111,11 @@ namespace Gallio.Icarus
         {
             get { return treeViewCategories; }
         }
+
+        [XmlElement("size")]
+        public Size Size { get; set; }
+
+        [XmlElement("location")]
+        public Point Location { get; set; }
     }
 }

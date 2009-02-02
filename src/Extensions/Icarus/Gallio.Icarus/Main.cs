@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Drawing;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -190,7 +191,13 @@ namespace Gallio.Icarus
             }
 
             // provide WindowsFormsSynchronizationContext to controllers for cross-thread databinding
-            mediator.ProjectController.SynchronizationContext = mediator.TestController.Model.SynchronizationContext = SynchronizationContext.Current;
+            mediator.ProjectController.SynchronizationContext = mediator.TestController.Model.SynchronizationContext = 
+                SynchronizationContext.Current;
+
+            if (!mediator.OptionsController.Size.Equals(Size.Empty))
+                Size = mediator.OptionsController.Size;
+            if (!mediator.OptionsController.Location.Equals(Point.Empty))
+                Location = mediator.OptionsController.Location;
         }
 
         private void DefaultDockState()
@@ -393,6 +400,10 @@ namespace Gallio.Icarus
             mediator.TestController.UnloadFinished += CleanUpOnClose;
             // unload the current test package
             mediator.Unload();
+
+            mediator.OptionsController.Size = Size;
+            mediator.OptionsController.Location = Location;
+            mediator.OptionsController.Save();
         }
 
         private void CleanUpOnClose(object sender, EventArgs e)

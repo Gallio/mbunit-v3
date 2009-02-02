@@ -13,9 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Gallio.Utilities;
 
 namespace Gallio.Icarus.Utilities
@@ -24,7 +21,7 @@ namespace Gallio.Icarus.Utilities
     {
         public void SaveToXml<T>(T root, string filename)
         {
-            XmlSerializationUtils.SaveToXml<T>(root, filename);
+            XmlSerializationUtils.SaveToXml(root, filename);
         }
 
         public T LoadFromXml<T>(string filename)

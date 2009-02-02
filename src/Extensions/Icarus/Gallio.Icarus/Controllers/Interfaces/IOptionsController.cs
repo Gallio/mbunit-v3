@@ -33,6 +33,8 @@ namespace Gallio.Icarus.Controllers.Interfaces
         Color InconclusiveColor { get; set; }
         Color SkippedColor { get; set; }
         double UpdateDelay { get; }
+        Size Size { get; set; }
+        Point Location { get; set; }
 
         void Cancel();
         void Load();

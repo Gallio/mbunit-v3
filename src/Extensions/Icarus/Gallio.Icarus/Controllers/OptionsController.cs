@@ -102,6 +102,18 @@ namespace Gallio.Icarus.Controllers
             get { return 1000; }
         }
 
+        public Size Size
+        {
+            get { return settings.Size; }
+            set { settings.Size = value; }
+        }
+
+        public Point Location
+        {
+            get { return settings.Location; }
+            set { settings.Location = value; }
+        }
+
         public OptionsController(IFileSystem fileSystem, IXmlSerialization xmlSerialization,
             IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
