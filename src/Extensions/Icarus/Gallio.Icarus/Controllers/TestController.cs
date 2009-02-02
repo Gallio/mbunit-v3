@@ -275,14 +275,21 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("View source code", 100))
             {
+                // retrieve TestData for selected item
                 if (testModelData == null)
                     return;
+                TestData testData = testModelData.GetTestById(testId);
+                if (testData == null)
+                    return;
 
-                var testData = testModelData.GetTestById(testId);
+                // cannot display source for assemblies etc.
+                string componentKind = testData.Metadata.GetValue(MetadataKeys.TestKind);
+                if (componentKind != TestKinds.Fixture && componentKind != TestKinds.Test)
+                    return;
 
-                if (testData != null)
-                    EventHandlerUtils.SafeInvoke(ShowSourceCode, this, 
-                        new ShowSourceCodeEventArgs(testData.CodeLocation));
+                // fire event for view
+                EventHandlerUtils.SafeInvoke(ShowSourceCode, this,
+                    new ShowSourceCodeEventArgs(testData.CodeLocation));
             }
         }
     }

@@ -118,7 +118,8 @@ namespace Gallio.Icarus
 
         private void ViewSourceCode()
         {
-            mediator.ViewSourceCode(((TestTreeNode)testTree.SelectedNode.Tag).Name);
+            if (testTree.SelectedNode != null)
+                mediator.ViewSourceCode(((TestTreeNode)testTree.SelectedNode.Tag).Name);
         }
 
         private void expandPassedTestsToolStripMenuItem_Click(object sender, EventArgs e)
