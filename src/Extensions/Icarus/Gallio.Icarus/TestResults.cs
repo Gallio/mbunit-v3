@@ -57,7 +57,11 @@ namespace Gallio.Icarus
 
             timer.Interval = mediator.OptionsController.UpdateDelay;
             timer.AutoReset = false;
-            timer.Elapsed += delegate { Sync.Invoke(this, UpdateTestResults); };
+            timer.Elapsed += delegate
+                                 {
+                                     if (!IsHidden)
+                                        Sync.Invoke(this, UpdateTestResults);
+                                 };
         }
 
         protected void UpdateTestResults()
@@ -80,7 +84,7 @@ namespace Gallio.Icarus
             testResultsList.EndUpdate();
         }
 
-        void UpdateTestResults(TestTreeNode node, int indentCount)
+        private void UpdateTestResults(TestTreeNode node, int indentCount)
         {
             foreach (TestStepRun tsr in node.TestStepRuns)
                 testResultsList.AddTestStepRun(node.NodeType, tsr, indentCount);
@@ -92,7 +96,7 @@ namespace Gallio.Icarus
             }
         }
 
-        void Reset()
+        private void Reset()
         {
             Sync.Invoke(this, delegate
             {

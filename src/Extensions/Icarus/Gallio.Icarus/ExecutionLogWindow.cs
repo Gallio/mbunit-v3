@@ -25,7 +25,8 @@ namespace Gallio.Icarus
 
             executionLogController.ExecutionLogUpdated += delegate
             {
-                reportViewer.Show(executionLogController.TestStepRuns, executionLogController.TestModelData);
+                if (!IsHidden)
+                    reportViewer.Show(executionLogController.TestStepRuns, executionLogController.TestModelData);
             };
 
             executionLogController.ExecutionLogReset += delegate
