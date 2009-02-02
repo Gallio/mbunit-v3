@@ -26,6 +26,7 @@ namespace Gallio.MSTestAdapter.Wrapper
         public string ResultsFile { get; set; }
         public string TestList { get; set; }
         public string TestMetadata { get; set; }
+        public string RunConfig { get; set; }
 
         public MSTestCommandArguments Copy()
         {
@@ -35,6 +36,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             copy.ResultsFile = ResultsFile;
             copy.TestList = TestList;
             copy.TestMetadata = TestMetadata;
+            copy.RunConfig = RunConfig;
             return copy;
         }
 
@@ -52,6 +54,8 @@ namespace Gallio.MSTestAdapter.Wrapper
                 AddArgument(args, "/testlist", TestList);
             if (TestMetadata != null)
                 AddArgument(args, "/testmetadata", TestMetadata);
+            if (TestMetadata != null)
+                AddArgument(args, "/runconfig", RunConfig);
 
             return args.ToArray();
         }

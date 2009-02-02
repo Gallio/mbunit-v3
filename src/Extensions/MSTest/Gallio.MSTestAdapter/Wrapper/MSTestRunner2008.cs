@@ -18,7 +18,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             return "9.0";
         }
 
-        protected override void WriteTestList(XmlWriter writer, IEnumerable<MSTest> tests, string assemblyFilePath)
+        protected override void WriteTestMetadata(XmlWriter writer, IEnumerable<MSTest> tests, string assemblyFilePath)
         {
             writer.WriteStartDocument();
 
@@ -53,6 +53,39 @@ namespace Gallio.MSTestAdapter.Wrapper
             writer.WriteEndElement();
             writer.WriteEndElement();
             writer.WriteEndElement();
+
+            writer.WriteEndDocument();
+        }
+
+        protected override void WriteRunConfig(XmlWriter writer)
+        {
+            /*
+                <?xml version="1.0" encoding="UTF-8"?>
+                <TestRunConfiguration name="Gallio Test Run" id="94d309d9-02ec-4f2a-978b-bb07dab7ab0f" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
+                  <Deployment enabled="false" />
+                  <Description>This is a test run configuration used by Gallio to launch MSTest tests locally.</Description>
+                  <TestTypeSpecific />
+                </TestRunConfiguration>
+             */
+
+            writer.WriteStartDocument();
+
+            writer.WriteStartElement("TestRunConfiguration", @"http://microsoft.com/schemas/VisualStudio/TeamTest/2006");
+            writer.WriteAttributeString("name", "Gallio Test Run");
+            writer.WriteAttributeString("id", "94d309d9-02ec-4f2a-978b-bb07dab7ab0f");
+
+            writer.WriteElementString("Description", "This is a test run configuration used by Gallio to launch MSTest tests locally.");
+
+            writer.WriteStartElement("Deployment");
+            writer.WriteAttributeString("enabled", "false");
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("TestTypeSpecific");
+            writer.WriteEndElement();
+
+            writer.WriteEndElement();
+
+            writer.WriteEndDocument();
         }
     }
 }

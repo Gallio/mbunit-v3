@@ -93,7 +93,7 @@ namespace Gallio.Reflection.Impl
                     }
                 }, null);
 
-                signal.WaitOne(1000);
+                signal.WaitOne(1000, false);
 
                 if (asyncException != null)
                     throw new InvalidOperationException("An exception occurred while reading debug symbols.", asyncException);

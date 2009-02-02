@@ -18,7 +18,12 @@ namespace Gallio.MSTestAdapter.Wrapper
             return "8.0";
         }
 
-        protected override void WriteTestList(XmlWriter writer, IEnumerable<MSTest> tests, string assemblyFilePath)
+        protected override void WriteTestMetadata(XmlWriter writer, IEnumerable<MSTest> tests, string assemblyFilePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void WriteRunConfig(XmlWriter writer)
         {
             throw new NotImplementedException();
         }

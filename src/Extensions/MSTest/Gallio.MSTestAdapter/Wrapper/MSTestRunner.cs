@@ -51,15 +51,17 @@ namespace Gallio.MSTestAdapter.Wrapper
 
                 string testMetadataPath = cacheGroup.GetFileInfo("tests.vsmdi").FullName;
                 string testResultsPath = cacheGroup.GetFileInfo("tests.trx").FullName;
+                string runConfigPath = cacheGroup.GetFileInfo("tests.runconfig").FullName;
                 string workingDirectory = Environment.CurrentDirectory;
 
                 progressMonitor.SetStatus("Generating tests list");
-                CreateTestListFile(testMetadataPath,
+                CreateTestMetadataFile(testMetadataPath,
                     GetTestsFromCommands(assemblyTestCommand.PreOrderTraversal), assemblyTest.AssemblyFilePath);
+                CreateRunConfigFile(runConfigPath);
 
                 progressMonitor.SetStatus("Executing tests");
                 TestOutcome outcome = ExecuteTests(assemblyContext, workingDirectory,
-                    testMetadataPath, testResultsPath);
+                    testMetadataPath, testResultsPath, runConfigPath);
 
                 progressMonitor.SetStatus("Processing results");
                 if (!ProcessTestResults(assemblyContext, assemblyTestCommand, testResultsPath))
@@ -75,7 +77,9 @@ namespace Gallio.MSTestAdapter.Wrapper
 
         protected abstract string GetVisualStudioVersion();
 
-        protected abstract void WriteTestList(XmlWriter writer, IEnumerable<MSTest> tests, string assemblyFilePath);
+        protected abstract void WriteTestMetadata(XmlWriter writer, IEnumerable<MSTest> tests, string assemblyFilePath);
+
+        protected abstract void WriteRunConfig(XmlWriter writer);
 
         private static MSTestCommand GetMSTestCommand()
         {
@@ -90,24 +94,38 @@ namespace Gallio.MSTestAdapter.Wrapper
                 yield return (MSTest)testCommand.Test;
         }
 
-        private void CreateTestListFile(string testMetadataFilePath, IEnumerable<MSTest> tests, string assemblyFilePath)
+        private void CreateTestMetadataFile(string testMetadataFilePath, IEnumerable<MSTest> tests, string assemblyFilePath)
+        {
+            using (XmlWriter writer = OpenXmlWriter(testMetadataFilePath))
+            {
+                WriteTestMetadata(writer, tests, assemblyFilePath);
+            }
+        }
+
+        private void CreateRunConfigFile(string runConfigFilePath)
+        {
+            using (XmlWriter writer = OpenXmlWriter(runConfigFilePath))
+            {
+                WriteRunConfig(writer);
+            }
+        }
+
+        private XmlWriter OpenXmlWriter(string filePath)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.CloseOutput = true;
-            using (XmlWriter writer = XmlWriter.Create(testMetadataFilePath, settings))
-            {
-                WriteTestList(writer, tests, assemblyFilePath);
-            }
+            return XmlWriter.Create(filePath, settings);
         }
 
         private TestOutcome ExecuteTests(ITestContext context, string workingDirectory,
-            string testMetadataPath, string testResultsPath)
+            string testMetadataPath, string testResultsPath, string runConfigPath)
         {
             MSTestCommandArguments args = new MSTestCommandArguments();
             args.NoLogo = true;
             args.TestMetadata = testMetadataPath;
             args.ResultsFile = testResultsPath;
+            args.RunConfig = runConfigPath;
             args.TestList = SelectedTestListName;
 
             string executablePath = MSTestResolver.FindMSTestPathForVisualStudioVersion(GetVisualStudioVersion());
