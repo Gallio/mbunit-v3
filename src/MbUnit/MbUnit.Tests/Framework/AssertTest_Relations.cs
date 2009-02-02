@@ -108,6 +108,18 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
+        public void GreaterThan_with_comparer_test()
+        {
+            Assert.GreaterThan(4, 3, new Comparer<int>((left, right) => left.CompareTo(0) + right.CompareTo(0)));
+        }
+
+        [Test]
+        public void GreaterThan_with_comparer_and_message_test()
+        {
+            Assert.GreaterThan(0, 1, new Comparer<int>((left, right) => left.CompareTo(0) + right.CompareTo(0)), "custom compare");
+        }
+
+        [Test]
         public void GreaterThan_with_message_test()
         {
             Assert.GreaterThan(0, -1, "custom message");
@@ -191,6 +203,18 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
+        public void GreaterThanOrEqual_with_comparer_test()
+        {
+            Assert.GreaterThanOrEqualTo(4, 4, new Comparer<int>((left, right) => left.CompareTo(0) + right.CompareTo(0)));
+        }
+
+        [Test]
+        public void GreaterThanOrEqual_with_comparer_and_message_test()
+        {
+            Assert.GreaterThanOrEqualTo(0, 0, new Comparer<int>((left, right) => left.CompareTo(0) + right.CompareTo(0)), "custom compare");
+        }
+
+        [Test]
         public void GreaterThanOrEqual_with_both_values_null()
         {
             const string s1 = null;
@@ -268,21 +292,33 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void LessThan_with_delegate_test()
-        {
-            Assert.LessThan(3, 4, (left, right) => left - right);
-        }
-
-        [Test]
         public void LessThan_with_message_test()
         {
             Assert.LessThan(null, "six", "custom message");
         }
 
         [Test]
+        public void LessThan_with_delegate_test()
+        {
+            Assert.LessThan(3, 4, (left, right) => left - right);
+        }
+
+        [Test]
         public void LessThan_with_delegate_and_message_test()
         {
             Assert.LessThan(-5, 3, (left, right) => left - right, "custom message");
+        }
+
+        [Test]
+        public void LessThan_with_comparer_test()
+        {
+            Assert.LessThan(3, 4, new Comparer<int>((left, right) => left - right));
+        }
+
+        [Test]
+        public void LessThan_with_comparer_and_message_test()
+        {
+            Assert.LessThan(-5, 3, new Comparer<int>((left, right) => left - right), "custom message");
         }
         #endregion
 
@@ -340,21 +376,33 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
+        public void LessThanOrEqual_with_message_test()
+        {
+            Assert.LessThanOrEqualTo(-6, 6, "custom message");
+        }
+
+        [Test]
         public void LessThanOrEqual_with_delegate_test()
         {
             Assert.LessThanOrEqualTo(3, 4, (left, right) => left - right);
         }
 
         [Test]
-        public void LessThanOrEqual_with_delegate_and_message()
-        {
-            Assert.LessThanOrEqualTo(-6, 6, "custom message");
-        }
-
-        [Test]
         public void LessThanOrEqual_with_delegate_and_message_test()
         {
             Assert.LessThanOrEqualTo(3, 4, (left, right) => left - right, "custom message");
+        }
+
+        [Test]
+        public void LessThanOrEqual_with_comparer_test()
+        {
+            Assert.LessThanOrEqualTo(3, 4, new Comparer<int>((left, right) => left - right));
+        }
+
+        [Test]
+        public void LessThanOrEqual_with_comparer_and_message_test()
+        {
+            Assert.LessThanOrEqualTo(3, 4, new Comparer<int>((left, right) => left - right), "custom message");
         }
         #endregion
 
@@ -390,6 +438,18 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Maximum Value", failures[0].LabeledValues[2].Label);
             Assert.AreEqual("3", failures[0].LabeledValues[2].FormattedValue.ToString());
         }
+
+        [Test]
+        public void Between_with_delegate_test()
+        {
+            Assert.Between("banana", "APPLE", "COOKIES", (left, right) => string.Compare(left, right, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        [Test]
+        public void Between_with_comparer_test()
+        {
+            Assert.Between("banana", "APPLE", "COOKIES", new Comparer<string>((left, right) => string.Compare(left, right, StringComparison.InvariantCultureIgnoreCase)));
+        }
         #endregion
 
         #region NotBetween
@@ -414,6 +474,33 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Maximum Value", failures[0].LabeledValues[2].Label);
             Assert.AreEqual("3", failures[0].LabeledValues[2].FormattedValue.ToString());
         }
+
+        [Test]
+        public void NotBetween_with_delegate_test()
+        {
+            Assert.NotBetween("APPLE", "banana", "COOKIES", (left, right) => string.Compare(left, right, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        [Test]
+        public void NotBetween_with_comparer_test()
+        {
+            Assert.NotBetween("APPLE", "banana", "COOKIES", new Comparer<string>((left, right) => string.Compare(left, right, StringComparison.InvariantCultureIgnoreCase)));
+        }
         #endregion
+
+        private sealed class Comparer<T> : IComparer<T>
+        {
+            private readonly Comparison<T> comparison;
+
+            public Comparer(Comparison<T> comparison)
+            {
+                this.comparison = comparison;
+            }
+
+            public int Compare(T x, T y)
+            {
+                return comparison(x, y);
+            }
+        }
     }
 }
