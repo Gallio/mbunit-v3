@@ -417,34 +417,37 @@ namespace Gallio.Icarus
 
         public void ShowWindow(string window)
         {
-            // TODO: is there a better way to do this, rather than relying on the menu item?
-            switch (window)
-            {
-                case "testResultsToolStripMenuItem":
-                    testResults.Show(dockPanel);
-                    break;
-                case "projectExplorerToolStripMenuItem":
-                    projectExplorer.Show(dockPanel);
-                    break;
-                case "testExplorerToolStripMenuItem":
-                    testExplorer.Show(dockPanel);
-                    break;
-                case "runtimeLogToolStripMenuItem":
-                    runtimeLogWindow.Show(dockPanel);
-                    break;
-                case "propertiesToolStripMenuItem":
-                    propertiesWindow.Show(dockPanel);
-                    break;
-                case "testFiltersToolStripMenuItem":
-                    filtersWindow.Show(dockPanel);
-                    break;
-                case "executionLogToolStripMenuItem":
-                    executionLogWindow.Show(dockPanel);
-                    break;
-                case "annotationsToolStripMenuItem":
-                    annotationsWindow.Show(dockPanel);
-                    break;
-            }            
+            Sync.Invoke(this, delegate
+                                  {
+                                      // TODO: is there a better way to do this, rather than relying on the menu item?
+                                      switch (window)
+                                      {
+                                          case "testResultsToolStripMenuItem":
+                                              testResults.Show(dockPanel);
+                                              break;
+                                          case "projectExplorerToolStripMenuItem":
+                                              projectExplorer.Show(dockPanel);
+                                              break;
+                                          case "testExplorerToolStripMenuItem":
+                                              testExplorer.Show(dockPanel);
+                                              break;
+                                          case "runtimeLogToolStripMenuItem":
+                                              runtimeLogWindow.Show(dockPanel);
+                                              break;
+                                          case "propertiesToolStripMenuItem":
+                                              propertiesWindow.Show(dockPanel);
+                                              break;
+                                          case "testFiltersToolStripMenuItem":
+                                              filtersWindow.Show(dockPanel);
+                                              break;
+                                          case "executionLogToolStripMenuItem":
+                                              executionLogWindow.Show(dockPanel);
+                                              break;
+                                          case "annotationsToolStripMenuItem":
+                                              annotationsWindow.Show(dockPanel);
+                                              break;
+                                      }
+                                  });
         }
 
         private void AssemblyChanged(object sender, AssemblyChangedEventArgs e)
