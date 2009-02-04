@@ -64,7 +64,7 @@ namespace MbUnit.Tests.Framework
         public void TimeoutMustBeNullOrPositive()
         {
             TestCase testCase = new TestCase("Name", delegate { });
-            Assert.IsNull(testCase.Timeout);
+            Assert.AreEqual(TimeSpan.FromSeconds(10), testCase.Timeout);
 
             testCase.Timeout = TimeSpan.FromSeconds(5);
             Assert.AreEqual(TimeSpan.FromSeconds(5), testCase.Timeout);
