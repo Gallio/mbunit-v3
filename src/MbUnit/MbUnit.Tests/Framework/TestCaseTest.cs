@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gallio.Framework;
+using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
@@ -64,7 +65,7 @@ namespace MbUnit.Tests.Framework
         public void TimeoutMustBeNullOrPositive()
         {
             TestCase testCase = new TestCase("Name", delegate { });
-            Assert.AreEqual(TimeSpan.FromSeconds(10), testCase.Timeout);
+            Assert.AreEqual(TestAssemblyExecutionParameters.DefaultTestCaseTimeout, testCase.Timeout);
 
             testCase.Timeout = TimeSpan.FromSeconds(5);
             Assert.AreEqual(TimeSpan.FromSeconds(5), testCase.Timeout);

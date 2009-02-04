@@ -126,70 +126,70 @@ namespace MbUnit.Tests.Framework
             public void One()
             {
                 TestLog.WriteLine("One");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
 
             [Test, Parallelizable]
             public void Two()
             {
                 TestLog.WriteLine("Two");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
 
             [Test, Parallelizable]
             public void Three()
             {
                 TestLog.WriteLine("Three");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
 
             [Test, Parallelizable]
             public void Four()
             {
                 TestLog.WriteLine("Four");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
 
             [Test]
             public void Five()
             {
                 TestLog.WriteLine("Five");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
 
             [Test, DependsOn("Five")]
             public void Six()
             {
                 TestLog.WriteLine("Six");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
 
             [Test(Order=1), Parallelizable]
             public void Seven()
             {
                 TestLog.WriteLine("Seven");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
 
             [Test(Order=1), Parallelizable]
             public void Eight()
             {
                 TestLog.WriteLine("Eight");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
 
             [Test(Order = 1)]
             public void Nine()
             {
                 TestLog.WriteLine("Nine");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
 
             [Test(Order = 2), Parallelizable]
             public void Ten()
             {
                 TestLog.WriteLine("Ten");
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
         }
     }
