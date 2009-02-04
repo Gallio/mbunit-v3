@@ -107,7 +107,8 @@
     <Compile Include="Framework\Pattern\ITestDataContextBuilder.cs" />
     <Compile Include="Framework\Pattern\ITestModelBuilder.cs" />
     <Compile Include="Framework\Pattern\ITestParameterBuilder.cs" />
-    <Compile Include="Framework\Pattern\PatternTestGlobals.cs" />
+    <Compile Include="Framework\Pattern\ParallelizableTestCaseScheduler.cs" />
+    <Compile Include="Framework\Pattern\TestAssemblyExecutionParameters.cs" />
     <Compile Include="Framework\Pattern\PatternTestParameterActions.cs" />
     <Compile Include="FuncChain.cs" />
     <Compile Include="FuncDecorator.cs" />

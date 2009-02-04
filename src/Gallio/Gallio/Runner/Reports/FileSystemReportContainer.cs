@@ -91,7 +91,7 @@ namespace Gallio.Runner.Reports
         {
             string reportFilePath = GetReportFilePath(path);
 
-            return File.Open(reportFilePath, FileMode.Open, FileAccess.Read);
+            return File.Open(reportFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
         /// <inheritdoc />

@@ -140,6 +140,8 @@
     <Compile Include="Framework\ContractVerifiers\AbstractContract.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyContractAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\IContract.cs" />
+    <Compile Include="Framework\DefaultTestCaseTimeoutAttribute.cs" />
+    <Compile Include="Framework\DegreeOfParallelismAttribute.cs" />
     <Compile Include="Framework\LinkMixinAttribute.cs" />
     <Compile Include="Framework\XmlDataAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\ComparisonContract.cs" />

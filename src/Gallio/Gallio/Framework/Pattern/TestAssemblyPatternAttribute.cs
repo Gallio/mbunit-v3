@@ -63,6 +63,7 @@ namespace Gallio.Framework.Pattern
             assemblyScope.TestBuilder.Kind = TestKinds.Assembly;
 
             InitializeAssemblyTest(assemblyScope, assembly);
+            SetTestSemantics(assemblyScope.TestBuilder, assembly);
 
             if (skipChildren)
                 PrepareToPopulateChildrenOnDemand(assemblyScope, assembly);
@@ -97,6 +98,38 @@ namespace Gallio.Framework.Pattern
                 assemblyScope.TestBuilder.AddMetadata(pair.Key, pair.Value);
 
             assemblyScope.Process(assembly);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Applies semantic actions to the assembly-level test to estalish its runtime behavior.
+        /// </para>
+        /// <para>
+        /// This method is called after <see cref="InitializeAssemblyTest" />.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default behavior for a <see cref="TestAssemblyPatternAttribute" />
+        /// is to configure the test actions as follows:
+        /// <list type="bullet">
+        /// <item><see cref="IPatternTestHandler.InitializeTest" />: Reset the <see cref="TestAssemblyExecutionParameters" />
+        /// to defaults.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// You can override this method to change the semantics as required.
+        /// </para>
+        /// </remarks>
+        /// <param name="testBuilder">The test builder</param>
+        /// <param name="assembly">The assembly</param>
+        protected virtual void SetTestSemantics(ITestBuilder testBuilder, IAssemblyInfo assembly)
+        {
+            testBuilder.TestActions.InitializeTestChain.After(
+                delegate(PatternTestState testInstanceState)
+                {
+                    TestAssemblyExecutionParameters.Reset();
+                });
         }
 
         /// <summary>

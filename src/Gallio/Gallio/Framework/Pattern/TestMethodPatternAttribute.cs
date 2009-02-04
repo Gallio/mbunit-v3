@@ -73,7 +73,7 @@ namespace Gallio.Framework.Pattern
             methodScope.TestBuilder.Kind = TestKinds.Test;
             methodScope.TestBuilder.IsTestCase = true;
             methodScope.TestBuilder.Order = Order;
-            methodScope.TestBuilder.Timeout = TimeSpan.FromMinutes(10);
+            methodScope.TestBuilder.Timeout = TestAssemblyExecutionParameters.DefaultTestCaseTimeout;
 
             InitializeTest(methodScope, method);
             SetTestSemantics(methodScope.TestBuilder, method);

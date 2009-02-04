@@ -64,7 +64,7 @@ namespace Gallio.Framework.Pattern
                 {
                     progressMonitor.Canceled += canceledHandler;
 
-                    PatternTestGlobals.Reset();
+                    TestAssemblyExecutionParameters.Reset();
 
                     PatternTestExecutor executor = new PatternTestExecutor(options, progressMonitor, formatter, converter);
                     return executor.RunTest(rootTestCommand, parentTestStep, sandbox, null);

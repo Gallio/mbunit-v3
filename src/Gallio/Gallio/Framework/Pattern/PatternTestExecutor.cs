@@ -43,6 +43,7 @@ namespace Gallio.Framework.Pattern
         private readonly IProgressMonitor progressMonitor;
         private readonly IFormatter formatter;
         private readonly IConverter converter;
+        private readonly ParallelizableTestCaseScheduler scheduler;
 
         public PatternTestExecutor(TestExecutionOptions options, IProgressMonitor progressMonitor,
             IFormatter formatter, IConverter converter)
@@ -51,6 +52,9 @@ namespace Gallio.Framework.Pattern
             this.progressMonitor = progressMonitor;
             this.formatter = formatter;
             this.converter = converter;
+
+            scheduler = new ParallelizableTestCaseScheduler(() =>
+                TestAssemblyExecutionParameters.DegreeOfParallelism);
         }
 
         public TestOutcome RunTest(ITestCommand testCommand, ITestStep parentTestStep,
@@ -317,24 +321,39 @@ namespace Gallio.Framework.Pattern
         private TestOutcome RunTestChildren(ITestCommand testCommand, Sandbox sandbox,
             PatternTestInstanceState testInstanceState)
         {
-            TestPlan plan = new TestPlan(testCommand.Children);
-            return plan.Run(childTestCommand =>
+            var outcomeAccumulator = new ThreadSafeTestOutcomeAccumulator();
+
+            foreach (TestBatch batch in GenerateTestBatches(testCommand.Children))
             {
-                if (progressMonitor.IsCanceled)
-                    return TestOutcome.Canceled;
-
-                PatternTestHandlerDecorator testHandlerDecorator = delegate(Sandbox childSandbox, ref IPatternTestHandler childHandler)
+                scheduler.Run(batch.ToActions(childTestCommand => () =>
                 {
-                    PatternTestActions decoratedChildTestActions = PatternTestActions.CreateDecorator(childHandler);
-                    childHandler = decoratedChildTestActions;
+                    TestOutcome outcome;
+                    if (progressMonitor.IsCanceled)
+                    {
+                        outcome = TestOutcome.Canceled;
+                    }
+                    else
+                    {
+                        PatternTestHandlerDecorator testHandlerDecorator =
+                            delegate(Sandbox childSandbox, ref IPatternTestHandler childHandler)
+                            {
+                                PatternTestActions decoratedChildTestActions =
+                                    PatternTestActions.CreateDecorator(childHandler);
+                                childHandler = decoratedChildTestActions;
 
-                    return DoDecorateChildTest(childSandbox, testInstanceState, decoratedChildTestActions);
-                };
+                                return DoDecorateChildTest(childSandbox, testInstanceState, decoratedChildTestActions);
+                            };
 
-                ITestContext context = TestContextTrackerAccessor.Instance.CurrentContext;
-                ITestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
-                return RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator);
-            });
+                        ITestContext context = TestContextTrackerAccessor.Instance.CurrentContext;
+                        ITestStep parentTestStep = context != null ? context.TestStep : testInstanceState.TestStep;
+                        outcome = RunTest(childTestCommand, parentTestStep, sandbox, testHandlerDecorator);
+                    }
+
+                    outcomeAccumulator.Combine(outcome);
+                }));
+            }
+
+            return outcomeAccumulator.Generalize();
         }
 
         private static void UpdateInterimOutcome(TestContext context, ref TestOutcome outcome, TestOutcome newOutcome)
@@ -634,106 +653,94 @@ namespace Gallio.Framework.Pattern
             }
         }
 
-        private sealed class TestPlan
+        private static IEnumerable<TestBatch> GenerateTestBatches(IEnumerable<ITestCommand> commands)
         {
-            private readonly List<IList<ITestCommand>> batches;
-
-            public TestPlan(IEnumerable<ITestCommand> commands)
+            foreach (TestPartition partition in GenerateTestPartitions(commands))
             {
-                batches = new List<IList<ITestCommand>>();
+                if (partition.ParallelCommands.Count > 0)
+                    yield return new TestBatch(partition.ParallelCommands);
 
-                PopulateBatches(commands);
+                foreach (ITestCommand command in partition.SequentialCommands)
+                    yield return new TestBatch(new [] { command });
             }
+        }
 
-            public TestOutcome Run(Func<ITestCommand, TestOutcome> executionCallback)
+        private static IEnumerable<TestPartition> GenerateTestPartitions(IEnumerable<ITestCommand> commands)
+        {
+            TestPartition currentPartition = null;
+            int currentOrder = int.MinValue;
+            foreach (ITestCommand command in commands)
             {
-                TestOutcome outcome = TestOutcome.Passed;
-
-                foreach (IList<ITestCommand> batch in batches)
+                if (command.Test.Order != currentOrder)
                 {
-                    if (batch.Count == 1)
+                    if (currentPartition != null)
                     {
-                        outcome = outcome.CombineWith(executionCallback(batch[0]));
+                        yield return currentPartition;
+                        currentPartition = null;
                     }
-                    else if (batch.Count > 1)
-                    {
-                        TaskContainer taskContainer = new TaskContainer();
-                        AutoResetEvent finishedOne = new AutoResetEvent(false);
 
-                        taskContainer.TaskTerminated += delegate { finishedOne.Set(); };
-
-                        foreach (ITestCommand command in batch)
-                        {
-                            ITestCommand boundCommand = command;
-
-                            while (taskContainer.GetActiveTasks().Count >= PatternTestGlobals.DegreeOfParallelism)
-                                finishedOne.WaitOne();
-
-                            Task task = Tasks.StartThreadTask(String.Format("Parallel Test: {0}", command.Test.Name), () =>
-                            {
-                                outcome = outcome.CombineWith(executionCallback(boundCommand));
-                            });
-
-                            taskContainer.Watch(task);
-                        }
-
-                        taskContainer.JoinAll(null);
-                    }
+                    currentOrder = command.Test.Order;
                 }
 
-                return outcome.Generalize();
-            }
+                if (currentPartition == null)
+                    currentPartition = new TestPartition();
 
-            private void PopulateBatches(IEnumerable<ITestCommand> commands)
-            {
-                foreach (Pair<IList<ITestCommand>, IList<ITestCommand>> splits in SplitBatchesForParallelism(commands))
+                PatternTest test = command.Test as PatternTest;
+                if (test != null && test.IsParallelizable && command.Dependencies.Count == 0)
                 {
-                    if (splits.First.Count > 0)
-                        batches.Add(splits.First);
-
-                    foreach (ITestCommand command in splits.Second)
-                        batches.Add(new[] { command });
+                    currentPartition.ParallelCommands.Add(command);
+                }
+                else
+                {
+                    currentPartition.SequentialCommands.Add(command);
                 }
             }
-        
-            private IEnumerable<Pair<IList<ITestCommand>, IList<ITestCommand>>> SplitBatchesForParallelism(IEnumerable<ITestCommand> commands)
+
+            if (currentPartition != null)
+                yield return currentPartition;
+        }
+
+        private sealed class TestBatch
+        {
+            public TestBatch(IList<ITestCommand> commands)
             {
-                List<ITestCommand> parallel = null, sequential = null;
+                Commands = commands;
+            }
 
-                int currentOrder = int.MinValue;
-                foreach (ITestCommand command in commands)
-                {
-                    if (command.Test.Order != currentOrder)
-                    {
-                        if (parallel != null)
-                        {
-                            yield return new Pair<IList<ITestCommand>, IList<ITestCommand>>(parallel, sequential);
-                            parallel = null;
-                            sequential = null;
-                        }
+            public IList<ITestCommand> Commands { get; private set; }
 
-                        currentOrder = command.Test.Order;
-                    }
+            public IList<Action> ToActions(Converter<ITestCommand, Action> converter)
+            {
+                return GenericUtils.ConvertAllToArray(Commands, converter);
+            }
+        }
 
-                    if (parallel == null)
-                    {
-                        parallel = new List<ITestCommand>();
-                        sequential = new List<ITestCommand>();
-                    }
+        private sealed class TestPartition
+        {
+            public TestPartition()
+            {
+                ParallelCommands = new List<ITestCommand>();
+                SequentialCommands = new List<ITestCommand>();
+            }
 
-                    PatternTest test = command.Test as PatternTest;
-                    if (test != null && test.IsParallelizable && command.Dependencies.Count == 0)
-                    {
-                        parallel.Add(command);
-                    }
-                    else
-                    {
-                        sequential.Add(command);
-                    }
-                }
+            public IList<ITestCommand> ParallelCommands { get; private set; }
+            public IList<ITestCommand> SequentialCommands { get; private set; }
+        }
 
-                if (parallel != null)
-                    yield return new Pair<IList<ITestCommand>, IList<ITestCommand>>(parallel, sequential);
+        private sealed class ThreadSafeTestOutcomeAccumulator
+        {
+            private TestOutcome combinedOutcome = TestOutcome.Passed;
+
+            public void Combine(TestOutcome outcome)
+            {
+                lock (this)
+                    combinedOutcome = combinedOutcome.CombineWith(outcome);
+            }
+
+            public TestOutcome Generalize()
+            {
+                lock (this)
+                    return combinedOutcome.Generalize();
             }
         }
     }

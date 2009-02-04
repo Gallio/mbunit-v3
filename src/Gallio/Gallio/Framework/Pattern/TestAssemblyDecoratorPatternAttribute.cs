@@ -24,7 +24,7 @@ namespace Gallio.Framework.Pattern
     /// existing test declared at the assembly-level.
     /// </summary>
     /// <seealso cref="TestAssemblyPatternAttribute"/>
-    [AttributeUsage(PatternAttributeTargets.TestAssembly, AllowMultiple=true, Inherited=true)]
+    [AttributeUsage(PatternAttributeTargets.TestAssembly, AllowMultiple = true, Inherited = true)]
     public abstract class TestAssemblyDecoratorPatternAttribute : DecoratorPatternAttribute
     {
         /// <inheritdoc />

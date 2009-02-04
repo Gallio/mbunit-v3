@@ -51,29 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Framework\ApartmentStateTest.cs" />
-    <Compile Include="Framework\AssertOverSyntaxTest.cs" />
     <Compile Include="Compatibility\Framework\OldArrayAssertTest.cs" />
-    <Compile Include="Framework\AssertExTest.cs" />
-    <Compile Include="Framework\AssertImplementationConsistencyTest.cs" />
-    <Compile Include="Framework\AssertTest.cs" />
     <Compile Include="Compatibility\Framework\OldAssertTest.cs" />
     <Compile Include="Compatibility\Framework\OldAssertWithReflectionTest.cs" />
     <Compile Include="Compatibility\Framework\OldAssertWithTypeTest.cs" />
     <Compile Include="Compatibility\Framework\OldCollectionAssertTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EquivalenceClassTest.cs" />
-    <Compile Include="Framework\AssertTest_Strings.cs" />
     <Compile Include="Integration\ConfigurationFileTest.cs" />
-    <Compile Include="Framework\AutomaticTestFixtureTest.cs" />
     <Compile Include="Framework\RepeatTest.cs" />
     <Compile Include="Framework\ExplicitTest.cs" />
-    <Compile Include="Framework\CsvDataTest.cs" />
     <Compile Include="Framework\FactoryTest.cs" />
     <Compile Include="Compatibility\Framework\OldFileAssertTest.cs" />
     <Compile Include="Compatibility\Framework\OldGenericAssertTest.cs" />
-    <Compile Include="Framework\DataBindingTest.cs" />
-    <Compile Include="Framework\AssertionExceptionTest.cs" />
     <Compile Include="Framework\Reflection\ReflectionExceptionTest.cs" />
     <Compile Include="Framework\ThreadedRepeatTest.cs" />
     <Compile Include="Integration\ContextOutcomeTest.cs" />
@@ -121,20 +111,62 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Framework\CsvDataTest.csv" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Framework\AssertTest_Collections.cs" />
-    <Compile Include="Framework\AssertTest_Comparisons.cs" />
-    <Compile Include="Framework\AssertTest_Exceptions.cs" />
-    <Compile Include="Framework\AssertTest_Reflection.cs" />
-    <Compile Include="Framework\AssertTest_Relations.cs" />
-    <Compile Include="Framework\BaseAssertTest.cs" />
+    <Compile Include="Framework\ApartmentStateTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertExTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertImplementationConsistencyTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertionExceptionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertOverSyntaxTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertTest_Collections.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertTest_Comparisons.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertTest_Exceptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertTest_Reflection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertTest_Relations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AssertTest_Strings.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\AutomaticTestFixtureTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\BaseAssertTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Framework\ContractVerifiers\AbstractContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ComparisonContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EqualityContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ExceptionContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ImmutabilityContractTest.cs" />
+    <Compile Include="Framework\TimeoutAttributeTest.cs" />
+    <Compile Include="Framework\CsvDataTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\DataBindingTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Framework\DefaultTestCaseTimeoutAttributeTest.cs" />
+    <Compile Include="Framework\DegreeOfParallelismAttributeTest.cs" />
     <Compile Include="Framework\MixinTest.cs" />
     <Compile Include="Framework\XmlDataTest.cs" />
     <Compile Include="Framework\ParallelizableTest.cs" />
@@ -143,6 +175,7 @@
     <Compile Include="Framework\IsolationTest.cs" />
     <Compile Include="Framework\RollbackAttributeTest.cs" />
     <Compile Include="Framework\TestCaseTest.cs" />
+    <EmbeddedResource Include="Framework\CsvDataTest.csv" />
     <EmbeddedResource Include="Framework\XmlDataTest.xml" />
     <None Include="MbUnit.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -15,6 +15,7 @@
 
 using System;
 using Gallio;
+using Gallio.Framework.Pattern;
 using Gallio.Model;
 using Gallio.Model.Diagnostics;
 
@@ -50,7 +51,7 @@ namespace MbUnit.Framework
                 throw new ArgumentNullException("execute");
 
             Execute = execute;
-            Timeout = TimeSpan.FromMinutes(10);
+            Timeout = TestAssemblyExecutionParameters.DefaultTestCaseTimeout;
         }
 
         /// <summary>

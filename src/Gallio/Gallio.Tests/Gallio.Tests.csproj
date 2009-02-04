@@ -57,7 +57,8 @@
     <Compile Include="Concurrency\LockBoxTest.cs" />
     <Compile Include="Concurrency\ProcessTaskTest.cs" />
     <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
-    <Compile Include="Framework\Pattern\PatternTestGlobalsTest.cs" />
+    <Compile Include="Framework\Pattern\ParallelizableTestCaseSchedulerTest.cs" />
+    <Compile Include="Framework\Pattern\TestAssemblyExecutionParametersTest.cs" />
     <Compile Include="FuncChainTest.cs" />
     <Compile Include="Framework\Assertions\AssertionConditionEvaluatorTest.cs" />
     <Compile Include="Framework\Assertions\AssertionContextTest.cs" />

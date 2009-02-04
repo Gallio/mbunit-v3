@@ -20,25 +20,20 @@ using System.Text;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// Provides global runtime configuration values for the pattern test framework during execution.
+    /// Configures runtime parameters while executing tests within a test assembly.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Using static variables is a bad idea.  We will probably refactor this and move the configuration
-    /// parameters elsewhere.
-    /// </para>
-    /// </remarks>
-    public static class PatternTestGlobals
+    public static class TestAssemblyExecutionParameters
     {
         private static int degreeOfParallelism;
+        private static TimeSpan? defaultTestCaseTimeout;
 
-        static PatternTestGlobals()
+        static TestAssemblyExecutionParameters()
         {
             Reset();
         }
 
         /// <summary>
-        /// Specifies the number of concurrent threads to spin up when tests are run in parallel.
+        /// Specifies the maximum number of concurrent threads to use when tests are run in parallel.
         /// </summary>
         /// <value>The degree of parallelism.  Defaults to <see cref="Environment.ProcessorCount" /> or 2, whichever is greater.</value>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than 1</exception>
@@ -54,11 +49,27 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
+        /// Specifies the default test case timeout or null if none.
+        /// </summary>
+        /// <value>The default timeout for test cases or null if none.  Defaults to 10 minutes.</value>
+        public static TimeSpan? DefaultTestCaseTimeout
+        {
+            get { return defaultTestCaseTimeout; }
+            set
+            {
+                if (value.HasValue && value.Value.Ticks < 0)
+                    throw new ArgumentOutOfRangeException("value", "Default test case timeout must be non-negative or null.");
+                defaultTestCaseTimeout = value;
+            }
+        }
+
+        /// <summary>
         /// Resets the globals to default values.
         /// </summary>
         public static void Reset()
         {
             DegreeOfParallelism = Math.Max(2, Environment.ProcessorCount);
+            DefaultTestCaseTimeout = TimeSpan.FromMinutes(10);
         }
     }
 }
