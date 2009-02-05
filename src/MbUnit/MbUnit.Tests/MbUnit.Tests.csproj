@@ -158,6 +158,8 @@
     <Compile Include="Framework\ContractVerifiers\EqualityContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ExceptionContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ImmutabilityContractTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\DistinctInstanceCollectionTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\CollectionContractTest.cs" />
     <Compile Include="Framework\TimeoutAttributeTest.cs" />
     <Compile Include="Framework\CsvDataTest.cs">
       <SubType>Code</SubType>

@@ -1,0 +1,393 @@
+﻿// Copyright 2005-2008 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
+using System.Linq;
+using System.Runtime.Serialization;
+using Gallio.Model;
+using Gallio.Runner.Reports;
+using Gallio.Tests;
+using Gallio.Tests.Integration;
+using MbUnit.Framework;
+using MbUnit.Framework.ContractVerifiers;
+using System.Collections.Generic;
+
+namespace MbUnit.Tests.Framework.ContractVerifiers
+{
+    [RunSample(typeof(BasicSampleTest))]
+    [RunSample(typeof(NotWriteableBasicTest))]
+    [RunSample(typeof(ReadOnlySampleTest))]
+    [RunSample(typeof(NotReadOnlySampleTest))]
+    [RunSample(typeof(BasicSampleWithNoDefaultConstructorTest))]
+    [RunSample(typeof(BasicNullableSampleTest))]
+    [RunSample(typeof(BuggyAddSampleTest))]
+    [RunSample(typeof(BuggyClearSampleTest))]
+    [RunSample(typeof(NoDoubletSampleTest))]
+    public class CollectionContractTest : AbstractContractTest
+    {
+        [Test]
+        [Row(typeof(BasicSampleTest), "VerifyReadOnlyProperty", TestStatus.Passed)]
+        [Row(typeof(BasicSampleTest), "AddShouldThrowNotSupportedException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleTest), "RemoveShouldThrowNotSupportedException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleTest), "ClearShouldThrowNotSupportedException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleTest), "AddNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleTest), "RemoveNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleTest), "ContainsNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleTest), "AddItems", TestStatus.Passed)]
+        [Row(typeof(BasicSampleTest), "Clear", TestStatus.Passed)]
+        [Row(typeof(BasicSampleTest), "AddEqualItems", TestStatus.Passed)]
+        [Row(typeof(BasicSampleTest), "RemoveItems", TestStatus.Passed)]
+        [Row(typeof(NotWriteableBasicTest), "VerifyReadOnlyProperty", TestStatus.Failed)]
+        [Row(typeof(NotWriteableBasicTest), "AddShouldThrowNotSupportedException", TestStatus.Inconclusive)]
+        [Row(typeof(NotWriteableBasicTest), "RemoveShouldThrowNotSupportedException", TestStatus.Inconclusive)]
+        [Row(typeof(NotWriteableBasicTest), "ClearShouldThrowNotSupportedException", TestStatus.Inconclusive)]
+        [Row(typeof(NotWriteableBasicTest), "AddNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(NotWriteableBasicTest), "RemoveNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(NotWriteableBasicTest), "ContainsNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(NotWriteableBasicTest), "AddItems", TestStatus.Failed)]
+        [Row(typeof(NotWriteableBasicTest), "Clear", TestStatus.Failed)]
+        [Row(typeof(NotWriteableBasicTest), "AddEqualItems", TestStatus.Failed)]
+        [Row(typeof(NotWriteableBasicTest), "RemoveItems", TestStatus.Failed)]
+        [Row(typeof(ReadOnlySampleTest), "VerifyReadOnlyProperty", TestStatus.Passed)]
+        [Row(typeof(ReadOnlySampleTest), "AddShouldThrowNotSupportedException", TestStatus.Passed)]
+        [Row(typeof(ReadOnlySampleTest), "RemoveShouldThrowNotSupportedException", TestStatus.Passed)]
+        [Row(typeof(ReadOnlySampleTest), "ClearShouldThrowNotSupportedException", TestStatus.Passed)]
+        [Row(typeof(ReadOnlySampleTest), "AddNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(ReadOnlySampleTest), "RemoveNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(ReadOnlySampleTest), "ContainsNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(ReadOnlySampleTest), "AddItems", TestStatus.Inconclusive)]
+        [Row(typeof(ReadOnlySampleTest), "Clear", TestStatus.Inconclusive)]
+        [Row(typeof(ReadOnlySampleTest), "AddEqualItems", TestStatus.Inconclusive)]
+        [Row(typeof(ReadOnlySampleTest), "RemoveItems", TestStatus.Inconclusive)]
+        [Row(typeof(NotReadOnlySampleTest), "VerifyReadOnlyProperty", TestStatus.Failed)]
+        [Row(typeof(NotReadOnlySampleTest), "AddShouldThrowNotSupportedException", TestStatus.Failed)]
+        [Row(typeof(NotReadOnlySampleTest), "RemoveShouldThrowNotSupportedException", TestStatus.Failed)]
+        [Row(typeof(NotReadOnlySampleTest), "ClearShouldThrowNotSupportedException", TestStatus.Failed)]
+        [Row(typeof(NotReadOnlySampleTest), "AddNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(NotReadOnlySampleTest), "RemoveNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(NotReadOnlySampleTest), "ContainsNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(NotReadOnlySampleTest), "AddItems", TestStatus.Inconclusive)]
+        [Row(typeof(NotReadOnlySampleTest), "Clear", TestStatus.Inconclusive)]
+        [Row(typeof(NotReadOnlySampleTest), "AddEqualItems", TestStatus.Inconclusive)]
+        [Row(typeof(NotReadOnlySampleTest), "RemoveItems", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "VerifyReadOnlyProperty", TestStatus.Passed)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "AddShouldThrowNotSupportedException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "RemoveShouldThrowNotSupportedException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "ClearShouldThrowNotSupportedException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "AddNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "RemoveNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "ContainsNullArgumentShouldThrowArgumentNullException", TestStatus.Inconclusive)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "AddItems", TestStatus.Passed)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "Clear", TestStatus.Passed)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "AddEqualItems", TestStatus.Passed)]
+        [Row(typeof(BasicSampleWithNoDefaultConstructorTest), "RemoveItems", TestStatus.Passed)]
+        [Row(typeof(BasicNullableSampleTest), "AddNullArgumentShouldThrowArgumentNullException", TestStatus.Passed)]
+        [Row(typeof(BasicNullableSampleTest), "RemoveNullArgumentShouldThrowArgumentNullException", TestStatus.Passed)]
+        [Row(typeof(BasicNullableSampleTest), "ContainsNullArgumentShouldThrowArgumentNullException", TestStatus.Passed)]
+        [Row(typeof(BuggyAddSampleTest), "AddItems", TestStatus.Failed)]
+        [Row(typeof(BuggyClearSampleTest), "AddItems", TestStatus.Passed)]
+        [Row(typeof(BuggyClearSampleTest), "Clear", TestStatus.Failed)]
+        [Row(typeof(NoDoubletSampleTest), "AddEqualItems", TestStatus.Passed)]
+        [Row(typeof(NoDoubletSampleTest), "RemoveItems", TestStatus.Passed)]
+        public void VerifySampleCollectionContract(Type fixtureType, string testMethodName, TestStatus expectedTestStatus)
+        {
+            VerifySampleContract("CollectionTests", fixtureType, testMethodName, expectedTestStatus);
+        }
+
+        #region Sample contracts
+
+        [Explicit]
+        internal class BasicSampleTest
+        {
+            [VerifyContract]
+            public readonly IContract CollectionTests = new CollectionContract<BasicSample<int>, int>
+            {
+                IsReadOnly = false,
+                DistinctInstances = { 1, 2, 3 }
+            };
+        }
+
+        [Explicit]
+        internal class NotWriteableBasicTest
+        {
+            [VerifyContract]
+            public readonly IContract CollectionTests = new CollectionContract<ReadOnlySample<int>, int>
+            {
+                IsReadOnly = false,
+                DistinctInstances = { 1, 2, 3 }
+            };
+        }
+
+        [Explicit]
+        internal class ReadOnlySampleTest
+        {
+            [VerifyContract]
+            public readonly IContract CollectionTests = new CollectionContract<ReadOnlySample<int>, int>
+            {
+                IsReadOnly = true,
+                DistinctInstances = { 1, 2, 3 }
+            };
+        }
+
+        [Explicit]
+        internal class NotReadOnlySampleTest
+        {
+            [VerifyContract]
+            public readonly IContract CollectionTests = new CollectionContract<BasicSample<int>, int>
+            {
+                IsReadOnly = true,
+                DistinctInstances = { 1, 2, 3 }
+            };
+        }
+
+        [Explicit]
+        internal class BasicSampleWithNoDefaultConstructorTest
+        {
+            [VerifyContract]
+            public readonly IContract CollectionTests = new CollectionContract<BasicSampleWithNoDefaultConstructor<int>, int>
+            {
+                GetDefaultInstance = () => new BasicSampleWithNoDefaultConstructor<int>(new[] { 1, 2, 3 }),
+                DistinctInstances = { 4, 5, 6 },
+            };
+        }
+
+        [Explicit]
+        internal class BasicNullableSampleTest
+        {
+            [VerifyContract]
+            public readonly IContract CollectionTests = new CollectionContract<BasicSample<Foo>, Foo>
+            {
+                IsReadOnly = false,
+                DistinctInstances = { new Foo(1), new Foo(2), new Foo(3) },
+                AcceptNullReference = false
+            };
+        }
+
+        internal class Foo
+        {
+            private readonly int value;
+
+            public Foo(int value)
+            {
+                this.value = value;
+            }
+        }
+
+        [Explicit]
+        internal class BuggyAddSampleTest
+        {
+            [VerifyContract]
+            public readonly IContract CollectionTests = new CollectionContract<BuggyAddSample<int>, int>
+            {
+                IsReadOnly = false,
+                DistinctInstances = { 1, 2, 3 }
+            };
+        }
+
+        [Explicit]
+        internal class BuggyClearSampleTest
+        {
+            [VerifyContract]
+            public readonly IContract CollectionTests = new CollectionContract<BuggyClearSample<Foo>, Foo>
+            {
+                IsReadOnly = false,
+                DistinctInstances = { new Foo(1), new Foo(2), new Foo(3) }
+            };
+        }
+
+        [Explicit]
+        internal class NoDoubletSampleTest
+        {
+            [VerifyContract]
+            public readonly IContract CollectionTests = new CollectionContract<NoDoubletSample<Foo>, Foo>
+            {
+                IsReadOnly = false,
+                AcceptEqualItems = false,
+                DistinctInstances = { new Foo(1), new Foo(2), new Foo(3) }
+            };
+        }
+
+        #endregion
+
+        #region Sample collections
+
+        /// <summary>
+        /// Minimal and operational implementation of a collection.
+        /// </summary>
+        /// <typeparam name="T">The type of the items</typeparam>
+        internal class BasicSample<T> : ICollection<T>
+        {
+            private List<T> items = new List<T>();
+
+            protected void CheckItemNotNull(T item)
+            {
+                if (item == null)
+                {
+                    throw new ArgumentNullException("item");
+                }
+            }
+
+            public virtual void Add(T item)
+            {
+                CheckItemNotNull(item);
+                items.Add(item);
+            }
+
+            public virtual void Clear()
+            {
+                items.Clear();
+            }
+
+            public virtual bool Contains(T item)
+            {
+                CheckItemNotNull(item);
+                return items.Contains(item);
+            }
+
+            public virtual void CopyTo(T[] array, int arrayIndex)
+            {
+                items.CopyTo(array, arrayIndex);
+            }
+
+            public virtual int Count
+            {
+                get
+                {
+                    return items.Count;
+                }
+            }
+
+            public virtual bool IsReadOnly
+            {
+                get
+                {
+                    return false;
+                }
+            }
+
+            public virtual bool Remove(T item)
+            {
+                CheckItemNotNull(item);
+                return items.Remove(item);
+            }
+
+            public virtual IEnumerator<T> GetEnumerator()
+            {
+                return items.GetEnumerator();
+            }
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                foreach (T item in items)
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Minimal and operational implementation of a read-only collection.
+        /// Add, Remove, or Clear throws a NotSupportedException.
+        /// </summary>
+        /// <typeparam name="T">The type of the items</typeparam>
+        internal class ReadOnlySample<T> : BasicSample<T>
+        {
+            public override void Add(T item)
+            {
+                throw new NotSupportedException();
+            }
+
+            public override void Clear()
+            {
+                throw new NotSupportedException();
+            }
+
+            public override  bool IsReadOnly
+            {
+                get
+                {
+                    return true;
+                }
+            }
+
+            public override bool Remove(T item)
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        /// <summary>
+        /// Same as "BasicSample" but with hiding the default constructor.
+        /// Most of tests will fail if the user does not provide manually a default instance 
+        /// to the contract verifyer by using the property "DefaultInstance".
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        internal class BasicSampleWithNoDefaultConstructor<T> : BasicSample<T>
+        {
+            public BasicSampleWithNoDefaultConstructor(IEnumerable<T> items)
+            {
+                foreach (T item in items)
+                {
+                    Add(item);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Same as "BasicSample", but with a buggy implementation of "Add".
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        internal class BuggyAddSample<T> : BasicSample<T>
+        {
+            public override void Add(T item)
+            {
+                // Oops! Missing implementation here!
+            }
+        }
+
+        /// <summary>
+        /// Same as "BasicSample", but with a buggy implementation of "Clear".
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        internal class BuggyClearSample<T> : BasicSample<T>
+        {
+            public override void Clear()
+            {
+                // Empty the trash yourself!
+            }
+        }
+
+        /// <summary>
+        /// Same as "BasicSample", which does not accept doublet items.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        internal class NoDoubletSample<T> : BasicSample<T>
+        {
+            public override void Add(T item)
+            {
+                CheckItemNotNull(item);
+
+                if (Contains(item))
+                {
+                    throw new ArgumentException();
+                }
+
+                base.Add(item);
+            }
+        }
+
+        #endregion
+    }
+}
