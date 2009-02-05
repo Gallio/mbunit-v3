@@ -25,7 +25,7 @@ namespace MbUnit.Samples.ContractVerifiers.Collection
         public readonly IContract CollectionTests = new CollectionContract<SampleCollection, Foo>
         {
             // Do not accept equal items in the collection.
-            // Optional; default is false.
+            // Optional; default is true.
             AcceptEqualItems = false,
 
             // Do consider null references as illegal items.

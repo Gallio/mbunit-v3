@@ -23,18 +23,70 @@ using Gallio;
 namespace MbUnit.Framework.ContractVerifiers
 {
     /// <summary>
+    /// <para>
     /// Contract for verifying the implementation of the generic <see cref="ICollection{T}"/>.
+    /// </para>
+    /// <para>
+    /// Built-in verifications:
+    /// <list type="bullet">
+    /// <item>
+    /// <term>VerifyReadOnlyProperty</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>AddShouldThrowNotSupportedException</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>RemoveShouldThrowNotSupportedException</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>ClearShouldThrowNotSupportedException</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>AddNullArgumentShouldThrowArgumentNullException</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>RemoveNullArgumentShouldThrowArgumentNullException</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>ContainsNullArgumentShouldThrowArgumentNullException</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>AddItems</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>RemoveItems</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>AddEqualItems</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// <item>
+    /// <term>ClearItems</term>
+    /// <description>[Add some description here...]</description>
+    /// </item>
+    /// </list>
+    /// </para>
     /// </summary>
-    /// <typeparam name="TCollection"></typeparam>
-    /// <typeparam name="TItem"></typeparam>
+    /// <typeparam name="TCollection">The type of the collection implementing <see cref="ICollection{T}"/>.</typeparam>
+    /// <typeparam name="TItem">The type of items contained in the collection.</typeparam>
     public class CollectionContract<TCollection, TItem> : AbstractContract
         where TCollection : ICollection<TItem>
     {
         /// <summary>
         /// Provides a default instance of the collection which may contain or not items already.
         /// By default, the contract verifier attempts to invoke the default constructor
-        /// of the collection. Override the default provider if the tested collection
-        /// does not have a default constructor.
+        /// of the collection. Overwrite the default provider if the tested collection
+        /// does not have a default constructor, or if you want the contract verifier
+        /// to use a particular instance.
         /// </summary>
         public Func<TCollection> GetDefaultInstance
         {
@@ -53,7 +105,7 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Determines whether the collection accepts null references as valid items.
+        /// Determines whether the collection is expected to accept null references as valid items.
         /// The default value is false.
         /// </summary>
         public bool AcceptNullReference
@@ -63,7 +115,7 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
-        /// Determines whether the collection accepts several identical items (by object equality).
+        /// Determines whether the collection is expected to accept several identical items (object equality).
         /// The default value is true.
         /// </summary>
         public bool AcceptEqualItems
@@ -190,7 +242,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
         private Test CreateClearTest()
         {
-            return new TestCase("Clear", () =>
+            return new TestCase("ClearItems", () =>
             {
                 var collection = GetDefaultInstance();
 

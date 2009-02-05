@@ -27,8 +27,8 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </para>
     /// <para>
     /// Equivalent classes are used by some contract verifiers such as 
-    /// <see cref="EqualityContract{TTarget}"/>  to check for 
-    /// the correct implementation of object equality or comparison.
+    /// <see cref="EqualityContract{TTarget}"/> and <see cref="ComparisonContract{TTarget}"/> 
+    /// to check for the correct implementation of object equality or comparison.
     /// </para>
     /// <para>
     /// Use the default constructor followed by a list initializer to create a 
