@@ -95,8 +95,8 @@ namespace Gallio.Framework.Pattern
             
             if (consumer != null)
             {
-                foreach (IPatternScope scope in evaluator.GetDeclaredTests(type))
-                    consumer(scope.TestBuilder.ToTest());
+                foreach (PatternTest test in evaluator.GetDeclaredTests(type))
+                    consumer(test);
             }
         }
 
