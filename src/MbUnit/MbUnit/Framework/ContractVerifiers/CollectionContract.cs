@@ -19,6 +19,7 @@ using System.Reflection;
 using Gallio.Collections;
 using Gallio.Framework.Assertions;
 using Gallio;
+using System.Collections.ObjectModel;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -31,47 +32,102 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <list type="bullet">
     /// <item>
     /// <term>VerifyReadOnlyProperty</term>
-    /// <description>[Add some description here...]</description>
+    /// <description>The <see cref="ICollection{T}.IsReadOnly"/> property returns a value in accordance to 
+    /// the expected result determined in the declaration of the contract verifier, by setting the property
+    /// <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/>. By default, the collection is
+    /// expected to be not read-only (items can be added and removed, and the collection to be cleared).</description>
     /// </item>
     /// <item>
-    /// <term>AddShouldThrowNotSupportedException</term>
-    /// <description>[Add some description here...]</description>
+    /// <term>AddShouldThrowException</term>
+    /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Add"/> is called.
+    /// <remarks>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'false'.
+    /// </remarks>
+    /// </description>
     /// </item>
     /// <item>
-    /// <term>RemoveShouldThrowNotSupportedException</term>
-    /// <description>[Add some description here...]</description>
+    /// <term>RemoveShouldThrowException</term>
+    /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Remove"/>
+    /// is called.
+    /// <remarks>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'false'.
+    /// </remarks>
+    /// </description>
     /// </item>
     /// <item>
-    /// <term>ClearShouldThrowNotSupportedException</term>
-    /// <description>[Add some description here...]</description>
+    /// <term>ClearShouldThrowException</term>
+    /// <description>The read-only collection throws an exception when the method <see cref="ICollection{T}.Clear"/> is called. 
+    /// <remarks>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'false'.
+    /// </remarks>
+    /// </description>
     /// </item>
     /// <item>
-    /// <term>AddNullArgumentShouldThrowArgumentNullException</term>
-    /// <description>[Add some description here...]</description>
+    /// <term>AddNullArgument</term>
+    /// <description>The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Add"/>
+    /// is called with a null reference item. 
+    /// <remarks>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to 'true'.
+    /// </remarks>
+    /// </description>
     /// </item>
     /// <item>
-    /// <term>RemoveNullArgumentShouldThrowArgumentNullException</term>
-    /// <description>[Add some description here...]</description>
+    /// <term>RemoveNullArgument</term>
+    /// <description>
+    /// The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Remove"/>
+    /// is called with a null reference item.
+    /// <remarks>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to 'true'.
+    /// </remarks>
+    /// </description>
     /// </item>
     /// <item>
-    /// <term>ContainsNullArgumentShouldThrowArgumentNullException</term>
-    /// <description>[Add some description here...]</description>
+    /// <term>ContainsNullArgument</term>
+    /// <description>
+    /// The collection throwns a <see cref="ArgumentNullException"/> when the method <see cref="ICollection{T}.Contains"/> 
+    /// is called with a null reference item. 
+    /// <remarks>
+    /// The test is not run when the contract property 
+    /// <see cref="CollectionContract{TCollection,TItem}.AcceptNullReference"/> is set to 'true'.
+    /// </remarks>
+    /// </description>
     /// </item>
     /// <item>
     /// <term>AddItems</term>
-    /// <description>[Add some description here...]</description>
+    /// <description>
+    /// The collection handles correctly with the addition of new items. The method 
+    /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
+    /// to return suited results as well. The case of duplicate items (object equality) is tested too; according
+    /// to the value of contract property <see cref="CollectionContract{TCollection,TItem}.AcceptEqualItems"/>.
+    /// <remarks>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'true'.
+    /// </remarks>
+    /// </description>
     /// </item>
     /// <item>
     /// <term>RemoveItems</term>
-    /// <description>[Add some description here...]</description>
-    /// </item>
-    /// <item>
-    /// <term>AddEqualItems</term>
-    /// <description>[Add some description here...]</description>
+    /// The collection handles correctly with the removal of items. The method 
+    /// <see cref="ICollection{T}.Contains"/> and the property <see cref="ICollection{T}.Count"/> are expected
+    /// to return suited results as well.
+    /// <remarks>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'true'.
+    /// </remarks>
     /// </item>
     /// <item>
     /// <term>ClearItems</term>
-    /// <description>[Add some description here...]</description>
+    /// <description>
+    /// The collection is cleared as expected when the method <see cref="ICollection{T}.Clear"/> is called.
+    /// <remarks>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> is set to 'true'.
+    /// </remarks>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>CopyTo</term>
+    /// <description>
+    /// Not implemented yet. 
+    /// The test already succeeds.
+    /// </description>
     /// </item>
     /// </list>
     /// </para>
@@ -82,11 +138,21 @@ namespace MbUnit.Framework.ContractVerifiers
         where TCollection : ICollection<TItem>
     {
         /// <summary>
-        /// Provides a default instance of the collection which may contain or not items already.
-        /// By default, the contract verifier attempts to invoke the default constructor
-        /// of the collection. Overwrite the default provider if the tested collection
-        /// does not have a default constructor, or if you want the contract verifier
-        /// to use a particular instance.
+        /// <para>
+        /// Provides a default instance of the collection to test.
+        /// By default, the contract verifier attempts to invoke the default constructor to get an valid instance. 
+        /// Overwrite the default provider if the collection has no default constructor, or if you want 
+        /// the contract verifier to use a particular instance.
+        /// <example>
+        /// <code><![CDATA[
+        /// [VerifyContract]
+        /// public readonly IContract CollectionTests = new CollectionContract<MyCollection, int>
+        /// {
+        ///     GetDefaultInstance = () => new MyCollection(1, 2, 3)
+        /// };
+        /// ]]></code>
+        /// </example>
+        /// </para>
         /// </summary>
         public Func<TCollection> GetDefaultInstance
         {
@@ -95,8 +161,12 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
+        /// <para>
         /// Determines whether the tested collection is expected to be read-only.
-        /// The default value is false.
+        /// </para>
+        /// <remarks>
+        /// The default value is 'false'.
+        /// </remarks>
         /// </summary>
         public bool IsReadOnly
         {
@@ -105,8 +175,12 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
+        /// <para>
         /// Determines whether the collection is expected to accept null references as valid items.
-        /// The default value is false.
+        /// </para>
+        /// <remarks>
+        /// The default value is 'false'.
+        /// </remarks>
         /// </summary>
         public bool AcceptNullReference
         {
@@ -115,8 +189,13 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <summary>
+        /// <para>
         /// Determines whether the collection is expected to accept several identical items (object equality).
         /// The default value is true.
+        /// </para>
+        /// <remarks>
+        /// The default value is 'false'.
+        /// </remarks>
         /// </summary>
         public bool AcceptEqualItems
         {
@@ -132,10 +211,10 @@ namespace MbUnit.Framework.ContractVerifiers
         /// In order to optimize the tests, consider to provide:
         /// <list type="bullet">
         /// <item>
-        /// Some items which are not in the default collection instance yet.
+        /// items which are not in the default collection instance yet.
         /// </item>
         /// <item>
-        /// Some items which are in the default collection instance already (if not empty).
+        /// items which are in the default collection instance already (if not empty).
         /// </item>
         /// </list>
         /// </para>
@@ -163,24 +242,25 @@ namespace MbUnit.Framework.ContractVerifiers
 
             if (IsReadOnly)
             {
-                yield return CreateMethodShouldThrowNotSupportedExceptionTest("Add", (collection, item) => collection.Add(item));
-                yield return CreateMethodShouldThrowNotSupportedExceptionTest("Remove", (collection, item) => collection.Remove(item));
-                yield return CreateMethodShouldThrowNotSupportedExceptionTest("Clear", (collection, item) => collection.Clear());
+                yield return CreateNotSupportedWriteTest("Add", (collection, item) => collection.Add(item));
+                yield return CreateNotSupportedWriteTest("Remove", (collection, item) => collection.Remove(item));
+                yield return CreateNotSupportedWriteTest("Clear", (collection, item) => collection.Clear());
             }
             else
             {
                 if (!typeof(TItem).IsValueType && !AcceptNullReference)
                 {
-                    yield return CreateMethodWithNullArgumentShouldThrowExceptionTest("Add", collection => collection.Add(default(TItem)));
-                    yield return CreateMethodWithNullArgumentShouldThrowExceptionTest("Remove", collection => collection.Remove(default(TItem)));
-                    yield return CreateMethodWithNullArgumentShouldThrowExceptionTest("Contains", collection => collection.Contains(default(TItem)));
+                    yield return CreateNullArgumentTest("Add", collection => collection.Add(default(TItem)));
+                    yield return CreateNullArgumentTest("Remove", collection => collection.Remove(default(TItem)));
+                    yield return CreateNullArgumentTest("Contains", collection => collection.Contains(default(TItem)));
                 }
 
-                yield return CreateAddItemsTest();
                 yield return CreateClearTest();
-                yield return CreateAddEqualItemsTest();
                 yield return CreateRemoveItemsTest();
+                yield return CreateAddItemsTest();
             }
+
+            yield return CreateCopyToTest();
 
             // TODO: Missing test(s) for ICollection<T>.CopyTo.
         }
@@ -209,7 +289,7 @@ namespace MbUnit.Framework.ContractVerifiers
                     if (IsReadOnly == collection.IsReadOnly)
                         return null;
 
-                    return new AssertionFailureBuilder("Expected the collection to be marked as read-only.")
+                    return new AssertionFailureBuilder("Expected the read-only property of the collection to return a specific value.")
                         .AddLabeledValue("Property", "IsReadOnly")
                         .AddRawLabeledValue("Expected Value", IsReadOnly)
                         .AddRawLabeledValue("Actual Value", collection.IsReadOnly)
@@ -218,25 +298,65 @@ namespace MbUnit.Framework.ContractVerifiers
             });
         }
 
-        private Test CreateMethodShouldThrowNotSupportedExceptionTest(string methodName, Action<TCollection, TItem> invoke)
+        private Test CreateNotSupportedWriteTest(string methodName, Action<TCollection, TItem> invoke)
         {
-            return new TestCase(String.Format("{0}ShouldThrowNotSupportedException", methodName), () =>
+            return new TestCase(String.Format("{0}ShouldThrowException", methodName), () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var collection = GetDefaultInstance();
-                var item = DistinctInstances.Instances[0];
-                Assert.Throws<NotSupportedException>(() => invoke(collection, item),
-                    "The readonly collection should thrown an exception when the method '{0}' is called.", methodName);
+
+                foreach(var item in DistinctInstances)
+                {
+                    var collection = GetDefaultInstance();
+
+                    AssertionHelper.Verify(() =>
+                    {
+                        try
+                        {
+                            invoke(collection, item);
+                            
+                            return new AssertionFailureBuilder("Expected a method of the read-only collection to throw an exception when called.")
+                                .AddLabeledValue("Method", methodName)
+                                .ToAssertionFailure();
+                        }
+                        catch (Exception)
+                        {
+                            return null;
+                        }
+                    });
+                }
             });
         }
 
-        private Test CreateMethodWithNullArgumentShouldThrowExceptionTest(string methodName, Action<TCollection> invoke)
+        private Test CreateNullArgumentTest(string methodName, Action<TCollection> invoke)
         {
-            return new TestCase(String.Format("{0}NullArgumentShouldThrowArgumentNullException", methodName), () =>
+            return new TestCase(String.Format("{0}NullArgument", methodName), () =>
             {
                 var collection = GetDefaultInstance();
-                Assert.Throws<ArgumentNullException>(() => invoke(collection),
-                    "The collection should thrown an exception when the method '{0}' is called with a null reference argument.", methodName);
+
+                AssertionHelper.Verify(() =>
+                {
+                    try
+                    {
+                        invoke(collection);
+
+                        return new AssertionFailureBuilder("Expected a method to throw an exception when called with a null argument.")
+                            .AddLabeledValue("Method", methodName)
+                            .AddRawLabeledValue("Expected Exception", typeof(ArgumentNullException))
+                            .ToAssertionFailure();
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        return null;
+                    }
+                    catch (Exception actualException)
+                    {
+                        return new AssertionFailureBuilder("A method threw an exception of a different type than was expected while called with a null argument.")
+                            .AddLabeledValue("Method", methodName)
+                            .AddRawLabeledValue("Expected Exception", typeof(ArgumentNullException))
+                            .AddException(actualException)
+                            .ToAssertionFailure();
+                    }
+                });
             });
         }
 
@@ -244,13 +364,12 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase("ClearItems", () =>
             {
+                AssertDistinctIntancesNotEmpty();
                 var collection = GetDefaultInstance();
 
-                if (collection.Count == 0)
+                if (collection.Count == 0) 
                 {
                     // The default instance is empty: add some items.
-                    AssertDistinctIntancesNotEmpty();
-
                     foreach (var item in DistinctInstances)
                     {
                         collection.Add(item);
@@ -264,7 +383,7 @@ namespace MbUnit.Framework.ContractVerifiers
                     if (collection.Count == 0)
                         return null;
 
-                    return new AssertionFailureBuilder("Expected the collection to be empty once the 'Clear' method was called.")
+                    return new AssertionFailureBuilder("Expected the collection to be empty once the 'Clear' method was called on it.")
                         .AddLabeledValue("Property", "Count")
                         .AddRawLabeledValue("Expected Value", 0)
                         .AddRawLabeledValue("Actual Value", collection.Count)
@@ -279,94 +398,24 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 AssertDistinctIntancesNotEmpty();
                 var collection = GetDefaultInstance();
-                int count = collection.Count;
-                bool addedOnce = false;
+                var handler = new CollectionHandler(collection);
+                var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
                 foreach (var item in DistinctInstances)
                 {
-                    if (!collection.Contains(item))
+                    if (!initialContent.Contains(item))
                     {
-                        addedOnce = true;
-                        collection.Add(item);
-
-                        AssertionHelper.Verify(() =>
-                        {
-                            if ((++count) == collection.Count)
-                                return null;
-
-                            return new AssertionFailureBuilder("Expected the collection to have a certain number of items after the 'Add' method was called.")
-                                .AddLabeledValue("Property", "Count")
-                                .AddRawLabeledValue("Expected Value", count)
-                                .AddRawLabeledValue("Actual Value", collection.Count)
-                                .ToAssertionFailure();
-                        });
-
-                        AssertionHelper.Verify(() =>
-                        {
-                            if (collection.Contains(item))
-                                return null;
-
-                            return new AssertionFailureBuilder("Expected the collection to contain a just added item.")
-                                .AddRawLabeledValue("Added Item", item)
-                                .ToAssertionFailure();
-                        });
+                        handler.AddSingleItemOk(item);
                     }
-                }
 
-                AssertionHelper.Verify(() =>
-                {
-                    if (addedOnce)
-                        return null;
-
-                    return new AssertionFailureBuilder("At least one of the specified distinct instances " +
-                        "should not be in the provided default collection instance.")
-                        .ToAssertionFailure();
-                });
-            });
-        }
-
-        private Test CreateAddEqualItemsTest()
-        {
-            return new TestCase("AddEqualItems", () =>
-            {
-                AssertDistinctIntancesNotEmpty();
-                var collection = GetDefaultInstance();
-                collection.Clear();
-                var item = DistinctInstances.Instances[0];
-                collection.Add(item);
-
-                if (AcceptEqualItems)
-                {
-                    Assert.DoesNotThrow(() => collection.Add(item), "Expected the collection to accept several times the same item.");
-
-                    AssertionHelper.Verify(() =>
+                    if (AcceptEqualItems)
                     {
-                        if (collection.Count == 2)
-                            return null;
-
-                        return new AssertionFailureBuilder("Expected the collection to contain several times the same item.")
-                            .AddLabeledValue("Property", "Count")
-                            .AddRawLabeledValue("Expected Value", 2)
-                            .AddRawLabeledValue("Actual Value", collection.Count)
-                            .ToAssertionFailure();
-                    });
-                }
-                else
-                {
-                    AssertionHelper.Verify(() =>
+                        handler.AddDuplicateItemOk(item);
+                    }
+                    else
                     {
-                        try
-                        {
-                            collection.Add(item);
-                        }
-                        catch (Exception) // Any kind of exception will make it.
-                        {
-                            return null;
-                        }
-
-                        return new AssertionFailureBuilder("Expected the collection to throw an exception when adding several times the same item.")
-                            .ToAssertionFailure();
-                    });
+                        handler.AddDuplicateItemFails(item);
+                    }
                 }
             });
         }
@@ -377,72 +426,163 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 AssertDistinctIntancesNotEmpty();
                 var collection = GetDefaultInstance();
-                int countTrack = collection.Count;
-                
+                var handler = new CollectionHandler(collection);
+                var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
+
                 foreach (var item in DistinctInstances)
                 {
-                    bool alreadyIn = collection.Contains(item);
-                    bool addedAsDoublet = false;
+                    if (!initialContent.Contains(item))
+                    {
+                        handler.RemoveMissingItemFails(item);
+                        handler.AddSingleItemOk(item);
+                    }
 
-                    if (!alreadyIn || AcceptEqualItems)
+                    handler.RemoveItemOk(item);
+                }
+            });
+        }
+
+        private class CollectionHandler
+        {
+            private TCollection collection;
+            private int countTrack;
+
+            public CollectionHandler(TCollection collection)
+	        {
+                this.collection = collection;
+                this.countTrack = collection.Count;
+	        }
+
+            private void AssertAddItemOk(TItem item, string failureMessage)
+            {
+                AssertionHelper.Verify(() =>
+                {
+                    try
                     {
                         collection.Add(item);
                         countTrack++;
-                        addedAsDoublet = alreadyIn && AcceptEqualItems;
+                        return null;
                     }
+                    catch (Exception actualException)
+                    {
+                        return new AssertionFailureBuilder(failureMessage + "\nAn exception was thrown while none was expected.")
+                            .AddException(actualException)
+                            .ToAssertionFailure();
+                    }
+                });
+            }
 
-                    bool removed = collection.Remove(item);
+            private void AssertCount(string failureMessage)
+            {
+                int actual = collection.Count;
+
+                AssertionHelper.Verify(() =>
+                {
+                    if (countTrack == actual)
+                        return null;
+
+                    return new AssertionFailureBuilder(failureMessage)
+                        .AddLabeledValue("Property", "Count")
+                        .AddRawLabeledValue("Expected Value", countTrack)
+                        .AddRawLabeledValue("Actual Value", actual)
+                        .ToAssertionFailure();
+                });
+            }
+
+            private void AssertContained(TItem item, string failureMessage)
+            {
+                AssertionHelper.Verify(() =>
+                {
+                    if (collection.Contains(item))
+                        return null;
+
+                    return new AssertionFailureBuilder(failureMessage)
+                        .AddRawLabeledValue("Just Added Item", item)
+                        .AddLabeledValue("Method Called", "Contains")
+                        .AddRawLabeledValue("Expected Returned Value", true)
+                        .AddRawLabeledValue("Actual Returned Value", false)
+                        .ToAssertionFailure();
+                });
+            }
+
+            private void AssertAddItemFails(TItem item, string failureMessage)
+            {
+                AssertionHelper.Verify(() =>
+                {
+                    try
+                    {
+                        collection.Add(item);
+                        countTrack++;
+
+                        return new AssertionFailureBuilder(failureMessage + "\nNo exception was thrown while one was expected.")
+                            .AddLabeledValue("Expected Exception Type", "Any")
+                            .ToAssertionFailure();
+                    }
+                    catch (Exception)
+                    {
+                        return null; // Any kind of exception will make it...
+                    }
+                });
+            }
+
+            private void AssertRemoveItem(TItem item, bool expectedResult, string failureMessage)
+            {
+                bool actualResult = collection.Remove(item);
+
+                if (actualResult)
+                {
                     countTrack--;
-
-                    AssertionHelper.Verify(() =>
-                    {
-                        if (removed)
-                            return null;
-
-                        return new AssertionFailureBuilder("Expected the method 'Remove' to return a success value while removing an existing item from the collection.")
-                            .AddRawLabeledValue("Expected Value", true)
-                            .AddRawLabeledValue("Actual Value", removed)
-                            .ToAssertionFailure();
-                    });
-
-                    AssertionHelper.Verify(() =>
-                    {
-                        if (countTrack == collection.Count)
-                            return null;
-
-                        return new AssertionFailureBuilder("Expected the collection to have a certain number of items after the 'Remove' method was called successfully.")
-                            .AddLabeledValue("Property", "Count")
-                            .AddRawLabeledValue("Expected Value", countTrack)
-                            .AddRawLabeledValue("Actual Value", collection.Count)
-                            .ToAssertionFailure();
-                    });
-
-                    if (addedAsDoublet)
-                    {
-                        AssertionHelper.Verify(() =>
-                        {
-                            if (collection.Contains(item))
-                                return null;
-
-                            return new AssertionFailureBuilder("Expected the collection to contain still another similar item after removing a doublet.\n" +
-                                "The 'Remove' method should only remove the first occurrence of the searched item.")
-                                .AddRawLabeledValue("Item", item)
-                                .ToAssertionFailure();
-                        });
-                    }
-                    else
-                    {
-                        AssertionHelper.Verify(() =>
-                        {
-                            if (!collection.Contains(item))
-                                return null;
-
-                            return new AssertionFailureBuilder("Expected the collection to not contain a single item which was previously removed.")
-                                .AddRawLabeledValue("Item", item)
-                                .ToAssertionFailure();
-                        });
-                    }
                 }
+
+                AssertionHelper.Verify(() =>
+                {
+                    if (actualResult == expectedResult)
+                        return null;
+
+                    return new AssertionFailureBuilder(failureMessage)
+                        .AddRawLabeledValue("Item", item)
+                        .AddLabeledValue("Method", "Remove")
+                        .AddRawLabeledValue("Expected Returned Value", expectedResult)
+                        .AddRawLabeledValue("Actual Returned Value", actualResult)
+                        .ToAssertionFailure();
+                });
+            }
+
+            public void AddSingleItemOk(TItem item)
+            {
+                AssertAddItemOk(item, "Expected the collection to accept successfully a new item.");
+                AssertCount("Expected the collection to have a certain number of items after a new element was added.");
+                AssertContained(item, "Expected the collection to contain a just added item.");
+            }
+     
+            public void AddDuplicateItemOk(TItem item)
+            {
+                AssertAddItemOk(item, "Expected the collection to accept successfully a duplicate item.");
+                AssertCount("Expected the collection to have a certain number of items after a duplicate element was added.");
+            }
+
+            public void AddDuplicateItemFails(TItem item)
+            {
+                AssertAddItemFails(item, "Expected the collection to refuse several identical items.");
+            }
+
+            public void RemoveMissingItemFails(TItem item)
+            {
+                AssertRemoveItem(item, false, "Expected the collection to not remove a missing item.");
+            }
+
+            public void RemoveItemOk(TItem item)
+            {
+                AssertRemoveItem(item, true, "Expected the collection to remove successfully an existing item.");
+                AssertCount("Expected the collection to have a certain number of items after an element was removed.");
+            }
+        }
+
+        private Test CreateCopyToTest()
+        {
+            return new TestCase("CopyTo", () =>
+            {
+                // TODO
             });
         }
     }
