@@ -105,6 +105,7 @@ namespace Gallio.Tests.Reflection
         private bool supportsFinalizers = true;
         private bool supportsStaticConstructors = true;
         private bool supportsFullAssemblyName = true;
+        private bool supportsNestedGenericTypes = true;
         private bool workaroundStrongTypeEquivalenceProblems = false;
 
         public WrapperAssert()
@@ -187,6 +188,16 @@ namespace Gallio.Tests.Reflection
         }
 
         /// <summary>
+        /// Specifies whether the reflection API supports nested generic types.
+        /// This is to workaround R# 3.1 specific issues involving a generic type
+        /// that contains another generic type nested within.
+        /// </summary>
+        public bool SupportsNestedGenericTypes
+        {
+            set { supportsNestedGenericTypes = value; }
+        }
+
+        /// <summary>
         /// Workaround strong type equivalence issues.
         /// </summary>
         public bool WorkaroundStrongTypeEquivalenceProblems
@@ -265,9 +276,12 @@ namespace Gallio.Tests.Reflection
                 {
                     if (type.IsPublic)
                     {
-                        ITypeInfo foundType = info.GetType(type.FullName);
-                        AreEqualWhenResolved(type, foundType);
-                        Assert.IsTrue(publicTypes.Contains(foundType), "Should appear in public types: {0}", type);
+                        if (! IsUnsupportedType(type))
+                        {
+                            ITypeInfo foundType = info.GetType(type.FullName);
+                            AreEqualWhenResolved(type, foundType);
+                            Assert.IsTrue(publicTypes.Contains(foundType), "Should appear in public types: {0}", type);
+                        }
                     }
                 }
 
@@ -295,7 +309,12 @@ namespace Gallio.Tests.Reflection
             if (recursive)
             {
                 foreach (Type type in target.GetExportedTypes())
-                    AreEquivalent(type, info.GetType(type.FullName), true);
+                {
+                    if (!IsUnsupportedType(type))
+                    {
+                        AreEquivalent(type, info.GetType(type.FullName), true);
+                    }
+                }
             }
         }
 
@@ -1050,6 +1069,26 @@ namespace Gallio.Tests.Reflection
             int count;
             counts.TryGetValue(type, out count);
             counts[type] = count + 1;
+        }
+
+        public bool IsUnsupportedType(Type type)
+        {
+            if (!supportsNestedGenericTypes && IsNestedGenericType(type))
+                return true;
+            return false;
+        }
+
+        private bool IsNestedGenericType(Type type)
+        {
+            int genericTypeCount = 0;
+            while (type != null)
+            {
+                if (type.IsGenericType)
+                    genericTypeCount += 1;
+                type = type.DeclaringType;
+            }
+
+            return genericTypeCount > 1;
         }
 
         private bool IsSpecialAttribute(object attrib)

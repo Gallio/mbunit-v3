@@ -36,6 +36,9 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
         {
             base.SetUp();
             WrapperAssert.SupportsSpecialFeatures = false;
+#if RESHARPER_31
+            WrapperAssert.SupportsNestedGenericTypes = false;
+#endif
 
             loader = new MetadataLoader(BuiltInMetadataAssemblyResolver.Instance);
 

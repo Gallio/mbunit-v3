@@ -212,6 +212,9 @@ namespace Gallio.Tests.Reflection
         [Row(typeof(ReflectionPolicySample.TortureTest<>.GenericDoublyNestedType<>))]
         public void TypeWrapper(Type target)
         {
+            if (WrapperAssert.IsUnsupportedType(target))
+                Assert.Inconclusive("Test involves a type that is not supported due to known issues.");
+
             ITypeInfo info = GetType(target);
 
             WrapperAssert.AreEquivalent(target, info, false);
