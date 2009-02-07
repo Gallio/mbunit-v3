@@ -22,7 +22,6 @@ namespace Gallio.Tests.Reflection.Impl
 {
     [TestFixture]
     [TestsOn(typeof(CecilReflectionPolicy))]
-    [Pending("There are known bugs in the underlying implementation some of which are due to missing features in Cecil.")]
     public class CecilReflectionPolicyTest : BaseReflectionPolicyTest
     {
         private CecilReflectionPolicy policy;
@@ -31,6 +30,16 @@ namespace Gallio.Tests.Reflection.Impl
         {
             base.SetUp();
             WrapperAssert.SupportsSpecialFeatures = false;
+
+            // FIXME: There is a Cecil bug dealing with recursively nested generic types.
+            // It returns the incorrect generic type parameters.  In the when getting the
+            // generic arguments of the base type of IndirectlyRecursiveNestedType we get
+            // a generic parameter declared on the wrong type:
+            // Expected: "MbUnit.TestResources.Reflection.ReflectionPolicySample+TortureTest`1+NestedType+MiddleType+IndirectlyRecursiveNestedType[T]"
+            // Actual  : "MbUnit.TestResources.Reflection.ReflectionPolicySample+TortureTest`1+NestedType+DirectlyRecursiveNestedType[T]"
+            //
+            // Cecil bug: https://bugzilla.novell.com/show_bug.cgi?id=473186
+            WrapperAssert.WorkaroundStrongTypeEquivalenceProblems = true;
 
             policy = new CecilReflectionPolicy();
         }

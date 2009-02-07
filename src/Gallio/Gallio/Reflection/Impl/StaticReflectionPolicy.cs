@@ -373,7 +373,8 @@ namespace Gallio.Reflection.Impl
         protected internal abstract IList<StaticDeclaredTypeWrapper> GetTypeInterfaces(StaticDeclaredTypeWrapper type);
 
         /// <summary>
-        /// Gets the generic parameters of a type.
+        /// Gets the generic parameters of a type, including all generic parameters
+        /// of its declaring types if it is nested enumerated from outside in.
         /// </summary>
         /// <param name="type">The type, not null</param>
         /// <returns>The type's generic parameters</returns>

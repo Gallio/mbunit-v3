@@ -172,8 +172,8 @@ namespace Gallio.Reflection
                 throw new ArgumentNullException(@"parameter");
 
             MemberInfo member = parameter.Member;
-            Type type = member.ReflectedType;
-            return new CodeReference(type.Assembly.FullName, type.Namespace ?? "", type.FullName ?? type.Name, member.Name, parameter.Name);
+            Type type = GetSimpleType(member.ReflectedType);
+            return new CodeReference(type.Assembly.FullName, GetTypeNamespace(type), GetTypeName(type), member.Name, parameter.Name);
         }
 
         /// <summary>
@@ -191,8 +191,8 @@ namespace Gallio.Reflection
             if (type != null)
                 return CreateFromType(type);
 
-            type = member.ReflectedType;
-            return new CodeReference(type.Assembly.FullName, type.Namespace ?? "", type.FullName ?? type.Name, member.Name, null);
+            type = GetSimpleType(member.ReflectedType);
+            return new CodeReference(type.Assembly.FullName, GetTypeNamespace(type), GetTypeName(type), member.Name, null);
         }
 
         /// <summary>
@@ -206,7 +206,8 @@ namespace Gallio.Reflection
             if (type == null)
                 throw new ArgumentNullException(@"type");
 
-            return new CodeReference(type.Assembly.FullName, type.Namespace ?? "", type.FullName ?? type.Name, null, null);
+            type = GetSimpleType(type);
+            return new CodeReference(type.Assembly.FullName, GetTypeNamespace(type), GetTypeName(type), null, null);
         }
 
         /// <summary>
@@ -374,5 +375,20 @@ namespace Gallio.Reflection
                 writer.WriteAttributeString(@"parameter", parameterName);
         }
         #endregion
+
+        private static Type GetSimpleType(Type type)
+        {
+            return type.IsGenericType ? type.GetGenericTypeDefinition() : type;
+        }
+
+        private static string GetTypeNamespace(Type type)
+        {
+            return type.Namespace ?? "";
+        }
+
+        private static string GetTypeName(Type type)
+        {
+            return type.FullName ?? type.Name;
+        }
     }
 }

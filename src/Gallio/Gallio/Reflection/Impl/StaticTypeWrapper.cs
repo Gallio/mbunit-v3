@@ -52,7 +52,12 @@ namespace Gallio.Reflection.Impl
             get
             {
                 CodeReference reference = Assembly.CodeReference;
-                return new CodeReference(reference.AssemblyName, NamespaceName, FullName ?? Name, null, null);
+
+                ITypeInfo simpleType = GenericTypeDefinition ?? this;
+                return new CodeReference(reference.AssemblyName,
+                    simpleType.NamespaceName ?? "",
+                    simpleType.FullName ?? simpleType.Name,
+                    null, null);
             }
         }
 

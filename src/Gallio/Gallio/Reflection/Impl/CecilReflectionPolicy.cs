@@ -51,51 +51,6 @@ namespace Gallio.Reflection.Impl
             resolver.AddHintDirectory(path);
         }
 
-        /*
-        #region Equality
-        protected internal override bool Equals(StaticWrapper a, StaticWrapper b)
-        {
-            if (a.Handle == b.Handle)
-                return true;
-
-            IMetadataTokenProvider pa = a.Handle as IMetadataTokenProvider;
-            IMetadataTokenProvider pb = b.Handle as IMetadataTokenProvider;
-            if (pa == null || pb == null)
-                return false;
-
-            if (pa.MetadataToken != pb.MetadataToken)
-                return false;
-
-            IMemberReference ma = a.Handle as IMemberReference;
-            IMemberReference mb = b.Handle as IMemberReference;
-            if (ma == null || mb == null)
-                return false;
-
-            ModuleDefinition moda = GetContainingModule(ma);
-            ModuleDefinition modb = GetContainingModule(mb);
-            return moda == modb;
-        }
-
-        private static ModuleDefinition GetContainingModule(IMemberReference memberRef)
-        {
-            TypeReference typeRef = memberRef as TypeReference;
-            if (typeRef == null)
-                typeRef = memberRef.DeclaringType;
-
-            return typeRef.Module;
-        }
-
-        protected internal override int GetHashCode(StaticWrapper wrapper)
-        {
-            IMetadataTokenProvider p = wrapper.Handle as IMetadataTokenProvider;
-            if (p == null)
-                return 0;
-
-            return p.MetadataToken.GetHashCode();
-        }
-        #endregion
-         */
-
         #region Wrapping
         private StaticAssemblyWrapper Wrap(AssemblyDefinition target)
         {
@@ -134,17 +89,59 @@ namespace Gallio.Reflection.Impl
 
         private MethodDefinition FindMatchingMethod(MethodReference methodRefHandle, IList methodDefnHandles)
         {
-            return CollectionUtils.Find<MethodDefinition>(methodDefnHandles, delegate(MethodDefinition methodDefnHandle)
+            MethodDefinition def = CollectionUtils.Find<MethodDefinition>(methodDefnHandles, delegate(MethodDefinition methodDefnHandle)
             {
-                if (methodDefnHandle.Name != methodRefHandle.Name
-                    || methodDefnHandle.GenericParameters.Count != methodRefHandle.GenericParameters.Count
-                    || methodDefnHandle.Parameters.Count != methodRefHandle.Parameters.Count)
+                return IsMatchingMethod(methodDefnHandle, methodRefHandle);
+            });
+
+            if (def == null)
+                throw new MissingMethodException("Could not find method definition.");
+            return def;
+        }
+
+        private bool IsMatchingMethod(MethodReference a, MethodReference b)
+        {
+            if (a.Name != b.Name)
+                return false;
+
+            GenericParameterCollection aGenericParams = a.GenericParameters;
+            GenericParameterCollection bGenericParams = b.GenericParameters;
+            if (aGenericParams.Count != bGenericParams.Count)
+                return false;
+
+            ParameterDefinitionCollection aParams = a.Parameters;
+            ParameterDefinitionCollection bParams = b.Parameters;
+            if (aParams.Count != bParams.Count)
+                return false;
+
+            for (int i = 0; i < aGenericParams.Count; i++)
+                if (!IsMatchingGenericParameter(a.GenericParameters[i], b.GenericParameters[i]))
                     return false;
 
-                // FIXME: Very imprecise.  Should consider exact argument types.
-                return true;
-            });
+            for (int i = 0; i < aParams.Count; i++)
+                if (! IsMatchingParameter(a.Parameters[i], b.Parameters[i]))
+                    return false;
+
+            return true;
         }
+
+        private bool IsMatchingGenericParameter(GenericParameter a, GenericParameter b)
+        {
+            // FIXME: Imprecise.  Should consider parameter constraints.
+            return true;
+        }
+
+        private bool IsMatchingParameter(ParameterDefinition a, ParameterDefinition b)
+        {
+            return IsMatchingType(a.ParameterType, b.ParameterType);
+        }
+
+        private bool IsMatchingType(TypeReference a, TypeReference b)
+        {
+            // FIXME: Imprecise.
+            return a.FullName == b.FullName;
+        }
+
         #endregion
 
         #region Assemblies
@@ -704,7 +701,8 @@ namespace Gallio.Reflection.Impl
         private StaticTypeWrapper MakeGenericInstanceType(GenericInstanceType typeHandle)
         {
             StaticDeclaredTypeWrapper nonGenericType = MakeDeclaredType(typeHandle.ElementType);
-            return nonGenericType.MakeGenericType(CollectionUtils.ConvertAllToArray<TypeReference, StaticTypeWrapper>(typeHandle.GenericArguments, MakeType));
+            IList<ITypeInfo> genericArguments = CollectionUtils.ConvertAllToArray<TypeReference, StaticTypeWrapper>(typeHandle.GenericArguments, MakeType);
+            return nonGenericType.MakeGenericType(genericArguments);
         }
         #endregion
 

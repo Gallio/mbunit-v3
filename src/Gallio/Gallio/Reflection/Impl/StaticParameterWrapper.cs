@@ -30,6 +30,7 @@ namespace Gallio.Reflection.Impl
         private readonly Memoizer<ParameterAttributes> parameterAttributesMemoizer = new Memoizer<ParameterAttributes>();
         private readonly Memoizer<string> nameMemoizer = new Memoizer<string>();
         private readonly Memoizer<int> positionMemoizer = new Memoizer<int>();
+        private readonly Memoizer<ITypeInfo> valueTypeMemoizer = new Memoizer<ITypeInfo>();
 
         private readonly StaticMemberWrapper member;
 
@@ -123,7 +124,7 @@ namespace Gallio.Reflection.Impl
         /// <inheritdoc />
         public ITypeInfo ValueType
         {
-            get { return member.Substitution.Apply(Policy.GetParameterType(this)); }
+            get { return valueTypeMemoizer.Memoize(() => member.Substitution.Apply(Policy.GetParameterType(this))); }
         }
 
         /// <inheritdoc />

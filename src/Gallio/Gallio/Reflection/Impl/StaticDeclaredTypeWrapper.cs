@@ -102,7 +102,7 @@ namespace Gallio.Reflection.Impl
                 return baseTypeMemoizer.Memoize(() =>
                 {
                     StaticDeclaredTypeWrapper baseType = Policy.GetTypeBaseType(this);
-                    return baseType != null ? baseType.ComposeSubstitution(Substitution) : null;
+                    return baseType != null ? baseType.ComposeSubstitution(substitution) : null;
                 });
             }
         }
@@ -156,7 +156,10 @@ namespace Gallio.Reflection.Impl
             get
             {
                 IList<StaticGenericParameterWrapper> genericParameters = GenericParameters;
-                return genericParameters.Count != 0 && Substitution.DoesNotContainAny(genericParameters);
+                if (genericParameters.Count != 0 && Substitution.DoesNotContainAny(genericParameters))
+                    return true;
+
+                return false;
             }
         }
 
@@ -168,6 +171,7 @@ namespace Gallio.Reflection.Impl
                 foreach (ITypeInfo type in GenericArguments)
                     if (type.ContainsGenericParameters)
                         return true;
+
                 return false;
             }
         }
@@ -481,18 +485,52 @@ namespace Gallio.Reflection.Impl
 
             foreach (StaticDeclaredTypeWrapper baseType in GetAllBaseTypes())
             {
-                foreach (StaticTypeWrapper inheritedNestedType in baseType.EnumerateNestedTypes(includePublicTypes, includeNonPublicTypes))
+                // It turns out that standard .Net reflection does not enumerate the recursively
+                // nested types.  This is good as clients could end up recursing indefinitely
+                // if they attempted to traverse such beasts.
+                //
+                // eg. Class2 contains itself as a nested type due to the inheritance relationship.
+                //
+                // class Class1 { class Class2 : Class1 { } }
+                //
+                // eg. Worse situation, Class3 indirectly contains itself via Class2.
+                //
+                // class Class1 { class Class2 { class Class3 : Class1 { } }
+                if (! IsRecursivelyDeclaringType(baseType))
                 {
-                    result.Add(inheritedNestedType);
+                    foreach (StaticTypeWrapper inheritedNestedType in
+                        baseType.EnumerateNestedTypes(includePublicTypes, includeNonPublicTypes))
+                    {
+                        result.Add(inheritedNestedType);
+                    }
                 }
             }
 
             return result;
         }
 
+        private bool IsRecursivelyDeclaringType(StaticDeclaredTypeWrapper type)
+        {
+            StaticDeclaredTypeWrapper declaringType = DeclaringType;
+            while (declaringType != null)
+            {
+                if (declaringType.Equals(type))
+                    return true;
+
+                declaringType = declaringType.DeclaringType;
+            }
+
+            return false;
+        }
+
         private IEnumerable<StaticTypeWrapper> EnumerateNestedTypes(bool includePublicTypes, bool includeNonPublicTypes)
         {
-            foreach (StaticTypeWrapper nestedType in Policy.GetTypeNestedTypes(this))
+            // Handle an interesting edge case of .Net reflection.  Enumeration of nested types
+            // within generic types discards any generic type arguments bound to it and has as its
+            // declaring type the generic type definition.
+            StaticDeclaredTypeWrapper unspecializedType = IsGenericType ? GenericTypeDefinition : this;
+
+            foreach (StaticTypeWrapper nestedType in Policy.GetTypeNestedTypes(unspecializedType))
             {
                 if (nestedType.IsNestedPublic)
                 {
@@ -516,8 +554,9 @@ namespace Gallio.Reflection.Impl
             get
             {
                 string name = base.Name;
-                if (IsGenericType)
-                    name = string.Concat(name, "`", GenericParameters.Count.ToString(CultureInfo.InvariantCulture));
+                int localGenericParameterCount = GenericParameterCountExcludingThoseDefinedByDeclaringTypes;
+                if (localGenericParameterCount != 0)
+                    name = string.Concat(name, "`", localGenericParameterCount.ToString(CultureInfo.InvariantCulture));
                 return name;
             }
         }
@@ -531,26 +570,14 @@ namespace Gallio.Reflection.Impl
                 {
                     // Note: This funny little rule actually exists in the .Net framework.
                     bool containsGenericParameters = ContainsGenericParameters;
-                    if (containsGenericParameters && !IsGenericTypeDefinition)
+                    bool isGenericTypeDefinition = IsGenericTypeDefinition;
+                    if (containsGenericParameters && ! isGenericTypeDefinition)
                         return null;
 
                     StringBuilder fullName = new StringBuilder();
+                    AppendFullName(fullName);
 
-                    ITypeInfo declaringType = DeclaringType;
-                    if (declaringType != null)
-                    {
-                        fullName.Append(declaringType.FullName).Append('+');
-                    }
-                    else
-                    {
-                        string namespaceName = NamespaceName;
-                        if (namespaceName.Length != 0)
-                            fullName.Append(namespaceName).Append('.');
-                    }
-
-                    fullName.Append(Name);
-
-                    if (! containsGenericParameters)
+                    if (!isGenericTypeDefinition)
                     {
                         IList<ITypeInfo> genericArguments = GenericArguments;
                         if (genericArguments.Count != 0)
@@ -579,20 +606,7 @@ namespace Gallio.Reflection.Impl
             return signatureMemoizer.Memoize(delegate
             {
                 StringBuilder sig = new StringBuilder();
-
-                ITypeInfo declaringType = DeclaringType;
-                if (declaringType != null)
-                {
-                    sig.Append(declaringType).Append('+');
-                }
-                else
-                {
-                    string namespaceName = NamespaceName;
-                    if (namespaceName.Length != 0)
-                        sig.Append(namespaceName).Append('.');
-                }
-
-                sig.Append(Name);
+                AppendFullName(sig);
 
                 IList<ITypeInfo> genericArguments = GenericArguments;
                 if (genericArguments.Count != 0)
@@ -611,6 +625,24 @@ namespace Gallio.Reflection.Impl
 
                 return sig.ToString();
             });
+        }
+
+        private void AppendFullName(StringBuilder sig)
+        {
+            StaticDeclaredTypeWrapper declaringType = DeclaringType;
+            if (declaringType != null)
+            {
+                declaringType.AppendFullName(sig);
+                sig.Append('+');
+            }
+            else
+            {
+                string namespaceName = NamespaceName;
+                if (namespaceName.Length != 0)
+                    sig.Append(namespaceName).Append('.');
+            }
+
+            sig.Append(Name);
         }
         #endregion
 
@@ -651,12 +683,28 @@ namespace Gallio.Reflection.Impl
 
         private IList<StaticGenericParameterWrapper> GenericParameters
         {
-            get
+            get 
             {
                 return genericParametersMemoizer.Memoize(delegate
                 {
                     return Policy.GetTypeGenericParameters(this);
                 });
+            }
+        }
+
+        private int GenericParameterCountExcludingThoseDefinedByDeclaringTypes
+        {
+            get
+            {
+                int genericParameterCount = GenericParameters.Count;
+                if (genericParameterCount != 0)
+                {
+                    StaticDeclaredTypeWrapper declaringType = DeclaringType;
+                    if (declaringType != null)
+                        genericParameterCount -= declaringType.GenericParameters.Count;
+                }
+
+                return genericParameterCount;
             }
         }
 

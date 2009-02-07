@@ -139,13 +139,25 @@ namespace Gallio.Collections
         /// <returns>True if the elements are equal</returns>
         public static bool ElementsEqual<T>(IList<T> a, IList<T> b)
         {
+            return ElementsEqual(a, b, (x, y) => Equals(x, y));
+        }
+
+        /// <summary>
+        /// Returns true if the elements of both lists are equal.
+        /// </summary>
+        /// <param name="a">The first collection</param>
+        /// <param name="b">The second collection</param>
+        /// <param name="comparer">The comparison strategy to use</param>
+        /// <returns>True if the elements are equal</returns>
+        public static bool ElementsEqual<T>(IList<T> a, IList<T> b, Func<T, T, bool> comparer)
+        {
             int count = a.Count;
             if (count != b.Count)
                 return false;
 
             for (int i = 0; i < count; i++)
             {
-                if (!Equals(a[i], b[i]))
+                if (!comparer(a[i], b[i]))
                     return false;
             }
 

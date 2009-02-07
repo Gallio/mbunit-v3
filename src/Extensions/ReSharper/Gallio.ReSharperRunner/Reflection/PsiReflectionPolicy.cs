@@ -825,7 +825,8 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override int GetParameterPosition(StaticParameterWrapper parameter)
         {
             IParameter parameterHandle = (IParameter)parameter.Handle;
-            return parameterHandle.ContainingParametersOwner.Parameters.IndexOf(parameterHandle);
+            int parameterIndex = parameterHandle.ContainingParametersOwner.Parameters.IndexOf(parameterHandle);
+            return parameterIndex;
         }
 
         protected override StaticTypeWrapper GetParameterType(StaticParameterWrapper parameter)
@@ -910,11 +911,44 @@ namespace Gallio.ReSharperRunner.Reflection
                 {
                     IClass @class = superTypeHandle.GetTypeElement() as IClass;
                     if (@class != null)
-                        return MakeDeclaredType(superTypeHandle);
+                    {
+                        StaticDeclaredTypeWrapper baseType = MakeDeclaredType(superTypeHandle);
+
+                        // Handles an edge case where the base type is also the containing type of the original type.
+                        // This can occur when the original type is nested within its own basetype.
+                        // In that case, the containing type should be parameterized by the generic type parameters
+                        // of the nested that apply to it.
+                        int containingTypeParamCount = baseType.GenericArguments.Count;
+                        if (containingTypeParamCount != 0 && IsContainingType(@class, typeHandle))
+                        {
+                            var containingTypeArgs = new ITypeInfo[containingTypeParamCount];
+                            IList<ITypeInfo> genericArgs = type.GenericArguments;
+                            for (int i = 0; i < containingTypeParamCount; i++)
+                                containingTypeArgs[i] = genericArgs[i];
+
+                            baseType = baseType.MakeGenericType(containingTypeArgs);
+                        }
+
+                        return baseType;
+                    }
                 }
             }
 
             return null;
+        }
+
+        private bool IsContainingType(ITypeElement candidateContainingType, ITypeElement type)
+        {
+            ITypeElement containingType = type;
+            for (; ; )
+            {
+                containingType = containingType.GetContainingType();
+                if (containingType == null)
+                    return false;
+
+                if (containingType == candidateContainingType)
+                    return true;
+            }
         }
 
         protected override IList<StaticDeclaredTypeWrapper> GetTypeInterfaces(StaticDeclaredTypeWrapper type)
@@ -935,10 +969,20 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override IList<StaticGenericParameterWrapper> GetTypeGenericParameters(StaticDeclaredTypeWrapper type)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
-            return Array.ConvertAll<ITypeParameter, StaticGenericParameterWrapper>(typeHandle.TypeParameters, delegate(ITypeParameter parameterHandle)
-            {
-                return StaticGenericParameterWrapper.CreateGenericTypeParameter(this, parameterHandle, type);
-            });
+
+            var genericParameters = new List<StaticGenericParameterWrapper>();
+            BuildTypeGenericParameters(type, typeHandle, genericParameters);
+            return genericParameters;
+        }
+
+        private void BuildTypeGenericParameters(StaticDeclaredTypeWrapper ownerType, ITypeElement typeHandle, List<StaticGenericParameterWrapper> genericParameters)
+        {
+            ITypeElement declaringType = typeHandle.GetContainingType();
+            if (declaringType != null)
+                BuildTypeGenericParameters(ownerType, declaringType, genericParameters);
+
+            foreach (ITypeParameter parameterHandle in typeHandle.TypeParameters)
+                genericParameters.Add(StaticGenericParameterWrapper.CreateGenericTypeParameter(this, parameterHandle, ownerType));
         }
 
         protected override IEnumerable<StaticConstructorWrapper> GetTypeConstructors(StaticDeclaredTypeWrapper type)
@@ -1094,7 +1138,12 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(IDeclaredType typeHandle)
         {
-            return MakeDeclaredType(typeHandle.GetTypeElement(), typeHandle.GetSubstitution());
+            ITypeElement typeElement = typeHandle.GetTypeElement();
+            if (typeElement == null)
+                throw new NotSupportedException(String.Format("Cannot obtain type element for type '{0}' possibly because its source code is not available.",
+                    typeHandle.GetCLRName()));
+
+            return MakeDeclaredType(typeElement, typeHandle.GetSubstitution());
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(ITypeElement typeElementHandle, ISubstitution substitutionHandle)
@@ -1114,7 +1163,7 @@ namespace Gallio.ReSharperRunner.Reflection
                 type = new StaticDeclaredTypeWrapper(this, typeElementHandle, null, StaticTypeSubstitution.Empty);
             }
 
-            ITypeParameter[] typeParameterHandles = typeElementHandle.TypeParameters;
+            var typeParameterHandles = new List<ITypeParameter>(typeElementHandle.AllTypeParameters);
             if (substitutionHandle.IsIdempotent(typeParameterHandles))
                 return type;
 
@@ -1168,7 +1217,19 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override int GetGenericParameterPosition(StaticGenericParameterWrapper genericParameter)
         {
             ITypeParameter genericParameterHandle = (ITypeParameter)genericParameter.Handle;
-            return genericParameterHandle.Index;
+            int parameterIndex = genericParameterHandle.Index;
+
+            // Must also factor in generic parameters of declaring types.
+            for (ITypeElement declaringType = genericParameterHandle.OwnerType; declaringType != null; )
+            {
+                declaringType = declaringType.GetContainingType();
+                if (declaringType == null)
+                    break;
+
+                parameterIndex += declaringType.TypeParameters.Length;
+            }
+
+            return parameterIndex;
         }
 
         protected override IList<StaticTypeWrapper> GetGenericParameterConstraints(StaticGenericParameterWrapper genericParameter)

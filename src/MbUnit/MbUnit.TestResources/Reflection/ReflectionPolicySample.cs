@@ -177,6 +177,24 @@ namespace MbUnit.TestResources.Reflection
                 get { return ""; }
                 set { }
             }
+
+            public class NestedType
+            {
+                public class DirectlyRecursiveNestedType : NestedType
+                {
+                }
+
+                public class MiddleType
+                {
+                    public class IndirectlyRecursiveNestedType : NestedType
+                    {
+                    }
+                }
+            }
+
+            public class GenericDoublyNestedType<S>
+            {
+            }
         }
 
         public class TortureTest2<[Sample(typeof(string[]), Field = 2, Property = "foo")] T> : TortureTest<T[]>

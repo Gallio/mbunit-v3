@@ -105,6 +105,7 @@ namespace Gallio.Tests.Reflection
         private bool supportsFinalizers = true;
         private bool supportsStaticConstructors = true;
         private bool supportsFullAssemblyName = true;
+        private bool workaroundStrongTypeEquivalenceProblems = false;
 
         public WrapperAssert()
         {
@@ -183,6 +184,14 @@ namespace Gallio.Tests.Reflection
         public bool SupportsFullAssemblyName
         {
             set { supportsFullAssemblyName = value; }
+        }
+
+        /// <summary>
+        /// Workaround strong type equivalence issues.
+        /// </summary>
+        public bool WorkaroundStrongTypeEquivalenceProblems
+        {
+            set { workaroundStrongTypeEquivalenceProblems = value; }
         }
 
         public void AreEquivalent(string namespaceName, INamespaceInfo info)
@@ -424,7 +433,7 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(CodeElementKind.Type, info.Kind);
 
             AreTypesEquivalent(target, info, recursive);
-            Assert.AreEqual(target, info.Resolve(true));
+            AreEqual(target, info.Resolve(true));
 
             if (recursive)
             {
@@ -443,7 +452,7 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual(CodeElementKind.GenericParameter, info.Kind);
 
             AreTypesEquivalent(target, info, recursive);
-            Assert.AreEqual(target, info.Resolve(true));
+            AreEqual(target, info.Resolve(true));
 
             AreEqualWhenResolved(typeof(Type), info.ValueType);
             Assert.IsTrue(info.ContainsGenericParameters);
@@ -837,24 +846,27 @@ namespace Gallio.Tests.Reflection
             throw new AssertionException(String.Format("Did not find matching member: {0}", member));
         }
 
-        private static void AreEqual(Type expected, Type actual)
+        private void AreEqual(Type expected, Type actual)
         {
-            Assert.AreEqual(expected, actual);
+            if (workaroundStrongTypeEquivalenceProblems)
+                Assert.AreEqual(expected != null ? expected.ToString() : null, actual != null ? actual.ToString() : null);
+            else
+                Assert.AreEqual(expected, actual);
         }
 
-        private static void AreEqual(MemberInfo expected, MemberInfo actual)
+        private void AreEqual(MemberInfo expected, MemberInfo actual)
         {
-            Assert.AreEqual(expected.DeclaringType, actual.DeclaringType);
+            AreEqual(expected.DeclaringType, actual.DeclaringType);
             Assert.AreEqual(expected.MetadataToken, actual.MetadataToken);
         }
 
-        private static void AreEqual(ParameterInfo expected, ParameterInfo actual)
+        private void AreEqual(ParameterInfo expected, ParameterInfo actual)
         {
-            Assert.AreEqual(expected.Member.DeclaringType, actual.Member.DeclaringType);
+            AreEqual(expected.Member.DeclaringType, actual.Member.DeclaringType);
             Assert.AreEqual(expected.MetadataToken, actual.MetadataToken);
         }
 
-        private static void AreEqualWhenResolved(Type expected, ITypeInfo wrapper)
+        private void AreEqualWhenResolved(Type expected, ITypeInfo wrapper)
         {
             if (expected != null)
                 AreEqual(expected, wrapper != null ? wrapper.Resolve(true) : null);
@@ -862,7 +874,7 @@ namespace Gallio.Tests.Reflection
                 Assert.IsNull(wrapper);
         }
 
-        private static void AreEqualWhenResolved<TMember, TWrapper>(TMember expected, TWrapper wrapper)
+        private void AreEqualWhenResolved<TMember, TWrapper>(TMember expected, TWrapper wrapper)
             where TMember : MemberInfo
             where TWrapper : IMemberInfo
         {
@@ -872,7 +884,7 @@ namespace Gallio.Tests.Reflection
                 Assert.IsNull(wrapper);
         }
 
-        private static void AreEqualWhenResolved(ParameterInfo expected, IParameterInfo wrapper)
+        private void AreEqualWhenResolved(ParameterInfo expected, IParameterInfo wrapper)
         {
             if (expected != null)
                 AreEqual(expected, wrapper != null ? wrapper.Resolve(true) : null);
@@ -880,7 +892,7 @@ namespace Gallio.Tests.Reflection
                 Assert.IsNull(wrapper);
         }
 
-        private static void AreElementsEqualWhenResolved<TWrapper>(IEnumerable<Type> expectedTypes, IEnumerable<TWrapper> actualTypes)
+        private void AreElementsEqualWhenResolved<TWrapper>(IEnumerable<Type> expectedTypes, IEnumerable<TWrapper> actualTypes)
             where TWrapper : ITypeInfo
         {
             Dictionary<string, Type> keyedExpectedTypes = new Dictionary<string, Type>();

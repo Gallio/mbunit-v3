@@ -116,8 +116,16 @@ namespace Gallio.Reflection.Impl
                     }
                     else
                     {
-                        parameters = SetMethod.Parameters;
-                        indexParameterCount = parameters.Count - 1;
+                        StaticMethodWrapper setMethod = SetMethod;
+                        if (setMethod != null)
+                        {
+                            parameters = SetMethod.Parameters;
+                            indexParameterCount = parameters.Count - 1;
+                        }
+                        else
+                        {
+                            return EmptyArray<StaticParameterWrapper>.Instance;
+                        }
                     }
 
                     if (indexParameterCount == 0)

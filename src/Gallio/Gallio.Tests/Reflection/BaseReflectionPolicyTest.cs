@@ -204,7 +204,12 @@ namespace Gallio.Tests.Reflection
         [Row(typeof(ReflectionPolicySample.Class1))]
         [Row(typeof(ReflectionPolicySample.Class3))]
         [Row(typeof(ReflectionPolicySample.Struct1<int, string>))]
+        [Row(typeof(ReflectionPolicySample.Struct1<,>))]
         [Row(typeof(ReflectionPolicySample.Interface1))]
+        [Row(typeof(ReflectionPolicySample.TortureTest<int>.NestedType))]
+        [Row(typeof(ReflectionPolicySample.TortureTest<>.NestedType))]
+        [Row(typeof(ReflectionPolicySample.TortureTest<int>.GenericDoublyNestedType<string>))]
+        [Row(typeof(ReflectionPolicySample.TortureTest<>.GenericDoublyNestedType<>))]
         public void TypeWrapper(Type target)
         {
             ITypeInfo info = GetType(target);
