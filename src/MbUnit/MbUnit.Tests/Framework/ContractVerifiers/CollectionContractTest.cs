@@ -48,6 +48,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
         [Row(typeof(BasicSampleTest), "AddItems", TestStatus.Passed)]
         [Row(typeof(BasicSampleTest), "ClearItems", TestStatus.Passed)]
         [Row(typeof(BasicSampleTest), "RemoveItems", TestStatus.Passed)]
+        [Row(typeof(BasicSampleTest), "CopyTo", TestStatus.Passed)]
         [Row(typeof(NotWriteableBasicTest), "VerifyReadOnlyProperty", TestStatus.Failed)]
         [Row(typeof(NotWriteableBasicTest), "AddShouldThrowException", TestStatus.Inconclusive)]
         [Row(typeof(NotWriteableBasicTest), "RemoveShouldThrowException", TestStatus.Inconclusive)]

@@ -261,8 +261,6 @@ namespace MbUnit.Framework.ContractVerifiers
             }
 
             yield return CreateCopyToTest();
-
-            // TODO: Missing test(s) for ICollection<T>.CopyTo.
         }
 
         private void AssertDistinctIntancesNotEmpty()
@@ -578,11 +576,76 @@ namespace MbUnit.Framework.ContractVerifiers
             }
         }
 
+        private void AssertCopyToThrowException(Action action, string failureMessage, string label, object value)
+        {
+            AssertionHelper.Verify(() =>
+            {
+                try
+                {
+                    action();
+                    return new AssertionFailureBuilder("Expected the method to throw an exception " + failureMessage)
+                        .AddLabeledValue("Method", "CopyTo")
+                        .AddRawLabeledValue(label, value)
+                        .ToAssertionFailure();
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            });
+        }
+
+        private void AssertCopyToNotThrowException(Action action, string failureMessage)
+        {
+            AssertionHelper.Verify(() =>
+            {
+                try
+                {
+                    action();
+                    return null;
+                }
+                catch (Exception actualException)
+                {
+                    return new AssertionFailureBuilder(failureMessage)
+                        .AddLabeledValue("Method", "CopyTo")
+                        .AddException(actualException)
+                        .ToAssertionFailure();
+                }
+            });
+        }
+
         private Test CreateCopyToTest()
         {
             return new TestCase("CopyTo", () =>
             {
-                // TODO
+                AssertDistinctIntancesNotEmpty();
+                var collection = GetDefaultInstance();
+                var handler = new CollectionHandler(collection);
+                var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
+
+                foreach (var item in DistinctInstances)
+                {
+                    if (!initialContent.Contains(item))
+                    {
+                        handler.AddSingleItemOk(item);
+                    }
+                }
+
+                const int extension = 5;
+                int count = collection.Count;
+                var target = new TItem[count + extension];
+                AssertCopyToThrowException(() => collection.CopyTo(null, 0), "when called with a null argument.", "Argument Name", "array");
+                AssertCopyToThrowException(() => collection.CopyTo(target, -1), "when called with a negative index.", "Argument Name", "arrayIndex");
+
+                for (int i = 0; i <= extension; i++)
+                {
+                    AssertCopyToNotThrowException(() => collection.CopyTo(target, i), "Expected the method to not throw an exception.");
+                    var clone = new TItem[count];
+                    Array.Copy(target, i, clone, 0, count);
+                    Assert.AreElementsEqual(collection, clone);
+                }
+
+                AssertCopyToThrowException(() => collection.CopyTo(target, extension + 1), "when called with a too large array index.", "Argument Name", "arrayIndex");
             });
         }
     }

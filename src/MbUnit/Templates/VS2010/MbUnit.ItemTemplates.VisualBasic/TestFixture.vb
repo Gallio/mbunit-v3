@@ -1,5 +1,6 @@
 ﻿Imports Gallio.Framework
 Imports MbUnit.Framework
+Imports MbUnit.Framework.ContractVerifiers
 
 <TestFixture> _
 Public Class $safeitemname$
