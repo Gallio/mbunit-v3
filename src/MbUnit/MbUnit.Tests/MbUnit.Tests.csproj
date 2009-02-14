@@ -160,6 +160,8 @@
     <Compile Include="Framework\ContractVerifiers\ImmutabilityContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\DistinctInstanceCollectionTest.cs" />
     <Compile Include="Framework\ContractVerifiers\CollectionContractTest.cs" />
+    <Compile Include="Framework\AssertTest_Xml.cs" />
+    <Compile Include="Framework\AssertTest_Serialization.cs" />
     <Compile Include="Framework\TimeoutAttributeTest.cs" />
     <Compile Include="Framework\CsvDataTest.cs">
       <SubType>Code</SubType>

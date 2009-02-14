@@ -70,22 +70,20 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Gets the current assertion failure behavior.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The value of this property may change during invocations of <see cref="CaptureFailures" />.
         /// </para>
-        /// </summary>
+        /// </remarks>
         public AssertionFailureBehavior AssertionFailureBehavior
         {
             get { return scope.AssertionFailureBehavior; }
         }
 
         /// <summary>
-        /// <para>
         /// Submits an assertion failure.
-        /// </para>
         /// </summary>
         /// <remarks>
         /// <para>
@@ -107,10 +105,10 @@ namespace Gallio.Framework.Assertions
         }
 
         /// <summary>
-        /// <para>
         /// Performs an action and returns an array containing the assertion failures
         /// that were observed within the block.
-        /// </para>
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The set of failures captured will depend on the setting of <paramref name="assertionFailureBehavior"/>.
         /// <list type="bullet">
@@ -124,7 +122,7 @@ namespace Gallio.Framework.Assertions
         /// will be captured since they will all be ignored!</item>
         /// </list>
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="action">The action to invoke</param>
         /// <param name="assertionFailureBehavior">The assertion failure behavior to use while
         /// executing the block</param>
@@ -152,6 +150,15 @@ namespace Gallio.Framework.Assertions
                 if (oldScope != null && Interlocked.CompareExchange(ref scope, oldScope, newScope) != newScope)
                     throw new NotSupportedException("The current implementation does not support capturing failures concurrently.");
             }
+        }
+
+        /// <summary>
+        /// Gets the pending failures within the current assertion scope.
+        /// </summary>
+        /// <returns>The pending failures, or an empty array if none</returns>
+        public AssertionFailure[] GetPendingFailures()
+        {
+            return scope.GetPendingFailures();
         }
 
         private sealed class Scope
@@ -203,6 +210,16 @@ namespace Gallio.Framework.Assertions
                 }
 
                 return GetSavedFailuresAsArray();
+            }
+
+            public AssertionFailure[] GetPendingFailures()
+            {
+                lock (this)
+                {
+                    if (savedFailures == null)
+                        return EmptyArray<AssertionFailure>.Instance;
+                    return savedFailures.ToArray();
+                }
             }
 
             private void SubmitFailure(AssertionFailure failure, bool noThrow)

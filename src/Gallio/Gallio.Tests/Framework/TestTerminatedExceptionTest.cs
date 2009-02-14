@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Framework;
 using Gallio.Model;
 using MbUnit.Framework;
@@ -20,17 +21,28 @@ using MbUnit.Framework.ContractVerifiers;
 
 namespace Gallio.Tests.Framework
 {
-    [TestsOn(typeof(TestFailedException))]
-    public class TestFailedExceptionTest
+    [TestsOn(typeof(TestTerminatedException))]
+    public class TestTerminatedExceptionTest
     {
         [VerifyContract]
-        public readonly IContract ExceptionTests = new ExceptionContract<TestFailedException>();
+        public readonly IContract ExceptionTests = new ExceptionContract<TestTerminatedException>()
+        {
+            ImplementsStandardConstructors = false            
+        };
 
         [Test]
-        public void OutcomeIsFailed()
+        public void OutcomeIsAsSpecifiedInConstructor()
         {
-            var ex = new TestFailedException();
-            Assert.AreEqual(TestOutcome.Failed, ex.Outcome);
+            var ex = new TestTerminatedException(TestOutcome.Error);
+            Assert.AreEqual(TestOutcome.Error, ex.Outcome);
+        }
+
+        [Test]
+        public void OutcomeSurvivesSerialization()
+        {
+            var ex = new TestTerminatedException(TestOutcome.Skipped);
+            var deserializedEx = Assert.IsBinarySerializable(ex);
+            Assert.AreEqual(TestOutcome.Skipped, deserializedEx.Outcome);
         }
     }
 }

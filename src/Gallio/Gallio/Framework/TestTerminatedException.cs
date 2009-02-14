@@ -21,18 +21,23 @@ namespace Gallio.Framework
 {
     /// <summary>
     /// <para>
-    /// This exception type is used to signal a test outcome silently without logging the exception.
+    /// This exception type is used to signal that a test has been terminated with
+    /// a particular outcome.  The exception message, if present, should explain the
+    /// reason that the test was terminated.
     /// </para>
     /// </summary>
     [Serializable]
-    public class SilentTestException : TestTerminatedException
+    public class TestTerminatedException : TestException
     {
+        private const string OutcomeKey = "Outcome";
+        private readonly TestOutcome outcome;
+
         /// <summary>
         /// Creates a silent test exception with the specified outcome.
         /// </summary>
         /// <param name="outcome">The test outcome</param>
-        public SilentTestException(TestOutcome outcome)
-            : base(outcome)
+        public TestTerminatedException(TestOutcome outcome)
+            : this(outcome, null, null)
         {
         }
 
@@ -41,9 +46,21 @@ namespace Gallio.Framework
         /// </summary>
         /// <param name="outcome">The test outcome</param>
         /// <param name="message">The message, or null if none</param>
-        public SilentTestException(TestOutcome outcome, string message)
-            : base(outcome, message)
+        public TestTerminatedException(TestOutcome outcome, string message)
+            : this(outcome, message, null)
         {
+        }
+
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="outcome">The test outcome</param>
+        /// <param name="message">The message, or null if none</param>
+        /// <param name="innerException">The inner exception, or null if none</param>
+        public TestTerminatedException(TestOutcome outcome, string message, Exception innerException)
+            : base(message, innerException)
+        {
+            this.outcome = outcome;
         }
 
         /// <summary>
@@ -51,15 +68,23 @@ namespace Gallio.Framework
         /// </summary>
         /// <param name="info">The serialization info</param>
         /// <param name="context">The streaming context</param>
-        protected SilentTestException(SerializationInfo info, StreamingContext context)
+        protected TestTerminatedException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            outcome = (TestOutcome) info.GetValue(OutcomeKey, typeof(TestOutcome));
         }
 
         /// <inheritdoc />
-        public override bool ExcludeStackTrace
+        public override TestOutcome Outcome
         {
-            get { return true; }
+            get { return outcome; }
+        }
+
+        /// <inheritdoc />
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue(OutcomeKey, outcome);
         }
     }
 }

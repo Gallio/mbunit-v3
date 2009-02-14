@@ -33,18 +33,24 @@ namespace MbUnit.Samples
         [Test]
         public void Failed()
         {
-            throw new TestFailedException();
+            Assert.Fail("Failed for demonstration purposes.");
         }
 
         [Test]
         public void Inconclusive()
         {
-            throw new TestInconclusiveException();
+            Assert.Inconclusive("Inconclusive for demonstration purposes.");
         }
 
         [Test, Ignore("Skipped")]
         public void Skipped()
         {
+        }
+
+        [Test]
+        public void Terminated()
+        {
+            Assert.Terminated(TestOutcome.Error, "Terminated for demonstration purposes.");
         }
 
         [Test]
@@ -56,13 +62,7 @@ namespace MbUnit.Samples
         [Row(TestStatus.Skipped, "ignored")]
         public void RowsWithDifferentOutcomes(TestStatus status, string category)
         {
-            throw new SilentTestException(new TestOutcome(status, category));
-        }
-
-        [Test]
-        public void AssertionFailure()
-        {
-            Assert.Fail("Failed!");
+            Assert.TerminateSilently(new TestOutcome(status, category), "Terminated by design");
         }
     }
 }

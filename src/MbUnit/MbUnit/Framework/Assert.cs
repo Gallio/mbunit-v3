@@ -19,6 +19,7 @@ using System.ComponentModel;
 using Gallio;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
+using Gallio.Model;
 using Gallio.Model.Diagnostics;
 
 namespace MbUnit.Framework
@@ -152,8 +153,15 @@ namespace MbUnit.Framework
 
         #region Inconclusive
         /// <summary>
-        /// Signals that a test has yielded an inconclusive result.
+        /// Terminates the test and reports an inconclusive test outcome.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The test is terminated with an inconclusive test outcome by throwing a
+        /// <see cref="TestInconclusiveException" />.  If other code in the test case catches
+        /// this exception and does not rethrow it then the test might not terminate correctly.
+        /// </para>
+        /// </remarks>
         /// <exception cref="TestInconclusiveException">Thrown always</exception>
         public static void Inconclusive()
         {
@@ -161,8 +169,15 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Signals that a test has yielded an inconclusive result.
+        /// Terminates the test and reports an inconclusive test outcome.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The test is terminated with an inconclusive test outcome by throwing a
+        /// <see cref="TestInconclusiveException" />.  If other code in the test case catches
+        /// this exception and does not rethrow it then the test might not terminate correctly.
+        /// </para>
+        /// </remarks>
         /// <param name="messageFormat">The custom message format string, or null if none</param>
         /// <param name="messageArgs">The custom message arguments, or null if none</param>
         /// <exception cref="TestInconclusiveException">Thrown always</exception>
@@ -171,6 +186,96 @@ namespace MbUnit.Framework
             throw new TestInconclusiveException(messageFormat != null && messageArgs != null
                 ? String.Format(messageFormat, messageArgs)
                 : messageFormat ?? "The test was inconclusive.");
+        }
+        #endregion
+
+        #region Terminate
+        /// <summary>
+        /// Terminates the test and reports a specific test outcome.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The test is terminated with by throwing a <see cref="TestTerminatedException" />
+        /// with the specified outcome.  If other code in the test case catches
+        /// this exception and does not rethrow it then the test might not terminate correctly.
+        /// </para>
+        /// </remarks>
+        /// <param name="outcome">The desired test outcome</param>
+        /// <exception cref="TestTerminatedException">Thrown always</exception>
+        public static void Terminate(TestOutcome outcome)
+        {
+            Terminate(outcome, null, null);
+        }
+
+        /// <summary>
+        /// Terminates the test and reports a specific test outcome.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The test is terminated with by throwing a <see cref="TestTerminatedException" />
+        /// with the specified outcome.  If other code in the test case catches
+        /// this exception and does not rethrow it then the test might not terminate correctly.
+        /// </para>
+        /// </remarks>
+        /// <param name="outcome">The desired test outcome</param>
+        /// <param name="messageFormat">The custom message format string, or null if none</param>
+        /// <param name="messageArgs">The custom message arguments, or null if none</param>
+        /// <exception cref="TestTerminatedException">Thrown always</exception>
+        public static void Terminate(TestOutcome outcome, string messageFormat, params object[] messageArgs)
+        {
+            throw new TestTerminatedException(outcome, messageFormat != null && messageArgs != null
+                ? String.Format(messageFormat, messageArgs)
+                : messageFormat ?? "The test was terminated.");
+        }
+        #endregion
+
+        #region TerminateSilently
+        /// <summary>
+        /// Terminates the test silently and reports a specific test outcome.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Unlike <see cref="Terminate(TestOutcome)" /> this method does not report the
+        /// stack trace.  It also does not include a termination reason unless one is explicitly
+        /// specified by the caller.
+        /// </para>
+        /// <para>
+        /// The test is terminated with by throwing a <see cref="SilentTestException" />
+        /// with the specified outcome.  If other code in the test case catches
+        /// this exception and does not rethrow it then the test might not terminate correctly.
+        /// </para>
+        /// </remarks>
+        /// <param name="outcome">The desired test outcome</param>
+        /// <exception cref="SilentTestException">Thrown always</exception>
+        public static void TerminateSilently(TestOutcome outcome)
+        {
+            TerminateSilently(outcome, null, null);
+        }
+
+        /// <summary>
+        /// Terminates the test silently and reports a specific test outcome.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Unlike <see cref="Terminate(TestOutcome, string, object[])" /> this method does not report the
+        /// stack trace.  It also does not include a termination reason unless one is explicitly
+        /// specified by the caller.
+        /// </para>
+        /// <para>
+        /// The test is terminated with by throwing a <see cref="TestTerminatedException" />
+        /// with the specified outcome.  If other code in the test case catches
+        /// this exception and does not rethrow it then the test might not terminate correctly.
+        /// </para>
+        /// </remarks>
+        /// <param name="outcome">The desired test outcome</param>
+        /// <param name="messageFormat">The custom message format string, or null if none</param>
+        /// <param name="messageArgs">The custom message arguments, or null if none</param>
+        /// <exception cref="SilentTestException">Thrown always</exception>
+        public static void TerminateSilently(TestOutcome outcome, string messageFormat, params object[] messageArgs)
+        {
+            throw new SilentTestException(outcome, messageFormat != null && messageArgs != null
+                ? String.Format(messageFormat, messageArgs)
+                : null);
         }
         #endregion
 
@@ -244,6 +349,25 @@ namespace MbUnit.Framework
                     .ToAssertionFailure();
             });
         }
+        #endregion
+
+        #region IsFailurePending
+
+        /// <summary>
+        /// Returns true if there is a pending unreported assertion failure.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This property is used in conjuction with the <see cref="Assert.Multiple(Action)" />
+        /// feature to determine whether there is a pending assertion failure yet
+        /// to be reported within a multiple-assertion block.
+        /// </para>
+        /// </remarks>
+        public static bool IsFailurePending
+        {
+            get { return AssertionContext.CurrentContext.GetPendingFailures().Length != 0; }
+        }
+
         #endregion
     }
 }

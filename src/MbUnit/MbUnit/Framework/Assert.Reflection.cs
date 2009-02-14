@@ -35,9 +35,45 @@ namespace MbUnit.Framework
         /// <seealso cref="Type.IsAssignableFrom"/>
         /// <param name="expectedType">The Type to compare with the object's Type</param>
         /// <param name="actualValue">The object under examination</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedType"/> is null</exception>
         public static void IsAssignableFrom(Type expectedType, object actualValue)
         {
             IsAssignableFrom(expectedType, actualValue, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an object may be assigned to a variable of the specified type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Type.IsAssignableFrom"/>
+        /// <param name="expectedType">The Type to compare with the object's Type</param>
+        /// <param name="actualValue">The object under examination</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedType"/> is null</exception>
+        public static void IsAssignableFrom(Type expectedType, object actualValue, string messageFormat, params object[] messageArgs)
+        {
+            if (expectedType == null)
+                throw new ArgumentNullException("expectedType");
+
+            AssertionHelper.Verify(delegate
+            {
+                if (actualValue != null && actualValue.GetType().IsAssignableFrom(expectedType))
+                    return null;
+
+                var builder = new AssertionFailureBuilder("Expected the actual type to be assignable to the expected type.")
+                    .SetMessage(messageFormat, messageArgs)
+                    .AddRawLabeledValue("Expected Type", expectedType);
+                if (actualValue != null)
+                    builder.AddRawLabeledValue("Actual Type", actualValue.GetType());
+                return builder
+                    .AddRawActualValue(actualValue)
+                    .ToAssertionFailure();
+            });
         }
 
         /// <summary>
@@ -65,39 +101,6 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
-        /// <param name="expectedType">The Type to compare with the object's Type</param>
-        /// <param name="actualValue">The object under examination</param>
-        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
-        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        public static void IsAssignableFrom(Type expectedType, object actualValue, string messageFormat, params object[] messageArgs)
-        {
-            if (expectedType == null)
-                throw new ArgumentNullException("expectedType");
-            if (actualValue == null)
-                throw new ArgumentNullException("actualValue");
-
-            AssertionHelper.Verify(delegate
-            {
-                if (actualValue != null && actualValue.GetType().IsAssignableFrom(expectedType))
-                    return null;
-
-                return new AssertionFailureBuilder("Expected the actual type to be assignable to the expected type.")
-                    .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Actual Type", actualValue.GetType())
-                    .AddRawLabeledValue("Expected Type", expectedType)
-                    .ToAssertionFailure();
-            });
-        }
-
-        /// <summary>
-        /// Verifies that an object may be assigned to a variable of the specified type.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This assertion will fail if the object is null.
-        /// </para>
-        /// </remarks>
-        /// <seealso cref="Type.IsAssignableFrom"/>
         /// <typeparam name="TExpected">The Type to compare with the object's Type</typeparam>
         /// <param name="actualValue">The object under examination</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
@@ -105,8 +108,7 @@ namespace MbUnit.Framework
         public static void IsAssignableFrom<TExpected>(object actualValue, string messageFormat, params object[] messageArgs)
         {
             IsAssignableFrom(typeof(TExpected), actualValue, messageFormat, messageArgs);
-        }
-        
+        }        
         #endregion
 
         #region IsNotAssignableFrom
@@ -120,11 +122,12 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
-        /// <param name="expectedType">The Type to compare with the object's Type</param>
+        /// <param name="unexpectedType">The Type to compare with the object's Type</param>
         /// <param name="actualValue">The object under examination</param>
-        public static void IsNotAssignableFrom(Type expectedType, object actualValue)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedType"/> is null</exception>
+        public static void IsNotAssignableFrom(Type unexpectedType, object actualValue)
         {
-            IsNotAssignableFrom(expectedType, actualValue, null, null);
+            IsNotAssignableFrom(unexpectedType, actualValue, null, null);
         }
 
         /// <summary>
@@ -136,42 +139,28 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
-        /// <typeparam name="TExpected">The Type to compare with the object's Type</typeparam>
-        /// <param name="actualValue">The object under examination</param>
-        public static void IsNotAssignableFrom<TExpected>(object actualValue)
-        {
-            IsNotAssignableFrom(typeof(TExpected), actualValue, null, null);
-        }
-
-        /// <summary>
-        /// Verifies that an object may not be assigned to a variable of the specified type.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This assertion will fail if the object is null.
-        /// </para>
-        /// </remarks>
-        /// <seealso cref="Type.IsAssignableFrom"/>
-        /// <param name="expectedType">The Type to compare with the object's Type</param>
+        /// <param name="unexpectedType">The Type to compare with the object's Type</param>
         /// <param name="actualValue">The object under examination</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        public static void IsNotAssignableFrom(Type expectedType, object actualValue, string messageFormat, params object[] messageArgs)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedType"/> is null</exception>
+        public static void IsNotAssignableFrom(Type unexpectedType, object actualValue, string messageFormat, params object[] messageArgs)
         {
-            if (expectedType == null)
-                throw new ArgumentNullException("expectedType");
-            if (actualValue == null)
-                throw new ArgumentNullException("actualValue");
+            if (unexpectedType == null)
+                throw new ArgumentNullException("unexpectedType");
 
             AssertionHelper.Verify(delegate
             {
-                if (actualValue != null && !actualValue.GetType().IsAssignableFrom(expectedType))
+                if (actualValue != null && !actualValue.GetType().IsAssignableFrom(unexpectedType))
                     return null;
 
-                return new AssertionFailureBuilder("Expected the actual type not to be assignable to the expected type.")
+                var builder = new AssertionFailureBuilder("Expected the actual type not to be assignable to the expected type.")
                     .SetMessage(messageFormat, messageArgs)
-                    .AddRawLabeledValue("Actual Type", actualValue.GetType())
-                    .AddRawLabeledValue("Expected Type", expectedType)
+                    .AddRawLabeledValue("Unexpected Type", unexpectedType);
+                if (actualValue != null)
+                    builder.AddRawLabeledValue("Actual Type", actualValue.GetType());
+                return builder
+                    .AddRawActualValue(actualValue)
                     .ToAssertionFailure();
             });
         }
@@ -185,13 +174,29 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="Type.IsAssignableFrom"/>
-        /// <typeparam name="TExpected">The Type to compare with the object's Type</typeparam>
+        /// <typeparam name="TUnexpected">The Type to compare with the object's Type</typeparam>
+        /// <param name="actualValue">The object under examination</param>
+        public static void IsNotAssignableFrom<TUnexpected>(object actualValue)
+        {
+            IsNotAssignableFrom(typeof(TUnexpected), actualValue, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an object may not be assigned to a variable of the specified type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Type.IsAssignableFrom"/>
+        /// <typeparam name="TUnexpected">The Type to compare with the object's Type</typeparam>
         /// <param name="actualValue">The object under examination</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
-        public static void IsNotAssignableFrom<TExpected>(object actualValue, string messageFormat, params object[] messageArgs)
+        public static void IsNotAssignableFrom<TUnexpected>(object actualValue, string messageFormat, params object[] messageArgs)
         {
-            IsNotAssignableFrom(typeof(TExpected), actualValue, messageFormat, messageArgs);
+            IsNotAssignableFrom(typeof(TUnexpected), actualValue, messageFormat, messageArgs);
         }
 
         #endregion
@@ -213,23 +218,6 @@ namespace MbUnit.Framework
         public static void IsInstanceOfType(Type expectedType, object actualValue)
         {
             IsInstanceOfType(expectedType, actualValue, null, null);
-        }
-
-        /// <summary>
-        /// Verifies that an actual value is an instance of some expected type.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This assertion will fail if the object is null.
-        /// </para>
-        /// </remarks>
-        /// <typeparam name="TExpected">The expected type</typeparam>
-        /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedType"/> is null</exception>
-        public static void IsInstanceOfType<TExpected>(object actualValue)
-        {
-            IsInstanceOfType(typeof(TExpected), actualValue, null, null);
         }
 
         /// <summary>
@@ -277,10 +265,25 @@ namespace MbUnit.Framework
         /// </remarks>
         /// <typeparam name="TExpected">The expected type</typeparam>
         /// <param name="actualValue">The actual value</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void IsInstanceOfType<TExpected>(object actualValue)
+        {
+            IsInstanceOfType(typeof(TExpected), actualValue, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an actual value is an instance of some expected type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="TExpected">The expected type</typeparam>
+        /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedType"/> is null</exception>
         public static void IsInstanceOfType<TExpected>(object actualValue, string messageFormat, params object[] messageArgs)
         {
             IsInstanceOfType(typeof(TExpected), actualValue, messageFormat, messageArgs);
@@ -305,23 +308,6 @@ namespace MbUnit.Framework
         public static void IsNotInstanceOfType(Type unexpectedType, object actualValue)
         {
             IsNotInstanceOfType(unexpectedType, actualValue, null, null);
-        }
-
-        /// <summary>
-        /// Verifies that an actual value is not an instance of some unexpected type.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This assertion will fail if the object is null.
-        /// </para>
-        /// </remarks>
-        /// <typeparam name="TUnexpected">The unexpected type</typeparam>
-        /// <param name="actualValue">The actual value</param>
-        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedType"/> is null</exception>
-        public static void IsNotInstanceOfType<TUnexpected>(object actualValue)
-        {
-            IsNotInstanceOfType(typeof(TUnexpected), actualValue, null, null);
         }
 
         /// <summary>
@@ -369,10 +355,25 @@ namespace MbUnit.Framework
         /// </remarks>
         /// <typeparam name="TUnexpected">The unexpected type</typeparam>
         /// <param name="actualValue">The actual value</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void IsNotInstanceOfType<TUnexpected>(object actualValue)
+        {
+            IsNotInstanceOfType(typeof(TUnexpected), actualValue, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that an actual value is not an instance of some unexpected type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This assertion will fail if the object is null.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="TUnexpected">The unexpected type</typeparam>
+        /// <param name="actualValue">The actual value</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="unexpectedType"/> is null</exception>
         public static void IsNotInstanceOfType<TUnexpected>(object actualValue, string messageFormat, params object[] messageArgs)
         {
             IsNotInstanceOfType(typeof(TUnexpected), actualValue, messageFormat, messageArgs);

@@ -13,24 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Framework;
-using Gallio.Model;
-using MbUnit.Framework;
-using MbUnit.Framework.ContractVerifiers;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Gallio;
+using Gallio.Framework.Assertions;
 
-namespace Gallio.Tests.Framework
+namespace MbUnit.Framework
 {
-    [TestsOn(typeof(TestFailedException))]
-    public class TestFailedExceptionTest
+    public abstract partial class Assert
     {
-        [VerifyContract]
-        public readonly IContract ExceptionTests = new ExceptionContract<TestFailedException>();
-
-        [Test]
-        public void OutcomeIsFailed()
-        {
-            var ex = new TestFailedException();
-            Assert.AreEqual(TestOutcome.Failed, ex.Outcome);
-        }
     }
 }

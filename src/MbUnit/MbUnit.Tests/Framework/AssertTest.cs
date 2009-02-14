@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Gallio.Framework;
 using Gallio.Framework.Assertions;
+using Gallio.Model;
 using Gallio.Model.Diagnostics;
 using MbUnit.Framework;
 
@@ -25,8 +26,6 @@ namespace MbUnit.Tests.Framework
     [TestsOn(typeof(Assert))]
     public class AssertTest : BaseAssertTest
     {
-        #region Fail
-
         [Test]
         public void Fail_without_parameters()
         {
@@ -45,6 +44,154 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("MbUnit message.", failures[0].Message);
         }
 
-        #endregion
+        [Test]
+        public void Inconclusive()
+        {
+            var ex = Assert.Throws<TestInconclusiveException>(() => Assert.Inconclusive());
+            Assert.AreEqual("The test was inconclusive.", ex.Message);
+        }
+
+        [Test]
+        public void Inconclusive_with_message()
+        {
+            var ex = Assert.Throws<TestInconclusiveException>(() => Assert.Inconclusive("{0} {1}.", "MbUnit", "message"));
+            Assert.AreEqual("MbUnit message.", ex.Message);
+        }
+
+        [Test]
+        public void Terminate()
+        {
+            var ex = Assert.Throws<TestTerminatedException>(() => Assert.Terminate(TestOutcome.Explicit));
+            Assert.AreEqual("The test was terminated.", ex.Message);
+            Assert.AreEqual(TestOutcome.Explicit, ex.Outcome);
+        }
+
+        [Test]
+        public void Terminate_with_message()
+        {
+            var ex = Assert.Throws<TestTerminatedException>(() => Assert.Terminate(TestOutcome.Explicit, "{0} {1}.", "MbUnit", "message"));
+            Assert.AreEqual("MbUnit message.", ex.Message);
+            Assert.AreEqual(TestOutcome.Explicit, ex.Outcome);
+        }
+
+        [Test]
+        public void TerminateSilently()
+        {
+            var ex = Assert.Throws<SilentTestException>(() => Assert.TerminateSilently(TestOutcome.Error));
+            Assert.IsFalse(ex.HasNonDefaultMessage);
+            Assert.AreEqual(TestOutcome.Error, ex.Outcome);
+        }
+
+        [Test]
+        public void TerminateSilently_with_message()
+        {
+            var ex = Assert.Throws<SilentTestException>(() => Assert.TerminateSilently(TestOutcome.Error, "{0} {1}.", "MbUnit", "message"));
+            Assert.IsTrue(ex.HasNonDefaultMessage);
+            Assert.AreEqual("MbUnit message.", ex.Message);
+            Assert.AreEqual(TestOutcome.Error, ex.Outcome);
+        }
+
+        [Test]
+        public void Multiple_passes_if_no_failures_within_block()
+        {
+            bool executed = false;
+            AssertionFailure[] failures = Capture(() => Assert.Multiple(() =>
+            {
+                executed = true;
+            }));
+
+            Assert.IsTrue(executed);
+            Assert.IsEmpty(failures);
+        }
+
+        [Test]
+        public void Multiple_reports_summary_of_a_single_failure()
+        {
+            bool executed = false;
+            AssertionFailure[] failures = Capture(() => Assert.Multiple(() =>
+            {
+                Assert.IsFalse(true, "Failed assert");
+                executed = true;
+            }));
+
+            Assert.IsTrue(executed);
+            Assert.AreEqual("There was 1 failure within the multiple assertion block.", failures[0].Description);
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual(null, failures[0].Message);
+
+            Assert.AreEqual(0, failures[0].InnerFailures.Count, "Should not contain inner failures because they are logged immediately.");
+        }
+
+        [Test]
+        public void Multiple_reports_summary_of_multiple_failures()
+        {
+            bool executed = false;
+            AssertionFailure[] failures = Capture(() => Assert.Multiple(() =>
+            {
+                Assert.IsFalse(true, "Failed assert #1");
+                Assert.IsFalse(false, "Passed assert #1");
+                Assert.IsFalse(true, "Failed assert #2");
+                executed = true;
+            }));
+
+            Assert.IsTrue(executed);
+            Assert.AreEqual("There were 2 failures within the multiple assertion block.", failures[0].Description);
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual(null, failures[0].Message);
+
+            Assert.AreEqual(0, failures[0].InnerFailures.Count, "Should not contain inner failures because they are logged immediately.");
+        }
+
+        [Test]
+        public void Multiple_reports_summary_of_multiple_failures_with_custom_message()
+        {
+            bool executed = false;
+            AssertionFailure[] failures = Capture(() => Assert.Multiple(() =>
+            {
+                Assert.IsFalse(true, "Failed assert #1");
+                Assert.IsFalse(false, "Passed assert #1");
+                Assert.IsFalse(true, "Failed assert #2");
+                executed = true;
+            }, "{0} {1}", "MbUnit", "message"));
+
+            Assert.IsTrue(executed);
+            Assert.AreEqual(1, failures.Length);
+            Assert.AreEqual("MbUnit message", failures[0].Message);
+
+            Assert.AreEqual(0, failures[0].InnerFailures.Count, "Should not contain inner failures because they are logged immediately.");
+        }
+
+        [Test]
+        public void IsFailurePending_false_when_no_pending_failures()
+        {
+            bool wasPending = false;
+            bool executed = false;
+            AssertionFailure[] failures = Capture(() => Assert.Multiple(() =>
+            {
+                wasPending = Assert.IsFailurePending;
+                executed = true;
+            }));
+
+            Assert.IsTrue(executed);
+            Assert.IsFalse(wasPending);
+            Assert.AreEqual(0, failures.Length);
+        }
+
+        [Test]
+        public void IsFailurePending_true_when_there_is_a_pending_failures()
+        {
+            bool wasPending = false;
+            bool executed = false;
+            AssertionFailure[] failures = Capture(() => Assert.Multiple(() =>
+            {
+                Assert.Fail("Failure");
+                wasPending = Assert.IsFailurePending;
+                executed = true;
+            }));
+
+            Assert.IsTrue(executed);
+            Assert.IsTrue(wasPending);
+            Assert.AreEqual(1, failures.Length);
+        }
     }
 }

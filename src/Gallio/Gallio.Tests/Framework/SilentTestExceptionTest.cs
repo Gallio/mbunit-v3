@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Framework;
+using Gallio.Model;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
@@ -24,9 +25,23 @@ namespace Gallio.Tests.Framework
     public class SilentTestExceptionTest
     {
         [VerifyContract]
-        public readonly IContract ExceptionTests = new ExceptionContract<TestInconclusiveException>()
+        public readonly IContract ExceptionTests = new ExceptionContract<SilentTestException>()
         {
             ImplementsStandardConstructors = false
         };
+
+        [Test]
+        public void OutcomeIsAsSpecifiedInConstructor()
+        {
+            var ex = new SilentTestException(TestOutcome.Error);
+            Assert.AreEqual(TestOutcome.Error, ex.Outcome);
+        }
+
+        [Test]
+        public void ExceptionExcludesStackTrace()
+        {
+            var ex = new SilentTestException(TestOutcome.Error);
+            Assert.IsTrue(ex.ExcludeStackTrace);
+        }
     }
 }

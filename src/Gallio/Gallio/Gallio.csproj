@@ -91,6 +91,7 @@
     <Compile Include="Concurrency\TaskResult.cs" />
     <Compile Include="Concurrency\ThreadAbortScope.cs" />
     <Compile Include="Concurrency\ThreadTask.cs" />
+    <Compile Include="Framework\TestTerminatedException.cs" />
     <Compile Include="Framework\Pattern\BaseBuilder.cs" />
     <Compile Include="Framework\Pattern\DefaultTestBuilder.cs" />
     <Compile Include="Framework\Pattern\BaseTestComponentBuilder.cs" />

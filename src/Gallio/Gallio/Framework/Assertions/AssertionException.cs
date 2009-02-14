@@ -24,7 +24,7 @@ namespace Gallio.Framework.Assertions
     /// The exception type used by the Gallio assertion framework to signal assertion failures.
     /// </summary>
     [Serializable]
-    public class AssertionException : TestException
+    public class AssertionException : TestFailedException
     {
         /// <summary>
         /// Creates an exception.
@@ -60,12 +60,6 @@ namespace Gallio.Framework.Assertions
         protected AssertionException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-        }
-
-        /// <inheritdoc />
-        public override TestOutcome Outcome
-        {
-            get { return TestOutcome.Failed; }
         }
     }
 }

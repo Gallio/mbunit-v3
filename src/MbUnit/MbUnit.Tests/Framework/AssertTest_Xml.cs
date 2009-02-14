@@ -13,24 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Gallio.Framework;
-using Gallio.Model;
+using System;
+using System.Text.RegularExpressions;
+using Gallio.Framework.Assertions;
 using MbUnit.Framework;
-using MbUnit.Framework.ContractVerifiers;
 
-namespace Gallio.Tests.Framework
+namespace MbUnit.Tests.Framework
 {
-    [TestsOn(typeof(TestFailedException))]
-    public class TestFailedExceptionTest
+    [TestsOn(typeof(Assert))]
+    public class AssertTest_Xml : BaseAssertTest
     {
-        [VerifyContract]
-        public readonly IContract ExceptionTests = new ExceptionContract<TestFailedException>();
-
-        [Test]
-        public void OutcomeIsFailed()
-        {
-            var ex = new TestFailedException();
-            Assert.AreEqual(TestOutcome.Failed, ex.Outcome);
-        }
     }
 }
