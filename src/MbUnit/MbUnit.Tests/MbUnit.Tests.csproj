@@ -78,7 +78,6 @@
     <Compile Include="Framework\Reflection\StaticTests.cs" />
     <Compile Include="Framework\Reflection\TestSample.cs" />
     <Compile Include="Compatibility\Framework\OldStringAssertTest.cs" />
-    <Compile Include="Framework\Xml\XmlSerializationAssertTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Gallio\Gallio.Tests\Gallio.Tests.csproj">

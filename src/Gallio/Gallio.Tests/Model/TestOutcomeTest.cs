@@ -15,7 +15,6 @@
 
 using System;
 using Gallio.Model;
-using MbUnit.Framework.Xml;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Model
@@ -121,19 +120,19 @@ namespace Gallio.Tests.Model
         [Test]
         public void TypeIsXmlSerializable()
         {
-            XmlSerializationAssert.IsXmlSerializable(typeof(TestOutcome));
+            Assert.IsXmlSerializableType(typeof(TestOutcome));
         }
 
         [Test]
         public void RoundTripXmlSerializationWhenCategoryIsNull()
         {
-            XmlSerializationAssert.AreEqualAfterRoundTrip(TestOutcome.Passed);
+            Assert.AreEqual(TestOutcome.Passed, Assert.XmlSerializeThenDeserialize(TestOutcome.Passed));
         }
 
         [Test]
         public void RoundTripXmlSerializationWhenCategoryIsNonNull()
         {
-            XmlSerializationAssert.AreEqualAfterRoundTrip(TestOutcome.Error);
+            Assert.AreEqual(TestOutcome.Error, Assert.XmlSerializeThenDeserialize(TestOutcome.Error));
         }
     }
 }

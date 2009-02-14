@@ -48,9 +48,9 @@ namespace MbUnit.Samples
         }
 
         [Test]
-        public void Terminated()
+        public void Terminate()
         {
-            Assert.Terminated(TestOutcome.Error, "Terminated for demonstration purposes.");
+            Assert.Terminate(TestOutcome.Error, "Terminated for demonstration purposes.");
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace MbUnit.Samples
         [Row(TestStatus.Skipped, "ignored")]
         public void RowsWithDifferentOutcomes(TestStatus status, string category)
         {
-            Assert.TerminateSilently(new TestOutcome(status, category), "Terminated by design");
+            Assert.TerminateSilently(new TestOutcome(status, category), "Terminated for demonstration purposes.");
         }
     }
 }

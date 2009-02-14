@@ -17,7 +17,6 @@ using System;
 using System.Reflection;
 using Gallio.Reflection;
 using MbUnit.Framework;
-using MbUnit.Framework.Xml;
 
 namespace Gallio.Tests.Reflection
 {
@@ -186,19 +185,21 @@ namespace Gallio.Tests.Reflection
         [Test]
         public void TypeIsXmlSerializable()
         {
-            XmlSerializationAssert.IsXmlSerializable(typeof(CodeReference));
+            Assert.IsXmlSerializableType(typeof(CodeReference));
         }
 
         [Test]
         public void RoundTripXmlSerializationFullyPopulatedProperties()
         {
-            XmlSerializationAssert.AreEqualAfterRoundTrip(CodeReference.CreateFromParameter(parameter));
+            var value = CodeReference.CreateFromParameter(parameter);
+            Assert.AreEqual(value, Assert.XmlSerializeThenDeserialize(value));
         }
 
         [Test]
         public void RoundTripXmlSerializationUnknown()
         {
-            XmlSerializationAssert.AreEqualAfterRoundTrip(CodeReference.Unknown);
+            var value = CodeReference.Unknown;
+            Assert.AreEqual(value, Assert.XmlSerializeThenDeserialize(value));
         }
 
         internal void Dummy(object dummy)

@@ -18,7 +18,6 @@ using Gallio.Model.Logging;
 using Gallio.Model.Logging.Tags;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
-using MbUnit.Framework.Xml;
 
 namespace Gallio.Tests.Model.Logging.Tags
 {
@@ -89,7 +88,7 @@ namespace Gallio.Tests.Model.Logging.Tags
             {
                 foreach (Tag item in @class)
                 {
-                    XmlSerializationAssert.AreEqualAfterRoundTrip(item);
+                    Assert.AreEqual(item, Assert.XmlSerializeThenDeserialize(item));
                 }
             }
         }

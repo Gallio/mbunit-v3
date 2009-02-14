@@ -19,9 +19,7 @@ using System.Xml.Serialization;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
-using Gallio.Runtime.Loader;
 using MbUnit.Framework;
-using MbUnit.Framework.Xml;
 using Gallio.Model.Serialization;
 
 namespace Gallio.Tests.Runner.Reports
@@ -33,7 +31,7 @@ namespace Gallio.Tests.Runner.Reports
         [Test]
         public void ReportTypeIsXmlSerializable()
         {
-            XmlSerializationAssert.IsXmlSerializable(typeof(Report));
+            Assert.IsXmlSerializableType(typeof(Report));
         }
 
         [Test]

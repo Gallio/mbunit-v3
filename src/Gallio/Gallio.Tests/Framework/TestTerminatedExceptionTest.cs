@@ -41,7 +41,7 @@ namespace Gallio.Tests.Framework
         public void OutcomeSurvivesSerialization()
         {
             var ex = new TestTerminatedException(TestOutcome.Skipped);
-            var deserializedEx = Assert.IsBinarySerializable(ex);
+            var deserializedEx = Assert.BinarySerializeThenDeserialize(ex);
             Assert.AreEqual(TestOutcome.Skipped, deserializedEx.Outcome);
         }
     }

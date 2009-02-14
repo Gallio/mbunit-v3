@@ -75,7 +75,7 @@ namespace MbUnit.Framework
         }
         #endregion
 
-        #region IsBinarySerializable
+        #region BinarySerializeThenDeserialize
         /// <summary>
         /// Verifies that an object can be serialized and deserialized using a
         /// <see cref="BinaryFormatter" />.
@@ -88,9 +88,9 @@ namespace MbUnit.Framework
         /// <param name="value">The value</param>
         /// <returns>The deserialized object which may be inspected for additional verification</returns>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static T IsBinarySerializable<T>(T value)
+        public static T BinarySerializeThenDeserialize<T>(T value)
         {
-            return IsBinarySerializable(value, null);
+            return BinarySerializeThenDeserialize(value, null);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static T IsBinarySerializable<T>(T value, string messageFormat, params object[] messageArgs)
+        public static T BinarySerializeThenDeserialize<T>(T value, string messageFormat, params object[] messageArgs)
         {
             T deserializedValue = default(T);
             AssertionHelper.Verify(delegate
@@ -202,7 +202,7 @@ namespace MbUnit.Framework
                 }
                 catch (Exception ex)
                 {
-                    return new AssertionFailureBuilder("Expected the type to support Xml serialization but an exception was thrown while constructing and XmlSerializer.")
+                    return new AssertionFailureBuilder("Expected the type to support Xml serialization but an exception was thrown while constructing an XmlSerializer.")
                         .SetMessage(messageFormat, messageArgs)
                         .AddException(ex)
                         .AddRawLabeledValue("Type", type)
@@ -212,7 +212,7 @@ namespace MbUnit.Framework
         }
         #endregion
 
-        #region IsXmlSerializable
+        #region XmlSerializeThenDeserialize
         /// <summary>
         /// Verifies that an object can be serialized and deserialized using an <see cref="XmlSerializer" />.
         /// </summary>
@@ -224,9 +224,9 @@ namespace MbUnit.Framework
         /// <param name="value">The value</param>
         /// <returns>The deserialized object which may be inspected for additional verification</returns>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static T IsXmlSerializable<T>(T value)
+        public static T XmlSerializeThenDeserialize<T>(T value)
         {
-            return IsXmlSerializable(value, null);
+            return XmlSerializeThenDeserialize(value, null);
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static T IsXmlSerializable<T>(T value, string messageFormat, params object[] messageArgs)
+        public static T XmlSerializeThenDeserialize<T>(T value, string messageFormat, params object[] messageArgs)
         {
             T deserializedValue = default(T);
             AssertionHelper.Verify(delegate

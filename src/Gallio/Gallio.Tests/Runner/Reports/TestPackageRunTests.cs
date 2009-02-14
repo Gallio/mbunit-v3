@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using Gallio.Runner.Reports;
-using MbUnit.Framework.Xml;
 using Gallio.Model.Serialization;
 using MbUnit.Framework;
 
@@ -56,7 +55,7 @@ namespace Gallio.Tests.Runner.Reports
         [Test]
         public void ReportTypeIsXmlSerializable()
         {
-            XmlSerializationAssert.IsXmlSerializable(testPackageRun.GetType());
+            Assert.IsXmlSerializableType(testPackageRun.GetType());
         }
 
         [Test]
@@ -64,7 +63,7 @@ namespace Gallio.Tests.Runner.Reports
         {
             testPackageRun.RootTestStepRun = new TestStepRun(new TestStepData("stepId", "stepName", "stepFullName", "testId"));
 
-            TestPackageRun deserializedTestPackageRun = XmlSerializationAssert.RoundTrip(testPackageRun);
+            TestPackageRun deserializedTestPackageRun = Assert.XmlSerializeThenDeserialize(testPackageRun);
             ReportAssert.AreEqual(testPackageRun, deserializedTestPackageRun);
         }
 

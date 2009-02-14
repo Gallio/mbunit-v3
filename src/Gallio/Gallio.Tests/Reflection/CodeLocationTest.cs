@@ -16,7 +16,6 @@
 
 using System;
 using Gallio.Reflection;
-using MbUnit.Framework.Xml;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 using System.IO;
@@ -67,7 +66,7 @@ namespace Gallio.Tests.Reflection
         [Test]
         public void TypeIsXmlSerializable()
         {
-            XmlSerializationAssert.IsXmlSerializable(typeof(CodeLocation));
+            Assert.IsXmlSerializableType(typeof(CodeLocation));
         }
 
         [Test]
@@ -104,13 +103,15 @@ namespace Gallio.Tests.Reflection
         [Test]
         public void RoundTripXmlSerializationFullyPopulatedProperties()
         {
-            XmlSerializationAssert.AreEqualAfterRoundTrip(new CodeLocation("path", 42, 33));
+            var value = new CodeLocation("path", 42, 33);
+            Assert.AreEqual(value, Assert.XmlSerializeThenDeserialize(value));
         }
 
         [Test]
         public void RoundTripXmlSerializationAllUnknown()
         {
-            XmlSerializationAssert.AreEqualAfterRoundTrip(CodeLocation.Unknown);
+            var value = CodeLocation.Unknown;
+            Assert.AreEqual(value, Assert.XmlSerializeThenDeserialize(value));
         }
 
         [Test]
