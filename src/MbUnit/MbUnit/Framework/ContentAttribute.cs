@@ -146,6 +146,13 @@ namespace MbUnit.Framework
         /// <summary>
         /// Opens the contents as a stream.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If you override this method to return data from a different stream, consider
+        /// also overriding <see cref="ValidateSource" /> in case the manner in which the
+        /// data source location is specified has also changed.
+        /// </para>
+        /// </remarks>
         /// <param name="codeElement">The code element to which the attribute was applied</param>
         /// <returns>The stream</returns>
         protected virtual Stream OpenStream(ICodeElementInfo codeElement)
@@ -162,6 +169,13 @@ namespace MbUnit.Framework
         /// <summary>
         /// Opens the contents as a text reader.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If you override this method to return data from a different stream, consider
+        /// also overriding <see cref="ValidateSource" /> in case the manner in which the
+        /// data source location is specified has also changed.
+        /// </para>
+        /// </remarks>
         /// <param name="codeElement">The code element to which the attribute was applied</param>
         /// <returns>The text reader</returns>
         protected virtual TextReader OpenTextReader(ICodeElementInfo codeElement)
@@ -189,6 +203,23 @@ namespace MbUnit.Framework
         {
             base.Validate(scope, codeElement);
 
+            ValidateSource(scope, codeElement);
+        }
+
+        /// <summary>
+        /// Validates the data source properties of the content attribute.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Throws a <see cref="PatternUsageErrorException" /> if none of the source
+        /// properties, such as <see cref="Contents"/>, <see cref="FilePath" /> or
+        /// <see cref="ResourcePath"/> have been set.
+        /// </para>
+        /// </remarks>
+        /// <param name="scope">The pattern scope</param>
+        /// <param name="codeElement">The code element to which the attribute was applied</param>
+        protected virtual void ValidateSource(IPatternScope scope, ICodeElementInfo codeElement)
+        {
             if (contents == null && filePath == null && resourcePath == null)
                 ThrowUsageErrorException("At least one source property must be specified.");
         }
