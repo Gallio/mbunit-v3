@@ -75,7 +75,7 @@ namespace Gallio.Reports.Tests
                         .Do((Func<string, string>)delegate(string value) { return value; });
 
                     SetupResult.For(reportContainer.ReportName).Return("Foo");
-                    Expect.Call(reportContainer.OpenWrite("Foo.mht", MimeTypes.MHtml, Encoding.UTF8))
+                    Expect.Call(reportContainer.OpenWrite("Foo.mht", MimeTypes.MHtml, new UTF8Encoding(false)))
                         .Return(tempFileStream);
                     reportWriter.AddReportDocumentPath("Foo.mht");
 

@@ -46,6 +46,7 @@ namespace Gallio.Tests
         [SetUp]
         public virtual void SetUp()
         {
+            mocks = null;
         }
 
         [TearDown]

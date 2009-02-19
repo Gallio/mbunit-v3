@@ -152,7 +152,7 @@ namespace Gallio.Reports.Tests
                         });
 
                     SetupResult.For(reportContainer.ReportName).Return("Foo");
-                    Expect.Call(reportContainer.OpenWrite("Foo.ext", MimeTypes.PlainText, Encoding.UTF8))
+                    Expect.Call(reportContainer.OpenWrite("Foo.ext", MimeTypes.PlainText, new UTF8Encoding(false)))
                         .Return(tempFileStream);
                     reportWriter.AddReportDocumentPath("Foo.ext");
 
