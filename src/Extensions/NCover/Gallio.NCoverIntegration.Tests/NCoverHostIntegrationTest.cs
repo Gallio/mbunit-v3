@@ -40,7 +40,7 @@ namespace Gallio.NCoverIntegration.Tests
         [Row("NCover3", 3)]
         public void GeneratesNCoverCoverageLogInWorkingDirectory(string factoryName, int majorVersion)
         {
-            if (Process.GetProcessesByName("NCover.Console.exe").Length != 0)
+            if (Process.GetProcessesByName("NCover.Console").Length != 0)
                 Assert.Inconclusive("Cannot run this test while another instance of NCover is running.");
 
             string tempPath = Path.GetTempPath();
