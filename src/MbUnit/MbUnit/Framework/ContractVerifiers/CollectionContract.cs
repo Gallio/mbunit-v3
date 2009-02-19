@@ -194,7 +194,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// The default value is true.
         /// </para>
         /// <remarks>
-        /// The default value is 'false'.
+        /// The default value is 'true'.
         /// </remarks>
         /// </summary>
         public bool AcceptEqualItems
