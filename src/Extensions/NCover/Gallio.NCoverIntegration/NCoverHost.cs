@@ -26,27 +26,40 @@ namespace Gallio.NCoverIntegration
     /// </summary>
     public class NCoverHost : IsolatedProcessHost
     {
+        private readonly NCoverVersion version;
+
         /// <summary>
         /// Creates an uninitialized host.
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
         /// <param name="logger">The logger for host message output</param>
         /// <param name="installationPath">The runtime installation path where the hosting executable will be found</param>
+        /// <param name="version">The NCover version</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
         /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null</exception>
-        public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath)
+        public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath, NCoverVersion version)
             : base(hostSetup, logger, installationPath)
         {
+            this.version = version;
         }
 
         /// <inheritdoc />
         protected override ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
-#if NCOVER2
-            return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory);
-#else
-            return new NCoverProcessTask(executablePath, arguments, workingDirectory, Logger);
-#endif
+            switch (version)
+            {
+                case NCoverVersion.V1:
+                    return new EmbeddedNCoverProcessTask(executablePath, arguments, workingDirectory, Logger);
+
+                case NCoverVersion.V2:
+                    return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, 2);
+
+                case NCoverVersion.V3:
+                    return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, 3);
+
+                default:
+                    throw new NotSupportedException("Unrecognized NCover version.");
+            }
         }
     }
 }

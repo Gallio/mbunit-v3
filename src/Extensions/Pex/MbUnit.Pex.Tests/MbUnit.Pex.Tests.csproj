@@ -39,15 +39,15 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ExtendedReflection, Version=0.5.30215.2, Culture=neutral, PublicKeyToken=76a274db078248c8, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Microsoft.ExtendedReflection, Version=0.9.40114.0, Culture=neutral, PublicKeyToken=76a274db078248c8, processorArchitecture=MSIL">
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="Microsoft.Pex, Version=0.5.30215.2, Culture=neutral, PublicKeyToken=76a274db078248c8, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Microsoft.Pex, Version=0.9.40114.0, Culture=neutral, PublicKeyToken=76a274db078248c8, processorArchitecture=MSIL">
+      <SpecificVersion>True</SpecificVersion>
       <ExecutableExtension>.exe</ExecutableExtension>
     </Reference>
-    <Reference Include="Microsoft.Pex.Framework, Version=0.5.30215.2, Culture=neutral, PublicKeyToken=76a274db078248c8, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Microsoft.Pex.Framework, Version=0.9.40114.0, Culture=neutral, PublicKeyToken=76a274db078248c8, processorArchitecture=MSIL">
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

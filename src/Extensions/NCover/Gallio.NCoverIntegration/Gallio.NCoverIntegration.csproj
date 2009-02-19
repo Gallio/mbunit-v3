@@ -12,13 +12,12 @@
     <AssemblyName>Gallio.NCoverIntegration</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <BaseIntermediateOutputPath>obj\v1.5.8\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\v1.5.8\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,7 +28,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\v1.5.8\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,6 +40,7 @@
     <Reference Include="NCover.Framework, Version=1.5.8.0, Culture=neutral, PublicKeyToken=f4018786f4b01bc6, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\v1.5.8\NCover.Framework.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -49,8 +49,10 @@
   <ItemGroup>
     <Compile Include="NCoverHost.cs" />
     <Compile Include="NCoverHostFactory.cs" />
+    <Compile Include="NCoverTool.cs" />
+    <Compile Include="NCoverVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NCoverProcessTask.cs" />
+    <Compile Include="EmbeddedNCoverProcessTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
@@ -60,17 +62,25 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.NCoverIntegration.plugin" />
+    <Content Include="..\libs\v1.5.8\NCover.Framework.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>v1.5.8\NCover.Framework.dll</Link>
+    </Content>
     <Content Include="..\libs\v1.5.8\CoverLib.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>v1.5.8\CoverLib.dll</Link>
     </Content>
     <Content Include="..\libs\v1.5.8\MSVCP80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>v1.5.8\MSVCP80.dll</Link>
     </Content>
     <Content Include="..\libs\v1.5.8\MSVCR80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>v1.5.8\MSVCR80.dll</Link>
     </Content>
     <Content Include="..\libs\v1.5.8\Microsoft.VC80.CRT.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>v1.5.8\Microsoft.VC80.CRT.manifest</Link>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

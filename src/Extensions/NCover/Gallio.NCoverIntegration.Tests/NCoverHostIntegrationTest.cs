@@ -29,27 +29,15 @@ namespace Gallio.NCoverIntegration.Tests
     [TestFixture]
     [TestsOn(typeof(NCoverHost))]
     [TestsOn(typeof(NCoverHostFactory))]
-#if NCOVER2
-    [TestsOn(typeof(NCoverTool))]
-    [Ignore(@"Broken due to a fatal exception in NCover:
--- Top-level exception (System.InvalidOperationException)
-Could not merge modules, there is a sequence-point mismatch between multiple loads of method [.cctor..cctor() : void [static]]
--- Stack Trace
-at NCover.Framework.CoverageData._MergeMethod(MethodData leftSide, MethodData rightSide)")]
-#else
-    [TestsOn(typeof(NCoverProcessTask))]
-#endif
     public class NCoverHostIntegrationTest
     {
-#if NCOVER2
-        private const string NCoverTestRunnerFactoryName = "NCover2";
-#else
-        private const string NCoverTestRunnerFactoryName = "NCover";
-#endif
         private const string TestCoverageXmlFileName = "Coverage.xml";
 
         [Test]
-        public void GeneratesNCoverCoverageLogInWorkingDirectory()
+        [Row("NCover", 0)]
+        [Row("NCover2", 2)]
+        [Row("NCover3", 3)]
+        public void GeneratesNCoverCoverageLogInWorkingDirectory(string factoryName, int majorVersion)
         {
             string tempPath = Path.GetTempPath();
             string coverageFilePath = Path.Combine(tempPath, TestCoverageXmlFileName);
@@ -63,24 +51,36 @@ at NCover.Framework.CoverageData._MergeMethod(MethodData leftSide, MethodData ri
             launcher.Logger = new TestLogStreamLogger(TestLog.Default);
             launcher.TestPackageConfig.AssemblyFiles.Add(AssemblyUtils.GetAssemblyLocalPath(simpleTestType.Assembly));
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = tempPath;
-            launcher.TestRunnerFactoryName = NCoverTestRunnerFactoryName;
+            launcher.TestRunnerFactoryName = factoryName;
             launcher.TestExecutionOptions.Filter = new TypeFilter<ITest>(new EqualityFilter<string>(simpleTestType.FullName), false);
 
-            TestLauncherResult result = launcher.Run();
+            if (majorVersion != 0 && !NCoverTool.IsNCoverVersionInstalled(majorVersion))
+            {
+                var ex = Assert.Throws<RunnerException>(() => launcher.Run());
+                Assert.Contains(ex.ToString(), "NCover v" + majorVersion + " does not appear to be installed.");
+            }
+            else
+            {
+                TestLauncherResult result = launcher.Run();
 
-            Assert.AreEqual(2, result.Statistics.RunCount);
-            Assert.AreEqual(1, result.Statistics.PassedCount);
-            Assert.AreEqual(1, result.Statistics.FailedCount);
-            Assert.AreEqual(0, result.Statistics.InconclusiveCount);
-            Assert.AreEqual(0, result.Statistics.SkippedCount);
+                Assert.AreEqual(2, result.Statistics.RunCount);
+                Assert.AreEqual(1, result.Statistics.PassedCount);
+                Assert.AreEqual(1, result.Statistics.FailedCount);
+                Assert.AreEqual(0, result.Statistics.InconclusiveCount);
+                Assert.AreEqual(0, result.Statistics.SkippedCount);
 
-            Assert.IsTrue(File.Exists(coverageFilePath),
-                "The NCover runner should have written its coverage log to '{0}'.", coverageFilePath);
+                Assert.IsTrue(File.Exists(coverageFilePath),
+                    "The NCover runner should have written its coverage log to '{0}'.", coverageFilePath);
 
-            string coverageXml = File.ReadAllText(coverageFilePath);
-            File.Delete(coverageFilePath);
+                string coverageXml = File.ReadAllText(coverageFilePath);
+                File.Delete(coverageFilePath);
 
-            Assert.Contains(coverageXml, simpleTestType.Name);
+                Assert.Contains(coverageXml, simpleTestType.Name,
+                    "Expected the coverage log to include information about the test method that we actually ran.\n"
+                    + "In NCover v3, there is now a list of excluded 'system assemblies' in NCover.Console.exe.config which "
+                    + "specifies MbUnit and Gallio by default.  For this test to run, the file must be edited such that "
+                    + "these entries are removed.");
+            }
         }
     }
 }

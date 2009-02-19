@@ -39,15 +39,17 @@
     <Binary Include="libs\v1.5.8\NCoverFAQ.html">
         <Folder>NCover\v1.5.8</Folder>
     </Binary>
-    <Binary Include="Gallio.NCoverIntegration\bin\v1.5.8\Gallio.NCoverIntegration.dll">
-        <Folder>NCover\v1.5.8</Folder>
+    <Binary Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.dll">
+        <Folder>NCover</Folder>
     </Binary>
     <Binary Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.plugin">
-        <Folder>NCover\v1.5.8</Folder>
+        <Folder>NCover</Folder>
     </Binary>
   </ItemGroup>
 
   <ItemGroup>
-    <TestAssembly Include="Gallio.NCoverIntegration.Tests\bin\v1.5.8\Gallio.NCoverIntegration.Tests.dll" />
+    <Feature Include="FEATURE_NCOVER_INTEGRATION" />
+
+    <TestAssembly Include="Gallio.NCoverIntegration.Tests\bin\Gallio.NCoverIntegration.Tests.dll" />
   </ItemGroup>
 </Project>

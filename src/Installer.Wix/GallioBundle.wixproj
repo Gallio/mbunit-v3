@@ -129,9 +129,6 @@
     <Compile Include="..\Extensions\NCover\NCover.wxs">
       <Link>NCover.wxs</Link>
     </Compile>
-    <Compile Include="..\Extensions\NCover\NCover2.wxs">
-      <Link>NCover2.wxs</Link>
-    </Compile>
     <Compile Include="..\Extensions\TeamCity\TeamCity.wxs">
       <Link>TeamCity.wxs</Link>
     </Compile>

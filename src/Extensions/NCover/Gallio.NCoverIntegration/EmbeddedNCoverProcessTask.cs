@@ -31,7 +31,7 @@ namespace Gallio.NCoverIntegration
     /// <todo author="jeff">
     /// Support NCover configuration settings using the test runner options collection.
     /// </todo>
-    public class NCoverProcessTask : ProcessTask
+    internal class EmbeddedNCoverProcessTask : ProcessTask
     {
         // Note: NCover can take a long time to finish writing out its results.
         private readonly TimeSpan WaitForExitTimeout = TimeSpan.FromSeconds(120);
@@ -49,7 +49,7 @@ namespace Gallio.NCoverIntegration
         /// <param name="logger">The logger</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
         /// <paramref name="arguments"/>, <paramref name="workingDirectory"/> or <paramref name="logger" /> is null</exception>
-        public NCoverProcessTask(string executablePath, string arguments, string workingDirectory, ILogger logger)
+        public EmbeddedNCoverProcessTask(string executablePath, string arguments, string workingDirectory, ILogger logger)
             : base(executablePath, arguments, workingDirectory)
         {
             if (logger == null)

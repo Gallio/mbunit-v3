@@ -19,17 +19,18 @@ using System.IO;
 using System.Text;
 using Gallio.Concurrency;
 using Gallio.Runtime.Hosting;
-using Gallio.Utilities;
 using Microsoft.Win32;
 
 namespace Gallio.NCoverIntegration
 {
-#if NCOVER2
     internal static class NCoverTool
     {
-        public static ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
+        public static ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory, int majorVersion)
         {
-            string installDir = GetNCoverInstallDir();
+            string installDir = GetNCoverInstallDir(majorVersion);
+            if (installDir == null)
+                throw new HostException("NCover v" + majorVersion + " does not appear to be installed.");
+
             string ncoverConsolePath = Path.Combine(installDir, "NCover.Console.exe");
 
             StringBuilder ncoverArguments = new StringBuilder();
@@ -42,18 +43,27 @@ namespace Gallio.NCoverIntegration
             return new ProcessTask(ncoverConsolePath, ncoverArguments.ToString(), workingDirectory);
         }
 
-        private static string GetNCoverInstallDir()
+        public static bool IsNCoverVersionInstalled(int majorVersion)
+        {
+            return GetNCoverInstallDir(majorVersion) != null;
+        }
+
+        private static string GetNCoverInstallDir(int majorVersion)
         {
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"Software\Gnoso\NCover")
                 ?? Registry.LocalMachine.OpenSubKey(@"WOW6432Node\Software\Gnoso\NCover");
             if (key != null)
             {
-                string installDir = (string) key.GetValue("InstallDir");
-                if (installDir != null)
-                    return installDir;
+                string currentVersion = (string) key.GetValue("CurrentVersion");
+                if (currentVersion != null && currentVersion.StartsWith(majorVersion + "."))
+                {
+                    string installDir = (string) key.GetValue("InstallDir");
+                    if (installDir != null)
+                        return installDir;
+                }
             }
 
-            throw new HostException("NCover v2 does not appear to be installed.");
+            return null;
         }
 
         private static string RemoveTrailingBackslash(string path)
@@ -63,5 +73,4 @@ namespace Gallio.NCoverIntegration
             return path;
         }
     }
-#endif
 }

@@ -196,9 +196,8 @@
             <FeatureRef Id="feat_Gallio.Ambience"/>
 <?endif?>
             <FeatureRef Id='feat_Navigator'/>
+<?ifdef FEATURE_NCOVER_INTEGRATION ?>
             <FeatureRef Id='feat_NCoverIntegration'/>
-<?ifdef FEATURE_NCOVER_INTEGRATION_2 ?>
-            <FeatureRef Id='feat_NCoverIntegration2'/>
 <?endif?>
             <FeatureRef Id='feat_TeamCityIntegration'/>
             <FeatureRef Id='feat_TypeMockIntegration'/>

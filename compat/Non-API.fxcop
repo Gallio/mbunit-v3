@@ -22,13 +22,19 @@
  </ProjectOptions>
  <Targets>
   <AssemblyReferenceDirectories>
-   <Directory>C:/Program Files/Common Files/microsoft shared/MSEnv/PublicAssemblies/</Directory>
-   <Directory>C:/Program Files/Microsoft Visual Studio 2008 SDK/VisualStudioIntegration/Common/Assemblies/</Directory>
-   <Directory>C:/Program Files/Microsoft Visual Studio 9.0/Common7/IDE/PrivateAssemblies/</Directory>
+   <Directory>$(ProjectDir)/../../../../Program Files/Common Files/microsoft shared/MSEnv/PublicAssemblies/</Directory>
+   <Directory>$(ProjectDir)/../../../../Program Files/Microsoft Visual Studio 2008 SDK/VisualStudioIntegration/Common/Assemblies/</Directory>
+   <Directory>$(ProjectDir)/../../../../Program Files/Microsoft Visual Studio 9.0/Common7/IDE/PrivateAssemblies/</Directory>
    <Directory>$(ProjectDir)/../src/Extensions/MbUnit2/libs/</Directory>
+   <Directory>$(ProjectDir)/../src/Extensions/NCover/Gallio.NCoverIntegration/bin/v1.5.8/</Directory>
+   <Directory>$(ProjectDir)/../src/Extensions/NCover/Gallio.NCoverIntegration/bin/v2/</Directory>
    <Directory>$(ProjectDir)/../src/Extensions/TDNet/libs/</Directory>
+   <Directory>$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Tip.Proxy/bin/</Directory>
+   <Directory>$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Tip/bin/</Directory>
    <Directory>$(ProjectDir)/../src/Gallio/Gallio.Loader/bin/</Directory>
   </AssemblyReferenceDirectories>
+  <Target Name="$(ProjectDir)/../src/Extensions/AutoCAD/Gallio.AutoCAD.Plugin/bin/Gallio.AutoCAD.Plugin.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Extensions/AutoCAD/Gallio.AutoCAD/bin/Gallio.AutoCAD.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\CCNet\CCNet.Gallio.WebDashboard.Plugin\bin\CCNet.Gallio.WebDashboard.Plugin.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\CSUnit\Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\Echo\Gallio.Echo\bin\Gallio.Echo.exe" Analyze="True" AnalyzeAllChildren="True" />
@@ -37,17 +43,20 @@
   <Target Name="$(ProjectDir)\..\src\Extensions\MSBuild\Gallio.MSBuildTasks\bin\Gallio.MSBuildTasks.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\MSTest\Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\NAnt\Gallio.NAntTasks\bin\Gallio.NAntTasks.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\..\src\Extensions\NCover\Gallio.NCoverIntegration\bin\v1.5.8\Gallio.NCoverIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\..\src\Extensions\NCover\Gallio.NCoverIntegration\bin\v2\Gallio.NCoverIntegration2.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Extensions/Navigator/Gallio.Navigator/bin/Gallio.Navigator.exe" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Extensions/Navigator/Gallio.Navigator/bin/Gallio.Navigator.IE.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Extensions/NCover/Gallio.NCoverIntegration/bin/Gallio.NCoverIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\NUnit\Gallio.NUnitAdapter\bin\Gallio.NUnitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)\..\src\Extensions\PowerShell\Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" Analyze="False" AnalyzeAllChildren="False" />
+  <Target Name="$(ProjectDir)\..\src\Extensions\PowerShell\Gallio.PowerShellCommands\bin\Gallio.PowerShellCommands.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Extensions/ReSharper/Gallio.ReSharperRunner/bin/v4.1/Gallio.ReSharperRunner41.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\TDNet\Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\TeamCity\Gallio.TeamCityIntegration\bin\Gallio.TeamCityIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\TypeMock\Gallio.TypeMockIntegration\bin\Gallio.TypeMockIntegration.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Interop/bin/Gallio.VisualStudio.Interop.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Sail/bin/Gallio.VisualStudio.Sail.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Shell/bin/Gallio.VisualStudio.Shell.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Tip.Proxy/bin/Gallio.VisualStudio.Tip.Proxy.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Tip/bin/Gallio.VisualStudio.Tip.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Tip.Proxy/bin/v9.0/Gallio.VisualStudio.Tip90.Proxy.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Extensions/VisualStudio/Gallio.VisualStudio.Tip/bin/v9.0/Gallio.VisualStudio.Tip90.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\Xunit\Gallio.XunitAdapter\bin\Gallio.XunitAdapter.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Gallio\Gallio.Host\bin\Gallio.Host.exe" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Gallio\Gallio.Reports\bin\Gallio.Reports.dll" Analyze="True" AnalyzeAllChildren="True" />

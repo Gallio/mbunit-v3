@@ -26,10 +26,12 @@
    <Directory>$(ProjectDir)/../src/Extensions/NAnt/Gallio.NAntTasks/bin/</Directory>
    <Directory>$(ProjectDir)/../src/Extensions/PowerShell/Gallio.PowerShellCommands/bin/</Directory>
    <Directory>$(ProjectDir)/../src/Extensions/PowerShell/libs/</Directory>
-   <Directory>$(ProjectDir)/../src/Gallio/Gallio.Reports/bin/</Directory>
   </AssemblyReferenceDirectories>
+  <Target Name="$(ProjectDir)/../src/Extensions/Ambience/Gallio.Ambience/bin/Gallio.Ambience.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Extensions\Pex\MbUnit.Pex\bin\MbUnit.Pex.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Gallio\Gallio.Loader\bin\Gallio.Loader.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Gallio/Gallio.Reports/bin/Gallio.Reports.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../src/Gallio/Gallio.UI/bin/Gallio.UI.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Gallio\Gallio\bin\Gallio.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\Gallio\Gallio35\bin\Gallio35.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)\..\src\MbUnit\MbUnit.Compatibility\bin\MbUnit.Compatibility.dll" Analyze="True" AnalyzeAllChildren="True" />

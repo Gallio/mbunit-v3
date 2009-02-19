@@ -3,11 +3,12 @@
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="NCover" Name="NCover">
-                <Directory Id="NCoverIntegration" Name="v1.5.8">
-                    <Component Id="Gallio.NCoverIntegration.dll" Guid="5C614361-C7FF-4283-A51E-D7DC2A5B8826" Win64="no">
-                        <File Name="Gallio.NCoverIntegration.dll" KeyPath="yes" />
-                        <File Name="Gallio.NCoverIntegration.plugin" />
-                    </Component>
+                <Component Id="Gallio.NCoverIntegration.dll" Guid="5C614361-C7FF-4283-A51E-D7DC2A5B8826" Win64="no">
+                    <File Name="Gallio.NCoverIntegration.dll" KeyPath="yes" />
+                    <File Name="Gallio.NCoverIntegration.plugin" />
+                </Component>
+
+                <Directory Id="NCover_v1_5_8" Name="v1.5.8">
                     <Component Id="NCover.Framework.dll" Guid="12098944-9C89-48a4-BA54-0D39540AEEAE" Win64="no">
                         <File Name="NCover.Framework.dll" KeyPath="yes" />
                     </Component>
@@ -34,8 +35,8 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id='feat_NCoverIntegration' Title='NCover v1.5.8 Integration' Level='1' AllowAdvertise="no"
-            Description='Provides integration with the NCover v1.5.8 code coverage tool (included).'>
+        <Feature Id='feat_NCoverIntegration' Title='NCover Integration' Level='1' AllowAdvertise="no"
+            Description='Provides integration with the NCover v1.5.8 code coverage tool (included) and NCover v2 and v3 (must be installed separately).'>
             <ComponentRef Id="Gallio.NCoverIntegration.dll"/>
             <ComponentRef Id="NCover.Framework.dll"/>
             <ComponentRef Id="CoverLib.dll"/>

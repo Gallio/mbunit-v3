@@ -3,7 +3,6 @@
 
   <PropertyGroup>
     <Coverage Condition="'$(Coverage)'==''">false</Coverage>
-    <SatisfactoryCoverage>70</SatisfactoryCoverage>
 
     <ShowReports Condition="'$(ShowReports)'==''">true</ShowReports>
     <ReportTypes Condition="'$(ReportTypes)'==''">Html-Condensed</ReportTypes>
@@ -14,7 +13,7 @@
     <VSIPSDKHelpPath Condition="'$(VSIPSDKHelpPath)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\8.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
     <SourceServerIndexerPath Condition="! Exists('$(SourceServerIndexerPath)')">$(ProgramFiles)\Debugging Tools for Windows (x86)\srcsrv\ssindex.cmd</SourceServerIndexerPath>
-    <NCoverExplorerPath>$(ToolsDir)\NCoverExplorer</NCoverExplorerPath>
+    <NCoverInstallDir>$(Registry:HKEY_LOCAL_MACHINE\Software\Gnoso\NCover\@InstallDir)</NCoverInstallDir>
 
     <VersionSuffix></VersionSuffix>
     <VersionSuffix Condition="'$(Runtime)'=='Mono'">-Mono</VersionSuffix>
@@ -262,28 +261,68 @@
 
 
   <!-- SUPPORT CODE: TESTS -->
-  
-  <UsingTask AssemblyFile="$(NCoverExplorerPath)\NCoverExplorer.MSBuildTasks.dll" TaskName="NCoverExplorer.MSBuildTasks.NCoverExplorer" />
+
+  <UsingTask TaskName="NCover.MSBuildTasks.NCoverReporting"
+             AssemblyFile="$(NCoverInstallDir)\Build Task Plugins\NCover.MSBuildTasks.dll"/>
 
   <!-- Note: The Gallio MSBuildTasks assembly gets loaded lazily so it's ok
        to reference it even when it has yet to be built. -->
   <UsingTask AssemblyFile="$(ImageDir)\bin\Gallio.MSBuildTasks.dll" TaskName="Gallio.MSBuildTasks.Gallio" />
 
   <PropertyGroup>
-    <TestRunnerType Condition="$(Coverage)">NCover2</TestRunnerType>
+    <TestRunnerType Condition="$(Coverage)">NCover3</TestRunnerType>
     <TestRunnerType Condition="! $(Coverage)">IsolatedProcess</TestRunnerType>
     <TestRunnerType Condition="'$(Runtime)'=='Mono'">IsolatedAppDomain</TestRunnerType>
+
+    <CoverageFilters>
+      <Filter>
+        <Pattern>*.Tests</Pattern>
+	<Type>Assembly</Type>
+      </Filter>
+      <Filter>
+        <Pattern>*.TestResources</Pattern>
+	<Type>Assembly</Type>
+      </Filter>
+      <Filter>
+        <Pattern>JetBrains.*</Pattern>
+	<Type>Assembly</Type>
+      </Filter>
+      <Filter>
+        <Pattern>Castle.*</Pattern>
+	<Type>Namespace</Type>
+      </Filter>
+    </CoverageFilters>
+    <SatisfactoryCoverage>
+        <Threshold>
+            <CoverageMetric>SymbolCoverage</CoverageMetric>
+            <Value>95.0</Value>
+        </Threshold>
+        <Threshold>
+            <CoverageMetric>MethodCoverage</CoverageMetric>
+            <Type>Document</Type>
+            <Value>70</Value>
+        </Threshold>
+        <Threshold>
+            <CoverageMetric>BranchCoverage</CoverageMetric>
+            <Type>Method</Type>
+            <Value>75</Value>
+        </Threshold>
+    </SatisfactoryCoverage>
   </PropertyGroup>
   <Target Name="RunTestAssemblies">
     <Message Text="Running unit tests..."
              Importance="High" />
+
+    <Delete Files="Coverage.xml"
+            Condition="Exists('Coverage.xml')" />   
 
     <Gallio Condition="'$(Runtime)'=='CLR'"
             Assemblies="@(TestAssembly)"
             ReportDirectory="$(ReportDir)"
             ReportTypes="$(ReportTypes)"
             RunnerType="$(TestRunnerType)"
-            ShowReports="$(ShowReports)">
+            ShowReports="$(ShowReports)"
+	    IgnoreFailures="true">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
 
@@ -293,17 +332,19 @@
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
 
-    <NCoverExplorer Condition="$(Coverage) and Exists('$(TempDir)\Coverage.xml')"
-                    Exclusions="Assembly=*.Tests;Assembly=*.TestResources;Assembly=JetBrains.*"
-                    XmlReportName="CoverageSummary.xml"
-                    ReportType="ModuleClassFunctionSummary"
-                    ToolPath="$(NCoverExplorerPath)"
-                    OutputDir="$(ReportDir)"
-                    CoverageFiles="$(TempDir)\Coverage.xml"
+    <NCoverReporting Condition="$(Coverage) and Exists('Coverage.xml')"
+                    CoverageDataPaths="Coverage.xml"
+                    OutputPath="$(ReportDir)\CoverageReport.xml"
+		    ProjectName="Gallio"
+		    ReportFormat="Xml"
+		    ReportType="SymbolModuleNamespaceClass"
+		    SortBy="ClassLine"
+		    MaxTopUncoveredToReport="20"
+		    CoverageFilters="$(CoverageFilters)"
                     SatisfactoryCoverage="$(SatisfactoryCoverage)" />
 
-    <Exec Command="cscript $(BinDir)\Run.vbs //nologo &quot;&quot;$(NCoverExplorerPath)\NCoverExplorer.exe&quot; &quot;$(TempDir)\Coverage.xml&quot;&quot;"
-          Condition="$(ShowReports) and $(Coverage) and Exists('$(TempDir)\Coverage.xml')" />
+    <Exec Command="cscript //nologo $(BinDir)\Run.vbs &quot;'$(NCoverInstallDir)\NCover.Explorer.exe' Coverage.xml&quot;"
+          Condition="$(ShowReports) and $(Coverage) and Exists('Coverage.xml')" />
 
     <Error Text="Some tests failed!"
              Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
