@@ -77,7 +77,7 @@ namespace Gallio.UI
         public MemoryStream Format(ICollection<TestStepRun> stepRuns, TestModelData modelData)
         {
             MemoryStream stream = new MemoryStream();
-            StreamWriter writer = new StreamWriter(stream, Encoding.UTF8);
+            StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false));
 
             Format(writer, stepRuns, modelData);
 

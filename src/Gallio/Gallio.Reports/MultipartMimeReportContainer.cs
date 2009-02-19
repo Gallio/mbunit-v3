@@ -69,7 +69,8 @@ namespace Gallio.Reports
             if (archiveWriter != null)
                 throw new InvalidOperationException("The archive is already open.");
 
-            archiveWriter = new StreamWriter(inner.OpenWrite(archivePath, MimeTypes.MHtml, Encoding.UTF8), Encoding.UTF8);
+            Encoding encoding = new UTF8Encoding(false);
+            archiveWriter = new StreamWriter(inner.OpenWrite(archivePath, MimeTypes.MHtml, encoding), encoding);
             archiveWriter.AutoFlush = false;
             archiveWriter.NewLine = "\r\n";
             archiveWriter.WriteLine("MIME-Version: 1.0");

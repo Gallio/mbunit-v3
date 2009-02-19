@@ -328,7 +328,8 @@ namespace Gallio.Runtime.Hosting
             if (path == null)
                 throw new ArgumentNullException("path");
 
-            using (StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8))
+            Encoding encoding = new UTF8Encoding(false);
+            using (StreamWriter writer = new StreamWriter(path, false, encoding))
                 WriteTo(writer);
         }
 

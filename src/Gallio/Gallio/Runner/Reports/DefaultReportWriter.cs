@@ -159,10 +159,11 @@ namespace Gallio.Runner.Reports
             int attachmentCount = CountAttachments(report);
             using (progressMonitor.BeginTask("Saving report.", attachmentCount + 1))
             {
+                Encoding encoding = new UTF8Encoding(false);
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.CheckCharacters = false;
                 settings.Indent = true;
-                settings.Encoding = Encoding.UTF8;
+                settings.Encoding = encoding;
                 settings.CloseOutput = true;
 
                 string reportPath = reportContainer.ReportName + @".xml";
@@ -227,8 +228,9 @@ namespace Gallio.Runner.Reports
 
         private void SaveAttachmentContents(AttachmentData attachmentData, string attachmentPath)
         {
-            using (Stream attachmentStream = reportContainer.OpenWrite(attachmentPath, attachmentData.ContentType, Encoding.UTF8))
-                attachmentData.SaveContents(attachmentStream, Encoding.UTF8);
+            Encoding encoding = new UTF8Encoding(false);
+            using (Stream attachmentStream = reportContainer.OpenWrite(attachmentPath, attachmentData.ContentType, encoding))
+                attachmentData.SaveContents(attachmentStream, encoding);
         }
 
         private string GetAttachmentPath(string testStepId, string attachmentName)

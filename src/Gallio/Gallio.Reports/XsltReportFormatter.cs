@@ -148,12 +148,13 @@ namespace Gallio.Reports
 
             string reportPath = reportWriter.ReportContainer.ReportName + @"." + extension;
 
+            Encoding encoding = new UTF8Encoding(false);
             XslCompiledTransform transform = Transform;
             XmlWriterSettings settings = transform.OutputSettings.Clone();
             settings.CheckCharacters = false;
-            settings.Encoding = Encoding.UTF8;
+            settings.Encoding = encoding;
             settings.CloseOutput = true;
-            using (XmlWriter writer = XmlWriter.Create(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, Encoding.UTF8), settings))
+            using (XmlWriter writer = XmlWriter.Create(reportWriter.ReportContainer.OpenWrite(reportPath, contentType, encoding), settings))
                 transform.Transform(document, arguments, writer);
 
             reportWriter.AddReportDocumentPath(reportPath);

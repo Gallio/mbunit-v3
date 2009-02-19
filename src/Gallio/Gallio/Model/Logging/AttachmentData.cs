@@ -229,7 +229,7 @@ namespace Gallio.Model.Logging
 
             if (IsText)
             {
-                using (StreamWriter writer = new StreamWriter(stream, encoding ?? System.Text.Encoding.UTF8))
+                using (StreamWriter writer = new StreamWriter(stream, encoding ?? new UTF8Encoding(false)))
                     writer.Write(serializedContents);
             }
             else
