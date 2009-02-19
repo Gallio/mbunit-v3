@@ -189,9 +189,13 @@
         </DirectoryRef>        
 <?endif?>        
 
-        <Feature Id='feat_Gallio.TDNet' Title='TestDriven.Net Runner' Level='0' AllowAdvertise='no'
-                 Description='Installs the TestDriven.Net add-in.'>
+        <Feature Id='feat_Gallio.TDNet' Title='TestDriven.Net Runner' Level='1' AllowAdvertise='no'
+                 Description='Installs the TestDriven.Net add-in.  TestDriven.Net itself must be downloaded and installed separately.'>
+	   <!-- Changed to install features even if TDNet not currently installed.
+	        This is to help users who get confused about the required
+		installation order.
             <Condition Level='1'>TDNET_INSTALLDIR</Condition>
+	    -->
             <ComponentRef Id='Gallio.TDNetRunner.dll'/>
             <ComponentRef Id='Gallio.TDNetRunner.plugin'/>
             <ComponentRef Id="TDNetApp.Icarus" />
