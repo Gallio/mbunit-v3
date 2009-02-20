@@ -343,7 +343,7 @@
 		    CoverageFilters="$(CoverageFilters)"
                     SatisfactoryCoverage="$(SatisfactoryCoverage)" />
 
-    <Exec Command="cscript //nologo $(BinDir)\Run.vbs &quot;'$(NCoverInstallDir)\NCover.Explorer.exe' Coverage.xml&quot;"
+    <Exec Command="cscript //nologo &quot;$(BinDir)\Run.vbs&quot; &quot;'$(NCoverInstallDir)\NCover.Explorer.exe' Coverage.xml&quot;"
           Condition="$(ShowReports) and $(Coverage) and Exists('Coverage.xml')" />
 
     <Error Text="Some tests failed!"
