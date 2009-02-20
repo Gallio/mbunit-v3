@@ -1,8 +1,11 @@
 Imports System
 Imports System.Text
 Imports System.Collections.Generic
+Imports System.Web.Mvc
 Imports Gallio.Framework
 Imports MbUnit.Framework
+Imports $mvcprojectnamespace$
+Imports $mvcprojectnamespace$.Controllers
 
 <TestFixture()> _
 Public Class HomeControllerTest
