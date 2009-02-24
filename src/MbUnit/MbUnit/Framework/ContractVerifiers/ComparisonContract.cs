@@ -170,7 +170,7 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        public override IEnumerable<Test> GetContractVerificationTests()
+        protected override IEnumerable<Test> GetContractVerificationTests()
         {
             // Is IComparable.CompareTo implementation OK?
             yield return CreateComparisonTest("ComparableCompareTo",
@@ -228,7 +228,7 @@ namespace MbUnit.Framework.ContractVerifiers
                 {
                     if (!typeof(TTarget).IsValueType && method.IsStatic)
                     {
-                        VerifyComparison(null, null, int.MinValue, int.MinValue, comparer, classifier, referenceComparer);
+                        VerifyComparison(null, null, int.MinValue, int.MinValue, comparer, classifier, referenceComparer, Context);
                     }
 
                     int leftIndex = 0;
@@ -239,12 +239,11 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             if (!typeof (TTarget).IsValueType)
                             {
-                                VerifyComparison(leftValue, null, 0, int.MinValue, comparer, classifier, referenceComparer);
+                                VerifyComparison(leftValue, null, 0, int.MinValue, comparer, classifier, referenceComparer, Context);
 
                                 if (method.IsStatic)
                                 {
-                                    VerifyComparison(null, leftValue, int.MinValue, 0, comparer, classifier,
-                                        referenceComparer);
+                                    VerifyComparison(null, leftValue, int.MinValue, 0, comparer, classifier, referenceComparer, Context);
                                 }
                             }
 
@@ -254,8 +253,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             {
                                 foreach (TTarget rightValue in rightClass)
                                 {
-                                    VerifyComparison(leftValue, rightValue, leftIndex, rightIndex, comparer, classifier,
-                                        referenceComparer);
+                                    VerifyComparison(leftValue, rightValue, leftIndex, rightIndex, comparer, classifier, referenceComparer, Context);
                                 }
 
                                 rightIndex += 1;
@@ -270,7 +268,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
         private static void VerifyComparison<TResult>(object leftValue, object rightValue, int leftIndex, int rightIndex,
             Func<object, object, TResult> comparer, Func<TResult, string> classifier,
-            Func<int, int, TResult> referenceComparer)
+            Func<int, int, TResult> referenceComparer, ContractVerificationContext context)
         {
             AssertionHelper.Verify(() =>
             {
@@ -285,6 +283,7 @@ namespace MbUnit.Framework.ContractVerifiers
                     .AddRawLabeledValue("Right Value", rightValue)
                     .AddLabeledValue("Expected Result", classifier(expectedResult))
                     .AddLabeledValue("Actual Result", classifier(actualResult))
+                    .SetStackTrace(context.GetStackTraceData())
                     .ToAssertionFailure();
             });
         }

@@ -174,7 +174,7 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        public override IEnumerable<Test> GetContractVerificationTests()
+        protected override IEnumerable<Test> GetContractVerificationTests()
         {
             if (ImplementsSerialization)
             {
@@ -234,6 +234,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
                     return new AssertionFailureBuilder("Expected the exception type to have the [Serializable] attribute.")
                         .AddRawLabeledValue("Exception Type", typeof(TException))
+                    .SetStackTrace(Context.GetStackTraceData())
                         .ToAssertionFailure();
                 });
             });
@@ -251,6 +252,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
                     return new AssertionFailureBuilder("Expected the exception type to have a serialization constructor with signature .ctor(SerializationInfo, StreamingContext).")
                         .AddRawLabeledValue("Exception Type", typeof(TException))
+                        .SetStackTrace(Context.GetStackTraceData())
                         .ToAssertionFailure();
                 });
             });
@@ -271,6 +273,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
                     return new AssertionFailureBuilder(String.Format("Expected the exception type to have a standard constructor with signature .ctor({0}).", constructorSignature))
                         .AddRawLabeledValue("Exception Type", typeof(TException))
+                        .SetStackTrace(Context.GetStackTraceData())
                         .ToAssertionFailure();
                 });
 
@@ -294,6 +297,7 @@ namespace MbUnit.Framework.ContractVerifiers
                                     .AddRawLabeledValue("Exception Type", typeof (TException))
                                     .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
                                     .AddRawLabeledValue("Expected Inner Exception", innerException)
+                                    .SetStackTrace(Context.GetStackTraceData())
                                     .ToAssertionFailure();
                         });
 
@@ -304,11 +308,11 @@ namespace MbUnit.Framework.ContractVerifiers
                                 if (instance.Message != null)
                                     return null;
 
-                                return
-                                    new AssertionFailureBuilder(
-                                        "The exception message should not be null.")
-                                        .AddRawLabeledValue("Exception Type", typeof (TException))
-                                        .ToAssertionFailure();
+                                return new AssertionFailureBuilder(
+                                    "The exception message should not be null.")
+                                    .AddRawLabeledValue("Exception Type", typeof (TException))
+                                    .SetStackTrace(Context.GetStackTraceData())
+                                    .ToAssertionFailure();
                             });
                         }
                         else
@@ -324,6 +328,7 @@ namespace MbUnit.Framework.ContractVerifiers
                                         .AddRawLabeledValue("Exception Type", typeof (TException))
                                         .AddLabeledValue("Actual Message", instance.Message)
                                         .AddLabeledValue("Expected Message", message)
+                                        .SetStackTrace(Context.GetStackTraceData())
                                         .ToAssertionFailure();
                             });
                         }
@@ -356,6 +361,7 @@ namespace MbUnit.Framework.ContractVerifiers
                     .AddRawLabeledValue("Exception Type", typeof(TException))
                     .AddLabeledValue("Expected Message", instance.Message)
                     .AddLabeledValue("Actual Message ", result.Message)
+                    .SetStackTrace(Context.GetStackTraceData())
                     .ToAssertionFailure();
             });
 
@@ -372,6 +378,7 @@ namespace MbUnit.Framework.ContractVerifiers
                     .AddRawLabeledValue("Exception Type", typeof(TException))
                     .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
                     .AddRawLabeledValue("Expected Inner Exception", result.InnerException)
+                    .SetStackTrace(Context.GetStackTraceData())
                     .ToAssertionFailure();
             });
         }

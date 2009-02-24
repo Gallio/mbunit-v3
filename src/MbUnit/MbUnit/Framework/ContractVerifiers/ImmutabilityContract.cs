@@ -79,7 +79,7 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        public override IEnumerable<Test> GetContractVerificationTests()
+        protected override IEnumerable<Test> GetContractVerificationTests()
         {
             // Are all child fields marked as read only?
             yield return CreateImmutabilityTest("AreAllFieldsReadOnly");
@@ -112,12 +112,12 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 Assert.Multiple(() =>
                 {
-                    VerifyMemberTypes(typeof(TTarget), visitedTypes);
+                    VerifyMemberTypes(typeof(TTarget), visitedTypes, Context);
                 });
             });
         }
 
-        private static void VerifyMemberTypes(Type type, ICollection<Type> visitedTypes)
+        private static void VerifyMemberTypes(Type type, ICollection<Type> visitedTypes, ContractVerificationContext context)
         {
             if (!visitedTypes.Contains(type) && 
                 !type.IsEnum && 
@@ -136,10 +136,11 @@ namespace MbUnit.Framework.ContractVerifiers
                             .AddRawLabeledValue("Declaring Type", fieldInfo.DeclaringType)
                             .AddRawLabeledValue("Field Type", fieldInfo.FieldType)
                             .AddRawLabeledValue("Field Name", fieldInfo.Name)
+                            .SetStackTrace(context.GetStackTraceData())
                             .ToAssertionFailure();
                     });
 
-                    VerifyMemberTypes(fieldInfo.FieldType, visitedTypes);
+                    VerifyMemberTypes(fieldInfo.FieldType, visitedTypes, context);
                 }
             }
         }

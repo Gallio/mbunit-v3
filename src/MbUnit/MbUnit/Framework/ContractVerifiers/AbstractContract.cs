@@ -27,8 +27,27 @@ namespace MbUnit.Framework.ContractVerifiers
     [TestFrameworkInternal]
     public abstract class AbstractContract : IContract
     {
+        /// <summary>
+        /// Gets the execution context.
+        /// </summary>
+        protected ContractVerificationContext Context
+        {
+            get;
+            private set;
+        }
+
         /// <inheritdoc />
-        public abstract IEnumerable<Test> GetContractVerificationTests();
+        public IEnumerable<Test> GetContractVerificationTests(ContractVerificationContext context)
+        {
+            this.Context = context;
+            return GetContractVerificationTests();
+        }
+
+        /// <summary>
+        /// Gets an enumeration of test cases whose purpose is to verify the contract.
+        /// </summary>
+        /// <returns>An enumeration of tests</returns>
+        protected abstract IEnumerable<Test> GetContractVerificationTests();
 
         /// <summary>
         /// Gets the interface of a particular type if it is implemented by another type,

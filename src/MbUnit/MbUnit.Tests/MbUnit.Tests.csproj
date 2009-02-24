@@ -154,6 +154,7 @@
     </Compile>
     <Compile Include="Framework\ContractVerifiers\AbstractContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ComparisonContractTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\ContractVerificationContextTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EqualityContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ExceptionContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ImmutabilityContractTest.cs" />

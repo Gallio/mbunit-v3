@@ -17,6 +17,8 @@ using System;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Logging;
 using MbUnit.Framework;
+using Gallio.Reflection;
+using Rhino.Mocks;
 
 namespace Gallio.Tests.Model.Diagnostics
 {
@@ -24,9 +26,15 @@ namespace Gallio.Tests.Model.Diagnostics
     public class StackTraceDataTest
     {
         [Test, ExpectedArgumentNullException]
-        public void ConstructorThrowsIfArgumentIsNull()
+        public void ConstructorThrowsIfStringArgumentIsNull()
         {
-            new StackTraceData(null);
+            new StackTraceData((string)null);
+        }
+
+        [Test, ExpectedArgumentNullException]
+        public void ConstructorThrowsIfCodeElementInfoArgumentIsNull()
+        {
+            new StackTraceData((ICodeElementInfo)null);
         }
 
         [Test]
@@ -46,6 +54,18 @@ namespace Gallio.Tests.Model.Diagnostics
         public void ConstructorStripsTrailingNewLineAutomatically()
         {
             Assert.AreEqual("bar\nfoo", new StackTraceData("bar\nfoo\n").ToString());
+        }
+
+        [Test]
+        public void ConstructsWithCodeElement()
+        {
+            var mockCodeElement = MockRepository.GenerateStub<ICodeElementInfo>();
+            mockCodeElement.Stub(x => x.GetCodeLocation()).Return(new CodeLocation("C:\\Path\\File.cs", 123, 456));
+            mockCodeElement.Stub(x => x.CodeReference).Return(new CodeReference("AssemblyName", "The.Ultimate.NameSpace", "TypeName", "MemberName", "ParameterName"));
+            var data = new StackTraceData(mockCodeElement);
+            var writer = new StringTestLogWriter(true);
+            data.WriteTo(writer.Failures);
+            Assert.AreEqual("[Marker \'StackTrace\']   at MemberName\n   at The.Ultimate.NameSpace.TypeName() in [Marker \'CodeLocation\']C:\\Path\\File.cs:line 123[End][End]", writer.ToString());
         }
 
         [Test]

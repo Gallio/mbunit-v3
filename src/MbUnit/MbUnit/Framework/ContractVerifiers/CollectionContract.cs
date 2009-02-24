@@ -236,7 +236,7 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        public override IEnumerable<Test> GetContractVerificationTests()
+        protected override IEnumerable<Test> GetContractVerificationTests()
         {
             yield return CreateVerifyReadOnlyPropertyTest();
 
@@ -272,6 +272,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 return new AssertionFailureBuilder("Expected the collection of distinct instances to be not empty.\n" +
                     "Please feed the 'DistinctInstances' property of your collection contract with some valid objects.")
+                    .SetStackTrace(Context.GetStackTraceData())
                     .ToAssertionFailure();
             });
         }
@@ -291,6 +292,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         .AddLabeledValue("Property", "IsReadOnly")
                         .AddRawLabeledValue("Expected Value", IsReadOnly)
                         .AddRawLabeledValue("Actual Value", collection.IsReadOnly)
+                        .SetStackTrace(Context.GetStackTraceData())
                         .ToAssertionFailure();
                 });
             });
@@ -314,6 +316,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             
                             return new AssertionFailureBuilder("Expected a method of the read-only collection to throw an exception when called.")
                                 .AddLabeledValue("Method", methodName)
+                                .SetStackTrace(Context.GetStackTraceData())
                                 .ToAssertionFailure();
                         }
                         catch (Exception)
@@ -340,6 +343,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         return new AssertionFailureBuilder("Expected a method to throw an exception when called with a null argument.")
                             .AddLabeledValue("Method", methodName)
                             .AddRawLabeledValue("Expected Exception", typeof(ArgumentNullException))
+                            .SetStackTrace(Context.GetStackTraceData())
                             .ToAssertionFailure();
                     }
                     catch (ArgumentNullException)
@@ -352,6 +356,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             .AddLabeledValue("Method", methodName)
                             .AddRawLabeledValue("Expected Exception", typeof(ArgumentNullException))
                             .AddException(actualException)
+                            .SetStackTrace(Context.GetStackTraceData())
                             .ToAssertionFailure();
                     }
                 });
@@ -385,6 +390,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         .AddLabeledValue("Property", "Count")
                         .AddRawLabeledValue("Expected Value", 0)
                         .AddRawLabeledValue("Actual Value", collection.Count)
+                        .SetStackTrace(Context.GetStackTraceData())
                         .ToAssertionFailure();
                 });
             });
@@ -396,7 +402,7 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 AssertDistinctIntancesNotEmpty();
                 var collection = GetDefaultInstance();
-                var handler = new CollectionHandler(collection);
+                var handler = new CollectionHandler(collection, Context);
                 var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
                 foreach (var item in DistinctInstances)
@@ -424,7 +430,7 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 AssertDistinctIntancesNotEmpty();
                 var collection = GetDefaultInstance();
-                var handler = new CollectionHandler(collection);
+                var handler = new CollectionHandler(collection, Context);
                 var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
                 foreach (var item in DistinctInstances)
@@ -442,13 +448,15 @@ namespace MbUnit.Framework.ContractVerifiers
 
         private class CollectionHandler
         {
-            private TCollection collection;
+            private readonly TCollection collection;
             private int countTrack;
+            private readonly ContractVerificationContext context;
 
-            public CollectionHandler(TCollection collection)
+            public CollectionHandler(TCollection collection, ContractVerificationContext context)
 	        {
                 this.collection = collection;
                 this.countTrack = collection.Count;
+                this.context = context;
 	        }
 
             private void AssertAddItemOk(TItem item, string failureMessage)
@@ -465,6 +473,7 @@ namespace MbUnit.Framework.ContractVerifiers
                     {
                         return new AssertionFailureBuilder(failureMessage + "\nAn exception was thrown while none was expected.")
                             .AddException(actualException)
+                            .SetStackTrace(context.GetStackTraceData())
                             .ToAssertionFailure();
                     }
                 });
@@ -483,6 +492,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         .AddLabeledValue("Property", "Count")
                         .AddRawLabeledValue("Expected Value", countTrack)
                         .AddRawLabeledValue("Actual Value", actual)
+                        .SetStackTrace(context.GetStackTraceData())
                         .ToAssertionFailure();
                 });
             }
@@ -499,6 +509,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         .AddLabeledValue("Method Called", "Contains")
                         .AddRawLabeledValue("Expected Returned Value", true)
                         .AddRawLabeledValue("Actual Returned Value", false)
+                        .SetStackTrace(context.GetStackTraceData())
                         .ToAssertionFailure();
                 });
             }
@@ -514,6 +525,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
                         return new AssertionFailureBuilder(failureMessage + "\nNo exception was thrown while one was expected.")
                             .AddLabeledValue("Expected Exception Type", "Any")
+                            .SetStackTrace(context.GetStackTraceData())
                             .ToAssertionFailure();
                     }
                     catch (Exception)
@@ -542,6 +554,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         .AddLabeledValue("Method", "Remove")
                         .AddRawLabeledValue("Expected Returned Value", expectedResult)
                         .AddRawLabeledValue("Actual Returned Value", actualResult)
+                        .SetStackTrace(context.GetStackTraceData())
                         .ToAssertionFailure();
                 });
             }
@@ -586,6 +599,7 @@ namespace MbUnit.Framework.ContractVerifiers
                     return new AssertionFailureBuilder("Expected the method to throw an exception " + failureMessage)
                         .AddLabeledValue("Method", "CopyTo")
                         .AddRawLabeledValue(label, value)
+                        .SetStackTrace(Context.GetStackTraceData())
                         .ToAssertionFailure();
                 }
                 catch (Exception)
@@ -609,6 +623,7 @@ namespace MbUnit.Framework.ContractVerifiers
                     return new AssertionFailureBuilder(failureMessage)
                         .AddLabeledValue("Method", "CopyTo")
                         .AddException(actualException)
+                        .SetStackTrace(Context.GetStackTraceData())
                         .ToAssertionFailure();
                 }
             });
@@ -620,7 +635,7 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 AssertDistinctIntancesNotEmpty();
                 var collection = GetDefaultInstance();
-                var handler = new CollectionHandler(collection);
+                var handler = new CollectionHandler(collection, Context);
                 var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
                 foreach (var item in DistinctInstances)

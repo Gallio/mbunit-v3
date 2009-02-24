@@ -44,6 +44,8 @@ namespace MbUnit.Framework.ContractVerifiers
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class VerifyContractAttribute : PatternAttribute
     {
+        private ICodeElementInfo codeElement;
+
         /// <inheritdoc />
         public override bool IsPrimary
         {
@@ -62,6 +64,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
+            this.codeElement = codeElement;
             IFieldInfo field = codeElement as IFieldInfo;
             Validate(containingScope, field);
 
@@ -115,7 +118,8 @@ namespace MbUnit.Framework.ContractVerifiers
                 if (contract == null)
                     throw new TestFailedException(String.Format("The field '{0}' must contain an instance of type IContract that describes a contract to be verified.", field.Name));
 
-                TestOutcome outcome = Test.RunDynamicTests(contract.GetContractVerificationTests(), field, null, null);
+                var context = new ContractVerificationContext(codeElement);
+                TestOutcome outcome = Test.RunDynamicTests(contract.GetContractVerificationTests(context), field, null, null);
                 if (outcome != TestOutcome.Passed)
                     throw new SilentTestException(outcome);
             });

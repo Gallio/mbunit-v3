@@ -172,7 +172,7 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         /// <inheritdoc />
-        public override IEnumerable<Test> GetContractVerificationTests()
+        protected override IEnumerable<Test> GetContractVerificationTests()
         {
             // Is Object equality method OK?
             yield return CreateEqualityTest("ObjectEquals",
@@ -219,7 +219,7 @@ namespace MbUnit.Framework.ContractVerifiers
                 {
                     if (!typeof(TTarget).IsValueType && method.IsStatic)
                     {
-                        VerifyEquality(null, null, int.MinValue, int.MinValue, comparer, referenceComparer);
+                        VerifyEquality(null, null, int.MinValue, int.MinValue, comparer, referenceComparer, Context);
                     }
 
                     int leftIndex = 0;
@@ -229,11 +229,11 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             if (!typeof(TTarget).IsValueType)
                             {
-                                VerifyEquality(leftValue, null, 0, int.MinValue, comparer, referenceComparer);
+                                VerifyEquality(leftValue, null, 0, int.MinValue, comparer, referenceComparer, Context);
 
                                 if (method.IsStatic)
                                 {
-                                    VerifyEquality(null, leftValue, int.MinValue, 0, comparer, referenceComparer);
+                                    VerifyEquality(null, leftValue, int.MinValue, 0, comparer, referenceComparer, Context);
                                 }
                             }
 
@@ -242,7 +242,7 @@ namespace MbUnit.Framework.ContractVerifiers
                             {
                                 foreach (TTarget rightValue in rightClass)
                                 {
-                                    VerifyEquality(leftValue, rightValue, leftIndex, rightIndex, comparer, referenceComparer);
+                                    VerifyEquality(leftValue, rightValue, leftIndex, rightIndex, comparer, referenceComparer, Context);
                                 }
 
                                 rightIndex += 1;
@@ -267,7 +267,7 @@ namespace MbUnit.Framework.ContractVerifiers
                         {
                             foreach (TTarget rightValue in @class)
                             {
-                                VerifyHashCodeOfEquivalentInstances(leftValue, rightValue);
+                                VerifyHashCodeOfEquivalentInstances(leftValue, rightValue, Context);
                             }
                         }
                     }
@@ -276,7 +276,7 @@ namespace MbUnit.Framework.ContractVerifiers
         }
 
         private static void VerifyEquality(object leftValue, object rightValue, int leftIndex, int rightIndex,
-            Func<object, object, bool> comparer, Func<int, int, bool> referenceComparer)
+            Func<object, object, bool> comparer, Func<int, int, bool> referenceComparer, ContractVerificationContext context)
         {
             AssertionHelper.Verify(() =>
             {
@@ -291,11 +291,12 @@ namespace MbUnit.Framework.ContractVerifiers
                     .AddRawLabeledValue("Right Value", rightValue)
                     .AddRawLabeledValue("Expected Result", expectedResult)
                     .AddRawLabeledValue("Actual Result", actualResult)
+                    .SetStackTrace(context.GetStackTraceData())
                     .ToAssertionFailure();
             });
         }
 
-        private static void VerifyHashCodeOfEquivalentInstances(object leftValue, object rightValue)
+        private static void VerifyHashCodeOfEquivalentInstances(object leftValue, object rightValue, ContractVerificationContext context)
         {
             AssertionHelper.Verify(() =>
             {
@@ -310,6 +311,7 @@ namespace MbUnit.Framework.ContractVerifiers
                     .AddRawLabeledValue("Left HashCode", leftHashCode)
                     .AddRawLabeledValue("Right Value", rightValue)
                     .AddRawLabeledValue("Right HashCode", rightHashCode)
+                    .SetStackTrace(context.GetStackTraceData())
                     .ToAssertionFailure();
             });
         }

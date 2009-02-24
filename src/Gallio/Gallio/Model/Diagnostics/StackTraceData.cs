@@ -46,6 +46,23 @@ namespace Gallio.Model.Diagnostics
         }
 
         /// <summary>
+        /// Creates a stack trace data object that points to the specified code element.
+        /// </summary>
+        /// <param name="codeElement">The code element</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is null</exception>
+        public StackTraceData(ICodeElementInfo codeElement)
+        {
+            if (codeElement == null)
+                throw new ArgumentNullException("codeElement");
+
+
+            var codeLocation = codeElement.GetCodeLocation();
+            var codeReference = codeElement.CodeReference;
+            this.stackTrace = String.Format("   at {0}\n   at {1}.{2}() in {3}:line {4}",
+                codeReference.MemberName, codeReference.NamespaceName, codeReference.TypeName, codeLocation.Path, codeLocation.Line);
+        }
+
+        /// <summary>
         /// Returns true if the stack trace data is empty.
         /// </summary>
         public bool IsEmpty
