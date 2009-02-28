@@ -1,3 +1,5 @@
+#pragma warning disable 618
+
 namespace MbUnit.Tests.Compatibility.Framework.Xml {
     using MbUnit.Framework;
     using MbUnit.Framework.Xml;
@@ -13,39 +15,39 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
         private static readonly string COUNT_XPATH = "count(//b)";
         [Test] public void XpathExistsTrueForXpathThatExists() {
             XPath xpath = new XPath(EXISTENT_XPATH);
-            Assert.AreEqual(true, 
+            OldAssert.AreEqual(true, 
                                    xpath.XPathExists(SIMPLE_XML));
         }
         
         [Test] public void XpathExistsFalseForUnmatchedExpression() {
             XPath xpath = new XPath(NONEXISTENT_XPATH);
-            Assert.AreEqual(false, 
+            OldAssert.AreEqual(false, 
                                    xpath.XPathExists(SIMPLE_XML));
         }
         
         [Test] public void XpathEvaluatesToTextValueForSimpleString() {
             string expectedValue = "one two";
             XPath xpath = new XPath(EXISTENT_XPATH);
-            Assert.AreEqual(expectedValue, 
+            OldAssert.AreEqual(expectedValue, 
                                    xpath.EvaluateXPath(SIMPLE_XML));
         }
         
         [Test] public void XpathEvaluatesToEmptyStringForUnmatchedExpression() {
             string expectedValue = "";
             XPath xpath = new XPath(NONEXISTENT_XPATH);
-            Assert.AreEqual(expectedValue, 
+            OldAssert.AreEqual(expectedValue, 
                                    xpath.EvaluateXPath(SIMPLE_XML));
         }
         [Test] public void XpathEvaluatesCountExpression() {
             string expectedValue = "2";
             XPath xpath = new XPath(COUNT_XPATH);
-            Assert.AreEqual(expectedValue, 
+            OldAssert.AreEqual(expectedValue, 
                                    xpath.EvaluateXPath(MORE_COMPLEX_XML));
         }
         [Test] public void XpathEvaluatesMultiNodeExpression() {
             string expectedValue = "onetwo";
             XPath xpath = new XPath(MULTI_NODE_XPATH);
-            Assert.AreEqual(expectedValue, 
+            OldAssert.AreEqual(expectedValue, 
                                    xpath.EvaluateXPath(MORE_COMPLEX_XML));
         }
     }

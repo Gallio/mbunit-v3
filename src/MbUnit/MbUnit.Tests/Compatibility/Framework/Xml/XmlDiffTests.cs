@@ -1,3 +1,5 @@
+#pragma warning disable 618
+
 namespace MbUnit.Tests.Compatibility.Framework.Xml
 {
     using MbUnit.Framework;
@@ -14,7 +16,7 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml
         {
             TextReader reader = new StringReader("<empty/>");
             DiffResult result = PerformDiff(reader, reader);
-            Assert.AreEqual(true, result.Equal);
+            OldAssert.AreEqual(true, result.Equal);
         }
 
         [Test]
@@ -23,7 +25,7 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml
             TextReader reader = new StringReader("<empty/>");
             DiffResult result1 = PerformDiff(reader, reader);
             DiffResult result2 = _xmlDiff.Compare();
-            Assert.AreSame(result1, result2);
+            OldAssert.AreSame(result1, result2);
 
         }
 
@@ -36,14 +38,14 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml
         {
             DiffResult result = GetDiffResult(input1, input2);
             string msg = "Equal: comparing " + input1 + " to " + input2 + ": " + result.Difference;
-            Assert.AreEqual(expected, GetDiffResult(input1, input2).Equal, msg);
+            OldAssert.AreEqual(expected, GetDiffResult(input1, input2).Equal, msg);
         }
 
         private void AssertExpectedIdenticalResult(string input1, string input2, bool expected)
         {
             DiffResult result = GetDiffResult(input1, input2);
             string msg = "Identical: comparing " + input1 + " to " + input2 + ": " + result.Difference;
-            Assert.AreEqual(expected, result.Identical, msg);
+            OldAssert.AreEqual(expected, result.Identical, msg);
         }
 
         private DiffResult GetDiffResult(string input1, string input2)

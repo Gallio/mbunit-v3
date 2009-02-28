@@ -1,3 +1,5 @@
+#pragma warning disable 618
+
 namespace MbUnit.Tests.Compatibility.Framework.Xml {
     using System;
     using System.IO;
@@ -18,13 +20,13 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
         [Test] public void StringInputTranslatesToXmlReader() {
             XmlInput input = new XmlInput(INPUT);
             string actual = ReadOuterXml(input.CreateXmlReader());
-            Assert.AreEqual(_expected, actual);
+            OldAssert.AreEqual(_expected, actual);
         }
         
         [Test] public void TextReaderInputTranslatesToXmlReader() {
             XmlInput input = new XmlInput(new StringReader(INPUT));
             string actual = ReadOuterXml(input.CreateXmlReader());
-            Assert.AreEqual(_expected, actual);
+            OldAssert.AreEqual(_expected, actual);
         }
         
         [Test] public void StreamInputTranslatesToXmlReader() {
@@ -36,7 +38,7 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
             XmlInput input = new XmlInput(stream);
             string actual = ReadOuterXml(input.CreateXmlReader());
             try {
-                Assert.AreEqual(_expected, actual);
+                OldAssert.AreEqual(_expected, actual);
             } finally {
                 writer.Close();
             }
@@ -53,32 +55,32 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
         
         [Test] public void NotEqualsNull() {
             XmlInput input = new XmlInput(INPUT);
-            Assert.AreEqual(false, input.Equals(null));
+            OldAssert.AreEqual(false, input.Equals(null));
         }
         
         [Test] public void NotEqualsADifferentClass() {
             XmlInput input = new XmlInput(INPUT);
-            Assert.AreEqual(false, input.Equals(INPUT));
+            OldAssert.AreEqual(false, input.Equals(INPUT));
         }
         
         [Test] public void EqualsSelf() {
             XmlInput input = new XmlInput(INPUT);
-            Assert.AreEqual(input, input);
+            OldAssert.AreEqual(input, input);
         }
         
         [Test] public void EqualsCopyOfSelf() {
             XmlInput input = new XmlInput(INPUT);
-            Assert.AreEqual(new XmlInput(INPUT), input);
+            OldAssert.AreEqual(new XmlInput(INPUT), input);
         }
         
         [Test] public void HashCodeEqualsHashCodeOfInput() {
             XmlInput input = new XmlInput(INPUT);
-            Assert.AreEqual(INPUT.GetHashCode(), input.GetHashCode());
+            OldAssert.AreEqual(INPUT.GetHashCode(), input.GetHashCode());
         }
         
         [Test] public void HashCodeEqualsHashCodeOfCopy() {
             XmlInput input = new XmlInput(INPUT);
-            Assert.AreEqual(new XmlInput(INPUT).GetHashCode(), input.GetHashCode());
+            OldAssert.AreEqual(new XmlInput(INPUT).GetHashCode(), input.GetHashCode());
         }
         
     }

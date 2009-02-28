@@ -190,24 +190,24 @@
     <Compile Include="Framework\TestCaseTest.cs" />
     <EmbeddedResource Include="Framework\CsvDataTest.csv" />
     <EmbeddedResource Include="Framework\XmlDataTest.xml" />
-    <None Include="Compatibility\Framework\Xml\etc\Book.xsd" />
-    <None Include="Compatibility\Framework\Xml\etc\test.dtd" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\Book.xsd" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\test.dtd" />
     <None Include="MbUnit.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Compatibility\Framework\Xml\etc\animal.xsl" />
-    <Content Include="Compatibility\Framework\Xml\etc\BookXsdGenerated.xml" />
-    <Content Include="Compatibility\Framework\Xml\etc\controlDetail.xml" />
-    <Content Include="Compatibility\Framework\Xml\etc\controlNamespaces.xml" />
-    <Content Include="Compatibility\Framework\Xml\etc\invalidBook.xml" />
-    <Content Include="Compatibility\Framework\Xml\etc\test.blame.html" />
-    <Content Include="Compatibility\Framework\Xml\etc\test1.xml" />
-    <Content Include="Compatibility\Framework\Xml\etc\test2.xml" />
-    <Content Include="Compatibility\Framework\Xml\etc\testAnimal.xml" />
-    <Content Include="Compatibility\Framework\Xml\etc\testDetail.xml" />
-    <Content Include="Compatibility\Framework\Xml\etc\testNamespaces.xml" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\animal.xsl" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\BookXsdGenerated.xml" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\controlDetail.xml" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\controlNamespaces.xml" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\invalidBook.xml" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\test.blame.html" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\test1.xml" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\test2.xml" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testAnimal.xml" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testDetail.xml" />
+    <EmbeddedResource Include="Compatibility\Framework\Xml\etc\testNamespaces.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

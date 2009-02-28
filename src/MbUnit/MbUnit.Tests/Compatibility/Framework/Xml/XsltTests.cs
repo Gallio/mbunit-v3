@@ -1,3 +1,5 @@
+#pragma warning disable 618
+
 namespace MbUnit.Tests.Compatibility.Framework.Xml {
     using MbUnit.Framework;
     using MbUnit.Framework.Xml;
@@ -27,8 +29,8 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
             Xslt xslt = new Xslt(IDENTITY_TRANSFORM);
             string input = "<qwerty>uiop</qwerty>";
             string output = new string(input.ToCharArray());
-            Assert.AreEqual(output, xslt.Transform(input).AsString());
-            Assert.AreEqual(output, xslt.Transform(input).AsString());
+            OldAssert.AreEqual(output, xslt.Transform(input).AsString());
+            OldAssert.AreEqual(output, xslt.Transform(input).AsString());
         }                      
     }
 }

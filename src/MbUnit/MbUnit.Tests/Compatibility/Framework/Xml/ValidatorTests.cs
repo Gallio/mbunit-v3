@@ -1,3 +1,5 @@
+#pragma warning disable 618
+
 namespace MbUnit.Tests.Compatibility.Framework.Xml {
     using System;
     using System.IO;
@@ -13,8 +15,8 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
 		public static Stream GetTestFile(string file)
 		{
             Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream(
-                    "MbUnit.Framework.Tests.Asserts.XmlUnitTests.etc." + file);
-			Assert.IsNotNull(s);
+                    "MbUnit.Tests.Compatibility.Framework.Xml.etc." + file);
+			OldAssert.IsNotNull(s);
 			return s;
 		}
 
@@ -44,7 +46,7 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
 			using(input)
 			{
                 Validator validator = new Validator(new XmlInput(new StreamReader(input)));
-                Assert.AreEqual(expected, validator.IsValid, validator.ValidationMessage);
+                OldAssert.AreEqual(expected, validator.IsValid, validator.ValidationMessage);
                 return validator;
             }
         }
@@ -62,7 +64,7 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
         //    Console.Out.WriteLine( new StreamReader(InvalidFile).ReadToEnd() );
         //    Validator validator = PerformAssertion(InvalidFile, false);
         //    string expected = "The element 'http://www.publishing.org:Book' has incomplete content";
-        //    Assert.AreEqual(true,validator.ValidationMessage.StartsWith(expected));
+        //    OldAssert.AreEqual(true,validator.ValidationMessage.StartsWith(expected));
         //}
     }
 }

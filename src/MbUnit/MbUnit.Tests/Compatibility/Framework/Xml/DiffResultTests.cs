@@ -1,3 +1,5 @@
+#pragma warning disable 618
+
 namespace MbUnit.Tests.Compatibility.Framework.Xml {
     using MbUnit.Framework;
     using MbUnit.Framework.Xml;
@@ -18,25 +20,25 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
         }
         
         [Test] public void NewDiffResultIsEqualAndIdentical() {
-            Assert.AreEqual(true, _result.Identical);
-            Assert.AreEqual(true, _result.Equal);
-        	Assert.AreEqual("Identical", _result.StringValue);
+            OldAssert.AreEqual(true, _result.Identical);
+            OldAssert.AreEqual(true, _result.Equal);
+        	OldAssert.AreEqual("Identical", _result.StringValue);
         }
         
         [Test] public void NotEqualOrIdenticalAfterMajorDifferenceFound() {
             _result.DifferenceFound(_diff, _majorDifference);
-            Assert.AreEqual(false, _result.Identical);
-            Assert.AreEqual(false, _result.Equal);
-        	Assert.AreEqual(_diff.OptionalDescription
+            OldAssert.AreEqual(false, _result.Identical);
+            OldAssert.AreEqual(false, _result.Equal);
+        	OldAssert.AreEqual(_diff.OptionalDescription
         	                       + Environment.NewLine
         	                       + _majorDifference.ToString(), _result.StringValue);
         }
         
         [Test] public void NotIdenticalButEqualAfterMinorDifferenceFound() {
             _result.DifferenceFound(_diff, _minorDifference);
-            Assert.AreEqual(false, _result.Identical);
-            Assert.AreEqual(true, _result.Equal);
-        	Assert.AreEqual(_diff.OptionalDescription
+            OldAssert.AreEqual(false, _result.Identical);
+            OldAssert.AreEqual(true, _result.Equal);
+        	OldAssert.AreEqual(_diff.OptionalDescription
         	                       + Environment.NewLine
         	                       + _minorDifference.ToString(), _result.StringValue);
         }

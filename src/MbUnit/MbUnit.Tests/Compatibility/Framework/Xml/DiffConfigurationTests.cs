@@ -1,3 +1,5 @@
+#pragma warning disable 618
+
 namespace MbUnit.Tests.Compatibility.Framework.Xml {
 	using MbUnit.Framework;	
 	using MbUnit.Framework.Xml;
@@ -17,16 +19,16 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
                 
         [Test] public void DefaultConfiguredWithGenericDescription() {
             DiffConfiguration diffConfiguration = new DiffConfiguration();
-            Assert.AreEqual(DiffConfiguration.DEFAULT_DESCRIPTION, 
+            OldAssert.AreEqual(DiffConfiguration.DEFAULT_DESCRIPTION, 
                                    diffConfiguration.Description);
             
-            Assert.AreEqual(DiffConfiguration.DEFAULT_DESCRIPTION, 
+            OldAssert.AreEqual(DiffConfiguration.DEFAULT_DESCRIPTION, 
                                    new XmlDiff("", "").OptionalDescription);
         }
         
         //[Test] public void DefaultConfiguredToUseValidatingParser() {
         //    DiffConfiguration diffConfiguration = new DiffConfiguration();
-        //    Assert.AreEqual(DiffConfiguration.DEFAULT_USE_VALIDATING_PARSER, 
+        //    OldAssert.AreEqual(DiffConfiguration.DEFAULT_USE_VALIDATING_PARSER, 
         //                           diffConfiguration.UseValidatingParser);
             
         //    Stream controlFileStream = ValidatorTests.ValidFile;
@@ -35,7 +37,7 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
         //        XmlDiff diff = new XmlDiff(new StreamReader(controlFileStream), 
         //                                   new StreamReader(testFileStream));
         //        diff.Compare();
-        //        Assert.Fail("Expected validation failure");
+        //        OldAssert.Fail("Expected validation failure");
         //    } catch (XmlSchemaException e) {
         //        string message = e.Message; // to prevent 'unused variable' compiler warning 
         //    } finally {
@@ -46,7 +48,7 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
                 
         //[Test] public void CanConfigureNotToUseValidatingParser() {
         //    DiffConfiguration diffConfiguration = new DiffConfiguration(false);
-        //    Assert.AreEqual(false, diffConfiguration.UseValidatingParser);
+        //    OldAssert.AreEqual(false, diffConfiguration.UseValidatingParser);
             
         //    Stream controlFileStream = ValidatorTests.ValidFile;
         //    Stream testFileStream = ValidatorTests.InvalidFile;
@@ -56,7 +58,7 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
         //                                   diffConfiguration);
         //        diff.Compare();
         //    } catch (XmlSchemaException e) {
-        //        Assert.Fail("Unexpected validation failure: " + e.Message);
+        //        OldAssert.Fail("Unexpected validation failure: " + e.Message);
         //    } finally {
         //        controlFileStream.Close();
         //        testFileStream.Close();
@@ -65,7 +67,7 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
         
         //[Test] public void DefaultConfiguredWithWhitespaceHandlingAll() {
         //    DiffConfiguration diffConfiguration = new DiffConfiguration();
-        //    Assert.AreEqual(WhitespaceHandling.All, diffConfiguration.WhitespaceHandling);
+        //    OldAssert.AreEqual(WhitespaceHandling.All, diffConfiguration.WhitespaceHandling);
             
         //    PerformAssertion(xmlWithoutWhitespace, xmlWithWhitespaceElement, false);
         //    PerformAssertion(xmlWithoutWhitespace, xmlWithoutWhitespaceElement, false);
@@ -84,8 +86,8 @@ namespace MbUnit.Tests.Compatibility.Framework.Xml {
             PerformAssertion(diff, assertion);
         }        
         private void PerformAssertion(XmlDiff diff, bool assertion) {
-            Assert.AreEqual(assertion, diff.Compare().Equal);            
-            Assert.AreEqual(assertion, diff.Compare().Identical);            
+            OldAssert.AreEqual(assertion, diff.Compare().Equal);            
+            OldAssert.AreEqual(assertion, diff.Compare().Identical);            
         }
 
         [Test] public void CanConfigureWhitespaceHandlingSignificant() {

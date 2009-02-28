@@ -160,7 +160,7 @@ namespace MbUnit.Framework
         private static void XmlEquals(XmlDiff xmlDiff, bool equal)
         {
             DiffResult diffResult = xmlDiff.Compare();
-            Assert.AreEqual(equal, diffResult.Equal, FailMessage(equal, xmlDiff.OptionalDescription));
+            OldAssert.AreEqual(equal, diffResult.Equal, FailMessage(equal, xmlDiff.OptionalDescription));
 
         }
 
@@ -197,7 +197,7 @@ namespace MbUnit.Framework
         /// if <c>false</c>, the assert passes if the XML is not identical</param>
         private static void XmlIdentical(XmlDiff xmlDiff, bool identical) {
             DiffResult diffResult = xmlDiff.Compare();
-            Assert.AreEqual(identical, diffResult.Identical,xmlDiff.OptionalDescription);
+            OldAssert.AreEqual(identical, diffResult.Identical,xmlDiff.OptionalDescription);
         }
 
 
@@ -253,7 +253,7 @@ namespace MbUnit.Framework
         /// </summary>
         /// <param name="validator">A <see cref="Validator"/> object containing the XML to validate</param>
         public static void XmlValid(Validator validator) {
-            Assert.AreEqual(true, validator.IsValid,validator.ValidationMessage);
+            OldAssert.AreEqual(true, validator.IsValid,validator.ValidationMessage);
         }
 
 
@@ -284,7 +284,7 @@ namespace MbUnit.Framework
         /// <param name="inXml">The XML to test.</param>
         public static void XPathExists(string anXPathExpression, XmlInput inXml) {
             XPath xpath = new XPath(anXPathExpression);
-            Assert.AreEqual(true, xpath.XPathExists(inXml));
+            OldAssert.AreEqual(true, xpath.XPathExists(inXml));
         }
 
 
@@ -319,7 +319,7 @@ namespace MbUnit.Framework
         public static void XPathEvaluatesTo(string anXPathExpression, XmlInput inXml, 
                                                   string expectedValue) {
             XPath xpath = new XPath(anXPathExpression);
-            Assert.AreEqual(expectedValue, xpath.EvaluateXPath(inXml));
+            OldAssert.AreEqual(expectedValue, xpath.EvaluateXPath(inXml));
         }
 
 
