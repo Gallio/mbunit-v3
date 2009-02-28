@@ -110,6 +110,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compatibility\Framework\Xml\DiffConfigurationTests.cs" />
+    <Compile Include="Compatibility\Framework\Xml\DifferenceTests.cs" />
+    <Compile Include="Compatibility\Framework\Xml\DiffResultTests.cs" />
+    <Compile Include="Compatibility\Framework\Xml\ValidatorTests.cs" />
+    <Compile Include="Compatibility\Framework\OldXmlAssertTest.cs" />
+    <Compile Include="Compatibility\Framework\Xml\XmlDiffTests.cs" />
+    <Compile Include="Compatibility\Framework\Xml\XmlInputTests.cs" />
+    <Compile Include="Compatibility\Framework\Xml\XPathTests.cs" />
+    <Compile Include="Compatibility\Framework\Xml\XsltTests.cs" />
     <Compile Include="Framework\ApartmentStateTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -181,9 +190,24 @@
     <Compile Include="Framework\TestCaseTest.cs" />
     <EmbeddedResource Include="Framework\CsvDataTest.csv" />
     <EmbeddedResource Include="Framework\XmlDataTest.xml" />
+    <None Include="Compatibility\Framework\Xml\etc\Book.xsd" />
+    <None Include="Compatibility\Framework\Xml\etc\test.dtd" />
     <None Include="MbUnit.Tests.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Compatibility\Framework\Xml\etc\animal.xsl" />
+    <Content Include="Compatibility\Framework\Xml\etc\BookXsdGenerated.xml" />
+    <Content Include="Compatibility\Framework\Xml\etc\controlDetail.xml" />
+    <Content Include="Compatibility\Framework\Xml\etc\controlNamespaces.xml" />
+    <Content Include="Compatibility\Framework\Xml\etc\invalidBook.xml" />
+    <Content Include="Compatibility\Framework\Xml\etc\test.blame.html" />
+    <Content Include="Compatibility\Framework\Xml\etc\test1.xml" />
+    <Content Include="Compatibility\Framework\Xml\etc\test2.xml" />
+    <Content Include="Compatibility\Framework\Xml\etc\testAnimal.xml" />
+    <Content Include="Compatibility\Framework\Xml\etc\testDetail.xml" />
+    <Content Include="Compatibility\Framework\Xml\etc\testNamespaces.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

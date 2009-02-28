@@ -55,6 +55,19 @@
     <Compile Include="Framework\OldSecurityAssert.cs" />
     <Compile Include="Framework\TestFixtureSetUpAttribute.cs" />
     <Compile Include="Framework\TestFixtureTearDown.cs" />
+    <Compile Include="Framework\OldXmlAssert.cs" />
+    <Compile Include="Framework\Xml\DiffConfiguration.cs" />
+    <Compile Include="Framework\Xml\Difference.cs" />
+    <Compile Include="Framework\Xml\Differences.cs" />
+    <Compile Include="Framework\Xml\DifferenceType.cs" />
+    <Compile Include="Framework\Xml\DiffResult.cs" />
+    <Compile Include="Framework\Xml\NamespaceDoc.cs" />
+    <Compile Include="Framework\Xml\Validator.cs" />
+    <Compile Include="Framework\Xml\XmlDiff.cs" />
+    <Compile Include="Framework\Xml\XmlInput.cs" />
+    <Compile Include="Framework\Xml\XmlOutput.cs" />
+    <Compile Include="Framework\Xml\XPath.cs" />
+    <Compile Include="Framework\Xml\Xslt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

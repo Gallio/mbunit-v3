@@ -276,7 +276,7 @@ namespace MbUnit.Framework
         {
             // Delta must be positive otherwise the following case fails
             if (delta < 0)
-                throw new ArgumentException("delta", "Delta must be a positive value.");
+                throw new ArgumentException("Delta must be a positive value.", "delta");
 
             IncrementAssertCount();
             // handle infinity specially since subtracting two infinite values gives
