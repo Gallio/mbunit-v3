@@ -92,10 +92,8 @@ namespace MbUnit.Framework
         private readonly Key<TransactionScope> TransactionScopeKey = new Key<TransactionScope>("RollbackAttribute.TransactionScope");
 
         /// <summary>
-        /// <para>
         /// Tags a test method whose database operation must be executed within a transaction and rolled
         /// back when it has finished executing.
-        /// </para>
         /// </summary>
         public RollbackAttribute()
         {
@@ -147,7 +145,13 @@ namespace MbUnit.Framework
             TimeSpan timeout = TransactionManager.MaximumTimeout;
             if (state.Test.Timeout.HasValue && state.Test.Timeout.Value < timeout)
                 timeout = state.Test.Timeout.Value;
-            return new TransactionScope(TransactionScopeOption.RequiresNew, timeout);
+
+            TransactionOptions options = new TransactionOptions()
+            {
+                Timeout = timeout
+            };
+
+            return new TransactionScope(TransactionScopeOption.RequiresNew, options, EnterpriseServicesInteropOption.Full);
         }
     }
 }
