@@ -30,31 +30,31 @@ namespace Gallio.Tests.Framework.Formatting
             {
                 Field = 42,
                 Property = 101,
-                AnotherProperty = null
+                Left = null
             };
 
-            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: AnotherProperty = null, Field = {42}, Property = {101}, ReadOnlyProperty = {blah}}";
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: Field = {42}, Left = null, Property = {101}, ReadOnlyProperty = {blah}, Right = null}";
             Assert.AreEqual(expectedResult, Formatter.Format(value));
         }
 
         [Test]
-        public void Format_ReentrantCallShouldPrintPlaceholderForObjectAndNotCauseStackOverflowException()
+        public void Format_CyclicGraphShouldPrintPlaceholderForObjectAndNotCauseStackOverflowException()
         {
             SampleObject value = new SampleObject();
-            value.AnotherProperty = value;
+            value.Left = value;
 
-            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: AnotherProperty = {...}, Field = {0}, Property = {0}, ReadOnlyProperty = {blah}}";
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: Field = {0}, Left = {...}, Property = {0}, ReadOnlyProperty = {blah}, Right = null}";
             Assert.AreEqual(expectedResult, Formatter.Format(value));
         }
 
         [Test]
-        public void Format_ReentrantCallShouldStopAfterTwoLevels()
+        public void Format_DeepGraphShouldStopAfterTwoLevels()
         {
             SampleObject value = new SampleObject
             {
-                AnotherProperty = new SampleObject
+                Left = new SampleObject
                 {
-                    AnotherProperty = new SampleObject
+                    Left = new SampleObject
                     {
                         Field = 3
                     },
@@ -63,8 +63,37 @@ namespace Gallio.Tests.Framework.Formatting
                 Field = 1
             };
 
-            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: AnotherProperty = {Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: AnotherProperty = {...}, Field = {2}, Property = {0}, ReadOnlyProperty = {blah}}, Field = {1}, Property = {0}, ReadOnlyProperty = {blah}}";
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: Field = {1}, Left = {Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: Field = {2}, Left = {...}, Property = {0}, ReadOnlyProperty = {blah}, Right = null}, Property = {0}, ReadOnlyProperty = {blah}, Right = null}";
             Assert.AreEqual(expectedResult, Formatter.Format(value));
+        }
+
+        [Test]
+        public void Format_ShouldRemoveObjectFromReentanceVisitedSetWhenAllPrinted()
+        {
+            SampleObject value = new SampleObject();
+
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: Field = {0}, Left = null, Property = {0}, ReadOnlyProperty = {blah}, Right = null}";
+            Assert.AreEqual(expectedResult, Formatter.Format(value));
+
+            // This is the actual regression test.  Previously the value remained in the visited
+            // set such that all subsequent printings were elided.
+            Assert.AreEqual(expectedResult, Formatter.Format(value), "Value should be printed again.");
+        }
+
+        [Test]
+        public void Format_ShouldUseReferentialEqualityForDeterminingReentrance()
+        {
+            SampleObject value = new SampleObject
+            {
+                Field = 1,
+                Left = new SampleObject
+                {
+                    Field = 1
+                }
+            };
+
+            string expectedResult = "{Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: Field = {1}, Left = {Gallio.Tests.Framework.Formatting.StructuralFormattingRuleTest+SampleObject: Field = {1}, Left = null, Property = {0}, ReadOnlyProperty = {blah}, Right = null}, Property = {0}, ReadOnlyProperty = {blah}, Right = null}";
+            Assert.AreEqual(expectedResult, Formatter.Format(value), "Both the outer and inner objects should be printed even through they are considered equal by value.");
         }
 
         [Test]
@@ -74,14 +103,15 @@ namespace Gallio.Tests.Framework.Formatting
             Assert.AreEqual(expectedPriority, FormattingRule.GetPriority(type));
         }
 
-        private sealed class SampleObject
+        private sealed class SampleObject : IEquatable<SampleObject>
         {
             private int PrivateField = 0;
             private int PrivateProperty { get { return PrivateField; } }
 
             public int Field;
 
-            public object AnotherProperty { get; set; }
+            public object Left { get; set; }
+            public object Right { get; set; }
 
             public int Property { get; set; }
 
@@ -98,6 +128,26 @@ namespace Gallio.Tests.Framework.Formatting
             public int ReadOnlyPropertyWithError
             {
                 get { throw new NotImplementedException(); }
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as SampleObject);
+            }
+
+            public bool Equals(SampleObject other)
+            {
+                return other != null
+                    && PrivateField == other.PrivateField
+                    && Field == other.Field
+                    && Property == other.Property;
+                    //&& Equals(Left, other.Left)
+                    //&& Equals(Right, other.Right)
+            }
+
+            public override int GetHashCode()
+            {
+                return 0;
             }
         }
     }

@@ -63,8 +63,15 @@ namespace Gallio.Framework.Formatting
                 }
                 else
                 {
-                    state.Visited.Add(obj);
-                    result = FormatRecursive(obj, formatter);
+                    try
+                    {
+                        state.Visited.Add(obj);
+                        result = FormatRecursive(obj, formatter);
+                    }
+                    finally
+                    {
+                        state.Visited.Remove(obj);
+                    }
                 }
             });
 
@@ -122,7 +129,7 @@ namespace Gallio.Framework.Formatting
 
         private sealed class ReentranceState
         {
-            private readonly HashSet<object> visited = new HashSet<object>();
+            private readonly HashSet<object> visited = new HashSet<object>(ReferentialEqualityComparer<object>.Instance);
             private int currentReentranceCount;
 
             public HashSet<object> Visited
