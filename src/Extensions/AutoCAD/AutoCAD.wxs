@@ -20,7 +20,7 @@
               </Component>
             </Directory>
         </DirectoryRef>
-        <Feature Id="feat_Gallio.AutoCAD" Title="AutoCAD Integration" Level="1" AllowAdvertise="no"
+        <Feature Id="feat_Gallio.AutoCAD" Title="AutoCAD Integration" Level="100" AllowAdvertise="no"
                  Description="Installs the AutoCAD integration features.">
             <ComponentRef Id="Gallio.AutoCAD.dll" />
             <ComponentRef Id="Gallio.AutoCAD.plugin" />

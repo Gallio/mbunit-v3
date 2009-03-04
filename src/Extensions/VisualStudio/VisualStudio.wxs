@@ -216,7 +216,7 @@
 <?endif?>
                 
 <?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
-            <Feature Id="feat_Gallio.VisualStudio.Sail.VS90" Title="Sail" Level="2" Description="Simple test runner add-in for Visual Studio (Experimental!)" AllowAdvertise="no">
+            <Feature Id="feat_Gallio.VisualStudio.Sail.VS90" Title="Sail" Level="100" Description="Simple test runner add-in for Visual Studio (Experimental!)" AllowAdvertise="no">
                 <ComponentRef Id="Gallio.VisualStudio.Sail.dll"/>
                 <!--
                 <ComponentRef Id="Gallio.VisualStudio.Sail.VS90.Registry"/>
@@ -243,7 +243,7 @@
 <?endif?>
                 
 <?ifdef FEATURE_VISUALSTUDIO_SAIL ?>
-            <Feature Id="feat_Gallio.VisualStudio.Sail.VS100" Title="Sail" Level="2" Description="Simple test runner add-in for Visual Studio (Experimental!)" AllowAdvertise="no">
+            <Feature Id="feat_Gallio.VisualStudio.Sail.VS100" Title="Sail" Level="100" Description="Simple test runner add-in for Visual Studio (Experimental!)" AllowAdvertise="no">
                 <ComponentRef Id="Gallio.VisualStudio.Sail.dll"/>
                 <!--
                 <ComponentRef Id="Gallio.VisualStudio.Sail.VS100.Registry"/>

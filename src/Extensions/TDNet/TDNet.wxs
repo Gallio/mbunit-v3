@@ -5,26 +5,6 @@
 
         <!-- TODO: Each TDNet runner should only be installed if the associated runner has been installed. -->
 
-        <PropertyRef Id='VS90DEVENV'/>
-
-        <Property Id="TDNET_PRODUCT_VERSION"> 
-            <RegistrySearch Id='TDNet.ProductVersion.CU.x86' Type="raw" Win64="no"
-                Root='HKCU' Key='Software\MutantDesign\TestDriven.NET' Name="ProductVersion" />
-            <RegistrySearch Id='TDNet.ProductVersion.LM.x86' Type="raw" Win64="no"
-                Root='HKLM' Key='Software\MutantDesign\TestDriven.NET' Name="ProductVersion" />
-<?if $(sys.BUILDARCH) = "x64" ?>
-            <RegistrySearch Id='TDNet.ProductVersion.CU.x64' Type="raw" Win64="yes"
-                Root='HKCU' Key='Software\MutantDesign\TestDriven.NET' Name="ProductVersion" />
-            <RegistrySearch Id='TDNet.ProductVersion.LM.x64' Type="raw" Win64="yes"
-                Root='HKLM' Key='Software\MutantDesign\TestDriven.NET' Name="ProductVersion" />
-<?endif?>
-        </Property>
-
-        <Property Id="TDNET_INSTALLDIR">
-            <RegistrySearch Id='TDNet.InstallDir' Type="raw" Win64="no"
-                Root='HKLM' Key='SOFTWARE\MutantDesign\TestDriven.NET' Name='InstallDir' />
-        </Property>
-
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Directory Id="TDNet" Name="TDNet">
                 <Component Id="Gallio.TDNetRunner.dll" Guid="9fc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
@@ -191,11 +171,6 @@
 
         <Feature Id='feat_Gallio.TDNet' Title='TestDriven.Net Runner' Level='1' AllowAdvertise='no'
                  Description='Installs the TestDriven.Net add-in.  TestDriven.Net itself must be downloaded and installed separately.'>
-	   <!-- Changed to install features even if TDNet not currently installed.
-	        This is to help users who get confused about the required
-		installation order.
-            <Condition Level='1'>TDNET_INSTALLDIR</Condition>
-	    -->
             <ComponentRef Id='Gallio.TDNetRunner.dll'/>
             <ComponentRef Id='Gallio.TDNetRunner.plugin'/>
             <ComponentRef Id="TDNetApp.Icarus" />
@@ -228,7 +203,7 @@
             </Feature>
 
             <Feature Id='feat_Gallio.TDNetRunner.MSTest' Title ='MSTest' Level='0' AllowAdvertise='no'>
-                <Condition Level="1">VS90DEVENV</Condition>
+                <!-- TODO: <Condition Level='2'>    not MSTestAdapterInstalled </Condition> -->
                 <ComponentRef Id='TDNetRunner.MSTest'/>            
 <?if $(sys.BUILDARCH) = "x64" ?>
                 <ComponentRef Id='TDNetRunner.MSTest.x64'/>

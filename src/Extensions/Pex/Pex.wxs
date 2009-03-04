@@ -4,21 +4,14 @@
     
     <Fragment>
 <?ifdef FEATURE_MBUNIT_PEX ?>
-        <!-- indicates wheter Pex was installed -->
-        <Property Id="PEX_INSTALLDIR" Secure="yes">
-            <RegistrySearch Id="PexConsoleSearch" Type="raw" Win64="no"
-                Root="HKLM" Key="Software\Microsoft\Pex\CurrentVersion" Name="InstallPath" />
-        </Property>
-
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
             <Component Id="MbUnit.Pex.dll" Guid="bfc40e70-ddcd-4d3a-b823-d81a5731b8a8" Win64="no">
                 <File Id="MbUnit.Pex.dll" Name="MbUnit.Pex.dll" KeyPath="yes" />
             </Component>
         </DirectoryRef>
 
-        <Feature Id='feat_PexAdapter' Title='MbUnit v3 Pex' Level='0' AllowAdvertise="no"
-            Description='Installs the MbUnit v3 Pex package.'>
-            <Condition Level="1">PEX_INSTALLDIR</Condition>
+        <Feature Id='feat_PexAdapter' Title='MbUnit v3 Pex' Level='100' AllowAdvertise="no"
+            Description='Installs the MbUnit v3 Pex package.  Requires a compatible version of Pex to be installed separately.'>
             <ComponentRef Id="MbUnit.Pex.dll"/>
         </Feature>
 <?endif?>

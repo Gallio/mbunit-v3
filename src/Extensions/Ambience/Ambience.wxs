@@ -69,7 +69,7 @@
             <Directory Id="GallioAmbienceCommonAppDataFolder" Name="Gallio.Ambience" />
         </DirectoryRef>
         
-        <Feature Id="feat_Gallio.Ambience" Title="Ambience" Level="1" AllowAdvertise="no"
+        <Feature Id="feat_Gallio.Ambience" Title="Ambience" Level="100" AllowAdvertise="no"
             Description="Installs the Ambience database client and server.  Stores persistent data shared across test runs.">
 
             <ComponentRef Id="Gallio.Ambience.dll" />
