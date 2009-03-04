@@ -216,14 +216,18 @@ namespace MbUnit.Framework
             if (isStatic)
                 return null;
 
-            return GetCurrentTestInstanceState().FixtureInstance;
+            object instance = GetCurrentTestInstanceState().FixtureInstance;
+            if (instance == null)
+                throw new InvalidOperationException(String.Format("Cannot invoke factory '{0}' because it is non-static and there is no fixture instance available for this test.", memberName));
+
+            return instance;
         }
 
         private PatternTestInstanceState GetCurrentTestInstanceState()
         {
             PatternTestInstanceState state = PatternTestInstanceState.FromContext(TestContext.CurrentContext);
-            if (state == null || state.FixtureInstance == null)
-                throw new InvalidOperationException(String.Format("Cannot invoke factory '{0}' because it is non-static and there is no fixture instance available for this test.", memberName));
+            if (state == null)
+                throw new NotSupportedException("Could not find the current pattern test instance state.  The [Factory] attribute probably cannot be used in this context.");
 
             return state;
         }

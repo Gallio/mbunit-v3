@@ -116,6 +116,9 @@ namespace Gallio.Framework.Pattern
             if (context == null)
                 throw new ArgumentNullException("context");
 
+            while (!context.Data.HasValue(ContextKey) && context.Parent != null)
+                context = context.Parent;
+
             return context.Data.GetValueOrDefault(ContextKey, null);
         }
 
