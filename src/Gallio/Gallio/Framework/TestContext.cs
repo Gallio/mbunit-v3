@@ -19,6 +19,7 @@ using System.Threading;
 using Gallio;
 using Gallio.Collections;
 using Gallio.Framework;
+using Gallio.Framework.Assertions;
 using Gallio.Model;
 using Gallio.Model.Diagnostics;
 using Gallio.Model.Execution;
@@ -260,25 +261,23 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Gets the user data collection associated with the context.  It may be used
         /// to associate arbitrary key/value pairs with the context.
-        /// </para>
-        /// <para>
-        /// When a new child context is created, it inherits a copy of its parent's data.
-        /// </para>
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Each context has its own distinct user data collection.
+        /// </para>
+        /// </remarks>
         public UserDataCollection Data
         {
             get { return inner.Data; }
         }
 
         /// <summary>
-        /// <para>
         /// The <see cref="Finishing" /> event is raised when the test is finishing to provide
         /// clients with an opportunity to perform additional clean up tasks after all ordinary
         /// test processing is finished.
-        /// </para>
         /// </summary>
         public event EventHandler Finishing
         {
@@ -295,18 +294,23 @@ namespace Gallio.Framework
         }
 
         /// <summary>
-        /// <para>
         /// Performs an action as a new step within the current context and associates it
-        /// with the specified code reference.
-        /// </para>
+        /// with the specified code reference.  Does not verify the outcome of the step.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// This method creates a new child context with a new nested <see cref="ITestStep" />,
         /// enters the child context, performs the action, then exits the child context.
         /// </para>
-        /// </summary>
-        /// <remarks>
+        /// <para>
         /// This method may be called recursively to create nested steps or concurrently
         /// to create parallel steps.
+        /// </para>
+        /// <para>
+        /// This method does not verify that the test step completed successfully.  Check the
+        /// <see cref="TestContext.Outcome" /> of the test step or call <see cref="RunStepAndVerifyOutcome"/>
+        /// to ensure that the expected outcome was obtained.
+        /// </para>
         /// </remarks>
         /// <param name="name">The name of the step</param>
         /// <param name="action">The action to perform</param>
@@ -317,24 +321,80 @@ namespace Gallio.Framework
         /// <paramref name="action"/> is null</exception>
         /// <returns>The context of the step that ran</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
-        /// <exception cref="Exception">Any exception thrown by the action</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
         public TestContext RunStep(string name, Action action, TimeSpan? timeout, bool isTestCase, ICodeElementInfo codeElement)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
             if (action == null)
                 throw new ArgumentNullException("action");
+            if (timeout.HasValue && timeout.Value.Ticks < 0)
+                throw new ArgumentOutOfRangeException("timeout", "Timeout must not be negative.");
 
             TestContext childContext = StartChildStep(name, codeElement, isTestCase);
             TestOutcome outcome = TestOutcome.Error;
-
-            childContext.LifecyclePhase = LifecyclePhases.Execute;
-            childContext.Sandbox.UseTimeout(timeout, delegate
+            try
             {
-                outcome = childContext.Sandbox.Run(childContext.LogWriter, action, null);
+                childContext.LifecyclePhase = LifecyclePhases.Execute;
+                childContext.Sandbox.UseTimeout(timeout, delegate
+                {
+                    outcome = childContext.Sandbox.Run(childContext.LogWriter, action, null);
+                });
+            }
+            finally
+            {
+                childContext.FinishStep(outcome);
+            }
+
+            return childContext;
+        }
+
+        /// <summary>
+        /// Performs an action as a new step within the current context and associates it
+        /// with the specified code reference.  Verifies that the step produced the expected outcome.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method creates a new child context with a new nested <see cref="ITestStep" />,
+        /// enters the child context, performs the action, then exits the child context.
+        /// </para>
+        /// <para>
+        /// This method may be called recursively to create nested steps or concurrently
+        /// to create parallel steps.
+        /// </para>
+        /// <para>
+        /// This method verifies that the step produced the expected outcome.  If a different outcome
+        /// was obtained, then raises an assertion failure.
+        /// </para>
+        /// </remarks>
+        /// <param name="name">The name of the step</param>
+        /// <param name="action">The action to perform</param>
+        /// <param name="timeout">The step execution timeout, or null if none</param>
+        /// <param name="isTestCase">True if the step represents an independent test case</param>
+        /// <param name="codeElement">The associated code element, or null if none</param>
+        /// <param name="expectedOutcome">The expected outcome of the step</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> or
+        /// <paramref name="action"/> is null</exception>
+        /// <returns>The context of the step that ran</returns>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="name"/> is the empty string</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
+        /// <exception cref="AssertionFailureException">Thrown if the expected outcome was not obtained</exception>
+        public TestContext RunStepAndVerifyOutcome(string name, Action action, TimeSpan? timeout, bool isTestCase, ICodeElementInfo codeElement, TestOutcome expectedOutcome)
+        {
+            TestContext childContext = RunStep(name, action, timeout, isTestCase, codeElement);
+
+            AssertionHelper.Verify(() =>
+            {
+                TestOutcome actualOutcome = childContext.Outcome;
+                if (actualOutcome == expectedOutcome)
+                    return null;
+
+                return new AssertionFailureBuilder("The test step did not produce the expected outcome.")
+                    .AddLabeledValue("Expected Outcome", expectedOutcome.ToString())
+                    .AddLabeledValue("Actual Outcome", actualOutcome.ToString())
+                    .ToAssertionFailure();
             });
 
-            childContext.FinishStep(outcome);
             return childContext;
         }
 

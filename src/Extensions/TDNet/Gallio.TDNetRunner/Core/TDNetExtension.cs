@@ -74,12 +74,12 @@ namespace Gallio.TDNetRunner.Core
         }
 
         /// <inheritdoc />
-        protected override void LogTestStepStarted(TestStepStartedEventArgs e)
+        protected override void LogTestCaseStarted(TestStepStartedEventArgs e)
         {
         }
 
         /// <inheritdoc />
-        protected override void LogTestStepFinished(TestStepFinishedEventArgs e)
+        protected override void LogTestCaseFinished(TestStepFinishedEventArgs e)
         {
             // A TestResult with State == TestState.Passed won't be displayed in the
             // output window (TD.NET just diplays "[TestName] passed" in the status bar.
@@ -88,9 +88,6 @@ namespace Gallio.TDNetRunner.Core
             // progressively see if the tests are passing or failing.
             if (e.TestStepRun.Result.Outcome.Status == TestStatus.Passed)
             {
-                if (!e.TestStepRun.Step.IsTestCase)
-                    return; // nothing interesting to report
-
                 testListener.WriteLine(String.Format(Resources.TDNetLogMonitor_TestCasePassed, 
                     e.TestStepRun.Step.FullName), FacadeCategory.Info);
             }
@@ -110,9 +107,6 @@ namespace Gallio.TDNetRunner.Core
             StructuredTestLogStream warningStream = e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Warnings);
             if (warningStream != null)
                 result.Message = warningStream.ToString();
-
-            if (!e.TestStepRun.Step.IsTestCase && failureStream == null && warningStream == null)
-                return; // nothing interesting to report
 
             // TD.NET will automatically count the number of passed, ignored and failed tests
             // provided we call the TestFinished method with the right State

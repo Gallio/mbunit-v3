@@ -254,8 +254,15 @@ namespace Gallio.Framework
         /// <param name="timeout">The execution timeout or null if none</param>
         /// <param name="action">The action to perform, protected by the timeout</param>
         /// <exception cref="ObjectDisposedException">Thrown if the sandbox was disposed</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="timeout"/> is negative</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
         public void UseTimeout(TimeSpan? timeout, Action action)
         {
+            if (timeout.HasValue && timeout.Value.Ticks < 0)
+                throw new ArgumentOutOfRangeException("timeout", "Timeout must not be negative.");
+            if (action == null)
+                throw new ArgumentNullException("action");
+
             ThrowIfDisposed();
 
             using (timeout.HasValue ? new Timer(delegate

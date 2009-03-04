@@ -74,10 +74,7 @@ namespace Gallio.Model.Execution
             externallyVisibleLogWriter = new FallbackTestLogWriter(logWriter, 
                 parent != null ? parent.LogWriter : new NullTestLogWriter());
 
-            if (parent == null)
-                data = new UserDataCollection();
-            else
-                data = parent.Data.Copy();
+            data = new UserDataCollection();
         }
 
         /// <inheritdoc />

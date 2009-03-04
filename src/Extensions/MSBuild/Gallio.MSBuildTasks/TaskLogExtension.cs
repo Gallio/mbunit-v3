@@ -83,11 +83,11 @@ namespace Gallio.MSBuildTasks
             }
         }
 
-        protected override void LogTestStepStarted(TestStepStartedEventArgs e)
+        protected override void LogTestCaseStarted(TestStepStartedEventArgs e)
         {
         }
 
-        protected override void LogTestStepFinished(TestStepFinishedEventArgs e)
+        protected override void LogTestCaseFinished(TestStepFinishedEventArgs e)
         {
             CodeLocation codeLocation = e.TestStepRun.Step.CodeLocation;
             TestOutcome outcome = e.TestStepRun.Result.Outcome;

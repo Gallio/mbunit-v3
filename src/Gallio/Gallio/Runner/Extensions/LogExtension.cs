@@ -50,12 +50,14 @@ namespace Gallio.Runner.Extensions
 
             Events.TestStepStarted += delegate(object sender, TestStepStartedEventArgs e)
             {
-                LogTestStepStarted(e);
+                if (e.TestStepRun.Step.IsTestCase)
+                    LogTestCaseStarted(e);
             };
 
             Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
             {
-                LogTestStepFinished(e);
+                if (e.TestStepRun.Step.IsTestCase)
+                    LogTestCaseFinished(e);
             };
         }
 
@@ -69,19 +71,25 @@ namespace Gallio.Runner.Extensions
         }
 
         /// <summary>
-        /// Logs a test step started event.
+        /// Logs a message about a test case that has started.
         /// </summary>
+        /// <remarks>
+        /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to false.
+        /// </remarks>
         /// <param name="e">The event</param>
-        protected virtual void LogTestStepStarted(TestStepStartedEventArgs e)
+        protected virtual void LogTestCaseStarted(TestStepStartedEventArgs e)
         {
             Logger.Log(LogSeverity.Debug, String.Format("[starting] {0}", e.TestStepRun.Step.FullName));
         }
 
         /// <summary>
-        /// Logs a test step finished event.
+        /// Logs a message about a test case that has finished.
         /// </summary>
+        /// <remarks>
+        /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to false.
+        /// </remarks>
         /// <param name="e">The event</param>
-        protected virtual void LogTestStepFinished(TestStepFinishedEventArgs e)
+        protected virtual void LogTestCaseFinished(TestStepFinishedEventArgs e)
         {
             TestOutcome outcome = e.TestStepRun.Result.Outcome;
             LogSeverity severity = GetLogSeverityForOutcome(outcome);

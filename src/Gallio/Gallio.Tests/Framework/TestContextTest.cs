@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Collections;
 using Gallio.Framework;
 using MbUnit.Framework;
 
@@ -26,6 +27,14 @@ namespace Gallio.Tests.Framework
         public void CurrentTestHasCorrectTestName()
         {
             Assert.AreEqual("CurrentTestHasCorrectTestName", TestContext.CurrentContext.Test.Name);
+        }
+
+        [Test]
+        public void CanStoreDataInTestContext()
+        {
+            Key<string> key = new Key<string>("key");
+            TestContext.CurrentContext.Data.SetValue(key, "value");
+            Assert.AreEqual("value", TestContext.CurrentContext.Data.GetValue(key));
         }
     }
 }
