@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Framework.Data;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -33,6 +35,7 @@ namespace MbUnit.Framework
     /// <seealso cref="SequentialJoinStrategy"/>
     /// <seealso cref="CombinatorialJoinAttribute"/>
     /// <seealso cref="PairwiseJoinAttribute"/>
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class SequentialJoinAttribute : JoinAttribute
     {
         /// <inheritdoc />

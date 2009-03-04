@@ -33,6 +33,7 @@ namespace MbUnit.Framework
     /// <see cref="TestContext" />.
     /// </para>
     /// </remarks>
+    [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public class MetadataAttribute : MetadataPatternAttribute
     {
         private readonly string metadataKey;

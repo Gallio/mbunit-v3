@@ -40,6 +40,7 @@ namespace MbUnit.Tests.Framework
     [RunSample(typeof(PropertyBindingSample))]
     [RunSample(typeof(MethodParameterBindingInsideSample))]
     [RunSample(typeof(MethodParameterBindingOutsideSample))]
+    [RunSample(typeof(MethodParameterBindingOutsideSampleInherited))]
     [RunSample(typeof(ExplicitBindingByNameSample<>))]
     [RunSample(typeof(ExplicitBindingByIndexSample<>))]
     [RunSample(typeof(ImplicitBindingByNameSample<>))]
@@ -62,6 +63,7 @@ namespace MbUnit.Tests.Framework
         [Row(typeof(PropertyBindingSample), "Test", new string[] { "(Apples, 1)" })]
         [Row(typeof(MethodParameterBindingInsideSample), "Test", new string[] { "(Apples, 1)" })]
         [Row(typeof(MethodParameterBindingOutsideSample), "Test", new string[] { "(Apples, 1)" })]
+        [Row(typeof(MethodParameterBindingOutsideSampleInherited), "Test", new string[] { "(Apples, 1)", "(Oranges, 2)" }, Description = "Should inherit rows.")]
         [Row(typeof(ExplicitBindingByNameSample<>), "Test", new string[] { "System.String -> (Apples, 1) x 10, Empire" })]
         [Row(typeof(ExplicitBindingByIndexSample<>), "Test", new string[] { "System.String -> (Apples, 1) x 10, Empire" })]
         [Row(typeof(ImplicitBindingByNameSample<>), "Test", new string[] { "System.String -> (Apples, 1) x 10, Empire" })]
@@ -229,9 +231,19 @@ namespace MbUnit.Tests.Framework
         {
             [Test]
             [Row("Apples", 1)]
-            public void Test(string item, decimal price)
+            public virtual void Test(string item, decimal price)
             {
                 TestLog.WriteLine("({0}, {1})", item, price);
+            }
+        }
+
+        [TestFixture, Explicit("Sample")]
+        internal class MethodParameterBindingOutsideSampleInherited : MethodParameterBindingOutsideSample
+        {
+            [Row("Oranges", 2)]
+            public override void Test(string item, decimal price)
+            {
+                base.Test(item, price);
             }
         }
 

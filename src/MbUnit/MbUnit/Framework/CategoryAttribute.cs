@@ -25,6 +25,7 @@ namespace MbUnit.Framework
     /// or other test component.  The category name can be used to classify tests
     /// and build test suites of related tests.
     /// </summary>
+    [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public class CategoryAttribute : MetadataPatternAttribute
     {
         private readonly string categoryName;

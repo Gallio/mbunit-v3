@@ -38,6 +38,7 @@ namespace MbUnit.Framework
     /// setting the index).
     /// </para>
     /// </remarks>
+    [AttributeUsage(PatternAttributeTargets.TestParameter, AllowMultiple = true, Inherited = true)]
     public class BindAttribute : TestParameterDecoratorPatternAttribute
     {
         private string source;

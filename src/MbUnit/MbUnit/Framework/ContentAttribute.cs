@@ -33,6 +33,7 @@ namespace MbUnit.Framework
     /// Add support for Uris.  We will need to define an IUriLoader service to help
     /// with this.  Such a service would be quite useful for many other reasons also.
     /// </todo>
+    [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public abstract class ContentAttribute : DataPatternAttribute
     {
         private string contents;

@@ -35,6 +35,7 @@ namespace MbUnit.Framework
     /// This attribute can be repeated multiple times if there are multiple types.
     /// </para>
     /// </remarks>
+    [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public class TestsOnAttribute : MetadataPatternAttribute
     {
         private readonly string typeName;

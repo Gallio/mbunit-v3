@@ -46,6 +46,7 @@ namespace MbUnit.Framework
     /// traversed during the normal sequence of test exploration.
     /// </para>
     /// </remarks>
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class AnnotationAttribute : AnnotationPatternAttribute
     {
         /// <summary>

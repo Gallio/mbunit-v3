@@ -49,6 +49,7 @@ namespace MbUnit.Framework
     /// <seealso cref="RowAttribute"/>
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
+    [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class HeaderAttribute : DataPatternAttribute
     {
         private readonly string[] columnNames;

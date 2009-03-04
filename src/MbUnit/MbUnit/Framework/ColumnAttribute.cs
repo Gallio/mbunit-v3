@@ -48,6 +48,7 @@ namespace MbUnit.Framework
     /// </example>
     /// <seealso cref="RowAttribute"/>
     [CLSCompliant(false)]
+    [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class ColumnAttribute : DataAttribute
     {
         private readonly object[] values;

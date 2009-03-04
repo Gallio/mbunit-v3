@@ -24,6 +24,7 @@ namespace MbUnit.Framework
     /// Associates the author's name and email address with a test fixture, test method,
     /// test parameter or other test component.
     /// </summary>
+    [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public class AuthorAttribute : MetadataPatternAttribute
     {
         private readonly string authorName;

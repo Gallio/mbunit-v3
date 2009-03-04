@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Framework.Data;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -37,6 +38,7 @@ namespace MbUnit.Framework
     /// <seealso cref="CombinatorialJoinStrategy"/>
     /// <seealso cref="SequentialJoinAttribute"/>
     /// <seealso cref="PairwiseJoinAttribute"/>
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class CombinatorialJoinAttribute : JoinAttribute
     {
         /// <inheritdoc />

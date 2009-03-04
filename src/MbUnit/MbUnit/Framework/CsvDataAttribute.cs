@@ -63,6 +63,7 @@ namespace MbUnit.Framework
     /// </code>
     /// </example>
     /// <seealso cref="CsvDataSet"/>
+    [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class CsvDataAttribute : ContentAttribute
     {
         private char fieldDelimiter = ',';

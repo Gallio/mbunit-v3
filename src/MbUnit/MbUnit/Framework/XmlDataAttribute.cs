@@ -115,6 +115,7 @@ namespace MbUnit.Framework
     /// </example>
     /// </remarks>
     /// <seealso cref="XmlDataSet"/>
+    [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class XmlDataAttribute : ContentAttribute
     {
         private readonly string itemPath;

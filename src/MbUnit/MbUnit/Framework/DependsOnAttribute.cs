@@ -34,6 +34,7 @@ namespace MbUnit.Framework
     /// This attribute can be repeated multiple times if there are multiple dependencies.
     /// </para>
     /// </remarks>
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public class DependsOnAttribute : TestDependencyPatternAttribute
     {
         private readonly Type testFixtureType;

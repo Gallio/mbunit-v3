@@ -31,6 +31,7 @@ namespace MbUnit.Framework
     /// </para>
     /// </remarks>
     /// <seealso cref="DataPatternAttribute"/> for more information about data binding attributes in general.
+    [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public abstract class DataAttribute : DataPatternAttribute
     {
         private string description;

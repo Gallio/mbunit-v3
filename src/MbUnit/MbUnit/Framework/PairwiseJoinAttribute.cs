@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Framework.Data;
+using Gallio.Framework.Pattern;
 
 namespace MbUnit.Framework
 {
@@ -46,6 +48,7 @@ namespace MbUnit.Framework
     /// <seealso cref="PairwiseJoinStrategy"/>
     /// <seealso cref="SequentialJoinAttribute"/>
     /// <seealso cref="CombinatorialJoinAttribute"/>
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
     public class PairwiseJoinAttribute : JoinAttribute
     {
         /// <inheritdoc />

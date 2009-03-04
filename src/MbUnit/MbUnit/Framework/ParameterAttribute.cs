@@ -51,6 +51,7 @@ namespace MbUnit.Framework
     ///     public string Parameter2 { get; set; }
     /// }
     /// </example>
+    [AttributeUsage(PatternAttributeTargets.TestParameter, AllowMultiple = false, Inherited = true)]
     public class ParameterAttribute : TestParameterPatternAttribute
     {
     }

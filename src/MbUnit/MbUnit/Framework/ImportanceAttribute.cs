@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Gallio.Model;
 using Gallio.Framework.Pattern;
@@ -23,6 +24,7 @@ namespace MbUnit.Framework
     /// Associates a <see cref="Framework.Importance" /> with a test fixture, test method,
     /// test parameter or other test component.
     /// </summary>
+    [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public class ImportanceAttribute : MetadataPatternAttribute
     {
         private readonly Importance importance;

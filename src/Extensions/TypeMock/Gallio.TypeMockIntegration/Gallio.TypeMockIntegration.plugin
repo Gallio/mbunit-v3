@@ -17,7 +17,7 @@
           <parameters>
             <testDriverFactory>${TypeMockIntegration.TypeMockTestDriverFactory}</testDriverFactory>
             <name>TypeMock</name>
-            <description>Runs tests in an external process with TypeMock.Net.  TypeMock.Net v4 must be installed for this mode to work.</description>
+            <description>Runs tests in an external process with TypeMock.Net.  TypeMock.Net v4 or v5 must be installed for this mode to work.</description>
           </parameters>
         </component>
 

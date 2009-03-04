@@ -33,6 +33,7 @@ namespace MbUnit.Framework
     /// make it available to the user as metadata.
     /// </para>
     /// </remarks>
+    [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public class DescriptionAttribute : MetadataPatternAttribute
     {
         private readonly string description;

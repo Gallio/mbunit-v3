@@ -23,6 +23,7 @@ using MbUnit.Framework;
 
 namespace Gallio.ReSharperRunner.Tests
 {
+    [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = true, Inherited = true)]
     public class RunWithGuardedReadLockAttribute : TestDecoratorPatternAttribute
     {
         protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)

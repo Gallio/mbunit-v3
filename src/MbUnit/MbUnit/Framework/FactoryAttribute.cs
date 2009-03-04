@@ -38,6 +38,7 @@ namespace MbUnit.Framework
     /// factories that are supported.
     /// </para>
     /// </remarks>
+    [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class FactoryAttribute : DataPatternAttribute
     {
         private readonly Type type;
