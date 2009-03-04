@@ -28,33 +28,33 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.TestComponent, AllowMultiple = true, Inherited = true)]
     public class CategoryAttribute : MetadataPatternAttribute
     {
-        private readonly string categoryName;
+        private readonly string category;
 
         /// <summary>
-        /// Associates a category name with the test component annotated by this attribute.
+        /// Associates a category with the test component annotated by this attribute.
         /// </summary>
-        /// <param name="categoryName">The category name to associate</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="categoryName"/> is null</exception>
-        public CategoryAttribute(string categoryName)
+        /// <param name="category">The name of the category to associate</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="category"/> is null</exception>
+        public CategoryAttribute(string category)
         {
-            if (categoryName == null)
-                throw new ArgumentNullException(@"categoryName");
+            if (category == null)
+                throw new ArgumentNullException("category");
 
-            this.categoryName = categoryName;
+            this.category = category;
         }
 
         /// <summary>
-        /// Gets the category name.
+        /// Gets the name of the category.
         /// </summary>
-        public string CategoryName
+        public string Category
         {
-            get { return categoryName; }
+            get { return category; }
         }
 
         /// <inheritdoc />
         protected override IEnumerable<KeyValuePair<string, string>> GetMetadata()
         {
-            yield return new KeyValuePair<string, string>(MetadataKeys.CategoryName, categoryName);
+            yield return new KeyValuePair<string, string>(MetadataKeys.Category, category);
         }
     }
 }

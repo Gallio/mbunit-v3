@@ -230,7 +230,7 @@ namespace Gallio.NUnitAdapter.Model
                 test.Metadata.Add(MetadataKeys.IgnoreReason, nunitTest.IgnoreReason);
 
             foreach (string category in nunitTest.Categories)
-                test.Metadata.Add(MetadataKeys.CategoryName, category);
+                test.Metadata.Add(MetadataKeys.Category, category);
 
             foreach (DictionaryEntry entry in nunitTest.Properties)
                 test.Metadata.Add(entry.Key.ToString(), entry.Value != null ? entry.Value.ToString() : null);

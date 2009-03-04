@@ -244,7 +244,7 @@ namespace MbUnit.Pex
         {
             foreach (CategoryAttribute categoryAttribute in categoryAttributes)
             {
-                if (delimitedCategories.Contains(categoryAttribute.CategoryName))
+                if (delimitedCategories.Contains(categoryAttribute.Category))
                     return true;
             }
 

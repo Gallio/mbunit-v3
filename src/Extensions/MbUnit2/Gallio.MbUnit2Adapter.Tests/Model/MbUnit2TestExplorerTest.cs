@@ -72,7 +72,7 @@ namespace Gallio.MbUnit2Adapter.Tests.Model
             PopulateTestTree();
 
             MbUnit2Test test = (MbUnit2Test)GetDescendantByName(testModel.RootTest, typeof(FixtureCategorySample).Name);
-            Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKeys.CategoryName));
+            Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKeys.Category));
         }
 
         [Test]

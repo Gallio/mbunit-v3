@@ -55,7 +55,7 @@ namespace Gallio.MbUnit2Adapter.Model
 
             foreach (FixtureCategoryAttribute2 attrib in AttributeUtils.GetAttributes<FixtureCategoryAttribute2>(fixtureType, true))
             {
-                test.Metadata.Add(MetadataKeys.CategoryName, attrib.Category);
+                test.Metadata.Add(MetadataKeys.Category, attrib.Category);
             }
 
             try

@@ -323,7 +323,7 @@ namespace Gallio.CSUnitAdapter.Model
                 {
                     foreach (string category in categories.Split(','))
                     {
-                        metadata.Add(MetadataKeys.CategoryName, category);
+                        metadata.Add(MetadataKeys.Category, category);
                     }
                 }
             }
@@ -348,7 +348,7 @@ namespace Gallio.CSUnitAdapter.Model
                 {
                     foreach (string category in categories.Split(','))
                     {
-                        metadata.Add(MetadataKeys.CategoryName, category);
+                        metadata.Add(MetadataKeys.Category, category);
                     }
                 }
             }

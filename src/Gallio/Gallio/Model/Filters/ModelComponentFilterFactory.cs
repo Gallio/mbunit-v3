@@ -57,6 +57,8 @@ namespace Gallio.Model.Filters
                     return new TypeFilter<T>(valueFilter, false);
                 case "Member":
                     return new MemberFilter<T>(valueFilter);
+                case "CategoryName": // For backwards compatibility.  TODO: Remove me someday.
+                    return new MetadataFilter<T>(MetadataKeys.Category, valueFilter);
                 default:
                     return new MetadataFilter<T>(key, valueFilter);
             }

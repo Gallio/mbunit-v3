@@ -61,7 +61,7 @@ namespace Gallio.NUnitAdapter.Tests.Model
             PopulateTestTree();
 
             NUnitTest test = (NUnitTest)GetDescendantByName(testModel.RootTest, typeof(CategorySample).Name);
-            Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKeys.CategoryName));
+            Assert.AreEqual("samples", test.Metadata.GetValue(MetadataKeys.Category));
         }
 
         [Test]

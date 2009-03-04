@@ -206,7 +206,7 @@ namespace Gallio.ReSharperRunner.Provider
 
         private void PopulateMetadata()
         {
-            IList<string> categories = test.Metadata[MetadataKeys.CategoryName];
+            IList<string> categories = test.Metadata[MetadataKeys.Category];
             if (categories.Count != 0)
                 AssignCategories(categories);
 

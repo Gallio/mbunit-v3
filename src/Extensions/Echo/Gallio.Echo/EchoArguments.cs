@@ -130,7 +130,7 @@ namespace Gallio.Echo
                  + "key: value, \"quoted value\", /regular expression/\n"
                  + "A filter key may be 'Id', 'Name', 'Assembly', 'Namespace',\n"
                  + "'Type', 'ExactType', 'Member' or any custom metadata key\n"
-                 + "such as 'CategoryName' or 'AuthorName'.\n  Examples:\n"
+                 + "such as 'Category' or 'AuthorName'.\n  Examples:\n"
                  + "Type: Fixture1, Fixture2\n"
                  + "- Runs tests belonging to Fixture1 or Fixture2 including subclasses.\n"
                  + "ExactType: Fixture1 and Member: Test1\n"

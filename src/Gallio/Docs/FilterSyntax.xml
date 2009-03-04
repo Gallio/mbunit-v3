@@ -75,7 +75,7 @@
           <item>ExactType: Filter by type name, excluding inherited types.</item>
           <item>Member: Filter by member name.</item>
           <item>
-            *: All other names are assumed to correspond to metadata keys. See <see cref="MetadataKeys" /> for standard metadata keys.<seealso cref="MetadataKeys" />
+            *: All other names are assumed to correspond to metadata keys. See <see cref="MetadataKeys" /> for standard metadata keys.  Common keys are: AuthorName, Category, Description, Importance, TestsOn.  <seealso cref="MetadataKeys" />
           </item>
         </list>
       </item>      
@@ -87,7 +87,7 @@
     </para>
     <code>
       [TestFixture]
-      [TestCategory("UnitTest")]
+      [Category("UnitTest")]
       [Author("AlbertEinstein")]
       public class Fixture1
       {
@@ -102,7 +102,7 @@
       }
 
       [TestFixture]
-      [TestCategory("IntegrationTest")]
+      [Category("IntegrationTest")]
       public class Fixture2
       {
         [Test]
@@ -119,7 +119,7 @@
     <list type="bullet">
       <item>
         <term>Type: Fixture1</term>
-        <description>Only tests within Fixture1 will be run (that is, Fixture1.Test1 and Fixture1.Test2).</description>
+        <description>All the tests within Fixture1 will be run.</description>
       </item>
 
       <item>
@@ -149,14 +149,18 @@
 
       <item>
         <term>AuthorName:AlbertEinstein</term>
-        <description>All the tests within Fixture1 will be run (because its author attribute is
-        set to "AlbertEinstein").</description>
+        <description>All the tests within Fixture1 will be run because its author attribute is set to "AlbertEinstein".</description>
+      </item>
+
+      <item>
+        <term>Category: IntegrationTest</term>
+        <description>All the tests within Fixture2 will be run because its category attribute is set to "IntegrationTest".</description>
       </item>
 
       <item>
         <term>Type: Fixture2 and not AuthorName: AlbertEinstein</term>
-        <description>All the tests within Fixture2 will be run (because they belong to Fixture2
-        and its author attribute is not set to "AlbertEinstein").</description>
+        <description>All the tests within Fixture2 will be run because they belong to Fixture2
+        and its author attribute is not set to "AlbertEinstein".</description>
       </item>
 
       <item>

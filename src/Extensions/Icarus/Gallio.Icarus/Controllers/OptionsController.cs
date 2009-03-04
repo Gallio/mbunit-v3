@@ -127,7 +127,7 @@ namespace Gallio.Icarus.Controllers
             settings = LoadSettings(Paths.SettingsFile) ?? new Settings();
 
             if (settings.TreeViewCategories.Count == 0)
-                settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, MetadataKeys.CategoryName, 
+                settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, MetadataKeys.Category, 
                     MetadataKeys.Importance, MetadataKeys.TestsOn });
 
             unselectedTreeViewCategoriesList.Clear();

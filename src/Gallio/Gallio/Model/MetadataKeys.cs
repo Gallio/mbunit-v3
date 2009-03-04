@@ -53,7 +53,7 @@ namespace Gallio.Model
         /// <remarks>
         /// May be derived from <c>CategoryAttribute</c> in MbUnit or its equivalent.
         /// </remarks>
-        public const string CategoryName = "CategoryName";
+        public const string Category = "Category";
 
         /// <summary>
         /// The matadata key for the location of an assembly as a local
