@@ -143,19 +143,37 @@ namespace MbUnit.Tests.Framework
             Assert.IsTrue(suiteRun.Step.IsDynamic);
             Assert.IsFalse(suiteRun.Step.IsPrimary);
             Assert.IsFalse(suiteRun.Step.IsTestCase);
+            Assert.AreEqual(factoryData.Id, suiteRun.Step.TestId);
             Assert.AreEqual("System.Int32", suiteRun.Step.CodeReference.TypeName);
             Assert.AreEqual("Me", suiteRun.Step.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Suite, suiteRun.Step.Metadata.GetValue(MetadataKeys.TestKind));
             Assert.AreEqual("*** Log ***\n\nSuiteSetUp\nSuiteTearDown\n", suiteRun.TestLog.ToString());
-            Assert.AreEqual(2, suiteRun.Children.Count);
+            Assert.AreEqual(3, suiteRun.Children.Count);
 
+            // Order matters.
             TestStepRun test1Run = suiteRun.Children[0];
             Assert.AreEqual("Test1", test1Run.Step.Name);
             Assert.AreEqual("*** Log ***\n\nSetUp\nExecute1\nTearDown\n", test1Run.TestLog.ToString());
+            Assert.IsTrue(test1Run.Step.IsDynamic);
+            Assert.IsFalse(test1Run.Step.IsPrimary);
+            Assert.IsTrue(test1Run.Step.IsTestCase);
+            Assert.AreEqual(factoryData.Id, test1Run.Step.TestId);
 
-            TestStepRun test2Run = suiteRun.Children[1];
+            TestStepRun test3Run = suiteRun.Children[1];
+            Assert.AreEqual("Test3", test3Run.Step.Name);
+            Assert.AreEqual("*** Log ***\n\nSetUp\nExecute3\nTearDown\n", test3Run.TestLog.ToString());
+            Assert.IsTrue(test3Run.Step.IsDynamic);
+            Assert.IsFalse(test3Run.Step.IsPrimary);
+            Assert.IsTrue(test3Run.Step.IsTestCase);
+            Assert.AreEqual(factoryData.Id, test3Run.Step.TestId);
+
+            TestStepRun test2Run = suiteRun.Children[2];
             Assert.AreEqual("Test2", test2Run.Step.Name);
             Assert.AreEqual("*** Log ***\n\nSetUp\nExecute2\nTearDown\n", test2Run.TestLog.ToString());
+            Assert.IsTrue(test2Run.Step.IsDynamic);
+            Assert.IsFalse(test2Run.Step.IsPrimary);
+            Assert.IsTrue(test2Run.Step.IsTestCase);
+            Assert.AreEqual(factoryData.Id, test2Run.Step.TestId);
         }
 
         [Test]
@@ -170,36 +188,57 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("System.Int32", suiteData.CodeReference.TypeName);
             Assert.AreEqual("Me", suiteData.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Suite, suiteData.Metadata.GetValue(MetadataKeys.TestKind));
-            Assert.AreEqual(2, suiteData.Children.Count);
+            Assert.AreEqual(3, suiteData.Children.Count);
 
+            // Order matters.
             TestData test1Data = suiteData.Children[0];
             Assert.AreEqual("Test1", test1Data.Name);
 
-            TestData test2Data = suiteData.Children[1];
+            TestData test3Data = suiteData.Children[1];
+            Assert.AreEqual("Test3", test3Data.Name);
+
+            TestData test2Data = suiteData.Children[2];
             Assert.AreEqual("Test2", test2Data.Name);
 
-            TestStepRun fixtureRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(
-                typeof(DynamicSample).GetMethod("Factory")));
+            TestStepRun fixtureRun = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromType(typeof(StaticSample)));
             Assert.AreEqual(1, fixtureRun.Children.Count);
 
             TestStepRun suiteRun = fixtureRun.Children[0];
             Assert.AreEqual("Suite", suiteRun.Step.Name);
-            Assert.IsTrue(suiteRun.Step.IsDynamic);
-            Assert.IsFalse(suiteRun.Step.IsPrimary);
+            Assert.IsFalse(suiteRun.Step.IsDynamic);
+            Assert.IsTrue(suiteRun.Step.IsPrimary);
             Assert.IsFalse(suiteRun.Step.IsTestCase);
+            Assert.AreEqual(suiteData.Id, suiteRun.Step.TestId);
             Assert.AreEqual("System.Int32", suiteRun.Step.CodeReference.TypeName);
             Assert.AreEqual("Me", suiteRun.Step.Metadata.GetValue(MetadataKeys.AuthorName));
             Assert.AreEqual(TestKinds.Suite, suiteRun.Step.Metadata.GetValue(MetadataKeys.TestKind));
             Assert.AreEqual("*** Log ***\n\nSuiteSetUp\nSuiteTearDown\n", suiteRun.TestLog.ToString());
-            Assert.AreEqual(2, suiteRun.Children.Count);
+            Assert.AreEqual(3, suiteRun.Children.Count);
 
+            // Order matters.
             TestStepRun test1Run = suiteRun.Children[0];
             Assert.AreEqual("Test1", test1Run.Step.Name);
             Assert.AreEqual("*** Log ***\n\nSetUp\nExecute1\nTearDown\n", test1Run.TestLog.ToString());
+            Assert.IsFalse(test1Run.Step.IsDynamic);
+            Assert.IsTrue(test1Run.Step.IsPrimary);
+            Assert.IsTrue(test1Run.Step.IsTestCase);
+            Assert.AreEqual(test1Data.Id, test1Run.Step.TestId);
 
-            TestStepRun test2Run = suiteRun.Children[1];
+            TestStepRun test3Run = suiteRun.Children[1];
+            Assert.AreEqual("Test3", test3Run.Step.Name);
+            Assert.AreEqual("*** Log ***\n\nSetUp\nExecute3\nTearDown\n", test3Run.TestLog.ToString());
+            Assert.IsFalse(test3Run.Step.IsDynamic);
+            Assert.IsTrue(test3Run.Step.IsPrimary);
+            Assert.IsTrue(test3Run.Step.IsTestCase);
+            Assert.AreEqual(test3Data.Id, test3Run.Step.TestId);
+
+            TestStepRun test2Run = suiteRun.Children[2];
             Assert.AreEqual("Test2", test2Run.Step.Name);
             Assert.AreEqual("*** Log ***\n\nSetUp\nExecute2\nTearDown\n", test2Run.TestLog.ToString());
+            Assert.IsFalse(test2Run.Step.IsDynamic);
+            Assert.IsTrue(test2Run.Step.IsPrimary);
+            Assert.IsTrue(test2Run.Step.IsTestCase);
+            Assert.AreEqual(test2Data.Id, test2Run.Step.TestId);
         }
 
         private static readonly Test[] tests = new Test[]
@@ -207,7 +246,10 @@ namespace MbUnit.Tests.Framework
             new TestSuite("Suite")
             {
                 Children = {
+                    // Deliberately out of order to verify that tests run in order specified
+                    // not in order by name.
                     new TestCase("Test1", () => TestLog.WriteLine("Execute1")),
+                    new TestCase("Test3", () => TestLog.WriteLine("Execute3")),
                     new TestCase("Test2", () => TestLog.WriteLine("Execute2"))
                 },
                 CodeElement = Reflector.Wrap(typeof(Int32)),

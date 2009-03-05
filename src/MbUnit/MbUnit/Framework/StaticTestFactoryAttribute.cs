@@ -44,6 +44,14 @@ namespace MbUnit.Framework
     /// fixture class.  It must be static and must not have any parameters.
     /// It must return an enumeration of values of type <see cref="Test" />.
     /// </para>
+    /// <para>
+    /// Tests built by a <see cref="StaticTestFactoryAttribute" /> will not be visible in ReSharper
+    /// and other test runners that rely only on source code and metadata exclusively.
+    /// This is because the test factory must be executed in order to populate the list of tests
+    /// but the code might not be available in a compiled form during test exploration.  The
+    /// tests should still run as part of the containing fixture although the results may
+    /// only be visible in the full test report.
+    /// </para>
     /// </remarks>
     /// <example>
     /// <para>

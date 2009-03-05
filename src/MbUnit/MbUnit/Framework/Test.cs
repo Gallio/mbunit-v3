@@ -97,8 +97,16 @@ namespace MbUnit.Framework
             if (GenericUtils.Find(tests, test => test == null) != null)
                 throw new ArgumentNullException("tests", "Test enumeration should not contain null.");
 
+            // HACK: Preserve exact test ordering.  No easy way to decorate all newly created tests at this time
+            //       so we assume newly added ones must be at the end.
+            var children = containingScope.TestBuilder.ToTest().Children;
+            int originalCount = children.Count;
+
             foreach (Test test in tests)
                 test.BuildStaticTest(containingScope, declaringCodeElement);
+
+            for (int i = originalCount; i < children.Count; i++)
+                children[i].Order = i;
         }
 
         /// <summary>
