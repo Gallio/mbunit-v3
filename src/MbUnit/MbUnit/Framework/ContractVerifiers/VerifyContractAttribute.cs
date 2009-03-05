@@ -20,6 +20,7 @@ using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
 using Gallio.Model;
 using System.Reflection;
+using MbUnit.Framework.ContractVerifiers.Core;
 
 namespace MbUnit.Framework.ContractVerifiers
 {

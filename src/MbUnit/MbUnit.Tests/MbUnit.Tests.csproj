@@ -163,7 +163,7 @@
     </Compile>
     <Compile Include="Framework\ContractVerifiers\AbstractContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ComparisonContractTest.cs" />
-    <Compile Include="Framework\ContractVerifiers\ContractVerificationContextTest.cs" />
+    <Compile Include="Framework\ContractVerifiers\Test\ContractVerificationContextTest.cs" />
     <Compile Include="Framework\ContractVerifiers\EqualityContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ExceptionContractTest.cs" />
     <Compile Include="Framework\ContractVerifiers\ImmutabilityContractTest.cs" />
@@ -171,6 +171,7 @@
     <Compile Include="Framework\ContractVerifiers\CollectionContractTest.cs" />
     <Compile Include="Framework\AssertTest_Xml.cs" />
     <Compile Include="Framework\AssertTest_Serialization.cs" />
+    <Compile Include="Framework\ContractVerifiers\ListContractTest.cs" />
     <Compile Include="Framework\TimeoutAttributeTest.cs" />
     <Compile Include="Framework\CsvDataTest.cs">
       <SubType>Code</SubType>

@@ -20,6 +20,7 @@ using Gallio.Collections;
 using Gallio.Framework.Assertions;
 using Gallio;
 using System.Collections.ObjectModel;
+using MbUnit.Framework.ContractVerifiers.Core;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
@@ -263,7 +264,10 @@ namespace MbUnit.Framework.ContractVerifiers
             yield return CreateCopyToTest();
         }
 
-        private void AssertDistinctIntancesNotEmpty()
+        /// <summary>
+        /// Asserts that the collection of distinct instances specified by the user is not empty.
+        /// </summary>
+        protected void AssertDistinctIntancesNotEmpty()
         {
             AssertionHelper.Verify(() =>
             {
@@ -298,7 +302,14 @@ namespace MbUnit.Framework.ContractVerifiers
             });
         }
 
-        private Test CreateNotSupportedWriteTest(string methodName, Action<TCollection, TItem> invoke)
+        /// <summary>
+        /// Creates a test that invokes an action over the collection, which
+        /// is supposed to not be supported. The test expects that an exception be thrown.
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="invoke"></param>
+        /// <returns></returns>
+        protected Test CreateNotSupportedWriteTest(string methodName, Action<TCollection, TItem> invoke)
         {
             return new TestCase(String.Format("{0}ShouldThrowException", methodName), () =>
             {
@@ -328,7 +339,14 @@ namespace MbUnit.Framework.ContractVerifiers
             });
         }
 
-        private Test CreateNullArgumentTest(string methodName, Action<TCollection> invoke)
+        /// <summary>
+        /// Creates a test which runs an action over the collection with
+        /// a null argument. The test expects that an exception be thrown.
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="invoke"></param>
+        /// <returns></returns>
+        protected Test CreateNullArgumentTest(string methodName, Action<TCollection> invoke)
         {
             return new TestCase(String.Format("{0}NullArgument", methodName), () =>
             {
@@ -402,7 +420,7 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 AssertDistinctIntancesNotEmpty();
                 var collection = GetDefaultInstance();
-                var handler = new CollectionHandler(collection, Context);
+                var handler = new CollectionHandler<TCollection, TItem>(collection, Context);
                 var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
                 foreach (var item in DistinctInstances)
@@ -430,7 +448,7 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 AssertDistinctIntancesNotEmpty();
                 var collection = GetDefaultInstance();
-                var handler = new CollectionHandler(collection, Context);
+                var handler = new CollectionHandler<TCollection, TItem>(collection, Context);
                 var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
                 foreach (var item in DistinctInstances)
@@ -444,149 +462,6 @@ namespace MbUnit.Framework.ContractVerifiers
                     handler.RemoveItemOk(item);
                 }
             });
-        }
-
-        private class CollectionHandler
-        {
-            private readonly TCollection collection;
-            private int countTrack;
-            private readonly ContractVerificationContext context;
-
-            public CollectionHandler(TCollection collection, ContractVerificationContext context)
-	        {
-                this.collection = collection;
-                this.countTrack = collection.Count;
-                this.context = context;
-	        }
-
-            private void AssertAddItemOk(TItem item, string failureMessage)
-            {
-                AssertionHelper.Verify(() =>
-                {
-                    try
-                    {
-                        collection.Add(item);
-                        countTrack++;
-                        return null;
-                    }
-                    catch (Exception actualException)
-                    {
-                        return new AssertionFailureBuilder(failureMessage + "\nAn exception was thrown while none was expected.")
-                            .AddException(actualException)
-                            .SetStackTrace(context.GetStackTraceData())
-                            .ToAssertionFailure();
-                    }
-                });
-            }
-
-            private void AssertCount(string failureMessage)
-            {
-                int actual = collection.Count;
-
-                AssertionHelper.Verify(() =>
-                {
-                    if (countTrack == actual)
-                        return null;
-
-                    return new AssertionFailureBuilder(failureMessage)
-                        .AddLabeledValue("Property", "Count")
-                        .AddRawLabeledValue("Expected Value", countTrack)
-                        .AddRawLabeledValue("Actual Value", actual)
-                        .SetStackTrace(context.GetStackTraceData())
-                        .ToAssertionFailure();
-                });
-            }
-
-            private void AssertContained(TItem item, string failureMessage)
-            {
-                AssertionHelper.Verify(() =>
-                {
-                    if (collection.Contains(item))
-                        return null;
-
-                    return new AssertionFailureBuilder(failureMessage)
-                        .AddRawLabeledValue("Just Added Item", item)
-                        .AddLabeledValue("Method Called", "Contains")
-                        .AddRawLabeledValue("Expected Returned Value", true)
-                        .AddRawLabeledValue("Actual Returned Value", false)
-                        .SetStackTrace(context.GetStackTraceData())
-                        .ToAssertionFailure();
-                });
-            }
-
-            private void AssertAddItemFails(TItem item, string failureMessage)
-            {
-                AssertionHelper.Verify(() =>
-                {
-                    try
-                    {
-                        collection.Add(item);
-                        countTrack++;
-
-                        return new AssertionFailureBuilder(failureMessage + "\nNo exception was thrown while one was expected.")
-                            .AddLabeledValue("Expected Exception Type", "Any")
-                            .SetStackTrace(context.GetStackTraceData())
-                            .ToAssertionFailure();
-                    }
-                    catch (Exception)
-                    {
-                        return null; // Any kind of exception will make it...
-                    }
-                });
-            }
-
-            private void AssertRemoveItem(TItem item, bool expectedResult, string failureMessage)
-            {
-                bool actualResult = collection.Remove(item);
-
-                if (actualResult)
-                {
-                    countTrack--;
-                }
-
-                AssertionHelper.Verify(() =>
-                {
-                    if (actualResult == expectedResult)
-                        return null;
-
-                    return new AssertionFailureBuilder(failureMessage)
-                        .AddRawLabeledValue("Item", item)
-                        .AddLabeledValue("Method", "Remove")
-                        .AddRawLabeledValue("Expected Returned Value", expectedResult)
-                        .AddRawLabeledValue("Actual Returned Value", actualResult)
-                        .SetStackTrace(context.GetStackTraceData())
-                        .ToAssertionFailure();
-                });
-            }
-
-            public void AddSingleItemOk(TItem item)
-            {
-                AssertAddItemOk(item, "Expected the collection to accept successfully a new item.");
-                AssertCount("Expected the collection to have a certain number of items after a new element was added.");
-                AssertContained(item, "Expected the collection to contain a just added item.");
-            }
-     
-            public void AddDuplicateItemOk(TItem item)
-            {
-                AssertAddItemOk(item, "Expected the collection to accept successfully a duplicate item.");
-                AssertCount("Expected the collection to have a certain number of items after a duplicate element was added.");
-            }
-
-            public void AddDuplicateItemFails(TItem item)
-            {
-                AssertAddItemFails(item, "Expected the collection to refuse several identical items.");
-            }
-
-            public void RemoveMissingItemFails(TItem item)
-            {
-                AssertRemoveItem(item, false, "Expected the collection to not remove a missing item.");
-            }
-
-            public void RemoveItemOk(TItem item)
-            {
-                AssertRemoveItem(item, true, "Expected the collection to remove successfully an existing item.");
-                AssertCount("Expected the collection to have a certain number of items after an element was removed.");
-            }
         }
 
         private void AssertCopyToThrowException(Action action, string failureMessage, string label, object value)
@@ -635,7 +510,7 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 AssertDistinctIntancesNotEmpty();
                 var collection = GetDefaultInstance();
-                var handler = new CollectionHandler(collection, Context);
+                var handler = new CollectionHandler<TCollection, TItem>(collection, Context);
                 var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
                 foreach (var item in DistinctInstances)

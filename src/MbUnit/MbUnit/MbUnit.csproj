@@ -137,9 +137,12 @@
     <Compile Include="Framework\Assert.Reflection.cs" />
     <Compile Include="Framework\Assert.Relations.cs" />
     <Compile Include="Framework\ContractVerifiers\AbstractContract.cs" />
-    <Compile Include="Framework\ContractVerifiers\ContractVerificationContext.cs" />
+    <Compile Include="Framework\ContractVerifiers\Core\CollectionHandler.cs" />
+    <Compile Include="Framework\ContractVerifiers\Core\ContractVerificationContext.cs" />
+    <Compile Include="Framework\ContractVerifiers\Core\ListHandler.cs" />
     <Compile Include="Framework\ContractVerifiers\DistinctInstanceCollection.cs" />
     <Compile Include="Framework\ContractVerifiers\CollectionContract.cs" />
+    <Compile Include="Framework\ContractVerifiers\ListContract.cs" />
     <Compile Include="Framework\ContractVerifiers\VerifyContractAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\IContract.cs" />
     <Compile Include="Framework\Assert.Xml.cs" />

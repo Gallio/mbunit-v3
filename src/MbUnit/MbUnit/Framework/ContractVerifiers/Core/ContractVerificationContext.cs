@@ -19,7 +19,7 @@ using System.Text;
 using Gallio.Reflection;
 using Gallio.Model.Diagnostics;
 
-namespace MbUnit.Framework.ContractVerifiers
+namespace MbUnit.Framework.ContractVerifiers.Core
 {
     /// <summary>
     /// Execution context of a contract verification test.

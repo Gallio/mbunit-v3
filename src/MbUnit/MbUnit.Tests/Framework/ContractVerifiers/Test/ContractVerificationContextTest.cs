@@ -18,13 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MbUnit.Framework;
-using MbUnit.Framework.ContractVerifiers;
+using MbUnit.Framework.ContractVerifiers.Core;
 using Gallio.Tests;
 using Gallio.Model;
 using Rhino.Mocks;
 using Gallio.Reflection;
 
-namespace MbUnit.Tests.Framework.ContractVerifiers
+namespace MbUnit.Tests.Framework.ContractVerifiers.Core
 {
     [TestFixture]
     public class ContractVerificationContextTest

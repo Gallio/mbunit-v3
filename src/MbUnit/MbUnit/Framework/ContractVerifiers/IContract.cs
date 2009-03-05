@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using MbUnit.Framework.ContractVerifiers.Core;
 
 namespace MbUnit.Framework.ContractVerifiers
 {
