@@ -16,7 +16,7 @@
 using System;
 using System.Reflection;
 
-namespace Gallio.Model
+namespace Gallio.MSTestAdapter.Model
 {
     /// <summary>
     /// Provides common MSTes metadata keys.

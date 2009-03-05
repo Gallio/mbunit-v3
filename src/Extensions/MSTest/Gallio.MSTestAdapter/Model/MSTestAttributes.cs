@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.MSTestAdapter
+namespace Gallio.MSTestAdapter.Model
 {
     internal static class MSTestAttributes
     {
