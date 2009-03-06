@@ -49,7 +49,8 @@ namespace Gallio.Runtime.Hosting
         private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ReadyPollInterval = TimeSpan.FromSeconds(0.5);
         private static readonly TimeSpan PingInterval = TimeSpan.FromSeconds(5);
-        private static readonly TimeSpan JoinBeforeAbortTimeout = TimeSpan.FromSeconds(60);
+        private static readonly TimeSpan JoinBeforeAbortTimeout = TimeSpan.FromMinutes(10); // This timeout is purposely long to allow code coverage tools to finish up.
+        private static readonly TimeSpan JoinBeforeAbortWarningTimeout = TimeSpan.FromSeconds(10);
         private static readonly TimeSpan JoinAfterAbortTimeout = TimeSpan.FromSeconds(15);
 
         // FIXME: Large timeout to workaround the remoting starvation issue.  See Google Code issue #147.  Reduce value when fixed.
@@ -261,9 +262,21 @@ namespace Gallio.Runtime.Hosting
             if (processTask != null)
             {
                 if (! abortImmediately)
-                    processTask.Join(JoinBeforeAbortTimeout);
+                {
+                    if (!processTask.Join(JoinBeforeAbortWarningTimeout))
+                    {
+                        Logger.Log(LogSeverity.Info, "* Waiting for the host process to terminate.");
+                        if (!processTask.Join(JoinBeforeAbortTimeout - JoinBeforeAbortWarningTimeout))
+                            Logger.Log(LogSeverity.Info, string.Format("* Timed out after {0} minutes.", JoinBeforeAbortTimeout.TotalMinutes));
+                    }
+                }
 
-                processTask.Abort();
+                if (processTask.IsRunning)
+                {
+                    Logger.Log(LogSeverity.Warning, "* Forcibly killing the host process!");
+                    processTask.Abort();
+                }
+
                 processTask.Join(JoinAfterAbortTimeout);
                 processTask = null;
             }
