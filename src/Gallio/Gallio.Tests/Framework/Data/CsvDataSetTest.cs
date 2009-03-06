@@ -174,5 +174,23 @@ namespace Gallio.Tests.Framework.Data
                 new DataBinding(2, null)
             }, items[0].GetBindingsForInformalDescription());
         }
+
+        [Test]
+        public void IgnoresMissingMetadataColumns()
+        {
+            string document = "value,[Metadata]\n123";
+            Func<TextReader> documentReaderProvider = delegate { return new StringReader(document); };
+            CsvDataSet dataSet = new CsvDataSet(documentReaderProvider, false)
+            {
+                HasHeader = true
+            };
+
+            DataBinding binding = new DataBinding(0, null);
+            List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(new DataBinding[] { binding }, true));
+
+            Assert.AreEqual("123", items[0].GetValue(binding));
+            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
+            Assert.IsFalse(map.ContainsKey("Metadata"));
+        }
     }
 }

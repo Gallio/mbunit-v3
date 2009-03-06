@@ -185,7 +185,12 @@ namespace Gallio.Framework.Data
             if (metadataColumns != null)
             {
                 foreach (KeyValuePair<string, int> metadataColumn in metadataColumns)
-                    yield return new KeyValuePair<string, string>(metadataColumn.Key, record[metadataColumn.Value]);
+                {
+                    // Ignore metadata columns that are absent.
+                    int columnIndex = metadataColumn.Value;
+                    if (columnIndex < record.Length)
+                        yield return new KeyValuePair<string, string>(metadataColumn.Key, record[columnIndex]);
+                }
             }
         }
 
