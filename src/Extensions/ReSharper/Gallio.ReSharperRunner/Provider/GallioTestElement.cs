@@ -110,7 +110,13 @@ namespace Gallio.ReSharperRunner.Provider
         {
             IDeclaredElement element = GetDeclaredElement();
             if (element == null || !element.IsValid())
+            {
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
                 return UnitTestElementDisposition.ourInvalidDisposition;
+#else
+                return UnitTestElementDisposition.InvalidDisposition;
+#endif
+            }
 
             List<UnitTestElementLocation> locations = new List<UnitTestElementLocation>();
 

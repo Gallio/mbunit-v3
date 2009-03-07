@@ -1149,13 +1149,15 @@ namespace Gallio.ReSharperRunner.Reflection
         private StaticDeclaredTypeWrapper MakeDeclaredType(ITypeElement typeElementHandle, ISubstitution substitutionHandle)
         {
             if (typeElementHandle is ITypeParameter)
-                throw new ArgumentException("This method should never be called with a generic parameter as input.", "typeElementHandle");
+                throw new ArgumentException("This method should never be called with a generic parameter as input.",
+                    "typeElementHandle");
 
             ITypeElement declaringTypeElementHandle = typeElementHandle.GetContainingType();
             StaticDeclaredTypeWrapper type;
             if (declaringTypeElementHandle != null)
             {
-                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(declaringTypeElementHandle, substitutionHandle);
+                StaticDeclaredTypeWrapper declaringType = MakeDeclaredType(declaringTypeElementHandle,
+                    substitutionHandle);
                 type = new StaticDeclaredTypeWrapper(this, typeElementHandle, declaringType, declaringType.Substitution);
             }
             else
@@ -1164,10 +1166,16 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             var typeParameterHandles = new List<ITypeParameter>(typeElementHandle.AllTypeParameters);
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             if (substitutionHandle.IsIdempotent(typeParameterHandles))
+#else
+            if (substitutionHandle.IsIdempotentAll(typeParameterHandles))
+#endif
+            {
                 return type;
+            }
 
-            ITypeInfo[] genericArguments = GenericUtils.ConvertAllToArray<ITypeParameter, ITypeInfo>(typeParameterHandles, delegate(ITypeParameter typeParameterHandle)
+        ITypeInfo[] genericArguments = GenericUtils.ConvertAllToArray<ITypeParameter, ITypeInfo>(typeParameterHandles, delegate(ITypeParameter typeParameterHandle)
             {
                 IType substitutedType = substitutionHandle.Apply(typeParameterHandle);
                 if (substitutedType.IsUnknown)

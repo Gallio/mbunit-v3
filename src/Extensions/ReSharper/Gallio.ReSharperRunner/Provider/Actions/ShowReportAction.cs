@@ -18,12 +18,13 @@ using System.IO;
 using EnvDTE;
 using JetBrains.ActionManagement;
 using JetBrains.ReSharper.UnitTestExplorer;
-using Microsoft.VisualStudio.Shell.Interop;
 
 #if RESHARPER_31
 using JetBrains.Shell.VSIntegration;
-#else
+#elif RESHARPER_40 || RESHARPER_41
 using JetBrains.VSIntegration.Shell;
+#else
+using JetBrains.VSIntegration.Application;
 #endif
 
 namespace Gallio.ReSharperRunner.Provider.Actions

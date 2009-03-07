@@ -34,7 +34,11 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
             GallioLoader.Initialize().SetupRuntime();
         }
 
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
         public IDaemonStageProcess CreateProcess(IDaemonProcess process)
+#else
+        public IDaemonStageProcess CreateProcess(IDaemonProcess process, DaemonProcessKind processKind)
+#endif
         {
             return new AnnotationDaemonStageProcess(process);
         }

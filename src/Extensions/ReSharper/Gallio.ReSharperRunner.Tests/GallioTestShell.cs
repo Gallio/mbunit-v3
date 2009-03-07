@@ -67,6 +67,7 @@ namespace Gallio.ReSharperRunner.Tests
             Directory.CreateDirectory(Path.Combine(binDir, @"..\Platform\test\assemblies"));
 #endif
 
+#if RESHARPER_41
             // As of ReSharper v4.1, the way the images are loaded has changed somewhat.
             // Instead of always loading from JetBrains.ReSharper.Resources, the images are resolved
             // from the "ConfigurationAssembly", which is the one that contains "AllAssemblies.xml".
@@ -77,6 +78,7 @@ namespace Gallio.ReSharperRunner.Tests
             // Another approach might be to hack the ApplicationConfiguration object after the
             // AllAssembliesXml has been loaded. -- Jeff.
             ImageLoader.ImageId.AssembliesEligibleDefault[0] = typeof(JetBrains.ReSharper.GlobalSettings).Assembly;
+#endif
 
             base.InitializeComponents();
         }

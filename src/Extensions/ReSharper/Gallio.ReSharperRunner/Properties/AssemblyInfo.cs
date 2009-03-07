@@ -20,7 +20,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using JetBrains.ActionManagement;
 using JetBrains.UI;
+
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
 using JetBrains.UI.Shell.PluginSupport;
+#else
+using JetBrains.UI.Application.PluginSupport;
+#endif
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information

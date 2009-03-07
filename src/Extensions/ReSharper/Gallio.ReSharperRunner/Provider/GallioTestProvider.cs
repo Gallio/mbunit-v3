@@ -91,6 +91,11 @@ namespace Gallio.ReSharperRunner.Provider
             return shim.IsUnitTestElement(element);
         }
 
+        public bool IsUnitTestStuff(IDeclaredElement element)
+        {
+            return shim.IsUnitTestStuff(element);
+        }
+
         public void Present(UnitTestElement element, IPresentableItem item, TreeModelNode node, PresentationState state)
         {
             shim.Present(element, item, node, state);
@@ -150,20 +155,15 @@ namespace Gallio.ReSharperRunner.Provider
 
         internal sealed class Shim
         {
-            private static readonly Guid NUnitFrameworkId = new Guid("{E0273D0F-BEAE-47ff-9391-D6782417F000}");
-            private const string NUnitProvider = "nUnit";
-
-            private static readonly Dictionary<string, Guid> IncompatibleProviders;
+            private static readonly Dictionary<string, Guid> IncompatibleProviders = new Dictionary<string, Guid>()
+            {
+                { "nUnit", new Guid("{E0273D0F-BEAE-47ff-9391-D6782417F000}") },
+                { "MSTest", new Guid("{559AA77B-E0E5-43bb-AF48-EF50D0025D3C}") }
+            };
 
             private readonly IUnitTestProvider provider;
             private readonly GallioTestPresenter presenter;
             private readonly ITestPackageExplorerFactory explorerFactory;
-
-            static Shim()
-            {
-                IncompatibleProviders = new Dictionary<string, Guid>();
-                IncompatibleProviders.Add(NUnitProvider, NUnitFrameworkId);
-            }
 
             /// <summary>
             /// Initializes the provider.
@@ -302,6 +302,16 @@ namespace Gallio.ReSharperRunner.Provider
 
                 ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
                 return explorer.IsTest(elementInfo);
+            }
+
+            /// <summary>
+            /// Checks if given declared element is part of a unit test.  Could be a set up or tear down
+            /// method, or something else that belongs to a test.
+            /// </summary>
+            public bool IsUnitTestStuff(IDeclaredElement element)
+            {
+                // TODO: Need to change the ITestExplorer API to support this kind of stuff.
+                return IsUnitTestElement(element);
             }
 
             /// <summary>
