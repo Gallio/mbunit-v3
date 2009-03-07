@@ -533,6 +533,38 @@ namespace Gallio.Tests.Reflection
             Assert.AreEqual("", info.NamespaceName);
         }
 
+        [Test]
+        public void AssemblyCodeLocation()
+        {
+            Assembly assembly = typeof(ReflectionPolicySample).Assembly;
+            IAssemblyInfo info = GetAssembly(assembly);
+
+            var codeLocation = info.GetCodeLocation();
+            Assert.AreEqual(info.Path, codeLocation.Path);
+        }
+
+        [Test]
+        public void TypeCodeLocation()
+        {
+            Type target = typeof(ReflectionPolicySample.Class1);
+            ITypeInfo info = GetType(target);
+
+            var codeLocation = info.GetCodeLocation();
+            if (codeLocation != CodeLocation.Unknown)
+                Assert.EndsWith(codeLocation.Path, "ReflectionPolicySample.cs");
+        }
+
+        [Test]
+        public void MethodCodeLocation()
+        {
+            MethodInfo target = typeof(ReflectionPolicySample.Class1).GetMethod("Method1");
+            IMethodInfo info = GetMethod(target);
+
+            var codeLocation = info.GetCodeLocation();
+            if (codeLocation != CodeLocation.Unknown)
+                Assert.EndsWith(codeLocation.Path, "ReflectionPolicySample.cs");
+        }
+
         protected static void VerifyEqualityAndHashcodeContracts<TTarget, TWrapper>(
             TTarget target1, TTarget target2, Func<TTarget, TWrapper> wrapperFactory)
         {

@@ -35,15 +35,13 @@ namespace Gallio.Reflection.Impl
     /// http://www.microsoft.com/downloads/details.aspx?FamilyID=38449a42-6b7a-4e28-80ce-c55645ab1310
     /// and from Mike Stall's PDB2Xml program sample available on
     /// his blog at: http://blogs.msdn.com/jmstall/archive/2005/08/25/pdb2xml.aspx.
+    /// Many thanks to you!
     /// </para>
     /// <para>
     /// We do not use the ISymWrapper implementation of the symbol store interfaces because
     /// they throw COMExceptions whenever method metadata is not available.  This causes
     /// confusion for users because the Visual Studio Debugger Exception Assistant window
     /// may pop up dozens of times while loading symbol information.
-    /// </para>
-    /// <para>
-    /// Many thanks to you!
     /// </para>
     /// </remarks>
     public class ComDebugSymbolResolver : IDebugSymbolResolver

@@ -316,7 +316,11 @@ namespace Gallio.ReSharperRunner.Reflection
 
         protected override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
         {
-            return CodeLocation.Unknown;
+            IDeclaredElement declaredElement = GetDeclaredElement((StaticWrapper)member);
+            if (declaredElement == null)
+                return CodeLocation.Unknown;
+
+            return GetDeclaredElementSourceLocation(declaredElement);
         }
         #endregion
 

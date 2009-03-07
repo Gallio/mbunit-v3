@@ -22,6 +22,7 @@ using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using System.IO;
 using Mono.Cecil;
+using Mono.Cecil.Metadata;
 using EventAttributes=System.Reflection.EventAttributes;
 using FieldAttributes=System.Reflection.FieldAttributes;
 using GenericParameterAttributes=System.Reflection.GenericParameterAttributes;
@@ -44,11 +45,12 @@ namespace Gallio.Reflection.Impl
     {
         private static readonly Key<string> PathAnnotationKey = new Key<string>("Path");
 
-        private readonly CustomAssemblyResolver resolver = new CustomAssemblyResolver();
+        private readonly CustomAssemblyResolver assemblyResolver = new CustomAssemblyResolver();
+        private IDebugSymbolResolver symbolResolver;
 
         public void AddHintDirectory(string path)
         {
-            resolver.AddHintDirectory(path);
+            assemblyResolver.AddHintDirectory(path);
         }
 
         #region Wrapping
@@ -147,12 +149,12 @@ namespace Gallio.Reflection.Impl
         #region Assemblies
         protected override IAssemblyInfo LoadAssemblyImpl(AssemblyName assemblyName)
         {
-            return Wrap(resolver.Resolve(AssemblyNameReference.Parse(assemblyName.FullName)));
+            return Wrap(assemblyResolver.Resolve(AssemblyNameReference.Parse(assemblyName.FullName)));
         }
 
         protected override IAssemblyInfo LoadAssemblyFromImpl(string assemblyFile)
         {
-            return Wrap(resolver.LoadAssembly(assemblyFile));
+            return Wrap(assemblyResolver.LoadAssembly(assemblyFile));
         }
 
         protected internal override IEnumerable<StaticAttributeWrapper> GetAssemblyCustomAttributes(StaticAssemblyWrapper assembly)
@@ -170,7 +172,7 @@ namespace Gallio.Reflection.Impl
         protected internal override string GetAssemblyPath(StaticAssemblyWrapper assembly)
         {
             AssemblyDefinition assemblyHandle = (AssemblyDefinition)assembly.Handle;
-            return resolver.GetAssemblyPath(assemblyHandle);
+            return assemblyResolver.GetAssemblyPath(assemblyHandle);
         }
 
         protected internal override IList<AssemblyName> GetAssemblyReferences(StaticAssemblyWrapper assembly)
@@ -337,8 +339,43 @@ namespace Gallio.Reflection.Impl
 
         protected internal override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
         {
+            IMemberReference memberHandle = (IMemberReference) member.Handle;
+
+            switch (memberHandle.MetadataToken.TokenType)
+            {
+                case TokenType.TypeDef:
+                    return GuessTypeSourceLocation((TypeDefinition)memberHandle);
+
+                case TokenType.Method:
+                    return GetMethodSourceLocation((MethodDefinition) memberHandle);
+
+                default:
+                    return GuessTypeSourceLocation((TypeDefinition)memberHandle.DeclaringType);
+            }
+        }
+
+        private CodeLocation GuessTypeSourceLocation(TypeDefinition typeDefinition)
+        {
+            foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
+            {
+                CodeLocation location = GetMethodSourceLocation(methodDefinition);
+                if (location != CodeLocation.Unknown)
+                    return new CodeLocation(location.Path, 0, 0);
+            }
+
             return CodeLocation.Unknown;
         }
+
+        private CodeLocation GetMethodSourceLocation(MethodDefinition methodDefinition)
+        {
+            if (symbolResolver == null)
+                symbolResolver = DebugSymbolUtils.CreateResolver();
+
+            string assemblyPath = assemblyResolver.GetAssemblyPath(methodDefinition.DeclaringType.Module.Assembly);
+            int metadataToken = (int) methodDefinition.MetadataToken.ToUInt();
+            return symbolResolver.GetSourceLocationForMethod(assemblyPath, metadataToken);
+        }
+
         #endregion
 
         #region Events
@@ -644,7 +681,7 @@ namespace Gallio.Reflection.Impl
             AssemblyNameReference assemblyRef = typeHandle.Scope as AssemblyNameReference;
             if (assemblyRef != null)
             {
-                AssemblyDefinition assemblyDefn = resolver.Resolve(assemblyRef);
+                AssemblyDefinition assemblyDefn = assemblyResolver.Resolve(assemblyRef);
                 foreach (ModuleDefinition moduleDefn in assemblyDefn.Modules)
                 {
                     TypeDefinition typeDefn = moduleDefn.Types[typeHandle.FullName];

@@ -14,10 +14,20 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Tree;
+
+#if RESHARPER_31
+using JetBrains.ReSharper.Editor;
+using ReSharperDocumentRange = JetBrains.ReSharper.Editor.DocumentRange;
+#else
+using JetBrains.DocumentModel;
+using ReSharperDocumentRange = JetBrains.DocumentModel.DocumentRange;
+#endif
 
 namespace Gallio.ReSharperRunner.Reflection
 {
@@ -97,6 +107,36 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             return new ConstantValue(Reflector.Wrap(value.GetType()), value);
+        }
+
+        /// <summary>
+        /// Gets the location associated with a declared element.
+        /// </summary>
+        /// <param name="declaredElement"></param>
+        /// <returns></returns>
+        protected static CodeLocation GetDeclaredElementSourceLocation(IDeclaredElement declaredElement)
+        {
+            IList<IDeclaration> decl = declaredElement.GetDeclarations();
+            if (decl.Count == 0)
+                return CodeLocation.Unknown;
+
+            ReSharperDocumentRange range = decl[0].GetDocumentRange();
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
+            bool isValid = range.IsValid;
+#else
+            bool isValid = range.IsValid();
+#endif
+            if (isValid)
+                return CodeLocation.Unknown;
+
+            var projectFile = decl[0].GetProjectFile();
+            if (projectFile == null)
+                return CodeLocation.Unknown;
+
+            string filename = projectFile.Location.FullPath;
+            DocumentCoords start = range.Document.GetCoordsByOffset(range.TextRange.StartOffset);
+
+            return new CodeLocation(filename, start.Line, start.Column);
         }
 
         private static Type MapConstantArrayElementType<TType>(Type arrayType)

@@ -30,7 +30,7 @@ namespace Gallio.Reflection.Impl
         private static IDebugSymbolResolver resolver;
 
         /// <summary>
-        /// Gets the debug symbol resolver.
+        /// Gets the singleton debug symbol resolver used by these utilities.
         /// </summary>
         public static IDebugSymbolResolver Resolver
         {
@@ -42,7 +42,11 @@ namespace Gallio.Reflection.Impl
             }
         }
 
-        private static IDebugSymbolResolver CreateResolver()
+        /// <summary>
+        /// Creates a new debug symbol resolver appropriate for this platform.
+        /// </summary>
+        /// <returns>The debug symbol resolver</returns>
+        public static IDebugSymbolResolver CreateResolver()
         {
             if (RuntimeDetection.IsUsingMono)
                 return new MonoDebugSymbolResolver();
@@ -52,7 +56,7 @@ namespace Gallio.Reflection.Impl
 
         /// <summary>
         /// Gets the location of a source file that contains the declaration of a type, or
-        /// null if not available.
+        /// unknown if not available.
         /// </summary>
         /// <param name="type">The type</param>
         /// <returns>The code location, or <see cref="CodeLocation.Unknown" /> if unknown</returns>
@@ -90,7 +94,7 @@ namespace Gallio.Reflection.Impl
 
         /// <summary>
         /// Gets the location of a source file that contains the declaration of a method, or
-        /// null if not available.
+        /// unknown if not available.
         /// </summary>
         /// <param name="method">The method</param>
         /// <returns>The source location, or <see cref="CodeLocation.Unknown" /> if unknown</returns>

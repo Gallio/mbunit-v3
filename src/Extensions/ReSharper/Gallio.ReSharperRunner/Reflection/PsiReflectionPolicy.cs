@@ -565,23 +565,7 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
         {
             IDeclaredElement memberHandle = (IDeclaredElement)member.Handle;
-            IList<IDeclaration> decl = memberHandle.GetDeclarations();
-            if (decl.Count == 0)
-                return CodeLocation.Unknown;
-
-            ReSharperDocumentRange range = decl[0].GetDocumentRange();
-#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
-            bool isValid = range.IsValid;
-#else
-            bool isValid = range.IsValid();
-#endif
-            if (isValid)
-                return CodeLocation.Unknown;
-
-            string filename = decl[0].GetProjectFile().Location.FullPath;
-            DocumentCoords start = range.Document.GetCoordsByOffset(range.TextRange.StartOffset);
-
-            return new CodeLocation(filename, start.Line, start.Column);
+            return GetDeclaredElementSourceLocation(memberHandle);
         }
         #endregion
 
