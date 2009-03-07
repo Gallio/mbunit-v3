@@ -278,18 +278,22 @@
       <Filter>
         <Pattern>*.Tests</Pattern>
 	<Type>Assembly</Type>
+        <IsInclude>false</IsInclude>
       </Filter>
       <Filter>
         <Pattern>*.TestResources</Pattern>
 	<Type>Assembly</Type>
+        <IsInclude>false</IsInclude>
       </Filter>
       <Filter>
         <Pattern>JetBrains.*</Pattern>
 	<Type>Assembly</Type>
+        <IsInclude>false</IsInclude>
       </Filter>
       <Filter>
         <Pattern>Castle.*</Pattern>
 	<Type>Namespace</Type>
+        <IsInclude>false</IsInclude>
       </Filter>
     </CoverageFilters>
     <SatisfactoryCoverage>
@@ -336,6 +340,7 @@
                     CoverageDataPaths="Coverage.xml"
                     OutputPath="$(ReportDir)\CoverageReport.xml"
 		    ProjectName="Gallio"
+		    ReportDataFilter="Assembly | Namespace"
 		    ReportFormat="Xml"
 		    ReportType="SymbolModuleNamespaceClass"
 		    SortBy="ClassLine"
