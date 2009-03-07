@@ -26,7 +26,7 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public abstract class StaticTypeWrapper : StaticMemberWrapper, IResolvableTypeInfo
     {
-        private readonly KeyedMemoizer<bool, Type> resolveMemoizer = new KeyedMemoizer<bool, Type>();
+        private KeyedMemoizer<bool, Type> resolveMemoizer = new KeyedMemoizer<bool, Type>();
 
         /// <summary>
         /// Creates a wrapper.

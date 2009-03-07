@@ -12,9 +12,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//#define STATISTICS
 
 using System;
 using System.Collections.Generic;
+using Gallio.Framework;
 
 namespace Gallio.Utilities
 {
@@ -27,12 +29,30 @@ namespace Gallio.Utilities
     /// </remarks>
     /// <typeparam name="TKey">The key type</typeparam>
     /// <typeparam name="TValue">The value type</typeparam>
+    /// <example>
+    /// <code><![CDATA[
+    /// public class MyClass
+    /// {
+    ///     // Do NOT put the "readonly" keyword on this field.
+    ///     // Otherwise we will not be able to modify the contents of the structure and memoization will not occur.
+    ///     private KeyedMemoizer<string, int> valueMemoizer = new KeyedMemoizer<string, int>();
+    ///     
+    ///     public int GetValue(string key)
+    ///     {
+    ///         return valueMemoizer.Memoize(key, () =>
+    ///         {
+    ///             // Expensive calculation here.
+    ///             return 42;
+    ///         });
+    ///     }
+    /// }
+    /// ]]></code>
+    /// </example>
     public struct KeyedMemoizer<TKey, TValue>
     {
-        // Using a list for storage since we generally expect a relatively small number
-        // of values to be memoized.  Moreover we want to be able to handle null
-        // keys correctly (more difficult with a dictionary).
-        private List<KeyValuePair<TKey, TValue>> items;
+        private const int HybridThreshold = 8;
+
+        private ITable table;
 
         /// <summary>
         /// Gets the memoized value for the given key if available, otherwise populates it
@@ -44,20 +64,181 @@ namespace Gallio.Utilities
         /// <returns>The value returned by the populator, possibly memoized</returns>
         public TValue Memoize(TKey key, Func<TValue> populator)
         {
-            if (items != null)
+            TValue value;
+            if (table != null)
             {
-                foreach (KeyValuePair<TKey, TValue> item in items)
-                    if (object.Equals(key, item.Key))
-                        return item.Value;
+                if (table.Lookup(key, out value))
+                {
+#if STATISTICS
+                    OnHit();
+                    OnReturn();
+#endif
+                    return value;
+                }
             }
             else
             {
-                items = new List<KeyValuePair<TKey, TValue>>();
+                table = new ArrayTable();
+#if STATISTICS
+                OnSmallCacheCreated();
+#endif
             }
 
-            TValue value = populator();
-            items.Add(new KeyValuePair<TKey,TValue>(key, value));
+#if STATISTICS
+            OnMiss();
+#endif
+            value = populator();
+            if (! table.Store(key, value))
+            {
+                var newTable = new DictionaryTable();
+                table.CopyTo(newTable);
+                table = newTable;
+                table.Store(key, value);
+#if STATISTICS
+                OnSmallCachePromotedToLarge();
+#endif
+            }
+
+#if STATISTICS
+            OnReturn();
+#endif
             return value;
+        }
+
+#if STATISTICS
+        private static int numSmallCaches;
+        private static int numLargeCaches;
+        private static int maxSize;
+        private static int hits;
+        private static int misses;
+        private static DateTime nextSample;
+
+        private static void OnSmallCacheCreated()
+        {
+            numSmallCaches += 1;
+        }
+
+        private static void OnSmallCachePromotedToLarge()
+        {
+            numSmallCaches -= 1;
+            numLargeCaches += 1;
+        }
+
+        private static void OnHit()
+        {
+            hits += 1;
+        }
+
+        private void OnMiss()
+        {
+            misses += 1;
+            if (table.Count > maxSize)
+                maxSize = table.Count;
+        }
+
+        private static void OnReturn()
+        {
+            DateTime now = DateTime.Now;
+            if (now > nextSample)
+            {
+                nextSample = now.AddSeconds(5);
+                DiagnosticLog.WriteLine(
+                    "KeyedMemoizer<{0}, {1}>: # Small = {2}, # Large = {3}, Max Size = {4}, Hits = {5}, Misses = {6}",
+                    typeof(TKey).Name, typeof(TValue).Name, numSmallCaches, numLargeCaches, maxSize, hits, misses);
+            }
+        }
+#endif
+
+        private interface ITable
+        {
+            void CopyTo(ITable table);
+            bool Lookup(TKey key, out TValue value);
+            bool Store(TKey key, TValue value);
+            int Count { get; }
+        }
+
+        private sealed class DictionaryTable : Dictionary<TKey, TValue>, ITable
+        {
+            private TValue nullValue;
+            private bool hasNullValue;
+
+            public void CopyTo(ITable table)
+            {
+                throw new NotSupportedException();
+            }
+
+            public bool Lookup(TKey key, out TValue value)
+            {
+                if (key == null)
+                {
+                    if (hasNullValue)
+                    {
+                        value = nullValue;
+                        return true;
+                    }
+
+                    value = default(TValue);
+                    return false;
+                }
+
+                return TryGetValue(key, out value);
+            }
+
+            public bool Store(TKey key, TValue value)
+            {
+                if (key == null)
+                {
+                    nullValue = value;
+                    hasNullValue = true;
+                }
+                else
+                {
+                    Add(key, value);
+                }
+
+                return true;
+            }
+        }
+
+        private sealed class ArrayTable : ITable
+        {
+            private readonly KeyValuePair<TKey, TValue>[] items = new KeyValuePair<TKey, TValue>[HybridThreshold];
+            private int count;
+
+            public void CopyTo(ITable table)
+            {
+                for (int i = 0; i < count; i++)
+                    table.Store(items[i].Key, items[i].Value);
+            }
+
+            public bool Lookup(TKey key, out TValue value)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    if (Equals(key, items[i].Key))
+                    {
+                        value = items[i].Value;
+                        return true;
+                    }
+                }
+
+                value = default(TValue);
+                return false;
+            }
+
+            public bool Store(TKey key, TValue value)
+            {
+                if (count == HybridThreshold)
+                    return false;
+
+                items[count++] = new KeyValuePair<TKey, TValue>(key, value);
+                return true;
+            }
+
+            public int Count
+            {
+                get { return count; }
+            }
         }
     }
 }

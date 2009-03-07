@@ -23,12 +23,12 @@ using Gallio.Model.Logging;
 namespace Gallio.Framework
 {
     /// <summary>
-    /// <para>
-    /// The log class provides services for writing information to the
+    /// The test log class provides services for writing information to the
     /// execution log associated with a test.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
-    /// An execution log records the output of a test during its execution including any text
+    /// A test log records the output of a test during its execution including any text
     /// that was written to console output streams, exceptions that occurred, and 
     /// anything else the test writer might want to save.
     /// </para>
@@ -43,7 +43,13 @@ namespace Gallio.Framework
     /// Certain test frameworks may automatically create attachments to gather all manner
     /// of diagnostic information over the course of the test.
     /// </para>
-    /// </summary>
+    /// <para>
+    /// Test log messages are not echoed to the console or runtime log during test execution,
+    /// they are incorporated into the test report.  Use <see cref="DiagnosticLog" /> instead if you
+    /// wish to write messages immediately where the operator can see them.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="DiagnosticLog"/>
     public static class TestLog
     {
         #region Current log writer accessor

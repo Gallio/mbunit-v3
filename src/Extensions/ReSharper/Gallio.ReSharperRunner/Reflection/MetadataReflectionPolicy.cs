@@ -26,11 +26,11 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using System.IO;
+using Gallio.Utilities;
 
 #if RESHARPER_31
 using JetBrains.Shell;
 using JetBrains.Util;
-
 #else
 using JetBrains.Application;
 #endif
@@ -44,6 +44,11 @@ namespace Gallio.ReSharperRunner.Reflection
     {
         private readonly IProject contextProject;
         private readonly MetadataLoader metadataLoader;
+
+        private KeyedMemoizer<IMetadataAssembly, StaticAssemblyWrapper> assemblyMemoizer = new KeyedMemoizer<IMetadataAssembly, StaticAssemblyWrapper>();
+        private KeyedMemoizer<IMetadataType, StaticTypeWrapper> typeMemoizer = new KeyedMemoizer<IMetadataType, StaticTypeWrapper>();
+        private KeyedMemoizer<IMetadataTypeInfo, StaticDeclaredTypeWrapper> typeWithoutSubstitutionMemoizer = new KeyedMemoizer<IMetadataTypeInfo, StaticDeclaredTypeWrapper>();
+        private KeyedMemoizer<IMetadataClassType, StaticDeclaredTypeWrapper> classMemoizer = new KeyedMemoizer<IMetadataClassType, StaticDeclaredTypeWrapper>();
 
         /// <summary>
         /// Creates a reflector with the specified project as its context.
@@ -76,7 +81,9 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <returns>The reflection wrapper, or null if none</returns>
         public StaticAssemblyWrapper Wrap(IMetadataAssembly target)
         {
-            return target != null ? new StaticAssemblyWrapper(this, target) : null;
+            return target != null
+                ? assemblyMemoizer.Memoize(target, () => new StaticAssemblyWrapper(this, target))
+                : null;
         }
 
         /// <summary>
@@ -634,37 +641,47 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private StaticTypeWrapper MakeType(IMetadataType typeHandle)
         {
-            IMetadataClassType classTypeHandle = typeHandle as IMetadataClassType;
-            if (classTypeHandle != null)
-                return MakeDeclaredType(classTypeHandle);
+            return typeMemoizer.Memoize(typeHandle, () =>
+            {
+                IMetadataClassType classTypeHandle = typeHandle as IMetadataClassType;
+                if (classTypeHandle != null)
+                    return MakeDeclaredType(classTypeHandle);
 
-            IMetadataArrayType arrayTypeHandle = typeHandle as IMetadataArrayType;
-            if (arrayTypeHandle != null)
-                return MakeArrayType(arrayTypeHandle);
+                IMetadataArrayType arrayTypeHandle = typeHandle as IMetadataArrayType;
+                if (arrayTypeHandle != null)
+                    return MakeArrayType(arrayTypeHandle);
 
-            IMetadataPointerType pointerTypeHandle = typeHandle as IMetadataPointerType;
-            if (pointerTypeHandle != null)
-                return MakePointerType(pointerTypeHandle);
+                IMetadataPointerType pointerTypeHandle = typeHandle as IMetadataPointerType;
+                if (pointerTypeHandle != null)
+                    return MakePointerType(pointerTypeHandle);
 
-            IMetadataReferenceType referenceTypeHandle = typeHandle as IMetadataReferenceType;
-            if (referenceTypeHandle != null)
-                return MakeByRefType(referenceTypeHandle);
+                IMetadataReferenceType referenceTypeHandle = typeHandle as IMetadataReferenceType;
+                if (referenceTypeHandle != null)
+                    return MakeByRefType(referenceTypeHandle);
 
-            IMetadataGenericArgumentReferenceType argumentTypeHandle = typeHandle as IMetadataGenericArgumentReferenceType;
-            if (argumentTypeHandle != null)
-                return MakeGenericParameter(argumentTypeHandle);
+                IMetadataGenericArgumentReferenceType argumentTypeHandle =
+                    typeHandle as IMetadataGenericArgumentReferenceType;
+                if (argumentTypeHandle != null)
+                    return MakeGenericParameter(argumentTypeHandle);
 
-            throw new NotSupportedException("Unsupported type: " + typeHandle);
+                throw new NotSupportedException("Unsupported type: " + typeHandle);
+            });
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredTypeWithoutSubstitution(IMetadataTypeInfo typeHandle)
         {
-            return MakeDeclaredType(typeHandle, Collections.EmptyArray<IMetadataType>.Instance);
+            return typeWithoutSubstitutionMemoizer.Memoize(typeHandle, () =>
+            {
+                return MakeDeclaredType(typeHandle, Collections.EmptyArray<IMetadataType>.Instance);
+            });
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(IMetadataClassType typeHandle)
         {
-            return MakeDeclaredType(typeHandle.Type, typeHandle.Arguments);
+            return classMemoizer.Memoize(typeHandle, () =>
+            {
+                return MakeDeclaredType(typeHandle.Type, typeHandle.Arguments);
+            });
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(IMetadataTypeInfo typeInfoHandle, IMetadataType[] argumentTypeHandles)

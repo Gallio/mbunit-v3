@@ -26,8 +26,8 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticFieldWrapper : StaticReflectedMemberWrapper, IFieldInfo
     {
-        private readonly Memoizer<FieldAttributes> fieldAttributesMemoizer = new Memoizer<FieldAttributes>();
-        private readonly KeyedMemoizer<bool, FieldInfo> resolveMemoizer = new KeyedMemoizer<bool, FieldInfo>();
+        private Memoizer<FieldAttributes> fieldAttributesMemoizer = new Memoizer<FieldAttributes>();
+        private KeyedMemoizer<bool, FieldInfo> resolveMemoizer = new KeyedMemoizer<bool, FieldInfo>();
 
         /// <summary>
         /// Creates a wrapper.

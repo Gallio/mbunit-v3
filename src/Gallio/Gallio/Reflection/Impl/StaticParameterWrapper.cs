@@ -27,10 +27,10 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticParameterWrapper : StaticCodeElementWrapper, IParameterInfo
     {
-        private readonly Memoizer<ParameterAttributes> parameterAttributesMemoizer = new Memoizer<ParameterAttributes>();
-        private readonly Memoizer<string> nameMemoizer = new Memoizer<string>();
-        private readonly Memoizer<int> positionMemoizer = new Memoizer<int>();
-        private readonly Memoizer<ITypeInfo> valueTypeMemoizer = new Memoizer<ITypeInfo>();
+        private Memoizer<ParameterAttributes> parameterAttributesMemoizer = new Memoizer<ParameterAttributes>();
+        private Memoizer<string> nameMemoizer = new Memoizer<string>();
+        private Memoizer<int> positionMemoizer = new Memoizer<int>();
+        private Memoizer<ITypeInfo> valueTypeMemoizer = new Memoizer<ITypeInfo>();
 
         private readonly StaticMemberWrapper member;
 

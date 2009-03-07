@@ -27,11 +27,11 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticPropertyWrapper : StaticReflectedMemberWrapper, IPropertyInfo
     {
-        private readonly Memoizer<PropertyAttributes> propertyAttributesMemoizer = new Memoizer<PropertyAttributes>();
-        private readonly Memoizer<IList<StaticParameterWrapper>> indexParametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
-        private readonly Memoizer<StaticMethodWrapper> getMethodMemoizer = new Memoizer<StaticMethodWrapper>();
-        private readonly Memoizer<StaticMethodWrapper> setMethodMemoizer = new Memoizer<StaticMethodWrapper>();
-        private readonly Memoizer<ITypeInfo> valueTypeMemoizer = new Memoizer<ITypeInfo>();
+        private Memoizer<PropertyAttributes> propertyAttributesMemoizer = new Memoizer<PropertyAttributes>();
+        private Memoizer<IList<StaticParameterWrapper>> indexParametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
+        private Memoizer<StaticMethodWrapper> getMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private Memoizer<StaticMethodWrapper> setMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private Memoizer<ITypeInfo> valueTypeMemoizer = new Memoizer<ITypeInfo>();
 
         /// <summary>
         /// Creates a wrapper.

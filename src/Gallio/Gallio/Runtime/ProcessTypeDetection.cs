@@ -29,7 +29,7 @@ namespace Gallio.Runtime
     /// </summary>
     public static class ProcessTypeDetection
     {
-        private static readonly Memoizer<ProcessType> processType;
+        private static Memoizer<ProcessType> processType = new Memoizer<ProcessType>();
 
         /// <summary>
         /// Gets the process type of the current process.

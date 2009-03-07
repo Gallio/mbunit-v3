@@ -21,6 +21,7 @@ using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Reflection.Impl;
 using System.IO;
+using Gallio.Utilities;
 using Mono.Cecil;
 using Mono.Cecil.Metadata;
 using EventAttributes=System.Reflection.EventAttributes;
@@ -45,6 +46,10 @@ namespace Gallio.Reflection.Impl
     {
         private static readonly Key<string> PathAnnotationKey = new Key<string>("Path");
 
+        private KeyedMemoizer<AssemblyDefinition, StaticAssemblyWrapper> assemblyMemoizer = new KeyedMemoizer<AssemblyDefinition, StaticAssemblyWrapper>();
+        private KeyedMemoizer<TypeReference, StaticTypeWrapper> typeMemoizer = new KeyedMemoizer<TypeReference, StaticTypeWrapper>();
+        private KeyedMemoizer<TypeDefinition, StaticDeclaredTypeWrapper> typeWithoutSubstitutionMemoizer = new KeyedMemoizer<TypeDefinition, StaticDeclaredTypeWrapper>();
+
         private readonly CustomAssemblyResolver assemblyResolver = new CustomAssemblyResolver();
         private IDebugSymbolResolver symbolResolver;
 
@@ -56,7 +61,9 @@ namespace Gallio.Reflection.Impl
         #region Wrapping
         private StaticAssemblyWrapper Wrap(AssemblyDefinition target)
         {
-            return target != null ? new StaticAssemblyWrapper(this, target) : null;
+            return target != null
+                ? assemblyMemoizer.Memoize(target, () => new StaticAssemblyWrapper(this, target))
+                : null;
         }
 
         private StaticMethodWrapper WrapAccessor(MethodDefinition accessorHandle, StaticMemberWrapper member)
@@ -654,49 +661,57 @@ namespace Gallio.Reflection.Impl
 
         private StaticTypeWrapper MakeType(TypeReference typeHandle)
         {
-            TypeDefinition declaredTypeHandle = typeHandle as TypeDefinition;
-            if (declaredTypeHandle != null)
-                return MakeDeclaredTypeWithoutSubstitution(declaredTypeHandle);
-
-            GenericParameter genericParameterHandle = typeHandle as GenericParameter;
-            if (genericParameterHandle != null)
-                return MakeGenericParameter(genericParameterHandle);
-
-            ArrayType arrayTypeHandle = typeHandle as ArrayType;
-            if (arrayTypeHandle != null)
-                return MakeArrayType(arrayTypeHandle);
-
-            PointerType pointerTypeHandle = typeHandle as PointerType;
-            if (pointerTypeHandle != null)
-                return MakePointerType(pointerTypeHandle);
-
-            ReferenceType referenceTypeHandle = typeHandle as ReferenceType;
-            if (referenceTypeHandle != null)
-                return MakeByRefType(referenceTypeHandle);
-
-            GenericInstanceType genericInstanceTypeHandle = typeHandle as GenericInstanceType;
-            if (genericInstanceTypeHandle != null)
-                return MakeGenericInstanceType(genericInstanceTypeHandle);
-
-            AssemblyNameReference assemblyRef = typeHandle.Scope as AssemblyNameReference;
-            if (assemblyRef != null)
+            return typeMemoizer.Memoize(typeHandle, () =>
             {
-                AssemblyDefinition assemblyDefn = assemblyResolver.Resolve(assemblyRef);
-                foreach (ModuleDefinition moduleDefn in assemblyDefn.Modules)
-                {
-                    TypeDefinition typeDefn = moduleDefn.Types[typeHandle.FullName];
-                    if (typeDefn != null)
-                        return MakeDeclaredType(typeDefn);
-                }
-            }
+                TypeDefinition declaredTypeHandle = typeHandle as TypeDefinition;
+                if (declaredTypeHandle != null)
+                    return MakeDeclaredTypeWithoutSubstitution(declaredTypeHandle);
 
-            throw new NotSupportedException("Unsupported type: " + typeHandle);
+                GenericParameter genericParameterHandle = typeHandle as GenericParameter;
+                if (genericParameterHandle != null)
+                    return MakeGenericParameter(genericParameterHandle);
+
+                ArrayType arrayTypeHandle = typeHandle as ArrayType;
+                if (arrayTypeHandle != null)
+                    return MakeArrayType(arrayTypeHandle);
+
+                PointerType pointerTypeHandle = typeHandle as PointerType;
+                if (pointerTypeHandle != null)
+                    return MakePointerType(pointerTypeHandle);
+
+                ReferenceType referenceTypeHandle = typeHandle as ReferenceType;
+                if (referenceTypeHandle != null)
+                    return MakeByRefType(referenceTypeHandle);
+
+                GenericInstanceType genericInstanceTypeHandle = typeHandle as GenericInstanceType;
+                if (genericInstanceTypeHandle != null)
+                    return MakeGenericInstanceType(genericInstanceTypeHandle);
+
+                AssemblyNameReference assemblyRef = typeHandle.Scope as AssemblyNameReference;
+                if (assemblyRef != null)
+                {
+                    AssemblyDefinition assemblyDefn = assemblyResolver.Resolve(assemblyRef);
+                    foreach (ModuleDefinition moduleDefn in assemblyDefn.Modules)
+                    {
+                        TypeDefinition typeDefn = moduleDefn.Types[typeHandle.FullName];
+                        if (typeDefn != null)
+                            return MakeDeclaredType(typeDefn);
+                    }
+                }
+
+                throw new NotSupportedException("Unsupported type: " + typeHandle);
+            });
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredTypeWithoutSubstitution(TypeDefinition typeHandle)
         {
-            StaticDeclaredTypeWrapper declaringType = typeHandle.DeclaringType != null ? MakeDeclaredType(typeHandle.DeclaringType) : null;
-            return new StaticDeclaredTypeWrapper(this, typeHandle, declaringType, StaticTypeSubstitution.Empty);
+            return typeWithoutSubstitutionMemoizer.Memoize(typeHandle, () =>
+            {
+                StaticDeclaredTypeWrapper declaringType = typeHandle.DeclaringType != null
+                    ? MakeDeclaredType(typeHandle.DeclaringType)
+                    : null;
+                return new StaticDeclaredTypeWrapper(this, typeHandle, declaringType, StaticTypeSubstitution.Empty);
+            });
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(TypeReference typeHandle)

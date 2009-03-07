@@ -26,11 +26,11 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticMethodWrapper : StaticFunctionWrapper, IMethodInfo
     {
-        private readonly Memoizer<IList<ITypeInfo>> genericArgumentsMemoizer = new Memoizer<IList<ITypeInfo>>();
-        private readonly Memoizer<IList<StaticGenericParameterWrapper>> genericParametersMemoizer = new Memoizer<IList<StaticGenericParameterWrapper>>();
-        private readonly Memoizer<IParameterInfo> returnParameterMemoizer = new Memoizer<IParameterInfo>();
-        private readonly Memoizer<StaticMethodWrapper> genericMethodDefinitionMemoizer = new Memoizer<StaticMethodWrapper>();
-        private readonly Memoizer<MethodInfo> resolveMemoizer = new Memoizer<MethodInfo>();
+        private Memoizer<IList<ITypeInfo>> genericArgumentsMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private Memoizer<IList<StaticGenericParameterWrapper>> genericParametersMemoizer = new Memoizer<IList<StaticGenericParameterWrapper>>();
+        private Memoizer<IParameterInfo> returnParameterMemoizer = new Memoizer<IParameterInfo>();
+        private Memoizer<StaticMethodWrapper> genericMethodDefinitionMemoizer = new Memoizer<StaticMethodWrapper>();
+        private Memoizer<MethodInfo> resolveMemoizer = new Memoizer<MethodInfo>();
 
         private readonly StaticTypeSubstitution substitution;
 

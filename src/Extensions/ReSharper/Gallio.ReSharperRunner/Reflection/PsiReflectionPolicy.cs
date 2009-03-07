@@ -35,6 +35,7 @@ using ReSharperDocumentRange = JetBrains.ReSharper.Editor.DocumentRange;
 #else
 using JetBrains.DocumentModel;
 using ReSharperDocumentRange = JetBrains.DocumentModel.DocumentRange;
+using Gallio.Utilities;
 #endif
 
 namespace Gallio.ReSharperRunner.Reflection
@@ -45,6 +46,11 @@ namespace Gallio.ReSharperRunner.Reflection
     public class PsiReflectionPolicy : ReSharperReflectionPolicy
     {
         private readonly PsiManager psiManager;
+
+        private KeyedMemoizer<IModule, StaticAssemblyWrapper> assemblyMemoizer = new KeyedMemoizer<IModule, StaticAssemblyWrapper>();
+        private KeyedMemoizer<IType, StaticTypeWrapper> typeMemoizer = new KeyedMemoizer<IType, StaticTypeWrapper>();
+        private KeyedMemoizer<ITypeElement, StaticDeclaredTypeWrapper> typeWithoutSubstitutionMemoizer = new KeyedMemoizer<ITypeElement, StaticDeclaredTypeWrapper>();
+        private KeyedMemoizer<IDeclaredType, StaticDeclaredTypeWrapper> declaredTypeMemoizer = new KeyedMemoizer<IDeclaredType, StaticDeclaredTypeWrapper>();
 
         /// <summary>
         /// Creates a reflector with the specified PSI manager.
@@ -220,7 +226,7 @@ namespace Gallio.ReSharperRunner.Reflection
                     IAssemblyFile assemblyFile = BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
 
                     if (assemblyFile != null && IsMatchingAssemblyName(assemblyName, assemblyFile.AssemblyName))
-                        return new StaticAssemblyWrapper(this, project);
+                        return WrapModule(project);
                 }
                 catch (InvalidOperationException)
                 {
@@ -231,7 +237,7 @@ namespace Gallio.ReSharperRunner.Reflection
             foreach (IAssembly assembly in psiManager.Solution.GetAllAssemblies())
             {
                 if (IsMatchingAssemblyName(assemblyName, assembly.AssemblyName))
-                    return new StaticAssemblyWrapper(this, assembly);
+                    return WrapModule(assembly);
             }
 
             throw new ArgumentException(String.Format("Could not find assembly '{0}' in the ReSharper code cache.",
@@ -413,6 +419,11 @@ namespace Gallio.ReSharperRunner.Reflection
             return PsiModuleManager.GetInstance(psiManager.Solution).GetPrimaryPsiModule(moduleHandle);
         }
 #endif
+
+        private StaticAssemblyWrapper WrapModule(IModule module)
+        {
+            return assemblyMemoizer.Memoize(module, () => new StaticAssemblyWrapper(this, module));
+        }
 
         #endregion
 
@@ -882,9 +893,9 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
-            return new StaticAssemblyWrapper(this, typeHandle.Module);
+            return WrapModule(typeHandle.Module);
 #else
-            return new StaticAssemblyWrapper(this, typeHandle.Module.ContainingProjectModule);
+            return WrapModule(typeHandle.Module.ContainingProjectModule);
 #endif
         }
 
@@ -1093,19 +1104,22 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private StaticTypeWrapper MakeType(IType typeHandle)
         {
-            IDeclaredType declaredTypeHandle = typeHandle as IDeclaredType;
-            if (declaredTypeHandle != null)
-                return MakeType(declaredTypeHandle);
+            return typeMemoizer.Memoize(typeHandle, () =>
+            {
+                IDeclaredType declaredTypeHandle = typeHandle as IDeclaredType;
+                if (declaredTypeHandle != null)
+                    return MakeType(declaredTypeHandle);
 
-            IArrayType arrayTypeHandle = typeHandle as IArrayType;
-            if (arrayTypeHandle != null)
-                return MakeArrayType(arrayTypeHandle);
+                IArrayType arrayTypeHandle = typeHandle as IArrayType;
+                if (arrayTypeHandle != null)
+                    return MakeArrayType(arrayTypeHandle);
 
-            IPointerType pointerTypeHandle = typeHandle as IPointerType;
-            if (pointerTypeHandle != null)
-                return MakePointerType(pointerTypeHandle);
+                IPointerType pointerTypeHandle = typeHandle as IPointerType;
+                if (pointerTypeHandle != null)
+                    return MakePointerType(pointerTypeHandle);
 
-            throw new NotSupportedException("Unsupported type: " + typeHandle);
+                throw new NotSupportedException("Unsupported type: " + typeHandle);
+            });
         }
 
         private StaticTypeWrapper MakeType(IDeclaredType typeHandle)
@@ -1128,17 +1142,25 @@ namespace Gallio.ReSharperRunner.Reflection
 
         private StaticDeclaredTypeWrapper MakeDeclaredTypeWithoutSubstitution(ITypeElement typeElementHandle)
         {
-            return MakeDeclaredType(typeElementHandle, typeElementHandle.IdSubstitution);
+            return typeWithoutSubstitutionMemoizer.Memoize(typeElementHandle, () =>
+            {
+                return MakeDeclaredType(typeElementHandle, typeElementHandle.IdSubstitution);
+            });
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(IDeclaredType typeHandle)
         {
-            ITypeElement typeElement = typeHandle.GetTypeElement();
-            if (typeElement == null)
-                throw new NotSupportedException(String.Format("Cannot obtain type element for type '{0}' possibly because its source code is not available.",
-                    typeHandle.GetCLRName()));
+            return declaredTypeMemoizer.Memoize(typeHandle, () =>
+            {
+                ITypeElement typeElement = typeHandle.GetTypeElement();
+                if (typeElement == null)
+                    throw new NotSupportedException(
+                        String.Format(
+                            "Cannot obtain type element for type '{0}' possibly because its source code is not available.",
+                            typeHandle.GetCLRName()));
 
-            return MakeDeclaredType(typeElement, typeHandle.GetSubstitution());
+                return MakeDeclaredType(typeElement, typeHandle.GetSubstitution());
+            });
         }
 
         private StaticDeclaredTypeWrapper MakeDeclaredType(ITypeElement typeElementHandle, ISubstitution substitutionHandle)

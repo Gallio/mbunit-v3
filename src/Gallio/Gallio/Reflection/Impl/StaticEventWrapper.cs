@@ -27,12 +27,12 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticEventWrapper : StaticReflectedMemberWrapper, IEventInfo
     {
-        private readonly Memoizer<EventAttributes> eventAttributesMemoizer = new Memoizer<EventAttributes>();
-        private readonly Memoizer<StaticMethodWrapper> raiseMethodMemoizer = new Memoizer<StaticMethodWrapper>();
-        private readonly Memoizer<StaticMethodWrapper> addMethodMemoizer = new Memoizer<StaticMethodWrapper>();
-        private readonly Memoizer<StaticMethodWrapper> removeMethodMemoizer = new Memoizer<StaticMethodWrapper>();
-        private readonly Memoizer<ITypeInfo> eventHandlerTypeMemoizer = new Memoizer<ITypeInfo>();
-        private readonly KeyedMemoizer<bool, EventInfo> resolveMemoizer = new KeyedMemoizer<bool, EventInfo>();
+        private Memoizer<EventAttributes> eventAttributesMemoizer = new Memoizer<EventAttributes>();
+        private Memoizer<StaticMethodWrapper> raiseMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private Memoizer<StaticMethodWrapper> addMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private Memoizer<StaticMethodWrapper> removeMethodMemoizer = new Memoizer<StaticMethodWrapper>();
+        private Memoizer<ITypeInfo> eventHandlerTypeMemoizer = new Memoizer<ITypeInfo>();
+        private KeyedMemoizer<bool, EventInfo> resolveMemoizer = new KeyedMemoizer<bool, EventInfo>();
 
         /// <summary>
         /// Creates a wrapper.

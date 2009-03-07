@@ -25,11 +25,11 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticAttributeWrapper : StaticWrapper, IAttributeInfo
     {
-        private readonly Memoizer<IConstructorInfo> constructorMemoizer = new Memoizer<IConstructorInfo>();
-        private readonly KeyedMemoizer<bool, object> resolveMemoizer = new KeyedMemoizer<bool, object>();
-        private readonly Memoizer<IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>>> fieldArgumentsMemoizer
+        private Memoizer<IConstructorInfo> constructorMemoizer = new Memoizer<IConstructorInfo>();
+        private KeyedMemoizer<bool, object> resolveMemoizer = new KeyedMemoizer<bool, object>();
+        private Memoizer<IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>>> fieldArgumentsMemoizer
             = new Memoizer<IEnumerable<KeyValuePair<StaticFieldWrapper, ConstantValue>>>();
-        private readonly Memoizer<IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>>> propertyArgumentsMemoizer
+        private Memoizer<IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>>> propertyArgumentsMemoizer
             = new Memoizer<IEnumerable<KeyValuePair<StaticPropertyWrapper, ConstantValue>>>();
 
         /// <summary>

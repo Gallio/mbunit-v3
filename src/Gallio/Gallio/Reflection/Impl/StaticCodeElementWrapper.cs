@@ -27,7 +27,7 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public abstract class StaticCodeElementWrapper : StaticWrapper, ICodeElementInfo
     {
-        private readonly Memoizer<IEnumerable<IAttributeInfo>> allCustomAttributesMemoizer = new Memoizer<IEnumerable<IAttributeInfo>>();
+        private Memoizer<IEnumerable<IAttributeInfo>> allCustomAttributesMemoizer = new Memoizer<IEnumerable<IAttributeInfo>>();
 
         /// <summary>
         /// Creates a wrapper.

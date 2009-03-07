@@ -27,9 +27,9 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public abstract class StaticFunctionWrapper : StaticReflectedMemberWrapper, IFunctionInfo
     {
-        private readonly Memoizer<MethodAttributes> methodAttributesMemoizer = new Memoizer<MethodAttributes>();
-        private readonly Memoizer<IList<StaticParameterWrapper>> parametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
-        private readonly Memoizer<CallingConventions> callingConventionMemoizer = new Memoizer<CallingConventions>();
+        private Memoizer<MethodAttributes> methodAttributesMemoizer = new Memoizer<MethodAttributes>();
+        private Memoizer<IList<StaticParameterWrapper>> parametersMemoizer = new Memoizer<IList<StaticParameterWrapper>>();
+        private Memoizer<CallingConventions> callingConventionMemoizer = new Memoizer<CallingConventions>();
 
         /// <summary>
         /// Creates a wrapper.

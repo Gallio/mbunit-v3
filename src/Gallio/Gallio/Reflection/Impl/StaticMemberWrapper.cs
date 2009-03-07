@@ -26,8 +26,8 @@ namespace Gallio.Reflection.Impl
     public abstract class StaticMemberWrapper : StaticCodeElementWrapper, IMemberInfo
     {
         private readonly StaticDeclaredTypeWrapper declaringType;
-        private readonly Memoizer<string> nameMemoizer = new Memoizer<string>();
-        private readonly Memoizer<CodeLocation> codeLocationMemoizer = new Memoizer<CodeLocation>();
+        private Memoizer<string> nameMemoizer = new Memoizer<string>();
+        private Memoizer<CodeLocation> codeLocationMemoizer = new Memoizer<CodeLocation>();
 
         /// <summary>
         /// Creates a wrapper.

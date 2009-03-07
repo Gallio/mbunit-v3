@@ -26,9 +26,9 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticGenericParameterWrapper : StaticSpecialTypeWrapper, IGenericParameterInfo
     {
-        private readonly Memoizer<GenericParameterAttributes> genericParameterAttributesMemoizer = new Memoizer<GenericParameterAttributes>();
-        private readonly Memoizer<IList<ITypeInfo>> constraintsMemoizer = new Memoizer<IList<ITypeInfo>>();
-        private readonly Memoizer<int> positionMemoizer = new Memoizer<int>();
+        private Memoizer<GenericParameterAttributes> genericParameterAttributesMemoizer = new Memoizer<GenericParameterAttributes>();
+        private Memoizer<IList<ITypeInfo>> constraintsMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private Memoizer<int> positionMemoizer = new Memoizer<int>();
 
         private readonly StaticMethodWrapper declaringMethod;
 

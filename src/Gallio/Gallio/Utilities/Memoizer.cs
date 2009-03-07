@@ -12,8 +12,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//#define STATISTICS
 
 using System;
+using Gallio.Framework;
 
 namespace Gallio.Utilities
 {
@@ -21,9 +23,30 @@ namespace Gallio.Utilities
     /// A structure that memoizes the result of some computation for later reuse.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Not thread safe.
+    /// </para>
     /// </remarks>
     /// <typeparam name="T">The value type</typeparam>
+    /// <example>
+    /// <code><![CDATA[
+    /// public class MyClass
+    /// {
+    ///     // Do NOT put the "readonly" keyword on this field.
+    ///     // Otherwise we will not be able to modify the contents of the structure and memoization will not occur.
+    ///     private Memoizer<int> valueMemoizer = new Memoizer<int>();
+    ///     
+    ///     public int GetValue()
+    ///     {
+    ///         return valueMemoizer.Memoize(() =>
+    ///         {
+    ///             // Expensive calculation here.
+    ///             return 42;
+    ///         });
+    ///     }
+    /// }
+    /// ]]></code>
+    /// </example>
     public struct Memoizer<T>
     {
         private T value;
@@ -39,11 +62,51 @@ namespace Gallio.Utilities
         {
             if (!isPopulated)
             {
+#if STATISTICS
+                OnMiss();
+#endif
                 value = populator();
                 isPopulated = true;
             }
+            else
+            {
+#if STATISTICS
+                OnHit();
+#endif
+            }
 
+#if STATISTICS
+            OnReturn();
+#endif
             return value;
         }
+
+#if STATISTICS
+        private static int hits;
+        private static int misses;
+        private static DateTime nextSample;
+
+        private static void OnHit()
+        {
+            hits += 1;
+        }
+
+        private static void OnMiss()
+        {
+            misses += 1;
+        }
+
+        private static void OnReturn()
+        {
+            DateTime now = DateTime.Now;
+            if (now > nextSample)
+            {
+                nextSample = now.AddSeconds(5);
+                DiagnosticLog.WriteLine(
+                    "Memoizer<{0}>: Hits = {1}, Misses = {2}",
+                    typeof(T).Name, hits, misses);
+            }
+        }
+#endif
     }
 }

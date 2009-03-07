@@ -30,7 +30,7 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public abstract class StaticWrapper : IEquatable<StaticWrapper>
     {
-        private readonly Memoizer<int> hashCodeMemoizer = new Memoizer<int>();
+        private Memoizer<int> hashCodeMemoizer = new Memoizer<int>();
 
         private readonly StaticReflectionPolicy policy;
         private readonly object handle;

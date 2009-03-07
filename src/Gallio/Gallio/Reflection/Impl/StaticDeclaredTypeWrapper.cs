@@ -30,16 +30,16 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticDeclaredTypeWrapper : StaticTypeWrapper
     {
-        private readonly Memoizer<StaticAssemblyWrapper> assemblyMemoizer = new Memoizer<StaticAssemblyWrapper>();
-        private readonly Memoizer<TypeAttributes> typeAttriutesMemoizer = new Memoizer<TypeAttributes>();
-        private readonly Memoizer<IList<ITypeInfo>> genericArgumentsMemoizer = new Memoizer<IList<ITypeInfo>>();
-        private readonly Memoizer<IList<StaticGenericParameterWrapper>> genericParametersMemoizer = new Memoizer<IList<StaticGenericParameterWrapper>>();
-        private readonly Memoizer<string> fullNameMemoizer = new Memoizer<string>();
-        private readonly Memoizer<string> namespaceNameMemoizer = new Memoizer<string>();
-        private readonly Memoizer<string> signatureMemoizer = new Memoizer<string>();
-        private readonly Memoizer<StaticDeclaredTypeWrapper> baseTypeMemoizer = new Memoizer<StaticDeclaredTypeWrapper>();
-        private readonly Memoizer<IList<ITypeInfo>> interfacesMemoizer = new Memoizer<IList<ITypeInfo>>();
-        private readonly Memoizer<StaticDeclaredTypeWrapper> genericTypeDefinitionMemoizer = new Memoizer<StaticDeclaredTypeWrapper>();
+        private Memoizer<StaticAssemblyWrapper> assemblyMemoizer = new Memoizer<StaticAssemblyWrapper>();
+        private Memoizer<TypeAttributes> typeAttriutesMemoizer = new Memoizer<TypeAttributes>();
+        private Memoizer<IList<ITypeInfo>> genericArgumentsMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private Memoizer<IList<StaticGenericParameterWrapper>> genericParametersMemoizer = new Memoizer<IList<StaticGenericParameterWrapper>>();
+        private Memoizer<string> fullNameMemoizer = new Memoizer<string>();
+        private Memoizer<string> namespaceNameMemoizer = new Memoizer<string>();
+        private Memoizer<string> signatureMemoizer = new Memoizer<string>();
+        private Memoizer<StaticDeclaredTypeWrapper> baseTypeMemoizer = new Memoizer<StaticDeclaredTypeWrapper>();
+        private Memoizer<IList<ITypeInfo>> interfacesMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private Memoizer<StaticDeclaredTypeWrapper> genericTypeDefinitionMemoizer = new Memoizer<StaticDeclaredTypeWrapper>();
 
         private readonly StaticTypeSubstitution substitution;
 

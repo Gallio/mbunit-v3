@@ -27,13 +27,13 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public sealed class StaticAssemblyWrapper : StaticCodeElementWrapper, IAssemblyInfo
     {
-        private readonly Memoizer<AssemblyName> assemblyNameMemoizer = new Memoizer<AssemblyName>();
-        private readonly Memoizer<string> assemblyPathMemoizer = new Memoizer<string>();
-        private readonly Memoizer<IList<AssemblyName>> referencedAssembliesMemoizer = new Memoizer<IList<AssemblyName>>();
-        private readonly Memoizer<IList<ITypeInfo>> exportedTypesMemoizer = new Memoizer<IList<ITypeInfo>>();
-        private readonly Memoizer<IList<ITypeInfo>> typesMemoizer = new Memoizer<IList<ITypeInfo>>();
-        private readonly KeyedMemoizer<string, ITypeInfo> getTypeMemoizer = new KeyedMemoizer<string, ITypeInfo>();
-        private readonly KeyedMemoizer<bool, Assembly> resolveMemoizer = new KeyedMemoizer<bool, Assembly>();
+        private Memoizer<AssemblyName> assemblyNameMemoizer = new Memoizer<AssemblyName>();
+        private Memoizer<string> assemblyPathMemoizer = new Memoizer<string>();
+        private Memoizer<IList<AssemblyName>> referencedAssembliesMemoizer = new Memoizer<IList<AssemblyName>>();
+        private Memoizer<IList<ITypeInfo>> exportedTypesMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private Memoizer<IList<ITypeInfo>> typesMemoizer = new Memoizer<IList<ITypeInfo>>();
+        private KeyedMemoizer<string, ITypeInfo> getTypeMemoizer = new KeyedMemoizer<string, ITypeInfo>();
+        private KeyedMemoizer<bool, Assembly> resolveMemoizer = new KeyedMemoizer<bool, Assembly>();
 
         /// <summary>
         /// Creates a wrapper.
