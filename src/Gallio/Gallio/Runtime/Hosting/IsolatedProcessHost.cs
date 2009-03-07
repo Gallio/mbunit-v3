@@ -271,13 +271,13 @@ namespace Gallio.Runtime.Hosting
                     }
                 }
 
-                if (processTask.IsRunning)
+                if (! processTask.Join(TimeSpan.Zero))
                 {
                     Logger.Log(LogSeverity.Warning, "* Forcibly killing the host process!");
                     processTask.Abort();
+                    processTask.Join(JoinAfterAbortTimeout);
                 }
 
-                processTask.Join(JoinAfterAbortTimeout);
                 processTask = null;
             }
 
