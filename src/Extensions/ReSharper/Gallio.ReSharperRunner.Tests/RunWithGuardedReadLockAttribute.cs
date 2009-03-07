@@ -28,17 +28,23 @@ namespace Gallio.ReSharperRunner.Tests
     {
         protected override void DecorateTest(IPatternScope scope, ICodeElementInfo codeElement)
         {
-            scope.TestBuilder.TestInstanceActions.DecorateChildTestChain.After(delegate(PatternTestInstanceState state, PatternTestActions actions)
-            {
-                actions.TestInstanceActions.ExecuteTestInstanceChain.Around(delegate(PatternTestInstanceState childState, Action<PatternTestInstanceState> inner)
+            scope.TestBuilder.TestInstanceActions.DecorateChildTestChain.After(
+                delegate(PatternTestInstanceState state, PatternTestActions actions)
                 {
-                    TestShell.RunGuarded(delegate
+                    AddDecorator(actions.TestInstanceActions.ExecuteTestInstanceChain);
+                });
+        }
+
+        private void AddDecorator(ActionChain<PatternTestInstanceState> chain)
+        {
+            chain.Around(delegate(PatternTestInstanceState childState, Action<PatternTestInstanceState> inner)
+            {
+                TestShell.RunGuarded(delegate
+                {
+                    using (ReadLockCookie.Create())
                     {
-                        using (ReadLockCookie.Create())
-                        {
-                            inner(childState);
-                        }
-                    });
+                        inner(childState);
+                    }
                 });
             });
         }

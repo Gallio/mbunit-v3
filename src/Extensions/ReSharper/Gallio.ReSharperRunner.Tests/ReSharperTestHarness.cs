@@ -51,7 +51,10 @@ namespace Gallio.ReSharperRunner.Tests
         {
             if (! IsShellInitialized)
             {
-                new GallioTestShell();
+                RunWithWriteLock(() =>
+                {
+                    new GallioTestShell();
+                });
             }
         }
 
@@ -69,11 +72,14 @@ namespace Gallio.ReSharperRunner.Tests
 
             if (IsShellInitialized)
             {
-                GallioTestShell shell = Shell.Instance as GallioTestShell;
-                if (shell != null)
+                RunWithWriteLock(() =>
                 {
-                    shell.TearDown();
-                }
+                    GallioTestShell shell = Shell.Instance as GallioTestShell;
+                    if (shell != null)
+                    {
+                        shell.TearDown();
+                    }
+                });
             }
         }
 

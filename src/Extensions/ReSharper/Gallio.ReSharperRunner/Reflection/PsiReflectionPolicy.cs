@@ -215,10 +215,17 @@ namespace Gallio.ReSharperRunner.Reflection
         {
             foreach (IProject project in psiManager.Solution.GetAllProjects())
             {
-                IAssemblyFile assemblyFile = BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
+                try
+                {
+                    IAssemblyFile assemblyFile = BuildSettingsManager.GetInstance(project).GetOutputAssemblyFile();
 
-                if (assemblyFile != null && IsMatchingAssemblyName(assemblyName, assemblyFile.AssemblyName))
-                    return new StaticAssemblyWrapper(this, project);
+                    if (assemblyFile != null && IsMatchingAssemblyName(assemblyName, assemblyFile.AssemblyName))
+                        return new StaticAssemblyWrapper(this, project);
+                }
+                catch (InvalidOperationException)
+                {
+                    // May be thrown if build settings are not available for the project.
+                }
             }
 
             foreach (IAssembly assembly in psiManager.Solution.GetAllAssemblies())
@@ -890,7 +897,11 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticAssemblyWrapper GetTypeAssembly(StaticDeclaredTypeWrapper type)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
             return new StaticAssemblyWrapper(this, typeHandle.Module);
+#else
+            return new StaticAssemblyWrapper(this, typeHandle.Module.ContainingProjectModule);
+#endif
         }
 
         protected override string GetTypeNamespace(StaticDeclaredTypeWrapper type)
