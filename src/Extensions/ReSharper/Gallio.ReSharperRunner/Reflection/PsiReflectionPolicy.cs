@@ -28,6 +28,7 @@ using JetBrains.ReSharper.Psi.Impl.Caches2;
 using JetBrains.ReSharper.Psi.Impl.Special;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
+using Gallio.Utilities;
 
 #if RESHARPER_31
 using JetBrains.ReSharper.Editor;
@@ -35,7 +36,6 @@ using ReSharperDocumentRange = JetBrains.ReSharper.Editor.DocumentRange;
 #else
 using JetBrains.DocumentModel;
 using ReSharperDocumentRange = JetBrains.DocumentModel.DocumentRange;
-using Gallio.Utilities;
 #endif
 
 namespace Gallio.ReSharperRunner.Reflection
