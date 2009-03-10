@@ -199,16 +199,23 @@ namespace MbUnit.Framework.ContractVerifiers.Core
             AssertAddItemFails(item, "Expected the list to refuse several identical items.");
         }
 
-        public void IndexOfItem(TItem item)
+        public void IndexOfItem(TItem item, bool isReadonly)
         {
             if (!List.Contains(item))
             {
                 AssertIndexOfMissingItem(item);
-                AssertAddItemOk(item, "Expected the collection to accept successfully a new item.");
+
+                if (!isReadonly)
+                {
+                    AssertAddItemOk(item, "Expected the collection to accept successfully a new item.");
+                }
             }
 
-            AssertIndexOfPresentItem(item);
-            AssertIndexOfConsistentWithIndexer(item);
+            if (List.Contains(item))
+            {
+                AssertIndexOfPresentItem(item);
+                AssertIndexOfConsistentWithIndexer(item);
+            }
         }
 
         public void RemoveItemAtOk(TItem item)

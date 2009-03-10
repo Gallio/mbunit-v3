@@ -31,7 +31,7 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <para>
     /// Since the generic <see cref="IList{T}"/> interface is a descendant of the generic <see cref="ICollection{T}"/> interface,
     /// the contract verifier has the same tests as the <see cref="CollectionContract{TCollection,TItem}"/> contract verifier, 
-    /// with the following built-in additional verifications:
+    /// plus the following built-in verifications:
     /// <list type="bullet">
     /// <item>
     /// <term>InsertShouldThrowException</term>
@@ -118,9 +118,6 @@ namespace MbUnit.Framework.ContractVerifiers
     /// </remarks>
     /// </description>
     /// </item>
-    /// 
-    /// 
-    /// 
     /// <item>
     /// <term>RemoveItemsAt</term>
     /// The collection handles correctly with the removal of items at specific indexes. The method 
@@ -141,6 +138,31 @@ namespace MbUnit.Framework.ContractVerifiers
     /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
     /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
     /// </remarks>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>GetItemsAtInvalidIndex</term>
+    /// <description>
+    /// The collection handles correctly with the retrieval of items at an invalid index. The indexer
+    /// should throw an <see cref="ArgumentOutOfRangeException"/> when called with a negative index or with
+    /// an index greater than the number of items in the list.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>GetSetItemsWithIndexer</term>
+    /// <description>
+    /// Setting and getting items by using the indexer property works as expected.
+    /// <remarks>
+    /// The test is not run when the contract property <see cref="CollectionContract{TCollection,TItem}.IsReadOnly"/> 
+    /// inherited from <see cref="CollectionContract{TCollection,TItem}"/>, is set to 'true'.
+    /// </remarks>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>IndexOfItem</term>
+    /// <description>
+    /// The retrieval of the index of an item in the collection works as expected, and the index can be used
+    /// effectively to get the item with the getter of the indexer property.
     /// </description>
     /// </item>
     /// </list>
@@ -188,12 +210,13 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 yield return CreateInsertItemsTest();
                 yield return CreateInsertItemsAtInvalidIndexTest();
-                yield return CreateIndexOfItemsTest();
                 yield return CreateRemoveItemsAtTest();
                 yield return CreateRemoveItemsAtInvalidIndexTest();
-                yield return CreateIndexerGetItemsAtInvalidIndexTest();
                 yield return CreateIndexerGetSetItemsTest();
             }
+
+            yield return CreateIndexOfItemsTest();
+            yield return CreateIndexerGetItemsAtInvalidIndexTest();
         }
 
         private Test CreateInsertItemsTest()
@@ -263,7 +286,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 foreach (var item in DistinctInstances)
                 {
-                    handler.IndexOfItem(item);
+                    handler.IndexOfItem(item, IsReadOnly);
                 }
             });
         }
