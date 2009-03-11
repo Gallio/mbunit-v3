@@ -171,8 +171,9 @@ namespace Gallio.Runtime.Hosting
             hostArguments.Append(@" /timeout:").Append((int)WatchdogTimeout.TotalSeconds);
             hostArguments.Append(@" /owner-process:").Append(Process.GetCurrentProcess().Id);
             if (HostSetup.ApplicationBaseDirectory != null)
-                hostArguments.Append(@" ""/application-base-directory:").Append(FileUtils.StripTrailingBackslash(HostSetup.ApplicationBaseDirectory)).Append('"');
-            hostArguments.Append(@" ""/configuration-file:").Append(temporaryConfigurationFilePath).Append('"');
+                hostArguments.Append(@" /application-base-directory:""").Append(
+                    FileUtils.StripTrailingBackslash(HostSetup.ApplicationBaseDirectory)).Append('"');
+            hostArguments.Append(@" /configuration-file:""").Append(temporaryConfigurationFilePath).Append('"');
             if (HostSetup.ShadowCopy)
                 hostArguments.Append(@" /shadow-copy");
             if (HostSetup.Debug)
