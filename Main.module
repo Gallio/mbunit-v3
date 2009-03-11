@@ -370,6 +370,26 @@
 	<Type>Namespace</Type>
         <IsInclude>false</IsInclude>
       </Filter>
+      <Filter>
+        <Pattern>Mono.*</Pattern>
+	<Type>Namespace</Type>
+        <IsInclude>false</IsInclude>
+      </Filter>
+      <Filter>
+        <Pattern>Cecil.*</Pattern>
+	<Type>Namespace</Type>
+        <IsInclude>false</IsInclude>
+      </Filter>
+      <Filter>
+        <Pattern>Sharpen.*</Pattern>
+	<Type>Namespace</Type>
+        <IsInclude>false</IsInclude>
+      </Filter>
+      <Filter>
+        <Pattern>Db4objects.*</Pattern>
+	<Type>Namespace</Type>
+        <IsInclude>false</IsInclude>
+      </Filter>
     </CoverageFilters>
     <SatisfactoryCoverage>
         <Threshold>
@@ -417,7 +437,7 @@
 		    ProjectName="Gallio"
 		    ReportDataFilter="Assembly, Namespace"
 		    ReportFormat="Xml"
-		    ReportType="SymbolModuleNamespaceClass"
+		    ReportType="SymbolModuleNamespaceClassMethod"
 		    SortBy="ClassLine"
 		    MaxTopUncoveredToReport="20"
 		    CoverageFilters="$(CoverageFilters)"
