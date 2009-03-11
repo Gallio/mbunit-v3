@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <Target Name="BeforeBuild">
-    <Error Text="VSIP packages must be installed to ensure that Gallio.VisualStudio.Interop component can be built.  This component is currently required for several features including navigate to source and debugging support.  Later it will be injected via the IoC." />
+    <Error Condition="! $(VSIPInstalled)"
+           Text="VSIP packages must be installed to ensure that Gallio.VisualStudio.Interop component can be built.  This component is currently required for several features including navigate to source and debugging support.  Later it will be injected via the IoC." />
   </Target>
 </Project>
