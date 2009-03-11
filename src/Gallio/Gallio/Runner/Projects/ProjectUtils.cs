@@ -22,7 +22,7 @@ using NDepend.Helpers.FileDirectoryPath;
 namespace Gallio.Runner.Projects
 {
     /// <summary>
-    /// 
+    /// Utilities for working with Gallio projects.
     /// </summary>
     public class ProjectUtils
     {
@@ -71,8 +71,10 @@ namespace Gallio.Runner.Projects
         }
 
         /// <summary>
-        /// 
+        /// Save a Gallio project to disk.
         /// </summary>
+        /// <param name="project">The Project instance to save.</param>
+        /// <param name="projectLocation">The location to save it to.</param>
         public static void SaveProject(Project project, string projectLocation)
         {
             ConvertToRelativePaths(project, Path.GetDirectoryName(projectLocation));
