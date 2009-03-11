@@ -387,7 +387,8 @@ namespace Gallio.Framework.Pattern
         /// Infers whether the type is a test type based on its structure.
         /// Returns true if the type any associated patterns, if it has
         /// non-nested type members (subject to <see cref="GetMemberBindingFlags" />)
-        /// with patterns, or if it has generic parameters with patterns.
+        /// with patterns, if it has generic parameters with patterns, or if any
+        /// of its nested types satisfy the preceding rules.
         /// </summary>
         /// <param name="evaluator">The pattern evaluator</param>
         /// <param name="type">The type</param>
@@ -398,12 +399,19 @@ namespace Gallio.Framework.Pattern
                 return true;
 
             BindingFlags bindingFlags = GetMemberBindingFlags(type);
-            return HasCodeElementWithPattern(evaluator, type.GetMethods(bindingFlags))
+            if (HasCodeElementWithPattern(evaluator, type.GetMethods(bindingFlags))
                 || HasCodeElementWithPattern(evaluator, type.GetProperties(bindingFlags))
                 || HasCodeElementWithPattern(evaluator, type.GetFields(bindingFlags))
                 || HasCodeElementWithPattern(evaluator, type.GetConstructors(bindingFlags))
                 || HasCodeElementWithPattern(evaluator, type.GetEvents(bindingFlags))
-                || (type.IsGenericTypeDefinition && HasCodeElementWithPattern(evaluator, type.GenericArguments));
+                || (type.IsGenericTypeDefinition && HasCodeElementWithPattern(evaluator, type.GenericArguments)))
+                return true;
+
+            foreach (ITypeInfo nestedType in type.GetNestedTypes(bindingFlags))
+                if (InferTestType(evaluator, nestedType))
+                    return true;
+
+            return false;
         }
 
         private static bool HasCodeElementWithPattern<T>(IPatternEvaluator evaluator, IEnumerable<T> elements)
@@ -425,10 +433,6 @@ namespace Gallio.Framework.Pattern
                     if (InferTestType(containingScope.Evaluator, type))
                     {
                         base.Consume(containingScope, codeElement, skipChildren);
-                    }
-                    else
-                    {
-                        ConsumeNestedTypes(containingScope, type);
                     }
                 }
             }

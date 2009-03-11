@@ -212,7 +212,7 @@ namespace Gallio.Model.Serialization
                                 targetTest.Metadata.Add(pairs.Key, value);
 
                     foreach (TestData child in test.Children)
-                        MergeSubtree(targetTest.Id, child);
+                        MergeSubtree(test.Id, child);
 
                     return targetTest;
                 }

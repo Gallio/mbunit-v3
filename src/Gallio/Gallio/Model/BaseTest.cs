@@ -227,7 +227,7 @@ namespace Gallio.Model
                 foreach (ITest sibling in parent.Children)
                 {
                     if (sibling != this && sibling.LocalId == localId)
-                        return true;
+                        return false;
                 }
             }
 
