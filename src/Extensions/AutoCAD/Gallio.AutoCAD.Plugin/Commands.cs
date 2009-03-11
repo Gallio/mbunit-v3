@@ -105,20 +105,25 @@ namespace Gallio.AutoCAD.Plugin
         {
             ownerProcess = null;
 
-            PromptIntegerResult prompt = ActiveEditor.GetInteger(new PromptIntegerOptions("Owner process ID:") { LowerLimit = 1, UpperLimit = Int32.MaxValue });
+            PromptResult prompt = ActiveEditor.GetString("Owner process ID:");
             if (prompt.Status != PromptStatus.OK)
                 return false;
+
             try
             {
-                ownerProcess = Process.GetProcessById(prompt.Value);
+                int procId;
+                if (Int32.TryParse(prompt.StringResult, out procId))
+                {
+                    ownerProcess = Process.GetProcessById(procId);
+                    return true;
+                }
             }
             catch (ArgumentException)
             {
-                ActiveEditor.WriteMessage("Unable to find process with ID \"{0}\".\n", prompt.Value);
-                return false;
             }
 
-            return true;
+            ActiveEditor.WriteMessage("Unable to find process with ID \"{0}\".\n", prompt.StringResult);
+            return false;
         }
 
         private static bool GetIpcPortName(out string ipcPortName)
