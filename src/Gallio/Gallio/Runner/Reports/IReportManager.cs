@@ -36,12 +36,12 @@ namespace Gallio.Runner.Reports
         /// </summary>
         /// <param name="reportWriter">The report writer</param>
         /// <param name="formatterName">The formatter name</param>
-        /// <param name="formatterOptions">Custom options for the report formatter</param>
+        /// <param name="formatterOptions">The report formatter options</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportWriter"/>, <paramref name="formatterName"/>,
         /// <paramref name="formatterOptions"/> or <paramref name="progressMonitor"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if there is no formatter with the specified name</exception>
-        void Format(IReportWriter reportWriter, string formatterName, NameValueCollection formatterOptions, IProgressMonitor progressMonitor);
+        void Format(IReportWriter reportWriter, string formatterName, ReportFormatterOptions formatterOptions, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Gets a report reader to load a report from the specified container.

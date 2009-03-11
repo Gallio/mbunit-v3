@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Specialized;
 
 namespace Gallio.Runner
 {
@@ -21,8 +22,27 @@ namespace Gallio.Runner
     /// Provides options that control the operation of the test runner.
     /// </summary>
     [Serializable]
-    public class TestRunnerOptions
+    public sealed class TestRunnerOptions
     {
+        private readonly NameValueCollection properties;
+
+        /// <summary>
+        /// Creates a default set of options.
+        /// </summary>
+        public TestRunnerOptions()
+        {
+            properties = new NameValueCollection();
+        }
+
+        /// <summary>
+        /// Gets a mutable collection of key/value pairs that specify configuration properties
+        /// for the test runner.
+        /// </summary>
+        public NameValueCollection Properties
+        {
+            get { return properties; }
+        }
+
         /// <summary>
         /// Creates a copy of the options.
         /// </summary>
@@ -30,6 +50,7 @@ namespace Gallio.Runner
         public TestRunnerOptions Copy()
         {
             TestRunnerOptions copy = new TestRunnerOptions();
+            copy.properties.Add(properties);
 
             return copy;
         }

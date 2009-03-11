@@ -127,14 +127,14 @@ namespace Gallio.Runner
         /// <param name="reportDirectory">The report directory</param>
         /// <param name="reportName">The report name</param>
         /// <param name="reportFormats">The report formats to generate</param>
-        /// <param name="reportFormatOptions">The report formatting options</param>
+        /// <param name="reportFormatOptions">The report formatter options</param>
         /// <param name="reportManager">The report manager</param>
         /// <param name="progressMonitor">A progress monitor for the operation</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportDirectory"/>,
         /// <paramref name="reportName"/>, <paramref name="reportFormats"/>, <paramref name="reportFormatOptions"/>,
         /// <paramref name="reportManager"/>, or <paramref name="progressMonitor"/> is null.</exception>
         public void GenerateReports(string reportDirectory, string reportName, IList<string> reportFormats,
-            NameValueCollection reportFormatOptions, IReportManager reportManager, IProgressMonitor progressMonitor)
+            ReportFormatterOptions reportFormatOptions, IReportManager reportManager, IProgressMonitor progressMonitor)
         {
             if (reportDirectory == null)
                 throw new ArgumentNullException("reportDirectory");

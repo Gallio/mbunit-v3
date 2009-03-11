@@ -47,7 +47,7 @@ namespace Gallio.Runner.Reports
         }
 
         /// <inheritdoc />
-        public void Format(IReportWriter reportWriter, string formatterName, NameValueCollection formatterOptions,
+        public void Format(IReportWriter reportWriter, string formatterName, ReportFormatterOptions formatterOptions,
             IProgressMonitor progressMonitor)
         {
             if (reportWriter == null)

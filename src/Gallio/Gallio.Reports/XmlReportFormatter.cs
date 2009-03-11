@@ -58,7 +58,7 @@ namespace Gallio.Reports
         }
 
         /// <inheritdoc />
-        public override void Format(IReportWriter reportWriter, NameValueCollection options, IProgressMonitor progressMonitor)
+        public override void Format(IReportWriter reportWriter, ReportFormatterOptions options, IProgressMonitor progressMonitor)
         {
             AttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 

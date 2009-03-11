@@ -32,7 +32,7 @@ namespace Gallio.Reports.Tests
     [TestsOn(typeof(MHtmlReportFormatter))]
     public class MHtmlReportFormatterTest : BaseTestWithMocks
     {
-        private delegate void FormatDelegate(IReportWriter reportWriter, NameValueCollection formatterOptions, IProgressMonitor progressMonitor);
+        private delegate void FormatDelegate(IReportWriter reportWriter, ReportFormatterOptions formatterOptions, IProgressMonitor progressMonitor);
 
         [Test, ExpectedArgumentNullException]
         public void NameCannotBeNull()
@@ -59,7 +59,7 @@ namespace Gallio.Reports.Tests
             IReportContainer reportContainer = Mocks.StrictMock<IReportContainer>();
             IReportFormatter htmlReportFormatter = Mocks.StrictMock<IReportFormatter>();
             IProgressMonitor progressMonitor = NullProgressMonitor.CreateInstance();
-            NameValueCollection options = new NameValueCollection();
+            var reportFormatterOptions = new ReportFormatterOptions();
 
             string reportPath = Path.GetTempFileName();
             using (Stream tempFileStream = File.OpenWrite(reportPath))
@@ -80,8 +80,8 @@ namespace Gallio.Reports.Tests
                     reportWriter.AddReportDocumentPath("Foo.mht");
 
                     Expect.Call(delegate { htmlReportFormatter.Format(null, null, null); })
-                        .Constraints(Is.NotNull(), Is.Same(options), Is.NotNull())
-                        .Do((FormatDelegate)delegate(IReportWriter innerReportWriter, NameValueCollection innerFormatterOptions, IProgressMonitor innerProgressMonitor)
+                        .Constraints(Is.NotNull(), Is.Same(reportFormatterOptions), Is.NotNull())
+                        .Do((FormatDelegate)delegate(IReportWriter innerReportWriter, ReportFormatterOptions innerFormatterOptions, IProgressMonitor innerProgressMonitor)
                         {
                             using (StreamWriter contentWriter = new StreamWriter(innerReportWriter.ReportContainer.OpenWrite("Foo.html", MimeTypes.Html, Encoding.UTF8)))
                                 contentWriter.Write("<html><body>Some HTML</body></html>");
@@ -99,7 +99,7 @@ namespace Gallio.Reports.Tests
                 {
                     MHtmlReportFormatter formatter = new MHtmlReportFormatter("SomeName", "description", htmlReportFormatter);
 
-                    formatter.Format(reportWriter, options, progressMonitor);
+                    formatter.Format(reportWriter, reportFormatterOptions, progressMonitor);
 
                     string reportContents = File.ReadAllText(reportPath);
                     TestLog.AttachPlainText("MHTML Report", reportContents);

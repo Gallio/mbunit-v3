@@ -69,7 +69,7 @@ namespace Gallio.Runner
         private TestExecutionOptions testExecutionOptions;
 
         private readonly List<string> reportFormats;
-        private readonly NameValueCollection reportFormatOptions;
+        private ReportFormatterOptions reportFormatterOptions;
 
         private IProgressMonitorProvider progressMonitorProvider;
         private ILogger logger;
@@ -107,7 +107,7 @@ namespace Gallio.Runner
             reportDirectory = @"";
             reportNameFormat = @"test-report-{0}-{1}";
             reportFormats = new List<string>();
-            reportFormatOptions = new NameValueCollection();
+            reportFormatterOptions = new ReportFormatterOptions();
 
             progressMonitorProvider = NullProgressMonitorProvider.Instance;
             logger = NullLogger.Instance;
@@ -369,11 +369,19 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Gets the mutable collection of options for the report formatters.
+        /// Gets or sets the report formatter options.
         /// </summary>
-        public NameValueCollection ReportFormatOptions
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public ReportFormatterOptions ReportFormatterOptions
         {
-            get { return reportFormatOptions; }
+            get { return reportFormatterOptions; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                reportFormatterOptions = value;
+            }
         }
 
         /// <summary>
@@ -620,7 +628,7 @@ namespace Gallio.Runner
             RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 result.GenerateReports(reportDirectory, GenerateReportName(result.Report), reportFormats,
-                    reportFormatOptions, reportManager, progressMonitor);
+                    reportFormatterOptions, reportManager, progressMonitor);
             });
         }
 

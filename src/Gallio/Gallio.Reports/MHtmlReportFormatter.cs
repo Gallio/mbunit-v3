@@ -51,7 +51,7 @@ namespace Gallio.Reports
         }
 
         /// <inheritdoc />
-        public override void Format(IReportWriter reportWriter, NameValueCollection formatterOptions, IProgressMonitor progressMonitor)
+        public override void Format(IReportWriter reportWriter, ReportFormatterOptions formatterOptions, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10))
             {

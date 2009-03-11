@@ -97,7 +97,7 @@ namespace Gallio.Reports
         }
 
         /// <inheritdoc />
-        public override void Format(IReportWriter reportWriter, NameValueCollection options, IProgressMonitor progressMonitor)
+        public override void Format(IReportWriter reportWriter, ReportFormatterOptions options, IProgressMonitor progressMonitor)
         {
             AttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 
@@ -138,8 +138,7 @@ namespace Gallio.Reports
         /// <summary>
         /// Applies the transform to produce a report.
         /// </summary>
-        protected virtual void ApplyTransform(IReportWriter reportWriter, AttachmentContentDisposition attachmentContentDisposition,
-            NameValueCollection options)
+        protected virtual void ApplyTransform(IReportWriter reportWriter, AttachmentContentDisposition attachmentContentDisposition, ReportFormatterOptions options)
         {
             XsltArgumentList arguments = new XsltArgumentList();
             PopulateArguments(arguments, options, reportWriter.ReportContainer.ReportName);
@@ -177,7 +176,7 @@ namespace Gallio.Reports
         /// <summary>
         /// Populates the arguments for the XSL template processing.
         /// </summary>
-        protected virtual void PopulateArguments(XsltArgumentList arguments, NameValueCollection options, string reportName)
+        protected virtual void PopulateArguments(XsltArgumentList arguments, ReportFormatterOptions options, string reportName)
         {
             arguments.AddParam(@"resourceRoot", @"", reportName);
         }

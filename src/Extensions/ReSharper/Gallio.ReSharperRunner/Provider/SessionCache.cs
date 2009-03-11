@@ -56,8 +56,8 @@ namespace Gallio.ReSharperRunner.Provider
                 IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
                 FileSystemReportContainer reportContainer = new FileSystemReportContainer(htmlReportFile.DirectoryName, ReportBaseName);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
-                NameValueCollection options = new NameValueCollection();
-                reportManager.Format(reportWriter, condensed ? "Html-Condensed" : "Html", options, NullProgressMonitor.CreateInstance());
+                var reportFormatterOptions = new ReportFormatterOptions();
+                reportManager.Format(reportWriter, condensed ? "Html-Condensed" : "Html", reportFormatterOptions, NullProgressMonitor.CreateInstance());
             }
 
             return htmlReportFile;

@@ -22,7 +22,7 @@ namespace Gallio.Model.Execution
     /// Provides options that control how test execution occurs.
     /// </summary>
     [Serializable]
-    public class TestExecutionOptions
+    public sealed class TestExecutionOptions
     {
         private Filter<ITest> filter = new AnyFilter<ITest>();
         private bool skipDynamicTests;

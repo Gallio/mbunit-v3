@@ -165,10 +165,10 @@ namespace Gallio.Reports.Tests
                 using (Mocks.Playback())
                 {
                     XsltReportFormatter formatter = new XsltReportFormatter(runtime, "SomeName", "description", "ext", MimeTypes.PlainText, "file://content", "Diagnostic.xslt", new string[] { "MbUnitLogo.png" });
-                    NameValueCollection options = new NameValueCollection();
-                    options.Add(XsltReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
+                    var reportFormatterOptions = new ReportFormatterOptions();
+                    reportFormatterOptions.Properties.Add(XsltReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
 
-                    formatter.Format(reportWriter, options, progressMonitor);
+                    formatter.Format(reportWriter, reportFormatterOptions, progressMonitor);
 
                     string reportContents = File.ReadAllText(reportPath);
                     TestLog.EmbedXml("Diagnostic report contents", reportContents);

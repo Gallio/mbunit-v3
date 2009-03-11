@@ -70,9 +70,9 @@ namespace Gallio.Reports
         /// </summary>
         /// <param name="options">The formatter options</param>
         /// <returns>The attachment content disposition</returns>
-        protected AttachmentContentDisposition GetAttachmentContentDisposition(NameValueCollection options)
+        protected AttachmentContentDisposition GetAttachmentContentDisposition(ReportFormatterOptions options)
         {
-            string option = options.Get(AttachmentContentDispositionOption);
+            string option = options.Properties.Get(AttachmentContentDispositionOption);
             if (option != null)
             {
                 try
@@ -101,7 +101,7 @@ namespace Gallio.Reports
         }
 
         /// <inheritdoc />
-        public abstract void Format(IReportWriter reportWriter, NameValueCollection formatterOptions,
+        public abstract void Format(IReportWriter reportWriter, ReportFormatterOptions formatterOptions,
             IProgressMonitor progressMonitor);
     }
 }

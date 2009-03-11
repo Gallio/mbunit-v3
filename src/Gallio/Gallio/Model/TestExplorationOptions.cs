@@ -21,7 +21,7 @@ namespace Gallio.Model
     /// Provides options that control how test exploration occurs.
     /// </summary>
     [Serializable]
-    public class TestExplorationOptions
+    public sealed class TestExplorationOptions
     {
         /// <summary>
         /// Creates a copy of the options.

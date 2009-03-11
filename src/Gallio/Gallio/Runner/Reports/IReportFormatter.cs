@@ -29,10 +29,10 @@ namespace Gallio.Runner.Reports
         /// Formats the report indicated by the report writer.
         /// </summary>
         /// <param name="reportWriter">The report writer</param>
-        /// <param name="formatterOptions">Custom options for the report formatter</param>
+        /// <param name="formatterOptions">The report formatter options</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="reportWriter"/>,
         /// <paramref name="formatterOptions"/> or <paramref name="progressMonitor"/> is null</exception>
-        void Format(IReportWriter reportWriter, NameValueCollection formatterOptions, IProgressMonitor progressMonitor);
+        void Format(IReportWriter reportWriter, ReportFormatterOptions formatterOptions, IProgressMonitor progressMonitor);
     }
 }

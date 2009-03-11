@@ -82,9 +82,9 @@ namespace Gallio.Reports.Tests
             using (Mocks.Playback())
             {
                 XmlReportFormatter formatter = new XmlReportFormatter("Xml", "description");
-                NameValueCollection options = new NameValueCollection();
+                var reportFormatterOptions = new ReportFormatterOptions();
 
-                formatter.Format(writer, options, progressMonitor);
+                formatter.Format(writer, reportFormatterOptions, progressMonitor);
             }
         }
 
@@ -102,8 +102,8 @@ namespace Gallio.Reports.Tests
             using (Mocks.Playback())
             {
                 XmlReportFormatter formatter = new XmlReportFormatter("Xml", "description");
-                NameValueCollection options = new NameValueCollection();
-                options.Add(XmlReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
+                ReportFormatterOptions options = new ReportFormatterOptions();
+                options.Properties.Add(XmlReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
 
                 formatter.Format(writer, options, progressMonitor);
             }

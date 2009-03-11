@@ -52,8 +52,9 @@ namespace Gallio.Icarus.Services
                 progressMonitor.Worked(10);
 
                 // Format the report
+                var reportFormatterOptions = new ReportFormatterOptions();
                 using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
-                    reportManager.Format(reportWriter, format, new NameValueCollection(), subProgressMonitor);
+                    reportManager.Format(reportWriter, format, reportFormatterOptions, subProgressMonitor);
 
                 if (reportWriter.ReportDocumentPaths.Count > 0)
                     file = Path.Combine(folderName, reportWriter.ReportDocumentPaths[0]);

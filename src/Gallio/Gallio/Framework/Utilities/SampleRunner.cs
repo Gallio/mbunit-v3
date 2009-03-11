@@ -265,7 +265,7 @@ namespace Gallio.Framework.Utilities
             string reportDirectory = Path.GetTempPath();
             launcher.ReportDirectory = reportDirectory;
             launcher.ReportNameFormat = "SampleRunnerReport";
-            launcher.ReportFormatOptions.Add(@"SaveAttachmentContents", @"false");
+            launcher.ReportFormatterOptions.Properties.Add(@"SaveAttachmentContents", @"false");
             launcher.ReportFormats.Add(@"Text");
 
             launcher.DoNotRun = doNoRun;
