@@ -135,23 +135,7 @@ namespace Gallio.VisualStudio.Tip
                     }
                 }
 
-                RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
-                {
-                    runner.Load(testPackageConfig, progressMonitor);
-                });
-
-                if (isCanceled)
-                    return;
-
                 TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
-                RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
-                {
-                    runner.Explore(testExplorationOptions, progressMonitor);
-                });
-
-                if (isCanceled)
-                    return;
-
                 TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
 
                 List<Filter<string>> idFilters = new List<Filter<string>>();
@@ -167,7 +151,7 @@ namespace Gallio.VisualStudio.Tip
 
                 RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)
                 {
-                    runner.Run(testExecutionOptions, progressMonitor);
+                    runner.Run(testPackageConfig, testExplorationOptions, testExecutionOptions, progressMonitor);
                 });
             }
             finally

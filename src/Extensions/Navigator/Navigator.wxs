@@ -1,29 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <?include ..\..\Installer.Wix\Features.wxi ?>
-	
+
     <Fragment>
         <DirectoryRef Id="binFolder" FileSource="$(var.GallioTargetDir)\bin\">
-            <Directory Id="Navigator" Name="Navigator">
-                <Component Id="Navigator.Gallio.VisualStudio.Interop.dll" Guid="{D6CDDB34-A334-490b-AFF1-29D572830CCC}" Win64="no">
-                    <File Id="Navigator.Gallio.VisualStudio.Interop.dll" Name="Gallio.VisualStudio.Interop.dll" KeyPath="yes" 
-                          Assembly=".net" AssemblyApplication="Gallio.Navigator.exe" />
-                </Component>
-		
-                <Component Id="Gallio.Navigator.exe" Guid="{AF22A32E-D8AA-40a2-8E14-07A70C52F46F}" Win64="no">
-                    <File Name="Gallio.Navigator.exe" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.Navigator.exe" />
-                    <File Name="Gallio.Navigator.exe.config" />
-                </Component>
-		
-                <Component Id="Navigator.Readme.txt" Guid="{AA7095B2-D4F7-480a-ADCD-DE5B46C10BA2}" Win64="no">
-                    <File Id="Navigator.Readme.txt" Name="Readme.txt" KeyPath="yes" />
-                </Component>
-            </Directory>
+            <Component Id="Gallio.Navigator.exe" Guid="{AF22A32E-D8AA-40a2-8E14-07A70C52F46F}" Win64="no">
+                <File Name="Gallio.Navigator.exe" KeyPath="yes" Assembly=".net" AssemblyApplication="Gallio.Navigator.exe" />
+                <File Name="Gallio.Navigator.exe.config" />
+            </Component>
         </DirectoryRef>
 
         <Feature Id='feat_Navigator' Title='Browser Integration' Level='1' AllowAdvertise="no"
             Description='Provides integration with Internet Explorer and Firefox to enable navigation to source code from Gallio reports.'>
-	    <ComponentRef Id="Navigator.Gallio.VisualStudio.Interop.dll"/>
             <ComponentRef Id="Gallio.Navigator.exe"/>
             <ComponentRef Id="Navigator.Readme.txt"/>
         </Feature>

@@ -22,6 +22,7 @@ using Gallio.Collections;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Logging;
+using Gallio.Model.Messages;
 using Gallio.Runner;
 using Gallio.Runner.Drivers;
 using Gallio.Runtime;
@@ -51,7 +52,9 @@ namespace Gallio.Tests.Runner.Drivers
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             testPackageConfig.AssemblyFiles.AddRange(testAssemblies);
 
-            Assert.Throws<HostException>(() => driver.Load(testPackageConfig, NullProgressMonitor.CreateInstance()));
+            Assert.Throws<HostException>(() => driver.Explore(testPackageConfig,
+                new TestExplorationOptions(), MockRepository.GenerateStub<ITestExplorationListener>(),
+                NullProgressMonitor.CreateInstance()));
 
             Assert.AreEqual(expectedProcessorArchitecture, driver.ProcessorArchitecture);
         }
@@ -66,7 +69,10 @@ namespace Gallio.Tests.Runner.Drivers
             testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x86.dll");
             testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x64.dll");
 
-            RunnerException ex = Assert.Throws<RunnerException>(() => driver.Load(testPackageConfig, NullProgressMonitor.CreateInstance()));
+            RunnerException ex = Assert.Throws<RunnerException>(() => driver.Explore(testPackageConfig,
+                new TestExplorationOptions(), MockRepository.GenerateStub<ITestExplorationListener>(),
+                NullProgressMonitor.CreateInstance()));
+
             Assert.Contains(ex.Message, "Cannot run all test assemblies together");
         }
 

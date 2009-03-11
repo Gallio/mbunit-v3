@@ -28,6 +28,11 @@ namespace Gallio.Runtime.Hosting
         private readonly string runtimePath;
 
         /// <summary>
+        /// Gets the component Id of this factory.
+        /// </summary>
+        public static readonly string ComponentId = "Core.IsolatedProcessHostFactory";
+
+        /// <summary>
         /// Creates a host factory.
         /// </summary>
         /// <param name="runtime">The runtime</param>

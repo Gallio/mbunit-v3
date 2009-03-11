@@ -40,19 +40,19 @@ namespace Gallio.VisualStudio.Interop
         };
 
         /// <summary>
-        /// <para>
-        /// Runs a block of code with the currently active Visual Studio DTE either by finding the currently
-        /// active instance or by starting one.
-        /// </para>
+        /// Runs a block of code with the Visual Studio DTE.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The action runs in an STA thread context and the appropriate <see cref="ComRetryMessageFilter" /> installed.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="action">The action to run</param>
         /// <param name="retryTimeout">The COM retry timeout</param>
+        /// <param name="spawnIfNoActiveInstance">If true, then starts a new instance of Visual Studio if none is currently active</param>
         /// <returns>True if the action ran, false if no active instance of Visual Studio was found</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
-        public static bool SafeRunWithActiveVisualStudio(Action<DTE> action, TimeSpan retryTimeout)
+        public static bool RunWithVisualStudio(Action<DTE> action, TimeSpan retryTimeout, bool spawnIfNoActiveInstance)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
@@ -62,11 +62,11 @@ namespace Gallio.VisualStudio.Interop
 
             if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
             {
-                SafeRunWithActiveVisualStudio(action, retryTimeout, out ran, out exception);
+                RunWithVisualStudio(action, retryTimeout, spawnIfNoActiveInstance, out ran, out exception);
             }
             else
             {
-                var thread = new Thread(() => SafeRunWithActiveVisualStudio(action, retryTimeout, out ran, out exception));
+                var thread = new Thread(() => RunWithVisualStudio(action, retryTimeout, spawnIfNoActiveInstance, out ran, out exception));
                 thread.SetApartmentState(ApartmentState.STA);
                 thread.Start();
                 thread.Join();
@@ -78,7 +78,7 @@ namespace Gallio.VisualStudio.Interop
             return ran;
         }
 
-        private static void SafeRunWithActiveVisualStudio(Action<DTE> action, TimeSpan retryTimeout, out bool ran, out Exception exception)
+        private static void RunWithVisualStudio(Action<DTE> action, TimeSpan retryTimeout, bool spawnIfNoActiveInstance, out bool ran, out Exception exception)
         {
             ran = false;
             exception = null;
@@ -86,7 +86,7 @@ namespace Gallio.VisualStudio.Interop
             ComRetryMessageFilter.Install(retryTimeout);
             try
             {
-                DTE dte = GetActiveVisualStudio();
+                DTE dte = GetVisualStudio(spawnIfNoActiveInstance);
                 if (dte != null)
                 {
                     ran = true;
@@ -101,6 +101,15 @@ namespace Gallio.VisualStudio.Interop
             {
                 ComRetryMessageFilter.Uninstall();
             }
+        }
+
+        private static DTE GetVisualStudio(bool spawnIfNoActiveInstance)
+        {
+            DTE dte = GetActiveVisualStudio();
+            if (dte == null && spawnIfNoActiveInstance)
+                dte = LaunchVisualStudio9();
+
+            return dte;
         }
 
         /// <summary>

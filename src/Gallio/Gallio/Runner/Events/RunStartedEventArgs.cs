@@ -14,7 +14,10 @@
 // limitations under the License.
 
 using System;
+using Gallio.Concurrency;
+using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Events
 {
@@ -23,19 +26,51 @@ namespace Gallio.Runner.Events
     /// </summary>
     public sealed class RunStartedEventArgs : OperationStartedEventArgs
     {
+        private readonly TestPackageConfig testPackageConfig;
+        private readonly TestExplorationOptions testExplorationOptions;
         private readonly TestExecutionOptions testExecutionOptions;
+        private readonly LockBox<Report> reportLockBox;
 
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
+        /// <param name="testPackageConfig">The test package configuration</param>
+        /// <param name="testExplorationOptions">The test exploration options</param>
         /// <param name="testExecutionOptions">The test execution options</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testExecutionOptions"/> is null</exception>
-        public RunStartedEventArgs(TestExecutionOptions testExecutionOptions)
+        /// <param name="reportLockBox">The report lock-box which may be used to access the report asynchronously during execution</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
+        /// <paramref name="testExplorationOptions"/> or <paramref name="testExecutionOptions"/> is null</exception>
+        public RunStartedEventArgs(TestPackageConfig testPackageConfig,
+            TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions,
+            LockBox<Report> reportLockBox)
         {
+            if (testPackageConfig == null)
+                throw new ArgumentNullException("testPackageConfig");
+            if (testExplorationOptions == null)
+                throw new ArgumentNullException("testExplorationOptions");
             if (testExecutionOptions == null)
                 throw new ArgumentNullException("testExecutionOptions");
 
+            this.testPackageConfig = testPackageConfig;
+            this.testExplorationOptions = testExplorationOptions;
             this.testExecutionOptions = testExecutionOptions;
+            this.reportLockBox = reportLockBox;
+        }
+
+        /// <summary>
+        /// Gets the test package configuration.
+        /// </summary>
+        public TestPackageConfig TestPackageConfig
+        {
+            get { return testPackageConfig; }
+        }
+
+        /// <summary>
+        /// Gets the test exploration options.
+        /// </summary>
+        public TestExplorationOptions TestExplorationOptions
+        {
+            get { return testExplorationOptions; }
         }
 
         /// <summary>
@@ -44,6 +79,14 @@ namespace Gallio.Runner.Events
         public TestExecutionOptions TestExecutionOptions
         {
             get { return testExecutionOptions; }
+        }
+
+        /// <summary>
+        /// Gets the report lock-box which may be used to access the report asynchronously during execution.
+        /// </summary>
+        public LockBox<Report> ReportLockBox
+        {
+            get { return reportLockBox; }
         }
     }
 }

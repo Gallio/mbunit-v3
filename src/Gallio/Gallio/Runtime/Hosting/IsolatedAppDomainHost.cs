@@ -14,9 +14,11 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime;
 using Gallio.Reflection;
@@ -42,6 +44,8 @@ namespace Gallio.Runtime.Hosting
     /// </remarks>
     public class IsolatedAppDomainHost : RemoteHost
     {
+        private readonly IDebuggerManager debuggerManager;
+
         private AppDomain appDomain;
         private CurrentDirectorySwitcher currentDirectorySwitcher;
         private string temporaryConfigurationFilePath;
@@ -51,11 +55,16 @@ namespace Gallio.Runtime.Hosting
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
         /// <param name="logger">The logger for host message output</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>
-        /// or <paramref name="logger"/> is null</exception>
-        public IsolatedAppDomainHost(HostSetup hostSetup, ILogger logger)
+        /// <param name="debuggerManager">The debugger manager</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>, <paramref name="logger"/>
+        /// or <paramref name="debuggerManager"/> is null</exception>
+        public IsolatedAppDomainHost(HostSetup hostSetup, ILogger logger, IDebuggerManager debuggerManager)
             : base(hostSetup, logger, null)
         {
+            if (debuggerManager == null)
+                throw new ArgumentNullException("debuggerManager");
+
+            this.debuggerManager = debuggerManager;
         }
 
         /// <inheritdoc />
@@ -75,6 +84,7 @@ namespace Gallio.Runtime.Hosting
                 SetWorkingDirectory();
                 CreateTemporaryConfigurationFile();
                 CreateAppDomain();
+                AttachDebuggerIfNeeded(debuggerManager, Process.GetCurrentProcess());
 
                 return (IRemoteHostService) AppDomainUtils.CreateRemoteInstance(appDomain, typeof(RemoteHostService), (TimeSpan?)null);
             }
@@ -87,6 +97,7 @@ namespace Gallio.Runtime.Hosting
 
         private void FreeResources()
         {
+            DetachDebuggerIfNeeded();
             UnloadAppDomain();
             ResetWorkingDirectory();
             DeleteTemporaryConfigurationFile();

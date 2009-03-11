@@ -16,7 +16,7 @@
 using System;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Serialization;
+using Gallio.Model.Messages;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
@@ -38,39 +38,30 @@ namespace Gallio.Runner.Drivers
         void Initialize(RuntimeSetup runtimeSetup, ILogger logger);
 
         /// <summary>
-        /// Loads a test package.
+        /// Explores tests in a test package.
         /// </summary>
         /// <param name="testPackageConfig">The test package configuration</param>
+        /// <param name="testExplorationOptions">The test exploration options</param>
+        /// <param name="testExplorationListener">The test exploration listener</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>
-        /// or <paramref name="progressMonitor"/> is null</exception>
-        void Load(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor);
+        /// <returns>The test report</returns>
+        void Explore(TestPackageConfig testPackageConfig,
+            TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener,
+            IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// Explores the tests.
+        /// Explores and runs tests in a test package.
         /// </summary>
-        /// <param name="options">The test exploration options</param>
+        /// <param name="testPackageConfig">The test package configuration</param>
+        /// <param name="testExplorationOptions">The test exploration options</param>
+        /// <param name="testExplorationListener">The test exploration listener</param>
+        /// <param name="testExecutionOptions">The test execution options</param>
+        /// <param name="testExecutionListener">The test execution listener</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <returns>The test model data</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/>
-        /// or <paramref name="progressMonitor"/> is null</exception>
-        TestModelData Explore(TestExplorationOptions options, IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Runs the tests.
-        /// </summary>
-        /// <param name="options">The test execution options</param>
-        /// <param name="listener">The test listener</param>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/>,
-        /// <paramref name="listener"/> or <paramref name="progressMonitor"/> is null</exception>
-        void Run(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Unloads the tests.
-        /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        void Unload(IProgressMonitor progressMonitor);
+        /// <returns>The test report</returns>
+        void Run(TestPackageConfig testPackageConfig,
+            TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener,
+            TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener,
+            IProgressMonitor progressMonitor);
     }
 }

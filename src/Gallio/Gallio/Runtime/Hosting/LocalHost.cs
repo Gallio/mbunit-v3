@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
@@ -28,17 +30,24 @@ namespace Gallio.Runtime.Hosting
     public class LocalHost : BaseHost
     {
         private readonly CurrentDirectorySwitcher currentDirectorySwitcher;
+        private readonly IDebuggerManager debuggerManager;
 
         /// <summary>
         /// Creates a local host.
         /// </summary>
         /// <param name="hostSetup">The host setup</param>
         /// <param name="logger">The logger for host message output</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>
-        /// or <paramref name="logger"/> is null</exception>
-        public LocalHost(HostSetup hostSetup, ILogger logger)
+        /// <param name="debuggerManager">The debugger manager</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/>, <paramref name="logger"/>
+        /// or <paramref name="debuggerManager"/> is null</exception>
+        public LocalHost(HostSetup hostSetup, ILogger logger, IDebuggerManager debuggerManager)
             : base(hostSetup, logger)
         {
+            if (debuggerManager == null)
+                throw new ArgumentNullException("debuggerManager");
+
+            this.debuggerManager = debuggerManager;
+
             if (! string.IsNullOrEmpty(hostSetup.WorkingDirectory))
                 currentDirectorySwitcher = new CurrentDirectorySwitcher(hostSetup.WorkingDirectory);
         }
@@ -52,12 +61,16 @@ namespace Gallio.Runtime.Hosting
         /// <inheritdoc />
         protected sealed override IHostService AcquireHostService()
         {
+            AttachDebuggerIfNeeded(debuggerManager, Process.GetCurrentProcess());
+
             return new LocalHostService();
         }
 
         /// <inheritdoc />
         protected sealed override void ReleaseHostService(IHostService hostService)
         {
+            DetachDebuggerIfNeeded();
+
             LocalHostService localHostService = (LocalHostService)hostService;
             localHostService.Dispose();
         }

@@ -164,7 +164,7 @@ namespace Gallio.Icarus.Models
             return inner.GetPath(node);
         }
 
-        public void ResetTestStatus(IProgressMonitor progressMonitor)
+        public void ResetTestStatus()
         {
             Passed = 0;
             OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
@@ -352,8 +352,7 @@ namespace Gallio.Icarus.Models
             return node.IsLeaf;
         }
 
-        public void BuildTestTree(TestModelData testModelData, string treeViewCategory, 
-            IProgressMonitor progressMonitor)
+        public void BuildTestTree(TestModelData testModelData, string treeViewCategory)
         {
             Nodes.Clear();
 
@@ -477,25 +476,22 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public void ApplyFilter(Filter<ITest> filter, IProgressMonitor progressMonitor)
+        public void ApplyFilter(Filter<ITest> filter)
         {
-            using (progressMonitor.BeginTask("Applying filter.", 100))
+            if (Root == null)
+                return;
+
+            if (filter is AnyFilter<ITest>)
             {
-                if (Root == null)
-                    return;
-
-                if (filter is AnyFilter<ITest>)
-                {
-                    Root.CheckState = CheckState.Checked;
-                    Root.UpdateStateOfRelatedNodes();
-                    return;
-                }
-
-                Root.CheckState = CheckState.Unchecked;
+                Root.CheckState = CheckState.Checked;
                 Root.UpdateStateOfRelatedNodes();
-
-                RecursivelyApplyFilter(filter);
+                return;
             }
+
+            Root.CheckState = CheckState.Unchecked;
+            Root.UpdateStateOfRelatedNodes();
+
+            RecursivelyApplyFilter(filter);
         }
 
         private void RecursivelyApplyFilter(Filter<ITest> filter)
@@ -520,7 +516,7 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor)
+        public Filter<ITest> GenerateFilterFromSelectedTests()
         {
             Filter<ITest> filter;
             if (Root == null || Root.CheckState == CheckState.Checked)

@@ -39,13 +39,9 @@ namespace Gallio.Runner.Extensions
         /// <inheritdoc />
         protected override void Initialize()
         {
-            Events.ExploreFinished += delegate(object sender, ExploreFinishedEventArgs e)
+            Events.TestModelAnnotationAdded += delegate(object sender, TestModelAnnotationAddedEventArgs e)
             {
-                if (e.Success)
-                {
-                    foreach (AnnotationData annotation in e.Report.TestModel.Annotations)
-                        LogAnnotation(annotation);
-                }
+                LogAnnotation(e.Annotation);
             };
 
             Events.TestStepStarted += delegate(object sender, TestStepStartedEventArgs e)

@@ -14,38 +14,51 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 
 namespace Gallio.Runner.Events
 {
     /// <summary>
-    /// Arguments for an event raised to indicate that a test package has finished loading.
+    /// Arguments for an event raised to signal that a subtree of tests has been
+    /// merged into the test model.
     /// </summary>
-    public sealed class LoadFinishedEventArgs : OperationFinishedEventArgs
+    public sealed class TestModelSubtreeMergedEventArgs : EventArgs
     {
         private readonly Report report;
+        private readonly TestData test;
 
         /// <summary>
         /// Initializes the event arguments.
         /// </summary>
-        /// <param name="success">True if the test package was loaded successfully</param>
-        /// <param name="report">The report, including test package data on success</param>
+        /// <param name="report">The report</param>
+        /// <param name="test">The test at the top of the subtree that was added</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="report"/> is null</exception>
-        public LoadFinishedEventArgs(bool success, Report report)
-            : base(success)
+        public TestModelSubtreeMergedEventArgs(Report report, TestData test)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
+            if (test == null)
+                throw new ArgumentNullException("test");
 
             this.report = report;
+            this.test = test;
         }
 
         /// <summary>
-        /// Gets the report, including test package data on success.
+        /// Gets the report.
         /// </summary>
         public Report Report
         {
             get { return report; }
+        }
+
+        /// <summary>
+        /// Gets the test at the top of the subtree that was merged.
+        /// </summary>
+        public TestData Test
+        {
+            get { return test; }
         }
     }
 }

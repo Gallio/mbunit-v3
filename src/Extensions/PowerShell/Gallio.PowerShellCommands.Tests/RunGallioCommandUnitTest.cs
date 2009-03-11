@@ -61,8 +61,9 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
 
                 Assert.IsNull(launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
-                Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsNull(launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+                Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
+                Assert.IsFalse(launcher.TestPackageConfig.HostSetup.Debug);
 
                 return new TestLauncherResult(new Report());
             });
@@ -120,8 +121,9 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreElementsEqual(new string[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);
 
                 Assert.AreEqual("baseDir", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
-                Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+                Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
+                Assert.IsTrue(launcher.TestPackageConfig.HostSetup.Debug);
 
                 return new TestLauncherResult(new Report());
             });

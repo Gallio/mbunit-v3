@@ -16,13 +16,12 @@
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 
-namespace Gallio.Model.Execution
+namespace Gallio.Model.Messages
 {
     /// <summary>
-    /// An test listener observes the progress of test execution as a
-    /// series of events.
+    /// A test execution listener observes the progress of test execution as a series of events.
     /// </summary>
-    public interface ITestListener
+    public interface ITestExecutionListener
     {
         /// <summary>
         /// Notifies the listener that a test step has started execution.

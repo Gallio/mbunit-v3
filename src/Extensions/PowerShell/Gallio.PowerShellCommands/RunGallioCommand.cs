@@ -55,6 +55,7 @@ namespace Gallio.PowerShellCommands
         private string applicationBaseDirectory;
         private string workingDirectory;
         private SwitchParameter shadowCopy;
+        private SwitchParameter debug;
 
         private string[] reportTypes = EmptyArray<string>.Instance;
         private string reportNameFormat = Resources.DefaultReportNameFormat;
@@ -209,6 +210,21 @@ namespace Gallio.PowerShellCommands
         public SwitchParameter ShadowCopy
         {
             set { shadowCopy = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Attaches the debugger to the test process when set to true.
+        /// </para>
+        /// <para>
+        /// The default is false.
+        /// </para>
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("d")]
+        public bool Debug
+        {
+            set { debug = value; }
         }
 
         /// <summary>
@@ -471,6 +487,7 @@ namespace Gallio.PowerShellCommands
             launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
             launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy.IsPresent;
+            launcher.TestPackageConfig.HostSetup.Debug = debug.IsPresent;
 
             AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
             AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);

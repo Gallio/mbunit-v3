@@ -15,75 +15,76 @@
 
 using System;
 using Gallio.Model.Logging;
+using Gallio.Model.Messages;
 
 namespace Gallio.Model.Execution
 {
     /// <summary>
-    /// A log writer that sends messages to a <see cref="ITestListener" />.
+    /// A log writer that sends messages to a <see cref="ITestExecutionListener" />.
     /// </summary>
     public class ObservableTestLogWriter : TestLogWriter
     {
-        private ITestListener listener;
+        private ITestExecutionListener testExecutionListener;
         private readonly string stepId;
 
         /// <summary>
         /// Creates a log writer.
         /// </summary>
-        /// <param name="listener">The test listener to which notifications are dispatched</param>
+        /// <param name="testExecutionListener">The test listener to which notifications are dispatched</param>
         /// <param name="stepId">The step id</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="listener"/> or
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testExecutionListener"/> or
         /// <paramref name="stepId"/> is null</exception>
-        public ObservableTestLogWriter(ITestListener listener, string stepId)
+        public ObservableTestLogWriter(ITestExecutionListener testExecutionListener, string stepId)
         {
-            if (listener == null)
-                throw new ArgumentNullException(@"listener");
+            if (testExecutionListener == null)
+                throw new ArgumentNullException("testExecutionListener");
             if (stepId == null)
                 throw new ArgumentNullException(@"stepId");
 
-            this.listener = listener;
+            this.testExecutionListener = testExecutionListener;
             this.stepId = stepId;
         }
 
         /// <inheritdoc />
         protected override void CloseImpl()
         {
-            listener = null;
+            testExecutionListener = null;
         } 
 
         /// <inheritdoc />
         protected override void AttachImpl(Attachment attachment)
         {
-            listener.NotifyTestStepLogAttach(stepId, attachment);
+            testExecutionListener.NotifyTestStepLogAttach(stepId, attachment);
         }
 
         /// <inheritdoc />
         protected override void StreamWriteImpl(string streamName, string text)
         {
-            listener.NotifyTestStepLogStreamWrite(stepId, streamName, text);
+            testExecutionListener.NotifyTestStepLogStreamWrite(stepId, streamName, text);
         }
 
         /// <inheritdoc />
         protected override void StreamEmbedImpl(string streamName, string attachmentName)
         {
-            listener.NotifyTestStepLogStreamEmbed(stepId, streamName, attachmentName);
+            testExecutionListener.NotifyTestStepLogStreamEmbed(stepId, streamName, attachmentName);
         }
 
         /// <inheritdoc />
         protected override void StreamBeginSectionImpl(string streamName, string sectionName)
         {
-            listener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
+            testExecutionListener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
         }
 
         /// <inheritdoc />
         protected override void StreamBeginMarkerImpl(string streamName, Marker marker)
         {
-            listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, marker);
+            testExecutionListener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, marker);
         }
 
         /// <inheritdoc />
         protected override void StreamEndImpl(string streamName)
         {
-            listener.NotifyTestStepLogStreamEnd(stepId, streamName);
+            testExecutionListener.NotifyTestStepLogStreamEnd(stepId, streamName);
         }
     }
 }

@@ -72,8 +72,9 @@ namespace Gallio.NAntTasks.Tests
                 Assert.AreElementsEqual(new string[] { }, launcher.TestPackageConfig.HintDirectories);
 
                 Assert.IsNull(launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
-                Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsNull(launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+                Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
+                Assert.IsFalse(launcher.TestPackageConfig.HostSetup.Debug);
 
                 TestLauncherResult result = new TestLauncherResult(new Report());
                 result.SetResultCode(ResultCode.Success);
@@ -105,6 +106,7 @@ namespace Gallio.NAntTasks.Tests
 
             task.ApplicationBaseDirectory = "baseDir";
             task.ShadowCopy = true;
+            task.Debug = true;
             task.WorkingDirectory = "workingDir";
 
             task.SetRunLauncherAction(delegate(TestLauncher launcher)
@@ -133,8 +135,9 @@ namespace Gallio.NAntTasks.Tests
                 Assert.AreElementsEqual(new string[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);
 
                 Assert.AreEqual("baseDir", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
-                Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
+                Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
+                Assert.IsTrue(launcher.TestPackageConfig.HostSetup.Debug);
 
                 TestLauncherResult result = new TestLauncherResult(new Report());
                 result.SetResultCode(ResultCode.NoTests);

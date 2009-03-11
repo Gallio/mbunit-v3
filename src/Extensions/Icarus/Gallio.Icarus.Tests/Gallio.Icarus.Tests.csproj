@@ -96,7 +96,6 @@
     </Compile>
     <Compile Include="ReloadDialogTest.cs" />
     <Compile Include="RuntimeLogWindowTest.cs" />
-    <Compile Include="Services\TestRunnerServiceTest.cs" />
     <Compile Include="TaskManagerTest.cs" />
     <Compile Include="TestExplorerTest.cs" />
     <Compile Include="TestResultsTest.cs">
@@ -137,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Options\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

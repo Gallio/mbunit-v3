@@ -138,5 +138,17 @@ namespace Gallio.Model.Serialization
         {
             get { return parameters; }
         }
+
+        /// <summary>
+        /// Recursively enumerates this test and all of its descendants.
+        /// </summary>
+        [XmlIgnore]
+        public IEnumerable<TestData> AllTests
+        {
+            get
+            {
+                return TreeUtils.GetPreOrderTraversal(this, test => test.Children);
+            }
+        }
     }
 }

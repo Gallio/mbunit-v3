@@ -63,6 +63,7 @@ namespace Gallio.Runtime.Hosting
         private ProcessTask processTask;
         private IClientChannel clientChannel;
         private IServerChannel callbackChannel;
+        private SeverityPrefixParser severityPrefixParser;
 
         /// <summary>
         /// Creates an uninitialized host.
@@ -174,6 +175,11 @@ namespace Gallio.Runtime.Hosting
             hostArguments.Append(@" ""/configuration-file:").Append(temporaryConfigurationFilePath).Append('"');
             if (HostSetup.ShadowCopy)
                 hostArguments.Append(@" /shadow-copy");
+            if (HostSetup.Debug)
+                hostArguments.Append(@" /debug");
+            hostArguments.Append(" /severity-prefix");
+
+            severityPrefixParser = new SeverityPrefixParser();
 
             processTask = CreateProcessTask(GetInstalledHostProcessPath(), hostArguments.ToString(), HostSetup.WorkingDirectory ?? Environment.CurrentDirectory);
             processTask.CaptureConsoleOutput = true;
@@ -203,13 +209,22 @@ namespace Gallio.Runtime.Hosting
         private void LogConsoleOutput(object sender, DataReceivedEventArgs e)
         {
             if (e.Data != null)
-                Logger.Log(LogSeverity.Info, e.Data);
+            {
+                LogSeverity severity;
+                string message;
+
+                severityPrefixParser.ParseLine(e.Data, out severity, out message);
+
+                Logger.Log(severity, message);
+            }
         }
 
         private void LogConsoleError(object sender, DataReceivedEventArgs e)
         {
             if (e.Data != null)
+            {
                 Logger.Log(LogSeverity.Error, e.Data);
+            }
         }
 
         private void LogExitCode(object sender, EventArgs e)

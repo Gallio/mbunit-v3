@@ -141,24 +141,24 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
                 try
                 {
                     runner.Initialize(testRunnerOptions, logger, CreateProgressMonitor());
-                    runner.Load(packageConfig, CreateProgressMonitor());
-                    runner.Explore(testExplorationOptions, CreateProgressMonitor());
-                    runner.Run(testExecutionOptions, CreateProgressMonitor());
+                    Report report = runner.Run(packageConfig, testExplorationOptions, testExecutionOptions, CreateProgressMonitor());
+
+                    if (sessionId != null)
+                        SessionCache.SaveSerializedReport(sessionId, report);
+
                     return FacadeTaskResult.Success;
                 }
                 catch (Exception ex)
                 {
+                    if (sessionId != null)
+                        SessionCache.ClearSerializedReport(sessionId);
+
                     logger.Log(LogSeverity.Error, "A fatal exception occurred during test execution.", ex);
                     return FacadeTaskResult.Exception;
                 }
                 finally
                 {
                     SubmitFailureForRemainingPendingTasks();
-
-                    if (sessionId != null)
-                    {
-                        runner.Report.Read(report => SessionCache.SaveSerializedReport(sessionId, report));
-                    }
                 }
             }
             finally

@@ -26,11 +26,11 @@ using Gallio.Model;
 namespace Gallio.Runner
 {
     /// <summary>
-    /// <para>
     /// A test runner provides the basic functionality for loading, exploring and running
     /// tests.  It abstracts away most concerns having to do with the execution of tests
     /// in isolated (possibly remote) domains.
-    /// </para>
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// The basic usage pattern of a test runner is as follows:
     /// <list type="bullet">
@@ -38,37 +38,21 @@ namespace Gallio.Runner
     /// <item>Create the test runner.</item>
     /// <item>Add event handlers and register extensions.  <seealso cref="Events"/>, <seealso cref="RegisterExtension"/></item>
     /// <item>Initialize the runner.  <seealso cref="Initialize"/></item>
-    /// <item>Load a test package.  <seealso cref="Load"/></item>
-    /// <item>Explore the tests.  <seealso cref="Explore"/></item>
-    /// <item>Run the tests.  Save or format the report contents as required using the reporting APIs.  <seealso cref="Run"/></item>
-    /// <item>Unload the test package.  <seealso cref="Unload"/></item>
+    /// <item>Explore and/or Run the tests.  <seealso cref="Explore"/> and <seealso cref="Run" /></item>
     /// <item>Dispose the test runner.  <seealso cref="Dispose"/></item>
+    /// <item>Save or format the report contents as required using the reporting APIs.</item>
     /// </list>
     /// </para>
     /// <para>
-    /// Once a test package is loaded, it may be re-explored and/or re-run as often as desired.
-    /// The package may also be unloaded to release resources make way for a new package to be
-    /// loaded at a later time without discarding the test runner itself.
+    /// Multiple test runs may be performed between initialization and disposal of the test runner.
     /// </para>
-    /// </summary>
+    /// </remarks>
     public interface ITestRunner
     {
         /// <summary>
         /// Gets the event dispatcher for the test runner.
         /// </summary>
         ITestRunnerEvents Events { get; }
-
-        /// <summary>
-        /// Gets the most recent report contents.
-        /// The report may be only partially populated depending on the current state of
-        /// the test runner.  When no test package has been loaded, the report will be empty
-        /// but not null.
-        /// </summary>
-        /// <remarks>
-        /// Since the report may be updated concurrently while a test is in progress, it is
-        /// protected by a <see cref="LockBox{T}" />
-        /// </remarks>
-        LockBox<Report> Report { get; }
 
         /// <summary>
         /// <para>
@@ -87,90 +71,58 @@ namespace Gallio.Runner
         void RegisterExtension(ITestRunnerExtension extension);
 
         /// <summary>
-        /// <para>
         /// Initializes the test runner.
-        /// </para>
         /// </summary>
-        /// <param name="options">The test runner options</param>
+        /// <param name="testRunnerOptions">The test runner options</param>
         /// <param name="logger">The logger</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options" />,
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testRunnerOptions" />,
         /// <paramref name="logger" /> or <paramref name="progressMonitor"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if the runner is already initialized</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed</exception>
-        void Initialize(TestRunnerOptions options, ILogger logger, IProgressMonitor progressMonitor);
+        void Initialize(TestRunnerOptions testRunnerOptions, ILogger logger, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// <para>
-        /// Loads a test package.
-        /// </para>
-        /// <para>
-        /// When this operation completes, the <see cref="Reports.Report.TestPackageConfig" /> property
-        /// of <see cref="Report" /> will contain information about the test package.
-        /// </para>
+        /// Explores tests in a test package.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Returns a report that contains test package and test model information only.
+        /// </para>
+        /// </remarks>
         /// <param name="testPackageConfig">The test package configuration</param>
+        /// <param name="testExplorationOptions">The test exploration options</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="testPackageConfig"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if a package is already loaded</exception>
+        /// <returns>The test report</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
+        /// <paramref name="testExplorationOptions"/>, or <paramref name="progressMonitor"/> is null</exception>
         /// <exception cref="RunnerException">Thrown if the operation failed</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed</exception>
-        void Load(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor);
+        Report Explore(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions,
+            IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// <para>
-        /// Explores tests within the currently loaded test package.
-        /// </para>
-        /// <para>
-        /// When this operation completes, the <see cref="Reports.Report.TestModel" /> property
-        /// of <see cref="Report" /> will contain information about the test package.
-        /// </para>
+        /// Explores and runs tests in a test package.
         /// </summary>
-        /// <param name="options">The test exploration options</param>
+        /// <remarks>
+        /// <para>
+        /// Returns a report that contains test package, test model and test run data.
+        /// </para>
+        /// </remarks>
+        /// <param name="testPackageConfig">The test package configuration</param>
+        /// <param name="testExplorationOptions">The test exploration options</param>
+        /// <param name="testExecutionOptions">The test execution options</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> or
-        /// <paramref name="progressMonitor"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if no package is currently loaded</exception>
+        /// <returns>The test report</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testPackageConfig"/>,
+        /// <paramref name="testExplorationOptions"/>, <paramref name="testExecutionOptions"/>, or <paramref name="progressMonitor"/> is null</exception>
         /// <exception cref="RunnerException">Thrown if the operation failed</exception>
         /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed</exception>
-        void Explore(TestExplorationOptions options, IProgressMonitor progressMonitor);
+        Report Run(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions,
+            TestExecutionOptions testExecutionOptions, IProgressMonitor progressMonitor);
 
         /// <summary>
-        /// <para>
-        /// Runs the tests.
-        /// </para>
-        /// <para>
-        /// When this operation completes, the <see cref="Reports.Report.TestPackageRun" /> property
-        /// of <see cref="Report" /> will contain test results.
-        /// </para>
-        /// </summary>
-        /// <param name="options">The test execution options</param>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        /// <exception cref="InvalidOperationException">Thrown if no package is currently loaded
-        /// or if test exploration has not taken place</exception>
-        /// <exception cref="RunnerException">Thrown if the operation failed</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed</exception>
-        void Run(TestExecutionOptions options, IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// <para>
-        /// Unloads the current test package.  Does nothing if none is currently loaded.
-        /// </para>
-        /// <para>
-        /// When this operation completes, the <see cref="Report" /> will be empty once again.
-        /// </para>
-        /// </summary>
-        /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>
-        /// <exception cref="RunnerException">Thrown if the operation failed</exception>
-        /// <exception cref="ObjectDisposedException">Thrown if the runner has been disposed</exception>
-        void Unload(IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// <para>
         /// Disposes the test runner.  Does nothing if already disposed or if not initialized.
-        /// </para>
         /// </summary>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> is null</exception>

@@ -19,6 +19,7 @@ using System.Runtime.Remoting;
 using System.Threading;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Drivers;
 using Gallio.Runtime;
@@ -34,7 +35,7 @@ namespace Gallio.AutoCAD
     public class AcadTestDriver : BaseTestDriver
     {
         private IAcadProcess process;
-        private ProxyTestDriver proxyDriver;
+        private Runner.Drivers.RemoteTestDriver remoteTestDriver;
         private KeepAlive keepAlive;
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace Gallio.AutoCAD
             if (remoteDriver == null)
                 throw new ArgumentNullException("remoteDriver");
             this.process = process;
-            this.proxyDriver = new ProxyTestDriver(remoteDriver);
+            this.remoteTestDriver = new Runner.Drivers.RemoteTestDriver(remoteDriver);
             this.keepAlive = new KeepAlive(remoteDriver);
         }
 
@@ -65,10 +66,10 @@ namespace Gallio.AutoCAD
                     keepAlive.Dispose();
                     keepAlive = null;
                 }
-                if (proxyDriver != null)
+                if (remoteTestDriver != null)
                 {
-                    proxyDriver.Dispose();
-                    proxyDriver = null;
+                    remoteTestDriver.Dispose();
+                    remoteTestDriver = null;
                 }
                 if (process != null)
                 {
@@ -83,31 +84,19 @@ namespace Gallio.AutoCAD
         protected override void InitializeImpl(RuntimeSetup runtimeSetup, ILogger logger)
         {
             base.InitializeImpl(runtimeSetup, logger);
-            proxyDriver.Initialize(runtimeSetup, logger);
+            remoteTestDriver.Initialize(runtimeSetup, logger);
         }
 
         /// <inheritdoc/>
-        protected override void LoadImpl(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
+        protected override void ExploreImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor)
         {
-            proxyDriver.Load(testPackageConfig, progressMonitor);
+            remoteTestDriver.Explore(testPackageConfig, testExplorationOptions, testExplorationListener, progressMonitor);
         }
 
         /// <inheritdoc/>
-        protected override TestModelData ExploreImpl(TestExplorationOptions options, IProgressMonitor progressMonitor)
+        protected override void RunImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor)
         {
-            return proxyDriver.Explore(options, progressMonitor);
-        }
-
-        /// <inheritdoc/>
-        protected override void RunImpl(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
-        {
-            proxyDriver.Run(options, listener, progressMonitor);
-        }
-
-        /// <inheritdoc/>
-        protected override void UnloadImpl(IProgressMonitor progressMonitor)
-        {
-            proxyDriver.Unload(progressMonitor);
+            remoteTestDriver.Run(testPackageConfig, testExplorationOptions, testExplorationListener, testExecutionOptions, testExecutionListener, progressMonitor);
         }
 
         private class KeepAlive : IDisposable

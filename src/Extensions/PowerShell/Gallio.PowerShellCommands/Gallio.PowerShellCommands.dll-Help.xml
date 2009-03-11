@@ -169,6 +169,16 @@
         </command:parameter>
 
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Debug</maml:name>
+          <maml:description>
+            <maml:para>
+              Attaches the debugger to the test process.
+            </maml:para>
+          </maml:description>
+          <dev:defaultValue>false</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
           <maml:name>ShowReports</maml:name>
           <maml:description>
             <maml:para>Sets whether to open the generated reports once execution has finished.</maml:para>
@@ -301,6 +311,16 @@
         <maml:description>
           <maml:para>
             Enables shadow copying when set to true. Shadow copying allows the original assemblies to be modified while the tests are running. However, shadow copying may occasionally cause some tests to fail if they depend on their original location.
+          </maml:para>
+        </maml:description>
+        <dev:defaultValue>false</dev:defaultValue>
+      </command:parameter>
+
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
+        <maml:name>Debug</maml:name>
+        <maml:description>
+          <maml:para>
+            Attaches the debugger to the test process.
           </maml:para>
         </maml:description>
         <dev:defaultValue>false</dev:defaultValue>

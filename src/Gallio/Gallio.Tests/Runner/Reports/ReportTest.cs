@@ -58,7 +58,7 @@ namespace Gallio.Tests.Runner.Reports
 
             Assert.IsNull(report.TestModel);
 
-            TestModelData value = MockTestDataFactory.CreateEmptyTestModel();
+            TestModelData value = new TestModelData();
             report.TestModel = value;
             Assert.AreSame(value, report.TestModel);
         }

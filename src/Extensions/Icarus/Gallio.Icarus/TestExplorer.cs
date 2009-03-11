@@ -46,8 +46,8 @@ namespace Gallio.Icarus
 
             testTree.Model = mediator.TestController.Model;
 
-            mediator.TestController.LoadStarted += delegate { testTree.EditEnabled = false; };
-            mediator.TestController.LoadFinished += delegate
+            mediator.TestController.ExploreStarted += delegate { testTree.EditEnabled = false; };
+            mediator.TestController.ExploreFinished += delegate
             {
                 testTree.EditEnabled = true;
                 RestoreState();

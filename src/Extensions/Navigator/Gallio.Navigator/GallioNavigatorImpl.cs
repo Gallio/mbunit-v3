@@ -63,7 +63,7 @@ namespace Gallio.Navigator
         {
             path = Path.GetFullPath(path);
 
-            VisualStudioSupport.SafeRunWithActiveVisualStudio(dte =>
+            VisualStudioSupport.RunWithVisualStudio(dte =>
             {
                 Window window = OpenFile(dte, path);
                 if (window == null)
@@ -80,7 +80,7 @@ namespace Gallio.Navigator
                 window.Visible = true;
 
                 VisualStudioSupport.BringVisualStudioToFront(dte);
-            }, TimeSpan.FromSeconds(30));
+            }, TimeSpan.FromSeconds(30), true);
 
             return true;
         }

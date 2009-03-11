@@ -34,17 +34,17 @@ namespace Gallio.Tests.Runtime.Logging
 
         [Test]
         [Row(LogSeverity.Debug, "A debug message.", false,
-            "[Debug] A debug message.\n")]
+            "A debug message.\n")]
         [Row(LogSeverity.Error, "An error message.", false,
-            "[Error] An error message.\n")]
+            "An error message.\n")]
         [Row(LogSeverity.Important, "An important message.", false,
-            "[Important] An important message.\n")]
+            "An important message.\n")]
         [Row(LogSeverity.Info, "An info message.", false,
-            "[Info] An info message.\n")]
+            "An info message.\n")]
         [Row(LogSeverity.Warning, "A warning message.", false,
-            "[Warning] A warning message.\n")]
+            "A warning message.\n")]
         [Row(LogSeverity.Error, "An error message.", true,
-            "[Error] An error message.\n  System.Exception: Foo\n")]
+            "An error message.\n  System.Exception: Foo\n")]
         public void WritesFormattedMessageToTextWriter(LogSeverity severity, string message, bool includeException, string expectedText)
         {
             StringWriter writer = new StringWriter();

@@ -19,50 +19,64 @@ using System.ComponentModel;
 using System.Timers;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
-using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Services.Interfaces;
 using Gallio.Model;
+using Gallio.Model.Execution;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
+using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
+using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
+using ITestController=Gallio.Icarus.Controllers.Interfaces.ITestController;
 
 namespace Gallio.Icarus.Controllers
 {
     public class TestController : ITestController
     {
-        private readonly ITestRunnerService testRunnerService;
         private readonly BindingList<TestTreeNode> selectedTests;
         private readonly ITestTreeModel testTreeModel;
+        private readonly Timer testTreeUpdateTimer = new Timer();
+        private LockBox<Report> reportLockBox;
+
+        private ITestRunnerFactory testRunnerFactory;
         private TestPackageConfig testPackageConfig;
-        private bool testPackageLoaded;
-        private TestModelData testModelData;
-        private readonly Timer timer = new Timer();
+
+        public TestController(ITestTreeModel testTreeModel)
+        {
+            this.testTreeModel = testTreeModel;
+
+            selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
+
+            testTreeUpdateTimer.Interval = 1000;
+            testTreeUpdateTimer.AutoReset = false;
+            testTreeUpdateTimer.Elapsed += delegate { testTreeModel.Notify(); };
+
+            testPackageConfig = new TestPackageConfig();
+            reportLockBox = new LockBox<Report>(new Report());
+        }
+
+        public void Dispose()
+        {
+            testTreeUpdateTimer.Dispose();
+        }
 
         public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
         public event EventHandler<ShowSourceCodeEventArgs> ShowSourceCode;
-        
         public event EventHandler RunStarted;
         public event EventHandler RunFinished;
-        public event EventHandler LoadStarted;
-        public event EventHandler LoadFinished;
-        public event EventHandler UnloadStarted;
-        public event EventHandler UnloadFinished;
-        
+        public event EventHandler ExploreStarted;
+        public event EventHandler ExploreFinished;
+
         public string TreeViewCategory
         {
             get;
             set;
-        }
-
-        public LockBox<Report> Report
-        {
-            get { return testRunnerService.Report; }
         }
 
         public BindingList<TestTreeNode> SelectedTests
@@ -77,7 +91,13 @@ namespace Gallio.Icarus.Controllers
 
         public IList<string> TestFrameworks
         {
-            get { return testRunnerService.TestFrameworks; }
+            get
+            {
+                List<string> frameworks = new List<string>();
+                foreach (ITestFramework framework in RuntimeAccessor.Instance.ResolveAll<ITestFramework>())
+                    frameworks.Add(framework.Name);
+                return frameworks;
+            }
         }
 
         public int TestCount
@@ -85,211 +105,155 @@ namespace Gallio.Icarus.Controllers
             get { return testTreeModel.TestCount; }
         }
 
-        public TestController(ITestRunnerService testRunnerService, ITestTreeModel testTreeModel)
+        public void Explore(IProgressMonitor progressMonitor)
         {
-            this.testRunnerService = testRunnerService;
-            this.testTreeModel = testTreeModel;
-
-            testRunnerService.TestStepFinished += ((sender, e) =>
+            using (progressMonitor.BeginTask("Exploring the tests.", 100))
             {
-                timer.Enabled = true;
-                testTreeModel.UpdateTestStatus(e.Test, e.TestStepRun);
-                EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
-            });
+                DoWithTestRunner(testRunner =>
+                {
+                    var testExplorationOptions = new TestExplorationOptions();
 
-            selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
+                    testRunner.Explore(testPackageConfig, testExplorationOptions,
+                        progressMonitor.CreateSubProgressMonitor(85));
 
-            timer.Interval = 1000;
-            timer.AutoReset = false;
-            timer.Elapsed += delegate { testTreeModel.Notify(); };
-        }
-
-        public void ApplyFilter(string filter, IProgressMonitor progressMonitor)
-        {
-            using (progressMonitor.BeginTask("Applying filter", 3))
-            {
-                progressMonitor.SetStatus("Parsing filter");
-                var f = FilterUtils.ParseTestFilter(filter);
-                progressMonitor.Worked(1);
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                    testTreeModel.ApplyFilter(f, subProgressMonitor);
-
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                    testRunnerService.SetFilter(f, subProgressMonitor);
+                    RefreshTestTree(progressMonitor.CreateSubProgressMonitor(5));
+                }, progressMonitor, 10);
             }
         }
 
-        private bool Explore(IProgressMonitor progressMonitor)
+        public void Run(bool debug, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Exploring test package", 2))
+            using (progressMonitor.BeginTask("Running the tests.", 100))
             {
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                    Load(subProgressMonitor);
+                DoWithTestRunner(testRunner =>
+                {
+                    var testPackageConfigCopy = testPackageConfig.Copy();
+                    testPackageConfigCopy.HostSetup.Debug = debug;
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                    if (testModelData == null)
-                        testModelData = testRunnerService.Explore(subProgressMonitor);
-             
-                return testModelData != null;
+                    var testExplorationOptions = new TestExplorationOptions();
+                    var testExecutionOptions = new TestExecutionOptions()
+                    {
+                        Filter = GenerateFilterFromSelectedTests(),
+                        ExactFilter = true
+                    };
+
+                    testRunner.Run(testPackageConfigCopy, testExplorationOptions, testExecutionOptions,
+                        progressMonitor.CreateSubProgressMonitor(85));
+
+                    RefreshTestTree(progressMonitor.CreateSubProgressMonitor(5));
+                }, progressMonitor, 10);
             }
         }
 
-        public Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor)
+        public void SetTestPackageConfig(TestPackageConfig testPackageConfig)
         {
-            using (progressMonitor.BeginTask("Getting current filter", 2))
-            {
-                Filter<ITest> filter;
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                    filter = testTreeModel.GetCurrentFilter(subProgressMonitor);
+            if (testPackageConfig == null)
+                throw new ArgumentNullException("testPackageConfig");
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                    testRunnerService.SetFilter(filter, subProgressMonitor);
-
-                return filter;
-            }
+            this.testPackageConfig = testPackageConfig.Copy();
         }
 
-        private void Load(IProgressMonitor progressMonitor)
+        public void ReadReport(ReadAction<Report> action)
         {
-            using (progressMonitor.BeginTask("Loading test package", 100))
-            {
-                if (testPackageLoaded)
-                    return;
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
-                    testRunnerService.Load(testPackageConfig, subProgressMonitor);
-
-                testPackageLoaded = true;
-                testModelData = null;
-            }
+            reportLockBox.Read(action);
         }
 
-        public void Reload(IProgressMonitor progressMonitor)
+        public void ApplyFilter(Filter<ITest> filter)
         {
-            if (testPackageConfig != null)
-                Reload(testPackageConfig, progressMonitor);
+            testTreeModel.ApplyFilter(filter);
         }
 
-        public void Reload(TestPackageConfig config, IProgressMonitor progressMonitor)
+        public Filter<ITest> GenerateFilterFromSelectedTests()
         {
-            using (progressMonitor.BeginTask("Reloading test package", 100))
-            {
-                testPackageConfig = config;
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
-                    Unload(subProgressMonitor);
-
-                EventHandlerUtils.SafeInvoke(LoadStarted, this, System.EventArgs.Empty);
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(40))
-                    Explore(subProgressMonitor);
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
-                    if (!testPackageConfig.HostSetup.ShadowCopy)
-                        Unload(subProgressMonitor);
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(40))
-                    RefreshTestTree(subProgressMonitor);
-
-                EventHandlerUtils.SafeInvoke(LoadFinished, this, System.EventArgs.Empty);
-            }
+            return testTreeModel.GenerateFilterFromSelectedTests();
         }
 
         public void RefreshTestTree(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Refreshing test tree", 100))
             {
-                testRunnerService.Report.Read(report => testTreeModel.BuildTestTree(report.TestModel, 
-                    TreeViewCategory, progressMonitor));
+                ReadReport(report => testTreeModel.BuildTestTree(report.TestModel, TreeViewCategory));
             }
         }
 
-        private void Unload(IProgressMonitor progressMonitor)
+        public void ResetTestStatus()
         {
-            using (progressMonitor.BeginTask("Unloading test package", 100))
-            {
-                EventHandlerUtils.SafeInvoke(UnloadStarted, this, System.EventArgs.Empty);
-
-                if (testPackageLoaded)
-                {
-                    using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
-                        testRunnerService.Unload(subProgressMonitor);
-                    testPackageLoaded = false;
-                    // Note: we specifically do not null out the testModelData because
-                    //       it can still be used for View Source operations later.
-                }
-
-                EventHandlerUtils.SafeInvoke(UnloadFinished, this, System.EventArgs.Empty);
-            }
+            testTreeModel.ResetTestStatus();
         }
 
-        public void ResetTests(IProgressMonitor progressMonitor)
+        public void SetTestRunnerFactory(ITestRunnerFactory testRunnerFactory)
         {
-            using (progressMonitor.BeginTask("Resetting tests", 100))
-            {
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(75))
-                    testTreeModel.ResetTestStatus(subProgressMonitor);
+            if (testRunnerFactory == null)
+                throw new ArgumentNullException("testRunnerFactory");
 
-                testRunnerService.Report.Write(report => report.TestPackageRun = null);
-            }
-        }
-
-        public void RunTests(IProgressMonitor progressMonitor)
-        {
-            using (progressMonitor.BeginTask("Running tests", 100))
-            {
-                EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                    testTreeModel.ResetTestStatus(subProgressMonitor);
-
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
-                    if (Explore(subProgressMonitor))
-                    {
-                        using (var subSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
-                            testRunnerService.Run(subSubProgressMonitor);
-
-                        using (var subSubSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
-                            if (testPackageConfig != null && !testPackageConfig.HostSetup.ShadowCopy)
-                                Unload(subSubSubProgressMonitor);
-                    }
-
-                EventHandlerUtils.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
-            }
-        }
-
-        public void SetTestRunner(ITestRunner testRunner)
-        {
-            testRunnerService.TestRunner = testRunner;
-            testPackageLoaded = false;            
-            testRunnerService.Initialize();
-        }
-
-        public void UnloadTestPackage(IProgressMonitor progressMonitor)
-        {
-            Unload(progressMonitor);
+            this.testRunnerFactory = testRunnerFactory;
         }
 
         public void ViewSourceCode(string testId, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("View source code", 100))
             {
-                // retrieve TestData for selected item
-                if (testModelData == null)
-                    return;
-                TestData testData = testModelData.GetTestById(testId);
-                if (testData == null)
-                    return;
+                CodeLocation codeLocation = CodeLocation.Unknown;
+                ReadReport(report =>
+                {
+                    if (report.TestModel != null)
+                    {
+                        TestData testData = report.TestModel.GetTestById(testId);
+                        if (testData != null)
+                            codeLocation = testData.CodeLocation;
+                    }
+                });
 
-                // cannot display source for assemblies etc.
-                string componentKind = testData.Metadata.GetValue(MetadataKeys.TestKind);
-                if (componentKind != TestKinds.Fixture && componentKind != TestKinds.Test)
+                if (codeLocation == CodeLocation.Unknown
+                    || codeLocation.Path.EndsWith(".dll")
+                    || codeLocation.Path.EndsWith(".exe"))
                     return;
 
                 // fire event for view
-                EventHandlerUtils.SafeInvoke(ShowSourceCode, this,
-                    new ShowSourceCodeEventArgs(testData.CodeLocation));
+                EventHandlerUtils.SafeInvoke(ShowSourceCode, this, new ShowSourceCodeEventArgs(codeLocation));
+            }
+        }
+
+        private void DoWithTestRunner(Action<ITestRunner> action, IProgressMonitor progressMonitor,
+            double initializationAndDisposalWorkUnits)
+        {
+            if (testRunnerFactory == null)
+                throw new InvalidOperationException("A test runner factory must be set first.");
+
+            ITestRunner testRunner = testRunnerFactory.CreateTestRunner();
+            try
+            {
+                var testRunnerOptions = new TestRunnerOptions();
+                var logger = RuntimeAccessor.Logger;
+
+                testRunner.Initialize(testRunnerOptions, logger, progressMonitor.CreateSubProgressMonitor(initializationAndDisposalWorkUnits / 2));
+
+                testRunner.Events.TestStepFinished += (sender, e) =>
+                {
+                    testTreeUpdateTimer.Enabled = true;
+                    testTreeModel.UpdateTestStatus(e.Test, e.TestStepRun);
+                    EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
+                };
+
+                testRunner.Events.RunStarted += (sender, e) =>
+                {
+                    reportLockBox = e.ReportLockBox;
+                    EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
+                };
+                testRunner.Events.RunFinished += (sender, e) => EventHandlerUtils.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
+
+                testRunner.Events.ExploreStarted += (sender, e) =>
+                {
+                    reportLockBox = e.ReportLockBox;
+                    EventHandlerUtils.SafeInvoke(ExploreStarted, this, System.EventArgs.Empty);
+                };
+                testRunner.Events.ExploreFinished += (sender, e) => EventHandlerUtils.SafeInvoke(ExploreFinished, this, System.EventArgs.Empty);
+
+                action(testRunner);
+            }
+            finally
+            {
+                testRunner.Dispose(progressMonitor.CreateSubProgressMonitor(initializationAndDisposalWorkUnits / 2));
             }
         }
     }

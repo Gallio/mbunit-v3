@@ -87,7 +87,7 @@ namespace Gallio.Icarus.Controllers
         {
             // Do this work in the background to avoid a possible deadlock acquiring the report lock
             // on the UI thread.
-            ThreadPool.QueueUserWorkItem(dummy => testController.Report.Read(report =>
+            ThreadPool.QueueUserWorkItem(dummy => testController.ReadReport(report =>
             {
                 TestModelData = report.TestModel;
 

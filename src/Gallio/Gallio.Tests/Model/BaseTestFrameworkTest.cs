@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Reflection;
+using Gallio.Model.Messages;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime;
 using Gallio.Framework;
@@ -23,6 +24,7 @@ using MbUnit.Framework;
 using Gallio.Runner.Harness;
 using Gallio.Model.Execution;
 using Gallio.Runtime.ProgressMonitoring;
+using Rhino.Mocks;
 
 namespace Gallio.Tests.Model
 {
@@ -68,7 +70,9 @@ namespace Gallio.Tests.Model
             config.AssemblyFiles.Add(AssemblyUtils.GetFriendlyAssemblyCodeBase(sampleAssembly));
 
             harness.Load(config, NullProgressMonitor.CreateInstance());
-            harness.Explore(new TestExplorationOptions(), NullProgressMonitor.CreateInstance());
+            harness.Explore(new TestExplorationOptions(),
+                MockRepository.GenerateStub<ITestExplorationListener>(),
+                NullProgressMonitor.CreateInstance());
 
             testModel = harness.TestModel;
         }

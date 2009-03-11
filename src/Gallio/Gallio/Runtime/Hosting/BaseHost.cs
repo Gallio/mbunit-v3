@@ -14,6 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
@@ -33,6 +35,9 @@ namespace Gallio.Runtime.Hosting
 
         private bool wasInitialized;
         private bool isDisposed;
+
+        private IDebugger debugger;
+        private Process debuggedProcess;
 
         /// <summary>
         /// Creates a host.
@@ -265,6 +270,51 @@ namespace Gallio.Runtime.Hosting
             }
 
             EventHandlerUtils.SafeInvoke(cachedDisconnectedHandlers, this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Attaches the debugger to a process if the host settings require it.
+        /// </summary>
+        protected void AttachDebuggerIfNeeded(IDebuggerManager debuggerManager, Process debuggedProcess)
+        {
+            if (HostSetup.Debug)
+            {
+                IDebugger debugger = debuggerManager.GetDefaultDebugger();
+
+                if (!debugger.IsAttachedToProcess(debuggedProcess))
+                {
+                    Logger.Log(LogSeverity.Important, "Attaching debugger to the host.");
+
+                    AttachDebuggerResult result = debugger.AttachToProcess(debuggedProcess);
+                    if (result == AttachDebuggerResult.Attached)
+                    {
+                        this.debugger = debugger;
+                        this.debuggedProcess = debuggedProcess;
+                    }
+                    else if (result == AttachDebuggerResult.CouldNotAttach)
+                    {
+                        Logger.Log(LogSeverity.Warning, "Could not attach debugger to the host.");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Detaches the debugger from a process if the host settings require it.
+        /// </summary>
+        protected void DetachDebuggerIfNeeded()
+        {
+            if (debugger != null && debuggedProcess != null)
+            {
+                Logger.Log(LogSeverity.Important, "Detaching debugger from the host.");
+
+                DetachDebuggerResult result = debugger.DetachFromProcess(debuggedProcess);
+                if (result == DetachDebuggerResult.CouldNotDetach)
+                    Logger.Log(LogSeverity.Warning, "Could not detach debugger from the host.");
+
+                debuggedProcess = null;
+                debugger = null;
+            }
         }
     }
 }

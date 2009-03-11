@@ -83,7 +83,23 @@ namespace Gallio.Host
              Description = "Enable shadow copying of assemblies."
              )]
         public bool ShadowCopy;
-        
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "d",
+             LongName = "debug",
+             Description = "Attaches the debugger to the process."
+             )]
+        public bool Debug;
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "sp",
+             LongName = "severity-prefix",
+             Description = "Include the severity as prefixed text in log messages."
+             )]
+        public bool SeverityPrefix;
+
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "h",

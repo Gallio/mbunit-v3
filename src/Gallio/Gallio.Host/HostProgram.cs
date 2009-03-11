@@ -19,8 +19,10 @@ using System.IO;
 using Gallio.Host.Properties;
 using Gallio.Reflection;
 using Gallio.Runtime.ConsoleSupport;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
 namespace Gallio.Host
@@ -59,21 +61,33 @@ namespace Gallio.Host
                 return 1;
             }
 
-            UnhandledExceptionPolicy.ReportUnhandledException += HandleUnhandledExceptionNotification;
-            Console.WriteLine(String.Format("* Host started at {0}.", DateTime.Now));
+            ILogger logger = new RichConsoleLogger(Console);
+            if (Arguments.SeverityPrefix)
+                logger = new SeverityPrefixLogger(logger);
+
+            UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) =>
+            {
+                if (! e.IsRecursive)
+                    logger.Log(LogSeverity.Error, String.Format("Unhandled exception: {0}", e.GetDescription()));
+            };
+
+            logger.Log(LogSeverity.Info, String.Format("Host started at {0}.", DateTime.Now));
 
             bool fatal = false;
             try
             {
-                RunEndpoint();
+                if (Arguments.Debug)
+                    RunEndpointWithDebugger(logger);
+                else
+                    RunEndpoint(logger);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(String.Format("* Fatal exception: {0}", ExceptionUtils.SafeToString(ex)));
+                logger.Log(LogSeverity.Error, String.Format("Fatal exception: {0}", ExceptionUtils.SafeToString(ex)));
                 fatal = true;
             }
 
-            Console.WriteLine(String.Format("* Host stopped at {0}.", DateTime.Now));
+            logger.Log(LogSeverity.Info, String.Format("Host stopped at {0}.", DateTime.Now));
 
             ForceExit(fatal);
             return 0;
@@ -119,12 +133,43 @@ namespace Gallio.Host
             return true;
         }
 
-        private void RunEndpoint()
+        private void RunEndpointWithDebugger(ILogger logger)
+        {
+            Process currentProcess = Process.GetCurrentProcess();
+
+            IDebuggerManager debuggerManager = new DefaultDebuggerManager(); // FIXME: Get from IoC
+            IDebugger debugger = debuggerManager.GetDefaultDebugger();
+            AttachDebuggerResult attachResult = AttachDebuggerResult.CouldNotAttach;
+            try
+            {
+                if (!debugger.IsAttachedToProcess(currentProcess))
+                {
+                    logger.Log(LogSeverity.Important, "Attaching the debugger to the host.");
+                    attachResult = debugger.AttachToProcess(currentProcess);
+                    if (attachResult == AttachDebuggerResult.CouldNotAttach)
+                        logger.Log(LogSeverity.Warning, "Could not attach debugger to the host.");
+                }
+
+                RunEndpoint(logger);
+            }
+            finally
+            {
+                if (attachResult == AttachDebuggerResult.Attached)
+                {
+                    logger.Log(LogSeverity.Important, "Detaching the debugger from the host.");
+                    DetachDebuggerResult detachResult = debugger.DetachFromProcess(currentProcess);
+                    if (detachResult == DetachDebuggerResult.CouldNotDetach)
+                        logger.Log(LogSeverity.Warning, "Could not detach debugger from the host.");
+                }
+            }
+        }
+
+        private void RunEndpoint(ILogger logger)
         {
             AppDomain appDomain = null;
             try
             {
-                appDomain = AppDomainUtils.CreateAppDomain(@"IsolatedProcessHost",
+                appDomain = AppDomainUtils.CreateAppDomain(@"Host",
                     Arguments.ApplicationBaseDirectory, Arguments.ConfigurationFile, Arguments.ShadowCopy);
 
                 Type endpointType = typeof(HostEndpoint);
@@ -135,8 +180,8 @@ namespace Gallio.Host
                     {
                         if (!endpoint.SetOwnerProcess(Arguments.OwnerProcessId))
                         {
-                            Console.WriteLine(
-                                String.Format("* The owner process with PID {0} does not appear to be running!",
+                            logger.Log(LogSeverity.Warning,
+                                String.Format("The owner process with PID {0} does not appear to be running!",
                                     Arguments.OwnerProcessId));
                             return;
                         }
@@ -144,13 +189,13 @@ namespace Gallio.Host
 
                     if (Arguments.IpcPortName != null)
                     {
-                        Console.WriteLine(String.Format("* Listening for connections on IPC port: '{0}'",
+                        logger.Log(LogSeverity.Debug, String.Format("Listening for connections on IPC port: '{0}'",
                             Arguments.IpcPortName));
                         endpoint.InitializeIpcChannel(Arguments.IpcPortName);
                     }
                     else
                     {
-                        Console.WriteLine(String.Format("* Listening for connections on TCP port: '{0}'",
+                        logger.Log(LogSeverity.Debug, String.Format("Listening for connections on TCP port: '{0}'",
                             Arguments.TcpPortNumber));
                         endpoint.InitializeTcpChannel(Arguments.TcpPortNumber);
                     }
@@ -164,11 +209,11 @@ namespace Gallio.Host
                     switch (reason)
                     {
                         case HostTerminationReason.WatchdogTimeout:
-                            Console.WriteLine("* Watchdog timer expired!");
+                            logger.Log(LogSeverity.Warning, "Watchdog timer expired!");
                             break;
 
                         case HostTerminationReason.Disowned:
-                            Console.WriteLine("* Owner process terminated abruptly!");
+                            logger.Log(LogSeverity.Warning, "Owner process terminated abruptly!");
                             break;
 
                         case HostTerminationReason.Disposed:
@@ -184,14 +229,6 @@ namespace Gallio.Host
                 if (appDomain != null)
                     AppDomain.Unload(appDomain);
             }
-        }
-
-        private void HandleUnhandledExceptionNotification(object sender, CorrelatedExceptionEventArgs e)
-        {
-            if (e.IsRecursive)
-                return;
-
-            Console.WriteLine(String.Format("* Unhandled exception: {0}", e.GetDescription()));
         }
 
         [STAThread]

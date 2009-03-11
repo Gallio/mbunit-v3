@@ -16,8 +16,10 @@
 using System;
 using Gallio.Framework;
 using Gallio.Model.Logging;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
+using Rhino.Mocks;
 
 namespace Gallio.Tests.Runtime.Hosting
 {
@@ -28,7 +30,7 @@ namespace Gallio.Tests.Runtime.Hosting
     {
         public override IHostFactory Factory
         {
-            get { return new LocalHostFactory(); }
+            get { return new LocalHostFactory(MockRepository.GenerateStub<IDebuggerManager>()); }
         }
 
         [Test]

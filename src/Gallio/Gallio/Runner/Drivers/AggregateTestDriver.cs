@@ -19,6 +19,7 @@ using System.Diagnostics;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
+using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
@@ -30,8 +31,7 @@ namespace Gallio.Runner.Drivers
     /// </summary>
     public abstract class AggregateTestDriver : BaseTestDriver
     {
-        private readonly List<Partition> partitions = new List<Partition>();
-        private bool shutdownExceptionEncountered;
+        private delegate void PartitionAction(ITestDriver testDriver, TestPackageConfig testPackageConfig, Listener listener, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Initializes an aggregate test driver.
@@ -41,157 +41,97 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <inheritdoc />
-        protected override void LoadImpl(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
+        protected override void ExploreImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Loading tests.", 2))
+            using (progressMonitor.BeginTask("Exploring the tests.", 1))
             {
-                Reset();
-
-                partitions.AddRange(CreatePartitions(testPackageConfig));
-                progressMonitor.Worked(1);
-
-                if (partitions.Count != 0)
+                ExploreOrRunEachPartition(testPackageConfig, testExplorationListener, null, (testDriver, partitionConfig, listener, subProgressMonitor) =>
                 {
-                    double workPerPartition = 1.0 / partitions.Count;
-                    foreach (Partition partition in partitions)
-                    {
-                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workPerPartition))
-                            partition.TestDriver.Load(partition.TestPackageConfig, subProgressMonitor);
-                    }
-                }
+                    testDriver.Explore(partitionConfig, testExplorationOptions, listener, subProgressMonitor);
+                }, progressMonitor);
             }
         }
 
         /// <inheritdoc />
-        protected override TestModelData ExploreImpl(TestExplorationOptions options, IProgressMonitor progressMonitor)
+        protected override void RunImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Exploring tests.", 1))
+            using (progressMonitor.BeginTask("Running the tests.", 1))
             {
-                TestModelData model = new TestModelData(new TestData(new RootTest()));
-                if (partitions.Count != 0)
+                ExploreOrRunEachPartition(testPackageConfig, testExplorationListener, testExecutionListener, (testDriver, partitionConfig, listener, subProgressMonitor) =>
                 {
-                    double workPerPartition = 1.0 / partitions.Count;
-                    foreach (Partition partition in partitions)
-                    {
-                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workPerPartition))
-                            model.MergeFrom(partition.TestDriver.Explore(options, subProgressMonitor));
-                    }
-                }
-
-                return model;
+                    testDriver.Run(partitionConfig, testExplorationOptions, listener, testExecutionOptions, listener, subProgressMonitor);
+                }, progressMonitor);
             }
         }
 
-        /// <inheritdoc />
-        protected override void RunImpl(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
+        private void ExploreOrRunEachPartition(TestPackageConfig testPackageConfig,
+            ITestExplorationListener testExplorationListener,
+            ITestExecutionListener testExecutionListener,
+            PartitionAction action, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Running tests.", 1))
+            bool shutdownExceptionEncountered = false;
+
+            DoWithPartitions(testPackageConfig, partitions =>
             {
-                MergeRootTestListener mergeListener = new MergeRootTestListener(listener);
-                mergeListener.StartRootTestStep();
-                try
+                using (Listener listener = new Listener(testExplorationListener, testExecutionListener))
                 {
                     if (partitions.Count != 0)
                     {
                         double workPerPartition = 1.0 / partitions.Count;
                         foreach (Partition partition in partitions)
                         {
-                            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workPerPartition))
-                                partition.TestDriver.Run(options, mergeListener, subProgressMonitor);
-                        }
-                    }
-                }
-                finally
-                {
-                    mergeListener.FinishRootTestStep();
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void UnloadImpl(IProgressMonitor progressMonitor)
-        {
-            using (progressMonitor.BeginTask("Unloading tests.", 1))
-            {
-                if (partitions.Count != 0)
-                {
-                    try
-                    {
-                        double workPerPartition = 1.0 / partitions.Count;
-                        foreach (Partition partition in partitions)
-                        {
-                            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(workPerPartition))
+                            using (IProgressMonitor subProgressMonitor =
+                                progressMonitor.CreateSubProgressMonitor(workPerPartition))
                             {
+                                progressMonitor.SetStatus("Initializing test driver.");
+
+                                ITestDriver testDriver = partition.TestDriverFactory.CreateTestDriver();
+                                testDriver.Initialize(RuntimeSetup, Logger);
                                 try
                                 {
-                                    partition.TestDriver.Unload(subProgressMonitor);
+                                    progressMonitor.SetStatus("");
+
+                                    action(testDriver, testPackageConfig, listener, subProgressMonitor);
                                 }
-                                catch (Exception ex)
+                                finally
                                 {
-                                    LogShutdownException(ex, "An exception occurred while unloading a test driver.");
+                                    progressMonitor.SetStatus("Disposing test driver.");
+
+                                    try
+                                    {
+                                        testDriver.Dispose();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        if (!shutdownExceptionEncountered)
+                                        {
+                                            shutdownExceptionEncountered = true;
+                                            Logger.Log(LogSeverity.Warning, "A fatal exception occurred while disposing a test driver.", ex);
+                                        }
+                                    }
+
+                                    progressMonitor.SetStatus("");
                                 }
                             }
                         }
                     }
-                    finally
-                    {
-                        Reset();
-                    }
                 }
-            }
-        }
-
-        private void LogShutdownException(Exception ex, string description)
-        {
-            if (!shutdownExceptionEncountered)
-            {
-                shutdownExceptionEncountered = true;
-                Logger.Log(LogSeverity.Warning, description, ex);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-                Reset();
+            }, progressMonitor.SetStatus);
         }
 
         /// <summary>
-        /// Creates the partitions of the aggregate test driver.
-        /// </summary>
-        /// <param name="testPackageConfig">The test package configuration, not null</param>
-        /// <returns>The partitions</returns>
-        protected abstract IEnumerable<Partition> CreatePartitions(TestPackageConfig testPackageConfig);
-
-        /// <summary>
-        /// Resets the test driver between and after test loads.
+        /// Runs a block of code with partitions of the test package.
         /// </summary>
         /// <remarks>
-        /// The base implementation disposes all test drivers in currently active partitions.
+        /// <para>
+        /// The subclass should perform any setup / teardown around the callback.
+        /// </para>
         /// </remarks>
-        protected virtual void Reset()
-        {
-            DisposeDrivers();
-            shutdownExceptionEncountered = false;
-        }
-
-        private void DisposeDrivers()
-        {
-            foreach (Partition partition in partitions)
-            {
-                try
-                {
-                    partition.TestDriver.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    LogShutdownException(ex, "An exception occurred while disposing a test driver.");
-                }
-            }
-
-            partitions.Clear();
-        }
+        /// <param name="testPackageConfig">The test package configuration, not null</param>
+        /// <param name="action">The action to perform given a list of partitions, not null</param>
+        /// <param name="setStatus">An action that can be used to report progress, not null</param>
+        protected abstract void DoWithPartitions(TestPackageConfig testPackageConfig, Action<IList<Partition>> action,
+            Action<string> setStatus);
 
         /// <summary>
         /// Provides information about a partition of the aggregate test driver.
@@ -200,33 +140,33 @@ namespace Gallio.Runner.Drivers
         /// </summary>
         protected struct Partition
         {
-            private readonly ITestDriver testDriver;
+            private readonly ITestDriverFactory testDriverFactory;
             private readonly TestPackageConfig testPackageConfig;
 
             /// <summary>
             /// Creates a partition information structure.
             /// </summary>
-            /// <param name="testDriver">The test driver</param>
+            /// <param name="testDriverFactory">The test driver factory</param>
             /// <param name="testPackageConfig">The test package configuration for the driver</param>
-            /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriver"/>
+            /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/>
             /// or <paramref name="testPackageConfig"/> is null</exception>
-            public Partition(ITestDriver testDriver, TestPackageConfig testPackageConfig)
+            public Partition(ITestDriverFactory testDriverFactory, TestPackageConfig testPackageConfig)
             {
-                if (testDriver == null)
-                    throw new ArgumentNullException("testDriver");
+                if (testDriverFactory == null)
+                    throw new ArgumentNullException("testDriverFactory");
                 if (testPackageConfig == null)
                     throw new ArgumentNullException("testPackageConfig");
 
-                this.testDriver = testDriver;
+                this.testDriverFactory = testDriverFactory;
                 this.testPackageConfig = testPackageConfig;
             }
 
             /// <summary>
-            /// Gets the test driver.
+            /// Gets the test driver factory.
             /// </summary>
-            public ITestDriver TestDriver
+            public ITestDriverFactory TestDriverFactory
             {
-                get { return testDriver; }
+                get { return testDriverFactory; }
             }
 
             /// <summary>
@@ -247,38 +187,50 @@ namespace Gallio.Runner.Drivers
         /// test model knows nothing at all about intersecting test domains.  Probably
         /// what needs to happen is to allow the test model to have multiple roots.
         /// </todo>
-        private sealed class MergeRootTestListener : ITestListener
+        private sealed class Listener : ITestExplorationListener, ITestExecutionListener, IDisposable
         {
-            private readonly ITestListener listener;
+            private readonly ITestExplorationListener testExplorationListener;
+            private readonly ITestExecutionListener testExecutionListener;
             private readonly Dictionary<string, string> redirectedSteps;
 
             private TestStepData rootTestStepData;
             private TestResult rootTestStepResult;
-            private Stopwatch stopwatch;
+            private Stopwatch rootTestStepStopwatch;
 
-            public MergeRootTestListener(ITestListener listener)
+            private bool wasRootTestStepStarted;
+
+            public Listener(ITestExplorationListener testExplorationListener, ITestExecutionListener testExecutionListener)
             {
-                this.listener = listener;
+                this.testExplorationListener = testExplorationListener;
+                this.testExecutionListener = testExecutionListener;
+
                 redirectedSteps = new Dictionary<string, string>();
+
+                rootTestStepStopwatch = Stopwatch.StartNew();
+                rootTestStepData = new TestStepData(new BaseTestStep(new RootTest(), null));
+                rootTestStepResult = new TestResult()
+                {
+                    Outcome = TestOutcome.Passed
+                };
             }
 
-            public void StartRootTestStep()
+            public void Dispose()
             {
-                RootTest rootTest = new RootTest();
-                BaseTestStep rootTestStep = new BaseTestStep(rootTest, null);
-                rootTestStepData = new TestStepData(rootTestStep);
-                rootTestStepResult = new TestResult();
-                rootTestStepResult.Outcome = TestOutcome.Passed;
-                stopwatch = Stopwatch.StartNew();
-
-                listener.NotifyTestStepStarted(rootTestStepData);
+                if (wasRootTestStepStarted)
+                {
+                    rootTestStepResult.Duration = rootTestStepStopwatch.Elapsed.TotalSeconds;
+                    testExecutionListener.NotifyTestStepFinished(rootTestStepData.Id, rootTestStepResult);
+                }
             }
 
-            public void FinishRootTestStep()
+            public void NotifySubtreeMerged(string parentTestId, TestData test)
             {
-                rootTestStepResult.Duration = stopwatch.Elapsed.TotalSeconds;
+                testExplorationListener.NotifySubtreeMerged(parentTestId, test);
+            }
 
-                listener.NotifyTestStepFinished(rootTestStepData.Id, rootTestStepResult);
+            public void NotifyAnnotationAdded(AnnotationData annotation)
+            {
+                testExplorationListener.NotifyAnnotationAdded(annotation);
             }
 
             public void NotifyTestStepStarted(TestStepData step)
@@ -286,24 +238,30 @@ namespace Gallio.Runner.Drivers
                 if (step.ParentId == null)
                 {
                     redirectedSteps.Add(step.Id, rootTestStepData.Id);
+
+                    if (!wasRootTestStepStarted)
+                    {
+                        testExecutionListener.NotifyTestStepStarted(rootTestStepData);
+                        wasRootTestStepStarted = true;
+                    }
                 }
                 else
                 {
                     step.ParentId = Redirect(step.ParentId);
-                    listener.NotifyTestStepStarted(step);
+                    testExecutionListener.NotifyTestStepStarted(step);
                 }
             }
 
             public void NotifyTestStepLifecyclePhaseChanged(string stepId, string lifecyclePhase)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLifecyclePhaseChanged(stepId, lifecyclePhase);
+                testExecutionListener.NotifyTestStepLifecyclePhaseChanged(stepId, lifecyclePhase);
             }
 
             public void NotifyTestStepMetadataAdded(string stepId, string metadataKey, string metadataValue)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepMetadataAdded(stepId, metadataKey, metadataValue);
+                testExecutionListener.NotifyTestStepMetadataAdded(stepId, metadataKey, metadataValue);
             }
 
             public void NotifyTestStepFinished(string stepId, TestResult result)
@@ -315,45 +273,45 @@ namespace Gallio.Runner.Drivers
                 }
                 else
                 {
-                    listener.NotifyTestStepFinished(stepId, result);
+                    testExecutionListener.NotifyTestStepFinished(stepId, result);
                 }
             }
 
             public void NotifyTestStepLogAttach(string stepId, Attachment attachment)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogAttach(stepId, attachment);
+                testExecutionListener.NotifyTestStepLogAttach(stepId, attachment);
             }
 
             public void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamWrite(stepId, streamName, text);
+                testExecutionListener.NotifyTestStepLogStreamWrite(stepId, streamName, text);
             }
 
             public void NotifyTestStepLogStreamEmbed(string stepId, string streamName,
                 string attachmentName)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamEmbed(stepId, streamName, attachmentName);
+                testExecutionListener.NotifyTestStepLogStreamEmbed(stepId, streamName, attachmentName);
             }
 
             public void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
+                testExecutionListener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
             }
 
             public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, Marker marker)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, marker);
+                testExecutionListener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, marker);
             }
 
             public void NotifyTestStepLogStreamEnd(string stepId, string streamName)
             {
                 stepId = Redirect(stepId);
-                listener.NotifyTestStepLogStreamEnd(stepId, streamName);
+                testExecutionListener.NotifyTestStepLogStreamEnd(stepId, streamName);
             }
 
             private string Redirect(string id)

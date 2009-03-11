@@ -25,11 +25,6 @@
             </Directory>
 
             <Directory Id="VisualStudio" Name="VisualStudio">
-                <Component Id="Gallio.VisualStudio.Interop.dll" Guid="{56E419A9-B033-4115-9BA5-D21137D6F052}" Win64="no">
-                    <File Name="Gallio.VisualStudio.Interop.dll" KeyPath="yes" 
-                          Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Interop.dll" />
-                </Component>
-
                 <Component Id="Gallio.VisualStudio.Shell.dll" Guid="{E0BE4838-A5CA-4af4-8838-3AC519AF28F9}" Win64="no">
                     <File Name="Gallio.VisualStudio.Shell.dll" KeyPath="yes" 
                           Assembly=".net" AssemblyApplication="Gallio.VisualStudio.Shell.dll" />
@@ -203,7 +198,6 @@
         <Feature Id="feat_Gallio.VisualStudio.VS90" Title="Visual Studio 2008 Add-In" Level="0" Description="Installs the pre-requisite packages for Visual Studio 2008 integration features." AllowAdvertise="no">
             <Condition Level="1">VS90DEVENV</Condition>
 
-            <ComponentRef Id="Gallio.VisualStudio.Interop.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell.VS90.Registry"/>
             
@@ -230,7 +224,6 @@
         <Feature Id="feat_Gallio.VisualStudio.VS100" Title="Visual Studio 2010 Add-In (Beta)" Level="0" Description="Installs the pre-requisite packages for Visual Studio 2010 integration features." AllowAdvertise="no">
             <Condition Level="1">VS100DEVENV</Condition>
 
-            <ComponentRef Id="Gallio.VisualStudio.Interop.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell.dll"/>
             <ComponentRef Id="Gallio.VisualStudio.Shell.VS100.Registry"/>
             

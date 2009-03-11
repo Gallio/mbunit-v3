@@ -29,34 +29,108 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface ITestController
+    public interface ITestController : IDisposable
     {
+        /// <summary>
+        /// Gets the list of currently selected tests.
+        /// </summary>
         BindingList<TestTreeNode> SelectedTests { get; }
+
+        /// <summary>
+        /// Gets the current test tree model.
+        /// </summary>
         ITestTreeModel Model { get; }
+
+        /// <summary>
+        /// Gets or sets the current tree category.
+        /// </summary>
         string TreeViewCategory { get; set; }
-        LockBox<Report> Report { get; }
+
+        /// <summary>
+        /// Gets the list of all test framework names.
+        /// </summary>
         IList<string> TestFrameworks { get; }
+
+        /// <summary>
+        /// Gets the total number of tests.
+        /// </summary>
         int TestCount { get; }
 
+        /// <summary>
+        /// Event raised after each test step completes.
+        /// </summary>
         event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
+
+        /// <summary>
+        /// Event raised when showing source code.
+        /// FIXME: Does not belong here.
+        /// </summary>
         event EventHandler<ShowSourceCodeEventArgs> ShowSourceCode;
 
         event EventHandler RunStarted;
         event EventHandler RunFinished;
-        event EventHandler LoadStarted;
-        event EventHandler LoadFinished;
-        event EventHandler UnloadStarted;
-        event EventHandler UnloadFinished;
+        event EventHandler ExploreStarted;
+        event EventHandler ExploreFinished;
 
-        void ApplyFilter(string filter, IProgressMonitor progressMonitor);
-        Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor);
+        /// <summary>
+        /// Sets the test runner factory used by the test controller.
+        /// </summary>
+        /// <param name="testRunnerFactory">The test runner factory to use</param>
+        void SetTestRunnerFactory(ITestRunnerFactory testRunnerFactory);
+
+        /// <summary>
+        /// Sets the test package configuration to be used during subsequent calls to <see cref="Explore" /> or <see cref="Run" />.
+        /// </summary>
+        /// <param name="testPackageConfig">The test package configuration</param>
+        void SetTestPackageConfig(TestPackageConfig testPackageConfig);
+
+        /// <summary>
+        /// Acquires a read lock on the report and executes the specified action.
+        /// </summary>
+        /// <param name="action">The action to execute within the context of the read lock</param>
+        void ReadReport(ReadAction<Report> action);
+
+        /// <summary>
+        /// Applies a filter to the tests, potentially altering selections.
+        /// </summary>
+        /// <param name="filter">The filter to apply</param>
+        void ApplyFilter(Filter<ITest> filter);
+
+        /// <summary>
+        /// Generates a filter from selected tests.
+        /// </summary>
+        /// <returns>The generated filter</returns>
+        Filter<ITest> GenerateFilterFromSelectedTests();
+
+        /// <summary>
+        /// Explores the tests and updates the model, does not run them.
+        /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
+        void Explore(IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Runs the tests and updates the model.
+        /// </summary>
+        /// <param name="debug">If true, runs tests with the debugger</param>
+        /// <param name="progressMonitor">The progress monitor</param>
+        void Run(bool debug, IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Refreshes the contents of the test tree based on the tests most recently run or explored.
+        /// </summary>
+        /// <param name="progressMonitor">The progress monitor</param>
         void RefreshTestTree(IProgressMonitor progressMonitor);
-        void Reload(IProgressMonitor progressMonitor);
-        void Reload(TestPackageConfig config, IProgressMonitor progressMonitor);
-        void ResetTests(IProgressMonitor progressMonitor);
-        void RunTests(IProgressMonitor progressMonitor);
-        void SetTestRunner(ITestRunner testRunner);
-        void UnloadTestPackage(IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Views the source code associated with a particular test.
+        /// </summary>
+        /// <param name="testId">The test id</param>
+        /// <param name="progressMonitor">The progress monitor</param>
         void ViewSourceCode(string testId, IProgressMonitor progressMonitor);
+
+        /// <summary>
+        /// Resets the status of all tests.
+        /// </summary>
+        void ResetTestStatus();
     }
 }

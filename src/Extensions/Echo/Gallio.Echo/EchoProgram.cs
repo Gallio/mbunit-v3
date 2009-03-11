@@ -93,6 +93,7 @@ namespace Gallio.Echo
             launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(EchoProgram).Assembly));
 
             launcher.TestPackageConfig.HostSetup.ShadowCopy = Arguments.ShadowCopy;
+            launcher.TestPackageConfig.HostSetup.Debug = Arguments.Debug;
             launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = Arguments.ApplicationBaseDirectory;
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = Arguments.WorkingDirectory;
 

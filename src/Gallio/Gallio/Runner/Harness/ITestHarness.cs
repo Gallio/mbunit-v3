@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Messages;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Execution;
@@ -67,22 +68,23 @@ namespace Gallio.Runner.Harness
         /// <summary>
         /// Populates the test model.
         /// </summary>
-        /// <param name="options">The test enumeration options</param>
+        /// <param name="testExplorationOptions">The test exploration options</param>
+        /// <param name="testExplorationListener">The test exploration listener</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="options"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/> or <paramref name="testExplorationOptions"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="Load" /> has not been called yet</exception>
-        void Explore(TestExplorationOptions options, IProgressMonitor progressMonitor);
+        void Explore(TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Runs the tests.
         /// </summary>
-        /// <param name="options">The test execution options</param>
-        /// <param name="listener">The test listener for monitoring test execution</param>
+        /// <param name="testExecutionOptions">The test execution options</param>
+        /// <param name="testExecutionListener">The test execution listener</param>
         /// <param name="progressMonitor">The progress monitor</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="progressMonitor"/>,
-        /// <paramref name="listener"/> or <paramref name="options"/> is null</exception>
+        /// <paramref name="testExecutionListener"/> or <paramref name="testExecutionOptions"/> is null</exception>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="Explore" /> has not been called yet</exception>
-        void Run(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
+        void Run(TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Unloads the tests.

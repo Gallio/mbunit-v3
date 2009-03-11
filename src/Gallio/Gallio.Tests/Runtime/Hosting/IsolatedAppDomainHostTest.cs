@@ -13,8 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
 using MbUnit.Framework;
+using Rhino.Mocks;
 
 namespace Gallio.Tests.Runtime.Hosting
 {
@@ -26,7 +28,7 @@ namespace Gallio.Tests.Runtime.Hosting
     {
         public override IHostFactory Factory
         {
-            get { return new IsolatedAppDomainHostFactory(); }
+            get { return new IsolatedAppDomainHostFactory(MockRepository.GenerateStub<IDebuggerManager>()); }
         }
     }
 }

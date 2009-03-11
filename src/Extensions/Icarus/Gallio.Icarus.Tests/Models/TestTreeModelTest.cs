@@ -33,7 +33,7 @@ namespace Gallio.Icarus.Tests.Models
             IProgressMonitor progressMonitor = MockProgressMonitor();
             TestTreeModel testTreeModel = new TestTreeModel();
             Filter<ITest> filter = new NoneFilter<ITest>();
-            testTreeModel.ApplyFilter(filter, progressMonitor);
+            testTreeModel.ApplyFilter(filter);
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace Gallio.Icarus.Tests.Models
             TestTreeNode n = new TestTreeNode("root", "root", "root");
             testTreeModel.Nodes.Add(n);
             Filter<ITest> filter = new AnyFilter<ITest>();
-            testTreeModel.ApplyFilter(filter, progressMonitor);
+            testTreeModel.ApplyFilter(filter);
             Assert.AreEqual(CheckState.Checked, n.CheckState);
         }
 
@@ -56,7 +56,7 @@ namespace Gallio.Icarus.Tests.Models
             TestTreeNode n = new TestTreeNode("root", "root", "root");
             testTreeModel.Nodes.Add(n);
             Filter<ITest> filter = new NoneFilter<ITest>();
-            testTreeModel.ApplyFilter(filter, progressMonitor);
+            testTreeModel.ApplyFilter(filter);
             Assert.AreEqual(CheckState.Unchecked, n.CheckState);
         }
 
@@ -76,7 +76,7 @@ namespace Gallio.Icarus.Tests.Models
             Filter<ITest> left = new IdFilter<ITest>(new EqualityFilter<string>("a"));
             Filter<ITest> right = new IdFilter<ITest>(new EqualityFilter<string>("b"));
             Filter<ITest> orFilter = new OrFilter<ITest>(new[] { left, right});
-            testTreeModel.ApplyFilter(orFilter, progressMonitor);
+            testTreeModel.ApplyFilter(orFilter);
             Assert.AreEqual(CheckState.Indeterminate, n.CheckState);
             Assert.AreEqual(CheckState.Checked, a.CheckState);
             Assert.AreEqual(CheckState.Checked, b.CheckState);
@@ -123,7 +123,7 @@ namespace Gallio.Icarus.Tests.Models
             
             TestModelData testModelData = new TestModelData(root);
             
-            testTreeModel.BuildTestTree(testModelData, "Namespace", progressMonitor);
+            testTreeModel.BuildTestTree(testModelData, "Namespace");
             
             Assert.IsNotNull(testTreeModel.Root);
             Assert.AreEqual(1, testTreeModel.Root.Nodes.Count);

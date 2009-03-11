@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime.Hosting
@@ -24,10 +26,30 @@ namespace Gallio.Runtime.Hosting
     /// </summary>
     public class LocalHostFactory : BaseHostFactory
     {
+        private readonly IDebuggerManager debuggerManager;
+
+        /// <summary>
+        /// Gets the component Id of this factory.
+        /// </summary>
+        public static readonly string ComponentId = "Core.LocalHostFactory";
+
+        /// <summary>
+        /// Creates a host factory.
+        /// </summary>
+        /// <param name="debuggerManager">A reference to the debugger manager</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="debuggerManager"/> is null</exception>
+        public LocalHostFactory(IDebuggerManager debuggerManager)
+        {
+            if (debuggerManager == null)
+                throw new ArgumentNullException("debuggerManager");
+
+            this.debuggerManager = debuggerManager;
+        }
+
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {
-            LocalHost host = new LocalHost(hostSetup, logger);
+            LocalHost host = new LocalHost(hostSetup, logger, debuggerManager);
             host.Connect();
             return host;
         }

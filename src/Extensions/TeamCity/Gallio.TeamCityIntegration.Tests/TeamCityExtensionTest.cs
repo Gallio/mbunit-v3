@@ -15,6 +15,7 @@
 
 using System;
 using System.Text;
+using Gallio.Concurrency;
 using Gallio.Framework;
 using Gallio.Model;
 using Gallio.Model.Execution;
@@ -70,25 +71,27 @@ namespace Gallio.TeamCityIntegration.Tests
         }
 
         [Test]
-        public void LoadStarted()
+        public void ExploreStarted()
         {
-            dispatcher.NotifyLoadStarted(new LoadStartedEventArgs(new TestPackageConfig()));
+            dispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(new TestPackageConfig(), new TestExplorationOptions(),
+                new LockBox<Report>(new Report())));
 
-            Assert.AreEqual("##teamcity[progressMessage 'Loading tests.']\n", log.ToString());
+            Assert.AreEqual("##teamcity[progressStart 'Exploring tests.']\n", log.ToString());
         }
 
         [Test]
-        public void ExploreStarted()
+        public void ExploreFinished()
         {
-            dispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(new TestExplorationOptions()));
+            dispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(true, new Report()));
 
-            Assert.AreEqual("##teamcity[progressMessage 'Exploring tests.']\n", log.ToString());
+            Assert.AreEqual("##teamcity[progressFinish 'Exploring tests.']\n", log.ToString());
         }
 
         [Test]
         public void RunStarted()
         {
-            dispatcher.NotifyRunStarted(new RunStartedEventArgs(new TestExecutionOptions()));
+            dispatcher.NotifyRunStarted(new RunStartedEventArgs(new TestPackageConfig(), new TestExplorationOptions(), new TestExecutionOptions(),
+                new LockBox<Report>(new Report())));
 
             Assert.AreEqual("##teamcity[progressStart 'Running tests.']\n", log.ToString());
         }
@@ -99,14 +102,6 @@ namespace Gallio.TeamCityIntegration.Tests
             dispatcher.NotifyRunFinished(new RunFinishedEventArgs(true, new Report()));
 
             Assert.AreEqual("##teamcity[progressFinish 'Running tests.']\n", log.ToString());
-        }
-
-        [Test]
-        public void UnloadFinished()
-        {
-            dispatcher.NotifyUnloadFinished(new UnloadFinishedEventArgs(true));
-
-            Assert.AreEqual("##teamcity[progressMessage 'Unloaded tests.']\n", log.ToString());
         }
 
         [Test]

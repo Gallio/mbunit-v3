@@ -75,6 +75,14 @@ namespace Gallio.Echo
              )]
         public bool ShadowCopy;
 
+        [CommandLineArgument(
+             CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "d",
+             LongName = "debug",
+             Description = "Attach the debugger to the test process."
+             )]
+        public bool Debug;
+
         #endregion
 
         #region Report Arguments
@@ -240,6 +248,7 @@ namespace Gallio.Echo
             sw.WriteLine("Application Base Directory: {0}", ApplicationBaseDirectory);
             sw.WriteLine("Working Directory: {0}", WorkingDirectory);
             sw.WriteLine("Shadow Copy: {0}", ShadowCopy);
+            sw.WriteLine("Debug: {0}", Debug);
 
             sw.WriteLine("Report Folder: {0}", ReportDirectory);
             sw.WriteLine("Report Name Format: {0}", ReportNameFormat);

@@ -39,8 +39,6 @@ namespace Gallio.Icarus.Mediator
 
         public IReportController ReportController { get; set; }
 
-        public IDebuggerController DebuggerController { get; set; }
-
         public IExecutionLogController ExecutionLogController { get; set; }
 
         public IAnnotationsController AnnotationsController { get; set; }
@@ -74,7 +72,10 @@ namespace Gallio.Icarus.Mediator
 
                     // reload tests
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
-                        TestController.Reload(ProjectController.TestPackageConfig, subProgressMonitor);
+                    {
+                        TestController.SetTestPackageConfig(ProjectController.TestPackageConfig);
+                        TestController.Explore(subProgressMonitor);
+                    }
                 }
             }));
         }
@@ -82,7 +83,7 @@ namespace Gallio.Icarus.Mediator
         public void ApplyFilter(string filter)
         {
             taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
-                TestController.ApplyFilter(filter, progressMonitor)));
+                TestController.ApplyFilter(FilterUtils.ParseTestFilter(filter))));
         }
 
         public void ConvertSavedReport(string fileName, string format)
@@ -126,7 +127,7 @@ namespace Gallio.Icarus.Mediator
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();
 
-                TestController.Report.Read(
+                TestController.ReadReport(
                     report => ReportController.GenerateReport(report, reportFolder, progressMonitor));
             }));
         }
@@ -146,7 +147,10 @@ namespace Gallio.Icarus.Mediator
 
                     // reload
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
-                        TestController.Reload(ProjectController.TestPackageConfig, subProgressMonitor);
+                    {
+                        TestController.SetTestPackageConfig(ProjectController.TestPackageConfig);
+                        TestController.Explore(subProgressMonitor);
+                    }
                 }
             }));
         }
@@ -165,7 +169,10 @@ namespace Gallio.Icarus.Mediator
                             throw new OperationCanceledException();
 
                         using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(80))
-                            TestController.Reload(ProjectController.TestPackageConfig, subProgressMonitor);
+                        {
+                            TestController.SetTestPackageConfig(ProjectController.TestPackageConfig);
+                            TestController.Explore(subProgressMonitor);
+                        }
 
                         if (progressMonitor.IsCanceled)
                             throw new OperationCanceledException();
@@ -183,7 +190,9 @@ namespace Gallio.Icarus.Mediator
                 using (progressMonitor.BeginTask("Reloading", 100))
                 {
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
-                        TestController.Reload(subProgressMonitor);
+                    {
+                        TestController.Explore(subProgressMonitor);
+                    }
 
                     if (progressMonitor.IsCanceled)
                         throw new OperationCanceledException();
@@ -207,10 +216,11 @@ namespace Gallio.Icarus.Mediator
                 if (progressMonitor.IsCanceled)
                     throw new OperationCanceledException();
 
-                if (filterInfo.FilterName != "AutoSave")
-                    continue;
-                TestController.ApplyFilter(filterInfo.Filter, progressMonitor);
-                return;
+                if (filterInfo.FilterName == "AutoSave")
+                {
+                    TestController.ApplyFilter(FilterUtils.ParseTestFilter(filterInfo.Filter));
+                    return;
+                }
             }
         }
 
@@ -229,7 +239,10 @@ namespace Gallio.Icarus.Mediator
 
                     // reload
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                        TestController.Reload(ProjectController.TestPackageConfig, subProgressMonitor);
+                    {
+                        TestController.SetTestPackageConfig(ProjectController.TestPackageConfig);
+                        TestController.Explore(subProgressMonitor);
+                    }
                 }
             }));
         }
@@ -243,7 +256,7 @@ namespace Gallio.Icarus.Mediator
         public void ResetTests()
         {
             taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
-                TestController.ResetTests(progressMonitor)));
+                TestController.ResetTestStatus()));
         }
 
         public void RunTests(bool attachDebugger)
@@ -255,26 +268,16 @@ namespace Gallio.Icarus.Mediator
                     // save current filter as last run
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                     using (IProgressMonitor subSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                        ProjectController.SaveFilter("LastRun", TestController.GetCurrentFilter(subProgressMonitor),
+                        ProjectController.SaveFilter("LastRun", TestController.GenerateFilterFromSelectedTests(),
                             subSubProgressMonitor);
 
                     // stop if user has canceled
                     if (progressMonitor.IsCanceled)
                         throw new OperationCanceledException();
 
-                    // attach debugger (if necessary)
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                        if (attachDebugger)
-                            DebuggerController.Attach(subProgressMonitor);
-
                     // run the tests
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(96))
-                        TestController.RunTests(subProgressMonitor);
-
-                    // detach the debugger (if necessary)
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                        if (attachDebugger)
-                            DebuggerController.Detach(subProgressMonitor);
+                        TestController.Run(attachDebugger, subProgressMonitor);
                 }
             }));    
         }
@@ -287,7 +290,7 @@ namespace Gallio.Icarus.Mediator
                 {
                     Filter<ITest> filter;
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                        filter = TestController.GetCurrentFilter(subProgressMonitor);
+                        filter = TestController.GenerateFilterFromSelectedTests();
 
                     if (progressMonitor.IsCanceled)
                         throw new OperationCanceledException();
@@ -306,19 +309,13 @@ namespace Gallio.Icarus.Mediator
 
         public void ShowReport(string reportFormat)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => TestController.Report.Read(
+            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => TestController.ReadReport(
                 delegate(Report report)
                 {
                     string fileName = ReportController.ShowReport(report, reportFormat, progressMonitor);
                     if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
                         Process.Start(fileName);
                 })));
-        }
-
-        public void Unload()
-        {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
-                TestController.UnloadTestPackage(progressMonitor)));
         }
 
         public void ViewSourceCode(string testId)

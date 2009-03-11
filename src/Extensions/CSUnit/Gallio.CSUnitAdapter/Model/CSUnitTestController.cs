@@ -28,6 +28,7 @@ using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner.Harness;
 using Gallio.Runtime;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime.Remoting;
@@ -198,10 +199,9 @@ namespace Gallio.CSUnitAdapter.Model
                 if (File.Exists(configFile))
                     hostSetup.Configuration.ConfigurationXml = File.ReadAllText(configFile);
 
-                using (IsolatedAppDomainHost host = new IsolatedAppDomainHost(hostSetup, RuntimeAccessor.Logger))
+                var hostFactory = (IHostFactory) RuntimeAccessor.Instance.Resolve(IsolatedAppDomainHostFactory.ComponentId);
+                using (IHost host = hostFactory.CreateHost(hostSetup, RuntimeAccessor.Logger))
                 {
-                    host.Connect();
-
                     Type loaderType = typeof(RemoteLoader);
                     if (!loaderType.Assembly.GlobalAssemblyCache)
                     {

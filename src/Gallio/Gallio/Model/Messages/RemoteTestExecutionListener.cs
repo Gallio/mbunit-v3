@@ -18,86 +18,86 @@ using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Runtime.Remoting;
 
-namespace Gallio.Model.Execution
+namespace Gallio.Model.Messages
 {
     /// <summary>
-    /// Wraps a test listener so that it can be accessed remotely.
+    /// Wraps a test execution listener so that it can be accessed remotely.
     /// </summary>
-    public class RemoteTestListener : LongLivedMarshalByRefObject, ITestListener
+    public class RemoteTestExecutionListener : LongLivedMarshalByRefObject, ITestExecutionListener
     {
-        private readonly ITestListener listener;
+        private readonly ITestExecutionListener testExecutionListener;
 
         /// <summary>
-        /// Creates a wrapper for the specified test listener.
+        /// Creates a wrapper for the specified listener.
         /// </summary>
-        /// <param name="listener">The logger</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="listener"/> is null</exception>
-        public RemoteTestListener(ITestListener listener)
+        /// <param name="testExecutionListener">The listener to wrap</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testExecutionListener"/> is null</exception>
+        public RemoteTestExecutionListener(ITestExecutionListener testExecutionListener)
         {
-            if (listener == null)
-                throw new ArgumentNullException("listener");
+            if (testExecutionListener == null)
+                throw new ArgumentNullException("testExecutionListener");
 
-            this.listener = listener;
+            this.testExecutionListener = testExecutionListener;
         }
 
         /// <inheritdoc />
         public void NotifyTestStepStarted(TestStepData step)
         {
-            listener.NotifyTestStepStarted(step);
+            testExecutionListener.NotifyTestStepStarted(step);
         }
 
         /// <inheritdoc />
         public void NotifyTestStepLifecyclePhaseChanged(string stepId, string lifecyclePhase)
         {
-            listener.NotifyTestStepLifecyclePhaseChanged(stepId, lifecyclePhase);
+            testExecutionListener.NotifyTestStepLifecyclePhaseChanged(stepId, lifecyclePhase);
         }
 
         /// <inheritdoc />
         public void NotifyTestStepMetadataAdded(string stepId, string metadataKey, string metadataValue)
         {
-            listener.NotifyTestStepMetadataAdded(stepId, metadataKey, metadataValue);
+            testExecutionListener.NotifyTestStepMetadataAdded(stepId, metadataKey, metadataValue);
         }
 
         /// <inheritdoc />
         public void NotifyTestStepFinished(string stepId, TestResult result)
         {
-            listener.NotifyTestStepFinished(stepId, result);
+            testExecutionListener.NotifyTestStepFinished(stepId, result);
         }
 
         /// <inheritdoc />
         public void NotifyTestStepLogAttach(string stepId, Attachment attachment)
         {
-            listener.NotifyTestStepLogAttach(stepId, attachment);
+            testExecutionListener.NotifyTestStepLogAttach(stepId, attachment);
         }
 
         /// <inheritdoc />
         public void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text)
         {
-            listener.NotifyTestStepLogStreamWrite(stepId, streamName, text);
+            testExecutionListener.NotifyTestStepLogStreamWrite(stepId, streamName, text);
         }
 
         /// <inheritdoc />
         public void NotifyTestStepLogStreamEmbed(string stepId, string streamName, string attachmentName)
         {
-            listener.NotifyTestStepLogStreamEmbed(stepId, streamName, attachmentName);
+            testExecutionListener.NotifyTestStepLogStreamEmbed(stepId, streamName, attachmentName);
         }
 
         /// <inheritdoc />
         public void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName)
         {
-            listener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
+            testExecutionListener.NotifyTestStepLogStreamBeginSection(stepId, streamName, sectionName);
         }
 
         /// <inheritdoc />
         public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, Marker marker)
         {
-            listener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, marker);
+            testExecutionListener.NotifyTestStepLogStreamBeginMarker(stepId, streamName, marker);
         }
 
         /// <inheritdoc />
         public void NotifyTestStepLogStreamEnd(string stepId, string streamName)
         {
-            listener.NotifyTestStepLogStreamEnd(stepId, streamName);
+            testExecutionListener.NotifyTestStepLogStreamEnd(stepId, streamName);
         }
     }
 }

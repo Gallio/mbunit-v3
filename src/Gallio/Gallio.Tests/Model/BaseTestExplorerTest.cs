@@ -16,12 +16,14 @@
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Messages;
 using Gallio.Reflection;
 using Gallio.Runner.Harness;
 using Gallio.Runtime;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
+using Rhino.Mocks;
 
 namespace Gallio.Tests.Model
 {
@@ -181,7 +183,9 @@ namespace Gallio.Tests.Model
             config.AssemblyFiles.Add(AssemblyUtils.GetFriendlyAssemblyCodeBase(sampleAssembly));
 
             harness.Load(config, NullProgressMonitor.CreateInstance());
-            harness.Explore(new TestExplorationOptions(), NullProgressMonitor.CreateInstance());
+            harness.Explore(new TestExplorationOptions(),
+                MockRepository.GenerateStub<ITestExplorationListener>(),
+                NullProgressMonitor.CreateInstance());
 
             testModel = harness.TestModel;
         }

@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
@@ -47,10 +48,11 @@ namespace Gallio.Icarus.Tests.Controllers
             var report = new Report
                              {
                                  TestPackageRun = new TestPackageRun(),
-                                 TestModel = new TestModelData(new TestData(new RootTest()))
+                                 TestModel = new TestModelData()
                              };
             report.TestPackageRun.RootTestStepRun = testStepRun;
-            testController.Stub(x => x.Report).Return(new LockBox<Report>(report));
+
+            testController.Stub(x => x.ReadReport(null)).Do((Action<Action<Report>>)(action => action(report)));
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "name", "nodeType"));
             testController.Stub(x => x.Model).Return(testTreeModel);

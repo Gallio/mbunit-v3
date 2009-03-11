@@ -38,13 +38,13 @@ namespace Gallio.Icarus.Models.Interfaces
         int Inconclusive { get; }
         SynchronizationContext SynchronizationContext { get; set; }
 
-        void ApplyFilter(Filter<ITest> filter, IProgressMonitor progressMonitor);
-        void BuildTestTree(TestModelData testModelData, string treeViewCategory, IProgressMonitor progressMonitor);
+        void ApplyFilter(Filter<ITest> filter);
+        void BuildTestTree(TestModelData testModelData, string treeViewCategory);
         Node FindNode(TreePath path);
-        Filter<ITest> GetCurrentFilter(IProgressMonitor progressMonitor);
+        Filter<ITest> GenerateFilterFromSelectedTests();
         TreePath GetPath(Node node);
         void Notify();
-        void ResetTestStatus(IProgressMonitor progressMonitor);
+        void ResetTestStatus();
         void UpdateTestStatus(TestData testData, TestStepRun testStepRun);
     }
 }

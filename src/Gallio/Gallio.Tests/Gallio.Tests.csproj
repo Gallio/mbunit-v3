@@ -182,14 +182,14 @@
     <Compile Include="Runner\Drivers\HostedTestDriverTest.cs" />
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
-    <Compile Include="Runner\Sessions\LocalTestSessionManagerTest.cs" />
-    <Compile Include="Runner\Workspaces\ResourcePathTests.cs" />
     <Compile Include="RunSampleAttribute.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
     <Compile Include="Runtime\Hosting\HostConfigurationTest.cs" />
     <Compile Include="Runtime\Hosting\HostSetupTest.cs" />
     <Compile Include="Runtime\Hosting\LocalHostFactoryTest.cs" />
+    <Compile Include="Runtime\Logging\SeverityPrefixParserTest.cs" />
     <Compile Include="Runtime\Logging\EventLoggerTest.cs" />
+    <Compile Include="Runtime\Logging\SeverityPrefixLoggerTest.cs" />
     <Compile Include="Runtime\Logging\TextLoggerTest.cs" />
     <Compile Include="Runtime\Remoting\BinaryTcpChannelTest.cs" />
     <Compile Include="Host\HostProgramIntegrationTest.cs" />
@@ -253,7 +253,6 @@
     <Compile Include="Model\Filters\TypeFilterTest.cs" />
     <Compile Include="Model\MetadataMapTest.cs" />
     <Compile Include="Collections\GenericUtilsTest.cs" />
-    <Compile Include="Runner\Reports\MockTestDataFactory.cs" />
     <Compile Include="Model\BaseTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runner\Reports\PackageRunStatisticsTests.cs" />

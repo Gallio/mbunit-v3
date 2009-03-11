@@ -98,6 +98,12 @@ namespace Gallio.ReSharperRunner.Provider
                 formatter.Serialize(stream, report);
         }
 
+        public static void ClearSerializedReport(string sessionId)
+        {
+            IDiskCacheGroup group = GetReportCacheGroup(sessionId);
+            group.Delete();
+        }
+
         private static BinaryFormatter CreateBinaryFormatter()
         {
             BinaryFormatter formatter = new BinaryFormatter();

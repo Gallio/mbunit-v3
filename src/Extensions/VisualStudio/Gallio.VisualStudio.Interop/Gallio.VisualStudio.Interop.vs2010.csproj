@@ -66,11 +66,15 @@
     <Compile Include="VisualStudioSupport.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+  <PropertyGroup>
+    <GallioProjectOutputPath>..\..\..\Gallio\Gallio\bin</GallioProjectOutputPath>
+  </PropertyGroup>  
   <Target Name="BeforeBuild">
+    <Delete Files="$(GallioProjectOutputPath)\$(TargetFileName)" Condition="Exists('$(GallioProjectOutputPath)\$(TargetFileName)')" />
   </Target>
   <Target Name="AfterBuild">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GallioProjectOutputPath)" Condition="Exists('$(TargetPath)')">
+      <Output TaskParameter="DestinationFiles" ItemName="FilesWrites" />
+    </Copy>
   </Target>
-  -->
 </Project>

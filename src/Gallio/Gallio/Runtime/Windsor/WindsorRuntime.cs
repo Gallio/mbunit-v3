@@ -140,6 +140,19 @@ namespace Gallio.Runtime.Windsor
         }
 
         /// <inheritdoc />
+        public object Resolve(string componentId)
+        {
+            try
+            {
+                return container.Resolve(componentId);
+            }
+            catch (Exception ex)
+            {
+                throw new RuntimeException(String.Format("Could not resolve component with id '{0}'.", componentId), ex);
+            }
+        }
+
+        /// <inheritdoc />
         public object Resolve(Type service)
         {
             try

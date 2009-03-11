@@ -42,6 +42,14 @@ namespace Gallio.Runtime
         void Initialize(ILogger logger);
 
         /// <summary>
+        /// Resolves a reference to a component with the given id.
+        /// </summary>
+        /// <param name="componentId">The componentId</param>
+        /// <returns>A component with the specified id</returns>
+        /// <exception cref="RuntimeException">Thrown if the component could not be resolved</exception>
+        object Resolve(string componentId);
+
+        /// <summary>
         /// Resolves a reference to a component that implements the specified service.
         /// </summary>
         /// <param name="service">The service type</param>

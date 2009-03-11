@@ -80,7 +80,7 @@ namespace Gallio.Icarus
             mediator.ProjectController.AssemblyChanged += AssemblyChanged;
 
             mediator.TestController.RunFinished += testController_RunFinished;
-            mediator.TestController.LoadFinished += testController_LoadFinished;
+            mediator.TestController.ExploreFinished += testController_LoadFinished;
             mediator.TestController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
             
             mediator.ProgressMonitorProvider.ProgressUpdate += ProgressUpdate;
@@ -397,17 +397,11 @@ namespace Gallio.Icarus
             mediator.Cancel();
             // save the current state of the test tree
             testExplorer.SaveState();
-            mediator.TestController.UnloadFinished += CleanUpOnClose;
-            // unload the current test package
-            mediator.Unload();
 
             mediator.OptionsController.Size = Size;
             mediator.OptionsController.Location = Location;
             mediator.OptionsController.Save();
-        }
 
-        private void CleanUpOnClose(object sender, EventArgs e)
-        {
             mediator.SaveProject(string.Empty);
 
             // save dock panel config

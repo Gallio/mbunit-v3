@@ -14,10 +14,9 @@
 // limitations under the License.
 
 using System;
-using Gallio.Runner.Events;
 using Gallio.Utilities;
 
-namespace Gallio.Runner
+namespace Gallio.Runner.Events
 {
     /// <summary>
     /// Dispatches test runner events to listeners.
@@ -39,12 +38,6 @@ namespace Gallio.Runner
         public event EventHandler<DisposeFinishedEventArgs> DisposeFinished;
 
         /// <inheritdoc/>
-        public event EventHandler<LoadStartedEventArgs> LoadStarted;
-
-        /// <inheritdoc/>
-        public event EventHandler<LoadFinishedEventArgs> LoadFinished;
-
-        /// <inheritdoc/>
         public event EventHandler<ExploreStartedEventArgs> ExploreStarted;
 
         /// <inheritdoc/>
@@ -57,10 +50,10 @@ namespace Gallio.Runner
         public event EventHandler<RunFinishedEventArgs> RunFinished;
 
         /// <inheritdoc/>
-        public event EventHandler<UnloadStartedEventArgs> UnloadStarted;
+        public event EventHandler<TestModelSubtreeMergedEventArgs> TestModelSubtreeMerged;
 
         /// <inheritdoc/>
-        public event EventHandler<UnloadFinishedEventArgs> UnloadFinished;
+        public event EventHandler<TestModelAnnotationAddedEventArgs> TestModelAnnotationAdded;
 
         /// <inheritdoc/>
         public event EventHandler<TestStepStartedEventArgs> TestStepStarted;
@@ -129,24 +122,6 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Dispatches the <see cref="LoadStarted" /> event.
-        /// </summary>
-        /// <param name="e">The event arguments</param>
-        public void NotifyLoadStarted(LoadStartedEventArgs e)
-        {
-            EventHandlerUtils.SafeInvoke(LoadStarted, this, e);
-        }
-
-        /// <summary>
-        /// Dispatches the <see cref="LoadFinished" /> event.
-        /// </summary>
-        /// <param name="e">The event arguments</param>
-        public void NotifyLoadFinished(LoadFinishedEventArgs e)
-        {
-            EventHandlerUtils.SafeInvoke(LoadFinished, this, e);
-        }
-
-        /// <summary>
         /// Dispatches the <see cref="ExploreStarted" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
@@ -183,21 +158,21 @@ namespace Gallio.Runner
         }
 
         /// <summary>
-        /// Dispatches the <see cref="UnloadStarted" /> event.
+        /// Dispatches the <see cref="TestModelSubtreeMerged" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        public void NotifyUnloadStarted(UnloadStartedEventArgs e)
+        public void NotifyTestModelSubtreeMerged(TestModelSubtreeMergedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(UnloadStarted, this, e);
+            EventHandlerUtils.SafeInvoke(TestModelSubtreeMerged, this, e);
         }
 
         /// <summary>
-        /// Dispatches the <see cref="UnloadFinished" /> event.
+        /// Dispatches the <see cref="TestModelAnnotationAdded" /> event.
         /// </summary>
         /// <param name="e">The event arguments</param>
-        public void NotifyUnloadFinished(UnloadFinishedEventArgs e)
+        public void NotifyTestModelAnnotationAdded(TestModelAnnotationAddedEventArgs e)
         {
-            EventHandlerUtils.SafeInvoke(UnloadFinished, this, e);
+            EventHandlerUtils.SafeInvoke(TestModelAnnotationAdded, this, e);
         }
 
         /// <summary>
@@ -301,16 +276,16 @@ namespace Gallio.Runner
             if (events == null)
                 throw new ArgumentNullException("events");
 
+            events.InitializeFinished += (sender, e) => NotifyInitializeFinished(e);
+            events.InitializeStarted += (sender, e) => NotifyInitializeStarted(e);
             events.DisposeFinished += (sender, e) => NotifyDisposeFinished(e);
             events.DisposeStarted += (sender, e) => NotifyDisposeStarted(e);
             events.ExploreFinished += (sender, e) => NotifyExploreFinished(e);
             events.ExploreStarted += (sender, e) => NotifyExploreStarted(e);
-            events.InitializeFinished += (sender, e) => NotifyInitializeFinished(e);
-            events.InitializeStarted += (sender, e) => NotifyInitializeStarted(e);
-            events.LoadFinished += (sender, e) => NotifyLoadFinished(e);
-            events.LoadStarted += (sender, e) => NotifyLoadStarted(e);
             events.RunFinished += (sender, e) => NotifyRunFinished(e);
             events.RunStarted += (sender, e) => NotifyRunStarted(e);
+            events.TestModelSubtreeMerged += (sender, e) => NotifyTestModelSubtreeMerged(e);
+            events.TestModelAnnotationAdded += (sender, e) => NotifyTestModelAnnotationAdded(e);
             events.TestStepFinished += (sender, e) => NotifyTestStepFinished(e);
             events.TestStepLifecyclePhaseChanged += (sender, e) => NotifyTestStepLifecyclePhaseChanged(e);
             events.TestStepLogAttach += (sender, e) => NotifyTestStepLogAttach(e);
@@ -321,8 +296,6 @@ namespace Gallio.Runner
             events.TestStepLogStreamWrite += (sender, e) => NotifyTestStepLogStreamWrite(e);
             events.TestStepMetadataAdded += (sender, e) => NotifyTestStepMetadataAdded(e);
             events.TestStepStarted += (sender, e) => NotifyTestStepStarted(e);
-            events.UnloadFinished += (sender, e) => NotifyUnloadFinished(e);
-            events.UnloadStarted += (sender, e) => NotifyUnloadStarted(e);
         }
     }
 }

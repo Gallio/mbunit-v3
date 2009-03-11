@@ -36,11 +36,11 @@ namespace Gallio.Icarus.Tests.Controllers
         public void SetUp()
         {
             ITestController testController = mocks.StrictMock<ITestController>();
-            testController.LoadFinished += null;
+            testController.ExploreFinished += null;
             IEventRaiser loadFinished = LastCall.IgnoreArguments().GetEventRaiser();
             Report report = new Report
             {
-                TestModel = new TestModelData(new TestData("id", "name", "fullName"))
+                TestModel = new TestModelData()
             };
             report.TestModel.Annotations.AddRange(new[]
             {
@@ -48,8 +48,10 @@ namespace Gallio.Icarus.Tests.Controllers
                 new AnnotationData(AnnotationType.Warning, CodeLocation.Unknown, new CodeReference(), "message", "details"), 
                 new AnnotationData(AnnotationType.Info, CodeLocation.Unknown, new CodeReference(), "message", "details"), 
             });
-            Expect.Call(testController.Report).Return(new LockBox<Report>(report)).Repeat.Twice();
+
+            testController.Stub(x => x.ReadReport(null)).Do((Action<Action<Report>>)(action => action(report))).Repeat.Twice();
             mocks.ReplayAll();
+
             annotationsController = new AnnotationsController(testController);
             loadFinished.Raise(testController, EventArgs.Empty);            
         }

@@ -17,8 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Runtime;
+using Gallio.Runtime.Debugging;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.Remoting;
@@ -37,9 +39,6 @@ namespace Gallio.Runner.Drivers
         private readonly ITestFramework[] frameworks;
         private readonly IRuntime runtime;
         private readonly bool shareAppDomain;
-
-        private IHost remoteHost;
-        private Remote remote;
 
         /// <summary>
         /// Creates a hosted test driver.
@@ -91,55 +90,52 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <inheritdoc />
-        protected override void Reset()
+        protected override void DoWithPartitions(TestPackageConfig testPackageConfig, Action<IList<AggregateTestDriver.Partition>> action,
+            Action<string> setStatus)
         {
-            base.Reset();
+            setStatus("Partitioning tests.");
 
-            if (remoteHost != null)
-            {
-                DisposeHost(remoteHost);
-                remoteHost = null;
-            }
+            string workingDirectory = testPackageConfig.HostSetup.WorkingDirectory;
+            bool shadowCopy = testPackageConfig.HostSetup.ShadowCopy;
+            bool debug = testPackageConfig.HostSetup.Debug;
 
-            remote = null;
-        }
-
-        /// <inheritdoc />
-        protected override IEnumerable<Partition> CreatePartitions(TestPackageConfig testPackageConfig)
-        {
-            ICollection<TestDomainSetup> testDomains = GetTestDomains(testPackageConfig);
+            ICollection<TestDomainSetup> testDomains = SplitPackageIntoTestDomains(testPackageConfig);
 
             ProcessorArchitecture arch = testPackageConfig.HostSetup.ProcessorArchitecture;
             if (arch == ProcessorArchitecture.None)
                 arch = GetCommonProcessorArchitecture(testDomains);
 
-            remoteHost = CreateRemoteHost(testPackageConfig.HostSetup.WorkingDirectory,
-                testPackageConfig.HostSetup.ShadowCopy, arch);
+            setStatus("Initializing the test host.");
 
-            remote = HostUtils.CreateInstance<Remote>(remoteHost);
-
-            foreach (TestDomainSetup testDomain in testDomains)
+            IHost remoteHost = CreateRemoteHost(workingDirectory, shadowCopy, debug, arch);
+            try
             {
-                ITestDriver testDriver = CreateTestDriver(testDomain);
-                testDriver.Initialize(RuntimeSetup, Logger);
+                Remote remote = HostUtils.CreateInstance<Remote>(remoteHost);
 
-                yield return new Partition(testDriver, testDomain.TestPackageConfig);
+                var partitions = GenericUtils.ConvertAllToArray(testDomains,
+                    testDomain => new Partition(new Factory(testDomain, remote, shareAppDomain, Logger), testDomain.TestPackageConfig));
+
+                setStatus("");
+
+                action(partitions);
+            }
+            finally
+            {
+                setStatus("Disposing the test host.");
+
+                DisposeHost(remoteHost);
+
+                setStatus("");
             }
         }
 
-        private ITestDriver CreateTestDriver(TestDomainSetup testDomain)
-        {
-            if (shareAppDomain)
-                return new LocalTestDriver();
-            return new ProxyTestDriver(remote.CreateRemoteTestDriver(testDomain, new RemoteLogger(Logger)));
-        }
-
-        private IHost CreateRemoteHost(string workingDirectory, bool shadowCopy, ProcessorArchitecture arch)
+        private IHost CreateRemoteHost(string workingDirectory, bool shadowCopy, bool debug, ProcessorArchitecture arch)
         {
             HostSetup hostSetup = new HostSetup();
             hostSetup.ApplicationBaseDirectory = RuntimeSetup.RuntimePath;
             hostSetup.WorkingDirectory = workingDirectory;
             hostSetup.ShadowCopy = shadowCopy;
+            hostSetup.Debug = debug;
             hostSetup.ProcessorArchitecture = arch;
             hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.Temp;
 
@@ -151,7 +147,7 @@ namespace Gallio.Runner.Drivers
             return remoteHost;
         }
 
-        private ICollection<TestDomainSetup> GetTestDomains(TestPackageConfig testPackageConfig)
+        private ICollection<TestDomainSetup> SplitPackageIntoTestDomains(TestPackageConfig testPackageConfig)
         {
             Dictionary<HostSetup, TestDomainSetup> testDomains = new Dictionary<HostSetup, TestDomainSetup>();
             foreach (string assemblyFile in testPackageConfig.AssemblyFiles)
@@ -191,7 +187,7 @@ namespace Gallio.Runner.Drivers
             return testDomains.Values;
         }
 
-        private static ProcessorArchitecture GetCommonProcessorArchitecture(ICollection<TestDomainSetup> testDomains)
+        private static ProcessorArchitecture GetCommonProcessorArchitecture(IEnumerable<TestDomainSetup> testDomains)
         {
             ProcessorArchitecture commonArch = ProcessorArchitecture.MSIL;
             foreach (TestDomainSetup testDomain in testDomains)
@@ -224,18 +220,41 @@ namespace Gallio.Runner.Drivers
             }
         }
 
-        private class Remote : LongLivedMarshalByRefObject
+        private sealed class Remote : LongLivedMarshalByRefObject
         {
-            public ITestDriver CreateRemoteTestDriver(TestDomainSetup setup, ILogger logger)
+            public ITestDriver CreateTestDriverInIsolatedAppDomain(TestDomainSetup setup, ILogger logger)
             {
-                IHostFactory hostFactory = new IsolatedAppDomainHostFactory();
+                IHostFactory hostFactory = new IsolatedAppDomainHostFactory(new DefaultDebuggerManager());
                 IHost host = hostFactory.CreateHost(setup.TestPackageConfig.HostSetup, logger);
 
-                ITestDriver remoteTestDriver = HostUtils.CreateInstance<LocalTestDriver>(host);
-                ProxyTestDriver proxyTestDriver = new ProxyTestDriver(remoteTestDriver);
-                proxyTestDriver.Disposed += delegate { host.Dispose(); };
+                ITestDriver hostTestDriver = HostUtils.CreateInstance<LocalTestDriver>(host);
+                RemoteTestDriver remoteTestDriver = new RemoteTestDriver(hostTestDriver);
+                remoteTestDriver.Disposed += delegate { host.Dispose(); };
 
-                return proxyTestDriver;
+                return remoteTestDriver;
+            }
+        }
+
+        private sealed class Factory : ITestDriverFactory
+        {
+            private readonly TestDomainSetup testDomainSetup;
+            private readonly Remote remote;
+            private readonly bool shareAppDomain;
+            private readonly ILogger logger;
+
+            public Factory(TestDomainSetup testDomainSetup, Remote remote, bool shareAppDomain, ILogger logger)
+            {
+                this.testDomainSetup = testDomainSetup;
+                this.remote = remote;
+                this.shareAppDomain = shareAppDomain;
+                this.logger = logger;
+            }
+
+            public ITestDriver CreateTestDriver()
+            {
+                if (shareAppDomain)
+                    return new LocalTestDriver();
+                return new RemoteTestDriver(remote.CreateTestDriverInIsolatedAppDomain(testDomainSetup, new RemoteLogger(logger)));
             }
         }
     }

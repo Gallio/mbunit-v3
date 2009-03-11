@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Collections;
-using Gallio.Model.Serialization;
 using Gallio.Utilities;
 
 namespace Gallio.Model.Serialization
@@ -40,11 +39,11 @@ namespace Gallio.Model.Serialization
         private TestData rootTest;
 
         /// <summary>
-        /// Creates an uninitialized instance for Xml deserialization.
+        /// Creates an empty test model with just a root test.
         /// </summary>
-        private TestModelData()
+        public TestModelData()
+            : this(new TestData(new RootTest()))
         {
-            annotations = new List<AnnotationData>();
         }
 
         /// <summary>
@@ -53,13 +52,13 @@ namespace Gallio.Model.Serialization
         /// <param name="source">The source test model</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null</exception>
         public TestModelData(TestModel source)
-            : this()
         {
             if (source == null)
                 throw new ArgumentNullException("source");
 
             rootTest = new TestData(source.RootTest);
 
+            annotations = new List<AnnotationData>();
             foreach (Annotation annotation in source.Annotations)
                 annotations.Add(new AnnotationData(annotation));
         }
@@ -70,12 +69,13 @@ namespace Gallio.Model.Serialization
         /// <param name="rootTest">The root test</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootTest"/> is null</exception>
         public TestModelData(TestData rootTest)
-            : this()
         {
             if (rootTest == null)
                 throw new ArgumentNullException(@"rootTest");
 
             this.rootTest = rootTest;
+
+            annotations = new List<AnnotationData>();
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Gallio.Model.Serialization
                 if (rootTest == null)
                     return EmptyArray<TestData>.Instance;
 
-                return TreeUtils.GetPreOrderTraversal(rootTest, GetChildren);
+                return rootTest.AllTests;
             }
         }
 
@@ -175,35 +175,48 @@ namespace Gallio.Model.Serialization
         }
 
         /// <summary>
-        /// Merges the contents of another test model with this one.
+        /// Merged a subtree of tests into the model.
         /// </summary>
-        /// <param name="source">The source test model</param>
-        public void MergeFrom(TestModelData source)
+        /// <remarks>
+        /// <para>
+        /// Merges tests with duplicate ids.  Adds new tests in place.
+        /// </para>
+        /// </remarks>
+        /// <param name="parentTestId">The id of the parent test, or null if adding the root</param>
+        /// <param name="test">The top test of the subtree to add</param>
+        /// <returns>The merged test, if the test was already present in the tree</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
+        public TestData MergeSubtree(string parentTestId, TestData test)
         {
-            annotations.AddRange(source.annotations);
+            if (test == null)
+                throw new ArgumentNullException("test");
 
-            foreach (TestData sourceTest in source.AllTests)
+            lock (this)
             {
-                TestData targetTest = GetTestById(sourceTest.Id);
-                if (targetTest != null)
+                TestData targetTest = GetTestById(test.Id);
+                if (targetTest == null)
                 {
-                    foreach (KeyValuePair<string, IList<string>> pairs in sourceTest.Metadata)
+                    TestData parentTest = GetTestById(parentTestId);
+                    parentTest.Children.Add(test);
+
+                    foreach (TestData addedTest in test.AllTests)
+                        tests.Add(addedTest.Id, addedTest);
+
+                    return test;
+                }
+                else
+                {
+                    foreach (KeyValuePair<string, IList<string>> pairs in test.Metadata)
                         foreach (string value in pairs.Value)
                             if (!targetTest.Metadata.Contains(pairs.Key, value))
                                 targetTest.Metadata.Add(pairs.Key, value);
 
-                    foreach (TestData sourceChild in sourceTest.Children)
-                        if (GetTestById(sourceChild.Id) == null)
-                            targetTest.Children.Add(sourceChild);
+                    foreach (TestData child in test.Children)
+                        MergeSubtree(targetTest.Id, child);
+
+                    return targetTest;
                 }
             }
-
-            ResetIndex();
-        }
-
-        private static IEnumerable<TestData> GetChildren(TestData node)
-        {
-            return node.Children;
         }
     }
 }

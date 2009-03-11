@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <gallio>
+    <assemblies>
+      <assembly file="Gallio.VisualStudio.Interop.dll" />
+    </assemblies>
+
+    <runtime>
+      <components>
+        <component id="VisualStudio.Debugger"
+                   service="Gallio.Runtime.Debugging.IDebugger, Gallio"
+                   type="Gallio.VisualStudio.Interop.VisualStudioDebugger, Gallio.VisualStudio.Interop" />
+      </components>
+    </runtime>
+  </gallio>
+</configuration>

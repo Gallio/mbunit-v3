@@ -19,6 +19,9 @@ using System.Runtime.Remoting;
 namespace Gallio.Runtime.Remoting
 {
     /// <summary>
+    /// Base class for long-lived marshal by ref objects.
+    /// </summary>
+    /// <remarks>
     /// <para>
     /// A <see cref="LongLivedMarshalByRefObject"/> represents a remote
     /// object whose lifetime is managed explicitly.  It ensures that long-lived
@@ -30,11 +33,11 @@ namespace Gallio.Runtime.Remoting
     /// to ensure it does not get garbage collected prematurely.  A marshalled
     /// object can also be explicitly disconnected via <see cref="RemotingServices.Disconnect" />.
     /// </para>
-    /// </summary>
-    /// <remarks>
+    /// <para>
     /// This class overrides <see cref="InitializeLifetimeService" />
     /// to return <c>null</c> which disables the automatic lease-management
     /// performed by the default lifetime service.
+    /// </para>
     /// </remarks>
     public abstract class LongLivedMarshalByRefObject : MarshalByRefObject
     {

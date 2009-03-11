@@ -42,14 +42,14 @@ namespace Gallio.TeamCityIntegration
                 writer.WriteProgressMessage("Initializing test runner.");
             };
 
-            Events.LoadStarted += delegate(object sender, LoadStartedEventArgs e)
-            {
-                writer.WriteProgressMessage("Loading tests.");
-            };
-
             Events.ExploreStarted += delegate(object sender, ExploreStartedEventArgs e)
             {
-                writer.WriteProgressMessage("Exploring tests.");
+                writer.WriteProgressStart("Exploring tests.");
+            };
+
+            Events.ExploreFinished += delegate(object sender, ExploreFinishedEventArgs e)
+            {
+                writer.WriteProgressFinish("Exploring tests."); // nb: message must be same as specified in progress start
             };
 
             Events.RunStarted += delegate(object sender, RunStartedEventArgs e)
@@ -60,11 +60,6 @@ namespace Gallio.TeamCityIntegration
             Events.RunFinished += delegate(object sender, RunFinishedEventArgs e)
             {
                 writer.WriteProgressFinish("Running tests."); // nb: message must be same as specified in progress start
-            };
-
-            Events.UnloadFinished += delegate(object sender, UnloadFinishedEventArgs e)
-            {
-                writer.WriteProgressMessage("Unloaded tests.");
             };
 
             Events.DisposeFinished += delegate(object sender, DisposeFinishedEventArgs e)

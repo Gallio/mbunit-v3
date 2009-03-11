@@ -140,6 +140,7 @@
         -->
 	
         <FeatureRef Id='feat_Gallio'> <!-- Display="2" -->
+            <FeatureRef Id='feat_Gallio.VisualStudio.Interop'/>
         </FeatureRef>
 
         <FeatureRef Id='feat_MbUnit3'> <!-- Display="4" -->

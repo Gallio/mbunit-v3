@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Runtime.InteropServices;
 using Gallio.VisualStudio.Interop.Native;
 
 namespace Gallio.VisualStudio.Interop
@@ -28,7 +29,7 @@ namespace Gallio.VisualStudio.Interop
     public static class ComRetryMessageFilter
     {
         private static readonly object syncRoot = new object();
-        private static IOleMessageFilter oldFilter;
+        private static IOleMessageFilter oldFilter, newFilter;
 
         /// <summary>
         /// Installs a retry message filter.
@@ -42,7 +43,7 @@ namespace Gallio.VisualStudio.Interop
                 if (oldFilter != null)
                     throw new InvalidOperationException("The retry message filter has already been installed.");
 
-                IOleMessageFilter newFilter = new MessageFilter(retryTimeout);
+                newFilter = new MessageFilter(retryTimeout);
                 NativeMethods.CoRegisterMessageFilter(newFilter, out oldFilter);
             }
         }
@@ -60,6 +61,7 @@ namespace Gallio.VisualStudio.Interop
                     NativeMethods.CoRegisterMessageFilter(oldFilter, out filter);
 
                     oldFilter = null;
+                    newFilter = null;
                 }
             }
         }

@@ -16,9 +16,11 @@
 using System;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Serialization;
+using Gallio.Model.Messages;
 using Gallio.Runner.Harness;
 using Gallio.Runtime;
+using Gallio.Runtime.Debugging;
+using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 
@@ -30,7 +32,30 @@ namespace Gallio.Runner.Drivers
     /// </summary>
     public class LocalTestDriver : BaseTestDriver
     {
+        private readonly LocalHostFactory localHostFactory;
+
         private ITestHarness harness;
+
+        /// <summary>
+        /// Creates a test driver.
+        /// </summary>
+        public LocalTestDriver()
+            : this(new DefaultDebuggerManager()) // FIXME: Should use IoC always
+        {
+        }
+
+        /// <summary>
+        /// Creates a test driver.
+        /// </summary>
+        /// <param name="debuggerManager">A reference to the debugger manager</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="debuggerManager"/> is null</exception>
+        public LocalTestDriver(IDebuggerManager debuggerManager)
+        {
+            if (debuggerManager == null)
+                throw new ArgumentNullException("debuggerManager");
+
+            localHostFactory = new LocalHostFactory(debuggerManager);
+        }
 
         /// <inheritdoc />
         protected override void InitializeImpl(RuntimeSetup runtimeSetup, ILogger logger)
@@ -42,28 +67,61 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <inheritdoc />
-        protected override void LoadImpl(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
+        protected override void Dispose(bool disposing)
         {
-            harness.Load(testPackageConfig, progressMonitor);
+            if (disposing && harness != null)
+                harness.Dispose();
         }
 
         /// <inheritdoc />
-        protected override TestModelData ExploreImpl(TestExplorationOptions options, IProgressMonitor progressMonitor)
+        protected override void ExploreImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor)
         {
-            harness.Explore(options, progressMonitor);
-            return new TestModelData(harness.TestModel);
+            using (progressMonitor.BeginTask("Exploring the tests.", 4))
+            {
+                using (CreateLocalHost(testPackageConfig))
+                {
+                    try
+                    {
+                        harness.Load(testPackageConfig, progressMonitor.CreateSubProgressMonitor(1));
+                        harness.Explore(testExplorationOptions, testExplorationListener,
+                            progressMonitor.CreateSubProgressMonitor(2));
+                    }
+                    finally
+                    {
+                        harness.Unload(progressMonitor.CreateSubProgressMonitor(1));
+                    }
+                }
+            }
         }
 
         /// <inheritdoc />
-        protected override void RunImpl(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
+        protected override void RunImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor)
         {
-            harness.Run(options, listener, progressMonitor);
+            using (progressMonitor.BeginTask("Running the tests.", 14))
+            {
+                using (CreateLocalHost(testPackageConfig))
+                {
+                    try
+                    {
+                        harness.Load(testPackageConfig, progressMonitor.CreateSubProgressMonitor(1));
+                        harness.Explore(testExplorationOptions, testExplorationListener,
+                            progressMonitor.CreateSubProgressMonitor(2));
+                        harness.Run(testExecutionOptions, testExecutionListener,
+                            progressMonitor.CreateSubProgressMonitor(10));
+                    }
+                    finally
+                    {
+                        harness.Unload(progressMonitor.CreateSubProgressMonitor(1));
+                    }
+                }
+            }
         }
 
-        /// <inheritdoc />
-        protected override void UnloadImpl(IProgressMonitor progressMonitor)
+        // We create a local host to ensure that the working directory and debugging options
+        // are set correctly during exploration and execution
+        private IHost CreateLocalHost(TestPackageConfig testPackageConfig)
         {
-            harness.Unload(progressMonitor);
+            return localHostFactory.CreateHost(testPackageConfig.HostSetup, Logger);
         }
     }
 }

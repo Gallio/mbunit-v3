@@ -85,6 +85,7 @@ namespace Gallio.MSBuildTasks
         private ITaskItem applicationBaseDirectory;
         private ITaskItem workingDirectory;
         private bool shadowCopy;
+        private bool debug;
 
         private string filter = "*";
         private string[] reportTypes = EmptyArray<string>.Instance;
@@ -231,6 +232,19 @@ namespace Gallio.MSBuildTasks
         public bool ShadowCopy
         {
             set { shadowCopy = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Attaches the debugger to the test process when set to true.
+        /// </para>
+        /// <para>
+        /// The default is false.
+        /// </para>
+        /// </summary>
+        public bool Debug
+        {
+            set { debug = value; }
         }
 
         /// <summary>
@@ -706,6 +720,7 @@ namespace Gallio.MSBuildTasks
             if (workingDirectory != null)
                 launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory.ItemSpec;
             launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
+            launcher.TestPackageConfig.HostSetup.Debug = debug;
 
             AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
             AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);

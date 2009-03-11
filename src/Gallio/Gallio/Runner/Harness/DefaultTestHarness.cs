@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using Gallio.Concurrency;
+using Gallio.Model.Messages;
+using Gallio.Model.Serialization;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
@@ -198,12 +200,12 @@ namespace Gallio.Runner.Harness
         }
 
         /// <inheritdoc />
-        public void Explore(TestExplorationOptions options, IProgressMonitor progressMonitor)
+        public void Explore(TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor)
         {
-            if (options == null)
-                throw new ArgumentNullException(@"options");
+            if (testExplorationOptions == null)
+                throw new ArgumentNullException("testExplorationOptions");
             if (progressMonitor == null)
-                throw new ArgumentNullException(@"progressMonitor");
+                throw new ArgumentNullException("progressMonitor");
 
             ThrowIfDisposed();
 
@@ -224,16 +226,21 @@ namespace Gallio.Runner.Harness
 
                     explorer.FinishModel();
                 }
+
+                foreach (Annotation annotation in model.Annotations)
+                    testExplorationListener.NotifyAnnotationAdded(new AnnotationData(annotation));
+
+                testExplorationListener.NotifySubtreeMerged(null, new TestData(model.RootTest));
             }
         }
 
         /// <inheritdoc />
-        public void Run(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
+        public void Run(TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor)
         {
-            if (options == null)
-                throw new ArgumentNullException(@"options");
-            if (listener == null)
-                throw new ArgumentNullException("listener");
+            if (testExecutionOptions == null)
+                throw new ArgumentNullException("testExecutionOptions");
+            if (testExecutionListener == null)
+                throw new ArgumentNullException("testExecutionListener");
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
 
@@ -255,13 +262,13 @@ namespace Gallio.Runner.Harness
                         progressMonitor.Worked(5);
 
                         progressMonitor.SetStatus("Sorting tests.");
-                        ObservableTestContextManager contextManager = new ObservableTestContextManager(contextTracker, listener);
-                        ITestCommand rootTestCommand = TestCommandFactory.BuildCommands(model, options.Filter, options.ExactFilter, contextManager);
+                        ObservableTestContextManager contextManager = new ObservableTestContextManager(contextTracker, testExecutionListener);
+                        ITestCommand rootTestCommand = TestCommandFactory.BuildCommands(model, testExecutionOptions.Filter, testExecutionOptions.ExactFilter, contextManager);
                         progressMonitor.Worked(5);
                         progressMonitor.SetStatus(@"");
 
                         using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
-                            RunAllTestCommands(rootTestCommand, options, subProgressMonitor);
+                            RunAllTestCommands(rootTestCommand, testExecutionOptions, subProgressMonitor);
                     }
                     finally
                     {

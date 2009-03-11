@@ -52,15 +52,6 @@ namespace Gallio.AutoCAD.Plugin
             minfo.Invoke(actual, new object[] { pingTimeout });
         }
 
-        private static Type GetEndpointType()
-        {
-            if (endpointType != null)
-                return endpointType;
-
-
-            return endpointType;
-        }
-
         public void Dispose()
         {
             if (actual != null)

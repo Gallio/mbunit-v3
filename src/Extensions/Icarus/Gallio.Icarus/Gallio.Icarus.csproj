@@ -88,13 +88,11 @@
       <DependentUpon>CodeWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AnnotationsController.cs" />
-    <Compile Include="Controllers\DebuggerController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\ExecutionLogController.cs" />
     <Compile Include="Controllers\Interfaces\IAnnotationsController.cs" />
-    <Compile Include="Controllers\Interfaces\IDebuggerController.cs" />
     <Compile Include="Controllers\Interfaces\IErrorController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
@@ -147,7 +145,6 @@
     <Compile Include="ProgressMonitoring\EventArgs\ProgressUpdateEventArgs.cs" />
     <Compile Include="Remoting\AssemblyWatcher.cs" />
     <Compile Include="Services\Interfaces\IReportService.cs" />
-    <Compile Include="Services\Interfaces\ITestRunnerService.cs" />
     <Compile Include="Models\Interfaces\ITestTreeModel.cs" />
     <Compile Include="Models\ProjectTreeModel.cs" />
     <Compile Include="Models\TestTreeModel.cs" />
@@ -292,7 +289,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Services\ReportService.cs" />
-    <Compile Include="Services\TestRunnerService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TestExplorer.cs">
       <SubType>Form</SubType>

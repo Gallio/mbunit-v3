@@ -20,10 +20,13 @@ using Gallio.Utilities;
 namespace Gallio.Runtime.Logging
 {
     /// <summary>
-    /// <para>
     /// A logger that writes output to a <see cref="TextWriter"/>.
-    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// To include severity information in the output, wrap this logger with a <see cref="SeverityPrefixLogger" />.
+    /// </para>
+    /// </remarks>
     public class TextLogger : BaseLogger
     {
         private readonly TextWriter textWriter;
@@ -43,7 +46,7 @@ namespace Gallio.Runtime.Logging
         /// <inheritdoc />
         protected override void LogImpl(LogSeverity severity, string message, Exception exception)
         {
-            textWriter.WriteLine("[{0}] {1}", severity, message);
+            textWriter.WriteLine(message);
             if (exception != null)
             {
                 textWriter.Write("  ");

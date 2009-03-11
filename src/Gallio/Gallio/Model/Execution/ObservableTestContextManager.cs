@@ -14,36 +14,37 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Messages;
 
 namespace Gallio.Model.Execution
 {
     /// <summary>
     /// An observable test context manager creates and tracks test contexts that are
-    /// associated with a <see cref="ITestListener" /> for reporting test events
+    /// associated with a <see cref="ITestExecutionListener" /> for reporting test events
     /// back to the test runner.
     /// </summary>
     public class ObservableTestContextManager : ITestContextManager
     {
         private readonly ITestContextTracker contextTracker;
-        private readonly ITestListener listener;
+        private readonly ITestExecutionListener testExecutionListener;
 
         /// <summary>
         /// Creates a test context manager.
         /// </summary>
         /// <param name="contextTracker">The test context tracker</param>
-        /// <param name="listener">The test listener to which notifications are dispatched</param>
+        /// <param name="testExecutionListener">The test listener to which notifications are dispatched</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>
-        /// or <paramref name="listener"/> is null</exception>
+        /// or <paramref name="testExecutionListener"/> is null</exception>
         public ObservableTestContextManager(ITestContextTracker contextTracker,
-            ITestListener listener)
+            ITestExecutionListener testExecutionListener)
         {
             if (contextTracker == null)
                 throw new ArgumentNullException("contextTracker");
-            if (listener == null)
-                throw new ArgumentNullException("listener");
+            if (testExecutionListener == null)
+                throw new ArgumentNullException("testExecutionListener");
 
             this.contextTracker = contextTracker;
-            this.listener = listener;
+            this.testExecutionListener = testExecutionListener;
         }
 
         /// <inheritdoc />
@@ -55,9 +56,9 @@ namespace Gallio.Model.Execution
         /// <summary>
         /// Gets the test listener to which test events are dispatched.
         /// </summary>
-        public ITestListener Listener
+        public ITestExecutionListener TestExecutionListener
         {
-            get { return listener; }
+            get { return testExecutionListener; }
         }
 
         /// <inheritdoc />

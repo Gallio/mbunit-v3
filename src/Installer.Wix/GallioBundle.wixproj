@@ -138,6 +138,9 @@
     <Compile Include="..\Extensions\VisualStudio\VisualStudio.wxs">
       <Link>VisualStudio.wxs</Link>
     </Compile>
+    <Compile Include="..\Extensions\VisualStudio\VisualStudio.Interop.wxs">
+      <Link>VisualStudio.Interop.wxs</Link>
+    </Compile>
     <Compile Include="..\Extensions\CCNet\CCNet.wxs">
       <Link>CCNet.wxs</Link>
     </Compile>

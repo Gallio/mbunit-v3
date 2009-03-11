@@ -7,15 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(VSIPInstalled)">
-    <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Shell.Tests\Gallio.VisualStudio.Shell.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.VisualStudio.Sail.Tests\Gallio.VisualStudio.Sail.Tests$(ProjectVariant).csproj" />
     
-    <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll">
-        <Folder>VisualStudio</Folder>
-    </Binary>
     <Binary Include="Gallio.VisualStudio.Shell\bin\Gallio.VisualStudio.Shell.dll">
       <Folder>VisualStudio</Folder>
     </Binary>

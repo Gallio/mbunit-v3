@@ -80,6 +80,7 @@ namespace Gallio.NAntTasks
         private string applicationBaseDirectory;
         private string workingDirectory;
         private bool shadowCopy;
+        private bool debug;
 
         private string filter = "*";
         private string reportTypes = @"";
@@ -218,6 +219,20 @@ namespace Gallio.NAntTasks
         public bool ShadowCopy
         {
             set { shadowCopy = value; }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Attaches the debugger to the test process when set to true.
+        /// </para>
+        /// <para>
+        /// The default is false.
+        /// </para>
+        /// </summary>
+        [TaskAttribute("debug")]
+        public bool Debug
+        {
+            set { debug = value; }
         }
 
         /// <summary>
@@ -500,6 +515,7 @@ namespace Gallio.NAntTasks
             launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
             launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
+            launcher.TestPackageConfig.HostSetup.Debug = debug;
 
             AddAssemblies(launcher);
             AddHintDirectories(launcher);

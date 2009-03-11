@@ -73,14 +73,14 @@ namespace Gallio.Icarus.Controllers
         {
             this.testController = testController;
             annotations = new BindingList<AnnotationData>(annotationsList);
-            testController.LoadFinished += delegate { UpdateList(); };
+            testController.ExploreFinished += delegate { UpdateList(); };
         }
 
         private void UpdateList()
         {
             annotations.Clear();
             int error = 0, warning = 0, info = 0;
-            testController.Report.Read(report =>
+            testController.ReadReport(report =>
             {
                 foreach (AnnotationData annotationData in report.TestModel.Annotations)
                 {

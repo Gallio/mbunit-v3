@@ -16,7 +16,7 @@
 using System;
 using Gallio.Model;
 using Gallio.Model.Execution;
-using Gallio.Model.Serialization;
+using Gallio.Model.Messages;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
@@ -27,7 +27,7 @@ namespace Gallio.Runner.Drivers
     /// A proxy for a remote test driver.
     /// Wraps a test driver and forwards all messages to it.
     /// </summary>
-    public class ProxyTestDriver : BaseTestDriver
+    public class RemoteTestDriver : BaseTestDriver
     {
         private ITestDriver testDriver;
 
@@ -36,7 +36,7 @@ namespace Gallio.Runner.Drivers
         /// </summary>
         /// <param name="testDriver">The test driver to which messages should be forwarded</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriver"/> is null</exception>
-        public ProxyTestDriver(ITestDriver testDriver)
+        public RemoteTestDriver(ITestDriver testDriver)
         {
             if (testDriver == null)
                 throw new ArgumentNullException("testDriver");
@@ -74,28 +74,26 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <inheritdoc />
-        protected override void LoadImpl(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
+        protected override void ExploreImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor)
         {
-            testDriver.Load(testPackageConfig, new RemoteProgressMonitor(progressMonitor));
+            if (testDriver == null)
+                throw new ObjectDisposedException("Test driver");
+
+            testDriver.Explore(testPackageConfig,
+                testExplorationOptions, new RemoteTestExplorationListener(testExplorationListener),
+                new RemoteProgressMonitor(progressMonitor));
         }
 
         /// <inheritdoc />
-        protected override TestModelData ExploreImpl(TestExplorationOptions options, IProgressMonitor progressMonitor)
+        protected override void RunImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor)
         {
-            return testDriver.Explore(options, new RemoteProgressMonitor(progressMonitor));
-        }
+            if (testDriver == null)
+                throw new ObjectDisposedException("Test driver");
 
-        /// <inheritdoc />
-        protected override void RunImpl(TestExecutionOptions options, ITestListener listener,
-            IProgressMonitor progressMonitor)
-        {
-            testDriver.Run(options, new RemoteTestListener(listener), new RemoteProgressMonitor(progressMonitor));
-        }
-
-        /// <inheritdoc />
-        protected override void UnloadImpl(IProgressMonitor progressMonitor)
-        {
-            testDriver.Unload(new RemoteProgressMonitor(progressMonitor));
+            testDriver.Run(testPackageConfig,
+                testExplorationOptions, new RemoteTestExplorationListener(testExplorationListener),
+                testExecutionOptions, new RemoteTestExecutionListener(testExecutionListener),
+                new RemoteProgressMonitor(progressMonitor));
         }
     }
 }

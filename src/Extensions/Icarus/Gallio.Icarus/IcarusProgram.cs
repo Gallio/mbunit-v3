@@ -23,7 +23,6 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Properties;
-using Gallio.Icarus.Services.Interfaces;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Projects;
@@ -40,7 +39,6 @@ namespace Gallio.Icarus
     /// </summary>
     public class IcarusProgram : ConsoleProgram<IcarusArguments>
     {
-        private ITestRunnerService testRunnerService;
         private ITestController testController;
 
         /// <summary>
@@ -72,16 +70,16 @@ namespace Gallio.Icarus
                     AssemblyUtils.GetFriendlyAssemblyLocation(typeof (IcarusProgram).Assembly))
             };
 
-            testRunnerService = new TestRunnerService();
             var optionsController = new OptionsController(new FileSystem(), new XmlSerialization(),
                 new Utilities.UnhandledExceptionPolicy());
+
             // create & initialize a test runner whenever the test runner factory is changed
             optionsController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
             {
                 if (e.PropertyName != "TestRunnerFactory")
                     return;
 
-                CreateTestRunner(optionsController.TestRunnerFactory);
+                ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
             };
             optionsController.Load();
 
@@ -92,57 +90,58 @@ namespace Gallio.Icarus
             
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                testController = new TestController(testRunnerService, new TestTreeModel());
-                CreateTestRunner(optionsController.TestRunnerFactory);
-
-                var reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
-
-                IMediator mediator = new Mediator.Mediator();
-                mediator.ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, 
-                    new Project()), new FileSystem(), new XmlSerialization());
-                mediator.TestController = testController;
-                mediator.ReportController = new ReportController(new ReportService(reportManager), new FileSystem());
-                mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController, optionsController);
-                mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
-                mediator.RuntimeLogController = runtimeLogController;
-                mediator.OptionsController = optionsController;
-                mediator.DebuggerController = new DebuggerController(mediator.ProjectController, testRunnerService, 
-                    optionsController);
-
-                var main = new Main(mediator);
-                main.Load += delegate
+                using (testController = new TestController(new TestTreeModel()))
                 {
-                    var assemblyFiles = new List<string>();
-                    if (Arguments != null && Arguments.Assemblies.Length > 0)
-                    {
-                        foreach (var assembly in assemblyFiles)
-                        {
-                            if (!File.Exists(assembly))
-                                continue;
+                    ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 
-                            if (Path.GetExtension(assembly) == ".gallio")
+                    var reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+
+                    IMediator mediator = new Mediator.Mediator();
+                    mediator.ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject,
+                        new Project()), new FileSystem(), new XmlSerialization());
+                    mediator.TestController = testController;
+                    mediator.ReportController = new ReportController(new ReportService(reportManager), new FileSystem());
+                    mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController,
+                        optionsController);
+                    mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
+                    mediator.RuntimeLogController = runtimeLogController;
+                    mediator.OptionsController = optionsController;
+
+                    var main = new Main(mediator);
+                    main.Load += delegate
+                    {
+                        var assemblyFiles = new List<string>();
+                        if (Arguments != null && Arguments.Assemblies.Length > 0)
+                        {
+                            foreach (var assembly in assemblyFiles)
                             {
-                                mediator.OpenProject(assembly);
-                                break;
+                                if (!File.Exists(assembly))
+                                    continue;
+
+                                if (Path.GetExtension(assembly) == ".gallio")
+                                {
+                                    mediator.OpenProject(assembly);
+                                    break;
+                                }
+                                mediator.AddAssemblies(assemblyFiles);
                             }
-                            mediator.AddAssemblies(assemblyFiles);
                         }
-                    }
-                    else if (optionsController.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
-                        mediator.OpenProject(Paths.DefaultProject);
-                };
-                main.CleanUp += delegate { testRunnerService.Dispose(); };
-                Application.Run(main);
+                        else if (optionsController.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
+                            mediator.OpenProject(Paths.DefaultProject);
+                    };
+
+                    Application.Run(main);
+                }
             }
 
             return ResultCode.Success;
         }
 
-        private void CreateTestRunner(string factoryName)
+        private void ConfigureTestRunnerFactory(string factoryName)
         {
-            ITestRunnerManager testRunnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
-            ITestRunner testRunner = testRunnerManager.CreateTestRunner(factoryName);
-            testController.SetTestRunner(testRunner);
+            var testRunnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
+            var testRunnerFactory = testRunnerManager.GetFactory(factoryName);
+            testController.SetTestRunnerFactory(testRunnerFactory);
         }
 
         protected override void ShowHelp()

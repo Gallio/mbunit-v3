@@ -16,6 +16,7 @@
 using System;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
@@ -28,7 +29,7 @@ namespace Gallio.Runner.Drivers
     /// Base implementation of a test driver.
     /// </summary>
     /// <remarks>
-    /// The base implementation inherits from <see cref="MarshalByRefObject" />
+    /// The base implementation inherits from <see cref="LongLivedMarshalByRefObject" />
     /// so that test driver's services can be accessed remotely if needed.
     /// </remarks>
     public abstract class BaseTestDriver : LongLivedMarshalByRefObject, ITestDriver
@@ -56,47 +57,37 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <inheritdoc />
-        public void Load(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
+        public void Explore(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor)
         {
             if (testPackageConfig == null)
                 throw new ArgumentNullException("testPackageConfig");
+            if (testExplorationOptions == null)
+                throw new ArgumentNullException("testExplorationOptions");
+            if (testExplorationListener == null)
+                throw new ArgumentNullException("testExplorationListener");
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
-            LoadImpl(testPackageConfig, progressMonitor);
+            ExploreImpl(testPackageConfig, testExplorationOptions, testExplorationListener, progressMonitor);
         }
 
         /// <inheritdoc />
-        public TestModelData Explore(TestExplorationOptions options, IProgressMonitor progressMonitor)
+        public void Run(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor)
         {
-            if (options == null)
-                throw new ArgumentNullException("options");
+            if (testPackageConfig == null)
+                throw new ArgumentNullException("testPackageConfig");
+            if (testExplorationOptions == null)
+                throw new ArgumentNullException("testExplorationOptions");
+            if (testExplorationListener == null)
+                throw new ArgumentNullException("testExplorationListener");
+            if (testExecutionOptions == null)
+                throw new ArgumentNullException("testExecutionOptions");
+            if (testExecutionListener == null)
+                throw new ArgumentNullException("testExecutionListener");
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
-            return ExploreImpl(options, progressMonitor);
-        }
-
-        /// <inheritdoc />
-        public void Run(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
-        {
-            if (options == null)
-                throw new ArgumentNullException("options");
-            if (listener == null)
-                throw new ArgumentNullException("listener");
-            if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
-
-            RunImpl(options, listener, progressMonitor);
-        }
-
-        /// <inheritdoc />
-        public void Unload(IProgressMonitor progressMonitor)
-        {
-            if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
-
-            UnloadImpl(progressMonitor);
+            RunImpl(testPackageConfig, testExplorationOptions, testExplorationListener, testExecutionOptions, testExecutionListener, progressMonitor);
         }
 
         /// <summary>
@@ -149,27 +140,15 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <summary>
-        /// Internal implementation of <see cref="Load" />.
-        /// Called after argument validation takes place.
-        /// </summary>
-        protected abstract void LoadImpl(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor);
-
-        /// <summary>
         /// Internal implementation of <see cref="Explore" />.
         /// Called after argument validation takes place.
         /// </summary>
-        protected abstract TestModelData ExploreImpl(TestExplorationOptions options, IProgressMonitor progressMonitor);
+        protected abstract void ExploreImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Internal implementation of <see cref="Run" />.
         /// Called after argument validation takes place.
         /// </summary>
-        protected abstract void RunImpl(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Internal implementation of <see cref="Unload" />.
-        /// Called after argument validation takes place.
-        /// </summary>
-        protected abstract void UnloadImpl(IProgressMonitor progressMonitor);
+        protected abstract void RunImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor);
     }
 }

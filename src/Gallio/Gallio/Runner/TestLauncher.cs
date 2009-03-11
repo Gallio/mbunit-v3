@@ -553,50 +553,22 @@ namespace Gallio.Runner
 
         private TestLauncherResult RunWithInitializedRunner(ITestRunner runner, IReportManager reportManager)
         {
-            TestLauncherResult result = null;
             bool wasCanceled = false;
+
+            // Explore or Run tests.
+            Report report = null;
             try
             {
-                // Run initial phases.
-                try
-                {
-                    DoLoad(runner);
-                    DoExplore(runner);
-                }
-                catch (OperationCanceledException)
-                {
-                    wasCanceled = true;
-                }
-
-                // Run tests.
-                if (! wasCanceled && !doNotRun)
-                {
-                    try
-                    {
-                        DoRun(runner);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        wasCanceled = true;
-                    }
-                }
-
-                runner.Report.Read(report => result = new TestLauncherResult(report));
+                report = DoExploreOrRun(runner);
             }
-            finally
+            catch (OperationCanceledException)
             {
-                // Unload the package now since we're done with it.
-                // This also provides more meaningful progress information to the user
-                // than if we're simply waited until the runner was disposed.
-                try
-                {
-                    DoUnload(runner);
-                }
-                catch (OperationCanceledException)
-                {
-                    wasCanceled = true;
-                }
+                wasCanceled = true;
             }
+
+            if (report == null)
+                report = new Report();
+            var result = new TestLauncherResult(report);
 
             // Generate reports even if the test run is canceled, unless this step
             // also gets canceled.
@@ -762,36 +734,18 @@ namespace Gallio.Runner
             });
         }
 
-        private void DoLoad(ITestRunner runner)
+        private Report DoExploreOrRun(ITestRunner runner)
         {
+            Report report = null;
             RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
-                runner.Load(testPackageConfig, progressMonitor);
+                if (doNotRun)
+                    report = runner.Explore(testPackageConfig, testExplorationOptions, progressMonitor);
+                else
+                    report = runner.Run(testPackageConfig, testExplorationOptions, testExecutionOptions, progressMonitor);
             });
-        }
 
-        private void DoExplore(ITestRunner runner)
-        {
-            RunWithProgress(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.Explore(testExplorationOptions, progressMonitor);
-            });
-        }
-
-        private void DoRun(ITestRunner runner)
-        {
-            RunWithProgress(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.Run(testExecutionOptions, progressMonitor);
-            });
-        }
-
-        private void DoUnload(ITestRunner runner)
-        {
-            RunWithProgress(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.Unload(progressMonitor);
-            });
+            return report;
         }
 
         private void DoDispose(ITestRunner runner)

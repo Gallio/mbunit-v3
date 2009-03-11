@@ -20,6 +20,7 @@ using Gallio.Concurrency;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
+using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Drivers;
@@ -48,19 +49,15 @@ namespace Gallio.Runner
         private readonly List<ITestRunnerExtension> extensions;
 
         private ILogger logger;
-        private TestRunnerOptions options;
+        private TestRunnerOptions testRunnerOptions;
 
         private State state;
-        private LockBox<Report> report;
         private ITestDriver testDriver;
 
         private enum State
         {
             Created,
             Initialized,
-            Loaded,
-            Explored,
-            RunFinished,
             Disposed
         }
 
@@ -79,8 +76,6 @@ namespace Gallio.Runner
             eventDispatcher = new TestRunnerEventDispatcher();
             state = State.Created;
             extensions = new List<ITestRunnerExtension>();
-
-            ResetReport();
         }
 
         /// <summary>
@@ -94,30 +89,15 @@ namespace Gallio.Runner
         /// <summary>
         /// Gets the test runner options, or null if the test runner has not been initialized.
         /// </summary>
-        protected TestRunnerOptions Options
+        protected TestRunnerOptions TestRunnerOptions
         {
-            get { return options; }
+            get { return testRunnerOptions; }
         }
 
         /// <inheritdoc />
         public ITestRunnerEvents Events
         {
             get { return eventDispatcher; }
-        }
-
-        /// <inheritdoc />
-        public LockBox<Report> Report
-        {
-            get
-            {
-                lock (this)
-                    return report;
-            }
-            private set
-            {
-                lock (this)
-                    report = value;
-            }
         }
 
         /// <inheritdoc />
@@ -134,10 +114,10 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public void Initialize(TestRunnerOptions options, ILogger logger, IProgressMonitor progressMonitor)
+        public void Initialize(TestRunnerOptions testRunnerOptions, ILogger logger, IProgressMonitor progressMonitor)
         {
-            if (options == null)
-                throw new ArgumentNullException("options");
+            if (testRunnerOptions == null)
+                throw new ArgumentNullException("testRunnerOptions");
             if (logger == null)
                 throw new ArgumentNullException("logger");
             if (progressMonitor == null)
@@ -147,13 +127,13 @@ namespace Gallio.Runner
             if (state != State.Created)
                 throw new InvalidOperationException("The test runner has already been initialized.");
 
-            options = options.Copy();
+            testRunnerOptions = testRunnerOptions.Copy();
 
-            this.options = options;
+            this.testRunnerOptions = testRunnerOptions;
             this.logger = logger;
 
             int extensionCount = extensions.Count;
-            using (progressMonitor.BeginTask("Initializing the test runner.", 10 + extensionCount))
+            using (progressMonitor.BeginTask("Initializing the test runner.", 1 + extensionCount))
             {
                 foreach (ITestRunnerExtension extension in extensions)
                 {
@@ -174,14 +154,25 @@ namespace Gallio.Runner
 
                 try
                 {
-                    eventDispatcher.NotifyInitializeStarted(new InitializeStartedEventArgs(options));
+                    eventDispatcher.NotifyInitializeStarted(new InitializeStartedEventArgs(testRunnerOptions));
 
-                    DoInitialize(progressMonitor, 10);
+                    progressMonitor.SetStatus("Initializing the test driver.");
+
+                    // Override the runtime path for development.
+                    RuntimeSetup runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
+                    if (runtimeSetup.InstallationConfiguration.IsDevelopmentRuntimePathValid())
+                        runtimeSetup.RuntimePath = runtimeSetup.InstallationConfiguration.DevelopmentRuntimePath;
+
+                    // Create test driver.
+                    testDriver = testDriverFactory.CreateTestDriver();
+                    testDriver.Initialize(runtimeSetup, logger);
+
+                    progressMonitor.Worked(1);
                 }
                 catch (Exception ex)
                 {
                     eventDispatcher.NotifyInitializeFinished(new InitializeFinishedEventArgs(false));
-                    throw new RunnerException("Failed to initialize the host.", ex);
+                    throw new RunnerException("A fatal exception occurred while initializing the test driver.", ex);
                 }
 
                 state = State.Initialized;
@@ -190,133 +181,129 @@ namespace Gallio.Runner
         }
 
         /// <inheritdoc />
-        public void Load(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
+        public Report Explore(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, IProgressMonitor progressMonitor)
         {
             if (testPackageConfig == null)
                 throw new ArgumentNullException("testPackageConfig");
+            if (testExplorationOptions == null)
+                throw new ArgumentNullException("testExplorationOptions");
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
             ThrowIfDisposed();
             if (state != State.Initialized)
-                throw new InvalidOperationException("The previous test package must be unloaded before a new one can be loaded.");
+                throw new InvalidOperationException("The test runner must be initialized before this operation is performed.");
 
             testPackageConfig = testPackageConfig.Copy();
             testPackageConfig.Canonicalize(null);
-
-            using (progressMonitor.BeginTask("Loading the test package.", 10))
-            {
-                try
-                {
-                    eventDispatcher.NotifyLoadStarted(new LoadStartedEventArgs(testPackageConfig));
-
-                    DoLoad(testPackageConfig, progressMonitor, 10);
-                }
-                catch (Exception ex)
-                {
-                    Report.Write(report => eventDispatcher.NotifyLoadFinished(new LoadFinishedEventArgs(false, report)));
-                    throw new RunnerException("Failed to load the test package.", ex);
-                }
-
-                state = State.Loaded;
-                Report.Write(report => eventDispatcher.NotifyLoadFinished(new LoadFinishedEventArgs(true, report)));
-            }
-        }
-
-        /// <inheritdoc />
-        public void Explore(TestExplorationOptions options, IProgressMonitor progressMonitor)
-        {
-            if (options == null)
-                throw new ArgumentNullException("options");
-            if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
-
-            ThrowIfDisposed();
-            if (state < State.Loaded)
-                throw new InvalidOperationException("A test package must be loaded before tests can be explored.");
-
-            options = options.Copy();
+            testExplorationOptions = testExplorationOptions.Copy();
 
             using (progressMonitor.BeginTask("Exploring the tests.", 10))
             {
+                Report report = new Report()
+                {
+                    TestPackageConfig = testPackageConfig,
+                    TestModel = new TestModelData()
+                };
+                var reportLockBox = new LockBox<Report>(report);
+
+                bool success;
+                eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(testPackageConfig, testExplorationOptions, reportLockBox));
                 try
                 {
-                    eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(options));
+                    using (Listener listener = new Listener(eventDispatcher, reportLockBox))
+                    {
+                        testDriver.Explore(testPackageConfig,
+                            testExplorationOptions, listener,
+                            progressMonitor.CreateSubProgressMonitor(10));
+                    }
 
-                    DoExplore(options, progressMonitor, 10);
+                    success = true;
                 }
                 catch (Exception ex)
                 {
-                    Report.Write(report => eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(false, report)));
-                    throw new RunnerException("Failed to explore the tests.", ex);
+                    success = false;
+
+                    logger.Log(LogSeverity.Error, "A fatal exception occurred while exploring tests.", ex);
+
+                    report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
+                        CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while exploring tests.",
+                        ExceptionUtils.SafeToString(ex)));
                 }
 
-                state = State.Explored;
-                Report.Write(report => eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(true, report)));
+                eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(success, report));
+                return report;
             }
         }
 
         /// <inheritdoc />
-        public void Run(TestExecutionOptions options, IProgressMonitor progressMonitor)
+        public Report Run(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, TestExecutionOptions testExecutionOptions, IProgressMonitor progressMonitor)
         {
-            if (options == null)
-                throw new ArgumentNullException("options");
+            if (testPackageConfig == null)
+                throw new ArgumentNullException("testPackageConfig");
+            if (testExplorationOptions == null)
+                throw new ArgumentNullException("testExplorationOptions");
+            if (testExecutionOptions == null)
+                throw new ArgumentNullException("testExecutionOptions");
             if (progressMonitor == null)
                 throw new ArgumentNullException("progressMonitor");
 
             ThrowIfDisposed();
-            if (state < State.Explored)
-                throw new InvalidOperationException("A test package must be loaded and explored before tests can be run.");
+            if (state != State.Initialized)
+                throw new InvalidOperationException("The test runner must be initialized before this operation is performed.");
 
-            options = options.Copy();
+            testPackageConfig = testPackageConfig.Copy();
+            testPackageConfig.Canonicalize(null);
+            testExplorationOptions = testExplorationOptions.Copy();
+            testExecutionOptions = testExecutionOptions.Copy();
 
             using (progressMonitor.BeginTask("Running the tests.", 10))
             {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                Report report = new Report()
+                {
+                    TestPackageConfig = testPackageConfig,
+                    TestModel = new TestModelData(),
+                    TestPackageRun = new TestPackageRun()
+                    {
+                        StartTime = DateTime.Now
+                    }
+                };
+                var reportLockBox = new LockBox<Report>(report);
+
+                eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(testPackageConfig, testExplorationOptions, testExecutionOptions, reportLockBox));
+
+                bool success;
                 try
                 {
-                    eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(options));
+                    using (Listener listener = new Listener(eventDispatcher, reportLockBox))
+                    {
+                        testDriver.Run(testPackageConfig,
+                            testExplorationOptions, listener,
+                            testExecutionOptions, listener,
+                            progressMonitor.CreateSubProgressMonitor(10));
+                    }
 
-                    DoRun(options, progressMonitor, 10);
+                    success = true;
                 }
                 catch (Exception ex)
                 {
-                    Report.Write(report => eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(false, report)));
-                    throw new RunnerException("Failed to run the tests.", ex);
+                    success = false;
+
+                    logger.Log(LogSeverity.Error, "A fatal exception occurred while running tests.  Possible causes include stack overflow exceptions in the tests.", ex);
+
+                    report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
+                        CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while running tests.  Possible causes include stack overflow exceptions in the tests.",
+                        ExceptionUtils.SafeToString(ex)));
                 }
-
-                state = State.RunFinished;
-                Report.Write(report => eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(true, report)));
-            }
-        }
-
-        /// <inheritdoc />
-        public void Unload(IProgressMonitor progressMonitor)
-        {
-            if (progressMonitor == null)
-                throw new ArgumentNullException("progressMonitor");
-
-            ThrowIfDisposed();
-            if (state < State.Initialized)
-                throw new InvalidOperationException("The test runner must be initialized in order for a test package to be unloaded.");
-            if (state < State.Loaded)
-                return;
-
-            using (progressMonitor.BeginTask("Unloading the test package.", 10))
-            {
-                try
+                finally
                 {
-                    eventDispatcher.NotifyUnloadStarted(new UnloadStartedEventArgs());
-
-                    DoUnload(progressMonitor, 10);
-                }
-                catch (Exception ex)
-                {
-                    eventDispatcher.NotifyUnloadFinished(new UnloadFinishedEventArgs(false));
-                    throw new RunnerException("Failed to unload the test package.", ex);
+                    report.TestPackageRun.EndTime = DateTime.Now;
+                    report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
                 }
 
-                state = State.Initialized;
-                eventDispatcher.NotifyUnloadFinished(new UnloadFinishedEventArgs(true));
+                eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(success, report));
+                return report;
             }
         }
 
@@ -330,34 +317,26 @@ namespace Gallio.Runner
 
             using (progressMonitor.BeginTask("Disposing the test runner.", 10))
             {
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(9))
-                {
-                    if (state == State.Loaded || state == State.Explored || state == State.RunFinished)
-                    {
-                        try
-                        {
-                            Unload(subProgressMonitor);
-                        }
-                        catch
-                        {
-                            // Ignore unloading problems during disposal.
-                            // It's quite likely there are other issues in play also.
-                        }
-                    }
-                }
-
                 bool success;
                 try
                 {
                     eventDispatcher.NotifyDisposeStarted(new DisposeStartedEventArgs());
 
-                    DoDispose(progressMonitor, 1);
+                    if (testDriver != null)
+                    {
+                        progressMonitor.SetStatus("Disposing the test driver.");
+
+                        testDriver.Dispose();
+                        testDriver = null;
+                    }
+
+                    progressMonitor.Worked(10);
                     success = true;
                 }
                 catch (Exception ex)
                 {
                     if (logger != null)
-                        logger.Log(LogSeverity.Warning, "Failed to safely dispose the host.", ex);
+                        logger.Log(LogSeverity.Warning, "An exception occurred while disposing the test driver.  This may indicate that the test driver previously encountered another fault from which it could not recover.", ex);
                     success = false;
                 }
 
@@ -366,180 +345,255 @@ namespace Gallio.Runner
             }
         }
 
-        private void DoInitialize(IProgressMonitor progressMonitor, double totalWork)
-        {
-            progressMonitor.Worked(totalWork);
-        }
-
-        private void DoLoad(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor, double totalWork)
-        {
-            Report = new LockBox<Report>(new Report() { TestPackageConfig = testPackageConfig });
-
-            InitializeTestDriver(progressMonitor, totalWork * 0.1);
-            LoadTestDomains(testPackageConfig, progressMonitor, totalWork * 0.9);
-        }
-
-        private void InitializeTestDriver(IProgressMonitor progressMonitor, double totalWork)
-        {
-            if (testDriver == null)
-            {
-                progressMonitor.SetStatus("Initializing the test driver.");
-
-                // Override the runtime path for development.
-                RuntimeSetup runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
-                if (runtimeSetup.InstallationConfiguration.IsDevelopmentRuntimePathValid())
-                    runtimeSetup.RuntimePath = runtimeSetup.InstallationConfiguration.DevelopmentRuntimePath;
-
-                // Create test driver.
-                testDriver = testDriverFactory.CreateTestDriver();
-                testDriver.Initialize(runtimeSetup, logger);
-            }
-
-            progressMonitor.Worked(totalWork);
-        }
-
-        private void LoadTestDomains(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor, double totalWork)
-        {
-            progressMonitor.SetStatus("Loading tests.");
-
-            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
-                testDriver.Load(testPackageConfig, subProgressMonitor);
-        }
-
-        private void DoExplore(TestExplorationOptions options, IProgressMonitor progressMonitor, double totalWork)
-        {
-            Report.Read(report =>
-            {
-                Report = new LockBox<Report>(new Report() { TestPackageConfig = report.TestPackageConfig });
-            });
-
-            ExploreTestDomains(options, progressMonitor, totalWork);
-        }
-
-        private void ExploreTestDomains(TestExplorationOptions options, IProgressMonitor progressMonitor, double totalWork)
-        {
-            progressMonitor.SetStatus("Exploring tests.");
-
-            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
-            {
-                Report.Write(report =>
-                {
-                    try
-                    {
-                        report.TestModel = testDriver.Explore(options, subProgressMonitor);
-                    }
-                    catch (Exception ex)
-                    {
-                        report.TestModel = new TestModelData(new TestData(new RootTest()));
-
-                        report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error, CodeLocation.Unknown, CodeReference.Unknown,
-                            "Failed to explore the tests.", ExceptionUtils.SafeToString(ex)));
-                    }
-                });
-            }
-        }
-
-        private void DoRun(TestExecutionOptions options, IProgressMonitor progressMonitor, double totalWork)
-        {
-            Report.Read(report =>
-            {
-                Report = new LockBox<Report>(new Report()
-                {
-                    TestPackageConfig = report.TestPackageConfig,
-                    TestModel = report.TestModel,
-                    TestPackageRun = new TestPackageRun() { StartTime = DateTime.Now }
-                });
-            });
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            try
-            {
-                using (ReportTestListener listener = new ReportTestListener(eventDispatcher, Report))
-                {
-                    RunTestDomains(options, listener, progressMonitor, totalWork);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Log(LogSeverity.Error, "*** A fatal error occurred during test execution! ***\n\n"
-                            + "Test results may be missing or inaccurate.\n\n"
-                            + "This error may be caused by an unrecoverable failure of the test process.  "
-                            + "For example, the most recently executed test may have encountered a StackOverflowException "
-                            + "and been forcibly terminated by the runtime.  To pinpoint the problem, try running the "
-                            + "tests again with the debugger attached.", ex);
-
-                Report.Write(report =>
-                {
-                    report.TestPackageRun.Statistics.AddOutcome(TestOutcome.Error);
-                });
-            }
-            finally
-            {
-                Report.Write(report =>
-                {
-                    if (report.TestPackageRun != null)
-                    {
-                        report.TestPackageRun.EndTime = DateTime.Now;
-                        report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
-                    }
-                });
-            }
-        }
-
-        private void RunTestDomains(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor, double totalWork)
-        {
-            progressMonitor.SetStatus("Running tests.");
-
-            using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
-                testDriver.Run(options, listener, subProgressMonitor);
-        }
-
-        private void DoUnload(IProgressMonitor progressMonitor, double totalWork)
-        {
-            ResetReport();
-
-            UnloadTestDomains(progressMonitor, totalWork);
-        }
-
-        private void UnloadTestDomains(IProgressMonitor progressMonitor, double totalWork)
-        {
-            if (testDriver != null)
-            {
-                progressMonitor.SetStatus("Unloading tests.");
-
-                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(totalWork))
-                    testDriver.Unload(subProgressMonitor);
-            }
-        }
-
-        private void DoDispose(IProgressMonitor progressMonitor, double totalWork)
-        {
-            DisposeTestDriver(progressMonitor, totalWork);
-            ResetReport();
-        }
-
-        private void ResetReport()
-        {
-            Report = new LockBox<Report>(new Report());
-        }
-
-        private void DisposeTestDriver(IProgressMonitor progressMonitor, double totalWork)
-        {
-            if (testDriver != null)
-            {
-                progressMonitor.SetStatus("Disposing the test driver.");
-
-                testDriver.Dispose();
-                testDriver = null;
-            }
-
-            progressMonitor.Worked(totalWork);
-        }
-
         private void ThrowIfDisposed()
         {
             if (state == State.Disposed)
                 throw new ObjectDisposedException(GetType().Name);
+        }
+
+        private sealed class Listener : ITestExplorationListener, ITestExecutionListener, IDisposable
+        {
+            private readonly TestRunnerEventDispatcher eventDispatcher;
+            private readonly LockBox<Report> reportBox;
+
+            private Dictionary<string, TestStepState> states;
+
+            public Listener(TestRunnerEventDispatcher eventDispatcher, LockBox<Report> reportBox)
+            {
+                this.eventDispatcher = eventDispatcher;
+                this.reportBox = reportBox;
+
+                states = new Dictionary<string, TestStepState>();
+            }
+
+            public void Dispose()
+            {
+                reportBox.Write(report =>
+                {
+                    states = null;
+                });
+            }
+
+            public void NotifySubtreeMerged(string parentTestId, TestData test)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    test = report.TestModel.MergeSubtree(parentTestId, test);
+
+                    eventDispatcher.NotifyTestModelSubtreeMerged(
+                        new TestModelSubtreeMergedEventArgs(report, test));
+                });
+            }
+
+            public void NotifyAnnotationAdded(AnnotationData annotation)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    report.TestModel.Annotations.Add(annotation);
+
+                    eventDispatcher.NotifyTestModelAnnotationAdded(
+                        new TestModelAnnotationAddedEventArgs(report, annotation));
+                });
+            }
+
+            public void NotifyTestStepStarted(TestStepData step)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestData testData = GetTestData(report, step.TestId);
+                    TestStepRun testStepRun = new TestStepRun(step);
+                    testStepRun.StartTime = DateTime.Now;
+
+                    if (step.ParentId != null)
+                    {
+                        TestStepState parentState = GetTestStepState(step.ParentId);
+                        parentState.TestStepRun.Children.Add(testStepRun);
+                    }
+                    else
+                    {
+                        report.TestPackageRun.RootTestStepRun = testStepRun;
+                    }
+
+                    TestStepState state = new TestStepState(testData, testStepRun);
+                    states.Add(step.Id, state);
+
+                    eventDispatcher.NotifyTestStepStarted(
+                        new TestStepStartedEventArgs(report, testData, testStepRun));
+                });
+            }
+
+            public void NotifyTestStepLifecyclePhaseChanged(string stepId, string lifecyclePhase)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestStepState state = GetTestStepState(stepId);
+
+                    eventDispatcher.NotifyTestStepLifecyclePhaseChanged(
+                        new TestStepLifecyclePhaseChangedEventArgs(report, state.TestData, state.TestStepRun, lifecyclePhase));
+                });
+            }
+
+            public void NotifyTestStepMetadataAdded(string stepId, string metadataKey, string metadataValue)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestStepState state = GetTestStepState(stepId);
+                    state.TestStepRun.Step.Metadata.Add(metadataKey, metadataValue);
+
+                    eventDispatcher.NotifyTestStepMetadataAdded(
+                        new TestStepMetadataAddedEventArgs(report, state.TestData, state.TestStepRun, metadataKey, metadataValue));
+                });
+            }
+
+            public void NotifyTestStepFinished(string stepId, TestResult result)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestStepState state = GetTestStepState(stepId);
+                    state.TestStepRun.EndTime = DateTime.Now;
+                    state.TestStepRun.Result = result;
+                    report.TestPackageRun.Statistics.MergeStepStatistics(state.TestStepRun);
+
+                    state.logWriter.Close();
+
+                    eventDispatcher.NotifyTestStepFinished(
+                        new TestStepFinishedEventArgs(report, state.TestData, state.TestStepRun));
+                });
+            }
+
+            public void NotifyTestStepLogAttach(string stepId, Attachment attachment)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestStepState state = GetTestStepState(stepId);
+                    state.logWriter.Attach(attachment);
+
+                    eventDispatcher.NotifyTestStepLogAttach(
+                        new TestStepLogAttachEventArgs(report, state.TestData, state.TestStepRun, attachment));
+                });
+            }
+
+            public void NotifyTestStepLogStreamWrite(string stepId, string streamName, string text)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestStepState state = GetTestStepState(stepId);
+                    state.logWriter[streamName].Write(text);
+
+                    eventDispatcher.NotifyTestStepLogStreamWrite(
+                        new TestStepLogStreamWriteEventArgs(report, state.TestData, state.TestStepRun, streamName, text));
+                });
+            }
+
+            public void NotifyTestStepLogStreamEmbed(string stepId, string streamName, string attachmentName)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestStepState state = GetTestStepState(stepId);
+                    state.logWriter[streamName].EmbedExisting(attachmentName);
+
+                    eventDispatcher.NotifyTestStepLogStreamEmbed(
+                        new TestStepLogStreamEmbedEventArgs(report, state.TestData, state.TestStepRun, streamName, attachmentName));
+                });
+            }
+
+            public void NotifyTestStepLogStreamBeginSection(string stepId, string streamName, string sectionName)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestStepState state = GetTestStepState(stepId);
+                    state.logWriter[streamName].BeginSection(sectionName);
+
+                    eventDispatcher.NotifyTestStepLogStreamBeginSection(
+                        new TestStepLogStreamBeginSectionEventArgs(report, state.TestData, state.TestStepRun, streamName, sectionName));
+                });
+            }
+
+            public void NotifyTestStepLogStreamBeginMarker(string stepId, string streamName, Marker marker)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestStepState state = GetTestStepState(stepId);
+                    state.logWriter[streamName].BeginMarker(marker);
+
+                    eventDispatcher.NotifyTestStepLogStreamBeginMarker(
+                        new TestStepLogStreamBeginMarkerEventArgs(report, state.TestData, state.TestStepRun, streamName, marker));
+                });
+            }
+
+            public void NotifyTestStepLogStreamEnd(string stepId, string streamName)
+            {
+                reportBox.Write(report =>
+                {
+                    ThrowIfDisposed();
+
+                    TestStepState state = GetTestStepState(stepId);
+                    state.logWriter[streamName].End();
+
+                    eventDispatcher.NotifyTestStepLogStreamEnd(
+                        new TestStepLogStreamEndEventArgs(report, state.TestData, state.TestStepRun, streamName));
+                });
+            }
+
+            private static TestData GetTestData(Report report, string testId)
+            {
+                TestData testData = report.TestModel.GetTestById(testId);
+                if (testData == null)
+                    throw new InvalidOperationException("The test id was not recognized.  It may belong to an earlier test run that has since completed.");
+                return testData;
+            }
+
+            private TestStepState GetTestStepState(string testStepId)
+            {
+                TestStepState testStepData;
+                if (!states.TryGetValue(testStepId, out testStepData))
+                    throw new InvalidOperationException("The test step id was not recognized.  It may belong to an earlier test run that has since completed.");
+                return testStepData;
+            }
+
+            private void ThrowIfDisposed()
+            {
+                if (states == null)
+                    throw new ObjectDisposedException(GetType().Name);
+            }
+
+            private sealed class TestStepState
+            {
+                public readonly TestData TestData;
+                public readonly TestStepRun TestStepRun;
+                public readonly StructuredTestLogWriter logWriter;
+
+                public TestStepState(TestData testData, TestStepRun testStepRun)
+                {
+                    TestData = testData;
+                    TestStepRun = testStepRun;
+
+                    logWriter = new StructuredTestLogWriter();
+                    testStepRun.TestLog = logWriter.TestLog;
+                }
+            }
         }
     }
 }

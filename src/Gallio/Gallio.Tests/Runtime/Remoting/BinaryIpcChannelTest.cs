@@ -16,6 +16,7 @@
 using System;
 using Gallio.Framework;
 using Gallio.Model.Logging;
+using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Remoting;
 using MbUnit.Framework;
@@ -47,7 +48,8 @@ namespace Gallio.Tests.Runtime.Remoting
         [Test]
         public void RegisteredServiceCanBeAccessedWithGetService()
         {
-            using (IHost host = new IsolatedAppDomainHostFactory().CreateHost(new HostSetup(), new TestLogStreamLogger(TestLog.Default)))
+            var hostFactory = (IsolatedAppDomainHostFactory)RuntimeAccessor.Instance.Resolve(IsolatedAppDomainHostFactory.ComponentId);
+            using (IHost host = hostFactory.CreateHost(new HostSetup(), new TestLogStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
 

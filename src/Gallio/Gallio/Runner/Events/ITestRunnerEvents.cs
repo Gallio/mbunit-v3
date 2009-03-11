@@ -43,16 +43,6 @@ namespace Gallio.Runner.Events
         event EventHandler<DisposeFinishedEventArgs> DisposeFinished;
 
         /// <summary>
-        /// The event raised to indicate that a test package is being loaded.
-        /// </summary>
-        event EventHandler<LoadStartedEventArgs> LoadStarted;
-
-        /// <summary>
-        /// The event raised to indicate that a test package has finished loading.
-        /// </summary>
-        event EventHandler<LoadFinishedEventArgs> LoadFinished;
-
-        /// <summary>
         /// The event raised to indicate that test exploration has started.
         /// </summary>
         event EventHandler<ExploreStartedEventArgs> ExploreStarted;
@@ -73,14 +63,14 @@ namespace Gallio.Runner.Events
         event EventHandler<RunFinishedEventArgs> RunFinished;
 
         /// <summary>
-        /// The event raised to indicate that a test package is being unloaded.
+        /// The event raised to indicate that a subtree of tests was merged into the test model.
         /// </summary>
-        event EventHandler<UnloadStartedEventArgs> UnloadStarted;
+        event EventHandler<TestModelSubtreeMergedEventArgs> TestModelSubtreeMerged;
 
         /// <summary>
-        /// The event raised to indicate that a test package has finished unloading.
+        /// The event raised to indicate that an annotation was added to the test model.
         /// </summary>
-        event EventHandler<UnloadFinishedEventArgs> UnloadFinished;
+        event EventHandler<TestModelAnnotationAddedEventArgs> TestModelAnnotationAdded;
 
         /// <summary>
         /// The event raised to indicate that a test step has started execution.

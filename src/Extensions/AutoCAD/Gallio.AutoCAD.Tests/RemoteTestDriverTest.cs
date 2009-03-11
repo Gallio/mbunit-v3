@@ -17,6 +17,7 @@ using System;
 using System.Threading;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Tests;
@@ -70,22 +71,12 @@ namespace Gallio.AutoCAD.Tests
                 base.Shutdown();
             }
 
-            protected override void LoadImpl(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
+            protected override void ExploreImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor)
             {
                 throw new NotImplementedException();
             }
 
-            protected override TestModelData ExploreImpl(TestExplorationOptions options, IProgressMonitor progressMonitor)
-            {
-                throw new NotImplementedException();
-            }
-
-            protected override void RunImpl(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
-            {
-                throw new NotImplementedException();
-            }
-
-            protected override void UnloadImpl(IProgressMonitor progressMonitor)
+            protected override void RunImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor)
             {
                 throw new NotImplementedException();
             }

@@ -39,16 +39,6 @@ namespace Gallio.Runner.Extensions
                 LogDebugFormat("[InitializeFinished]\n\tSuccess: {0}", e.Success);
             };
 
-            Events.LoadStarted += delegate(object sender, LoadStartedEventArgs e)
-            {
-                LogDebugFormat("[LoadStarted]");
-            };
-
-            Events.LoadFinished += delegate(object sender, LoadFinishedEventArgs e)
-            {
-                LogDebugFormat("[LoadFinished]\n\tSuccess: {0}", e.Success);
-            };
-
             Events.ExploreStarted += delegate(object sender, ExploreStartedEventArgs e)
             {
                 LogDebugFormat("[ExploreStarted]");
@@ -69,16 +59,6 @@ namespace Gallio.Runner.Extensions
                 LogDebugFormat("[RunFinished]\n\tSuccess: {0}", e.Success);
             };
 
-            Events.UnloadStarted += delegate(object sender, UnloadStartedEventArgs e)
-            {
-                LogDebugFormat("[UnloadStarted]");
-            };
-
-            Events.UnloadFinished += delegate(object sender, UnloadFinishedEventArgs e)
-            {
-                LogDebugFormat("[UnloadFinished]\n\tSuccess: {0}", e.Success);
-            };
-
             Events.DisposeStarted += delegate(object sender, DisposeStartedEventArgs e)
             {
                 LogDebugFormat("[DisposeStarted]");
@@ -87,6 +67,17 @@ namespace Gallio.Runner.Extensions
             Events.DisposeFinished += delegate(object sender, DisposeFinishedEventArgs e)
             {
                 LogDebugFormat("[DisposeFinished]\n\tSuccess: {0}", e.Success);
+            };
+
+            Events.TestModelSubtreeMerged += delegate(object sender, TestModelSubtreeMergedEventArgs e)
+            {
+                LogDebugFormat("[TestModelSubtreeMerged]\n\tTest: {0}", e.Test.FullName);
+            };
+
+            Events.TestModelAnnotationAdded += delegate(object sender, TestModelAnnotationAddedEventArgs e)
+            {
+                LogDebugFormat("[TestModelAnnotationAdded]\n\tType: {0}\n\tCode Location: {1}\n\tCode Reference: {2}\n\tMessage: {3}\n\tDetails: {4}",
+                    e.Annotation.Type, e.Annotation.CodeLocation, e.Annotation.CodeReference, e.Annotation.Message, e.Annotation.Details);
             };
 
             Events.TestStepStarted += delegate(object sender, TestStepStartedEventArgs e)

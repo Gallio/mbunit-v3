@@ -33,6 +33,7 @@ namespace Gallio.Runtime.Hosting
         private string applicationBaseDirectory;
         private string workingDirectory;
         private bool shadowCopy;
+        private bool debug;
         private ConfigurationFileLocation configurationFileLocation = ConfigurationFileLocation.Temp;
         private HostConfiguration configuration;
         private ProcessorArchitecture processorArchitecture = ProcessorArchitecture.MSIL;
@@ -104,6 +105,17 @@ namespace Gallio.Runtime.Hosting
         }
 
         /// <summary>
+        /// Gets or sets whether to attach the debugger to the host.
+        /// </summary>
+        /// <value>True if a debugger should be attached to the host.  Default is <c>false</c>.</value>
+        [XmlAttribute("debug")]
+        public bool Debug
+        {
+            get { return debug; }
+            set { debug = value; }
+        }
+
+        /// <summary>
         /// Gets or sets where the host should write out the configuration file for the hosted components.
         /// </summary>
         /// <value>The configuration file location.  Default is <see cref="Hosting.ConfigurationFileLocation.Temp" />.</value>
@@ -156,6 +168,7 @@ namespace Gallio.Runtime.Hosting
             copy.applicationBaseDirectory = applicationBaseDirectory;
             copy.workingDirectory = workingDirectory;
             copy.shadowCopy = shadowCopy;
+            copy.debug = debug;
             copy.processorArchitecture = processorArchitecture;
             copy.configurationFileLocation = configurationFileLocation;
 
@@ -237,6 +250,7 @@ namespace Gallio.Runtime.Hosting
                 && applicationBaseDirectory == other.applicationBaseDirectory
                 && workingDirectory == other.workingDirectory
                 && shadowCopy == other.shadowCopy
+                && debug == other.debug
                 && Configuration.Equals(other.Configuration)
                 && processorArchitecture == other.processorArchitecture
                 && configurationFileLocation == other.configurationFileLocation;
@@ -249,6 +263,7 @@ namespace Gallio.Runtime.Hosting
                 ^ (workingDirectory != null ? workingDirectory.GetHashCode() : 0)
                 ^ Configuration.GetHashCode()
                 ^ (shadowCopy.GetHashCode() << 16)
+                ^ (debug.GetHashCode() << 21)
                 ^ (processorArchitecture.GetHashCode() << 5)
                 ^ (configurationFileLocation.GetHashCode() << 2);
         }

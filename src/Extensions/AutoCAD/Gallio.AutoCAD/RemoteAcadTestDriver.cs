@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Threading;
 using Gallio.Model;
 using Gallio.Model.Execution;
+using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Drivers;
 using Gallio.Runtime;
@@ -59,7 +60,7 @@ namespace Gallio.AutoCAD
         ///<summary>The name of the .NET remoting service.</summary>
         public const string ServiceName = "AcadTestDriver";
 
-        private ProxyTestDriver proxyDriver;
+        private Runner.Drivers.RemoteTestDriver remoteTestDriver;
         private AcadThread acadThread;
         private int state;
 
@@ -82,38 +83,27 @@ namespace Gallio.AutoCAD
 
             state = State.Starting;
             acadThread = new AcadThread();
-            proxyDriver = new ProxyTestDriver(testDriver);
+            remoteTestDriver = new Runner.Drivers.RemoteTestDriver(testDriver);
         }
 
         /// <inheritdoc />
         protected override void InitializeImpl(RuntimeSetup runtimeSetup, ILogger logger)
         {
             base.InitializeImpl(runtimeSetup, logger);
-            Sync.Invoke(this, delegate { proxyDriver.Initialize(runtimeSetup, logger); });
+
+            remoteTestDriver.Initialize(runtimeSetup, logger);
         }
 
         /// <inheritdoc />
-        protected override TestModelData ExploreImpl(TestExplorationOptions options, IProgressMonitor progressMonitor)
+        protected override void ExploreImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, IProgressMonitor progressMonitor)
         {
-            return Sync.Invoke(this, delegate { return proxyDriver.Explore(options, progressMonitor); });
+            Sync.Invoke(this, () => remoteTestDriver.Explore(testPackageConfig, testExplorationOptions, testExplorationListener, progressMonitor));
         }
 
         /// <inheritdoc />
-        protected override void LoadImpl(TestPackageConfig testPackageConfig, IProgressMonitor progressMonitor)
+        protected override void RunImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor)
         {
-            Sync.Invoke(this, delegate { proxyDriver.Load(testPackageConfig, progressMonitor); });
-        }
-
-        /// <inheritdoc />
-        protected override void RunImpl(TestExecutionOptions options, ITestListener listener, IProgressMonitor progressMonitor)
-        {
-            Sync.Invoke(this, delegate { proxyDriver.Run(options, listener, progressMonitor); });
-        }
-
-        /// <inheritdoc />
-        protected override void UnloadImpl(IProgressMonitor progressMonitor)
-        {
-            Sync.Invoke(this, delegate { proxyDriver.Unload(progressMonitor); });
+            Sync.Invoke(this, () => remoteTestDriver.Run(testPackageConfig, testExplorationOptions, testExplorationListener, testExecutionOptions, testExecutionListener, progressMonitor));
         }
 
         /// <inheritdoc />
@@ -123,17 +113,19 @@ namespace Gallio.AutoCAD
             {
                 Shutdown();
 
-                if (proxyDriver != null)
+                if (remoteTestDriver != null)
                 {
-                    proxyDriver.Dispose();
-                    proxyDriver = null;
+                    remoteTestDriver.Dispose();
+                    remoteTestDriver = null;
                 }
+
                 if (acadThread != null)
                 {
                     acadThread.Dispose();
                     acadThread = null;
                 }
             }
+
             base.Dispose(disposing);
         }
 

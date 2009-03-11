@@ -21,6 +21,7 @@ using System.Text;
 using Gallio.Ambience.Impl;
 using Gallio.Framework;
 using Gallio.Model.Logging;
+using Gallio.Runtime;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 using MbUnit.Framework;
@@ -86,9 +87,10 @@ namespace Gallio.Ambience.Tests
         public void ToleratesAppDomainUnload()
         {
             StringWriter logWriter = new StringWriter();
-            TextLogger logger = new TextLogger(logWriter);
+            var logger = new SeverityPrefixLogger(new TextLogger(logWriter));
 
-            using (IHost host = new IsolatedAppDomainHostFactory().CreateHost(new HostSetup(), logger))
+            var hostFactory = (IsolatedAppDomainHostFactory)RuntimeAccessor.Instance.Resolve(IsolatedAppDomainHostFactory.ComponentId);
+            using (IHost host = hostFactory.CreateHost(new HostSetup(), logger))
             {
                 HostAssemblyResolverHook.InstallCallback(host);
 

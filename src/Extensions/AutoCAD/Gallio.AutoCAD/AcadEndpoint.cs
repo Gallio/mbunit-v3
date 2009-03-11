@@ -101,6 +101,5 @@ namespace Gallio.AutoCAD
                 }
             }
         }
-
     }
 }

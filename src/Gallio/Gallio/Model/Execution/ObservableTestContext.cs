@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Threading;
 using Gallio.Collections;
 using Gallio.Model.Logging;
+using Gallio.Model.Messages;
 using Gallio.Runtime;
 using Gallio.Model.Serialization;
 using Gallio.Utilities;
@@ -26,7 +27,7 @@ namespace Gallio.Model.Execution
 {
     /// <summary>
     /// An observable test context monitors translates state changes on the
-    /// test context into notifications on a <see cref="ITestListener" />.
+    /// test context into notifications on a <see cref="ITestExecutionListener" />.
     /// </summary>
     internal class ObservableTestContext : ITestContext
     {
@@ -70,7 +71,7 @@ namespace Gallio.Model.Execution
             this.testStep = testStep;
             this.parent = parent;
 
-            logWriter = new ObservableTestLogWriter(Listener, testStep.Id);
+            logWriter = new ObservableTestLogWriter(TestExecutionListener, testStep.Id);
             externallyVisibleLogWriter = new FallbackTestLogWriter(logWriter, 
                 parent != null ? parent.LogWriter : new NullTestLogWriter());
 
@@ -113,7 +114,7 @@ namespace Gallio.Model.Execution
                         return;
 
                     lifecyclePhase = value;
-                    Listener.NotifyTestStepLifecyclePhaseChanged(testStep.Id, lifecyclePhase);
+                    TestExecutionListener.NotifyTestStepLifecyclePhaseChanged(testStep.Id, lifecyclePhase);
                 }
             }
         }
@@ -188,7 +189,7 @@ namespace Gallio.Model.Execution
                     throw new InvalidOperationException("Cannot add metadata unless the test step is running.");
 
                 testStep.Metadata.CopyOnWriteAdd(metadataKey, metadataValue);
-                Listener.NotifyTestStepMetadataAdded(testStep.Id, metadataKey, metadataValue);
+                TestExecutionListener.NotifyTestStepMetadataAdded(testStep.Id, metadataKey, metadataValue);
             }
         }
 
@@ -246,7 +247,7 @@ namespace Gallio.Model.Execution
                 stopwatch = Stopwatch.StartNew();
 
                 // Dispatch the start notification.
-                Listener.NotifyTestStepStarted(new TestStepData(testStep));
+                TestExecutionListener.NotifyTestStepStarted(new TestStepData(testStep));
 
                 // Consider the test started.
                 executionStatus = StatusStarted;
@@ -301,7 +302,7 @@ namespace Gallio.Model.Execution
                 result.Duration = actualDuration.GetValueOrDefault(stopwatch.Elapsed).TotalSeconds;
                 result.Outcome = outcome;
 
-                Listener.NotifyTestStepFinished(testStep.Id, result);
+                TestExecutionListener.NotifyTestStepFinished(testStep.Id, result);
 
                 if (contextCookie != null)
                 {
@@ -321,9 +322,9 @@ namespace Gallio.Model.Execution
             get { return executionStatus == StatusStarted || executionStatus == StatusFinishing; }
         }
 
-        private ITestListener Listener
+        private ITestExecutionListener TestExecutionListener
         {
-            get { return manager.Listener; }
+            get { return manager.TestExecutionListener; }
         }
 
         private ITestContextTracker ContextTracker

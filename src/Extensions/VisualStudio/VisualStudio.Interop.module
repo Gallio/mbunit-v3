@@ -1,0 +1,18 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  <Import Project="VisualStudio.targets" />
+  
+  <PropertyGroup>
+    <MonoCompatible>false</MonoCompatible>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(VSIPInstalled)">
+    <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop$(ProjectVariant).csproj" />
+    
+    <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll" />
+  </ItemGroup>
+
+  <Target Name="BeforeBuild">
+    <Error Text="VSIP packages must be installed to ensure that Gallio.VisualStudio.Interop component can be built.  This component is currently required for several features including navigate to source and debugging support.  Later it will be injected via the IoC." />
+  </Target>
+</Project>
