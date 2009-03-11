@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
@@ -55,6 +56,12 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// Gets the total number of tests.
         /// </summary>
         int TestCount { get; }
+        SynchronizationContext SynchronizationContext { get; set; }
+        bool FilterPassed { get; set; }
+        bool FilterFailed { get; set; }
+        bool FilterInconclusive { get; set; }
+        bool SortAsc { get; set; }
+        bool SortDesc { get; set; }
 
         /// <summary>
         /// Event raised after each test step completes.
@@ -131,6 +138,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// <summary>
         /// Resets the status of all tests.
         /// </summary>
-        void ResetTestStatus();
+        void ResetTestStatus(IProgressMonitor progressMonitor);
     }
 }

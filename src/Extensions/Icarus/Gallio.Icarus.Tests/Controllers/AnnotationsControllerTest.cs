@@ -28,62 +28,75 @@ using Rhino.Mocks.Interfaces;
 namespace Gallio.Icarus.Tests.Controllers
 {
     [Category("Controllers")]
-    class AnnotationsControllerTest : MockTest
+    class AnnotationsControllerTest
     {
-        private AnnotationsController annotationsController;
-
-        [SetUp]
-        public void SetUp()
-        {
-            ITestController testController = mocks.StrictMock<ITestController>();
-            testController.ExploreFinished += null;
-            IEventRaiser loadFinished = LastCall.IgnoreArguments().GetEventRaiser();
-            Report report = new Report
-            {
-                TestModel = new TestModelData()
-            };
-            report.TestModel.Annotations.AddRange(new[]
-            {
-                new AnnotationData(AnnotationType.Error, CodeLocation.Unknown, new CodeReference(), "message", "details"),
-                new AnnotationData(AnnotationType.Warning, CodeLocation.Unknown, new CodeReference(), "message", "details"), 
-                new AnnotationData(AnnotationType.Info, CodeLocation.Unknown, new CodeReference(), "message", "details"), 
-            });
-
-            testController.Stub(x => x.ReadReport(null)).Do((Action<Action<Report>>)(action => action(report))).Repeat.Twice();
-            mocks.ReplayAll();
-
-            annotationsController = new AnnotationsController(testController);
-            loadFinished.Raise(testController, EventArgs.Empty);            
-        }
-
         [Test]
         public void ShowErrors_Test()
         {
+            // Arrange
+            var testController = SetupAnnotationData(AnnotationType.Error);
+
+            // Act
+            var annotationsController = new AnnotationsController(testController);
+            testController.Raise(tc => tc.ExploreFinished += null, this, EventArgs.Empty);
+            
+            // Assert
             Assert.IsTrue(annotationsController.ShowErrors);
-            Assert.AreEqual(3, annotationsController.Annotations.Count);
-            Assert.AreEqual("1 Errors", annotationsController.ErrorsText);
+            Assert.AreEqual(1, annotationsController.Annotations.Count);
+            Assert.AreEqual("1 Error", annotationsController.ErrorsText);
             annotationsController.ShowErrors = false;
-            Assert.AreEqual(2, annotationsController.Annotations.Count);
+            Assert.AreEqual(0, annotationsController.Annotations.Count);
         }
 
         [Test]
         public void ShowWarnings_Test()
         {
+            // Arrange
+            var testController = SetupAnnotationData(AnnotationType.Warning);
+
+            // Act
+            var annotationsController = new AnnotationsController(testController);
+            testController.Raise(tc => tc.ExploreFinished += null, this, EventArgs.Empty);
+
+            // Assert
             Assert.IsTrue(annotationsController.ShowWarnings);
-            Assert.AreEqual(3, annotationsController.Annotations.Count);
-            Assert.AreEqual("1 Warnings", annotationsController.WarningsText);
+            Assert.AreEqual(1, annotationsController.Annotations.Count);
+            Assert.AreEqual("1 Warning", annotationsController.WarningsText);
             annotationsController.ShowWarnings = false;
-            Assert.AreEqual(2, annotationsController.Annotations.Count);
+            Assert.AreEqual(0, annotationsController.Annotations.Count);
         }
 
         [Test]
         public void ShowInfo_Test()
         {
+            // Arrange
+            var testController = SetupAnnotationData(AnnotationType.Info);
+
+            // Act
+            var annotationsController = new AnnotationsController(testController);
+            testController.Raise(tc => tc.ExploreFinished += null, this, EventArgs.Empty);
+
+            // Assert
             Assert.IsTrue(annotationsController.ShowInfo);
-            Assert.AreEqual(3, annotationsController.Annotations.Count);
+            Assert.AreEqual(1, annotationsController.Annotations.Count);
             Assert.AreEqual("1 Info", annotationsController.InfoText);
             annotationsController.ShowInfo = false;
-            Assert.AreEqual(2, annotationsController.Annotations.Count);
+            Assert.AreEqual(0, annotationsController.Annotations.Count);
+        }
+
+        private static ITestController SetupAnnotationData(AnnotationType annotationType)
+        {
+            var testModelData = new TestModelData();
+            testModelData.Annotations.Add(new AnnotationData(annotationType, CodeLocation.Unknown,
+                                                             new CodeReference(), "message", "details"));
+            Report report = new Report
+                                {
+                                    TestModel = testModelData
+                                };
+
+            var testController = MockRepository.GenerateStub<ITestController>();
+            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>) (action => action(report)));
+            return testController;
         }
     }
 }

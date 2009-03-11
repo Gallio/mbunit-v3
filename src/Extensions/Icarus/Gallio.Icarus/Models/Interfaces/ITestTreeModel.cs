@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -25,13 +26,13 @@ namespace Gallio.Icarus.Models.Interfaces
 {
     public interface ITestTreeModel : ITreeModel
     {
-        bool FilterPassed { get; set; }
-        bool FilterFailed { get; set; }
-        bool FilterInconclusive { get; set; }
+        bool FilterPassed { get; }
+        bool FilterFailed { get; }
+        bool FilterInconclusive { get; }
         int TestCount { get; }
         TestTreeNode Root { get; }
-        bool SortAsc { get; set; }
-        bool SortDesc { get; set; }
+        bool SortAsc { get; }
+        bool SortDesc { get; }
         int Passed { get; }
         int Failed { get; }
         int Skipped { get; }
@@ -44,7 +45,10 @@ namespace Gallio.Icarus.Models.Interfaces
         Filter<ITest> GenerateFilterFromSelectedTests();
         TreePath GetPath(Node node);
         void Notify();
-        void ResetTestStatus();
+        void RemoveFilter(TestStatus testStatus);
+        void ResetTestStatus(IProgressMonitor progressMonitor);
+        void SetFilter(TestStatus testStatus);
+        void SetSortOrder(SortOrder sortOrder);
         void UpdateTestStatus(TestData testData, TestStepRun testStepRun);
     }
 }

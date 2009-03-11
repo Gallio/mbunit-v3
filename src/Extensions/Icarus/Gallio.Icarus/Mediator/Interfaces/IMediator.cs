@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Threading;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.ProgressMonitoring;
 using Gallio.Runner.Projects;
@@ -31,6 +32,7 @@ namespace Gallio.Icarus.Mediator.Interfaces
         IRuntimeLogController RuntimeLogController { get; set; }
         TaskManager TaskManager { get; }
         ITestController TestController { get; set; }
+        SynchronizationContext SynchronizationContext { set; }
 
         void AddAssemblies(IList<string> assemblyFiles);
         void ApplyFilter(string filter);

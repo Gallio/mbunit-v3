@@ -59,6 +59,7 @@ namespace Gallio.Icarus.Models
             
             properties = new Node("Properties");
             projectRoot.Nodes.Add(properties);
+            properties.Image = Properties.Resources.PropertiesHS;
             
             assemblies = new Node("Assemblies");
             projectRoot.Nodes.Add(assemblies);

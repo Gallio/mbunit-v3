@@ -56,22 +56,22 @@ namespace Gallio.Icarus
             mediator.TestController.RunStarted += delegate { testTree.EditEnabled = false; };
             mediator.TestController.RunFinished += delegate { testTree.EditEnabled = true; };
 
-            filterPassedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterPassed", 
+            filterPassedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "FilterPassed", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
-            filterPassedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterPassed", 
+            filterPassedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "FilterPassed", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
-            filterFailedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterFailed", 
+            filterFailedTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "FilterFailed", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
-            filterFailedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterFailed", 
+            filterFailedTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "FilterFailed", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
-            filterInconclusiveTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "Model.FilterInconclusive", 
+            filterInconclusiveTestsToolStripMenuItem.DataBindings.Add("Checked", mediator.TestController, "FilterInconclusive", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
-            filterInconclusiveTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.FilterInconclusive", 
+            filterInconclusiveTestsToolStripButton.DataBindings.Add("Checked", mediator.TestController, "FilterInconclusive", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
 
-            sortAscToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.SortAsc", 
+            sortAscToolStripButton.DataBindings.Add("Checked", mediator.TestController, "SortAsc", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
-            sortDescToolStripButton.DataBindings.Add("Checked", mediator.TestController, "Model.SortDesc", 
+            sortDescToolStripButton.DataBindings.Add("Checked", mediator.TestController, "SortDesc", 
                 false, DataSourceUpdateMode.OnPropertyChanged);
         }
 

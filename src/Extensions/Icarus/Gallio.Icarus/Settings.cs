@@ -38,6 +38,7 @@ namespace Gallio.Icarus
         private int inconclusiveColor = Color.Gold.ToArgb();
         private int skippedColor = Color.SlateGray.ToArgb();
         private readonly List<string> treeViewCategories = new List<string>();
+        private readonly List<string> addIns = new List<string>();
 
         [XmlElement("testRunnerFactory")]
         public string TestRunnerFactory
@@ -117,5 +118,12 @@ namespace Gallio.Icarus
 
         [XmlElement("location")]
         public Point Location { get; set; }
+
+        [XmlArray("addIns", IsNullable = false)]
+        [XmlArrayItem("addIn", typeof(string), IsNullable = false)]
+        public List<string> AddIns
+        {
+            get { return addIns; }
+        }
     }
 }

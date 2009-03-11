@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.ProgressMonitoring;
@@ -36,6 +37,15 @@ namespace Gallio.Icarus.Mediator
         public IProjectController ProjectController { get; set; }
 
         public ITestController TestController { get; set; }
+
+        public SynchronizationContext SynchronizationContext
+        {
+            set
+            {
+                ProjectController.SynchronizationContext = value;
+                TestController.SynchronizationContext = value;
+            }
+        }
 
         public IReportController ReportController { get; set; }
 
@@ -256,7 +266,7 @@ namespace Gallio.Icarus.Mediator
         public void ResetTests()
         {
             taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
-                TestController.ResetTestStatus()));
+                TestController.ResetTestStatus(progressMonitor)));
         }
 
         public void RunTests(bool attachDebugger)
@@ -267,9 +277,8 @@ namespace Gallio.Icarus.Mediator
                 {
                     // save current filter as last run
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                    using (IProgressMonitor subSubProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
                         ProjectController.SaveFilter("LastRun", TestController.GenerateFilterFromSelectedTests(),
-                            subSubProgressMonitor);
+                            subProgressMonitor);
 
                     // stop if user has canceled
                     if (progressMonitor.IsCanceled)
@@ -288,9 +297,7 @@ namespace Gallio.Icarus.Mediator
             {
                 using (progressMonitor.BeginTask("Saving filter", 2))
                 {
-                    Filter<ITest> filter;
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                        filter = TestController.GenerateFilterFromSelectedTests();
+                    Filter<ITest> filter = TestController.GenerateFilterFromSelectedTests();
 
                     if (progressMonitor.IsCanceled)
                         throw new OperationCanceledException();

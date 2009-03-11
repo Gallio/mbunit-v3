@@ -35,6 +35,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         double UpdateDelay { get; }
         Size Size { get; set; }
         Point Location { get; set; }
+        BindingList<string> AddIns { get; }
 
         void Cancel();
         void Load();

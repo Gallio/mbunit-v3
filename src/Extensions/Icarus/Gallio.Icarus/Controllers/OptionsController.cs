@@ -140,6 +140,7 @@ namespace Gallio.Icarus.Controllers
             PluginDirectories = new BindingList<string>(settings.PluginDirectories);
             SelectedTreeViewCategories = new BindingList<string>(settings.TreeViewCategories);
             UnselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
+            AddIns = new BindingList<string>(settings.AddIns);
         }
 
         private Settings LoadSettings(string fileName)
@@ -167,6 +168,8 @@ namespace Gallio.Icarus.Controllers
                 unhandledExceptionPolicy.Report("An exception occurred while saving Icarus settings file.", ex);
             }
         }
+
+        public BindingList<string> AddIns { get; private set; }
 
         public void Cancel()
         {

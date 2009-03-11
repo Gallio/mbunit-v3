@@ -103,9 +103,9 @@ namespace Gallio.Icarus.Controllers
                             break;
                     }
                 }
-                ErrorsText = string.Format("{0} Errors", error);
-                WarningsText = string.Format("{0} Warnings", warning);
-                InfoText = string.Format("{0} Info", info);
+                ErrorsText = (error == 1) ? string.Format("{0} Error", error) : string.Format("{0} Errors", error);
+                WarningsText = (warning == 1) ? string.Format("{0} Warning", warning): string.Format("{0} Warnings", warning);
+                InfoText = (info == 1) ? string.Format("{0} Info", info) : string.Format("{0} Infos", info);
             });
         }
     }

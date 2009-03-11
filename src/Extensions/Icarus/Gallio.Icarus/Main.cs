@@ -190,9 +190,8 @@ namespace Gallio.Icarus
                 DefaultDockState();
             }
 
-            // provide WindowsFormsSynchronizationContext to controllers for cross-thread databinding
-            mediator.ProjectController.SynchronizationContext = mediator.TestController.Model.SynchronizationContext = 
-                SynchronizationContext.Current;
+            // provide WindowsFormsSynchronizationContext for cross-thread databinding
+            mediator.SynchronizationContext = SynchronizationContext.Current;
 
             if (!mediator.OptionsController.Size.Equals(Size.Empty))
                 Size = mediator.OptionsController.Size;
@@ -390,6 +389,9 @@ namespace Gallio.Icarus
         {
             if (e.CloseReason == CloseReason.ApplicationExitCall)
                 return;
+
+            // no point showing any more progress dialogs!
+            timer.Enabled = false;
 
             // we'll close once we've tidied up
             e.Cancel = true;

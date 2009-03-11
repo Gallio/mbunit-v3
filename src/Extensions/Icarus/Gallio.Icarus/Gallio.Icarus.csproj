@@ -131,6 +131,20 @@
     <Compile Include="Controls\ToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ServiceProvider.cs" />
+    <Compile Include="Window.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Window.Designer.cs">
+      <DependentUpon>Window.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IMenuManager.cs" />
+    <Compile Include="IPackage.cs" />
+    <Compile Include="IStatusStrip.cs" />
+    <Compile Include="IToolStripManager.cs" />
+    <Compile Include="IWindow.cs" />
+    <Compile Include="IWindowCollection.cs" />
+    <Compile Include="IWindowManager.cs" />
     <Compile Include="Mediator\Interfaces\IMediator.cs" />
     <Compile Include="Mediator\Mediator.cs" />
     <Compile Include="Models\Interfaces\IProjectTreeModel.cs" />
@@ -311,6 +325,8 @@
     <Compile Include="Utilities\IXmlSerialization.cs" />
     <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
     <Compile Include="Utilities\XmlSerialization.cs" />
+    <Compile Include="WindowCollection.cs" />
+    <Compile Include="WindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">
@@ -356,6 +372,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AnnotationsWindow.resx">
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Window.resx">
+      <DependentUpon>Window.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\AppearanceOptions.resx">
@@ -434,6 +454,7 @@
     <Content Include="Resources\Options.ico" />
     <Content Include="Resources\PassMb.ico" />
     <None Include="Resources\pillar.png" />
+    <None Include="Resources\PropertiesHS.png" />
     <Content Include="Resources\Reload.ico" />
     <Content Include="Resources\Report.ico" />
     <Content Include="Resources\Sort.png" />

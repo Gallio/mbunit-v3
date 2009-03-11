@@ -33,67 +33,46 @@ namespace Gallio.Icarus.Models
     public class TestTreeModel : TreeModelBase, ITestTreeModel, INotifyPropertyChanged
     {
         private readonly TreeModel inner;
-        private bool filterPassed, filterFailed, filterInconclusive;
+        private readonly List<TestStatus> filterStatuses = new List<TestStatus>();
         private readonly TestTreeSorter testTreeSorter;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool FilterPassed
         {
-            get { return filterPassed; }
-            set
+            get
             {
-                filterPassed = value;
-                if (value)
-                    FilterTree();
-                else
-                    ClearFilter(TestStatus.Passed);
-                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+                return filterStatuses.Contains(TestStatus.Passed);
             }
         }
 
         public bool FilterFailed
         {
-            get { return filterFailed; }
-            set
+            get
             {
-                filterFailed = value;
-                if (value)
-                    FilterTree();
-                else
-                    ClearFilter(TestStatus.Failed);
-                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+                return filterStatuses.Contains(TestStatus.Failed);
             }
         }
 
         public bool FilterInconclusive
         {
-            get { return filterInconclusive; }
-            set
+            get
             {
-                filterInconclusive = value;
-                if (value)
-                    FilterTree();
-                else
-                    ClearFilter(TestStatus.Skipped);
-                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+                return filterStatuses.Contains(TestStatus.Skipped);
             }
         }
 
         public bool SortAsc
         {
-            get { return (testTreeSorter.SortOrder == SortOrder.Ascending); }
-            set
+            get
             {
-                testTreeSorter.SortOrder = value ? SortOrder.Ascending : SortOrder.None;
-                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
-                OnPropertyChanged(new PropertyChangedEventArgs("SortDesc"));
+                return (testTreeSorter.SortOrder == SortOrder.Ascending);
             }
         }
 
         public bool SortDesc
         {
-            get { return (testTreeSorter.SortOrder == SortOrder.Descending); }
+            get{ return (testTreeSorter.SortOrder == SortOrder.Descending); }
             set
             {
                 testTreeSorter.SortOrder = value ? SortOrder.Descending : SortOrder.None;
@@ -164,7 +143,13 @@ namespace Gallio.Icarus.Models
             return inner.GetPath(node);
         }
 
-        public void ResetTestStatus()
+        public void RemoveFilter(TestStatus testStatus)
+        {
+            filterStatuses.Remove(testStatus);
+            ClearFilter(testStatus);
+        }
+
+        public void ResetTestStatus(IProgressMonitor progressMonitor)
         {
             Passed = 0;
             OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
@@ -181,6 +166,18 @@ namespace Gallio.Icarus.Models
             OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new object[] { }));
 
             FilterTree();
+        }
+
+        public void SetFilter(TestStatus testStatus)
+        {
+            filterStatuses.Add(testStatus);
+            FilterTree();
+        }
+
+        public void SetSortOrder(SortOrder sortOrder)
+        {
+            testTreeSorter.SortOrder = sortOrder;
+            OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
         }
 
         public void UpdateTestStatus(TestData testData, TestStepRun testStepRun)
@@ -228,44 +225,23 @@ namespace Gallio.Icarus.Models
         {
             foreach (Node node in Nodes)
                 Filter(node);
+
+            OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
         }
 
         private bool Filter(Node n)
         {
-            if (n is TestTreeNode && (filterPassed || filterFailed || filterInconclusive))
+            if (n is TestTreeNode && filterStatuses.Count > 0)
             {
                 TestTreeNode node = (TestTreeNode)n;
                 
                 // only filter leaf nodes
-                if (n.Nodes.Count == 0)
+                if (n.Nodes.Count == 0 && filterStatuses.Contains(node.TestStatus))
                 {
-                    switch (node.TestStatus)
-                    {
-                        case TestStatus.Passed:
-                            if (filterPassed)
-                            {
-                                FilterNode(node, "Passed", TestStatus.Passed, "FilterPassed");
-                                return false;
-                            }
-                            break;
-                        case TestStatus.Inconclusive:
-                            if (filterInconclusive)
-                            {
-                                FilterNode(node, "Inconclusive", TestStatus.Inconclusive, "FilterInconclusive");
-                                return false;
-                            }
-                            break;
-                        case TestStatus.Failed:
-                            if (filterFailed)
-                            {
-                                FilterNode(node, "Failed", TestStatus.Failed, "FilterFailed");
-                                return false;
-                            }
-                            break;
-                    }
+                    FilterNode(node, node.TestStatus);
+                    return false;
                 }
-                else if (node.Name != TestStatus.Passed.ToString() && node.Name != TestStatus.Failed.ToString()
-                    && node.Name != TestStatus.Inconclusive.ToString())
+                if (!Enum.IsDefined(typeof(TestStatus), node.Name))
                 {
                     int i = 0;
                     while (i < node.Nodes.Count)
@@ -278,7 +254,7 @@ namespace Gallio.Icarus.Models
             return true;
         }
 
-        private static void FilterNode(Node node, string text, TestStatus testStatus, string nodeType)
+        private static void FilterNode(Node node, TestStatus testStatus)
         {
             if (node == null)
                 throw new ArgumentNullException("node");
@@ -290,7 +266,7 @@ namespace Gallio.Icarus.Models
                 filterNode = nodes[0];
             else
             {
-                filterNode = new TestTreeNode(text, key, nodeType) {TestStatus = testStatus};
+                filterNode = new TestTreeNode(key, key, key) { TestStatus = testStatus };
                 node.Parent.Nodes.Add(filterNode);
             }
             node.Parent.Nodes.Remove(node);
@@ -310,6 +286,8 @@ namespace Gallio.Icarus.Models
                     filterNode.Parent.Nodes.Add(n);
                 filterNode.Parent.Nodes.Remove(filterNode);
             }
+
+            OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
         }
 
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -417,9 +395,6 @@ namespace Gallio.Icarus.Models
 
         private void PopulateMetadataTree(string key, IList<TestData> list, Node parent)
         {
-            if (Root == null)
-                return;
-
             for (int i = 0; i < list.Count; i++)
             {
                 TestData td = list[i];

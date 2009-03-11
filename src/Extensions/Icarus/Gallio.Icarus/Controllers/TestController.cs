@@ -16,12 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Timers;
+using System.Threading;
+using System.Windows.Forms;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
-using Gallio.Icarus.Services.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
@@ -33,11 +33,12 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
+using Timer=System.Timers.Timer;
 using ITestController=Gallio.Icarus.Controllers.Interfaces.ITestController;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class TestController : ITestController
+    public class TestController : ITestController, INotifyPropertyChanged
     {
         private readonly BindingList<TestTreeNode> selectedTests;
         private readonly ITestTreeModel testTreeModel;
@@ -46,6 +47,7 @@ namespace Gallio.Icarus.Controllers
 
         private ITestRunnerFactory testRunnerFactory;
         private TestPackageConfig testPackageConfig;
+        private SynchronizationContext synchronizationContext;
 
         public TestController(ITestTreeModel testTreeModel)
         {
@@ -105,10 +107,96 @@ namespace Gallio.Icarus.Controllers
             get { return testTreeModel.TestCount; }
         }
 
+        public bool FilterPassed
+        {
+            get 
+            {
+                return testTreeModel.FilterPassed;
+            }
+// ReSharper disable ValueParameterNotUsed
+            set
+// ReSharper restore ValueParameterNotUsed
+            {
+                testTreeModel.SetFilter(TestStatus.Passed);
+            }
+        }
+
+        public bool FilterFailed
+        {
+            get
+            {
+                return testTreeModel.FilterFailed;
+            }
+// ReSharper disable ValueParameterNotUsed
+            set
+// ReSharper restore ValueParameterNotUsed
+            {
+                testTreeModel.SetFilter(TestStatus.Failed);
+            }
+        }
+
+        public bool FilterInconclusive
+        {
+            get
+            {
+                return testTreeModel.FilterInconclusive;
+            }
+// ReSharper disable ValueParameterNotUsed
+            set
+// ReSharper restore ValueParameterNotUsed
+            {
+                testTreeModel.SetFilter(TestStatus.Skipped);
+            }
+        }
+
+        public bool SortAsc
+        {
+            get
+            {
+                return testTreeModel.SortAsc;
+            }
+            set
+            {
+                if (value)
+                    testTreeModel.SetSortOrder(SortOrder.Ascending);
+                else
+                    testTreeModel.SetSortOrder(SortOrder.None);
+                OnPropertyChanged(new PropertyChangedEventArgs("SortDesc"));
+            }
+        }
+
+        public bool SortDesc
+        {
+            get 
+            {
+                return testTreeModel.SortDesc; 
+            }
+            set
+            {
+                if (value)
+                    testTreeModel.SetSortOrder(SortOrder.Descending);
+                else
+                    testTreeModel.SetSortOrder(SortOrder.None);
+                OnPropertyChanged(new PropertyChangedEventArgs("SortAsc"));
+            }
+        }
+
+        public SynchronizationContext SynchronizationContext
+        {
+            get { return synchronizationContext; }
+            set
+            {
+                synchronizationContext = value;
+                testTreeModel.SynchronizationContext = value;
+            }
+        }
+
         public void Explore(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Exploring the tests.", 100))
             {
+                EventHandlerUtils.SafeInvoke(ExploreStarted, this, System.EventArgs.Empty);
+
                 DoWithTestRunner(testRunner =>
                 {
                     var testExplorationOptions = new TestExplorationOptions();
@@ -118,21 +206,25 @@ namespace Gallio.Icarus.Controllers
 
                     RefreshTestTree(progressMonitor.CreateSubProgressMonitor(5));
                 }, progressMonitor, 10);
+
+                EventHandlerUtils.SafeInvoke(ExploreFinished, this, System.EventArgs.Empty);
             }
         }
-
+        
         public void Run(bool debug, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Running the tests.", 100))
             {
+                EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
+
                 DoWithTestRunner(testRunner =>
                 {
                     var testPackageConfigCopy = testPackageConfig.Copy();
                     testPackageConfigCopy.HostSetup.Debug = debug;
 
                     var testExplorationOptions = new TestExplorationOptions();
-                    var testExecutionOptions = new TestExecutionOptions()
-                    {
+                    var testExecutionOptions = new TestExecutionOptions
+                                                   {
                         Filter = GenerateFilterFromSelectedTests(),
                         ExactFilter = true
                     };
@@ -140,8 +232,9 @@ namespace Gallio.Icarus.Controllers
                     testRunner.Run(testPackageConfigCopy, testExplorationOptions, testExecutionOptions,
                         progressMonitor.CreateSubProgressMonitor(85));
 
-                    RefreshTestTree(progressMonitor.CreateSubProgressMonitor(5));
                 }, progressMonitor, 10);
+
+                EventHandlerUtils.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
             }
         }
 
@@ -176,9 +269,9 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public void ResetTestStatus()
+        public void ResetTestStatus(IProgressMonitor progressMonitor)
         {
-            testTreeModel.ResetTestStatus();
+            testTreeModel.ResetTestStatus(progressMonitor);
         }
 
         public void SetTestRunnerFactory(ITestRunnerFactory testRunnerFactory)
@@ -238,16 +331,12 @@ namespace Gallio.Icarus.Controllers
                 testRunner.Events.RunStarted += (sender, e) =>
                 {
                     reportLockBox = e.ReportLockBox;
-                    EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
                 };
-                testRunner.Events.RunFinished += (sender, e) => EventHandlerUtils.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
 
                 testRunner.Events.ExploreStarted += (sender, e) =>
                 {
                     reportLockBox = e.ReportLockBox;
-                    EventHandlerUtils.SafeInvoke(ExploreStarted, this, System.EventArgs.Empty);
                 };
-                testRunner.Events.ExploreFinished += (sender, e) => EventHandlerUtils.SafeInvoke(ExploreFinished, this, System.EventArgs.Empty);
 
                 action(testRunner);
             }
@@ -255,6 +344,20 @@ namespace Gallio.Icarus.Controllers
             {
                 testRunner.Dispose(progressMonitor.CreateSubProgressMonitor(initializationAndDisposalWorkUnits / 2));
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            if (SynchronizationContext == null)
+                return;
+
+            SynchronizationContext.Post(delegate
+            {
+                if (PropertyChanged != null)
+                    PropertyChanged(this, e);
+            }, null);
         }
     }
 }
