@@ -163,7 +163,7 @@ namespace Gallio.Icarus.Tests.Models
             fixture2.Children.Add(test2);
 
             TestModelData testModelData = new TestModelData(root);
-            //testTreeModel.BuildTestTree(testModelData, MetadataKeys.Category, progressMonitor);
+            testTreeModel.BuildTestTree(testModelData, MetadataKeys.Category);
 
             Assert.IsNotNull(testTreeModel.Root);
             Assert.AreEqual(2, testTreeModel.Root.Nodes.Count);

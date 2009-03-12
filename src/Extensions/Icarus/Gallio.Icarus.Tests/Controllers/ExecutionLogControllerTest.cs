@@ -52,7 +52,7 @@ namespace Gallio.Icarus.Tests.Controllers
                              };
             report.TestPackageRun.RootTestStepRun = testStepRun;
 
-            testController.Stub(x => x.ReadReport(null)).Do((Action<Action<Report>>)(action => action(report)));
+            testController.Stub(x => x.ReadReport(null)).IgnoreArguments().Do((Action<ReadAction<Report>>)(action => action(report)));
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "name", "nodeType"));
             testController.Stub(x => x.Model).Return(testTreeModel);
