@@ -92,8 +92,9 @@ namespace Gallio.PowerShellCommands.Tests
             task.HintDirectories = new string[] { "hint1", "hint2" };
 
             task.ApplicationBaseDirectory = "baseDir";
-            task.ShadowCopy = true;
             task.WorkingDirectory = "workingDir";
+            task.ShadowCopy = true;
+            task.DebugTests = true;
 
             task.SetRunLauncherAction(delegate(TestLauncher launcher)
             {

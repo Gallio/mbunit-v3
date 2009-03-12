@@ -169,7 +169,7 @@
         </command:parameter>
 
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
-          <maml:name>Debug</maml:name>
+          <maml:name>DebugTests</maml:name>
           <maml:description>
             <maml:para>
               Attaches the debugger to the test process.
@@ -317,7 +317,7 @@
       </command:parameter>
 
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
-        <maml:name>Debug</maml:name>
+        <maml:name>DebugTests</maml:name>
         <maml:description>
           <maml:para>
             Attaches the debugger to the test process.

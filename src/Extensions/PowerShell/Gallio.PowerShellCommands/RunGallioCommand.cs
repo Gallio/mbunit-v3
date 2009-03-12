@@ -222,7 +222,7 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true)]
         [Alias("d")]
-        public bool Debug
+        public bool DebugTests
         {
             set { debug = value; }
         }

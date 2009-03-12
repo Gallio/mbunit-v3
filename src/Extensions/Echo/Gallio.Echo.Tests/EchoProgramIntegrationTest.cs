@@ -49,6 +49,7 @@ namespace Gallio.Echo.Tests
         {
             ProcessTask task = RunEcho("/ignore-annotations /filter:Type:UnhandledExceptionTest");
             Assert.Contains(task.ConsoleOutput, "2 run, 2 passed, 0 failed, 0 inconclusive, 0 skipped");
+            Assert.Contains(task.ConsoleOutput, "Unhandled!");
             Assert.AreEqual(task.ExitCode, 0, "Exit code should be zero because the unhandled exception test still passes.");
         }
 
