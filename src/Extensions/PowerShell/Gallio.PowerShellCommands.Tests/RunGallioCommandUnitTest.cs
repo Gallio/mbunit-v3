@@ -43,7 +43,7 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
-                Assert.AreEqual(0, launcher.ReportFormatterOptions.Count);
+                Assert.AreEqual(0, launcher.ReportFormatterOptions.Properties.Count);
                 Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
                 Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
                 Assert.IsFalse(launcher.ShowReports);
@@ -103,7 +103,7 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
-                Assert.AreEqual(0, launcher.ReportFormatterOptions.Count);
+                Assert.AreEqual(0, launcher.ReportFormatterOptions.Properties.Count);
                 Assert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
