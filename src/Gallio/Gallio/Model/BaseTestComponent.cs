@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Collections;
 using Gallio.Reflection;
 
 namespace Gallio.Model
@@ -25,7 +26,7 @@ namespace Gallio.Model
     {
         private string name;
         private ICodeElementInfo codeElement;
-        private readonly MetadataMap metadata;
+        private readonly PropertyBag metadata;
 
         /// <summary>
         /// Initializes a test component.
@@ -41,7 +42,7 @@ namespace Gallio.Model
             this.name = name;
             this.codeElement = codeElement;
 
-            metadata = new MetadataMap();
+            metadata = new PropertyBag();
         }
 
         /// <inheritdoc />
@@ -74,7 +75,7 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public MetadataMap Metadata
+        public PropertyBag Metadata
         {
             get { return metadata; }
         }

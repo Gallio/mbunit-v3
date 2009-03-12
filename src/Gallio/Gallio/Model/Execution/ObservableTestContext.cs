@@ -188,7 +188,7 @@ namespace Gallio.Model.Execution
                 if (! IsRunning)
                     throw new InvalidOperationException("Cannot add metadata unless the test step is running.");
 
-                testStep.Metadata.CopyOnWriteAdd(metadataKey, metadataValue);
+                testStep.Metadata.Add(metadataKey, metadataValue);
                 TestExecutionListener.NotifyTestStepMetadataAdded(testStep.Id, metadataKey, metadataValue);
             }
         }

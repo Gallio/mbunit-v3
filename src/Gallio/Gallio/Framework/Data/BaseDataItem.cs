@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Model;
+using Gallio.Collections;
 
 namespace Gallio.Framework.Data
 {
@@ -28,7 +28,7 @@ namespace Gallio.Framework.Data
         public abstract bool IsDynamic { get; }
 
         /// <inheritdoc />
-        public void PopulateMetadata(MetadataMap map)
+        public void PopulateMetadata(PropertyBag map)
         {
             if (map == null)
                 throw new ArgumentNullException("map");
@@ -59,6 +59,6 @@ namespace Gallio.Framework.Data
         /// Implements <see cref="PopulateMetadata" />.
         /// </summary>
         /// <param name="map">The metadata map to populate, never null</param>
-        protected abstract void PopulateMetadataImpl(MetadataMap map);
+        protected abstract void PopulateMetadataImpl(PropertyBag map);
     }
 }

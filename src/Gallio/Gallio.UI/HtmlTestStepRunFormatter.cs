@@ -412,7 +412,7 @@ namespace Gallio.UI
 
             private void RenderMetadata(TestStepRun testStepRun)
             {
-                MetadataMap visibleEntries = testStepRun.Step.Metadata.Copy();
+                PropertyBag visibleEntries = testStepRun.Step.Metadata.Copy();
                 visibleEntries.Remove(MetadataKeys.TestKind);
 
                 if (visibleEntries.Keys.Count > 0)

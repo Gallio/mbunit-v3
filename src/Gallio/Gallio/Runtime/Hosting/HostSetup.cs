@@ -18,6 +18,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Xml.Serialization;
+using Gallio.Collections;
 using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
@@ -37,12 +38,23 @@ namespace Gallio.Runtime.Hosting
         private ConfigurationFileLocation configurationFileLocation = ConfigurationFileLocation.Temp;
         private HostConfiguration configuration;
         private ProcessorArchitecture processorArchitecture = ProcessorArchitecture.MSIL;
+        private PropertySet properties;
 
         /// <summary>
         /// Creates a default host setup.
         /// </summary>
         public HostSetup()
         {
+            properties = new PropertySet();
+        }
+
+        /// <summary>
+        /// Gets a mutable collection of key/value pairs that specify configuration properties
+        /// for the host.
+        /// </summary>
+        public PropertySet Properties
+        {
+            get { return properties; }
         }
 
         /// <summary>
@@ -171,6 +183,7 @@ namespace Gallio.Runtime.Hosting
             copy.debug = debug;
             copy.processorArchitecture = processorArchitecture;
             copy.configurationFileLocation = configurationFileLocation;
+            copy.properties.AddAll(properties);
 
             if (configuration != null)
                 copy.configuration = configuration.Copy();
@@ -253,7 +266,8 @@ namespace Gallio.Runtime.Hosting
                 && debug == other.debug
                 && Configuration.Equals(other.Configuration)
                 && processorArchitecture == other.processorArchitecture
-                && configurationFileLocation == other.configurationFileLocation;
+                && configurationFileLocation == other.configurationFileLocation
+                && properties.Equals(other.properties);
         }
 
         /// <inheritdoc />
@@ -265,7 +279,8 @@ namespace Gallio.Runtime.Hosting
                 ^ (shadowCopy.GetHashCode() << 16)
                 ^ (debug.GetHashCode() << 21)
                 ^ (processorArchitecture.GetHashCode() << 5)
-                ^ (configurationFileLocation.GetHashCode() << 2);
+                ^ (configurationFileLocation.GetHashCode() << 2)
+                ^ properties.GetHashCode();
         }
 
         private string GetCanonicalApplicationBaseDirectory(string baseDirectory)

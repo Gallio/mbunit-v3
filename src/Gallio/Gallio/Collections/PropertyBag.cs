@@ -16,79 +16,72 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Gallio.Collections;
 using Gallio.Utilities;
 
-namespace Gallio.Model
+namespace Gallio.Collections
 {
     /// <summary>
-    /// A metadata map is a multi-valued dictionary of metadata keys and values associated 
-    /// with a model element.  Metadata is used to communicate declarative 
-    /// properties of the model in an extensible manner.
+    /// A property bag associates keys with values where each key may have one or more associated value.
+    /// All keys and values must be non-null strings.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This collection supports Xml-serialization and content-based equality comparison.
+    /// </para>
+    /// </remarks>
     [Serializable]
-    [XmlRoot("metadata", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("propertyBag", Namespace=XmlSerializationUtils.GallioNamespace)]
     [XmlSchemaProvider("ProvideXmlSchema")]
-    public sealed class MetadataMap : IMultiMap<string, string>, IXmlSerializable
+    public sealed class PropertyBag : IMultiMap<string, string>, IXmlSerializable, IEquatable<PropertyBag>
     {
-        private IMultiMap<string, string> contents;
+        private readonly IMultiMap<string, string> contents;
 
-        private MetadataMap(IMultiMap<string, string> contents)
+        private PropertyBag(IMultiMap<string, string> contents)
         {
             this.contents = contents;
         }
 
         /// <summary>
-        /// Creates an empty metadata map.
+        /// Creates an empty property bag.
         /// </summary>
-        public MetadataMap()
+        public PropertyBag()
             : this(new MultiMap<string, string>())
         {
         }
 
         /// <summary>
-        /// Creates an metadata map by pairs from another map.
-        /// </summary>
-        /// <param name="pairs">The pairs to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pairs"/> is null</exception>
-        public MetadataMap(IEnumerable<KeyValuePair<string, string>> pairs)
-            : this(new MultiMap<string, string>())
-        {
-            contents.AddAll(pairs);
-        }
-
-        /// <summary>
-        /// Creates a copy of the metadata map.
+        /// Creates a copy of this property bag.
         /// </summary>
         /// <returns>The copy</returns>
-        public MetadataMap Copy()
+        public PropertyBag Copy()
         {
-            MetadataMap copy = new MetadataMap();
+            PropertyBag copy = new PropertyBag();
             copy.AddAll(this);
             return copy;
         }
 
         /// <summary>
-        /// Creates a read-only view of the metadata map.
+        /// Gets a read-only view of this property set.
         /// </summary>
-        /// <returns>The read-only view</returns>
-        public MetadataMap AsReadOnly()
+        /// <returns>A read-only view</returns>
+        public PropertyBag AsReadOnly()
         {
-            if (contents.IsReadOnly)
-                return this;
-            return new MetadataMap(MultiMap<string, string>.ReadOnly(this));
+            return contents.IsReadOnly ? this : new PropertyBag(MultiMap<string, string>.ReadOnly(contents));
         }
 
         /// <summary>
-        /// Gets the value associated with the metadata key.
-        /// If there are multiple values, returns only the first one.
+        /// Gets the first value associated with a key.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If there are multiple values, returns only the first one.
+        /// </para>
+        /// </remarks>
         /// <param name="key">The key</param>
-        /// <returns>The value, or null if none</returns>
+        /// <returns>The first associated value, or null if none</returns>
         public string GetValue(string key)
         {
             IList<string> values = this[key];
@@ -99,9 +92,13 @@ namespace Gallio.Model
         }
 
         /// <summary>
-        /// Sets the value associated with the metadata key.
-        /// Removes all values previously associated with that key.
+        /// Sets the value associated with a key.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Removes all values previously associated with that key.
+        /// </para>
+        /// </remarks>
         /// <param name="key">The key</param>
         /// <param name="value">The new value, or null to remove the value</param>
         public void SetValue(string key, string value)
@@ -112,64 +109,51 @@ namespace Gallio.Model
                 Add(key, value);
         }
 
-        /// <summary>
-        /// Adds metadata in a thread-safe manner by performing an atomic copy-on-write of the
-        /// internal storage collection.  This method must be used when a component's metadata
-        /// is updated while tests are in flight and may potentially be accessed concurrently.
-        /// </summary>
-        /// <param name="metadataKey">The metadata key</param>
-        /// <param name="metadataValue">The metadata value</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="metadataKey"/>
-        /// or <paramref name="metadataValue"/> is null</exception>
-        internal void CopyOnWriteAdd(string metadataKey, string metadataValue)
-        {
-            if (metadataKey == null)
-                throw new ArgumentNullException(@"metadataKey");
-            if (metadataValue == null)
-                throw new ArgumentNullException(@"metadataValue");
-            if (IsReadOnly)
-                throw new NotSupportedException("The metadata is read-only.");
-
-            for (; ; )
-            {
-                IMultiMap<string, string> original = contents;
-                IMultiMap<string, string> copy = new MultiMap<string, string>();
-                copy.AddAll(original);
-                copy.Add(metadataKey, metadataValue);
-
-                if (Interlocked.CompareExchange(ref contents, copy, original) == original)
-                    return;
-            }
-        }
-
         #region MultiMap delegating methods
         /// <inheritdoc />
         public void Add(string key, string value)
         {
+            if (value == null)
+                throw new ArgumentNullException("value");
+
             contents.Add(key, value);
         }
 
         /// <inheritdoc />
         public void AddAll(IEnumerable<KeyValuePair<string, IList<string>>> map)
         {
-            contents.AddAll(map);
+            if (map == null)
+                throw new ArgumentNullException("map");
+
+            foreach (KeyValuePair<string, IList<string>> entry in map)
+                Add(entry.Key, entry.Value);
         }
 
         /// <inheritdoc />
         public void AddAll(IEnumerable<KeyValuePair<string, string>> pairs)
         {
-            contents.AddAll(pairs);
+            if (pairs == null)
+                throw new ArgumentNullException("pairs");
+
+            foreach (KeyValuePair<string, string> entry in pairs)
+                Add(entry.Key, entry.Value);
         }
 
         /// <inheritdoc />
         public bool Contains(string key, string value)
         {
+            if (value == null)
+                throw new ArgumentNullException("value");
+
             return contents.Contains(key, value);
         }
 
         /// <inheritdoc />
         public bool Remove(string key, string value)
         {
+            if (value == null)
+                throw new ArgumentNullException("value");
+
             return contents.Remove(key, value);
         }
 
@@ -180,9 +164,13 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public void Add(string key, IList<string> value)
+        public void Add(string key, IList<string> values)
         {
-            contents.Add(key, value);
+            if (values == null)
+                throw new ArgumentNullException("values");
+
+            foreach (string value in values)
+                Add(key, value);
         }
 
         /// <inheritdoc />
@@ -201,7 +189,12 @@ namespace Gallio.Model
         public IList<string> this[string key]
         {
             get { return contents[key]; }
-            set { contents[key] = value; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                contents[key] = value;
+            }
         }
 
         /// <inheritdoc />
@@ -225,7 +218,7 @@ namespace Gallio.Model
         /// <inheritdoc />
         public void Add(KeyValuePair<string, IList<string>> item)
         {
-            contents.Add(item);
+            Add(item.Key, item.Value);
         }
 
         /// <inheritdoc />
@@ -277,6 +270,42 @@ namespace Gallio.Model
         }
         #endregion
 
+        #region Equality
+        /// <inheritdoc />
+        public bool Equals(PropertyBag other)
+        {
+            if (other == null)
+                return false;
+            if (Count != other.Count)
+                return false;
+
+            foreach (KeyValuePair<string, IList<string>> entry in this)
+            {
+                IList<string> otherValues;
+                if (!other.TryGetValue(entry.Key, out otherValues))
+                    return false;
+
+                if (!GenericUtils.ElementsEqualOrderIndependent(entry.Value, otherValues))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as PropertyBag);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            // FIXME: Can make this better...
+            return Count;
+        }
+        #endregion
+
         #region Xml Serialization
         /// <summary>
         /// Provides the Xml schema for this element.
@@ -289,46 +318,58 @@ namespace Gallio.Model
             {
                 TargetNamespace = XmlSerializationUtils.GallioNamespace,
                 Items =
-                {
-                    new XmlSchemaComplexType()
                     {
-                        Name = "MetadataMap",
-                        Particle = new XmlSchemaSequence()
+                        new XmlSchemaComplexType()
                         {
-                            Items = 
+                            Name = "PropertyBag",
+                            Particle = new XmlSchemaSequence()
                             {
-                                new XmlSchemaElement()
-                                {
-                                    Name = "entry",
-                                    IsNillable = false,
-                                    MinOccursString = "0",
-                                    MaxOccursString = "unbounded",
-                                    SchemaType = new XmlSchemaComplexType()
+                                Items =
                                     {
-                                        Attributes =
+                                        new XmlSchemaElement()
                                         {
-                                            new XmlSchemaAttribute()
+                                            Name = "entry",
+                                            IsNillable = false,
+                                            MinOccursString = "0",
+                                            MaxOccursString = "unbounded",
+                                            SchemaType = new XmlSchemaComplexType()
                                             {
-                                                Name = "key",
-                                                Use = XmlSchemaUse.Required,
-                                                SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema")
-                                            },
-                                            new XmlSchemaAttribute()
-                                            {
-                                                Name = "value",
-                                                Use = XmlSchemaUse.Required,
-                                                SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema")
+                                                Attributes =
+                                                    {
+                                                        new XmlSchemaAttribute()
+                                                        {
+                                                            Name = "key",
+                                                            Use = XmlSchemaUse.Required,
+                                                            SchemaTypeName =
+                                                                new XmlQualifiedName("string",
+                                                                    "http://www.w3.org/2001/XMLSchema")
+                                                        },
+                                                    },
+                                                Particle = new XmlSchemaSequence()
+                                                {
+                                                    Items =
+                                                        {
+                                                            new XmlSchemaElement()
+                                                            {
+                                                                Name = "value",
+                                                                IsNillable = false,
+                                                                MinOccursString = "1",
+                                                                MaxOccursString = "unbounded",
+                                                                SchemaTypeName =
+                                                                    new XmlQualifiedName("string",
+                                                                        "http://www.w3.org/2001/XMLSchema")
+                                                            }
+                                                        }
+                                                }
                                             }
                                         }
                                     }
-                                }
                             }
                         }
                     }
-                }
             });
 
-            return new XmlQualifiedName("MetadataMap", XmlSerializationUtils.GallioNamespace);
+            return new XmlQualifiedName("PropertyBag", XmlSerializationUtils.GallioNamespace);
         }
 
         XmlSchema IXmlSerializable.GetSchema()
@@ -339,7 +380,7 @@ namespace Gallio.Model
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             bool isEmptyMetadata = reader.IsEmptyElement;
-            reader.ReadStartElement(@"metadata");
+            reader.ReadStartElement();
 
             if (isEmptyMetadata)
                 return;
@@ -382,7 +423,7 @@ namespace Gallio.Model
                 foreach (string value in entry.Value)
                 {
                     if (value == null)
-                        throw new InvalidOperationException("The metadata map contains an invalid null value.");
+                        throw new InvalidOperationException("The property bag contains an invalid null value.");
 
                     writer.WriteStartElement(@"value");
                     writer.WriteValue(value);

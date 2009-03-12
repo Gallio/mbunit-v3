@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
@@ -52,7 +51,7 @@ namespace Gallio.Tests.Framework.Data
                 throw new NotImplementedException();
             }
 
-            protected override void PopulateMetadataImpl(MetadataMap map)
+            protected override void PopulateMetadataImpl(PropertyBag map)
             {
                 throw new NotImplementedException();
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
+using Gallio.Collections;
 
 namespace Gallio.Runner.Reports
 {
@@ -11,21 +12,21 @@ namespace Gallio.Runner.Reports
     [Serializable]
     public sealed class ReportFormatterOptions
     {
-        private readonly NameValueCollection properties;
+        private readonly PropertySet properties;
 
         /// <summary>
         /// Creates a default set of options.
         /// </summary>
         public ReportFormatterOptions()
         {
-            properties = new NameValueCollection();
+            properties = new PropertySet();
         }
 
         /// <summary>
         /// Gets a mutable collection of key/value pairs that specify configuration properties
         /// for the report formatter.
         /// </summary>
-        public NameValueCollection Properties
+        public PropertySet Properties
         {
             get { return properties; }
         }
@@ -37,7 +38,7 @@ namespace Gallio.Runner.Reports
         public ReportFormatterOptions Copy()
         {
             ReportFormatterOptions copy = new ReportFormatterOptions();
-            copy.properties.Add(properties);
+            copy.properties.AddAll(properties);
 
             return copy;
         }

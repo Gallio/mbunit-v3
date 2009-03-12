@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="ActionChainTestForTwoParameters.cs" />
     <Compile Include="BaseTestWithMocks.cs" />
+    <Compile Include="Collections\PropertySetTest.cs" />
     <Compile Include="Collections\UserDataCollectionTest.cs" />
     <Compile Include="Concurrency\LockBoxTest.cs" />
     <Compile Include="Concurrency\ProcessTaskTest.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />
     <Compile Include="Linq\ExpressionInstrumentorTest.cs" />
+    <Compile Include="Model\BaseTestTest.cs" />
     <Compile Include="Model\Diagnostics\StackTraceDataTest.cs" />
     <Compile Include="Model\Diagnostics\ExceptionDataTest.cs" />
     <Compile Include="Model\Diagnostics\StackTraceFilterTest.cs" />
@@ -251,7 +253,7 @@
     <Compile Include="Model\Filters\NotFilterTest.cs" />
     <Compile Include="Model\Filters\OrFilterTest.cs" />
     <Compile Include="Model\Filters\TypeFilterTest.cs" />
-    <Compile Include="Model\MetadataMapTest.cs" />
+    <Compile Include="Collections\PropertyBagTest.cs" />
     <Compile Include="Collections\GenericUtilsTest.cs" />
     <Compile Include="Model\BaseTestFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Specialized;
+using Gallio.Collections;
+using Gallio.Runtime.Hosting;
 
 namespace Gallio.Runner
 {
@@ -24,21 +26,21 @@ namespace Gallio.Runner
     [Serializable]
     public sealed class TestRunnerOptions
     {
-        private readonly NameValueCollection properties;
+        private readonly PropertySet properties;
 
         /// <summary>
         /// Creates a default set of options.
         /// </summary>
         public TestRunnerOptions()
         {
-            properties = new NameValueCollection();
+            properties = new PropertySet();
         }
 
         /// <summary>
         /// Gets a mutable collection of key/value pairs that specify configuration properties
         /// for the test runner.
         /// </summary>
-        public NameValueCollection Properties
+        public PropertySet Properties
         {
             get { return properties; }
         }
@@ -50,7 +52,7 @@ namespace Gallio.Runner
         public TestRunnerOptions Copy()
         {
             TestRunnerOptions copy = new TestRunnerOptions();
-            copy.properties.Add(properties);
+            copy.properties.AddAll(properties);
 
             return copy;
         }

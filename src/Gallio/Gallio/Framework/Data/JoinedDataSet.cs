@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
-using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
@@ -236,7 +235,7 @@ namespace Gallio.Framework.Data
                 return items[resolvedBinding.DataSetInfo.DataSetIndex].GetValue(resolvedBinding.Inner);
             }
 
-            protected override void PopulateMetadataImpl(MetadataMap map)
+            protected override void PopulateMetadataImpl(PropertyBag map)
             {
                 foreach (IDataItem item in items)
                     item.PopulateMetadata(map);

@@ -21,11 +21,7 @@ namespace Gallio.Utilities
     /// A 64bit hash code value type.
     /// Provides somewhat more protection against collisions than 32 bit hashes.
     /// </summary>
-    /// <todo author="jeff">
-    /// Add equality comparisons and GetHashCode implementation.
-    /// Currently these methods are not required.
-    /// </todo>
-    public struct Hash64
+    public struct Hash64 : IEquatable<Hash64>
     {
         private readonly long value;
 
@@ -67,6 +63,24 @@ namespace Gallio.Utilities
             unchecked { newValue *= 0x3E36B306AD118E71L; } // a large prime to scatter the bits around
 
             return new Hash64(newValue);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(Hash64 other)
+        {
+            return value == other.value;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is Hash64 && Equals((Hash64)obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return (int) (value ^ value >> 32);
         }
 
         /// <inheritdoc />

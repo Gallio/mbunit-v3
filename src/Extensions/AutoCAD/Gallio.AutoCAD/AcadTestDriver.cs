@@ -21,6 +21,7 @@ using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Messages;
 using Gallio.Model.Serialization;
+using Gallio.Runner;
 using Gallio.Runner.Drivers;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
@@ -81,10 +82,10 @@ namespace Gallio.AutoCAD
         }
 
         /// <inheritdoc/>
-        protected override void InitializeImpl(RuntimeSetup runtimeSetup, ILogger logger)
+        protected override void InitializeImpl(RuntimeSetup runtimeSetup, TestRunnerOptions testRunnerOptions, ILogger logger)
         {
-            base.InitializeImpl(runtimeSetup, logger);
-            remoteTestDriver.Initialize(runtimeSetup, logger);
+            base.InitializeImpl(runtimeSetup, testRunnerOptions, logger);
+            remoteTestDriver.Initialize(runtimeSetup, testRunnerOptions, logger);
         }
 
         /// <inheritdoc/>

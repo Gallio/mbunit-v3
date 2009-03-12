@@ -58,9 +58,9 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <inheritdoc />
-        protected override void InitializeImpl(RuntimeSetup runtimeSetup, ILogger logger)
+        protected override void InitializeImpl(RuntimeSetup runtimeSetup, TestRunnerOptions testRunnerOptions, ILogger logger)
         {
-            base.InitializeImpl(runtimeSetup, logger);
+            base.InitializeImpl(runtimeSetup, testRunnerOptions, logger);
 
             ITestHarnessFactory factory = RuntimeAccessor.Instance.Resolve<ITestHarnessFactory>();
             harness = factory.CreateHarness();

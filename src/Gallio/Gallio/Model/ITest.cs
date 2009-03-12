@@ -124,19 +124,19 @@ namespace Gallio.Model
         ITest Parent { get; set; }
 
         /// <summary>
-        /// Gets the children of this test.
+        /// Gets a read-only list of the children of this test.
         /// </summary>
         IList<ITest> Children { get; }
 
         /// <summary>
-        /// Gets the parameters of this test.
+        /// Gets a read-only list of the parameters of this test.
         /// Each parameter must have a unique name.  The order in which
         /// the parameters appear is not significant.
         /// </summary>
         IList<ITestParameter> Parameters { get; }
 
         /// <summary>
-        /// Gets the list of the dependencies of this test.
+        /// Gets a read-only list of the dependencies of this test.
         /// </summary>
         /// <remarks>
         /// Some test frameworks may choose to ignore test dependencies or may impose their own dependency schemes.
@@ -215,5 +215,13 @@ namespace Gallio.Model
         /// <param name="test">The test to add as a dependency</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="test"/> is null</exception>
         void AddDependency(ITest test);
+
+        /// <summary>
+        /// Obtains a unique local id for a child of this test.
+        /// </summary>
+        /// <param name="localIdHint">A suggested id which will be used if no conflicts occur</param>
+        /// <returns>The unique local id to use</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="localIdHint"/> is null</exception>
+        string GetUniqueLocalIdForChild(string localIdHint);
     }
 }

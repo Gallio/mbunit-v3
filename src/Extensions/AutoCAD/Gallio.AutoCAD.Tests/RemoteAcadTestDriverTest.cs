@@ -17,6 +17,7 @@ using System;
 using System.Threading;
 using Gallio.Framework;
 using Gallio.Model.Logging;
+using Gallio.Runner;
 using Gallio.Runner.Drivers;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
@@ -73,7 +74,8 @@ namespace Gallio.AutoCAD.Tests
         public void CallingITestDriverMethodBeforeRunThrowsInvalidOperationException()
         {
             var driver = new RemoteAcadTestDriver(null, Mocks.Stub<ITestDriver>());
-            driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(), new TestLogStreamLogger(TestLog.Default));
+            driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(),
+                new TestRunnerOptions(), new TestLogStreamLogger(TestLog.Default));
         }
 
         [Test]
@@ -111,6 +113,7 @@ namespace Gallio.AutoCAD.Tests
         public void CallingITestDriverMethodsExecuteOnCorrectThread()
         {
             var runtimeSetup = RuntimeAccessor.Instance.GetRuntimeSetup();
+            var testRunnerOptions = new TestRunnerOptions();
             var logger = new TestLogStreamLogger(TestLog.Default);
             var stub = Mocks.Stub<ITestDriver>();
             var driver = new RemoteAcadTestDriver(null, stub);
@@ -118,7 +121,7 @@ namespace Gallio.AutoCAD.Tests
 
             using (Mocks.Record())
             {
-                Expect.Call(() => stub.Initialize(runtimeSetup, logger))
+                Expect.Call(() => stub.Initialize(runtimeSetup, testRunnerOptions, logger))
                       .Do(new Action<RuntimeSetup, ILogger>((x, y) => Assert.AreEqual(Thread.CurrentThread, runThread)));
             }
 
@@ -129,7 +132,7 @@ namespace Gallio.AutoCAD.Tests
                     runThread.Start();
                     Thread.Sleep(100); // Give it some time to start up.
 
-                    driver.Initialize(runtimeSetup, logger);
+                    driver.Initialize(runtimeSetup, testRunnerOptions, logger);
                     driver.Shutdown();
                 }
             }

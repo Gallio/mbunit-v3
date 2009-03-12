@@ -15,6 +15,7 @@
 
 using System;
 using System.Threading;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Reflection;
 
@@ -25,7 +26,7 @@ namespace Gallio.Model
     /// </summary>
     public abstract class TestComponentInfo : BaseInfo, ITestComponent
     {
-        private MetadataMap cachedMetadata;
+        private PropertyBag cachedMetadata;
 
         /// <summary>
         /// Creates a read-only wrapper of the specified model object.
@@ -50,7 +51,7 @@ namespace Gallio.Model
         }
 
         /// <inheritdoc />
-        public MetadataMap Metadata
+        public PropertyBag Metadata
         {
             get
             {

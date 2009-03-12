@@ -145,7 +145,7 @@ namespace Gallio.Tests.Framework.Data
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(new DataBinding[] { binding }, true));
 
             Assert.AreEqual("42", ((XPathNavigator)items[0].GetValue(binding)).Value);
-            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
+            PropertyBag map = DataItemUtils.GetMetadata(items[0]);
             Assert.AreEqual("<inline>", map.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual("abc", map.GetValue("Metadata"));
 

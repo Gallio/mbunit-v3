@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Model.Execution;
 using Gallio.Reflection;
 using Gallio.Properties;
@@ -31,9 +32,10 @@ namespace Gallio.Model
     /// </remarks>
     public class BaseTest : BaseTestComponent, ITest
     {
-        private readonly List<ITestParameter> parameters;
-        private readonly List<ITest> children;
-        private readonly List<ITest> dependencies;
+        private List<ITestParameter> parameters;
+        private List<ITest> children;
+        private List<ITest> dependencies;
+        private HashSet<string> assignedChildLocalIds;
         private ITest parent;
         private bool isTestCase;
         private int order;
@@ -51,10 +53,6 @@ namespace Gallio.Model
         public BaseTest(string name, ICodeElementInfo codeElement)
             : base(name, codeElement)
         {
-            parameters = new List<ITestParameter>();
-            dependencies = new List<ITest>();
-            children = new List<ITest>();
-
             Kind = TestKinds.Group;
         }
 
@@ -130,12 +128,11 @@ namespace Gallio.Model
             {
                 if (cachedLocalId == null)
                 {
-                    string root = localIdHint ?? Name;
-                    cachedLocalId = root;
-
-                    int suffix = 0;
-                    while (!IsLocalIdUniqueAmongSiblings(cachedLocalId))
-                        cachedLocalId = root + (++suffix);
+                    string resolvedLocalIdHint = localIdHint ?? Name;
+                    if (parent != null)
+                        cachedLocalId = parent.GetUniqueLocalIdForChild(resolvedLocalIdHint);
+                    else
+                        cachedLocalId = resolvedLocalIdHint;
                 }
 
                 return cachedLocalId;
@@ -152,19 +149,19 @@ namespace Gallio.Model
         /// <inheritdoc />
         public IList<ITestParameter> Parameters
         {
-            get { return parameters.AsReadOnly(); }
+            get { return parameters != null ? (IList<ITestParameter>) parameters.AsReadOnly() : EmptyArray<ITestParameter>.Instance; }
         }
 
         /// <inheritdoc />
         public IList<ITest> Children
         {
-            get { return children.AsReadOnly(); }
+            get { return children != null ? (IList<ITest>) children.AsReadOnly() : EmptyArray<ITest>.Instance; }
         }
 
         /// <inheritdoc />
         public IList<ITest> Dependencies
         {
-            get { return dependencies.AsReadOnly(); }
+            get { return dependencies != null ? (IList<ITest>) dependencies.AsReadOnly() : EmptyArray<ITest>.Instance; }
         }
 
         /// <inheritdoc />
@@ -183,6 +180,9 @@ namespace Gallio.Model
                 throw new InvalidOperationException("The test parameter is already owned by another test.");
 
             parameter.Owner = this;
+
+            if (parameters == null)
+                parameters = new List<ITestParameter>();
             parameters.Add(parameter);
         }
 
@@ -195,6 +195,9 @@ namespace Gallio.Model
                 throw new InvalidOperationException(Resources.BaseTest_TestAlreadyHasAParent);
 
             test.Parent = this;
+
+            if (children == null)
+                children = new List<ITest>();
             children.Add(test);
         }
 
@@ -204,8 +207,36 @@ namespace Gallio.Model
             if (test == null)
                 throw new ArgumentNullException("test");
 
+            if (dependencies == null)
+                dependencies = new List<ITest>();
             if (! dependencies.Contains(test))
                 dependencies.Add(test);
+        }
+
+        /// <inheritdoc />
+        public string GetUniqueLocalIdForChild(string localIdHint)
+        {
+            if (localIdHint == null)
+                throw new ArgumentNullException("localIdHint");
+
+            string candidateLocalId = localIdHint;
+
+            if (assignedChildLocalIds == null)
+            {
+                assignedChildLocalIds = new HashSet<string>();
+            }
+            else
+            {
+                int index = 2;
+                while (assignedChildLocalIds.Contains(candidateLocalId))
+                {
+                    candidateLocalId = localIdHint + index;
+                    index += 1;
+                }
+            }
+
+            assignedChildLocalIds.Add(candidateLocalId);
+            return candidateLocalId;
         }
 
         /// <inheritdoc />
@@ -218,20 +249,6 @@ namespace Gallio.Model
         public override string ToString()
         {
             return String.Format("[{0}] {1}", Kind, Name);
-        }
-
-        private bool IsLocalIdUniqueAmongSiblings(string localId)
-        {
-            if (parent != null)
-            {
-                foreach (ITest sibling in parent.Children)
-                {
-                    if (sibling != this && sibling.LocalId == localId)
-                        return false;
-                }
-            }
-
-            return true;
         }
     }
 }

@@ -165,7 +165,7 @@ namespace Gallio.Runner
 
                     // Create test driver.
                     testDriver = testDriverFactory.CreateTestDriver();
-                    testDriver.Initialize(runtimeSetup, logger);
+                    testDriver.Initialize(runtimeSetup, testRunnerOptions, logger);
 
                     progressMonitor.Worked(1);
                 }

@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
@@ -28,7 +28,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void HasNoMetadata()
         {
-            MetadataMap metadata = DataItemUtils.GetMetadata(NullDataItem.Instance);
+            PropertyBag metadata = DataItemUtils.GetMetadata(NullDataItem.Instance);
             Assert.AreEqual(0, metadata.Count);
         }
 

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Reflection;
 
@@ -61,7 +62,7 @@ namespace Gallio.Model
         /// <summary>
         /// Gets the metadata of the component.
         /// </summary>
-        MetadataMap Metadata { get; }
+        PropertyBag Metadata { get; }
 
         /// <summary>
         /// Gets a reference to the point of definition of this test

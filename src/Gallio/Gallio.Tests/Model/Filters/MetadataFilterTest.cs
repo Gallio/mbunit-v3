@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
+using Gallio.Collections;
 using Gallio.Tests;
 
 using Gallio.Model.Filters;
@@ -42,7 +42,7 @@ namespace Gallio.Tests.Model.Filters
         [Row(false, new string[] { })]
         public void IsMatchCombinations(bool expectedMatch, string[] values)
         {
-            MetadataMap metadata = new MetadataMap();
+            PropertyBag metadata = new PropertyBag();
             foreach (string value in values)
                 metadata.Add("key", value);
 

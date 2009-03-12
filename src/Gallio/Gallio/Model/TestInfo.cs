@@ -140,6 +140,11 @@ namespace Gallio.Model
             throw new NotSupportedException();
         }
 
+        string ITest.GetUniqueLocalIdForChild(string localIdHint)
+        {
+            throw new NotSupportedException();
+        }
+
         Func<ITestController> ITest.TestControllerFactory
         {
             get { throw new NotSupportedException(); }

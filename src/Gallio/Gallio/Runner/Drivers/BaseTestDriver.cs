@@ -17,7 +17,6 @@ using System;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Messages;
-using Gallio.Model.Serialization;
 using Gallio.Runtime;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
@@ -35,18 +34,21 @@ namespace Gallio.Runner.Drivers
     public abstract class BaseTestDriver : LongLivedMarshalByRefObject, ITestDriver
     {
         private RuntimeSetup runtimeSetup;
+        private TestRunnerOptions testRunnerOptions;
         private ILogger logger = NullLogger.Instance;
         private bool initializedRuntime;
 
         /// <inheritdoc />
-        public void Initialize(RuntimeSetup runtimeSetup, ILogger logger)
+        public void Initialize(RuntimeSetup runtimeSetup, TestRunnerOptions testRunnerOptions, ILogger logger)
         {
             if (runtimeSetup == null)
                 throw new ArgumentNullException("runtimeSetup");
+            if (testRunnerOptions == null)
+                throw new ArgumentNullException("testRunnerOptions");
             if (logger == null)
                 throw new ArgumentNullException("logger");
 
-            InitializeImpl(runtimeSetup, logger);
+            InitializeImpl(runtimeSetup, testRunnerOptions, logger);
         }
 
         /// <inheritdoc />
@@ -99,6 +101,14 @@ namespace Gallio.Runner.Drivers
         }
 
         /// <summary>
+        /// Gets the test runner options, or null if not initialized.
+        /// </summary>
+        protected TestRunnerOptions TestRunnerOptions
+        {
+            get { return testRunnerOptions; }
+        }
+
+        /// <summary>
         /// Gets the logger, or a null logger instance if not initialized.
         /// </summary>
         protected ILogger Logger
@@ -110,9 +120,10 @@ namespace Gallio.Runner.Drivers
         /// Internal implementation of <see cref="Initialize" />.
         /// Called after argument validation takes place.
         /// </summary>
-        protected virtual void InitializeImpl(RuntimeSetup runtimeSetup, ILogger logger)
+        protected virtual void InitializeImpl(RuntimeSetup runtimeSetup, TestRunnerOptions testRunnerOptions, ILogger logger)
         {
             this.runtimeSetup = runtimeSetup;
+            this.testRunnerOptions = testRunnerOptions;
             this.logger = logger;
 
             if (!RuntimeAccessor.IsInitialized)

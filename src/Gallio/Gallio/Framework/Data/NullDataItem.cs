@@ -15,7 +15,6 @@
 
 using System.Collections.Generic;
 using Gallio.Collections;
-using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
@@ -47,7 +46,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override void PopulateMetadataImpl(MetadataMap map)
+        protected override void PopulateMetadataImpl(PropertyBag map)
         {
         }
 

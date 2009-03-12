@@ -17,7 +17,6 @@
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
@@ -46,7 +45,7 @@ namespace Gallio.Tests.Framework.Data
         public void HasNoMetadataIfNullSpecifiedInConstructor()
         {
             ListDataItem<object> item = new ListDataItem<object>(EmptyArray<object>.Instance, null, false);
-            MetadataMap metadata = DataItemUtils.GetMetadata(item);
+            PropertyBag metadata = DataItemUtils.GetMetadata(item);
             Assert.AreEqual(0, metadata.Count);
         }
 
@@ -58,7 +57,7 @@ namespace Gallio.Tests.Framework.Data
 
             ListDataItem<object> item = new ListDataItem<object>(EmptyArray<object>.Instance, metadataPairs, false);
 
-            MetadataMap map = DataItemUtils.GetMetadata(item);
+            PropertyBag map = DataItemUtils.GetMetadata(item);
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }

@@ -15,8 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
@@ -40,7 +40,7 @@ namespace Gallio.Tests.Framework.Data
         {
             SimpleDataItem item = new StubDataItem(null, false);
 
-            MetadataMap map = DataItemUtils.GetMetadata(item);
+            PropertyBag map = DataItemUtils.GetMetadata(item);
             Assert.AreEqual(0, map.Count);
         }
 
@@ -51,7 +51,7 @@ namespace Gallio.Tests.Framework.Data
             metadataPairs.Add(new KeyValuePair<string,string>("Foo", "Bar"));
             BaseDataItem item = new StubDataItem(metadataPairs, false);
 
-            MetadataMap map = DataItemUtils.GetMetadata(item);
+            PropertyBag map = DataItemUtils.GetMetadata(item);
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }

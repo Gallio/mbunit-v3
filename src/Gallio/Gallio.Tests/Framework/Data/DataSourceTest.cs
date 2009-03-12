@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -152,7 +151,7 @@ namespace Gallio.Tests.Framework.Data
                 List<IDataItem> items = new List<IDataItem>(source.GetItems(bindings, true));
                 Assert.AreEqual(1, items.Count);
 
-                MetadataMap map = DataItemUtils.GetMetadata(items[0]);
+                PropertyBag map = DataItemUtils.GetMetadata(items[0]);
                 Assert.AreEqual(1, map.Count);
                 Assert.AreEqual("Bar", map.GetValue("Foo"));
                 Assert.AreEqual("def", items[0].GetValue(bindings[0]));
@@ -204,7 +203,7 @@ namespace Gallio.Tests.Framework.Data
                 List<IDataItem> items = new List<IDataItem>(source.GetItems(bindings, true));
                 Assert.AreEqual(1, items.Count);
 
-                MetadataMap map = DataItemUtils.GetMetadata(items[0]);
+                PropertyBag map = DataItemUtils.GetMetadata(items[0]);
                 Assert.AreEqual(1, map.Count);
                 Assert.AreEqual("Bar", map.GetValue("Foo"));
 

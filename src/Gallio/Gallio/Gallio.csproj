@@ -81,6 +81,7 @@
     <Compile Include="Collections\ArrayEqualityComparer.cs" />
     <Compile Include="Collections\HashSet.cs" />
     <Compile Include="Collections\Key.cs" />
+    <Compile Include="Collections\PropertySet.cs" />
     <Compile Include="Collections\ReadOnlyDictionary.cs" />
     <Compile Include="Collections\ReferentialEqualityComparer.cs" />
     <Compile Include="Concurrency\WriteAction.cs" />
@@ -717,7 +718,7 @@
     <Compile Include="Model\ITest.cs" />
     <Compile Include="Model\LifecyclePhases.cs" />
     <Compile Include="Model\MetadataKeys.cs" />
-    <Compile Include="Model\MetadataMap.cs" />
+    <Compile Include="Collections\PropertyBag.cs" />
     <Compile Include="Model\TestComponentInfo.cs" />
     <Compile Include="Model\ModelException.cs" />
     <Compile Include="Model\ModelUtils.cs" />

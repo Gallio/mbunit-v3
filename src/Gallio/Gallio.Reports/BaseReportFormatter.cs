@@ -72,12 +72,12 @@ namespace Gallio.Reports
         /// <returns>The attachment content disposition</returns>
         protected AttachmentContentDisposition GetAttachmentContentDisposition(ReportFormatterOptions options)
         {
-            string option = options.Properties.Get(AttachmentContentDispositionOption);
-            if (option != null)
+            string contentDisposition;
+            if (options.Properties.TryGetValue(AttachmentContentDispositionOption, out contentDisposition))
             {
                 try
                 {
-                    return (AttachmentContentDisposition)Enum.Parse(typeof(AttachmentContentDisposition), option, true);
+                    return (AttachmentContentDisposition)Enum.Parse(typeof(AttachmentContentDisposition), contentDisposition, true);
                 }
                 catch (ArgumentException)
                 {

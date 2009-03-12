@@ -86,7 +86,7 @@ namespace Gallio.Runner.Drivers
                                 progressMonitor.SetStatus("Initializing test driver.");
 
                                 ITestDriver testDriver = partition.TestDriverFactory.CreateTestDriver();
-                                testDriver.Initialize(RuntimeSetup, Logger);
+                                testDriver.Initialize(RuntimeSetup, TestRunnerOptions, Logger);
                                 try
                                 {
                                     progressMonitor.SetStatus("");

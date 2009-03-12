@@ -14,7 +14,7 @@
 // limitations under the License.
 
 using System;
-using Gallio.Model;
+using Gallio.Collections;
 
 namespace Gallio.Framework.Data
 {
@@ -28,9 +28,9 @@ namespace Gallio.Framework.Data
         /// </summary>
         /// <param name="dataItem">The data item</param>
         /// <returns>The associated metadata</returns>
-        public static MetadataMap GetMetadata(IDataItem dataItem)
+        public static PropertyBag GetMetadata(IDataItem dataItem)
         {
-            MetadataMap map = new MetadataMap();
+            PropertyBag map = new PropertyBag();
             dataItem.PopulateMetadata(map);
             return map;
         }

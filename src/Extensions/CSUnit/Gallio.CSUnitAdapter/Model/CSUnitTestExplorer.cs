@@ -19,6 +19,7 @@ using System.Reflection;
 using csUnit;
 using csUnit.Core;
 using csUnit.Interfaces;
+using Gallio.Collections;
 using Gallio.CSUnitAdapter.Properties;
 using Gallio.Model;
 using Gallio.Reflection;
@@ -301,7 +302,7 @@ namespace Gallio.CSUnitAdapter.Model
 
         #region Populate Metadata methods
 
-        internal static void PopulateAssemblyMetadata(IAssemblyInfo codeElement, MetadataMap metadata)
+        internal static void PopulateAssemblyMetadata(IAssemblyInfo codeElement, PropertyBag metadata)
         {
             ModelUtils.PopulateMetadataFromAssembly(codeElement, metadata);
 
@@ -313,7 +314,7 @@ namespace Gallio.CSUnitAdapter.Model
             }
         }
 
-        internal static void PopulateFixtureMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
+        internal static void PopulateFixtureMetadata(ICodeElementInfo codeElement, PropertyBag metadata)
         {
             foreach (TestFixtureAttribute attr in AttributeUtils.GetAttributes<TestFixtureAttribute>(codeElement, true))
             {
@@ -331,7 +332,7 @@ namespace Gallio.CSUnitAdapter.Model
             PopulateCommonMetadata(codeElement, metadata);
         }
 
-        internal static void PopulateMethodMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
+        internal static void PopulateMethodMetadata(ICodeElementInfo codeElement, PropertyBag metadata)
         {
             foreach (TestAttribute attr in AttributeUtils.GetAttributes<TestAttribute>(codeElement, true))
             {
@@ -362,7 +363,7 @@ namespace Gallio.CSUnitAdapter.Model
             PopulateCommonMetadata(codeElement, metadata);
         }
 
-        private static void PopulateCommonMetadata(ICodeElementInfo codeElement, MetadataMap metadata)
+        private static void PopulateCommonMetadata(ICodeElementInfo codeElement, PropertyBag metadata)
         {
             // Add ignore reason.
             foreach (IgnoreAttribute attr in AttributeUtils.GetAttributes<IgnoreAttribute>(codeElement, true))

@@ -16,7 +16,6 @@
 using System.Collections.Generic;
 using Gallio.Collections;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using MbUnit.Framework;
 
 namespace Gallio.Tests.Framework.Data
@@ -51,7 +50,7 @@ namespace Gallio.Tests.Framework.Data
         [Test]
         public void ShouldProvideFluentInterfaceForBuildingMetadata()
         {
-            MetadataMap extraMetadata = new MetadataMap();
+            PropertyBag extraMetadata = new PropertyBag();
             extraMetadata.SetValue("Author", "Lewis Carroll");
             extraMetadata.SetValue("Title", "The Jabberwocky");
 
@@ -61,7 +60,7 @@ namespace Gallio.Tests.Framework.Data
                 .WithMetadata(extraMetadata);
             Assert.AreEqual("abc", row.GetValue(new DataBinding(0, null)));
 
-            MetadataMap map = DataItemUtils.GetMetadata(row);
+            PropertyBag map = DataItemUtils.GetMetadata(row);
             Assert.AreEqual(4, map.Count);
             Assert.AreEqual("Frumious", map.GetValue("Description"));
             Assert.AreEqual("Bandersnatch", map.GetValue("Name"));

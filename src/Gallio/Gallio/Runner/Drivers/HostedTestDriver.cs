@@ -28,11 +28,14 @@ using Gallio.Runtime.Remoting;
 namespace Gallio.Runner.Drivers
 {
     /// <summary>
-    /// <para>
     /// A test driver that runs tests remotely within a remote host.  The driver further partitions
     /// assemblies into test domains based on their configuration requirements.
-    /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Copies down the test runner options to the containing host.
+    /// </para>
+    /// </remarks>
     public class HostedTestDriver : AggregateTestDriver
     {
         private readonly IHostFactory hostFactory;
@@ -138,6 +141,7 @@ namespace Gallio.Runner.Drivers
             hostSetup.Debug = debug;
             hostSetup.ProcessorArchitecture = arch;
             hostSetup.ConfigurationFileLocation = ConfigurationFileLocation.Temp;
+            hostSetup.Properties.AddAll(TestRunnerOptions.Properties);
 
             ConfigureHost(hostSetup);
 

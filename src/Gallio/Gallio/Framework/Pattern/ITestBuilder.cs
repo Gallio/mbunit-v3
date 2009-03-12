@@ -144,7 +144,7 @@ namespace Gallio.Framework.Pattern
         /// to produce a truly unique <see cref="LocalId" />.
         /// </summary>
         /// <value>
-        /// The default value of this property is <c>null</c> which causes the <see cref="ITestComponent.Name" />
+        /// The default value of this property is <c>null</c> which causes the <see cref="ITestComponentBuilder.Name" />
         /// property to be used as the local id hint.
         /// </value>
         /// <returns>The local id hint</returns>

@@ -92,7 +92,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="assembly">The assembly</param>
         protected virtual void InitializeAssemblyTest(IPatternScope assemblyScope, IAssemblyInfo assembly)
         {
-            MetadataMap metadata = new MetadataMap();
+            PropertyBag metadata = new PropertyBag();
             ModelUtils.PopulateMetadataFromAssembly(assembly, metadata);
             foreach (var pair in metadata.Pairs)
                 assemblyScope.TestBuilder.AddMetadata(pair.Key, pair.Value);

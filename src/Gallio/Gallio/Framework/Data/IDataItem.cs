@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Model;
+using Gallio.Collections;
 
 namespace Gallio.Framework.Data
 {
@@ -66,7 +66,7 @@ namespace Gallio.Framework.Data
         /// </para>
         /// </summary>
         /// <param name="map">The metadata map</param>
-        void PopulateMetadata(MetadataMap map);
+        void PopulateMetadata(PropertyBag map);
 
         /// <summary>
         /// Gets the value of the specified binding.

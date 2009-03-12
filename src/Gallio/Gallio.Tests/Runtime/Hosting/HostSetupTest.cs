@@ -41,8 +41,12 @@ namespace Gallio.Tests.Runtime.Hosting
                 { new HostSetup { ProcessorArchitecture = ProcessorArchitecture.Amd64 }},
                 { new HostSetup { ProcessorArchitecture = ProcessorArchitecture.IA64 }},
                 { new HostSetup { ShadowCopy = true }},
+                { new HostSetup { Debug = true }},
                 { new HostSetup { WorkingDirectory = @"C:\WorkingDir" }},
-                { new HostSetup { WorkingDirectory = @"C:\WorkingDir-2" }}
+                { new HostSetup { WorkingDirectory = @"C:\WorkingDir-2" }},
+                { new HostSetup { Properties = { { "prop", "value" } }}},
+                { new HostSetup { Properties = { { "prop", "value2" } }}},
+                { new HostSetup { Properties = { { "prop", "value" }, { "other prop", "value" } }}}
             }
         };
 

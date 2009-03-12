@@ -15,6 +15,7 @@
 
 using System;
 using System.Xml.Serialization;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Utilities;
@@ -33,7 +34,7 @@ namespace Gallio.Model.Serialization
         private string name;
         private CodeReference codeReference;
         private CodeLocation codeLocation;
-        private MetadataMap metadata;
+        private PropertyBag metadata;
 
         /// <summary>
         /// Creates an uninitialized instance for Xml deserialization.
@@ -143,12 +144,12 @@ namespace Gallio.Model.Serialization
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         /// <seealso cref="ITestComponent.Metadata"/>
         [XmlElement("metadata", IsNullable=false)]
-        public MetadataMap Metadata
+        public PropertyBag Metadata
         {
             get
             {
                 if (metadata == null)
-                    metadata = new MetadataMap();
+                    metadata = new PropertyBag();
                 return metadata;
             }
             set

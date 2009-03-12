@@ -203,7 +203,7 @@ namespace Gallio.Framework.Pattern
                         testStep = testState.PrimaryTestStep;
                         invisible = false;
 
-                        MetadataMap map = DataItemUtils.GetMetadata(bindingItem);
+                        PropertyBag map = DataItemUtils.GetMetadata(bindingItem);
                         foreach (KeyValuePair<string, string> entry in map.Pairs)
                             primaryContext.AddMetadata(entry.Key, entry.Value);
                     }

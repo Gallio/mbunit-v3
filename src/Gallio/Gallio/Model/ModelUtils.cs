@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Collections;
 using Gallio.Reflection;
 using Gallio.Properties;
 
@@ -49,7 +50,7 @@ namespace Gallio.Model
         /// </summary>
         /// <param name="assembly">The assembly</param>
         /// <param name="metadataMap">The metadata map</param>
-        public static void PopulateMetadataFromAssembly(IAssemblyInfo assembly, MetadataMap metadataMap)
+        public static void PopulateMetadataFromAssembly(IAssemblyInfo assembly, PropertyBag metadataMap)
         {
             metadataMap.Add(MetadataKeys.CodeBase, assembly.Path);
 
@@ -93,7 +94,7 @@ namespace Gallio.Model
             metadataMap.Add(MetadataKeys.Version, assembly.GetName().Version.ToString());
         }
 
-        private static void AddMetadataIfNotEmptyOrNull(MetadataMap metadataMap, string key, string value)
+        private static void AddMetadataIfNotEmptyOrNull(PropertyBag metadataMap, string key, string value)
         {
             if (! string.IsNullOrEmpty(value))
                 metadataMap.Add(key, value);

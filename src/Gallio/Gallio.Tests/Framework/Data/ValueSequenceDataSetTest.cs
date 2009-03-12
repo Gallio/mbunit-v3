@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Text;
 using Gallio.Collections;
 using Gallio.Framework.Data;
-using Gallio.Model;
 using MbUnit.Framework;
 using Rhino.Mocks.Constraints;
 
@@ -59,7 +58,7 @@ namespace Gallio.Tests.Framework.Data
             ValueSequenceDataSet dataSet = new ValueSequenceDataSet(new object[] { "a" }, null, false);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
 
-            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
+            PropertyBag map = DataItemUtils.GetMetadata(items[0]);
             Assert.AreEqual(0, map.Count);
         }
 
@@ -72,7 +71,7 @@ namespace Gallio.Tests.Framework.Data
             ValueSequenceDataSet dataSet = new ValueSequenceDataSet(new object[] { "a" }, metadataPairs, false);
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(EmptyArray<DataBinding>.Instance, true));
 
-            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
+            PropertyBag map = DataItemUtils.GetMetadata(items[0]);
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual("Bar", map.GetValue("Foo"));
         }

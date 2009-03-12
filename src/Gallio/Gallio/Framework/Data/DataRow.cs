@@ -15,7 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Model;
+using Gallio.Collections;
 
 namespace Gallio.Framework.Data
 {
@@ -82,7 +82,7 @@ namespace Gallio.Framework.Data
         /// <returns>The augmented data row</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="map"/>
         /// is null</exception>
-        public DataRow WithMetadata(MetadataMap map)
+        public DataRow WithMetadata(PropertyBag map)
         {
             if (map == null)
                 throw new ArgumentNullException("map");
@@ -100,7 +100,7 @@ namespace Gallio.Framework.Data
         }
 
         /// <inheritdoc />
-        protected override void PopulateMetadataImpl(MetadataMap map)
+        protected override void PopulateMetadataImpl(PropertyBag map)
         {
             for (MetadataNode node = metadata; node != null; node = node.Predecessor)
                 map.Add(node.Key, node.Value);

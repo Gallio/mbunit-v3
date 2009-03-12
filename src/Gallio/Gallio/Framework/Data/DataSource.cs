@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Collections;
-using Gallio.Model;
 
 namespace Gallio.Framework.Data
 {
@@ -154,7 +153,7 @@ namespace Gallio.Framework.Data
                     yield return source.ReverseTranslateBinding(dataBinding);
             }
 
-            protected override void PopulateMetadataImpl(MetadataMap map)
+            protected override void PopulateMetadataImpl(PropertyBag map)
             {
                 item.PopulateMetadata(map);
             }

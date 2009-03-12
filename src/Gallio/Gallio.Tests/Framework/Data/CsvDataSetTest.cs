@@ -140,12 +140,12 @@ namespace Gallio.Tests.Framework.Data
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(new DataBinding[] { binding }, true));
 
             Assert.AreEqual("123", items[0].GetValue(binding));
-            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
+            PropertyBag map = DataItemUtils.GetMetadata(items[0]);
             Assert.AreEqual("<inline>(2)", map.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual("abc", map.GetValue("Metadata"));
 
             Assert.AreEqual("456", items[1].GetValue(binding));
-            map = new MetadataMap();
+            map = new PropertyBag();
             items[1].PopulateMetadata(map);
             Assert.AreEqual("<inline>(3)", map.GetValue(MetadataKeys.DataLocation));
             Assert.AreEqual("def", map.GetValue("Metadata"));
@@ -189,7 +189,7 @@ namespace Gallio.Tests.Framework.Data
             List<IDataItem> items = new List<IDataItem>(dataSet.GetItems(new DataBinding[] { binding }, true));
 
             Assert.AreEqual("123", items[0].GetValue(binding));
-            MetadataMap map = DataItemUtils.GetMetadata(items[0]);
+            PropertyBag map = DataItemUtils.GetMetadata(items[0]);
             Assert.IsFalse(map.ContainsKey("Metadata"));
         }
     }

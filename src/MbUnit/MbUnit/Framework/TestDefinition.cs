@@ -32,7 +32,7 @@ namespace MbUnit.Framework
     public abstract class TestDefinition : Test
     {
         private readonly string name;
-        private readonly MetadataMap metadata = new MetadataMap();
+        private readonly PropertyBag metadata = new PropertyBag();
 
         private TimeSpan? timeout;
         private ICodeElementInfo codeElement;
@@ -82,7 +82,7 @@ namespace MbUnit.Framework
         /// </para>
         /// </remarks>
         /// <seealso cref="MetadataKeys"/>
-        public MetadataMap Metadata
+        public PropertyBag Metadata
         {
             get { return metadata; }
         }

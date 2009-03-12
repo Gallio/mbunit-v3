@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Serialization;
 using MbUnit.Framework;
@@ -78,7 +79,7 @@ namespace Gallio.Tests.Model
             AreEqual((TestComponentData)expected, actual);
         }
 
-        public static void AreEqual(MetadataMap expected, MetadataMap actual)
+        public static void AreEqual(PropertyBag expected, PropertyBag actual)
         {
             if (expected == null)
             {
@@ -86,7 +87,7 @@ namespace Gallio.Tests.Model
                 return;
             }
 
-            Assert.Over.KeyedPairs(expected, actual, Assert.AreEqual);
+            Assert.Over.KeyedPairs(expected, actual, Assert.AreElementsEqualIgnoringOrder);
         }
 
         public static void AreEqual(TestStepData expected, TestStepData actual)

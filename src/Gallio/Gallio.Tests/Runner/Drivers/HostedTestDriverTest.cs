@@ -47,7 +47,8 @@ namespace Gallio.Tests.Runner.Drivers
             ProcessorArchitecture expectedProcessorArchitecture, string[] testAssemblies)
         {
             StubbedHostedTestDriver driver = new StubbedHostedTestDriver();
-            driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(), new TestLogStreamLogger(TestLog.Default));
+            driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(),
+                new TestRunnerOptions(), new TestLogStreamLogger(TestLog.Default));
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             testPackageConfig.AssemblyFiles.AddRange(testAssemblies);
@@ -63,7 +64,8 @@ namespace Gallio.Tests.Runner.Drivers
         public void ThrowsRunnerExceptionIfAssembliesHaveIncompatibleProcessorArchitectures()
         {
             StubbedHostedTestDriver driver = new StubbedHostedTestDriver();
-            driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(), new TestLogStreamLogger(TestLog.Default));
+            driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(),
+                new TestRunnerOptions(), new TestLogStreamLogger(TestLog.Default));
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();
             testPackageConfig.AssemblyFiles.Add("MbUnit.TestResources.x86.dll");
