@@ -84,28 +84,35 @@ namespace Gallio.Echo
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(Console);
 
+            ConfigureLauncherFromArguments(launcher, Arguments);
+
+            TestLauncherResult result = launcher.Run();
+            DisplayResultSummary(result);
+
+            return result.ResultCode;
+        }
+
+        internal static void ConfigureLauncherFromArguments(TestLauncher launcher, EchoArguments arguments)
+        {
             launcher.RuntimeSetup = new RuntimeSetup();
-            launcher.RuntimeSetup.PluginDirectories.AddRange(Arguments.PluginDirectories);
+            launcher.RuntimeSetup.PluginDirectories.AddRange(arguments.PluginDirectories);
 
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
             launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(EchoProgram).Assembly));
 
-            launcher.TestPackageConfig.HostSetup.ShadowCopy = Arguments.ShadowCopy;
-            launcher.TestPackageConfig.HostSetup.Debug = Arguments.Debug;
-            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = Arguments.ApplicationBaseDirectory;
-            launcher.TestPackageConfig.HostSetup.WorkingDirectory = Arguments.WorkingDirectory;
+            launcher.TestPackageConfig.HostSetup.ShadowCopy = arguments.ShadowCopy;
+            launcher.TestPackageConfig.HostSetup.Debug = arguments.Debug;
+            launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = arguments.ApplicationBaseDirectory;
+            launcher.TestPackageConfig.HostSetup.WorkingDirectory = arguments.WorkingDirectory;
 
             // add assemblies to testpackageconfig
-            foreach (string assembly in Arguments.Assemblies)
+            foreach (string assembly in arguments.Assemblies)
             {
-                if (!File.Exists(assembly))
-                    continue;
-
                 if (Path.GetExtension(assembly) == ".gallio")
                 {
-                    if (Arguments.Assemblies.Length > 1)
+                    if (arguments.Assemblies.Length > 1)
                         throw new ArgumentException("Please don't mix and match gallio project files and assemblies!");
 
                     Project project = ProjectUtils.LoadProject(assembly);
@@ -114,32 +121,27 @@ namespace Gallio.Echo
                 }
                 launcher.TestPackageConfig.AssemblyFiles.Add(assembly);
             }
-            launcher.TestPackageConfig.HintDirectories.AddRange(Arguments.HintDirectories);
+            launcher.TestPackageConfig.HintDirectories.AddRange(arguments.HintDirectories);
 
-            launcher.ReportDirectory = Arguments.ReportDirectory;
-            launcher.ReportNameFormat = Arguments.ReportNameFormat;
+            launcher.ReportDirectory = arguments.ReportDirectory;
+            launcher.ReportNameFormat = arguments.ReportNameFormat;
 
-            GenericUtils.AddAll(Arguments.ReportTypes, launcher.ReportFormats);
+            GenericUtils.AddAll(arguments.ReportTypes, launcher.ReportFormats);
 
-            launcher.TestRunnerFactoryName = Arguments.RunnerType;
-            GenericUtils.AddAll(Arguments.RunnerExtensions, launcher.TestRunnerExtensionSpecifications);
+            launcher.TestRunnerFactoryName = arguments.RunnerType;
+            GenericUtils.AddAll(arguments.RunnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
-            launcher.DoNotRun = Arguments.DoNotRun;
-            launcher.IgnoreAnnotations = Arguments.IgnoreAnnotations;
+            launcher.DoNotRun = arguments.DoNotRun;
+            launcher.IgnoreAnnotations = arguments.IgnoreAnnotations;
 
-            if (!String.IsNullOrEmpty(Arguments.Filter))
-                launcher.TestExecutionOptions.Filter = FilterUtils.ParseTestFilter(Arguments.Filter);
+            if (!String.IsNullOrEmpty(arguments.Filter))
+                launcher.TestExecutionOptions.Filter = FilterUtils.ParseTestFilter(arguments.Filter);
 
-            launcher.EchoResults = !Arguments.NoEchoResults;
-            launcher.ShowReports = Arguments.ShowReports;
+            launcher.EchoResults = !arguments.NoEchoResults;
+            launcher.ShowReports = arguments.ShowReports;
 
-            if (Arguments.RunTimeLimitInSeconds >= 0)
-                launcher.RunTimeLimit = TimeSpan.FromSeconds(Arguments.RunTimeLimitInSeconds);
-
-            TestLauncherResult result = launcher.Run();
-            DisplayResultSummary(result);
-
-            return result.ResultCode;
+            if (arguments.RunTimeLimitInSeconds >= 0)
+                launcher.RunTimeLimit = TimeSpan.FromSeconds(arguments.RunTimeLimitInSeconds);
         }
 
         private void DisplayResultSummary(TestLauncherResult result)

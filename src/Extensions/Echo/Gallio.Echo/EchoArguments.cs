@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Collections;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runner;
 
@@ -29,7 +30,7 @@ namespace Gallio.Echo
             Description = "The test assemblies to run.",
             ValueLabel = "assemblies"
             )]
-        public string[] Assemblies;
+        public string[] Assemblies = EmptyArray<string>.Instance;
 
         [CommandLineArgument(
             CommandLineArgumentFlags.MultipleUnique,
@@ -38,7 +39,7 @@ namespace Gallio.Echo
             Description = "Additional directories used for loading assemblies and other dependent resources.",
             ValueLabel = "dir"
             )]
-        public string[] HintDirectories;
+        public string[] HintDirectories = EmptyArray<string>.Instance;
 
         [CommandLineArgument(
             CommandLineArgumentFlags.MultipleUnique,
@@ -47,7 +48,7 @@ namespace Gallio.Echo
             Description = "Additional MbUnit plugin directories to search recursively",
             ValueLabel = "dir"
             )]
-        public string[] PluginDirectories;
+        public string[] PluginDirectories = EmptyArray<string>.Instance;
 
         [CommandLineArgument(
             CommandLineArgumentFlags.AtMostOnce,
@@ -111,7 +112,7 @@ namespace Gallio.Echo
              Description = "Report types to generate.  See below for all supported types.",
              ValueLabel = "type"
         )]
-        public string[] ReportTypes;
+        public string[] ReportTypes = EmptyArray<string>.Instance;
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
@@ -166,7 +167,7 @@ namespace Gallio.Echo
              ValueLabel = "specification",
              Description = "Specifies the type, assembly, and parameters of custom test runner extensions to use during the test run in the form:\n'[Namespace.]Type,Assembly[;Parameters]'.\neg. 'FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting'"
              )]
-        public string[] RunnerExtensions;
+        public string[] RunnerExtensions = EmptyArray<string>.Instance;
 
         #endregion
 
