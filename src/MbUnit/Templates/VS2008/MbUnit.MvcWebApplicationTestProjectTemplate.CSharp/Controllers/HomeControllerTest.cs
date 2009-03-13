@@ -26,25 +26,9 @@ namespace $safeprojectname$.Controllers
             ViewResult result = controller.Index() as ViewResult;
 
             // Verify
-            ViewDataDictionary viewData = result.ViewData as ViewDataDictionary;
-
-            Assert.AreEqual("Home Page", viewData["Title"]);
+            ViewDataDictionary viewData = result.ViewData;
+           
             Assert.AreEqual("Welcome to ASP.NET MVC!", viewData["Message"]);
-        }
-
-        [Test]
-        public void About()
-        {
-            // Setup
-            HomeController controller = new HomeController();
-
-            // Execute
-            ViewResult result = controller.About() as ViewResult;
-
-            // Verify
-            ViewDataDictionary viewData = result.ViewData as ViewDataDictionary;
-
-            Assert.AreEqual("About Page", viewData["Title"]);
         }
     }
 }
