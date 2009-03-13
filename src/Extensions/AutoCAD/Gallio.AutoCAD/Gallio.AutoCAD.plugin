@@ -13,7 +13,7 @@
           <parameters>
             <testDriverFactory>${AutoCAD.AcadTestDriverFactory}</testDriverFactory>
             <name>AutoCAD</name>
-            <description>Runs tests within an AutoCAD instance</description>
+            <description>Runs tests within an AutoCAD instance.</description>
           </parameters>
         </component>
 

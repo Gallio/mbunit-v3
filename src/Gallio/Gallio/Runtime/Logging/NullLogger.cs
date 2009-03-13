@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 
 namespace Gallio.Runtime.Logging
 {
@@ -28,7 +29,7 @@ namespace Gallio.Runtime.Logging
         public static readonly NullLogger Instance = new NullLogger();
 
         /// <inheritdoc />
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
         }
     }

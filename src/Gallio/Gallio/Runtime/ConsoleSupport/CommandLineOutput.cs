@@ -135,7 +135,7 @@ namespace Gallio.Runtime.ConsoleSupport
                 if (pos == text.Length - 1)
                     break;
 
-                text = text.Substring(pos + 1).TrimStart();
+                text = text.Substring(pos + 1).TrimStart(' ', '\t', '\r'); // exclude \n
                 currentIndentation = indentation;
             }
         }

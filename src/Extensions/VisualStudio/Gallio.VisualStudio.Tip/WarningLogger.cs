@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 using Microsoft.VisualStudio.TestTools.Common;
@@ -29,13 +30,13 @@ namespace Gallio.VisualStudio.Tip
             this.warningHandler = warningHandler;
         }
 
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             if (severity >= LogSeverity.Warning)
             {
-                string warning = exception == null
+                string warning = exceptionData == null
                     ? message
-                    : string.Concat(message, ExceptionUtils.SafeToString(exception));
+                    : string.Concat(message, "\n", exceptionData.ToString());
 
                 warningHandler.Write(this, new WarningEventArgs(warning));
             }

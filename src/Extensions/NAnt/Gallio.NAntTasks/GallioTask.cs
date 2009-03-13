@@ -26,6 +26,7 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
+using Gallio.Utilities;
 using NAnt.Core;
 using NAnt.Core.Attributes;
 using NAnt.Core.Types;
@@ -95,6 +96,9 @@ namespace Gallio.NAntTasks
         private bool ignoreAnnotations;
         private bool echoResults = true;
         private TimeSpan? runTimeLimit;
+
+        private ArgumentCollection runnerProperties = new ArgumentCollection();
+        private ArgumentCollection reportFormatterProperties = new ArgumentCollection();
 
         #endregion
 
@@ -340,6 +344,46 @@ namespace Gallio.NAntTasks
         }
 
         /// <summary>
+        /// Specifies option property key/value pairs for the test runner.
+        /// </summary>
+        /// <example>
+        /// The following example specifies some extra NCover arguments.
+        /// <code>
+        /// <![CDATA[
+        /// <gallio>
+        ///     <runner-properties value="NCoverArguments='//eas Gallio'" />
+        ///     <!-- More options -->
+        /// </gallio>
+        /// ]]>
+        /// </code>
+        /// </example>
+        [BuildElementArray("runner-properties")]
+        public ArgumentCollection RunnerProperties
+        {
+            get { return runnerProperties; }
+        }
+
+        /// <summary>
+        /// Specifies option property key/value pairs for the report formatter.
+        /// </summary>
+        /// <example>
+        /// The following example changes the default attachment content disposition for the reports.
+        /// <code>
+        /// <![CDATA[
+        /// <gallio>
+        ///     <report-formatter-properties value="AttachmentContentDisposition=Absent" />
+        ///     <!-- More options -->
+        /// </gallio>
+        /// ]]>
+        /// </code>
+        /// </example>
+        [BuildElementArray("report-formatter-properties")]
+        public ArgumentCollection ReportFormatterProperties
+        {
+            get { return reportFormatterProperties; }
+        }
+
+        /// <summary>
         /// Sets whether to load the tests but not run them.  This option may be used to produce a
         /// report that contains test metadata for consumption by other tools.
         /// </summary>
@@ -516,6 +560,12 @@ namespace Gallio.NAntTasks
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
             launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
             launcher.TestPackageConfig.HostSetup.Debug = debug;
+
+            foreach (Argument option in reportFormatterProperties)
+                launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option.Value));
+
+            foreach (Argument option in runnerProperties)
+                launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option.Value));
 
             AddAssemblies(launcher);
             AddHintDirectories(launcher);

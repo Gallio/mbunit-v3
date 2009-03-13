@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 using NAnt.Core;
 
@@ -35,10 +36,10 @@ namespace Gallio.NAntTasks
             this.task = task;
         }
 
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
-            if (exception != null)
-                message += "\n" + exception;
+            if (exceptionData != null)
+                message += "\n" + exceptionData;
 
             switch (severity)
             {

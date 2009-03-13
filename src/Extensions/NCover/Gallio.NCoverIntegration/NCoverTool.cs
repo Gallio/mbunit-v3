@@ -19,13 +19,15 @@ using System.IO;
 using System.Text;
 using Gallio.Concurrency;
 using Gallio.Runtime.Hosting;
+using Gallio.Runtime.Logging;
 using Microsoft.Win32;
 
 namespace Gallio.NCoverIntegration
 {
     internal static class NCoverTool
     {
-        public static ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory, int majorVersion)
+        public static ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory, int majorVersion,
+            ILogger logger, string ncoverArguments, string ncoverCoverageFile)
         {
             string installDir = GetNCoverInstallDir(majorVersion);
             if (installDir == null)
@@ -33,15 +35,18 @@ namespace Gallio.NCoverIntegration
 
             string ncoverConsolePath = Path.Combine(installDir, "NCover.Console.exe");
 
-            StringBuilder ncoverArguments = new StringBuilder();
-            ncoverArguments.Append('"').Append(executablePath).Append('"');
-            ncoverArguments.Append(' ').Append(arguments);
-            ncoverArguments.Append(" //w \"").Append(RemoveTrailingBackslash(workingDirectory)).Append('"');
-            ncoverArguments.Append(" //x \"").Append(Path.Combine(workingDirectory, "Coverage.xml")).Append('"');
-            //ncoverArguments.Append(" //l \"").Append(Path.Combine(workingDirectory, "Coverage.log")).Append('"');
-            //ncoverArguments.Append(" //ll Verbose");
+            StringBuilder ncoverArgumentsCombined = new StringBuilder();
+            ncoverArgumentsCombined.Append('"').Append(executablePath).Append('"');
+            ncoverArgumentsCombined.Append(' ').Append(arguments);
+            ncoverArgumentsCombined.Append(" //w \"").Append(RemoveTrailingBackslash(workingDirectory)).Append('"');
+            ncoverArgumentsCombined.Append(" //x \"").Append(ncoverCoverageFile).Append('"');
 
-            return new ProcessTask(ncoverConsolePath, ncoverArguments.ToString(), workingDirectory);
+            if (ncoverArguments.Length != 0)
+                ncoverArgumentsCombined.Append(' ').Append(ncoverArguments);
+
+            logger.Log(LogSeverity.Info, string.Format("Starting NCover v{0} with arguments: {1}", majorVersion, ncoverArgumentsCombined));
+
+            return new ProcessTask(ncoverConsolePath, ncoverArgumentsCombined.ToString(), workingDirectory);
         }
 
         public static bool IsNCoverVersionInstalled(int majorVersion)

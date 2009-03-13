@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Model.Logging
@@ -40,12 +41,12 @@ namespace Gallio.Model.Logging
         }
 
         /// <inheritdoc />
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             message = String.Format("[{0}] {1}", severity.ToString().ToLowerInvariant(), message);
 
-            if (exception != null)
-                writer.WriteException(exception, message);
+            if (exceptionData != null)
+                writer.WriteException(exceptionData, message);
             else
                 writer.WriteLine(message);
         }

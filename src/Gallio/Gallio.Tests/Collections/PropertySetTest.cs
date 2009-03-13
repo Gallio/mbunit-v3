@@ -141,6 +141,26 @@ namespace Gallio.Tests.Collections
             MbUnit.Framework.Assert.Throws<NotSupportedException>(delegate { readOnly.Add("def", "456"); });
         }
 
+        [Test]
+        public void GetAndSetValue()
+        {
+            PropertySet set = new PropertySet();
+
+            Assert.IsNull(set.GetValue("key"));
+
+            set.SetValue("key", "value");
+            Assert.AreEqual("value", set.GetValue("key"));
+
+            set.SetValue("key", "different value");
+            Assert.AreEqual("different value", set.GetValue("key"));
+
+            set.SetValue("key", null);
+            Assert.IsNull(set.GetValue("key"));
+
+            set.Add("key", "value1");
+            Assert.AreEqual("value1", set.GetValue("key"));
+        }
+
         private static void AssertAreEqual(PropertySet expected, PropertySet actual)
         {
             Assert.AreEqual(expected.Count, actual.Count);

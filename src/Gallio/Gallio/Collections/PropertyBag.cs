@@ -100,7 +100,7 @@ namespace Gallio.Collections
         /// </para>
         /// </remarks>
         /// <param name="key">The key</param>
-        /// <param name="value">The new value, or null to remove the value</param>
+        /// <param name="value">The new value, or null to remove the existing values</param>
         public void SetValue(string key, string value)
         {
             Remove(key);

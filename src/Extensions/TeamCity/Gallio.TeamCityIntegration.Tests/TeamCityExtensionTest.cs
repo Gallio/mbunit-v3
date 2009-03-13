@@ -18,6 +18,7 @@ using System.Text;
 using Gallio.Concurrency;
 using Gallio.Framework;
 using Gallio.Model;
+using Gallio.Model.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
@@ -261,10 +262,10 @@ namespace Gallio.TeamCityIntegration.Tests
                 return output.ToString();
             }
 
-            protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+            protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
             {
                 Assert.AreEqual(LogSeverity.Important, severity);
-                Assert.IsNull(exception);
+                Assert.IsNull(exceptionData);
 
                 output.Append(message).Append('\n');
             }

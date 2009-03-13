@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Gallio.Runtime.Logging;
@@ -36,10 +37,10 @@ namespace Gallio.MSBuildTasks
             this.taskLoggingHelper = taskLoggingHelper;
         }
 
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
-            if (exception != null)
-                message += "\n" + exception;
+            if (exceptionData != null)
+                message += "\n" + exceptionData;
 
             switch (severity)
             {

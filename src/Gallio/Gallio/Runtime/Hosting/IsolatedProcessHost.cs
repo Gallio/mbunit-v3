@@ -228,19 +228,27 @@ namespace Gallio.Runtime.Hosting
             }
         }
 
-        private void LogExitCode(object sender, EventArgs e)
+        private void LogExitCode(object sender, TaskEventArgs e)
         {
-            ProcessTask processTask = (ProcessTask)sender;
+            var processTask = (ProcessTask)e.Task;
 
-            StringBuilder diagnostics = new StringBuilder();
-            int exitCode = processTask.ExitCode;
-            diagnostics.AppendFormat("* Host process exited with code: {0}", exitCode);
+            var exception = processTask.Result.Exception;
+            if (exception != null)
+            {
+                Logger.Log(LogSeverity.Error, "* Host process encountered an exception.", exception);
+            }
+            else
+            {
+                var diagnostics = new StringBuilder();
+                int exitCode = processTask.ExitCode;
+                diagnostics.AppendFormat("* Host process exited with code: {0}", exitCode);
 
-            string exitCodeDescription = processTask.ExitCodeDescription;
-            if (exitCodeDescription != null)
-                diagnostics.Append(" (").Append(exitCodeDescription).Append(")");
+                string exitCodeDescription = processTask.ExitCodeDescription;
+                if (exitCodeDescription != null)
+                    diagnostics.Append(" (").Append(exitCodeDescription).Append(")");
 
-            Logger.Log(exitCode < 0 ? LogSeverity.Error : LogSeverity.Info, diagnostics.ToString());
+                Logger.Log(exitCode != 0 ? LogSeverity.Error : LogSeverity.Info, diagnostics.ToString());
+            }
         }
 
         private void WaitUntilReady(IHostService hostService)

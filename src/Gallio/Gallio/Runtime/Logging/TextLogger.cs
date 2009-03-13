@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Model.Diagnostics;
 using Gallio.Utilities;
 
 namespace Gallio.Runtime.Logging
@@ -44,13 +45,13 @@ namespace Gallio.Runtime.Logging
         }
 
         /// <inheritdoc />
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             textWriter.WriteLine(message);
-            if (exception != null)
+            if (exceptionData != null)
             {
                 textWriter.Write("  ");
-                textWriter.WriteLine(ExceptionUtils.SafeToString(exception));
+                textWriter.WriteLine(exceptionData);
             }
 
             textWriter.Flush();

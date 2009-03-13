@@ -26,6 +26,7 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runner;
+using Gallio.Utilities;
 
 namespace Gallio.Echo
 {
@@ -131,6 +132,12 @@ namespace Gallio.Echo
             launcher.TestRunnerFactoryName = arguments.RunnerType;
             GenericUtils.AddAll(arguments.RunnerExtensions, launcher.TestRunnerExtensionSpecifications);
 
+            foreach (string option in arguments.ReportFormatterProperties)
+                launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+
+            foreach (string option in arguments.RunnerProperties)
+                launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+
             launcher.DoNotRun = arguments.DoNotRun;
             launcher.IgnoreAnnotations = arguments.IgnoreAnnotations;
 
@@ -230,7 +237,6 @@ namespace Gallio.Echo
         private void ShowRegisteredComponents<T>(string heading, IRegisteredComponentResolver<T> resolver)
             where T : class, IRegisteredComponent
         {
-            Console.WriteLine();
             Console.WriteLine(heading);
             Console.WriteLine();
 
@@ -246,6 +252,7 @@ namespace Gallio.Echo
                 {
                     T component = resolver.Resolve(name);
                     CommandLineOutput.PrintArgumentHelp("", name, null, component.Description, null, null);
+                    Console.WriteLine();
                 }
             }
         }

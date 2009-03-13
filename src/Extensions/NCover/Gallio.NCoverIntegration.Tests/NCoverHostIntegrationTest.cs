@@ -32,22 +32,32 @@ namespace Gallio.NCoverIntegration.Tests
     [TestsOn(typeof(NCoverHostFactory))]
     public class NCoverHostIntegrationTest
     {
-        private const string TestCoverageXmlFileName = "Coverage.xml";
-
         [Test]
-        [Row("NCover", 0)]
-        [Row("NCover2", 2)]
-        [Row("NCover3", 3)]
-        public void GeneratesNCoverCoverageLogInWorkingDirectory(string factoryName, int majorVersion)
+        [Row("NCover", 0, null, false)]
+        [Row("NCover2", 2, null, false)]
+        [Row("NCover3", 3, null, false)]
+        [Row("NCover", 0, "DifferentFile.xml", true)]
+        [Row("NCover2", 2, "DifferentFile.xml", true)]
+        [Row("NCover3", 3, "DifferentFile.xml", true)]
+        public void GeneratesNCoverCoverageAndProcessesHostProperties(string factoryName, int majorVersion,
+            string ncoverCoverageFile, bool includeLogArgument)
         {
             if (Process.GetProcessesByName("NCover.Console").Length != 0)
                 Assert.Inconclusive("Cannot run this test while another instance of NCover is running.");
 
             string tempPath = Path.GetTempPath();
-            string coverageFilePath = Path.Combine(tempPath, TestCoverageXmlFileName);
+            string coverageFilePath = Path.Combine(tempPath, ncoverCoverageFile ?? "Coverage.xml");
+            string coverageLogFilePath = Path.Combine(tempPath, "CoverageLog.txt");
+
+            string ncoverArguments = includeLogArgument
+                ? "//l \"" + coverageLogFilePath + "\"" + (majorVersion == 0 ? "" : " //ll Normal")
+                : null;
 
             if (File.Exists(coverageFilePath))
                 File.Delete(coverageFilePath);
+
+            if (File.Exists(coverageLogFilePath))
+                File.Delete(coverageLogFilePath);
 
             Type simpleTestType = typeof(SimpleTest);
 
@@ -58,15 +68,22 @@ namespace Gallio.NCoverIntegration.Tests
             launcher.TestRunnerFactoryName = factoryName;
             launcher.TestExecutionOptions.Filter = new TypeFilter<ITest>(new EqualityFilter<string>(simpleTestType.FullName), false);
 
+            launcher.TestRunnerOptions.Properties.SetValue("NCoverArguments", ncoverArguments);
+            launcher.TestRunnerOptions.Properties.SetValue("NCoverCoverageFile", ncoverCoverageFile);
+
+            TestLauncherResult result = launcher.Run();
+
             if (majorVersion != 0 && !NCoverTool.IsNCoverVersionInstalled(majorVersion))
             {
-                var ex = Assert.Throws<RunnerException>(() => launcher.Run());
-                Assert.Contains(ex.ToString(), "NCover v" + majorVersion + " does not appear to be installed.");
+                Assert.AreEqual(ResultCode.Failure, result.ResultCode);
+
+                var annotations = result.Report.TestModel.Annotations;
+                Assert.AreEqual(1, annotations.Count);
+                Assert.AreEqual(AnnotationType.Error, annotations[0].Type);
+                Assert.Contains(annotations[0].Details, "NCover v" + majorVersion + " does not appear to be installed.");
             }
             else
             {
-                TestLauncherResult result = launcher.Run();
-
                 Assert.AreEqual(2, result.Statistics.RunCount);
                 Assert.AreEqual(1, result.Statistics.PassedCount);
                 Assert.AreEqual(1, result.Statistics.FailedCount);
@@ -84,6 +101,13 @@ namespace Gallio.NCoverIntegration.Tests
                     + "In NCover v3, there is now a list of excluded 'system assemblies' in NCover.Console.exe.config which "
                     + "specifies MbUnit and Gallio by default.  For this test to run, the file must be edited such that "
                     + "these entries are removed.");
+
+                if (ncoverArguments != null && ncoverArguments.Contains("/l"))
+                {
+                    Assert.IsTrue(File.Exists(coverageLogFilePath),
+                        "Should have created a coverage log file since the /l argument was specified.");
+                    File.Delete(coverageLogFilePath);
+                }
             }
         }
     }

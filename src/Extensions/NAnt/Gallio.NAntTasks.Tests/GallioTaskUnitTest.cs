@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Collections;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -54,7 +55,6 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
-                Assert.AreEqual(0, launcher.ReportFormatterOptions.Properties.Count);
                 Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
                 Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
                 Assert.IsFalse(launcher.ShowReports);
@@ -75,6 +75,9 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsNull(launcher.TestPackageConfig.HostSetup.WorkingDirectory);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.Debug);
+
+                Assert.AreEqual(new PropertySet(), launcher.TestRunnerOptions.Properties);
+                Assert.AreEqual(new PropertySet(), launcher.ReportFormatterOptions.Properties);
 
                 TestLauncherResult result = new TestLauncherResult(new Report());
                 result.SetResultCode(ResultCode.Success);
@@ -109,6 +112,9 @@ namespace Gallio.NAntTasks.Tests
             task.Debug = true;
             task.WorkingDirectory = "workingDir";
 
+            task.RunnerProperties.AddRange(new[] { new Argument("RunnerOption1=RunnerValue1"), new Argument("  RunnerOption2  "), new Argument("RunnerOption3 = 'RunnerValue3'"), new Argument("RunnerOption4=\"'RunnerValue4'\"") });
+            task.ReportFormatterProperties.AddRange(new[] { new Argument("FormatterOption1=FormatterValue1"), new Argument("  FormatterOption2  "), new Argument("FormatterOption3 = 'FormatterValue3'"), new Argument("FormatterOption4=\"'FormatterValue4'\"") });
+
             task.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
                 Assert.IsTrue(launcher.DoNotRun);
@@ -117,7 +123,6 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
-                Assert.AreEqual(0, launcher.ReportFormatterOptions.Properties.Count);
                 Assert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
@@ -138,6 +143,22 @@ namespace Gallio.NAntTasks.Tests
                 Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
                 Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsTrue(launcher.TestPackageConfig.HostSetup.Debug);
+
+                Assert.AreEqual(new PropertySet()
+                {
+                    { "RunnerOption1", "RunnerValue1" },
+                    { "RunnerOption2", "" },
+                    { "RunnerOption3", "RunnerValue3" },
+                    { "RunnerOption4", "'RunnerValue4'" }
+                }, launcher.TestRunnerOptions.Properties);
+
+                Assert.AreEqual(new PropertySet()
+                {
+                    { "FormatterOption1", "FormatterValue1" },
+                    { "FormatterOption2", "" },
+                    { "FormatterOption3", "FormatterValue3" },
+                    { "FormatterOption4", "'FormatterValue4'" }
+                }, launcher.ReportFormatterOptions.Properties);
 
                 TestLauncherResult result = new TestLauncherResult(new Report());
                 result.SetResultCode(ResultCode.NoTests);

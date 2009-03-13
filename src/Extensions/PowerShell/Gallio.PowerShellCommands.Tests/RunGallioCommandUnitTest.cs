@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Reflection;
@@ -43,7 +44,6 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
-                Assert.AreEqual(0, launcher.ReportFormatterOptions.Properties.Count);
                 Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
                 Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
                 Assert.IsFalse(launcher.ShowReports);
@@ -64,6 +64,9 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.IsNull(launcher.TestPackageConfig.HostSetup.WorkingDirectory);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsFalse(launcher.TestPackageConfig.HostSetup.Debug);
+
+                Assert.AreEqual(new PropertySet(), launcher.TestRunnerOptions.Properties);
+                Assert.AreEqual(new PropertySet(), launcher.ReportFormatterOptions.Properties);
 
                 return new TestLauncherResult(new Report());
             });
@@ -96,6 +99,9 @@ namespace Gallio.PowerShellCommands.Tests
             task.ShadowCopy = true;
             task.DebugTests = true;
 
+            task.RunnerProperties = new[] { "RunnerOption1=RunnerValue1", "  RunnerOption2  ", "RunnerOption3 = 'RunnerValue3'", "RunnerOption4=\"'RunnerValue4'\"" };
+            task.ReportFormatterProperties = new[] { "FormatterOption1=FormatterValue1", "  FormatterOption2  ", "FormatterOption3 = 'FormatterValue3'", "FormatterOption4=\"'FormatterValue4'\"" };
+
             task.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
                 Assert.IsTrue(launcher.DoNotRun);
@@ -104,7 +110,6 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
-                Assert.AreEqual(0, launcher.ReportFormatterOptions.Properties.Count);
                 Assert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
@@ -125,6 +130,22 @@ namespace Gallio.PowerShellCommands.Tests
                 Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
                 Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
                 Assert.IsTrue(launcher.TestPackageConfig.HostSetup.Debug);
+
+                Assert.AreEqual(new PropertySet()
+                {
+                    { "RunnerOption1", "RunnerValue1" },
+                    { "RunnerOption2", "" },
+                    { "RunnerOption3", "RunnerValue3" },
+                    { "RunnerOption4", "'RunnerValue4'" }
+                }, launcher.TestRunnerOptions.Properties);
+
+                Assert.AreEqual(new PropertySet()
+                {
+                    { "FormatterOption1", "FormatterValue1" },
+                    { "FormatterOption2", "" },
+                    { "FormatterOption3", "FormatterValue3" },
+                    { "FormatterOption4", "'FormatterValue4'" }
+                }, launcher.ReportFormatterOptions.Properties);
 
                 return new TestLauncherResult(new Report());
             });

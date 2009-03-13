@@ -17,6 +17,7 @@ using System;
 using System.Drawing;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
@@ -26,7 +27,7 @@ namespace Gallio.Icarus.Controllers
     {
         public event EventHandler<RuntimeLogEventArgs> LogMessage;
 
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             Color color = Color.Black;
             switch (severity)
@@ -57,8 +58,8 @@ namespace Gallio.Icarus.Controllers
 
             LogMessage(this, new RuntimeLogEventArgs(message, color));
 
-            if (exception != null)
-                LogMessage(this, new RuntimeLogEventArgs(ExceptionUtils.SafeToString(exception), color));
+            if (exceptionData != null)
+                LogMessage(this, new RuntimeLogEventArgs(exceptionData.ToString(), color));
         }
     }
 }

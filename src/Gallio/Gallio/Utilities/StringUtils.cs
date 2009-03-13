@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Gallio.Utilities
@@ -213,6 +214,104 @@ namespace Gallio.Utilities
                     }
                     break;
             }
+        }
+
+        /// <summary>
+        /// Parses a key/value pair from an input string of the form "key=value", with the
+        /// value optionally quoted and optional surrounding whitespace removed.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the value is quoted, the outermost quotes will be removed.
+        /// If the equals or value is absent then an empty string will be used as the value.
+        /// Also trims whitespace around the key and value.
+        /// </para>
+        /// </remarks>
+        /// <param name="input">The input string</param>
+        /// <returns>The key value pair</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> is null</exception>
+        public static KeyValuePair<string, string> ParseKeyValuePair(string input)
+        {
+            if (input == null)
+                throw new ArgumentNullException("input");
+
+            int equalsPos = input.IndexOf('=');
+            if (equalsPos < 0)
+                return new KeyValuePair<string, string>(input.Trim(), "");
+
+            string key = input.Substring(0, equalsPos).Trim();
+            string value = input.Substring(equalsPos + 1).Trim();
+
+            return new KeyValuePair<string, string>(key, Unquote(value));
+        }
+
+        private static string Unquote(string value)
+        {
+            return IsQuoted(value) ? value.Substring(1, value.Length - 2) : value;
+        }
+
+        private static bool IsQuoted(string value)
+        {
+            if (value.Length < 2)
+                return false;
+
+            char firstChar = value[0];
+            if (firstChar != '"' && firstChar != '\'')
+                return false;
+
+            return value[value.Length - 1] == firstChar;
+        }
+
+        /// <summary>
+        /// Parses a string of whitespace delimited and possibly quoted arguments and
+        /// returns an array of each one unquoted.
+        /// </summary>
+        /// <param name="arguments">The arguments string, eg. "/foo 'quoted arg' /bar</param>
+        /// <returns>The parsed and unquoted arguments</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="arguments"/> is null</exception>
+        public static string[] ParseArguments(string arguments)
+        {
+            if (arguments == null)
+                throw new ArgumentNullException("arguments");
+
+            List<string> result = new List<string>();
+
+            char quoteChar = '\0';
+            bool inQuotes = false;
+
+            int startPos, currentPos;
+            for (startPos = 0, currentPos = 0; currentPos < arguments.Length; currentPos++)
+            {
+                char c = arguments[currentPos];
+                if (currentPos > startPos)
+                {
+                    if (inQuotes && c == quoteChar && (currentPos + 1 == arguments.Length || char.IsWhiteSpace(arguments[currentPos + 1]))
+                        || !inQuotes && char.IsWhiteSpace(c))
+                    {
+                        result.Add(arguments.Substring(startPos, currentPos - startPos));
+                        startPos = currentPos + 1;
+                        inQuotes = false;
+                    }
+                }
+                else
+                {
+                    if (c == '"' || c == '\'')
+                    {
+                        inQuotes = true;
+                        quoteChar = c;
+                        startPos = currentPos + 1;
+                    }
+                    else if (char.IsWhiteSpace(c))
+                    {
+                        startPos = currentPos + 1;
+                    }
+                }
+            }
+
+            if (currentPos > startPos)
+                result.Add(arguments.Substring(startPos, currentPos - startPos));
+
+            return result.ToArray();
         }
     }
 }

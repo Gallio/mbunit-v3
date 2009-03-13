@@ -27,6 +27,7 @@ using Gallio.Model.Filters;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Reports;
+using Gallio.Utilities;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -99,6 +100,9 @@ namespace Gallio.MSBuildTasks
         private bool ignoreAnnotations;
         private bool echoResults = true;
         private TimeSpan? runTimeLimit;
+
+        private string[] runnerProperties = EmptyArray<string>.Instance;
+        private string[] reportFormatterProperties = EmptyArray<string>.Instance;
 
         private int exitCode;
 
@@ -339,6 +343,43 @@ namespace Gallio.MSBuildTasks
         public string[] RunnerExtensions
         {
             set { runnerExtensions = value; }
+        }
+
+        /// <summary>
+        /// Specifies option property key/value pairs for the test runner.
+        /// </summary>
+        /// <example>
+        /// The following example specifies some extra NCover arguments.
+        /// <code>
+        /// <![CDATA[
+        /// <gallio>
+        /// <Target Name="MyTarget">
+        ///     <Gallio Assemblies="MyAssembly" RunnerExtensions="NCoverArguments='//eas Gallio'" />
+        /// </Target>
+        /// ]]>
+        /// </code>
+        /// </example>
+        public string[] RunnerProperties
+        {
+            set { runnerProperties = value; }
+        }
+
+        /// <summary>
+        /// Specifies option property key/value pairs for the report formatter.
+        /// </summary>
+        /// <example>
+        /// The following example changes the default attachment content disposition for the reports.
+        /// <code>
+        /// <![CDATA[
+        /// <Target Name="MyTarget">
+        ///     <Gallio Assemblies="MyAssembly" RunnerExtensions="AttachmentContentDisposition=Absent" />
+        /// </Target>
+        /// ]]>
+        /// </code>
+        /// </example>
+        public string[] ReportFormatterProperties
+        {
+            set { reportFormatterProperties = value; }
         }
 
         /// <summary>
@@ -721,6 +762,12 @@ namespace Gallio.MSBuildTasks
                 launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory.ItemSpec;
             launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy;
             launcher.TestPackageConfig.HostSetup.Debug = debug;
+
+            foreach (string option in reportFormatterProperties)
+                launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+
+            foreach (string option in runnerProperties)
+                launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
 
             AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
             AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);

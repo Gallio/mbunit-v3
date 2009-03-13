@@ -51,7 +51,7 @@ namespace Gallio.TypeMockIntegration
         /// <inheritdoc />
         protected override Process StartProcess(ProcessStartInfo startInfo)
         {
-            logger.Log(LogSeverity.Important, "* Starting TypeMock.");
+            logger.Log(LogSeverity.Important, "Starting TypeMock.");
 
             TypeMockProcess process = new TypeMockProcess(startInfo, false);
             process.Start();

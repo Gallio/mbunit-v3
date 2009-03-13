@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 
 namespace Gallio.Runtime.Logging
 {
@@ -31,12 +32,21 @@ namespace Gallio.Runtime.Logging
         void Log(LogSeverity severity, string message);
         
         /// <summary>
-        /// Logs a message.
+        /// Logs a message with an associated exception.
         /// </summary>
         /// <param name="severity">The log message severity</param>
         /// <param name="message">The log message</param>
         /// <param name="exception">The associated exception, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
         void Log(LogSeverity severity, string message, Exception exception);
+
+        /// <summary>
+        /// Logs a message with an associated exception.
+        /// </summary>
+        /// <param name="severity">The log message severity</param>
+        /// <param name="message">The log message</param>
+        /// <param name="exceptionData">The associated exception data, or null if none</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
+        void Log(LogSeverity severity, string message, ExceptionData exceptionData);
     }
 }

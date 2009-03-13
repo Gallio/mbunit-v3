@@ -115,6 +115,15 @@ namespace Gallio.Echo
         public string[] ReportTypes = EmptyArray<string>.Instance;
 
         [CommandLineArgument(
+             CommandLineArgumentFlags.Multiple,
+             ShortName = "rfp",
+             LongName = "report-formatter-property",
+             ValueLabel = "key=value",
+             Description = "Specifies a property key/value for the report formatters.  eg. \"AttachmentContentDisposition=Absent\""
+             )]
+        public string[] ReportFormatterProperties = EmptyArray<string>.Instance;
+
+        [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
              ShortName = "sr",
              LongName = "show-reports",
@@ -155,6 +164,7 @@ namespace Gallio.Echo
 
         [CommandLineArgument(
              CommandLineArgumentFlags.AtMostOnce,
+             ShortName = "r",
              LongName = "runner",
              ValueLabel = "type",
              Description = "Specifies the type of test runner to use.  See below for all supported types.  The default is '" + StandardTestRunnerFactoryNames.IsolatedProcess + "'"
@@ -163,11 +173,21 @@ namespace Gallio.Echo
 
         [CommandLineArgument(
              CommandLineArgumentFlags.Multiple,
-             LongName = "extension",
-             ValueLabel = "specification",
+             ShortName = "re",
+             LongName = "runner-extension",
+             ValueLabel = "type;params",
              Description = "Specifies the type, assembly, and parameters of custom test runner extensions to use during the test run in the form:\n'[Namespace.]Type,Assembly[;Parameters]'.\neg. 'FancyLogger,MyExtensions.dll;ColorOutput,FancyIndenting'"
              )]
         public string[] RunnerExtensions = EmptyArray<string>.Instance;
+
+        [CommandLineArgument(
+             CommandLineArgumentFlags.Multiple,
+             ShortName = "rp",
+             LongName = "runner-property",
+             ValueLabel = "key=value",
+             Description = "Specifies an option property key/value for the test runner.  eg. \"NCoverArguments='//eas Gallio'\""
+             )]
+        public string[] RunnerProperties = EmptyArray<string>.Instance;
 
         #endregion
 
@@ -254,12 +274,14 @@ namespace Gallio.Echo
             sw.WriteLine("Report Folder: {0}", ReportDirectory);
             sw.WriteLine("Report Name Format: {0}", ReportNameFormat);
             sw.WriteLine("Report Types: {0}", String.Join(", ", ReportTypes));
+            sw.WriteLine("Report Formatter Properties: {0}", String.Join(", ", ReportFormatterProperties));
             sw.WriteLine("Show Reports: {0}", ShowReports);
 
             sw.WriteLine("Filter: {0}", Filter);
 
             sw.WriteLine("Runner Type: {0}", RunnerType);
             sw.WriteLine("Runner Extensions: {0}", String.Join(", ", RunnerExtensions));
+            sw.WriteLine("Runner Properties: {0}", String.Join(", ", RunnerProperties));
 
             sw.WriteLine("Verbosity: {0}", Verbosity);
             sw.WriteLine("No Echo Results: {0}", NoEchoResults);

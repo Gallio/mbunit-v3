@@ -20,6 +20,7 @@ using Gallio.Runtime.Logging;
 using Gallio.Concurrency;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime;
+using Gallio.Utilities;
 using NCover.Framework;
 
 namespace Gallio.NCoverIntegration
@@ -28,49 +29,55 @@ namespace Gallio.NCoverIntegration
     /// A <see cref="ProcessTask" /> that uses the NCover framework to
     /// start the process with NCover attached.
     /// </summary>
-    /// <todo author="jeff">
-    /// Support NCover configuration settings using the test runner options collection.
-    /// </todo>
     internal class EmbeddedNCoverProcessTask : ProcessTask
     {
         // Note: NCover can take a long time to finish writing out its results.
         private readonly TimeSpan WaitForExitTimeout = TimeSpan.FromSeconds(120);
 
         private readonly ILogger logger;
+        private readonly string ncoverArguments;
+        private readonly string ncoverCoverageFile;
+
         private ProfilerDriver driver;
         private ThreadTask waitForExitTask;
 
-        /// <summary>
-        /// Creates a process task.
-        /// </summary>
-        /// <param name="executablePath">The path of the executable executable</param>
-        /// <param name="arguments">The arguments for the executable</param>
-        /// <param name="workingDirectory">The working directory</param>
-        /// <param name="logger">The logger</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="executablePath"/>,
-        /// <paramref name="arguments"/>, <paramref name="workingDirectory"/> or <paramref name="logger" /> is null</exception>
-        public EmbeddedNCoverProcessTask(string executablePath, string arguments, string workingDirectory, ILogger logger)
+        public EmbeddedNCoverProcessTask(string executablePath, string arguments, string workingDirectory, ILogger logger,
+            string ncoverArguments, string ncoverCoverageFile)
             : base(executablePath, arguments, workingDirectory)
         {
             if (logger == null)
                 throw new ArgumentNullException("logger");
+            if (ncoverArguments == null)
+                throw new ArgumentNullException("ncoverArguments");
+            if (ncoverCoverageFile == null)
+                throw new ArgumentNullException("ncoverCoverageFile");
 
             this.logger = logger;
+            this.ncoverArguments = ncoverArguments;
+            this.ncoverCoverageFile = ncoverCoverageFile;
         }
 
-        /// <inheritdoc />
         protected override Process StartProcess(ProcessStartInfo startInfo)
         {
-            string outputDirectory = startInfo.WorkingDirectory;
+            logger.Log(LogSeverity.Info, string.Format("Starting NCover v1.5.8 with arguments: //x \"{0}\" {1}", ncoverCoverageFile, ncoverArguments));
 
-            ProfilerSettings settings = new ProfilerSettings();
+            ProfilerSettings settings;
+            try
+            {
+                settings = ProfilerSettings.Parse(StringUtils.ParseArguments("/l ---NOLOG--- " + ncoverArguments));
+            }
+            catch (ApplicationException ex)
+            {
+                var relevantException = ex.InnerException ?? ex;
+                logger.Log(LogSeverity.Error, string.Format("Could not parse NCover arguments: {0}", relevantException.Message));
+                throw;
+            }
+
             settings.CommandLineExe = startInfo.FileName;
             settings.CommandLineArgs = startInfo.Arguments;
             settings.WorkingDirectory = startInfo.WorkingDirectory;
-            settings.NoLog = true;
-            //settings.LogFile = Path.Combine(outputDirectory, "Coverage.log");
-            settings.CoverageXml = Path.Combine(outputDirectory, "Coverage.xml");
-            //settings.CoverageHtmlPath = Path.Combine(outputDirectory, "Coverage.html");
+            settings.NoLog = settings.LogFile == "---NOLOG---";
+            settings.CoverageXml = ncoverCoverageFile;
             settings.RegisterForUser = true;
 
             return RegisterAndStartProfiler(settings, startInfo.RedirectStandardOutput | startInfo.RedirectStandardError);

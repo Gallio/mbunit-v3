@@ -15,6 +15,7 @@
 
 using System;
 using System.Management.Automation;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.PowerShellCommands
@@ -45,8 +46,8 @@ namespace Gallio.PowerShellCommands
         /// </summary>
         /// <param name="severity">The log message severity.</param>
         /// <param name="message">The message to log.</param>
-        /// <param name="exception">The exception to log (it can be null).</param>
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        /// <param name="exceptionData">The exception to log (it can be null).</param>
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             // The PowerShell logging methods may throw InvalidOperationException
             // or NotImplementedException if the PowerShell host is not connected
@@ -55,13 +56,13 @@ namespace Gallio.PowerShellCommands
             {
                 try
                 {
+                    if (exceptionData != null)
+                        message = string.Concat(message, "\n", exceptionData.ToString());
+
                     switch (severity)
                     {
                         case LogSeverity.Error:
-                            if (exception == null)
-                                exception = new Exception(message);
-
-                            cmdlet.WriteError(new ErrorRecord(exception, message, ErrorCategory.NotSpecified, "Gallio"));
+                            cmdlet.WriteError(new ErrorRecord(new Exception(message), "Error", ErrorCategory.NotSpecified, "Gallio"));
                             break;
 
                         case LogSeverity.Warning:

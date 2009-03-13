@@ -69,6 +69,9 @@ namespace Gallio.PowerShellCommands
         private SwitchParameter noEchoResults;
         private TimeSpan? runTimeLimit;
 
+        private string[] runnerProperties = EmptyArray<string>.Instance;
+        private string[] reportFormatterProperties = EmptyArray<string>.Instance;
+
         #endregion
 
         #region Public Properties
@@ -364,6 +367,38 @@ namespace Gallio.PowerShellCommands
         }
 
         /// <summary>
+        /// Specifies option property key/value pairs for the test runner.
+        /// </summary>
+        /// <example>
+        /// The following example specifies some extra NCover arguments.
+        /// <code>
+        /// Run-Gallio SomeAssembly.dll -runner-property "NCoverArguments='//eas Gallio'"
+        /// </code>
+        /// </example>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("runner-property")]
+        public string[] RunnerProperties
+        {
+            set { runnerProperties = value; }
+        }
+
+        /// <summary>
+        /// Specifies option property key/value pairs for the report formatter.
+        /// </summary>
+        /// <example>
+        /// The following example changes the default attachment content disposition for the reports.
+        /// <code>
+        /// Run-Gallio SomeAssembly.dll -report-formatter-property "AttachmentContentDisposition=Absent"
+        /// </code>
+        /// </example>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Alias("report-formatter-property")]
+        public string[] ReportFormatterProperties
+        {
+            set { reportFormatterProperties = value; }
+        }
+
+        /// <summary>
         /// Sets whether to load the tests but not run them.  This option may be used to produce a
         /// report that contains test metadata for consumption by other tools.
         /// </summary>
@@ -488,6 +523,12 @@ namespace Gallio.PowerShellCommands
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
             launcher.TestPackageConfig.HostSetup.ShadowCopy = shadowCopy.IsPresent;
             launcher.TestPackageConfig.HostSetup.Debug = debug.IsPresent;
+
+            foreach (string option in reportFormatterProperties)
+                launcher.ReportFormatterOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
+
+            foreach (string option in runnerProperties)
+                launcher.TestRunnerOptions.Properties.Add(StringUtils.ParseKeyValuePair(option));
 
             AddAllItemSpecs(launcher.TestPackageConfig.AssemblyFiles, assemblies);
             AddAllItemSpecs(launcher.TestPackageConfig.HintDirectories, hintDirectories);

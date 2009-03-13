@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Model.Diagnostics;
 
 namespace Gallio.Runtime.Logging
 {
@@ -58,9 +59,9 @@ namespace Gallio.Runtime.Logging
         }
 
         /// <inheritdoc />
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
-            inner.Log(severity, SeverityPrefixes[severity] + message, exception);
+            inner.Log(severity, SeverityPrefixes[severity] + message, exceptionData);
         }
     }
 }

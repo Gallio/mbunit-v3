@@ -80,9 +80,6 @@ namespace Gallio.Model.Diagnostics
         /// <returns>The formatted stack trace</returns>
         public override string ToString()
         {
-            //StringTestLogWriter writer = new StringTestLogWriter(false);
-            //WriteTo(writer.Default);
-            //return writer.ToString();
             return stackTrace;
         }
 

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using Gallio.Runtime.Logging;
 using Gallio.Concurrency;
 using Gallio.Runtime.Hosting;
@@ -46,16 +47,26 @@ namespace Gallio.NCoverIntegration
         /// <inheritdoc />
         protected override ProcessTask CreateProcessTask(string executablePath, string arguments, string workingDirectory)
         {
+            string ncoverArguments = HostSetup.Properties.GetValue("NCoverArguments");
+            string ncoverCoverageFile = HostSetup.Properties.GetValue("NCoverCoverageFile");
+
+            if (ncoverArguments == null)
+                ncoverArguments = string.Empty;
+            if (string.IsNullOrEmpty(ncoverCoverageFile))
+                ncoverCoverageFile = "Coverage.xml";
+
+            ncoverCoverageFile = Path.Combine(workingDirectory, ncoverCoverageFile);
+
             switch (version)
             {
                 case NCoverVersion.V1:
-                    return new EmbeddedNCoverProcessTask(executablePath, arguments, workingDirectory, Logger);
+                    return new EmbeddedNCoverProcessTask(executablePath, arguments, workingDirectory, Logger, ncoverArguments, ncoverCoverageFile);
 
                 case NCoverVersion.V2:
-                    return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, 2);
+                    return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, 2, Logger, ncoverArguments, ncoverCoverageFile);
 
                 case NCoverVersion.V3:
-                    return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, 3);
+                    return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, 3, Logger, ncoverArguments, ncoverCoverageFile);
 
                 default:
                     throw new NotSupportedException("Unrecognized NCover version.");

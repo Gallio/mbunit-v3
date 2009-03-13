@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 using Gallio.TDNetRunner.Facade;
 using Gallio.Utilities;
@@ -39,7 +40,7 @@ namespace Gallio.TDNetRunner.Core
         }
 
         /// <inheritdoc />
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             switch (severity)
             {
@@ -61,8 +62,8 @@ namespace Gallio.TDNetRunner.Core
                     break;
             }
 
-            if (exception != null)
-                testListener.WriteLine(ExceptionUtils.SafeToString(exception), FacadeCategory.Error);
+            if (exceptionData != null)
+                testListener.WriteLine(exceptionData.ToString(), FacadeCategory.Error);
         }
     }
 }

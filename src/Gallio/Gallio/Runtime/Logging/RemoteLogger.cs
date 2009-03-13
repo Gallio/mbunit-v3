@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.Remoting;
 
@@ -41,9 +42,9 @@ namespace Gallio.Runtime.Logging
         }
 
         /// <inheritdoc />
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
-            forwarder.Log(severity, message, exception);
+            forwarder.Log(severity, message, exceptionData);
         }
 
         /// <summary>
@@ -58,9 +59,9 @@ namespace Gallio.Runtime.Logging
                 this.logger = logger;
             }
 
-            public void Log(LogSeverity severity, string message, Exception exception)
+            public void Log(LogSeverity severity, string message, ExceptionData exceptionData)
             {
-                logger.Log(severity, message, exception);
+                logger.Log(severity, message, exceptionData);
             }
         }
     }

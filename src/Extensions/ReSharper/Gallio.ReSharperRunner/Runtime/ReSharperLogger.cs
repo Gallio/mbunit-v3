@@ -15,6 +15,8 @@
 
 
 using System;
+using System.Text;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 using JetBrains.Util;
 
@@ -22,26 +24,30 @@ namespace Gallio.ReSharperRunner.Runtime
 {
     internal class ReSharperLogger : BaseLogger
     {
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
-            string fullMessage = message;
-            if (exception != null)
-                fullMessage += exception;
+            StringBuilder fullMessage = new StringBuilder();
+            fullMessage.Append(GetCaption(severity));
+            fullMessage.Append(": ");
+            fullMessage.Append(message);
 
-            Logger.LogMessage(GetLoggingLevel(severity), string.Concat(GetCaption(severity), ": ", fullMessage));
+            if (exceptionData != null)
+                fullMessage.Append('\n').Append(exceptionData);
 
-            if (exception != null)
+            switch (severity)
             {
-                if (severity == LogSeverity.Error)
-                    Logger.LogException(message, exception);
-                else
-                    Logger.LogExceptionSilently(exception);
+                case LogSeverity.Debug:
+                    Logger.LogMessage(LoggingLevel.VERBOSE, fullMessage.ToString());
+                    break;
+                case LogSeverity.Info:
+                case LogSeverity.Important:
+                case LogSeverity.Warning:
+                    Logger.LogMessage(LoggingLevel.NORMAL, fullMessage.ToString());
+                    break;
+                case LogSeverity.Error:
+                    Logger.LogError(fullMessage.ToString());
+                    break;
             }
-        }
-
-        private static LoggingLevel GetLoggingLevel(LogSeverity severity)
-        {
-            return severity == LogSeverity.Debug ? LoggingLevel.VERBOSE : LoggingLevel.NORMAL;
         }
 
         private static string GetCaption(LogSeverity severity)

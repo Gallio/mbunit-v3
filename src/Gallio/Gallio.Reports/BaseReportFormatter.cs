@@ -72,8 +72,8 @@ namespace Gallio.Reports
         /// <returns>The attachment content disposition</returns>
         protected AttachmentContentDisposition GetAttachmentContentDisposition(ReportFormatterOptions options)
         {
-            string contentDisposition;
-            if (options.Properties.TryGetValue(AttachmentContentDispositionOption, out contentDisposition))
+            string contentDisposition = options.Properties.GetValue(AttachmentContentDispositionOption);
+            if (contentDisposition != null)
             {
                 try
                 {

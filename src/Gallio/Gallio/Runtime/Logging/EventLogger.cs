@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Gallio.Utilities;
 
 namespace Gallio.Runtime.Logging
@@ -29,9 +30,9 @@ namespace Gallio.Runtime.Logging
         public event EventHandler<LogMessageEventArgs> LogMessage;
 
         /// <inheritdoc />
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
-            EventHandlerUtils.SafeInvoke(LogMessage, this, new LogMessageEventArgs(severity, message, exception));
+            EventHandlerUtils.SafeInvoke(LogMessage, this, new LogMessageEventArgs(severity, message, exceptionData));
         }
     }
 }

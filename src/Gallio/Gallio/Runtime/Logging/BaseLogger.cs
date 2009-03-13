@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 
 namespace Gallio.Runtime.Logging
 {
@@ -27,7 +28,7 @@ namespace Gallio.Runtime.Logging
         /// <inheritdoc />
         public void Log(LogSeverity severity, string message)
         {
-            Log(severity, message, null);
+            Log(severity, message, (ExceptionData) null);
         }
 
         /// <inheritdoc />
@@ -36,15 +37,24 @@ namespace Gallio.Runtime.Logging
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            LogImpl(severity, message, exception);
+            LogImpl(severity, message, exception != null ? new ExceptionData(exception) : null);
+        }
+
+        /// <inheritdoc />
+        public void Log(LogSeverity severity, string message, ExceptionData exceptionData)
+        {
+            if (message == null)
+                throw new ArgumentNullException("message");
+
+            LogImpl(severity, message, exceptionData);
         }
 
         /// <summary>
-        /// Logs a message.
+        /// Logs a message with an associated exception.
         /// </summary>
         /// <param name="severity">The log message severity</param>
         /// <param name="message">The log message, not null</param>
-        /// <param name="exception">The associated exception, or null if none</param>
-        protected abstract void LogImpl(LogSeverity severity, string message, Exception exception);
+        /// <param name="exceptionData">The associated exception data, or null if none</param>
+        protected abstract void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData);
     }
 }

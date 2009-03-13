@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Reflection;
@@ -41,7 +42,6 @@ namespace Gallio.Echo.Tests
             Assert.IsTrue(launcher.EchoResults);
             Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.Filter);
             Assert.AreEqual("", launcher.ReportDirectory);
-            Assert.AreEqual(0, launcher.ReportFormatterOptions.Properties.Count);
             Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
             Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
             Assert.IsFalse(launcher.ShowReports);
@@ -62,6 +62,9 @@ namespace Gallio.Echo.Tests
             Assert.IsNull(launcher.TestPackageConfig.HostSetup.WorkingDirectory);
             Assert.IsFalse(launcher.TestPackageConfig.HostSetup.ShadowCopy);
             Assert.IsFalse(launcher.TestPackageConfig.HostSetup.Debug);
+
+            Assert.AreEqual(new PropertySet(), launcher.TestRunnerOptions.Properties);
+            Assert.AreEqual(new PropertySet(), launcher.ReportFormatterOptions.Properties);
         }
 
         [Test]
@@ -91,13 +94,15 @@ namespace Gallio.Echo.Tests
             arguments.ShadowCopy = true;
             arguments.Debug = true;
 
+            arguments.RunnerProperties = new[] { "RunnerOption1=RunnerValue1", "  RunnerOption2  ", "RunnerOption3 = 'RunnerValue3'", "RunnerOption4=\"'RunnerValue4'\"" };
+            arguments.ReportFormatterProperties = new[] { "FormatterOption1=FormatterValue1", "  FormatterOption2  ", "FormatterOption3 = 'FormatterValue3'", "FormatterOption4=\"'FormatterValue4'\"" };
+
             EchoProgram.ConfigureLauncherFromArguments(launcher, arguments);
 
             Assert.IsTrue(launcher.DoNotRun);
             Assert.IsFalse(launcher.EchoResults);
             Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.Filter.ToFilterExpr());
             Assert.AreEqual("dir", launcher.ReportDirectory);
-            Assert.AreEqual(0, launcher.ReportFormatterOptions.Properties.Count);
             Assert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
             Assert.AreEqual("report", launcher.ReportNameFormat);
             Assert.IsTrue(launcher.ShowReports);
@@ -118,6 +123,22 @@ namespace Gallio.Echo.Tests
             Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);
             Assert.IsTrue(launcher.TestPackageConfig.HostSetup.ShadowCopy);
             Assert.IsTrue(launcher.TestPackageConfig.HostSetup.Debug);
+
+            Assert.AreEqual(new PropertySet()
+                {
+                    { "RunnerOption1", "RunnerValue1" },
+                    { "RunnerOption2", "" },
+                    { "RunnerOption3", "RunnerValue3" },
+                    { "RunnerOption4", "'RunnerValue4'" }
+                }, launcher.TestRunnerOptions.Properties);
+
+            Assert.AreEqual(new PropertySet()
+                {
+                    { "FormatterOption1", "FormatterValue1" },
+                    { "FormatterOption2", "" },
+                    { "FormatterOption3", "FormatterValue3" },
+                    { "FormatterOption4", "'FormatterValue4'" }
+                }, launcher.ReportFormatterOptions.Properties);
         }
     }
 }

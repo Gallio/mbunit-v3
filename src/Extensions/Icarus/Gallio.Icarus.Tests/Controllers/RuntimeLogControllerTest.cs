@@ -15,6 +15,7 @@
 
 using System;
 using System.Drawing;
+using Gallio.Model.Diagnostics;
 using MbUnit.Framework;
 using Gallio.Icarus.Controllers;
 using Gallio.Runtime.Logging;
@@ -81,7 +82,7 @@ namespace Gallio.Icarus.Tests.Controllers
                 Assert.AreEqual(colors[logSeverity], e.Color);
             };
             LogMessage += eh;
-            LogImpl(logSeverity, message, ex);
+            LogImpl(logSeverity, message, new ExceptionData(ex));
             LogMessage -= eh;
         }
     }

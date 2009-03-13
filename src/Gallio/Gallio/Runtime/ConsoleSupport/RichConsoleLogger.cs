@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
@@ -41,7 +42,7 @@ namespace Gallio.Runtime.ConsoleSupport
         }
 
         /// <inheritdoc />
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             lock (console.SyncRoot)
             {
@@ -78,8 +79,8 @@ namespace Gallio.Runtime.ConsoleSupport
 
                     console.WriteLine(message);
 
-                    if (exception != null)
-                        console.WriteLine(Indent(ExceptionUtils.SafeToString(exception)));
+                    if (exceptionData != null)
+                        console.WriteLine(Indent(exceptionData.ToString()));
 
                     if (!console.IsRedirected)
                     {

@@ -12,7 +12,12 @@
                    type="Gallio.Reports.XmlReportFormatter, Gallio.Reports">
           <parameters>
             <name>Xml</name>
-            <description>Generates XML reports with linked attachment files.</description>
+            <description>
+              Generates XML reports with linked attachment files.
+
+              Supported report formatter properties:
+              - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+            </description>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
           </parameters>
         </component>
@@ -50,7 +55,12 @@
                    type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
           <parameters>
             <name>Html</name>
-            <description>Generates HTML reports.</description>
+            <description>
+              Generates HTML reports.
+
+              Supported report formatter properties:
+              - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+            </description>
             <extension>html</extension>
             <contentType>text/html</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
@@ -71,7 +81,12 @@
                    type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
           <parameters>
             <name>Html-Condensed</name>
-            <description>Generates HTML reports that omit passing tests.</description>
+            <description>
+              Generates HTML reports that omit passing tests.
+
+              Supported report formatter properties:
+              - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+            </description>
             <extension>html</extension>
             <contentType>text/html</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
@@ -92,7 +107,12 @@
                    type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
           <parameters>
             <name>XHtml</name>
-            <description>Generates XHTML reports.</description>
+            <description>
+              Generates XHTML reports.
+
+              Supported report formatter properties:
+              - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+            </description>
             <extension>xhtml</extension>
             <contentType>text/xhtml+xml</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
@@ -113,7 +133,12 @@
                    type="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
           <parameters>
             <name>XHtml-Condensed</name>
-            <description>Generates XHTML reports that omit passing tests.</description>
+            <description>
+              Generates XHTML reports that omit passing tests.
+
+              Supported report formatter properties:
+              - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+            </description>
             <extension>xhtml</extension>
             <contentType>text/xhtml+xml</contentType>
             <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>

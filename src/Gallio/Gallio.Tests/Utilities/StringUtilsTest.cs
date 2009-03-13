@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Utilities;
 using MbUnit.Framework;
 
@@ -127,6 +128,37 @@ namespace Gallio.Tests.Utilities
         public void ToUnquotedStringLiteral(string value, string expectedResult)
         {
             Assert.AreEqual(expectedResult, StringUtils.ToUnquotedStringLiteral(value));
+        }
+
+        [Test, MultipleAsserts]
+        [Row("", "", "")]
+        [Row("key", "key", "")]
+        [Row("key=", "key", "")]
+        [Row("key=value", "key", "value")]
+        [Row("key='value'", "key", "value")]
+        [Row("key=\"value\"", "key", "value")]
+        [Row("key=\"'value'\"", "key", "'value'")]
+        [Row("key='\"value\"'", "key", "\"value\"")]
+        [Row(" key = value ", "key", "value")]
+        [Row(" key = ' value ' ", "key", " value ")]
+        public void ParseKeyValuePair(string input, string expectedKey, string expectedValue)
+        {
+            KeyValuePair<string, string> result = StringUtils.ParseKeyValuePair(input);
+            Assert.AreEqual(expectedKey, result.Key);
+            Assert.AreEqual(expectedValue, result.Value);
+        }
+
+        [Test]
+        [Row("", new string[] { })]
+        [Row("arg1", new string[] { "arg1" })]
+        [Row(" arg1 ", new string[] { "arg1" })]
+        [Row("arg1 arg2", new string[] { "arg1", "arg2" })]
+        [Row("'arg1 etc' arg2 \"arg3 ' ' etc\"", new string[] { "arg1 etc", "arg2", "arg3 ' ' etc" })]
+        [Row("that's all 'and no more'", new string[] { "that's", "all", "and no more" })]
+        public void ParseArguments(string arguments, string[] expectedResult)
+        {
+            string[] result = StringUtils.ParseArguments(arguments);
+            Assert.AreElementsEqual(expectedResult, result);
         }
     }
 }

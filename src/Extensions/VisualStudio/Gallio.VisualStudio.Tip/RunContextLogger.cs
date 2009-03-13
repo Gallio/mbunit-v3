@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
 using Microsoft.VisualStudio.TestTools.Common;
 using Microsoft.VisualStudio.TestTools.Execution;
@@ -29,7 +30,7 @@ namespace Gallio.VisualStudio.Tip
             this.runContext = runContext;
         }
 
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             TestOutcome outcome;
             if (severity == LogSeverity.Warning)
@@ -39,7 +40,10 @@ namespace Gallio.VisualStudio.Tip
             else
                 return;
 
-            TestRunTextResultMessage resultMessage = new TestRunTextResultMessage(runContext.RunConfig.TestRun.Id, message, exception);
+            if (exceptionData != null)
+                message = string.Concat(message, "\n", exceptionData.ToString());
+
+            TestRunTextResultMessage resultMessage = new TestRunTextResultMessage(runContext.RunConfig.TestRun.Id, message);
             resultMessage.Outcome = outcome;
 
             runContext.ResultSink.AddResult(resultMessage);

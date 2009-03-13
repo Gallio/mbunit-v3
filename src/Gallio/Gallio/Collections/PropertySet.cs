@@ -73,6 +73,31 @@ namespace Gallio.Collections
             return contents.IsReadOnly ? this : new PropertySet(new ReadOnlyDictionary<string, string>(contents));
         }
 
+        /// <summary>
+        /// Gets the value associated with a key, or null if absent.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <returns>The associated value, or null if none</returns>
+        public string GetValue(string key)
+        {
+            string value;
+            TryGetValue(key, out value);
+            return value;
+        }
+
+        /// <summary>
+        /// Sets the value associated with a key, removes an existing value if null.
+        /// </summary>
+        /// <param name="key">The key</param>
+        /// <param name="value">The new value, or null to remove the existing value</param>
+        public void SetValue(string key, string value)
+        {
+            Remove(key);
+
+            if (value != null)
+                Add(key, value);
+        }
+
         #region IDictionary delegating members
         /// <inheritdoc />
         public void Add(KeyValuePair<string, string> item)

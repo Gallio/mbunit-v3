@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Model.Diagnostics;
 
 namespace Gallio.Runtime.Logging
 {
@@ -41,10 +42,10 @@ namespace Gallio.Runtime.Logging
         }
 
         /// <inheritdoc />
-        protected override void LogImpl(LogSeverity severity, string message, Exception exception)
+        protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             if (severity >= minSeverity)
-                logger.Log(severity, message, exception);
+                logger.Log(severity, message, exceptionData);
         }
     }
 }

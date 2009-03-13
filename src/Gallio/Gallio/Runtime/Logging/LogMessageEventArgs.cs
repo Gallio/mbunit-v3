@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Gallio.Model.Diagnostics;
 
 namespace Gallio.Runtime.Logging
 {
@@ -29,16 +30,16 @@ namespace Gallio.Runtime.Logging
         /// </summary>
         /// <param name="severity">The log severity</param>
         /// <param name="message">The log message</param>
-        /// <param name="exception">The exception, or null if none</param>
+        /// <param name="exceptionData">The exception data, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="message"/> is null</exception>
-        public LogMessageEventArgs(LogSeverity severity, string message, Exception exception)
+        public LogMessageEventArgs(LogSeverity severity, string message, ExceptionData exceptionData)
         {
             if (message == null)
                 throw new ArgumentNullException("message");
 
             Severity = severity;
             Message = message;
-            Exception = exception;
+            ExceptionData = exceptionData;
         }
 
         /// <summary>
@@ -54,6 +55,6 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// Gets the exception, or null if none.
         /// </summary>
-        public Exception Exception { get; private set; }
+        public ExceptionData ExceptionData { get; private set; }
     }
 }
