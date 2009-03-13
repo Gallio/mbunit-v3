@@ -41,14 +41,13 @@ namespace MbUnit.Tests.Framework
         }
 
         [Test]
-        public void ShouldInferTestFixtureIfTypeHasNonPrimaryPattern()
+        [Row(typeof(AutomaticTestFixtureSampleWithNonPrimaryPattern))]
+        [Row(typeof(AutomaticTestFixtureSampleInferredFromNestedFixture))]
+        [Row(typeof(AutomaticTestFixtureSampleInferredFromNestedAutomaticFixture))]
+        public void ShouldInferTestFixtureIfTypeHasNonPrimaryPatternOrNestedTypeIsAFixture(Type type)
         {
-            TestData fixture = Runner.GetTestData(CodeReference.CreateFromType(typeof(AutomaticTestFixtureSampleWithNonPrimaryPattern)));
+            TestData fixture = Runner.GetTestData(CodeReference.CreateFromType(type));
             Assert.IsNotNull(fixture);
-
-            TestData nestedFixture = Runner.GetTestData(CodeReference.CreateFromType(typeof(AutomaticTestFixtureSampleWithNonPrimaryPattern.NestedFixture)));
-            Assert.IsNotNull(nestedFixture);
-            Assert.Contains(fixture.Children, nestedFixture);
         }
 
         [Test]
@@ -70,10 +69,6 @@ namespace MbUnit.Tests.Framework
                 Assert.IsNotNull(test);
                 Assert.Contains(fixture.Children, test);
             }
-
-            TestData nestedFixture = Runner.GetTestData(CodeReference.CreateFromType(sampleType.GetNestedType("NestedFixture")));
-            Assert.IsNotNull(nestedFixture);
-            Assert.Contains(fixture.Children, nestedFixture);
         }
 
         [Test]
@@ -83,9 +78,6 @@ namespace MbUnit.Tests.Framework
         {
             TestData fixture = Runner.GetTestData(CodeReference.CreateFromType(sampleType));
             Assert.IsNull(fixture);
-
-            TestData nestedFixture = Runner.GetTestData(CodeReference.CreateFromType(sampleType.GetNestedType("NestedFixture")));
-            Assert.IsNotNull(nestedFixture);
         }
 
         /// <summary>
@@ -95,10 +87,6 @@ namespace MbUnit.Tests.Framework
         [Explicit("Sample")]
         internal class AutomaticTestFixtureSampleWithNonPrimaryPattern
         {
-            [TestFixture]
-            public class NestedFixture
-            {
-            }
         }
 
         /// <summary>
@@ -108,11 +96,6 @@ namespace MbUnit.Tests.Framework
         internal class AutomaticTestFixtureSampleNotInferred
         {
             public void NonTestMethod()
-            {
-            }
-
-            [TestFixture]
-            public class NestedFixture
             {
             }
         }
@@ -127,33 +110,18 @@ namespace MbUnit.Tests.Framework
             public void Test()
             {
             }
-
-            [TestFixture]
-            public class NestedFixture
-            {
-            }
         }
 
         internal class AutomaticTestFixtureSampleInferredFromField
         {
             [Parameter]
             public int Field = 0;
-
-            [TestFixture]
-            public class NestedFixture
-            {
-            }
         }
 
         internal class AutomaticTestFixtureSampleInferredFromProperty
         {
             [Parameter]
             public int Property { get { return 0; } set { } }
-
-            [TestFixture]
-            public class NestedFixture
-            {
-            }
         }
 
         internal class AutomaticTestFixtureSampleInferredFromEvent
@@ -165,11 +133,6 @@ namespace MbUnit.Tests.Framework
             {
                 Event(null, null);
             }
-
-            [TestFixture]
-            public class NestedFixture
-            {
-            }
         }
 
         internal class AutomaticTestFixtureSampleInferredFromConstructor
@@ -178,30 +141,16 @@ namespace MbUnit.Tests.Framework
             public AutomaticTestFixtureSampleInferredFromConstructor()
             {
             }
-
-            [TestFixture]
-            public class NestedFixture
-            {
-            }
         }
 
         internal class AutomaticTestFixtureSampleInferredFromGenericParameter<[Parameter] T>
         {
-            [TestFixture]
-            public class NestedFixture
-            {
-            }
         }
 
         internal abstract class AutomaticTestFixtureSampleNotInferredFromInstanceMethodOnAbstractClass
         {
             [Test]
             public void Test()
-            {
-            }
-
-            [TestFixture]
-            public class NestedFixture
             {
             }
         }
@@ -212,10 +161,24 @@ namespace MbUnit.Tests.Framework
             public static void Test()
             {
             }
+        }
 
+        internal class AutomaticTestFixtureSampleInferredFromNestedFixture
+        {
             [TestFixture]
             public class NestedFixture
             {
+            }
+        }
+
+        internal class AutomaticTestFixtureSampleInferredFromNestedAutomaticFixture
+        {
+            public class NestedFixture
+            {
+                [Test]
+                public void Test()
+                {
+                }
             }
         }
     }

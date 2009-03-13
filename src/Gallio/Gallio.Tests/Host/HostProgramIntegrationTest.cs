@@ -43,7 +43,7 @@ namespace Gallio.Tests.Host
             ProcessTask task = StartHost("/ipc-port:HostIntegrationTest /timeout:1");
             task.Join(TimeSpan.FromSeconds(5));
 
-            Assert.Contains(task.ConsoleOutput, "* Watchdog timer expired!");
+            Assert.Contains(task.ConsoleOutput, "Watchdog timer expired!");
             Assert.AreEqual(0, task.ExitCode);
         }
 
@@ -53,7 +53,7 @@ namespace Gallio.Tests.Host
             ProcessTask task = StartHost("/ipc-port:HostIntegrationTest /owner-process:100000"); // invalid process id
             task.Join(TimeSpan.FromSeconds(5));
 
-            Assert.Contains(task.ConsoleOutput, "* The owner process with PID 100000 does not appear to be running!");
+            Assert.Contains(task.ConsoleOutput, "The owner process with PID 100000 does not appear to be running!");
             Assert.AreEqual(0, task.ExitCode);
         }
 
@@ -69,7 +69,7 @@ namespace Gallio.Tests.Host
             ownerProcess.Abort();
             Assert.IsTrue(task.Join(TimeSpan.FromSeconds(5)), "The host should terminate.");
 
-            Assert.Contains(task.ConsoleOutput, "* Owner process terminated abruptly!");
+            Assert.Contains(task.ConsoleOutput, "Owner process terminated abruptly!");
             Assert.AreEqual(0, task.ExitCode);
         }
 

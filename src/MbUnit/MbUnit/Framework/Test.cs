@@ -99,12 +99,13 @@ namespace MbUnit.Framework
 
             // HACK: Preserve exact test ordering.  No easy way to decorate all newly created tests at this time
             //       so we assume newly added ones must be at the end.
-            var children = containingScope.TestBuilder.ToTest().Children;
-            int originalCount = children.Count;
+            var originalChildren = containingScope.TestBuilder.ToTest().Children;
+            int originalCount = originalChildren.Count;
 
             foreach (Test test in tests)
                 test.BuildStaticTest(containingScope, declaringCodeElement);
 
+            var children = containingScope.TestBuilder.ToTest().Children;
             for (int i = originalCount; i < children.Count; i++)
                 children[i].Order = i;
         }

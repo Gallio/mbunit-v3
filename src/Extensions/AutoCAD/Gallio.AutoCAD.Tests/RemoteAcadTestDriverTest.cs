@@ -70,14 +70,6 @@ namespace Gallio.AutoCAD.Tests
             }
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
-        public void CallingITestDriverMethodBeforeRunThrowsInvalidOperationException()
-        {
-            var driver = new RemoteAcadTestDriver(null, Mocks.Stub<ITestDriver>());
-            driver.Initialize(RuntimeAccessor.Instance.GetRuntimeSetup(),
-                new TestRunnerOptions(), new TestLogStreamLogger(TestLog.Default));
-        }
-
         [Test]
         public void WaitForShutdownBlocksUntilShutdown()
         {
@@ -122,7 +114,7 @@ namespace Gallio.AutoCAD.Tests
             using (Mocks.Record())
             {
                 Expect.Call(() => stub.Initialize(runtimeSetup, testRunnerOptions, logger))
-                      .Do(new Action<RuntimeSetup, ILogger>((x, y) => Assert.AreEqual(Thread.CurrentThread, runThread)));
+                      .Do(new Action<RuntimeSetup, TestRunnerOptions, ILogger>((x, y, z) => Assert.AreEqual(Thread.CurrentThread, runThread)));
             }
 
             using (Mocks.Playback())
