@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Xml.Serialization;
 
 namespace Gallio.Runtime.Logging
 {
@@ -25,26 +26,31 @@ namespace Gallio.Runtime.Logging
         /// <summary>
         /// The severity used for debug messages.
         /// </summary>
+        [XmlEnum("debug")]
         Debug = 0,
 
         /// <summary>
         /// The severity used for informational messages.
         /// </summary>
+        [XmlEnum("info")]
         Info = 1,
 
         /// <summary>
         /// The severity used for important messages.
         /// </summary>
+        [XmlEnum("important")]
         Important = 2,
 
         /// <summary>
         /// The severity used for warning messages.
         /// </summary>
+        [XmlEnum("warning")]
         Warning = 3,
 
         /// <summary>
         /// The severity used for error messages.
         /// </summary>
+        [XmlEnum("error")]
         Error = 4
     }
 }

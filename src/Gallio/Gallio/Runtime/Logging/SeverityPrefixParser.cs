@@ -33,8 +33,9 @@ namespace Gallio.Runtime.Logging
         /// <param name="line">The line of log data to parse</param>
         /// <param name="severity">Set to the severity of the message extracted from the line</param>
         /// <param name="message">The message extracted from the line</param>
+        /// <returns>True if the message included a severity, false otherwise</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="line"/> is null</exception>
-        public void ParseLine(string line, out LogSeverity severity, out string message)
+        public bool ParseLine(string line, out LogSeverity severity, out string message)
         {
             if (line == null)
                 throw new ArgumentNullException("line");
@@ -46,12 +47,13 @@ namespace Gallio.Runtime.Logging
                     severity = pair.Key;
                     previousSeverity = severity;
                     message = line.Substring(pair.Value.Length);
-                    return;
+                    return true;
                 }
             }
 
             severity = previousSeverity;
             message = line;
+            return false;
         }
     }
 }

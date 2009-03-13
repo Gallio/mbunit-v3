@@ -24,7 +24,6 @@ using System.Threading;
 using Gallio.Runtime.Logging;
 using Gallio.Concurrency;
 using Gallio.Runtime.Remoting;
-using Gallio.Runtime;
 using Gallio.Utilities;
 
 namespace Gallio.Runtime.Hosting
@@ -65,6 +64,11 @@ namespace Gallio.Runtime.Hosting
         private IServerChannel callbackChannel;
         private SeverityPrefixParser severityPrefixParser;
 
+        private const int logConsoleOutputBufferTimeoutMilliseconds = 100;
+        private readonly Timer logConsoleOutputBufferTimer;
+        private LogSeverity logConsoleOutputBufferedMessageSeverity;
+        private string logConsoleOutputBufferedMessage;
+
         /// <summary>
         /// Creates an uninitialized host.
         /// </summary>
@@ -81,6 +85,8 @@ namespace Gallio.Runtime.Hosting
 
             this.runtimePath = runtimePath;
             uniqueId = Hash64.CreateUniqueHash().ToString();
+
+            logConsoleOutputBufferTimer = new Timer(LogConsoleOutputBufferTimeoutExpired);
         }
 
         /// <inheritdoc />
@@ -209,14 +215,46 @@ namespace Gallio.Runtime.Hosting
 
         private void LogConsoleOutput(object sender, DataReceivedEventArgs e)
         {
-            if (e.Data != null)
+            lock (logConsoleOutputBufferTimer)
             {
-                LogSeverity severity;
-                string message;
+                if (e.Data != null)
+                {
+                    LogSeverity severity;
+                    string message;
 
-                severityPrefixParser.ParseLine(e.Data, out severity, out message);
+                    if (severityPrefixParser.ParseLine(e.Data, out severity, out message))
+                        LogConsoleOutputWriteBufferedMessageSync();
+                    message = message.TrimEnd();
 
-                Logger.Log(severity, message);
+                    logConsoleOutputBufferedMessageSeverity = severity;
+                    if (logConsoleOutputBufferedMessage == null)
+                        logConsoleOutputBufferedMessage = message;
+                    else
+                        logConsoleOutputBufferedMessage = string.Concat(logConsoleOutputBufferedMessage, "\n", message);
+
+                    logConsoleOutputBufferTimer.Change(logConsoleOutputBufferTimeoutMilliseconds, Timeout.Infinite);
+                }
+                else
+                {
+                    LogConsoleOutputWriteBufferedMessageSync();
+                }
+            }
+        }
+
+        private void LogConsoleOutputBufferTimeoutExpired(object dummy)
+        {
+            lock (logConsoleOutputBufferTimer)
+            {
+                LogConsoleOutputWriteBufferedMessageSync();
+            }
+        }
+
+        private void LogConsoleOutputWriteBufferedMessageSync()
+        {
+            if (logConsoleOutputBufferedMessage != null)
+            {
+                Logger.Log(logConsoleOutputBufferedMessageSeverity, logConsoleOutputBufferedMessage);
+                logConsoleOutputBufferedMessage = null;
             }
         }
 
@@ -224,7 +262,7 @@ namespace Gallio.Runtime.Hosting
         {
             if (e.Data != null)
             {
-                Logger.Log(LogSeverity.Error, e.Data);
+                Logger.Log(LogSeverity.Error, e.Data.TrimEnd());
             }
         }
 
@@ -235,13 +273,13 @@ namespace Gallio.Runtime.Hosting
             var exception = processTask.Result.Exception;
             if (exception != null)
             {
-                Logger.Log(LogSeverity.Error, "* Host process encountered an exception.", exception);
+                Logger.Log(LogSeverity.Error, "Host process encountered an exception.", exception);
             }
             else
             {
                 var diagnostics = new StringBuilder();
                 int exitCode = processTask.ExitCode;
-                diagnostics.AppendFormat("* Host process exited with code: {0}", exitCode);
+                diagnostics.AppendFormat("Host process exited with code: {0}", exitCode);
 
                 string exitCodeDescription = processTask.ExitCodeDescription;
                 if (exitCodeDescription != null)
@@ -289,15 +327,15 @@ namespace Gallio.Runtime.Hosting
                 {
                     if (!processTask.Join(JoinBeforeAbortWarningTimeout))
                     {
-                        Logger.Log(LogSeverity.Info, "* Waiting for the host process to terminate.");
+                        Logger.Log(LogSeverity.Info, "Waiting for the host process to terminate.");
                         if (!processTask.Join(JoinBeforeAbortTimeout - JoinBeforeAbortWarningTimeout))
-                            Logger.Log(LogSeverity.Info, string.Format("* Timed out after {0} minutes.", JoinBeforeAbortTimeout.TotalMinutes));
+                            Logger.Log(LogSeverity.Info, string.Format("Timed out after {0} minutes.", JoinBeforeAbortTimeout.TotalMinutes));
                     }
                 }
 
                 if (! processTask.Join(TimeSpan.Zero))
                 {
-                    Logger.Log(LogSeverity.Warning, "* Forcibly killing the host process!");
+                    Logger.Log(LogSeverity.Warning, "Forcibly killing the host process!");
                     processTask.Abort();
                     processTask.Join(JoinAfterAbortTimeout);
                 }
@@ -321,6 +359,11 @@ namespace Gallio.Runtime.Hosting
             {
                 File.Delete(temporaryConfigurationFilePath);
                 temporaryConfigurationFilePath = null;
+            }
+
+            lock (logConsoleOutputBufferTimer)
+            {
+                logConsoleOutputBufferTimer.Dispose();
             }
         }
 

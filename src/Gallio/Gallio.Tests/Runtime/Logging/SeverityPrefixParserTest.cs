@@ -49,9 +49,10 @@ namespace Gallio.Tests.Runtime.Logging
             {
                 LogSeverity severity;
                 string message;
-                parser.ParseLine(line, out severity, out message);
+                bool hasSeverity = parser.ParseLine(line, out severity, out message);
 
                 actualSeverityAndMessages.Add(new object[] { severity, message });
+                Assert.AreEqual(line.StartsWith("["), hasSeverity, "Should indicate whether the line had its own severity indication.");
             }
 
             Assert.AreElementsEqual(expectedSeverityAndMessages, actualSeverityAndMessages);

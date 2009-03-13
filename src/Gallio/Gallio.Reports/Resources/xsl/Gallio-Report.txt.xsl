@@ -8,7 +8,7 @@
   <xsl:param name="show-failed-tests">true</xsl:param>
   <xsl:param name="show-inconclusive-tests">true</xsl:param>
   <xsl:param name="show-skipped-tests">true</xsl:param>
-
+  
   <xsl:output method="text" encoding="utf-8"/>
 
   <xsl:template match="/">
@@ -18,6 +18,7 @@
   <xsl:template match="g:report">
 		<xsl:apply-templates select="." mode="results"/>
     <xsl:apply-templates select="g:testModel/g:annotations" />
+    <xsl:apply-templates select="g:logEntries" />
     <xsl:apply-templates select="g:testPackageRun/g:statistics" />
   </xsl:template>
   
@@ -217,6 +218,38 @@
     <xsl:text>&lt;Attachment: </xsl:text>
     <xsl:value-of select="@attachmentName"/>
     <xsl:text>&gt;&#xA;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="g:logEntries">
+    <xsl:variable name="logEntries" select="g:logEntry[@severity != 'debug']"/>
+    
+    <xsl:if test="$logEntries">
+      <xsl:text>* Diagnostic Log:&#xA;&#xA;</xsl:text>
+      <xsl:apply-templates select="$logEntries"/>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="g:logEntry">
+    <xsl:call-template name="indent">
+      <xsl:with-param name="text">
+        <xsl:text>[</xsl:text>
+        <xsl:value-of select="@severity"/>
+        <xsl:text>] </xsl:text>
+        <xsl:value-of select="@message"/>
+      </xsl:with-param>
+      <xsl:with-param name="firstLinePrefix" select="''" />
+    </xsl:call-template>
+
+    <xsl:if test="@details">
+      <xsl:call-template name="indent">
+        <xsl:with-param name="text">
+          <xsl:value-of select="@details"/>
+        </xsl:with-param>
+        <xsl:with-param name="secondLinePrefix" select="'    '" />
+      </xsl:call-template>
+    </xsl:if>
+
+    <xsl:text>&#xA;</xsl:text>
   </xsl:template>
 
   <xsl:template match="*">

@@ -92,6 +92,7 @@ html
       <xsl:apply-templates select="g:testModel/g:annotations" mode="annotations"/>
       <xsl:apply-templates select="g:testPackageRun" mode="summary"/>
       <xsl:apply-templates select="g:testPackageRun" mode="details"/>
+      <xsl:apply-templates select="g:logEntries" mode="log"/>
     </div>
   </xsl:template>
   
@@ -155,7 +156,7 @@ html
       </xsl:if>
       
       <xsl:if test="@details">
-        <div class="annotation-location">
+        <div class="annotation-details">
           <xsl:text>Details: </xsl:text>
           <xsl:call-template name="print-text-with-breaks"><xsl:with-param name="text" select="@details" /></xsl:call-template>
         </div>
@@ -742,7 +743,43 @@ html
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
+
+  <xsl:template match="g:logEntries" mode="log">
+    <div id="Log" class="section">
+      <h2>Diagnostic Log</h2>
+      <div class="section-content">
+        <ul>
+          <xsl:apply-templates select="g:logEntry[@severity != 'debug']" mode="log" />
+        </ul>
+      </div>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="g:logEntry" mode="log">
+    <li>
+      <xsl:attribute name="class">
+        logEntry logEntry-severity-<xsl:value-of select="@severity"/>
+      </xsl:attribute>
+      <div class="logEntry-text">
+        <xsl:text>[</xsl:text>
+        <xsl:value-of select="@severity"/>
+        <xsl:text>] </xsl:text>
+        <xsl:call-template name="print-text-with-breaks">
+          <xsl:with-param name="text" select="@message" />
+        </xsl:call-template>
+      </div>
+
+      <xsl:if test="@details">
+        <div class="logEntry-details">
+          <xsl:text>Details: </xsl:text>
+          <xsl:call-template name="print-text-with-breaks">
+            <xsl:with-param name="text" select="@details" />
+          </xsl:call-template>
+        </div>
+      </xsl:if>
+    </li>
+  </xsl:template>
+
   <!-- Include the common report template -->
   <xsl:include href="Gallio-Report.common.xsl" />  
 </xsl:stylesheet>

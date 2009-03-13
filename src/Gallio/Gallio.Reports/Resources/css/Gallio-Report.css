@@ -451,6 +451,49 @@ div.gallio-report div.navigator
 	color: #999999;
 }
 
+/* Log Entries */
+.gallio-report div.logEntry
+{
+}
+
+.gallio-report div.logEntry-text
+{
+	margin-left: 2em;
+	text-indent: -2em;
+}
+
+.gallio-report div.logEntry-details
+{
+	margin-left: 4em;
+	text-indent: -2em;
+	font-style: italic;
+}
+
+.gallio-report .logEntry-severity-error
+{
+	color: #990000;
+}
+
+.gallio-report .logEntry-severity-warning
+{
+	color: #999900;
+}
+
+.gallio-report .logEntry-severity-important
+{
+	color: #000000;
+}
+
+.gallio-report .logEntry-severity-info
+{
+	color: #999999;
+}
+
+.gallio-report .logEntry-severity-debug
+{
+	color: #aaaaaa;
+}
+
 /* Cross-References */
 
 .gallio-report a:hover.crossref

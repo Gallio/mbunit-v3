@@ -75,10 +75,11 @@ namespace Gallio.Tests.Runtime.Logging
 
             LogSeverity parsedSeverity;
             string parsedMessage;
-            parser.ParseLine(writer.ToString().Trim(), out parsedSeverity, out parsedMessage);
+            bool hasSeverity = parser.ParseLine(writer.ToString().Trim(), out parsedSeverity, out parsedMessage);
 
             Assert.AreEqual(severity, parsedSeverity);
             Assert.AreEqual(message, parsedMessage);
+            Assert.IsTrue(hasSeverity);
         }
     }
 }

@@ -148,7 +148,7 @@ namespace Gallio.Runner.Reports
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
         [XmlArray("outcomeSummaries", IsNullable=false)]
-        [XmlArrayItem("outcomeSummary", IsNullable=false)]
+        [XmlArrayItem("outcomeSummary", typeof(TestOutcomeSummary), IsNullable=false)]
         public TestOutcomeSummary[] OutcomeSummaries
         {
             get

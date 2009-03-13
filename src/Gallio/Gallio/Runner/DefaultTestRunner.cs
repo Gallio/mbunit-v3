@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Gallio.Concurrency;
 using Gallio.Model;
+using Gallio.Model.Diagnostics;
 using Gallio.Model.Execution;
 using Gallio.Model.Logging;
 using Gallio.Model.Messages;
@@ -48,7 +49,7 @@ namespace Gallio.Runner
         private readonly TestRunnerEventDispatcher eventDispatcher;
         private readonly List<ITestRunnerExtension> extensions;
 
-        private ILogger logger;
+        private TappedLogger tappedLogger;
         private TestRunnerOptions testRunnerOptions;
 
         private State state;
@@ -83,7 +84,7 @@ namespace Gallio.Runner
         /// </summary>
         protected ILogger Logger
         {
-            get { return logger; }
+            get { return tappedLogger; }
         }
 
         /// <summary>
@@ -130,7 +131,7 @@ namespace Gallio.Runner
             testRunnerOptions = testRunnerOptions.Copy();
 
             this.testRunnerOptions = testRunnerOptions;
-            this.logger = logger;
+            tappedLogger = new TappedLogger(this, logger);
 
             int extensionCount = extensions.Count;
             using (progressMonitor.BeginTask("Initializing the test runner.", 1 + extensionCount))
@@ -142,6 +143,10 @@ namespace Gallio.Runner
                     progressMonitor.SetStatus(String.Format("Installing extension '{0}'.", extensionName));
                     try
                     {
+                        // Note: We don't pass the tapped logger to the extensions because the
+                        //       extensions frequently write to the console a bunch of information we
+                        //       already have represented in the report.  We are more interested in what
+                        //       the test driver has to tell us.
                         extension.Install(eventDispatcher, logger);
                         progressMonitor.Worked(1);
                     }
@@ -165,7 +170,7 @@ namespace Gallio.Runner
 
                     // Create test driver.
                     testDriver = testDriverFactory.CreateTestDriver();
-                    testDriver.Initialize(runtimeSetup, testRunnerOptions, logger);
+                    testDriver.Initialize(runtimeSetup, testRunnerOptions, tappedLogger);
 
                     progressMonitor.Worked(1);
                 }
@@ -207,31 +212,34 @@ namespace Gallio.Runner
                 };
                 var reportLockBox = new LockBox<Report>(report);
 
-                bool success;
-                eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(testPackageConfig, testExplorationOptions, reportLockBox));
-                try
+                using (new LogReporter(reportLockBox, eventDispatcher))
                 {
-                    using (Listener listener = new Listener(eventDispatcher, reportLockBox))
+                    bool success;
+                    eventDispatcher.NotifyExploreStarted(new ExploreStartedEventArgs(testPackageConfig,
+                        testExplorationOptions, reportLockBox));
+                    try
                     {
-                        testDriver.Explore(testPackageConfig,
-                            testExplorationOptions, listener,
-                            progressMonitor.CreateSubProgressMonitor(10));
+                        using (Listener listener = new Listener(eventDispatcher, reportLockBox))
+                        {
+                            testDriver.Explore(testPackageConfig,
+                                testExplorationOptions, listener,
+                                progressMonitor.CreateSubProgressMonitor(10));
+                        }
+
+                        success = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        success = false;
+
+                        tappedLogger.Log(LogSeverity.Error,
+                            "A fatal exception occurred while exploring tests.  Possible causes include invalid test runner parameters.",
+                            ex);
                     }
 
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-
-                    logger.Log(LogSeverity.Error, "A fatal exception occurred while exploring tests.  Possible causes include invalid test runner parameters.", ex);
-
-                    report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
-                        CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while exploring tests.",
-                        ExceptionUtils.SafeToString(ex)));
+                    eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(success, report));
                 }
 
-                eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(success, report));
                 return report;
             }
         }
@@ -271,38 +279,41 @@ namespace Gallio.Runner
                 };
                 var reportLockBox = new LockBox<Report>(report);
 
-                eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(testPackageConfig, testExplorationOptions, testExecutionOptions, reportLockBox));
-
-                bool success;
-                try
+                using (new LogReporter(reportLockBox, eventDispatcher))
                 {
-                    using (Listener listener = new Listener(eventDispatcher, reportLockBox))
+                    eventDispatcher.NotifyRunStarted(new RunStartedEventArgs(testPackageConfig, testExplorationOptions,
+                        testExecutionOptions, reportLockBox));
+
+                    bool success;
+                    try
                     {
-                        testDriver.Run(testPackageConfig,
-                            testExplorationOptions, listener,
-                            testExecutionOptions, listener,
-                            progressMonitor.CreateSubProgressMonitor(10));
+                        using (Listener listener = new Listener(eventDispatcher, reportLockBox))
+                        {
+                            testDriver.Run(testPackageConfig,
+                                testExplorationOptions, listener,
+                                testExecutionOptions, listener,
+                                progressMonitor.CreateSubProgressMonitor(10));
+                        }
+
+                        success = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        success = false;
+
+                        tappedLogger.Log(LogSeverity.Error,
+                            "A fatal exception occurred while running tests.  Possible causes include invalid test runner parameters and stack overflows.",
+                            ex);
+                    }
+                    finally
+                    {
+                        report.TestPackageRun.EndTime = DateTime.Now;
+                        report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
                     }
 
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-
-                    logger.Log(LogSeverity.Error, "A fatal exception occurred while running tests.  Possible causes include invalid test runner parameters and stack overflows.", ex);
-
-                    report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
-                        CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while running tests.  Possible causes include stack overflow exceptions in the tests.",
-                        ExceptionUtils.SafeToString(ex)));
-                }
-                finally
-                {
-                    report.TestPackageRun.EndTime = DateTime.Now;
-                    report.TestPackageRun.Statistics.Duration = stopwatch.Elapsed.TotalSeconds;
+                    eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(success, report));
                 }
 
-                eventDispatcher.NotifyRunFinished(new RunFinishedEventArgs(success, report));
                 return report;
             }
         }
@@ -335,14 +346,19 @@ namespace Gallio.Runner
                 }
                 catch (Exception ex)
                 {
-                    if (logger != null)
-                        logger.Log(LogSeverity.Warning, "An exception occurred while disposing the test driver.  This may indicate that the test driver previously encountered another fault from which it could not recover.", ex);
+                    if (tappedLogger != null)
+                        tappedLogger.Log(LogSeverity.Warning, "An exception occurred while disposing the test driver.  This may indicate that the test driver previously encountered another fault from which it could not recover.", ex);
                     success = false;
                 }
 
                 state = State.Disposed;
                 eventDispatcher.NotifyDisposeFinished(new DisposeFinishedEventArgs(success));
             }
+        }
+
+        private void OnLog(LogSeverity logSeverity, string message, ExceptionData exceptionData)
+        {
+            eventDispatcher.NotifyLogMessage(new LogMessageEventArgs(logSeverity, message, exceptionData));
         }
 
         private void ThrowIfDisposed()
@@ -593,6 +609,53 @@ namespace Gallio.Runner
                     logWriter = new StructuredTestLogWriter();
                     testStepRun.TestLog = logWriter.TestLog;
                 }
+            }
+        }
+
+        private sealed class TappedLogger : BaseLogger
+        {
+            private readonly DefaultTestRunner runner;
+            private readonly ILogger inner;
+
+            public TappedLogger(DefaultTestRunner runner, ILogger inner)
+            {
+                this.runner = runner;
+                this.inner = inner;
+            }
+
+            protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
+            {
+                inner.Log(severity, message, exceptionData);
+                runner.OnLog(severity, message, exceptionData);
+            }
+        }
+
+        private sealed class LogReporter : IDisposable
+        {
+            private readonly LockBox<Report> reportLockBox;
+            private readonly TestRunnerEventDispatcher eventDispatcher;
+
+            public LogReporter(LockBox<Report> reportLockBox, TestRunnerEventDispatcher eventDispatcher)
+            {
+                this.reportLockBox = reportLockBox;
+                this.eventDispatcher = eventDispatcher;
+
+                eventDispatcher.LogMessage += OnLog;
+            }
+
+            public void Dispose()
+            {
+                eventDispatcher.LogMessage -= OnLog;
+            }
+
+            private void OnLog(object sender, LogMessageEventArgs e)
+            {
+                reportLockBox.Write(report => report.AddLogEntry(new LogEntry()
+                {
+                    Severity = e.Severity,
+                    Message = e.Message,
+                    Details = e.ExceptionData != null ? e.ExceptionData.ToString() : null
+                }));
             }
         }
     }

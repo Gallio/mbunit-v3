@@ -272,6 +272,7 @@
     <Compile Include="Runner\Events\RunFinishedEventArgs.cs" />
     <Compile Include="Runner\Events\RunStartedEventArgs.cs" />
     <Compile Include="Runner\Events\OperationFinishedEventArgs.cs" />
+    <Compile Include="Runner\Reports\LogEntry.cs" />
     <Compile Include="Runner\Reports\ReportFormatterOptions.cs" />
     <Compile Include="Runtime\Debugging\AttachDebuggerResult.cs" />
     <Compile Include="Runtime\Debugging\DefaultDebuggerManager.cs" />

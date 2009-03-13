@@ -65,11 +65,13 @@ namespace Gallio.Host
             if (Arguments.SeverityPrefix)
                 logger = new SeverityPrefixLogger(logger);
 
+            /* Already reported via other means.  The duplication is distracting.
             UnhandledExceptionPolicy.ReportUnhandledException += (sender, e) =>
             {
                 if (! e.IsRecursive)
                     logger.Log(LogSeverity.Error, String.Format("Unhandled exception: {0}", e.GetDescription()));
             };
+            */
 
             logger.Log(LogSeverity.Info, String.Format("Host started at {0}.", DateTime.Now));
 

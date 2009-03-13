@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using Gallio.Model.Serialization;
 using Gallio.Model;
@@ -33,12 +34,14 @@ namespace Gallio.Runner.Reports
         private TestPackageConfig testPackageConfig;
         private TestModelData testModel;
         private TestPackageRun testPackageRun;
+        private readonly List<LogEntry> logEntries;
 
         /// <summary>
         /// Creates an empty report.
         /// </summary>
         public Report()
         {
+            logEntries = new List<LogEntry>();
         }
 
         /// <summary>
@@ -69,6 +72,29 @@ namespace Gallio.Runner.Reports
         {
             get { return testPackageRun; }
             set { testPackageRun = value; }
+        }
+
+        /// <summary>
+        /// Gets a mutable list of log entries.
+        /// </summary>
+        [XmlArray("logEntries", IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlArrayItem("logEntry", typeof(LogEntry), IsNullable = false, Namespace = XmlSerializationUtils.GallioNamespace)]
+        public List<LogEntry> LogEntries
+        {
+            get { return logEntries; }
+        }
+
+        /// <summary>
+        /// Adds a log entry to the report.
+        /// </summary>
+        /// <param name="logEntry">The log entry to add</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logEntry"/> is null</exception>
+        public void AddLogEntry(LogEntry logEntry)
+        {
+            if (logEntry == null)
+                throw new ArgumentNullException("logEntry");
+
+            logEntries.Add(logEntry);
         }
     }
 }

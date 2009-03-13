@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
 namespace Gallio.Runner.Events
@@ -25,6 +26,9 @@ namespace Gallio.Runner.Events
     /// </summary>
     public sealed class TestRunnerEventDispatcher : ITestRunnerEvents
     {
+        /// <inheritdoc/>
+        public event EventHandler<LogMessageEventArgs> LogMessage;
+
         /// <inheritdoc/>
         public event EventHandler<InitializeStartedEventArgs> InitializeStarted;
 
@@ -84,6 +88,15 @@ namespace Gallio.Runner.Events
 
         /// <inheritdoc/>
         public event EventHandler<TestStepLogStreamEndEventArgs> TestStepLogStreamEnd;
+
+        /// <summary>
+        /// Dispatches the <see cref="LogMessage" /> event.
+        /// </summary>
+        /// <param name="e">The event arguments</param>
+        public void NotifyLogMessage(LogMessageEventArgs e)
+        {
+            EventHandlerUtils.SafeInvoke(LogMessage, this, e);
+        }
 
         /// <summary>
         /// Dispatches the <see cref="InitializeStarted" /> event.
@@ -276,6 +289,7 @@ namespace Gallio.Runner.Events
             if (events == null)
                 throw new ArgumentNullException("events");
 
+            events.LogMessage += (sender, e) => NotifyLogMessage(e);
             events.InitializeFinished += (sender, e) => NotifyInitializeFinished(e);
             events.InitializeStarted += (sender, e) => NotifyInitializeStarted(e);
             events.DisposeFinished += (sender, e) => NotifyDisposeFinished(e);

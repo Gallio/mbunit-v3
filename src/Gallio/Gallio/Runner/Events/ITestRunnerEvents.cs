@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Runner.Events
 {
@@ -22,6 +23,16 @@ namespace Gallio.Runner.Events
     /// </summary>
     public interface ITestRunnerEvents
     {
+        /// <summary>
+        /// The event raised to indicate that a log message was written by the test runner.
+        /// </summary>
+        /// <remarks>
+        /// The runner automatically writes out these log messages to the logger with which it
+        /// is initialized.  These events are raised to allow other subscribers to receive
+        /// log messages as well.
+        /// </remarks>
+        event EventHandler<LogMessageEventArgs> LogMessage;
+
         /// <summary>
         /// The event raised to indicate that the test runner initialization has started.
         /// </summary>
