@@ -91,7 +91,7 @@ namespace Gallio.Runner.Drivers
                                 {
                                     progressMonitor.SetStatus("");
 
-                                    action(testDriver, testPackageConfig, listener, subProgressMonitor);
+                                    action(testDriver, partition.TestPackageConfig, listener, subProgressMonitor);
                                 }
                                 finally
                                 {
