@@ -351,13 +351,13 @@ namespace Gallio.NAntTasks
         /// <code>
         /// <![CDATA[
         /// <gallio>
-        ///     <runner-properties value="NCoverArguments='//eas Gallio'" />
+        ///     <runner-property value="NCoverArguments='//eas Gallio'" />
         ///     <!-- More options -->
         /// </gallio>
         /// ]]>
         /// </code>
         /// </example>
-        [BuildElementArray("runner-properties")]
+        [BuildElementArray("runner-property")]
         public ArgumentCollection RunnerProperties
         {
             get { return runnerProperties; }
@@ -371,13 +371,13 @@ namespace Gallio.NAntTasks
         /// <code>
         /// <![CDATA[
         /// <gallio>
-        ///     <report-formatter-properties value="AttachmentContentDisposition=Absent" />
+        ///     <report-formatter-property value="AttachmentContentDisposition=Absent" />
         ///     <!-- More options -->
         /// </gallio>
         /// ]]>
         /// </code>
         /// </example>
-        [BuildElementArray("report-formatter-properties")]
+        [BuildElementArray("report-formatter-property")]
         public ArgumentCollection ReportFormatterProperties
         {
             get { return reportFormatterProperties; }
