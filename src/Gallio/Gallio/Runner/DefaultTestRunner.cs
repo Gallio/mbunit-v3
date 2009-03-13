@@ -224,7 +224,7 @@ namespace Gallio.Runner
                 {
                     success = false;
 
-                    logger.Log(LogSeverity.Error, "A fatal exception occurred while exploring tests.", ex);
+                    logger.Log(LogSeverity.Error, "A fatal exception occurred while exploring tests.  Possible causes include invalid test runner parameters.", ex);
 
                     report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
                         CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while exploring tests.",
@@ -290,7 +290,7 @@ namespace Gallio.Runner
                 {
                     success = false;
 
-                    logger.Log(LogSeverity.Error, "A fatal exception occurred while running tests.  Possible causes include stack overflow exceptions in the tests.", ex);
+                    logger.Log(LogSeverity.Error, "A fatal exception occurred while running tests.  Possible causes include invalid test runner parameters and stack overflows.", ex);
 
                     report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
                         CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while running tests.  Possible causes include stack overflow exceptions in the tests.",
