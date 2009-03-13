@@ -3,7 +3,7 @@
     <Configuration>Release</Configuration>
     <ShowReports>false</ShowReports>
     <ReportTypes>XML-Inline</ReportTypes>
-    <Coverage>true</Coverage>
+    <Coverage>false</Coverage>
 
     <Version>$(CCNetLabel)</Version>
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
