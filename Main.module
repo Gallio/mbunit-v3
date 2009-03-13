@@ -427,7 +427,7 @@
             ReportDirectory="$(ReportDir)"
             ReportTypes="$(ReportTypes)"
             RunnerType="$(TestRunnerType)"
-	    RunnerProperties="NCoverArguments='//eas .*.Tests%3B.*.TestResources%3BJetBrains.*%3BAga.Controls%3BConfiguration%3BDevExpress.*%3BEnvDTE.*%3BNAnt.*%3BcsUnit.*%3Bnunit.*%3Bxunit.*%3BQuickGraph.*%3BMbUnit.Framework%3BRhino.Mocks%3BTestDriven.Framework%3BWeifenLuo.*%3Blog4net%3BISymWrapper%3BICSharpCode.TextEditor /et Castle.*%3BMono.*%3BCecil.*%3BSharpen.*%3BDb4objects.*'"
+	    RunnerProperties="NCoverArguments='//eas .*.Tests%3B.*.TestResources%3BJetBrains.*%3BAga.Controls%3BConfiguration%3BDevExpress.*%3BEnvDTE.*%3BNAnt.*%3BcsUnit.*%3Bnunit.*%3Bxunit.*%3BQuickGraph.*%3BMbUnit.Framework%3BRhino.Mocks%3BTestDriven.Framework%3BWeifenLuo.*%3Blog4net%3BISymWrapper%3BICSharpCode.TextEditor //et Castle.*%3BMono.*%3BCecil.*%3BSharpen.*%3BDb4objects.*'"
             ShowReports="$(ShowReports)"
 	    IgnoreFailures="true">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
