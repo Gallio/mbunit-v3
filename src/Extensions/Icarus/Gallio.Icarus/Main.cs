@@ -149,6 +149,7 @@ namespace Gallio.Icarus
             {
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
 
                 mediator.GenerateReport();
             });
@@ -230,6 +231,7 @@ namespace Gallio.Icarus
         {
             // enable/disable buttons
             startButton.Enabled = startTestsToolStripMenuItem.Enabled = false;
+            runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = false;
             stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = true;
 
             // no need for progress dialog
@@ -481,8 +483,8 @@ namespace Gallio.Icarus
         {
             Sync.Invoke(this, delegate
             {
-                startButton.Enabled = true;
-                startTestsToolStripMenuItem.Enabled = true;
+                startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
+                runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
             });
         }
 
@@ -536,6 +538,11 @@ namespace Gallio.Icarus
         }
 
         private void startWithDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartTests(true);
+        }
+
+        private void runTestsWithDebuggerButton_Click(object sender, EventArgs e)
         {
             StartTests(true);
         }

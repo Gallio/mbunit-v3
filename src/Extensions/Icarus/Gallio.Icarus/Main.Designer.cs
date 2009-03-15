@@ -99,6 +99,7 @@ namespace Gallio.Icarus
             this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.runTestsWithDebuggerButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -468,12 +469,13 @@ namespace Gallio.Icarus
             this.reloadToolbarButton,
             this.toolStripSeparator6,
             this.startButton,
+            this.runTestsWithDebuggerButton,
             this.stopButton,
             this.toolStripSeparator2,
             this.helpToolbarButton});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(256, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(310, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
@@ -584,6 +586,18 @@ namespace Gallio.Icarus
             this.dockPanel.Size = new System.Drawing.Size(1003, 636);
             this.dockPanel.TabIndex = 8;
             // 
+            // runTestsWithDebuggerButton
+            // 
+            this.runTestsWithDebuggerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.runTestsWithDebuggerButton.Enabled = false;
+            this.runTestsWithDebuggerButton.Image = ((System.Drawing.Image)(resources.GetObject("runTestsWithDebuggerButton.Image")));
+            this.runTestsWithDebuggerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.runTestsWithDebuggerButton.Name = "runTestsWithDebuggerButton";
+            this.runTestsWithDebuggerButton.Size = new System.Drawing.Size(23, 22);
+            this.runTestsWithDebuggerButton.Text = "Run Tests With Debugger";
+            this.runTestsWithDebuggerButton.ToolTipText = "Run Tests With Debugger";
+            this.runTestsWithDebuggerButton.Click += new System.EventHandler(this.runTestsWithDebuggerButton_Click);
+            // 
             // Main
             // 
             this.AllowDrop = true;
@@ -673,6 +687,7 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem reportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startWithDebuggerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton runTestsWithDebuggerButton;
     }
 }
 
