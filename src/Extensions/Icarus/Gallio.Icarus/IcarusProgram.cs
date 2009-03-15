@@ -113,7 +113,7 @@ namespace Gallio.Icarus
                         var assemblyFiles = new List<string>();
                         if (Arguments != null && Arguments.Assemblies.Length > 0)
                         {
-                            foreach (var assembly in assemblyFiles)
+                            foreach (var assembly in Arguments.Assemblies)
                             {
                                 if (!File.Exists(assembly))
                                     continue;
@@ -123,8 +123,9 @@ namespace Gallio.Icarus
                                     mediator.OpenProject(assembly);
                                     break;
                                 }
-                                mediator.AddAssemblies(assemblyFiles);
+                                assemblyFiles.Add(assembly);
                             }
+                            mediator.AddAssemblies(assemblyFiles);
                         }
                         else if (optionsController.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
                             mediator.OpenProject(Paths.DefaultProject);
