@@ -31,16 +31,16 @@ namespace Gallio.AutoCAD.Tests
         [Test]
         public void ShutdownIsCalledIfPingNotRecieved()
         {
-            var timeout = TimeSpan.FromMilliseconds(200);
+            var timeout = TimeSpan.FromMilliseconds(250);
             var driver = new RemoteTestDriverTestDouble(timeout);
-            Thread.Sleep(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds * 1.5));
+            Thread.Sleep(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds * 2));
             Assert.IsTrue(driver.ShutdownCalled);
         }
 
         [Test]
         public void ShutdownIsNotCalledIfPingIsRecieved()
         {
-            TimeSpan timeout = TimeSpan.FromMilliseconds(200);
+            TimeSpan timeout = TimeSpan.FromMilliseconds(500);
             var driver = new RemoteTestDriverTestDouble(timeout);
 
             int numPings = 3;

@@ -78,6 +78,7 @@ namespace Gallio.ReSharperRunner.Tests
                     if (shell != null)
                     {
                         shell.TearDown();
+                        shell.Dispose();
                     }
                 });
             }
