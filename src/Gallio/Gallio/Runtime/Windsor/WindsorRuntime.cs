@@ -437,6 +437,8 @@ namespace Gallio.Runtime.Windsor
             }
 
             pluginAssemblyPaths.Add(assemblyPath, assemblyName);
+
+            assemblyResolverManager.AddHintDirectory(FileUtils.GetFullPathOfParentDirectory(assemblyPath));
             return true;
         }
 
