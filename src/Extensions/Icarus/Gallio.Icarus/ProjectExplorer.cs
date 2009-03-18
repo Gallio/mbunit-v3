@@ -143,7 +143,8 @@ namespace Gallio.Icarus
                 if (ParentForm != null)
                     ((Main) ParentForm).ShowWindow("propertiesToolStripMenuItem");
             }
-            else if (projectTree.SelectedNode.Parent != null && ((Node) projectTree.SelectedNode.Parent.Tag).Text == "Reports")
+            else if (projectTree.SelectedNode.Parent != null && projectTree.SelectedNode.Parent.Tag != null && 
+                ((Node)projectTree.SelectedNode.Parent.Tag).Text == "Reports")
             {
                 OpenReport();
             }
