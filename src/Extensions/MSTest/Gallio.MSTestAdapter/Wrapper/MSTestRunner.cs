@@ -46,8 +46,8 @@ namespace Gallio.MSTestAdapter.Wrapper
 
         public static MSTestRunner GetRunnerForFrameworkVersion(Version frameworkVersion, IDiskCache diskCache)
         {
-            //if (frameworkVersion.Major == 8 && frameworkVersion.Minor == 0)
-            //    return new MSTestRunner2005(diskCache);
+            if (frameworkVersion.Major == 8 && frameworkVersion.Minor == 0)
+                return new MSTestRunner2005(diskCache);
             if (frameworkVersion.Major == 9 && frameworkVersion.Minor == 0)
                 return new MSTestRunner2008(diskCache);
             if (frameworkVersion.Major == 10 && frameworkVersion.Minor == 0)
