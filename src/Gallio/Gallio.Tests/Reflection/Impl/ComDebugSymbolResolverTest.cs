@@ -29,10 +29,13 @@ namespace Gallio.Tests.Reflection.Impl
     [TestsOn(typeof(ComDebugSymbolResolver))]
     public class ComDebugSymbolResolverTest
     {
+        [Column(true, false)]
+        public bool AvoidLocks;
+
         [Test, ExpectedArgumentNullException]
         public void GetSourceLocationForMethod_ThrowsIfAssemblyFileIsNull()
         {
-            new ComDebugSymbolResolver().GetSourceLocationForMethod(null, 0);
+            new ComDebugSymbolResolver(AvoidLocks).GetSourceLocationForMethod(null, 0);
         }
 
         [Test]
@@ -55,26 +58,26 @@ namespace Gallio.Tests.Reflection.Impl
         [Test]
         public void GetSourceLocationForMethod_ReturnsUnknownIfAssemblyFileDoesNotExist()
         {
-            CodeLocation codeLocation = new ComDebugSymbolResolver().GetSourceLocationForMethod("NoSuchAssembly", 0);
+            CodeLocation codeLocation = new ComDebugSymbolResolver(AvoidLocks).GetSourceLocationForMethod("NoSuchAssembly", 0);
             Assert.AreEqual(CodeLocation.Unknown, codeLocation);
         }
 
         [Test]
         public void GetSourceLocationForMethod_ReturnsUnknownIfAssemblyExistsButThereIsNoPDB()
         {
-            CodeLocation codeLocation = new ComDebugSymbolResolver().GetSourceLocationForMethod(typeof(ILogger).Assembly.Location, 0);
+            CodeLocation codeLocation = new ComDebugSymbolResolver(AvoidLocks).GetSourceLocationForMethod(typeof(ILogger).Assembly.Location, 0);
             Assert.AreEqual(CodeLocation.Unknown, codeLocation);
         }
 
         [Test]
         public void GetSourceLocationForMethod_ReturnsUnknownIfMethodTokenNotValid()
         {
-            CodeLocation codeLocation = new ComDebugSymbolResolver().GetSourceLocationForMethod(GetType().Assembly.Location, 0);
+            CodeLocation codeLocation = new ComDebugSymbolResolver(AvoidLocks).GetSourceLocationForMethod(GetType().Assembly.Location, 0);
         }
 
         private CodeLocation GetSourceLocationForMethod(string methodName)
         {
-            ComDebugSymbolResolver resolver = new ComDebugSymbolResolver();
+            ComDebugSymbolResolver resolver = new ComDebugSymbolResolver(AvoidLocks);
 
             MethodInfo method = typeof(Sample).GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
             return resolver.GetSourceLocationForMethod(method.DeclaringType.Assembly.Location, method.MetadataToken);

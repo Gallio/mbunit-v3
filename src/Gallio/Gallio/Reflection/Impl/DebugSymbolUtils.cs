@@ -37,7 +37,7 @@ namespace Gallio.Reflection.Impl
             get
             {
                 if (resolver == null)
-                    Interlocked.CompareExchange(ref resolver, CreateResolver(), null);
+                    Interlocked.CompareExchange(ref resolver, CreateResolver(false), null);
                 return resolver;
             }
         }
@@ -45,13 +45,14 @@ namespace Gallio.Reflection.Impl
         /// <summary>
         /// Creates a new debug symbol resolver appropriate for this platform.
         /// </summary>
+        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage</param>
         /// <returns>The debug symbol resolver</returns>
-        public static IDebugSymbolResolver CreateResolver()
+        public static IDebugSymbolResolver CreateResolver(bool avoidLocks)
         {
             if (RuntimeDetection.IsUsingMono)
-                return new MonoDebugSymbolResolver();
+                return new MonoDebugSymbolResolver(avoidLocks);
 
-            return new ComDebugSymbolResolver();
+            return new ComDebugSymbolResolver(avoidLocks);
         }
 
         /// <summary>

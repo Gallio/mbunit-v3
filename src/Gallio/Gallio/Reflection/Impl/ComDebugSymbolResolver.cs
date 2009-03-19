@@ -12,6 +12,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#define USE_ISTREAM
 
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading;
+using Microsoft.Win32.SafeHandles;
+using STATSTG=System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace Gallio.Reflection.Impl
 {
@@ -46,14 +49,35 @@ namespace Gallio.Reflection.Impl
     /// </remarks>
     public class ComDebugSymbolResolver : IDebugSymbolResolver
     {
+        private const int S_OK = 0;
         private const int E_PDB_NOT_FOUND = unchecked((int)0x806D0005);
         private const int E_PDB_NO_DEBUG_INFO = unchecked((int)0x806D0014);
         private const int E_PDB_DEBUG_INFO_NOT_IN_PDB = unchecked((int)0x806D0017);
         private const int E_FILE_NOT_FOUND = unchecked((int)0x80070002);
         private const int E_FAIL = unchecked((int)0x80004005);
+        private const int STG_E_INVALIDFUNCTION = unchecked((int)0x80030001);
+        private const int STG_E_CANTSAVE = unchecked((int)0x80030103);
 
+        private readonly bool avoidLocks;
         private readonly Dictionary<string, ISymUnmanagedReader> symbolReaders = new Dictionary<string, ISymUnmanagedReader>();
 
+        /// <summary>
+        /// Creates a COM debug symbol resolver.
+        /// </summary>
+        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage</param>
+        public ComDebugSymbolResolver(bool avoidLocks)
+        {
+            this.avoidLocks = avoidLocks;
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            foreach (var symbolReader in symbolReaders.Values)
+                Marshal.ReleaseComObject(symbolReader);
+
+            symbolReaders.Clear();
+        }
 
         /// <inheritdoc />
         public CodeLocation GetSourceLocationForMethod(string assemblyPath, int methodToken)
@@ -156,7 +180,7 @@ namespace Gallio.Reflection.Impl
                 ISymUnmanagedReader symbolReader;
                 if (!symbolReaders.TryGetValue(assemblyPath, out symbolReader))
                 {
-                    symbolReader = CreateSymbolReader(assemblyPath, null);
+                    symbolReader = CreateSymbolReader(assemblyPath, null, avoidLocks);
                     symbolReaders.Add(assemblyPath, symbolReader);
                 }
 
@@ -174,7 +198,7 @@ namespace Gallio.Reflection.Impl
         }
 
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        private static ISymUnmanagedReader CreateSymbolReader(string filename, string searchPath)
+        private static ISymUnmanagedReader CreateSymbolReader(string filename, string searchPath, bool avoidLocks)
         {
             // Guids for imported metadata interfaces.
             Guid CLSID_CorMetaDataDispenser = new Guid(0xe5cb7a31, 0x7512, 0x11d2, 0x89, 0xce, 0x00, 0x80, 0xc7, 0x92, 0xe5, 0xd8);
@@ -196,9 +220,11 @@ namespace Gallio.Reflection.Impl
                     Marshal.ThrowExceptionForHR(errorCode);
                 }
 
-                ISymUnmanagedBinder binder = (ISymUnmanagedBinder)Activator.CreateInstance(Type.GetTypeFromCLSID(CLSID_CorSymBinder));
+                ISymUnmanagedBinder3 binder = (ISymUnmanagedBinder3)Activator.CreateInstance(Type.GetTypeFromCLSID(CLSID_CorSymBinder));
                 ISymUnmanagedReader reader;
-                errorCode = binder.GetReaderForFile(importer, filename, searchPath, out reader);
+
+                errorCode = CreateSymbolReader(binder, importer, filename, searchPath, avoidLocks, out reader);
+
                 if (errorCode < 0)
                 {
                     if (errorCode == E_FAIL
@@ -218,7 +244,163 @@ namespace Gallio.Reflection.Impl
             }
         }
 
-        [Guid("809c652e-7396-11d2-9771-00a0c9b4d50c"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private static int CreateSymbolReader(ISymUnmanagedBinder3 binder, IntPtr importer,
+            string filename, string searchPath, bool avoidLocks, out ISymUnmanagedReader reader)
+        {
+            if (! avoidLocks)
+                return binder.GetReaderForFile(importer, filename, searchPath, out reader);
+
+            reader = null;
+
+            string pdbFilename = Path.ChangeExtension(filename, ".pdb");
+            if (!File.Exists(pdbFilename))
+                return E_PDB_NOT_FOUND;
+
+            try
+            {
+                byte[] bytes = File.ReadAllBytes(pdbFilename);
+
+#if USE_ISTREAM
+                IStream stream = new ComStream(new MemoryStream(bytes, 0, bytes.Length, false, true));
+                return binder.GetReaderFromStream(importer, stream, out reader);
+#else
+                IDiaReadExeAtOffsetCallback callback = new DiaReadExeAtOffsetCallback(bytes);
+                return binder.GetReaderFromCallback(importer, filename, searchPath,
+                    CorSymSearchPolicyAttributes.AllowReferencePathAccess, callback, out reader);
+#endif
+            }
+            catch (IOException)
+            {
+                return E_FAIL;
+            }
+        }
+
+#if USE_ISTREAM
+        private sealed class ComStream : IStream
+        {
+            private readonly MemoryStream stream;
+
+            public ComStream(MemoryStream stream)
+            {
+                this.stream = stream;
+            }
+
+            int IStream.Read(IntPtr pv, int cb, out int pcbRead)
+            {
+                int length = (int) stream.Length;
+                int position = (int) stream.Position;
+                int count = Math.Min(length - position, cb);
+
+                Marshal.Copy(stream.GetBuffer(), position, pv, count);
+                stream.Position += count;
+                pcbRead = count;
+
+                return S_OK;
+            }
+
+            int IStream.Write(IntPtr pv, int cb, out int pcbWritten)
+            {
+                pcbWritten = 0;
+                return STG_E_CANTSAVE;
+            }
+
+            int IStream.Seek(long dlibMove, STREAM_SEEK dwOrigin, IntPtr plibNewPosition)
+            {
+                SeekOrigin origin;
+                switch (dwOrigin)
+                {
+                    case STREAM_SEEK.STREAM_SEEK_SET:
+                        origin = SeekOrigin.Begin;
+                        break;
+                    case STREAM_SEEK.STREAM_SEEK_CUR:
+                        origin = SeekOrigin.Current;
+                        break;
+                    case STREAM_SEEK.STREAM_SEEK_END:
+                        origin = SeekOrigin.End;
+                        break;
+                    default:
+                        return STG_E_INVALIDFUNCTION;
+                }
+
+                if (plibNewPosition != IntPtr.Zero)
+                    Marshal.WriteInt64(plibNewPosition, stream.Seek(dlibMove, origin));
+                return S_OK;
+            }
+
+            int IStream.SetSize(long libNewSize)
+            {
+                return STG_E_INVALIDFUNCTION;
+            }
+
+            int IStream.CopyTo(IStream pstm, long cb, IntPtr pcbRead, IntPtr pcbWritten)
+            {
+                return STG_E_INVALIDFUNCTION;
+            }
+
+            int IStream.Commit(int grfCommitFlags)
+            {
+                return S_OK;
+            }
+
+            int IStream.Revert()
+            {
+                return S_OK;
+            }
+
+            int IStream.LockRegion(long libOffset, long cb, int dwLockType)
+            {
+                return STG_E_INVALIDFUNCTION;
+            }
+
+            int IStream.UnlockRegion(long libOffset, long cb, int dwLockType)
+            {
+                return STG_E_INVALIDFUNCTION;
+            }
+
+            int IStream.Stat(out STATSTG pstatstg, int grfStatFlag)
+            {
+                pstatstg = new STATSTG();
+                pstatstg.type = 2;
+                pstatstg.cbSize = stream.Length;
+                pstatstg.grfLocksSupported = 2;
+                return S_OK;
+            }
+
+            int IStream.Clone(out IStream ppstm)
+            {
+                ppstm = new ComStream(new MemoryStream(stream.GetBuffer()));
+                return S_OK;
+            }
+        }
+#else
+        private sealed class DiaReadExeAtOffsetCallback : IDiaReadExeAtOffsetCallback
+        {
+            private readonly byte[] bytes;
+
+            public DiaReadExeAtOffsetCallback(byte[] bytes)
+            {
+                this.bytes = bytes;
+            }
+
+            int IDiaReadExeAtOffsetCallback.ReadExecutableAt(long fileOffset, int cbData, out int pcbData, IntPtr data)
+            {
+                if (fileOffset < 0 || cbData < 0 || fileOffset > bytes.Length)
+                {
+                    pcbData = 0;
+                    return E_FAIL;
+                }
+
+                int offset = (int)fileOffset;
+                int count = Math.Min(bytes.Length - offset, cbData);
+                Marshal.Copy(bytes, offset, data, count);
+                pcbData = count;
+
+                return S_OK;
+            }
+        }
+#endif
+
+        [ComImport, Guid("809c652e-7396-11d2-9771-00a0c9b4d50c"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface IMetaDataDispenser
         {
             // We need to be able to call OpenScope, which is the 2nd vtable slot.
@@ -239,8 +421,8 @@ namespace Gallio.Reflection.Impl
             // Don't need any other methods.
         }
 
-        [Guid("AA544d42-28CB-11d3-bd22-0000f80849bd"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        private interface ISymUnmanagedBinder
+        [ComImport, Guid("28AD3D43-B601-4d26-8A1B-25F9165AF9D7"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private interface ISymUnmanagedBinder3
         {
             [PreserveSig]
             int GetReaderForFile(IntPtr importer,
@@ -250,11 +432,26 @@ namespace Gallio.Reflection.Impl
 
             [PreserveSig]
             int GetReaderFromStream(IntPtr importer,
-                                            IStream stream,
+                                            [MarshalAs(UnmanagedType.Interface)] IStream stream,
                                             [MarshalAs(UnmanagedType.Interface)] out ISymUnmanagedReader retVal);
+
+            [PreserveSig]
+            int GetReaderForFile2(IntPtr importer,
+                                      [MarshalAs(UnmanagedType.LPWStr)] String filename,
+                                      [MarshalAs(UnmanagedType.LPWStr)] String SearchPath,
+                                      [MarshalAs(UnmanagedType.U4)] CorSymSearchPolicyAttributes searchPolicy,
+                                      [MarshalAs(UnmanagedType.Interface)] out ISymUnmanagedReader retVal);
+
+            [PreserveSig]
+            int GetReaderFromCallback(IntPtr importer,
+                                      [MarshalAs(UnmanagedType.LPWStr)] String filename,
+                                      [MarshalAs(UnmanagedType.LPWStr)] String SearchPath,
+                                      [MarshalAs(UnmanagedType.U4)] CorSymSearchPolicyAttributes searchPolicy,
+                                      [MarshalAs(UnmanagedType.Interface)] IDiaReadExeAtOffsetCallback callback,
+                                      [MarshalAs(UnmanagedType.Interface)] out ISymUnmanagedReader retVal);
         }
 
-        [Guid("B4CE6286-2A6B-3712-A3B7-1EE1DAD467B5"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [ComImport, Guid("B4CE6286-2A6B-3712-A3B7-1EE1DAD467B5"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface ISymUnmanagedReader
         {
             void GetDocument([MarshalAs(UnmanagedType.LPWStr)] String url,
@@ -334,7 +531,7 @@ namespace Gallio.Reflection.Impl
                                        out int version);
         }
 
-        [Guid("40DE4037-7C81-3E1E-B022-AE1ABFF2CA08"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [ComImport, Guid("40DE4037-7C81-3E1E-B022-AE1ABFF2CA08"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface ISymUnmanagedDocument
         {
             void GetURL(int cchUrl,
@@ -369,7 +566,7 @@ namespace Gallio.Reflection.Impl
                                      [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] byte[] source);
         }
 
-        [Guid("B62B923C-B500-3158-A543-24F307A8B7E1"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [ComImport, Guid("B62B923C-B500-3158-A543-24F307A8B7E1"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface ISymUnmanagedMethod
         {
             void GetToken(out SymbolToken pToken);
@@ -404,22 +601,87 @@ namespace Gallio.Reflection.Impl
                                       [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] int[] endColumns);
         }
 
-        [Guid("0DFF7289-54F8-11d3-BD28-0000F80849BD"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [ComImport, Guid("0DFF7289-54F8-11d3-BD28-0000F80849BD"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface ISymUnmanagedNamespace
         {
             // Omitted for brevity
         }
 
-        [Guid("9F60EEBE-2D9A-3F7C-BF58-80BC991C60BB"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [ComImport, Guid("9F60EEBE-2D9A-3F7C-BF58-80BC991C60BB"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface ISymUnmanagedVariable
         {
             // Omitted for brevity
         }
 
-        [Guid("68005D0F-B8E0-3B01-84D5-A11A94154942"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [ComImport, Guid("68005D0F-B8E0-3B01-84D5-A11A94154942"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface ISymUnmanagedScope
         {
             // Omitted for brevity
+        }
+
+        [ComImport, Guid("587A461C-B80B-4f54-9194-5032589A6319"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private interface IDiaReadExeAtOffsetCallback
+        {
+            [PreserveSig]
+            int ReadExecutableAt(long fileOffset, int cbData, out int pcbData, IntPtr data);
+        }
+
+        [ComImport, Guid("0000000c-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private interface IStream
+        {
+            [PreserveSig]
+            int Read(IntPtr pv, int cb, out int pcbRead);
+
+            [PreserveSig]
+            int Write(IntPtr pv, int cb, out int pcbWritten);
+
+            [PreserveSig]
+            int Seek([In, MarshalAs(UnmanagedType.I8)] long dlibMove,
+                [MarshalAs(UnmanagedType.I4)] STREAM_SEEK dwOrigin,
+                IntPtr plibNewPosition);
+
+            [PreserveSig]
+            int SetSize([In, MarshalAs(UnmanagedType.I8)] long libNewSize);
+
+            [PreserveSig]
+            int CopyTo([In, MarshalAs(UnmanagedType.Interface)] IStream pstm,
+                [In, MarshalAs(UnmanagedType.I8)] long cb,
+                IntPtr pcbRead,
+                IntPtr pcbWritten);
+
+            [PreserveSig]
+            int Commit(int grfCommitFlags);
+
+            [PreserveSig]
+            int Revert();
+
+            [PreserveSig]
+            int LockRegion(long libOffset, long cb, int dwLockType);
+
+            [PreserveSig]
+            int UnlockRegion(long libOffset, long cb, int dwLockType);
+
+            [PreserveSig]
+            int Stat([Out] out STATSTG pstatstg, int grfStatFlag);
+
+            [PreserveSig]
+            int Clone([MarshalAs(UnmanagedType.Interface)] out IStream ppstm);
+        }
+
+        private enum CorSymSearchPolicyAttributes
+        {
+            None = 0,
+            AllowRegistryAccess = 0x1,
+	        AllowSymbolServerAccess = 0x2,
+	        AllowOriginalPathAccess = 0x4,
+	        AllowReferencePathAccess = 0x8
+        }
+
+        private enum STREAM_SEEK
+        {
+            STREAM_SEEK_SET = 0,
+            STREAM_SEEK_CUR = 1,
+            STREAM_SEEK_END = 2
         }
     }
 }

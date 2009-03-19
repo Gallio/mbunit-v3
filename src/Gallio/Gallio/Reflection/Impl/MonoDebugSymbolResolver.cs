@@ -24,6 +24,19 @@ namespace Gallio.Reflection.Impl
     /// </summary>
     public class MonoDebugSymbolResolver : IDebugSymbolResolver
     {
+        /// <summary>
+        /// Creates a Mono debug symbol resolver.
+        /// </summary>
+        /// <param name="avoidLocks">If true, avoids taking a lock on the PDB files but may use more memory or storage</param>
+        public MonoDebugSymbolResolver(bool avoidLocks)
+        {
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+        }
+
         /// <inheritdoc />
         public CodeLocation GetSourceLocationForMethod(string assemblyPath, int methodToken)
         {

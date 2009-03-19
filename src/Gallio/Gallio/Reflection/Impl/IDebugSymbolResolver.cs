@@ -20,7 +20,7 @@ namespace Gallio.Reflection.Impl
     /// <summary>
     /// Resolves debug symbols associated with members.
     /// </summary>
-    public interface IDebugSymbolResolver
+    public interface IDebugSymbolResolver : IDisposable
     {
         /// <summary>
         /// Gets the location of a source file that contains the declaration of a method, or
