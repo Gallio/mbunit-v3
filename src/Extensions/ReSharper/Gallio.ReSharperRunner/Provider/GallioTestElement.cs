@@ -43,9 +43,9 @@ namespace Gallio.ReSharperRunner.Provider
         private readonly string typeName;
         private readonly string namespaceName;
 
-        private GallioTestElement(IUnitTestProvider provider, string testId, string testName, string kind, bool isTestCase,
+        private GallioTestElement(IUnitTestProvider provider, GallioTestElement parent, string testId, string testName, string kind, bool isTestCase,
             IProject project, IDeclaredElementResolver declaredElementResolver, string assemblyPath, string typeName, string namespaceName)
-            : base(provider, null)
+            : base(provider, parent)
         {
             this.testId = testId;
             this.testName = testName;
@@ -68,7 +68,7 @@ namespace Gallio.ReSharperRunner.Provider
             // for quite a long time so we don't want it holding on to all sorts of irrelevant stuff.
             // Basically we flatten out the ITest to just those properties that we need to keep.
             ICodeElementInfo codeElement = test.CodeElement;
-            GallioTestElement element = new GallioTestElement(provider,
+            GallioTestElement element = new GallioTestElement(provider, parent,
                 test.Id,
                 test.Name,
                 test.Metadata.GetValue(MetadataKeys.TestKind) ?? "Unknown",
@@ -87,7 +87,6 @@ namespace Gallio.ReSharperRunner.Provider
             if (reason != null)
                 element.SetExplicit(reason);
 
-            element.Parent = parent;
             return element;
         }
 
