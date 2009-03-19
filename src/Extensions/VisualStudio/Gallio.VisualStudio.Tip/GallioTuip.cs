@@ -90,6 +90,8 @@ namespace Gallio.VisualStudio.Tip
                         if (selection != null)
                             selection.MoveToLineAndOffset(gallioTest.Line, Math.Max(1, gallioTest.Column), false);
                     }
+
+                    window.Activate();
                 }
             }
         }
