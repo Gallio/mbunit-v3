@@ -89,6 +89,12 @@ namespace MbUnit.TestResources.Reflection
 
             private int nonInheritedField = 0;
 
+            public const int Constant = 42;
+
+            public volatile int VolatileField;
+
+            public readonly int ReadOnlyField = 42;
+
             [return: Sample(typeof(int))]
             [Sample(typeof(int))]
             public virtual S InheritedMethod<[Sample(typeof(int))] S>([Sample(typeof(int))] S s, T t)

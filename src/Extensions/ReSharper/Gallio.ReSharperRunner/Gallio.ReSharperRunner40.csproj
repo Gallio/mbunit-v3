@@ -130,6 +130,7 @@
     <Compile Include="Provider\Actions\ShowCondensedReportAction.cs" />
     <Compile Include="Provider\Actions\GallioAction.cs" />
     <Compile Include="Provider\Actions\ShowReportAction.cs" />
+    <Compile Include="Provider\AnnotationState.cs" />
     <Compile Include="Provider\Daemons\AnnotationDaemonStage.cs" />
     <Compile Include="Provider\Daemons\AnnotationDaemonStageProcess.cs" />
     <Compile Include="Provider\Daemons\AnnotationHighlighting.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Provider\Tasks\GallioTestItemTask.cs" />
     <Compile Include="Provider\Tasks\GallioTestRunner.cs" />
     <Compile Include="Provider\Tasks\GallioTestRunTask.cs" />
+    <Compile Include="Reflection\IDeclaredElementResolver.cs" />
     <Compile Include="Runtime\ReSharperLogger.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicy.cs" />
     <Compile Include="Reflection\PsiReflectionPolicy.cs" />

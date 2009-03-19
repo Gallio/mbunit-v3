@@ -70,7 +70,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             writer.WriteValue("True");
             writer.WriteEndElement();
 
-            writer.WriteStartElement("parentCategoryId ");
+            writer.WriteStartElement("parentCategoryId");
             writer.WriteAttributeString("type", "Microsoft.VisualStudio.TestTools.Common.TestCategoryId");
             writer.WriteStartElement("id");
             writer.WriteAttributeString("type", "System.Guid");

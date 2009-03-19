@@ -24,7 +24,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 #endif
     internal sealed class InfoAnnotationHighlighting : AnnotationHighlighting
     {
-        public InfoAnnotationHighlighting(Annotation annotation)
+        public InfoAnnotationHighlighting(AnnotationState annotation)
             : base(annotation)
         {
         }

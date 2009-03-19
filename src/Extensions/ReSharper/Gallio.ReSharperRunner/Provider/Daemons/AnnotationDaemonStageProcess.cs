@@ -59,9 +59,9 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
             {
                 List<HighlightingInfo> highlightings = new List<HighlightingInfo>();
 
-                foreach (Annotation annotation in state.Annotations)
+                foreach (AnnotationState annotation in state.Annotations)
                 {
-                    IDeclaredElement declaredElement = ReSharperReflectionPolicy.GetDeclaredElement(annotation.CodeElement);
+                    IDeclaredElement declaredElement = annotation.GetDeclaredElement();
                     if (declaredElement != null)
                     {
                         foreach (IDeclaration declaration in declaredElement.GetDeclarationsIn(projectFile))

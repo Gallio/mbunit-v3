@@ -323,11 +323,15 @@ namespace Gallio.ReSharperRunner.Reflection
 
         protected override CodeLocation GetMemberSourceLocation(StaticMemberWrapper member)
         {
-            IDeclaredElement declaredElement = GetDeclaredElement((StaticWrapper)member);
-            if (declaredElement == null)
-                return CodeLocation.Unknown;
+            IDeclaredElementResolver resolver = GetDeclaredElementResolver((StaticWrapper)member);
+            if (resolver != null)
+            {
+                IDeclaredElement declaredElement = resolver.ResolveDeclaredElement();
+                if (declaredElement != null)
+                    return GetDeclaredElementSourceLocation(declaredElement);
+            }
 
-            return GetDeclaredElementSourceLocation(declaredElement);
+            return CodeLocation.Unknown;
         }
         #endregion
 
@@ -470,6 +474,12 @@ namespace Gallio.ReSharperRunner.Reflection
             {
                 return StaticGenericParameterWrapper.CreateGenericMethodParameter(this, parameterHandle, method);
             });
+        }
+
+        private static bool IsConstructor(IMetadataMethod method)
+        {
+            string name = method.Name;
+            return name == ".ctor" || name == ".cctor";
         }
         #endregion
 
@@ -769,40 +779,9 @@ namespace Gallio.ReSharperRunner.Reflection
         #endregion
 
         #region GetDeclaredElement and GetProject
-        protected override IDeclaredElement GetDeclaredElement(StaticWrapper element)
+        protected override IDeclaredElementResolver GetDeclaredElementResolver(StaticWrapper element)
         {
-            using (ReadLockCookie.Create())
-            {
-                IMetadataTypeInfo type = element.Handle as IMetadataTypeInfo;
-                if (type != null)
-                    return GetDeclaredElementWithLock(type);
-
-                IMetadataMethod method = element.Handle as IMetadataMethod;
-                if (method != null)
-                    return GetDeclaredElementWithLock(method);
-
-                IMetadataProperty property = element.Handle as IMetadataProperty;
-                if (property != null)
-                    return GetDeclaredElementWithLock(property);
-
-                IMetadataField field = element.Handle as IMetadataField;
-                if (field != null)
-                    return GetDeclaredElementWithLock(field);
-
-                IMetadataEvent @event = element.Handle as IMetadataEvent;
-                if (@event != null)
-                    return GetDeclaredElementWithLock(@event);
-
-                IMetadataParameter parameter = element.Handle as IMetadataParameter;
-                if (parameter != null)
-                    return GetDeclaredElementWithLock(parameter);
-
-                IMetadataReturnValue returnValue = element.Handle as IMetadataReturnValue;
-                if (returnValue != null)
-                    return GetDeclaredElementWithLock(returnValue);
-
-                return null;
-            }
+            return DeclaredElementResolver.CreateResolver(contextProject, element);
         }
 
         protected override IProject GetProject(StaticWrapper element)
@@ -810,165 +789,305 @@ namespace Gallio.ReSharperRunner.Reflection
             return contextProject;
         }
 
-        private IDeclarationsCache GetDeclarationsCache()
+        private sealed class DeclaredElementResolver : IDeclaredElementResolver
         {
-#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
-            return PsiManager.GetInstance(contextProject.GetSolution()).
-                GetDeclarationsCache(DeclarationsCacheScope.ProjectScope(contextProject, true), true);
-#else
-            IPsiModule module = PsiModuleManager.GetInstance(contextProject.GetSolution()).GetPsiModule(contextProject.ProjectFile);
-            return PsiManager.GetInstance(contextProject.GetSolution()).
-                GetDeclarationsCache(DeclarationsScopeFactory.ModuleScope(module, true), true);
-#endif
-        }
+            private readonly IProject project;
+            private readonly Func<IProject, IDeclaredElement> provider;
 
-        internal ITypeElement GetDeclaredElementWithLock(IMetadataTypeInfo type)
-        {
-            if (contextProject != null)
+            private DeclaredElementResolver(IProject project, Func<IProject, IDeclaredElement> provider)
             {
-                IDeclarationsCache cache = GetDeclarationsCache();
-
-                // TODO: Verify expected assembly name in case there are multiple types with
-                //       the same name distinguished only by declaring assembly.
-                return cache.GetTypeElementByCLRName(type.FullyQualifiedName);
+                this.project = project;
+                this.provider = provider;
             }
 
-            return null;
-        }
-
-        private IFunction GetDeclaredElementWithLock(IMetadataMethod metadataMethod)
-        {
-            ITypeElement type = GetDeclaredElementWithLock(metadataMethod.DeclaringType);
-
-            if (type != null)
+            public IDeclaredElement ResolveDeclaredElement()
             {
+                if (provider == null)
+                    return null;
+
+                using (ReadLockCookie.Create())
+                {
+                    return provider(project);
+                }
+            }
+
+            public static IDeclaredElementResolver CreateResolver(IProject project, StaticWrapper element)
+            {
+                return new DeclaredElementResolver(project, project != null ? GetProvider(element) : null);
+            }
+
+            private static Func<IProject, IDeclaredElement> ToDeclaredElementProvider<T>(Func<IProject, T> provider)
+                where T : IDeclaredElement
+            {
+                return project => provider(project);
+            }
+
+            private static Func<IProject, IDeclaredElement> GetProvider(StaticWrapper element)
+            {
+                IMetadataTypeInfo type = element.Handle as IMetadataTypeInfo;
+                if (type != null)
+                    return ToDeclaredElementProvider(GetProvider(type));
+
+                IMetadataMethod method = element.Handle as IMetadataMethod;
+                if (method != null)
+                    return ToDeclaredElementProvider(GetProvider(method));
+
+                IMetadataProperty property = element.Handle as IMetadataProperty;
+                if (property != null)
+                    return ToDeclaredElementProvider(GetProvider(property));
+
+                IMetadataField field = element.Handle as IMetadataField;
+                if (field != null)
+                    return ToDeclaredElementProvider(GetProvider(field));
+
+                IMetadataEvent @event = element.Handle as IMetadataEvent;
+                if (@event != null)
+                    return ToDeclaredElementProvider(GetProvider(@event));
+
+                IMetadataParameter parameter = element.Handle as IMetadataParameter;
+                if (parameter != null)
+                    return ToDeclaredElementProvider(GetProvider(parameter));
+
+                IMetadataReturnValue returnValue = element.Handle as IMetadataReturnValue;
+                if (returnValue != null)
+                    return ToDeclaredElementProvider(GetProvider(returnValue));
+
+                return project => null;
+            }
+
+            private static Func<IProject, ITypeElement> GetProvider(IMetadataTypeInfo type)
+            {
+                string clrName = type.FullyQualifiedName;
+
+                return project =>
+                {
+                    IDeclarationsCache cache = GetDeclarationsCache(project);
+
+                    // TODO: Verify expected assembly name in case there are multiple types with
+                    //       the same name distinguished only by declaring assembly.
+                    return cache.GetTypeElementByCLRName(clrName);
+                };
+            }
+
+            private static Func<IProject, IFunction> GetProvider(IMetadataMethod metadataMethod)
+            {
+                Func<IProject, ITypeElement> typeProvider = GetProvider(metadataMethod.DeclaringType);
+                bool isStatic = metadataMethod.IsStatic;
+                MethodParameterInfo[] parameters = MethodParameterInfo.CreateParameterListFromMetadata(metadataMethod.Parameters);
+
                 if (IsConstructor(metadataMethod))
                 {
-                    foreach (IConstructor constructor in type.Constructors)
+                    return project =>
                     {
-                        if (constructor.IsStatic == metadataMethod.IsStatic
-                            && IsSameSignature(constructor.Parameters, metadataMethod.Parameters))
-                            return constructor;
-                    }
+                        ITypeElement type = typeProvider(project);
+                        if (type != null)
+                        {
+                            foreach (IConstructor constructor in type.Constructors)
+                            {
+                                if (constructor.IsStatic == isStatic
+                                    && MethodParameterInfo.IsMatchingParameterList(parameters, constructor.Parameters))
+                                    return constructor;
+                            }
+                        }
+
+                        return null;
+                    };
                 }
-                else
+
+                string name = metadataMethod.Name;
+                return project =>
                 {
-                    foreach (IMethod method in type.Methods)
+                    ITypeElement type = typeProvider(project);
+                    if (type != null)
                     {
-                        if (method.IsStatic == metadataMethod.IsStatic
-                            && method.ShortName == metadataMethod.Name
-                            && IsSameSignature(method.Parameters, metadataMethod.Parameters))
-                            return method;
+                        foreach (IMethod method in type.Methods)
+                        {
+                            if (method.IsStatic == isStatic
+                                && method.ShortName == name
+                                && MethodParameterInfo.IsMatchingParameterList(parameters, method.Parameters))
+                                return method;
+                        }
                     }
-                }
+
+                    return null;
+                };
             }
 
-            return null;
-        }
-
-        private IProperty GetDeclaredElementWithLock(IMetadataProperty metadataProperty)
-        {
-            ITypeElement type = GetDeclaredElementWithLock(metadataProperty.DeclaringType);
-
-            if (type != null)
+            private static Func<IProject, IProperty> GetProvider(IMetadataProperty metadataProperty)
             {
-                // TODO: Handle overloaded indexer properties.
-                foreach (IProperty property in type.Properties)
-                    if (property.ShortName == metadataProperty.Name)
-                        return property;
+                Func<IProject, ITypeElement> typeProvider = GetProvider(metadataProperty.DeclaringType);
+                string name = metadataProperty.Name;
+
+                return project =>
+                {
+                    ITypeElement type = typeProvider(project);
+                    if (type != null)
+                    {
+                        // TODO: Handle overloaded indexer properties.
+                        foreach (IProperty property in type.Properties)
+                            if (property.ShortName == name)
+                                return property;
+                    }
+
+                    return null;
+                };
             }
 
-            return null;
-        }
-
-        private IField GetDeclaredElementWithLock(IMetadataField metadataField)
-        {
-            ITypeElement type = GetDeclaredElementWithLock(metadataField.DeclaringType);
-
-            IClass classHandle = type as IClass;
-            if (classHandle != null)
+            private static Func<IProject, IField> GetProvider(IMetadataField metadataField)
             {
-                foreach (IField field in classHandle.Fields)
-                    if (field.ShortName == metadataField.Name)
-                        return field;
-                foreach (IField field in classHandle.Constants)
-                    if (field.ShortName == metadataField.Name)
-                        return field;
+                Func<IProject, ITypeElement> typeProvider = GetProvider(metadataField.DeclaringType);
+                string name = metadataField.Name;
+
+                return project =>
+                {
+                    ITypeElement type = typeProvider(project);
+
+                    IClass classHandle = type as IClass;
+                    if (classHandle != null)
+                    {
+                        foreach (IField field in classHandle.Fields)
+                            if (field.ShortName == name)
+                                return field;
+                        foreach (IField field in classHandle.Constants)
+                            if (field.ShortName == name)
+                                return field;
+                    }
+
+                    IStruct structHandle = type as IStruct;
+                    if (structHandle != null)
+                    {
+                        foreach (IField field in structHandle.Fields)
+                            if (field.ShortName == name)
+                                return field;
+                        foreach (IField field in structHandle.Constants)
+                            if (field.ShortName == name)
+                                return field;
+                    }
+
+                    return null;
+                };
             }
 
-            IStruct structHandle = type as IStruct;
-            if (structHandle != null)
+            private static Func<IProject, IEvent> GetProvider(IMetadataEvent metadataEvent)
             {
-                foreach (IField field in structHandle.Fields)
-                    if (field.ShortName == metadataField.Name)
-                        return field;
-                foreach (IField field in structHandle.Constants)
-                    if (field.ShortName == metadataField.Name)
-                        return field;
+                Func<IProject, ITypeElement> typeProvider = GetProvider(metadataEvent.DeclaringType);
+                string name = metadataEvent.Name;
+
+                return project =>
+                {
+                    ITypeElement type = typeProvider(project);
+                    if (type != null)
+                    {
+                        foreach (IEvent @event in type.Events)
+                            if (@event.ShortName == name)
+                                return @event;
+                    }
+
+                    return null;
+                };
             }
 
-            return null;
-        }
-
-        private IEvent GetDeclaredElementWithLock(IMetadataEvent metadataEvent)
-        {
-            ITypeElement type = GetDeclaredElementWithLock(metadataEvent.DeclaringType);
-
-            if (type != null)
+            private static Func<IProject, IParameter> GetProvider(IMetadataParameter metadataParameter)
             {
-                foreach (IEvent @event in type.Events)
-                    if (@event.ShortName == metadataEvent.Name)
-                        return @event;
+                Func<IProject, IFunction> functionProvider = GetProvider(metadataParameter.DeclaringMethod);
+                string name = metadataParameter.Name;
+
+                return project =>
+                {
+                    IFunction function = functionProvider(project);
+                    if (function != null)
+                    {
+                        foreach (IParameter parameter in function.Parameters)
+                            if (parameter.ShortName == name)
+                                return parameter;
+                    }
+
+                    return null;
+                };
             }
 
-            return null;
-        }
-
-        private IParameter GetDeclaredElementWithLock(IMetadataParameter metadataParameter)
-        {
-            IFunction function = GetDeclaredElementWithLock(metadataParameter.DeclaringMethod);
-
-            if (function != null)
+            private static Func<IProject, IParameter> GetProvider(IMetadataReturnValue metadataParameter)
             {
-                foreach (IParameter parameter in function.Parameters)
-                    if (parameter.ShortName == metadataParameter.Name)
-                        return parameter;
+                // FIXME: Not sure which ReSharper code model element represents a return value.
+                return project => null;
             }
 
-            return null;
-        }
-
-        private IParameter GetDeclaredElementWithLock(IMetadataReturnValue metadataParameter)
-        {
-            // FIXME: Not sure which ReSharper code model element represents a return value.
-            return null;
-        }
-
-        private static bool IsConstructor(IMetadataMethod method)
-        {
-            string name = method.Name;
-            return name == ".ctor" || name == ".cctor";
-        }
-
-        private static bool IsSameSignature(IList<IParameter> parameters, IMetadataParameter[] metadataParameters)
-        {
-            if (parameters.Count != metadataParameters.Length)
-                return false;
-
-            for (int i = 0; i < metadataParameters.Length; i++)
+            private static IDeclarationsCache GetDeclarationsCache(IProject contextProject)
             {
-                IParameter parameter = parameters[i];
-                IMetadataParameter metadataParameter = metadataParameters[i];
+#if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
+                return PsiManager.GetInstance(contextProject.GetSolution()).
+                    GetDeclarationsCache(DeclarationsCacheScope.ProjectScope(contextProject, true), true);
+#else
+                IPsiModule module = PsiModuleManager.GetInstance(contextProject.GetSolution()).GetPsiModule(contextProject.ProjectFile);
+                return PsiManager.GetInstance(contextProject.GetSolution()).
+                    GetDeclarationsCache(DeclarationsScopeFactory.ModuleScope(module, true), true);
+#endif
+            }
+        }
 
-                if (parameter.ShortName != metadataParameter.Name
-                    || parameter.IsOptional != metadataParameter.IsOptional
-                    || (parameter.Kind != ParameterKind.OUTPUT) != metadataParameter.IsIn
-                    || (parameter.Kind != ParameterKind.VALUE) != metadataParameter.IsOut
-                    || parameter.Type.GetPresentableName(PsiLanguageType.UNKNOWN) != metadataParameter.Type.PresentableName)
+        private sealed class MethodParameterInfo : IEquatable<MethodParameterInfo>
+        {
+            public string Name { get; private set; }
+            public bool IsOptional { get; private set; }
+            public bool IsIn { get; private set; }
+            public bool IsOut { get; private set; }
+            public string TypeName { get; private set; }
+
+            public static MethodParameterInfo[] CreateParameterListFromMetadata(IMetadataParameter[] parameters)
+            {
+                return GenericUtils.ConvertAllToArray<IMetadataParameter, MethodParameterInfo>(parameters, CreateFromMetadata);
+            }
+
+            public static bool IsMatchingParameterList(MethodParameterInfo[] a, IList<IParameter> b)
+            {
+                if (a.Length != b.Count)
                     return false;
+
+                for (int i = 0; i < a.Length; i++)
+                {
+                    MethodParameterInfo aParameterInfo = a[i];
+                    MethodParameterInfo bParameterInfo = MethodParameterInfo.CreateFromPsi(b[i]);
+                    if (!aParameterInfo.Equals(bParameterInfo))
+                        return false;
+                }
+
+                return true;
             }
 
-            return true;
+
+            public static MethodParameterInfo CreateFromMetadata(IMetadataParameter parameter)
+            {
+                return new MethodParameterInfo()
+                {
+                    Name = parameter.Name,
+                    IsOptional = parameter.IsOptional,
+                    IsIn = parameter.IsIn,
+                    IsOut = parameter.IsOut,
+                    TypeName = parameter.Type.PresentableName
+                };
+            }
+
+            public static MethodParameterInfo CreateFromPsi(IParameter parameter)
+            {
+                return new MethodParameterInfo()
+                {
+                    Name = parameter.ShortName,
+                    IsOptional = parameter.IsOptional,
+                    IsIn = parameter.Kind != ParameterKind.OUTPUT,
+                    IsOut = parameter.Kind != ParameterKind.VALUE,
+                    TypeName = parameter.Type.GetPresentableName(PsiLanguageType.UNKNOWN)
+                };
+            }
+
+            public bool Equals(MethodParameterInfo other)
+            {
+                return other != null
+                    && Name == other.Name
+                    && IsOptional == other.IsOptional
+                    && IsIn == other.IsIn
+                    && IsOut == other.IsOut
+                    && TypeName == other.TypeName;
+            }
         }
         #endregion
 

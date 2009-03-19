@@ -31,57 +31,127 @@ namespace Gallio.ReSharperRunner.Provider
     /// </summary>
     public class GallioTestElement : UnitTestElement, IEquatable<GallioTestElement>, IComparable<GallioTestElement>, IComparable
     {
-        private readonly ITest test;
+        private readonly string testName;
+        private readonly string testId;
+        private readonly string kind;
+        private readonly bool isTestCase;
 
-        public GallioTestElement(ITest test, IUnitTestProvider provider, UnitTestElement parent)
-            : base(provider, parent)
+        private readonly IProject project;
+        private readonly IDeclaredElementResolver declaredElementResolver;
+
+        private readonly string assemblyPath;
+        private readonly string typeName;
+        private readonly string namespaceName;
+
+        private GallioTestElement(IUnitTestProvider provider, string testId, string testName, string kind, bool isTestCase,
+            IProject project, IDeclaredElementResolver declaredElementResolver, string assemblyPath, string typeName, string namespaceName)
+            : base(provider, null)
+        {
+            this.testId = testId;
+            this.testName = testName;
+            this.kind = kind;
+            this.isTestCase = isTestCase;
+            this.project = project;
+            this.declaredElementResolver = declaredElementResolver;
+            this.assemblyPath = assemblyPath;
+            this.typeName = typeName;
+            this.namespaceName = namespaceName;
+        }
+
+        public static GallioTestElement CreateFromTest(ITest test, IUnitTestProvider provider, GallioTestElement parent)
         {
             if (test == null)
                 throw new ArgumentNullException("test");
-            if (provider == null)
-                throw new ArgumentNullException("provider");
 
-            this.test = test;
+            // The idea here is to generate a test element object that does not retain any direct
+            // references to ITest and other heavyweight objects.  A test element may survive in memory
+            // for quite a long time so we don't want it holding on to all sorts of irrelevant stuff.
+            // Basically we flatten out the ITest to just those properties that we need to keep.
+            ICodeElementInfo codeElement = test.CodeElement;
+            GallioTestElement element = new GallioTestElement(provider,
+                test.Id,
+                test.Name,
+                test.Metadata.GetValue(MetadataKeys.TestKind) ?? "Unknown",
+                test.IsTestCase,
+                ReSharperReflectionPolicy.GetProject(codeElement),
+                ReSharperReflectionPolicy.GetDeclaredElementResolver(codeElement),
+                GetAssemblyPath(codeElement),
+                GetTypeName(codeElement),
+                GetNamespaceName(codeElement));
 
-            PopulateMetadata();
+            IList<string> categories = test.Metadata[MetadataKeys.Category];
+            if (categories.Count != 0)
+                element.AssignCategories(categories);
+
+            string reason = test.Metadata.GetValue(MetadataKeys.IgnoreReason);
+            if (reason != null)
+                element.SetExplicit(reason);
+
+            element.Parent = parent;
+            return element;
+        }
+
+        private static string GetAssemblyPath(ICodeElementInfo codeElement)
+        {
+            IAssemblyInfo assembly = ReflectionUtils.GetAssembly(codeElement);
+            return assembly != null ? assembly.Path : null;
+        }
+
+        private static string GetTypeName(ICodeElementInfo codeElement)
+        {
+            ITypeInfo type = ReflectionUtils.GetType(codeElement);
+            return type != null ? type.FullName : "";
+        }
+
+        private static string GetNamespaceName(ICodeElementInfo codeElement)
+        {
+            INamespaceInfo @namespace = ReflectionUtils.GetNamespace(codeElement);
+            return @namespace != null ? @namespace.Name : "";
         }
 
         public string GetAssemblyLocation()
         {
-            IAssemblyInfo assembly = ReflectionUtils.GetAssembly(test.CodeElement);
-            return assembly != null ? assembly.Path : null;
+            return assemblyPath;
         }
 
-        public ITest Test
+        public string TestName
         {
-            get { return test; }
+            get { return testName; }
+        }
+
+        public string TestId
+        {
+            get { return testId; }
+        }
+
+        public bool IsTestCase
+        {
+            get { return isTestCase; }
         }
 
         public override string GetTitle()
         {
-            return test.Name;
+            return testName;
         }
 
         public override string GetTypeClrName()
         {
-            ITypeInfo type = ReflectionUtils.GetType(test.CodeElement);
-            return type != null ? type.FullName : "";
+            return typeName;
         }
 
         public override UnitTestNamespace GetNamespace()
         {
-            INamespaceInfo @namespace = ReflectionUtils.GetNamespace(test.CodeElement);
-            return new UnitTestNamespace(@namespace != null ? @namespace.Name : "");
-        }
-
-        public override string GetKind()
-        {
-            return test.Metadata.GetValue(MetadataKeys.TestKind) ?? "Unknown";
+            return new UnitTestNamespace(namespaceName);
         }
 
         public override IProject GetProject()
         {
-            return ReSharperReflectionPolicy.GetProject(test.CodeElement);
+            return project;
+        }
+
+        public override string GetKind()
+        {
+            return kind;
         }
 
 #if RESHARPER_31
@@ -141,7 +211,7 @@ namespace Gallio.ReSharperRunner.Provider
 
         public override IDeclaredElement GetDeclaredElement()
         {
-            return ReSharperReflectionPolicy.GetDeclaredElement(test.CodeElement);
+            return declaredElementResolver.ResolveDeclaredElement();
         }
 
 #if RESHARPER_31
@@ -157,7 +227,7 @@ namespace Gallio.ReSharperRunner.Provider
 
         public bool Equals(GallioTestElement other)
         {
-            return other != null && test.Id == other.test.Id;
+            return other != null && testId == other.testId;
         }
 
         public override bool Equals(object obj)
@@ -167,7 +237,7 @@ namespace Gallio.ReSharperRunner.Provider
 
         public override int GetHashCode()
         {
-            return test.Id.GetHashCode();
+            return testId.GetHashCode();
         }
 
         public int CompareTo(GallioTestElement other)
@@ -196,7 +266,7 @@ namespace Gallio.ReSharperRunner.Provider
             }
 
             // No common ancestor, compare test ids.
-            return test.Id.CompareTo(other.Test.Id);
+            return testId.CompareTo(other.testId);
         }
 
         public int CompareTo(object obj)
@@ -208,17 +278,6 @@ namespace Gallio.ReSharperRunner.Provider
         public override string ToString()
         {
             return GetTitle();
-        }
-
-        private void PopulateMetadata()
-        {
-            IList<string> categories = test.Metadata[MetadataKeys.Category];
-            if (categories.Count != 0)
-                AssignCategories(categories);
-
-            string reason = test.Metadata.GetValue(MetadataKeys.IgnoreReason);
-            if (reason != null)
-                SetExplicit(reason);
         }
     }
 }

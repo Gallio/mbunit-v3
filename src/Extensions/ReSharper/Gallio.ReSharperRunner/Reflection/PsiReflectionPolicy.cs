@@ -641,6 +641,8 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.Static, fieldHandle.IsStatic);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.InitOnly, fieldHandle.IsReadonly);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.Literal, fieldHandle.IsConstant);
             return flags;
         }
 
@@ -892,10 +894,15 @@ namespace Gallio.ReSharperRunner.Reflection
         protected override StaticAssemblyWrapper GetTypeAssembly(StaticDeclaredTypeWrapper type)
         {
             ITypeElement typeHandle = (ITypeElement)type.Handle;
+            return WrapModule(GetModule(typeHandle));
+        }
+
+        private IModule GetModule(IDeclaredElement declaredElement)
+        {
 #if RESHARPER_31 || RESHARPER_40 || RESHARPER_41
-            return WrapModule(typeHandle.Module);
+            return declaredElement.Module;
 #else
-            return WrapModule(typeHandle.Module.ContainingProjectModule);
+            return declaredElement.Module.ContainingProjectModule;
 #endif
         }
 
@@ -1264,10 +1271,11 @@ namespace Gallio.ReSharperRunner.Reflection
         }
         #endregion
 
-        #region GetDeclaredElement and GetProject
-        protected override IDeclaredElement GetDeclaredElement(StaticWrapper element)
+        #region GetDeclaredElementResolver and GetProject
+        protected override IDeclaredElementResolver GetDeclaredElementResolver(StaticWrapper element)
         {
-            return element.Handle as IDeclaredElement;
+            IDeclaredElement declaredElement = GetDeclaredElement(element);
+            return new DeclaredElementResolver(declaredElement);
         }
 
         protected override IProject GetProject(StaticWrapper element)
@@ -1277,7 +1285,27 @@ namespace Gallio.ReSharperRunner.Reflection
                 return project;
 
             IDeclaredElement declaredElement = GetDeclaredElement(element);
-            return declaredElement != null && declaredElement.IsValid() ? declaredElement.Module as IProject : null;
+            return declaredElement != null && declaredElement.IsValid() ? GetModule(declaredElement) as IProject : null;
+        }
+
+        private IDeclaredElement GetDeclaredElement(StaticWrapper element)
+        {
+            return element.Handle as IDeclaredElement;
+        }
+
+        private sealed class DeclaredElementResolver : IDeclaredElementResolver
+        {
+            private IDeclaredElement declaredElement;
+
+            public DeclaredElementResolver(IDeclaredElement declaredElement)
+            {
+                this.declaredElement = declaredElement;
+            }
+
+            public IDeclaredElement ResolveDeclaredElement()
+            {
+                return declaredElement;
+            }
         }
         #endregion
 

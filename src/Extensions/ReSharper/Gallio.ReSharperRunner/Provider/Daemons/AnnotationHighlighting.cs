@@ -22,14 +22,14 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 {
     internal abstract class AnnotationHighlighting : IHighlighting
     {
-        private readonly Annotation annotation;
+        private readonly AnnotationState annotation;
 
-        protected AnnotationHighlighting(Annotation annotation)
+        protected AnnotationHighlighting(AnnotationState annotation)
         {
             this.annotation = annotation;
         }
 
-        public static AnnotationHighlighting CreateHighlighting(Annotation annotation)
+        public static AnnotationHighlighting CreateHighlighting(AnnotationState annotation)
         {
             switch (annotation.Type)
             {

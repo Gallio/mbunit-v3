@@ -44,9 +44,7 @@ namespace Gallio.ReSharperRunner.Provider
         {
             item.Clear();
 
-            ITest test = value.Test;
-
-            item.RichText = test.Name;
+            item.RichText = value.TestName;
 
             if (value.IsExplicit)
                 item.RichText.SetForeColor(SystemColors.GrayText);
@@ -54,12 +52,12 @@ namespace Gallio.ReSharperRunner.Provider
             Image image = UnitTestManager.GetStateImage(state);
 
             if (image == null)
-                image = UnitTestManager.GetStandardImage(test.IsTestCase ? UnitTestElementImage.Test : UnitTestElementImage.TestCategory);
+                image = UnitTestManager.GetStandardImage(value.IsTestCase ? UnitTestElementImage.Test : UnitTestElementImage.TestCategory);
 
             if (image != null)
                 item.Images.Add(image);
 
-            if (! test.IsTestCase)
+            if (! value.IsTestCase)
                 AppendOccurencesCount(item, modelNode, "test");
         }
     }

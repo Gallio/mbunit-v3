@@ -126,6 +126,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Provider\AnnotationState.cs" />
     <Compile Include="Provider\EnvironmentManager.cs" />
     <Compile Include="Provider\Actions\ShowFullReportAction.cs" />
     <Compile Include="Provider\Actions\ShowCondensedReportAction.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Provider\Tasks\GallioTestItemTask.cs" />
     <Compile Include="Provider\Tasks\GallioTestRunTask.cs" />
     <Compile Include="Provider\Facade\TaskExceptionFactory.cs" />
+    <Compile Include="Reflection\IDeclaredElementResolver.cs" />
     <Compile Include="Runtime\ReSharperLogger.cs" />
     <Compile Include="Reflection\MetadataReflectionPolicy.cs" />
     <Compile Include="Reflection\PsiReflectionPolicy.cs" />

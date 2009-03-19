@@ -16,10 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.ReSharperRunner.Provider.Daemons;
 using JetBrains.ProjectModel;
-using JetBrains.Util;
 
 namespace Gallio.ReSharperRunner.Provider
 {
@@ -30,16 +30,21 @@ namespace Gallio.ReSharperRunner.Provider
     /// </summary>
     internal class ProjectFileState
     {
-        private static readonly Key<ProjectFileState> key = new Key<ProjectFileState>(typeof(ProjectFileState).Name);
-        private readonly IList<Annotation> annotations;
+        private static readonly JetBrains.Util.Key<ProjectFileState> key = new JetBrains.Util.Key<ProjectFileState>(typeof(ProjectFileState).Name);
+        private readonly IList<AnnotationState> annotations;
+
+        private ProjectFileState(IList<AnnotationState> annotations)
+        {
+            this.annotations = annotations;
+        }
 
         /// <summary>
         /// Creates a state object with the specified annotations. 
         /// </summary>
         /// <param name="annotations">The annotations</param>
-        public ProjectFileState(IList<Annotation> annotations)
+        public static ProjectFileState CreateFromAnnotations(IList<Annotation> annotations)
         {
-            this.annotations = new System.Collections.ObjectModel.ReadOnlyCollection<Annotation>(annotations);
+            return new ProjectFileState(GenericUtils.ConvertAllToArray<Annotation, AnnotationState>(annotations, AnnotationState.CreateFromAnnotation));
         }
 
         /// <summary>
@@ -65,7 +70,7 @@ namespace Gallio.ReSharperRunner.Provider
         /// <summary>
         /// Gets a readonly list of annotations.
         /// </summary>
-        public IList<Annotation> Annotations
+        public IList<AnnotationState> Annotations
         {
             get { return annotations; }
         }

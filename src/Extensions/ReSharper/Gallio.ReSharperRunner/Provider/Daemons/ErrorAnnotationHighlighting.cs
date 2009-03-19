@@ -24,7 +24,7 @@ namespace Gallio.ReSharperRunner.Provider.Daemons
 #endif
     internal sealed class ErrorAnnotationHighlighting : AnnotationHighlighting
     {
-        public ErrorAnnotationHighlighting(Annotation annotation)
+        public ErrorAnnotationHighlighting(AnnotationState annotation)
             : base(annotation)
         {
         }

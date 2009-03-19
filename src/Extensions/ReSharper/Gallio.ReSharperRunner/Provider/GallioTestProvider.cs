@@ -212,16 +212,19 @@ namespace Gallio.ReSharperRunner.Provider
                 if (consumer == null)
                     throw new ArgumentNullException("consumer");
 
-                MetadataReflectionPolicy reflectionPolicy = new MetadataReflectionPolicy(assembly, project);
-                IAssemblyInfo assemblyInfo = reflectionPolicy.Wrap(assembly);
-
-                if (assemblyInfo != null)
+                using (ReadLockCookie.Create())
                 {
-                    ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
-                    ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
+                    MetadataReflectionPolicy reflectionPolicy = new MetadataReflectionPolicy(assembly, project);
+                    IAssemblyInfo assemblyInfo = reflectionPolicy.Wrap(assembly);
 
-                    explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
-                    explorer.FinishModel();
+                    if (assemblyInfo != null)
+                    {
+                        ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer);
+                        ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
+
+                        explorer.ExploreAssembly(assemblyInfo, consumerAdapter.Consume);
+                        explorer.FinishModel();
+                    }
                 }
             }
 
@@ -250,30 +253,33 @@ namespace Gallio.ReSharperRunner.Provider
                 if (consumer == null)
                     throw new ArgumentNullException("consumer");
 
-                PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
-                ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer, psiFile);
-                ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
-
-                psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
+                using (ReadLockCookie.Create())
                 {
-                    ITypeDeclaration declaration = element as ITypeDeclaration;
-                    if (declaration != null)
-                        ExploreTypeDeclaration(reflectionPolicy, explorer, declaration, consumerAdapter.Consume);
-                }, delegate(IElement element)
-                {
-                    if (interrupted())
-                        throw new ProcessCancelledException();
+                    PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
+                    ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer, psiFile);
+                    ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
 
-                    // Stop recursing at the first type declaration found.
-                    return element is ITypeDeclaration;
-                }));
+                    psiFile.ProcessDescendants(new OneActionProcessorWithoutVisit(delegate(IElement element)
+                    {
+                        ITypeDeclaration declaration = element as ITypeDeclaration;
+                        if (declaration != null)
+                            ExploreTypeDeclaration(reflectionPolicy, explorer, declaration, consumerAdapter.Consume);
+                    }, delegate(IElement element)
+                    {
+                        if (interrupted())
+                            throw new ProcessCancelledException();
 
-                // Note: We don't call FinishModel because we know the model will be incomplete.
+                        // Stop recursing at the first type declaration found.
+                        return element is ITypeDeclaration;
+                    }));
 
-                ProjectFileState state = explorer.TestModel.Annotations.Count != 0
-                    ? new ProjectFileState(explorer.TestModel.Annotations)
-                    : null;
-                ProjectFileState.SetFileState(psiFile.GetProjectFile(), state);
+                    // Note: We don't call FinishModel because it is ok for the model to be incomplete.
+
+                    ProjectFileState state = explorer.TestModel.Annotations.Count != 0
+                        ? ProjectFileState.CreateFromAnnotations(explorer.TestModel.Annotations)
+                        : null;
+                    ProjectFileState.SetFileState(psiFile.GetProjectFile(), state);
+                }
             }
 
             private static void ExploreTypeDeclaration(PsiReflectionPolicy reflectionPolicy, ITestExplorer explorer, ITypeDeclaration declaration, Action<ITest> consumer)
@@ -295,13 +301,16 @@ namespace Gallio.ReSharperRunner.Provider
                 if (element == null)
                     throw new ArgumentNullException("element");
 
-                PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
-                ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
-                if (elementInfo == null)
-                    return false;
+                using (ReadLockCookie.Create())
+                {
+                    PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
+                    ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
+                    if (elementInfo == null)
+                        return false;
 
-                ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
-                return explorer.IsTest(elementInfo);
+                    ITestExplorer explorer = CreateTestExplorer(reflectionPolicy);
+                    return explorer.IsTest(elementInfo);
+                }
             }
 
             /// <summary>
@@ -388,38 +397,30 @@ namespace Gallio.ReSharperRunner.Provider
                 // Add the assembly location.
                 tasks.Add(new UnitTestTask(null, FacadeUtils.ToRemoteTask(new GallioTestAssemblyTask(topElement.GetAssemblyLocation()))));
 
-                // Add explicit element markers.
-                foreach (GallioTestElement explicitElement in explicitElements)
-                    tasks.Add(new UnitTestTask(null, FacadeUtils.ToRemoteTask(new GallioTestExplicitTask(explicitElement.Test.Id))));
+                if (explicitElements.Count != 0)
+                {
+                    // Add explicit element markers.
+                    foreach (GallioTestElement explicitElement in explicitElements)
+                        tasks.Add(new UnitTestTask(null,
+                            FacadeUtils.ToRemoteTask(new GallioTestExplicitTask(explicitElement.TestId))));
+                }
+                else
+                {
+                    // No explicit elements but we must have at least one to filter by, so we consider
+                    // the top test explicitly selected.
+                    tasks.Add(new UnitTestTask(null, FacadeUtils.ToRemoteTask(new GallioTestExplicitTask(topElement.TestId))));
+                }
 
                 return tasks;
             }
 
             private static void AddTestTasksFromRootToLeaf(List<UnitTestTask> tasks, GallioTestElement element)
             {
-                // This is disabled right now because R# does weird things with the test tree
-                // It introduces additional bogus top-level notes in the Unit Test Session.
-                //
-                // To reproduce:
-                //   Run a test by clicking on the Run Test action in the margin of a test editor.
-                //   Modify the test.
-                //   Switch to Projects and Namespaces view.
-                //   Then click Run All Tests from within the Unit Test Session.
-                //
-                // Notice:
-                //   The first time, all is well.
-                //   The second time, a new node for the test fixture's containing namespace is created at the top level.
-                //   so the fixture will appear twice, once under its project and once under the duplicate namespace.
-                /*
                 GallioTestElement parentElement = element.Parent as GallioTestElement;
                 if (parentElement != null)
                     AddTestTasksFromRootToLeaf(tasks, parentElement);
-                 */
 
-                if (!element.Test.IsTestCase)
-                    return; // workaround
-
-                tasks.Add(new UnitTestTask(element, FacadeUtils.ToRemoteTask(new GallioTestItemTask(element.Test.Id))));
+                tasks.Add(new UnitTestTask(element, FacadeUtils.ToRemoteTask(new GallioTestItemTask(element.TestId))));
             }
 
             /// <summary>
@@ -484,7 +485,7 @@ namespace Gallio.ReSharperRunner.Provider
             private sealed class ConsumerAdapter
             {
                 private readonly IUnitTestProvider provider;
-                private readonly Dictionary<ITest, UnitTestElement> tests = new Dictionary<ITest, UnitTestElement>();
+                private readonly Dictionary<ITest, GallioTestElement> tests = new Dictionary<ITest, GallioTestElement>();
                 private readonly UnitTestElementConsumer consumer;
 
                 public ConsumerAdapter(IUnitTestProvider provider, UnitTestElementConsumer consumer)
@@ -516,50 +517,41 @@ namespace Gallio.ReSharperRunner.Provider
                     Consume(test, null);
                 }
 
-                private void Consume(ITest test, UnitTestElement parentElement)
+                private void Consume(ITest test, GallioTestElement parentElement)
                 {
-                    UnitTestElement element;
-
-                    if (ShouldTestBePresented(test))
-                    {
-                        element = MapTest(test, parentElement);
-                        consumer(element);
-                    }
-                    else
-                    {
-                        element = null;
-                    }
-
-                    foreach (ITest childTest in test.Children)
-                        Consume(childTest, element);
-                }
-
-                private UnitTestElement MapTest(ITest test, UnitTestElement parentElement)
-                {
-                    UnitTestElement element;
+                    GallioTestElement element;
                     if (!tests.TryGetValue(test, out element))
                     {
-                        element = new GallioTestElement(test, provider, parentElement);
-                        tests.Add(test, element);
-                    }
+                        if (ShouldTestBePresented(test))
+                        {
+                            element = GallioTestElement.CreateFromTest(test, provider, parentElement);
+                            consumer(element);
+                        }
 
-                    return element;
+                        tests.Add(test, element);
+
+                        foreach (ITest child in test.Children)
+                            Consume(child, element);
+                    }
                 }
 
                 /// <summary>
                 /// ReSharper does not know how to present tests with a granularity any
-                /// larger than a namespace.  The tree it shows to users in such cases is
-                /// not very helpful because it appear that the root test is a child of the
+                /// larger than a type.  The tree it shows to users in such cases is
+                /// not very helpful because it appears that the root test is a child of the
                 /// project that resides in the root namespace.  So we filter out
                 /// certain kinds of tests from view.
                 /// </summary>
                 private static bool ShouldTestBePresented(ITest test)
                 {
-                    switch (test.Metadata.GetValue(MetadataKeys.TestKind))
+                    ICodeElementInfo codeElement = test.CodeElement;
+                    if (codeElement == null)
+                        return false;
+
+                    switch (codeElement.Kind)
                     {
-                        case TestKinds.Root:
-                        case TestKinds.Framework:
-                        case TestKinds.Assembly:
+                        case CodeElementKind.Assembly:
+                        case CodeElementKind.Namespace:
                             return false;
 
                         default:

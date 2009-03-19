@@ -39,16 +39,16 @@ namespace Gallio.ReSharperRunner.Reflection
     public abstract class ReSharperReflectionPolicy : StaticReflectionPolicy
     {
         /// <summary>
-        /// Gets the declared element associated with the code element, or null if none.
+        /// Gets the declared element resolver associated with the code element, or null if none.
         /// </summary>
-        public static IDeclaredElement GetDeclaredElement(ICodeElementInfo codeElement)
+        public static IDeclaredElementResolver GetDeclaredElementResolver(ICodeElementInfo codeElement)
         {
             StaticWrapper element = codeElement as StaticWrapper;
             if (element == null)
                 return null;
 
             ReSharperReflectionPolicy policy = element.Policy as ReSharperReflectionPolicy;
-            return policy != null ? policy.GetDeclaredElement(element) : null;
+            return policy != null ? policy.GetDeclaredElementResolver(element) : null;
         }
 
         /// <summary>
@@ -65,9 +65,9 @@ namespace Gallio.ReSharperRunner.Reflection
         }
 
         /// <summary>
-        /// Gets the declared element associated with the code element, or null if none.
+        /// Gets the declared element resolver associated with the code element, or null if none.
         /// </summary>
-        protected abstract IDeclaredElement GetDeclaredElement(StaticWrapper element);
+        protected abstract IDeclaredElementResolver GetDeclaredElementResolver(StaticWrapper element);
 
         /// <summary>
         /// Gets the project to which a code element belongs, or null if none.
