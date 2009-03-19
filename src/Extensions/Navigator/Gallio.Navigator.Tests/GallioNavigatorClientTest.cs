@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EnvDTE;
+using Gallio.VisualStudio.Interop;
 using MbUnit.Framework;
 using Rhino.Mocks;
 

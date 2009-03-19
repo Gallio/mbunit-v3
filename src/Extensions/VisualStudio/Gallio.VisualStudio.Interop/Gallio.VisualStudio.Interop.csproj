@@ -55,13 +55,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComRetryMessageFilter.cs" />
+    <Compile Include="IVisualStudio.cs" />
+    <Compile Include="IVisualStudioManager.cs" />
     <Compile Include="Native\IOleMessageFilter.cs" />
     <Compile Include="Native\NativeConstants.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\SERVERCALL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VisualStudioException.cs" />
+    <Compile Include="VisualStudio.cs" />
     <Compile Include="VisualStudioDebugger.cs" />
-    <Compile Include="VisualStudioSupport.cs" />
+    <Compile Include="VisualStudioManager.cs" />
+    <Compile Include="VisualStudioVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gallio.VisualStudio.Interop.plugin" />
@@ -75,7 +80,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <GallioProjectOutputPath>..\..\..\Gallio\Gallio\bin</GallioProjectOutputPath>
-  </PropertyGroup>  
+  </PropertyGroup>
   <Target Name="BeforeBuild">
     <Delete Files="$(GallioProjectOutputPath)\$(TargetFileName)" Condition="Exists('$(GallioProjectOutputPath)\$(TargetFileName)')" />
   </Target>

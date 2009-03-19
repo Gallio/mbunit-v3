@@ -15,6 +15,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Gallio.VisualStudio.Interop.Native
 {
@@ -33,6 +34,12 @@ namespace Gallio.VisualStudio.Interop.Native
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+        public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("ole32.dll")]
+        public static extern int GetRunningObjectTable(uint reserved, out IRunningObjectTable pprot);
+
+        [DllImport("ole32.dll")]
+        public static extern int CreateBindCtx(uint reserved, out IBindCtx pctx);
     }
 }

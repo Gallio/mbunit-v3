@@ -30,17 +30,17 @@ namespace Gallio.VisualStudio.Shell.Tests
     [AssemblyFixture]
     public static class VisualStudioTestHarness
     {
-        private static DTE2 dte;
+        private static IVisualStudio visualStudio;
 
         /// <summary>
-        /// Gets an instance of the Visual Studio 9 DTE.
+        /// Gets an instance of Visual Studio.
         /// </summary>
-        public static DTE2 GetDTE()
+        public static IVisualStudio GetVisualStudio()
         {
-            if (dte == null)
-                dte = (DTE2) VisualStudioSupport.LaunchVisualStudio9();
+            if (visualStudio == null)
+                visualStudio = VisualStudioManager.Instance.LaunchVisualStudio(VisualStudioVersion.VS2008);
 
-            return dte;
+            return visualStudio;
         }
 
         public static Solution OpenSolutionIfNeeded()
@@ -48,11 +48,16 @@ namespace Gallio.VisualStudio.Shell.Tests
             string solutionPath = Path.Combine(Path.GetDirectoryName(
                 AssemblyUtils.GetAssemblyLocalPath(typeof(VisualStudioTestHarness).Assembly)), @"..\TestSolution.sln");
 
-            DTE2 dte = GetDTE();
-            if (! dte.Solution.IsOpen)
-                dte.Solution.Open(solutionPath);
+            Solution solution = null;
+            visualStudio.Call(dte =>
+            {
+                if (!dte.Solution.IsOpen)
+                    dte.Solution.Open(solutionPath);
 
-            return dte.Solution;
+                solution = dte.Solution;
+            });
+
+            return solution;
         }
 
         [FixtureSetUp]
@@ -66,10 +71,10 @@ namespace Gallio.VisualStudio.Shell.Tests
         {
             try
             {
-                if (dte != null)
+                if (visualStudio != null)
                 {
-                    dte.Quit();
-                    dte = null;
+                    visualStudio.Call(dte => dte.Quit());
+                    visualStudio = null;
                 }
             }
             finally

@@ -33,12 +33,16 @@ namespace Gallio.VisualStudio.Interop
             bool result = false;
             try
             {
-                VisualStudioSupport.RunWithVisualStudio(dte =>
+                IVisualStudio visualStudio = VisualStudioManager.Instance.GetVisualStudio(VisualStudioVersion.Any, false);
+                if (visualStudio == null)
+                    return false;
+
+                visualStudio.Call(dte =>
                 {
                     EnvDTE.Process dteProcess = FindProcess(dte.Debugger.DebuggedProcesses, process);
                     if (dteProcess != null)
                         result = true;
-                }, TimeSpan.FromSeconds(0.1), true);
+                });
             }
             catch (ApplicationException)
             {
@@ -56,23 +60,27 @@ namespace Gallio.VisualStudio.Interop
             AttachDebuggerResult result = AttachDebuggerResult.CouldNotAttach;
             try
             {
-                VisualStudioSupport.RunWithVisualStudio(dte =>
+                IVisualStudio visualStudio = VisualStudioManager.Instance.GetVisualStudio(VisualStudioVersion.Any, true);
+                if (visualStudio != null)
                 {
-                    EnvDTE.Process dteProcess = FindProcess(dte.Debugger.DebuggedProcesses, process);
-                    if (dteProcess != null)
+                    visualStudio.Call(dte =>
                     {
-                        result = AttachDebuggerResult.AlreadyAttached;
-                    }
-                    else
-                    {
-                        dteProcess = FindProcess(dte.Debugger.LocalProcesses, process);
+                        EnvDTE.Process dteProcess = FindProcess(dte.Debugger.DebuggedProcesses, process);
                         if (dteProcess != null)
                         {
-                            dteProcess.Attach();
-                            result = AttachDebuggerResult.Attached;
+                            result = AttachDebuggerResult.AlreadyAttached;
                         }
-                    }
-                }, TimeSpan.FromSeconds(30), true);
+                        else
+                        {
+                            dteProcess = FindProcess(dte.Debugger.LocalProcesses, process);
+                            if (dteProcess != null)
+                            {
+                                dteProcess.Attach();
+                                result = AttachDebuggerResult.Attached;
+                            }
+                        }
+                    });
+                }
             }
             catch (ApplicationException)
             {
@@ -90,15 +98,19 @@ namespace Gallio.VisualStudio.Interop
             DetachDebuggerResult result = DetachDebuggerResult.AlreadyDetached;
             try
             {
-                VisualStudioSupport.RunWithVisualStudio(dte =>
+                IVisualStudio visualStudio = VisualStudioManager.Instance.GetVisualStudio(VisualStudioVersion.Any, false);
+                if (visualStudio != null)
                 {
-                    EnvDTE.Process dteProcess = FindProcess(dte.Debugger.DebuggedProcesses, process);
-                    if (dteProcess != null)
+                    visualStudio.Call(dte =>
                     {
-                        dteProcess.Detach(false);
-                        result = DetachDebuggerResult.Detached;
-                    }
-                }, TimeSpan.FromSeconds(30), false);
+                        EnvDTE.Process dteProcess = FindProcess(dte.Debugger.DebuggedProcesses, process);
+                        if (dteProcess != null)
+                        {
+                            dteProcess.Detach(false);
+                            result = DetachDebuggerResult.Detached;
+                        }
+                    });
+                }
             }
             catch (ApplicationException)
             {

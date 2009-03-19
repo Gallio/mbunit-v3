@@ -30,6 +30,29 @@ namespace Gallio.Navigator
     /// </summary>
     public class GallioNavigatorImpl : IGallioNavigator
     {
+        private readonly IVisualStudioManager visualStudioManager;
+
+        /// <summary>
+        /// Creates a navigator.
+        /// </summary>
+        /// <param name="visualStudioManager">The visual studio manager</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="visualStudioManager"/> is null</exception>
+        public GallioNavigatorImpl(IVisualStudioManager visualStudioManager)
+        {
+            if (visualStudioManager == null)
+                throw new ArgumentNullException("visualStudioManager");
+
+            this.visualStudioManager = visualStudioManager;
+        }
+
+        /// <summary>
+        /// Creates a navigator.
+        /// </summary>
+        public GallioNavigatorImpl()
+            : this(VisualStudioManager.Instance)
+        {
+        }
+
         /// <inheritdoc />
         public bool NavigateTo(string path, int lineNumber, int columnNumber)
         {
@@ -59,11 +82,13 @@ namespace Gallio.Navigator
             }
         }
 
-        private static bool NavigateToImpl(string path, int lineNumber, int columnNumber)
+        private bool NavigateToImpl(string path, int lineNumber, int columnNumber)
         {
             path = Path.GetFullPath(path);
 
-            VisualStudioSupport.RunWithVisualStudio(dte =>
+            IVisualStudio visualStudio = visualStudioManager.GetVisualStudio(VisualStudioVersion.Any, true);
+
+            visualStudio.Call(dte =>
             {
                 Window window = OpenFile(dte, path);
                 if (window == null)
@@ -78,9 +103,9 @@ namespace Gallio.Navigator
 
                 window.Activate();
                 window.Visible = true;
+            });
 
-                VisualStudioSupport.BringVisualStudioToFront(dte);
-            }, TimeSpan.FromSeconds(30), true);
+            visualStudio.BringToFront();
 
             return true;
         }
