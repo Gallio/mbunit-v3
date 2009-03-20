@@ -216,7 +216,7 @@ namespace Gallio.ReSharperRunner.Provider
 #if RESHARPER_31
         public override bool Matches(string filter)
         {
-            if (test.Name.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0)
+            if (testName.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0)
                 return true;
 
             GallioTestElement parent = Parent as GallioTestElement;
