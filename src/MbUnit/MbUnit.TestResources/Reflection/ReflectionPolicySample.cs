@@ -91,7 +91,8 @@ namespace MbUnit.TestResources.Reflection
 
             public const int Constant = 42;
 
-            public volatile int VolatileField;
+            // Causes Cecil to throw NotSupportedException.
+            //public volatile int VolatileField;
 
             public readonly int ReadOnlyField = 42;
 

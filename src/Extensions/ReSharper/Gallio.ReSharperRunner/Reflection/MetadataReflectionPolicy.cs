@@ -380,7 +380,7 @@ namespace Gallio.ReSharperRunner.Reflection
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.Public, fieldHandle.IsPublic);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.SpecialName, fieldHandle.IsSpecialName);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.Static, fieldHandle.IsStatic);
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.Literal, fieldHandle.IsLiteral);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.Literal | FieldAttributes.HasDefault, fieldHandle.IsLiteral);
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.InitOnly, fieldHandle.IsInitOnly);
             return flags;
         }

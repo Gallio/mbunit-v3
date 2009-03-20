@@ -641,8 +641,8 @@ namespace Gallio.ReSharperRunner.Reflection
             }
 
             ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.Static, fieldHandle.IsStatic);
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.InitOnly, fieldHandle.IsReadonly);
-            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.Literal, fieldHandle.IsConstant);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.InitOnly, fieldHandle.IsReadonly && ! fieldHandle.IsConstant);
+            ReflectorFlagsUtils.AddFlagIfTrue(ref flags, FieldAttributes.Literal | FieldAttributes.HasDefault, fieldHandle.IsConstant);
             return flags;
         }
 
