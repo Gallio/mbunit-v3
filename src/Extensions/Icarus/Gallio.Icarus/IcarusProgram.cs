@@ -96,17 +96,13 @@ namespace Gallio.Icarus
 
                     var reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
 
-                    IMediator mediator = new Mediator.Mediator
-                                             {
-                                                 ProjectController =
-                                                     new ProjectController(new ProjectTreeModel(Paths.DefaultProject,
-                                                                                                new Project()),
-                                                                           new FileSystem(), new DefaultXmlSerializer()),
-                                                 TestController = testController,
-                                                 ReportController =
-                                                     new ReportController(new ReportService(reportManager),
-                                                                          new FileSystem())
-                                             };
+                    IMediator mediator = new Mediator.Mediator 
+                    { 
+                        ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, new Project()), 
+                            optionsController, new FileSystem(), new DefaultXmlSerializer()), 
+                        TestController = testController, 
+                        ReportController = new ReportController(new ReportService(reportManager), new FileSystem())
+                    };
                     mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController,
                         optionsController);
                     mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
@@ -133,8 +129,14 @@ namespace Gallio.Icarus
                             }
                             mediator.AddAssemblies(assemblyFiles);
                         }
-                        else if (optionsController.RestorePreviousSettings && File.Exists(Paths.DefaultProject))
-                            mediator.OpenProject(Paths.DefaultProject);
+                        else if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
+                        {
+                            string projectName = optionsController.RecentProjects.Items[0];
+                            if (File.Exists(projectName))
+                                mediator.OpenProject(projectName);
+                            else
+                                optionsController.RecentProjects.Items.Remove(projectName);
+                        }
                     };
 
                     Application.Run(main);

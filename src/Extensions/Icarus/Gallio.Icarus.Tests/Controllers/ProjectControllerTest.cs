@@ -16,7 +16,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Icarus.Controllers;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
@@ -28,7 +30,7 @@ using Rhino.Mocks;
 namespace Gallio.Icarus.Tests.Controllers
 {
     [Category("Controllers"), Author("Graham Hay")]
-    class ProjectControllerTest : MockTest
+    class ProjectControllerTest
     {
         [Test]
         public void AddAssemblies_Test()
@@ -42,8 +44,9 @@ namespace Gallio.Icarus.Tests.Controllers
             fileSystem.Stub(fs => fs.FileExists(fileName)).Return(true);
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
 
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerializer);
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
             Assert.AreEqual(0, projectController.TestPackageConfig.AssemblyFiles.Count);
             projectController.AddAssemblies(list, progressMonitor);
             
@@ -54,16 +57,16 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void DeleteFilter_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             Project project = new Project();
-            Expect.Call(projectTreeModel.Project).Return(project).Repeat.Times(4);
-            IProgressMonitor progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            Expect.Call(progressMonitor.BeginTask("Deleting filter", 1)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.Done();
-            mocks.ReplayAll();
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            projectTreeModel.Project = project;
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             Assert.AreEqual(0, projectController.TestFilters.Count);
             FilterInfo filterInfo = new FilterInfo("filterName", new NoneFilter<ITest>().ToFilterExpr());
             projectController.TestFilters.Add(filterInfo);
@@ -75,16 +78,16 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void GetFilter_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             Project project = new Project();
-            Expect.Call(projectTreeModel.Project).Return(project).Repeat.Times(3);
+            projectTreeModel.Project = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            IProgressMonitor progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            Expect.Call(progressMonitor.BeginTask("Getting filter", 1)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.Done();
-            mocks.ReplayAll();
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             Assert.AreEqual(0, projectController.TestFilters.Count);
             FilterInfo filterInfo = new FilterInfo("filterName", new NoneFilter<ITest>().ToFilterExpr());
             projectController.TestFilters.Add(filterInfo);
@@ -95,16 +98,16 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void GetInvalidFilter_Test()
         {
-            var projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var project = new Project();
-            Expect.Call(projectTreeModel.Project).Return(project);
+            projectTreeModel.Project = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            Expect.Call(progressMonitor.BeginTask("Getting filter", 1)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.Done();
-            mocks.ReplayAll();
-            var projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             Assert.AreEqual(0, projectController.TestFilters.Count);
             Assert.IsNull(projectController.GetFilter("filterName", progressMonitor));
         }
@@ -112,61 +115,68 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void Model_Test()
         {
-            var projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            mocks.ReplayAll();
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             Assert.AreEqual(projectTreeModel, projectController.Model);
         }
 
         [Test]
         public void TestPackageConfig_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             Project project = new Project();
-            Expect.Call(projectTreeModel.Project).Return(project);
+            projectTreeModel.Project = project;
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
 
-            mocks.ReplayAll();
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
 
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
             Assert.AreEqual(project.TestPackageConfig, projectController.TestPackageConfig);
         }
 
         [Test]
         public void TestFilters_Test()
         {
-            var projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            mocks.ReplayAll();
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             Assert.AreEqual(0, projectController.TestFilters.Count);
         }
 
         [Test]
         public void HintDirectories_Test()
         {
-            IProjectTreeModel projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            mocks.ReplayAll();
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
             Assert.AreEqual(0, projectController.HintDirectories.Count);
         }
 
         [Test]
         public void ProjectFileName_Test()
         {
-            var projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             const string fileName = "fileName";
-            Expect.Call(projectTreeModel.FileName).Return(fileName);
-            mocks.ReplayAll();
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            projectTreeModel.FileName = fileName;
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             Assert.AreEqual(fileName, projectController.ProjectFileName);
         }
 
@@ -175,11 +185,13 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
             progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            mocks.ReplayAll();
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             projectController.PropertyChanged += ((sender, e) => Assert.AreEqual("TestPackageConfig", e.PropertyName));
             projectController.NewProject(progressMonitor);
             Assert.AreEqual(Paths.DefaultProject, projectTreeModel.FileName);
@@ -190,33 +202,33 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void RemoveAllAssemblies_Test()
         {
-            var projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            Expect.Call(projectTreeModel.Project).Return(new Project());
-            IProgressMonitor progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            mocks.ReplayAll();
-            ProjectController projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            projectTreeModel.Project = new Project();
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             projectController.RemoveAllAssemblies(progressMonitor);
         }
 
         [Test]
         public void RemoveAssembly_Test()
         {
-            var projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             var project = new Project();
             const string fileName = "test";
             project.TestPackageConfig.AssemblyFiles.Add(fileName);
-            Expect.Call(projectTreeModel.Project).Return(project);
-            
+            projectTreeModel.Project = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            
-            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            
-            mocks.ReplayAll();
-            
-            var projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             Assert.AreEqual(1, project.TestPackageConfig.AssemblyFiles.Count);
             
             projectController.RemoveAssembly(fileName, progressMonitor);
@@ -226,13 +238,15 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void SaveFilter_Test()
         {
-            var projectTreeModel = mocks.StrictMock<IProjectTreeModel>();
-            Expect.Call(projectTreeModel.Project).Return(new Project()).Repeat.Twice();
+            var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
+            projectTreeModel.Project = new Project();
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            mocks.ReplayAll();
-            var projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             Assert.AreEqual(0, projectController.TestFilters.Count);
             projectController.SaveFilter("filterName", new NoneFilter<ITest>(), progressMonitor);
             Assert.AreEqual(1, projectController.TestFilters.Count);
@@ -247,13 +261,20 @@ namespace Gallio.Icarus.Tests.Controllers
             Project project = new Project();
             projectTreeModel.Project = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
-            var projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var mruList = new MRUList(new List<string>(), 10);
+            optionsController.Stub(oc => oc.RecentProjects).Return(mruList);
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             const string projectName = "projectName";
             projectController.SaveProject(projectName, progressMonitor);
-            xmlSerialization.AssertWasCalled(x => x.SaveToXml(Arg<UserOptions>.Is.Anything, 
+            xmlSerializer.AssertWasCalled(x => x.SaveToXml(Arg<UserOptions>.Is.Anything, 
                 Arg.Is(projectName + ".user")));
+            Assert.AreEqual(1, mruList.Count);
+            Assert.IsTrue(mruList.Items.Contains(projectName));
         }
 
         [Test]
@@ -263,14 +284,18 @@ namespace Gallio.Icarus.Tests.Controllers
             Project project = new Project();
             projectTreeModel.Project = project;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
-            var projectController = new ProjectController(projectTreeModel, fileSystem, xmlSerialization);
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            optionsController.Stub(oc => oc.RecentProjects).Return(new MRUList(new List<string>(), 10));
+
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+
             projectController.SaveProject(string.Empty, progressMonitor);
 
             fileSystem.AssertWasCalled(fs => fs.DirectoryExists(Paths.IcarusAppDataFolder));
             fileSystem.AssertWasCalled(fs => fs.CreateDirectory(Paths.IcarusAppDataFolder));
-            xmlSerialization.AssertWasCalled(xs => xs.SaveToXml(Arg<UserOptions>.Is.Anything, 
+            xmlSerializer.AssertWasCalled(xs => xs.SaveToXml(Arg<UserOptions>.Is.Anything, 
                 Arg.Is(Paths.DefaultProject + ".user")));
         }
     }

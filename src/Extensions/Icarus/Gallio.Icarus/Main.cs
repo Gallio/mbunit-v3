@@ -150,10 +150,11 @@ namespace Gallio.Icarus
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
-            });
 
-            if (mediator.TestController.FailedTests)
-                Activate();
+                // notify the user if tests have failed!
+                if (mediator.TestController.FailedTests)
+                    Activate();
+            });
         }
 
         private IDockContent GetContentFromPersistString(string persistString)
@@ -403,11 +404,12 @@ namespace Gallio.Icarus
             // save the current state of the test tree
             testExplorer.SaveState();
 
+            mediator.SaveProject(string.Empty);
+
+            // save window size & location for when we restore
             mediator.OptionsController.Size = Size;
             mediator.OptionsController.Location = Location;
             mediator.OptionsController.Save();
-
-            mediator.SaveProject(string.Empty);
 
             // save dock panel config
             dockPanel.SaveAsXml(Paths.DockConfigFile);

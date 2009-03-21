@@ -33,6 +33,7 @@ namespace Gallio.Icarus.Controllers
     public class ProjectController : IProjectController, INotifyPropertyChanged
     {
         private readonly IProjectTreeModel projectTreeModel;
+        private readonly IOptionsController optionsController;
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerializer xmlSerializer;
         private readonly BindingList<FilterInfo> testFilters;
@@ -40,6 +41,7 @@ namespace Gallio.Icarus.Controllers
         private readonly BindingList<string> hintDirectories;
         private readonly List<string> hintDirectoriesList = new List<string>();
         private readonly AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
+        private string currentProjectName = Paths.DefaultProject;
 
         public event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -87,10 +89,11 @@ namespace Gallio.Icarus.Controllers
             set;
         }
 
-        public ProjectController(IProjectTreeModel projectTreeModel, IFileSystem fileSystem, 
-            IXmlSerializer xmlSerializer)
+        public ProjectController(IProjectTreeModel projectTreeModel, IOptionsController optionsController, 
+            IFileSystem fileSystem, IXmlSerializer xmlSerializer)
         {
             this.projectTreeModel = projectTreeModel;
+            this.optionsController = optionsController;
             this.fileSystem = fileSystem;
             this.xmlSerializer = xmlSerializer;
 
@@ -191,6 +194,7 @@ namespace Gallio.Icarus.Controllers
                 Project project = projectUtils.LoadProject(projectName);
                 progressMonitor.Worked(50);
 
+                currentProjectName = projectName;
                 projectTreeModel.FileName = projectName;
                 projectTreeModel.Project = project;
 
@@ -227,19 +231,20 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Saving project", 100))
             {
-                // if no project name is specified, use the default project
                 if (string.IsNullOrEmpty(projectName))
-                {
-                    // create folder (if necessary)
-                    if (!fileSystem.DirectoryExists(Paths.IcarusAppDataFolder))
-                        fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
-                    projectName = Paths.DefaultProject;
-                }
+                    projectName = currentProjectName;
+
+                // create folder (if necessary)
+                string dir = Path.GetDirectoryName(projectName);
+                if (!fileSystem.DirectoryExists(dir))
+                    fileSystem.CreateDirectory(dir);
                 progressMonitor.Worked(10);
 
                 ProjectUtils projectUtils = new ProjectUtils(fileSystem, xmlSerializer);
                 projectUtils.SaveProject(projectTreeModel.Project, projectName);
                 progressMonitor.Worked(50);
+
+                optionsController.RecentProjects.Add(projectName);
 
                 progressMonitor.SetStatus("Saving user options");
                 string projectUserOptionsFile = projectName + ".user";

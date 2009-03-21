@@ -15,6 +15,7 @@
 
 using System.ComponentModel;
 using System.Drawing;
+using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
@@ -38,6 +39,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         Point Location { get; set; }
         BindingList<string> AddIns { get; }
         bool GenerateReportAfterTestRun { get; set; }
+        MRUList RecentProjects { get; }
 
         void Cancel();
         void Load();
