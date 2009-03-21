@@ -22,18 +22,17 @@ namespace Gallio.Icarus.Controls
     {
         public ProjectTreeView()
         {
-            NodeIcon nodeIcon = new NodeIcon();
-            nodeIcon.DataPropertyName = "Image";
-            nodeIcon.LeftMargin = 1;
-            nodeIcon.ParentColumn = null;
+            NodeIcon nodeIcon = new NodeIcon {DataPropertyName = "Image", LeftMargin = 1, ParentColumn = null};
             NodeControls.Add(nodeIcon);
 
-            NodeTextBox nodeTextBox = new NodeTextBox();
-            nodeTextBox.DataPropertyName = "Text";
-            nodeTextBox.IncrementalSearchEnabled = true;
-            nodeTextBox.EditEnabled = false;
-            nodeTextBox.LeftMargin = 3;
-            nodeTextBox.ParentColumn = null;
+            NodeTextBox nodeTextBox = new NodeTextBox
+                                          {
+                                              DataPropertyName = "Text",
+                                              IncrementalSearchEnabled = true,
+                                              EditEnabled = false,
+                                              LeftMargin = 3,
+                                              ParentColumn = null
+                                          };
             NodeControls.Add(nodeTextBox);
         }
     }

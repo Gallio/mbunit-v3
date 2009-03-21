@@ -36,6 +36,7 @@
             this.groupBoxTreeViewCategories = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.runTestsAfterReload = new System.Windows.Forms.CheckBox();
             this.panel.SuspendLayout();
             this.groupBoxTreeViewCategories.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -44,8 +45,12 @@
             // 
             // panel
             // 
+            this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel.Controls.Add(this.runTestsAfterReload);
             this.panel.Controls.Add(this.groupBoxTreeViewCategories);
             this.panel.Controls.Add(this.alwaysReloadAssemblies);
+            this.panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel.Size = new System.Drawing.Size(450, 252);
             // 
             // selectedTreeViewCategories
             // 
@@ -55,7 +60,7 @@
             this.selectedTreeViewCategories.FormattingEnabled = true;
             this.selectedTreeViewCategories.Location = new System.Drawing.Point(3, 3);
             this.selectedTreeViewCategories.Name = "selectedTreeViewCategories";
-            this.selectedTreeViewCategories.Size = new System.Drawing.Size(190, 199);
+            this.selectedTreeViewCategories.Size = new System.Drawing.Size(190, 160);
             this.selectedTreeViewCategories.TabIndex = 0;
             // 
             // unselectedTreeViewCategories
@@ -66,14 +71,14 @@
             this.unselectedTreeViewCategories.FormattingEnabled = true;
             this.unselectedTreeViewCategories.Location = new System.Drawing.Point(244, 3);
             this.unselectedTreeViewCategories.Name = "unselectedTreeViewCategories";
-            this.unselectedTreeViewCategories.Size = new System.Drawing.Size(191, 199);
+            this.unselectedTreeViewCategories.Size = new System.Drawing.Size(191, 160);
             this.unselectedTreeViewCategories.TabIndex = 2;
             // 
             // addButton
             // 
             this.addButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.addButton.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.addButton.Location = new System.Drawing.Point(1, 73);
+            this.addButton.Location = new System.Drawing.Point(1, 57);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(37, 26);
             this.addButton.TabIndex = 3;
@@ -85,7 +90,7 @@
             // 
             this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.removeButton.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.removeButton.Location = new System.Drawing.Point(1, 102);
+            this.removeButton.Location = new System.Drawing.Point(1, 86);
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(37, 26);
             this.removeButton.TabIndex = 4;
@@ -96,11 +101,11 @@
             // alwaysReloadAssemblies
             // 
             this.alwaysReloadAssemblies.AutoSize = true;
-            this.alwaysReloadAssemblies.Location = new System.Drawing.Point(10, 234);
+            this.alwaysReloadAssemblies.Location = new System.Drawing.Point(6, 202);
             this.alwaysReloadAssemblies.Name = "alwaysReloadAssemblies";
-            this.alwaysReloadAssemblies.Size = new System.Drawing.Size(151, 17);
+            this.alwaysReloadAssemblies.Size = new System.Drawing.Size(145, 17);
             this.alwaysReloadAssemblies.TabIndex = 5;
-            this.alwaysReloadAssemblies.Text = "Always Reload Assemblies";
+            this.alwaysReloadAssemblies.Text = "Always reload assemblies";
             this.alwaysReloadAssemblies.UseVisualStyleBackColor = true;
             // 
             // groupBoxTreeViewCategories
@@ -110,7 +115,7 @@
             this.groupBoxTreeViewCategories.Controls.Add(this.tableLayoutPanel1);
             this.groupBoxTreeViewCategories.Location = new System.Drawing.Point(3, 3);
             this.groupBoxTreeViewCategories.Name = "groupBoxTreeViewCategories";
-            this.groupBoxTreeViewCategories.Size = new System.Drawing.Size(444, 225);
+            this.groupBoxTreeViewCategories.Size = new System.Drawing.Size(444, 193);
             this.groupBoxTreeViewCategories.TabIndex = 6;
             this.groupBoxTreeViewCategories.TabStop = false;
             this.groupBoxTreeViewCategories.Text = "Tree View Categories";
@@ -129,7 +134,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(438, 206);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(438, 174);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // panel1
@@ -139,13 +144,25 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(199, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(39, 200);
+            this.panel1.Size = new System.Drawing.Size(39, 168);
             this.panel1.TabIndex = 3;
+            // 
+            // runTestsAfterReload
+            // 
+            this.runTestsAfterReload.AutoSize = true;
+            this.runTestsAfterReload.Enabled = false;
+            this.runTestsAfterReload.Location = new System.Drawing.Point(24, 225);
+            this.runTestsAfterReload.Name = "runTestsAfterReload";
+            this.runTestsAfterReload.Size = new System.Drawing.Size(127, 17);
+            this.runTestsAfterReload.TabIndex = 7;
+            this.runTestsAfterReload.Text = "Run tests after reload";
+            this.runTestsAfterReload.UseVisualStyleBackColor = true;
             // 
             // TestExplorerOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Name = "TestExplorerOptions";
+            this.Size = new System.Drawing.Size(450, 252);
             this.panel.ResumeLayout(false);
             this.panel.PerformLayout();
             this.groupBoxTreeViewCategories.ResumeLayout(false);
@@ -165,5 +182,6 @@
         private System.Windows.Forms.GroupBox groupBoxTreeViewCategories;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox runTestsAfterReload;
     }
 }

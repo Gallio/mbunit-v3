@@ -27,7 +27,6 @@ using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
-using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -35,7 +34,7 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly IProjectTreeModel projectTreeModel;
         private readonly IFileSystem fileSystem;
-        private readonly IXmlSerialization xmlSerialization;
+        private readonly IXmlSerializer xmlSerializer;
         private readonly BindingList<FilterInfo> testFilters;
         private readonly List<FilterInfo> testFiltersList = new List<FilterInfo>();
         private readonly BindingList<string> hintDirectories;
@@ -89,11 +88,11 @@ namespace Gallio.Icarus.Controllers
         }
 
         public ProjectController(IProjectTreeModel projectTreeModel, IFileSystem fileSystem, 
-            IXmlSerialization xmlSerialization)
+            IXmlSerializer xmlSerializer)
         {
             this.projectTreeModel = projectTreeModel;
             this.fileSystem = fileSystem;
-            this.xmlSerialization = xmlSerialization;
+            this.xmlSerializer = xmlSerializer;
 
             testFilters = new BindingList<FilterInfo>(testFiltersList);
             testFilters.ListChanged += testFilters_ListChanged;
@@ -188,7 +187,8 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Loading project file", 100))
             {
-                Project project = ProjectUtils.LoadProject(projectName);
+                ProjectUtils projectUtils = new ProjectUtils(fileSystem, xmlSerializer);
+                Project project = projectUtils.LoadProject(projectName);
                 progressMonitor.Worked(50);
 
                 projectTreeModel.FileName = projectName;
@@ -204,7 +204,7 @@ namespace Gallio.Icarus.Controllers
             if (!fileSystem.FileExists(projectUserOptionsFile))
                 return;
 
-            UserOptions userOptions = xmlSerialization.LoadFromXml<UserOptions>(projectUserOptionsFile);
+            UserOptions userOptions = xmlSerializer.LoadFromXml<UserOptions>(projectUserOptionsFile);
             TreeViewCategory = userOptions.TreeViewCategory;
             OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
             CollapsedNodes = userOptions.CollapsedNodes;
@@ -237,7 +237,8 @@ namespace Gallio.Icarus.Controllers
                 }
                 progressMonitor.Worked(10);
 
-                ProjectUtils.SaveProject(projectTreeModel.Project, projectName);
+                ProjectUtils projectUtils = new ProjectUtils(fileSystem, xmlSerializer);
+                projectUtils.SaveProject(projectTreeModel.Project, projectName);
                 progressMonitor.Worked(50);
 
                 progressMonitor.SetStatus("Saving user options");
@@ -249,7 +250,7 @@ namespace Gallio.Icarus.Controllers
                                               };
                 progressMonitor.Worked(10);
 
-                xmlSerialization.SaveToXml(userOptions, projectUserOptionsFile);
+                xmlSerializer.SaveToXml(userOptions, projectUserOptionsFile);
             }
         }
 

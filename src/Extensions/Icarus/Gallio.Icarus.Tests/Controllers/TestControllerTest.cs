@@ -13,15 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using Gallio.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Models.Interfaces;
-using Gallio.Icarus.Services.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
-using Gallio.Runner.Reports;
-using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Runner;
+using Gallio.Runner.Events;
+using Gallio.Runtime.Logging;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using Gallio.Model.Serialization;
@@ -29,187 +27,47 @@ using Gallio.Model.Serialization;
 namespace Gallio.Icarus.Tests.Controllers
 {
     [Category("Controllers"), Author("Graham Hay"), TestsOn(typeof(TestController))]
-    class TestControllerTest : MockTest
+    class TestControllerTest
     {
-        /* FIXME: Broken by refactoring.
         [Test]
         public void ApplyFilter_Test()
         {
             Filter<ITest> filter = new NoneFilter<ITest>();
-            ITestRunnerService testRunnerService = SetupTestRunnerService();
-            testRunnerService.SetFilter(filter, null);
-            LastCall.IgnoreArguments();
-
-            var testTreeModel = mocks.StrictMock<ITestTreeModel>();
-            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            LastCall.IgnoreArguments();
-            Expect.Call(progressMonitor.BeginTask("Applying filter", 3)).Return(
-                new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.SetStatus("Parsing filter");
-            progressMonitor.Worked(1);
-            testTreeModel.ApplyFilter(filter);
-            LastCall.IgnoreArguments();
-            Expect.Call(progressMonitor.CreateSubProgressMonitor(1)).Return(
-                (IProgressMonitor)mocks.Stub(typeof(IProgressMonitor))).Repeat
-                .Times(2);
-            progressMonitor.Done();
-            mocks.ReplayAll();
-            var testController = new TestController(testRunnerService, testTreeModel);
-            testController.ApplyFilter(filter.ToFilterExpr(), progressMonitor);
-        }
-
-        ITestRunnerService SetupTestRunnerService()
-        {
-            ITestRunnerService testRunnerService = mocks.StrictMock<ITestRunnerService>();
-            testRunnerService.TestStepFinished += delegate { };
-            LastCall.IgnoreArguments();
-            return testRunnerService;
-        }
-
-        [Test]
-        public void GetCurrentFilter_Test_AnyFilter()
-        {
-            Filter<ITest> filter = new NoneFilter<ITest>();
-            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-            Expect.Call(testTreeModel.GenerateFilterFromSelectedTests()).Return(filter).IgnoreArguments();
-            ITestRunnerService testRunnerService = SetupTestRunnerService();
-            testRunnerService.SetFilter(filter, null);
-            LastCall.IgnoreArguments();
-            var progressMonitor = mocks.StrictMock<IProgressMonitor>();
-            Expect.Call(progressMonitor.BeginTask("Getting current filter", 2)).Return(
-                new ProgressMonitorTaskCookie(progressMonitor));
-            Expect.Call(progressMonitor.CreateSubProgressMonitor(1)).Return((IProgressMonitor)mocks.Stub(
-                typeof(IProgressMonitor))).Repeat.Times(2);
-            progressMonitor.Done();
-            mocks.ReplayAll();
-            TestController testController = new TestController(testRunnerService, testTreeModel);
-            Assert.AreEqual(filter, testController.GetCurrentFilter(progressMonitor));
-        }
-
-        [Test]
-        public void Selected_Tests_Test()
-        {
-            ITestRunnerService testRunnerService = SetupTestRunnerService();
-            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-
-            mocks.ReplayAll();
-
-            TestController testController = new TestController(testRunnerService, testTreeModel);
-            Assert.AreEqual(0, testController.SelectedTests.Count);
-        }
-
-        [Test]
-        public void Model_Test()
-        {
-            ITestRunnerService testRunnerService = SetupTestRunnerService();
-            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-
-            mocks.ReplayAll();
-
-            TestController testController = new TestController(testRunnerService, testTreeModel);
-            Assert.AreEqual(testTreeModel, testController.Model);
-        }
-
-        [Test]
-        public void TestFrameworks_Test()
-        {
-            List<string> testFrameworks = new List<string>();
-            ITestRunnerService testRunnerService = SetupTestRunnerService();
-            Expect.Call(testRunnerService.TestFrameworks).Return(testFrameworks);
-            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-
-            mocks.ReplayAll();
-
-            TestController testController = new TestController(testRunnerService, testTreeModel);
-            Assert.AreEqual(testFrameworks, testController.TestFrameworks);
-        }
-
-        [Test]
-        public void TestCount_Test()
-        {
-            ITestRunnerService testRunnerService = SetupTestRunnerService();
-            ITestTreeModel testTreeModel = mocks.StrictMock<ITestTreeModel>();
-            const int testCount = 0;
-            Expect.Call(testTreeModel.TestCount).Return(testCount);
-
-            mocks.ReplayAll();
-
-            TestController testController = new TestController(testRunnerService, testTreeModel);
-            Assert.AreEqual(testCount, testController.TestCount);
-        }
-
-        [Test]
-        public void ResetTests_Test()
-        {
-            var testRunnerService = MockRepository.GenerateStub<ITestRunnerService>();
-            testRunnerService.Stub(x => x.Report).Return(new LockBox<Report>(new Report()));
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            var testController = new TestController(testRunnerService, testTreeModel);
-            var progressMonitor = MockProgressMonitor();
-            testController.ResetTestStatus();
-            testTreeModel.AssertWasCalled(x => x.ResetTestStatus());
-        }
-
-        IProgressMonitor MockProgressMonitor()
-        {
-            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
-            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.Stub(x => x.CreateSubProgressMonitor(Arg<double>.Is.Anything)).Return(progressMonitor).Repeat.Any();
-            return progressMonitor;
+            var testController = new TestController(testTreeModel);
+            testController.ApplyFilter(filter);
+            testTreeModel.AssertWasCalled(ttm => ttm.ApplyFilter(filter));
         }
 
         [Test]
-        public void Reload_Test()
+        public void Explore_Test()
         {
-            var testRunnerService = MockRepository.GenerateStub<ITestRunnerService>();
-            testRunnerService.Stub(x => x.Report).Return(new LockBox<Report>(new Report()));
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
-            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.Stub(x => x.CreateSubProgressMonitor(Arg<double>.Is.Anything)).Return(progressMonitor);
-            var testController = new TestController(testRunnerService, testTreeModel);
-            bool loadStarted = false;
-            testController.ExploreStarted += delegate { loadStarted = true; };
-            bool loadFinished = false;
-            testController.ExploreFinished += delegate { loadFinished = true; };
-            testController.Reload(new TestPackageConfig(), progressMonitor);
-            Assert.IsTrue(loadStarted);
-            Assert.IsTrue(loadFinished);
-        }
-
-        [Test]
-        public void TreeViewCategory_Test()
-        {
-            var testRunnerService = MockRepository.GenerateStub<ITestRunnerService>();
-            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            var testController = new TestController(testRunnerService, testTreeModel);
-            Assert.IsNull(testController.TreeViewCategory);
-            const string treeViewCategory = "test";
+            var testController = new TestController(testTreeModel);
+            var exploreStartedFlag = false;
+            testController.ExploreStarted += delegate { exploreStartedFlag = true; };
+            var exploreFinishedFlag = false;
+            testController.ExploreFinished += delegate { exploreFinishedFlag = true; };
+            var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
+            var testRunner = MockRepository.GenerateStub<ITestRunner>();
+            var testRunnerEvents = MockRepository.GenerateStub<ITestRunnerEvents>();
+            testRunner.Stub(tr => tr.Events).Return(testRunnerEvents);
+            testRunnerFactory.Stub(trf => trf.CreateTestRunner()).Return(testRunner);
+            testController.SetTestRunnerFactory(testRunnerFactory);
+            const string treeViewCategory = "treeViewCategory";
             testController.TreeViewCategory = treeViewCategory;
-            Assert.AreEqual(treeViewCategory, testController.TreeViewCategory);
-        }
 
-        [Test]
-        public void RunTests_Test()
-        {
-            var testRunnerService = MockRepository.GenerateStub<ITestRunnerService>();
-            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            var progressMonitor = MockRepository.GenerateStub<IProgressMonitor>();
-            testRunnerService.Stub(x => x.Explore(progressMonitor)).Return(new TestModelData());
-            progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
-            progressMonitor.Stub(x => x.CreateSubProgressMonitor(Arg<double>.Is.Anything)).Return(progressMonitor).Repeat.Any();
-            var testController = new TestController(testRunnerService, testTreeModel);
-            bool runStarted = false;
-            bool runFinished = false;
-            testController.RunStarted += delegate { runStarted = true; };
-            testController.RunFinished += delegate { runFinished = true; };
-            testController.RunTests(progressMonitor);
-            Assert.IsTrue(runStarted);
-            testTreeModel.AssertWasCalled(x => x.ResetTestStatus());
-            testRunnerService.AssertWasCalled(x => x.Load(Arg<TestPackageConfig>.Is.Anything, Arg.Is(progressMonitor)));
-            testRunnerService.AssertWasCalled(x => x.Run(progressMonitor));
-            Assert.IsTrue(runFinished);
+            testController.Explore(progressMonitor);
+            
+            Assert.IsTrue(exploreStartedFlag);
+            testRunner.AssertWasCalled(tr => tr.Initialize(Arg<TestRunnerOptions>.Is.Anything, 
+                Arg<ILogger>.Is.Anything, Arg.Is(progressMonitor)));
+            testRunner.AssertWasCalled(tr => tr.Explore(Arg<TestPackageConfig>.Is.Anything, 
+                Arg<TestExplorationOptions>.Is.Anything, Arg.Is(progressMonitor)));
+            testTreeModel.AssertWasCalled(ttm => ttm.BuildTestTree(Arg<TestModelData>.Is.Anything, 
+                Arg.Is(treeViewCategory)));
+            Assert.IsTrue(exploreFinishedFlag);
         }
-         */
     }
 }

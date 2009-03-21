@@ -150,9 +150,10 @@ namespace Gallio.Icarus
                 stopButton.Enabled = stopTestsToolStripMenuItem.Enabled = false;
                 startButton.Enabled = startTestsToolStripMenuItem.Enabled = true;
                 runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
-
-                mediator.GenerateReport();
             });
+
+            if (mediator.TestController.FailedTests)
+                Activate();
         }
 
         private IDockContent GetContentFromPersistString(string persistString)
@@ -475,8 +476,13 @@ namespace Gallio.Icarus
                     }
                 }
             }
-            if (reload)
-                Reload();
+            
+            if (!reload)
+                return;
+
+            Reload();
+            if (mediator.OptionsController.RunTestsAfterReload)
+                StartTests(false);
         }
 
         void testController_LoadFinished(object sender, EventArgs e)

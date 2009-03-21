@@ -287,6 +287,9 @@ namespace Gallio.Icarus.Mediator
                     // run the tests
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(96))
                         TestController.Run(attachDebugger, subProgressMonitor);
+
+                    if (OptionsController.GenerateReportAfterTestRun)
+                        GenerateReport();
                 }
             }));    
         }

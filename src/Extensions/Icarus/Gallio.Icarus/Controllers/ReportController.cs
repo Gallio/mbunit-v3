@@ -19,9 +19,9 @@ using System.Globalization;
 using System.IO;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Services.Interfaces;
-using Gallio.Icarus.Utilities;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {

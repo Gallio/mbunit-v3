@@ -15,11 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Xml.Serialization;
 using Gallio.Icarus.Controls;
 using Gallio.Utilities;
 using Gallio.Runner;
-using System.Drawing;
 
 namespace Gallio.Icarus
 {
@@ -39,6 +39,7 @@ namespace Gallio.Icarus
         private int skippedColor = Color.SlateGray.ToArgb();
         private readonly List<string> treeViewCategories = new List<string>();
         private readonly List<string> addIns = new List<string>();
+        private bool generateReportAfterTestRun = true;
 
         [XmlElement("testRunnerFactory")]
         public string TestRunnerFactory
@@ -56,6 +57,9 @@ namespace Gallio.Icarus
 
         [XmlElement("alwaysReloadTests")]
         public bool AlwaysReloadAssemblies { get; set; }
+
+        [XmlElement("runTestsAfterReload")]
+        public bool RunTestsAfterReload { get; set; }
 
         [XmlElement("showProgressDialogs")]
         public bool ShowProgressDialogs
@@ -124,6 +128,20 @@ namespace Gallio.Icarus
         public List<string> AddIns
         {
             get { return addIns; }
+        }
+
+        [XmlElement("lastProject")]
+        public string LastProject { get; set; }
+
+        [XmlArray("recentProjects", IsNullable = false)]
+        [XmlArrayItem("recentProject", typeof(string), IsNullable = false)]
+        public List<string> RecentProjects { get; set; }
+
+        [XmlElement("generateReportAfterTestRun")]
+        public bool GenerateReportAfterTestRun
+        {
+            get { return generateReportAfterTestRun;}
+            set { generateReportAfterTestRun = value; }
         }
     }
 }

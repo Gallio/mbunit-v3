@@ -544,6 +544,9 @@
     <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
     <Compile Include="Model\Logging\TestLogWriter.cs" />
     <Compile Include="Triple.cs" />
+    <Compile Include="Utilities\FileSystem.cs" />
+    <Compile Include="Utilities\IFileSystem.cs" />
+    <Compile Include="Utilities\IXmlSerializer.cs" />
     <Compile Include="Utilities\Memoizer.cs" />
     <Compile Include="Utilities\CurrentDirectorySwitcher.cs" />
     <Compile Include="Utilities\EventHandlerUtils.cs" />
@@ -740,6 +743,7 @@
     </Compile>
     <Compile Include="Concurrency\LockBox.cs" />
     <Compile Include="Utilities\Sync.cs" />
+    <Compile Include="Utilities\DefaultXmlSerializer.cs" />
     <Compile Include="XmlSerializableTypeIncludes.cs">
       <SubType>Component</SubType>
     </Compile>

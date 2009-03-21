@@ -38,6 +38,11 @@ namespace Gallio.Icarus.Controllers.Interfaces
         BindingList<TestTreeNode> SelectedTests { get; }
 
         /// <summary>
+        /// Indicator if any tests failed during the last run.
+        /// </summary>
+        bool FailedTests { get; }
+
+        /// <summary>
         /// Gets the current test tree model.
         /// </summary>
         ITestTreeModel Model { get; }

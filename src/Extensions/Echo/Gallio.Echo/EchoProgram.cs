@@ -81,9 +81,11 @@ namespace Gallio.Echo
         {
             logger.Log(LogSeverity.Debug, Arguments.ToString());
 
-            TestLauncher launcher = new TestLauncher();
-            launcher.Logger = logger;
-            launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(Console);
+            TestLauncher launcher = new TestLauncher
+                                        {
+                                            Logger = logger,
+                                            ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(Console)
+                                        };
 
             ConfigureLauncherFromArguments(launcher, Arguments);
 
@@ -116,7 +118,8 @@ namespace Gallio.Echo
                     if (arguments.Assemblies.Length > 1)
                         throw new ArgumentException("Please don't mix and match gallio project files and assemblies!");
 
-                    Project project = ProjectUtils.LoadProject(assembly);
+                    ProjectUtils projectUtils = new ProjectUtils(new FileSystem(), new DefaultXmlSerializer());
+                    Project project = projectUtils.LoadProject(assembly);
                     launcher.TestPackageConfig = project.TestPackageConfig;
                     break;
                 }

@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus.Options
@@ -30,17 +32,23 @@ namespace Gallio.Icarus.Options
             selectedTreeViewCategories.DataSource = optionsController.SelectedTreeViewCategories;
             unselectedTreeViewCategories.DataSource = optionsController.UnselectedTreeViewCategories;
 
-            alwaysReloadAssemblies.DataBindings.Add("Checked", optionsController, "AlwaysReloadAssemblies");
+            alwaysReloadAssemblies.DataBindings.Add("Checked", optionsController, "AlwaysReloadAssemblies", false, 
+                DataSourceUpdateMode.OnPropertyChanged);
+            
+            runTestsAfterReload.DataBindings.Add("Enabled", optionsController, "AlwaysReloadAssemblies", false, 
+                DataSourceUpdateMode.OnPropertyChanged);
+            runTestsAfterReload.DataBindings.Add("Checked", optionsController, "RunTestsAfterReload", false, 
+                DataSourceUpdateMode.OnPropertyChanged);
         }
 
-        private void addButton_Click(object sender, System.EventArgs e)
+        private void addButton_Click(object sender, EventArgs e)
         {
             object category = unselectedTreeViewCategories.SelectedItem;
             optionsController.SelectedTreeViewCategories.Add((string) category);
             optionsController.UnselectedTreeViewCategories.Remove((string) category);
         }
 
-        private void removeButton_Click(object sender, System.EventArgs e)
+        private void removeButton_Click(object sender, EventArgs e)
         {
             object category = selectedTreeViewCategories.SelectedItem;
             optionsController.UnselectedTreeViewCategories.Add((string) category);

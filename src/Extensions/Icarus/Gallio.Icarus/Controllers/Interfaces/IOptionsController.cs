@@ -21,6 +21,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
     public interface IOptionsController
     {
         bool AlwaysReloadAssemblies { get; set; }
+        bool RunTestsAfterReload { get; set; }
         string TestStatusBarStyle { get; set; }
         bool ShowProgressDialogs { get; set; }
         bool RestorePreviousSettings { get; set; }
@@ -36,6 +37,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         Size Size { get; set; }
         Point Location { get; set; }
         BindingList<string> AddIns { get; }
+        bool GenerateReportAfterTestRun { get; set; }
 
         void Cancel();
         void Load();

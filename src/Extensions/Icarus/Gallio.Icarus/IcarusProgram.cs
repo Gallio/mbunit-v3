@@ -30,7 +30,7 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Icarus.Services;
-using Gallio.Icarus.Utilities;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus
 {
@@ -70,7 +70,7 @@ namespace Gallio.Icarus
                     AssemblyUtils.GetFriendlyAssemblyLocation(typeof (IcarusProgram).Assembly))
             };
 
-            var optionsController = new OptionsController(new FileSystem(), new XmlSerialization(),
+            var optionsController = new OptionsController(new FileSystem(), new DefaultXmlSerializer(),
                 new Utilities.UnhandledExceptionPolicy());
 
             // create & initialize a test runner whenever the test runner factory is changed
@@ -96,11 +96,17 @@ namespace Gallio.Icarus
 
                     var reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
 
-                    IMediator mediator = new Mediator.Mediator();
-                    mediator.ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject,
-                        new Project()), new FileSystem(), new XmlSerialization());
-                    mediator.TestController = testController;
-                    mediator.ReportController = new ReportController(new ReportService(reportManager), new FileSystem());
+                    IMediator mediator = new Mediator.Mediator
+                                             {
+                                                 ProjectController =
+                                                     new ProjectController(new ProjectTreeModel(Paths.DefaultProject,
+                                                                                                new Project()),
+                                                                           new FileSystem(), new DefaultXmlSerializer()),
+                                                 TestController = testController,
+                                                 ReportController =
+                                                     new ReportController(new ReportService(reportManager),
+                                                                          new FileSystem())
+                                             };
                     mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController,
                         optionsController);
                     mediator.AnnotationsController = new AnnotationsController(mediator.TestController);

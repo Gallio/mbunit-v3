@@ -131,7 +131,14 @@
     <Compile Include="Controls\ToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Options\ReportOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\ReportOptions.Designer.cs">
+      <DependentUpon>ReportOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="ServiceProvider.cs" />
+    <Compile Include="Utilities\MRUList.cs" />
     <Compile Include="Window.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -318,13 +325,8 @@
     </Compile>
     <Compile Include="TaskManager.cs" />
     <Compile Include="UserOptions.cs" />
-    <Compile Include="Utilities\EncryptionUtil.cs" />
-    <Compile Include="Utilities\FileSystem.cs" />
-    <Compile Include="Utilities\IFileSystem.cs" />
     <Compile Include="Utilities\IUnhandledExceptionPolicy.cs" />
-    <Compile Include="Utilities\IXmlSerialization.cs" />
     <Compile Include="Utilities\UnhandledExceptionPolicy.cs" />
-    <Compile Include="Utilities\XmlSerialization.cs" />
     <Compile Include="WindowCollection.cs" />
     <Compile Include="WindowManager.cs" />
   </ItemGroup>
@@ -372,6 +374,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AnnotationsWindow.resx">
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\ReportOptions.resx">
+      <DependentUpon>ReportOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Window.resx">

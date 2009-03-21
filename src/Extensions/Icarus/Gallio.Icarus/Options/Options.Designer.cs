@@ -43,7 +43,7 @@ namespace Gallio.Icarus.Options
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Colors");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Test status colors");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Appearance", new System.Windows.Forms.TreeNode[] {
             treeNode1});
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Plugin directories");
@@ -51,6 +51,7 @@ namespace Gallio.Icarus.Options
             treeNode3});
             System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Startup");
             System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Test Explorer");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Reports");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Options));
             this.optionCategoryTree = new System.Windows.Forms.TreeView();
             this.cancelButton = new System.Windows.Forms.Button();
@@ -66,8 +67,8 @@ namespace Gallio.Icarus.Options
             this.optionCategoryTree.HideSelection = false;
             this.optionCategoryTree.Location = new System.Drawing.Point(13, 12);
             this.optionCategoryTree.Name = "optionCategoryTree";
-            treeNode1.Name = "colors";
-            treeNode1.Text = "Colors";
+            treeNode1.Name = "testStatusColors";
+            treeNode1.Text = "Test status colors";
             treeNode2.Name = "appearance";
             treeNode2.Text = "Appearance";
             treeNode3.Name = "pluginDirectories";
@@ -78,11 +79,14 @@ namespace Gallio.Icarus.Options
             treeNode5.Text = "Startup";
             treeNode6.Name = "testExplorer";
             treeNode6.Text = "Test Explorer";
+            treeNode7.Name = "Reports";
+            treeNode7.Text = "Reports";
             this.optionCategoryTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode2,
             treeNode4,
             treeNode5,
-            treeNode6});
+            treeNode6,
+            treeNode7});
             this.optionCategoryTree.Size = new System.Drawing.Size(175, 257);
             this.optionCategoryTree.TabIndex = 0;
             this.optionCategoryTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.optionCategoryTree_AfterSelect);
@@ -135,7 +139,7 @@ namespace Gallio.Icarus.Options
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(503, 318);
+            this.ClientSize = new System.Drawing.Size(503, 325);
             this.Controls.Add(this.panelContainer);
             this.Controls.Add(this.seperatorBar);
             this.Controls.Add(this.okButton);

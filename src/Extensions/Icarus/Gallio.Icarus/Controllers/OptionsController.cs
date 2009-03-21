@@ -21,6 +21,7 @@ using System.Reflection;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -28,8 +29,9 @@ namespace Gallio.Icarus.Controllers
     {
         private Settings settings;
         private readonly IFileSystem fileSystem;
-        private readonly IXmlSerialization xmlSerialization;
+        private readonly IXmlSerializer xmlSerializer;
         private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
+        private MRUList recentProjects;
 
         private readonly List<string> unselectedTreeViewCategoriesList = new List<string>();
 
@@ -37,6 +39,12 @@ namespace Gallio.Icarus.Controllers
         {
             get { return settings.AlwaysReloadAssemblies; }
             set { settings.AlwaysReloadAssemblies = value; }
+        }
+
+        public bool RunTestsAfterReload
+        {
+            get { return settings.RunTestsAfterReload; }
+            set { settings.RunTestsAfterReload = value; }
         }
 
         public string TestStatusBarStyle
@@ -114,11 +122,21 @@ namespace Gallio.Icarus.Controllers
             set { settings.Location = value; }
         }
 
-        public OptionsController(IFileSystem fileSystem, IXmlSerialization xmlSerialization,
+        public MRUList RecentProjects
+        {
+            get
+            {
+                if (recentProjects == null)
+                    recentProjects = new MRUList(settings.RecentProjects, 10);
+                return recentProjects;
+            }
+        }
+
+        public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer,
             IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
             this.fileSystem = fileSystem;
-            this.xmlSerialization = xmlSerialization;
+            this.xmlSerializer = xmlSerializer;
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
         }
 
@@ -148,7 +166,7 @@ namespace Gallio.Icarus.Controllers
             try
             {
                 if (fileSystem.FileExists(fileName))
-                    return xmlSerialization.LoadFromXml<Settings>(fileName);
+                    return xmlSerializer.LoadFromXml<Settings>(fileName);
             }
             catch (Exception ex)
             {
@@ -161,7 +179,7 @@ namespace Gallio.Icarus.Controllers
         {
             try
             {
-                xmlSerialization.SaveToXml(settings, Paths.SettingsFile);
+                xmlSerializer.SaveToXml(settings, Paths.SettingsFile);
             }
             catch (Exception ex)
             {
@@ -170,6 +188,12 @@ namespace Gallio.Icarus.Controllers
         }
 
         public BindingList<string> AddIns { get; private set; }
+        
+        public bool GenerateReportAfterTestRun
+        {
+            get { return settings.GenerateReportAfterTestRun; }
+            set { settings.GenerateReportAfterTestRun = value; }
+        }
 
         public void Cancel()
         {

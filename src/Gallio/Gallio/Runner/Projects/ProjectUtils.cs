@@ -26,31 +26,45 @@ namespace Gallio.Runner.Projects
     /// </summary>
     public class ProjectUtils
     {
+        private readonly IFileSystem fileSystem;
+        private readonly IXmlSerializer xmlSerializer;
+
+        ///<summary>
+        /// Constructor.
+        ///</summary>
+        ///<param name="fileSystem">The file system to use (allows mocking).</param>
+        ///<param name="xmlSerializer">The xml serializer to use (allows mocking).</param>
+        public ProjectUtils(IFileSystem fileSystem, IXmlSerializer xmlSerializer)
+        {
+            this.fileSystem = fileSystem;
+            this.xmlSerializer = xmlSerializer;
+        }
+
         /// <summary>
         /// Load a saved Gallio project file.
         /// </summary>
         /// <param name="projectLocation">The location of the project file.</param>
         /// <returns>A Gallio Project instance.</returns>
         /// <exception cref="ArgumentException">Thrown when the specified project location is invalid.</exception>
-        public static Project LoadProject(string projectLocation)
+        public Project LoadProject(string projectLocation)
         {
             // fail fast
-            if (!File.Exists(projectLocation))
+            if (!fileSystem.FileExists(projectLocation))
                 throw new ArgumentException(String.Format("Project file {0} does not exist.", projectLocation));
 
             // deserialize project
-            var project = XmlSerializationUtils.LoadFromXml<Project>(projectLocation);
+            var project = xmlSerializer.LoadFromXml<Project>(projectLocation);
             ConvertFromRelativePaths(project, Path.GetDirectoryName(projectLocation));
             return project;
         }
 
-        private static void ConvertFromRelativePaths(Project project, string directory)
+        private void ConvertFromRelativePaths(Project project, string directory)
         {
             IList<string> assemblyList = new List<string>();
             foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
             {
                 string assemblyPath = assembly;
-                if (!Path.IsPathRooted(assembly))
+                if (!fileSystem.IsPathRooted(assembly))
                 {
                     try
                     {
@@ -63,7 +77,7 @@ namespace Gallio.Runner.Projects
                         assemblyPath = assembly;
                     }
                 }
-                if (File.Exists(assemblyPath))
+                if (fileSystem.FileExists(assemblyPath))
                     assemblyList.Add(assemblyPath);
             }
             project.TestPackageConfig.AssemblyFiles.Clear();
@@ -75,19 +89,19 @@ namespace Gallio.Runner.Projects
         /// </summary>
         /// <param name="project">The Project instance to save.</param>
         /// <param name="projectLocation">The location to save it to.</param>
-        public static void SaveProject(Project project, string projectLocation)
+        public void SaveProject(Project project, string projectLocation)
         {
             ConvertToRelativePaths(project, Path.GetDirectoryName(projectLocation));
-            XmlSerializationUtils.SaveToXml(project, projectLocation);
+            xmlSerializer.SaveToXml(project, projectLocation);
             ConvertFromRelativePaths(project, Path.GetDirectoryName(projectLocation));
         }
 
-        private static void ConvertToRelativePaths(Project project, string directory)
+        private void ConvertToRelativePaths(Project project, string directory)
         {
             IList<string> assemblyList = new List<string>();
             foreach (string assembly in project.TestPackageConfig.AssemblyFiles)
             {
-                if (Path.IsPathRooted(assembly))
+                if (fileSystem.IsPathRooted(assembly))
                 {
                     try
                     {

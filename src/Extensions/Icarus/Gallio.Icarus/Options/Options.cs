@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -24,7 +23,6 @@ namespace Gallio.Icarus.Options
     public partial class Options : Form
     {
         private readonly IOptionsController controller;
-        private string currentPanel;
 
         public Options(IOptionsController controller)
         {
@@ -55,10 +53,11 @@ namespace Gallio.Icarus.Options
             var panels = new Dictionary<string, Type>
             {
                 { "appearance", typeof(AppearanceOptions) },
-                { "colors", typeof(ColorsOptions) },
+                { "testStatusColors", typeof(ColorsOptions) },
                 { "pluginDirectories", typeof(PluginDirectoriesOptions) },
                 { "startup", typeof(StartupOptions) },
                 { "testExplorer", typeof(TestExplorerOptions) },
+                { "Reports", typeof(ReportOptions)}
             };
 
             Type panelType;
@@ -81,13 +80,10 @@ namespace Gallio.Icarus.Options
         private void AddPanel(Control optionPanel)
         {
             if (optionPanel == null)
-            {
                 throw new ArgumentNullException("optionPanel");
-            }
 
             ClearPanel();
             panelContainer.Controls.Add(optionPanel);
-            currentPanel = optionPanel.Name;
             optionPanel.Dock = DockStyle.Fill;
         }
     }

@@ -17,6 +17,7 @@ using System.Drawing;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
 using Gallio.Runner;
+using Gallio.Utilities;
 using MbUnit.Framework;
 using System;
 using Gallio.Icarus.Utilities;
@@ -28,14 +29,14 @@ namespace Gallio.Icarus.Tests.Controllers
     {
         private OptionsController optionsController;
         private IFileSystem fileSystem;
-        private IXmlSerialization xmlSerialization;
+        private IXmlSerializer xmlSerialization;
         private IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
         [SetUp]
         public void SetUp()
         {
             fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            xmlSerialization = MockRepository.GenerateStub<IXmlSerialization>();
+            xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
             unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
 
             fileSystem.Stub(x => x.FileExists(Paths.SettingsFile)).Return(true);

@@ -100,6 +100,7 @@
     <Compile Include="TestExplorerTest.cs" />
     <Compile Include="TestResultsTest.cs">
     </Compile>
+    <Compile Include="Utilities\EventAssert.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">

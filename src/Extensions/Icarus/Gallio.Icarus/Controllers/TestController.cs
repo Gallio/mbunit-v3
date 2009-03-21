@@ -191,6 +191,8 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
+        public bool FailedTests { get; private set; }
+
         public void Explore(IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Exploring the tests.", 100))
@@ -216,6 +218,7 @@ namespace Gallio.Icarus.Controllers
             using (progressMonitor.BeginTask("Running the tests.", 100))
             {
                 EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
+                FailedTests = false;
 
                 DoWithTestRunner(testRunner =>
                 {
@@ -326,6 +329,9 @@ namespace Gallio.Icarus.Controllers
                     testTreeUpdateTimer.Enabled = true;
                     testTreeModel.UpdateTestStatus(e.Test, e.TestStepRun);
                     EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
+
+                    if (e.TestStepRun.Result.Outcome.Status == TestStatus.Failed)
+                        FailedTests = true;
                 };
 
                 testRunner.Events.RunStarted += (sender, e) =>
