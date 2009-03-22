@@ -25,6 +25,42 @@ namespace Gallio.MbUnit2Adapter.TestResources
     public class SimpleTest
     {
         /// <summary>
+        /// Fixture setup.
+        /// </summary>
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            Console.WriteLine("TestFixtureSetUp");
+        }
+
+        /// <summary>
+        /// Fixture teardown.
+        /// </summary>
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
+        {
+            Console.WriteLine("TestFixtureTearDown");
+        }
+
+        /// <summary>
+        /// Setup.
+        /// </summary>
+        [SetUp]
+        public void SetUp()
+        {
+            Console.WriteLine("SetUp");
+        }
+
+        /// <summary>
+        /// Teardown.
+        /// </summary>
+        [TearDown]
+        public void TearDown()
+        {
+            Console.WriteLine("TearDown");
+        }
+
+        /// <summary>
         /// A passing test.
         /// </summary>
         [Test]
