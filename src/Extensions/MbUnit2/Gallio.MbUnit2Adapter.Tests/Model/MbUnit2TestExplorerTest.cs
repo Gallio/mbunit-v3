@@ -33,6 +33,16 @@ namespace Gallio.MbUnit2Adapter.Tests.Model
             return new MbUnit2TestFramework();
         }
 
+        protected override string PassTestName
+        {
+            get { return "SetUp.Pass.TearDown"; }
+        }
+
+        protected override string FailTestName
+        {
+            get { return "SetUp.Fail.TearDown"; }
+        }
+
         [Test]
         public void MetadataImport_AuthorName()
         {
