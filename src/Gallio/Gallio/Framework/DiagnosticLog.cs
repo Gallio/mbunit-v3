@@ -28,9 +28,13 @@ namespace Gallio.Framework
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Diagnostic messages are not associated with particular tests and are not stored in the
-    /// test report.  Use <see cref="TestLog" /> instead if you wish to retain the log
-    /// content in the report or if you wish to save attachments and other rich content for later.
+    /// Diagnostic messages will appear in the test report but they are not associated with
+    /// any particular tests.  Unlike <see cref="TestLog"/> the messages may not include rich
+    /// content such as attachments or embedded images.
+    /// </para>
+    /// <para>
+    /// If you use the diagnostic log to report progress messages, keep in mind that they
+    /// will all be preserved in the report, making the report larger.
     /// </para>
     /// </remarks>
     /// <seealso cref="TestLog"/>
