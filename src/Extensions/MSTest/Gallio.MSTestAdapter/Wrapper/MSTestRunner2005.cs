@@ -19,6 +19,8 @@ using System.Text;
 using System.Xml;
 using Gallio.MSTestAdapter.Model;
 using Gallio.Runner.Caching;
+using System.Xml.XPath;
+using Gallio.Model;
 
 namespace Gallio.MSTestAdapter.Wrapper
 {
@@ -105,7 +107,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             writer.WriteValue("True");
             writer.WriteEndElement();
 
-            writer.WriteStartElement("parentCategoryId ");
+            writer.WriteStartElement("parentCategoryId");
             writer.WriteAttributeString("type", "Microsoft.VisualStudio.TestTools.Common.TestCategoryId");
             writer.WriteStartElement("id");
             writer.WriteAttributeString("type", "System.Guid");
@@ -207,11 +209,63 @@ namespace Gallio.MSTestAdapter.Wrapper
             writer.WriteValue("This is a test run configuration used by Gallio to launch MSTest tests locally.");
             writer.WriteEndElement();
 
+            writer.WriteStartElement("runTimeout");
+            writer.WriteAttributeString("type", "System.Int32");
+            writer.WriteValue("0");
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("testTimeout");
+            writer.WriteAttributeString("type", "System.Int32");
+            writer.WriteValue("300000");
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("agentNotRespondingTimeout");
+            writer.WriteAttributeString("type", "System.Int32");
+            writer.WriteValue("300000");
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("deploymentTimeout");
+            writer.WriteAttributeString("type", "System.Int32");
+            writer.WriteValue("300000");
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("bucketSize");
+            writer.WriteAttributeString("type", "System.Int32");
+            writer.WriteValue("200");
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("bucketThreshold");
+            writer.WriteAttributeString("type", "System.Int32");
+            writer.WriteValue("1000");
+            writer.WriteEndElement();
+
             writer.WriteEndElement(); // TestRunConfiguration
 
             writer.WriteEndElement(); // Tests
 
             writer.WriteEndDocument();
+        }
+
+        protected override void ExtractExecutedTestsInformation(Dictionary<string, MSTestResult> testResults, XmlReader reader)
+        {
+            XPathNavigator xpathNavigator = new XPathDocument(reader).CreateNavigator();
+            XPathNodeIterator xpathIterator = xpathNavigator.Select("/Tests/UnitTestResult");
+
+            while (xpathIterator.MoveNext())
+            {
+                MSTestResult testResult = new MSTestResult();
+
+                XPathNavigator x = xpathIterator.Current;
+
+                testResult.Guid = x.SelectSingleNode("id/testId/id").Value;
+                testResult.Outcome = GetTestOutcome(x.SelectSingleNode("outcome/value__").Value);
+                testResult.Duration = GetDuration(x.SelectSingleNode("duration").Value);
+                testResult.StdOut = x.SelectSingleNode("stdout").Value;
+                testResult.Errors = x.SelectSingleNode("errorInfo") != null ? x.SelectSingleNode("errorInfo/message").Value + 
+                    x.SelectSingleNode("errorInfo/stackTrace").Value : string.Empty;
+
+                testResults.Add(testResult.Guid, testResult);
+            }
         }
     }
 }

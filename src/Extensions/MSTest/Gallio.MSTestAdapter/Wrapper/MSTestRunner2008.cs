@@ -102,5 +102,32 @@ namespace Gallio.MSTestAdapter.Wrapper
 
             writer.WriteEndDocument();
         }
+
+        protected override void ExtractExecutedTestsInformation(
+            Dictionary<string, MSTestResult> testResults,
+            XmlReader reader)
+        {
+            while (reader.ReadToFollowing("UnitTestResult"))
+            {
+                MSTestResult testResult = new MSTestResult();
+                testResult.Guid = reader.GetAttribute("testId");
+                testResult.Duration = GetDuration(reader.GetAttribute("duration"));
+                testResult.Outcome = GetTestOutcome(reader.GetAttribute("outcome"));
+                reader.ReadToFollowing("Output");
+                reader.Read();
+                if (reader.Name == "StdOut")
+                {
+                    testResult.StdOut = reader.ReadString();
+                    reader.Read();
+                }
+                if (reader.Name == "ErrorInfo")
+                {
+                    testResult.Errors = ReadErrors(reader);
+                }
+
+                testResults.Add(testResult.Guid, testResult);
+            }
+        }
+
     }
 }

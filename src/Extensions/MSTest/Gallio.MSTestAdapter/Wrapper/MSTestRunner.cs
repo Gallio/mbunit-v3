@@ -161,7 +161,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             return TestOutcome.Passed;
         }
 
-        private static bool ProcessTestResults(ITestContext assemblyContext,
+        private bool ProcessTestResults(ITestContext assemblyContext,
             ITestCommand assemblyCommand, string resultsFilePath)
         {
             Dictionary<string, MSTestResult> testResults = new Dictionary<string, MSTestResult>();
@@ -262,31 +262,9 @@ namespace Gallio.MSTestAdapter.Wrapper
             }
         }
 
-        private static void ExtractExecutedTestsInformation(
+        protected abstract void ExtractExecutedTestsInformation(
             Dictionary<string, MSTestResult> testResults,
-            XmlReader reader)
-        {
-            while (reader.ReadToFollowing("UnitTestResult"))
-            {
-                MSTestResult testResult = new MSTestResult();
-                testResult.Guid = reader.GetAttribute("testId");
-                testResult.Duration = GetDuration(reader.GetAttribute("duration"));
-                testResult.Outcome = GetTestOutcome(reader.GetAttribute("outcome"));
-                reader.ReadToFollowing("Output");
-                reader.Read();
-                if (reader.Name == "StdOut")
-                {
-                    testResult.StdOut = reader.ReadString();
-                    reader.Read();
-                }
-                if (reader.Name == "ErrorInfo")
-                {
-                    testResult.Errors = ReadErrors(reader);
-                }
-
-                testResults.Add(testResult.Guid, testResult);
-            }
-        }
+            XmlReader reader);
 
         private static void ProcessIgnoredTests(Dictionary<string, MSTestResult> testCommandsByTestGuid, IEnumerable<ITestCommand> allCommands)
         {
@@ -311,7 +289,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             }
         }
 
-        private static string ReadErrors(XmlReader reader)
+        protected static string ReadErrors(XmlReader reader)
         {
             reader.ReadToFollowing("Message");
             string message = reader.ReadString();
@@ -330,7 +308,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             context.LogWriter.Failures.Write(message);
         }
 
-        private static TestOutcome GetTestOutcome(string outcome)
+        protected static TestOutcome GetTestOutcome(string outcome)
         {
             TestOutcome testOutcome;
             // The commented cases are the ones we are not sure how to map yet.
@@ -338,6 +316,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             switch (outcome)
             {
                 case "Aborted":
+                case "3":
                     testOutcome = TestOutcome.Canceled;
                     break;
                 //case "Completed":
@@ -347,12 +326,15 @@ namespace Gallio.MSTestAdapter.Wrapper
                 //    testOutcome = TestOutcome.Passed;
                 //    break;
                 case "Error":
+                case "0":
                     testOutcome = TestOutcome.Error;
                     break;
                 case "Failed":
+                case "1":
                     testOutcome = TestOutcome.Failed;
                     break;
                 case "Inconclusive":
+                case "4":
                     testOutcome = TestOutcome.Inconclusive;
                     break;
                 //case "InProgress":
@@ -365,21 +347,26 @@ namespace Gallio.MSTestAdapter.Wrapper
                 //    testOutcome = TestOutcome.Passed;
                 //    break;
                 case "NotExecuted":
+                case "7":
                     testOutcome = TestOutcome.Skipped;
                     break;
                 case "NotRunnable":
+                case "6":
                     testOutcome = TestOutcome.Skipped;
                     break;
                 case "Passed":
+                case "10":
                     testOutcome = TestOutcome.Passed;
                     break;
                 //case "PassedButRunAborted":
                 //    testOutcome = TestOutcome.Passed;
                 //    break;
                 case "Pending":
+                case "13":
                     testOutcome = TestOutcome.Pending;
                     break;
                 case "Timeout":
+                case "2":
                     testOutcome = TestOutcome.Timeout;
                     break;
                 //case "Warning":
@@ -393,7 +380,7 @@ namespace Gallio.MSTestAdapter.Wrapper
             return testOutcome;
         }
 
-        private static TimeSpan GetDuration(string duration)
+        protected static TimeSpan GetDuration(string duration)
         {
             return TimeSpan.Parse(duration);
         }
