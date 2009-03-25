@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using Gallio.Framework.Assertions;
 using MbUnit.Framework.Reflection;
 using MbUnit.Framework;
 
@@ -37,7 +38,7 @@ namespace MbUnit.Tests.Framework.Reflection
         [Test]
         public void CreateInstanceByAssemblyNameAndClassWithDefaultConstructo()
         {
-            string className = "System.Number";
+            const string className = "System.Number";
             object obj = Reflector.CreateInstance(MSCorLibAssembly, className);
             Assert.IsNotNull(obj);
             Assert.AreEqual(true, Reflector.InvokeMethod(AccessModifier.Default, obj, "IsWhite", ' '));
@@ -47,11 +48,21 @@ namespace MbUnit.Tests.Framework.Reflection
         [Test]
         public void CreateInstanceByAssemblyNameAndClassWithParametizedConstructor()
         {
-            string className = "System.Collections.KeyValuePairs";
+            const string className = "System.Collections.KeyValuePairs";
             object obj = Reflector.CreateInstance(MSCorLibAssembly, className, 1, 'A');
             Assert.IsNotNull(obj);
             Assert.AreEqual(1, Reflector.GetProperty(obj, "Key"));
             Assert.AreEqual('A', Reflector.GetProperty(obj, "Value"));
+        }
+
+        [Test]
+        public void CreateInstance_fails_with_useful_message_if_type_cannot_be_found()
+        {
+            const string className = "Number";
+            AssertionFailureException assertionFailureException = 
+                Assert.Throws<AssertionFailureException>(() => Reflector.CreateInstance(MSCorLibAssembly, className));
+            Assert.AreEqual("Could not find type Number in the specified assembly.", 
+                assertionFailureException.Failure.Message);
         }
         #endregion
 
@@ -83,7 +94,7 @@ namespace MbUnit.Tests.Framework.Reflection
         }
 
         [Test]
-        [ExpectedArgumentNullException()]
+        [ExpectedArgumentNullException]
         public void SetPropertyWithNullObject()
         {
             Reflector.SetProperty(null, "somePropety", "value");

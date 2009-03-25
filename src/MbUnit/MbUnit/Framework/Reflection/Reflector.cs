@@ -221,10 +221,13 @@ namespace MbUnit.Framework.Reflection
         /// <returns>Newly created object.</returns>
         public static object CreateInstance(string assemblyName, string typeName, params object[] args)
         {
-            object obj;
             Type[] argTypes = Type.EmptyTypes;
             Assembly a = Assembly.Load(assemblyName);
+            
             Type type = a.GetType(typeName);
+            if (type == null)
+                Assert.Fail("Could not find type {0} in the specified assembly.", typeName);
+
             if (args != null)
             {
                 argTypes = new Type[args.Length];
@@ -234,7 +237,7 @@ namespace MbUnit.Framework.Reflection
             ConstructorInfo ci = type.GetConstructor(
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
                 , null, argTypes, null);
-            obj = ci.Invoke(args);
+            object obj = ci.Invoke(args);
             return obj;
         }
 
@@ -284,9 +287,8 @@ namespace MbUnit.Framework.Reflection
         {
             FieldInfo fi = type.GetField(fieldName, BindingFlags.Instance | (BindingFlags)access);
             if (lookInBase && fi == null && !type.Equals(typeof(Object)))
-                return GetField(access, type.BaseType, fieldName, lookInBase);
-            else
-                return fi;
+                return GetField(access, type.BaseType, fieldName, true);
+            return fi;
         }
         #endregion
 
@@ -379,9 +381,8 @@ namespace MbUnit.Framework.Reflection
         {
             PropertyInfo pi = type.GetProperty(fieldName, BindingFlags.Instance | (BindingFlags)access);
             if (lookInBase && pi == null && !type.Equals(typeof(Object)))
-                return GetProperty(access, type.BaseType, fieldName, lookInBase);
-            else
-                return pi;
+                return GetProperty(access, type.BaseType, fieldName, true);
+            return pi;
         }
         #endregion
 
@@ -498,9 +499,8 @@ namespace MbUnit.Framework.Reflection
 
             MethodInfo mi = type.GetMethod(methodName, BindingFlags.Instance | (BindingFlags)access, null, paramTypes, null);
             if (lookInBase && mi == null && !type.Equals(typeof(Object)))
-                return GetMethod(access, type.BaseType, methodName, lookInBase, methodParams);
-            else
-                return mi;
+                return GetMethod(access, type.BaseType, methodName, true, methodParams);
+            return mi;
         }
 
         #endregion
