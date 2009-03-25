@@ -42,6 +42,7 @@ namespace Gallio.Icarus
 
             testController.TestStepFinished += delegate { timer.Enabled = true; };
             testController.SelectedTests.ListChanged += delegate { timer.Enabled = true; };
+            testController.ExploreStarted += delegate { Reset(); };
             testController.RunStarted += delegate { Reset(); };
 
             testProgressStatusBar.DataBindings.Add("Mode", mediator.OptionsController, "TestStatusBarStyle");

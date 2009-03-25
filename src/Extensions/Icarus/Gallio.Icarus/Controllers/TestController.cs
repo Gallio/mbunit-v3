@@ -145,7 +145,7 @@ namespace Gallio.Icarus.Controllers
             set
 // ReSharper restore ValueParameterNotUsed
             {
-                testTreeModel.SetFilter(TestStatus.Skipped);
+                testTreeModel.SetFilter(TestStatus.Inconclusive);
             }
         }
 
@@ -219,6 +219,7 @@ namespace Gallio.Icarus.Controllers
             {
                 EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
                 FailedTests = false;
+                testTreeModel.ResetTestStatus(progressMonitor);
 
                 DoWithTestRunner(testRunner =>
                 {
@@ -227,7 +228,7 @@ namespace Gallio.Icarus.Controllers
 
                     var testExplorationOptions = new TestExplorationOptions();
                     var testExecutionOptions = new TestExecutionOptions
-                                                   {
+                    {
                         Filter = GenerateFilterFromSelectedTests(),
                         ExactFilter = true
                     };
