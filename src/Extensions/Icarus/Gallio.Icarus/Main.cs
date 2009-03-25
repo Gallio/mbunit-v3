@@ -221,7 +221,7 @@ namespace Gallio.Icarus
 
         private void aboutMenuItem_Click(object sender, EventArgs e)
         {
-            aboutDialog.ShowDialog();
+            aboutDialog.ShowDialog(this);
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -314,7 +314,7 @@ namespace Gallio.Icarus
         {
             using (Options.Options options = new Options.Options(mediator.OptionsController))
             {
-                options.ShowDialog();
+                options.ShowDialog(this);
             }
         }
 
@@ -464,25 +464,32 @@ namespace Gallio.Icarus
 
         private void AssemblyChanged(object sender, AssemblyChangedEventArgs e)
         {
+            // Do this asynchronously when called from another thread.
+            BeginInvoke(new MethodInvoker(() => HandleAssemblyChanged(e.AssemblyName)));
+        }
+
+        private void HandleAssemblyChanged(string assemblyName)
+        {
             bool reload = false;
             if (mediator.OptionsController.AlwaysReloadAssemblies)
                 reload = true;
             else
             {
-                using (ReloadDialog reloadDialog = new ReloadDialog(e.AssemblyName))
+                using (ReloadDialog reloadDialog = new ReloadDialog(assemblyName))
                 {
-                    if (reloadDialog.ShowDialog() == DialogResult.OK)
+                    if (reloadDialog.ShowDialog(this) == DialogResult.OK)
                     {
                         reload = true;
                         mediator.OptionsController.AlwaysReloadAssemblies = reloadDialog.AlwaysReloadTests;
                     }
                 }
             }
-            
+
             if (!reload)
                 return;
 
             Reload();
+
             if (mediator.OptionsController.RunTestsAfterReload)
                 StartTests(false);
         }
