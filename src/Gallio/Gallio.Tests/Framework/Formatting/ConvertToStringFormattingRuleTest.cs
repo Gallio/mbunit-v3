@@ -47,6 +47,15 @@ namespace Gallio.Tests.Framework.Formatting
         [Row(typeof(object), 10000, FormattingRulePriority.Fallback, Description = "Object conversion with typical cost, default ToString.")]
         [Row(typeof(object), 1000000, FormattingRulePriority.Default, Description = "Object conversion with default cost, default ToString.")]
         [Row(typeof(object), 100000000, FormattingRulePriority.Default, Description = "Object conversion with maximum cost, default ToString.")]
+        [Row(typeof(ClassWithDefaultToString), 10000, FormattingRulePriority.Fallback, Description = "Object conversion with typical cost, default ToString.")]
+        [Row(typeof(ClassWithDefaultToString), 1000000, FormattingRulePriority.Default, Description = "Object conversion with default cost, default ToString.")]
+        [Row(typeof(ClassWithDefaultToString), 100000000, FormattingRulePriority.Default, Description = "Object conversion with maximum cost, default ToString.")]
+        [Row(typeof(ValueType), 10000, FormattingRulePriority.Fallback, Description = "Object conversion with typical cost, default ToString.")]
+        [Row(typeof(ValueType), 1000000, FormattingRulePriority.Default, Description = "Object conversion with default cost, default ToString.")]
+        [Row(typeof(ValueType), 100000000, FormattingRulePriority.Default, Description = "Object conversion with maximum cost, default ToString.")]
+        [Row(typeof(StructWithDefaultToString), 10000, FormattingRulePriority.Fallback, Description = "Object conversion with typical cost, default ToString.")]
+        [Row(typeof(StructWithDefaultToString), 1000000, FormattingRulePriority.Default, Description = "Object conversion with default cost, default ToString.")]
+        [Row(typeof(StructWithDefaultToString), 100000000, FormattingRulePriority.Default, Description = "Object conversion with maximum cost, default ToString.")]
         [Row(typeof(string), 0, FormattingRulePriority.Fallback, Description = "Object conversion with zero cost, non-default ToString.")]
         [Row(typeof(DateTime), 10000, FormattingRulePriority.Fallback, Description = "Object conversion with typical cost, non-default ToString.")]
         [Row(typeof(DateTime), 1000000, FormattingRulePriority.Fallback, Description = "Object conversion with default cost, non-default ToString.")]
@@ -61,6 +70,14 @@ namespace Gallio.Tests.Framework.Formatting
 
             ConvertToStringFormattingRule formattingRule = new ConvertToStringFormattingRule(converter);
             Assert.AreEqual(expectedPriority, formattingRule.GetPriority(type));
+        }
+
+        private class ClassWithDefaultToString
+        {
+        }
+
+        private struct StructWithDefaultToString
+        {
         }
     }
 }

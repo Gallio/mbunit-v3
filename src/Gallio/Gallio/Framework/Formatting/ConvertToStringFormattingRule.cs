@@ -66,7 +66,13 @@ namespace Gallio.Framework.Formatting
         private static bool HasNonDefaultToString(Type type)
         {
             MethodInfo toString = type.GetMethod("ToString", EmptyArray<Type>.Instance);
-            return toString != null && toString.DeclaringType != typeof(object);
+            return toString != null && ! IsBuiltInToStringDeclaringType(toString.DeclaringType);
+        }
+
+        private static bool IsBuiltInToStringDeclaringType(Type type)
+        {
+            return type == typeof(object)
+                || type == typeof(ValueType);
         }
     }
 }
