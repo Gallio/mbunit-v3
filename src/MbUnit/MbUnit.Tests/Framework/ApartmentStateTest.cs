@@ -17,13 +17,28 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Gallio.Model.Serialization;
+using Gallio.Reflection;
+using Gallio.Runner.Reports;
+using Gallio.Tests;
 using MbUnit.Framework;
+using MbUnit.TestResources;
 
 namespace MbUnit.Tests.Framework
 {
     [TestFixture]
-    public class ApartmentStateTest
+    [RunSample(typeof(AssemblyApartmentStateSample))]
+    public class ApartmentStateTest : BaseTestWithSampleRunner
     {
+        // The MbUnit.TestResources is configured for MTA.
+        [Test]
+        public void DefaultApartmentStateMayBeSetOnPerAssemblyBasis()
+        {
+            TestStepRun run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(
+                typeof(AssemblyApartmentStateSample).GetMethod("WriteApartmentStateToLog")));
+            Assert.Contains(run.TestLog.ToString(), "MTA");
+        }
+
         [Test]
         public void DefaultApartmentStateShouldBeSTA()
         {

@@ -21,20 +21,18 @@ using Gallio.Reflection;
 namespace MbUnit.Framework
 {
     /// <summary>
-    /// <para>
-    /// Sets the apartment state to be used to run the decorated test.
-    /// </para>
+    /// Sets the apartment state to be used to run the decorated test and its children
+    /// unless subsequently overridden.
     /// </summary>
     /// <remarks>
     /// <para>
     /// If no apartment state is specified or if it is <see cref="System.Threading.ApartmentState.Unknown" />
-    /// the test will inherit the apartment state of its parent.  Otherwise
-    /// it will run in a thread with the specified apartment state.
+    /// the test will inherit the apartment state of its parent test.  Consequently if the apartment
+    /// state is set on the fixture then its tests will use the same apartment state unless overridden.
     /// </para>
     /// <para>
-    /// The test runner guarantees that the root test runs with the <see cref="System.Threading.ApartmentState.STA" />
-    /// apartment state.  Consequently the apartment state only needs to be overridden to run 
-    /// a test in some mode that may differ from that which it would ordinarily inherit.
+    /// The default apartment state for a test assembly is <see cref="System.Threading.ApartmentState.STA"/> and
+    /// may be overridden by setting <see cref="ApartmentStateAttribute" /> attribute on the assembly.
     /// </para>
     /// </remarks>
     [AttributeUsage(PatternAttributeTargets.Test, AllowMultiple = false, Inherited = true)]
@@ -43,20 +41,20 @@ namespace MbUnit.Framework
         private readonly ApartmentState apartmentState;
 
         /// <summary>
-        /// <para>
-        /// Sets the apartment state to be used to run the decorated test.
-        /// </para>
+        /// Sets the apartment state to be used to run the decorated test and its children
+        /// unless subsequently overridden.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// If no apartment state is specified or if it is <see cref="System.Threading.ApartmentState.Unknown" />
-        /// the test will inherit the apartment state of its parent.  Otherwise
-        /// it will run in a thread with the specified apartment state.
+        /// the test will inherit the apartment state of its parent test.  Consequently if the apartment
+        /// state is set on the fixture then its tests will use the same apartment state unless overridden. 
         /// </para>
         /// <para>
-        /// The test runner guarantees that the root test runs with the <see cref="System.Threading.ApartmentState.STA" />
-        /// apartment state.  Consequently the apartment state only needs to be overridden to run 
-        /// a test in some mode that may differ from that which it would ordinarily inherit.
+        /// The default apartment state for a test assembly is <see cref="System.Threading.ApartmentState.STA"/> and
+        /// may be overridden by setting <see cref="ApartmentStateAttribute" /> attribute on the assembly.
         /// </para>
-        /// </summary>
+        /// </remarks>
         /// <param name="apartmentState">The apartment state to use</param>
         public ApartmentStateAttribute(ApartmentState apartmentState)
         {
