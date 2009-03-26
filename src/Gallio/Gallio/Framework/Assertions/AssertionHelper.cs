@@ -131,5 +131,42 @@ namespace Gallio.Framework.Assertions
 
             return AssertionContext.CurrentContext.CaptureFailures(action, assertionFailureBehavior, true);
         }
+
+        /// <summary>
+        /// A delegate for the <see cref="Explain" /> decorator method which combines the specified
+        /// inner failures into a single outer failure with a common explanation.
+        /// </summary>
+        /// <param name="innerFailures">The inner failures to combine together.</param>
+        /// <returns></returns>
+        public delegate AssertionFailure Explanation(AssertionFailure[] innerFailures);
+
+        /// <summary>
+        /// Performs an action and combines the possible assertion failures
+        /// that were observed within the block, into a single outer failure with
+        /// a common explanation.
+        /// </summary>
+        /// <param name="action">The action to invoke.</param>
+        /// <param name="explanation">A function that takes an array of inner failures and
+        /// returns a single outer failure with a common explanation.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="explanation"/> is null</exception>
+        public static void Explain(Action action, Explanation explanation)
+        {
+            if (action == null)
+                throw new ArgumentNullException("action");
+
+            if (explanation == null)
+                throw new ArgumentNullException("explanation");
+
+            AssertionHelper.Verify(() =>
+            {
+                AssertionFailure[] failures = AssertionHelper.Eval(() =>
+                {
+                    action();
+                });
+
+                return failures.Length == 0 ? null : explanation(failures);
+            });
+        }
     }
 }

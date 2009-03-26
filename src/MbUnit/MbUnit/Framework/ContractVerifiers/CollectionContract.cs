@@ -126,8 +126,8 @@ namespace MbUnit.Framework.ContractVerifiers
     /// <item>
     /// <term>CopyTo</term>
     /// <description>
-    /// Not implemented yet. 
-    /// The test already succeeds.
+    /// The collection performs a copy of the items in an output array. The implementation is expected to
+    /// handle properly with null arguments, and a valid or an invalid index argument.
     /// </description>
     /// </item>
     /// </list>

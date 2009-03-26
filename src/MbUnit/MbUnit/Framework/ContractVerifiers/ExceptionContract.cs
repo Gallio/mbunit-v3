@@ -244,17 +244,18 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase(name, () =>
             {
-                AssertionHelper.Verify(() =>
-                {
-                    if (typeof(TException).GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
-                        new[] { typeof(SerializationInfo), typeof(StreamingContext) }, null) != null)
-                        return null;
+                var constructor = typeof(TException).GetConstructor(
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
+                    new[] { typeof(SerializationInfo), typeof(StreamingContext) }, null);
 
-                    return new AssertionFailureBuilder("Expected the exception type to have a serialization constructor with signature .ctor(SerializationInfo, StreamingContext).")
+                AssertionHelper.Explain(() =>
+                    Assert.IsNotNull(constructor), 
+                    innerFailures => new AssertionFailureBuilder(
+                        "Expected the exception type to have a serialization constructor with signature .ctor(SerializationInfo, StreamingContext).")
                         .AddRawLabeledValue("Exception Type", typeof(TException))
                         .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                });
+                        .AddInnerFailures(innerFailures)
+                        .ToAssertionFailure());
             });
         }
 
@@ -263,74 +264,60 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase(name, () =>
             {
-                ConstructorInfo constructor = typeof(TException).GetConstructor(BindingFlags.Instance | BindingFlags.Public, null,
-                        constructorParameterTypes, null);
+                var constructor = typeof(TException).GetConstructor(BindingFlags.Instance | BindingFlags.Public, 
+                    null, constructorParameterTypes, null);
 
-                AssertionHelper.Verify(() =>
-                {
-                    if (constructor != null)
-                        return null;
-
-                    return new AssertionFailureBuilder(String.Format("Expected the exception type to have a standard constructor with signature .ctor({0}).", constructorSignature))
+                AssertionHelper.Explain(() => 
+                    Assert.IsNotNull(constructor), 
+                    innerFailures => new AssertionFailureBuilder(String.Format(
+                        "Expected the exception type to have a standard constructor with signature .ctor({0}).", constructorSignature))
                         .AddRawLabeledValue("Exception Type", typeof(TException))
                         .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                });
+                        .AddInnerFailures(innerFailures)
+                        .ToAssertionFailure());
 
                 foreach (var constructorArgumentList in constructorArgumentLists)
                 {
                     TException instance = (TException) constructor.Invoke(constructorArgumentList);
-
                     string message = constructorArgumentList.Length > 0 ? (string) constructorArgumentList[0] : null;
                     Exception innerException = constructorArgumentList.Length > 1 ? (Exception) constructorArgumentList[1] : null;
 
                     Assert.Multiple(() =>
                     {
-                        AssertionHelper.Verify(() =>
-                        {
-                            if (ReferenceEquals(innerException, instance.InnerException))
-                                return null;
-
-                            return
-                                new AssertionFailureBuilder(
-                                    "The inner exception should be referentially identical to the exception provided in the constructor.")
-                                    .AddRawLabeledValue("Exception Type", typeof (TException))
-                                    .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
-                                    .AddRawLabeledValue("Expected Inner Exception", innerException)
-                                    .SetStackTrace(Context.GetStackTraceData())
-                                    .ToAssertionFailure();
-                        });
+                        AssertionHelper.Explain(() => 
+                            Assert.AreSame(innerException, instance.InnerException), 
+                            innerFailures => new AssertionFailureBuilder(
+                                "The inner exception should be referentially identical to the exception provided in the constructor.")
+                                .AddRawLabeledValue("Exception Type", typeof (TException))
+                                .AddRawLabeledValue("Actual Inner Exception", instance.InnerException)
+                                .AddRawLabeledValue("Expected Inner Exception", innerException)
+                                .SetStackTrace(Context.GetStackTraceData())
+                                .AddInnerFailures(innerFailures)
+                                .ToAssertionFailure());
 
                         if (message == null)
                         {
-                            AssertionHelper.Verify(() =>
-                            {
-                                if (instance.Message != null)
-                                    return null;
-
-                                return new AssertionFailureBuilder(
+                            AssertionHelper.Explain(() =>
+                                Assert.IsNotNull(instance.Message), 
+                                innerFailures => new AssertionFailureBuilder(
                                     "The exception message should not be null.")
                                     .AddRawLabeledValue("Exception Type", typeof (TException))
                                     .SetStackTrace(Context.GetStackTraceData())
-                                    .ToAssertionFailure();
-                            });
+                                    .AddInnerFailures(innerFailures)
+                                    .ToAssertionFailure());
                         }
                         else
                         {
-                            AssertionHelper.Verify(() =>
-                            {
-                                if (message == instance.Message)
-                                    return null;
-
-                                return
-                                    new AssertionFailureBuilder(
-                                        "Expected the exception message to be equal to a specific text.")
-                                        .AddRawLabeledValue("Exception Type", typeof (TException))
-                                        .AddLabeledValue("Actual Message", instance.Message)
-                                        .AddLabeledValue("Expected Message", message)
-                                        .SetStackTrace(Context.GetStackTraceData())
-                                        .ToAssertionFailure();
-                            });
+                            AssertionHelper.Explain(() =>
+                                Assert.AreEqual(message, instance.Message),
+                                innerFailures => new AssertionFailureBuilder(
+                                    "Expected the exception message to be equal to a specific text.")
+                                    .AddRawLabeledValue("Exception Type", typeof (TException))
+                                    .AddLabeledValue("Actual Message", instance.Message)
+                                    .AddLabeledValue("Expected Message", message)
+                                    .SetStackTrace(Context.GetStackTraceData())
+                                    .AddInnerFailures(innerFailures)
+                                    .ToAssertionFailure());
                         }
 
                         if (ImplementsSerialization)
@@ -352,18 +339,16 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             Exception result = RoundTripSerialize(instance);
 
-            AssertionHelper.Verify(() =>
-            {
-                if (result.Message == instance.Message)
-                    return null;
-
-                return new AssertionFailureBuilder("Expected the exception message to be preserved by round-trip serialization.")
+            AssertionHelper.Explain(() =>
+                Assert.AreEqual(result.Message, instance.Message),
+                innerFailures => new AssertionFailureBuilder(
+                    "Expected the exception message to be preserved by round-trip serialization.")
                     .AddRawLabeledValue("Exception Type", typeof(TException))
                     .AddLabeledValue("Expected Message", instance.Message)
                     .AddLabeledValue("Actual Message ", result.Message)
                     .SetStackTrace(Context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
 
             AssertionHelper.Verify(() =>
             {
