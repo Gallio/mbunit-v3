@@ -31,6 +31,7 @@ namespace Gallio.Icarus
         private string testRunnerFactory = StandardTestRunnerFactoryNames.IsolatedProcess;
         private bool restorePreviousSettings = true;
         private readonly List<string> pluginDirectories = new List<string>();
+        private readonly List<string> recentProjects = new List<string>();
         private bool showProgressDialogs = true;
         private string testStatusBarStyle = TestStatusBarStyles.Integration;
         private int passedColor = Color.Green.ToArgb();
@@ -135,7 +136,10 @@ namespace Gallio.Icarus
 
         [XmlArray("recentProjects", IsNullable = false)]
         [XmlArrayItem("recentProject", typeof(string), IsNullable = false)]
-        public List<string> RecentProjects { get; set; }
+        public List<string> RecentProjects
+        {
+            get { return recentProjects; }
+        }
 
         [XmlElement("generateReportAfterTestRun")]
         public bool GenerateReportAfterTestRun

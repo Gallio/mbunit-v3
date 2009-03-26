@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Gallio.Icarus.Utilities
 {
@@ -27,6 +28,9 @@ namespace Gallio.Icarus.Utilities
 
         public MRUList(List<string> items, int maxItems)
         {
+            if (items == null)
+                throw new ArgumentNullException("items");
+
             this.items = items;
             MaxItems = maxItems;
         }
