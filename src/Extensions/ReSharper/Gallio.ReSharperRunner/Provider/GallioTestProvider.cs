@@ -91,10 +91,12 @@ namespace Gallio.ReSharperRunner.Provider
             return shim.IsUnitTestElement(element);
         }
 
+#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
         public bool IsUnitTestStuff(IDeclaredElement element)
         {
             return shim.IsUnitTestStuff(element);
         }
+#endif
 
         public void Present(UnitTestElement element, IPresentableItem item, TreeModelNode node, PresentationState state)
         {
@@ -212,7 +214,9 @@ namespace Gallio.ReSharperRunner.Provider
                 if (consumer == null)
                     throw new ArgumentNullException("consumer");
 
+#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
                 using (ReadLockCookie.Create())
+#endif
                 {
                     MetadataReflectionPolicy reflectionPolicy = new MetadataReflectionPolicy(assembly, project);
                     IAssemblyInfo assemblyInfo = reflectionPolicy.Wrap(assembly);
@@ -253,7 +257,9 @@ namespace Gallio.ReSharperRunner.Provider
                 if (consumer == null)
                     throw new ArgumentNullException("consumer");
 
+#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
                 using (ReadLockCookie.Create())
+#endif
                 {
                     PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(psiFile.GetManager());
                     ConsumerAdapter consumerAdapter = new ConsumerAdapter(provider, consumer, psiFile);
@@ -301,7 +307,9 @@ namespace Gallio.ReSharperRunner.Provider
                 if (element == null)
                     throw new ArgumentNullException("element");
 
+#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
                 using (ReadLockCookie.Create())
+#endif
                 {
                     PsiReflectionPolicy reflectionPolicy = new PsiReflectionPolicy(element.GetManager());
                     ICodeElementInfo elementInfo = reflectionPolicy.Wrap(element);
@@ -313,6 +321,7 @@ namespace Gallio.ReSharperRunner.Provider
                 }
             }
 
+#if ! RESHARPER_31 && ! RESHARPER_40 && ! RESHARPER_41
             /// <summary>
             /// Checks if given declared element is part of a unit test.  Could be a set up or tear down
             /// method, or something else that belongs to a test.
@@ -322,6 +331,7 @@ namespace Gallio.ReSharperRunner.Provider
                 // TODO: Need to change the ITestExplorer API to support this kind of stuff.
                 return IsUnitTestElement(element);
             }
+#endif
 
             /// <summary>
             /// Present unit test.
