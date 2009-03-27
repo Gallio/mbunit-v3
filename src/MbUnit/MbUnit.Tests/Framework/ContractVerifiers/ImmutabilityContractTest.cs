@@ -76,22 +76,36 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             Three,
         }
 
+        internal interface IFoo
+        {
+            void Hello();
+        }
+
+        internal class Foo : IFoo
+        {
+            public void Hello()
+            {
+            }
+        }
+
         internal class ImmutableSample
         {
             private readonly double number;
             private readonly string text;
-            private readonly ImmutableSubSample foo;
+            private readonly ImmutableSubSample subSample;
             private readonly SampleEnumeration digit;
             private readonly Func<int> function;
+            private readonly IFoo foo;
 
-            public ImmutableSample(int number, string text, ImmutableSubSample foo, 
+            public ImmutableSample(int number, string text, ImmutableSubSample subSample, 
                 SampleEnumeration digit, Func<int> function)
             {
                 this.number = number;
                 this.text = text;
-                this.foo = foo;
+                this.subSample = subSample;
                 this.digit = digit;
                 this.function = function;
+                this.foo = new Foo();
             }
         }
 

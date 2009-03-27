@@ -47,102 +47,85 @@ namespace MbUnit.Framework.ContractVerifiers.Core
 
         private void AssertInsertItemOk(int index, TItem item, string failureMessage)
         {
-            AssertionHelper.Verify(() =>
-            {
-                try
+            AssertionHelper.Explain(() =>
+                Assert.DoesNotThrow(() =>
                 {
                     List.Insert(index, item);
                     CountTrack++;
-                    return null;
-                }
-                catch (Exception actualException)
-                {
-                    return new AssertionFailureBuilder(failureMessage + "\nAn exception was thrown while none was expected.")
-                        .AddException(actualException)
-                        .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                }
-            });
+                }),
+                innerFailures => new AssertionFailureBuilder(
+                    failureMessage + "\nAn exception was thrown while none was expected.")
+                    .SetStackTrace(Context.GetStackTraceData())
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         private void AssertInsertItemFails(int index, TItem item, string failureMessage)
         {
-            AssertionHelper.Verify(() =>
-            {
-                try
+            AssertionHelper.Explain(() =>
+                Assert.Throws<Exception>(() =>
                 {
                     List.Insert(index, item);
                     CountTrack++;
-
-                    return new AssertionFailureBuilder(failureMessage + "\nNo exception was thrown while one was expected.")
-                        .AddLabeledValue("Expected Exception Type", "Any")
-                        .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                }
-                catch (Exception)
-                {
-                    return null; // Any kind of exception will make it...
-                }
-            });
+                }),
+                innerFailures => new AssertionFailureBuilder(
+                    failureMessage + "\nNo exception was thrown while one was expected.")
+                    .AddLabeledValue("Expected Exception Type", "Any")
+                    .SetStackTrace(Context.GetStackTraceData())
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         private void AssertIndexOfMissingItem(TItem item)
         {
-            AssertionHelper.Verify(() =>
-            {
-                int result = List.IndexOf(item);
+            int result = List.IndexOf(item);
 
-                if (result < 0)
-                    return null;
-
-                return new AssertionFailureBuilder("Expected the method to return a negative value indicating that a missing item is not present in the list.")
+            AssertionHelper.Explain(() =>
+                Assert.LessThan(result, 0),
+                innerFailures => new AssertionFailureBuilder(
+                    "Expected the method to return a negative value indicating that a missing item is not present in the list.")
                     .AddLabeledValue("Method", "IndexOf")
                     .AddRawLabeledValue("Actual Result", result)
                     .SetStackTrace(Context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         private void AssertIndexOfPresentItem(TItem item)
         {
-            AssertionHelper.Verify(() =>
-            {
-                int result = List.IndexOf(item);
+            int result = List.IndexOf(item);
 
-                if (result >= 0)
-                    return null;
-
-                return new AssertionFailureBuilder("Expected the method to return zero or a positive value indicating that an item was found in the list.")
+            AssertionHelper.Explain(() =>
+                Assert.GreaterThanOrEqualTo(result, 0),
+                innerFailures => new AssertionFailureBuilder(
+                    "Expected the method to return zero or a positive value indicating that an item was found in the list.")
                     .AddLabeledValue("Method", "IndexOf")
                     .AddRawLabeledValue("Actual Result", result)
                     .SetStackTrace(Context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         private void AssertIndexOfConsistentWithIndexer(TItem item)
         {
-            AssertionHelper.Verify(() =>
+            int index = List.IndexOf(item);
+
+            if (index >= 0) // Just ignore missing items.
             {
-                int index = List.IndexOf(item);
-
-                if (index < 0) // Just ignore missing items.
-                    return null;
-
                 TItem actual = List[index];
-
-                if (item.Equals(actual))
-                    return null;
-
-                return new AssertionFailureBuilder("Inconsistent result returned by the indexer accessor and " +
-                    "the 'IndexOf' method. The getter of indexer accessor called with a given index has returned an item " +
-                    "which is not equal to the item used against the 'IndexOf' method to obtain the index.")
-                    .AddRawLabeledValue("Original Item", item)
-                    .AddRawLabeledValue("Related Index", index)
-                    .AddRawLabeledValue("Found Item", actual)
-                    .SetStackTrace(Context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+            
+                AssertionHelper.Explain(() =>
+                    Assert.AreEqual(item, actual),
+                    innerFailures => new AssertionFailureBuilder("Inconsistent result returned by the indexer accessor and " +
+                        "the 'IndexOf' method. The getter of indexer accessor called with a given index has returned an item " +
+                        "which is not equal to the item used against the 'IndexOf' method to obtain the index.")
+                        .AddRawLabeledValue("Original Item", item)
+                        .AddRawLabeledValue("Related Index", index)
+                        .AddRawLabeledValue("Found Item", actual)
+                        .SetStackTrace(Context.GetStackTraceData())
+                        .AddInnerFailures(innerFailures)
+                        .ToAssertionFailure());
+            }
         }
 
         public void InsertSingleItemOk(int index, TItem item)
@@ -154,38 +137,19 @@ namespace MbUnit.Framework.ContractVerifiers.Core
 
         public void DoActionAtInvalidIndex(Func<TList, int> getInvalidIndex, Action<TList, int> action, string actionName)
         {
-            AssertionHelper.Verify(() =>
-            {
-                int invalidIndex = getInvalidIndex(List);
+            int invalidIndex = getInvalidIndex(List);
 
-                try
-                {
-                    action(List, invalidIndex);
-
-                    return new AssertionFailureBuilder("Expected a method of the list to throw an exception when called with a invalid argument.")
-                        .AddLabeledValue("Method", actionName)
-                        .AddLabeledValue("Invalid Argument Name", "index")
-                        .AddRawLabeledValue("Invalid Argument Value", invalidIndex)
-                        .AddRawLabeledValue("Expected Exception", typeof(ArgumentOutOfRangeException))
-                        .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return null;
-                }
-                catch (Exception actualException)
-                {
-                    return new AssertionFailureBuilder("A method threw an exception of a different type than was expected while called with an invalid argument.")
-                        .AddLabeledValue("Method", actionName)
-                        .AddLabeledValue("Invalid Argument Name", "index")
-                        .AddRawLabeledValue("Invalid Argument Value", invalidIndex)
-                        .AddRawLabeledValue("Expected Exception", typeof(ArgumentNullException))
-                        .AddException(actualException)
-                        .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                }
-            });
+            AssertionHelper.Explain(() =>
+                Assert.Throws<ArgumentOutOfRangeException>(() => action(List, invalidIndex)),
+                innerFailures => new AssertionFailureBuilder(
+                    "Expected a method of the list to throw an particular exception when called with a invalid argument.")
+                    .AddLabeledValue("Method", actionName)
+                    .AddLabeledValue("Invalid Argument Name", "index")
+                    .AddRawLabeledValue("Invalid Argument Value", invalidIndex)
+                    .AddRawLabeledValue("Expected Exception", typeof(ArgumentOutOfRangeException))
+                    .SetStackTrace(Context.GetStackTraceData())
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         public void InsertDuplicateItemOk(int index, TItem item)

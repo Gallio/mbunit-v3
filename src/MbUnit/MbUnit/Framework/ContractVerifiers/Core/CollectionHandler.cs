@@ -29,6 +29,9 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         private readonly TCollection collection;
         private readonly ContractVerificationContext context;
 
+        /// <summary>
+        /// Gets the contract verification context.
+        /// </summary>
         protected ContractVerificationContext Context
         {
             get
@@ -62,7 +65,7 @@ namespace MbUnit.Framework.ContractVerifiers.Core
         /// Constructor.
         /// </summary>
         /// <param name="collection">An instance of the collection to test.</param>
-        /// <param name="context">The </param>
+        /// <param name="context">The contract verification context.</param>
         public CollectionHandler(TCollection collection, ContractVerificationContext context)
         {
             this.collection = collection;
@@ -70,80 +73,70 @@ namespace MbUnit.Framework.ContractVerifiers.Core
             this.context = context;
         }
 
+        /// <summary>
+        /// Adds the specified item to the tested collection and increments the tracking counter.
+        /// The operation is expected to be successful.
+        /// </summary>
+        /// <param name="item">The item to add to the tested collection.</param>
+        /// <param name="failureMessage"></param>
         protected void AssertAddItemOk(TItem item, string failureMessage)
         {
-            AssertionHelper.Verify(() =>
-            {
-                try
+            AssertionHelper.Explain(() =>
+                Assert.DoesNotThrow(() =>
                 {
                     collection.Add(item);
                     CountTrack++;
-                    return null;
-                }
-                catch (Exception actualException)
-                {
-                    return new AssertionFailureBuilder(failureMessage + "\nAn exception was thrown while none was expected.")
-                        .AddException(actualException)
-                        .SetStackTrace(context.GetStackTraceData())
-                        .ToAssertionFailure();
-                }
-            });
+                }),
+                innerFailures => new AssertionFailureBuilder(
+                    failureMessage + "\nAn exception was thrown while none was expected.")
+                    .SetStackTrace(context.GetStackTraceData())
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         protected void AssertCount(string failureMessage)
         {
             int actual = collection.Count;
 
-            AssertionHelper.Verify(() =>
-            {
-                if (CountTrack == actual)
-                    return null;
-
-                return new AssertionFailureBuilder(failureMessage)
+            AssertionHelper.Explain(() =>
+                Assert.AreEqual(CountTrack, actual),
+                innerFailures => new AssertionFailureBuilder(failureMessage)
                     .AddLabeledValue("Property", "Count")
                     .AddRawLabeledValue("Expected Value", CountTrack)
                     .AddRawLabeledValue("Actual Value", actual)
                     .SetStackTrace(context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         protected void AssertContained(TItem item, string failureMessage)
         {
-            AssertionHelper.Verify(() =>
-            {
-                if (collection.Contains(item))
-                    return null;
-
-                return new AssertionFailureBuilder(failureMessage)
+            AssertionHelper.Explain(() =>
+                Assert.Contains(collection, item),
+                innerFailures => new AssertionFailureBuilder(failureMessage)
                     .AddRawLabeledValue("Just Added Item", item)
                     .AddLabeledValue("Method Called", "Contains")
                     .AddRawLabeledValue("Expected Returned Value", true)
                     .AddRawLabeledValue("Actual Returned Value", false)
                     .SetStackTrace(context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         protected void AssertAddItemFails(TItem item, string failureMessage)
         {
-            AssertionHelper.Verify(() =>
-            {
-                try
+            AssertionHelper.Explain(() =>
+                Assert.Throws<Exception>(() => // Any type of exception will make it!
                 {
                     collection.Add(item);
                     CountTrack++;
-
-                    return new AssertionFailureBuilder(failureMessage + "\nNo exception was thrown while one was expected.")
-                        .AddLabeledValue("Expected Exception Type", "Any")
-                        .SetStackTrace(context.GetStackTraceData())
-                        .ToAssertionFailure();
-                }
-                catch (Exception)
-                {
-                    return null; // Any kind of exception will make it...
-                }
-            });
+                }),
+                innerFailures => new AssertionFailureBuilder(
+                    failureMessage + "\nNo exception was thrown while one was expected.")
+                    .AddLabeledValue("Expected Exception Type", "Any")
+                    .SetStackTrace(context.GetStackTraceData())
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         protected void AssertRemoveItem(TItem item, bool expectedResult, string failureMessage)
@@ -155,19 +148,16 @@ namespace MbUnit.Framework.ContractVerifiers.Core
                 CountTrack--;
             }
 
-            AssertionHelper.Verify(() =>
-            {
-                if (actualResult == expectedResult)
-                    return null;
-
-                return new AssertionFailureBuilder(failureMessage)
+            AssertionHelper.Explain(() =>
+                Assert.AreEqual(expectedResult, actualResult),
+                innerFailures => new AssertionFailureBuilder(failureMessage)
                     .AddRawLabeledValue("Item", item)
                     .AddLabeledValue("Method", "Remove")
                     .AddRawLabeledValue("Expected Returned Value", expectedResult)
                     .AddRawLabeledValue("Actual Returned Value", actualResult)
                     .SetStackTrace(context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         public void AddSingleItemOk(TItem item)

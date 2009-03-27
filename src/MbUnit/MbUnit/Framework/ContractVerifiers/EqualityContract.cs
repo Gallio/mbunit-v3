@@ -279,49 +279,45 @@ namespace MbUnit.Framework.ContractVerifiers
         private static void VerifyEquality(object leftValue, object rightValue, int leftIndex, int rightIndex,
             Func<object, object, bool> comparer, Func<int, int, bool> referenceComparer, ContractVerificationContext context)
         {
-            AssertionHelper.Verify(() =>
-            {
-                bool actualResult = comparer(leftValue, rightValue);
-                bool expectedResult = referenceComparer(leftIndex, rightIndex);
+            bool actual = comparer(leftValue, rightValue);
+            bool expected = referenceComparer(leftIndex, rightIndex);
 
-                if (actualResult == expectedResult)
-                    return null;
-
-                return new AssertionFailureBuilder("The equality comparison between left and right values did not produce the expected result.")
+            AssertionHelper.Explain(() =>
+                Assert.AreEqual(expected, actual),
+                innerFailures => new AssertionFailureBuilder(
+                    "The equality comparison between left and right values did not produce the expected result.")
                     .AddRawLabeledValue("Left Value", leftValue)
                     .AddRawLabeledValue("Right Value", rightValue)
-                    .AddRawLabeledValue("Expected Result", expectedResult)
-                    .AddRawLabeledValue("Actual Result", actualResult)
+                    .AddRawLabeledValue("Expected Result", expected)
+                    .AddRawLabeledValue("Actual Result", actual)
                     .SetStackTrace(context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         private static void VerifyHashCodeOfEquivalentInstances(object leftValue, object rightValue, ContractVerificationContext context)
         {
-            AssertionHelper.Verify(() =>
-            {
-                int leftHashCode = leftValue.GetHashCode();
-                int rightHashCode = rightValue.GetHashCode();
+            int leftHashCode = leftValue.GetHashCode();
+            int rightHashCode = rightValue.GetHashCode();
 
-                if (leftHashCode == rightHashCode)
-                    return null;
-
-                return new AssertionFailureBuilder("Expected the hash codes of two values within the same equivalence class to be equal.")
+            AssertionHelper.Explain(() =>
+                Assert.AreEqual(leftHashCode, rightHashCode),
+                innerFailures => new AssertionFailureBuilder(
+                    "Expected the hash codes of two values within the same equivalence class to be equal.")
                     .AddRawLabeledValue("Left Value", leftValue)
                     .AddRawLabeledValue("Left HashCode", leftHashCode)
                     .AddRawLabeledValue("Right Value", rightValue)
                     .AddRawLabeledValue("Right HashCode", rightHashCode)
                     .SetStackTrace(context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         private static Func<object, object, bool> BinaryComparerFactory(MethodInfo method)
         {
             return (leftValue, rightValue) => method.IsStatic
-                ? (bool)method.Invoke(null, new object[] { leftValue, rightValue })
-                : (bool)method.Invoke(leftValue, new object[] { rightValue });
+                ? (bool)method.Invoke(null, new[] { leftValue, rightValue })
+                : (bool)method.Invoke(leftValue, new[] { rightValue });
         }
 
         private static Type GetIEquatableInterface()

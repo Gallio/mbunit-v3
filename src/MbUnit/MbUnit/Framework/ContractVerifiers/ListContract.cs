@@ -353,21 +353,18 @@ namespace MbUnit.Framework.ContractVerifiers
                         if (!list.Contains(item) || AcceptEqualItems || list.IndexOf(item) == index)
                         {
                             list[index] = item;
+                            var actual = list[index];
 
-                            AssertionHelper.Verify(() =>
-                            {
-                                var actual = list[index];
-                                
-                                if (actual.Equals(item))
-                                    return null;
-
-                                return new AssertionFailureBuilder("Expected the indexer to return a consistent result.")
+                            AssertionHelper.Explain(() =>
+                                Assert.AreEqual(item, actual),
+                                innerFailures => new AssertionFailureBuilder(
+                                    "Expected the indexer to return a consistent result.")
                                     .AddRawLabeledValue("Index", index)
                                     .AddRawLabeledValue("Actual Item", actual)
                                     .AddRawLabeledValue("Expected Item", item)
                                     .SetStackTrace(Context.GetStackTraceData())
-                                    .ToAssertionFailure();
-                            });
+                                    .AddInnerFailures(innerFailures)
+                                    .ToAssertionFailure());
                         }
                     }
                 }

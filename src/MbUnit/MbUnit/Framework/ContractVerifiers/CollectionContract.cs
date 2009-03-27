@@ -269,36 +269,31 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         protected void AssertDistinctIntancesNotEmpty()
         {
-            AssertionHelper.Verify(() =>
-            {
-                if (DistinctInstances.Instances.Count > 0)
-                    return null;
-
-                return new AssertionFailureBuilder("Expected the collection of distinct instances to be not empty.\n" +
-                    "Please feed the 'DistinctInstances' property of your collection contract with some valid objects.")
-                    .SetStackTrace(Context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+            AssertionHelper.Explain(() =>
+                Assert.GreaterThan(DistinctInstances.Instances.Count, 0),
+                innerFailures => new AssertionFailureBuilder("Expected the collection of distinct instances to be not empty.\n" +
+                "Please feed the 'DistinctInstances' property of your collection contract with some valid objects.")
+                .SetStackTrace(Context.GetStackTraceData())
+                .AddInnerFailures(innerFailures)
+                .ToAssertionFailure());
         }
 
         private Test CreateVerifyReadOnlyPropertyTest()
         {
             return new TestCase("VerifyReadOnlyProperty", () =>
-            { 
-                AssertionHelper.Verify(() =>
-                {
-                    var collection = GetDefaultInstance();
+            {
+                var collection = GetDefaultInstance();
 
-                    if (IsReadOnly == collection.IsReadOnly)
-                        return null;
-
-                    return new AssertionFailureBuilder("Expected the read-only property of the collection to return a specific value.")
-                        .AddLabeledValue("Property", "IsReadOnly")
-                        .AddRawLabeledValue("Expected Value", IsReadOnly)
-                        .AddRawLabeledValue("Actual Value", collection.IsReadOnly)
-                        .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                });
+                AssertionHelper.Explain(() =>
+                    Assert.AreEqual(IsReadOnly, collection.IsReadOnly),
+                    innerFailures => new AssertionFailureBuilder(
+                    "Expected the read-only property of the collection to return a specific value.")
+                    .AddLabeledValue("Property", "IsReadOnly")
+                    .AddRawLabeledValue("Expected Value", IsReadOnly)
+                    .AddRawLabeledValue("Actual Value", collection.IsReadOnly)
+                    .SetStackTrace(Context.GetStackTraceData())
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
             });
         }
 
@@ -319,22 +314,14 @@ namespace MbUnit.Framework.ContractVerifiers
                 {
                     var collection = GetDefaultInstance();
 
-                    AssertionHelper.Verify(() =>
-                    {
-                        try
-                        {
-                            invoke(collection, item);
-                            
-                            return new AssertionFailureBuilder("Expected a method of the read-only collection to throw an exception when called.")
-                                .AddLabeledValue("Method", methodName)
-                                .SetStackTrace(Context.GetStackTraceData())
-                                .ToAssertionFailure();
-                        }
-                        catch (Exception)
-                        {
-                            return null;
-                        }
-                    });
+                    AssertionHelper.Explain(() =>
+                        Assert.Throws<Exception>(() => invoke(collection, item)),
+                        innerFailures => new AssertionFailureBuilder(
+                            "Expected a method of the read-only collection to throw an exception when called.")
+                            .AddLabeledValue("Method", methodName)
+                            .SetStackTrace(Context.GetStackTraceData())
+                            .AddInnerFailures(innerFailures)
+                            .ToAssertionFailure());
                 }
             });
         }
@@ -352,32 +339,15 @@ namespace MbUnit.Framework.ContractVerifiers
             {
                 var collection = GetDefaultInstance();
 
-                AssertionHelper.Verify(() =>
-                {
-                    try
-                    {
-                        invoke(collection);
-
-                        return new AssertionFailureBuilder("Expected a method to throw an exception when called with a null argument.")
-                            .AddLabeledValue("Method", methodName)
-                            .AddRawLabeledValue("Expected Exception", typeof(ArgumentNullException))
-                            .SetStackTrace(Context.GetStackTraceData())
-                            .ToAssertionFailure();
-                    }
-                    catch (ArgumentNullException)
-                    {
-                        return null;
-                    }
-                    catch (Exception actualException)
-                    {
-                        return new AssertionFailureBuilder("A method threw an exception of a different type than was expected while called with a null argument.")
-                            .AddLabeledValue("Method", methodName)
-                            .AddRawLabeledValue("Expected Exception", typeof(ArgumentNullException))
-                            .AddException(actualException)
-                            .SetStackTrace(Context.GetStackTraceData())
-                            .ToAssertionFailure();
-                    }
-                });
+                AssertionHelper.Explain(() =>
+                    Assert.Throws<ArgumentNullException>(() => invoke(collection)),
+                    innerFailures => new AssertionFailureBuilder(
+                        "Expected a method to throw an exception when called with a null argument.")
+                        .AddLabeledValue("Method", methodName)
+                        .AddRawLabeledValue("Expected Exception", typeof(ArgumentNullException))
+                        .SetStackTrace(Context.GetStackTraceData())
+                        .AddInnerFailures(innerFailures)
+                        .ToAssertionFailure());
             });
         }
 
@@ -399,18 +369,16 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 collection.Clear();
 
-                AssertionHelper.Verify(() =>
-                {
-                    if (collection.Count == 0)
-                        return null;
-
-                    return new AssertionFailureBuilder("Expected the collection to be empty once the 'Clear' method was called on it.")
+                AssertionHelper.Explain(() =>
+                    Assert.AreEqual(0, collection.Count),
+                    innerFailures => new AssertionFailureBuilder(
+                        "Expected the collection to be empty once the 'Clear' method was called on it.")
                         .AddLabeledValue("Property", "Count")
                         .AddRawLabeledValue("Expected Value", 0)
                         .AddRawLabeledValue("Actual Value", collection.Count)
                         .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                });
+                        .AddInnerFailures(innerFailures)
+                        .ToAssertionFailure());
             });
         }
 
@@ -466,42 +434,26 @@ namespace MbUnit.Framework.ContractVerifiers
 
         private void AssertCopyToThrowException(Action action, string failureMessage, string label, object value)
         {
-            AssertionHelper.Verify(() =>
-            {
-                try
-                {
-                    action();
-                    return new AssertionFailureBuilder("Expected the method to throw an exception " + failureMessage)
-                        .AddLabeledValue("Method", "CopyTo")
-                        .AddRawLabeledValue(label, value)
-                        .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            });
+            AssertionHelper.Explain(() =>
+                Assert.Throws<Exception>(() => action()),
+                innerFailures => new AssertionFailureBuilder(
+                    "Expected the method to throw an exception " + failureMessage)
+                    .AddLabeledValue("Method", "CopyTo")
+                    .AddRawLabeledValue(label, value)
+                    .SetStackTrace(Context.GetStackTraceData())
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         private void AssertCopyToNotThrowException(Action action, string failureMessage)
         {
-            AssertionHelper.Verify(() =>
-            {
-                try
-                {
-                    action();
-                    return null;
-                }
-                catch (Exception actualException)
-                {
-                    return new AssertionFailureBuilder(failureMessage)
-                        .AddLabeledValue("Method", "CopyTo")
-                        .AddException(actualException)
-                        .SetStackTrace(Context.GetStackTraceData())
-                        .ToAssertionFailure();
-                }
-            });
+            AssertionHelper.Explain(() =>
+                Assert.DoesNotThrow(() => action()),
+                innerFailures => new AssertionFailureBuilder(failureMessage)
+                    .AddLabeledValue("Method", "CopyTo")
+                    .SetStackTrace(Context.GetStackTraceData())
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         private Test CreateCopyToTest()

@@ -222,7 +222,6 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase(name, () =>
             {
                 AssertMethodExists(method, methodSignature);
-
                 Func<object, object, TResult> comparer = comparerFactory(method);
 
                 Assert.Multiple(() =>
@@ -257,11 +256,11 @@ namespace MbUnit.Framework.ContractVerifiers
                                     VerifyComparison(leftValue, rightValue, leftIndex, rightIndex, comparer, classifier, referenceComparer, Context);
                                 }
 
-                                rightIndex += 1;
+                                rightIndex ++;
                             }
                         }
 
-                        leftIndex += 1;
+                        leftIndex ++;
                     }
                 });
             });
@@ -271,22 +270,19 @@ namespace MbUnit.Framework.ContractVerifiers
             Func<object, object, TResult> comparer, Func<TResult, string> classifier,
             Func<int, int, TResult> referenceComparer, ContractVerificationContext context)
         {
-            AssertionHelper.Verify(() =>
-            {
-                TResult actualResult = comparer(leftValue, rightValue);
-                TResult expectedResult = referenceComparer(leftIndex, rightIndex);
+            TResult actualResult = comparer(leftValue, rightValue);
+            TResult expectedResult = referenceComparer(leftIndex, rightIndex);
 
-                if (classifier(actualResult) == classifier(expectedResult))
-                    return null;
-
-                return new AssertionFailureBuilder("The comparison between left and right values did not produce the expected result.")
+            AssertionHelper.Explain(() =>
+                Assert.AreEqual(classifier(expectedResult), classifier(actualResult)),
+                innerFailures => new AssertionFailureBuilder("The comparison between left and right values did not produce the expected result.")
                     .AddRawLabeledValue("Left Value", leftValue)
                     .AddRawLabeledValue("Right Value", rightValue)
                     .AddLabeledValue("Expected Result", classifier(expectedResult))
                     .AddLabeledValue("Actual Result", classifier(actualResult))
                     .SetStackTrace(context.GetStackTraceData())
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
 
         private static Func<object, object, int> TernaryComparerFactory(MethodInfo method)

@@ -128,18 +128,15 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 foreach (var fieldInfo in type.GetFields(FieldBindingFlags))
                 {
-                    AssertionHelper.Verify(() =>
-                    {
-                        if (fieldInfo.IsInitOnly)
-                            return null;
-
-                        return new AssertionFailureBuilder("Expected the field to be marked as read only since it is part of an immutable type.")
+                    AssertionHelper.Explain(() =>
+                        Assert.IsTrue(fieldInfo.IsInitOnly),
+                        innerFailures => new AssertionFailureBuilder("Expected the field to be marked as read only since it is part of an immutable type.")
                             .AddRawLabeledValue("Declaring Type", fieldInfo.DeclaringType)
                             .AddRawLabeledValue("Field Type", fieldInfo.FieldType)
                             .AddRawLabeledValue("Field Name", fieldInfo.Name)
                             .SetStackTrace(context.GetStackTraceData())
-                            .ToAssertionFailure();
-                    });
+                            .AddInnerFailures(innerFailures)
+                            .ToAssertionFailure());
 
                     VerifyMemberTypes(fieldInfo.FieldType, visitedTypes, context);
                 }
