@@ -32,7 +32,7 @@ namespace Gallio.NCoverIntegration
     internal class EmbeddedNCoverProcessTask : ProcessTask
     {
         // Note: NCover can take a long time to finish writing out its results.
-        private readonly TimeSpan WaitForExitTimeout = TimeSpan.FromSeconds(120);
+        private readonly TimeSpan WaitForExitTimeout = TimeSpan.FromMinutes(5);
 
         private readonly ILogger logger;
         private readonly string ncoverArguments;
