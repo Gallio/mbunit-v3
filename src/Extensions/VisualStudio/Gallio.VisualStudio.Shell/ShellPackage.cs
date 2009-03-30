@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Gallio.Loader;
 using Gallio.VisualStudio.Shell.Resources;
@@ -95,7 +96,7 @@ namespace Gallio.VisualStudio.Shell
 
         int IVsInstalledProduct.ProductID(out string pbstrPID)
         {
-            Version version = GetType().Assembly.GetName().Version;
+            Version version = GallioLoader.GetApplicationVersion(Assembly.GetExecutingAssembly());
             pbstrPID = String.Format(VSPackage.PackageVersionFormat, version.Major,
                 version.Minor, version.Build, version.Revision);
             return VSConstants.S_OK;

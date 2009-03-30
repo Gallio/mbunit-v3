@@ -744,6 +744,7 @@
     <Compile Include="Concurrency\LockBox.cs" />
     <Compile Include="Utilities\Sync.cs" />
     <Compile Include="Utilities\DefaultXmlSerializer.cs" />
+    <Compile Include="Utilities\XmlUtils.cs" />
     <Compile Include="XmlSerializableTypeIncludes.cs">
       <SubType>Component</SubType>
     </Compile>

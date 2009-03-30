@@ -34,7 +34,7 @@ namespace MbUnit.Core
             if (frameworkAssemblyName == null)
                 yield break;
 
-            yield return new ToolInfo("MbUnit", String.Format("MbUnit v{0}", frameworkAssemblyName.Version));
+            yield return new ToolInfo("MbUnit", String.Format("MbUnit v{0}", AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly())));
         }
     }
 }

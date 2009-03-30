@@ -18,6 +18,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Reflection;
 
 namespace Gallio.Icarus
 {
@@ -28,7 +29,7 @@ namespace Gallio.Icarus
             InitializeComponent();
 
             // Set the application version.
-            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
             versionLabel.Text = String.Format(CultureInfo.CurrentCulture, versionLabel.Text, 
                 appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
 

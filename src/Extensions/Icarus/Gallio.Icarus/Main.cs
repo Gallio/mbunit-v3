@@ -179,7 +179,7 @@ namespace Gallio.Icarus
         private void Form_Load(object sender, EventArgs e)
         {
             // Set the application version in the window title
-            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
             Text = String.Format(Text, appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
 
             // try to load the dock state, if the file does not exist

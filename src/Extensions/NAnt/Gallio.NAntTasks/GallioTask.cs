@@ -648,7 +648,7 @@ namespace Gallio.NAntTasks
 
         private void DisplayVersion()
         {
-            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
 
             Log(Level.Info, String.Format(Resources.TaskNameAndVersion,
                 appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision));

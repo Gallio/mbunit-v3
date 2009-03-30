@@ -192,5 +192,54 @@ namespace MbUnit.Tests.Framework
                 Thread.Sleep(500);
             }
         }
+
+        [Explicit("Sample")]
+        public class NestedParallelizableTests
+        {
+            [Test]
+            public void Test()
+            {
+            }
+
+            [Parallelizable]
+            public class Fixture1
+            {
+                [Parallelizable, Test]
+                public void Test1()
+                {
+                }
+
+                [Parallelizable, Test]
+                public void Test2()
+                {
+                }
+
+                [Parallelizable, Test]
+                [Column(1, 2, 3, 4, 5)]
+                public void DataDrivenTest(int x)
+                {
+                }
+            }
+
+            [Parallelizable]
+            public class Fixture2
+            {
+                [Parallelizable, Test]
+                public void Test1()
+                {
+                }
+
+                [Parallelizable, Test]
+                public void Test2()
+                {
+                }
+
+                [Parallelizable, Test]
+                [Column(1, 2, 3, 4, 5)]
+                public void DataDrivenTest(int x)
+                {
+                }
+            }
+        }
     }
 }

@@ -7,6 +7,13 @@
 
     <Version>$(CCNetLabel)</Version>
     <Version Condition="'$(Version)'==''">0.0.0.0</Version>
+
+    <AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
+    <AssemblyVersion Condition="'$(AssemblyVersion)'==''">$(Version)</AssemblyVersion>
+
+    <AssemblyFileVersion>$(AssemblyFileVersion)</AssemblyFileVersion>
+    <AssemblyFileVersion Condition="'$(AssemblyFileVersion)'==''">$(Version)</AssemblyFileVersion>
+
     <RootDir>$(MSBuildProjectDirectory)</RootDir>
     <StartDir>$(RootDir)</StartDir>
     <MetaBuildBinDir>$(RootDir)\tools\MetaBuild\bin</MetaBuildBinDir>
@@ -21,6 +28,8 @@
 	       ReportTypes=$(ReportTypes);
 	       Coverage=$(Coverage);
 	       Version=$(Version);
+	       AssemblyVersion=$(AssemblyVersion);
+	       AssemblyFileVersion=$(AssemblyFileVersion);
 	       RootDir=$(RootDir);
 	       StartDir=$(StartDir);
 	       MetaBuildBinDir=$(MetaBuildBinDir);
