@@ -151,14 +151,14 @@ namespace Gallio.Icarus.Controllers
                 testFilters.Remove(filterInfo);
         }
 
-        public Filter<ITest> GetFilter(string filterName, IProgressMonitor progressMonitor)
+        public FilterSet<ITest> GetFilterSet(string filterName, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Getting filter", 1))
             {
                 foreach (FilterInfo filterInfo in projectTreeModel.Project.TestFilters)
                 {
                     if (filterInfo.FilterName == filterName)
-                        return FilterUtils.ParseTestFilter(filterInfo.Filter);
+                        return FilterUtils.ParseTestFilterSet(filterInfo.Filter);
                 }
                 return null;
             }
@@ -174,16 +174,16 @@ namespace Gallio.Icarus.Controllers
             projectTreeModel.Project.TestPackageConfig.AssemblyFiles.Remove(fileName);
         }
 
-        public void SaveFilter(string filterName, Filter<ITest> filter, IProgressMonitor progressMonitor)
+        public void SaveFilterSet(string filterName, FilterSet<ITest> filterSet, IProgressMonitor progressMonitor)
         {
             foreach (FilterInfo filterInfo in testFilters)
             {
                 if (filterInfo.FilterName != filterName)
                     continue;
-                filterInfo.Filter = filter.ToFilterExpr();
+                filterInfo.Filter = filterSet.ToFilterSetExpr();
                 return;
             }
-            testFilters.Add(new FilterInfo(filterName, filter.ToFilterExpr()));
+            testFilters.Add(new FilterInfo(filterName, filterSet.ToFilterSetExpr()));
         }
 
         public void OpenProject(string projectName, IProgressMonitor progressMonitor)

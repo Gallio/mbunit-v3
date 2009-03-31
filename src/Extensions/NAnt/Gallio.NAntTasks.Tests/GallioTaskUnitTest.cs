@@ -51,7 +51,7 @@ namespace Gallio.NAntTasks.Tests
             {
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsTrue(launcher.EchoResults);
-                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.Filter);
+                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.FilterSet);
                 Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
@@ -119,7 +119,7 @@ namespace Gallio.NAntTasks.Tests
             {
                 Assert.IsTrue(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
-                Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.Filter.ToFilterExpr());
+                Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.FilterSet.ToFilterSetExpr());
                 Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);

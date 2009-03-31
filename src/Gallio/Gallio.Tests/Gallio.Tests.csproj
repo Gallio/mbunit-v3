@@ -158,6 +158,8 @@
     <Compile Include="Model\Diagnostics\StackTraceFilterTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
     <Compile Include="Model\BaseTestExplorerTest.cs" />
+    <Compile Include="Model\Filters\FilterRuleTest.cs" />
+    <Compile Include="Model\Filters\FilterSetTest.cs" />
     <Compile Include="Model\Filters\FilterParseExceptionTest.cs" />
     <Compile Include="Model\Logging\AttachmentTest.cs" />
     <Compile Include="Model\Logging\MarkerTest.cs" />

@@ -263,7 +263,7 @@ namespace Gallio.Runner.Harness
 
                         progressMonitor.SetStatus("Sorting tests.");
                         ObservableTestContextManager contextManager = new ObservableTestContextManager(contextTracker, testExecutionListener);
-                        ITestCommand rootTestCommand = TestCommandFactory.BuildCommands(model, testExecutionOptions.Filter, testExecutionOptions.ExactFilter, contextManager);
+                        ITestCommand rootTestCommand = TestCommandFactory.BuildCommands(model, testExecutionOptions.FilterSet, testExecutionOptions.ExactFilter, contextManager);
                         progressMonitor.Worked(5);
                         progressMonitor.SetStatus(@"");
 

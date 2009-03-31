@@ -51,13 +51,62 @@ namespace Gallio.Model.Filters
         }
 
         /// <summary>
+        /// Creates a filter set from its textual representation as a filter set expression
+        /// consisting of inclusion and exclusion rules.
+        /// </summary>
+        /// <param name="filterSetExpr">The filter set expression</param>
+        /// <returns>The parsed filter set</returns>
+        public FilterSet<T> ParseFilterSet(string filterSetExpr)
+        {
+            return MatchFilterSet(new FilterLexer(filterSetExpr));
+        }
+
+        /// <summary>
         /// Creates a filter from its textual representation as a filter expression.
         /// </summary>
         /// <param name="filterExpr">The filter expression</param>
         /// <returns>The parsed filter</returns>
-        public Filter<T> Parse(string filterExpr)
+        public Filter<T> ParseFilter(string filterExpr)
         {
             return MatchFilter(new FilterLexer(filterExpr));
+        }
+
+        private FilterSet<T> MatchFilterSet(FilterLexer lexer)
+        {
+            if (lexer.Tokens.Count == 0)
+                throw new FilterParseException(Resources.FilterParser_EmptyFilterError);
+
+            List<FilterRule<T>> filterRules = new List<FilterRule<T>>();
+
+            FilterToken nextToken = LookAhead(lexer, 1);
+            while (nextToken != null)
+            {
+                FilterRuleType filterRuleType;
+                if (nextToken.Type == FilterTokenType.Include)
+                {
+                    filterRuleType = FilterRuleType.Inclusion;
+                    GetNextToken(lexer);
+                }
+                else if (nextToken.Type == FilterTokenType.Exclude)
+                {
+                    filterRuleType = FilterRuleType.Exclusion;
+                    GetNextToken(lexer);
+                }
+                else if (filterRules.Count == 0)
+                {
+                    // default to include for first filter
+                    filterRuleType = FilterRuleType.Inclusion;
+                }
+                else
+                    throw new FilterParseException("Separate inclusion and exclusion rules must be separated by 'include' or 'exclude'.");
+
+                Filter<T> filter = MatchOrFilter(lexer);
+                filterRules.Add(new FilterRule<T>(filterRuleType, filter));
+
+                nextToken = LookAhead(lexer, 1);
+            }
+
+            return new FilterSet<T>(filterRules);
         }
 
         private Filter<T> MatchFilter(FilterLexer lexer)
@@ -83,7 +132,7 @@ namespace Gallio.Model.Filters
             }
 
             if (filters.Count > 1)
-                return new OrFilter<T>(filters.ToArray());
+                return new OrFilter<T>(filters);
             else
                 return firstFilter;
         }
@@ -103,7 +152,7 @@ namespace Gallio.Model.Filters
             }
 
             if (filters.Count > 1)
-                return new AndFilter<T>(filters.ToArray());
+                return new AndFilter<T>(filters);
             else
                 return firstFilter;
         }
@@ -114,7 +163,7 @@ namespace Gallio.Model.Filters
             if (nextToken != null && nextToken.Type == FilterTokenType.Not)
             {
                 GetNextToken(lexer);
-                return new NotFilter<T>(MatchParenthesizedFilter(lexer));
+                return new NotFilter<T>(MatchNegationFilter(lexer));
             }
 
             return MatchParenthesizedFilter(lexer);
@@ -132,25 +181,35 @@ namespace Gallio.Model.Filters
                     filter = MatchOrFilter(lexer);
                     MatchRightBracket(lexer);
                 }
-                else if (nextToken.Type == FilterTokenType.Star)
+                else
+                {
+                    filter = MatchSimpleFilter(lexer);
+                }
+            }
+
+            return filter;
+        }
+
+        private Filter<T> MatchSimpleFilter(FilterLexer lexer)
+        {
+            FilterToken nextToken = LookAhead(lexer, 1);
+            if (nextToken != null)
+            {
+                if (nextToken.Type == FilterTokenType.Star)
                 {
                     GetNextToken(lexer);
                     return new AnyFilter<T>();
                 }
-                else if (IsWord(nextToken))
+                if (IsWord(nextToken))
                 {
                     string key = MatchKey(lexer);
                     MatchColon(lexer);
                     Filter<string> valueFilter = MatchMatchSequence(lexer);
                     return factory.CreateFilter(key, valueFilter);
-                }                
-                else
-                {
-                    filter = MatchOrFilter(lexer);
                 }
             }
 
-            return filter;
+            throw new FilterParseException("Simple filter expression expected such as '*' or 'Key: value'.");
         }
 
         private static string MatchKey(FilterLexer lexer)
@@ -179,21 +238,21 @@ namespace Gallio.Model.Filters
 
         private static Filter<string> MatchMatchSequence(FilterLexer lexer)
         {
-            List<Filter<string>> values = new List<Filter<string>>();
-            values.Add(MatchValue(lexer));
+            List<Filter<string>> valueFilters = new List<Filter<string>>();
+            valueFilters.Add(MatchValue(lexer));
 
             FilterToken nextToken = LookAhead(lexer, 1);
             while (nextToken != null && nextToken.Type == FilterTokenType.Comma)
             {
                 MatchComma(lexer);
-                values.Add(MatchValue(lexer));
+                valueFilters.Add(MatchValue(lexer));
                 nextToken = LookAhead(lexer, 1);
             }
 
-            if (values.Count == 1)
-                return values[0];
+            if (valueFilters.Count == 1)
+                return valueFilters[0];
             else
-                return new OrFilter<string>(values.ToArray());
+                return new OrFilter<string>(valueFilters);
         }
 
         private static Filter<string> MatchValue(FilterLexer lexer)

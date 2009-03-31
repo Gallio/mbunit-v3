@@ -501,7 +501,7 @@ namespace Gallio.PowerShellCommands
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = Logger;
             launcher.ProgressMonitorProvider = ProgressMonitorProvider;
-            launcher.TestExecutionOptions.Filter = GetFilter();
+            launcher.TestExecutionOptions.FilterSet = GetFilterSet();
             launcher.ShowReports = showReports.IsPresent;
             launcher.DoNotRun = doNotRun.IsPresent;
             launcher.IgnoreAnnotations = ignoreAnnotations.IsPresent;
@@ -554,14 +554,14 @@ namespace Gallio.PowerShellCommands
             return launcher.Run();
         }
 
-        private Filter<ITest> GetFilter()
+        private FilterSet<ITest> GetFilterSet()
         {
             if (String.IsNullOrEmpty(filter))
             {
-                return new AnyFilter<ITest>();
+                return FilterSet<ITest>.Empty;
             }
 
-            return FilterUtils.ParseTestFilter(filter);
+            return FilterUtils.ParseTestFilterSet(filter);
         }
 
         private static void AddAllItemSpecs(ICollection<string> collection, IEnumerable<string> items)

@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -52,10 +54,10 @@ namespace Gallio.TDNetRunner.Core
                 launcher.Cancel();
         }
 
-        protected override FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref)
+        protected override FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref, FacadeOptions facadeOptions)
         {
             if (cref == null)
-                return RunAssembly(testListener, assemblyPath);
+                return RunAssembly(testListener, assemblyPath, facadeOptions);
 
             if (cref.Length >= 2)
             {
@@ -64,10 +66,10 @@ namespace Gallio.TDNetRunner.Core
                 switch (descriptor)
                 {
                     case 'T':
-                        return RunType(testListener, assemblyPath, cref.Substring(2));
+                        return RunType(testListener, assemblyPath, cref.Substring(2), facadeOptions);
 
                     case 'N':
-                        return RunNamespace(testListener, assemblyPath, cref.Substring(2));
+                        return RunNamespace(testListener, assemblyPath, cref.Substring(2), facadeOptions);
 
                     case 'M':
                     case 'F':
@@ -84,41 +86,41 @@ namespace Gallio.TDNetRunner.Core
 
                         string typeName = memberNameWithType.Substring(0, memberPos);
                         string memberName = memberNameWithType.Substring(memberPos + 1);
-                        return RunMember(testListener, assemblyPath, typeName, memberName);
+                        return RunMember(testListener, assemblyPath, typeName, memberName, facadeOptions);
                 }
             }
 
             return FacadeTestRunState.NoTests;
         }
 
-        private FacadeTestRunState RunAssembly(IFacadeTestListener testListener, string assemblyPath)
+        private FacadeTestRunState RunAssembly(IFacadeTestListener testListener, string assemblyPath, FacadeOptions facadeOptions)
         {
-            return Run(testListener, assemblyPath, new AnyFilter<ITest>());
+            return Run(testListener, assemblyPath, new AnyFilter<ITest>(), facadeOptions);
         }
 
-        private FacadeTestRunState RunNamespace(IFacadeTestListener testListener, string assemblyPath, string @namespace)
+        private FacadeTestRunState RunNamespace(IFacadeTestListener testListener, string assemblyPath, string @namespace, FacadeOptions facadeOptions)
         {
             return Run(testListener, assemblyPath, new AndFilter<ITest>(new Filter<ITest>[]
             { 
                 new NamespaceFilter<ITest>(new EqualityFilter<string>(@namespace))
-            }));
+            }), facadeOptions);
         }
 
-        private FacadeTestRunState RunType(IFacadeTestListener testListener, string assemblyPath, string typeName)
+        private FacadeTestRunState RunType(IFacadeTestListener testListener, string assemblyPath, string typeName, FacadeOptions facadeOptions)
         {
             return Run(testListener, assemblyPath, new AndFilter<ITest>(new Filter<ITest>[]
             { 
                 new TypeFilter<ITest>(new EqualityFilter<string>(typeName), true)
-            }));
+            }), facadeOptions);
         }
 
-        private FacadeTestRunState RunMember(IFacadeTestListener testListener, string assemblyPath, string typeName, string memberName)
+        private FacadeTestRunState RunMember(IFacadeTestListener testListener, string assemblyPath, string typeName, string memberName, FacadeOptions facadeOptions)
         {
             return Run(testListener, assemblyPath, new AndFilter<ITest>(new Filter<ITest>[]
             { 
                 new TypeFilter<ITest>(new EqualityFilter<string>(typeName), true),
                 new MemberFilter<ITest>(new EqualityFilter<string>(memberName))
-            }));
+            }), facadeOptions);
         }
 
         public override object InitializeLifetimeService()
@@ -134,18 +136,46 @@ namespace Gallio.TDNetRunner.Core
             return launcher.Run();
         }
 
-        private FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, Filter<ITest> filter)
+        private static Filter<ITest> ToCategoryFilter(IList<string> categoryNames)
+        {
+            return new MetadataFilter<ITest>(MetadataKeys.Category, new OrFilter<string>(GenericUtils.ConvertAllToArray(categoryNames,
+                categoryName => new EqualityFilter<string>(categoryName))));
+        }
+
+        private FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, Filter<ITest> filter, FacadeOptions facadeOptions)
         {
             if (testListener == null)
                 throw new ArgumentNullException(@"testListener");
-            if (filter == null)
-                throw new ArgumentNullException(@"filter");
+            if (assemblyPath == null)
+                throw new ArgumentNullException("assemblyPath");
+            if (facadeOptions == null)
+                throw new ArgumentNullException("facadeOptions");
+
+            var filterRules = new List<FilterRule<ITest>>();
+            switch (facadeOptions.FilterCategoryMode)
+            {
+                case FacadeFilterCategoryMode.Disabled:
+                    filterRules.Add(new FilterRule<ITest>(FilterRuleType.Inclusion, filter));
+                    break;
+
+                case FacadeFilterCategoryMode.Include:
+                    filterRules.Add(new FilterRule<ITest>(FilterRuleType.Inclusion,
+                        new AndFilter<ITest>(new[] { filter, ToCategoryFilter(facadeOptions.FilterCategoryNames) })));
+                    break;
+
+                case FacadeFilterCategoryMode.Exclude:
+                    filterRules.Add(new FilterRule<ITest>(FilterRuleType.Exclusion, ToCategoryFilter(facadeOptions.FilterCategoryNames)));
+                    filterRules.Add(new FilterRule<ITest>(FilterRuleType.Inclusion, filter));
+                    break;
+            }
+
+            var filterSet = new FilterSet<ITest>(filterRules);
 
             ILogger logger = new FilteredLogger(new TDNetLogger(testListener), LogSeverity.Info);
 
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-            launcher.TestExecutionOptions.Filter = filter;
+            launcher.TestExecutionOptions.FilterSet = filterSet;
             launcher.TestRunnerFactoryName = StandardTestRunnerFactoryNames.IsolatedAppDomain;
 
             // This monitor will inform the user in real-time what's going on

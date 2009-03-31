@@ -40,7 +40,7 @@ namespace Gallio.PowerShellCommands.Tests
             {
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsTrue(launcher.EchoResults);
-                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.Filter);
+                Assert.AreEqual(0, launcher.TestExecutionOptions.FilterSet.Rules.Count);
                 Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
@@ -106,7 +106,7 @@ namespace Gallio.PowerShellCommands.Tests
             {
                 Assert.IsTrue(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
-                Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.Filter.ToFilterExpr());
+                Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.FilterSet.ToFilterSetExpr());
                 Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);

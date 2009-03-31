@@ -33,10 +33,12 @@ namespace Gallio.Icarus.Tests.Controllers
         public void ApplyFilter_Test()
         {
             Filter<ITest> filter = new NoneFilter<ITest>();
+            FilterSet<ITest> filterSet = new FilterSet<ITest>(filter);
+
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var testController = new TestController(testTreeModel);
-            testController.ApplyFilter(filter);
-            testTreeModel.AssertWasCalled(ttm => ttm.ApplyFilter(filter));
+            testController.ApplyFilterSet(filterSet);
+            testTreeModel.AssertWasCalled(ttm => ttm.ApplyFilterSet(filterSet));
         }
 
         [Test]

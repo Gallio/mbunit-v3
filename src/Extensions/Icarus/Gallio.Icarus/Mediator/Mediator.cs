@@ -93,7 +93,7 @@ namespace Gallio.Icarus.Mediator
         public void ApplyFilter(string filter)
         {
             taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
-                TestController.ApplyFilter(FilterUtils.ParseTestFilter(filter))));
+                TestController.ApplyFilterSet(FilterUtils.ParseTestFilterSet(filter))));
         }
 
         public void ConvertSavedReport(string fileName, string format)
@@ -228,7 +228,7 @@ namespace Gallio.Icarus.Mediator
 
                 if (filterInfo.FilterName == "AutoSave")
                 {
-                    TestController.ApplyFilter(FilterUtils.ParseTestFilter(filterInfo.Filter));
+                    TestController.ApplyFilterSet(FilterUtils.ParseTestFilterSet(filterInfo.Filter));
                     return;
                 }
             }
@@ -277,7 +277,7 @@ namespace Gallio.Icarus.Mediator
                 {
                     // save current filter as last run
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
-                        ProjectController.SaveFilter("LastRun", TestController.GenerateFilterFromSelectedTests(),
+                        ProjectController.SaveFilterSet("LastRun", TestController.GenerateFilterSetFromSelectedTests(),
                             subProgressMonitor);
 
                     // stop if user has canceled
@@ -300,13 +300,13 @@ namespace Gallio.Icarus.Mediator
             {
                 using (progressMonitor.BeginTask("Saving filter", 2))
                 {
-                    Filter<ITest> filter = TestController.GenerateFilterFromSelectedTests();
+                    FilterSet<ITest> filterSet = TestController.GenerateFilterSetFromSelectedTests();
 
                     if (progressMonitor.IsCanceled)
                         throw new OperationCanceledException();
 
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
-                        ProjectController.SaveFilter(filterName, filter, subProgressMonitor);
+                        ProjectController.SaveFilterSet(filterName, filterSet, subProgressMonitor);
                 }
             });
         }

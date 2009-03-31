@@ -451,12 +451,12 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public void ApplyFilter(Filter<ITest> filter)
+        public void ApplyFilterSet(FilterSet<ITest> filterSet)
         {
             if (Root == null)
                 return;
 
-            if (filter is AnyFilter<ITest>)
+            if (filterSet.Rules.Count == 0 || filterSet.Rules[0].Filter is AnyFilter<ITest>)
             {
                 Root.CheckState = CheckState.Checked;
                 Root.UpdateStateOfRelatedNodes();
@@ -466,7 +466,8 @@ namespace Gallio.Icarus.Models
             Root.CheckState = CheckState.Unchecked;
             Root.UpdateStateOfRelatedNodes();
 
-            RecursivelyApplyFilter(filter);
+            // FIXME: should be considering inclusion / exclusion rules in more detail
+            RecursivelyApplyFilter(filterSet.Rules[0].Filter);
         }
 
         private void RecursivelyApplyFilter(Filter<ITest> filter)
@@ -491,16 +492,15 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public Filter<ITest> GenerateFilterFromSelectedTests()
+        public FilterSet<ITest> GenerateFilterFromSelectedTests()
         {
-            Filter<ITest> filter;
             if (Root == null || Root.CheckState == CheckState.Checked)
-                filter = new AnyFilter<ITest>();
-            else
-                filter = Root.CheckState == CheckState.Unchecked
-                    ? new NoneFilter<ITest>()
-                    : CreateFilter(Nodes);
-            return filter;
+                return FilterSet<ITest>.Empty;
+
+            Filter<ITest> filter = Root.CheckState == CheckState.Unchecked
+                ? new NoneFilter<ITest>()
+                : CreateFilter(Nodes);
+            return new FilterSet<ITest>(filter);
         }
 
         private static Filter<ITest> CreateFilter(IEnumerable<Node> nodes)
@@ -549,7 +549,7 @@ namespace Gallio.Icarus.Models
                         }
                 }
             }
-            return filters.Count > 1 ? new OrFilter<ITest>(filters.ToArray()) : filters[0];
+            return filters.Count > 1 ? new OrFilter<ITest>(filters) : filters[0];
         }
 
         private class TestTreeSorter : IComparer

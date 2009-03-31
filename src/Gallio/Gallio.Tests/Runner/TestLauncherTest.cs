@@ -64,9 +64,9 @@ namespace Gallio.Tests.Runner
         }
 
         [Test]
-        public void Filter_DefaultIsAnyFilter()
+        public void Filter_DefaultIsEmpty()
         {
-            Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.Filter);
+            Assert.AreEqual(0, launcher.TestExecutionOptions.FilterSet.Rules.Count);
         }
 
         [Test]

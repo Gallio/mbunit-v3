@@ -41,13 +41,13 @@ namespace Gallio.Icarus.Controllers.Interfaces
 
         void AddAssemblies(IList<string> assemblies, IProgressMonitor progressMonitor);
         void DeleteFilter(FilterInfo filterInfo, IProgressMonitor progressMonitor);
-        Filter<ITest> GetFilter(string filterName, IProgressMonitor progressMonitor);
+        FilterSet<ITest> GetFilterSet(string filterName, IProgressMonitor progressMonitor);
         void NewProject(IProgressMonitor progressMonitor);
         void OpenProject(string projectName, IProgressMonitor progressMonitor);
         void RefreshTree(IProgressMonitor progressMonitor);
         void RemoveAllAssemblies(IProgressMonitor progressMonitor);
         void RemoveAssembly(string fileName, IProgressMonitor progressMonitor);
-        void SaveFilter(string filterName, Filter<ITest> filter, IProgressMonitor progressMonitor);
+        void SaveFilterSet(string filterName, FilterSet<ITest> filterSet, IProgressMonitor progressMonitor);
         void SaveProject(string projectName, IProgressMonitor progressMonitor);        
     }
 }

@@ -24,25 +24,25 @@ namespace Gallio.Model.Execution
     [Serializable]
     public sealed class TestExecutionOptions
     {
-        private Filter<ITest> filter = new AnyFilter<ITest>();
+        private FilterSet<ITest> filterSet = FilterSet<ITest>.Empty;
         private bool skipDynamicTests;
         private bool skipTestExecution;
         private bool exactFilter;
 
         /// <summary>
-        /// Gets or sets the filter.
+        /// Gets or sets the filter set.
         /// </summary>
-        /// <value>Defaults to an instance of <see cref="AnyFilter{T}" />.</value>
+        /// <value>Defaults to an empty filter set.</value>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        public Filter<ITest> Filter
+        public FilterSet<ITest> FilterSet
         {
-            get { return filter; }
+            get { return filterSet; }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException(@"value");
 
-                filter = value;
+                filterSet = value;
             }
         }
 
@@ -99,7 +99,7 @@ namespace Gallio.Model.Execution
         {
             TestExecutionOptions copy = new TestExecutionOptions();
 
-            copy.filter = filter;
+            copy.filterSet = filterSet;
             copy.skipDynamicTests = skipDynamicTests;
             copy.skipTestExecution = skipTestExecution;
 

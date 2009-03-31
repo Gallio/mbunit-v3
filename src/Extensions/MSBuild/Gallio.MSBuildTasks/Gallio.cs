@@ -740,7 +740,7 @@ namespace Gallio.MSBuildTasks
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-            launcher.TestExecutionOptions.Filter = GetFilter();
+            launcher.TestExecutionOptions.FilterSet = GetFilterSet();
             launcher.ShowReports = showReports;
             launcher.DoNotRun = doNotRun;
             launcher.IgnoreAnnotations = ignoreAnnotations;
@@ -835,14 +835,14 @@ namespace Gallio.MSBuildTasks
             }
         }
 
-        private Filter<ITest> GetFilter()
+        private FilterSet<ITest> GetFilterSet()
         {
             if (String.IsNullOrEmpty(filter))
             {
-                return new AnyFilter<ITest>();
+                return FilterSet<ITest>.Empty;
             }
 
-            return FilterUtils.ParseTestFilter(filter);
+            return FilterUtils.ParseTestFilterSet(filter);
         }
 
         private void DisplayVersion()

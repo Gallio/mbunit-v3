@@ -282,6 +282,20 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [Test]
+        [Row("*", "*")]
+        [Row("include *", "*")]
+        [Row("exclude *", "exclude *")]
+        [Row("include * exclude *", "* exclude *")]
+        [Row("include * exclude Type: foo and Type: bar", "* exclude (Type: foo and Type: bar)")]
+        [Row("Type: foo and Type: bar", "(Type: foo and Type: bar)")]
+        public void FilterSets(string filterSetExpr, string parsedFilterSetString)
+        {
+            FilterSet<ITest> parsedFilterSet = FilterUtils.ParseTestFilterSet(filterSetExpr);
+            Assert.IsNotNull(parsedFilterSet);
+            Assert.AreEqual(parsedFilterSetString, parsedFilterSet.ToFilterSetExpr());
+        }
+
+        [Test]
         [Row("foo''", ExpectedException = typeof(FilterParseException))]
         [Row(@"foo\", ExpectedException = typeof(FilterParseException))]
         [Row(@"foo\\", ExpectedException = typeof(FilterParseException))]
@@ -301,6 +315,9 @@ namespace Gallio.Tests.Model.Filters
         [Row("(Author:me", ExpectedException = typeof(FilterParseException))]
         [Row("(Author:", ExpectedException = typeof(FilterParseException))]
         [Row("(Author::", ExpectedException = typeof(FilterParseException))]
+        [Row("include", ExpectedException = typeof(FilterParseException))]
+        [Row("include exclude", ExpectedException = typeof(FilterParseException))]
+        [Row("include * exclude", ExpectedException = typeof(FilterParseException))]
         public void InvalidFilter(string filter)
         {
             FilterUtils.ParseTestFilter(filter);

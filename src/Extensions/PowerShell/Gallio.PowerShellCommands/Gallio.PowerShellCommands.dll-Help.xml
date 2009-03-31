@@ -91,7 +91,15 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
           <maml:name>Filter</maml:name>
           <maml:description>
-            <maml:para>Sets the filter expression to apply, which consists of one or more filter rules that may be combined using 'and', 'or', and 'not' and grouped with parentheses. A filter rule consists of a filter key followed by one or more comma-delimited matching values in the form 'key: value, "quoted value", /regular expression/'.</maml:para>
+            <maml:para>
+              Sets the filter set to apply, which consists of a sequence of one or more inclusion
+              or exclusion filter rules prefixed using 'include' (optional) or 'exclude'.
+              A filter rule consists of zero or more filter expressions
+              that may be combined using 'and', 'or', and 'not' and grouped with
+              parentheses.  A filter expression consists of a filter key followed by one or
+              more comma-delimited matching values in the form 'key: value, "quoted value",
+              /regular expression/'.
+            </maml:para>
           </maml:description>
           <dev:defaultValue>*</dev:defaultValue>
         </command:parameter>
@@ -232,7 +240,15 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="false" position="named">
         <maml:name>Filter</maml:name>
         <maml:description>
-          <maml:para>Sets the filter expression to apply, which consists of one or more filter rules that may be combined using 'and', 'or', and 'not' and grouped with parentheses. A filter rule consists of a filter key followed by one or more comma-delimited matching values in the form 'key: value, "quoted value", /regular expression/'.</maml:para>
+          <maml:para>
+            Sets the filter set to apply, which consists of a sequence of one or more inclusion
+            or exclusion filter rules prefixed using 'include' (optional) or 'exclude'.
+            A filter rule consists of zero or more filter expressions
+            that may be combined using 'and', 'or', and 'not' and grouped with
+            parentheses.  A filter expression consists of a filter key followed by one or
+            more comma-delimited matching values in the form 'key: value, "quoted value",
+            /regular expression/'.
+          </maml:para>
         </maml:description>
         <dev:defaultValue>*</dev:defaultValue>
       </command:parameter>

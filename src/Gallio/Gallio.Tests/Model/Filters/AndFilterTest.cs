@@ -27,9 +27,16 @@ namespace Gallio.Tests.Model.Filters
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void NullArgument()
+        public void Constructor_WhenFilterCollectionIsNull_Throws()
         {
             new AndFilter<object>(null);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Constructor_WhenFilterCollectionContainsNull_Throws()
+        {
+            new AndFilter<object>(new Filter<object>[] { null });
         }
 
         [Test]

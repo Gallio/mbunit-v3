@@ -259,7 +259,7 @@ namespace Gallio.Framework.Utilities
             TestLauncher launcher = new TestLauncher();
             launcher.TestPackageConfig = packageConfig;
             launcher.Logger = new TestLogStreamLogger(logStreamWriter);
-            launcher.TestExecutionOptions.Filter = new OrFilter<ITest>(filters.ToArray());
+            launcher.TestExecutionOptions.FilterSet = new FilterSet<ITest>(new OrFilter<ITest>(filters));
             launcher.TestRunnerFactoryName = TestRunnerFactoryName;
 
             string reportDirectory = Path.GetTempPath();

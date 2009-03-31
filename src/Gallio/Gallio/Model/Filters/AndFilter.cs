@@ -14,7 +14,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
+using Gallio.Collections;
 
 namespace Gallio.Model.Filters
 {
@@ -31,23 +34,23 @@ namespace Gallio.Model.Filters
         /// Creates an AND-filter.
         /// </summary>
         /// <param name="filters">The filters that must all jointly be matched.
-        /// If the array is empty, the filter matches everything.</param>
+        /// If the list is empty, the filter matches everything.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="filters"/> is null</exception>
-        public AndFilter(Filter<T>[] filters)
+        public AndFilter(ICollection<Filter<T>> filters)
         {
-            if (filters == null)
+            if (filters == null || filters.Contains(null))
                 throw new ArgumentNullException("filters");
 
-            this.filters = filters;
+            this.filters = GenericUtils.ToArray(filters);
         }
 
         /// <summary>
         /// Gets the filters that must jointly be matched.
-        /// If the array is empty, the filter matches everything.
+        /// If the list is empty, the filter matches everything.
         /// </summary>
-        public Filter<T>[] Filters
+        public IList<Filter<T>> Filters
         {
-            get { return filters; }
+            get { return new ReadOnlyCollection<Filter<T>>(filters); }
         }
 
         /// <inheritdoc />

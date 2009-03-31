@@ -92,7 +92,7 @@ namespace Gallio.Icarus.Tests.Controllers
             FilterInfo filterInfo = new FilterInfo("filterName", new NoneFilter<ITest>().ToFilterExpr());
             projectController.TestFilters.Add(filterInfo);
             Assert.AreEqual(1, projectController.TestFilters.Count);
-            Assert.AreEqual(filterInfo.Filter, projectController.GetFilter(filterInfo.FilterName, progressMonitor).ToFilterExpr());
+            Assert.AreEqual(filterInfo.Filter, projectController.GetFilterSet(filterInfo.FilterName, progressMonitor).ToFilterSetExpr());
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
 
             Assert.AreEqual(0, projectController.TestFilters.Count);
-            Assert.IsNull(projectController.GetFilter("filterName", progressMonitor));
+            Assert.IsNull(projectController.GetFilterSet("filterName", progressMonitor));
         }
 
         [Test]
@@ -248,9 +248,9 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
 
             Assert.AreEqual(0, projectController.TestFilters.Count);
-            projectController.SaveFilter("filterName", new NoneFilter<ITest>(), progressMonitor);
+            projectController.SaveFilterSet("filterName", new FilterSet<ITest>(new NoneFilter<ITest>()), progressMonitor);
             Assert.AreEqual(1, projectController.TestFilters.Count);
-            projectController.SaveFilter("filterName", new NoneFilter<ITest>(), progressMonitor);
+            projectController.SaveFilterSet("filterName", new FilterSet<ITest>(new NoneFilter<ITest>()), progressMonitor);
             Assert.AreEqual(1, projectController.TestFilters.Count);
         }
 

@@ -140,21 +140,20 @@ namespace Gallio.Echo
              LongName = "filter",
              ValueLabel = "expr",
              Description =
-                   "A filter expression consists of one or more filter rules\n"
-                 + "that may be combined using 'and', 'or', and 'not' and\n"
-                 + "grouped with parentheses. A filter rule consists of a\n"
-                 + "filter key followed by one or more comma-delimited\n" 
-                 + "matching values in the form:\n"
-                 + "key: value, \"quoted value\", /regular expression/\n"
-                 + "A filter key may be 'Id', 'Name', 'Assembly', 'Namespace',\n"
-                 + "'Type', 'ExactType', 'Member' or any custom metadata key\n"
-                 + "such as 'Category' or 'AuthorName'.\n  Examples:\n"
+                 "Sets the filter set to apply, which consists of one or more inclusion "
+                 + "or exclusion filter rules prefixed using 'include' (optional) or 'exclude'. "
+                 + "A filter rule consists of zero or more filter expressions "
+                 + "that may be combined using 'and', 'or', and 'not' and grouped with "
+                 + "parentheses.  A filter expression consists of a filter key followed by one or "
+                 + "more comma-delimited matching values in the form 'key: value, \"quoted value\", "
+                 +" /regular expression/'.\n\n"
+                 + "Examples:\n"
                  + "Type: Fixture1, Fixture2\n"
                  + "- Runs tests belonging to Fixture1 or Fixture2 including subclasses.\n"
                  + "ExactType: Fixture1 and Member: Test1\n"
                  + "- Runs Fixture1.Test1 excluding subclasses.\n"
-                 + "AuthorName: \"Albert Einstein\"\n"
-                 + "- Runs tests with the AuthorName metadata value \"Albert\nEinstein\"."
+                 + "include Type: Fixture1 exclude AuthorName: \"Albert Einstein\"\n"
+                 + "- Run Fixture1 and all other tests except those with the AuthorName metadata value \"Albert Einstein\"."
              )]
         public string Filter;
 
