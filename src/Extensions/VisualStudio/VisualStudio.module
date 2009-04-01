@@ -87,11 +87,11 @@
     <FileUpdate Files="$(ImageDir)\bin\VisualStudio\v9.0\Gallio.VisualStudio.Tip90.plugin"
                 Condition="'$(DotNet40)'!='true' and $(VSIP90Installed)"
                 Regex="0\.0\.0\.0"
-                ReplacementText="$(Version)" />
+                ReplacementText="$(AssemblyVersion)" />
 
     <FileUpdate Files="$(ImageDir)\bin\VisualStudio\v10.0\Gallio.VisualStudio.Tip100.plugin"
                 Condition="'$(DotNet40)'=='true' and $(VSIP100Installed)"
                 Regex="0\.0\.0\.0"
-                ReplacementText="$(Version)" />
+                ReplacementText="$(AssemblyVersion)" />
   </Target>
 </Project>
