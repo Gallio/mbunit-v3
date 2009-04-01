@@ -51,7 +51,7 @@ namespace Gallio.NAntTasks.Tests
             {
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsTrue(launcher.EchoResults);
-                Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.FilterSet);
+                Assert.IsTrue(launcher.TestExecutionOptions.FilterSet.IsEmpty);
                 Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
