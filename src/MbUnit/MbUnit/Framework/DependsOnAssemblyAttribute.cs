@@ -19,6 +19,13 @@ using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
 
+// This feature has been removed because it does not work in current
+// versions of Gallio unless all of the test assemblies are running in
+// the same AppDomain (uncommon).  The issue is that we just run the
+// assemblies sequentially in separate AppDomains so there is no opportunity
+// to control the order of execution or to communicate a failure across assemblies.
+#if false
+
 namespace MbUnit.Framework
 {
     /// <summary>
@@ -77,3 +84,5 @@ namespace MbUnit.Framework
         }
     }
 }
+
+#endif
