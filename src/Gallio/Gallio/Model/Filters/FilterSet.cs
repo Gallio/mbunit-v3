@@ -1,4 +1,4 @@
-// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+﻿// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
 // Portions Copyright 2000-2004 Jonathan de Halleux
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,17 +58,40 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Returns an empty filter set.
         /// </summary>
+        /// <remarks>
+        /// An empty filter set neither includes nor excludes any values on its own.
+        /// However when filtering tests, Gallio applies an implicit inclusion rule when
+        /// none is otherwise specified so the net effect if that all tests will be
+        /// included (although "explicit" tests will not be selected explicitly so they
+        /// will not run).
+        /// </remarks>
         public static FilterSet<T> Empty
         {
             get { return new FilterSet<T>(EmptyArray<FilterRule<T>>.Instance); }
         }
 
         /// <summary>
-        /// Gets the list of filter rules.
+        /// Gets the read-only list of filter rules.
         /// </summary>
         public IList<FilterRule<T>> Rules
         {
             get { return new ReadOnlyCollection<FilterRule<T>>(rules); }
+        }
+
+        /// <summary>
+        /// Returns true if the filter set is empty.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return rules.Length == 0; }
+        }
+
+        /// <summary>
+        /// Returns true if the filter set has at least one inclusion rule.
+        /// </summary>
+        public bool HasInclusionRules
+        {
+            get { return Array.Exists(rules, rule => rule.RuleType == FilterRuleType.Inclusion); }
         }
 
         /// <summary>
@@ -91,11 +114,14 @@ namespace Gallio.Model.Filters
         /// <summary>
         /// Formats the filter set to a string suitable for parsing by <see cref="FilterParser{T}" />.
         /// </summary>
+        /// <remarks>
+        /// The empty filter is represented by an empty string.
+        /// </remarks>
         /// <returns>The formatted filter set expression</returns>
         public string ToFilterSetExpr()
         {
             if (rules.Length == 0)
-                return "*";
+                return "";
 
             StringBuilder result = new StringBuilder();
             for (int i = 0; i < rules.Length; i++)
@@ -116,6 +142,12 @@ namespace Gallio.Model.Filters
             }
 
             return result.ToString();
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return ToFilterSetExpr();
         }
     }
 }

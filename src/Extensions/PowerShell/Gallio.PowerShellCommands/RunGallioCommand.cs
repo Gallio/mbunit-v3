@@ -62,7 +62,7 @@ namespace Gallio.PowerShellCommands
         private string reportDirectory = String.Empty;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
         private string[] runnerExtensions = EmptyArray<string>.Instance;
-        private string filter = "*";
+        private string filter = string.Empty;
         private SwitchParameter showReports;
         private SwitchParameter doNotRun;
         private SwitchParameter ignoreAnnotations;

@@ -83,8 +83,8 @@ namespace Gallio.NAntTasks
         private bool shadowCopy;
         private bool debug;
 
-        private string filter = "*";
-        private string reportTypes = @"";
+        private string filter = string.Empty;
+        private string reportTypes = string.Empty;
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
         private string resultProperty;

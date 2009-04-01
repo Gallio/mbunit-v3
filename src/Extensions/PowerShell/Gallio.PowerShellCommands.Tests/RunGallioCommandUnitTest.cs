@@ -40,7 +40,7 @@ namespace Gallio.PowerShellCommands.Tests
             {
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsTrue(launcher.EchoResults);
-                Assert.AreEqual(0, launcher.TestExecutionOptions.FilterSet.Rules.Count);
+                Assert.IsTrue(launcher.TestExecutionOptions.FilterSet.IsEmpty);
                 Assert.IsInstanceOfType(typeof(CommandLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(CommandProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);

@@ -456,7 +456,7 @@ namespace Gallio.Icarus.Models
             if (Root == null)
                 return;
 
-            if (filterSet.Rules.Count == 0 || filterSet.Rules[0].Filter is AnyFilter<ITest>)
+            if (filterSet.IsEmpty || filterSet.Rules[0].Filter is AnyFilter<ITest>)
             {
                 Root.CheckState = CheckState.Checked;
                 Root.UpdateStateOfRelatedNodes();

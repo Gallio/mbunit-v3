@@ -54,6 +54,10 @@ namespace Gallio.Model.Filters
         /// Creates a filter set from its textual representation as a filter set expression
         /// consisting of inclusion and exclusion rules.
         /// </summary>
+        /// <remarks>
+        /// If the filter set expression is empty or contains only whitespace then the 
+        /// resulting filter set will be empty.
+        /// </remarks>
         /// <param name="filterSetExpr">The filter set expression</param>
         /// <returns>The parsed filter set</returns>
         public FilterSet<T> ParseFilterSet(string filterSetExpr)
@@ -73,9 +77,6 @@ namespace Gallio.Model.Filters
 
         private FilterSet<T> MatchFilterSet(FilterLexer lexer)
         {
-            if (lexer.Tokens.Count == 0)
-                throw new FilterParseException(Resources.FilterParser_EmptyFilterError);
-
             List<FilterRule<T>> filterRules = new List<FilterRule<T>>();
 
             FilterToken nextToken = LookAhead(lexer, 1);

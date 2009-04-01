@@ -91,7 +91,7 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [Test]
-        [Row("*", new FilterRuleType[] { }, new bool[] { })]
+        [Row("", new FilterRuleType[] { }, new bool[] { })]
         [Row("*", new FilterRuleType[] { FilterRuleType.Inclusion }, new bool[] { true })]
         [Row("exclude *", new FilterRuleType[] { FilterRuleType.Exclusion }, new bool[] { true })]
         [Row("* exclude *", new FilterRuleType[] { FilterRuleType.Inclusion, FilterRuleType.Exclusion }, new bool[] { true, true })]
@@ -113,6 +113,46 @@ namespace Gallio.Tests.Model.Filters
             var empty = FilterSet<object>.Empty;
 
             Assert.AreEqual(0, empty.Rules.Count);
+        }
+
+        [Test]
+        public void IsEmpty_WhenNoRules_ReturnsTrue()
+        {
+            var empty = FilterSet<object>.Empty;
+
+            Assert.IsTrue(empty.IsEmpty);
+        }
+
+        [Test]
+        public void IsEmpty_WhenAtLeastOneRule_ReturnsFalse()
+        {
+            var filterSet = new FilterSet<object>(new AnyFilter<object>());
+
+            Assert.IsFalse(filterSet.IsEmpty);
+        }
+
+        [Test]
+        public void HasInclusionRules_WhenNoRules_ReturnsFalse()
+        {
+            var empty = FilterSet<object>.Empty;
+
+            Assert.IsFalse(empty.HasInclusionRules);
+        }
+
+        [Test]
+        public void HasInclusionRules_WhenAtLeastOneInclusionRule_ReturnsTrue()
+        {
+            var filterSet = new FilterSet<object>(new AnyFilter<object>());
+
+            Assert.IsTrue(filterSet.HasInclusionRules);
+        }
+
+        [Test]
+        public void HasInclusionRules_WhenOnlyExclusionRules_ReturnsFalse()
+        {
+            var filterSet = new FilterSet<object>(new[] { new FilterRule<object>(FilterRuleType.Exclusion, new AnyFilter<object>()) });
+
+            Assert.IsFalse(filterSet.HasInclusionRules);
         }
     }
 }

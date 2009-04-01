@@ -40,7 +40,7 @@ namespace Gallio.Echo.Tests
 
             Assert.IsFalse(launcher.DoNotRun);
             Assert.IsTrue(launcher.EchoResults);
-            Assert.AreEqual(0, launcher.TestExecutionOptions.FilterSet.Rules.Count);
+            Assert.IsTrue(launcher.TestExecutionOptions.FilterSet.IsEmpty);
             Assert.AreEqual("", launcher.ReportDirectory);
             Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
             Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);

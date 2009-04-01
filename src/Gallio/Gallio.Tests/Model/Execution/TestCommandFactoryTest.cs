@@ -72,13 +72,23 @@ namespace Gallio.Tests.Model.Execution
         }
 
         [Test]
-        public void RootCommandIncludesEntireHierarchyIfAllTestsSelected()
+        public void RootCommandIncludesEntireHierarchyIfFilterSetSelectsAllTestsSelected()
         {
             PopulateModelWithTests();
 
             BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "A", "A1", "A2", "A3", "B", "B1");
             AssertCommandExplicit("Root");
+        }
+
+        [Test]
+        public void RootCommandIncludesEntireHierarchyIfFilterSetIsEmpty()
+        {
+            PopulateModelWithTests();
+
+            BuildCommands(FilterSet<ITest>.Empty, false);
+            AssertCommandStructure("Root", "A", "A1", "A2", "A3", "B", "B1");
+            AssertCommandExplicit();
         }
 
         [Test]
@@ -98,7 +108,7 @@ namespace Gallio.Tests.Model.Execution
 
             BuildCommands(new FilterSet<ITest>(new[] { new FilterRule<ITest>(FilterRuleType.Exclusion, new NameFilter<ITest>(new EqualityFilter<string>("A"))) }), false);
             AssertCommandStructure("Root", "B", "B1");
-            AssertCommandExplicit("Root");
+            AssertCommandExplicit();
         }
 
         [Test]

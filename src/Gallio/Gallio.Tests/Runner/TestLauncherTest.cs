@@ -66,7 +66,7 @@ namespace Gallio.Tests.Runner
         [Test]
         public void Filter_DefaultIsEmpty()
         {
-            Assert.AreEqual(0, launcher.TestExecutionOptions.FilterSet.Rules.Count);
+            Assert.IsTrue(launcher.TestExecutionOptions.FilterSet.IsEmpty);
         }
 
         [Test]

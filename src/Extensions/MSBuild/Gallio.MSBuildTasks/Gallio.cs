@@ -88,7 +88,7 @@ namespace Gallio.MSBuildTasks
         private bool shadowCopy;
         private bool debug;
 
-        private string filter = "*";
+        private string filter = string.Empty;
         private string[] reportTypes = EmptyArray<string>.Instance;
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private ITaskItem reportDirectory = null;

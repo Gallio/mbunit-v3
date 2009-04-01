@@ -282,6 +282,7 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [Test]
+        [Row("", "", Description = "Empty filter set.")]
         [Row("*", "*")]
         [Row("include *", "*")]
         [Row("exclude *", "exclude *")]
