@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Properties;
+using Gallio.Reflection;
 
 namespace Gallio.Runtime.ConsoleSupport
 {
@@ -124,7 +125,7 @@ namespace Gallio.Runtime.ConsoleSupport
             get
             {
                 if (applicationVersion == null)
-                    applicationVersion = GetType().Assembly.GetName().Version;
+                    applicationVersion = AssemblyUtils.GetApplicationVersion(GetType().Assembly);
                 return applicationVersion;
             }
             set

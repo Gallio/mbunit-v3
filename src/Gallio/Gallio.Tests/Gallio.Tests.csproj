@@ -157,6 +157,8 @@
     <Compile Include="Model\Diagnostics\StackTraceFilterTest.cs" />
     <Compile Include="Host\HostExceptionTest.cs" />
     <Compile Include="Model\BaseTestExplorerTest.cs" />
+    <Compile Include="Model\Filters\FilterRuleTest.cs" />
+    <Compile Include="Model\Filters\FilterSetTest.cs" />
     <Compile Include="Model\Filters\FilterParseExceptionTest.cs" />
     <Compile Include="Model\Logging\AttachmentTest.cs" />
     <Compile Include="Model\Logging\MarkerTest.cs" />
@@ -273,6 +275,7 @@
     <Compile Include="Framework\Text\RangeTest.cs" />
     <Compile Include="Utilities\StringUtilsTest.cs" />
     <Compile Include="Runtime\UnhandledExceptionPolicyTest.cs" />
+    <Compile Include="Utilities\XmlUtilsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\MbUnit\MbUnit.TestResources.x64\MbUnit.TestResources.x64.csproj">

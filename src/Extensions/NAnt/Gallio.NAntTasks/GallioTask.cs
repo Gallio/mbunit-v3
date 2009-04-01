@@ -83,8 +83,8 @@ namespace Gallio.NAntTasks
         private bool shadowCopy;
         private bool debug;
 
-        private string filter = "*";
-        private string reportTypes = @"";
+        private string filter = string.Empty;
+        private string reportTypes = string.Empty;
         private string reportNameFormat = Resources.DefaultReportNameFormat;
         private string reportDirectory = String.Empty;
         private string resultProperty;
@@ -535,7 +535,7 @@ namespace Gallio.NAntTasks
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = logger;
             launcher.ProgressMonitorProvider = new LogProgressMonitorProvider(logger);
-            launcher.TestExecutionOptions.Filter = GetFilter();
+            launcher.TestExecutionOptions.FilterSet = GetFilterSet();
             launcher.ShowReports = showReports;
             launcher.DoNotRun = doNotRun;
             launcher.IgnoreAnnotations = ignoreAnnotations;
@@ -622,14 +622,14 @@ namespace Gallio.NAntTasks
             Properties[statisticsPropertiesPrefix + @"AssertCount"] = stats.AssertCount.ToString();
         }
 
-        private Filter<ITest> GetFilter()
+        private FilterSet<ITest> GetFilterSet()
         {
             if (String.IsNullOrEmpty(filter))
             {
-                return new AnyFilter<ITest>();
+                return FilterSet<ITest>.Empty;
             }
 
-            return FilterUtils.ParseTestFilter(filter);
+            return FilterUtils.ParseTestFilterSet(filter);
         }
 
         /// <summary>
@@ -648,7 +648,7 @@ namespace Gallio.NAntTasks
 
         private void DisplayVersion()
         {
-            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
 
             Log(Level.Info, String.Format(Resources.TaskNameAndVersion,
                 appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision));

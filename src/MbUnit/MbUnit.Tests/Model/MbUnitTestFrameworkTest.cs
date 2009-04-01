@@ -48,7 +48,7 @@ namespace MbUnit.Tests.Model
         [Test]
         public void PopulateTestTree_WhenAssemblyReferencesMbUnit_ContainsSimpleTest()
         {
-            Version expectedVersion = typeof(Assert).Assembly.GetName().Version;
+            Version expectedVersion = AssemblyUtils.GetApplicationVersion(typeof(Assert).Assembly);
             PopulateTestTree();
 
             RootTest rootTest = testModel.RootTest;

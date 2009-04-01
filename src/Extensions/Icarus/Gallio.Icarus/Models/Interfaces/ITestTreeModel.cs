@@ -39,10 +39,10 @@ namespace Gallio.Icarus.Models.Interfaces
         int Inconclusive { get; }
         SynchronizationContext SynchronizationContext { get; set; }
 
-        void ApplyFilter(Filter<ITest> filter);
+        void ApplyFilterSet(FilterSet<ITest> filterSet);
         void BuildTestTree(TestModelData testModelData, string treeViewCategory);
         Node FindNode(TreePath path);
-        Filter<ITest> GenerateFilterFromSelectedTests();
+        FilterSet<ITest> GenerateFilterFromSelectedTests();
         TreePath GetPath(Node node);
         void Notify();
         void RemoveFilter(TestStatus testStatus);

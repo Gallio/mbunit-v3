@@ -188,6 +188,10 @@
     <Compile Include="Model\Diagnostics\StackTraceFilter.cs" />
     <Compile Include="Model\Diagnostics\TestEntryPointAttribute.cs" />
     <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
+    <Compile Include="Model\Filters\FilterRule.cs" />
+    <Compile Include="Model\Filters\FilterRuleType.cs" />
+    <Compile Include="Model\Filters\FilterSet.cs" />
+    <Compile Include="Model\Filters\FilterSetResult.cs" />
     <Compile Include="Model\Logging\FallbackTestLogWriter.cs" />
     <Compile Include="Model\Messages\RemoteTestExplorationListener.cs" />
     <Compile Include="Model\Messages\ITestExecutionListener.cs" />
@@ -744,6 +748,7 @@
     <Compile Include="Concurrency\LockBox.cs" />
     <Compile Include="Utilities\Sync.cs" />
     <Compile Include="Utilities\DefaultXmlSerializer.cs" />
+    <Compile Include="Utilities\XmlUtils.cs" />
     <Compile Include="XmlSerializableTypeIncludes.cs">
       <SubType>Component</SubType>
     </Compile>

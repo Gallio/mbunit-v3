@@ -73,6 +73,8 @@
     <Compile Include="BaseTestRunner.cs" />
     <Compile Include="Core\BaseProxyTestRunner.cs" />
     <Compile Include="Core\LocalProxyTestRunner.cs" />
+    <Compile Include="Facade\FacadeFilterCategoryMode.cs" />
+    <Compile Include="Facade\FacadeOptions.cs" />
     <Compile Include="Facade\AdapterFacadeTestListener.cs" />
     <Compile Include="Facade\FacadeCategory.cs" />
     <Compile Include="Facade\FacadeTestResult.cs" />

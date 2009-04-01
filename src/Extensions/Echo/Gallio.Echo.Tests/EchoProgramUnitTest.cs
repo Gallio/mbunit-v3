@@ -40,7 +40,7 @@ namespace Gallio.Echo.Tests
 
             Assert.IsFalse(launcher.DoNotRun);
             Assert.IsTrue(launcher.EchoResults);
-            Assert.IsInstanceOfType(typeof(AnyFilter<ITest>), launcher.TestExecutionOptions.Filter);
+            Assert.IsTrue(launcher.TestExecutionOptions.FilterSet.IsEmpty);
             Assert.AreEqual("", launcher.ReportDirectory);
             Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
             Assert.AreEqual("test-report-{0}-{1}", launcher.ReportNameFormat);
@@ -101,7 +101,7 @@ namespace Gallio.Echo.Tests
 
             Assert.IsTrue(launcher.DoNotRun);
             Assert.IsFalse(launcher.EchoResults);
-            Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.Filter.ToFilterExpr());
+            Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.FilterSet.ToFilterSetExpr());
             Assert.AreEqual("dir", launcher.ReportDirectory);
             Assert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
             Assert.AreEqual("report", launcher.ReportNameFormat);

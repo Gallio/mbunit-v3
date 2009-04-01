@@ -31,26 +31,28 @@ namespace Gallio.Model.Execution
         /// Recursively builds a tree of test commands.
         /// </summary>
         /// <param name="testModel">The test model</param>
-        /// <param name="filter">The filter for the test model</param>
+        /// <param name="filterSet">The filter set for the test model</param>
         /// <param name="exactFilter">If true, only the specified tests are included, otherwise children
         /// of the selected tests are automatically included</param>
         /// <param name="contextManager">The test context manager</param>
         /// <returns>The root test command or null if none of the tests in
         /// the subtree including <paramref name="testModel"/> matched the filter</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/>,
-        /// <paramref name="filter"/> or <paramref name="contextManager"/> is null</exception>
+        /// <paramref name="filterSet"/> or <paramref name="contextManager"/> is null</exception>
         /// <exception cref="ModelException">Thrown if an invalid test dependency is found</exception>
-        public static ITestCommand BuildCommands(TestModel testModel, Filter<ITest> filter, bool exactFilter, ITestContextManager contextManager)
+        public static ITestCommand BuildCommands(TestModel testModel, FilterSet<ITest> filterSet, bool exactFilter, ITestContextManager contextManager)
         {
             if (testModel == null)
                 throw new ArgumentNullException("testModel");
-            if (filter == null)
-                throw new ArgumentNullException("filter");
+            if (filterSet == null)
+                throw new ArgumentNullException("filterSet");
             if (contextManager == null)
                 throw new ArgumentNullException("contextManager");
 
             Dictionary<ITest, ManagedTestCommand> commands = new Dictionary<ITest, ManagedTestCommand>();
-            ManagedTestCommand rootCommand = CreateFilteredClosure(commands, testModel.RootTest, filter, exactFilter, contextManager);
+            bool hasExplicitAncestor = ! filterSet.HasInclusionRules;
+            ManagedTestCommand rootCommand = CreateFilteredClosure(commands, testModel.RootTest, filterSet, exactFilter, 
+                hasExplicitAncestor, contextManager);
             if (rootCommand == null)
                 return null;
 
@@ -62,18 +64,22 @@ namespace Gallio.Model.Execution
         }
 
         private static ManagedTestCommand CreateFilteredClosure(Dictionary<ITest, ManagedTestCommand> commands,
-            ITest test, Filter<ITest> filter, bool exactFilter, ITestContextManager contextManager)
+            ITest test, FilterSet<ITest> filterSet, bool exactFilter, bool hasExplicitAncestor, ITestContextManager contextManager)
         {
-            bool isMatch = filter.IsMatch(test);
-            if (isMatch && !exactFilter)
-                return CreateCommandSubtree(commands, test, true, contextManager);
+            FilterSetResult filterSetResult = filterSet.Evaluate(test);
+
+            if (filterSetResult == FilterSetResult.Exclude)
+                return null;
+
+            bool isMatch = filterSetResult == FilterSetResult.Include;
+            bool isExplicit = isMatch && ! hasExplicitAncestor;
+            bool hasExplicitChild = false;
 
             List<ManagedTestCommand> children = new List<ManagedTestCommand>(test.Children.Count);
-
-            bool hasExplicitChild = false;
             foreach (ITest child in test.Children)
             {
-                ManagedTestCommand childMonitor = CreateFilteredClosure(commands, child, filter, exactFilter, contextManager);
+                ManagedTestCommand childMonitor = CreateFilteredClosure(commands, child, filterSet, exactFilter,
+                    hasExplicitAncestor || isExplicit, contextManager);
                 if (childMonitor != null)
                 {
                     children.Add(childMonitor);
@@ -83,21 +89,10 @@ namespace Gallio.Model.Execution
                 }
             }
 
-            if (isMatch || children.Count != 0)
-                return CreateCommand(commands, test, children, isMatch || hasExplicitChild, contextManager);
+            if (isMatch || children.Count != 0 || (! exactFilter && hasExplicitAncestor))
+                return CreateCommand(commands, test, children, isExplicit || hasExplicitChild, contextManager);
 
             return null;
-        }
-
-        private static ManagedTestCommand CreateCommandSubtree(Dictionary<ITest, ManagedTestCommand> commands,
-            ITest test, bool isExplicit, ITestContextManager contextManager)
-        {
-            List<ManagedTestCommand> children = new List<ManagedTestCommand>(test.Children.Count);
-
-            foreach (ITest child in test.Children)
-                children.Add(CreateCommandSubtree(commands, child, false, contextManager));
-
-            return CreateCommand(commands, test, children, isExplicit, contextManager);
         }
 
         private static ManagedTestCommand CreateCommand(Dictionary<ITest, ManagedTestCommand> commands,

@@ -55,7 +55,8 @@ namespace Gallio.Icarus.Tests.Models
             TestTreeNode n = new TestTreeNode("root", "root", "root");
             testTreeModel.Nodes.Add(n);
             Filter<ITest> filter = new NoneFilter<ITest>();
-            testTreeModel.ApplyFilter(filter);
+            FilterSet<ITest> filterSet = new FilterSet<ITest>(filter);
+            testTreeModel.ApplyFilterSet(filterSet);
             Assert.AreEqual(CheckState.Unchecked, n.CheckState);
         }
 
@@ -75,7 +76,8 @@ namespace Gallio.Icarus.Tests.Models
             Filter<ITest> left = new IdFilter<ITest>(new EqualityFilter<string>("a"));
             Filter<ITest> right = new IdFilter<ITest>(new EqualityFilter<string>("b"));
             Filter<ITest> orFilter = new OrFilter<ITest>(new[] { left, right});
-            testTreeModel.ApplyFilter(orFilter);
+            FilterSet<ITest> filterSet = new FilterSet<ITest>(orFilter);
+            testTreeModel.ApplyFilterSet(filterSet);
             Assert.AreEqual(CheckState.Indeterminate, n.CheckState);
             Assert.AreEqual(CheckState.Checked, a.CheckState);
             Assert.AreEqual(CheckState.Checked, b.CheckState);

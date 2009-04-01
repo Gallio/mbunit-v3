@@ -16,22 +16,23 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
-using Gallio.Framework;
-using MbUnit.Framework;
 
-// Ordinarily the default is STA, we change it to MTA here for testing purposes.
-[assembly: ApartmentState(System.Threading.ApartmentState.MTA)]
-
-namespace MbUnit.TestResources
+namespace Gallio.Model.Filters
 {
-    public class AssemblyApartmentStateSample
+    /// <summary>
+    /// Specifies whether a filter rule is an inclusion or exclusion rule.
+    /// </summary>
+    /// <seealso cref="FilterRule{T}"/>
+    public enum FilterRuleType
     {
-        // This is checked by ApartmentStateTest in MbUnit.Tests.
-        [Test]
-        public void WriteApartmentStateToLog()
-        {
-            TestLog.Write(Thread.CurrentThread.GetApartmentState());
-        }
+        /// <summary>
+        /// The filter rule is an inclusion rule.
+        /// </summary>
+        Inclusion,
+
+        /// <summary>
+        /// The filter rule is an exclusion rule.
+        /// </summary>
+        Exclusion
     }
 }

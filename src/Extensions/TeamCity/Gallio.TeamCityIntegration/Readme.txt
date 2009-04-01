@@ -14,8 +14,10 @@ If you are using the Gallio MSBuild task:
         ... other arguments... />
 
 If you are using the Gallio NAnt task:
-    <gallio runner-extension="TeamCityExtension,Gallio.TeamCityIntegration"
-        ... other arguments... />
+    <gallio ... other arguments>
+      <runner-extension value="TeamCityExtension,Gallio.TeamCityIntegration" />
+      ... other arguments
+    </gallio>
 
 If you are using the Gallio Echo task:
-    Gallio.Echo /e:TeamCityExtension,Gallio.TeamCityIntegration ... other arguments...
+    Gallio.Echo /re:TeamCityExtension,Gallio.TeamCityIntegration ... other arguments...

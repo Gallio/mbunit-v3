@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -81,13 +82,13 @@ namespace Gallio.Model.Filters
             ThrowNotSupportedException();
         }
 
-        private void FormatConjuction<T>(Filter<T>[] filters, string conjunction)
+        private void FormatConjuction<T>(IList<Filter<T>> filters, string conjunction)
         {
-            if (filters.Length == 0)
+            if (filters.Count == 0)
             {
                 result.Append('*');
             }
-            else if (filters.Length == 1)
+            else if (filters.Count == 1)
             {
                 filters[0].Accept(this);
             }
@@ -95,7 +96,7 @@ namespace Gallio.Model.Filters
             {
                 result.Append('(');
 
-                for (int i = 0; i < filters.Length; i++)
+                for (int i = 0; i < filters.Count; i++)
                 {
                     if (i != 0)
                         result.Append(conjunction);
@@ -196,14 +197,14 @@ namespace Gallio.Model.Filters
 
             public void VisitOrFilter<T>(OrFilter<T> filter)
             {
-                Filter<T>[] filters = filter.Filters;
-                if (filters.Length == 0)
+                IList<Filter<T>> filters = filter.Filters;
+                if (filters.Count == 0)
                 {
                     ThrowNotSupportedException();
                 }
                 else
                 {
-                    for (int i = 0; i < filters.Length; i++)
+                    for (int i = 0; i < filters.Count; i++)
                     {
                         if (needComma)
                             formatter.result.Append(", ");

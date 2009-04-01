@@ -93,6 +93,8 @@ namespace Gallio.Tests.Model.Filters
         [Row("OR", "Or")]
         [Row("not", "Not")]
         [Row("NOT", "Not")]
+        [Row("includE", "Include")]
+        [Row("Exclude", "Exclude")]
         [Row(":", "Colon")]
         [Row(",", "Comma")]
         [Row("*", "Star")]

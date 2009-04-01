@@ -106,13 +106,13 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// Applies a filter to the tests, potentially altering selections.
         /// </summary>
         /// <param name="filter">The filter to apply</param>
-        void ApplyFilter(Filter<ITest> filter);
+        void ApplyFilterSet(FilterSet<ITest> filter);
 
         /// <summary>
         /// Generates a filter from selected tests.
         /// </summary>
         /// <returns>The generated filter</returns>
-        Filter<ITest> GenerateFilterFromSelectedTests();
+        FilterSet<ITest> GenerateFilterSetFromSelectedTests();
 
         /// <summary>
         /// Explores the tests and updates the model, does not run them.

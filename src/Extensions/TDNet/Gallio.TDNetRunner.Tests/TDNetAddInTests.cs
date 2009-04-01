@@ -127,12 +127,13 @@ namespace Gallio.TDNetRunner.Tests
 
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
-                AssertTestLauncherOptions(launcher, assemblyPath, new AnyFilter<ITest>());
+                AssertTestLauncherOptions(launcher, assemblyPath, "*");
 
                 return new TestLauncherResult(new Report());
             });
 
-            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, null);
+            FacadeOptions facadeOptions = new FacadeOptions();
+            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, null, facadeOptions);
         }
 
         [Test]
@@ -147,12 +148,13 @@ namespace Gallio.TDNetRunner.Tests
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
                 AssertTestLauncherOptions(launcher, assemblyPath,
-                    new TypeFilter<ITest>(new EqualityFilter<string>(type.FullName), true));
+                    string.Format("Type: {0}", type.FullName));
 
                 return new TestLauncherResult(new Report());
             });
 
-            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, "T:" + type.FullName);
+            FacadeOptions facadeOptions = new FacadeOptions();
+            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, "T:" + type.FullName, facadeOptions);
         }
 
         [Test]
@@ -167,16 +169,14 @@ namespace Gallio.TDNetRunner.Tests
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
                 AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
-                    new AndFilter<ITest>(new Filter<ITest>[] {
-                        new TypeFilter<ITest>(new EqualityFilter<string>(method.DeclaringType.FullName), true),
-                        new MemberFilter<ITest>(new EqualityFilter<string>(method.Name))
-                    }));
+                    string.Format("(Type: {0} and Member: {1})", method.DeclaringType.FullName, method.Name));
 
                 return new TestLauncherResult(new Report());
             });
 
+            FacadeOptions facadeOptions = new FacadeOptions();
             tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath,
-                "M:" + method.DeclaringType.FullName + "." + method.Name);
+                "M:" + method.DeclaringType.FullName + "." + method.Name, facadeOptions);
         }
 
         [Test]
@@ -191,12 +191,63 @@ namespace Gallio.TDNetRunner.Tests
             tr.SetRunLauncherAction(delegate(TestLauncher launcher)
             {
                 AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
-                    new NamespaceFilter<ITest>(new EqualityFilter<string>(@namespace)));
+                    string.Format("Namespace: {0}", @namespace));
 
                 return new TestLauncherResult(new Report());
             });
 
-            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, "N:" + @namespace);
+            FacadeOptions facadeOptions = new FacadeOptions();
+            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, "N:" + @namespace, facadeOptions);
+        }
+
+        [Test]
+        public void RunWithInclusionCategoryFilterPassesCorrectOptionsToTheLauncher()
+        {
+            StubbedLocalTestRunner tr = new StubbedLocalTestRunner();
+
+            Assembly assembly = typeof(TDNetAddInTests).Assembly;
+            string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
+            string @namespace = "Foo";
+
+            tr.SetRunLauncherAction(delegate(TestLauncher launcher)
+            {
+                AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
+                    string.Format("(Namespace: {0} and Category: {1}, {2})", @namespace, "abc", "def"));
+
+                return new TestLauncherResult(new Report());
+            });
+
+            FacadeOptions facadeOptions = new FacadeOptions()
+            {
+                FilterCategoryMode = FacadeFilterCategoryMode.Include,
+                FilterCategoryNames = new string[] { "abc", "def" }
+            };
+            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, "N:" + @namespace, facadeOptions);
+        }
+
+        [Test]
+        public void RunWithExclusionCategoryFilterPassesCorrectOptionsToTheLauncher()
+        {
+            StubbedLocalTestRunner tr = new StubbedLocalTestRunner();
+
+            Assembly assembly = typeof(TDNetAddInTests).Assembly;
+            string assemblyPath = AssemblyUtils.GetAssemblyLocalPath(assembly);
+            string @namespace = "Foo";
+
+            tr.SetRunLauncherAction(delegate(TestLauncher launcher)
+            {
+                AssertTestLauncherOptions(launcher, AssemblyUtils.GetAssemblyLocalPath(assembly),
+                    string.Format("exclude Category: {0}, {1} include Namespace: {2}", "abc", "def", @namespace));
+
+                return new TestLauncherResult(new Report());
+            });
+
+            FacadeOptions facadeOptions = new FacadeOptions()
+            {
+                FilterCategoryMode = FacadeFilterCategoryMode.Exclude,
+                FilterCategoryNames = new string[] { "abc", "def" }
+            };
+            tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, "N:" + @namespace, facadeOptions);
         }
 
         [Test]
@@ -219,15 +270,16 @@ namespace Gallio.TDNetRunner.Tests
                 return result;
             });
 
-            FacadeTestRunState runResult = tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, null);
+            FacadeOptions facadeOptions = new FacadeOptions();
+            FacadeTestRunState runResult = tr.Run(MockRepository.GenerateStub<IFacadeTestListener>(), assemblyPath, null, facadeOptions);
             Assert.AreEqual(expectedRunState, runResult);
         }
 
-        private static void AssertTestLauncherOptions(TestLauncher launcher, string assemblyFile, Filter<ITest> filter)
+        private static void AssertTestLauncherOptions(TestLauncher launcher, string assemblyFile, string filterSetExpr)
         {
             Assert.IsFalse(launcher.DoNotRun);
             Assert.IsFalse(launcher.EchoResults);
-            Assert.AreEqual(filter.ToFilterExpr(), launcher.TestExecutionOptions.Filter.ToFilterExpr());
+            Assert.AreEqual(filterSetExpr, launcher.TestExecutionOptions.FilterSet.ToFilterSetExpr());
             Assert.IsInstanceOfType(typeof(FilteredLogger), launcher.Logger);
             Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
             Assert.IsFalse(launcher.ShowReports);

@@ -29,6 +29,8 @@ namespace Gallio.Model.Filters
         RightBracket,
         RegexWord,
         Star,
-        Word        
+        Word,
+        Include,
+        Exclude
     }
 }

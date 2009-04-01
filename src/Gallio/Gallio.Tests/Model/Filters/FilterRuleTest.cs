@@ -14,31 +14,33 @@
 // limitations under the License.
 
 using System;
-using NUnit.Framework;
+using Gallio.Collections;
+using Gallio.Tests;
+using MbUnit.Framework;
 
-namespace Gallio.NUnitAdapter.TestResources
+using Gallio.Model.Filters;
+
+namespace Gallio.Tests.Model.Filters
 {
-    /// <summary>
-    /// A simple test fixture.
-    /// </summary>
     [TestFixture]
-    public class SimpleTest
+    [TestsOn(typeof(FilterRule<object>))]
+    public class FilterRuleTest : BaseTestWithMocks
     {
-        /// <summary>
-        /// A passing test.
-        /// </summary>
         [Test]
-        public void Pass()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Constructor_WhenArgumentIsNull_Throws()
         {
+            new FilterRule<object>(FilterRuleType.Inclusion, null);
         }
 
-        /// <summary>
-        /// A failing test.
-        /// </summary>
         [Test]
-        public void Fail()
+        public void Constructor_WhenInvoked_InitializesProperties()
         {
-            Assert.Fail("Boom");
+            var filter = new AnyFilter<object>();
+            var filterRule = new FilterRule<object>(FilterRuleType.Exclusion, filter);
+
+            Assert.AreEqual(FilterRuleType.Exclusion, filterRule.RuleType);
+            Assert.AreEqual(filter, filterRule.Filter);
         }
     }
 }

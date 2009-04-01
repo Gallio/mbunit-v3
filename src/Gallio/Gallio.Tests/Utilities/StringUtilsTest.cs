@@ -116,6 +116,8 @@ namespace Gallio.Tests.Utilities
         [Row("", "\"\"")]
         [Row("abcdef", "\"abcdef\"")]
         [Row("\0\a\b\f\n\r\t\v\'\"\\", "\"\\0\\a\\b\\f\\n\\r\\t\\v\\'\\\"\\\\\"")]
+        [Row("\ufeff", "\"\\ufeff\"")]
+        [Row("\U00010000", "\"\\U00010000\"", Description = "Prints surrogate pairs as UTF32")]
         public void ToStringLiteral(string value, string expectedResult)
         {
             Assert.AreEqual(expectedResult, StringUtils.ToStringLiteral(value));
@@ -125,6 +127,8 @@ namespace Gallio.Tests.Utilities
         [Row("", "")]
         [Row("abcdef", "abcdef")]
         [Row("\0\a\b\f\n\r\t\v\'\"\\", "\\0\\a\\b\\f\\n\\r\\t\\v\\'\\\"\\\\")]
+        [Row("\ufeff", "\\ufeff")]
+        [Row("\U00010000", "\\U00010000", Description = "Prints surrogate pairs as UTF32")]
         public void ToUnquotedStringLiteral(string value, string expectedResult)
         {
             Assert.AreEqual(expectedResult, StringUtils.ToUnquotedStringLiteral(value));

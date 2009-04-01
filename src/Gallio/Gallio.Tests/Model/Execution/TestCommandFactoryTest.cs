@@ -47,7 +47,7 @@ namespace Gallio.Tests.Model.Execution
         [Test, ExpectedArgumentNullException]
         public void TestModelCannotBeNull()
         {
-            TestCommandFactory.BuildCommands(null, Mocks.Stub<Filter<ITest>>(), false, Mocks.Stub<ITestContextManager>());
+            TestCommandFactory.BuildCommands(null, FilterSet<ITest>.Empty, false, Mocks.Stub<ITestContextManager>());
         }
 
         [Test, ExpectedArgumentNullException]
@@ -59,7 +59,7 @@ namespace Gallio.Tests.Model.Execution
         [Test, ExpectedArgumentNullException]
         public void ContextManagerCannotBeNull()
         {
-            TestCommandFactory.BuildCommands(model, Mocks.Stub<Filter<ITest>>(), false, null);
+            TestCommandFactory.BuildCommands(model, FilterSet<ITest>.Empty, false, null);
         }
 
         [Test]
@@ -72,13 +72,23 @@ namespace Gallio.Tests.Model.Execution
         }
 
         [Test]
-        public void RootCommandIncludesEntireHierarchyIfAllTestsSelected()
+        public void RootCommandIncludesEntireHierarchyIfFilterSetSelectsAllTestsSelected()
         {
             PopulateModelWithTests();
 
             BuildCommands(new AnyFilter<ITest>(), false);
             AssertCommandStructure("Root", "A", "A1", "A2", "A3", "B", "B1");
             AssertCommandExplicit("Root");
+        }
+
+        [Test]
+        public void RootCommandIncludesEntireHierarchyIfFilterSetIsEmpty()
+        {
+            PopulateModelWithTests();
+
+            BuildCommands(FilterSet<ITest>.Empty, false);
+            AssertCommandStructure("Root", "A", "A1", "A2", "A3", "B", "B1");
+            AssertCommandExplicit();
         }
 
         [Test]
@@ -89,6 +99,16 @@ namespace Gallio.Tests.Model.Execution
             BuildCommands(new NameFilter<ITest>(new EqualityFilter<string>("A")), false);
             AssertCommandStructure("Root", "A", "A1", "A2", "A3");
             AssertCommandExplicit("Root", "A");
+        }
+
+        [Test]
+        public void RootCommandIncludesOnlyNonExcludedTestsInHierarchyEvenIfAChildTestMightHaveBeenOtherwiseIncluded()
+        {
+            PopulateModelWithTests();
+
+            BuildCommands(new FilterSet<ITest>(new[] { new FilterRule<ITest>(FilterRuleType.Exclusion, new NameFilter<ITest>(new EqualityFilter<string>("A"))) }), false);
+            AssertCommandStructure("Root", "B", "B1");
+            AssertCommandExplicit();
         }
 
         [Test]
@@ -326,7 +346,12 @@ namespace Gallio.Tests.Model.Execution
 
         private void BuildCommands(Filter<ITest> filter, bool exactFilter)
         {
-            rootCommand = TestCommandFactory.BuildCommands(model, filter, exactFilter, Mocks.Stub<ITestContextManager>());
+            BuildCommands(new FilterSet<ITest>(filter), exactFilter);
+        }
+
+        private void BuildCommands(FilterSet<ITest> filterSet, bool exactFilter)
+        {
+            rootCommand = TestCommandFactory.BuildCommands(model, filterSet, exactFilter, Mocks.Stub<ITestContextManager>());
         }
 
         private void PopulateModelWithTests()

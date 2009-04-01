@@ -14,7 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Gallio.Loader;
 using Gallio.TDNetRunner.Facade;
 using Gallio.TDNetRunner.Properties;
@@ -38,14 +40,43 @@ namespace Gallio.TDNetRunner.Core
         }
 
         /// <inheritdoc />
-        protected override FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref)
+        protected override FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref, FacadeOptions facadeOptions)
         {
-            Version appVersion = Assembly.GetCallingAssembly().GetName().Version;
+            Version appVersion = GallioLoader.GetApplicationVersion(Assembly.GetExecutingAssembly());
+
             testListener.WriteLine(String.Format(Resources.RunnerNameAndVersion + "\n",
                 appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision), FacadeCategory.Info);
 
+            switch (facadeOptions.FilterCategoryMode)
+            {
+                case FacadeFilterCategoryMode.Include:
+                    testListener.WriteLine(String.Format("Included categories: {0}\n", CombineCategoryNameList(facadeOptions.FilterCategoryNames)), FacadeCategory.Info);
+                    break;
+
+                case FacadeFilterCategoryMode.Exclude:
+                    testListener.WriteLine(String.Format("Excluded categories: {0}\n", CombineCategoryNameList(facadeOptions.FilterCategoryNames)), FacadeCategory.Info);
+                    break;
+            }
+
             EnsureTestRunnerIsCreated();
-            return testRunner.Run(testListener, assemblyPath, cref);
+            return testRunner.Run(testListener, assemblyPath, cref, facadeOptions);
+        }
+
+        private static string CombineCategoryNameList(IList<string> categoryNames)
+        {
+            if (categoryNames.Count == 0)
+                return "<none>";
+
+            StringBuilder result = new StringBuilder();
+            foreach (string categoryName in categoryNames)
+            {
+                if (result.Length != 0)
+                    result.Append(", ");
+
+                result.Append(categoryName);
+            }
+
+            return result.ToString();
         }
 
         /// <inheritdoc />

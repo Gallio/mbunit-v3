@@ -24,6 +24,7 @@ using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 using Gallio.Runner.Reports;
+using Gallio.Utilities;
 
 namespace Gallio.Reports
 {
@@ -204,26 +205,8 @@ namespace Gallio.Reports
         private static XPathDocument SerializeReportToXPathDocument(IReportWriter reportWriter,
             AttachmentContentDisposition attachmentContentDisposition)
         {
-            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
-            xmlWriterSettings.CheckCharacters = false;
-            xmlWriterSettings.Encoding = Encoding.UTF8;
-            xmlWriterSettings.Indent = false;
-            xmlWriterSettings.CloseOutput = false;
-
-            MemoryStream stream = new MemoryStream();
-            XmlWriter xmlWriter = XmlWriter.Create(stream, xmlWriterSettings);
-            reportWriter.SerializeReport(xmlWriter, attachmentContentDisposition);
-
-            XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
-            xmlReaderSettings.CheckCharacters = false;
-            xmlReaderSettings.ValidationType = ValidationType.None;
-            xmlReaderSettings.CloseInput = true;
-
-            stream.Position = 0;
-            XmlReader xmlReader = XmlReader.Create(stream, xmlReaderSettings);
-
-            XPathDocument document = new XPathDocument(xmlReader);
-            return document;
+            return XmlUtils.WriteToXPathDocument(
+                xmlWriter => reportWriter.SerializeReport(xmlWriter, attachmentContentDisposition));
         }
 
         private static XmlResolver GetContentResolver()

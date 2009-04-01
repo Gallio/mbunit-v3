@@ -146,7 +146,7 @@ namespace Gallio.VisualStudio.Tip
                         idFilters.Add(new EqualityFilter<string>(gallioTestElement.GallioTestId));
                 }
 
-                testExecutionOptions.Filter = new IdFilter<ITest>(new OrFilter<string>(idFilters.ToArray()));
+                testExecutionOptions.FilterSet = new FilterSet<ITest>(new IdFilter<ITest>(new OrFilter<string>(idFilters)));
                 testExecutionOptions.ExactFilter = true;
 
                 RunWithProgressMonitor(delegate(IProgressMonitor progressMonitor)

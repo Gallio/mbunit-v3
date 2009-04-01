@@ -92,13 +92,17 @@ namespace Gallio.Utilities
         /// Formats a character value as "'x'" or "'\n'" with support for escaped characters
         /// as a valid literal value.  Encloses the char in single quotes (').
         /// </summary>
+        /// <remarks>
+        /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
+        /// are represented by a Unicode character escape.
+        /// </remarks>
         /// <param name="value">The character value to format</param>
         /// <returns>The formatted character</returns>
         public static string ToCharLiteral(char value)
         {
             StringBuilder str = new StringBuilder(8);
             str.Append('\'');
-            AppendEscapedChar(str, value);
+            AppendUnquotedCharLiteral(str, value);
             str.Append('\'');
             return str.ToString();
         }
@@ -107,29 +111,40 @@ namespace Gallio.Utilities
         /// Escapes a character value as "x" or "\n".  Unlike <see cref="ToCharLiteral"/>,
         /// does not enclose the literal in single quotes (').
         /// </summary>
+        /// <remarks>
+        /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
+        /// are represented by a Unicode character escape.
+        /// </remarks>
         /// <param name="value">The character value to format</param>
         /// <returns>The unquoted char literal</returns>
         public static string ToUnquotedCharLiteral(char value)
         {
             StringBuilder str = new StringBuilder(6);
-            AppendEscapedChar(str, value);
+            AppendUnquotedCharLiteral(str, value);
             return str.ToString();
+        }
+
+        private static void AppendUnquotedCharLiteral(StringBuilder str, char value)
+        {
+            char previousChar = '\0';
+            AppendEscapedChar(str, value, ref previousChar);
         }
 
         /// <summary>
         /// Formats a string value as ""abc\ndef"" with support for escaped characters
         /// as a valid literal value.  Encloses the string in quotes (").
         /// </summary>
+        /// <remarks>
+        /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
+        /// are represented by a Unicode character escape.
+        /// </remarks>
         /// <param name="value">The string value to format</param>
         /// <returns>The formatted string</returns>
         public static string ToStringLiteral(string value)
         {
             StringBuilder str = new StringBuilder(value.Length + 2);
             str.Append('"');
-
-            foreach (char c in value)
-                AppendEscapedChar(str, c);
-
+            AppendUnquotedStringLiteral(str, value);
             str.Append('"');
             return str.ToString();
         }
@@ -138,19 +153,27 @@ namespace Gallio.Utilities
         /// Escapes a string value such as "abc\ndef".  Unlike <see cref="ToStringLiteral"/>,
         /// does not enclose the literal in quotes (").
         /// </summary>
+        /// <remarks>
+        /// Replaces common escaped characters with C# style escape codes.  Unprintable characters
+        /// are represented by a Unicode character escape.
+        /// </remarks>
         /// <param name="value">The string value to format</param>
         /// <returns>The unquoted string literal</returns>
         public static string ToUnquotedStringLiteral(string value)
         {
             StringBuilder str = new StringBuilder(value.Length);
-
-            foreach (char c in value)
-                AppendEscapedChar(str, c);
-
+            AppendUnquotedStringLiteral(str, value);
             return str.ToString();
         }
 
-        private static void AppendEscapedChar(StringBuilder str, char c)
+        private static void AppendUnquotedStringLiteral(StringBuilder str, string value)
+        {
+            char previousChar = '\0';
+            foreach (char c in value)
+                AppendEscapedChar(str, c, ref previousChar);
+        }
+
+        private static void AppendEscapedChar(StringBuilder str, char c, ref char previousChar)
         {
             switch (c)
             {
@@ -205,15 +228,35 @@ namespace Gallio.Utilities
                     }
                     else
                     {
-                        str.Append('\\');
-                        str.Append('u');
-                        str.Append(ToHexDigit(c >> 12));
-                        str.Append(ToHexDigit(c >> 8));
-                        str.Append(ToHexDigit(c >> 4));
-                        str.Append(ToHexDigit(c));
+                        int code;
+                        if (char.IsHighSurrogate(previousChar) && char.IsLowSurrogate(c))
+                        {
+                            code = char.ConvertToUtf32(previousChar, c);
+
+                            str.Length -= 5;
+                            str.Append('U');
+                            str.Append('0');
+                            str.Append('0');
+                            str.Append(ToHexDigit(code >> 20));
+                            str.Append(ToHexDigit(code >> 16));
+                        }
+                        else
+                        {
+                            code = c;
+
+                            str.Append('\\');
+                            str.Append('u');
+                        }
+
+                        str.Append(ToHexDigit(code >> 12));
+                        str.Append(ToHexDigit(code >> 8));
+                        str.Append(ToHexDigit(code >> 4));
+                        str.Append(ToHexDigit(code));
                     }
                     break;
             }
+
+            previousChar = c;
         }
 
         /// <summary>

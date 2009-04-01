@@ -312,6 +312,14 @@ namespace Gallio.Model.Filters
             {
                 reservedWord = FilterTokenType.Not;
             }
+            else if (loweredToken.CompareTo("include") == 0)
+            {
+                reservedWord = FilterTokenType.Include;
+            }
+            else if (loweredToken.CompareTo("exclude") == 0)
+            {
+                reservedWord = FilterTokenType.Exclude;
+            }
 
             return reservedWord;
         }

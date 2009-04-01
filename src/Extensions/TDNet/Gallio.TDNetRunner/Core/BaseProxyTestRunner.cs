@@ -53,11 +53,11 @@ namespace Gallio.TDNetRunner.Core
             }
         }
 
-        public FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, string cref)
+        public FacadeTestRunState Run(IFacadeTestListener testListener, string assemblyPath, string cref, FacadeOptions facadeOptions)
         {
             try
             {
-                return RunImpl(testListener, assemblyPath, cref);
+                return RunImpl(testListener, assemblyPath, cref, facadeOptions);
             }
             catch (Exception ex)
             {
@@ -67,7 +67,7 @@ namespace Gallio.TDNetRunner.Core
 
         protected abstract void Dispose(bool disposing);
         protected abstract void AbortImpl();
-        protected abstract FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref);
+        protected abstract FacadeTestRunState RunImpl(IFacadeTestListener testListener, string assemblyPath, string cref, FacadeOptions facadeOptions);
 
         public override object InitializeLifetimeService()
         {

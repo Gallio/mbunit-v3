@@ -123,11 +123,11 @@ namespace Gallio.ReSharperRunner.Provider.Tasks
             TestExplorationOptions testExplorationOptions = new TestExplorationOptions();
 
             TestExecutionOptions testExecutionOptions = new TestExecutionOptions();
-            testExecutionOptions.Filter = new IdFilter<ITest>(new OrFilter<string>(GenericUtils.ConvertAllToArray<string, Filter<string>>(
+            testExecutionOptions.FilterSet = new FilterSet<ITest>(new IdFilter<ITest>(new OrFilter<string>(GenericUtils.ConvertAllToArray<string, Filter<string>>(
                 explicitTestIds, delegate(string testId)
                 {
                     return new EqualityFilter<string>(testId);
-                })));
+                }))));
             testExecutionOptions.ExactFilter = true;
 
             // Install the listeners.

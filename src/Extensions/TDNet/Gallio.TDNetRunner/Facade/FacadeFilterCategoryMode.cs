@@ -16,22 +16,27 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
-using Gallio.Framework;
-using MbUnit.Framework;
 
-// Ordinarily the default is STA, we change it to MTA here for testing purposes.
-[assembly: ApartmentState(System.Threading.ApartmentState.MTA)]
-
-namespace MbUnit.TestResources
+namespace Gallio.TDNetRunner.Facade
 {
-    public class AssemblyApartmentStateSample
+    /// <summary>
+    /// Describes the mode of the TDNet category filter.
+    /// </summary>
+    public enum FacadeFilterCategoryMode
     {
-        // This is checked by ApartmentStateTest in MbUnit.Tests.
-        [Test]
-        public void WriteApartmentStateToLog()
-        {
-            TestLog.Write(Thread.CurrentThread.GetApartmentState());
-        }
+        /// <summary>
+        /// No category filter.
+        /// </summary>
+        Disabled = 0,
+
+        /// <summary>
+        /// Include named categories.
+        /// </summary>
+        Include,
+
+        /// <summary>
+        /// Exclude named categories.
+        /// </summary>
+        Exclude,
     }
 }

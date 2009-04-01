@@ -27,6 +27,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
 #if !RESHARPER_31
     [RunWithGuardedReadLock]
 #endif
+    [Category("Integration")]
     public class MetadataReflectionPolicyTest : BaseReflectionPolicyTest
     {
         private MetadataLoader loader;

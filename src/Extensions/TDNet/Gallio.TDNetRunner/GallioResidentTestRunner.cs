@@ -35,7 +35,8 @@ namespace Gallio.TDNetRunner
             if (assemblyFile == null)
                 throw new ArgumentNullException("assemblyFile");
 
-            FacadeTestRunState result = TestRunner.Run(new AdapterFacadeTestListener(testListener), assemblyFile, cref);
+            FacadeOptions options = FacadeOptions.ReadFromRegistry();
+            FacadeTestRunState result = TestRunner.Run(new AdapterFacadeTestListener(testListener), assemblyFile, cref, options);
             return FacadeUtils.ToTestRunState(result);
         }
 

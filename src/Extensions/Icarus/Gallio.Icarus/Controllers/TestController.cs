@@ -229,7 +229,7 @@ namespace Gallio.Icarus.Controllers
                     var testExplorationOptions = new TestExplorationOptions();
                     var testExecutionOptions = new TestExecutionOptions
                     {
-                        Filter = GenerateFilterFromSelectedTests(),
+                        FilterSet = GenerateFilterSetFromSelectedTests(),
                         ExactFilter = true
                     };
 
@@ -255,12 +255,12 @@ namespace Gallio.Icarus.Controllers
             reportLockBox.Read(action);
         }
 
-        public void ApplyFilter(Filter<ITest> filter)
+        public void ApplyFilterSet(FilterSet<ITest> filter)
         {
-            testTreeModel.ApplyFilter(filter);
+            testTreeModel.ApplyFilterSet(filter);
         }
 
-        public Filter<ITest> GenerateFilterFromSelectedTests()
+        public FilterSet<ITest> GenerateFilterSetFromSelectedTests()
         {
             return testTreeModel.GenerateFilterFromSelectedTests();
         }
