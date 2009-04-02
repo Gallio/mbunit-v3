@@ -56,7 +56,7 @@
                         <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.VisualStudio.Shell.dll]"/>
                         <RegistryValue Type="integer" Name="ID" Value="1"/>
                         <RegistryValue Type="string" Name="MinEdition" Value="Standard"/>
-                        <RegistryValue Type="string" Name="ProductVersion" Value="[ProductVersion]"/>
+                        <RegistryValue Type="string" Name="ProductVersion" Value="3.0"/>
                         <RegistryValue Type="string" Name="ProductName" Value="Gallio"/>
                         <RegistryValue Type="string" Name="CompanyName" Value="Gallio Project"/>
                     </RegistryKey>
@@ -95,7 +95,7 @@
                         <RegistryValue Type="string" Name="CodeBase" Value="[#Gallio.VisualStudio.Shell.dll]"/>
                         <RegistryValue Type="integer" Name="ID" Value="1"/>
                         <RegistryValue Type="string" Name="MinEdition" Value="Standard"/>
-                        <RegistryValue Type="string" Name="ProductVersion" Value="[ProductVersion]"/>
+                        <RegistryValue Type="string" Name="ProductVersion" Value="3.0"/>
                         <RegistryValue Type="string" Name="ProductName" Value="Gallio"/>
                         <RegistryValue Type="string" Name="CompanyName" Value="Gallio Project"/>
                     </RegistryKey>
