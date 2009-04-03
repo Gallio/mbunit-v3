@@ -27,7 +27,10 @@
     <Binary Include="libs\xunit.xml">
         <Folder>Xunit</Folder>
     </Binary>
-    <Binary Include="libs\xunitext.dll">
+    <Binary Include="libs\xunit.extensions.dll">
+        <Folder>Xunit</Folder>
+    </Binary>
+    <Binary Include="libs\xunit.extensions.xml">
         <Folder>Xunit</Folder>
     </Binary>
   </ItemGroup>
