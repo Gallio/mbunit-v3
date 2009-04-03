@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Gallio.Model.Diagnostics;
+using Gallio.Reflection;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Execution;
@@ -213,14 +214,33 @@ namespace Gallio.XunitAdapter.Model
                 BaseTestStep testStep = new BaseTestStep(testCommand.Test, parentTestStep,
                     testCommand.Test.Name, testCommand.Test.CodeElement, isPrimary);
                 testStep.IsDynamic = !isPrimary;
-                if (xunitTestCommand.Name != null)
-                    testStep.Name = xunitTestCommand.Name;
+
+                string displayName = xunitTestCommand.DisplayName;
+                if (displayName != null)
+                    testStep.Name = StripTypeNamePrefixFromDisplayName(testCommand.Test.CodeElement, displayName);
 
                 ITestContext testContext = testCommand.StartStep(testStep);
                 passed &= RunTestCommandAndFinishStep(testContext, testClassCommand, xunitTestCommand);
             }
 
             return passed;
+        }
+
+        private static string StripTypeNamePrefixFromDisplayName(ICodeElementInfo codeElement, string displayName)
+        {
+            IMemberInfo member = codeElement as IMemberInfo;
+            if (member != null)
+            {
+                ITypeInfo type = member.ReflectedType;
+                if (type != null)
+                {
+                    string typeNamePlusDot = type.FullName + ".";
+                    if (displayName.StartsWith(typeNamePlusDot))
+                        return displayName.Substring(typeNamePlusDot.Length);
+                }
+            }
+
+            return displayName;
         }
 
         private static bool RunTestCommandAndFinishStep(ITestContext testContext, XunitTestClassCommand testClassCommand, XunitTestCommand testCommand)

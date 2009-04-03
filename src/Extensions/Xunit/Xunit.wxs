@@ -21,8 +21,11 @@
                 <Component Id="xunit.xml" Guid="42b6b4c8-df7e-43af-aeeb-c20cffa63592" Win64="no">
                     <File Name="xunit.xml" KeyPath="yes" />
                 </Component>
-                <Component Id="xunitext.dll" Guid="4a78a038-ef65-43c2-b44f-b39948ef5ef6" Win64="no">
-                    <File Name="xunitext.dll" KeyPath="yes" />
+                <Component Id="xunit.extensions.dll" Guid="{F9526C00-AEB9-4c74-A882-93084BF7511B}" Win64="no">
+                    <File Name="xunit.extensions.dll" KeyPath="yes" />
+                </Component>
+                <Component Id="xunit.extensions.xml" Guid="{1DE39816-B747-4ccc-B112-9D0C2CAADFCD}" Win64="no">
+                    <File Name="xunit.extensions.xml" KeyPath="yes" />
                 </Component>
             </Directory>
         </DirectoryRef>
@@ -35,7 +38,8 @@
             <ComponentRef Id="xunit.EULA.txt"/>
             <ComponentRef Id="xunit.dll"/>
             <ComponentRef Id="xunit.xml"/>
-            <ComponentRef Id="xunitext.dll"/>
+            <ComponentRef Id="xunit.extensions.dll"/>
+            <ComponentRef Id="xunit.extensions.xml"/>
         </Feature>
     </Fragment>
 </Wix>

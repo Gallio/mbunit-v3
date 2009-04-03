@@ -15,7 +15,7 @@
 
 using System.Data;
 using Xunit;
-using XunitExt;
+using Xunit.Extensions;
 
 namespace Gallio.XunitAdapter.TestResources
 {
