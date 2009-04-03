@@ -70,15 +70,12 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <param name="methodSignature">The expected method signature for diagnostic output</param>
         protected static void AssertMethodExists(MethodInfo method, string methodSignature)
         {
-            AssertionHelper.Verify(() =>
-            {
-                if (method != null)
-                    return null;
-
-                return new AssertionFailureBuilder("Expected method to exist.")
+            AssertionHelper.Explain(() =>
+                Assert.IsNotNull(method),
+                innerFailures => new AssertionFailureBuilder("Expected a method to exist.")
                     .AddLabeledValue("Expected Method", methodSignature)
-                    .ToAssertionFailure();
-            });
+                    .AddInnerFailures(innerFailures)
+                    .ToAssertionFailure());
         }
     }
 }

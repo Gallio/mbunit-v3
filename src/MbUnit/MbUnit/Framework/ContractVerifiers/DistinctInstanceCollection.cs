@@ -129,7 +129,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// Returns a strongly-typed enumerator that iterates through the collection.
         /// </summary>
-        /// <returns>A strongly-typed enumerator</returns>
+        /// <returns>A strongly-typed enumerator.</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return distinctInstances.GetEnumerator();

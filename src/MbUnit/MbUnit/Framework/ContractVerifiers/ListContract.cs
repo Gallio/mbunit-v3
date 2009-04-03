@@ -232,7 +232,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
         private void DoInsertCycle(Func<TList, int> getIndex)
         {
-            var list = GetDefaultInstance();
+            var list = GetSafeDefaultInstance();
             var handler = new ListHandler<TList, TItem>(list, Context);
             var initialContent = new ReadOnlyCollection<TItem>(list);
 
@@ -259,7 +259,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("InsertItemsAtInvalidIndex", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var list = GetDefaultInstance();
+                var list = GetSafeDefaultInstance();
                 var handler = new ListHandler<TList, TItem>(list, Context);
                 var initialContent = new List<TItem>(list);
 
@@ -282,7 +282,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("IndexOfItem", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var handler = new ListHandler<TList, TItem>(GetDefaultInstance(), Context);
+                var handler = new ListHandler<TList, TItem>(GetSafeDefaultInstance(), Context);
 
                 foreach (var item in DistinctInstances)
                 {
@@ -296,7 +296,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("RemoveItemsAt", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var list = GetDefaultInstance();
+                var list = GetSafeDefaultInstance();
                 var handler = new ListHandler<TList, TItem>(list, Context);
 
                 foreach (var item in DistinctInstances)
@@ -311,7 +311,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("RemoveItemsAtInvalidIndex", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var handler = new ListHandler<TList, TItem>(GetDefaultInstance(), Context);
+                var handler = new ListHandler<TList, TItem>(GetSafeDefaultInstance(), Context);
 
                 Assert.Multiple(() =>
                 {
@@ -326,7 +326,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("GetItemsAtInvalidIndex", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var handler = new ListHandler<TList, TItem>(GetDefaultInstance(), Context);
+                var handler = new ListHandler<TList, TItem>(GetSafeDefaultInstance(), Context);
 
                 Assert.Multiple(() =>
                 {
@@ -341,7 +341,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("GetSetItemsWithIndexer", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var list = GetDefaultInstance();
+                var list = GetSafeDefaultInstance();
 
                 if (list.Count == 0) // The default instance is empty: add at least one item.
                     list.Add(DistinctInstances.Instances[0]);

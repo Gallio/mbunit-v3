@@ -141,6 +141,8 @@ namespace MbUnit.Framework.ContractVerifiers
         /// <summary>
         /// <para>
         /// Provides a default instance of the collection to test.
+        /// </para>
+        /// <para>
         /// By default, the contract verifier attempts to invoke the default constructor to get an valid instance. 
         /// Overwrite the default provider if the collection has no default constructor, or if you want 
         /// the contract verifier to use a particular instance.
@@ -149,13 +151,13 @@ namespace MbUnit.Framework.ContractVerifiers
         /// [VerifyContract]
         /// public readonly IContract CollectionTests = new CollectionContract<MyCollection, int>
         /// {
-        ///     GetDefaultInstance = () => new MyCollection(1, 2, 3)
+        ///     DefaultInstance = () => new MyCollection(1, 2, 3)
         /// };
         /// ]]></code>
         /// </example>
         /// </para>
         /// </summary>
-        public Func<TCollection> GetDefaultInstance
+        public Func<TCollection> DefaultInstance
         {
             get;
             set;
@@ -232,7 +234,7 @@ namespace MbUnit.Framework.ContractVerifiers
         public CollectionContract()
         {
             DistinctInstances = new DistinctInstanceCollection<TItem>();
-            GetDefaultInstance = () => Activator.CreateInstance<TCollection>();
+            DefaultInstance = () => Activator.CreateInstance<TCollection>();
             AcceptEqualItems = true;
         }
 
@@ -282,7 +284,7 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase("VerifyReadOnlyProperty", () =>
             {
-                var collection = GetDefaultInstance();
+                var collection = GetSafeDefaultInstance();
 
                 AssertionHelper.Explain(() =>
                     Assert.AreEqual(IsReadOnly, collection.IsReadOnly),
@@ -312,7 +314,7 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 foreach(var item in DistinctInstances)
                 {
-                    var collection = GetDefaultInstance();
+                    var collection = GetSafeDefaultInstance();
 
                     AssertionHelper.Explain(() =>
                         Assert.Throws<Exception>(() => invoke(collection, item)),
@@ -337,7 +339,7 @@ namespace MbUnit.Framework.ContractVerifiers
         {
             return new TestCase(String.Format("{0}NullArgument", methodName), () =>
             {
-                var collection = GetDefaultInstance();
+                var collection = GetSafeDefaultInstance();
 
                 AssertionHelper.Explain(() =>
                     Assert.Throws<ArgumentNullException>(() => invoke(collection)),
@@ -356,7 +358,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("ClearItems", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var collection = GetDefaultInstance();
+                var collection = GetSafeDefaultInstance();
 
                 if (collection.Count == 0) 
                 {
@@ -387,7 +389,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("AddItems", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var collection = GetDefaultInstance();
+                var collection = GetSafeDefaultInstance();
                 var handler = new CollectionHandler<TCollection, TItem>(collection, Context);
                 var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
@@ -415,7 +417,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("RemoveItems", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var collection = GetDefaultInstance();
+                var collection = GetSafeDefaultInstance();
                 var handler = new CollectionHandler<TCollection, TItem>(collection, Context);
                 var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
@@ -461,7 +463,7 @@ namespace MbUnit.Framework.ContractVerifiers
             return new TestCase("CopyTo", () =>
             {
                 AssertDistinctIntancesNotEmpty();
-                var collection = GetDefaultInstance();
+                var collection = GetSafeDefaultInstance();
                 var handler = new CollectionHandler<TCollection, TItem>(collection, Context);
                 var initialContent = new ReadOnlyCollection<TItem>(new List<TItem>(collection));
 
@@ -489,6 +491,27 @@ namespace MbUnit.Framework.ContractVerifiers
 
                 AssertCopyToThrowException(() => collection.CopyTo(target, extension + 1), "when called with a too large array index.", "Argument Name", "arrayIndex");
             });
+        }
+
+        /// <summary>
+        /// Returns safely a default instance of the tested type.
+        /// An assertion failure is generated if the instance cannot be created.
+        /// </summary>
+        /// <returns>A new instance of the tested type as specified in the contract.</returns>
+        protected TCollection GetSafeDefaultInstance()
+        {
+            TCollection target = default(TCollection);
+
+            AssertionHelper.Explain(() =>
+                Assert.DoesNotThrow(() => target = DefaultInstance()),
+                innerFailures => new AssertionFailureBuilder(
+                "Cannot instantiate a default instance of the tested type.")
+                .SetMessage("Please feed the contract property 'DefaultInstance' with a valid instance of type '{0}'.", typeof(TCollection))
+                .AddInnerFailures(innerFailures)
+                .SetStackTrace(Context.GetStackTraceData())
+                .ToAssertionFailure());
+
+            return target;
         }
     }
 }

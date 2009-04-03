@@ -40,7 +40,7 @@ namespace MbUnit.Samples.ContractVerifiers.Collection
             // Optional, default is based on the invocation of the default constructor.
             // Overwrite the default value if the collection has no default constructor, 
             // or if you want the contract verifier to work with some particular instance.
-            GetDefaultInstance = () => new SampleCollection(3),
+            DefaultInstance = () => new SampleCollection(3),
 
             // Provide some valid item instances to feed the collection.
             // Better is to provide items already in the default instance of collection 

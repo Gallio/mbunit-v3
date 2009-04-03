@@ -154,7 +154,7 @@ namespace MbUnit.Tests.Framework.ContractVerifiers
             [VerifyContract]
             public readonly IContract CollectionTests = new CollectionContract<BasicSampleWithNoDefaultConstructor<int>, int>
             {
-                GetDefaultInstance = () => new BasicSampleWithNoDefaultConstructor<int>(new[] { 1, 2, 3 }),
+                DefaultInstance = () => new BasicSampleWithNoDefaultConstructor<int>(new[] { 1, 2, 3 }),
                 DistinctInstances = { 4, 5, 6 },
             };
         }
