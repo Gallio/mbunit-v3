@@ -52,6 +52,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContractVerifiers\Accessor\SampleAccessor.cs" />
+    <Compile Include="ContractVerifiers\Accessor\SampleAccessor.Test.cs" />
     <Compile Include="ContractVerifiers\Collection\SampleCollection.cs" />
     <Compile Include="ContractVerifiers\Collection\SampleCollection.Test.cs" />
     <Compile Include="ContractVerifiers\Comparison\SampleComparable.Test.cs" />

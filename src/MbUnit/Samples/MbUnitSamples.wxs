@@ -73,6 +73,14 @@
                         <File Id="MbUnit3.Samples.SampleList.Test.cs" Name="SampleList.Test.cs" KeyPath="yes" />
                       </Component>
                     </Directory>
+                    <Directory Id="MbUnit3.Samples.ContractVerifiers.Accessor" Name="Accessor">
+                      <Component Id="MbUnit3.Samples.SampleAccessor.cs" Guid="{095712FB-D49D-491d-A68A-403045C08F9A}" Win64="no">
+                        <File Id="MbUnit3.Samples.SampleAccessor.cs" Name="SampleAccessor.cs" KeyPath="yes" />
+                      </Component>
+                      <Component Id="MbUnit3.Samples.SampleAccessor.Test.cs" Guid="{F39866AB-4C9B-4414-90AA-AAE97CE3FF46}" Win64="no">
+                        <File Id="MbUnit3.Samples.SampleAccessor.Test.cs" Name="SampleAccessor.Test.cs" KeyPath="yes" />
+                      </Component>
+                    </Directory>
                   </Directory>
                 <Component Id="MbUnit3.Samples.csproj" Guid="{89A17A8E-6EB6-4847-B1D6-1C5039A7AF03}" Win64="no">
                     <File Id="MbUnit3.Samples.csproj" Name="MbUnit.Samples.csproj" KeyPath="yes" />
@@ -187,6 +195,8 @@
             <ComponentRef Id="MbUnit3.Samples.SampleCollection.Test.cs" />
             <ComponentRef Id="MbUnit3.Samples.SampleList.cs" />
             <ComponentRef Id="MbUnit3.Samples.SampleList.Test.cs" />
+            <ComponentRef Id="MbUnit3.Samples.SampleAccessor.cs" />
+            <ComponentRef Id="MbUnit3.Samples.SampleAccessor.Test.cs" />
             <ComponentRef Id="MbUnit3.Samples.csproj" />
             <ComponentRef Id="MbUnit3.Samples.RichTestLogDemo.cs" />
             <ComponentRef Id="MbUnit3.Samples.WatiNDemo.cs" />
