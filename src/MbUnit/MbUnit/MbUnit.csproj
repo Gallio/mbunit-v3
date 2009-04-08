@@ -150,9 +150,11 @@
     <Compile Include="Framework\ContractVerifiers\IContract.cs" />
     <Compile Include="Framework\Assert.Xml.cs" />
     <Compile Include="Framework\Assert.Serialization.cs" />
+    <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\DefaultTestCaseTimeoutAttribute.cs" />
     <Compile Include="Framework\DegreeOfParallelismAttribute.cs" />
     <Compile Include="Framework\LinkMixinAttribute.cs" />
+    <Compile Include="Framework\SortOrder.cs" />
     <Compile Include="Framework\XmlDataAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\ComparisonContract.cs" />
     <Compile Include="Framework\ContractVerifiers\EqualityContract.cs" />

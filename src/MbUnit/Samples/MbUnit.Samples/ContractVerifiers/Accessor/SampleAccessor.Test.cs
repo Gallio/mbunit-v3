@@ -40,7 +40,7 @@ namespace MbUnit.Samples.ContractVerifiers.Accessor
         public readonly IContract TextAccessorTests = new AccessorContract<SampleAccessor, string>
         {
             // A second approach which is more flexible but also more complicated, consists in 
-            // indicating explicitely how to access to the tested accessors by settings the contract 
+            // indicating explicitly how to access to the tested accessors by settings the contract 
             // properties 'Setter' and 'Getter' appropriately.
             Setter = (o, v) => o.Text = v,
             Getter = o => o.Text,
@@ -53,7 +53,7 @@ namespace MbUnit.Samples.ContractVerifiers.Accessor
             // By default, that contract property is 'true'; but it is always ignored for non-nullable types.
             AcceptNullValue = false,
 
-            // Incompetent values are expected to be reject by the tested property setter.
+            // Incompetent values are expected to be rejected by the tested property setter.
             // You can provided lists of incompetent values with the type of the exception
             // which is expected to be thrown. In the example below, sending an empty string should
             // cause an ArgumentException.
@@ -81,7 +81,7 @@ namespace MbUnit.Samples.ContractVerifiers.Accessor
             // By default, the contract verifier performs the test on an instance of the tested type
             // created by invoking the default constructor. If no default constructor is available, or
             // if you want to customize the way the instance of the tested type is created, use the
-            // contract property 'DefaultInstance' and supply your own instance.
+            // contract property 'DefaultInstance' and provide your own instance.
             DefaultInstance = () =>
             {
                 var o = new SampleAccessor();
