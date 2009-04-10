@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -86,7 +87,7 @@ namespace Gallio.Echo.Tests
             arguments.RunnerExtensions = new string[] { "DebugExtension,Gallio" };
 
             arguments.PluginDirectories = new string[] { "plugin" };
-            arguments.Assemblies = new string[] { "assembly1", "assembly2" };
+            arguments.Assemblies = new[] { Assembly.GetExecutingAssembly().CodeBase };
             arguments.HintDirectories = new string[] { "hint1", "hint2" };
 
             arguments.ApplicationBaseDirectory = "baseDir";
@@ -110,14 +111,15 @@ namespace Gallio.Echo.Tests
 
             Assert.AreEqual(StandardTestRunnerFactoryNames.Local, launcher.TestRunnerFactoryName);
             Assert.AreEqual(0, launcher.TestRunnerExtensions.Count);
-            Assert.AreElementsEqual(new string[] { "DebugExtension,Gallio" }, launcher.TestRunnerExtensionSpecifications);
+            Assert.AreElementsEqual(new[] { "DebugExtension,Gallio" }, launcher.TestRunnerExtensionSpecifications);
 
             Assert.IsNull(launcher.RuntimeSetup.ConfigurationFilePath);
-            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(EchoProgram).Assembly)), launcher.RuntimeSetup.RuntimePath);
-            Assert.AreElementsEqual(new string[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
+            Assert.AreEqual(Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(EchoProgram).Assembly)), 
+                launcher.RuntimeSetup.RuntimePath);
+            Assert.AreElementsEqual(new[] { "plugin" }, launcher.RuntimeSetup.PluginDirectories);
 
-            Assert.AreElementsEqual(new string[] { "assembly1", "assembly2" }, launcher.TestPackageConfig.AssemblyFiles);
-            Assert.AreElementsEqual(new string[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);
+            Assert.AreEqual(1, launcher.TestPackageConfig.AssemblyFiles.Count);
+            Assert.AreElementsEqual(new[] { "hint1", "hint2" }, launcher.TestPackageConfig.HintDirectories);
 
             Assert.AreEqual("baseDir", launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory);
             Assert.AreEqual("workingDir", launcher.TestPackageConfig.HostSetup.WorkingDirectory);

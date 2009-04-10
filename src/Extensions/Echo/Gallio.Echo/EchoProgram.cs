@@ -38,7 +38,7 @@ namespace Gallio.Echo
         /// <summary>
         /// Creates an instance of the program.
         /// </summary>
-        public EchoProgram()
+        private EchoProgram()
         {
             ApplicationName = Resources.ApplicationName;
         }
@@ -113,17 +113,8 @@ namespace Gallio.Echo
             // add assemblies to testpackageconfig
             foreach (string assembly in arguments.Assemblies)
             {
-                if (Path.GetExtension(assembly) == ".gallio")
-                {
-                    if (arguments.Assemblies.Length > 1)
-                        throw new ArgumentException("Please don't mix and match gallio project files and assemblies!");
-
-                    ProjectUtils projectUtils = new ProjectUtils(new FileSystem(), new DefaultXmlSerializer());
-                    Project project = projectUtils.LoadProject(assembly);
-                    launcher.TestPackageConfig = project.TestPackageConfig;
+                if (!CheckAssembly(launcher, arguments, assembly))
                     break;
-                }
-                launcher.TestPackageConfig.AssemblyFiles.Add(assembly);
             }
             launcher.TestPackageConfig.HintDirectories.AddRange(arguments.HintDirectories);
 
@@ -152,6 +143,42 @@ namespace Gallio.Echo
 
             if (arguments.RunTimeLimitInSeconds >= 0)
                 launcher.RunTimeLimit = TimeSpan.FromSeconds(arguments.RunTimeLimitInSeconds);
+        }
+
+        private static bool CheckAssembly(TestLauncher launcher, EchoArguments arguments, string assembly)
+        {
+            if (Path.GetExtension(assembly) == ".gallio")
+            {
+                if (arguments.Assemblies.Length > 1)
+                    throw new ArgumentException("Please don't mix and match gallio project files and assemblies!");
+
+                ProjectUtils projectUtils = new ProjectUtils(new FileSystem(), new DefaultXmlSerializer());
+                Project project = projectUtils.LoadProject(assembly);
+                launcher.TestPackageConfig = project.TestPackageConfig;
+                return false;
+            }
+                
+            if (File.Exists(assembly))
+                launcher.TestPackageConfig.AssemblyFiles.Add(assembly);
+            else 
+            {
+                // could be a wildcarded string
+                string path = Environment.CurrentDirectory;
+                if (Path.IsPathRooted(assembly))
+                    path = Path.GetDirectoryName(assembly);
+                var info = new DirectoryInfo(path);
+                var files = info.GetFiles(Path.GetFileName(assembly));
+
+                if (files.Length == 0)
+                {
+                    System.Console.WriteLine(string.Format("Could not find any match for assembly: {0}", assembly));
+                    return true;
+                }
+
+                foreach (var file in files)
+                    launcher.TestPackageConfig.AssemblyFiles.Add(Path.Combine(path, file.Name));
+            }
+            return true;
         }
 
         private void DisplayResultSummary(TestLauncherResult result)
