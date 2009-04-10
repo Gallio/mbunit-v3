@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.Drawing;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
@@ -27,28 +28,26 @@ namespace Gallio.Icarus.Tests.Controllers
 {
     class OptionsControllerTest
     {
-        private OptionsController optionsController;
-        private IFileSystem fileSystem;
-        private IXmlSerializer xmlSerialization;
-        private IUnhandledExceptionPolicy unhandledExceptionPolicy;
-
-        [SetUp]
-        public void SetUp()
+        public OptionsController SetUpOptionsController(Settings settings)
         {
-            fileSystem = MockRepository.GenerateStub<IFileSystem>();
-            xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
-            unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
 
             fileSystem.Stub(x => x.FileExists(Paths.SettingsFile)).Return(true);
-            xmlSerialization.Stub(x => x.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings());
+            xmlSerialization.Stub(x => x.LoadFromXml<Settings>(Paths.SettingsFile)).Return(settings);
 
-            optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
+            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
             optionsController.Load();
+
+            return optionsController;
         }
 
         [Test]
         public void RestorePreviousSettings_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.IsTrue(optionsController.RestorePreviousSettings);
             optionsController.RestorePreviousSettings = false;
             Assert.IsFalse(optionsController.RestorePreviousSettings);
@@ -57,6 +56,8 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void PluginDirectories_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.AreEqual(0, optionsController.PluginDirectories.Count);
             optionsController.PluginDirectories.Add("test");
             Assert.AreEqual(1, optionsController.PluginDirectories.Count);
@@ -66,14 +67,25 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void TestRunnerFactory_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
+            bool propChangedFlag = false;
+            optionsController.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
+                                                     {
+                                                         propChangedFlag = true;
+                                                         Assert.AreEqual("TestRunnerFactory", e.PropertyName);
+                                                     };
             Assert.AreEqual(StandardTestRunnerFactoryNames.IsolatedProcess, optionsController.TestRunnerFactory);
             optionsController.TestRunnerFactory = StandardTestRunnerFactoryNames.Local;
+            Assert.IsTrue(propChangedFlag);
             Assert.AreEqual(StandardTestRunnerFactoryNames.Local, optionsController.TestRunnerFactory);
         }
 
         [Test]
         public void AlwaysReloadAssemblies_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.IsFalse(optionsController.AlwaysReloadAssemblies);
             optionsController.AlwaysReloadAssemblies = true;
             Assert.IsTrue(optionsController.AlwaysReloadAssemblies);
@@ -82,6 +94,8 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void ShowProgressDialogs_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.IsTrue(optionsController.ShowProgressDialogs);
             optionsController.ShowProgressDialogs = false;
             Assert.IsFalse(optionsController.ShowProgressDialogs);
@@ -90,6 +104,8 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void TestStatusBarStyle_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.AreEqual(TestStatusBarStyles.Integration, optionsController.TestStatusBarStyle);
             optionsController.TestStatusBarStyle = TestStatusBarStyles.UnitTest;
             Assert.AreEqual(TestStatusBarStyles.UnitTest, optionsController.TestStatusBarStyle);
@@ -98,6 +114,8 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void FailedColor_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.AreEqual(Color.Red.ToArgb(), optionsController.FailedColor.ToArgb());
             optionsController.FailedColor = Color.Black;
             Assert.AreEqual(Color.Black.ToArgb(), optionsController.FailedColor.ToArgb());
@@ -106,6 +124,8 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void PassedColor_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.AreEqual(Color.Green.ToArgb(), optionsController.PassedColor.ToArgb());
             optionsController.PassedColor = Color.Black;
             Assert.AreEqual(Color.Black.ToArgb(), optionsController.PassedColor.ToArgb());
@@ -114,6 +134,8 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void InconclusiveColor_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.AreEqual(Color.Gold.ToArgb(), optionsController.InconclusiveColor.ToArgb());
             optionsController.InconclusiveColor = Color.Black;
             Assert.AreEqual(Color.Black.ToArgb(), optionsController.InconclusiveColor.ToArgb());
@@ -122,6 +144,8 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void SkippedColor_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.AreEqual(Color.SlateGray.ToArgb(), optionsController.SkippedColor.ToArgb());
             optionsController.SkippedColor = Color.Black;
             Assert.AreEqual(Color.Black.ToArgb(), optionsController.SkippedColor.ToArgb());
@@ -130,41 +154,144 @@ namespace Gallio.Icarus.Tests.Controllers
         [Test]
         public void SelectedTreeViewCategories_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.AreEqual(5, optionsController.SelectedTreeViewCategories.Count);
         }
 
         [Test]
         public void UnselectedTreeViewCategories_Test()
         {
+            var optionsController = SetUpOptionsController(new Settings());
+
             Assert.AreEqual(20, optionsController.UnselectedTreeViewCategories.Count);
         }
 
         [Test]
         public void Cancel_Test()
         {
-            string fileName = Paths.SettingsFile;
-            fileSystem.Stub(x => x.FileExists(fileName)).Return(true);
-            xmlSerialization.Expect(x => x.LoadFromXml<Settings>(fileName)).Return(new Settings());
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            fileSystem.Expect(fs => fs.FileExists(Paths.SettingsFile)).Return(true).Repeat.Twice();
+            xmlSerialization.Expect(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings()).Repeat.Twice();
+            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
+            optionsController.Load();
+        
             optionsController.Cancel();
+
+            fileSystem.VerifyAllExpectations();
             xmlSerialization.VerifyAllExpectations();
         }
 
         [Test]
         public void Save_Test()
         {
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            fileSystem.Expect(fs => fs.FileExists(Paths.SettingsFile)).Return(true).Repeat.Twice();
+            xmlSerialization.Expect(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings()).Repeat.Twice();
+            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
+            optionsController.Load();
+
             optionsController.Save();
+
             xmlSerialization.AssertWasCalled(x => x.SaveToXml(Arg<Settings>.Is.Anything, Arg.Is(Paths.SettingsFile)));
         }
 
         [Test]
         public void Save_Exception_Test()
         {
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            fileSystem.Expect(fs => fs.FileExists(Paths.SettingsFile)).Return(true).Repeat.Twice();
+            xmlSerialization.Expect(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Return(new Settings()).Repeat.Twice();
+            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
+            optionsController.Load();
             Exception ex = new Exception();
             xmlSerialization.Stub(x => x.SaveToXml(Arg<Settings>.Is.Anything, 
                 Arg.Is(Paths.SettingsFile))).Throw(ex);
+            
             optionsController.Save();
+            
             unhandledExceptionPolicy.AssertWasCalled(x => 
                 x.Report("An exception occurred while saving Icarus settings file.", ex));
+        }
+
+        [Test]
+        public void Load_Exception_Test()
+        {
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+            fileSystem.Stub(fs => fs.FileExists(Paths.SettingsFile)).Return(true);
+            Exception ex = new Exception();
+            xmlSerialization.Stub(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Throw(ex);
+            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
+            
+            optionsController.Load();
+            
+            unhandledExceptionPolicy.AssertWasCalled(uep =>
+                uep.Report("An exception occurred while loading Icarus settings file.", ex));
+        }
+
+        [Test]
+        public void GenerateReportAfterTestRun_Test()
+        {
+            var optionsController = SetUpOptionsController(new Settings());
+
+            Assert.IsTrue(optionsController.GenerateReportAfterTestRun);
+            optionsController.GenerateReportAfterTestRun = false;
+            Assert.IsFalse(optionsController.GenerateReportAfterTestRun);
+        }
+
+        [Test]
+        public void Location_Test()
+        {
+            var optionsController = SetUpOptionsController(new Settings());
+
+            Point p = new Point(0, 0);
+            optionsController.Location = p;
+            Assert.AreEqual(p, optionsController.Location);
+        }
+
+        [Test]
+        public void RecentProjects_Test()
+        {
+            var settings = new Settings();
+            settings.RecentProjects.AddRange(new[] { "one", "two" });
+            var optionsController = SetUpOptionsController(settings);
+
+            Assert.AreEqual(2, optionsController.RecentProjects.Count);
+        }
+
+        [Test]
+        public void RunTestsAfterReload_Test()
+        {
+            var optionsController = SetUpOptionsController(new Settings());
+
+            Assert.IsFalse(optionsController.RunTestsAfterReload);
+            optionsController.RunTestsAfterReload = true;
+            Assert.IsTrue(optionsController.RunTestsAfterReload);
+        }
+
+        [Test]
+        public void Size_Test()
+        {
+            var optionsController = SetUpOptionsController(new Settings());
+            Size size = new Size(0, 0);
+
+            optionsController.Size = size;
+            Assert.AreEqual(size, optionsController.Size);
+        }
+
+        [Test]
+        public void UpdateDelay_Test()
+        {
+            var optionsController = SetUpOptionsController(new Settings());
+            Assert.AreEqual(1000, optionsController.UpdateDelay);
         }
     }
 }

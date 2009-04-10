@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
@@ -100,7 +101,7 @@ namespace Gallio.Icarus.Models
 
         public int Inconclusive { get; private set; }
 
-        public SynchronizationContext SynchronizationContext { get; set; }
+        public ISynchronizationContext SynchronizationContext { get; set; }
 
         public TestTreeModel()
         {

@@ -21,6 +21,7 @@ using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -61,7 +62,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// Gets the total number of tests.
         /// </summary>
         int TestCount { get; }
-        SynchronizationContext SynchronizationContext { get; set; }
+        ISynchronizationContext SynchronizationContext { get; set; }
         bool FilterPassed { get; set; }
         bool FilterFailed { get; set; }
         bool FilterInconclusive { get; set; }

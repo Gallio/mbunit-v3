@@ -88,10 +88,11 @@
       <DependentUpon>CodeWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AnnotationsController.cs" />
-    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\ExecutionLogController.cs" />
+    <Compile Include="Controllers\IApplicationController.cs" />
     <Compile Include="Controllers\Interfaces\IAnnotationsController.cs" />
     <Compile Include="Controllers\Interfaces\IErrorController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
@@ -138,7 +139,9 @@
       <DependentUpon>ReportOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="ServiceProvider.cs" />
+    <Compile Include="Utilities\ISynchronizationContext.cs" />
     <Compile Include="Utilities\MRUList.cs" />
+    <Compile Include="Utilities\SynchronizationContext.cs" />
     <Compile Include="Window.cs">
       <SubType>Form</SubType>
     </Compile>

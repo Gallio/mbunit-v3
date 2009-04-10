@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
@@ -35,9 +36,10 @@ namespace Gallio.Icarus
 {
     public partial class Main : Form
     {
-        private readonly IMediator mediator;
+        private readonly IApplicationController ApplicationController;
+        private readonly IMediator Mediator;
 
-        private readonly Timer timer = new Timer();
+        private readonly Timer Timer = new Timer();
         private bool showProgressMonitor = true;
 
         private string projectFileName = String.Empty;
@@ -67,46 +69,44 @@ namespace Gallio.Icarus
 
         public bool ShowProgressMonitor
         {
-            get { return showProgressMonitor; }
             set { showProgressMonitor = value; }
         }
 
-        public event EventHandler<EventArgs> CleanUp;
-
-        public Main(IMediator mediator)
+        public Main(IApplicationController applicationController)
         {
-            this.mediator = mediator;
+            ApplicationController = applicationController;
+            Mediator = applicationController.Mediator;
 
-            mediator.ProjectController.AssemblyChanged += AssemblyChanged;
+            Mediator.ProjectController.AssemblyChanged += AssemblyChanged;
 
-            mediator.TestController.RunFinished += testController_RunFinished;
-            mediator.TestController.ExploreFinished += testController_LoadFinished;
-            mediator.TestController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
+            Mediator.TestController.RunFinished += TestControllerRunFinished;
+            Mediator.TestController.ExploreFinished += TestControllerLoadFinished;
+            Mediator.TestController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
             
-            mediator.ProgressMonitorProvider.ProgressUpdate += ProgressUpdate;
-            progressMonitor = new ProgressMonitor(mediator);
+            Mediator.ProgressMonitorProvider.ProgressUpdate += ProgressUpdate;
+            progressMonitor = new ProgressMonitor(Mediator);
 
             InitializeComponent();
 
             UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
 
-            testExplorer = new TestExplorer(mediator);
-            projectExplorer = new ProjectExplorer(mediator);
-            testResults = new TestResults(mediator);
-            runtimeLogWindow = new RuntimeLogWindow(mediator.RuntimeLogController);
-            aboutDialog = new AboutDialog(mediator.TestController);
-            propertiesWindow = new PropertiesWindow(mediator.ProjectController);
-            filtersWindow = new FiltersWindow(mediator);
-            executionLogWindow = new ExecutionLogWindow(mediator.ExecutionLogController);
-            annotationsWindow = new AnnotationsWindow(mediator.AnnotationsController);
+            testExplorer = new TestExplorer(Mediator);
+            projectExplorer = new ProjectExplorer(Mediator);
+            testResults = new TestResults(Mediator);
+            runtimeLogWindow = new RuntimeLogWindow(Mediator.RuntimeLogController);
+            aboutDialog = new AboutDialog(Mediator.TestController);
+            propertiesWindow = new PropertiesWindow(Mediator.ProjectController);
+            filtersWindow = new FiltersWindow(Mediator);
+            executionLogWindow = new ExecutionLogWindow(Mediator.ExecutionLogController);
+            annotationsWindow = new AnnotationsWindow(Mediator.AnnotationsController);
 
             // used by dock window framework to re-assemble layout
             deserializeDockContent = GetContentFromPersistString;
 
             // set up delay timer for progress monitor
-            timer.Interval = 1000;
-            timer.AutoReset = false;
-            timer.Elapsed += delegate { Sync.Invoke(this, () => progressMonitor.Show(this)); };
+            Timer.Interval = 1000;
+            Timer.AutoReset = false;
+            Timer.Elapsed += delegate { Sync.Invoke(this, () => progressMonitor.Show(this)); };
 
             SetupReportMenus();
         }
@@ -115,12 +115,12 @@ namespace Gallio.Icarus
         {
             // add a menu item for each report type (Report -> View As)
             var reportTypes = new List<string>();
-            reportTypes.AddRange(mediator.ReportController.ReportTypes);
+            reportTypes.AddRange(Mediator.ReportController.ReportTypes);
             reportTypes.Sort();
             foreach (string reportType in reportTypes)
             {
                 var menuItem = new ToolStripMenuItem { Text = reportType };
-                menuItem.Click += delegate { mediator.ShowReport(menuItem.Text); };
+                menuItem.Click += delegate { Mediator.ShowReport(menuItem.Text); };
                 viewAsToolStripMenuItem.DropDownItems.Add(menuItem);
             }
         }
@@ -143,7 +143,7 @@ namespace Gallio.Icarus
             codeWindow.Show(dockPanel, DockState.Document);
         }
 
-        private void testController_RunFinished(object sender, EventArgs e)
+        private void TestControllerRunFinished(object sender, EventArgs e)
         {
             Sync.Invoke(this, delegate
             {
@@ -152,7 +152,7 @@ namespace Gallio.Icarus
                 runTestsWithDebuggerButton.Enabled = startWithDebuggerToolStripMenuItem.Enabled = true;
 
                 // notify the user if tests have failed!
-                if (mediator.TestController.FailedTests)
+                if (Mediator.TestController.FailedTests)
                     Activate();
             });
         }
@@ -178,6 +178,8 @@ namespace Gallio.Icarus
 
         private void Form_Load(object sender, EventArgs e)
         {
+            ApplicationController.Load();
+
             // Set the application version in the window title
             Version appVersion = AssemblyUtils.GetApplicationVersion(Assembly.GetExecutingAssembly());
             Text = String.Format(Text, appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
@@ -194,12 +196,12 @@ namespace Gallio.Icarus
             }
 
             // provide WindowsFormsSynchronizationContext for cross-thread databinding
-            mediator.SynchronizationContext = SynchronizationContext.Current;
+            Mediator.SynchronizationContext = new Utilities.SynchronizationContext(SynchronizationContext.Current);
 
-            if (!mediator.OptionsController.Size.Equals(Size.Empty))
-                Size = mediator.OptionsController.Size;
-            if (!mediator.OptionsController.Location.Equals(Point.Empty))
-                Location = mediator.OptionsController.Location;
+            if (!Mediator.OptionsController.Size.Equals(Size.Empty))
+                Size = Mediator.OptionsController.Size;
+            if (!Mediator.OptionsController.Location.Equals(Point.Empty))
+                Location = Mediator.OptionsController.Location;
         }
 
         private void DefaultDockState()
@@ -239,7 +241,7 @@ namespace Gallio.Icarus
             // no need for progress dialog
             showProgressMonitor = false;
 
-            mediator.RunTests(attachDebugger);
+            Mediator.RunTests(attachDebugger);
         }
 
         private void reloadToolbarButton_Click(object sender, EventArgs e)
@@ -247,10 +249,10 @@ namespace Gallio.Icarus
             Reload();
         }
 
-        public void Reload()
+        private void Reload()
         {
             testExplorer.SaveState();
-            mediator.Reload();
+            Mediator.Reload();
         }
 
         private void openProject_Click(object sender, EventArgs e)
@@ -261,7 +263,7 @@ namespace Gallio.Icarus
                 if (openFile.ShowDialog() != DialogResult.OK)
                     return;
                 ProjectFileName = openFile.FileName;
-                mediator.OpenProject(projectFileName);
+                Mediator.OpenProject(projectFileName);
             }
         }
 
@@ -285,7 +287,7 @@ namespace Gallio.Icarus
                 if (saveFile.ShowDialog() == DialogResult.OK)
                     ProjectFileName = saveFile.FileName;
             }
-            mediator.SaveProject(projectFileName);
+            Mediator.SaveProject(projectFileName);
         }
 
         private void addAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -306,13 +308,13 @@ namespace Gallio.Icarus
                 if (openFileDialog.ShowDialog() != DialogResult.OK)
                     return;
 
-                mediator.AddAssemblies(openFileDialog.FileNames);
+                Mediator.AddAssemblies(openFileDialog.FileNames);
             }
         }
 
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
-            using (Options.Options options = new Options.Options(mediator.OptionsController))
+            using (Options.Options options = new Options.Options(Mediator.OptionsController))
             {
                 options.ShowDialog(this);
             }
@@ -323,14 +325,14 @@ namespace Gallio.Icarus
             RemoveAllAssemblies();
         }
 
-        public void RemoveAllAssemblies()
+        private void RemoveAllAssemblies()
         {
-            mediator.RemoveAllAssemblies();
+            Mediator.RemoveAllAssemblies();
         }
 
         private void stopButton_Click(object sender, EventArgs e)
         {
-            mediator.Cancel();
+            Mediator.Cancel();
         }
 
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -346,7 +348,7 @@ namespace Gallio.Icarus
         private void CreateNewProject()
         {
             ProjectFileName = string.Empty;
-            mediator.NewProject();
+            Mediator.NewProject();
         }
 
         private void newProjectToolStripButton_Click(object sender, EventArgs e)
@@ -356,7 +358,7 @@ namespace Gallio.Icarus
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mediator.Cancel();
+            Mediator.Cancel();
         }
 
         private void startTestsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -384,9 +386,9 @@ namespace Gallio.Icarus
             ResetTests();
         }
 
-        public void ResetTests()
+        private void ResetTests()
         {
-            mediator.ResetTests();
+            Mediator.ResetTests();
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -395,27 +397,26 @@ namespace Gallio.Icarus
                 return;
 
             // no point showing any more progress dialogs!
-            timer.Enabled = false;
+            Timer.Enabled = false;
 
             // we'll close once we've tidied up
             e.Cancel = true;
             // shut down any running operations
-            mediator.Cancel();
+            Mediator.Cancel();
             // save the current state of the test tree
             testExplorer.SaveState();
 
-            mediator.SaveProject(string.Empty);
+            Mediator.SaveProject(string.Empty);
 
             // save window size & location for when we restore
-            mediator.OptionsController.Size = Size;
-            mediator.OptionsController.Location = Location;
-            mediator.OptionsController.Save();
+            Mediator.OptionsController.Size = Size;
+            Mediator.OptionsController.Location = Location;
+            Mediator.OptionsController.Save();
 
             // save dock panel config
             dockPanel.SaveAsXml(Paths.DockConfigFile);
 
             // dispose of the test runner service
-            EventHandlerUtils.SafeInvoke(CleanUp, this, EventArgs.Empty);
             UnhandledExceptionPolicy.ReportUnhandledException -= ReportUnhandledException;
 
             Application.Exit();
@@ -471,7 +472,7 @@ namespace Gallio.Icarus
         private void HandleAssemblyChanged(string assemblyName)
         {
             bool reload = false;
-            if (mediator.OptionsController.AlwaysReloadAssemblies)
+            if (Mediator.OptionsController.AlwaysReloadAssemblies)
                 reload = true;
             else
             {
@@ -480,7 +481,7 @@ namespace Gallio.Icarus
                     if (reloadDialog.ShowDialog(this) == DialogResult.OK)
                     {
                         reload = true;
-                        mediator.OptionsController.AlwaysReloadAssemblies = reloadDialog.AlwaysReloadTests;
+                        Mediator.OptionsController.AlwaysReloadAssemblies = reloadDialog.AlwaysReloadTests;
                     }
                 }
             }
@@ -490,11 +491,11 @@ namespace Gallio.Icarus
 
             Reload();
 
-            if (mediator.OptionsController.RunTestsAfterReload)
+            if (Mediator.OptionsController.RunTestsAfterReload)
                 StartTests(false);
         }
 
-        void testController_LoadFinished(object sender, EventArgs e)
+        private void TestControllerLoadFinished(object sender, EventArgs e)
         {
             Sync.Invoke(this, delegate
             {
@@ -503,7 +504,7 @@ namespace Gallio.Icarus
             });
         }
 
-        void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)
+        private void ReportUnhandledException(object sender, CorrelatedExceptionEventArgs e)
         {
             if (e.Exception is ThreadAbortException || e.IsRecursive)
                 return;
@@ -523,14 +524,14 @@ namespace Gallio.Icarus
         {
             Sync.Invoke(this, delegate
             {
-                if (e.TotalWorkUnits > 0 && !progressMonitor.Visible && showProgressMonitor && mediator.OptionsController.ShowProgressDialogs)
+                if (e.TotalWorkUnits > 0 && !progressMonitor.Visible && showProgressMonitor && Mediator.OptionsController.ShowProgressDialogs)
                 {
-                    timer.Enabled = true;
+                    Timer.Enabled = true;
                     progressMonitor.Cursor = Cursors.WaitCursor;
                 }
                 else if (e.TotalWorkUnits == 0)
                 {
-                    timer.Enabled = false;
+                    Timer.Enabled = false;
                     progressMonitor.Hide();
                     progressMonitor.Cursor = Cursors.Default;
                     showProgressMonitor = true;

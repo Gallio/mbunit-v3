@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
@@ -33,7 +34,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         BindingList<FilterInfo> TestFilters { get; }
         BindingList<string> HintDirectories { get; }
         string ProjectFileName { get; }
-        SynchronizationContext SynchronizationContext { get; set; }
+        ISynchronizationContext SynchronizationContext { get; set; }
         List<string> CollapsedNodes { get; set; }
         string TreeViewCategory { get; set; }
 

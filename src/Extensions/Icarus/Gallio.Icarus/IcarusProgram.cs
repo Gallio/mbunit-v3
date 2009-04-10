@@ -14,10 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -40,12 +38,12 @@ namespace Gallio.Icarus
     /// </summary>
     public class IcarusProgram : ConsoleProgram<IcarusArguments>
     {
-        private ITestController testController;
+        private ITestController TestController;
 
         /// <summary>
         /// Creates an instance of the program.
         /// </summary>
-        public IcarusProgram()
+        private IcarusProgram()
         {
             ApplicationName = Resources.ApplicationName;
         }
@@ -91,7 +89,7 @@ namespace Gallio.Icarus
             
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                using (testController = new TestController(new TestTreeModel()))
+                using (TestController = new TestController(new TestTreeModel()))
                 {
                     ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 
@@ -101,44 +99,17 @@ namespace Gallio.Icarus
                     { 
                         ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, new Project()), 
                             optionsController, new FileSystem(), new DefaultXmlSerializer()), 
-                        TestController = testController, 
-                        ReportController = new ReportController(new ReportService(reportManager), new FileSystem())
+                        TestController = TestController, 
+                        ReportController = new ReportController(new ReportService(reportManager), new FileSystem()),
+                        RuntimeLogController = runtimeLogController,
+                        OptionsController = optionsController
                     };
                     mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController,
                         optionsController);
                     mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
-                    mediator.RuntimeLogController = runtimeLogController;
-                    mediator.OptionsController = optionsController;
 
-                    var main = new Main(mediator);
-                    main.Load += delegate
-                    {
-                        var assemblyFiles = new List<string>();
-                        if (Arguments != null && Arguments.Assemblies.Length > 0)
-                        {
-                            foreach (var assembly in Arguments.Assemblies)
-                            {
-                                if (!File.Exists(assembly))
-                                    continue;
-
-                                if (Path.GetExtension(assembly) == ".gallio")
-                                {
-                                    mediator.OpenProject(assembly);
-                                    break;
-                                }
-                                assemblyFiles.Add(assembly);
-                            }
-                            mediator.AddAssemblies(assemblyFiles);
-                        }
-                        else if (optionsController.RestorePreviousSettings && optionsController.RecentProjects.Count > 0)
-                        {
-                            string projectName = optionsController.RecentProjects.Items[0];
-                            if (File.Exists(projectName))
-                                mediator.OpenProject(projectName);
-                            else
-                                optionsController.RecentProjects.Items.Remove(projectName);
-                        }
-                    };
+                    var applicationController = new ApplicationController(Arguments, mediator);
+                    var main = new Main(applicationController);
 
                     Application.Run(main);
                 }
@@ -151,7 +122,7 @@ namespace Gallio.Icarus
         {
             var testRunnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
             var testRunnerFactory = testRunnerManager.GetFactory(factoryName);
-            testController.SetTestRunnerFactory(testRunnerFactory);
+            TestController.SetTestRunnerFactory(testRunnerFactory);
         }
 
         protected override void ShowHelp()

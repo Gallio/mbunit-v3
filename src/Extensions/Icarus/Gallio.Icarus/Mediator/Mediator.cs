@@ -20,6 +20,7 @@ using System.Threading;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.ProgressMonitoring;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
@@ -38,7 +39,7 @@ namespace Gallio.Icarus.Mediator
 
         public ITestController TestController { get; set; }
 
-        public SynchronizationContext SynchronizationContext
+        public ISynchronizationContext SynchronizationContext
         {
             set
             {
@@ -170,7 +171,7 @@ namespace Gallio.Icarus.Mediator
             taskManager.StartTask(() => progressMonitorProvider.Run(
                 delegate(IProgressMonitor progressMonitor)
                 {
-                    using (progressMonitor.BeginTask("Opening project.", 100))
+                    using (progressMonitor.BeginTask("Opening project", 100))
                     {
                         using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
                             ProjectController.OpenProject(fileName, subProgressMonitor);

@@ -16,12 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using System.Windows.Forms;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
@@ -35,6 +35,7 @@ using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
 using Timer=System.Timers.Timer;
 using ITestController=Gallio.Icarus.Controllers.Interfaces.ITestController;
+using SynchronizationContext=System.Threading.SynchronizationContext;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -47,7 +48,7 @@ namespace Gallio.Icarus.Controllers
 
         private ITestRunnerFactory testRunnerFactory;
         private TestPackageConfig testPackageConfig;
-        private SynchronizationContext synchronizationContext;
+        private ISynchronizationContext synchronizationContext;
 
         public TestController(ITestTreeModel testTreeModel)
         {
@@ -181,7 +182,7 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public SynchronizationContext SynchronizationContext
+        public ISynchronizationContext SynchronizationContext
         {
             get { return synchronizationContext; }
             set
@@ -357,14 +358,13 @@ namespace Gallio.Icarus.Controllers
 
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            if (SynchronizationContext == null)
+            if (SynchronizationContext == null || PropertyChanged == null)
                 return;
 
             SynchronizationContext.Post(delegate
             {
-                if (PropertyChanged != null)
-                    PropertyChanged(this, e);
-            }, null);
+                PropertyChanged(this, e);
+            }, this);
         }
     }
 }

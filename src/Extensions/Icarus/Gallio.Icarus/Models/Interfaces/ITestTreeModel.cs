@@ -15,12 +15,12 @@
 
 using System.Windows.Forms;
 using Aga.Controls.Tree;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
-using System.Threading;
 
 namespace Gallio.Icarus.Models.Interfaces
 {
@@ -37,7 +37,7 @@ namespace Gallio.Icarus.Models.Interfaces
         int Failed { get; }
         int Skipped { get; }
         int Inconclusive { get; }
-        SynchronizationContext SynchronizationContext { get; set; }
+        ISynchronizationContext SynchronizationContext { get; set; }
 
         void ApplyFilterSet(FilterSet<ITest> filterSet);
         void BuildTestTree(TestModelData testModelData, string treeViewCategory);

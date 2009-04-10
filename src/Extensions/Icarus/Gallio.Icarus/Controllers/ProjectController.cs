@@ -22,6 +22,7 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Remoting;
+using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
@@ -77,7 +78,7 @@ namespace Gallio.Icarus.Controllers
             set;
         }
 
-        public SynchronizationContext SynchronizationContext
+        public ISynchronizationContext SynchronizationContext
         {
             get;
             set;
