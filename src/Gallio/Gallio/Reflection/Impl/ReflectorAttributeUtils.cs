@@ -47,7 +47,7 @@ namespace Gallio.Reflection.Impl
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise the result may include unresolved types, enums or arrays</param>
         /// <returns>The attribute instance</returns>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if the attribute could not be resolved</exception>
+        /// <exception cref="ReflectionResolveException">Thrown if the attribute could not be resolved</exception>
         public static object CreateAttribute(IAttributeInfo attribute, bool throwOnError)
         {
             try
@@ -66,23 +66,23 @@ namespace Gallio.Reflection.Impl
             }
             catch (TargetException ex)
             {
-                throw new ReflectionWrapperResolveException(attribute, ex);
+                throw new ReflectionResolveException(attribute, ex);
             }
             catch (TargetParameterCountException ex)
             {
-                throw new ReflectionWrapperResolveException(attribute, ex);
+                throw new ReflectionResolveException(attribute, ex);
             }
             catch (TargetInvocationException ex)
             {
-                throw new ReflectionWrapperResolveException(attribute, ex.InnerException ?? ex);
+                throw new ReflectionResolveException(attribute, ex.InnerException ?? ex);
             }
             catch (MemberAccessException ex)
             {
-                throw new ReflectionWrapperResolveException(attribute, ex);
+                throw new ReflectionResolveException(attribute, ex);
             }
             catch (ArgumentException ex)
             {
-                throw new ReflectionWrapperResolveException(attribute, ex);
+                throw new ReflectionResolveException(attribute, ex);
             }
         }
 

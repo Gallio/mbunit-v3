@@ -139,7 +139,7 @@ namespace Gallio.Reflection
         /// <param name="throwOnError">If true, throws an exception if the target could
         /// not be resolved, otherwise the result may include unresolved types, enums or arrays</param>
         /// <returns>The native constant value</returns>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if the target cannot be resolved</exception>
+        /// <exception cref="ReflectionResolveException">Thrown if the target cannot be resolved</exception>
         public object Resolve(bool throwOnError)
         {
             if (IsNative)

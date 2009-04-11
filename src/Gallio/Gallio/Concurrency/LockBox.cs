@@ -86,5 +86,51 @@ namespace Gallio.Concurrency
                 @lock.ReleaseWriterLock();
             }
         }
+
+        /// <summary>
+        /// Acquires a read lock and invokes the function with the object inside the lock box.
+        /// </summary>
+        /// <param name="func">The action to invoke</param>
+        /// <returns>The value returned by the function</returns>
+        /// <typeparam name="TResult">The function result type</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null</exception>
+        public TResult Read<TResult>(ReadFunc<T, TResult> func)
+        {
+            if (func == null)
+                throw new ArgumentNullException("func");
+
+            @lock.AcquireReaderLock(Timeout.Infinite);
+            try
+            {
+                return func(obj);
+            }
+            finally
+            {
+                @lock.ReleaseReaderLock();
+            }
+        }
+
+        /// <summary>
+        /// Acquires a write lock and invokes the function with the object inside the lock box.
+        /// </summary>
+        /// <param name="func">The action to invoke</param>
+        /// <returns>The value returned by the function</returns>
+        /// <typeparam name="TResult">The function result type</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="func"/> is null</exception>
+        public TResult Write<TResult>(WriteFunc<T, TResult> func)
+        {
+            if (func == null)
+                throw new ArgumentNullException("func");
+
+            @lock.AcquireWriterLock(Timeout.Infinite);
+            try
+            {
+                return func(obj);
+            }
+            finally
+            {
+                @lock.ReleaseWriterLock();
+            }
+        }
     }
 }

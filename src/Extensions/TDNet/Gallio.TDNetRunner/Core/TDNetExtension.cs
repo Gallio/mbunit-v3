@@ -81,6 +81,17 @@ namespace Gallio.TDNetRunner.Core
         /// <inheritdoc />
         protected override void LogTestCaseFinished(TestStepFinishedEventArgs e)
         {
+            LogTest(e);
+        }
+
+        /// <inheritdoc />
+        protected override void LogNonTestCaseProblem(TestStepFinishedEventArgs e)
+        {
+            LogTest(e);
+        }
+
+        private void LogTest(TestStepFinishedEventArgs e)
+        {
             // A TestResult with State == TestState.Passed won't be displayed in the
             // output window (TD.NET just diplays "[TestName] passed" in the status bar.
             // Since that can be harder to notice, and also is lost when the following
@@ -88,7 +99,7 @@ namespace Gallio.TDNetRunner.Core
             // progressively see if the tests are passing or failing.
             if (e.TestStepRun.Result.Outcome.Status == TestStatus.Passed)
             {
-                testListener.WriteLine(String.Format(Resources.TDNetLogMonitor_TestCasePassed, 
+                testListener.WriteLine(String.Format(Resources.TDNetLogMonitor_TestCasePassed,
                     e.TestStepRun.Step.FullName), FacadeCategory.Info);
             }
 

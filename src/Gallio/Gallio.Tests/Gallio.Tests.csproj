@@ -180,7 +180,8 @@
     <Compile Include="Model\ModelExceptionTest.cs" />
     <Compile Include="Reflection\Impl\CecilReflectionPolicyTest.cs" />
     <Compile Include="Reflection\ReflectionOnlyAssemblyLoaderTest.cs" />
-    <Compile Include="Reflection\ReflectionWrapperResolveExceptionTest.cs" />
+    <Compile Include="Reflection\ReflectionResolveExceptionTest.cs" />
+    <Compile Include="Reflection\TypeNameTest.cs" />
     <Compile Include="Runner\Caching\DiskCacheExceptionTest.cs" />
     <Compile Include="Runner\Caching\SimpleDiskCacheTest.cs" />
     <Compile Include="Runner\Caching\TemporaryDiskCacheTest.cs" />
@@ -188,6 +189,10 @@
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="RunSampleAttribute.cs" />
+    <Compile Include="Runtime\Extensibility\ComponentRegistrationTest.cs" />
+    <Compile Include="Runtime\Extensibility\ServiceRegistrationTest.cs" />
+    <Compile Include="Runtime\Extensibility\PluginRegistrationTest.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryTest.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
     <Compile Include="Runtime\Hosting\HostConfigurationTest.cs" />
     <Compile Include="Runtime\Hosting\HostSetupTest.cs" />

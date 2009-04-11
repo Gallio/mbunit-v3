@@ -20,9 +20,10 @@ using System.Text;
 namespace Gallio.Concurrency
 {
     /// <summary>
-    /// An action that reads or writes the contents of an object.
+    /// An action that reads or writes the contents of a protected object.
     /// </summary>
     /// <param name="obj">The object</param>
     /// <typeparam name="T">The type of object</typeparam>
+    /// <seealso cref="LockBox{T}"/>
     public delegate void WriteAction<T>(T obj);
 }

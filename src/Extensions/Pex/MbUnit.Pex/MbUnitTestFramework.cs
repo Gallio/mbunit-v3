@@ -35,6 +35,7 @@ using Microsoft.Pex.Engine.ComponentModel;
 using Microsoft.Pex.Engine.TestFrameworks;
 using Microsoft.Pex.Framework.Instrumentation;
 using Microsoft.Pex.Framework.Suppression;
+using TypeName=Microsoft.ExtendedReflection.Metadata.Names.TypeName;
 
 [assembly: PexSuppressStackFrameFromAssembly("Gallio")]
 [assembly: PexSuppressStackFrameFromAssembly("Gallio35")]

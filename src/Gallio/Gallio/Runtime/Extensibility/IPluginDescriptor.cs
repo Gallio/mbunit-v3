@@ -1,0 +1,160 @@
+// Copyright 2005-2009 Gallio Project - http://www.gallio.org/
+// Portions Copyright 2000-2004 Jonathan de Halleux
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Gallio.Collections;
+using Gallio.Reflection;
+
+namespace Gallio.Runtime.Extensibility
+{
+    /// <summary>
+    /// Describes a plugin.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The descriptor is used to query declarative information about the plugin
+    /// and to load associated code and resources.
+    /// </para>
+    /// </remarks>
+    public interface IPluginDescriptor
+    {
+        /// <summary>
+        /// Gets the plugin's id.
+        /// </summary>
+        string PluginId { get; }
+
+        /// <summary>
+        /// Gets the plugin type name.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The plugin type should be a class that implements <see cref="IPlugin" />.
+        /// </para>
+        /// </remarks>
+        TypeName PluginTypeName { get; }
+
+        /// <summary>
+        /// Gets the plugin handler factory.
+        /// </summary>
+        IHandlerFactory PluginHandlerFactory { get; }
+
+        /// <summary>
+        /// Gets the base directory that contains the plugin's definition and associated resources.
+        /// </summary>
+        DirectoryInfo BaseDirectory { get; }
+
+        /// <summary>
+        /// Gets the plugin properties.
+        /// </summary>
+        PropertySet PluginProperties { get; }
+
+        /// <summary>
+        /// Gets the traits properties.
+        /// </summary>
+        PropertySet TraitsProperties { get; }
+
+        /// <summary>
+        /// Gets the plugin's resource locator.
+        /// </summary>
+        IResourceLocator ResourceLocator { get; }
+
+        /*
+        /// <summary>
+        /// Gets a view of all components provided by the plugin.
+        /// </summary>
+        IComponents Components { get; }
+
+        /// <summary>
+        /// Gets a view of all services provided by the plugin.
+        /// </summary>
+        IServices Services { get; }
+         */
+
+        /// <summary>
+        /// Resolves the plugin type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The plugin type should be a class that implements <see cref="IPlugin" />.
+        /// </para>
+        /// <para>
+        /// This method may cause plugin resources to be loaded.  The caller
+        /// should therefore assume that the operation is potentially time-consuming
+        /// and may fail.
+        /// </para>
+        /// </remarks>
+        /// <returns>The plugin type</returns>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        Type ResolvePluginType();
+
+        /// <summary>
+        /// Resolves the plugin handler.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method may cause plugin resources to be loaded.  The caller
+        /// should therefore assume that the operation is potentially time-consuming
+        /// and may fail.
+        /// </para>
+        /// </remarks>
+        /// <returns>The plugin handler</returns>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        IHandler ResolvePluginHandler();
+
+        /// <summary>
+        /// Resolves the plugin instance.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method may cause plugin resources to be loaded.  The caller
+        /// should therefore assume that the operation is potentially time-consuming
+        /// and may fail.
+        /// </para>
+        /// </remarks>
+        /// <returns>The plugin instance</returns>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        IPlugin ResolvePlugin();
+
+        /// <summary>
+        /// Resolves the traits handler.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method may cause plugin resources to be loaded.  The caller
+        /// should therefore assume that the operation is potentially time-consuming
+        /// and may fail.
+        /// </para>
+        /// </remarks>
+        /// <returns>The traits handler</returns>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        IHandler ResolveTraitsHandler();
+
+        /// <summary>
+        /// Resolves the plugin traits.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method may cause plugin resources to be loaded.  The caller
+        /// should therefore assume that the operation is potentially time-consuming
+        /// and may fail.
+        /// </para>
+        /// </remarks>
+        /// <returns>The plugin traits</returns>
+        /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
+        PluginTraits ResolveTraits();
+    }
+}

@@ -52,7 +52,7 @@ namespace Gallio.Reflection.Impl
         /// <returns>The resolved <see cref="Assembly" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assembly"/>
         /// is null</exception>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if <paramref name="assembly"/>
+        /// <exception cref="ReflectionResolveException">Thrown if <paramref name="assembly"/>
         /// could not be resolved</exception>
         public static Assembly ResolveAssembly(IAssemblyInfo assembly, bool fallbackOnPartialName, bool throwOnError)
         {
@@ -65,7 +65,7 @@ namespace Gallio.Reflection.Impl
                 : resolvedAssemblyCache[fullName];
 
             if (throwOnError && resolvedAssembly == null)
-                throw new ReflectionWrapperResolveException(assembly);
+                throw new ReflectionResolveException(assembly);
 
             return resolvedAssembly;
         }
@@ -122,7 +122,7 @@ namespace Gallio.Reflection.Impl
         /// <returns>The resolved <see cref="Type" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/>
         /// is null</exception>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if <paramref name="type"/>
+        /// <exception cref="ReflectionResolveException">Thrown if <paramref name="type"/>
         /// could not be resolved</exception>
         public static Type ResolveType(IResolvableTypeInfo type, MethodInfo methodContext, bool throwOnError)
         {
@@ -184,11 +184,11 @@ namespace Gallio.Reflection.Impl
             catch (Exception ex)
             {
                 if (throwOnError)
-                    throw new ReflectionWrapperResolveException(type, ex);
+                    throw new ReflectionResolveException(type, ex);
             }
 
             if (throwOnError)
-                throw new ReflectionWrapperResolveException(type);
+                throw new ReflectionResolveException(type);
 
             return new UnresolvedType(type);
         }
@@ -216,7 +216,7 @@ namespace Gallio.Reflection.Impl
         /// <returns>The resolved <see cref="FieldInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="field"/>
         /// is null</exception>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if <paramref name="field"/>
+        /// <exception cref="ReflectionResolveException">Thrown if <paramref name="field"/>
         /// could not be resolved</exception>
         public static FieldInfo ResolveField(IFieldInfo field, bool throwOnError)
         {
@@ -238,11 +238,11 @@ namespace Gallio.Reflection.Impl
             catch (Exception ex)
             {
                 if (throwOnError)
-                    throw new ReflectionWrapperResolveException(field, ex);
+                    throw new ReflectionResolveException(field, ex);
             }
 
             if (throwOnError)
-                throw new ReflectionWrapperResolveException(field);
+                throw new ReflectionResolveException(field);
 
             return new UnresolvedFieldInfo(field);
         }
@@ -256,7 +256,7 @@ namespace Gallio.Reflection.Impl
         /// <returns>The resolved <see cref="PropertyInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="property"/>
         /// is null</exception>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if <paramref name="property"/>
+        /// <exception cref="ReflectionResolveException">Thrown if <paramref name="property"/>
         /// could not be resolved</exception>
         public static PropertyInfo ResolveProperty(IPropertyInfo property, bool throwOnError)
         {
@@ -282,11 +282,11 @@ namespace Gallio.Reflection.Impl
             catch (Exception ex)
             {
                 if (throwOnError)
-                    throw new ReflectionWrapperResolveException(property, ex);
+                    throw new ReflectionResolveException(property, ex);
             }
 
             if (throwOnError)
-                throw new ReflectionWrapperResolveException(property);
+                throw new ReflectionResolveException(property);
 
             return new UnresolvedPropertyInfo(property);
         }
@@ -300,7 +300,7 @@ namespace Gallio.Reflection.Impl
         /// <returns>The resolved <see cref="EventInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="event"/>
         /// is null</exception>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if <paramref name="event"/>
+        /// <exception cref="ReflectionResolveException">Thrown if <paramref name="event"/>
         /// could not be resolved</exception>
         public static EventInfo ResolveEvent(IEventInfo @event, bool throwOnError)
         {
@@ -323,11 +323,11 @@ namespace Gallio.Reflection.Impl
             catch (Exception ex)
             {
                 if (throwOnError)
-                    throw new ReflectionWrapperResolveException(@event, ex);
+                    throw new ReflectionResolveException(@event, ex);
             }
 
             if (throwOnError)
-                throw new ReflectionWrapperResolveException(@event);
+                throw new ReflectionResolveException(@event);
 
             return new UnresolvedEventInfo(@event);
         }
@@ -341,7 +341,7 @@ namespace Gallio.Reflection.Impl
         /// <returns>The resolved <see cref="ConstructorInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="constructor"/>
         /// is null</exception>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if <paramref name="constructor"/>
+        /// <exception cref="ReflectionResolveException">Thrown if <paramref name="constructor"/>
         /// could not be resolved</exception>
         public static ConstructorInfo ResolveConstructor(IConstructorInfo constructor, bool throwOnError)
         {
@@ -368,11 +368,11 @@ namespace Gallio.Reflection.Impl
             catch (Exception ex)
             {
                 if (throwOnError)
-                    throw new ReflectionWrapperResolveException(constructor, ex);
+                    throw new ReflectionResolveException(constructor, ex);
             }
 
             if (throwOnError)
-                throw new ReflectionWrapperResolveException(constructor);
+                throw new ReflectionResolveException(constructor);
 
             return new UnresolvedConstructorInfo(constructor);
         }
@@ -386,7 +386,7 @@ namespace Gallio.Reflection.Impl
         /// <returns>The resolved <see cref="MethodInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="method"/>
         /// is null</exception>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if <paramref name="method"/>
+        /// <exception cref="ReflectionResolveException">Thrown if <paramref name="method"/>
         /// could not be resolved</exception>
         public static MethodInfo ResolveMethod(IMethodInfo method, bool throwOnError)
         {
@@ -415,11 +415,11 @@ namespace Gallio.Reflection.Impl
             catch (Exception ex)
             {
                 if (throwOnError)
-                    throw new ReflectionWrapperResolveException(method, ex);
+                    throw new ReflectionResolveException(method, ex);
             }
 
             if (throwOnError)
-                throw new ReflectionWrapperResolveException(method);
+                throw new ReflectionResolveException(method);
 
             return new UnresolvedMethodInfo(method);
         }
@@ -466,7 +466,7 @@ namespace Gallio.Reflection.Impl
                     if (! resolvedValueType.Equals(methodParameters[i].ParameterType))
                         return false;
                 }
-                catch (ReflectionWrapperResolveException)
+                catch (ReflectionResolveException)
                 {
                     return false;
                 }
@@ -484,7 +484,7 @@ namespace Gallio.Reflection.Impl
         /// <returns>The resolved <see cref="ParameterInfo" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="parameter"/>
         /// is null</exception>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if <paramref name="parameter"/>
+        /// <exception cref="ReflectionResolveException">Thrown if <paramref name="parameter"/>
         /// could not be resolved</exception>
         public static ParameterInfo ResolveParameter(IParameterInfo parameter, bool throwOnError)
         {
@@ -520,11 +520,11 @@ namespace Gallio.Reflection.Impl
             catch (Exception ex)
             {
                 if (throwOnError)
-                    throw new ReflectionWrapperResolveException(parameter, ex);
+                    throw new ReflectionResolveException(parameter, ex);
             }
 
             if (throwOnError)
-                throw new ReflectionWrapperResolveException(parameter);
+                throw new ReflectionResolveException(parameter);
 
             return new UnresolvedParameterInfo(parameter);
         }

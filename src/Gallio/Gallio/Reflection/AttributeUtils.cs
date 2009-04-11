@@ -129,7 +129,7 @@ namespace Gallio.Reflection
                 {
                     obj = attribute.Resolve(false);
                 }
-                catch (ReflectionWrapperResolveException)
+                catch (ReflectionResolveException)
                 {
                     continue;
                 }

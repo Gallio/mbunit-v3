@@ -19,18 +19,44 @@ using System.Runtime.Serialization;
 namespace Gallio.Reflection
 {
     /// <summary>
-    /// The type of exception thrown when a reflection wrapper could not be resolved
-    /// to a native reflection target.
+    /// The type of exception thrown when a reflection info object or reference cannot
+    /// be resolved.
     /// </summary>
     [Serializable]
-    public class ReflectionWrapperResolveException : Exception
+    public class ReflectionResolveException : Exception
     {
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        public ReflectionResolveException()
+        {
+        }
+
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="message">The message</param>
+        public ReflectionResolveException(string message)
+            : base(message)
+        {
+        }
+
+        /// <summary>
+        /// Creates an exception.
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="innerException">The inner exception</param>
+        public ReflectionResolveException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
         /// <summary>
         /// Creates an exception for a code element that could not be resolved.
         /// </summary>
         /// <param name="codeElement">The code element that could not be resolved</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is nul</exception>
-        public ReflectionWrapperResolveException(ICodeElementInfo codeElement)
+        public ReflectionResolveException(ICodeElementInfo codeElement)
             : this(codeElement, null)
         {
         }
@@ -41,7 +67,7 @@ namespace Gallio.Reflection
         /// <param name="codeElement">The code element that could not be resolved</param>
         /// <param name="innerException">The inner exception, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="codeElement"/> is nul</exception>
-        public ReflectionWrapperResolveException(ICodeElementInfo codeElement, Exception innerException)
+        public ReflectionResolveException(ICodeElementInfo codeElement, Exception innerException)
             : base(FormatMessage(codeElement), innerException)
         {
         }
@@ -51,7 +77,7 @@ namespace Gallio.Reflection
         /// </summary>
         /// <param name="attribute">The attribute that could not be resolved</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attribute"/> is nul</exception>
-        public ReflectionWrapperResolveException(IAttributeInfo attribute)
+        public ReflectionResolveException(IAttributeInfo attribute)
             : this(attribute, null)
         {
         }
@@ -62,7 +88,7 @@ namespace Gallio.Reflection
         /// <param name="attribute">The attribute that could not be resolved</param>
         /// <param name="innerException">The inner exception, or null if none</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="attribute"/> is nul</exception>
-        public ReflectionWrapperResolveException(IAttributeInfo attribute, Exception innerException)
+        public ReflectionResolveException(IAttributeInfo attribute, Exception innerException)
             : base(FormatMessage(attribute), innerException)
         {
         }
@@ -72,7 +98,7 @@ namespace Gallio.Reflection
         /// </summary>
         /// <param name="info">The serialization info</param>
         /// <param name="context">The streaming context</param>
-        protected ReflectionWrapperResolveException(SerializationInfo info, StreamingContext context)
+        protected ReflectionResolveException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

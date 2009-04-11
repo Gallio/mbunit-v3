@@ -14,19 +14,25 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Gallio.Collections;
 using Gallio.Reflection;
-using MbUnit.Framework;
-using MbUnit.Framework.ContractVerifiers;
 
-namespace Gallio.Tests.Reflection
+namespace Gallio.Runtime.Extensibility
 {
-    [TestsOn(typeof(ReflectionWrapperResolveException))]
-    public class ReflectionWrapperResolveExceptionTest
+    /// <summary>
+    /// Provides a view of registered plugins along with methods for resolving them.
+    /// </summary>
+    public interface IPlugins : IEnumerable<IPluginDescriptor>
     {
-        [VerifyContract]
-        public readonly IContract ExceptionTests = new ExceptionContract<ReflectionWrapperResolveException>()
-        {
-            ImplementsStandardConstructors = false
-        };
+        /// <summary>
+        /// Gets a plugin descriptor by its id, or null if not found.
+        /// </summary>
+        /// <param name="pluginId">The plugin id</param>
+        /// <returns>The plugin descriptor, or null if not found</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="pluginId"/> is null</exception>
+        IPluginDescriptor this[string pluginId] { get; }
     }
 }

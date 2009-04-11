@@ -75,7 +75,7 @@ namespace Gallio.Reflection
         /// not be resolved, otherwise the result may include unresolved types, enums or arrays
         /// though it still may throw an exception if the attribute class cannot be instantiated</param>
         /// <returns>The attribute</returns>
-        /// <exception cref="ReflectionWrapperResolveException">Thrown if the attribute could not be resolved</exception>
+        /// <exception cref="ReflectionResolveException">Thrown if the attribute could not be resolved</exception>
         object Resolve(bool throwOnError);
     }
 }

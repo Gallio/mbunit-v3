@@ -47,13 +47,26 @@ namespace Gallio.Runner.Extensions
             Events.TestStepStarted += delegate(object sender, TestStepStartedEventArgs e)
             {
                 if (e.TestStepRun.Step.IsTestCase)
+                {
                     LogTestCaseStarted(e);
+                }
             };
 
             Events.TestStepFinished += delegate(object sender, TestStepFinishedEventArgs e)
             {
                 if (e.TestStepRun.Step.IsTestCase)
+                {
                     LogTestCaseFinished(e);
+                }
+                else
+                {
+                    if (e.TestStepRun.Result.Outcome.Status != TestStatus.Passed
+                        && (e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Warnings) != null
+                            || e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Failures) != null))
+                    {
+                        LogNonTestCaseProblem(e);
+                    }
+                }
             };
         }
 
@@ -86,6 +99,24 @@ namespace Gallio.Runner.Extensions
         /// </remarks>
         /// <param name="e">The event</param>
         protected virtual void LogTestCaseFinished(TestStepFinishedEventArgs e)
+        {
+            LogTest(e);
+        }
+
+        /// <summary>
+        /// Logs a message about a non-test case that has finished with some problem that
+        /// may have prevented other test cases from running correctly.
+        /// </summary>
+        /// <remarks>
+        /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to true.
+        /// </remarks>
+        /// <param name="e">The event</param>
+        protected virtual void LogNonTestCaseProblem(TestStepFinishedEventArgs e)
+        {
+            LogTest(e);
+        }
+        
+        private void LogTest(TestStepFinishedEventArgs e)
         {
             TestOutcome outcome = e.TestStepRun.Result.Outcome;
             LogSeverity severity = GetLogSeverityForOutcome(outcome);

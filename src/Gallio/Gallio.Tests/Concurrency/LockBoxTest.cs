@@ -28,7 +28,7 @@ namespace Gallio.Tests.Concurrency
     public class LockBoxTest
     {
         [Test]
-        public void ReadProvidesContents()
+        public void Read_WithAction_ProvidesContents()
         {
             LockBox<int> box = new LockBox<int>(11);
 
@@ -38,12 +38,30 @@ namespace Gallio.Tests.Concurrency
         }
 
         [Test]
-        public void WriteProvidesContents()
+        public void Write_WithAction_ProvidesContents()
         {
             LockBox<int> box = new LockBox<int>(11);
 
             int actualValue = 0;
             box.Write(value => actualValue = value);
+            Assert.AreEqual(11, actualValue);
+        }
+
+        [Test]
+        public void Read_WithFunc_ProvidesContents()
+        {
+            LockBox<int> box = new LockBox<int>(11);
+
+            int actualValue = box.Read(value => value);
+            Assert.AreEqual(11, actualValue);
+        }
+
+        [Test]
+        public void Write_WithFunc_ProvidesContents()
+        {
+            LockBox<int> box = new LockBox<int>(11);
+
+            int actualValue = box.Write(value => value);
             Assert.AreEqual(11, actualValue);
         }
 
