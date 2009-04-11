@@ -41,6 +41,35 @@ namespace Gallio.Runtime.Logging
             this.minSeverity = minSeverity;
         }
 
+        /// <summary>
+        /// Creates a filtered logger.
+        /// </summary>
+        /// <param name="logger">The logger to which filtered log messages are sent</param>
+        /// <param name="verbosity">The verbosity to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        public FilteredLogger(ILogger logger, Verbosity verbosity)
+        {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+            this.logger = logger;
+
+            switch (verbosity)
+            {
+                case Verbosity.Quiet:
+                    minSeverity = LogSeverity.Warning;
+                    break;
+                case Verbosity.Verbose:
+                    minSeverity = LogSeverity.Info;
+                    break;
+                case Verbosity.Debug:
+                    minSeverity = LogSeverity.Debug;
+                    break;
+                default:
+                    minSeverity = LogSeverity.Important;
+                    break;
+            }
+        }
+
         /// <inheritdoc />
         protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {

@@ -13,16 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Gallio.Echo
+namespace Gallio.Runtime.Logging
 {
     /// <summary>
     /// Specifies the verbosity of the output.
     /// </summary>
     public enum Verbosity
     {
+        ///<summary>
+        /// Will only display Error and Warning messages.
+        ///</summary>
         Quiet = 0,
+        /// <summary>
+        /// Will display Important, Warning and Error messages.
+        /// </summary>
         Normal,
+        /// <summary>
+        /// Will display all messages, except Debug.
+        /// </summary>
         Verbose,
+        /// <summary>
+        /// Will display all messages.
+        /// </summary>
         Debug
     }
 }

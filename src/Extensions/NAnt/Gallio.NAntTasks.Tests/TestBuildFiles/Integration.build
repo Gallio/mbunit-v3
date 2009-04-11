@@ -95,7 +95,7 @@
   </target>
   
   <target name="Extensions">
-    <gallio result-property="ExitCode" filter="Type: PassingTests" ignore-annotations="true">
+    <gallio result-property="ExitCode" filter="Type: PassingTests" ignore-annotations="true" verbosity="Debug">
       <assemblies>
         <include name="${TestAssembly}" />
       </assemblies>
@@ -106,5 +106,19 @@
     </gallio>
     
     <fail if="${ExitCode != '0'}" >Expected successful result code, was ${ExitCode}!</fail>
-  </target>  
+  </target>
+
+  <target name="Verbosity">
+    <gallio result-property="ExitCode" filter="Type: PassingTests" ignore-annotations="true" verbosity="Verbose">
+      <assemblies>
+        <include name="${TestAssembly}" />
+      </assemblies>
+      <plugin-directories>
+        <include name="${GallioPath}" />
+      </plugin-directories>
+    </gallio>
+
+    <fail if="${ExitCode != '0'}" >Expected successful result code, was ${ExitCode}!</fail>
+  </target>
+
 </project>

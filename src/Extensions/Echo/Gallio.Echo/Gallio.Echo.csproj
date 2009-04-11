@@ -54,7 +54,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Verbosity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />

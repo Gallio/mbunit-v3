@@ -331,6 +331,7 @@
     <Compile Include="Runtime\Logging\SeverityPrefixLogger.cs" />
     <Compile Include="Runtime\Logging\SeverityPrefixParser.cs" />
     <Compile Include="Runtime\Logging\TextLogger.cs" />
+    <Compile Include="Runtime\Logging\Verbosity.cs" />
     <Compile Include="Runtime\ProcessType.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorPresenter.cs" />
     <Compile Include="Runtime\ProgressMonitoring\BaseProgressMonitorProvider.cs" />

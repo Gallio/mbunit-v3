@@ -20,6 +20,7 @@ using System.Reflection;
 using Gallio.Runtime;
 using Gallio.NAntTasks.Properties;
 using Gallio.Collections;
+using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -96,6 +97,7 @@ namespace Gallio.NAntTasks
         private bool ignoreAnnotations;
         private bool echoResults = true;
         private TimeSpan? runTimeLimit;
+        private Verbosity verbosity = Verbosity.Normal;
 
         private ArgumentCollection runnerProperties = new ArgumentCollection();
         private ArgumentCollection reportFormatterProperties = new ArgumentCollection();
@@ -513,6 +515,26 @@ namespace Gallio.NAntTasks
             set { filter = value; }
         }
 
+        /// <summary>
+        /// Controls the level of information logged.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// <target name="RunTests">
+        ///     <gallio verbosity="Quiet" failonerror="false">
+        ///         <!-- Include test assemblies -->
+        ///     </gallio>
+        ///     <fail if="${ExitCode != 0}" >The return code should have been 0!</fail>
+        /// </target>
+        /// ]]>
+        /// </code>
+        /// </example>
+        [TaskAttribute("verbosity")]
+        public Verbosity Verbosity
+        {
+            set { verbosity = value; }
+        }
         #endregion
 
         #region Public Methods
@@ -528,7 +550,7 @@ namespace Gallio.NAntTasks
             // We don't catch exceptions here because NAnt takes care of that job,
             // and decides whether to let them through based on the value of the
             // FailOnError
-            TaskLogger logger = new TaskLogger(this);
+            var logger = CreateLogger();
 
             DisplayVersion();
 
@@ -554,7 +576,8 @@ namespace Gallio.NAntTasks
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
-            launcher.RuntimeSetup.RuntimePath = Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof(GallioTask).Assembly));
+            launcher.RuntimeSetup.RuntimePath =
+                Path.GetDirectoryName(AssemblyUtils.GetFriendlyAssemblyLocation(typeof (GallioTask).Assembly));
 
             launcher.TestPackageConfig.HostSetup.ApplicationBaseDirectory = applicationBaseDirectory;
             launcher.TestPackageConfig.HostSetup.WorkingDirectory = workingDirectory;
@@ -576,24 +599,29 @@ namespace Gallio.NAntTasks
             if (!String.IsNullOrEmpty(reportNameFormat))
                 launcher.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
-                GenericUtils.AddAll(reportTypes.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries),
-                    launcher.ReportFormats);
+                GenericUtils.AddAll(reportTypes.Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries),
+                                    launcher.ReportFormats);
 
             TestLauncherResult result = RunLauncher(launcher);
 
             SetResultProperty(result.ResultCode);
             PopulateStatistics(result);
 
-            if (FailOnError)
+            if (!FailOnError)
+                return;
+
+            if (result.ResultCode != ResultCode.Success && result.ResultCode != ResultCode.NoTests)
             {
-                if (result.ResultCode != ResultCode.Success && result.ResultCode != ResultCode.NoTests)
-                {
-                    // The only way to make the task fail is to throw an exception
-                    throw new BuildException(Resources.TestExecutionFailed);
-                }
+                // The only way to make the task fail is to throw an exception
+                throw new BuildException(Resources.TestExecutionFailed);
             }
         }
 
+        private ILogger CreateLogger()
+        {
+            TaskLogger logger = new TaskLogger(this);
+            return new FilteredLogger(logger, verbosity);
+        }
         #endregion
 
         #region Private Methods

@@ -18,6 +18,7 @@ using System.IO;
 using Gallio.Collections;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Runner;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Echo
 {

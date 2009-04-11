@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using Gallio.Collections;
+using Gallio.Runtime.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -52,7 +53,7 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsTrue(launcher.EchoResults);
                 Assert.IsTrue(launcher.TestExecutionOptions.FilterSet.IsEmpty);
-                Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
+                Assert.IsInstanceOfType(typeof(FilteredLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
                 Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
@@ -120,7 +121,7 @@ namespace Gallio.NAntTasks.Tests
                 Assert.IsTrue(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
                 Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.FilterSet.ToFilterSetExpr());
-                Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
+                Assert.IsInstanceOfType(typeof(FilteredLogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
                 Assert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);

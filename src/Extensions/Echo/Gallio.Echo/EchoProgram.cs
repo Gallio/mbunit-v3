@@ -201,25 +201,7 @@ namespace Gallio.Echo
         private ILogger CreateLogger()
         {
             RichConsoleLogger logger = new RichConsoleLogger(Console);
-
-            LogSeverity minSeverity;
-            switch (Arguments.Verbosity)
-            {
-                case Verbosity.Quiet:
-                    minSeverity = LogSeverity.Warning;
-                    break;
-                case Verbosity.Verbose:
-                    minSeverity = LogSeverity.Info;
-                    break;
-                case Verbosity.Debug:
-                    minSeverity = LogSeverity.Debug;
-                    break;
-                default:
-                    minSeverity = LogSeverity.Important;
-                    break;
-            }
-
-            return new FilteredLogger(logger, minSeverity);
+            return new FilteredLogger(logger, Arguments.Verbosity);
         }
 
         private void InstallCancelHandler()
