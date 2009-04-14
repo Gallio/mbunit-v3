@@ -28,7 +28,7 @@ namespace Gallio.Icarus.Tests.Controllers
 {
     class OptionsControllerTest
     {
-        public OptionsController SetUpOptionsController(Settings settings)
+        private OptionsController SetUpOptionsController(Settings settings)
         {
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
@@ -262,9 +262,20 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var settings = new Settings();
             settings.RecentProjects.AddRange(new[] { "one", "two" });
-            var optionsController = SetUpOptionsController(settings);
+            
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
 
-            Assert.AreEqual(2, optionsController.RecentProjects.Count);
+            fileSystem.Stub(fs => fs.FileExists(Paths.SettingsFile)).Return(true);
+            fileSystem.Stub(fs => fs.FileExists("one")).Return(true);
+            xmlSerialization.Stub(xs => xs.LoadFromXml<Settings>(Paths.SettingsFile)).Return(settings);
+
+            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
+            optionsController.Load();
+ 
+            Assert.AreEqual(1, optionsController.RecentProjects.Count);
+            Assert.AreEqual("one", optionsController.RecentProjects.Items[0]);
         }
 
         [Test]

@@ -127,7 +127,19 @@ namespace Gallio.Icarus.Controllers
             get
             {
                 if (recentProjects == null)
+                {
+                    // remove any dead projects
+                    var list = new List<string>();
+                    foreach(var proj in settings.RecentProjects)
+                    {
+                        if (fileSystem.FileExists(proj))
+                            list.Add(proj);
+                    }
+                    settings.RecentProjects.Clear();
+                    settings.RecentProjects.AddRange(list);
+
                     recentProjects = new MRUList(settings.RecentProjects, 10);
+                }
                 return recentProjects;
             }
         }

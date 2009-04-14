@@ -141,6 +141,7 @@
     <Compile Include="ServiceProvider.cs" />
     <Compile Include="Utilities\ISynchronizationContext.cs" />
     <Compile Include="Utilities\MRUList.cs" />
+    <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\SynchronizationContext.cs" />
     <Compile Include="Window.cs">
       <SubType>Form</SubType>

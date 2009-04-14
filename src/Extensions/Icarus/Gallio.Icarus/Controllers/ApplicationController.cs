@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using Gallio.Icarus.Mediator.Interfaces;
 
@@ -6,21 +8,37 @@ namespace Gallio.Icarus.Controllers
 {
     public class ApplicationController : IApplicationController
     {
-        private readonly IcarusArguments Arguments;
+        private readonly IcarusArguments arguments;
+        private string projectFileName = string.Empty;
+        
         public IMediator Mediator { get; private set; }
+        
+        public string ProjectFileName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(projectFileName) ? "Gallio Icarus" :
+                    string.Format("{0} - Gallio Icarus", Path.GetFileNameWithoutExtension(projectFileName));
+            }
+            set
+            {
+                projectFileName = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("ProjectFileName"));
+            }
+        }
 
         public ApplicationController(IcarusArguments args, IMediator mediator)
         {
-            Arguments = args;
+            arguments = args;
             Mediator = mediator;
         }
 
         public void Load()
         {
             var assemblyFiles = new List<string>();
-            if (Arguments != null && Arguments.Assemblies.Length > 0)
+            if (arguments != null && arguments.Assemblies.Length > 0)
             {
-                foreach (var assembly in Arguments.Assemblies)
+                foreach (var assembly in arguments.Assemblies)
                 {
                     if (!File.Exists(assembly))
                         continue;
@@ -37,11 +55,34 @@ namespace Gallio.Icarus.Controllers
             else if (Mediator.OptionsController.RestorePreviousSettings && Mediator.OptionsController.RecentProjects.Count > 0)
             {
                 string projectName = Mediator.OptionsController.RecentProjects.Items[0];
-                if (File.Exists(projectName))
-                    Mediator.OpenProject(projectName);
-                else
-                    Mediator.OptionsController.RecentProjects.Items.Remove(projectName);
+                ProjectFileName = projectName;
+                Mediator.OpenProject(projectName);
             }
+        }
+
+        public void OpenProject(string projectName)
+        {
+            ProjectFileName = projectName;
+            Mediator.OpenProject(projectName);
+        }
+
+        public void SaveProject()
+        {
+            Mediator.SaveProject(projectFileName);
+        }
+
+        public void NewProject()
+        {
+            ProjectFileName = string.Empty;
+            Mediator.NewProject();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, e);
         }
     }
 }
