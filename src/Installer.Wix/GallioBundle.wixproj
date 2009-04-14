@@ -120,9 +120,6 @@
     <Compile Include="..\Extensions\MSTest\MSTest.wxs">
       <Link>MSTest.wxs</Link>
     </Compile>
-    <Compile Include="..\Extensions\Pex\Pex.wxs">
-      <Link>Pex.wxs</Link>
-    </Compile>
     <Compile Include="..\Extensions\Navigator\Navigator.wxs">
       <Link>Navigator.wxs</Link>
     </Compile>
