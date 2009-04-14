@@ -30,7 +30,7 @@ namespace Gallio.Icarus
 
         void runtimeLogController_LogMessage(object sender, Controllers.EventArgs.RuntimeLogEventArgs e)
         {
-            //Sync.Invoke(this, () => AppendTextLine(e.Message, e.Color));
+            Sync.Invoke(this, () => AppendTextLine(e.Message, e.Color));
         }
 
         private void AppendTextLine(string text, Color color)
