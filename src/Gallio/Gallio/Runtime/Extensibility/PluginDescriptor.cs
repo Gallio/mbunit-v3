@@ -34,7 +34,7 @@ namespace Gallio.Runtime.Extensibility
             pluginProperties = pluginRegistration.PluginProperties.Copy().AsReadOnly();
             traitsProperties = pluginRegistration.TraitsProperties.Copy().AsReadOnly();
             pluginHandlerFactory = pluginRegistration.PluginHandlerFactory;
-            resourceLocator = new DirectoryResourceLocator(baseDirectory);
+            resourceLocator = new FileSystemResourceLocator(baseDirectory);
         }
 
         // Used by unit tests.

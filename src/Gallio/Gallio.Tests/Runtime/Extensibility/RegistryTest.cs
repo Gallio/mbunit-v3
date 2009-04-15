@@ -37,7 +37,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreEqual(new PropertySet() { { "ConfigName", "Value" } }, plugin.PluginProperties);
                     Assert.AreEqual(new PropertySet() { { "TraitName", "Value" } }, plugin.TraitsProperties);
                     Assert.AreSame(handlerFactory, plugin.PluginHandlerFactory);
-                    Assert.IsInstanceOfType<DirectoryResourceLocator>(plugin.ResourceLocator);
+                    Assert.IsInstanceOfType<FileSystemResourceLocator>(plugin.ResourceLocator);
                 });
             }
 
@@ -526,7 +526,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 Assert.Contains(ex.Message, "Could not resolve component for service type '" + new TypeName(typeof(DummyService)) + "' because there are 2 of them registered so the request is ambiguous.");
             }
 
-            [Test, Pending]
+            [Test]
             public void Resolve_WhenServiceTypeMapsToExactlyOneComponent_ReturnsResolvedComponent()
             {
                 var registry = new Registry();
@@ -572,7 +572,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 Assert.Contains(ex.Message, "Could not resolve component for service type '" + new TypeName(typeof(DummyService)) + "' because there are 2 of them registered so the request is ambiguous.");
             }
 
-            [Test, Pending]
+            [Test]
             public void ResolveGeneric_WhenServiceTypeMapsToExactlyOneComponent_ReturnsResolvedComponent()
             {
                 var registry = new Registry();
@@ -615,7 +615,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 Assert.IsEmpty(result);
             }
 
-            [Test, Pending]
+            [Test]
             public void ResolveAll_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllResolvedComponents()
             {
                 var registry = new Registry();
@@ -653,7 +653,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 Assert.IsEmpty(result);
             }
 
-            [Test, Pending]
+            [Test]
             public void ResolveAllGeneric_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllResolvedComponents()
             {
                 var registry = new Registry();
@@ -686,7 +686,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 Assert.Contains(ex.Message, "Could not resolve component with id 'componentId' because it does not appear to be registered.");
             }
 
-            [Test, Pending]
+            [Test]
             public void ResolveByComponentId_WhenComponentRegistered_ReturnsResolvedComponent()
             {
                 var registry = new Registry();
@@ -697,6 +697,81 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var component = (DummyComponent)registry.ResolveByComponentId("componentId");
 
                 Assert.IsNotNull(component);
+            }
+
+            [Test]
+            public void CanResolve_WhenServiceTypeIsNull_Throws()
+            {
+                var registry = new Registry();
+
+                Assert.Throws<ArgumentNullException>(() => registry.CanResolve(null));
+            }
+
+            [Test]
+            public void CanResolve_WhenServiceTypeNotRegistered_ReturnsFalse()
+            {
+                var registry = new Registry();
+
+                var result = registry.CanResolve(typeof(DummyService));
+
+                Assert.IsFalse(result);
+            }
+
+            [Test]
+            public void CanResolve_WhenServiceTypeRegisteredButNoComponents_ReturnsFalse()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
+
+                var result = registry.CanResolve(typeof(DummyService));
+
+                Assert.IsFalse(result);
+            }
+
+            [Test]
+            public void CanResolve_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsTrue()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
+                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component1Id", new TypeName(typeof(DummyComponent))));
+                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component2Id", new TypeName(typeof(DummyComponent2))));
+
+                var result = registry.CanResolve(typeof(DummyService));
+
+                Assert.IsTrue(result);
+            }
+
+            [Test]
+            public void CanResolveByComponentId_WhenComponentIdIsNull_Throws()
+            {
+                var registry = new Registry();
+
+                Assert.Throws<ArgumentNullException>(() => registry.CanResolveByComponentId(null));
+            }
+
+            [Test]
+            public void CanResolveByComponentId_WhenComponentNotRegistered_ReturnsFalse()
+            {
+                var registry = new Registry();
+
+                var result = registry.CanResolveByComponentId("componentId");
+
+                Assert.IsFalse(result);
+            }
+
+            [Test]
+            public void CanResolveByComponentId_WhenComponentRegistered_ReturnsTrue()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
+                registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponent))));
+
+                var result = registry.CanResolveByComponentId("componentId");
+
+                Assert.IsTrue(result);
             }
         }
 

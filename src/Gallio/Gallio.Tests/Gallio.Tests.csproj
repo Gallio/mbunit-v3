@@ -47,6 +47,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -190,6 +191,10 @@
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="RunSampleAttribute.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistrationTest.cs" />
+    <Compile Include="Runtime\Extensibility\FileSystemResourceLocatorTest.cs" />
+    <Compile Include="Runtime\Extensibility\ObjectFactoryTest.cs" />
+    <Compile Include="Runtime\Extensibility\SingletonHandlerFactoryTest.cs" />
+    <Compile Include="Runtime\Extensibility\InstanceHandlerFactoryTest.cs" />
     <Compile Include="Runtime\Extensibility\ServiceRegistrationTest.cs" />
     <Compile Include="Runtime\Extensibility\PluginRegistrationTest.cs" />
     <Compile Include="Runtime\Extensibility\RegistryTest.cs" />
@@ -316,6 +321,12 @@
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SampleIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SampleImage.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Framework\Utilities\" />

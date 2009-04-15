@@ -13,7 +13,37 @@ namespace Gallio.Runtime.Extensibility
         /// <inheritdoc />
         public IHandler CreateHandler(IServiceLocator serviceLocator, IResourceLocator resourceLocator, Type contractType, Type objectType, PropertySet properties)
         {
-            throw new NotImplementedException();
+            if (! contractType.IsAssignableFrom(objectType))
+                throw new RuntimeException(string.Format("Could not satisfy contract of type '{0}' by creating an instance of type '{1}'.",
+                    contractType, objectType));
+
+            var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, objectType, properties);
+            return new SingletonHandler(objectFactory);
+        }
+
+        private sealed class SingletonHandler : IHandler
+        {
+            private readonly ObjectFactory objectFactory;
+            private object instance;
+
+            public SingletonHandler(ObjectFactory objectFactory)
+            {
+                this.objectFactory = objectFactory;
+            }
+
+            public object Activate()
+            {
+                if (instance == null)
+                {
+                    lock (this)
+                    {
+                        if (instance == null)
+                            instance = objectFactory.CreateInstance();
+                    }
+                }
+
+                return instance;
+            }
         }
     }
 }

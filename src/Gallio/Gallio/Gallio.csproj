@@ -287,9 +287,10 @@
     <Compile Include="Runtime\Debugging\IDebuggerManager.cs" />
     <Compile Include="Runtime\Debugging\NullDebugger.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistration.cs" />
-    <Compile Include="Runtime\Extensibility\DirectoryResourceLocator.cs" />
+    <Compile Include="Runtime\Extensibility\FileSystemResourceLocator.cs" />
     <Compile Include="Runtime\Extensibility\InstanceHandlerFactory.cs" />
     <Compile Include="Runtime\Extensibility\IResourceLocator.cs" />
+    <Compile Include="Runtime\Extensibility\ObjectFactory.cs" />
     <Compile Include="Runtime\Extensibility\ServiceRegistration.cs" />
     <Compile Include="Runtime\Extensibility\IHandlerFactory.cs" />
     <Compile Include="Runtime\Extensibility\IComponentDescriptor.cs" />

@@ -154,6 +154,26 @@ namespace Gallio.Runtime.Extensibility
             return descriptor.ResolveComponent();
         }
 
+        /// <inheritdoc />
+        public bool CanResolve(Type serviceType)
+        {
+            if (serviceType == null)
+                throw new ArgumentNullException("serviceType");
+
+            IList<IComponentDescriptor> descriptors = dataBox.Read(data => data.FindComponentsByServiceTypeName(new TypeName(serviceType)));
+            return descriptors.Count != 0;
+        }
+
+        /// <inheritdoc />
+        public bool CanResolveByComponentId(string componentId)
+        {
+            if (componentId == null)
+                throw new ArgumentNullException("componentId");
+
+            ComponentDescriptor descriptor = dataBox.Read(data => data.GetComponentById(componentId));
+            return descriptor != null;
+        }
+
         private object ResolveImpl(TypeName serviceTypeName)
         {
             IList<IComponentDescriptor> descriptors = dataBox.Read(data => data.FindComponentsByServiceTypeName(serviceTypeName));

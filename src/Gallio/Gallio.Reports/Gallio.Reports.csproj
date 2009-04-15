@@ -77,7 +77,6 @@
     <Content Include="Resources\img\GallioTestReportHeader.png" />
     <Content Include="Resources\img\header-background.gif" />
     <Content Include="Resources\img\Ignored.gif" />
-    <Content Include="Resources\img\Logo.png" />
     <Content Include="Resources\img\Minus.gif" />
     <Content Include="Resources\img\Passed.gif" />
     <Content Include="Resources\img\Plus.gif" />

@@ -177,9 +177,6 @@
                 <Component Id="Reports.Ignored.gif" Guid="39DDC89E-0C54-4164-B13F-BB86E9ADD864" Win64="no">
                     <File Id="Reports.Ignored.gif" Name="Ignored.gif" KeyPath="yes" />
                 </Component>
-                <Component Id="Reports.Logo.png" Guid="2987ABDA-F0D0-475f-90D2-97F89C588002" Win64="no">
-                    <File Id="Reports.Logo.png" Name="Logo.png" KeyPath="yes" />
-                </Component>
                 <Component Id="Reports.Minus.gif" Guid="8F75BF51-8884-41b2-AFD8-1AD48D7ECE38" Win64="no">
                     <File Id="Reports.Minus.gif" Name="Minus.gif" KeyPath="yes" />
                 </Component>
@@ -270,7 +267,6 @@
             <ComponentRef Id="Reports.GallioTestReportHeader.png"/>
             <ComponentRef Id="Reports.header.background.gif"/>
             <ComponentRef Id="Reports.Ignored.gif"/>
-            <ComponentRef Id="Reports.Logo.png"/>
             <ComponentRef Id="Reports.Minus.gif"/>
             <ComponentRef Id="Reports.Passed.gif"/>
             <ComponentRef Id="Reports.Plus.gif"/>

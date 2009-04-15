@@ -14,7 +14,7 @@ namespace Gallio.Runtime.Extensibility
         /// </summary>
         /// <typeparam name="TService">The service type</typeparam>
         /// <returns>The component instance that implements the service</returns>
-        /// <exception cref="Runtime.RuntimeException">Thrown if no component was found</exception>
+        /// <exception cref="RuntimeException">Thrown if no component was found</exception>
         TService Resolve<TService>();
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Gallio.Runtime.Extensibility
         /// <param name="serviceType">The service type</param>
         /// <returns>The component instance that implements the service</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/> is null</exception>
-        /// <exception cref="Runtime.RuntimeException">Thrown if no component was found</exception>
+        /// <exception cref="RuntimeException">Thrown if no component was found</exception>
         object Resolve(Type serviceType);
 
         /// <summary>
@@ -46,6 +46,24 @@ namespace Gallio.Runtime.Extensibility
         /// </summary>
         /// <param name="componentId">The component id</param>
         /// <returns>The component instance</returns>
+        /// <exception cref="RuntimeException">Thrown if no component was found</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/> is null</exception>
         object ResolveByComponentId(string componentId);
+
+        /// <summary>
+        /// Returns true if there is at least one component registered for the given service type.
+        /// </summary>
+        /// <param name="serviceType">The service type</param>
+        /// <returns>True if there is at least one component registered for the given service type</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceType"/> is null</exception>
+        bool CanResolve(Type serviceType);
+
+        /// <summary>
+        /// Returns true if there is a component registered with the given component id.
+        /// </summary>
+        /// <param name="componentId">The component id</param>
+        /// <returns>True if there is a component registered with the given component id</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="componentId"/> is null</exception>
+        bool CanResolveByComponentId(string componentId);
     }
 }
