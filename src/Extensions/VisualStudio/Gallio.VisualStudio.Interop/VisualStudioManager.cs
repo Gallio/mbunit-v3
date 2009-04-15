@@ -70,10 +70,14 @@ namespace Gallio.VisualStudio.Interop
                 return null;
 
             string devenvPath = Path.Combine(installDirAndVersion.Value.First, "devenv.exe");
-            ProcessTask devenvProcess = new ProcessTask(devenvPath, "", Environment.CurrentDirectory);
-            devenvProcess.Start();
+            ProcessTask devenvProcessTask = new ProcessTask(devenvPath, "", Environment.CurrentDirectory);
+            devenvProcessTask.Start();
 
-            int processId = devenvProcess.Process.Id;
+            System.Diagnostics.Process devenvProcess = devenvProcessTask.Process;
+            if (devenvProcess == null)
+                return null;
+
+            int processId = devenvProcess.Id;
 
             Stopwatch stopwatch = Stopwatch.StartNew();
             for (; ; )
@@ -83,7 +87,7 @@ namespace Gallio.VisualStudio.Interop
                     return visualStudio;
 
                 if (stopwatch.ElapsedMilliseconds > VisualStudioAttachTimeoutMilliseconds
-                    || !devenvProcess.IsRunning)
+                    || !devenvProcessTask.IsRunning)
                     return null;
 
                 Thread.Sleep(500);
