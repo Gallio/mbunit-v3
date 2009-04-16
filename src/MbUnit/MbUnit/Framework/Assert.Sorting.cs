@@ -124,6 +124,7 @@ namespace MbUnit.Framework
                         {
                             return new AssertionFailureBuilder(
                                 "Expected the elements to be sorted in a specific order but no implicit ordering comparison can be found for the subject type.")
+                                .SetMessage(messageFormat, messageArgs)
                                 .AddRawLabeledValue("Type", typeof(T))
                                 .AddException(exception)
                                 .ToAssertionFailure();
@@ -133,6 +134,7 @@ namespace MbUnit.Framework
                         {
                             return new AssertionFailureBuilder(
                                 "Expected the elements to be sorted in a specific order but the sequence of values mismatches at one position at least.")
+                                .SetMessage(messageFormat, messageArgs)
                                 .AddRawLabeledValue("Expected Sort Order", sortInfo.Description)
                                 .AddRawLabeledValue("Sequence", values)
                                 .AddRawLabeledValue("Failing Position", index)

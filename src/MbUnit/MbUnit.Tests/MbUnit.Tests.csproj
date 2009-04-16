@@ -176,6 +176,7 @@
     <Compile Include="Framework\AssertTest_Serialization.cs" />
     <Compile Include="Framework\ContractVerifiers\ListContractTest.cs" />
     <Compile Include="Framework\AssertTest_Sorting.cs" />
+    <Compile Include="Framework\AssertTest_Distinct.cs" />
     <Compile Include="Framework\DependsOnTest.cs" />
     <Compile Include="Framework\TimeoutAttributeTest.cs" />
     <Compile Include="Framework\CsvDataTest.cs">
