@@ -10,6 +10,7 @@
     <CSharpProject Include="Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop$(ProjectVariant).csproj" />
     
     <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.dll" />
+    <Binary Include="Gallio.VisualStudio.Interop\bin\Gallio.VisualStudio.Interop.pdb" />
   </ItemGroup>
 
   <Target Name="BeforeBuild">

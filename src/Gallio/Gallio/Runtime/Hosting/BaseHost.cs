@@ -281,11 +281,11 @@ namespace Gallio.Runtime.Hosting
             {
                 IDebugger debugger = debuggerManager.GetDefaultDebugger();
 
-                if (!debugger.IsAttachedToProcess(debuggedProcess))
+                if (!debugger.IsAttachedToProcess(debuggedProcess, Logger))
                 {
                     Logger.Log(LogSeverity.Important, "Attaching debugger to the host.");
 
-                    AttachDebuggerResult result = debugger.AttachToProcess(debuggedProcess);
+                    AttachDebuggerResult result = debugger.AttachToProcess(debuggedProcess, Logger);
                     if (result == AttachDebuggerResult.Attached)
                     {
                         this.debugger = debugger;
@@ -308,7 +308,7 @@ namespace Gallio.Runtime.Hosting
             {
                 Logger.Log(LogSeverity.Important, "Detaching debugger from the host.");
 
-                DetachDebuggerResult result = debugger.DetachFromProcess(debuggedProcess);
+                DetachDebuggerResult result = debugger.DetachFromProcess(debuggedProcess, Logger);
                 if (result == DetachDebuggerResult.CouldNotDetach)
                     Logger.Log(LogSeverity.Warning, "Could not detach debugger from the host.");
 

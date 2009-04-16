@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime.Debugging
 {
@@ -26,19 +27,19 @@ namespace Gallio.Runtime.Debugging
     public class NullDebugger : IDebugger
     {
         /// <inheritdoc />
-        public bool IsAttachedToProcess(Process process)
+        public bool IsAttachedToProcess(Process process, ILogger logger)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public AttachDebuggerResult AttachToProcess(Process process)
+        public AttachDebuggerResult AttachToProcess(Process process, ILogger logger)
         {
             return AttachDebuggerResult.CouldNotAttach;
         }
 
         /// <inheritdoc />
-        public DetachDebuggerResult DetachFromProcess(Process process)
+        public DetachDebuggerResult DetachFromProcess(Process process, ILogger logger)
         {
             return DetachDebuggerResult.CouldNotDetach;
         }

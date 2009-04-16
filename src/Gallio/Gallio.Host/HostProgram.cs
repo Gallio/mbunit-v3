@@ -144,10 +144,10 @@ namespace Gallio.Host
             AttachDebuggerResult attachResult = AttachDebuggerResult.CouldNotAttach;
             try
             {
-                if (!debugger.IsAttachedToProcess(currentProcess))
+                if (!debugger.IsAttachedToProcess(currentProcess, logger))
                 {
                     logger.Log(LogSeverity.Important, "Attaching the debugger to the host.");
-                    attachResult = debugger.AttachToProcess(currentProcess);
+                    attachResult = debugger.AttachToProcess(currentProcess, logger);
                     if (attachResult == AttachDebuggerResult.CouldNotAttach)
                         logger.Log(LogSeverity.Warning, "Could not attach debugger to the host.");
                 }
@@ -159,7 +159,7 @@ namespace Gallio.Host
                 if (attachResult == AttachDebuggerResult.Attached)
                 {
                     logger.Log(LogSeverity.Important, "Detaching the debugger from the host.");
-                    DetachDebuggerResult detachResult = debugger.DetachFromProcess(currentProcess);
+                    DetachDebuggerResult detachResult = debugger.DetachFromProcess(currentProcess, logger);
                     if (detachResult == DetachDebuggerResult.CouldNotDetach)
                         logger.Log(LogSeverity.Warning, "Could not detach debugger from the host.");
                 }

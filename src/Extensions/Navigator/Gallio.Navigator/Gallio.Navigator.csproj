@@ -91,6 +91,10 @@
     <Content Include="Gallio.Navigator.Readme.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Gallio\Gallio\Gallio.csproj">
+      <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
+      <Name>Gallio %28Gallio\Gallio%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\VisualStudio\Gallio.VisualStudio.Interop\Gallio.VisualStudio.Interop.csproj">
       <Project>{B6912CC5-1E73-46E0-8F09-7F135924E3E2}</Project>
       <Name>Gallio.VisualStudio.Interop</Name>

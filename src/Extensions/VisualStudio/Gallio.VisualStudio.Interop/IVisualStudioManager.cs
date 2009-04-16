@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using EnvDTE;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.VisualStudio.Interop
 {
@@ -30,14 +31,18 @@ namespace Gallio.VisualStudio.Interop
         /// </summary>
         /// <param name="version">The version of Visual Studio to find, or <see cref="VisualStudioVersion.Any"/> for any version</param>
         /// <param name="launchIfNoActiveInstance">If true, launches an instance if there is no active Visual Studio yet</param>
+        /// <param name="logger">The logger for writing progress and failure messages</param>
         /// <returns>The Visual Studio instance, or null on failure</returns>
-        IVisualStudio GetVisualStudio(VisualStudioVersion version, bool launchIfNoActiveInstance);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        IVisualStudio GetVisualStudio(VisualStudioVersion version, bool launchIfNoActiveInstance, ILogger logger);
 
         /// <summary>
         /// Launches the latest installed version of Visual Studio.
         /// </summary>
         /// <param name="version">The version of Visual Studio to launch, or <see cref="VisualStudioVersion.Any"/> for the most recent version</param>
+        /// <param name="logger">The logger for writing progress and failure messages</param>
         /// <returns>The Visual Studio instance, or null on failure</returns>
-        IVisualStudio LaunchVisualStudio(VisualStudioVersion version);
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logger"/> is null</exception>
+        IVisualStudio LaunchVisualStudio(VisualStudioVersion version, ILogger logger);
     }
 }

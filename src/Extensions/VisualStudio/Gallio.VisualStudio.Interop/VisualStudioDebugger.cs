@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using Gallio.Runtime.Debugging;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.VisualStudio.Interop
 {
@@ -25,15 +26,17 @@ namespace Gallio.VisualStudio.Interop
     public class VisualStudioDebugger : IDebugger
     {
         /// <inheritdoc />
-        public bool IsAttachedToProcess(Process process)
+        public bool IsAttachedToProcess(Process process, ILogger logger)
         {
             if (process == null)
                 throw new ArgumentNullException("process");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
 
             bool result = false;
             try
             {
-                IVisualStudio visualStudio = VisualStudioManager.Instance.GetVisualStudio(VisualStudioVersion.Any, false);
+                IVisualStudio visualStudio = VisualStudioManager.Instance.GetVisualStudio(VisualStudioVersion.Any, false, logger);
                 if (visualStudio == null)
                     return false;
 
@@ -44,23 +47,26 @@ namespace Gallio.VisualStudio.Interop
                         result = true;
                 });
             }
-            catch (ApplicationException)
+            catch (VisualStudioException ex)
             {
+                logger.Log(LogSeverity.Debug, "Failed to detect whether Visual Studio debugger was attached to process.", ex);
             }
 
             return result;
         }
 
         /// <inheritdoc />
-        public AttachDebuggerResult AttachToProcess(Process process)
+        public AttachDebuggerResult AttachToProcess(Process process, ILogger logger)
         {
             if (process == null)
                 throw new ArgumentNullException("process");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
 
             AttachDebuggerResult result = AttachDebuggerResult.CouldNotAttach;
             try
             {
-                IVisualStudio visualStudio = VisualStudioManager.Instance.GetVisualStudio(VisualStudioVersion.Any, true);
+                IVisualStudio visualStudio = VisualStudioManager.Instance.GetVisualStudio(VisualStudioVersion.Any, true, logger);
                 if (visualStudio != null)
                 {
                     visualStudio.Call(dte =>
@@ -78,27 +84,34 @@ namespace Gallio.VisualStudio.Interop
                                 dteProcess.Attach();
                                 result = AttachDebuggerResult.Attached;
                             }
+                            else
+                            {
+                                logger.Log(LogSeverity.Debug, "Failed to attach Visual Studio debugger to process because it was not found in the LocalProcesses list.");
+                            }
                         }
                     });
                 }
             }
-            catch (ApplicationException)
+            catch (VisualStudioException ex)
             {
+                logger.Log(LogSeverity.Debug, "Failed to attach Visual Studio debugger to process.", ex);
             }
 
             return result;
         }
 
         /// <inheritdoc />
-        public DetachDebuggerResult DetachFromProcess(Process process)
+        public DetachDebuggerResult DetachFromProcess(Process process, ILogger logger)
         {
             if (process == null)
                 throw new ArgumentNullException("process");
+            if (logger == null)
+                throw new ArgumentNullException("logger");
 
             DetachDebuggerResult result = DetachDebuggerResult.AlreadyDetached;
             try
             {
-                IVisualStudio visualStudio = VisualStudioManager.Instance.GetVisualStudio(VisualStudioVersion.Any, false);
+                IVisualStudio visualStudio = VisualStudioManager.Instance.GetVisualStudio(VisualStudioVersion.Any, false, logger);
                 if (visualStudio != null)
                 {
                     visualStudio.Call(dte =>
@@ -112,9 +125,11 @@ namespace Gallio.VisualStudio.Interop
                     });
                 }
             }
-            catch (ApplicationException)
+            catch (VisualStudioException ex)
             {
                 result = DetachDebuggerResult.CouldNotDetach;
+
+                logger.Log(LogSeverity.Debug, "Failed to detach Visual Studio debugger from process.", ex);
             }
 
             return result;

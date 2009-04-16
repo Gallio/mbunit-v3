@@ -19,6 +19,7 @@ using EnvDTE;
 using EnvDTE80;
 using EnvDTE90;
 using Gallio.Reflection;
+using Gallio.Runtime.Logging;
 using Gallio.VisualStudio.Interop;
 using MbUnit.Framework;
 
@@ -38,7 +39,7 @@ namespace Gallio.VisualStudio.Shell.Tests
         public static IVisualStudio GetVisualStudio()
         {
             if (visualStudio == null)
-                visualStudio = VisualStudioManager.Instance.LaunchVisualStudio(VisualStudioVersion.VS2008);
+                visualStudio = VisualStudioManager.Instance.LaunchVisualStudio(VisualStudioVersion.VS2008, NullLogger.Instance);
 
             return visualStudio;
         }

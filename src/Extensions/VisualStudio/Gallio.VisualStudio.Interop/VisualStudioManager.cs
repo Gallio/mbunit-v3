@@ -21,6 +21,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using EnvDTE;
 using Gallio.Concurrency;
+using Gallio.Runtime.Logging;
 using Microsoft.Win32;
 using Thread = System.Threading.Thread;
 using Gallio.VisualStudio.Interop.Native;
@@ -53,45 +54,69 @@ namespace Gallio.VisualStudio.Interop
         }
 
         /// <inheritdoc />
-        public IVisualStudio GetVisualStudio(VisualStudioVersion version, bool launchIfNoActiveInstance)
+        public IVisualStudio GetVisualStudio(VisualStudioVersion version, bool launchIfNoActiveInstance, ILogger logger)
         {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
             IVisualStudio visualStudio = GetActiveVisualStudio(version);
             if (visualStudio == null && launchIfNoActiveInstance)
-                visualStudio = LaunchVisualStudio(version);
+                visualStudio = LaunchVisualStudio(version, logger);
 
             return visualStudio;
         }
 
         /// <inheritdoc />
-        public IVisualStudio LaunchVisualStudio(VisualStudioVersion version)
+        public IVisualStudio LaunchVisualStudio(VisualStudioVersion version, ILogger logger)
         {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
             Pair<string, VisualStudioVersion>? installDirAndVersion = GetVisualStudioInstallDirAndVersion(version);
-            if (! installDirAndVersion.HasValue)
+            if (!installDirAndVersion.HasValue)
+            {
+                logger.Log(LogSeverity.Debug, string.Format("Could not find Visual Studio version '{0}'.", version));
                 return null;
+            }
 
             string devenvPath = Path.Combine(installDirAndVersion.Value.First, "devenv.exe");
             ProcessTask devenvProcessTask = new ProcessTask(devenvPath, "", Environment.CurrentDirectory);
+
+            logger.Log(LogSeverity.Debug, string.Format("Launching Visual Studio using path: '{0}'.", devenvProcessTask.ExecutablePath));
             devenvProcessTask.Start();
 
             System.Diagnostics.Process devenvProcess = devenvProcessTask.Process;
-            if (devenvProcess == null)
-                return null;
-
-            int processId = devenvProcess.Id;
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            for (; ; )
+            if (devenvProcess != null)
             {
-                IVisualStudio visualStudio = GetVisualStudioFromProcess(processId, installDirAndVersion.Value.Second);
-                if (visualStudio != null)
-                    return visualStudio;
+                int processId = devenvProcess.Id;
 
-                if (stopwatch.ElapsedMilliseconds > VisualStudioAttachTimeoutMilliseconds
-                    || !devenvProcessTask.IsRunning)
-                    return null;
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                for (;;)
+                {
+                    IVisualStudio visualStudio = GetVisualStudioFromProcess(processId, installDirAndVersion.Value.Second);
+                    if (visualStudio != null)
+                        return visualStudio;
 
-                Thread.Sleep(500);
+                    if (stopwatch.ElapsedMilliseconds > VisualStudioAttachTimeoutMilliseconds)
+                    {
+                        logger.Log(LogSeverity.Debug, string.Format("Stopped waiting for Visual Studio to launch after {0} milliseconds.", VisualStudioAttachTimeoutMilliseconds));
+                        break;
+                    }
+
+                    if (!devenvProcessTask.IsRunning)
+                        break;
+
+                    Thread.Sleep(500);
+                }
             }
+
+            if (devenvProcessTask.IsTerminated && devenvProcessTask.Result != null)
+            {
+                if (devenvProcessTask.Result.Exception != null)
+                    logger.Log(LogSeverity.Debug, "Failed to launch Visual Studio.", devenvProcessTask.Result.Exception);
+            }
+
+            return null;
         }
 
         private static IVisualStudio GetActiveVisualStudio(VisualStudioVersion version)

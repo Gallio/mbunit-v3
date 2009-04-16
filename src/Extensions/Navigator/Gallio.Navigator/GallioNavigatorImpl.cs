@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using EnvDTE;
 using System.Runtime.InteropServices;
 using Gallio.Navigator.Native;
+using Gallio.Runtime.Logging;
 using Gallio.VisualStudio.Interop;
 
 namespace Gallio.Navigator
@@ -86,7 +87,10 @@ namespace Gallio.Navigator
         {
             path = Path.GetFullPath(path);
 
-            IVisualStudio visualStudio = visualStudioManager.GetVisualStudio(VisualStudioVersion.Any, true);
+            var logger = NullLogger.Instance;
+            IVisualStudio visualStudio = visualStudioManager.GetVisualStudio(VisualStudioVersion.Any, true, logger);
+            if (visualStudio == null)
+                return false;
 
             visualStudio.Call(dte =>
             {
