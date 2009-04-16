@@ -59,9 +59,6 @@
                             <Component Id="CCNet.Ignored.gif" Guid="{83AE6D5C-EDAD-4427-A3F4-A504BE2A8F23}" Win64="no">
                                 <File Id="CCNet.Ignored.gif" Name="Ignored.gif" KeyPath="yes" />
                             </Component>
-                            <Component Id="CCNet.Logo.png" Guid="{742E5E76-E8A6-481b-B862-19FC9DB43103}" Win64="no">
-                                <File Id="CCNet.Logo.png" Name="Logo.png" KeyPath="yes" />
-                            </Component>
                             <Component Id="CCNet.Minus.gif" Guid="{4BBACD67-59B4-4cc2-8622-C8DA7DCD4BF8}" Win64="no">
                                 <File Id="CCNet.Minus.gif" Name="Minus.gif" KeyPath="yes" />
                             </Component>
@@ -97,7 +94,6 @@
             <ComponentRef Id="CCNet.GallioTestReportHeader.png"/>
             <ComponentRef Id="CCNet.header.background.gif"/>
             <ComponentRef Id="CCNet.Ignored.gif"/>
-            <ComponentRef Id="CCNet.Logo.png"/>
             <ComponentRef Id="CCNet.Minus.gif"/>
             <ComponentRef Id="CCNet.Passed.gif"/>
             <ComponentRef Id="CCNet.Plus.gif"/>
