@@ -97,6 +97,10 @@ namespace Gallio.AutoCAD
         /// <inheritdoc/>
         protected override void RunImpl(TestPackageConfig testPackageConfig, TestExplorationOptions testExplorationOptions, ITestExplorationListener testExplorationListener, TestExecutionOptions testExecutionOptions, ITestExecutionListener testExecutionListener, IProgressMonitor progressMonitor)
         {
+            // AutoCAD uses fibers.  Inform the test harness not to switch threads.
+            testExecutionOptions = testExecutionOptions.Copy();
+            testExecutionOptions.SingleThreaded = true;
+
             remoteTestDriver.Run(testPackageConfig, testExplorationOptions, testExplorationListener, testExecutionOptions, testExecutionListener, progressMonitor);
         }
 
