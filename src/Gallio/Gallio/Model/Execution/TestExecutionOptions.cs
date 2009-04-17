@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using Gallio.Model.Filters;
 
 namespace Gallio.Model.Execution
@@ -28,6 +29,7 @@ namespace Gallio.Model.Execution
         private bool skipDynamicTests;
         private bool skipTestExecution;
         private bool exactFilter;
+        private bool singleThreaded;
 
         /// <summary>
         /// Gets or sets the filter set.
@@ -92,6 +94,24 @@ namespace Gallio.Model.Execution
         }
 
         /// <summary>
+        /// Gets or sets whether to run tests within a single thread.  This ensures that the
+        /// tests will run on the same thread as the initial call to the test harness (unless
+        /// the test framework itself spawns any new threads).
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// When tests are run single-threaded, the test harness will no longer be able to guarantee
+        /// that the default apartment state is <see cref="ApartmentState.STA"/>.
+        /// </para>
+        /// </remarks>
+        /// <value>Defaults to false.</value>
+        public bool SingleThreaded
+        {
+            get { return singleThreaded; }
+            set { singleThreaded = value; }
+        }
+
+        /// <summary>
         /// Creates a copy of the options.
         /// </summary>
         /// <returns>The copy</returns>
@@ -100,8 +120,10 @@ namespace Gallio.Model.Execution
             TestExecutionOptions copy = new TestExecutionOptions();
 
             copy.filterSet = filterSet;
+            copy.exactFilter = exactFilter;
             copy.skipDynamicTests = skipDynamicTests;
             copy.skipTestExecution = skipTestExecution;
+            copy.singleThreaded = singleThreaded;
 
             return copy;
         }

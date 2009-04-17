@@ -284,7 +284,7 @@ namespace Gallio.Runner.Harness
 
         private void RunAllTestCommands(ITestCommand rootTestCommand, TestExecutionOptions options, IProgressMonitor progressMonitor)
         {
-            ThreadTask task = new ThreadTask("Test Runner", delegate
+            Action action = delegate
             {
                 if (rootTestCommand != null)
                 {
@@ -299,16 +299,32 @@ namespace Gallio.Runner.Harness
                         }
                     }
                 }
-            });
+            };
 
-            // Use STA as the default for all tests.  A test framework may of course choose
-            // to create its own threads with different apartment states.
-            task.ApartmentState = ApartmentState.STA;
-            task.Run(null);
+            if (options.SingleThreaded)
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    throw new RunnerException("A fatal exception occurred while running all test commands.", ex);
+                }
+            }
+            else
+            {
+                ThreadTask task = new ThreadTask("Test Runner", action);
 
-            if (task.Result.Exception != null)
-                throw new RunnerException("A fatal exception occurred while running all test commands.",
-                    task.Result.Exception);
+                // Use STA as the default for all tests.  A test framework may of course choose
+                // to create its own threads with different apartment states.
+                task.ApartmentState = ApartmentState.STA;
+                task.Run(null);
+
+                if (task.Result.Exception != null)
+                    throw new RunnerException("A fatal exception occurred while running all test commands.",
+                        task.Result.Exception);
+            }
         }
 
         private void ThrowIfDisposed()

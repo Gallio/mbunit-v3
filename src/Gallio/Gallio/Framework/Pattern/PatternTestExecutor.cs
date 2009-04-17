@@ -54,7 +54,7 @@ namespace Gallio.Framework.Pattern
             this.converter = converter;
 
             scheduler = new ParallelizableTestCaseScheduler(() =>
-                TestAssemblyExecutionParameters.DegreeOfParallelism);
+                options.SingleThreaded ? 1 : TestAssemblyExecutionParameters.DegreeOfParallelism);
         }
 
         public TestOutcome RunTest(ITestCommand testCommand, ITestStep parentTestStep,
