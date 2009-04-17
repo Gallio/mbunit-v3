@@ -191,8 +191,13 @@
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="RunSampleAttribute.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistrationTest.cs" />
+    <Compile Include="Runtime\Extensibility\DefaultObjectDependencyResolverTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Extensibility\FileSystemPluginLoaderTest.cs" />
     <Compile Include="Runtime\Extensibility\FileSystemResourceLocatorTest.cs" />
     <Compile Include="Runtime\Extensibility\ObjectFactoryTest.cs" />
+    <Compile Include="Runtime\Extensibility\PluginCatalogTest.cs" />
     <Compile Include="Runtime\Extensibility\SingletonHandlerFactoryTest.cs" />
     <Compile Include="Runtime\Extensibility\InstanceHandlerFactoryTest.cs" />
     <Compile Include="Runtime\Extensibility\ServiceRegistrationTest.cs" />

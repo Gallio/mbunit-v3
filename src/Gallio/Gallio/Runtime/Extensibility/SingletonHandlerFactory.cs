@@ -17,7 +17,8 @@ namespace Gallio.Runtime.Extensibility
                 throw new RuntimeException(string.Format("Could not satisfy contract of type '{0}' by creating an instance of type '{1}'.",
                     contractType, objectType));
 
-            var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, objectType, properties);
+            var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+            var objectFactory = new ObjectFactory(dependencyResolver, objectType, properties);
             return new SingletonHandler(objectFactory);
         }
 

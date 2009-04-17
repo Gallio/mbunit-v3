@@ -17,6 +17,7 @@ using System.Web.Services;
 using System.Web.Services.Protocols;
 using Gallio.Runner.Projects;
 using Gallio.Runner.Reports;
+using Gallio.Schema.Plugins;
 
 namespace Gallio
 {
@@ -40,7 +41,7 @@ namespace Gallio
     internal class XmlSerializableTypeIncludes : SoapHttpClientProtocol
     {
         [SoapDocumentMethod]
-        public void Dummy(Report report, Project project)
+        public void Dummy(Report report, Project project, Plugin plugin)
         {
         }
     }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Gallio.Collections;
+using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -17,37 +18,25 @@ namespace Gallio.Tests.Runtime.Extensibility
         public class ArgumentValidation
         {
             [Test]
-            public void Constructor_WhenServiceLocatorIsNull_Throws()
+            public void Constructor_WhenObjectDependencyResolverIsNull_Throws()
             {
-                var resourceLocator = MockRepository.GenerateStub<IResourceLocator>();
-
-                Assert.Throws<ArgumentNullException>(() => new ObjectFactory(null, resourceLocator, typeof(object), new PropertySet()));
-            }
-
-            [Test]
-            public void Constructor_WhenResourceLocatorIsNull_Throws()
-            {
-                var serviceLocator = MockRepository.GenerateStub<IServiceLocator>();
-
-                Assert.Throws<ArgumentNullException>(() => new ObjectFactory(serviceLocator, null, typeof(object), new PropertySet()));
+                Assert.Throws<ArgumentNullException>(() => new ObjectFactory(null, typeof(object), new PropertySet()));
             }
 
             [Test]
             public void Constructor_WhenObjectTypeIsNull_Throws()
             {
-                var serviceLocator = MockRepository.GenerateStub<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateStub<IResourceLocator>();
+                var dependencyResolver = MockRepository.GenerateStub<IObjectDependencyResolver>();
 
-                Assert.Throws<ArgumentNullException>(() => new ObjectFactory(serviceLocator, resourceLocator, null, new PropertySet()));
+                Assert.Throws<ArgumentNullException>(() => new ObjectFactory(dependencyResolver, null, new PropertySet()));
             }
 
             [Test]
             public void Constructor_WhenPropertySetIsNull_Throws()
             {
-                var serviceLocator = MockRepository.GenerateStub<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateStub<IResourceLocator>();
+                var dependencyResolver = MockRepository.GenerateStub<IObjectDependencyResolver>();
 
-                Assert.Throws<ArgumentNullException>(() => new ObjectFactory(serviceLocator, resourceLocator, typeof(object), null));
+                Assert.Throws<ArgumentNullException>(() => new ObjectFactory(dependencyResolver, typeof(object), null));
             }
         }
 
@@ -56,319 +45,154 @@ namespace Gallio.Tests.Runtime.Extensibility
             [Test]
             public void CreateInstance_WhenComponentHasNoDependencies_InstantiatesItUsingDefaultConstructor()
             {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(Component), new PropertySet());
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(Component), new PropertySet());
 
                 var component = (Component)objectFactory.CreateInstance();
                 Assert.IsNotNull(component);
 
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
+                dependencyResolver.VerifyAllExpectations();
             }
 
             [Test]
-            public void CreateInstance_WhenComponentHasRequiredDependencyOnService_ResolvesDependencyWithServiceLocator()
+            public void CreateInstance_WhenComponentHasRequiredDependencyWithNoParameterValueAndItIsSatisfied_BuildsTheObjectWithTheResolvedDependency()
             {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithRequiredDependencyOnService), new PropertySet());
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(ComponentWithRequiredDependencyOnService), new PropertySet());
                 var service = MockRepository.GenerateStub<IService>();
-
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(true);
-                serviceLocator.Expect(x => x.Resolve(typeof(IService))).Return(service);
+                dependencyResolver.Expect(x => x.ResolveDependency("service", typeof(IService), null)).Return(DependencyResolution.Satisfied(service));
 
                 var component = (ComponentWithRequiredDependencyOnService)objectFactory.CreateInstance();
                 Assert.AreSame(service, component.Service);
 
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
+                dependencyResolver.VerifyAllExpectations();
             }
 
             [Test]
-            public void CreateInstance_WhenComponentHasOptionalDependencyOnService_ResolvesDependencyWithServiceLocator()
+            public void CreateInstance_WhenComponentHasRequiredDependencyWithNoParameterValueAndItIsNotSatisfied_Throws()
             {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithOptionalDependencyOnService), new PropertySet());
-                var service = MockRepository.GenerateStub<IService>();
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(ComponentWithRequiredDependencyOnService), new PropertySet());
+                dependencyResolver.Expect(x => x.ResolveDependency("service", typeof(IService), null)).Return(DependencyResolution.Unsatisfied());
 
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(true);
-                serviceLocator.Expect(x => x.Resolve(typeof(IService))).Return(service);
+                var ex = Assert.Throws<RuntimeException>(() => objectFactory.CreateInstance());
+                Assert.AreEqual(string.Format("Could not resolve required dependency 'service' of type '{0}'.", typeof(IService)), ex.Message);
+
+                dependencyResolver.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void CreateInstance_WhenComponentHasRequiredDependencyWithNoParameterValueAndItIsNotSatisfiedDueToException_Throws()
+            {
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(ComponentWithRequiredDependencyOnService), new PropertySet());
+                dependencyResolver.Expect(x => x.ResolveDependency("service", typeof(IService), null)).Throw(new InvalidOperationException("Boom"));
+
+                var ex = Assert.Throws<RuntimeException>(() => objectFactory.CreateInstance());
+                Assert.AreEqual(string.Format("Could not resolve required dependency 'service' of type '{0}' due to an exception.", typeof(IService)), ex.Message);
+                Assert.IsInstanceOfType<InvalidOperationException>(ex.InnerException, "Should contain rethrown exception.");
+
+                dependencyResolver.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void CreateInstance_WhenComponentHasOptionalDependencyWithNoParameterValueAndItIsSatisfied_BuildsTheObjectWithTheResolvedDependency()
+            {
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(ComponentWithOptionalDependencyOnService), new PropertySet());
+                var service = MockRepository.GenerateStub<IService>();
+                dependencyResolver.Expect(x => x.ResolveDependency("Service", typeof(IService), null)).Return(DependencyResolution.Satisfied(service));
 
                 var component = (ComponentWithOptionalDependencyOnService)objectFactory.CreateInstance();
                 Assert.AreSame(service, component.Service);
 
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
+                dependencyResolver.VerifyAllExpectations();
             }
 
             [Test]
-            public void CreateInstance_WhenComponentHasRequiredDependencyOnProperty_ResolvesDependencyWithPropertySetCaseInsensitively()
+            public void CreateInstance_WhenComponentHasOptionalDependencyWithNoParameterValueAndItIsNotSatisfied_BuildsTheObjectWithoutTheResolvedDependency()
             {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithRequiredDependencyOnProperty), new PropertySet()
-                {
-                    { "prOpERtY", "value" }
-                });
-
-                var component = (ComponentWithRequiredDependencyOnProperty)objectFactory.CreateInstance();
-                Assert.AreEqual("value", component.Property);
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-
-            [Test]
-            public void CreateInstance_WhenComponentHasOptionalDependencyOnProperty_ResolvesDependencyWithPropertySetCaseInsensitvely()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithOptionalDependencyOnProperty), new PropertySet()
-                {
-                    { "prOpERtY", "value" }
-                });
-
-                var component = (ComponentWithOptionalDependencyOnProperty)objectFactory.CreateInstance();
-                Assert.AreEqual("value", component.Property);
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-
-            [Test]
-            public void CreateInstance_WhenComponentHasRequiredDependencyOnServiceThatCannotBeResolved_Throws()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithRequiredDependencyOnService), new PropertySet());
-
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(false);
-
-                var ex = Assert.Throws<RuntimeException>(() => objectFactory.CreateInstance());
-                Assert.AreEqual(string.Format("Could not resolve required dependency '{0}' of type '{1}'.", "service", typeof(IService)), ex.Message);
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-
-            [Test]
-            public void CreateInstance_WhenComponentHasRequiredDependencyOnServiceThatThrowsDuringResolution_RethrowsWithMessage()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithRequiredDependencyOnService), new PropertySet());
-
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(true);
-                serviceLocator.Expect(x => x.Resolve(typeof(IService))).Throw(new InvalidOperationException("boom"));
-
-                var ex = Assert.Throws<RuntimeException>(() => objectFactory.CreateInstance());
-                Assert.AreEqual(string.Format("Could not resolve required dependency '{0}' of type '{1}' due to an exception.", "service", typeof(IService)), ex.Message);
-                Assert.IsInstanceOfType<InvalidOperationException>(ex.InnerException, "Should contain rethrown exception.");
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-
-            [Test]
-            public void CreateInstance_WhenComponentHasOptionalDependencyOnServiceThatCannotBeResolved_IgnoresIt()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithOptionalDependencyOnService), new PropertySet());
-
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(false);
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(ComponentWithOptionalDependencyOnService), new PropertySet());
+                dependencyResolver.Expect(x => x.ResolveDependency("Service", typeof(IService), null)).Return(DependencyResolution.Unsatisfied());
 
                 var component = (ComponentWithOptionalDependencyOnService)objectFactory.CreateInstance();
                 Assert.IsNull(component.Service);
 
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
+                dependencyResolver.VerifyAllExpectations();
             }
 
             [Test]
-            public void CreateInstance_WhenComponentHasOptionalDependencyOnServiceThatThrowsDuringResolution_RethrowsWithMessage()
+            public void CreateInstance_WhenComponentHasOptionalDependencyWithNoParameterValueAndItIsNotSatisfiedDueToException_Throws()
             {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithOptionalDependencyOnService), new PropertySet());
-
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(true);
-                serviceLocator.Expect(x => x.Resolve(typeof(IService))).Throw(new InvalidOperationException("boom"));
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(ComponentWithOptionalDependencyOnService), new PropertySet());
+                dependencyResolver.Expect(x => x.ResolveDependency("Service", typeof(IService), null)).Throw(new InvalidOperationException("Boom"));
 
                 var ex = Assert.Throws<RuntimeException>(() => objectFactory.CreateInstance());
-                Assert.AreEqual(string.Format("Could not resolve optional dependency '{0}' of type '{1}' due to an exception.", "Service", typeof(IService)), ex.Message);
+                Assert.AreEqual(string.Format("Could not resolve optional dependency 'Service' of type '{0}' due to an exception.", typeof(IService)), ex.Message);
                 Assert.IsInstanceOfType<InvalidOperationException>(ex.InnerException, "Should contain rethrown exception.");
 
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
+                dependencyResolver.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void CreateInstance_WhenComponentHasRequiredDependencyWithAParameterValueAndItIsSatisfied_BuildsTheObjectWithTheResolvedDependency()
+            {
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(ComponentWithRequiredDependencyOnProperty), new PropertySet()
+                {
+                    { "prOpERtY", "value" }
+                });
+                dependencyResolver.Expect(x => x.ResolveDependency("property", typeof(string), "value")).Return(DependencyResolution.Satisfied("value"));
+
+                var component = (ComponentWithRequiredDependencyOnProperty)objectFactory.CreateInstance();
+                Assert.AreEqual("value", component.Property);
+
+                dependencyResolver.VerifyAllExpectations();
             }
 
             [Test]
             public void CreateInstance_WhenComponentHasMultipleConstructors_UsesPublicConstructorWithMostParameters()
             {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithMultipleConstructors), new PropertySet()
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(ComponentWithMultipleConstructors), new PropertySet()
                 {
                     { "prOpERtY", "value" }
                 });
                 var service = MockRepository.GenerateStub<IService>();
-
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(true);
-                serviceLocator.Expect(x => x.Resolve(typeof(IService))).Return(service);
+                dependencyResolver.Expect(x => x.ResolveDependency("service", typeof(IService), null)).Return(DependencyResolution.Satisfied(service));
+                dependencyResolver.Expect(x => x.ResolveDependency("property", typeof(string), "value")).Return(DependencyResolution.Satisfied("value"));
 
                 var component = (ComponentWithMultipleConstructors)objectFactory.CreateInstance();
                 Assert.AreSame(service, component.Service);
                 Assert.AreEqual("value", component.Property);
 
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
+                dependencyResolver.VerifyAllExpectations();
             }
 
             [Test]
             public void CreateInstance_WhenComponentHasNoPublicConstructors_Throws()
             {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithNoPublicConstructors), new PropertySet());
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(ComponentWithNoPublicConstructors), new PropertySet());
 
                 var ex = Assert.Throws<RuntimeException>(() => objectFactory.CreateInstance());
                 Assert.AreEqual(string.Format("Type '{0}' does not have any public constructors.", typeof(ComponentWithNoPublicConstructors)), ex.Message);
 
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
+                dependencyResolver.VerifyAllExpectations();
             }
 
             [Test]
             public void CreateInstance_WhenComponentIsAbstract_Throws()
             {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(AbstractComponent), new PropertySet());
+                var dependencyResolver = MockRepository.GenerateMock<IObjectDependencyResolver>();
+                var objectFactory = new ObjectFactory(dependencyResolver, typeof(AbstractComponent), new PropertySet());
 
                 var ex = Assert.Throws<RuntimeException>(() => objectFactory.CreateInstance());
                 Assert.AreEqual(string.Format("Type '{0}' is abstract and cannot be instantiated.", typeof(AbstractComponent)), ex.Message);
 
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-        }
-
-        public class PropertyConversions
-        {
-            [Test]
-            public void CreateInstance_WhenPropertySpecifiesComponentId_ResolvesDependencyWithServiceLocatorUsingComponentId()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithRequiredDependencyOnService), new PropertySet()
-                    {
-                        { "service", "${componentId}" }
-                    });
-                var service = MockRepository.GenerateStub<IService>();
-
-                serviceLocator.Expect(x => x.ResolveByComponentId("componentId")).Return(service);
-
-                var component = (ComponentWithRequiredDependencyOnService)objectFactory.CreateInstance();
-                Assert.AreSame(service, component.Service);
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-
-            [Test]
-            public void CreateInstance_WhenDependencyIsOfTypeInt_ConvertsPropertyStringToInt()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithPropertiesOfMultipleTypes), new PropertySet()
-                    {
-                        { "int", "42" }
-                    });
-
-                var component = (ComponentWithPropertiesOfMultipleTypes)objectFactory.CreateInstance();
-                Assert.AreEqual(42, component.Int);
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-
-            [Test]
-            public void CreateInstance_WhenDependencyIsOfTypeImage_LoadsImageFromResource()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithPropertiesOfMultipleTypes), new PropertySet()
-                    {
-                        { "image", "SampleImage.png" }
-                    });
-
-                resourceLocator.Expect(x => x.GetFullPath("SampleImage.png")).Return(@"..\Resources\SampleImage.png");
-
-                var component = (ComponentWithPropertiesOfMultipleTypes)objectFactory.CreateInstance();
-                Assert.IsNotNull(component.Image);
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-
-            [Test]
-            public void CreateInstance_WhenDependencyIsOfTypeIcon_LoadsIconFromResource()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithPropertiesOfMultipleTypes), new PropertySet()
-                    {
-                        { "icon", "SampleIcon.ico" }
-                    });
-
-                resourceLocator.Expect(x => x.GetFullPath("SampleIcon.ico")).Return(@"..\Resources\SampleIcon.ico");
-
-                var component = (ComponentWithPropertiesOfMultipleTypes)objectFactory.CreateInstance();
-                Assert.IsNotNull(component.Icon);
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-
-            [Test]
-            public void CreateInstance_WhenDependencyIsOfTypeFileInfo_CreatesFileInfoForResource()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithPropertiesOfMultipleTypes), new PropertySet()
-                    {
-                        { "fileInfo", "file.txt" }
-                    });
-
-                resourceLocator.Expect(x => x.GetFullPath("file.txt")).Return(@"C:\file.txt");
-
-                var component = (ComponentWithPropertiesOfMultipleTypes)objectFactory.CreateInstance();
-                Assert.AreEqual(@"C:\file.txt", component.FileInfo.ToString());
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
-            }
-
-            [Test]
-            public void CreateInstance_WhenDependencyIsOfTypeDirectoryInfo_CreatesDirectoryInfoForResource()
-            {
-                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
-                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
-                var objectFactory = new ObjectFactory(serviceLocator, resourceLocator, typeof(ComponentWithPropertiesOfMultipleTypes), new PropertySet()
-                    {
-                        { "directoryInfo", "dir" }
-                    });
-
-                resourceLocator.Expect(x => x.GetFullPath("dir")).Return(@"C:\dir");
-
-                var component = (ComponentWithPropertiesOfMultipleTypes)objectFactory.CreateInstance();
-                Assert.AreEqual(@"C:\dir", component.DirectoryInfo.ToString());
-
-                serviceLocator.VerifyAllExpectations();
-                resourceLocator.VerifyAllExpectations();
+                dependencyResolver.VerifyAllExpectations();
             }
         }
 
@@ -405,11 +229,6 @@ namespace Gallio.Tests.Runtime.Extensibility
             public string Property { get; private set; }
         }
 
-        private class ComponentWithOptionalDependencyOnProperty
-        {
-            public string Property { get; set; }
-        }
-
         private class ComponentWithMultipleConstructors
         {
             public ComponentWithMultipleConstructors()
@@ -443,19 +262,6 @@ namespace Gallio.Tests.Runtime.Extensibility
             private ComponentWithNoPublicConstructors()
             {
             }
-        }
-
-        public class ComponentWithPropertiesOfMultipleTypes
-        {
-            public int Int { get; set; }
-
-            public Image Image { get; set; }
-
-            public Icon Icon { get; set; }
-
-            public FileInfo FileInfo { get; set; }
-
-            public DirectoryInfo DirectoryInfo { get; set; }
         }
 
         private abstract class AbstractComponent

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gallio.Collections;
+using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 using Rhino.Mocks;

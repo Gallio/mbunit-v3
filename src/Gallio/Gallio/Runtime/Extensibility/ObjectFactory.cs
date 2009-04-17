@@ -20,65 +20,40 @@ namespace Gallio.Runtime.Extensibility
     /// are specified by settable properties.
     /// </para>
     /// <para>
-    /// To resolve dependencies, the object factory applies the following rules:
-    /// <list type="bullet">
-    /// <item>If the property set contains a property whose name is (case insensitively) equal
-    /// to that of the parameters or property into which the dependency is to be injected
-    /// then the associated value is converted to an instance of the required type (see below).</item>
-    /// <item>If the service locator can resolve a service of the type specified by
-    /// the dependency, or if the type is an array and the service locator can resolve one or
-    /// more services of the array's element type, then those services will be resolved and injected.</item>
-    /// <item>If an optional dependency cannot be resolved then that dependency is ignored.
+    /// If an optional dependency cannot be resolved then that dependency is ignored.
     /// If any required dependency cannot be satisifed then the object construction fails and a
-    /// <see cref="RuntimeException" /> is thrown.</item>
-    /// </list>
+    /// <see cref="RuntimeException" /> is thrown.
     /// </para>
     /// <para>
-    /// To convert string property values to the dependency type, the object factory applies the following rules:
-    /// <list type="bullet">
-    /// <item>If the dependency type is a string, then no conversion is required so the value is used as-is.</item>
-    /// <item>If the value looks like "${component.id}" and there is a component registered with the specified
-    /// component id that satisfies the dependency type then that component is used.</item>
-    /// <item>If the dependency type is <see cref="Image" /> then the value is treated as a relative file
-    /// path to a resource and the image is loaded from the resource locator.</item>
-    /// <item>If the dependency type is <see cref="Icon" /> then the value is treated as a relative file
-    /// path to a resource and the icon is loaded from the resource locator.</item>
-    /// <item>If the dependency type is <see cref="FileInfo" /> or <see cref="DirectoryInfo"/> then the
-    /// value is treated as a relative file or directory path to a resource and an instance of the
-    /// appropriate file/directory info type is injected using the full path obtained from the resource locator.</item>
-    /// <item>Otherwise, the property value is converted using <see cref="Convert.ChangeType(object, Type)" /> if possible.</item>
-    /// </list>
+    /// To resolve each dependency, the factory consults an <see cref="IObjectDependencyResolver" />
+    /// given the name of the parameter, its type, and the optional configuration property value specified
+    /// in the object property set whose key matches the dependency parameter name case insensitively.
     /// </para>
     /// </remarks>
     public class ObjectFactory
     {
-        private readonly IServiceLocator serviceLocator;
-        private readonly IResourceLocator resourceLocator;
+        private readonly IObjectDependencyResolver dependencyResolver;
         private readonly Type objectType;
         private readonly PropertySet properties;
 
         /// <summary>
         /// Creates an object factory.
         /// </summary>
-        /// <param name="serviceLocator">The service locator</param>
-        /// <param name="resourceLocator">The resource locator</param>
+        /// <param name="dependencyResolver">The dependency resolver</param>
         /// <param name="objectType">The object type</param>
         /// <param name="properties">The object properties</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="serviceLocator"/>,
-        /// <paramref name="resourceLocator"/>, <paramref name="objectType"/> or <paramref name="properties"/> is null</exception>
-        public ObjectFactory(IServiceLocator serviceLocator, IResourceLocator resourceLocator, Type objectType, PropertySet properties)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="dependencyResolver"/>,
+        /// <paramref name="objectType"/> or <paramref name="properties"/> is null</exception>
+        public ObjectFactory(IObjectDependencyResolver dependencyResolver, Type objectType, PropertySet properties)
         {
-            if (serviceLocator == null)
-                throw new ArgumentNullException("serviceLocator");
-            if (resourceLocator == null)
-                throw new ArgumentNullException("resourceLocator");
+            if (dependencyResolver == null)
+                throw new ArgumentNullException("dependencyResolver");
             if (objectType == null)
                 throw new ArgumentNullException("objectType");
             if (properties == null)
                 throw new ArgumentNullException("properties");
 
-            this.serviceLocator = serviceLocator;
-            this.resourceLocator = resourceLocator;
+            this.dependencyResolver = dependencyResolver;
             this.objectType = objectType;
             this.properties = CanonicalizePropertiesToLowerCase(properties);
         }
@@ -144,9 +119,9 @@ namespace Gallio.Runtime.Extensibility
             {
                 if (IsOptionalDependency(property))
                 {
-                    DependencyResult dependencyResult = ResolveDependency(property.Name, property.PropertyType, true);
-                    if (dependencyResult.IsSatisfied)
-                        optionalDependencies.Add(property, dependencyResult.Value);
+                    DependencyResolution dependencyResolution = ResolveDependency(property.Name, property.PropertyType, true);
+                    if (dependencyResolution.IsSatisfied)
+                        optionalDependencies.Add(property, dependencyResolution.Value);
                 }
             }
 
@@ -161,120 +136,26 @@ namespace Gallio.Runtime.Extensibility
             return property.GetSetMethod() != null;
         }
 
-        private DependencyResult ResolveDependency(string name, Type type, bool isOptional)
+        private DependencyResolution ResolveDependency(string parameterName, Type parameterType, bool isOptional)
         {
+            DependencyResolution resolution;
             try
             {
-                // Resolve by property
                 string propertyValue;
-                if (properties.TryGetValue(CanonicalizePropertyKey(name), out propertyValue))
-                {
-                    object value = ConvertPropertyValueToType(propertyValue, type);
-                    return DependencyResult.Satisfied(value);
-                }
+                properties.TryGetValue(CanonicalizePropertyKey(parameterName), out propertyValue);
 
-                if (type.IsArray)
-                {
-                    // Resolve component array
-                    Type componentType = type.GetElementType();
-                    if (serviceLocator.CanResolve(componentType))
-                    {
-                        IList<object> components = serviceLocator.ResolveAll(componentType);
-                        Array componentArray = Array.CreateInstance(componentType, components.Count);
-
-                        for (int i = 0; i < components.Count; i++)
-                            componentArray.SetValue(components, i);
-
-                        return DependencyResult.Satisfied(componentArray);
-                    }
-                }
-                else
-                {
-                    // Resolve component
-                    if (serviceLocator.CanResolve(type))
-                    {
-                        object component = serviceLocator.Resolve(type);
-                        return DependencyResult.Satisfied(component);
-                    }
-                }
+                resolution = dependencyResolver.ResolveDependency(parameterName, parameterType, propertyValue);
             }
             catch (Exception ex)
             {
-                throw new RuntimeException(string.Format("Could not resolve {2} dependency '{0}' of type '{1}' due to an exception.", name, type,
+                throw new RuntimeException(string.Format("Could not resolve {2} dependency '{0}' of type '{1}' due to an exception.", parameterName, parameterType,
                     isOptional ? "optional" : "required"), ex);
             }
 
-            if (!isOptional)
-                throw new RuntimeException(string.Format("Could not resolve required dependency '{0}' of type '{1}'.", name, type));
+            if (! resolution.IsSatisfied && !isOptional)
+                throw new RuntimeException(string.Format("Could not resolve required dependency '{0}' of type '{1}'.", parameterName, parameterType));
 
-            return DependencyResult.Unsatisfied();
-        }
-
-        private object ConvertPropertyValueToType(string propertyValue, Type type)
-        {
-            if (type == typeof(string))
-                return propertyValue;
-
-            if (propertyValue.StartsWith("${") && propertyValue.EndsWith("}"))
-            {
-                string componentId = propertyValue.Substring(2, propertyValue.Length - 3);
-                object component = serviceLocator.ResolveByComponentId(componentId);
-                if (!type.IsInstanceOfType(component))
-                    throw new RuntimeException(string.Format("Could not inject component with id '{0}' into a dependency of type '{1}' because it is of the wrong type even though the component was explicitly specified using the '${{component.id}}' property value syntax.",
-                        componentId, type));
-                return component;
-            }
-
-            if (type == typeof(Image))
-                return Image.FromFile(resourceLocator.GetFullPath(propertyValue));
-
-            if (type == typeof(Icon))
-                return new Icon(resourceLocator.GetFullPath(propertyValue));
-
-            if (type == typeof(FileInfo))
-                return new FileInfo(resourceLocator.GetFullPath(propertyValue));
-
-            if (type == typeof(DirectoryInfo))
-                return new DirectoryInfo(resourceLocator.GetFullPath(propertyValue));
-
-            return Convert.ChangeType(propertyValue, type, CultureInfo.InvariantCulture);
-        }
-
-        private struct DependencyResult
-        {
-            private readonly bool isSatisfied;
-            private readonly object value;
-
-            private DependencyResult(bool isSatisfied, object value)
-            {
-                this.isSatisfied = isSatisfied;
-                this.value = value;
-            }
-
-            public static DependencyResult Satisfied(object value)
-            {
-                return new DependencyResult(true, value);
-            }
-
-            public static DependencyResult Unsatisfied()
-            {
-                return new DependencyResult(false, null);
-            }
-
-            public bool IsSatisfied
-            {
-                get { return isSatisfied; }
-            }
-
-            public object Value
-            {
-                get
-                {
-                    if (!isSatisfied)
-                        throw new InvalidOperationException("The dependency was not satisfied.");
-                    return value;
-                }
-            }
+            return resolution;
         }
     }
 }

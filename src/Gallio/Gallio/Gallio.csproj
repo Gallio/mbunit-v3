@@ -288,10 +288,18 @@
     <Compile Include="Runtime\Debugging\IDebuggerManager.cs" />
     <Compile Include="Runtime\Debugging\NullDebugger.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistration.cs" />
+    <Compile Include="Runtime\Extensibility\DefaultObjectDependencyResolver.cs" />
+    <Compile Include="Runtime\Extensibility\DefaultPlugin.cs" />
+    <Compile Include="Runtime\Extensibility\DependencyResolution.cs" />
     <Compile Include="Runtime\Extensibility\FileSystemResourceLocator.cs" />
     <Compile Include="Runtime\Extensibility\InstanceHandlerFactory.cs" />
+    <Compile Include="Runtime\Extensibility\IObjectDependencyResolver.cs" />
+    <Compile Include="Runtime\Extensibility\IPluginCatalog.cs" />
+    <Compile Include="Runtime\Extensibility\IPluginLoader.cs" />
     <Compile Include="Runtime\Extensibility\IResourceLocator.cs" />
     <Compile Include="Runtime\Extensibility\ObjectFactory.cs" />
+    <Compile Include="Runtime\Extensibility\PluginCatalog.cs" />
+    <Compile Include="Runtime\Extensibility\FileSystemPluginLoader.cs" />
     <Compile Include="Runtime\Extensibility\ServiceRegistration.cs" />
     <Compile Include="Runtime\Extensibility\IHandlerFactory.cs" />
     <Compile Include="Runtime\Extensibility\IComponentDescriptor.cs" />
@@ -315,7 +323,6 @@
     <Compile Include="Runtime\Extensibility\IServices.cs" />
     <Compile Include="Runtime\Extensibility\SingletonHandlerFactory.cs" />
     <Compile Include="Runtime\Extensibility\Traits.cs" />
-    <Compile Include="Runtime\Extensibility\RuntimeException.cs" />
     <Compile Include="Runtime\Extensibility\TraitsAttribute.cs" />
     <Compile Include="Reflection\TypeName.cs" />
     <Compile Include="Runtime\Hosting\ConfigurationFileLocation.cs" />
@@ -504,7 +511,9 @@
     <Compile Include="Runtime\Hosting\IsolatedAppDomainHost.cs" />
     <Compile Include="Runtime\Hosting\IsolatedProcessHost.cs" />
     <Compile Include="Runtime\RuntimeDetection.cs" />
-    <Compile Include="Runtime\RuntimeException.cs" />
+    <Compile Include="Runtime\RuntimeException.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Runtime\RuntimeRegisteredComponentResolver.cs" />
     <Compile Include="Runtime\Hosting\HostConfiguration.cs" />
     <Compile Include="Runtime\Hosting\HostException.cs" />
@@ -583,6 +592,16 @@
     <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
     <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
     <Compile Include="Model\Logging\TestLogWriter.cs" />
+    <Compile Include="Schema\Plugins\Component.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Schema\Plugins\Plugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Schema\Plugins\Service.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Schema\SchemaConstants.cs" />
     <Compile Include="Triple.cs" />
     <Compile Include="Utilities\FileSystem.cs" />
     <Compile Include="Utilities\IFileSystem.cs" />

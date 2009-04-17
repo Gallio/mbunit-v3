@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Gallio.Collections;
 using Gallio.Reflection;
+using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 using Rhino.Mocks;
@@ -888,14 +889,106 @@ namespace Gallio.Tests.Runtime.Extensibility
                 handlerFactory.VerifyAllExpectations();
             }
 
-            [Test, Pending]
+            [Test]
             public void ResolvePlugin_WhenWellFormed_ReturnsPluginObject()
             {
+                var registry = new Registry();
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName(typeof(DummyPlugin)), new DirectoryInfo(@"C:\"))
+                {
+                    PluginHandlerFactory = handlerFactory,
+                    PluginProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateMock<IHandler>();
+                var pluginInstance = new DummyPlugin();
+
+                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                    typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
+                    .Return(handler);
+                handler.Expect(x => x.Activate()).Return(pluginInstance);
+
+                var result = (DummyPlugin) plugin.ResolvePlugin();
+
+                handlerFactory.VerifyAllExpectations();
+                handler.VerifyAllExpectations();
+                Assert.AreSame(pluginInstance, result);
             }
 
-            [Test, Pending]
+            [Test]
+            public void ResolvePlugin_WhenActivationFails_Throws()
+            {
+                var registry = new Registry();
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName(typeof(DummyPlugin)), new DirectoryInfo(@"C:\"))
+                {
+                    PluginHandlerFactory = handlerFactory,
+                    PluginProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateMock<IHandler>();
+
+                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                    typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
+                    .Return(handler);
+                handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
+
+                var ex = Assert.Throws<RuntimeException>(() => plugin.ResolvePlugin());
+                Assert.AreEqual("Could not resolve instance of plugin 'pluginId'.", ex.Message);
+                handlerFactory.VerifyAllExpectations();
+                handler.VerifyAllExpectations();
+            }
+
+            [Test]
             public void ResolvePluginTraits_WhenWellFormed_ReturnsPluginTraitsObject()
             {
+                var registry = new Registry();
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName(typeof(DummyPlugin)), new DirectoryInfo(@"C:\"))
+                {
+                    TraitsProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateMock<IHandler>();
+                var traitsInstance = new PluginTraits("name");
+
+                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                    typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
+                    .Return(handler);
+                handler.Expect(x => x.Activate()).Return(traitsInstance);
+
+                PluginDescriptor.RunWithInjectedTraitsHandlerFactoryMock(handlerFactory, () =>
+                {
+                    var result = plugin.ResolveTraits();
+
+                    Assert.AreSame(traitsInstance, result);
+                });
+
+                handlerFactory.VerifyAllExpectations();
+                handler.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolvePluginTraits_WhenActivationFails_Throws()
+            {
+                var registry = new Registry();
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName(typeof(DummyPlugin)), new DirectoryInfo(@"C:\"))
+                {
+                    TraitsProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateMock<IHandler>();
+
+                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                    typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
+                    .Return(handler);
+                handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
+
+                PluginDescriptor.RunWithInjectedTraitsHandlerFactoryMock(handlerFactory, () =>
+                {
+                    var ex = Assert.Throws<RuntimeException>(() => plugin.ResolveTraits());
+                    Assert.AreEqual("Could not resolve traits of plugin 'pluginId'.", ex.Message);
+                });
+
+                handlerFactory.VerifyAllExpectations();
+                handler.VerifyAllExpectations();
             }
         }
 
@@ -1094,14 +1187,112 @@ namespace Gallio.Tests.Runtime.Extensibility
                 handlerFactory.VerifyAllExpectations();
             }
 
-            [Test, Pending]
+            [Test]
             public void ResolveComponent_WhenWellFormed_ReturnsComponentObject()
             {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponent)))
+                {
+                    ComponentHandlerFactory = handlerFactory,
+                    ComponentProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateMock<IHandler>();
+                var componentInstance = new DummyComponent();
+
+                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                    typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
+                    .Return(handler);
+                handler.Expect(x => x.Activate()).Return(componentInstance);
+
+                var result = (DummyComponent) component.ResolveComponent();
+
+                Assert.AreSame(componentInstance, result);
+                handlerFactory.VerifyAllExpectations();
+                handler.VerifyAllExpectations();
             }
 
-            [Test, Pending]
+            [Test]
+            public void ResolveComponent_WhenActivationFails_Throws()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponent)))
+                {
+                    ComponentHandlerFactory = handlerFactory,
+                    ComponentProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateMock<IHandler>();
+
+                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                    typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
+                    .Return(handler);
+                handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
+
+                var ex = Assert.Throws<RuntimeException>(() => component.ResolveComponent());
+                Assert.AreEqual("Could not resolve instance of component 'componentId'.", ex.Message);
+                handlerFactory.VerifyAllExpectations();
+                handler.VerifyAllExpectations();
+            }
+
+            [Test]
             public void ResolveComponentTraits_WhenWellFormed_ReturnsComponentTraitsObject()
             {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyServiceWithTraits)))
+                {
+                    TraitsHandlerFactory = handlerFactory,
+                });
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponent)))
+                {
+                    TraitsProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateMock<IHandler>();
+                var traitsInstance = new DummyTraits();
+
+                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                    typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
+                    .Return(handler);
+                handler.Expect(x => x.Activate()).Return(traitsInstance);
+
+                var result = (DummyTraits)component.ResolveTraits();
+
+                Assert.AreSame(traitsInstance, result);
+                handlerFactory.VerifyAllExpectations();
+                handler.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveComponentTraits_WhenActivationFails_Throws()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var handlerFactory = MockRepository.GenerateMock<IHandlerFactory>();
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyServiceWithTraits)))
+                {
+                    TraitsHandlerFactory = handlerFactory,
+                });
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponent)))
+                {
+                    TraitsProperties = { { "Name", "Value" } }
+                });
+                var handler = MockRepository.GenerateMock<IHandler>();
+
+                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                    typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
+                    .Return(handler);
+                handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
+
+                var ex = Assert.Throws<RuntimeException>(() => component.ResolveTraits());
+                Assert.AreEqual("Could not resolve traits of component 'componentId'.", ex.Message);
+                handlerFactory.VerifyAllExpectations();
+                handler.VerifyAllExpectations();
             }
         }
 

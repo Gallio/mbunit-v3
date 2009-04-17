@@ -58,7 +58,7 @@ namespace Gallio.Runtime.Extensibility
         IHandlerFactory ComponentHandlerFactory { get; }
 
         /// <summary>
-        /// Gets the component properties.
+        /// Gets the parameter properties.
         /// </summary>
         PropertySet ComponentProperties { get; }
 
