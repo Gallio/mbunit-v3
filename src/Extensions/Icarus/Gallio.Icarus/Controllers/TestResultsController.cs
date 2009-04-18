@@ -17,11 +17,9 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly ITestController testController;
         private readonly IOptionsController optionsController;
-        private readonly IUnhandledExceptionPolicy unhandledExceptionPolicy;
 
         private int resultsCount;
         private readonly Stopwatch stopwatch = new Stopwatch();
-        private readonly Stopwatch perf = new Stopwatch();
         private readonly List<ListViewItem> listViewItems = new List<ListViewItem>();
         private int firstItem;
         private int lastItem;
@@ -95,8 +93,7 @@ namespace Gallio.Icarus.Controllers
             get { return testController.TestCount; }
         }
 
-        internal TestResultsController(ITestController testController, IOptionsController optionsController, 
-            IUnhandledExceptionPolicy unhandledExceptionPolicy)
+        internal TestResultsController(ITestController testController, IOptionsController optionsController)
         {
             this.testController = testController;
 
@@ -125,20 +122,15 @@ namespace Gallio.Icarus.Controllers
             testController.RunFinished += delegate
             {
                 stopwatch.Stop();
-                MessageBox.Show(perf.ElapsedMilliseconds.ToString());
             };
             testController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
 
             this.optionsController = optionsController;
             optionsController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
-
-            this.unhandledExceptionPolicy = unhandledExceptionPolicy;
         }
 
         private void CountResults()
         {
-            perf.Start();
-
             // invalidate cache
             ResultsCount = 0;
 
@@ -156,8 +148,6 @@ namespace Gallio.Icarus.Controllers
             ResultsCount = count;
 
             OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
-
-            perf.Stop();
         }
 
         private static int CountResults(TestTreeNode node)
@@ -177,14 +167,10 @@ namespace Gallio.Icarus.Controllers
           
             stopwatch.Reset();
             OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
-
-            perf.Reset();
         }
 
         public void CacheVirtualItems(int startIndex, int endIndex)
         {
-            perf.Start();
-
             if (startIndex >= firstItem && endIndex <= firstItem + listViewItems.Count)
             {
                 // If the newly requested cache is a subset of the old cache, 
@@ -196,14 +182,10 @@ namespace Gallio.Icarus.Controllers
             lastItem = endIndex;
 
             UpdateTestResults();
-
-            perf.Stop();
         }
 
         public ListViewItem RetrieveVirtualItem(int itemIndex)
         {
-            perf.Start();
-
             try
             {
                 // If we don't have the item cached, then update the list
@@ -224,10 +206,6 @@ namespace Gallio.Icarus.Controllers
             {
                 return CreateListViewItem(string.Empty, -1, string.Empty, string.Empty, string.Empty, 
                     string.Empty, string.Empty, 0);
-            }
-            finally
-            {
-                perf.Stop();
             }
         }
 

@@ -108,7 +108,7 @@ namespace Gallio.Icarus
                     optionsController);
                 mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
                 mediator.TestResultsController = new TestResultsController(mediator.TestController, 
-                    mediator.OptionsController, new Utilities.UnhandledExceptionPolicy());
+                    mediator.OptionsController);
 
                 var applicationController = new ApplicationController(Arguments, mediator);
                 var main = new Main(applicationController);

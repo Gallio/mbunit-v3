@@ -326,20 +326,38 @@ namespace Gallio.Icarus.Models
             return node.IsLeaf;
         }
 
-        public void BuildTestTree(TestModelData testModelData, string treeViewCategory)
+        public void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
+            string treeViewCategory)
         {
-            ResetCounters();
-            Nodes.Clear();
+            int count = CountTestData(testModelData.RootTest);
 
-            TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id, TestKinds.Root);
-            Nodes.Add(root);
+            using (progressMonitor.BeginTask("Building test tree", count))
+            {
+                ResetCounters();
+                Nodes.Clear();
 
-            if (treeViewCategory == "Namespace")
-                PopulateNamespaceTree(testModelData.RootTest.Children, root);
-            else
-                PopulateMetadataTree(treeViewCategory, testModelData.RootTest.Children, root);
+                TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id,
+                                                     TestKinds.Root);
+                Nodes.Add(root);
 
-            OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+                progressMonitor.Worked(1);
+
+                if (treeViewCategory == "Namespace")
+                    PopulateNamespaceTree(progressMonitor, testModelData.RootTest.Children, root);
+                else
+                    PopulateMetadataTree(progressMonitor, treeViewCategory,
+                                         testModelData.RootTest.Children, root);
+
+                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
+            }
+        }
+
+        private static int CountTestData(TestData testData)
+        {
+            int count = 1;
+            foreach (var td in testData.Children)
+                count += CountTestData(td);
+            return count;
         }
 
         public Node FindNode(TreePath path)
@@ -347,7 +365,8 @@ namespace Gallio.Icarus.Models
             return inner.FindNode(path);
         }
 
-        private static void PopulateNamespaceTree(IList<TestData> list, TestTreeNode parent)
+        private static void PopulateNamespaceTree(IProgressMonitor progressMonitor, 
+            IList<TestData> list, TestTreeNode parent)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -386,11 +405,14 @@ namespace Gallio.Icarus.Models
                 ttnode.IsTest = td.IsTestCase;
 
                 // process child nodes
-                PopulateNamespaceTree(td.Children, ttnode);
+                PopulateNamespaceTree(progressMonitor, td.Children, ttnode);
+
+                progressMonitor.Worked(1);
             }
         }
 
-        private void PopulateMetadataTree(string key, IList<TestData> list, Node parent)
+        private void PopulateMetadataTree(IProgressMonitor progressMonitor, string key, 
+            IList<TestData> list, Node parent)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -404,7 +426,7 @@ namespace Gallio.Icarus.Models
                     case TestKinds.Test:
                         IList<string> metadata = td.Metadata[key];
                         if (metadata.Count == 0)
-                            metadata = new List<string> {"None"};
+                            metadata = new List<string> { "None" };
 
                         foreach (string m in metadata)
                         {
@@ -424,7 +446,7 @@ namespace Gallio.Icarus.Models
                             {
                                 TestTreeNode ttnode = new TestTreeNode(td.Name, td.Id, componentKind);
                                 metadataNode.Nodes.Add(ttnode);
-                                PopulateMetadataTree(key, td.Children, ttnode);
+                                PopulateMetadataTree(progressMonitor, key, td.Children, ttnode);
                             }
                             else
                             {
@@ -444,7 +466,9 @@ namespace Gallio.Icarus.Models
                         break;
                 }
                 if (componentKind != TestKinds.Fixture)
-                    PopulateMetadataTree(key, td.Children, parent);
+                    PopulateMetadataTree(progressMonitor, key, td.Children, parent);
+
+                progressMonitor.Worked(1);
             }
         }
 

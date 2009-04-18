@@ -202,9 +202,9 @@ namespace Gallio.Icarus.Controllers
                     var testExplorationOptions = new TestExplorationOptions();
 
                     testRunner.Explore(testPackageConfig, testExplorationOptions,
-                        progressMonitor.CreateSubProgressMonitor(85));
+                        progressMonitor.CreateSubProgressMonitor(80));
 
-                    RefreshTestTree(progressMonitor.CreateSubProgressMonitor(5));
+                    RefreshTestTree(progressMonitor.CreateSubProgressMonitor(10));
                 }, progressMonitor, 10);
 
                 EventHandlerUtils.SafeInvoke(ExploreFinished, this, System.EventArgs.Empty);
@@ -270,10 +270,8 @@ namespace Gallio.Icarus.Controllers
 
         public void RefreshTestTree(IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask("Refreshing test tree", 100))
-            {
-                ReadReport(report => testTreeModel.BuildTestTree(report.TestModel, TreeViewCategory));
-            }
+            ReadReport(report => testTreeModel.BuildTestTree(progressMonitor, report.TestModel, 
+                TreeViewCategory));
         }
 
         public void ResetTestStatus(IProgressMonitor progressMonitor)

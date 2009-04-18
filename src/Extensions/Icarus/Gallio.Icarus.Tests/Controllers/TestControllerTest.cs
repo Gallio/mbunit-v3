@@ -74,7 +74,7 @@ namespace Gallio.Icarus.Tests.Controllers
                 Arg<ILogger>.Is.Anything, Arg.Is(progressMonitor)));
             testRunner.AssertWasCalled(tr => tr.Explore(Arg<TestPackageConfig>.Is.Anything, 
                 Arg<TestExplorationOptions>.Is.Anything, Arg.Is(progressMonitor)));
-            testTreeModel.AssertWasCalled(ttm => ttm.BuildTestTree(Arg<TestModelData>.Is.Anything, 
+            testTreeModel.AssertWasCalled(ttm => ttm.BuildTestTree(Arg.Is(progressMonitor), Arg<TestModelData>.Is.Anything, 
                 Arg.Is(treeViewCategory)));
             Assert.IsTrue(exploreFinishedFlag);
         }

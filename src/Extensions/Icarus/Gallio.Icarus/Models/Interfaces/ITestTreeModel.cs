@@ -39,7 +39,8 @@ namespace Gallio.Icarus.Models.Interfaces
         int Inconclusive { get; }
 
         void ApplyFilterSet(FilterSet<ITest> filterSet);
-        void BuildTestTree(TestModelData testModelData, string treeViewCategory);
+        void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
+            string treeViewCategory);
         Node FindNode(TreePath path);
         FilterSet<ITest> GenerateFilterSetFromSelectedTests();
         TreePath GetPath(Node node);
