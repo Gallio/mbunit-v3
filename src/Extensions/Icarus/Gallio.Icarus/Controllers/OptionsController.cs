@@ -25,7 +25,7 @@ using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
-    public sealed class OptionsController : IOptionsController, INotifyPropertyChanged
+    public sealed class OptionsController : IOptionsController
     {
         private Settings settings;
         private readonly IFileSystem fileSystem;
@@ -191,6 +191,10 @@ namespace Gallio.Icarus.Controllers
         {
             try
             {
+                // create folder, if necessary
+                if (!fileSystem.DirectoryExists(Paths.IcarusAppDataFolder))
+                    fileSystem.CreateDirectory(Paths.IcarusAppDataFolder);
+
                 xmlSerializer.SaveToXml(settings, Paths.SettingsFile);
             }
             catch (Exception ex)

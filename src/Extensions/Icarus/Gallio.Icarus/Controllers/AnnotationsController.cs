@@ -21,7 +21,7 @@ using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus.Controllers
 {
-    class AnnotationsController : IAnnotationsController
+    internal class AnnotationsController : NotifyController, IAnnotationsController
     {
         private readonly ITestController testController;
         private readonly List<AnnotationData> annotationsList = new List<AnnotationData>();
@@ -104,8 +104,11 @@ namespace Gallio.Icarus.Controllers
                     }
                 }
                 ErrorsText = (error == 1) ? string.Format("{0} Error", error) : string.Format("{0} Errors", error);
+                OnPropertyChanged(new PropertyChangedEventArgs("ErrorsText"));
                 WarningsText = (warning == 1) ? string.Format("{0} Warning", warning): string.Format("{0} Warnings", warning);
+                OnPropertyChanged(new PropertyChangedEventArgs("WarningsText"));
                 InfoText = (info == 1) ? string.Format("{0} Info", info) : string.Format("{0} Infos", info);
+                OnPropertyChanged(new PropertyChangedEventArgs("InfoText"));
             });
         }
     }

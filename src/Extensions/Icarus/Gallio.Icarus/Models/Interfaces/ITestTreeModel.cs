@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
@@ -24,7 +24,7 @@ using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Icarus.Models.Interfaces
 {
-    public interface ITestTreeModel : ITreeModel
+    public interface ITestTreeModel : ITreeModel, INotifyPropertyChanged
     {
         bool FilterPassed { get; }
         bool FilterFailed { get; }
@@ -37,14 +37,12 @@ namespace Gallio.Icarus.Models.Interfaces
         int Failed { get; }
         int Skipped { get; }
         int Inconclusive { get; }
-        ISynchronizationContext SynchronizationContext { get; set; }
 
         void ApplyFilterSet(FilterSet<ITest> filterSet);
         void BuildTestTree(TestModelData testModelData, string treeViewCategory);
         Node FindNode(TreePath path);
-        FilterSet<ITest> GenerateFilterFromSelectedTests();
+        FilterSet<ITest> GenerateFilterSetFromSelectedTests();
         TreePath GetPath(Node node);
-        void Notify();
         void RemoveFilter(TestStatus testStatus);
         void ResetTestStatus(IProgressMonitor progressMonitor);
         void SetFilter(TestStatus testStatus);

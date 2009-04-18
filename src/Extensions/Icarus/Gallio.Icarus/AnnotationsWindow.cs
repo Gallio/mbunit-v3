@@ -37,13 +37,16 @@ namespace Gallio.Icarus
                 Sync.Invoke(this, PopulateListView);
             };
 
-            showErrorsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowErrors", false, DataSourceUpdateMode.OnPropertyChanged);
+            showErrorsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowErrors", false, 
+                DataSourceUpdateMode.OnPropertyChanged);
             showErrorsToolStripButton.DataBindings.Add("Text", annotationsController, "ErrorsText");
 
-            showWarningsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowWarnings", false, DataSourceUpdateMode.OnPropertyChanged);
+            showWarningsToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowWarnings", false, 
+                DataSourceUpdateMode.OnPropertyChanged);
             showWarningsToolStripButton.DataBindings.Add("Text", annotationsController, "WarningsText");
 
-            showInfoToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowInfo", false, DataSourceUpdateMode.OnPropertyChanged);
+            showInfoToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowInfo", false, 
+                DataSourceUpdateMode.OnPropertyChanged);
             showInfoToolStripButton.DataBindings.Add("Text", annotationsController, "InfoText");
         }
 
@@ -93,14 +96,9 @@ namespace Gallio.Icarus
                     ((Main)ParentForm).ShowSourceCode(((AnnotationData)lvi.Tag).CodeLocation);
         }
 
-        private string FilterText(string text)
+        private static string FilterText(string text)
         {
-            if (text != null)
-            {
-                return text.Replace("\n", " ");
-            }
-
-            return null;
+            return text != null ? text.Replace("\n", " ") : null;
         }
     }
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<NCover3ProjectSetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="307">
+  <CoverageDataURL>C:\Documents and Settings\Graham\My Documents\mb-unit\v3\src\Extensions\Icarus\Gallio.Icarus.Tests\bin\coverage.xml</CoverageDataURL>
+  <ShowExcludedNodes>false</ShowExcludedNodes>
+  <DefaultViewSetting SatisfactoryCoverageThreshold="95" SatisfactoryFunctionThreshold="80" SatisfactoryUnvisitedSequencePoints="0" WidgetType="TreeView" FilterStyle="None" ReportStyle="SequencePointCoveragePercentage" SortStyle="Name">
+    <DelayFilters>false</DelayFilters>
+    <filters />
+  </DefaultViewSetting>
+  <NCoverRunSettings>
+    <AutoExclude>false</AutoExclude>
+    <CommandLineArgs>/r:IsolatedAppDomain Gallio.Icarus.Tests.dll</CommandLineArgs>
+    <CommandLineExe>C:\Documents and Settings\Graham\My Documents\mb-unit\v3\src\Extensions\Echo\Gallio.Echo\bin\Gallio.Echo.exe</CommandLineExe>
+    <CoverageType>Symbol Branch CyclomaticComplexity MethodVisits</CoverageType>
+    <CoverageXml>coverage.xml</CoverageXml>
+    <LogFile>coverage.log</LogFile>
+    <LoggingLevel>None</LoggingLevel>
+    <NCoverExe>C:\Program Files\NCover\ncover.console.exe</NCoverExe>
+    <ProfileIIS>false</ProfileIIS>
+    <ProfileWindowsApplication>true</ProfileWindowsApplication>
+    <ProfileWindowsService>false</ProfileWindowsService>
+    <ProjectName>New Project</ProjectName>
+    <RegisterForUser>false</RegisterForUser>
+    <ServiceTimeout>0</ServiceTimeout>
+    <SymbolSearchPolicy>15</SymbolSearchPolicy>
+    <VersionNumber>300</VersionNumber>
+    <WaitForAppLoad>1</WaitForAppLoad>
+    <WorkingDirectory>C:\Documents and Settings\Graham\My Documents\mb-unit\v3\src\Extensions\Icarus\Gallio.Icarus.Tests\bin</WorkingDirectory>
+  </NCoverRunSettings>
+  <ProjectGuid>6015bbe1-39c8-4be8-8db6-a234497dd79b</ProjectGuid>
+  <ProjectName>New Project</ProjectName>
+  <RebasedPaths />
+  <ReportPath />
+  <SyncPathWithWorkingDirectory>false</SyncPathWithWorkingDirectory>
+</NCover3ProjectSetting>

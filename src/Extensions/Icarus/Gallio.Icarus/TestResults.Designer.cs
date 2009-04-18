@@ -65,7 +65,7 @@ namespace Gallio.Icarus
             // 
             this.testProgressStatusBar.BackColor = System.Drawing.Color.White;
             this.testProgressStatusBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.testProgressStatusBar.ElapsedTime = 0;
+            this.testProgressStatusBar.ElapsedTime = new System.TimeSpan(0);
             this.testProgressStatusBar.Failed = 0;
             this.testProgressStatusBar.FailedColor = System.Drawing.Color.Red;
             this.testProgressStatusBar.Font = new System.Drawing.Font("Verdana", 8F);

@@ -13,98 +13,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Timers;
-using Aga.Controls.Tree;
+using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Models;
-using Gallio.Runner.Reports;
-using Gallio.Utilities;
-using Gallio.Icarus.Mediator.Interfaces;
 
 namespace Gallio.Icarus
 {
-    public partial class TestResults : DockWindow
+    internal partial class TestResults : DockWindow
     {
-        private readonly ITestController testController;
-        private readonly Timer timer = new Timer();
+        private readonly ITestResultsController testResultsController;
 
-        public int TotalTests
+        public TestResults(ITestResultsController testResultsController)
         {
-            get { return testProgressStatusBar.Total; }
-            set { testProgressStatusBar.Total = value; }
-        }
-
-        public TestResults(IMediator mediator)
-        {
-            testController = mediator.TestController;
+            this.testResultsController = testResultsController;
 
             InitializeComponent();
 
-            testController.TestStepFinished += delegate { timer.Enabled = true; };
-            testController.SelectedTests.ListChanged += delegate { timer.Enabled = true; };
-            testController.ExploreStarted += delegate { Reset(); };
-            testController.RunStarted += delegate { Reset(); };
+            testProgressStatusBar.DataBindings.Add("Mode", testResultsController, "TestStatusBarStyle");
+            testProgressStatusBar.DataBindings.Add("PassedColor", testResultsController, "PassedColor");
+            testProgressStatusBar.DataBindings.Add("FailedColor", testResultsController, "FailedColor");
+            testProgressStatusBar.DataBindings.Add("InconclusiveColor", testResultsController, "InconclusiveColor");
+            testProgressStatusBar.DataBindings.Add("SkippedColor", testResultsController, "SkippedColor");
 
-            testProgressStatusBar.DataBindings.Add("Mode", mediator.OptionsController, "TestStatusBarStyle");
-            testProgressStatusBar.DataBindings.Add("PassedColor", mediator.OptionsController, "PassedColor");
-            testProgressStatusBar.DataBindings.Add("FailedColor", mediator.OptionsController, "FailedColor");
-            testProgressStatusBar.DataBindings.Add("InconclusiveColor", mediator.OptionsController, "InconclusiveColor");
-            testProgressStatusBar.DataBindings.Add("SkippedColor", mediator.OptionsController, "SkippedColor");
-            
-            testProgressStatusBar.DataBindings.Add("Passed", testController, "Model.Passed");
-            testProgressStatusBar.DataBindings.Add("Failed", testController, "Model.Failed");
-            testProgressStatusBar.DataBindings.Add("Skipped", testController, "Model.Skipped");
-            testProgressStatusBar.DataBindings.Add("Inconclusive", testController, "Model.Inconclusive");
+            testProgressStatusBar.DataBindings.Add("Passed", testResultsController, "Passed");
+            testProgressStatusBar.DataBindings.Add("Failed", testResultsController, "Failed");
+            testProgressStatusBar.DataBindings.Add("Skipped", testResultsController, "Skipped");
+            testProgressStatusBar.DataBindings.Add("Inconclusive", testResultsController, "Inconclusive");
+            testProgressStatusBar.DataBindings.Add("ElapsedTime", testResultsController, "ElapsedTime");
+            testProgressStatusBar.DataBindings.Add("Total", testResultsController, "TestCount");
 
-            timer.Interval = mediator.OptionsController.UpdateDelay;
-            timer.AutoReset = false;
-            timer.Elapsed += delegate
-                                 {
-                                     if (!IsHidden)
-                                        Sync.Invoke(this, UpdateTestResults);
-                                 };
+            testResultsList.DataBindings.Add("VirtualListSize", testResultsController, "ResultsCount");
+
+            testResultsList.RetrieveVirtualItem += testResultsList_RetrieveVirtualItem;
+            testResultsList.CacheVirtualItems += testResultsList_CacheVirtualItems;
         }
 
-        protected void UpdateTestResults()
+        private void testResultsList_CacheVirtualItems(object sender, CacheVirtualItemsEventArgs e)
         {
-            testResultsList.BeginUpdate();
-            testResultsList.Items.Clear();
-
-            if (testController.Model.Root == null)
-                return;
-
-            if (testController.SelectedTests.Count == 0)
-                UpdateTestResults(testController.Model.Root, 0);
-            else
-            {
-                foreach (TestTreeNode node in testController.SelectedTests)
-                    UpdateTestResults(node, 0);
-            }
-
-            testResultsList.Columns[0].Width = -1;
-            testResultsList.EndUpdate();
+            testResultsController.CacheVirtualItems(e.StartIndex, e.EndIndex);
         }
 
-        private void UpdateTestResults(TestTreeNode node, int indentCount)
+        private void testResultsList_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            foreach (TestStepRun tsr in node.TestStepRuns)
-                testResultsList.AddTestStepRun(node.NodeType, tsr, indentCount);
-
-            foreach (Node n in node.Nodes)
-            {
-                if (n is TestTreeNode)
-                    UpdateTestResults((TestTreeNode)n, (indentCount + 1));
-            }
-        }
-
-        private void Reset()
-        {
-            Sync.Invoke(this, delegate
-            {
-                testProgressStatusBar.Clear();
-                testProgressStatusBar.Total = testController.TestCount;
-                testResultsList.Items.Clear();
-            });
+            e.Item = testResultsController.RetrieveVirtualItem(e.ItemIndex);
         }
     }
 }

@@ -16,7 +16,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.ProgressMonitoring;
@@ -45,8 +44,12 @@ namespace Gallio.Icarus.Mediator
             {
                 ProjectController.SynchronizationContext = value;
                 TestController.SynchronizationContext = value;
+                AnnotationsController.SynchronizationContext = value;
+                TestResultsController.SynchronizationContext = value;
             }
         }
+
+        public ITestResultsController TestResultsController { get; set; }
 
         public IReportController ReportController { get; set; }
 
@@ -61,11 +64,6 @@ namespace Gallio.Icarus.Mediator
         public ProgressMonitorProvider ProgressMonitorProvider
         {
             get { return progressMonitorProvider; }
-        }
-
-        public TaskManager TaskManager
-        {
-            get { return taskManager; }
         }
 
         public void AddAssemblies(IList<string> assemblyFiles)

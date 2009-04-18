@@ -60,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutDialogTest.cs" />
-    <Compile Include="AnnotationsWindowTest.cs" />
     <Compile Include="CodeWindowTest.cs" />
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />

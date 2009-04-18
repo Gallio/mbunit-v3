@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gallio.org/">
+  <testPackageConfig>
+    <assemblyFiles>
+      <assemblyFile>.\Gallio.Tests\bin\Gallio.Tests.dll</assemblyFile>
+    </assemblyFiles>
+    <hintDirectories />
+    <excludedFrameworkIds />
+    <hostSetup enableShadowCopy="false" debug="false" configurationFileLocation="appBase" processorArchitecture="None">
+      <configuration legacyUnhandledExceptionPolicyEnabled="true" assertUiEnabled="false" remotingCustomErrorsEnabled="false">
+        <assemblyQualifications />
+        <assemblyDependencies />
+        <supportedRuntimeVersions />
+      </configuration>
+    </hostSetup>
+  </testPackageConfig>
+  <testFilters>
+    <testFilter filterName="AutoSave" filter="Namespace: Gallio.Tests.Model.Filters" />
+    <testFilter filterName="LastRun" filter="Namespace: Gallio.Tests.Model.Filters" />
+  </testFilters>
+</project>

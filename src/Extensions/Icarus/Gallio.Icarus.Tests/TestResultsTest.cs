@@ -25,18 +25,5 @@ namespace Gallio.Icarus.Tests
     [Category("Views")]
     public class TestResultsTest
     {
-        [Test]
-        public void Constructor_Test()
-        {
-            var mediator = MockRepository.GenerateStub<IMediator>();
-            var testController = MockRepository.GenerateStub<ITestController>();
-            testController.Stub(x => x.SelectedTests).Return(
-                new System.ComponentModel.BindingList<TestTreeNode>(new List<TestTreeNode>()));
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            optionsController.Stub(x => x.UpdateDelay).Return(1);
-            mediator.TestController = testController;
-            mediator.OptionsController = optionsController;
-            var testResults = new TestResults(mediator);
-        }
     }
 }

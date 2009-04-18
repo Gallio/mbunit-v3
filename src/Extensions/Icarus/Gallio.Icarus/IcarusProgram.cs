@@ -38,7 +38,7 @@ namespace Gallio.Icarus
     /// </summary>
     public class IcarusProgram : ConsoleProgram<IcarusArguments>
     {
-        private ITestController TestController;
+        private ITestController testController;
 
         /// <summary>
         /// Creates an instance of the program.
@@ -86,33 +86,34 @@ namespace Gallio.Icarus
             // when the test assembly contains a local copy of the primary runtime assemblies
             // which will confuse the runtime into searching in the wrong place for plugins.
             runtimeSetup.PluginDirectories.AddRange(optionsController.PluginDirectories);
-            
+
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                using (TestController = new TestController(new TestTreeModel()))
+                testController = new TestController(new TestTreeModel());
+
+                ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
+
+                var reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+
+                IMediator mediator = new Mediator.Mediator
                 {
-                    ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
+                    ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, new Project()),
+                        optionsController, new FileSystem(), new DefaultXmlSerializer()),
+                    TestController = testController,
+                    ReportController = new ReportController(new ReportService(reportManager), new FileSystem()),
+                    RuntimeLogController = runtimeLogController,
+                    OptionsController = optionsController
+                };
+                mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController,
+                    optionsController);
+                mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
+                mediator.TestResultsController = new TestResultsController(mediator.TestController, 
+                    mediator.OptionsController, new Utilities.UnhandledExceptionPolicy());
 
-                    var reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+                var applicationController = new ApplicationController(Arguments, mediator);
+                var main = new Main(applicationController);
 
-                    IMediator mediator = new Mediator.Mediator 
-                    { 
-                        ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, new Project()), 
-                            optionsController, new FileSystem(), new DefaultXmlSerializer()), 
-                        TestController = TestController, 
-                        ReportController = new ReportController(new ReportService(reportManager), new FileSystem()),
-                        RuntimeLogController = runtimeLogController,
-                        OptionsController = optionsController
-                    };
-                    mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController,
-                        optionsController);
-                    mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
-
-                    var applicationController = new ApplicationController(Arguments, mediator);
-                    var main = new Main(applicationController);
-
-                    Application.Run(main);
-                }
+                Application.Run(main);
             }
 
             return ResultCode.Success;
@@ -122,7 +123,7 @@ namespace Gallio.Icarus
         {
             var testRunnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
             var testRunnerFactory = testRunnerManager.GetFactory(factoryName);
-            TestController.SetTestRunnerFactory(testRunnerFactory);
+            testController.SetTestRunnerFactory(testRunnerFactory);
         }
 
         protected override void ShowHelp()

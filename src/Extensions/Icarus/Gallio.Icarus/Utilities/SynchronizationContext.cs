@@ -11,9 +11,14 @@ namespace Gallio.Icarus.Utilities
             this.synchronizationContext = synchronizationContext;
         }
 
-        public void Post(SendOrPostCallback sendOrPostCallback, object sender)
+        public void Post(SendOrPostCallback sendOrPostCallback, object state)
         {
-            synchronizationContext.Post(sendOrPostCallback, sender);
+            synchronizationContext.Post(sendOrPostCallback, state);
+        }
+
+        public void Send(SendOrPostCallback sendOrPostCallback, object state)
+        {
+            synchronizationContext.Send(sendOrPostCallback, state);
         }
     }
 }

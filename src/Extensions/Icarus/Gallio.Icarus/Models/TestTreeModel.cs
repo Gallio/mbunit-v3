@@ -20,18 +20,16 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Models.Interfaces;
-using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
-using System.Threading;
 
 namespace Gallio.Icarus.Models
 {
-    public class TestTreeModel : TreeModelBase, ITestTreeModel, INotifyPropertyChanged
+    public class TestTreeModel : TreeModelBase, ITestTreeModel
     {
         private readonly TreeModel inner;
         private readonly List<TestStatus> filterStatuses = new List<TestStatus>();
@@ -101,8 +99,6 @@ namespace Gallio.Icarus.Models
 
         public int Inconclusive { get; private set; }
 
-        public ISynchronizationContext SynchronizationContext { get; set; }
-
         public TestTreeModel()
         {
             inner = new TreeModel();
@@ -152,6 +148,21 @@ namespace Gallio.Icarus.Models
 
         public void ResetTestStatus(IProgressMonitor progressMonitor)
         {
+            using (progressMonitor.BeginTask("Resetting test statuses", 100))
+            {
+                ResetCounters();
+
+                foreach (Node node in Nodes)
+                    ((TestTreeNode) node).Reset();
+
+                OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new object[] {}));
+
+                FilterTree();
+            }
+        }
+
+        private void ResetCounters()
+        {
             Passed = 0;
             OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
             Failed = 0;
@@ -159,14 +170,7 @@ namespace Gallio.Icarus.Models
             Skipped = 0;
             OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
             Inconclusive = 0;
-            OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
-
-            foreach (Node node in Nodes)
-                ((TestTreeNode)node).Reset();
-
-            OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new object[] { }));
-
-            FilterTree();
+            OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));            
         }
 
         public void SetFilter(TestStatus testStatus)
@@ -191,6 +195,8 @@ namespace Gallio.Icarus.Models
             {
                 node.AddTestStepRun(testStepRun);
                 Filter(node);
+                OnNodesChanged(new TreeModelEventArgs(GetPath(node.Parent), 
+                    new[] { node.Index }, new[] { node }));
             }
 
             if (!testStepRun.Step.IsPrimary || (!testStepRun.Step.IsTestCase && !testData.IsTestCase))
@@ -200,26 +206,21 @@ namespace Gallio.Icarus.Models
             {
                 case TestStatus.Passed:
                     Passed++;
+                    OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
                     break;
                 case TestStatus.Failed:
                     Failed++;
+                    OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
                     break;
                 case TestStatus.Skipped:
                     Skipped++;
+                    OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
                     break;
                 case TestStatus.Inconclusive:
                     Inconclusive++;
+                    OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
                     break;
             }
-        }
-
-        public void Notify()
-        {
-            OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new object[] {}));
-            OnPropertyChanged(new PropertyChangedEventArgs("Passed"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Failed"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Skipped"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Inconclusive"));
         }
 
         private void FilterTree()
@@ -291,16 +292,10 @@ namespace Gallio.Icarus.Models
             OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
         }
 
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
+        private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            if (SynchronizationContext == null)
-                return;
-
-            SynchronizationContext.Post(delegate
-            {
-                if (PropertyChanged != null)
-                    PropertyChanged(this, e);
-            }, null);
+            if (PropertyChanged != null)
+                PropertyChanged(this, e);
         }
 
         public override IEnumerable GetChildren(TreePath treePath)
@@ -333,6 +328,7 @@ namespace Gallio.Icarus.Models
 
         public void BuildTestTree(TestModelData testModelData, string treeViewCategory)
         {
+            ResetCounters();
             Nodes.Clear();
 
             TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id, TestKinds.Root);
@@ -493,7 +489,7 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public FilterSet<ITest> GenerateFilterFromSelectedTests()
+        public FilterSet<ITest> GenerateFilterSetFromSelectedTests()
         {
             if (Root == null || Root.CheckState == CheckState.Checked)
                 return FilterSet<ITest>.Empty;
@@ -576,11 +572,11 @@ namespace Gallio.Icarus.Models
             public int Compare(object x, object y)
             {
                 // Cast the objects to be compared to ListViewItem objects
-                TestTreeNode X = (TestTreeNode)x;
-                TestTreeNode Y = (TestTreeNode)y;
+                TestTreeNode left = (TestTreeNode)x;
+                TestTreeNode right = (TestTreeNode)y;
 
                 // standard text sort (ci)
-                int compareResult = caseInsensitiveComparer.Compare(X.Text, Y.Text);
+                int compareResult = caseInsensitiveComparer.Compare(left.Text, right.Text);
 
                 // Calculate correct return value based on object comparison
                 if (SortOrder == SortOrder.Ascending)

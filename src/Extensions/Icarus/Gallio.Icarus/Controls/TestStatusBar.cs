@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -23,7 +24,7 @@ namespace Gallio.Icarus.Controls
 {
     internal class TestStatusBar : Control
     {
-        private double elapsedTime;
+        private TimeSpan elapsedTime;
 
         private Color failedColor = Color.Red;
         private int failedTests;
@@ -42,7 +43,7 @@ namespace Gallio.Icarus.Controls
         private string mode = "Integration";
 
         [Browsable(false)]
-        public double ElapsedTime
+        public TimeSpan ElapsedTime
         {
             get { return elapsedTime; }
             set
@@ -164,7 +165,7 @@ namespace Gallio.Icarus.Controls
         public override string Text
         {
             // Force the control to display this text always.
-            get { return "{0} tests - {1} passed - {2} failed - {3} inconclusive - {4} skipped - {5:0.0}s"; }
+            get { return "{0} tests - {1} passed - {2} failed - {3} inconclusive - {4} skipped - {5}"; }
         }
 
         [Browsable(false)]
@@ -292,7 +293,7 @@ namespace Gallio.Icarus.Controls
             skippedTests = 0;
             inconclusiveTests = 0;
 
-            elapsedTime = 0;
+            elapsedTime = new TimeSpan(0);
 
             Invalidate();
         }

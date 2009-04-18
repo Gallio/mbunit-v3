@@ -57,18 +57,18 @@ namespace Gallio.Icarus.Tests.Controls
             Assert.AreEqual(0, testStatusBar.Failed);
             Assert.AreEqual(0, testStatusBar.Skipped);
             Assert.AreEqual(0, testStatusBar.Inconclusive);
-            Assert.AreEqual(0, testStatusBar.ElapsedTime);
+            Assert.AreEqual(0, testStatusBar.ElapsedTime.Ticks);
             testStatusBar.Passed = 5;
             testStatusBar.Failed = 3;
             testStatusBar.Skipped = 15;
             testStatusBar.Inconclusive = 5;
-            testStatusBar.ElapsedTime = 12;
+            testStatusBar.ElapsedTime = new System.TimeSpan(1,2,3);
             testStatusBar.Clear();
             Assert.AreEqual(0, testStatusBar.Passed);
             Assert.AreEqual(0, testStatusBar.Failed);
             Assert.AreEqual(0, testStatusBar.Skipped);
             Assert.AreEqual(0, testStatusBar.Inconclusive);
-            Assert.AreEqual(0, testStatusBar.ElapsedTime);
+            Assert.AreEqual(0, testStatusBar.ElapsedTime.Ticks);
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Gallio.Icarus.Tests.Controls
         [Test]
         public void Text_Test()
         {
-            Assert.AreEqual("{0} tests - {1} passed - {2} failed - {3} inconclusive - {4} skipped - {5:0.0}s", 
+            Assert.AreEqual("{0} tests - {1} passed - {2} failed - {3} inconclusive - {4} skipped - {5}", 
                 testStatusBar.Text);
         }
 

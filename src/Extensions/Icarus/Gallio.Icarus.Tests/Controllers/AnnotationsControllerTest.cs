@@ -23,7 +23,6 @@ using Gallio.Reflection;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 
 namespace Gallio.Icarus.Tests.Controllers
 {

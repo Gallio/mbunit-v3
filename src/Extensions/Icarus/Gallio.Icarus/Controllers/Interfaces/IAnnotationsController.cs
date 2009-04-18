@@ -15,10 +15,11 @@
 
 using System.ComponentModel;
 using Gallio.Model.Serialization;
+using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface IAnnotationsController
+    public interface IAnnotationsController : INotifyController
     {
         BindingList<AnnotationData> Annotations { get; }
         bool ShowErrors { get; set; }

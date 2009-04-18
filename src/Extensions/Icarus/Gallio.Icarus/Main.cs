@@ -86,7 +86,7 @@ namespace Gallio.Icarus
 
             testExplorer = new TestExplorer(mediator);
             projectExplorer = new ProjectExplorer(mediator);
-            testResults = new TestResults(mediator);
+            testResults = new TestResults(mediator.TestResultsController);
             runtimeLogWindow = new RuntimeLogWindow(mediator.RuntimeLogController);
             aboutDialog = new AboutDialog(mediator.TestController);
             propertiesWindow = new PropertiesWindow(mediator.ProjectController);
@@ -414,11 +414,6 @@ namespace Gallio.Icarus
         }
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ResetTests();
-        }
-
-        private void ResetTests()
         {
             mediator.ResetTests();
         }

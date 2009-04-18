@@ -17,12 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Threading;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Remoting;
-using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
@@ -31,7 +29,7 @@ using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class ProjectController : IProjectController, INotifyPropertyChanged
+    public class ProjectController : NotifyController, IProjectController
     {
         private readonly IProjectTreeModel projectTreeModel;
         private readonly IOptionsController optionsController;
@@ -45,7 +43,6 @@ namespace Gallio.Icarus.Controllers
         private string currentProjectName = Paths.DefaultProject;
 
         public event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public IProjectTreeModel Model
         {
@@ -73,12 +70,6 @@ namespace Gallio.Icarus.Controllers
         }
 
         public List<string> CollapsedNodes
-        {
-            get;
-            set;
-        }
-
-        public ISynchronizationContext SynchronizationContext
         {
             get;
             set;
@@ -189,10 +180,38 @@ namespace Gallio.Icarus.Controllers
 
         public void OpenProject(string projectName, IProgressMonitor progressMonitor)
         {
+            using (progressMonitor.BeginTask("Opening project", 100))
+            {
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(70))
+                    LoadProjectFile(subProgressMonitor, projectName);
+
+                using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(30))
+                    LoadUserOptions(projectName, subProgressMonitor);
+            }
+        }
+
+        private void LoadUserOptions(string projectName, IProgressMonitor progressMonitor)
+        {
+            using (progressMonitor.BeginTask("Loading user options", 100))
+            {
+                string projectUserOptionsFile = projectName + ".user";
+                if (!fileSystem.FileExists(projectUserOptionsFile))
+                    return;
+
+                UserOptions userOptions = xmlSerializer.LoadFromXml<UserOptions>(projectUserOptionsFile);
+                TreeViewCategory = userOptions.TreeViewCategory;
+                OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
+                CollapsedNodes = userOptions.CollapsedNodes;
+            }
+        }
+
+        private void LoadProjectFile(IProgressMonitor progressMonitor, string projectName)
+        {
             using (progressMonitor.BeginTask("Loading project file", 100))
             {
                 ProjectUtils projectUtils = new ProjectUtils(fileSystem, xmlSerializer);
                 Project project = projectUtils.LoadProject(projectName);
+
                 progressMonitor.Worked(50);
 
                 currentProjectName = projectName;
@@ -204,15 +223,6 @@ namespace Gallio.Icarus.Controllers
 
                 PublishUpdates();
             }
-
-            string projectUserOptionsFile = projectName + ".user";
-            if (!fileSystem.FileExists(projectUserOptionsFile))
-                return;
-
-            UserOptions userOptions = xmlSerializer.LoadFromXml<UserOptions>(projectUserOptionsFile);
-            TreeViewCategory = userOptions.TreeViewCategory;
-            OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
-            CollapsedNodes = userOptions.CollapsedNodes;
         }
 
         public void NewProject(IProgressMonitor progressMonitor)
@@ -281,18 +291,6 @@ namespace Gallio.Icarus.Controllers
             hintDirectories.ListChanged += hintDirectories_ListChanged;
 
             OnPropertyChanged(new PropertyChangedEventArgs("TestPackageConfig"));
-        }
-
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            if (SynchronizationContext == null)
-                return;
-
-            SynchronizationContext.Post(delegate
-            {
-                if (PropertyChanged != null)
-                    PropertyChanged(this, e);
-            }, null);
         }
     }
 }

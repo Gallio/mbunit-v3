@@ -19,7 +19,7 @@ using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface IOptionsController
+    public interface IOptionsController : INotifyPropertyChanged
     {
         bool AlwaysReloadAssemblies { get; set; }
         bool RunTestsAfterReload { get; set; }

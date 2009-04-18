@@ -21,7 +21,6 @@ using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
-using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
@@ -33,22 +32,17 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Utilities;
-using Timer=System.Timers.Timer;
-using ITestController=Gallio.Icarus.Controllers.Interfaces.ITestController;
-using SynchronizationContext=System.Threading.SynchronizationContext;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class TestController : ITestController, INotifyPropertyChanged
+    public class TestController : NotifyController, Interfaces.ITestController
     {
         private readonly BindingList<TestTreeNode> selectedTests;
         private readonly ITestTreeModel testTreeModel;
-        private readonly Timer testTreeUpdateTimer = new Timer();
         private LockBox<Report> reportLockBox;
 
         private ITestRunnerFactory testRunnerFactory;
         private TestPackageConfig testPackageConfig;
-        private ISynchronizationContext synchronizationContext;
 
         public TestController(ITestTreeModel testTreeModel)
         {
@@ -56,17 +50,10 @@ namespace Gallio.Icarus.Controllers
 
             selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
 
-            testTreeUpdateTimer.Interval = 1000;
-            testTreeUpdateTimer.AutoReset = false;
-            testTreeUpdateTimer.Elapsed += delegate { testTreeModel.Notify(); };
-
             testPackageConfig = new TestPackageConfig();
             reportLockBox = new LockBox<Report>(new Report());
-        }
 
-        public void Dispose()
-        {
-            testTreeUpdateTimer.Dispose();
+            testTreeModel.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
         }
 
         public event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
@@ -182,14 +169,24 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public ISynchronizationContext SynchronizationContext
+        public int Passed
         {
-            get { return synchronizationContext; }
-            set
-            {
-                synchronizationContext = value;
-                testTreeModel.SynchronizationContext = value;
-            }
+            get { return Model.Passed; }
+        }
+
+        public int Failed
+        {
+            get { return Model.Failed; }
+        }
+
+        public int Skipped
+        {
+            get { return Model.Skipped; }
+        }
+
+        public int Inconclusive
+        {
+            get { return Model.Inconclusive; }
         }
 
         public bool FailedTests { get; private set; }
@@ -216,11 +213,16 @@ namespace Gallio.Icarus.Controllers
         
         public void Run(bool debug, IProgressMonitor progressMonitor)
         {
+            FailedTests = false;
+
             using (progressMonitor.BeginTask("Running the tests.", 100))
-            {
+            {    
                 EventHandlerUtils.SafeInvoke(RunStarted, this, System.EventArgs.Empty);
-                FailedTests = false;
-                testTreeModel.ResetTestStatus(progressMonitor);
+
+                progressMonitor.Worked(5);
+
+                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+                    testTreeModel.ResetTestStatus(subProgressMonitor);
 
                 DoWithTestRunner(testRunner =>
                 {
@@ -235,7 +237,7 @@ namespace Gallio.Icarus.Controllers
                     };
 
                     testRunner.Run(testPackageConfigCopy, testExplorationOptions, testExecutionOptions,
-                        progressMonitor.CreateSubProgressMonitor(85));
+                        progressMonitor.CreateSubProgressMonitor(70));
 
                 }, progressMonitor, 10);
 
@@ -263,7 +265,7 @@ namespace Gallio.Icarus.Controllers
 
         public FilterSet<ITest> GenerateFilterSetFromSelectedTests()
         {
-            return testTreeModel.GenerateFilterFromSelectedTests();
+            return testTreeModel.GenerateFilterSetFromSelectedTests();
         }
 
         public void RefreshTestTree(IProgressMonitor progressMonitor)
@@ -328,8 +330,8 @@ namespace Gallio.Icarus.Controllers
 
                 testRunner.Events.TestStepFinished += (sender, e) =>
                 {
-                    testTreeUpdateTimer.Enabled = true;
                     testTreeModel.UpdateTestStatus(e.Test, e.TestStepRun);
+                    
                     EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
 
                     if (e.TestStepRun.Result.Outcome.Status == TestStatus.Failed)
@@ -352,19 +354,6 @@ namespace Gallio.Icarus.Controllers
             {
                 testRunner.Dispose(progressMonitor.CreateSubProgressMonitor(initializationAndDisposalWorkUnits / 2));
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            if (SynchronizationContext == null || PropertyChanged == null)
-                return;
-
-            SynchronizationContext.Post(delegate
-            {
-                PropertyChanged(this, e);
-            }, this);
         }
     }
 }

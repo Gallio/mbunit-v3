@@ -177,32 +177,6 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void Dispose_Test()
-        {
-            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
-            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
-            var testController = new TestController(testTreeModel);
-            var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
-            var testRunner = MockRepository.GenerateStub<ITestRunner>();
-            var testRunnerEvents = MockRepository.GenerateStub<ITestRunnerEvents>();
-            testRunner.Stub(tr => tr.Events).Return(testRunnerEvents);
-            testRunnerFactory.Stub(trf => trf.CreateTestRunner()).Return(testRunner);
-            testController.SetTestRunnerFactory(testRunnerFactory);
-            testController.Explore(progressMonitor);
-            TestStepFinishedEventArgs testStepFinishedEventArgs = new TestStepFinishedEventArgs(new Report(),
-                new TestData("id", "name", "fullName"),
-                new TestStepRun(new TestStepData("id", "name", "fullName", "testId")));
-
-            using (testController)
-            {
-                testRunnerEvents.Raise(tre => tre.TestStepFinished += null, testRunner, testStepFinishedEventArgs);
-            }
-
-            Thread.Sleep(1500);
-            testTreeModel.AssertWasNotCalled(ttm => ttm.Notify());
-        }
-
-        [Test]
         public void DoWithTestRunner_should_throw_if_testRunnerFactory_is_null()
         {
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
@@ -280,7 +254,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var filter = new FilterSet<ITest>(new NoneFilter<ITest>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterFromSelectedTests()).Return(filter);
+            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
             var testController = new TestController(testTreeModel);
 
             Assert.AreEqual(filter, testController.GenerateFilterSetFromSelectedTests());
@@ -312,7 +286,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var filter = new FilterSet<ITest>(new NoneFilter<ITest>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterFromSelectedTests()).Return(filter);
+            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
             var testController = new TestController(testTreeModel);
             var runStartedFlag = false;
             testController.RunStarted += delegate { runStartedFlag = true; };
@@ -334,7 +308,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var filter = new FilterSet<ITest>(new NoneFilter<ITest>());
-            testTreeModel.Stub(ttm => ttm.GenerateFilterFromSelectedTests()).Return(filter);
+            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
             var testController = new TestController(testTreeModel);
             var runStartedFlag = false;
             testController.RunStarted += delegate { runStartedFlag = true; };
@@ -353,7 +327,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testController.Run(false, progressMonitor);
 
             Assert.IsTrue(runStartedFlag);
-            testTreeModel.AssertWasCalled(ttm => ttm.GenerateFilterFromSelectedTests());
+            testTreeModel.AssertWasCalled(ttm => ttm.GenerateFilterSetFromSelectedTests());
             testRunner.AssertWasCalled(tr => tr.Run(Arg<TestPackageConfig>.Matches(tpc => tpc.AssemblyFiles.Count == 1), 
                 Arg<TestExplorationOptions>.Is.Anything, 
                 Arg<TestExecutionOptions>.Matches(teo => ((teo.FilterSet == filter) && teo.ExactFilter)), 
@@ -436,7 +410,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testController.SynchronizationContext = synchronizationContext;
             testController.SortAsc = true;
 
-            var args = synchronizationContext.GetArgumentsForCallsMadeOn(sc => sc.Post(Arg<SendOrPostCallback>.Is.Anything, 
+            var args = synchronizationContext.GetArgumentsForCallsMadeOn(sc => sc.Send(Arg<SendOrPostCallback>.Is.Anything, 
                 Arg.Is(testController)))[0];
             SendOrPostCallback cb = (SendOrPostCallback)args[0];
             cb(args[1]);
@@ -479,7 +453,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testController.SynchronizationContext = synchronizationContext;
             testController.SortDesc = true;
 
-            var args = synchronizationContext.GetArgumentsForCallsMadeOn(sc => sc.Post(Arg<SendOrPostCallback>.Is.Anything,
+            var args = synchronizationContext.GetArgumentsForCallsMadeOn(sc => sc.Send(Arg<SendOrPostCallback>.Is.Anything,
                 Arg.Is(testController)))[0];
             SendOrPostCallback cb = (SendOrPostCallback)args[0];
             cb(args[1]);

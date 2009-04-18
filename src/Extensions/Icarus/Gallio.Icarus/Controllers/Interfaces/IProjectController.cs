@@ -18,23 +18,20 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models.Interfaces;
-using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.ProgressMonitoring;
-using System.Threading;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
-    public interface IProjectController
+    public interface IProjectController : INotifyController
     {
         IProjectTreeModel Model { get; }
         TestPackageConfig TestPackageConfig { get; }
         BindingList<FilterInfo> TestFilters { get; }
         BindingList<string> HintDirectories { get; }
         string ProjectFileName { get; }
-        ISynchronizationContext SynchronizationContext { get; set; }
         List<string> CollapsedNodes { get; set; }
         string TreeViewCategory { get; set; }
 

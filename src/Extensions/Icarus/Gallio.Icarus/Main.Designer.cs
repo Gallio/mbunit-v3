@@ -52,6 +52,8 @@ namespace Gallio.Icarus
             this.saveProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveProjectAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.recentProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.fileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,8 +102,6 @@ namespace Gallio.Icarus
             this.helpToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.recentProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -185,6 +185,17 @@ namespace Gallio.Icarus
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(185, 6);
+            // 
+            // recentProjectsToolStripMenuItem
+            // 
+            this.recentProjectsToolStripMenuItem.Name = "recentProjectsToolStripMenuItem";
+            this.recentProjectsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.recentProjectsToolStripMenuItem.Text = "Recent Projects";
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(185, 6);
             // 
             // fileExit
             // 
@@ -479,7 +490,7 @@ namespace Gallio.Icarus
             this.helpToolbarButton});
             this.mainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(340, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(370, 25);
             this.mainToolStrip.TabIndex = 3;
             this.mainToolStrip.Text = "Main Menu";
             // 
@@ -495,11 +506,10 @@ namespace Gallio.Icarus
             // 
             // openProjectToolStripButton
             // 
-            this.openProjectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.openProjectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("openProjectToolStripButton.Image")));
             this.openProjectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openProjectToolStripButton.Name = "openProjectToolStripButton";
-            this.openProjectToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.openProjectToolStripButton.Size = new System.Drawing.Size(53, 22);
             this.openProjectToolStripButton.Text = "Open";
             this.openProjectToolStripButton.ToolTipText = "Open Project";
             this.openProjectToolStripButton.Click += new System.EventHandler(this.openProject_Click);
@@ -599,17 +609,6 @@ namespace Gallio.Icarus
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(1003, 636);
             this.dockPanel.TabIndex = 8;
-            // 
-            // recentProjectsToolStripMenuItem
-            // 
-            this.recentProjectsToolStripMenuItem.Name = "recentProjectsToolStripMenuItem";
-            this.recentProjectsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.recentProjectsToolStripMenuItem.Text = "Recent Projects";
-            // 
-            // toolStripSeparator12
-            // 
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(185, 6);
             // 
             // Main
             // 
