@@ -68,7 +68,7 @@ namespace Gallio.Tests.Model.Filters
         }
 
         [Test]
-        [Row(FilterSetResult.Unmatched, new FilterRuleType[] { }, new bool[] { })]
+        [Row(FilterSetResult.Include, new FilterRuleType[] { }, new bool[] { })]
         [Row(FilterSetResult.Include, new FilterRuleType[] { FilterRuleType.Inclusion }, new bool[] { true })]
         [Row(FilterSetResult.Exclude, new FilterRuleType[] { FilterRuleType.Exclusion }, new bool[] { true })]
         [Row(FilterSetResult.Include, new FilterRuleType[] { FilterRuleType.Inclusion, FilterRuleType.Exclusion }, new bool[] { true, true })]
