@@ -60,8 +60,6 @@ namespace Gallio.Icarus
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var runtimeLogController = new RuntimeLogController();
-
             var runtimeSetup = new RuntimeSetup
             {
                 RuntimePath =
@@ -81,6 +79,8 @@ namespace Gallio.Icarus
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
             };
             optionsController.Load();
+
+            var runtimeLogController = new RuntimeLogController(optionsController);
 
             // Set the installation path explicitly to ensure that we do not encounter problems
             // when the test assembly contains a local copy of the primary runtime assemblies
@@ -106,7 +106,7 @@ namespace Gallio.Icarus
                 };
                 mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController,
                     optionsController);
-                mediator.AnnotationsController = new AnnotationsController(mediator.TestController);
+                mediator.AnnotationsController = new AnnotationsController(mediator.TestController, mediator.OptionsController);
                 mediator.TestResultsController = new TestResultsController(mediator.TestController, 
                     mediator.OptionsController);
 

@@ -34,17 +34,18 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             // Arrange
             var testController = SetupAnnotationData(AnnotationType.Error);
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
 
             // Act
-            var annotationsController = new AnnotationsController(testController);
+            var annotationsController = new AnnotationsController(testController, optionsController);
             testController.Raise(tc => tc.ExploreFinished += null, this, EventArgs.Empty);
             
             // Assert
-            Assert.IsTrue(annotationsController.ShowErrors);
+            Assert.IsFalse(annotationsController.ShowErrors);
+            Assert.AreEqual(0, annotationsController.Annotations.Count);
+            annotationsController.ShowErrors = true;
             Assert.AreEqual(1, annotationsController.Annotations.Count);
             Assert.AreEqual("1 Error", annotationsController.ErrorsText);
-            annotationsController.ShowErrors = false;
-            Assert.AreEqual(0, annotationsController.Annotations.Count);
         }
 
         [Test]
@@ -52,17 +53,18 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             // Arrange
             var testController = SetupAnnotationData(AnnotationType.Warning);
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
 
             // Act
-            var annotationsController = new AnnotationsController(testController);
+            var annotationsController = new AnnotationsController(testController, optionsController);
             testController.Raise(tc => tc.ExploreFinished += null, this, EventArgs.Empty);
 
             // Assert
-            Assert.IsTrue(annotationsController.ShowWarnings);
+            Assert.IsFalse(annotationsController.ShowWarnings);
+            Assert.AreEqual(0, annotationsController.Annotations.Count);
+            annotationsController.ShowWarnings = true;
             Assert.AreEqual(1, annotationsController.Annotations.Count);
             Assert.AreEqual("1 Warning", annotationsController.WarningsText);
-            annotationsController.ShowWarnings = false;
-            Assert.AreEqual(0, annotationsController.Annotations.Count);
         }
 
         [Test]
@@ -70,17 +72,18 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             // Arrange
             var testController = SetupAnnotationData(AnnotationType.Info);
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
 
             // Act
-            var annotationsController = new AnnotationsController(testController);
+            var annotationsController = new AnnotationsController(testController, optionsController);
             testController.Raise(tc => tc.ExploreFinished += null, this, EventArgs.Empty);
 
             // Assert
-            Assert.IsTrue(annotationsController.ShowInfo);
+            Assert.IsFalse(annotationsController.ShowInfos);
+            Assert.AreEqual(0, annotationsController.Annotations.Count);
+            annotationsController.ShowInfos = true;
             Assert.AreEqual(1, annotationsController.Annotations.Count);
             Assert.AreEqual("1 Info", annotationsController.InfoText);
-            annotationsController.ShowInfo = false;
-            Assert.AreEqual(0, annotationsController.Annotations.Count);
         }
 
         private static ITestController SetupAnnotationData(AnnotationType annotationType)

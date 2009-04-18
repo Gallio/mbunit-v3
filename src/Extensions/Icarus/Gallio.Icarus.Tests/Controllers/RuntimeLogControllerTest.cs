@@ -15,21 +15,25 @@
 
 using System;
 using System.Drawing;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model.Diagnostics;
 using MbUnit.Framework;
 using Gallio.Icarus.Controllers;
 using Gallio.Runtime.Logging;
 using Gallio.Icarus.Controllers.EventArgs;
-using System.Threading;
 using System.Collections.Generic;
 using Gallio.Utilities;
+using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
     public class RuntimeLogControllerTest : RuntimeLogController
     {
+        public RuntimeLogControllerTest() : base(MockRepository.GenerateMock<IOptionsController>())
+        { }
+
         // can't use Color.SomeColor in a RowTest :(
-        private Dictionary<LogSeverity, Color> colors = new Dictionary<LogSeverity, Color>();
+        private readonly Dictionary<LogSeverity, Color> colors = new Dictionary<LogSeverity, Color>();
 
         [FixtureSetUp]
         public void FixtureSetUp()

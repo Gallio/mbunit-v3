@@ -15,7 +15,6 @@
 
 using System.ComponentModel;
 using Gallio.Model.Serialization;
-using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
@@ -24,7 +23,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         BindingList<AnnotationData> Annotations { get; }
         bool ShowErrors { get; set; }
         bool ShowWarnings { get; set; }
-        bool ShowInfo { get; set; }
+        bool ShowInfos { get; set; }
         string ErrorsText { get; }
         string WarningsText { get; }
         string InfoText { get; }

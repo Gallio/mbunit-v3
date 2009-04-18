@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml.Serialization;
 using Gallio.Icarus.Controls;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 using Gallio.Runner;
 
@@ -147,5 +148,17 @@ namespace Gallio.Icarus
             get { return generateReportAfterTestRun;}
             set { generateReportAfterTestRun = value; }
         }
+
+        [XmlElement("minLogSeverity")]
+        public LogSeverity MinLogSeverity { get; set; }
+
+        [XmlElement("annotationsShowErrors")]
+        public bool AnnotationsShowErrors { get; set; }
+
+        [XmlElement("annotationsShowWarnings")]
+        public bool AnnotationsShowWarnings { get; set; }
+
+        [XmlElement("annotationsShowInfos")]
+        public bool AnnotationsShowInfos { get; set; }
     }
 }

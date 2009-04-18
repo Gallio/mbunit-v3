@@ -21,6 +21,7 @@ using System.Reflection;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model;
 using Gallio.Icarus.Utilities;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
@@ -142,6 +143,30 @@ namespace Gallio.Icarus.Controllers
                 }
                 return recentProjects;
             }
+        }
+
+        public LogSeverity MinLogSeverity
+        {
+            get { return settings.MinLogSeverity; }
+            set { settings.MinLogSeverity = value; }
+        }
+
+        public bool AnnotationsShowErrors
+        {
+            get { return settings.AnnotationsShowErrors; }
+            set { settings.AnnotationsShowErrors = value; }
+        }
+
+        public bool AnnotationsShowWarnings
+        {
+            get { return settings.AnnotationsShowWarnings; }
+            set { settings.AnnotationsShowWarnings = value; }
+        }
+
+        public bool AnnotationsShowInfos
+        {
+            get { return settings.AnnotationsShowInfos; }
+            set { settings.AnnotationsShowInfos = value; }
         }
 
         public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer,

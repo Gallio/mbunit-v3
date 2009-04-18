@@ -15,11 +15,13 @@
 
 using System;
 using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
     public interface IRuntimeLogController
     {
+        LogSeverity MinLogSeverity { get; set; }
         event EventHandler<RuntimeLogEventArgs> LogMessage;
     }
 }

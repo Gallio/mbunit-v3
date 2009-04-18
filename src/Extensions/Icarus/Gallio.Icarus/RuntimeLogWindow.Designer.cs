@@ -47,7 +47,10 @@ namespace Gallio.Icarus
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.logBody = new System.Windows.Forms.RichTextBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.severityLabel = new System.Windows.Forms.ToolStripLabel();
+            this.severityComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.clearAllToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -60,11 +63,11 @@ namespace Gallio.Icarus
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.logBody);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(292, 248);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(449, 248);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(292, 273);
+            this.toolStripContainer1.Size = new System.Drawing.Size(449, 273);
             this.toolStripContainer1.TabIndex = 0;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -77,7 +80,7 @@ namespace Gallio.Icarus
             this.logBody.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logBody.Location = new System.Drawing.Point(0, 0);
             this.logBody.Name = "logBody";
-            this.logBody.Size = new System.Drawing.Size(292, 248);
+            this.logBody.Size = new System.Drawing.Size(449, 248);
             this.logBody.TabIndex = 0;
             this.logBody.Text = "";
             // 
@@ -85,27 +88,46 @@ namespace Gallio.Icarus
             // 
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.severityLabel,
+            this.severityComboBox,
+            this.toolStripSeparator1,
             this.clearAllToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(35, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(305, 25);
             this.toolStrip1.TabIndex = 0;
+            // 
+            // severityLabel
+            // 
+            this.severityLabel.Name = "severityLabel";
+            this.severityLabel.Size = new System.Drawing.Size(94, 22);
+            this.severityLabel.Text = "Minimum Severity:";
+            // 
+            // severityComboBox
+            // 
+            this.severityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.severityComboBox.Name = "severityComboBox";
+            this.severityComboBox.Size = new System.Drawing.Size(121, 25);
             // 
             // clearAllToolStripButton
             // 
-            this.clearAllToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.clearAllToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("clearAllToolStripButton.Image")));
             this.clearAllToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.clearAllToolStripButton.Name = "clearAllToolStripButton";
-            this.clearAllToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.clearAllToolStripButton.Text = "Clear All";
+            this.clearAllToolStripButton.Size = new System.Drawing.Size(72, 22);
+            this.clearAllToolStripButton.Text = "Clear Log";
             this.clearAllToolStripButton.Click += new System.EventHandler(this.clearAllToolStripButton_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // RuntimeLogWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 273);
+            this.ClientSize = new System.Drawing.Size(449, 273);
             this.Controls.Add(this.toolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "RuntimeLogWindow";
@@ -128,6 +150,9 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton clearAllToolStripButton;
         private System.Windows.Forms.RichTextBox logBody;
+        private System.Windows.Forms.ToolStripComboBox severityComboBox;
+        private System.Windows.Forms.ToolStripLabel severityLabel;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 
     }
 }

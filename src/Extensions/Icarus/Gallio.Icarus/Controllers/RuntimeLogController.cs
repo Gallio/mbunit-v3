@@ -19,16 +19,37 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model.Diagnostics;
 using Gallio.Runtime.Logging;
-using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
     public class RuntimeLogController : BaseLogger, IRuntimeLogController
     {
+        private readonly IOptionsController optionsController;
+        private LogSeverity minLogSeverity;
+
+        public LogSeverity MinLogSeverity
+        {
+            get { return minLogSeverity; }
+            set
+            {
+                minLogSeverity = value;
+                optionsController.MinLogSeverity = value;
+            }
+        }
+
         public event EventHandler<RuntimeLogEventArgs> LogMessage;
+
+        public RuntimeLogController(IOptionsController optionsController)
+        {
+            this.optionsController = optionsController;
+            MinLogSeverity = optionsController.MinLogSeverity;
+        }
 
         protected override void LogImpl(LogSeverity severity, string message, ExceptionData exceptionData)
         {
+            if (severity < MinLogSeverity || LogMessage == null)
+                return;
+
             Color color = Color.Black;
             switch (severity)
             {
@@ -52,9 +73,6 @@ namespace Gallio.Icarus.Controllers
                     color = Color.DarkGray;
                     break;
             }
-
-            if (LogMessage == null)
-                return;
 
             LogMessage(this, new RuntimeLogEventArgs(message, color));
 

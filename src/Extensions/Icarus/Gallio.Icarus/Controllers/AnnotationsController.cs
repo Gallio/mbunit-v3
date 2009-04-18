@@ -24,9 +24,11 @@ namespace Gallio.Icarus.Controllers
     internal class AnnotationsController : NotifyController, IAnnotationsController
     {
         private readonly ITestController testController;
+        private readonly IOptionsController optionsController;
         private readonly List<AnnotationData> annotationsList = new List<AnnotationData>();
         private readonly BindingList<AnnotationData> annotations;
-        private bool showErrors = true, showWarnings = true, showInfo = true;
+        private bool showErrors = true, showWarnings = true, showInfos = true;
+        private int errors, warnings, infos;
 
         public BindingList<AnnotationData> Annotations
         {
@@ -39,6 +41,7 @@ namespace Gallio.Icarus.Controllers
             set
             {
                 showErrors = value;
+                optionsController.AnnotationsShowErrors = value;
                 UpdateList();
             }
         }
@@ -49,29 +52,46 @@ namespace Gallio.Icarus.Controllers
             set
             {
                 showWarnings = value;
+                optionsController.AnnotationsShowWarnings = value;
                 UpdateList();
             }
         }
 
-        public bool ShowInfo
+        public bool ShowInfos
         {
-            get { return showInfo; }
+            get { return showInfos; }
             set
             {
-                showInfo = value;
+                showInfos = value;
+                optionsController.AnnotationsShowInfos = value;
                 UpdateList();
             }
         }
 
-        public string ErrorsText { get; private set; }
+        public string ErrorsText
+        {
+            get { return (errors == 1) ? string.Format("{0} Error", errors) : string.Format("{0} Errors", errors); }
+        }
 
-        public string WarningsText { get; private set; }
+        public string WarningsText
+        {
+            get { return (warnings == 1) ? string.Format("{0} Warning", warnings) : string.Format("{0} Warnings", warnings); }
+        }
 
-        public string InfoText { get; private set; }
+        public string InfoText
+        {
+            get { return (infos == 1) ? string.Format("{0} Info", infos) : string.Format("{0} Infos", infos); }
+        }
 
-        public AnnotationsController(ITestController testController)
+        public AnnotationsController(ITestController testController, IOptionsController optionsController)
         {
             this.testController = testController;
+            this.optionsController = optionsController;
+
+            showErrors = optionsController.AnnotationsShowErrors;
+            showWarnings = optionsController.AnnotationsShowWarnings;
+            showInfos = optionsController.AnnotationsShowInfos;
+
             annotations = new BindingList<AnnotationData>(annotationsList);
             testController.ExploreFinished += delegate { UpdateList(); };
         }
@@ -79,7 +99,7 @@ namespace Gallio.Icarus.Controllers
         private void UpdateList()
         {
             annotations.Clear();
-            int error = 0, warning = 0, info = 0;
+            errors = warnings = infos = 0;
             testController.ReadReport(report =>
             {
                 foreach (AnnotationData annotationData in report.TestModel.Annotations)
@@ -89,25 +109,22 @@ namespace Gallio.Icarus.Controllers
                         case AnnotationType.Error:
                             if (showErrors)
                                 annotations.Add(annotationData);
-                            error++;
+                            errors++;
                             break;
                         case AnnotationType.Warning:
                             if (showWarnings)
                                 annotations.Add(annotationData);
-                            warning++;
+                            warnings++;
                             break;
                         case AnnotationType.Info:
-                            if (showInfo)
+                            if (showInfos)
                                 annotations.Add(annotationData);
-                            info++;
+                            infos++;
                             break;
                     }
                 }
-                ErrorsText = (error == 1) ? string.Format("{0} Error", error) : string.Format("{0} Errors", error);
                 OnPropertyChanged(new PropertyChangedEventArgs("ErrorsText"));
-                WarningsText = (warning == 1) ? string.Format("{0} Warning", warning): string.Format("{0} Warnings", warning);
                 OnPropertyChanged(new PropertyChangedEventArgs("WarningsText"));
-                InfoText = (info == 1) ? string.Format("{0} Info", info) : string.Format("{0} Infos", info);
                 OnPropertyChanged(new PropertyChangedEventArgs("InfoText"));
             });
         }

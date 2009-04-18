@@ -13,8 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Drawing;
+using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 
 namespace Gallio.Icarus
@@ -24,6 +27,13 @@ namespace Gallio.Icarus
         public RuntimeLogWindow(IRuntimeLogController runtimeLogController)
         {
             InitializeComponent();
+
+            if (severityComboBox.ComboBox != null)
+            {
+                severityComboBox.ComboBox.DataSource = Enum.GetValues(typeof(LogSeverity));
+                severityComboBox.ComboBox.DataBindings.Add("SelectedItem", runtimeLogController, "MinLogSeverity", 
+                    false, DataSourceUpdateMode.OnPropertyChanged);
+            }
 
             runtimeLogController.LogMessage += runtimeLogController_LogMessage;
         }
@@ -55,7 +65,7 @@ namespace Gallio.Icarus
             logBody.SelectionLength = 0;
         }
 
-        private void clearAllToolStripButton_Click(object sender, System.EventArgs e)
+        private void clearAllToolStripButton_Click(object sender, EventArgs e)
         {
             logBody.Clear();
         }

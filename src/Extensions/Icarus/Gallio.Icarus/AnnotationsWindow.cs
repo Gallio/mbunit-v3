@@ -45,7 +45,7 @@ namespace Gallio.Icarus
                 DataSourceUpdateMode.OnPropertyChanged);
             showWarningsToolStripButton.DataBindings.Add("Text", annotationsController, "WarningsText");
 
-            showInfoToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowInfo", false, 
+            showInfoToolStripButton.DataBindings.Add("Checked", annotationsController, "ShowInfos", false, 
                 DataSourceUpdateMode.OnPropertyChanged);
             showInfoToolStripButton.DataBindings.Add("Text", annotationsController, "InfoText");
         }

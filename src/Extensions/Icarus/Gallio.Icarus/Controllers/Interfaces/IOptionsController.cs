@@ -16,6 +16,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using Gallio.Icarus.Utilities;
+using Gallio.Runtime.Logging;
 
 namespace Gallio.Icarus.Controllers.Interfaces
 {
@@ -40,6 +41,10 @@ namespace Gallio.Icarus.Controllers.Interfaces
         BindingList<string> AddIns { get; }
         bool GenerateReportAfterTestRun { get; set; }
         MRUList RecentProjects { get; }
+        LogSeverity MinLogSeverity { get; set; }
+        bool AnnotationsShowErrors { get; set; }
+        bool AnnotationsShowWarnings { get; set; }
+        bool AnnotationsShowInfos { get; set; }
 
         void Cancel();
         void Load();

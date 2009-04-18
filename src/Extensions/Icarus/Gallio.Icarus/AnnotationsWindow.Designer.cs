@@ -58,6 +58,8 @@ namespace Gallio.Icarus
             this.showErrorsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.showWarningsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.showInfoToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -134,11 +136,13 @@ namespace Gallio.Icarus
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showErrorsToolStripButton,
+            this.toolStripSeparator1,
             this.showWarningsToolStripButton,
+            this.toolStripSeparator2,
             this.showInfoToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(245, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(224, 25);
             this.toolStrip1.TabIndex = 0;
             // 
             // showErrorsToolStripButton
@@ -174,6 +178,16 @@ namespace Gallio.Icarus
             this.showInfoToolStripButton.Size = new System.Drawing.Size(56, 22);
             this.showInfoToolStripButton.Text = "0 Info";
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
             // AnnotationsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -207,6 +221,8 @@ namespace Gallio.Icarus
         private ToolStripButton showErrorsToolStripButton;
         private ToolStripButton showWarningsToolStripButton;
         private ToolStripButton showInfoToolStripButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 
     }
 }
