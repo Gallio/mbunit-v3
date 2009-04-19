@@ -75,7 +75,7 @@
   <Target Name="Extensions">
     <Gallio Filter="Type: PassingTests" Assemblies="$(TestAssembly)"
             PluginDirectories="$(GallioPath)" IgnoreAnnotations="true"
-            RunnerExtensions="DebugExtension, Gallio">
+            RunnerExtensions="DebugExtension, Gallio" Verbosity="Debug">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Gallio>
     

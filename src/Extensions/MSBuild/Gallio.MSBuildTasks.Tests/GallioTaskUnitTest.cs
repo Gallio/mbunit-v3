@@ -51,7 +51,7 @@ namespace Gallio.MSBuildTasks.Tests
                 Assert.IsFalse(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
                 Assert.IsTrue(launcher.TestExecutionOptions.FilterSet.IsEmpty);
-                Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
+                Assert.IsInstanceOfType(typeof(Runtime.Logging.ILogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("", launcher.ReportDirectory);
                 Assert.AreElementsEqual(new string[] { }, launcher.ReportFormats);
@@ -101,7 +101,7 @@ namespace Gallio.MSBuildTasks.Tests
             task.RunTimeLimit = 7200; // seconds
 
             task.RunnerType = StandardTestRunnerFactoryNames.Local;
-            task.RunnerExtensions = new string[] { "DebugExtension,Gallio" };
+            task.RunnerExtensions = new[] { "DebugExtension,Gallio" };
 
             task.PluginDirectories = new ITaskItem[] { new TaskItem("plugin") };
             task.Assemblies = new ITaskItem[] { new TaskItem("assembly1"), new TaskItem("assembly2") };
@@ -120,10 +120,10 @@ namespace Gallio.MSBuildTasks.Tests
                 Assert.IsTrue(launcher.DoNotRun);
                 Assert.IsFalse(launcher.EchoResults);
                 Assert.AreEqual("Type: SimpleTest", launcher.TestExecutionOptions.FilterSet.ToFilterSetExpr());
-                Assert.IsInstanceOfType(typeof(TaskLogger), launcher.Logger);
+                Assert.IsInstanceOfType(typeof(Runtime.Logging.ILogger), launcher.Logger);
                 Assert.IsInstanceOfType(typeof(LogProgressMonitorProvider), launcher.ProgressMonitorProvider);
                 Assert.AreEqual("dir", launcher.ReportDirectory);
-                Assert.AreElementsEqual(new string[] { "XML", "Html" }, launcher.ReportFormats);
+                Assert.AreElementsEqual(new[] { "XML", "Html" }, launcher.ReportFormats);
                 Assert.AreEqual("report", launcher.ReportNameFormat);
                 Assert.IsTrue(launcher.ShowReports);
                 Assert.AreEqual(TimeSpan.FromMinutes(120), launcher.RunTimeLimit);

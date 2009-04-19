@@ -30,6 +30,7 @@ using Gallio.Runner.Reports;
 using Gallio.Utilities;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using ILogger=Gallio.Runtime.Logging.ILogger;
 
 namespace Gallio.MSBuildTasks
 {
@@ -91,7 +92,7 @@ namespace Gallio.MSBuildTasks
         private string filter = string.Empty;
         private string[] reportTypes = EmptyArray<string>.Instance;
         private string reportNameFormat = Resources.DefaultReportNameFormat;
-        private ITaskItem reportDirectory = null;
+        private ITaskItem reportDirectory;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
         private string[] runnerExtensions = EmptyArray<string>.Instance;
         private bool ignoreFailures;
@@ -100,6 +101,7 @@ namespace Gallio.MSBuildTasks
         private bool ignoreAnnotations;
         private bool echoResults = true;
         private TimeSpan? runTimeLimit;
+        private Verbosity verbosity;
 
         private string[] runnerProperties = EmptyArray<string>.Instance;
         private string[] reportFormatterProperties = EmptyArray<string>.Instance;
@@ -456,6 +458,14 @@ namespace Gallio.MSBuildTasks
         }
 
         /// <summary>
+        /// The verbosity to use when logging.
+        /// </summary>
+        public string Verbosity
+        {
+            set { verbosity = (Verbosity)Enum.Parse(typeof(Verbosity), value); }
+        }
+
+        /// <summary>
         /// Gets the exit code of the tests execution.
         /// </summary>
         /// <remarks>
@@ -735,7 +745,7 @@ namespace Gallio.MSBuildTasks
         {
             DisplayVersion();
 
-            TaskLogger logger = new TaskLogger(Log);
+            var logger = new FilteredLogger(new TaskLogger(Log), verbosity);
 
             TestLauncher launcher = new TestLauncher();
             launcher.Logger = logger;
@@ -790,12 +800,9 @@ namespace Gallio.MSBuildTasks
             LogResultSummary(logger, result);
             PopulateStatistics(result);
 
-            if (exitCode == ResultCode.Success ||
-                exitCode == ResultCode.NoTests ||
-                ignoreFailures)
-                return true;
-
-            return false;
+            return exitCode == ResultCode.Success ||
+                   exitCode == ResultCode.NoTests ||
+                   ignoreFailures;
         }
 
         /// <exclude />
@@ -821,7 +828,7 @@ namespace Gallio.MSBuildTasks
             testCount = stats.TestCount;
         }
 
-        private static void LogResultSummary(TaskLogger logger, TestLauncherResult result)
+        private static void LogResultSummary(ILogger logger, TestLauncherResult result)
         {
             switch (result.ResultCode)
             {
