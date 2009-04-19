@@ -131,6 +131,9 @@ namespace Gallio.Icarus.Controllers
 
         private void CountResults()
         {
+            if (testController.Model.Root == null)
+                return;
+
             // invalidate cache
             ResultsCount = 0;
 
@@ -156,7 +159,7 @@ namespace Gallio.Icarus.Controllers
             count += node.TestStepRuns.Count;
 
             foreach (Node n in node.Nodes)
-                count += CountResults((TestTreeNode)n);
+                count += CountResults((TestTreeNode) n);
 
             return count;
         }
@@ -233,11 +236,11 @@ namespace Gallio.Icarus.Controllers
             foreach (TestStepRun tsr in node.TestStepRuns)
                 AddTestStepRun(node.NodeType, tsr, indentCount);
 
+            if (node.NodeType != "Namespace")
+                indentCount++;
+
             foreach (Node n in node.Nodes)
-            {
-                if (n is TestTreeNode)
-                    UpdateTestResults((TestTreeNode)n, indentCount + 1);
-            }
+                UpdateTestResults((TestTreeNode) n, indentCount);
         }
 
         private void AddTestStepRun(string testKind, TestStepRun testStepRun, int indentCount)

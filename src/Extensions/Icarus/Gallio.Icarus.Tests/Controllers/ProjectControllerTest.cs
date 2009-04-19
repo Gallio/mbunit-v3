@@ -283,6 +283,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var projectTreeModel = MockRepository.GenerateStub<IProjectTreeModel>();
             Project project = new Project();
             projectTreeModel.Project = project;
+            projectTreeModel.FileName = Paths.DefaultProject;
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerializer = MockRepository.GenerateStub<IXmlSerializer>();
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();

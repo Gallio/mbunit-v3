@@ -40,7 +40,6 @@ namespace Gallio.Icarus.Controllers
         private readonly BindingList<string> hintDirectories;
         private readonly List<string> hintDirectoriesList = new List<string>();
         private readonly AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
-        private string currentProjectName = Paths.DefaultProject;
 
         public event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
 
@@ -214,7 +213,6 @@ namespace Gallio.Icarus.Controllers
 
                 progressMonitor.Worked(50);
 
-                currentProjectName = projectName;
                 projectTreeModel.FileName = projectName;
                 projectTreeModel.Project = project;
 
@@ -243,7 +241,7 @@ namespace Gallio.Icarus.Controllers
             using (progressMonitor.BeginTask("Saving project", 100))
             {
                 if (string.IsNullOrEmpty(projectName))
-                    projectName = currentProjectName;
+                    projectName = projectTreeModel.FileName;
 
                 // create folder (if necessary)
                 string dir = Path.GetDirectoryName(projectName);

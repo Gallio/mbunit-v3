@@ -37,6 +37,7 @@ namespace Gallio.Icarus.Models
             {
                 fileName = value;
                 projectRoot.Text = Path.GetFileNameWithoutExtension(fileName);
+                OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new[] { projectRoot } ));
             }
         }
 

@@ -516,7 +516,7 @@ namespace Gallio.Icarus.Models
         public FilterSet<ITest> GenerateFilterSetFromSelectedTests()
         {
             if (Root == null || Root.CheckState == CheckState.Checked)
-                return FilterSet<ITest>.Empty;
+                return new FilterSet<ITest>(new AnyFilter<ITest>());
 
             Filter<ITest> filter = Root.CheckState == CheckState.Unchecked
                 ? new NoneFilter<ITest>()

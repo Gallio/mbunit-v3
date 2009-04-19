@@ -102,9 +102,6 @@ namespace Gallio.Model.Filters
         /// <returns>The result</returns>
         public FilterSetResult Evaluate(T item)
         {
-            if (IsEmpty)
-                return FilterSetResult.Include;
-
             foreach (var rule in rules)
             {
                 if (rule.Filter.IsMatch(item))
