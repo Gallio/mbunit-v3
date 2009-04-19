@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C4AEA1A-CF85-4574-B24A-2C264ED0FEC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -135,6 +135,12 @@
     <Compile Include="Controllers\Interfaces\IProjectController.cs" />
     <Compile Include="Controls\ToolStripMenuItem.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Options\TestRunnerExtensionOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\TestRunnerExtensionOptions.Designer.cs">
+      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="Options\ReportOptions.cs">
       <SubType>UserControl</SubType>
@@ -382,6 +388,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AnnotationsWindow.resx">
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\TestRunnerExtensionOptions.resx">
+      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\ReportOptions.resx">

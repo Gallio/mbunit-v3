@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
 using Gallio.Model;
@@ -28,6 +29,7 @@ using Gallio.Model.Serialization;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Events;
+using Gallio.Runner.Extensions;
 using Gallio.Runner.Reports;
 using Gallio.Runtime;
 using Gallio.Runtime.ProgressMonitoring;
@@ -45,9 +47,12 @@ namespace Gallio.Icarus.Controllers
         private TestPackageConfig testPackageConfig;
         private FilterSet<ITest> filterSet;
 
-        public TestController(ITestTreeModel testTreeModel)
+        private readonly IOptionsController optionsController;
+
+        public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController)
         {
             this.testTreeModel = testTreeModel;
+            this.optionsController = optionsController;
 
             selectedTests = new BindingList<TestTreeNode>(new List<TestTreeNode>());
 
@@ -327,7 +332,14 @@ namespace Gallio.Icarus.Controllers
                 var testRunnerOptions = new TestRunnerOptions();
                 var logger = RuntimeAccessor.Logger;
 
-                testRunner.Initialize(testRunnerOptions, logger, progressMonitor.CreateSubProgressMonitor(initializationAndDisposalWorkUnits / 2));
+                foreach (string extensionSpecification in optionsController.TestRunnerExtensions)
+                {
+                    var testRunnerExtension = TestRunnerExtensionUtils.CreateExtensionFromSpecification(extensionSpecification);
+                    testRunner.RegisterExtension(testRunnerExtension);
+                }
+
+                testRunner.Initialize(testRunnerOptions, logger, 
+                    progressMonitor.CreateSubProgressMonitor(initializationAndDisposalWorkUnits / 2));
 
                 testRunner.Events.TestStepFinished += (sender, e) =>
                 {

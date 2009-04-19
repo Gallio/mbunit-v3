@@ -57,7 +57,8 @@ namespace Gallio.Icarus.Options
                 { "pluginDirectories", typeof(PluginDirectoriesOptions) },
                 { "startup", typeof(StartupOptions) },
                 { "testExplorer", typeof(TestExplorerOptions) },
-                { "Reports", typeof(ReportOptions)}
+                { "Reports", typeof(ReportOptions) },
+                { "testRunnerExtensions", typeof(TestRunnerExtensionOptions) }
             };
 
             Type panelType;

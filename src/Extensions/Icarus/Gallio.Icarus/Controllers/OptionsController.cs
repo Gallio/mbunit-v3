@@ -169,6 +169,8 @@ namespace Gallio.Icarus.Controllers
             set { settings.AnnotationsShowInfos = value; }
         }
 
+        public BindingList<string> TestRunnerExtensions { get; private set; }
+
         public OptionsController(IFileSystem fileSystem, IXmlSerializer xmlSerializer,
             IUnhandledExceptionPolicy unhandledExceptionPolicy)
         {
@@ -182,9 +184,13 @@ namespace Gallio.Icarus.Controllers
             settings = LoadSettings(Paths.SettingsFile) ?? new Settings();
 
             if (settings.TreeViewCategories.Count == 0)
-                settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, MetadataKeys.Category, 
+            {
+                // add default categories
+                settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, MetadataKeys.Category,
                     MetadataKeys.Importance, MetadataKeys.TestsOn });
+            }
 
+            // add unselected categories for treeview (test explorer)
             unselectedTreeViewCategoriesList.Clear();
             foreach (FieldInfo fi in typeof(MetadataKeys).GetFields())
             {
@@ -192,10 +198,12 @@ namespace Gallio.Icarus.Controllers
                     unselectedTreeViewCategoriesList.Add(fi.Name);
             }
 
+            // set up bindable lists (for options dialogs)
             PluginDirectories = new BindingList<string>(settings.PluginDirectories);
             SelectedTreeViewCategories = new BindingList<string>(settings.TreeViewCategories);
             UnselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
             AddIns = new BindingList<string>(settings.AddIns);
+            TestRunnerExtensions = new BindingList<string>(settings.TestRunnerExtensions);
         }
 
         private Settings LoadSettings(string fileName)

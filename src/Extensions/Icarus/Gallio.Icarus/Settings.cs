@@ -42,6 +42,7 @@ namespace Gallio.Icarus
         private readonly List<string> treeViewCategories = new List<string>();
         private readonly List<string> addIns = new List<string>();
         private bool generateReportAfterTestRun = true;
+        private readonly List<string> extensionSpecifications = new List<string>();
 
         [XmlElement("testRunnerFactory")]
         public string TestRunnerFactory
@@ -160,5 +161,12 @@ namespace Gallio.Icarus
 
         [XmlElement("annotationsShowInfos")]
         public bool AnnotationsShowInfos { get; set; }
+
+        [XmlArray("extensionSpecifications", IsNullable = false)]
+        [XmlArrayItem("extensionSpecification", typeof(string), IsNullable = false)]
+        public List<string> TestRunnerExtensions
+        {
+            get { return extensionSpecifications; }
+        }
     }
 }

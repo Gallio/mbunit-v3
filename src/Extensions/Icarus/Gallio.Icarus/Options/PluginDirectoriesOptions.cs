@@ -26,6 +26,9 @@ namespace Gallio.Icarus.Options
 
         public PluginDirectoriesOptions(IOptionsController optionsController)
         {
+            if (optionsController == null) 
+                throw new ArgumentNullException("optionsController");
+
             this.optionsController = optionsController;
             InitializeComponent();
             pluginDirectoriesListBox.DataSource = optionsController.PluginDirectories;
@@ -42,8 +45,7 @@ namespace Gallio.Icarus.Options
 
         private void removePluginDirectoryButton_Click(object sender, EventArgs e)
         {
-            if (optionsController != null)
-                optionsController.PluginDirectories.Remove((string) pluginDirectoriesListBox.SelectedItem);
+            optionsController.PluginDirectories.Remove((string) pluginDirectoriesListBox.SelectedItem);
         }
 
         private void addFolderButton_Click(object sender, EventArgs e)

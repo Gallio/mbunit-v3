@@ -348,9 +348,7 @@ namespace Gallio.Icarus
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
             using (Options.Options options = new Options.Options(mediator.OptionsController))
-            {
                 options.ShowDialog(this);
-            }
         }
 
         private void removeAssembliesToolStripMenuItem_Click(object sender, EventArgs e)

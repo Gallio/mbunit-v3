@@ -89,7 +89,7 @@ namespace Gallio.Icarus
 
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                testController = new TestController(new TestTreeModel());
+                testController = new TestController(new TestTreeModel(), optionsController);
 
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 
