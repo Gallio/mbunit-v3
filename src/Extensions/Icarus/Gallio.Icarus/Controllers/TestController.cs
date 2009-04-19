@@ -43,6 +43,7 @@ namespace Gallio.Icarus.Controllers
 
         private ITestRunnerFactory testRunnerFactory;
         private TestPackageConfig testPackageConfig;
+        private FilterSet<ITest> filterSet;
 
         public TestController(ITestTreeModel testTreeModel)
         {
@@ -232,8 +233,9 @@ namespace Gallio.Icarus.Controllers
                     var testExplorationOptions = new TestExplorationOptions();
                     var testExecutionOptions = new TestExecutionOptions
                     {
-                        FilterSet = GenerateFilterSetFromSelectedTests(),
-                        ExactFilter = true
+                        // re-use filter set generated when saving "last run" filter
+                        FilterSet = filterSet,
+                        ExactFilter = false
                     };
 
                     testRunner.Run(testPackageConfigCopy, testExplorationOptions, testExecutionOptions,
@@ -265,7 +267,8 @@ namespace Gallio.Icarus.Controllers
 
         public FilterSet<ITest> GenerateFilterSetFromSelectedTests()
         {
-            return testTreeModel.GenerateFilterSetFromSelectedTests();
+            filterSet = testTreeModel.GenerateFilterSetFromSelectedTests();
+            return filterSet;
         }
 
         public void RefreshTestTree(IProgressMonitor progressMonitor)

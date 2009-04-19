@@ -297,6 +297,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunnerFactory.Stub(trf => trf.CreateTestRunner()).Return(testRunner);
             testController.SetTestRunnerFactory(testRunnerFactory);
 
+            testController.GenerateFilterSetFromSelectedTests();
             testController.Run(false, progressMonitor);
 
             Assert.IsTrue(runStartedFlag);
@@ -324,13 +325,14 @@ namespace Gallio.Icarus.Tests.Controllers
             testPackageConfig.AssemblyFiles.Add("test");
 
             testController.SetTestPackageConfig(testPackageConfig);
+            testController.GenerateFilterSetFromSelectedTests();
             testController.Run(false, progressMonitor);
 
             Assert.IsTrue(runStartedFlag);
             testTreeModel.AssertWasCalled(ttm => ttm.GenerateFilterSetFromSelectedTests());
             testRunner.AssertWasCalled(tr => tr.Run(Arg<TestPackageConfig>.Matches(tpc => tpc.AssemblyFiles.Count == 1), 
                 Arg<TestExplorationOptions>.Is.Anything, 
-                Arg<TestExecutionOptions>.Matches(teo => ((teo.FilterSet == filter) && teo.ExactFilter)), 
+                Arg<TestExecutionOptions>.Matches(teo => ((teo.FilterSet == filter) && !teo.ExactFilter)), 
                 Arg.Is(progressMonitor)));
             Assert.IsTrue(runFinishedFlag);
         }
