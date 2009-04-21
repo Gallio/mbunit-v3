@@ -1,22 +1,40 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.MbUnit2Adapter.dll" />
-      <assembly file="MbUnit.Framework.2.0.dll" />
-      <assembly file="MbUnit.Framework.dll" />
-      <assembly file="QuickGraph.Algorithms.dll" />
-      <assembly file="QuickGraph.dll" />
-      <assembly file="Refly.dll" />
-      <assembly file="TestFu.dll" />
-    </assemblies>
+<plugin pluginId="Gallio.MbUnit2Adapter"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>MbUnit v2 Adapter Plugin</name>
+  </traits>
 
-    <runtime>
-      <components>
-        <component id="MbUnit2Adapter.TestFramework"
-                   service="Gallio.Model.ITestFramework, Gallio"
-                   type="Gallio.MbUnit2Adapter.Model.MbUnit2TestFramework, Gallio.MbUnit2Adapter" />
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.MbUnit2Adapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+              codeBase="Gallio.MbUnit2Adapter.dll" />
+
+    <assembly fullName="MbUnit.Framework, Version=2.4.2.175, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5"
+              codeBase="MbUnit.Framework.dll" />
+
+    <assembly fullName="MbUnit.Framework.2.0, Version=2.4.2.175, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5"
+              codeBase="MbUnit.Framework.2.0.dll" />
+    
+    <assembly fullName="QuickGraph.Algorithms, Version=2.4.2.175, Culture=neutral, PublicKeyToken=975e84d0c8d6464d"
+              codeBase="QuickGraph.Algorithms.dll" />
+    
+    <assembly fullName="QuickGraph, Version=2.4.2.175, Culture=neutral, PublicKeyToken=975e84d0c8d6464d"
+              codeBase="QuickGraph.dll" />
+    
+    <assembly fullName="Refly, Version=2.4.2.175, Culture=neutral, PublicKeyToken=829676e11975a31c"
+              codeBase="Refly.dll" />
+    
+    <assembly fullName="TestFu, Version=2.4.2.175, Culture=neutral, PublicKeyToken=5e72ecd30bc408d5"
+              codeBase="TestFu.dll" />
+  </assemblies>
+
+  <components>
+    <component componentId="MbUnit2Adapter.TestFramework"
+               serviceId="Gallio.TestFramework"
+               componentType="Gallio.MbUnit2Adapter.Model.MbUnit2TestFramework, Gallio.MbUnit2Adapter" />
+  </components>
+</plugin>

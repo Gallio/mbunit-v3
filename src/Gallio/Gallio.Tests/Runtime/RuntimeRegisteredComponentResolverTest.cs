@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
@@ -36,10 +37,13 @@ namespace Gallio.Tests.Runtime
         public void GetNamesDelegatesToTheRuntime()
         {
             IRuntime runtime = Mocks.StrictMock<IRuntime>();
+            IRegistry registry = Mocks.StrictMock<IRegistry>();
 
             using (Mocks.Record())
             {
-                Expect.Call(runtime.ResolveAll<DummyRegisteredComponent>()).Return(new DummyRegisteredComponent[]
+                SetupResult.For(runtime.Registry).Return(registry);
+
+                Expect.Call(registry.ResolveAll<DummyRegisteredComponent>()).Return(new DummyRegisteredComponent[]
                 {
                     new DummyRegisteredComponent("abc"),
                     new DummyRegisteredComponent("def")
@@ -67,9 +71,13 @@ namespace Gallio.Tests.Runtime
                 new DummyRegisteredComponent("def")
             };
 
+            IRegistry registry = Mocks.StrictMock<IRegistry>();
+
             using (Mocks.Record())
             {
-                SetupResult.For(runtime.ResolveAll<DummyRegisteredComponent>()).Return(components);
+                SetupResult.For(runtime.Registry).Return(registry);
+
+                SetupResult.For(registry.ResolveAll<DummyRegisteredComponent>()).Return(components);
             }
 
             using (Mocks.Playback())

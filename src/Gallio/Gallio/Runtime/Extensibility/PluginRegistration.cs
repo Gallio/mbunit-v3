@@ -18,6 +18,9 @@ namespace Gallio.Runtime.Extensibility
         private PropertySet pluginProperties;
         private PropertySet traitsProperties;
         private IHandlerFactory pluginHandlerFactory;
+        private IList<AssemblyReference> assemblyReferences;
+        private IList<IPluginDescriptor> pluginDependencies;
+        private IList<string> probingPaths;
 
         /// <summary>
         /// Creates a plugin registration.
@@ -76,6 +79,67 @@ namespace Gallio.Runtime.Extensibility
                 if (value == null)
                     throw new ArgumentNullException("value");
                 baseDirectory = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the list of plugin assembly references.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public IList<AssemblyReference> AssemblyReferences
+        {
+            get
+            {
+                if (assemblyReferences == null)
+                    assemblyReferences = new List<AssemblyReference>();
+                return assemblyReferences;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                assemblyReferences = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the list of probing paths in which to
+        /// attempt to locate referenced assemblies.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public IList<string> ProbingPaths
+        {
+            get
+            {
+                if (probingPaths == null)
+                    probingPaths = new List<string>();
+                return probingPaths;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                probingPaths = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the list of plugin dependencies.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
+        public IList<IPluginDescriptor> PluginDependencies
+        {
+            get
+            {
+                if (pluginDependencies == null)
+                    pluginDependencies = new List<IPluginDescriptor>();
+                return pluginDependencies;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                pluginDependencies = value;
             }
         }
 

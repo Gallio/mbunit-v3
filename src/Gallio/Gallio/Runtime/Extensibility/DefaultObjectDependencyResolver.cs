@@ -25,9 +25,14 @@ namespace Gallio.Runtime.Extensibility
     /// <para>
     /// To convert dtring configuration arguments to the parameter type, the object factory applies the following rules:
     /// <list type="bullet">
+    /// <item>If the parameter type is an array type, then the configuration argument is split on semicolons
+    /// (';') and each part is independently converted to a value of the array's element type and then
+    /// packaged into an array.</item>
     /// <item>If the parameter type is a string, then no conversion is required so the value is used as-is.</item>
     /// <item>If the value looks like "${component.id}" and there is a component registered with the specified
     /// component id that satisfies the parameter type then that component is used.</item>
+    /// <item>If the parameter type is an enum then the value is parsed to a 
+    /// value of that enum type, case-insensitively.</item>
     /// <item>If the parameter type is <see cref="Image" /> then the value is treated as a relative file
     /// path to a resource and the image is loaded from the resource locator.</item>
     /// <item>If the parameter type is <see cref="Icon" /> then the value is treated as a relative file
@@ -73,8 +78,19 @@ namespace Gallio.Runtime.Extensibility
             // Resolve by property
             if (configurationArgument != null)
             {
-                object value = ConvertConfigurationArgumentToType(parameterType, configurationArgument);
-                return DependencyResolution.Satisfied(value);
+                if (parameterType.IsArray)
+                {
+                    // TODO: Should really provide a better way to extract structural information.
+                    Type type = parameterType.GetElementType();
+                    object[] values = Array.ConvertAll(configurationArgument.Split(';'),
+                        value => ConvertConfigurationArgumentToType(type, value));
+                    return DependencyResolution.Satisfied(CreateArray(type, values));
+                }
+                else
+                {
+                    object value = ConvertConfigurationArgumentToType(parameterType, configurationArgument);
+                    return DependencyResolution.Satisfied(value);
+                }
             }
 
             if (parameterType.IsArray)
@@ -84,12 +100,7 @@ namespace Gallio.Runtime.Extensibility
                 if (serviceLocator.CanResolve(componentType))
                 {
                     IList<object> components = serviceLocator.ResolveAll(componentType);
-                    Array componentArray = Array.CreateInstance(componentType, components.Count);
-
-                    for (int i = 0; i < components.Count; i++)
-                        componentArray.SetValue(components[i], i);
-
-                    return DependencyResolution.Satisfied(componentArray);
+                    return DependencyResolution.Satisfied(CreateArray(componentType, components));
                 }
             }
             else
@@ -120,6 +131,9 @@ namespace Gallio.Runtime.Extensibility
                 return component;
             }
 
+            if (type.IsEnum)
+                return Enum.Parse(type, value, true);
+
             if (type == typeof(Image))
                 return Image.FromFile(resourceLocator.GetFullPath(value));
 
@@ -133,6 +147,16 @@ namespace Gallio.Runtime.Extensibility
                 return new DirectoryInfo(resourceLocator.GetFullPath(value));
 
             return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+        }
+
+        private static Array CreateArray(Type elementType, IList<object> values)
+        {
+            Array array = Array.CreateInstance(elementType, values.Count);
+
+            for (int i = 0; i < values.Count; i++)
+                array.SetValue(values[i], i);
+
+            return array;
         }
     }
 }

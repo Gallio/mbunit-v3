@@ -68,6 +68,18 @@ namespace Gallio.Runtime.Extensibility
         PropertySet TraitsProperties { get; }
 
         /// <summary>
+        /// Returns true if the plugin that provides the component is disabled
+        /// or if the service implemented by the component is disabled.
+        /// </summary>
+        bool IsDisabled { get; }
+
+        /// <summary>
+        /// Gets the reason the component was disabled.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDisabled" /> is false</exception>
+        string DisabledReason { get; }
+
+        /// <summary>
         /// Resolves the component type.
         /// </summary>
         /// <remarks>

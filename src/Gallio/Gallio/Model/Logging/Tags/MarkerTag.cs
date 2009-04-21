@@ -147,7 +147,6 @@ namespace Gallio.Model.Logging.Tags
         /// Represents a marker attribute.
         /// </summary>
         [Serializable]
-        [XmlRoot("marker", Namespace = XmlSerializationUtils.GallioNamespace)]
         [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
         public sealed class Attribute
         {

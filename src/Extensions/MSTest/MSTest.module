@@ -16,9 +16,9 @@
     <Binary Include="Gallio.MSTestAdapter\bin\Gallio.MSTestAdapter.dll">
       <Folder>MSTest</Folder>
     </Binary>
-    <Binary Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.plugin">
+    <PluginFile Include="Gallio.MSTestAdapter\Gallio.MSTestAdapter.plugin">
       <Folder>MSTest</Folder>
-    </Binary>
+    </PluginFile>
     <Binary Include="Gallio.MSTestAdapter\Readme.txt">
       <Folder>MSTest</Folder>
     </Binary>

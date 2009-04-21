@@ -62,7 +62,7 @@ namespace Gallio.Runner.Drivers
         {
             base.InitializeImpl(runtimeSetup, testRunnerOptions, logger);
 
-            ITestHarnessFactory factory = RuntimeAccessor.Instance.Resolve<ITestHarnessFactory>();
+            ITestHarnessFactory factory = RuntimeAccessor.Registry.Resolve<ITestHarnessFactory>();
             harness = factory.CreateHarness();
         }
 

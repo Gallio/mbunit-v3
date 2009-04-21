@@ -195,7 +195,7 @@ namespace Gallio.VisualStudio.Shell
 
         private void InitializeShellExtensions()
         {
-            foreach (IShellExtension extension in RuntimeAccessor.Instance.ResolveAll<IShellExtension>())
+            foreach (IShellExtension extension in RuntimeAccessor.Registry.ResolveAll<IShellExtension>())
             {
                 extensions.Add(extension);
                 extension.Initialize(this);

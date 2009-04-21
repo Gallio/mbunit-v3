@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Reflection;
 using Gallio.Model.Diagnostics;
 
@@ -44,8 +45,8 @@ namespace Gallio.Framework
     {
         private static readonly Type[] EqualsParams = new[] { typeof(object) };
         private static readonly Dictionary<Type, bool> SimpleEnumerableTypeCache = new Dictionary<Type, bool>();
-
         private static readonly Dictionary<Type, Pair<Type, Delegate>> PrimitiveSubtractionFuncs = new Dictionary<Type, Pair<Type, Delegate>>();
+        private static readonly Dictionary<Type, Func<object, object, bool>> SpecialEqualityFuncs = new Dictionary<Type,Func<object,object,bool>>();
 
         static ComparisonSemantics()
         {
@@ -60,11 +61,20 @@ namespace Gallio.Framework
             AddPrimitiveDifferencer<Single, Single>((a, b) => a - b);
             AddPrimitiveDifferencer<Double, Double>((a, b) => a - b);
             AddPrimitiveDifferencer<Char, Int32>((a, b) => a - b);
+
+            AddSpecialEqualityFunc<AssemblyName>((a, b) => a.FullName == b.FullName);
+            AddSpecialEqualityFunc<DirectoryInfo>((a, b) => a.ToString() == b.ToString());
+            AddSpecialEqualityFunc<FileInfo>((a, b) => a.ToString() == b.ToString());
         }
 
         private static void AddPrimitiveDifferencer<T, D>(SubtractionFunc<T, D> subtractionFunc)
         {
             PrimitiveSubtractionFuncs.Add(typeof(T), new Pair<Type, Delegate>(typeof(D), subtractionFunc));
+        }
+
+        private static void AddSpecialEqualityFunc<T>(Func<T, T, bool> equalityFunc)
+        {
+            SpecialEqualityFuncs.Add(typeof(T), (a, b) => equalityFunc((T)a, (T)b));
         }
 
         #region Private stuff
@@ -125,9 +135,17 @@ namespace Gallio.Framework
         /// <item>If both objects are null, returns true.</item>
         /// <item>If one object is null but not the other, returns false.</item>
         /// <item>If both objects are referentially equal, returns true.</item>
+        /// <item>If both objects are of a special type, applies special type euqality semantics (see below)</item>
         /// <item>If the objects are both instances of the same simple enumerable type (<seealso cref="IsSimpleEnumerableType" />),
         /// returns true if the collections have equal length and contents.</item>
         /// <item>Otherwise uses <see cref="Object.Equals(Object)" /> to determine equality.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Special type semantics:
+        /// <list type="bullet">
+        /// <item><see cref="FileInfo" /> and <see cref="DirectoryInfo" />: Compared by their ToString().</item>
+        /// <item><see cref="AssemblyName" />: Compared by their full name.</item>
         /// </list>
         /// </para>
         /// </remarks>
@@ -143,11 +161,20 @@ namespace Gallio.Framework
                 return false;
 
             Type leftType = left.GetType();
-            if (leftType == right.GetType() && IsSimpleEnumerableType(leftType))
+            if (leftType == right.GetType())
             {
-                IEnumerable leftEnumerable = (IEnumerable)left;
-                IEnumerable rightEnumerable = (IEnumerable)right;
-                return CompareEnumerables(leftEnumerable, rightEnumerable, CompareEqualsShim) == 0;
+                Func<object, object, bool> equalityFunc = GetSpecialEqualityFunc(leftType);
+                if (equalityFunc != null)
+                {
+                    return equalityFunc(left, right);
+                }
+
+                if (IsSimpleEnumerableType(leftType))
+                {
+                    IEnumerable leftEnumerable = (IEnumerable) left;
+                    IEnumerable rightEnumerable = (IEnumerable) right;
+                    return CompareEnumerables(leftEnumerable, rightEnumerable, CompareEqualsShim) == 0;
+                }
             }
 
             return left.Equals(right);
@@ -156,6 +183,13 @@ namespace Gallio.Framework
         private static int CompareEqualsShim(object left, object right)
         {
             return Equals(left, right) ? 0 : 1;
+        }
+
+        private static Func<object, object, bool> GetSpecialEqualityFunc(Type type)
+        {
+            Func<object, object, bool> func;
+            SpecialEqualityFuncs.TryGetValue(type, out func);
+            return func;
         }
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace Gallio.VisualStudio.Tip
                 return EmptyArray<TestElement>.Instance;
 
             // Explore the tests.
-            ITestPackageExplorerFactory explorerFactory = RuntimeAccessor.Instance.Resolve<ITestPackageExplorerFactory>();
+            ITestPackageExplorerFactory explorerFactory = RuntimeAccessor.Registry.Resolve<ITestPackageExplorerFactory>();
             WarningLogger logger = new WarningLogger(warningHandler);
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();

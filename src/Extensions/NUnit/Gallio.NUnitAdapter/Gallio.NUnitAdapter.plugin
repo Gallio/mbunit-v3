@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.NUnitAdapter.dll" />
-      <assembly file="nunit.core.dll" />
-      <assembly file="nunit.core.extensions.dll" />
-      <assembly file="nunit.core.interfaces.dll" />
-      <assembly file="nunit.util.dll" />
-    </assemblies>
+<plugin pluginId="Gallio.NUnitAdapter"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>NUnit Adapter Plugin</name>
+  </traits>
 
-    <runtime>
-      <components>
-        <component id="NUnitAdapter.TestFramework"
-                   service="Gallio.Model.ITestFramework, Gallio"
-                   type="Gallio.NUnitAdapter.Model.NUnitTestFramework, Gallio.NUnitAdapter" />
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.NUnitAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+              codeBase="Gallio.NUnitAdapter.dll" />
+
+    <assembly fullName="nunit.core, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+              codeBase="nunit.core.dll" />
+
+    <assembly fullName="nunit.core.extensions, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+              codeBase="nunit.core.extensions.dll" />
+
+    <assembly fullName="nunit.core.interfaces, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+              codeBase="nunit.core.interfaces.dll" />
+
+    <assembly fullName="nunit.util, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"
+              codeBase="nunit.util.dll" />
+  </assemblies>
+
+  <components>
+    <component componentId="NUnitAdapter.TestFramework"
+               serviceId="Gallio.TestFramework"
+               componentType="Gallio.NUnitAdapter.Model.NUnitTestFramework, Gallio.NUnitAdapter" />
+  </components>
+</plugin>

@@ -31,7 +31,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Gets the component Id of this factory.
         /// </summary>
-        public static readonly string ComponentId = "Core.LocalHostFactory";
+        public static readonly string ComponentId = "Gallio.LocalHostFactory";
 
         /// <summary>
         /// Creates a host factory.

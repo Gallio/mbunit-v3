@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.TypeMockIntegration.dll" />
-    </assemblies>
+<plugin pluginId="Gallio.TypeMockIntegration"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>TypeMock Integration Plugin</name>
+  </traits>
 
-    <runtime>
-      <components>
-        <component id="TypeMockIntegration.TypeMockHostFactory"
-                   service="Gallio.Runtime.Hosting.IHostFactory, Gallio"
-                   type="Gallio.TypeMockIntegration.TypeMockHostFactory, Gallio.TypeMockIntegration" />      
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
 
-        <component id="TypeMockIntegration.TypeMockTestRunnerFactory"
-                   service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                   type="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
-          <parameters>
-            <testDriverFactory>${TypeMockIntegration.TypeMockTestDriverFactory}</testDriverFactory>
-            <name>TypeMock</name>
-            <description>Runs tests in an external process with TypeMock.Net.  TypeMock.Net v4 or v5 must be installed for this mode to work.</description>
-          </parameters>
-        </component>
+  <assemblies>
+    <assembly fullName="Gallio.TypeMockIntegration, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+              codeBase="Gallio.TypeMockIntegration.dll" />
 
-        <component id="TypeMockIntegration.TypeMockTestDriverFactory"
-                   service="Gallio.Runner.Drivers.ITestDriverFactory, Gallio"
-                   type="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
-          <parameters>
-            <hostFactory>${TypeMockIntegration.TypeMockHostFactory}</hostFactory>
-          </parameters>
-        </component>
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+    <assembly fullName="TypeMock.Integration, Version=5.1.2.0, Culture=neutral, PublicKeyToken=null"
+              codeBase="TypeMock.Integration.dll" />
+  </assemblies>
+
+  <components>
+    <component componentId="TypeMockIntegration.TypeMockHostFactory"
+               serviceId="Gallio.HostFactory"
+               componentType="Gallio.TypeMockIntegration.TypeMockHostFactory, Gallio.TypeMockIntegration" />
+
+    <component componentId="TypeMockIntegration.TypeMockTestRunnerFactory"
+               serviceId="Gallio.TestRunnerFactory"
+               componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
+      <parameters>
+        <testDriverFactory>${TypeMockIntegration.TypeMockTestDriverFactory}</testDriverFactory>
+        <name>TypeMock</name>
+        <description>Runs tests in an external process with TypeMock.Net.  TypeMock.Net v4 or v5 must be installed for this mode to work.</description>
+      </parameters>
+    </component>
+
+    <component componentId="TypeMockIntegration.TypeMockTestDriverFactory"
+               serviceId="Gallio.TestDriverFactory"
+               componentType="Gallio.Runner.Drivers.HostedTestDriverFactory, Gallio">
+      <parameters>
+        <hostFactory>${TypeMockIntegration.TypeMockHostFactory}</hostFactory>
+      </parameters>
+    </component>
+  </components>
+</plugin>

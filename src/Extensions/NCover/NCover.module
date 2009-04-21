@@ -42,9 +42,9 @@
     <Binary Include="Gallio.NCoverIntegration\bin\Gallio.NCoverIntegration.dll">
         <Folder>NCover</Folder>
     </Binary>
-    <Binary Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.plugin">
+    <PluginFile Include="Gallio.NCoverIntegration\Gallio.NCoverIntegration.plugin">
         <Folder>NCover</Folder>
-    </Binary>
+    </PluginFile>
   </ItemGroup>
 
   <ItemGroup>

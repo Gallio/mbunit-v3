@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Binary Include="Gallio.Echo\bin\Gallio.Echo.exe" />
-    <Binary Include="Gallio.Echo\bin\Gallio.Echo.exe.config" />
+    <PluginFile Include="Gallio.Echo\bin\Gallio.Echo.exe.config" />
   </ItemGroup>
 
   <ItemGroup>

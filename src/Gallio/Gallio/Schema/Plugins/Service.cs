@@ -24,7 +24,7 @@ namespace Gallio.Schema.Plugins
     /// Represents a service descriptor in Xml.
     /// </summary>
     [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-    public class Service
+    public class Service : IValidatable
     {
         private string serviceId;
         private string serviceType;
@@ -85,6 +85,13 @@ namespace Gallio.Schema.Plugins
                     throw new ArgumentNullException("value");
                 serviceType = value;
             }
+        }
+
+        /// <inheritdoc />
+        public void Validate()
+        {
+            ValidationUtils.ValidateNotNull("serviceId", serviceId);
+            ValidationUtils.ValidateNotNull("serviceType", serviceType);
         }
     }
 }

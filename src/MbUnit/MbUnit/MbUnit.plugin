@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="MbUnit.dll" />
-    </assemblies>
+<plugin pluginId="MbUnit"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>MbUnit v3</name>
+  </traits>
 
-    <runtime>
-      <components>
-        <component id="MbUnit.MbUnitTestFrameworkExtension"
-                   service="Gallio.Framework.Pattern.IPatternTestFrameworkExtension, Gallio"
-                   type="MbUnit.Core.MbUnitTestFrameworkExtension, MbUnit" />
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="MbUnit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="MbUnit.dll" />
+  </assemblies>
+
+  <components>
+    <component componentId="MbUnit.MbUnitTestFrameworkExtension"
+               serviceId="Gallio.PatternTestFrameworkExtension"
+               componentType="MbUnit.Core.MbUnitTestFrameworkExtension, MbUnit" />
+  </components>
+</plugin>

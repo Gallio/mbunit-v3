@@ -9,6 +9,7 @@ using Gallio.Runtime;
 using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 using Rhino.Mocks;
+using System.Reflection;
 
 namespace Gallio.Tests.Runtime.Extensibility
 {
@@ -18,27 +19,94 @@ namespace Gallio.Tests.Runtime.Extensibility
         public class Registration
         {
             [Test]
+            public void RegistryPlugin_WhenRegistrationNull_Throws()
+            {
+                var registry = new Registry();
+
+                Assert.Throws<ArgumentNullException>(() => registry.RegisterPlugin(null));
+            }
+
+            [Test]
+            public void RegistryPlugin_WhenRegistrationContainsNullAssemblyReference_Throws()
+            {
+                var registry = new Registry();
+                var pluginRegistration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
+                pluginRegistration.AssemblyReferences.Add(null);
+
+                var ex = Assert.Throws<ArgumentException>(() => registry.RegisterPlugin(pluginRegistration));
+                Assert.Contains(ex.Message, "The assembly references must not contain a null reference.");
+            }
+
+            [Test]
+            public void RegistryPlugin_WhenRegistrationContainsNullPluginDependency_Throws()
+            {
+                var registry = new Registry();
+                var pluginRegistration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
+                pluginRegistration.PluginDependencies.Add(null);
+
+                var ex = Assert.Throws<ArgumentException>(() => registry.RegisterPlugin(pluginRegistration));
+                Assert.Contains(ex.Message, "The plugin dependencies must not contain a null reference.");
+            }
+
+            [Test]
+            public void RegistryPlugin_WhenRegistrationContainsNullProbingPath_Throws()
+            {
+                var registry = new Registry();
+                var pluginRegistration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
+                pluginRegistration.ProbingPaths.Add(null);
+
+                var ex = Assert.Throws<ArgumentException>(() => registry.RegisterPlugin(pluginRegistration));
+                Assert.Contains(ex.Message, "The probing paths must not contain a null reference.");
+            }
+
+            [Test]
+            public void RegistryService_WhenRegistrationNull_Throws()
+            {
+                var registry = new Registry();
+
+                Assert.Throws<ArgumentNullException>(() => registry.RegisterService(null));
+            }
+
+            [Test]
+            public void RegistryComponent_WhenRegistrationNull_Throws()
+            {
+                var registry = new Registry();
+
+                Assert.Throws<ArgumentNullException>(() => registry.RegisterComponent(null));
+            }
+
+            [Test]
             public void RegisterPlugin_WhenArgumentsValid_RegistersThePluginAndReturnsItsDescriptor()
             {
                 var registry = new Registry();
+                var dependentPlugin = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
                 var handlerFactory = MockRepository.GenerateStub<IHandlerFactory>();
+                var assemblyReferences = new[] { new AssemblyReference(new AssemblyName("Gallio"), new Uri("file:///c:/foo.dll")) };
+                var pluginDependencies = new[] { dependentPlugin };
+                var probingPaths = new[] { "publicBin", "privateBin" };
 
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"))
+                var plugin = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"))
                 {
                     PluginProperties = { { "ConfigName", "Value" } },
                     TraitsProperties = { { "TraitName", "Value" } },
-                    PluginHandlerFactory = handlerFactory
+                    PluginHandlerFactory = handlerFactory,
+                    AssemblyReferences = assemblyReferences,
+                    PluginDependencies = pluginDependencies,
+                    ProbingPaths = probingPaths
                 });
 
                 Assert.Multiple(() =>
                 {
-                    Assert.AreEqual("pluginId", plugin.PluginId);
+                    Assert.AreEqual("plugin2Id", plugin.PluginId);
                     Assert.AreEqual(new TypeName("Plugin, Assembly"), plugin.PluginTypeName);
                     Assert.AreEqual(@"C:\", plugin.BaseDirectory.ToString());
                     Assert.AreEqual(new PropertySet() { { "ConfigName", "Value" } }, plugin.PluginProperties);
                     Assert.AreEqual(new PropertySet() { { "TraitName", "Value" } }, plugin.TraitsProperties);
                     Assert.AreSame(handlerFactory, plugin.PluginHandlerFactory);
                     Assert.IsInstanceOfType<FileSystemResourceLocator>(plugin.ResourceLocator);
+                    Assert.AreElementsEqual(assemblyReferences, plugin.AssemblyReferences);
+                    Assert.AreElementsEqual(pluginDependencies, plugin.PluginDependencies);
+                    Assert.AreElementsEqual(probingPaths, plugin.ProbingPaths);
                 });
             }
 
@@ -67,11 +135,12 @@ namespace Gallio.Tests.Runtime.Extensibility
             public void RegisterComponent_WhenArgumentsValid_RegistersTheComponentAndReturnsItsDescriptor()
             {
                 var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName("Service, Assembly")));
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin2, "serviceId", new TypeName("Service, Assembly")));
                 var handlerFactory = MockRepository.GenerateStub<IHandlerFactory>();
 
-                var component = registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName("Component, Assembly"))
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin2, service, "componentId", new TypeName("Component, Assembly"))
                 {
                     ComponentProperties = { { "ConfigName", "Value" } },
                     TraitsProperties = { { "TraitName", "Value" } },
@@ -80,7 +149,7 @@ namespace Gallio.Tests.Runtime.Extensibility
 
                 Assert.Multiple(() =>
                 {
-                    Assert.AreSame(plugin, component.Plugin);
+                    Assert.AreSame(plugin2, component.Plugin);
                     Assert.AreSame(service, component.Service);
                     Assert.AreEqual("componentId", component.ComponentId);
                     Assert.AreEqual(new TypeName("Component, Assembly"), component.ComponentTypeName);
@@ -104,11 +173,47 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
 
             [Test]
+            public void RegisterPlugin_WhenPluginDependencyBelongsToDifferentRegistry_Throws()
+            {
+                var registry = new Registry();
+                var foreignRegistry = new Registry();
+                var foreignPlugin = foreignRegistry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+
+                var ex = Assert.Throws<ArgumentException>(() =>
+                {
+                    registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"))
+                    {
+                        PluginDependencies = { foreignPlugin }
+                    });
+                });
+                Assert.Contains(ex.Message, "One of the plugin dependencies does not belong to this registry.");
+            }
+
+            [Test]
+            public void RegisterPlugin_WhenPluginDependencyListNotClosed_AutomaticallyAddsIndirectDependency()
+            {
+                var registry = new Registry();
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"))
+                    {
+                        PluginDependencies = { plugin1 }
+                    });
+
+                var plugin3 = registry.RegisterPlugin(new PluginRegistration("plugin3Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"))
+                    {
+                        PluginDependencies = { plugin2 }
+                    });
+
+
+                Assert.AreElementsEqual(new[] { plugin2, plugin1 }, plugin3.PluginDependencies);
+            }
+
+            [Test]
             public void RegisterService_WhenPluginBelongsToDifferentRegistry_Throws()
             {
                 var registry = new Registry();
                 var foreignRegistry = new Registry();
-                var foreignPlugin = ((IRegistry) foreignRegistry).RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var foreignPlugin = foreignRegistry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
 
                 var ex = Assert.Throws<ArgumentException>(() =>
                 {
@@ -175,6 +280,21 @@ namespace Gallio.Tests.Runtime.Extensibility
                     registry.RegisterComponent(new ComponentRegistration(plugin, foreignService, "componentId", new TypeName("Component, Assembly")));
                 });
                 Assert.Contains(ex.Message, "The specified service descriptor does not belong to this registry.");
+            }
+
+            [Test]
+            public void RegisterComponent_WhenServiceBelongsToPluginNotIndicatedAsAPluginDependency_Throws()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var foreignPlugin = registry.RegisterPlugin(new PluginRegistration("foreignPluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var foreignService = registry.RegisterService(new ServiceRegistration(foreignPlugin, "foreignServiceId", new TypeName("Service, Assembly")));
+
+                var ex = Assert.Throws<ArgumentException>(() =>
+                {
+                    registry.RegisterComponent(new ComponentRegistration(plugin, foreignService, "componentId", new TypeName("Component, Assembly")));
+                });
+                Assert.Contains(ex.Message, "The service belongs to a plugin that was not declared as a dependency of the plugin that provides this component.  Plugin 'pluginId' should declare a dependency on plugin 'foreignPluginId'.");
             }
 
             [Test]
@@ -1293,6 +1413,256 @@ namespace Gallio.Tests.Runtime.Extensibility
                 Assert.AreEqual("Could not resolve traits of component 'componentId'.", ex.Message);
                 handlerFactory.VerifyAllExpectations();
                 handler.VerifyAllExpectations();
+            }
+        }
+
+        public class DisabledPlugins
+        {
+            [Test]
+            public void Disable_WhenReasonIsNull_Throws()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+
+                Assert.Throws<ArgumentNullException>(() => plugin.Disable(null));
+            }
+
+            [Test]
+            public void Disable_WhenAlreadyDisabled_OverwritesTheReason()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                plugin.Disable("Old Reason");
+
+                plugin.Disable("New Reason");
+
+                Assert.AreEqual("New Reason", plugin.DisabledReason);
+            }
+
+            [Test]
+            public void IsDisabled_WhenPluginNotDisabled_ReturnsFalse()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+
+                Assert.IsFalse(plugin.IsDisabled);
+            }
+
+            [Test]
+            public void IsDisabled_WhenPluginDisabledDirectly_ReturnsTrue()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+
+                plugin.Disable("The reason");
+
+                Assert.IsTrue(plugin.IsDisabled);
+            }
+
+            [Test]
+            public void IsDisabled_WhenPluginDisabledIndirectlyViaDependency_ReturnsTrue()
+            {
+                var registry = new Registry();
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"))
+                    {
+                        PluginDependencies = { plugin1 }
+                    });
+
+                plugin1.Disable("The reason");
+
+                Assert.IsTrue(plugin2.IsDisabled);
+            }
+
+            [Test]
+            public void DisabledReason_WhenPluginNotDisabled_Throws()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+
+                var ex = Assert.Throws<InvalidOperationException>(() => { var x = plugin.DisabledReason; });
+                Assert.AreEqual("The plugin has not been disabled.", ex.Message);
+            }
+
+            [Test]
+            public void DisabledReason_WhenPluginDisabled_ReturnsTheReason()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+
+                plugin.Disable("The reason");
+
+                Assert.AreEqual("The reason", plugin.DisabledReason);
+            }
+
+            [Test]
+            public void DisabledReason_WhenPluginDisabledIndirectlyViaDependency_ReturnsTheReason()
+            {
+                var registry = new Registry();
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"))
+                {
+                    PluginDependencies = { plugin1 }
+                });
+
+                plugin1.Disable("The reason");
+
+                Assert.AreEqual("The plugin depends on another disabled plugin.  Reason: The reason", plugin2.DisabledReason);
+            }
+        }
+
+        public class DisabledServices
+        {
+            [Test]
+            public void IsDisabled_WhenPluginNotDisabled_ReturnsFalse()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName("Service, Assembly")));
+
+                Assert.IsFalse(service.IsDisabled);
+            }
+
+            [Test]
+            public void IsDisabled_WhenPluginDisabled_ReturnsTrue()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName("Service, Assembly")));
+
+                plugin.Disable("The reason");
+
+                Assert.IsTrue(service.IsDisabled);
+            }
+
+            [Test]
+            public void DisabledReason_WhenPluginNotDisabled_Throws()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName("Service, Assembly")));
+
+                var ex = Assert.Throws<InvalidOperationException>(() => { var x = service.DisabledReason; });
+                Assert.AreEqual("The service has not been disabled.", ex.Message);
+            }
+
+            [Test]
+            public void DisabledReason_WhenPluginDisabled_ReturnsTheReason()
+            {
+                var registry = new Registry();
+                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
+                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName("Service, Assembly")));
+
+                plugin.Disable("The reason");
+
+                Assert.AreEqual("The plugin that provides this service was disabled.  Reason: The reason", service.DisabledReason);
+            }
+        }
+
+        public class DisabledComponents
+        {
+            [Test]
+            public void IsDisabled_WhenPluginAndServiceNotDisabled_ReturnsFalse()
+            {
+                var registry = new Registry();
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin1, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin2, Assembly"), new DirectoryInfo(@"C:\"))
+                {
+                    PluginDependencies = { plugin1 }
+                });
+                var service = registry.RegisterService(new ServiceRegistration(plugin1, "serviceId", new TypeName("Service, Assembly")));
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin2, service, "componentId", new TypeName("Component, Assembly")));
+
+                Assert.IsFalse(component.IsDisabled);
+            }
+
+            [Test]
+            public void IsDisabled_WhenPluginDisabled_ReturnsTrue()
+            {
+                var registry = new Registry();
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin1, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin2, Assembly"), new DirectoryInfo(@"C:\"))
+                {
+                    PluginDependencies = { plugin1 }
+                });
+                var service = registry.RegisterService(new ServiceRegistration(plugin1, "serviceId", new TypeName("Service, Assembly")));
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin2, service, "componentId", new TypeName("Component, Assembly")));
+
+                plugin2.Disable("The reason");
+
+                Assert.IsTrue(component.IsDisabled);
+            }
+
+            [Test]
+            public void IsDisabled_WhenServiceDisabled_ReturnsTrue()
+            {
+                var registry = new Registry();
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin1, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin2, Assembly"), new DirectoryInfo(@"C:\"))
+                {
+                    PluginDependencies = { plugin1 }
+                });
+                var service = registry.RegisterService(new ServiceRegistration(plugin1, "serviceId", new TypeName("Service, Assembly")));
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin2, service, "componentId", new TypeName("Component, Assembly")));
+
+                plugin1.Disable("The reason");
+
+                Assert.IsTrue(component.IsDisabled);
+            }
+
+            [Test]
+            public void DisabledReason_WhenPluginAndServiceNotDisabled_Throws()
+            {
+                var registry = new Registry();
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin1, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin2, Assembly"), new DirectoryInfo(@"C:\"))
+                    {
+                        PluginDependencies = { plugin1 }
+                    });
+                var service = registry.RegisterService(new ServiceRegistration(plugin1, "serviceId", new TypeName("Service, Assembly")));
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin2, service, "componentId", new TypeName("Component, Assembly")));
+
+                var ex = Assert.Throws<InvalidOperationException>(() => { var x = component.DisabledReason; });
+                Assert.AreEqual("The component has not been disabled.", ex.Message);
+            }
+
+            [Test]
+            public void DisabledReason_WhenPluginDisabled_ReturnsTheReason()
+            {
+                var registry = new Registry();
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin1, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin2, Assembly"), new DirectoryInfo(@"C:\"))
+                    {
+                        PluginDependencies = { plugin1 }
+                    });
+                var service = registry.RegisterService(new ServiceRegistration(plugin1, "serviceId", new TypeName("Service, Assembly")));
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin2, service, "componentId", new TypeName("Component, Assembly")));
+
+                plugin2.Disable("The reason");
+
+                Assert.AreEqual("The plugin that provides this component was disabled.  Reason: The reason", component.DisabledReason);
+            }
+
+            [Test]
+            public void DisabledReason_WhenServiceDisabled_ReturnsTheReason()
+            {
+                var registry = new Registry();
+                var plugin1 = registry.RegisterPlugin(new PluginRegistration("plugin1Id", new TypeName("Plugin1, Assembly"), new DirectoryInfo(@"C:\")));
+                var plugin2 = registry.RegisterPlugin(new PluginRegistration("plugin2Id", new TypeName("Plugin2, Assembly"), new DirectoryInfo(@"C:\"))
+                {
+                    PluginDependencies = { plugin1 }
+                });
+                var service = registry.RegisterService(new ServiceRegistration(plugin1, "serviceId", new TypeName("Service, Assembly")));
+                var component = registry.RegisterComponent(new ComponentRegistration(plugin2, service, "componentId", new TypeName("Component, Assembly")));
+
+                plugin1.Disable("The reason");
+
+                // Now that plugin dependencies have been implemented, we see a different message than before.
+                // However if later we add a feature to disable individual services independently of a plugin
+                // then we should see the following message:
+                // Assert.AreEqual("The service implemented by this component was disabled.  Reason: The plugin that provides this service was disabled.  Reason: The reason", component.DisabledReason);
+
+                Assert.AreEqual("The plugin that provides this component was disabled.  Reason: The plugin depends on another disabled plugin.  Reason: The reason", component.DisabledReason);
             }
         }
 

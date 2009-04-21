@@ -48,7 +48,7 @@ namespace Gallio.Tests.Runtime.Remoting
         [Test]
         public void RegisteredServiceCanBeAccessedWithGetService()
         {
-            var hostFactory = (IsolatedAppDomainHostFactory)RuntimeAccessor.Instance.Resolve(IsolatedAppDomainHostFactory.ComponentId);
+            var hostFactory = (IsolatedAppDomainHostFactory)RuntimeAccessor.Registry.ResolveByComponentId(IsolatedAppDomainHostFactory.ComponentId);
             using (IHost host = hostFactory.CreateHost(new HostSetup(), new TestLogStreamLogger(TestLog.Default)))
             {
                 HostAssemblyResolverHook.InstallCallback(host);

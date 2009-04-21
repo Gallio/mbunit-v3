@@ -190,11 +190,13 @@
     <Compile Include="Runner\Extensions\TestRunnerExtensionUtilsTest.cs" />
     <Compile Include="Runner\RunnerExceptionTest.cs" />
     <Compile Include="RunSampleAttribute.cs" />
+    <Compile Include="Runtime\Extensibility\AssemblyReferenceTest.cs" />
+    <Compile Include="Runtime\Extensibility\CachingPluginLoaderTest.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistrationTest.cs" />
     <Compile Include="Runtime\Extensibility\DefaultObjectDependencyResolverTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Runtime\Extensibility\FileSystemPluginLoaderTest.cs" />
+    <Compile Include="Runtime\Extensibility\PluginLoaderTest.cs" />
     <Compile Include="Runtime\Extensibility\FileSystemResourceLocatorTest.cs" />
     <Compile Include="Runtime\Extensibility\ObjectFactoryTest.cs" />
     <Compile Include="Runtime\Extensibility\PluginCatalogTest.cs" />
@@ -203,6 +205,7 @@
     <Compile Include="Runtime\Extensibility\ServiceRegistrationTest.cs" />
     <Compile Include="Runtime\Extensibility\PluginRegistrationTest.cs" />
     <Compile Include="Runtime\Extensibility\RegistryTest.cs" />
+    <Compile Include="Runtime\Extensibility\XmlPreprocessorTest.cs" />
     <Compile Include="Runtime\Hosting\AbstractHostFactoryTest.cs" />
     <Compile Include="Runtime\Hosting\HostConfigurationTest.cs" />
     <Compile Include="Runtime\Hosting\HostSetupTest.cs" />

@@ -174,7 +174,7 @@ namespace Gallio.ReSharperRunner.Provider
             {
                 this.provider = provider;
 
-                explorerFactory = RuntimeAccessor.Instance.Resolve<ITestPackageExplorerFactory>();
+                explorerFactory = RuntimeAccessor.Registry.Resolve<ITestPackageExplorerFactory>();
                 presenter = new GallioTestPresenter();
             }
 

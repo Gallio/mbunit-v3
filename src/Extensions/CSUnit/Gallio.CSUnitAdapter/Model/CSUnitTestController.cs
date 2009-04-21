@@ -199,7 +199,7 @@ namespace Gallio.CSUnitAdapter.Model
                 if (File.Exists(configFile))
                     hostSetup.Configuration.ConfigurationXml = File.ReadAllText(configFile);
 
-                var hostFactory = (IHostFactory) RuntimeAccessor.Instance.Resolve(IsolatedAppDomainHostFactory.ComponentId);
+                var hostFactory = (IHostFactory) RuntimeAccessor.Registry.ResolveByComponentId(IsolatedAppDomainHostFactory.ComponentId);
                 using (IHost host = hostFactory.CreateHost(hostSetup, RuntimeAccessor.Logger))
                 {
                     Type loaderType = typeof(RemoteLoader);

@@ -66,7 +66,8 @@ namespace Gallio.Reflection
             if (assemblyQualifiedName == null)
                 throw new ArgumentNullException("assemblyQualifiedName");
 
-            int commaPos = assemblyQualifiedName.IndexOf(',');
+            int lastBracketPos = assemblyQualifiedName.LastIndexOf(']');
+            int commaPos = assemblyQualifiedName.IndexOf(',', lastBracketPos + 1);
             if (commaPos < 0)
                 throw new ArgumentException("The assembly qualified name must include the assembly name.", "assemblyQualifiedName");
 

@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.AutoCAD.dll" />
-    </assemblies>
-    <runtime>
-      <components>
+<plugin pluginId="Gallio.AutoCAD"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>AutoCAD Integration Plugin</name>
+  </traits>
 
-        <component id="AutoCAD.AcadTestRunnerFactory"
-                   service="Gallio.Runner.ITestRunnerFactory, Gallio"
-                   type="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
-          <parameters>
-            <testDriverFactory>${AutoCAD.AcadTestDriverFactory}</testDriverFactory>
-            <name>AutoCAD</name>
-            <description>Runs tests within an AutoCAD instance.</description>
-          </parameters>
-        </component>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
 
-        <component id="AutoCAD.AcadTestDriverFactory"
-                   service="Gallio.Runner.Drivers.ITestDriverFactory, Gallio"
-                   type="Gallio.AutoCAD.AcadTestDriverFactory, Gallio.AutoCAD" />
+  <assemblies>
+    <assembly fullName="Gallio.AutoCAD, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.AutoCAD.dll" />
+  </assemblies>
 
-        <component id="AutoCAD.AcadProcessFactory"
-                   service="Gallio.AutoCAD.IAcadProcessFactory, Gallio.AutoCAD"
-                   type="Gallio.AutoCAD.AcadProcessFactory, Gallio.AutoCAD" />
+  <services>
+    <service serviceId="AutoCAD.AcadProcessFactory"
+             serviceType="Gallio.AutoCAD.IAcadProcessFactory, Gallio.AutoCAD" />
+  </services>
 
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <components>
+    <component componentId="AutoCAD.AcadTestRunnerFactory"
+               serviceId="Gallio.TestRunnerFactory"
+               componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
+      <parameters>
+        <testDriverFactory>${AutoCAD.AcadTestDriverFactory}</testDriverFactory>
+        <name>AutoCAD</name>
+        <description>Runs tests within an AutoCAD instance.</description>
+      </parameters>
+    </component>
+
+    <component componentId="AutoCAD.AcadTestDriverFactory"
+               serviceId="Gallio.TestDriverFactory"
+               componentType="Gallio.AutoCAD.AcadTestDriverFactory, Gallio.AutoCAD" />
+
+    <component componentId="AutoCAD.AcadProcessFactory"
+               serviceId="AutoCAD.AcadProcessFactory"
+               componentType="Gallio.AutoCAD.AcadProcessFactory, Gallio.AutoCAD" />
+  </components>
+</plugin>

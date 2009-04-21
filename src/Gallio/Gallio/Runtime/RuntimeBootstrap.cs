@@ -15,9 +15,9 @@
 
 using System;
 using System.Diagnostics;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
-using Gallio.Runtime.Windsor;
 
 namespace Gallio.Runtime
 {
@@ -53,7 +53,10 @@ namespace Gallio.Runtime
             if (RuntimeAccessor.IsInitialized)
                 throw new InvalidOperationException("The runtime has already been initialized.");
 
-            IRuntime runtime = new WindsorRuntime(new DefaultAssemblyResolverManager(), setup); // TODO: make me configurable via setup
+            var registry = new Registry();
+            var pluginLoader = new CachingPluginLoader(); //new PluginLoader();
+            var assemblyResolverManager = new DefaultAssemblyResolverManager();
+            IRuntime runtime = new DefaultRuntime(registry, pluginLoader, assemblyResolverManager, setup); // TODO: make me configurable via setup
             Debug.Assert(runtime != null, "The runtime returned by the runtime factory must not be null.");
 
             try

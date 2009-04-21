@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Gallio.Collections;
 using Gallio.Reflection;
@@ -120,6 +121,48 @@ namespace Gallio.Tests.Runtime.Extensibility
             registration.PluginHandlerFactory = differentHandlerFactory;
 
             Assert.AreSame(differentHandlerFactory, registration.PluginHandlerFactory);
+        }
+
+        [Test]
+        public void AssemblyReferences_Accessor_EnforcesConstraints()
+        {
+            var registration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
+
+            Assert.IsEmpty(registration.AssemblyReferences);
+            Assert.Throws<ArgumentNullException>(() => { registration.AssemblyReferences = null; });
+
+            var differentReferences = new[] { new AssemblyReference(new AssemblyName("Gallio"), null) };
+            registration.AssemblyReferences = differentReferences;
+
+            Assert.AreSame(differentReferences, registration.AssemblyReferences);
+        }
+
+        [Test]
+        public void PluginDependencies_Accessor_EnforcesConstraints()
+        {
+            var registration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
+
+            Assert.IsEmpty(registration.PluginDependencies);
+            Assert.Throws<ArgumentNullException>(() => { registration.PluginDependencies = null; });
+
+            var differentDependencies = new[] { MockRepository.GenerateStub<IPluginDescriptor>() };
+            registration.PluginDependencies = differentDependencies;
+
+            Assert.AreSame(differentDependencies, registration.PluginDependencies);
+        }
+
+        [Test]
+        public void ProbingPaths_Accessor_EnforcesConstraints()
+        {
+            var registration = new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\"));
+
+            Assert.IsEmpty(registration.ProbingPaths);
+            Assert.Throws<ArgumentNullException>(() => { registration.ProbingPaths = null; });
+
+            var differentPaths = new[] { "privateBin", "publicBin" };
+            registration.ProbingPaths = differentPaths;
+
+            Assert.AreSame(differentPaths, registration.ProbingPaths);
         }
     }
 }

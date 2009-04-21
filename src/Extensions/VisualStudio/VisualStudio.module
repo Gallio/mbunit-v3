@@ -15,15 +15,15 @@
     <Binary Include="Gallio.VisualStudio.Shell\bin\Gallio.VisualStudio.Shell.dll">
       <Folder>VisualStudio</Folder>
     </Binary>
-    <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.plugin">
+    <PluginFile Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.plugin">
       <Folder>VisualStudio</Folder>
-    </Binary>
+    </PluginFile>
     <Binary Include="Gallio.VisualStudio.Sail\bin\Gallio.VisualStudio.Sail.dll">
       <Folder>VisualStudio</Folder>
     </Binary>
-    <Binary Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.plugin">
+    <PluginFile Include="Gallio.VisualStudio.Sail\Gallio.VisualStudio.Sail.plugin">
       <Folder>VisualStudio</Folder>
-    </Binary>
+    </PluginFile>
 
     <TestAssembly Include="Gallio.VisualStudio.Shell.Tests\bin\Gallio.VisualStudio.Shell.Tests.dll" />
     <TestAssembly Include="Gallio.VisualStudio.Sail.Tests\bin\Gallio.VisualStudio.Sail.Tests.dll" />
@@ -43,10 +43,11 @@
     <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2008.addin">
       <Folder>VisualStudio</Folder>
     </Binary>
-    <Binary Include="Gallio.VisualStudio.Tip\bin\v9.0\Gallio.VisualStudio.Tip90.dll">
+    
+    <PluginFile Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.plugin">
       <Folder>VisualStudio\v9.0</Folder>
-    </Binary>
-    <Binary Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip90.plugin">
+    </PluginFile>
+    <Binary Include="Gallio.VisualStudio.Tip\bin\v9.0\Gallio.VisualStudio.Tip90.dll">
       <Folder>VisualStudio\v9.0</Folder>
     </Binary>
     <Binary Include="Gallio.VisualStudio.Tip.Proxy\bin\v9.0\Gallio.VisualStudio.Tip90.Proxy.dll">
@@ -67,10 +68,11 @@
     <Binary Include="Gallio.VisualStudio.Shell\Gallio.VisualStudio.Shell.vs2010.addin">
       <Folder>VisualStudio</Folder>
     </Binary>
-    <Binary Include="Gallio.VisualStudio.Tip\bin\v10.0\Gallio.VisualStudio.Tip100.dll">
+    
+    <PluginFile Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.plugin">
       <Folder>VisualStudio\v10.0</Folder>
-    </Binary>
-    <Binary Include="Gallio.VisualStudio.Tip\Gallio.VisualStudio.Tip100.plugin">
+    </PluginFile>
+    <Binary Include="Gallio.VisualStudio.Tip\bin\v10.0\Gallio.VisualStudio.Tip100.dll">
       <Folder>VisualStudio\v10.0</Folder>
     </Binary>
     <Binary Include="Gallio.VisualStudio.Tip.Proxy\bin\v10.0\Gallio.VisualStudio.Tip100.Proxy.dll">
@@ -82,16 +84,4 @@
     <Feature Include="FEATURE_VISUALSTUDIO_100" />
     <Feature Include="FEATURE_VISUALSTUDIO_TIP_100" />
   </ItemGroup>
-
-  <Target Name="AfterImage">
-    <FileUpdate Files="$(ImageDir)\bin\VisualStudio\v9.0\Gallio.VisualStudio.Tip90.plugin"
-                Condition="'$(DotNet40)'!='true' and $(VSIP90Installed)"
-                Regex="0\.0\.0\.0"
-                ReplacementText="$(AssemblyVersion)" />
-
-    <FileUpdate Files="$(ImageDir)\bin\VisualStudio\v10.0\Gallio.VisualStudio.Tip100.plugin"
-                Condition="'$(DotNet40)'=='true' and $(VSIP100Installed)"
-                Regex="0\.0\.0\.0"
-                ReplacementText="$(AssemblyVersion)" />
-  </Target>
 </Project>

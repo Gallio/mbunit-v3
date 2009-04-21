@@ -14,9 +14,9 @@
     <Binary Include="Gallio.TDNetRunner\bin\Gallio.TDNetRunner.dll">
       <Folder>TDNet</Folder>
     </Binary>
-    <Binary Include="Gallio.TDNetRunner\Gallio.TDNetRunner.plugin">
+    <PluginFile Include="Gallio.TDNetRunner\Gallio.TDNetRunner.plugin">
       <Folder>TDNet</Folder>
-    </Binary>
+    </PluginFile>
   </ItemGroup>
 
   <ItemGroup>

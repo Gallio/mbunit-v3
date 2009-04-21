@@ -17,9 +17,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Gallio.Framework;
 using MbUnit.Framework;
+using System.IO;
 
 namespace Gallio.Tests.Framework
 {
@@ -107,6 +109,42 @@ namespace Gallio.Tests.Framework
         public void EqualsComparesSimpleEnumerablesDistinctIfTheyHaveDifferentTypes()
         {
             Assert.IsFalse(ComparisonSemantics.Equals(new List<int> { 1, 2 }, new[] { 1, 2}));
+        }
+
+        [Test]
+        public void Equals_WhenObjectsAreOfTypeAssemblyName_ComparesByFullName()
+        {
+            Assert.IsTrue(ComparisonSemantics.Equals(
+                new AssemblyName("Gallio, Version=0.0.0.0"),
+                new AssemblyName("Gallio, Version=0.0.0.0")));
+
+            Assert.IsFalse(ComparisonSemantics.Equals(
+                new AssemblyName("Gallio, Version=0.0.0.0"),
+                new AssemblyName("Gallio")));
+        }
+
+        [Test]
+        public void Equals_WhenObjectsAreOfTypeFileInfo_ComparesByToString()
+        {
+            Assert.IsTrue(ComparisonSemantics.Equals(
+                new FileInfo("a\\file.txt"),
+                new FileInfo("a\\file.txt")));
+
+            Assert.IsFalse(ComparisonSemantics.Equals(
+                new FileInfo("a\\file.txt"),
+                new FileInfo("file.txt")));
+        }
+
+        [Test]
+        public void Equals_WhenObjectsAreOfTypeDirectoryInfo_ComparesByToString()
+        {
+            Assert.IsTrue(ComparisonSemantics.Equals(
+                new DirectoryInfo("a\\directory"),
+                new DirectoryInfo("a\\directory")));
+
+            Assert.IsFalse(ComparisonSemantics.Equals(
+                new DirectoryInfo("a\\directory"),
+                new DirectoryInfo("directory")));
         }
 
         [Test]

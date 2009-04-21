@@ -27,22 +27,26 @@ namespace Gallio.Schema.Plugins
     [Serializable]
     [XmlRoot("plugin", Namespace=SchemaConstants.XmlNamespace)]
     [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-    public sealed class Plugin
+    public sealed class Plugin : IValidatable
     {
         private string pluginId;
         private string pluginType;
+        private readonly List<Dependency> dependencies;
+        private readonly List<Assembly> assemblies;
         private readonly List<Service> services;
         private readonly List<Component> components;
-        private PropertySet parameters;
-        private PropertySet traits;
+        private readonly List<string> probingPaths;
 
         /// <summary>
         /// Creates an uninitialized plugin descriptor for XML deserialization.
         /// </summary>
         private Plugin()
         {
+            dependencies = new List<Dependency>();
+            assemblies = new List<Assembly>();
             services = new List<Service>();
             components = new List<Component>();
+            probingPaths = new List<string>();
         }
 
         /// <summary>
@@ -87,6 +91,26 @@ namespace Gallio.Schema.Plugins
         }
 
         /// <summary>
+        /// Gets the mutable list of plugin dependencies.
+        /// </summary>
+        [XmlArray("dependencies", IsNullable = false)]
+        [XmlArrayItem("dependency", typeof(Dependency), IsNullable = false)]
+        public List<Dependency> Dependencies
+        {
+            get { return dependencies; }
+        }
+
+        /// <summary>
+        /// Gets the mutable list of plugin assembly references.
+        /// </summary>
+        [XmlArray("assemblies", IsNullable = false)]
+        [XmlArrayItem("assembly", typeof(Assembly), IsNullable = false)]
+        public List<Assembly> Assemblies
+        {
+            get { return assemblies; }
+        }
+
+        /// <summary>
         /// Gets the mutable list of services belonging to the plugin.
         /// </summary>
         [XmlArray("services", IsNullable = false)]
@@ -107,45 +131,41 @@ namespace Gallio.Schema.Plugins
         }
 
         /// <summary>
-        /// Gets or sets the plugin parameters.
+        /// Gets or sets the plugin parameters, or null if there are none.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("parameters", IsNullable = true)]
-        public PropertySet Parameters
-        {
-            get
-            {
-                if (parameters == null)
-                    parameters = new PropertySet();
-                return parameters;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                parameters = value;
-            }
-        }
+        [XmlElement("parameters", IsNullable = false)]
+        public KeyValueTable Parameters { get; set; }
 
         /// <summary>
-        /// Gets or sets the plugin traits.
+        /// Gets or sets the plugin traits, or null if there are none.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("traits", IsNullable = true)]
-        public PropertySet Traits
+        [XmlElement("traits", IsNullable = false)]
+        public KeyValueTable Traits { get; set; }
+
+        /// <summary>
+        /// Gets the mutable list of additional probing paths in which to
+        /// attempt to locate referenced assemblies.
+        /// </summary>
+        [XmlArray("probingPaths", IsNullable = false)]
+        [XmlArrayItem("probingPath", typeof(string), IsNullable = false)]
+        public List<string> ProbingPaths
         {
-            get
-            {
-                if (traits == null)
-                    traits = new PropertySet();
-                return traits;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                traits = value;
-            }
+            get { return probingPaths; }
+        }
+
+        /// <inheritdoc />
+        public void Validate()
+        {
+            ValidationUtils.ValidateNotNull("pluginId", pluginId);
+            ValidationUtils.ValidateElementsAreNotNull("dependency", dependencies);
+            ValidationUtils.ValidateAll(dependencies);
+            ValidationUtils.ValidateElementsAreNotNull("assemblies", assemblies);
+            ValidationUtils.ValidateAll(assemblies);
+            ValidationUtils.ValidateElementsAreNotNull("services", services);
+            ValidationUtils.ValidateAll(services);
+            ValidationUtils.ValidateElementsAreNotNull("components", components);
+            ValidationUtils.ValidateAll(components);
+            ValidationUtils.ValidateElementsAreNotNull("probingPaths", probingPaths);
         }
     }
 }

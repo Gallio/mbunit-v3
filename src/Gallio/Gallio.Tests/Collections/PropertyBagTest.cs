@@ -194,7 +194,7 @@ namespace Gallio.Tests.Collections
             }
         }
 
-        [XmlRoot("container", Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlRoot("propertyBagContainer", Namespace = XmlSerializationUtils.GallioNamespace)]
         [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
         public class MetadataContainer
         {

@@ -238,10 +238,10 @@ namespace Gallio.Echo
 
             using (RuntimeBootstrap.Initialize(setup, CreateLogger()))
             {
-                IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+                IReportManager reportManager = RuntimeAccessor.Registry.Resolve<IReportManager>();
                 ShowRegisteredComponents("Supported report types:", reportManager.FormatterResolver);
 
-                ITestRunnerManager runnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
+                ITestRunnerManager runnerManager = RuntimeAccessor.Registry.Resolve<ITestRunnerManager>();
                 ShowRegisteredComponents("Supported runner types:", runnerManager.FactoryResolver);
             }
         }

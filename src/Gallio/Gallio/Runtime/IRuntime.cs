@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Logging;
 
 namespace Gallio.Runtime
@@ -34,6 +35,11 @@ namespace Gallio.Runtime
     public interface IRuntime : IDisposable
     {
         /// <summary>
+        /// Gets the plugin, service and component registry.
+        /// </summary>
+        IRegistry Registry { get; }
+
+        /// <summary>
         /// Initializes the runtime.
         /// </summary>
         /// <param name="logger">The runtime logging service</param>
@@ -42,42 +48,10 @@ namespace Gallio.Runtime
         void Initialize(ILogger logger);
 
         /// <summary>
-        /// Resolves a reference to a component with the given id.
-        /// </summary>
-        /// <param name="componentId">The componentId</param>
-        /// <returns>A component with the specified id</returns>
-        /// <exception cref="RuntimeException">Thrown if the component could not be resolved</exception>
-        object Resolve(string componentId);
-
-        /// <summary>
-        /// Resolves a reference to a component that implements the specified service.
-        /// </summary>
-        /// <param name="service">The service type</param>
-        /// <returns>A component that implements the service</returns>
-        /// <exception cref="RuntimeException">Thrown if the service could not be resolved</exception>
-        object Resolve(Type service);
-
-        /// <summary>
-        /// Resolves a reference to a component that implements the specified service.
-        /// </summary>
-        /// <typeparam name="T">The service type</typeparam>
-        /// <returns>A component that implements the service</returns>
-        /// <exception cref="RuntimeException">Thrown if the service could not be resolved</exception>
-        T Resolve<T>();
-
-        /// <summary>
-        /// Resolves references to all components that implement the specified service.
-        /// </summary>
-        /// <typeparam name="T">The service type</typeparam>
-        /// <returns>An array of components that implement the service</returns>
-        /// <exception cref="RuntimeException">Thrown if the service could not be resolved</exception>
-        T[] ResolveAll<T>();
-
-        /// <summary>
         /// Maps a Uri to a local path.
         /// </summary>
         /// <remarks>
-        /// Recognizes plugin-relative paths of the form "plugin://Some.Plugin.Name/foo.txt"
+        /// Recognizes plugin-relative paths of the form "plugin://Some.Plugin.Id/foo.txt"
         /// and Uri's in the "file" scheme.
         /// </remarks>
         /// <param name="uri">The uri to map</param>
@@ -93,9 +67,15 @@ namespace Gallio.Runtime
         RuntimeSetup GetRuntimeSetup();
 
         /// <summary>
-        /// Gets the paths and assembly names of all plugin assemblies.
+        /// Gets the list of all plugin assembly references.
         /// </summary>
-        /// <returns>The paths</returns>
-        IDictionary<string, AssemblyName> GetPluginAssemblyPaths();
+        /// <returns>The assembly references</returns>
+        IList<AssemblyReference> GetAllPluginAssemblyReferences();
+
+        /// <summary>
+        /// Verifies that the runtime is correctly installed.  Writes details to the log.
+        /// </summary>
+        /// <returns>True if the installation appears ok</returns>
+        bool VerifyInstallation();
     }
 }

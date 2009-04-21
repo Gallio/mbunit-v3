@@ -29,15 +29,15 @@
     
     <Binary Include="MbUnit\bin\MbUnit.dll" />
     <Binary Include="MbUnit\bin\MbUnit.pdb" />
-    <Binary Include="MbUnit\MbUnit.plugin" />
+    <PluginFile Include="MbUnit\MbUnit.plugin" />
     
     <Binary Include="MbUnit35\bin\MbUnit35.dll" />
     <Binary Include="MbUnit35\bin\MbUnit35.pdb" />
-    <Binary Include="MbUnit35\MbUnit35.plugin" />
+    <PluginFile Include="MbUnit35\MbUnit35.plugin" />
     
     <Binary Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.dll" />
     <Binary Include="MbUnit.Compatibility\bin\MbUnit.Compatibility.pdb" />
-    <Binary Include="MbUnit.Compatibility\MbUnit.Compatibility.plugin" />
+    <PluginFile Include="MbUnit.Compatibility\MbUnit.Compatibility.plugin" />
   </ItemGroup>
 
   <ItemGroup>

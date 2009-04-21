@@ -30,7 +30,7 @@ namespace Gallio.Runtime.Hosting
         /// <summary>
         /// Gets the component Id of this factory.
         /// </summary>
-        public static readonly string ComponentId = "Core.IsolatedProcessHostFactory";
+        public static readonly string ComponentId = "Gallio.IsolatedProcessHostFactory";
 
         /// <summary>
         /// Creates a host factory.
@@ -43,20 +43,6 @@ namespace Gallio.Runtime.Hosting
                 throw new ArgumentNullException("runtime");
 
             runtimePath = runtime.GetRuntimeSetup().RuntimePath;
-        }
-
-        /// <summary>
-        /// Creates a host factory.
-        /// </summary>
-        /// <param name="runtimePath">The path of the runtime components,
-        /// in particular the folder where Gallio.Host.exe is located</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="runtimePath"/> is null</exception>
-        public IsolatedProcessHostFactory(string runtimePath)
-        {
-            if (runtimePath == null)
-                throw new ArgumentNullException("runtimePath");
-
-            this.runtimePath = runtimePath;
         }
 
         /// <summary>

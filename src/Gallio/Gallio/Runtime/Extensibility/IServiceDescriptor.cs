@@ -57,6 +57,17 @@ namespace Gallio.Runtime.Extensibility
         IHandlerFactory TraitsHandlerFactory { get; }
 
         /// <summary>
+        /// Returns true if the plugin that provides the service is disabled.
+        /// </summary>
+        bool IsDisabled { get; }
+
+        /// <summary>
+        /// Gets the reason the service was disabled.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDisabled" /> is false</exception>
+        string DisabledReason { get; }
+
+        /// <summary>
         /// Resolves the service type.
         /// </summary>
         /// <remarks>

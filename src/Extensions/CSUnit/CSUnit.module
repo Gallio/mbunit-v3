@@ -11,9 +11,9 @@
     <Binary Include="Gallio.CSUnitAdapter\bin\Gallio.CSUnitAdapter.dll">
         <Folder>CSUnit</Folder>
     </Binary>
-    <Binary Include="Gallio.CSUnitAdapter\Gallio.CSUnitAdapter.plugin">
+    <PluginFile Include="Gallio.CSUnitAdapter\Gallio.CSUnitAdapter.plugin">
         <Folder>CSUnit</Folder>
-    </Binary>
+    </PluginFile>
     <Binary Include="Gallio.CSUnitAdapter\Readme.txt">
         <Folder>CSUnit</Folder>
     </Binary>

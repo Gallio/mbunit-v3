@@ -46,6 +46,23 @@ namespace Gallio.Runtime.Extensibility
             get { return traitsHandlerFactory; }
         }
 
+        public bool IsDisabled
+        {
+            get { return pluginDescriptor.IsDisabled; }
+        }
+
+        public string DisabledReason
+        {
+            get
+            {
+                if (pluginDescriptor.IsDisabled)
+                    return string.Format("The plugin that provides this service was disabled.  Reason: {0}", pluginDescriptor.DisabledReason);
+
+                throw new InvalidOperationException("The service has not been disabled.");
+            }
+        }
+
+
         public Type ResolveServiceType()
         {
             if (serviceType == null)

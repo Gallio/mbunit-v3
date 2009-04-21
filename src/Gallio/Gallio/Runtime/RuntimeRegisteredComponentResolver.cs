@@ -45,7 +45,7 @@ namespace Gallio.Runtime
         public IList<string> GetNames()
         {
             List<string> names = new List<string>();
-            foreach (T component in runtime.ResolveAll<T>())
+            foreach (T component in runtime.Registry.ResolveAll<T>())
                 names.Add(component.Name);
 
             return names;
@@ -57,7 +57,7 @@ namespace Gallio.Runtime
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            foreach (T component in runtime.ResolveAll<T>())
+            foreach (T component in runtime.Registry.ResolveAll<T>())
             {
                 if (String.Equals(name, component.Name, StringComparison.CurrentCultureIgnoreCase))
                     return component;

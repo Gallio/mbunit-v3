@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -20,12 +21,16 @@ namespace Gallio.Runtime.Extensibility
         private readonly PropertySet traitsProperties;
         private readonly IHandlerFactory pluginHandlerFactory;
         private readonly IResourceLocator resourceLocator;
+        private readonly ReadOnlyCollection<AssemblyReference> assemblyReferences;
+        private readonly ReadOnlyCollection<IPluginDescriptor> pluginDependencies;
+        private readonly ReadOnlyCollection<string> probingPaths;
 
         private Type pluginType;
         private IHandler pluginHandler;
         private IHandler traitsHandler;
+        private string disabledReason;
 
-        public PluginDescriptor(Registry registry, PluginRegistration pluginRegistration)
+        public PluginDescriptor(Registry registry, PluginRegistration pluginRegistration, IList<IPluginDescriptor> completePluginDependenciesCopy)
         {
             this.registry = registry;
             pluginId = pluginRegistration.PluginId;
@@ -35,6 +40,9 @@ namespace Gallio.Runtime.Extensibility
             traitsProperties = pluginRegistration.TraitsProperties.Copy().AsReadOnly();
             pluginHandlerFactory = pluginRegistration.PluginHandlerFactory;
             resourceLocator = new FileSystemResourceLocator(baseDirectory);
+            assemblyReferences = new ReadOnlyCollection<AssemblyReference>(GenericUtils.ToArray(pluginRegistration.AssemblyReferences));
+            pluginDependencies = new ReadOnlyCollection<IPluginDescriptor>(completePluginDependenciesCopy);
+            probingPaths = new ReadOnlyCollection<string>(GenericUtils.ToArray(pluginRegistration.ProbingPaths));
         }
 
         // Used by unit tests.
@@ -72,6 +80,11 @@ namespace Gallio.Runtime.Extensibility
             get { return baseDirectory; }
         }
 
+        public IList<AssemblyReference> AssemblyReferences
+        {
+            get { return assemblyReferences; }
+        }
+
         public PropertySet PluginProperties
         {
             get { return pluginProperties; }
@@ -85,6 +98,44 @@ namespace Gallio.Runtime.Extensibility
         public IResourceLocator ResourceLocator
         {
             get { return resourceLocator; }
+        }
+
+        public bool IsDisabled
+        {
+            get
+            {
+                return FirstDisabledPluginDependency != null || disabledReason != null;
+            }
+        }
+
+        public string DisabledReason
+        {
+            get
+            {
+                var firstDisabledPluginDependency = FirstDisabledPluginDependency;
+                if (firstDisabledPluginDependency != null)
+                    return string.Format(string.Format("The plugin depends on another disabled plugin.  Reason: {0}", firstDisabledPluginDependency.DisabledReason));
+
+                if (disabledReason == null)
+                    throw new InvalidOperationException("The plugin has not been disabled.");
+
+                return disabledReason;
+            }
+        }
+
+        private IPluginDescriptor FirstDisabledPluginDependency
+        {
+            get { return GenericUtils.Find(pluginDependencies, p => p.IsDisabled); }
+        }
+
+        public IList<IPluginDescriptor> PluginDependencies
+        {
+            get { return pluginDependencies; }
+        }
+
+        public IList<string> ProbingPaths
+        {
+            get { return probingPaths; }
         }
 
         public Type ResolvePluginType()
@@ -174,6 +225,14 @@ namespace Gallio.Runtime.Extensibility
             {
                 throw new RuntimeException(string.Format("Could not resolve traits of plugin '{0}'.", pluginId), ex);
             }
+        }
+
+        public void Disable(string reason)
+        {
+            if (reason == null)
+                throw new ArgumentNullException("reason");
+
+            disabledReason = reason;
         }
     }
 }

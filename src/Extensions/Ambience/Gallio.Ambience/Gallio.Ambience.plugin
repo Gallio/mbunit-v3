@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.Ambience.dll" />
-    </assemblies>
+<plugin pluginId="Gallio.Ambience"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Gallio Ambience Library</name>
+  </traits>
 
-    <runtime>
-      <components>
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.Ambience, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.Ambience.dll" />
+  </assemblies>
+</plugin>

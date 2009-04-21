@@ -63,10 +63,6 @@
 				<File Name="Gallio.xml" />
 				<File Id="Gallio.Report.xsd" Name="Gallio-Report.xsd" />
 				<?ifdef NO_ILMERGE ?>
-					<File Name="Castle.Core.dll" />
-					<File Name="Castle.MicroKernel.dll" />
-					<File Name="Castle.Windsor.dll" />
-					<File Name="Castle.DynamicProxy2.dll" />
 					<File Name="Mono.Cecil.dll" />
 					<File Name="NDepend.Helpers.FileDirectoryPath.dll" />
 				<?endif ?>
@@ -99,6 +95,10 @@
                 <File Name="Gallio.UI.pdb" />
                 <File Name="Gallio.UI.xml" />
                 <File Name="Gallio.UI.plugin" />
+            </Component>
+            <Component Id="Gallio.Utility" Guid="{91B04D9F-3775-4a56-82B1-864CF418D265}" Win64="no">
+                <File Name="Gallio.Utility.exe" KeyPath="yes" />
+                <File Name="Gallio.Utility.exe.config" />
             </Component>
 
             <Component Id="Gallio.Loader" Guid="{1b752f49-373c-4a57-8f72-eb97287d0d35}" Win64="no">
@@ -245,6 +245,7 @@
             <ComponentRef Id="Apache.License" />
             <ComponentRef Id="Gallio.Credits" />
             <ComponentRef Id="Gallio.UI.dll"/>
+            <ComponentRef Id="Gallio.Utility"/>
             <ComponentRef Id="Gallio.Reports.dll"/>
 
             <ComponentRef Id="Gallio.Report.css"/>

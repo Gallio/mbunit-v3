@@ -29,7 +29,7 @@ namespace Gallio.Icarus.Options
             restorePreviousSession.DataBindings.Add("Checked", optionsController, "RestorePreviousSettings");
 
             // retrieve list of possible factories
-            ITestRunnerManager testRunnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
+            ITestRunnerManager testRunnerManager = RuntimeAccessor.Registry.Resolve<ITestRunnerManager>();
             string[] factories = GenericUtils.ToArray(testRunnerManager.GetFactoryNames());
 
             testRunnerFactories.Items.AddRange(factories);

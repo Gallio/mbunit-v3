@@ -246,10 +246,7 @@
   <data name="ConsoleProgram_ApplicationTitleFormat" xml:space="preserve">
     <value>{0} - Version {1}.{2}.{3} build {4}</value>
   </data>
-  <data name="WindsorRuntime_CannotResolveServices" xml:space="preserve">
-    <value>Could not resolve service of type {0}.</value>
-  </data>
-  <data name="WindsorRuntime_RuntimeCannotBeInitialized" xml:space="preserve">
+  <data name="DefaultRuntime_RuntimeCannotBeInitialized" xml:space="preserve">
     <value>The runtime could not be initialized.</value>
   </data>
   <data name="ThreadAbortScope_ReentranceException" xml:space="preserve">

@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.TDNetRunner.dll" />
-      <assembly gac="Gallio.Loader"/>
-    </assemblies>
+<plugin pluginId="Gallio.TDNetRunner"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>TestDriven.Net Runner</name>
+  </traits>
 
-    <runtime>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.TDNetRunner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.TDNetRunner.dll" />
+
+    <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
+  </assemblies>
+</plugin>

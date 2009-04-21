@@ -189,7 +189,7 @@ namespace Gallio.Model.Execution
 
             // Perform a topological sort of the children using depth-first search.
             // Because at this stage a command only has dependencies on its siblings the depth-first search
-            // actually proceeds down the chain of sibling dependencies only; it does not follow
+            // actually proceeds down the chain of sibling dependencies only; it does not
             // traverse the whole test hierarchy.  -- Jeff.
             Dictionary<ManagedTestCommand, bool> visitedSet = new Dictionary<ManagedTestCommand, bool>();
             Stack<DepthFirstEntry> stack = new Stack<DepthFirstEntry>();

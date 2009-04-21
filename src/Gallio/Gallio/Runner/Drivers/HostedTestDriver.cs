@@ -21,6 +21,7 @@ using Gallio.Collections;
 using Gallio.Model;
 using Gallio.Runtime;
 using Gallio.Runtime.Debugging;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Hosting;
 using Gallio.Runtime.Logging;
 using Gallio.Runtime.Remoting;
@@ -171,8 +172,14 @@ namespace Gallio.Runner.Drivers
                 if (File.Exists(assemblyConfigFile))
                     testDomain.TestPackageConfig.HostSetup.Configuration.ConfigurationXml = File.ReadAllText(assemblyConfigFile);
 
-                foreach (KeyValuePair<string, AssemblyName> pair in runtime.GetPluginAssemblyPaths())
-                    testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(pair.Value, new Uri(pair.Key).ToString(), true);
+                foreach (AssemblyReference reference in runtime.GetAllPluginAssemblyReferences())
+                {
+                    if (reference.CodeBase != null)
+                    {
+                        testDomain.TestPackageConfig.HostSetup.Configuration.AddAssemblyBinding(reference.AssemblyName,
+                            reference.CodeBase, true);
+                    }
+                }
 
                 foreach (ITestFramework framework in frameworks)
                     framework.ConfigureTestDomain(testDomain);

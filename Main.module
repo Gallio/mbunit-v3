@@ -58,7 +58,7 @@
   <!-- TEST TARGETS -->
 
   <Target Name="AfterTest"
-          DependsOnTargets="RunTestAssemblies" />
+          DependsOnTargets="RunTestAssemblies;VerifyInstallation" />
 
 
   <!-- DIST TARGETS -->
@@ -436,6 +436,7 @@
 
     <Exec Condition="'$(Runtime)'=='Mono'"
           Command="&quot;$(MonoExe)&quot; &quot;$(ImageDir)\bin\Gallio.Echo.exe&quot; @(TestAssembly->'&quot;%(FullPath)&quot;', ' ') /rd:&quot;$(ReportDir)&quot; /rt:&quot;$(ReportTypes)&quot; /r:&quot;$(TestRunnerType)&quot;"
+          IgnoreExitCode="true"
 	  WorkingDirectory="$(TempDir)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
@@ -461,4 +462,17 @@
              Condition="'$(ExitCode)'!='0' and $(IgnoreFailures)" />
   </Target>  
 
+  <Target Name="VerifyInstallation">
+    <Message Text="Verifying installation of all plugins..."
+             Importance="High" />
+
+    <Exec Command="&quot;$(BinDir)\Gallio.Utility.exe&quot; /command:VerifyInstallation /v:Verbose"
+          IgnoreExitCode="true"
+	  WorkingDirectory="$(TempDir)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Exec>
+    
+    <Error Text="Verification of plugin installation failed!"
+             Condition="'$(ExitCode)'!='0' and ! $(IgnoreFailures)" />
+  </Target>
 </Project>

@@ -51,4 +51,4 @@ using System.Runtime.InteropServices;
 [assembly: SuppressMessage("Microsoft.Design", "CA2210:AssembliesShouldHaveValidStrongNames")]
 
 [assembly: InternalsVisibleTo("Gallio.NCoverIntegration.Tests")]
-[assembly: InternalsVisibleTo("Gallio.NCoverIntegration2.Tests")]
+

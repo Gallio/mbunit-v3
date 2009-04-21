@@ -58,6 +58,11 @@ namespace Gallio.Runtime.Extensibility
         DirectoryInfo BaseDirectory { get; }
 
         /// <summary>
+        /// Gets the list of plugin assembly references.
+        /// </summary>
+        IList<AssemblyReference> AssemblyReferences { get; }
+
+        /// <summary>
         /// Gets the plugin properties.
         /// </summary>
         PropertySet PluginProperties { get; }
@@ -71,6 +76,28 @@ namespace Gallio.Runtime.Extensibility
         /// Gets the plugin's resource locator.
         /// </summary>
         IResourceLocator ResourceLocator { get; }
+
+        /// <summary>
+        /// Returns true if the plugin is disabled.
+        /// </summary>
+        bool IsDisabled { get; }
+
+        /// <summary>
+        /// Gets the reason the plugin was disabled.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsDisabled" /> is false</exception>
+        string DisabledReason { get; }
+
+        /// <summary>
+        /// Gets the list of plugins upon which this plugin depends directly or indirectly.
+        /// </summary>
+        IList<IPluginDescriptor> PluginDependencies { get; }
+
+        /// <summary>
+        /// Gets the list of additional probing paths in which to attempt to locate
+        /// referenced assemblies.
+        /// </summary>
+        IList<string> ProbingPaths { get; }
 
         /*
         /// <summary>
@@ -156,5 +183,12 @@ namespace Gallio.Runtime.Extensibility
         /// <returns>The plugin traits</returns>
         /// <exception cref="RuntimeException">Thrown if an error occurs during resolution</exception>
         PluginTraits ResolveTraits();
+
+        /// <summary>
+        /// Disables the plugin.
+        /// </summary>
+        /// <param name="reason">The reason the plugin was disabled</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="reason"/> is null</exception>
+        void Disable(string reason);
     }
 }

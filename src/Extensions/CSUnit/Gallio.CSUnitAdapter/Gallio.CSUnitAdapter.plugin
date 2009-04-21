@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.CSUnitAdapter.dll" />
-      <assembly file="csUnit.dll" />
-      <assembly file="csUnit.Common.dll" />
-      <assembly file="csUnit.Interfaces.dll" />
-      <assembly file="csUnitCore.dll" />
-    </assemblies>
+<plugin pluginId="Gallio.CSUnitAdapter"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>csUnit Adapter Plugin</name>
+  </traits>
 
-   <runtime>
-      <components>
-        <component id="CSUnitAdapter.TestFramework"
-                   service="Gallio.Model.ITestFramework, Gallio"
-                   type="Gallio.CSUnitAdapter.Model.CSUnitTestFramework, Gallio.CSUnitAdapter" />
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.CSUnitAdapter, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+              codeBase="Gallio.CSUnitAdapter.dll" />
+
+    <assembly fullName="csUnit, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910"
+              codeBase="csUnit.dll" />
+
+    <assembly fullName="csUnit.Common, Version=2.5.3081.40665, Culture=neutral, PublicKeyToken=6871f04765cca910"
+              codeBase="csUnit.Common.dll" />
+
+    <assembly fullName="csUnit.Interfaces, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910"
+              codeBase="csUnit.Interfaces.dll" />
+
+    <assembly fullName="csUnitCore, Version=2.5.3081.40666, Culture=neutral, PublicKeyToken=6871f04765cca910"
+              codeBase="csUnitCore.dll" />
+  </assemblies>
+
+  <components>
+    <component componentId="CSUnitAdapter.TestFramework"
+               serviceId="Gallio.TestFramework"
+               componentType="Gallio.CSUnitAdapter.Model.CSUnitTestFramework, Gallio.CSUnitAdapter" />
+  </components>
+</plugin>

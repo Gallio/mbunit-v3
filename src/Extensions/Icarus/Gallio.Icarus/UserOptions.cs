@@ -22,7 +22,7 @@ using Gallio.Utilities;
 namespace Gallio.Icarus
 {
     [Serializable]
-    [XmlRoot("settings", Namespace = XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("userOptions", Namespace = XmlSerializationUtils.GallioNamespace)]
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public class UserOptions
     {

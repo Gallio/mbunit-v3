@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.UI.dll" />
-    </assemblies>
+<plugin pluginId="Gallio.UI"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Gallio UI Helper Library</name>
+  </traits>
 
-    <runtime>
-      <components>
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.UI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.UI.dll" />
+  </assemblies>
+</plugin>

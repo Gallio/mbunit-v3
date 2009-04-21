@@ -14,6 +14,8 @@
     <CSharpProject Include="Gallio.Reports\Gallio.Reports$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Reports.Tests\Gallio.Reports.Tests$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.UI\Gallio.UI$(ProjectVariant).csproj" />
+    
+    <CSharpProject Include="Gallio.Utility\Gallio.Utility$(ProjectVariant).csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,28 +30,31 @@
     <Content Include="Gallio Website.url" />
   
     <Binary Include="Gallio\bin\Gallio.XmlSerializers.dll" />
-    <Binary Include="Gallio\Gallio.plugin" />
+    <PluginFile Include="Gallio\Gallio.plugin" />
 
     <Binary Include="Gallio.Host\bin\msil\Gallio.Host.exe" />
-    <Binary Include="Gallio.Host\Gallio.Host.exe.config" />
+    <PluginFile Include="Gallio.Host\Gallio.Host.exe.config" />
 
     <Binary Include="Gallio.Host\bin\x86\Gallio.Host.x86.exe" />
-    <Binary Include="Gallio.Host\Gallio.Host.x86.exe.config" />
+    <PluginFile Include="Gallio.Host\Gallio.Host.x86.exe.config" />
 
     <Binary Include="Gallio.Loader\bin\Gallio.Loader.dll" />
     <Binary Include="Gallio.Loader\bin\Gallio.Loader.pdb" />
     
     <Binary Include="Gallio35\bin\Gallio35.dll" />
     <Binary Include="Gallio35\bin\Gallio35.pdb" />
-    <Binary Include="Gallio35\Gallio35.plugin" />
+    <PluginFile Include="Gallio35\Gallio35.plugin" />
     
     <Binary Include="Gallio.UI\bin\Gallio.UI.dll" />
     <Binary Include="Gallio.UI\bin\Gallio.UI.pdb" />
-    <Binary Include="Gallio.UI\Gallio.UI.plugin" />
-    
+    <PluginFile Include="Gallio.UI\Gallio.UI.plugin" />
+
+    <Binary Include="Gallio.Utility\bin\Gallio.Utility.exe" />
+    <PluginFile Include="Gallio.Utility\Gallio.Utility.exe.config" />
+
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.dll" />
     <Binary Include="Gallio.Reports\bin\Gallio.Reports.pdb" />
-    <Binary Include="Gallio.Reports\Gallio.Reports.plugin" />
+    <PluginFile Include="Gallio.Reports\Gallio.Reports.plugin" />
 
     <Binary Include="Gallio.Reports\Resources\css\*">
         <Folder>Resources\css</Folder>
@@ -77,12 +82,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <GallioMergeDependency Include="Gallio\bin\Castle.Core.dll" />
-    <GallioMergeDependency Include="Gallio\bin\Castle.MicroKernel.dll" />
-    <GallioMergeDependency Include="Gallio\bin\Castle.Windsor.dll" />
-    <GallioMergeDependency Include="Gallio\bin\Castle.DynamicProxy2.dll" />
     <GallioMergeDependency Include="Gallio\bin\Mono.Cecil.dll" />
-	<GallioMergeDependency Include="Gallio\bin\NDepend.Helpers.FileDirectoryPath.dll" />
+    <GallioMergeDependency Include="Gallio\bin\NDepend.Helpers.FileDirectoryPath.dll" />
   </ItemGroup>
 
   <Target Name="AfterImage"

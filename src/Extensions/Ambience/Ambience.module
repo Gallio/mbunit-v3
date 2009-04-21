@@ -6,10 +6,10 @@
     <CSharpProject Include="Gallio.Ambience.Server\Gallio.Ambience.Server$(ProjectVariant).csproj" />
     <CSharpProject Include="Gallio.Ambience.Tests\Gallio.Ambience.Tests$(ProjectVariant).csproj" />
 
-    <Binary Include="Gallio.Ambience\Gallio.Ambience.plugin" />
+    <PluginFile Include="Gallio.Ambience\Gallio.Ambience.plugin" />
   
     <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe" />
-    <Binary Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config" />
+    <PluginFile Include="Gallio.Ambience.Server\bin\Gallio.Ambience.Server.exe.config" />
 
     <Content Include="libs\db4o.license.html" />
     <Content Include="libs\Cecil.FlowAnalysis.license.html" />

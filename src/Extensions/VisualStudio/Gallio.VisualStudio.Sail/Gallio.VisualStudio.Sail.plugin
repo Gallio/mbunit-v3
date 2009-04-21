@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.VisualStudio.Sail.dll" />
-    </assemblies>
+<plugin pluginId="Gallio.VisualStudio.Sail"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Gallio Sail Test Runner</name>
+  </traits>
 
-    <runtime>
-      <components>
-        <component id="Sail.ShellExtension"
-                   service="Gallio.VisualStudio.Shell.IShellExtension, Gallio.VisualStudio.Shell"
-                   type="Gallio.VisualStudio.Sail.SailShellExtension, Gallio.VisualStudio.Sail" />
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio.VisualStudio.Shell" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.VisualStudio.Sail, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.VisualStudio.Sail.dll" />
+  </assemblies>
+
+  <components>
+    <component componentId="Sail.ShellExtension"
+               serviceId="Shell.ShellExtension"
+               componentType="Gallio.VisualStudio.Sail.SailShellExtension, Gallio.VisualStudio.Sail" />
+  </components>
+</plugin>

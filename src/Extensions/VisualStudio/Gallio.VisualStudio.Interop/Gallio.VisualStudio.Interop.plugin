@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.VisualStudio.Interop.dll" />
-    </assemblies>
+<plugin pluginId="Gallio.VisualStudio.Interop"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Visual Studio Interoperability Plugin</name>
+  </traits>
 
-    <runtime>
-      <components>
-        <component id="VisualStudio.Debugger"
-                   service="Gallio.Runtime.Debugging.IDebugger, Gallio"
-                   type="Gallio.VisualStudio.Interop.VisualStudioDebugger, Gallio.VisualStudio.Interop" />
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.VisualStudio.Interop, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.VisualStudio.Interop.dll" />
+  </assemblies>
+
+  <components>
+    <component componentId="VisualStudio.Debugger"
+               serviceId="Gallio.Debugger"
+               componentType="Gallio.VisualStudio.Interop.VisualStudioDebugger, Gallio.VisualStudio.Interop" />
+  </components>
+</plugin>

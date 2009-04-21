@@ -53,7 +53,7 @@ namespace Gallio.ReSharperRunner.Provider
                     return null;
 
                 group.CreateSubdirectory(directory);
-                IReportManager reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+                IReportManager reportManager = RuntimeAccessor.Registry.Resolve<IReportManager>();
                 FileSystemReportContainer reportContainer = new FileSystemReportContainer(htmlReportFile.DirectoryName, ReportBaseName);
                 IReportWriter reportWriter = reportManager.CreateReportWriter(report, reportContainer);
                 var reportFormatterOptions = new ReportFormatterOptions();

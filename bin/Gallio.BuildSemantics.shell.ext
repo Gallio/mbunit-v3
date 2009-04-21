@@ -15,7 +15,11 @@
     <Extra>
       <Folder />
     </Extra>
-    
+
+    <PluginFile>
+      <Folder />
+    </PluginFile>
+
     <DocumentedAssembly />
     <TestAssembly />
     <Feature />
@@ -35,7 +39,7 @@
 
   <PropertyGroup>
     <CoreLoadDependsOn>$(CoreLoadDependsOn);LoadGallioBuildSemanticsAddIn</CoreLoadDependsOn>
-    <CoreImageDependsOn>GenerateTemplateArchives;$(CoreImageDependsOn)</CoreImageDependsOn>
+    <CoreImageDependsOn>GenerateTemplateArchives;$(CoreImageDependsOn);PatchPluginFiles</CoreImageDependsOn>
   </PropertyGroup>
 
   <Target Name="LoadGallioBuildSemanticsAddIn">
@@ -46,6 +50,10 @@
 
       <File Include="@(Binary)">
         <ImagePath>bin\%(Binary.Folder)</ImagePath>
+      </File>
+
+      <File Include="@(PluginFile)">
+        <ImagePath>bin\%(PluginFile.Folder)</ImagePath>
       </File>
 
       <File Include="@(Document)">
@@ -82,5 +90,12 @@
          WorkingDirectory="%(Base)"
          ZipFileName="$(ImageDir)\extras\Templates\%(Zip)"
          ZipLevel="9" />
+  </Target>
+  
+  <Target Name="PatchPluginFiles"
+          Condition="'@(PluginFile)'!=''">
+    <FileUpdate Files="@(PluginFile->'$(ImageDir)\bin\%(Folder)\%(Filename)%(Extension)')"
+                Regex="0\.0\.0\.0"
+                ReplacementText="$(AssemblyVersion)" />
   </Target>
 </Project>

@@ -27,7 +27,7 @@ namespace Gallio.Runner.Reports
     /// Collects summary statistics about test execution for reporting purposes.
     /// </summary>
     [Serializable]
-    [XmlRoot(ElementName="statistics", Namespace=XmlSerializationUtils.GallioNamespace)]
+    [XmlRoot("statistics", Namespace=XmlSerializationUtils.GallioNamespace)]
     [XmlType(Namespace=XmlSerializationUtils.GallioNamespace)]
     public sealed class Statistics
     {

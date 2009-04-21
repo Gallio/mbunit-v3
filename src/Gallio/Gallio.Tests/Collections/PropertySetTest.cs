@@ -169,7 +169,7 @@ namespace Gallio.Tests.Collections
                 Assert.IsTrue(actual.Contains(entry));
         }
 
-        [XmlRoot("container", Namespace = XmlSerializationUtils.GallioNamespace)]
+        [XmlRoot("propertySetContainer", Namespace = XmlSerializationUtils.GallioNamespace)]
         [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
         public class MetadataContainer
         {

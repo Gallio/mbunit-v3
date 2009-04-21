@@ -40,7 +40,7 @@ namespace Gallio.Tests.Model.Execution
             base.SetUp();
 
             model = new TestModel(new TestPackage(new TestPackageConfig(), Reflector.NativeReflectionPolicy,
-                RuntimeAccessor.Instance.Resolve<ILoader>()));
+                RuntimeAccessor.Registry.Resolve<ILoader>()));
             rootCommand = null;
         }
 

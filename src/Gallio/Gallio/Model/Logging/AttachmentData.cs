@@ -154,6 +154,7 @@ namespace Gallio.Model.Logging
         /// <summary>
         /// Returns true if the attachment is textual, false if it is binary.
         /// </summary>
+        [XmlIgnore]
         public bool IsText
         {
             get { return encoding == AttachmentEncoding.Text; }

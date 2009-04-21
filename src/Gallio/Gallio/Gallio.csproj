@@ -11,7 +11,7 @@
     <AssemblyName>Gallio</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Key.snk</AssemblyOriginatorKeyFile>
-    <SGenUseProxyTypes>true</SGenUseProxyTypes>
+    <SGenUseProxyTypes>false</SGenUseProxyTypes>
     <SGenShouldGenerateSerializer>true</SGenShouldGenerateSerializer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -42,22 +42,6 @@
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.MicroKernel, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Castle.MicroKernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Castle.Windsor.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Cecil, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\Mono.Cecil.dll</HintPath>
@@ -287,6 +271,9 @@
     <Compile Include="Runtime\Debugging\IDebugger.cs" />
     <Compile Include="Runtime\Debugging\IDebuggerManager.cs" />
     <Compile Include="Runtime\Debugging\NullDebugger.cs" />
+    <Compile Include="Runtime\Extensibility\AssemblyProbingRules.cs" />
+    <Compile Include="Runtime\Extensibility\AssemblyReference.cs" />
+    <Compile Include="Runtime\Extensibility\CachingPluginLoader.cs" />
     <Compile Include="Runtime\Extensibility\ComponentRegistration.cs" />
     <Compile Include="Runtime\Extensibility\DefaultObjectDependencyResolver.cs" />
     <Compile Include="Runtime\Extensibility\DefaultPlugin.cs" />
@@ -299,7 +286,8 @@
     <Compile Include="Runtime\Extensibility\IResourceLocator.cs" />
     <Compile Include="Runtime\Extensibility\ObjectFactory.cs" />
     <Compile Include="Runtime\Extensibility\PluginCatalog.cs" />
-    <Compile Include="Runtime\Extensibility\FileSystemPluginLoader.cs" />
+    <Compile Include="Runtime\Extensibility\PluginLoader.cs" />
+    <Compile Include="Runtime\Extensibility\XmlPreprocessor.cs" />
     <Compile Include="Runtime\Extensibility\ServiceRegistration.cs" />
     <Compile Include="Runtime\Extensibility\IHandlerFactory.cs" />
     <Compile Include="Runtime\Extensibility\IComponentDescriptor.cs" />
@@ -589,19 +577,26 @@
     <Compile Include="Runtime\RuntimeBootstrap.cs" />
     <Compile Include="Runtime\ProcessTypeDetection.cs" />
     <Compile Include="Runtime\RuntimeVersion.cs" />
-    <Compile Include="Runtime\Windsor\ArraySubDependencyResolver.cs" />
-    <Compile Include="Runtime\Windsor\WindsorRuntime.cs" />
+    <Compile Include="Runtime\DefaultRuntime.cs" />
     <Compile Include="Model\Logging\TestLogWriter.cs" />
+    <Compile Include="Schema\IValidatable.cs" />
+    <Compile Include="Schema\Plugins\Assembly.cs" />
+    <Compile Include="Schema\Plugins\Cache.cs" />
     <Compile Include="Schema\Plugins\Component.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Schema\Plugins\CachePluginInfo.cs" />
+    <Compile Include="Schema\Plugins\Dependency.cs" />
     <Compile Include="Schema\Plugins\Plugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Schema\Plugins\KeyValueTable.cs" />
     <Compile Include="Schema\Plugins\Service.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Schema\ValidationException.cs" />
     <Compile Include="Schema\SchemaConstants.cs" />
+    <Compile Include="Schema\ValidationUtils.cs" />
     <Compile Include="Triple.cs" />
     <Compile Include="Utilities\FileSystem.cs" />
     <Compile Include="Utilities\IFileSystem.cs" />
@@ -804,9 +799,6 @@
     <Compile Include="Utilities\Sync.cs" />
     <Compile Include="Utilities\DefaultXmlSerializer.cs" />
     <Compile Include="Utilities\XmlUtils.cs" />
-    <Compile Include="XmlSerializableTypeIncludes.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Utilities\XmlSerializationUtils.cs" />
     <Compile Include="Runtime\CorrelatedExceptionEventArgs.cs" />
     <Compile Include="Utilities\StringUtils.cs" />
@@ -835,6 +827,7 @@
     <Content Include="Gallio.plugin" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\SGen.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -842,13 +835,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <!-- This target overrides the built-in SGen target from the .Net Framework v2.0
-    Microsoft.Common.targets with the version used in .Net Framework v3.5.
-    This resolves an issue with a serialization assembly only being generated
-    for web service proxy types. -->
-  <Target Name="GenerateSerializationAssemblies" Condition="'$(_SGenGenerateSerializationAssembliesConfig)' == 'On' or ('@(WebReferenceUrl)'!='' and '$(_SGenGenerateSerializationAssembliesConfig)' == 'Auto')" DependsOnTargets="AssignTargetPaths;Compile;ResolveKeySource" Inputs="$(MSBuildAllProjects);@(IntermediateAssembly)" Outputs="$(IntermediateOutputPath)$(_SGenDllName)">
-    <SGen BuildAssemblyName="$(TargetFileName)" BuildAssemblyPath="$(IntermediateOutputPath)" References="@(ReferencePath)" ShouldGenerateSerializer="$(SGenShouldGenerateSerializer)" UseProxyTypes="$(SGenUseProxyTypes)" KeyContainer="$(KeyContainerName)" KeyFile="$(KeyOriginatorFile)" DelaySign="$(DelaySign)" ToolPath="$(SGenToolPath)">
-      <Output TaskParameter="SerializationAssembly" ItemName="SerializationAssembly" />
-    </SGen>
-  </Target>
 </Project>

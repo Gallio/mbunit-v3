@@ -93,7 +93,7 @@ namespace Gallio.Icarus
 
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 
-                var reportManager = RuntimeAccessor.Instance.Resolve<IReportManager>();
+                var reportManager = RuntimeAccessor.Registry.Resolve<IReportManager>();
 
                 IMediator mediator = new Mediator.Mediator
                 {
@@ -121,7 +121,7 @@ namespace Gallio.Icarus
 
         private void ConfigureTestRunnerFactory(string factoryName)
         {
-            var testRunnerManager = RuntimeAccessor.Instance.Resolve<ITestRunnerManager>();
+            var testRunnerManager = RuntimeAccessor.Registry.Resolve<ITestRunnerManager>();
             var testRunnerFactory = testRunnerManager.GetFactory(factoryName);
             testController.SetTestRunnerFactory(testRunnerFactory);
         }

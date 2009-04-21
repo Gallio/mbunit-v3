@@ -168,6 +168,24 @@ namespace Gallio.Runtime.Hosting
         /// was originally requested</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/>
         /// or <paramref name="codeBase"/> is null</exception>
+        public void AddAssemblyBinding(AssemblyName assemblyName, Uri codeBase, bool bindingRedirect)
+        {
+            if (codeBase == null)
+                throw new ArgumentNullException("codeBase");
+
+            AddAssemblyBinding(assemblyName, codeBase.ToString(), bindingRedirect);
+        }
+
+        /// <summary>
+        /// Adds a binding to the configuration for the specified assembly.
+        /// </summary>
+        /// <param name="assemblyName">The assembly name</param>
+        /// <param name="codeBase">The assembly code base Uri</param>
+        /// <param name="bindingRedirect">True if a catch-all binding redirect should be used to
+        /// ensure that this exact version of the assembly is loaded no matter which version
+        /// was originally requested</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="assemblyName"/>
+        /// or <paramref name="codeBase"/> is null</exception>
         public void AddAssemblyBinding(AssemblyName assemblyName, string codeBase, bool bindingRedirect)
         {
             if (assemblyName == null)

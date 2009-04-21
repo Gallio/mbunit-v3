@@ -98,6 +98,19 @@ namespace Gallio.Tests.Reflection
         }
 
         [Test]
+        public void Constructor_WhenCalledWithValidAssemblyQualifiedNameIncludingTypeArguments_InitializesProperties()
+        {
+            Type type = typeof(Dummy<int>);
+            string assemblyQualifiedName = type.AssemblyQualifiedName;
+
+            TypeName typeName = new TypeName(assemblyQualifiedName);
+
+            Assert.AreEqual(type.FullName, typeName.FullName);
+            Assert.AreEqual(type.Assembly.GetName().FullName, typeName.AssemblyName.FullName);
+            Assert.AreEqual(type.AssemblyQualifiedName, typeName.AssemblyQualifiedName);
+        }
+
+        [Test]
         public void Constructor_WhenCalledWithValidFullNameAndAssemblyName_InitializesProperties()
         {
             Type type = typeof(Dummy<>);

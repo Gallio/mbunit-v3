@@ -56,7 +56,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App.ico" />
     <None Include="Resources\GallioEcho.ico" />
     <None Include="Gallio.Echo.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

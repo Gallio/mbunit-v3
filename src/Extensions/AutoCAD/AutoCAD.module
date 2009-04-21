@@ -13,9 +13,9 @@
     <Binary Include="Gallio.AutoCAD\bin\Gallio.AutoCAD.dll">
       <Folder>AutoCAD</Folder>
     </Binary>
-    <Binary Include="Gallio.AutoCAD\Gallio.AutoCAD.plugin">
+    <PluginFile Include="Gallio.AutoCAD\Gallio.AutoCAD.plugin">
       <Folder>AutoCAD</Folder>
-    </Binary>
+    </PluginFile>
     <Binary Include="Gallio.AutoCAD.Plugin\bin\Gallio.AutoCAD.Plugin.dll">
       <Folder>AutoCAD</Folder>
     </Binary>

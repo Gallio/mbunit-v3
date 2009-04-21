@@ -162,6 +162,46 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
 
             [Test]
+            public void ResolveDependency_WhenDependencyIsOfArrayType_SplitsAndParsesPropertyStringComponentsIndependently()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+
+                var result = dependencyResolver.ResolveDependency("array", typeof(string[]), "abc;def;ghi");
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.IsInstanceOfType<string[]>(result.Value);
+                    Assert.AreEqual(new[] { "abc", "def", "ghi" }, result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenDependencyIsOfEnumType_ParsesPropertyStringToEnumValueCaseInsensitively()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+
+                var result = dependencyResolver.ResolveDependency("enum", typeof(YesNo), "no");
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.IsInstanceOfType<YesNo>(result.Value);
+                    Assert.AreEqual(YesNo.No, result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
             public void ResolveDependency_WhenDependencyIsOfTypeInt_ConvertsPropertyStringToInt()
             {
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
@@ -266,6 +306,11 @@ namespace Gallio.Tests.Runtime.Extensibility
 
         public interface IService
         {
+        }
+
+        public enum YesNo
+        {
+            Yes, No
         }
     }
 }

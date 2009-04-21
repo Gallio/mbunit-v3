@@ -39,7 +39,7 @@ namespace Gallio.TypeMockIntegration.Tests
         [Test]
         public void TypeMockHostRunsWithTypeMockAttached()
         {
-            TypeMockHostFactory factory = new TypeMockHostFactory(RuntimeAccessor.RuntimePath);
+            TypeMockHostFactory factory = new TypeMockHostFactory(RuntimeAccessor.Instance);
 
             using (IHost host = factory.CreateHost(new HostSetup(), new TestLogStreamLogger(TestLog.Default)))
             {

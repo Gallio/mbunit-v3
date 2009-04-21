@@ -12,9 +12,9 @@
     <Binary Include="Gallio.MbUnit2Adapter\bin\Gallio.MbUnit2Adapter.dll">
         <Folder>MbUnit2</Folder>
     </Binary>
-    <Binary Include="Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter.plugin">
+    <PluginFile Include="Gallio.MbUnit2Adapter\Gallio.MbUnit2Adapter.plugin">
         <Folder>MbUnit2</Folder>
-    </Binary>
+    </PluginFile>
     <Binary Include="Gallio.MbUnit2Adapter\Readme.txt">
         <Folder>MbUnit2</Folder>
     </Binary>

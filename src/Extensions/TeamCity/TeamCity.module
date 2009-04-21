@@ -11,9 +11,9 @@
     <Binary Include="Gallio.TeamCityIntegration\bin\Gallio.TeamCityIntegration.dll">
         <Folder>TeamCity</Folder>
     </Binary>
-    <Binary Include="Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.plugin">
+    <PluginFile Include="Gallio.TeamCityIntegration\Gallio.TeamCityIntegration.plugin">
         <Folder>TeamCity</Folder>
-    </Binary>
+    </PluginFile>
     <Binary Include="Gallio.TeamCityIntegration\Readme.txt">
         <Folder>TeamCity</Folder>
     </Binary>

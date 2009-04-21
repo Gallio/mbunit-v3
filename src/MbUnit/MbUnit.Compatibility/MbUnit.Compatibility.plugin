@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="MbUnit.Compatibility.dll" />
-    </assemblies>
+<plugin pluginId="MbUnit.Compatibility"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>MbUnit v3 Extensions for Backwards Compatibility</name>
+  </traits>
 
-    <runtime>
-      <components>
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="MbUnit.Compatibility, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="MbUnit.Compatibility.dll" />
+  </assemblies>
+</plugin>

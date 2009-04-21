@@ -12,9 +12,9 @@
     <Binary Include="Gallio.XunitAdapter\bin\Gallio.XunitAdapter.dll">
         <Folder>Xunit</Folder>
     </Binary>
-    <Binary Include="Gallio.XunitAdapter\Gallio.XunitAdapter.plugin">
+    <PluginFile Include="Gallio.XunitAdapter\Gallio.XunitAdapter.plugin">
         <Folder>Xunit</Folder>
-    </Binary>
+    </PluginFile>
     <Binary Include="Gallio.XunitAdapter\Readme.txt">
         <Folder>Xunit</Folder>
     </Binary>

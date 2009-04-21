@@ -38,16 +38,6 @@ namespace Gallio.TypeMockIntegration
         {
         }
 
-        /// <summary>
-        /// Creates a host factory.
-        /// </summary>
-        /// <param name="installationPath">The installation path of the host executable</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="installationPath"/> is null</exception>
-        public TypeMockHostFactory(string installationPath)
-            : base(installationPath)
-        {
-        }
-
         /// <inheritdoc />
         protected override IHost CreateHostImpl(HostSetup hostSetup, ILogger logger)
         {

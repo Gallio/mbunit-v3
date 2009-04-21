@@ -26,13 +26,11 @@ namespace Gallio.Schema.Plugins
     /// </summary>
     [Serializable]
     [XmlType(Namespace = SchemaConstants.XmlNamespace)]
-    public sealed class Component
+    public sealed class Component : IValidatable
     {
         private string componentId;
         private string serviceId;
         private string componentType;
-        private PropertySet parameters;
-        private PropertySet traits;
 
         /// <summary>
         /// Creates an uninitialized component descriptor for XML deserialization.
@@ -112,45 +110,23 @@ namespace Gallio.Schema.Plugins
         }
 
         /// <summary>
-        /// Gets or sets the component parameters.
+        /// Gets or sets the component parameters, or null if there are none.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("parameters", IsNullable = true)]
-        public PropertySet Parameters
-        {
-            get
-            {
-                if (parameters == null)
-                    parameters = new PropertySet();
-                return parameters;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                parameters = value;
-            }
-        }
+        [XmlElement("parameters", IsNullable = false)]
+        public KeyValueTable Parameters { get; set; }
 
         /// <summary>
-        /// Gets or sets the component traits.
+        /// Gets or sets the component traits, or null if there are none.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null</exception>
-        [XmlElement("traits", IsNullable = true)]
-        public PropertySet Traits
+        [XmlElement("traits", IsNullable = false)]
+        public KeyValueTable Traits { get; set; }
+
+        /// <inheritdoc />
+        public void Validate()
         {
-            get
-            {
-                if (traits == null)
-                    traits = new PropertySet();
-                return traits;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                traits = value;
-            }
+            ValidationUtils.ValidateNotNull("componentId", componentId);
+            ValidationUtils.ValidateNotNull("serviceId", serviceId);
+            ValidationUtils.ValidateNotNull("componentType", componentType);
         }
     }
 }

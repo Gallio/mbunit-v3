@@ -15,6 +15,7 @@
 
 using System;
 using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Utilities;
 using Gallio.Runtime.Logging;
 
@@ -52,7 +53,19 @@ namespace Gallio.Runtime
             get
             {
                 IRuntime cachedInstance = instance;
-                return cachedInstance != null ? cachedInstance.Resolve<ILogger>() : NullLogger.Instance;
+                return cachedInstance != null ? cachedInstance.Registry.Resolve<ILogger>() : NullLogger.Instance;
+            }
+        }
+
+        /// <summary>
+        /// Gets the runtime's registry.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized</exception>
+        public static IRegistry Registry
+        {
+            get
+            {
+                return Instance.Registry;
             }
         }
 

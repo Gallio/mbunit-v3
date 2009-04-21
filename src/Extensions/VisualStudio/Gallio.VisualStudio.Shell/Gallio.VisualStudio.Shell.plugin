@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <gallio>
-    <assemblies>
-      <assembly file="Gallio.VisualStudio.Shell.dll" />
-      <assembly gac="Gallio.Loader" />
-    </assemblies>
+<plugin pluginId="Gallio.VisualStudio.Shell"
+        xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Visual Studio Integration Shell</name>
+  </traits>
 
-    <runtime>
-      <components>
-      </components>
-    </runtime>
-  </gallio>
-</configuration>
+  <dependencies>
+    <dependency pluginId="Gallio" />
+  </dependencies>
+
+  <assemblies>
+    <assembly fullName="Gallio.VisualStudio.Shell, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"
+              codeBase="Gallio.VisualStudio.Shell.dll" />
+
+    <assembly fullName="Gallio.Loader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e"/>
+  </assemblies>
+
+  <services>
+    <service serviceId="Shell.ShellExtension"
+             serviceType="Gallio.VisualStudio.Shell.IShellExtension, Gallio.VisualStudio.Shell" />
+  </services>
+</plugin>

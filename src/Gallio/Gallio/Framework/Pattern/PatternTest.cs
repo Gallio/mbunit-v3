@@ -149,7 +149,7 @@ namespace Gallio.Framework.Pattern
 
         private static PatternTestController ResolveTestController()
         {
-            return RuntimeAccessor.Instance.Resolve<PatternTestController>();
+            return RuntimeAccessor.Registry.Resolve<PatternTestController>();
         }
     }
 }

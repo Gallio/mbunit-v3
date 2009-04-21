@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <Binary Include="Gallio.Navigator\bin\Gallio.Navigator.exe" />
-    <Binary Include="Gallio.Navigator\Gallio.Navigator.exe.config" />
+    <PluginFile Include="Gallio.Navigator\Gallio.Navigator.exe.config" />
     <Binary Include="Gallio.Navigator\Gallio.Navigator.Readme.txt" />
   </ItemGroup>
 

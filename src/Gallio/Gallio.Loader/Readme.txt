@@ -24,5 +24,5 @@ types in the GallioLoader.
 The loader is intended to be resolved either from the GAC or copy-local alongside
 the application.
 
-GallioLoader called into GallioLoaderBootstrap in Gallio.dll.  For correct operation
+GallioLoader calles into GallioLoaderBootstrap in Gallio.dll.  For correct operation
 both of these publich interfaces must remain binary compatible.

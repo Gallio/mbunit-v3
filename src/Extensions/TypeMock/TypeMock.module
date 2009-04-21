@@ -18,9 +18,9 @@
     <Binary Include="Gallio.TypeMockIntegration\bin\Gallio.TypeMockIntegration.dll">
         <Folder>TypeMock</Folder>
     </Binary>
-    <Binary Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration.plugin">
+    <PluginFile Include="Gallio.TypeMockIntegration\Gallio.TypeMockIntegration.plugin">
         <Folder>TypeMock</Folder>
-    </Binary>
+    </PluginFile>
   </ItemGroup>
 
   <ItemGroup>

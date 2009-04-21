@@ -289,7 +289,7 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(method.Parameters[0], 1);
 
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(GenericClass<int>), method, slotValues, NullConverter.Instance);
-            Assert.AreEqual("Foo<int>(1)", spec.Format("Foo", RuntimeAccessor.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo<int>(1)", spec.Format("Foo", RuntimeAccessor.Registry.Resolve<IFormatter>()));
         }
 
         [Test]
@@ -298,7 +298,7 @@ namespace Gallio.Tests.Framework.Data
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
 
             MethodInvocationSpec spec = new MethodInvocationSpec(typeof(NonGenericClass), NonGenericClassEmptyMethodInfo, slotValues, NullConverter.Instance);
-            Assert.AreEqual("Foo", spec.Format("Foo", RuntimeAccessor.Instance.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo", spec.Format("Foo", RuntimeAccessor.Registry.Resolve<IFormatter>()));
         }
 
         public class NonGenericClass
