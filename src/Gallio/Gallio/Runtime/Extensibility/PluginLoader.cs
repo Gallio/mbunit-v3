@@ -16,7 +16,7 @@ namespace Gallio.Runtime.Extensibility
     /// </summary>
     public class PluginLoader : IPluginLoader
     {
-        private readonly Memoizer<XmlSerializer> pluginXmlSerializerMemoizer = new Memoizer<XmlSerializer>();
+        private Memoizer<XmlSerializer> pluginXmlSerializerMemoizer = new Memoizer<XmlSerializer>();
 
         private readonly List<string> pluginPaths;
         private readonly List<Pair<string, DirectoryInfo>> pluginXmls;

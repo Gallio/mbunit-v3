@@ -235,6 +235,8 @@ namespace Gallio.Runner
                         tappedLogger.Log(LogSeverity.Error,
                             "A fatal exception occurred while exploring tests.  Possible causes include invalid test runner parameters.",
                             ex);
+                        report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
+                            CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while exploring tests.  See log for details.", null));
                     }
 
                     eventDispatcher.NotifyExploreFinished(new ExploreFinishedEventArgs(success, report));
@@ -304,6 +306,8 @@ namespace Gallio.Runner
                         tappedLogger.Log(LogSeverity.Error,
                             "A fatal exception occurred while running tests.  Possible causes include invalid test runner parameters and stack overflows.",
                             ex);
+                        report.TestModel.Annotations.Add(new AnnotationData(AnnotationType.Error,
+                            CodeLocation.Unknown, CodeReference.Unknown, "A fatal exception occurred while running tests.  See log for details.", null));
                     }
                     finally
                     {

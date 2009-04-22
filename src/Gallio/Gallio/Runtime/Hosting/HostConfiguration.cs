@@ -210,7 +210,10 @@ namespace Gallio.Runtime.Hosting
                 assemblyDependency.AddAssemblyBindingRedirect(@"0.0.0.0-65535.65535.65535.65535", assemblyName.Version.ToString());
             }
 
-            assemblyDependency.AddAssemblyCodeBase(assemblyName.Version.ToString(), codeBase);
+            // Note: If unsigned assembly appears outside of appbase then we get an exception:
+            //       "The private assembly was located outside the appbase directory."
+            if (publicKeyToken != null)
+                assemblyDependency.AddAssemblyCodeBase(assemblyName.Version.ToString(), codeBase);
         }
 
         private static string GetProcessorArchitectureName(ProcessorArchitecture architecture)

@@ -23,7 +23,7 @@ namespace Gallio.Runtime.Extensibility
     /// </remarks>
     public class CachingPluginLoader : PluginLoader
     {
-        private readonly Memoizer<XmlSerializer> cacheXmlSerializerMemoizer = new Memoizer<XmlSerializer>();
+        private Memoizer<XmlSerializer> cacheXmlSerializerMemoizer = new Memoizer<XmlSerializer>();
 
         /// <summary>
         /// Creates a caching plugin loader.

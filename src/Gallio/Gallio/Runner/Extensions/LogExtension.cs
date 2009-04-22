@@ -15,6 +15,7 @@
 
 using System;
 using System.Text;
+using Gallio.Collections;
 using Gallio.Model.Logging;
 using Gallio.Runner.Events;
 using Gallio.Runtime.Logging;
@@ -39,6 +40,8 @@ namespace Gallio.Runner.Extensions
         /// <inheritdoc />
         protected override void Initialize()
         {
+            HashSet<string> testCaseSteps = new HashSet<string>();
+
             Events.TestModelAnnotationAdded += delegate(object sender, TestModelAnnotationAddedEventArgs e)
             {
                 LogAnnotation(e.Annotation);
@@ -48,7 +51,15 @@ namespace Gallio.Runner.Extensions
             {
                 if (e.TestStepRun.Step.IsTestCase)
                 {
+                    testCaseSteps.Add(e.TestStepRun.Step.Id);
+
                     LogTestCaseStarted(e);
+                }
+                else
+                {
+                    string parentId = e.TestStepRun.Step.ParentId;
+                    if (parentId != null && testCaseSteps.Contains(parentId))
+                        testCaseSteps.Add(e.TestStepRun.Step.Id);
                 }
             };
 
@@ -56,17 +67,27 @@ namespace Gallio.Runner.Extensions
             {
                 if (e.TestStepRun.Step.IsTestCase)
                 {
+                    testCaseSteps.Remove(e.TestStepRun.Step.Id);
+
                     LogTestCaseFinished(e);
                 }
                 else
                 {
-                    if (e.TestStepRun.Result.Outcome.Status != TestStatus.Passed
-                        && (e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Warnings) != null
-                            || e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Failures) != null))
+                    if (!testCaseSteps.Contains(e.TestStepRun.Step.Id))
                     {
-                        LogNonTestCaseProblem(e);
+                        if (e.TestStepRun.Result.Outcome.Status != TestStatus.Passed
+                            && (e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Warnings) != null
+                                || e.TestStepRun.TestLog.GetStream(TestLogStreamNames.Failures) != null))
+                        {
+                            LogNonTestCaseProblem(e);
+                        }
+                    }
+                    else
+                    {
+                        testCaseSteps.Remove(e.TestStepRun.Step.Id);
                     }
                 }
+
             };
         }
 
@@ -105,7 +126,8 @@ namespace Gallio.Runner.Extensions
 
         /// <summary>
         /// Logs a message about a non-test case that has finished with some problem that
-        /// may have prevented other test cases from running correctly.
+        /// may have prevented other test cases from running correctly.  This method is not
+        /// called for steps within test cases.
         /// </summary>
         /// <remarks>
         /// This method is not called for test steps that have <see cref="ITestStep.IsTestCase"/> set to true.

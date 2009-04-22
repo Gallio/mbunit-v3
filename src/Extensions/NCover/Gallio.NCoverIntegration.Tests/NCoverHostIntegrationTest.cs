@@ -22,6 +22,7 @@ using Gallio.Model.Filters;
 using Gallio.Model.Logging;
 using Gallio.Reflection;
 using Gallio.Runner;
+using Gallio.Runtime.Logging;
 using MbUnit.Framework;
 using MbUnit.TestResources;
 
@@ -77,10 +78,10 @@ namespace Gallio.NCoverIntegration.Tests
             {
                 Assert.AreEqual(ResultCode.Failure, result.ResultCode);
 
-                var annotations = result.Report.TestModel.Annotations;
-                Assert.AreEqual(1, annotations.Count);
-                Assert.AreEqual(AnnotationType.Error, annotations[0].Type);
-                Assert.Contains(annotations[0].Details, "NCover v" + majorVersion + " does not appear to be installed.");
+                var logEntries = result.Report.LogEntries;
+                Assert.AreEqual(1, logEntries.Count);
+                Assert.AreEqual(LogSeverity.Error, logEntries[0].Severity);
+                Assert.Contains(logEntries[0].Details, "NCover v" + majorVersion + " does not appear to be installed.");
             }
             else
             {
