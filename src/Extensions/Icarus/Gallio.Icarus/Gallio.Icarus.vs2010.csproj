@@ -47,6 +47,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Icarus.XML</DocumentationFile>
     <NoWarn>1734;1591</NoWarn>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -58,6 +59,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Icarus.XML</DocumentationFile>
     <NoWarn>1734;1591</NoWarn>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aga.Controls, Version=1.6.1.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">

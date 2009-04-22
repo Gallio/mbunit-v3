@@ -13,6 +13,8 @@
     </SGen>
   -->
   
+    <Message Importance="High" Text="Generating XmlSerializers assembly." />
+
     <SGenMultipleTypes BuildAssemblyName="$(TargetFileName)" BuildAssemblyPath="$(IntermediateOutputPath)" References="@(ReferencePath)" KeyFile="$(KeyOriginatorFile)">
       <Output TaskParameter="SerializationAssembly" ItemName="SerializationAssembly" />
     </SGenMultipleTypes>

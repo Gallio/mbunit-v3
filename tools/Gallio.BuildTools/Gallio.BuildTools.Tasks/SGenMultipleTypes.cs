@@ -51,73 +51,69 @@ namespace Gallio.BuildTools.Tasks
 
         public sealed class RemoteTask : MarshalByRefObject
         {
-            private string assemblyDir;
-
-            public string Execute(string assemblyDir, string assemblyFileName, string[] references, string keyFile)
+            public string Execute(string relativeAssemblyDir, string assemblyFileName, string[] references, string keyFile)
             {
-                this.assemblyDir = assemblyDir;
-                string assemblyPath = Path.GetFullPath(Path.Combine(assemblyDir, assemblyFileName));
+                string absoluteAssemblyDir = Path.GetFullPath(relativeAssemblyDir);
+                string assemblyPath = Path.Combine(absoluteAssemblyDir, assemblyFileName);
 
-                AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolver;
-                try
+                AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
                 {
-                    string serializersAssemblyPath = Path.ChangeExtension(assemblyPath, ".XmlSerializers.dll");
+                    // FIXME: Imprecise
+                    var requestedAssemblyName = new AssemblyName(e.Name).Name;
 
-                    Assembly assembly = Assembly.LoadFrom(assemblyPath);
-                    //string serializersAssemblyName = BuildAssemblyName + ".XmlSerializers";
-
-                    List<Type> serializableTypes = new List<Type>();
-                    foreach (Type type in assembly.GetExportedTypes())
+                    foreach (string reference in references)
                     {
-                        if (type.IsDefined(typeof(XmlRootAttribute), false))
-                            serializableTypes.Add(type);
+                        if (reference.ToLowerInvariant().Contains(requestedAssemblyName.ToLowerInvariant()))
+                            return Assembly.LoadFrom(reference);
                     }
 
-                    List<XmlMapping> mappings = new List<XmlMapping>();
-                    XmlReflectionImporter importer = new XmlReflectionImporter();
+                    var candidateAssemblyPath = Path.Combine(absoluteAssemblyDir, requestedAssemblyName + ".dll");
+                    if (File.Exists(candidateAssemblyPath))
+                        return Assembly.LoadFrom(candidateAssemblyPath);
 
-                    foreach (Type type in serializableTypes)
-                    {
-                        XmlMapping mapping = importer.ImportTypeMapping(type);
-                        mappings.Add(mapping);
-                    }
+                    return null;
+                };
+                
+                string serializersAssemblyPath = Path.ChangeExtension(assemblyPath, ".XmlSerializers.dll");
+                Assembly assembly = Assembly.LoadFrom(assemblyPath);
 
-                    CompilerParameters compilerParameters = new CompilerParameters();
-
-                    compilerParameters.TempFiles = new TempFileCollection();
-                    compilerParameters.IncludeDebugInformation = false;
-                    compilerParameters.GenerateInMemory = false;
-                    compilerParameters.OutputAssembly = serializersAssemblyPath;
-
-                    foreach (var reference in references)
-                    {
-                        if (!reference.Contains("System.Xml"))
-                            compilerParameters.ReferencedAssemblies.Add(reference);
-                    }
-
-                    if (keyFile != null)
-                        compilerParameters.CompilerOptions += " /keyfile:\"" + keyFile + "\"";
-
-                    XmlSerializer.GenerateSerializer(serializableTypes.ToArray(),
-                        mappings.ToArray(), compilerParameters);
-
-                    return serializersAssemblyPath;
-                }
-                finally
+                List<Type> serializableTypes = new List<Type>();
+                foreach (Type type in assembly.GetExportedTypes())
                 {
-                    AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolver;
+                    if (type.IsDefined(typeof(XmlRootAttribute), false))
+                        serializableTypes.Add(type);
                 }
-            }
 
-            private Assembly AssemblyResolver(object sender, ResolveEventArgs e)
-            {
-                var assemblyName = new AssemblyName(e.Name).Name + ".dll";
-                var assemblyPath = Path.Combine(assemblyDir, assemblyName);
+                List<XmlMapping> mappings = new List<XmlMapping>();
+                XmlReflectionImporter importer = new XmlReflectionImporter();
 
-                if (File.Exists(assemblyPath))
-                    return Assembly.LoadFrom(assemblyPath);
+                foreach (Type type in serializableTypes)
+                {
+                    XmlMapping mapping = importer.ImportTypeMapping(type);
+                    mappings.Add(mapping);
+                }
 
-                return null;
+                CompilerParameters compilerParameters = new CompilerParameters();
+
+                compilerParameters.TempFiles = new TempFileCollection();
+                compilerParameters.IncludeDebugInformation = false;
+                compilerParameters.GenerateInMemory = false;
+                compilerParameters.OutputAssembly = serializersAssemblyPath;
+
+                foreach (var reference in references)
+                {
+                    // FIXME: Imprecise
+                    if (!reference.Contains("System"))
+                        compilerParameters.ReferencedAssemblies.Add(reference);
+                }
+
+                if (keyFile != null)
+                    compilerParameters.CompilerOptions += " /keyfile:\"" + keyFile + "\"";
+
+                XmlSerializer.GenerateSerializer(serializableTypes.ToArray(),
+                    mappings.ToArray(), compilerParameters);
+
+                return serializersAssemblyPath;
             }
         }
     }

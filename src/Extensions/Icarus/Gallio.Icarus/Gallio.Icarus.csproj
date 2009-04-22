@@ -41,6 +41,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Icarus.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -52,6 +53,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Gallio.Icarus.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aga.Controls, Version=1.6.1.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
@@ -502,13 +504,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <!-- This target overrides the built-in SGen target from the .Net Framework v2.0
-    Microsoft.Common.targets with the version used in .Net Framework v3.5.
-    This resolves an issue with a serialization assembly only being generated
-    for web service proxy types. -->
-  <Target Name="GenerateSerializationAssemblies" Condition="'$(_SGenGenerateSerializationAssembliesConfig)' == 'On' or ('@(WebReferenceUrl)'!='' and '$(_SGenGenerateSerializationAssembliesConfig)' == 'Auto')" DependsOnTargets="AssignTargetPaths;Compile;ResolveKeySource" Inputs="$(MSBuildAllProjects);@(IntermediateAssembly)" Outputs="$(IntermediateOutputPath)$(_SGenDllName)">
-    <SGen BuildAssemblyName="$(TargetFileName)" BuildAssemblyPath="$(IntermediateOutputPath)" References="@(ReferencePath)" ShouldGenerateSerializer="$(SGenShouldGenerateSerializer)" UseProxyTypes="$(SGenUseProxyTypes)" KeyContainer="$(KeyContainerName)" KeyFile="$(KeyOriginatorFile)" DelaySign="$(DelaySign)" ToolPath="$(SGenToolPath)">
-      <Output TaskParameter="SerializationAssembly" ItemName="SerializationAssembly" />
-    </SGen>
-  </Target>
 </Project>
