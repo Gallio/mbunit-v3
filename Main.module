@@ -466,7 +466,7 @@
     <Message Text="Verifying installation of all plugins..."
              Importance="High" />
 
-    <Exec Command="&quot;$(BinDir)\Gallio.Utility.exe&quot; /command:VerifyInstallation /v:Verbose"
+    <Exec Command="&quot;$(ImageDir)\bin\Gallio.Utility.exe&quot; /command:VerifyInstallation /v:Verbose"
           IgnoreExitCode="true"
 	  WorkingDirectory="$(TempDir)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
