@@ -56,7 +56,7 @@ namespace Gallio.Runner
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryName"/> is null</exception>
         public static ITestRunner CreateTestRunnerByName(string factoryName)
         {
-            return RuntimeAccessor.Registry.Resolve<ITestRunnerManager>().CreateTestRunner(factoryName);
+            return RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>().CreateTestRunner(factoryName);
         }
     }
 }

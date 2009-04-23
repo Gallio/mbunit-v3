@@ -89,7 +89,7 @@ namespace Gallio.Ambience.Tests
             StringWriter logWriter = new StringWriter();
             var logger = new SeverityPrefixLogger(new TextLogger(logWriter));
 
-            var hostFactory = (IsolatedAppDomainHostFactory)RuntimeAccessor.Registry.ResolveByComponentId(IsolatedAppDomainHostFactory.ComponentId);
+            var hostFactory = (IsolatedAppDomainHostFactory)RuntimeAccessor.ServiceLocator.ResolveByComponentId(IsolatedAppDomainHostFactory.ComponentId);
             using (IHost host = hostFactory.CreateHost(new HostSetup(), logger))
             {
                 HostAssemblyResolverHook.InstallCallback(host);

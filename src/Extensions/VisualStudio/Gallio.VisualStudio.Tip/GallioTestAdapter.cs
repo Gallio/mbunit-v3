@@ -105,7 +105,7 @@ namespace Gallio.VisualStudio.Tip
 
         private void BackgroundTestRun(IRunContext runContext)
         {
-            ITestRunnerManager runnerManager = RuntimeAccessor.Registry.Resolve<ITestRunnerManager>();
+            ITestRunnerManager runnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
             var runner = runnerManager.CreateTestRunner(StandardTestRunnerFactoryNames.IsolatedProcess);
             runner.RegisterExtension(new RunContextExtension(runContext));
 

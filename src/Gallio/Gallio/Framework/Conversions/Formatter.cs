@@ -28,7 +28,7 @@ namespace Gallio.Framework.Conversions
         /// </summary>
         public static IConverter Instance
         {
-            get { return RuntimeAccessor.Registry.Resolve<IConverter>(); }
+            get { return RuntimeAccessor.ServiceLocator.Resolve<IConverter>(); }
         }
     }
 }

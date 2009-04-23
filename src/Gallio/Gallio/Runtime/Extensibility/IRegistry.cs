@@ -14,11 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Gallio.Collections;
-using Gallio.Reflection;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -37,7 +32,7 @@ namespace Gallio.Runtime.Extensibility
     /// of transient or context-dependent components.
     /// </para>
     /// </remarks>
-    public interface IRegistry : IServiceLocator, IDisposable
+    public interface IRegistry : IDisposable
     {
         /// <summary>
         /// Gets a view of all registered plugins.
@@ -53,6 +48,11 @@ namespace Gallio.Runtime.Extensibility
         /// Gets a view of all registered services.
         /// </summary>
         IServices Services { get; }
+
+        /// <summary>
+        /// Gets a service locator based on the contents of the registry.
+        /// </summary>
+        IServiceLocator ServiceLocator { get; }
 
         /// <summary>
         /// Registers a plugin and returns its descriptor.

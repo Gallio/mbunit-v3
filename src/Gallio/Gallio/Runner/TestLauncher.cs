@@ -515,11 +515,11 @@ namespace Gallio.Runner
 
         private TestLauncherResult RunWithRuntime()
         {
-            IReportManager reportManager = RuntimeAccessor.Registry.Resolve<IReportManager>();
+            IReportManager reportManager = RuntimeAccessor.ServiceLocator.Resolve<IReportManager>();
             if (!ValidateReportFormats(reportManager))
                 return CreateResult(ResultCode.InvalidArguments);
 
-            ITestRunnerManager manager = RuntimeAccessor.Registry.Resolve<ITestRunnerManager>();
+            ITestRunnerManager manager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
             ITestRunnerFactory factory = manager.GetFactory(testRunnerFactoryName);
             if (factory == null)
             {

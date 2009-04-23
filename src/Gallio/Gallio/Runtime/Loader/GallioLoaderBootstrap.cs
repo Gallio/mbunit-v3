@@ -61,7 +61,7 @@ namespace Gallio.Runtime.Loader
             if (serviceType == null)
                 throw new ArgumentNullException("serviceType");
 
-            return RuntimeAccessor.Registry.Resolve(serviceType);
+            return RuntimeAccessor.ServiceLocator.Resolve(serviceType);
         }
     }
 }

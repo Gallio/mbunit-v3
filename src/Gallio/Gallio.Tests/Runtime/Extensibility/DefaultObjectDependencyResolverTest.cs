@@ -63,7 +63,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
                 var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
                 var service = MockRepository.GenerateStub<IService>();
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(true);
+                serviceLocator.Expect(x => x.HasService(typeof(IService))).Return(true);
                 serviceLocator.Expect(x => x.Resolve(typeof(IService))).Return(service);
 
                 var result = dependencyResolver.ResolveDependency("service", typeof(IService), null);
@@ -87,7 +87,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
                 var service1 = MockRepository.GenerateStub<IService>();
                 var service2 = MockRepository.GenerateStub<IService>();
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(true);
+                serviceLocator.Expect(x => x.HasService(typeof(IService))).Return(true);
                 serviceLocator.Expect(x => x.ResolveAll(typeof(IService))).Return(new object[] { service1, service2 });
 
                 var result = dependencyResolver.ResolveDependency("service", typeof(IService[]), null);
@@ -113,7 +113,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
                 var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
                 var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(false);
+                serviceLocator.Expect(x => x.HasService(typeof(IService))).Return(false);
 
                 var result = dependencyResolver.ResolveDependency("service", typeof(IService), null);
 
@@ -129,7 +129,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
                 var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
                 var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
-                serviceLocator.Expect(x => x.CanResolve(typeof(IService))).Return(false);
+                serviceLocator.Expect(x => x.HasService(typeof(IService))).Return(false);
 
                 var result = dependencyResolver.ResolveDependency("service", typeof(IService[]), null);
 

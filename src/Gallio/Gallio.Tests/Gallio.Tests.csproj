@@ -200,6 +200,7 @@
     <Compile Include="Runtime\Extensibility\FileSystemResourceLocatorTest.cs" />
     <Compile Include="Runtime\Extensibility\ObjectFactoryTest.cs" />
     <Compile Include="Runtime\Extensibility\PluginCatalogTest.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryServiceLocatorTest.cs" />
     <Compile Include="Runtime\Extensibility\SingletonHandlerFactoryTest.cs" />
     <Compile Include="Runtime\Extensibility\InstanceHandlerFactoryTest.cs" />
     <Compile Include="Runtime\Extensibility\ServiceRegistrationTest.cs" />

@@ -47,7 +47,7 @@ namespace Gallio.Model.Execution
                 if (cachedContextTracker == null)
                 {
                     if (RuntimeAccessor.IsInitialized)
-                        cachedContextTracker = RuntimeAccessor.Registry.Resolve<ITestContextTracker>();
+                        cachedContextTracker = RuntimeAccessor.ServiceLocator.Resolve<ITestContextTracker>();
                     else
                         cachedContextTracker = new StubTestContextTracker();
                 }

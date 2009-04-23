@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using Gallio.Collections;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -20,17 +21,22 @@ namespace Gallio.Runtime.Extensibility
     /// <item>If the service locator can resolve a service of the parameter type, or if the parameter type
     /// is an array and the service locator can resolve one or more services of the array's element type,
     /// then those services will be resolved and injected.</item>
+    /// <item>If the parameter type is <see cref="ComponentHandle{TService,TTraits}" /> or an array
+    /// of that type and the service locator can resolve an a service of the requested type,
+    /// then the associated services will be resolve and injected as component handles.</item>
     /// </list>
     /// </para>
     /// <para>
-    /// To convert dtring configuration arguments to the parameter type, the object factory applies the following rules:
+    /// To convert string configuration arguments to the parameter type, the object factory applies the following rules:
     /// <list type="bullet">
     /// <item>If the parameter type is an array type, then the configuration argument is split on semicolons
     /// (';') and each part is independently converted to a value of the array's element type and then
     /// packaged into an array.</item>
     /// <item>If the parameter type is a string, then no conversion is required so the value is used as-is.</item>
     /// <item>If the value looks like "${component.id}" and there is a component registered with the specified
-    /// component id that satisfies the parameter type then that component is used.</item>
+    /// component id that satisfies the service described by the parameter type then that component is injected.
+    /// Similarly if the parameter is of type <see cref="ComponentHandle{TService,TTraits}"/> and the component
+    /// implements the requested service type then a handle of that component is injected.</item>
     /// <item>If the parameter type is an enum then the value is parsed to a 
     /// value of that enum type, case-insensitively.</item>
     /// <item>If the parameter type is <see cref="Image" /> then the value is treated as a relative file
@@ -75,45 +81,85 @@ namespace Gallio.Runtime.Extensibility
             if (parameterType == null)
                 throw new ArgumentNullException("parameterType");
 
-            // Resolve by property
             if (configurationArgument != null)
+                return ResolveDependencyByConfiguration(parameterName, parameterType, configurationArgument);
+
+            return ResolveDependencyByServiceLocation(parameterName, parameterType);
+        }
+
+        private DependencyResolution ResolveDependencyByConfiguration(string parameterName, Type parameterType, string configurationArgument)
+        {
+            if (parameterType.IsArray)
             {
-                if (parameterType.IsArray)
+                // TODO: Should really provide a better way to extract structural information from the configuration argument.
+                Type type = parameterType.GetElementType();
+                object[] values = Array.ConvertAll(configurationArgument.Split(';'),
+                    value => ConvertConfigurationArgumentToType(type, value));
+                return DependencyResolution.Satisfied(CreateArray(type, values));
+            }
+            else
+            {
+                object value = ConvertConfigurationArgumentToType(parameterType, configurationArgument);
+                return DependencyResolution.Satisfied(value);
+            }
+        }
+
+        private DependencyResolution ResolveDependencyByServiceLocation(string parameterName, Type parameterType)
+        {
+            if (parameterType.IsArray)
+            {
+                Type elementType = parameterType.GetElementType();
+
+                if (ComponentHandle.IsComponentHandleType(elementType))
                 {
-                    // TODO: Should really provide a better way to extract structural information.
-                    Type type = parameterType.GetElementType();
-                    object[] values = Array.ConvertAll(configurationArgument.Split(';'),
-                        value => ConvertConfigurationArgumentToType(type, value));
-                    return DependencyResolution.Satisfied(CreateArray(type, values));
+                    Type serviceType = GetServiceTypeFromComponentHandleType(elementType);
+                    if (serviceLocator.HasService(serviceType))
+                    {
+                        IList<ComponentHandle> componentHandles = serviceLocator.ResolveAllHandles(serviceType);
+                        return DependencyResolution.Satisfied(CreateArray(elementType, componentHandles));
+                    }
                 }
                 else
                 {
-                    object value = ConvertConfigurationArgumentToType(parameterType, configurationArgument);
-                    return DependencyResolution.Satisfied(value);
-                }
-            }
-
-            if (parameterType.IsArray)
-            {
-                // Resolve component array
-                Type componentType = parameterType.GetElementType();
-                if (serviceLocator.CanResolve(componentType))
-                {
-                    IList<object> components = serviceLocator.ResolveAll(componentType);
-                    return DependencyResolution.Satisfied(CreateArray(componentType, components));
+                    Type serviceType = elementType;
+                    if (serviceLocator.HasService(serviceType))
+                    {
+                        IList<object> components = serviceLocator.ResolveAll(serviceType);
+                        return DependencyResolution.Satisfied(CreateArray(serviceType, components));
+                    }
                 }
             }
             else
             {
-                // Resolve component
-                if (serviceLocator.CanResolve(parameterType))
+                if (ComponentHandle.IsComponentHandleType(parameterType))
                 {
-                    object component = serviceLocator.Resolve(parameterType);
-                    return DependencyResolution.Satisfied(component);
+                    Type serviceType = GetServiceTypeFromComponentHandleType(parameterType);
+                    if (serviceLocator.HasService(serviceType))
+                    {
+                        ComponentHandle componentHandle = serviceLocator.ResolveHandle(serviceType);
+                        return DependencyResolution.Satisfied(componentHandle);
+                    }
+                }
+                else
+                {
+                    Type serviceType = parameterType;
+                    if (serviceLocator.HasService(serviceType))
+                    {
+                        object component = serviceLocator.Resolve(parameterType);
+                        return DependencyResolution.Satisfied(component);
+                    }
                 }
             }
 
             return DependencyResolution.Unsatisfied();
+        }
+
+        private static Type GetServiceTypeFromComponentHandleType(Type componentHandleType)
+        {
+            if (!componentHandleType.IsGenericType)
+                throw new RuntimeException("Could not detect service type from non-generic component handle.");
+
+            return componentHandleType.GetGenericArguments()[0];
         }
 
         private object ConvertConfigurationArgumentToType(Type type, string value)
@@ -124,11 +170,18 @@ namespace Gallio.Runtime.Extensibility
             if (value.StartsWith("${") && value.EndsWith("}"))
             {
                 string componentId = value.Substring(2, value.Length - 3);
-                object component = serviceLocator.ResolveByComponentId(componentId);
-                if (!type.IsInstanceOfType(component))
+
+                object componentOrHandle;
+                if (ComponentHandle.IsComponentHandleType(type))
+                    componentOrHandle = serviceLocator.ResolveHandleByComponentId(componentId);
+                else
+                    componentOrHandle = serviceLocator.ResolveByComponentId(componentId);
+
+                if (!type.IsInstanceOfType(componentOrHandle))
                     throw new RuntimeException(string.Format("Could not inject component with id '{0}' into a dependency of type '{1}' because it is of the wrong type even though the component was explicitly specified using the '${{component.id}}' property value syntax.",
                         componentId, type));
-                return component;
+
+                return componentOrHandle;
             }
 
             if (type.IsEnum)
@@ -149,7 +202,7 @@ namespace Gallio.Runtime.Extensibility
             return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
         }
 
-        private static Array CreateArray(Type elementType, IList<object> values)
+        private static Array CreateArray<T>(Type elementType, IList<T> values)
         {
             Array array = Array.CreateInstance(elementType, values.Count);
 

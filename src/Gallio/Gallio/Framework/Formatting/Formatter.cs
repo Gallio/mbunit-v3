@@ -50,7 +50,7 @@ namespace Gallio.Framework.Formatting
                 if (cachedFormatter == null)
                 {
                     if (RuntimeAccessor.IsInitialized)
-                        cachedFormatter = RuntimeAccessor.Registry.Resolve<IFormatter>();
+                        cachedFormatter = RuntimeAccessor.ServiceLocator.Resolve<IFormatter>();
                     else
                         cachedFormatter = new StubFormatter();
                 }

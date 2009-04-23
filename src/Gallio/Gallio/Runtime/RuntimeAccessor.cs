@@ -53,7 +53,7 @@ namespace Gallio.Runtime
             get
             {
                 IRuntime cachedInstance = instance;
-                return cachedInstance != null ? cachedInstance.Registry.Resolve<ILogger>() : NullLogger.Instance;
+                return cachedInstance != null ? cachedInstance.ServiceLocator.Resolve<ILogger>() : NullLogger.Instance;
             }
         }
 
@@ -66,6 +66,18 @@ namespace Gallio.Runtime
             get
             {
                 return Instance.Registry;
+            }
+        }
+
+        /// <summary>
+        /// Gets the runtime's service locator.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the runtime has not been initialized</exception>
+        public static IServiceLocator ServiceLocator
+        {
+            get
+            {
+                return Instance.ServiceLocator;
             }
         }
 

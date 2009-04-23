@@ -15,10 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Xml;
@@ -29,7 +27,6 @@ using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.Logging;
 using Gallio.Schema;
-using Gallio.Utilities;
 
 namespace Gallio.Runtime
 {
@@ -97,6 +94,16 @@ namespace Gallio.Runtime
         }
 
         /// <inheritdoc />
+        public IServiceLocator ServiceLocator
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return registry.ServiceLocator;
+            }
+        }
+
+        /// <inheritdoc />
         public void Initialize(ILogger logger)
         {
             if (logger == null)
@@ -154,6 +161,7 @@ namespace Gallio.Runtime
                 });
 
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.Registry", typeof(IRegistry), registry);
+            RegisterBuiltInComponent(builtInPlugin, "BuiltIn.ServiceLocator", typeof(IServiceLocator), registry.ServiceLocator);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.Logger", typeof(ILogger), logger);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.Runtime", typeof(IRuntime), this);
             RegisterBuiltInComponent(builtInPlugin, "BuiltIn.AssemblyResolverManager", typeof(IAssemblyResolverManager), assemblyResolverManager);

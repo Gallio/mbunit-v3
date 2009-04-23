@@ -607,292 +607,17 @@ namespace Gallio.Tests.Runtime.Extensibility
         public class ServiceLocation
         {
             [Test]
-            public void Resolve_WhenServiceTypeIsNull_Throws()
+            public void ServiceLocator_Always_ReturnsARegistryServiceLocatorForTheRegistry()
             {
                 var registry = new Registry();
 
-                Assert.Throws<ArgumentNullException>(() => registry.Resolve(null));
-            }
-
-            [Test]
-            public void Resolve_WhenServiceTypeNotRegistered_Throws()
-            {
-                var registry = new Registry();
-
-                var ex = Assert.Throws<RuntimeException>(() => registry.Resolve(typeof(DummyService)));
-                Assert.Contains(ex.Message, "Could not resolve component for service type '" + new TypeName(typeof(DummyService)) + "' because there do not appear to be any components registered for that service type.");
-            }
-
-            [Test]
-            public void Resolve_WhenServiceTypeRegisteredButNoComponents_Throws()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-
-                var ex = Assert.Throws<RuntimeException>(() => registry.Resolve(typeof(DummyService)));
-                Assert.Contains(ex.Message, "Could not resolve component for service type '" + new TypeName(typeof(DummyService)) + "' because there do not appear to be any components registered for that service type.");
-            }
-
-            [Test]
-            public void Resolve_WhenServiceTypeRegisteredButMoreThanOneComponent_Throws()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component1Id", new TypeName(typeof(DummyComponent))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component2Id", new TypeName(typeof(DummyComponent2))));
-
-                var ex = Assert.Throws<RuntimeException>(() => registry.Resolve(typeof(DummyService)));
-                Assert.Contains(ex.Message, "Could not resolve component for service type '" + new TypeName(typeof(DummyService)) + "' because there are 2 of them registered so the request is ambiguous.");
-            }
-
-            [Test]
-            public void Resolve_WhenServiceTypeMapsToExactlyOneComponent_ReturnsResolvedComponent()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponent))));
-
-                var component = (DummyComponent)registry.Resolve(typeof(DummyService));
-
-                Assert.IsNotNull(component);
-            }
-
-            [Test]
-            public void ResolveGeneric_WhenServiceTypeNotRegistered_Throws()
-            {
-                var registry = new Registry();
-
-                var ex = Assert.Throws<RuntimeException>(() => registry.Resolve<DummyService>());
-                Assert.Contains(ex.Message, "Could not resolve component for service type '" + new TypeName(typeof(DummyService)) + "' because there do not appear to be any components registered for that service type.");
-            }
-
-            [Test]
-            public void ResolveGeneric_WhenServiceTypeRegisteredButNoComponents_Throws()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-
-                var ex = Assert.Throws<RuntimeException>(() => registry.Resolve<DummyService>());
-                Assert.Contains(ex.Message, "Could not resolve component for service type '" + new TypeName(typeof(DummyService)) + "' because there do not appear to be any components registered for that service type.");
-            }
-
-            [Test]
-            public void ResolveGeneric_WhenServiceTypeRegisteredButMoreThanOneComponent_Throws()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component1Id", new TypeName(typeof(DummyComponent))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component2Id", new TypeName(typeof(DummyComponent))));
-
-                var ex = Assert.Throws<RuntimeException>(() => registry.Resolve<DummyService>());
-                Assert.Contains(ex.Message, "Could not resolve component for service type '" + new TypeName(typeof(DummyService)) + "' because there are 2 of them registered so the request is ambiguous.");
-            }
-
-            [Test]
-            public void ResolveGeneric_WhenServiceTypeMapsToExactlyOneComponent_ReturnsResolvedComponent()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponent))));
-
-                var component = (DummyComponent)registry.Resolve<DummyService>();
-
-                Assert.IsNotNull(component);
-            }
-
-            [Test]
-            public void ResolveAll_WhenServiceTypeIsNull_Throws()
-            {
-                var registry = new Registry();
-
-                Assert.Throws<ArgumentNullException>(() => registry.ResolveAll(null));
-            }
-
-            [Test]
-            public void ResolveAll_WhenServiceTypeNotRegistered_ReturnsAnEmptyList()
-            {
-                var registry = new Registry();
-
-                var result = registry.ResolveAll(typeof(DummyService));
-
-                Assert.IsEmpty(result);
-            }
-
-            [Test]
-            public void ResolveAll_WhenServiceTypeRegisteredButNoComponents_ReturnsAnEmptyList()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-
-                var result = registry.ResolveAll(typeof(DummyService));
-
-                Assert.IsEmpty(result);
-            }
-
-            [Test]
-            public void ResolveAll_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllResolvedComponents()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component1Id", new TypeName(typeof(DummyComponent))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component2Id", new TypeName(typeof(DummyComponent2))));
-
-                var result = registry.ResolveAll(typeof(DummyService));
-
-                Assert.AreEqual(2, result.Count);
-                Assert.IsInstanceOfType<DummyComponent>(result[0]);
-                Assert.IsInstanceOfType<DummyComponent2>(result[1]);
-            }
-
-            [Test]
-            public void ResolveAllGeneric_WhenServiceTypeNotRegistered_ReturnsAnEmptyList()
-            {
-                var registry = new Registry();
-
-                var result = registry.ResolveAll<DummyService>();
-
-                Assert.IsEmpty(result);
-            }
-
-            [Test]
-            public void ResolveAllGeneric_WhenServiceTypeRegisteredButNoComponents_ReturnsAnEmptyList()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-
-                var result = registry.ResolveAll<DummyService>();
-
-                Assert.IsEmpty(result);
-            }
-
-            [Test]
-            public void ResolveAllGeneric_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllResolvedComponents()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component1Id", new TypeName(typeof(DummyComponent))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component2Id", new TypeName(typeof(DummyComponent2))));
-
-                var result = registry.ResolveAll<DummyService>();
-
-                Assert.AreEqual(2, result.Count);
-                Assert.IsInstanceOfType<DummyComponent>(result[0]);
-                Assert.IsInstanceOfType<DummyComponent2>(result[1]);
-            }
-
-            [Test]
-            public void ResolveByComponentId_WhenComponentIdIsNull_Throws()
-            {
-                var registry = new Registry();
-
-                Assert.Throws<ArgumentNullException>(() => registry.ResolveByComponentId(null));
-            }
-
-            [Test]
-            public void ResolveByComponentId_WhenComponentNotRegistered_Throws()
-            {
-                var registry = new Registry();
-
-                var ex = Assert.Throws<RuntimeException>(() => registry.ResolveByComponentId("componentId"));
-                Assert.Contains(ex.Message, "Could not resolve component with id 'componentId' because it does not appear to be registered.");
-            }
-
-            [Test]
-            public void ResolveByComponentId_WhenComponentRegistered_ReturnsResolvedComponent()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponent))));
-
-                var component = (DummyComponent)registry.ResolveByComponentId("componentId");
-
-                Assert.IsNotNull(component);
-            }
-
-            [Test]
-            public void CanResolve_WhenServiceTypeIsNull_Throws()
-            {
-                var registry = new Registry();
-
-                Assert.Throws<ArgumentNullException>(() => registry.CanResolve(null));
-            }
-
-            [Test]
-            public void CanResolve_WhenServiceTypeNotRegistered_ReturnsFalse()
-            {
-                var registry = new Registry();
-
-                var result = registry.CanResolve(typeof(DummyService));
-
-                Assert.IsFalse(result);
-            }
-
-            [Test]
-            public void CanResolve_WhenServiceTypeRegisteredButNoComponents_ReturnsFalse()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-
-                var result = registry.CanResolve(typeof(DummyService));
-
-                Assert.IsFalse(result);
-            }
-
-            [Test]
-            public void CanResolve_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsTrue()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component1Id", new TypeName(typeof(DummyComponent))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "component2Id", new TypeName(typeof(DummyComponent2))));
-
-                var result = registry.CanResolve(typeof(DummyService));
-
-                Assert.IsTrue(result);
-            }
-
-            [Test]
-            public void CanResolveByComponentId_WhenComponentIdIsNull_Throws()
-            {
-                var registry = new Registry();
-
-                Assert.Throws<ArgumentNullException>(() => registry.CanResolveByComponentId(null));
-            }
-
-            [Test]
-            public void CanResolveByComponentId_WhenComponentNotRegistered_ReturnsFalse()
-            {
-                var registry = new Registry();
-
-                var result = registry.CanResolveByComponentId("componentId");
-
-                Assert.IsFalse(result);
-            }
-
-            [Test]
-            public void CanResolveByComponentId_WhenComponentRegistered_ReturnsTrue()
-            {
-                var registry = new Registry();
-                var plugin = registry.RegisterPlugin(new PluginRegistration("pluginId", new TypeName("Plugin, Assembly"), new DirectoryInfo(@"C:\")));
-                var service = registry.RegisterService(new ServiceRegistration(plugin, "serviceId", new TypeName(typeof(DummyService))));
-                registry.RegisterComponent(new ComponentRegistration(plugin, service, "componentId", new TypeName(typeof(DummyComponent))));
-
-                var result = registry.CanResolveByComponentId("componentId");
-
-                Assert.IsTrue(result);
+                IServiceLocator serviceLocator = registry.ServiceLocator;
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsInstanceOfType<RegistryServiceLocator>(serviceLocator);
+                    Assert.AreSame(registry, ((RegistryServiceLocator)serviceLocator).Registry);
+                });
             }
         }
 
@@ -930,7 +655,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     PluginProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
@@ -951,7 +676,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
@@ -971,7 +696,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     TraitsProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
@@ -995,7 +720,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
@@ -1022,7 +747,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var pluginInstance = new DummyPlugin();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(pluginInstance);
@@ -1046,7 +771,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(IPlugin), typeof(DummyPlugin), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
@@ -1069,7 +794,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var traitsInstance = new PluginTraits("name");
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(traitsInstance);
@@ -1096,7 +821,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(PluginTraits), typeof(PluginTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
@@ -1224,7 +949,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     ComponentProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
@@ -1247,7 +972,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
@@ -1272,7 +997,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                     TraitsProperties = { { "Name", "Value" } }
                 });
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
                     .Throw(new Exception("Boom"));
 
@@ -1297,7 +1022,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateStub<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
 
@@ -1322,7 +1047,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var componentInstance = new DummyComponent();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(componentInstance);
@@ -1348,7 +1073,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(DummyService), typeof(DummyComponent), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));
@@ -1376,7 +1101,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 var handler = MockRepository.GenerateMock<IHandler>();
                 var traitsInstance = new DummyTraits();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Return(traitsInstance);
@@ -1404,7 +1129,7 @@ namespace Gallio.Tests.Runtime.Extensibility
                 });
                 var handler = MockRepository.GenerateMock<IHandler>();
 
-                handlerFactory.Expect(x => x.CreateHandler(registry, plugin.ResourceLocator,
+                handlerFactory.Expect(x => x.CreateHandler(registry.ServiceLocator, plugin.ResourceLocator,
                     typeof(Traits), typeof(DummyTraits), new PropertySet() { { "Name", "Value" } }))
                     .Return(handler);
                 handler.Expect(x => x.Activate()).Throw(new InvalidOperationException("Boom"));

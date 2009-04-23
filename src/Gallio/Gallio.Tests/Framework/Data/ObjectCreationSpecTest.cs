@@ -418,7 +418,7 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(type.GetProperties(PublicInstance)[0], 3);
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("Foo<int>(1): fieldValue=2, Property=3", spec.Format("Foo", RuntimeAccessor.Registry.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo<int>(1): fieldValue=2, Property=3", spec.Format("Foo", RuntimeAccessor.ServiceLocator.Resolve<IFormatter>()));
         }
 
         [Test]
@@ -428,7 +428,7 @@ namespace Gallio.Tests.Framework.Data
             Dictionary<ISlotInfo, object> slotValues = new Dictionary<ISlotInfo, object>();
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("Foo", spec.Format("Foo", RuntimeAccessor.Registry.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo", spec.Format("Foo", RuntimeAccessor.ServiceLocator.Resolve<IFormatter>()));
         }
 
         [Test]
@@ -440,7 +440,7 @@ namespace Gallio.Tests.Framework.Data
             slotValues.Add(type.GetConstructors(PublicInstance)[1].Parameters[1], "abc");
 
             ObjectCreationSpec spec = new ObjectCreationSpec(type, slotValues, NullConverter.Instance);
-            Assert.AreEqual("Foo(1, \"abc\")", spec.Format("Foo", RuntimeAccessor.Registry.Resolve<IFormatter>()));
+            Assert.AreEqual("Foo(1, \"abc\")", spec.Format("Foo", RuntimeAccessor.ServiceLocator.Resolve<IFormatter>()));
         }
 
         public class EmptyClass

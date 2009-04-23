@@ -40,6 +40,11 @@ namespace Gallio.Runtime
         IRegistry Registry { get; }
 
         /// <summary>
+        /// Gets the service locator.
+        /// </summary>
+        IServiceLocator ServiceLocator { get; }
+
+        /// <summary>
         /// Initializes the runtime.
         /// </summary>
         /// <param name="logger">The runtime logging service</param>

@@ -166,7 +166,7 @@ namespace Gallio.Runtime.Extensibility
                     registry.DataBox.Write(data =>
                     {
                         if (pluginHandler == null)
-                            pluginHandler = pluginHandlerFactory.CreateHandler(registry, resourceLocator,
+                            pluginHandler = pluginHandlerFactory.CreateHandler(registry.ServiceLocator, resourceLocator,
                                 contractType, objectType, pluginProperties);
                     });
                 }
@@ -202,7 +202,7 @@ namespace Gallio.Runtime.Extensibility
                     registry.DataBox.Write(data =>
                     {
                         if (traitsHandler == null)
-                            traitsHandler = traitsHandlerFactory.CreateHandler(registry, resourceLocator,
+                            traitsHandler = traitsHandlerFactory.CreateHandler(registry.ServiceLocator, resourceLocator,
                                 contractType, objectType, traitsProperties);
                     });
                 }

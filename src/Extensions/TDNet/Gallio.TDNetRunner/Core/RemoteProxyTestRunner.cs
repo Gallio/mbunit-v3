@@ -196,7 +196,7 @@ namespace Gallio.TDNetRunner.Core
                 var reportFormatterOptions = new ReportFormatterOptions();
                 result.GenerateReports(reportDirectory, Path.GetFileName(assemblyPath),
                     new[] {DetermineReportFormat(result.Report)}, reportFormatterOptions,
-                    RuntimeAccessor.Registry.Resolve<IReportManager>(), NullProgressMonitor.CreateInstance());
+                    RuntimeAccessor.ServiceLocator.Resolve<IReportManager>(), NullProgressMonitor.CreateInstance());
 
                 // This will generate a link to the generated report
                 if (result.ReportDocumentPaths.Count != 0)

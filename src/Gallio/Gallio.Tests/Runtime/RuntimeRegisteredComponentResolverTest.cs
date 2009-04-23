@@ -37,13 +37,13 @@ namespace Gallio.Tests.Runtime
         public void GetNamesDelegatesToTheRuntime()
         {
             IRuntime runtime = Mocks.StrictMock<IRuntime>();
-            IRegistry registry = Mocks.StrictMock<IRegistry>();
+            IServiceLocator serviceLocator = Mocks.StrictMock<IServiceLocator>();
 
             using (Mocks.Record())
             {
-                SetupResult.For(runtime.Registry).Return(registry);
+                SetupResult.For(runtime.ServiceLocator).Return(serviceLocator);
 
-                Expect.Call(registry.ResolveAll<DummyRegisteredComponent>()).Return(new DummyRegisteredComponent[]
+                Expect.Call(serviceLocator.ResolveAll<DummyRegisteredComponent>()).Return(new DummyRegisteredComponent[]
                 {
                     new DummyRegisteredComponent("abc"),
                     new DummyRegisteredComponent("def")
@@ -71,13 +71,13 @@ namespace Gallio.Tests.Runtime
                 new DummyRegisteredComponent("def")
             };
 
-            IRegistry registry = Mocks.StrictMock<IRegistry>();
+            var serviceLocator = Mocks.StrictMock<IServiceLocator>();
 
             using (Mocks.Record())
             {
-                SetupResult.For(runtime.Registry).Return(registry);
+                SetupResult.For(runtime.ServiceLocator).Return(serviceLocator);
 
-                SetupResult.For(registry.ResolveAll<DummyRegisteredComponent>()).Return(components);
+                SetupResult.For(serviceLocator.ResolveAll<DummyRegisteredComponent>()).Return(components);
             }
 
             using (Mocks.Playback())

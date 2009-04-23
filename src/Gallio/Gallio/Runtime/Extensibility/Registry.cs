@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Gallio.Collections;
 using Gallio.Concurrency;
-using Gallio.Reflection;
 
 namespace Gallio.Runtime.Extensibility
 {
@@ -17,6 +12,7 @@ namespace Gallio.Runtime.Extensibility
         private readonly Plugins plugins;
         private readonly Components components;
         private readonly Services services;
+        private readonly IServiceLocator serviceLocator;
 
         private readonly LockBox<RegistryData> dataBox;
 
@@ -28,6 +24,7 @@ namespace Gallio.Runtime.Extensibility
             plugins = new Plugins(this);
             components = new Components(this);
             services = new Services(this);
+            serviceLocator = new RegistryServiceLocator(this);
 
             dataBox = new LockBox<RegistryData>(new RegistryData());
         }
@@ -36,6 +33,7 @@ namespace Gallio.Runtime.Extensibility
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <inheritdoc />
@@ -54,6 +52,12 @@ namespace Gallio.Runtime.Extensibility
         public IServices Services
         {
             get { return services; }
+        }
+
+        /// <inheritdoc />
+        public IServiceLocator ServiceLocator
+        {
+            get { return serviceLocator; }
         }
 
         /// <inheritdoc />
@@ -145,93 +149,12 @@ namespace Gallio.Runtime.Extensibility
             });
         }
 
-        /// <inheritdoc />
-        public TService Resolve<TService>()
-        {
-            return (TService)ResolveImpl(new TypeName(typeof(TService)));
-        }
-
-        /// <inheritdoc />
-        public object Resolve(Type serviceType)
-        {
-            if (serviceType == null)
-                throw new ArgumentNullException("serviceType");
-
-            return ResolveImpl(new TypeName(serviceType));
-        }
-
-        /// <inheritdoc />
-        public IList<TService> ResolveAll<TService>()
-        {
-            return ResolveAllImpl<TService>(new TypeName(typeof(TService)));
-        }
-
-        /// <inheritdoc />
-        public IList<object> ResolveAll(Type serviceType)
-        {
-            if (serviceType == null)
-                throw new ArgumentNullException("serviceType");
-
-            return ResolveAllImpl<object>(new TypeName(serviceType));
-        }
-
-        /// <inheritdoc />
-        public object ResolveByComponentId(string componentId)
-        {
-            if (componentId == null)
-                throw new ArgumentNullException("componentId");
-
-            ComponentDescriptor descriptor = dataBox.Read(data => data.GetComponentById(componentId));
-            if (descriptor == null)
-                throw new RuntimeException(string.Format("Could not resolve component with id '{0}' because it does not appear to be registered.", componentId));
-
-            return descriptor.ResolveComponent();
-        }
-
-        /// <inheritdoc />
-        public bool CanResolve(Type serviceType)
-        {
-            if (serviceType == null)
-                throw new ArgumentNullException("serviceType");
-
-            IList<IComponentDescriptor> descriptors = dataBox.Read(data => data.FindComponentsByServiceTypeName(new TypeName(serviceType)));
-            return descriptors.Count != 0;
-        }
-
-        /// <inheritdoc />
-        public bool CanResolveByComponentId(string componentId)
-        {
-            if (componentId == null)
-                throw new ArgumentNullException("componentId");
-
-            ComponentDescriptor descriptor = dataBox.Read(data => data.GetComponentById(componentId));
-            return descriptor != null;
-        }
-
-        private object ResolveImpl(TypeName serviceTypeName)
-        {
-            IList<IComponentDescriptor> descriptors = dataBox.Read(data => data.FindComponentsByServiceTypeName(serviceTypeName));
-            if (descriptors.Count == 0)
-                throw new RuntimeException(string.Format("Could not resolve component for service type '{0}' because there do not appear to be any components registered for that service type.", serviceTypeName));
-
-            if (descriptors.Count > 1)
-                throw new RuntimeException(string.Format("Could not resolve component for service type '{0}' because there are {1} of them registered so the request is ambiguous.", serviceTypeName, descriptors.Count));
-
-            return descriptors[0].ResolveComponent();
-        }
-
         /// <summary>
         /// Disposes the registry.
         /// </summary>
         /// <param name="disposing">True if disposing</param>
         protected virtual void Dispose(bool disposing)
         {
-        }
-
-        private IList<TService> ResolveAllImpl<TService>(TypeName serviceTypeName)
-        {
-            IList<IComponentDescriptor> descriptors = dataBox.Read(data => data.FindComponentsByServiceTypeName(serviceTypeName));
-            return GenericUtils.ConvertAllToArray(descriptors, descriptor => (TService) descriptor.ResolveComponent());
         }
 
         internal LockBox<RegistryData> DataBox

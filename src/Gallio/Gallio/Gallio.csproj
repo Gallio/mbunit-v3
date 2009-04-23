@@ -278,6 +278,7 @@
     <Compile Include="Runtime\Extensibility\DefaultObjectDependencyResolver.cs" />
     <Compile Include="Runtime\Extensibility\DefaultPlugin.cs" />
     <Compile Include="Runtime\Extensibility\DependencyResolution.cs" />
+    <Compile Include="Runtime\Extensibility\ComponentHandle.cs" />
     <Compile Include="Runtime\Extensibility\FileSystemResourceLocator.cs" />
     <Compile Include="Runtime\Extensibility\InstanceHandlerFactory.cs" />
     <Compile Include="Runtime\Extensibility\IObjectDependencyResolver.cs" />
@@ -381,6 +382,7 @@
     <Compile Include="Runtime\ProgressMonitoring\SubProgressMonitorCreatedEventArgs.cs" />
     <Compile Include="Runtime\ProgressMonitoring\TaskWithProgress.cs" />
     <Compile Include="Runtime\ProgressMonitoring\ProgressMonitorTaskCookie.cs" />
+    <Compile Include="Runtime\Extensibility\RegistryServiceLocator.cs" />
     <Compile Include="Runtime\Remoting\BaseChannel.cs" />
     <Compile Include="Runtime\Remoting\BaseClientChannel.cs" />
     <Compile Include="Runtime\Remoting\BaseServerChannel.cs" />
