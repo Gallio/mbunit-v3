@@ -149,7 +149,7 @@ namespace Gallio.Collections
         /// <param name="b">The second collection</param>
         /// <param name="comparer">The comparison strategy to use</param>
         /// <returns>True if the elements are equal</returns>
-        public static bool ElementsEqual<T>(IList<T> a, IList<T> b, Func<T, T, bool> comparer)
+        public static bool ElementsEqual<T>(IList<T> a, IList<T> b, EqualityComparison<T> comparer)
         {
             int count = a.Count;
             if (count != b.Count)

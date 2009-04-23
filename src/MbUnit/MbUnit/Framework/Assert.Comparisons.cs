@@ -49,7 +49,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, string messageFormat, params object[] messageArgs)
         {
-            AreEqual<T>(expectedValue, actualValue, (Func<T, T, bool>)null, messageFormat, messageArgs);
+            AreEqual<T>(expectedValue, actualValue, (EqualityComparison<T>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreEqual<T>(T expectedValue, T actualValue, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
-            AreEqual<T>(expectedValue, actualValue, comparer != null ? comparer.Equals : (Func<T, T, bool>)null, messageFormat, messageArgs);
+            AreEqual<T>(expectedValue, actualValue, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreEqual<T>(T expectedValue, T actualValue, Func<T, T, bool> comparer)
+        public static void AreEqual<T>(T expectedValue, T actualValue, EqualityComparison<T> comparer)
         {
             AreEqual<T>(expectedValue, actualValue, comparer, null, null);
         }
@@ -103,7 +103,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreEqual<T>(T expectedValue, T actualValue, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        public static void AreEqual<T>(T expectedValue, T actualValue, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
             {
@@ -145,7 +145,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotEqual<T>(T unexpectedValue, T actualValue, string messageFormat, params object[] messageArgs)
         {
-            AreNotEqual<T>(unexpectedValue, actualValue, (Func<T, T, bool>)null, messageFormat, messageArgs);
+            AreNotEqual<T>(unexpectedValue, actualValue, (EqualityComparison<T>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreNotEqual<T>(T unexpectedValue, T actualValue, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
-            AreNotEqual<T>(unexpectedValue, actualValue, comparer != null ? comparer.Equals : (Func<T, T, bool>)null, messageFormat, messageArgs);
+            AreNotEqual<T>(unexpectedValue, actualValue, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace MbUnit.Framework
         /// <param name="actualValue">The actual value</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotEqual<T>(T unexpectedValue, T actualValue, Func<T, T, bool> comparer)
+        public static void AreNotEqual<T>(T unexpectedValue, T actualValue, EqualityComparison<T> comparer)
         {
             AreNotEqual<T>(unexpectedValue, actualValue, comparer, null, null);
         }
@@ -199,7 +199,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreNotEqual<T>(T unexpectedValue, T actualValue, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        public static void AreNotEqual<T>(T unexpectedValue, T actualValue, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
             {

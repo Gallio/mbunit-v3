@@ -63,7 +63,7 @@ namespace MbUnit.Framework
         /// <param name="actualSequence">The actual sequence</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer)
+        public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer)
         {
             AreElementsEqual(expectedSequence, actualSequence, comparer, null, null);
         }
@@ -79,7 +79,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
             {
@@ -182,7 +182,7 @@ namespace MbUnit.Framework
         /// <param name="actualSequence">The actual sequence</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer)
+        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer)
         {
             AreElementsNotEqual(unexpectedSequence, actualSequence, comparer, null, null);
         }
@@ -197,7 +197,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
             {
@@ -281,7 +281,7 @@ namespace MbUnit.Framework
         /// <param name="actualSequence">The actual sequence</param>
         /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer)
+        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer)
         {
             AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, comparer, null, null);
         }
@@ -297,7 +297,7 @@ namespace MbUnit.Framework
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, Func<T, T, bool> comparer, string messageFormat, params object[] messageArgs)
+        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(delegate
             {
@@ -361,11 +361,11 @@ namespace MbUnit.Framework
 
         private sealed class MatchTable<T>
         {
-            private readonly Func<T, T, bool> comparer;
+            private readonly EqualityComparison<T> comparer;
             private readonly List<KeyValuePair<T, Pair<int, int>>> items;
             private int nonEqualCount;
 
-            public MatchTable(Func<T, T, bool> comparer)
+            public MatchTable(EqualityComparison<T> comparer)
             {
                 this.comparer = comparer;
                 items = new List<KeyValuePair<T,Pair<int,int>>>();
