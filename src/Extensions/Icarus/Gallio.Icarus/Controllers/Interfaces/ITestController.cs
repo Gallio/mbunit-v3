@@ -16,12 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Models.Interfaces;
-using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -110,27 +108,36 @@ namespace Gallio.Icarus.Controllers.Interfaces
         event EventHandler<TestStepFinishedEventArgs> TestStepFinished;
 
         /// <summary>
-        /// Event raised when showing source code.
-        /// FIXME: Does not belong here.
+        /// Event raised when a test run is started.
         /// </summary>
-        event EventHandler<ShowSourceCodeEventArgs> ShowSourceCode;
-
         event EventHandler RunStarted;
+
+        /// <summary>
+        /// Event raised when a test run finishes.
+        /// </summary>
         event EventHandler RunFinished;
+
+        /// <summary>
+        /// Event raised when test exploration begins.
+        /// </summary>
         event EventHandler ExploreStarted;
+
+        /// <summary>
+        /// Event raised when test exploration completes.
+        /// </summary>
         event EventHandler ExploreFinished;
 
         /// <summary>
         /// Sets the test runner factory used by the test controller.
         /// </summary>
-        /// <param name="testRunnerFactory">The test runner factory to use</param>
-        void SetTestRunnerFactory(ITestRunnerFactory testRunnerFactory);
+        /// <param name="factory">The test runner factory to use</param>
+        void SetTestRunnerFactory(ITestRunnerFactory factory);
 
         /// <summary>
         /// Sets the test package configuration to be used during subsequent calls to <see cref="Explore" /> or <see cref="Run" />.
         /// </summary>
-        /// <param name="testPackageConfig">The test package configuration</param>
-        void SetTestPackageConfig(TestPackageConfig testPackageConfig);
+        /// <param name="config">The test package configuration</param>
+        void SetTestPackageConfig(TestPackageConfig config);
 
         /// <summary>
         /// Acquires a read lock on the report and executes the specified action.
@@ -154,27 +161,22 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// Explores the tests and updates the model, does not run them.
         /// </summary>
         /// <param name="progressMonitor">The progress monitor</param>
-        void Explore(IProgressMonitor progressMonitor);
+        /// <param name="testRunnerExtensions">A list of test runner extensions to use.</param>
+        void Explore(IProgressMonitor progressMonitor, IEnumerable<string> testRunnerExtensions);
 
         /// <summary>
         /// Runs the tests and updates the model.
         /// </summary>
         /// <param name="debug">If true, runs tests with the debugger</param>
         /// <param name="progressMonitor">The progress monitor</param>
-        void Run(bool debug, IProgressMonitor progressMonitor);
+        /// <param name="testRunnerExtensions">A list of test runner extensions to use.</param>
+        void Run(bool debug, IProgressMonitor progressMonitor, IEnumerable<string> testRunnerExtensions);
 
         /// <summary>
         /// Refreshes the contents of the test tree based on the tests most recently run or explored.
         /// </summary>
         /// <param name="progressMonitor">The progress monitor</param>
         void RefreshTestTree(IProgressMonitor progressMonitor);
-
-        /// <summary>
-        /// Views the source code associated with a particular test.
-        /// </summary>
-        /// <param name="testId">The test id</param>
-        /// <param name="progressMonitor">The progress monitor</param>
-        void ViewSourceCode(string testId, IProgressMonitor progressMonitor);
 
         /// <summary>
         /// Resets the status of all tests.

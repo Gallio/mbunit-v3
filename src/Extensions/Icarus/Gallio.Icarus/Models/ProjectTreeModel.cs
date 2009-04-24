@@ -57,23 +57,23 @@ namespace Gallio.Icarus.Models
             this.fileName = fileName;
 
             projectRoot = new Node(Path.GetFileNameWithoutExtension(fileName));
-            
-            properties = new Node("Properties");
+
+            properties = new Node("Properties") { Image = Properties.Resources.Properties.ToBitmap() };
             projectRoot.Nodes.Add(properties);
-            properties.Image = Properties.Resources.PropertiesHS;
             
             assemblies = new Node("Assemblies");
             projectRoot.Nodes.Add(assemblies);
             
-            reports = new Node("Reports");
-            reports.Image = Properties.Resources.Report.ToBitmap();
+            reports = new Node("Reports") { Image = Properties.Resources.Report.ToBitmap() };
             projectRoot.Nodes.Add(reports);
         }
 
         public override IEnumerable GetChildren(TreePath treePath)
         {
             if (treePath.IsEmpty())
+            {
                 yield return projectRoot;
+            }
             else if (treePath.LastNode == projectRoot)
             {
                 foreach (Node n in projectRoot.Nodes)
@@ -82,26 +82,14 @@ namespace Gallio.Icarus.Models
             else if (treePath.LastNode == assemblies)
             {
                 foreach (string assemblyFile in project.TestPackageConfig.AssemblyFiles)
-                {
-                    Node n = new Node(Path.GetFileNameWithoutExtension(assemblyFile));
-                    n.Image = Properties.Resources.Assembly;
-                    n.Tag = assemblyFile;
-                    yield return n;
-                }
+                    yield return new AssemblyNode(assemblyFile);
             }
             else if (treePath.LastNode == reports && !string.IsNullOrEmpty(fileName))
             {
                 string reportDirectory = Path.Combine(Path.GetDirectoryName(fileName), "Reports");
                 if (Directory.Exists(reportDirectory))
-                {
                     foreach (string file in Directory.GetFiles(reportDirectory, "*.xml", SearchOption.AllDirectories))
-                    {
-                        Node n = new Node(Path.GetFileNameWithoutExtension(file));
-                        n.Image = Properties.Resources.XmlFile.ToBitmap();
-                        n.Tag = file;
-                        yield return n;
-                    }
-                }
+                        yield return new ReportNode(file);
             }
         }
 

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<plugin pluginId="Gallio.Icarus" xmlns="http://www.gallio.org/">
+  <traits>
+    <name>Gallio Icarus Test Runner</name>
+  </traits>
+
+  <services>
+    <service serviceId="Gallio.Icarus.UnhandledExceptionPolicy" 
+             serviceType="Gallio.Icarus.Utilities.IUnhandledExceptionPolicy, Gallio.Icarus" />
+
+    <service serviceId="Gallio.Icarus.TestTreeModel" 
+             serviceType="Gallio.Icarus.Models.Interfaces.ITestTreeModel, Gallio.Icarus" />
+  </services>
+
+  <components>
+    <component componentId="Gallio.Icarus.UnhandledExceptionPolicy" 
+               serviceId="Gallio.Icarus.UnhandledExceptionPolicy" 
+               componentType="Gallio.Utilites.UnhandledExceptionPolicy, Gallio.Icarus" />
+
+    <component componentId="Gallio.Icarus.TestTreeModel" 
+               serviceId="Gallio.Icarus.TestTreeModel" 
+               componentType="Gallio.Icarus.Models.TestTreeModel, Gallio.Icarus" />
+  </components>
+</plugin>

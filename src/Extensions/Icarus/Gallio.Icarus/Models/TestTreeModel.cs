@@ -71,12 +71,9 @@ namespace Gallio.Icarus.Models
 
         public bool SortDesc
         {
-            get{ return (testTreeSorter.SortOrder == SortOrder.Descending); }
-            set
+            get
             {
-                testTreeSorter.SortOrder = value ? SortOrder.Descending : SortOrder.None;
-                OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
-                OnPropertyChanged(new PropertyChangedEventArgs("SortAsc"));
+                return (testTreeSorter.SortOrder == SortOrder.Descending);
             }
         }
 
@@ -85,7 +82,7 @@ namespace Gallio.Icarus.Models
             get
             {
                 int count = 0;
-                foreach (Node node in Nodes)
+                foreach (Node node in inner.Nodes)
                     count += CountTests(node);
                 return count;
             }
@@ -124,15 +121,10 @@ namespace Gallio.Icarus.Models
         {
             get
             {
-                if (Nodes.Count > 0)
-                    return (TestTreeNode)Nodes[0];
+                if (inner.Root.Nodes.Count > 0)
+                    return (TestTreeNode)inner.Root.Nodes[0];
                 return null;
             }
-        }
-
-        public IList<Node> Nodes
-        {
-            get { return inner.Nodes; }
         }
 
         public TreePath GetPath(Node node)
@@ -152,8 +144,8 @@ namespace Gallio.Icarus.Models
             {
                 ResetCounters();
 
-                foreach (Node node in Nodes)
-                    ((TestTreeNode) node).Reset();
+                foreach (Node node in inner.Root.Nodes)
+                    ((TestTreeNode)node).Reset();
 
                 OnNodesChanged(new TreeModelEventArgs(TreePath.Empty, new object[] {}));
 
@@ -191,14 +183,13 @@ namespace Gallio.Icarus.Models
                 return;
 
             var nodes = Root.Find(testData.Id, true);
-            foreach (var node in nodes)
+            foreach (var node in nodes) // there should only be one
             {
                 node.AddTestStepRun(testStepRun);
                 Filter(node);
-                OnNodesChanged(new TreeModelEventArgs(GetPath(node.Parent), 
-                    new[] { node.Index }, new[] { node }));
             }
 
+            // only update test status count if the test is complete
             if (!testStepRun.Step.IsPrimary || (!testStepRun.Step.IsTestCase && !testData.IsTestCase))
                 return;
 
@@ -225,7 +216,7 @@ namespace Gallio.Icarus.Models
 
         private void FilterTree()
         {
-            foreach (Node node in Nodes)
+            foreach (Node node in inner.Root.Nodes)
                 Filter(node);
 
             OnStructureChanged(new TreePathEventArgs(TreePath.Empty));
@@ -334,11 +325,13 @@ namespace Gallio.Icarus.Models
             using (progressMonitor.BeginTask("Building test tree", count))
             {
                 ResetCounters();
-                Nodes.Clear();
 
-                TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, testModelData.RootTest.Id,
-                                                     TestKinds.Root);
-                Nodes.Add(root);
+                inner.Root.Nodes.Clear();
+
+                TestTreeNode root = new TestTreeNode(testModelData.RootTest.Name, 
+                    testModelData.RootTest.Id, TestKinds.Root);
+
+                inner.Root.Nodes.Add(root);
 
                 progressMonitor.Worked(1);
 
@@ -516,11 +509,9 @@ namespace Gallio.Icarus.Models
         public FilterSet<ITest> GenerateFilterSetFromSelectedTests()
         {
             if (Root == null || Root.CheckState == CheckState.Checked)
-                return new FilterSet<ITest>(new AnyFilter<ITest>());
+                return FilterSet<ITest>.Empty;
 
-            Filter<ITest> filter = Root.CheckState == CheckState.Unchecked
-                ? new NoneFilter<ITest>()
-                : CreateFilter(Nodes);
+            Filter<ITest> filter = Root.CheckState == CheckState.Unchecked ? new NoneFilter<ITest>() : CreateFilter(inner.Root.Nodes);
             return new FilterSet<ITest>(filter);
         }
 
@@ -571,6 +562,37 @@ namespace Gallio.Icarus.Models
                 }
             }
             return filters.Count > 1 ? new OrFilter<ITest>(filters) : filters[0];
+        }
+
+        public IList<TestTreeNode> GetSelectedTests()
+        {
+            if (Root == null || Root.CheckState == CheckState.Unchecked)
+                return new List<TestTreeNode>();
+
+            if (Root.CheckState == CheckState.Checked)
+                return new List<TestTreeNode>(new[] { Root });
+
+            List <TestTreeNode> selected = new List<TestTreeNode>();
+            selected.AddRange(GetSelectedTests(Root));
+            return selected;
+        }
+
+        public IList<TestTreeNode> GetSelectedTests(TestTreeNode node)
+        {
+            List<TestTreeNode> selected = new List<TestTreeNode>();
+
+            // special case for namespaces, as they don't really exist!
+            // i.e. they don't have an id we can use, so we must add all 
+            // their children instead.
+            if (node.CheckState == CheckState.Indeterminate || 
+                (node.CheckState == CheckState.Checked && node.NodeType == "Namespace"))
+            {
+                foreach (var n in node.Nodes)
+                    selected.AddRange(GetSelectedTests((TestTreeNode)n));
+            }
+            else if (node.CheckState == CheckState.Checked)
+                selected.Add(node);
+            return selected;
         }
 
         private class TestTreeSorter : IComparer

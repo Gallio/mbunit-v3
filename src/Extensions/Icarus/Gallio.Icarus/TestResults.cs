@@ -34,10 +34,10 @@ namespace Gallio.Icarus
             testProgressStatusBar.DataBindings.Add("InconclusiveColor", testResultsController, "InconclusiveColor");
             testProgressStatusBar.DataBindings.Add("SkippedColor", testResultsController, "SkippedColor");
 
-            testProgressStatusBar.DataBindings.Add("Passed", testResultsController, "Passed");
-            testProgressStatusBar.DataBindings.Add("Failed", testResultsController, "Failed");
-            testProgressStatusBar.DataBindings.Add("Skipped", testResultsController, "Skipped");
-            testProgressStatusBar.DataBindings.Add("Inconclusive", testResultsController, "Inconclusive");
+            testProgressStatusBar.DataBindings.Add("Passed", testResultsController, "PassedTestCount");
+            testProgressStatusBar.DataBindings.Add("Failed", testResultsController, "FailedTestCount");
+            testProgressStatusBar.DataBindings.Add("Skipped", testResultsController, "SkippedTestCount");
+            testProgressStatusBar.DataBindings.Add("Inconclusive", testResultsController, "InconclusiveTestCount");
             testProgressStatusBar.DataBindings.Add("ElapsedTime", testResultsController, "ElapsedTime");
             testProgressStatusBar.DataBindings.Add("Total", testResultsController, "TestCount");
 
@@ -45,6 +45,13 @@ namespace Gallio.Icarus
 
             testResultsList.RetrieveVirtualItem += testResultsList_RetrieveVirtualItem;
             testResultsList.CacheVirtualItems += testResultsList_CacheVirtualItems;
+            testResultsList.ColumnClick += testResultsList_ColumnClick;
+        }
+
+        private void testResultsList_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            testResultsController.SetSortColumn(e.Column);
+            testResultsList.Invalidate();
         }
 
         private void testResultsList_CacheVirtualItems(object sender, CacheVirtualItemsEventArgs e)

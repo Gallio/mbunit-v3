@@ -91,6 +91,8 @@
     <Compile Include="CodeWindow.Designer.cs">
       <DependentUpon>CodeWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Commands\AddAssembliesCommand.cs" />
+    <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Controllers\AnnotationsController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
@@ -101,11 +103,13 @@
     <Compile Include="Controllers\Interfaces\IErrorController.cs" />
     <Compile Include="Controllers\Interfaces\INotifyController.cs" />
     <Compile Include="Controllers\Interfaces\IReportController.cs" />
+    <Compile Include="Controllers\Interfaces\ISourceCodeController.cs" />
     <Compile Include="Controllers\Interfaces\ITestResultsController.cs" />
     <Compile Include="Controllers\NotifyController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\RuntimeLogController.cs" />
+    <Compile Include="Controllers\SourceCodeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\TestResultsController.cs" />
     <Compile Include="Controls\TestStatusBarStyles.cs" />
@@ -140,17 +144,19 @@
     <Compile Include="Controls\ToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Options\TestRunnerExtensionOptions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\TestRunnerExtensionOptions.Designer.cs">
-      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Models\AssemblyNode.cs" />
+    <Compile Include="Models\ReportNode.cs" />
     <Compile Include="Options\ReportOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Options\ReportOptions.Designer.cs">
       <DependentUpon>ReportOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\TestRunnerExtensionOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\TestRunnerExtensionOptions.Designer.cs">
+      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="ServiceProvider.cs" />
     <Compile Include="Utilities\ISynchronizationContext.cs" />
@@ -394,12 +400,12 @@
       <DependentUpon>AnnotationsWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Options\TestRunnerExtensionOptions.resx">
-      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Options\ReportOptions.resx">
       <DependentUpon>ReportOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\TestRunnerExtensionOptions.resx">
+      <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Window.resx">
@@ -468,6 +474,7 @@
     <None Include="Gallio.Icarus.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Icarus.plugin" />
     <None Include="Resources\Group.png" />
     <Content Include="Resources\help-browser.png" />
     <Content Include="Resources\LinkToMBU.png" />
@@ -483,6 +490,9 @@
     <Content Include="Resources\PassMb.ico" />
     <None Include="Resources\pillar.png" />
     <None Include="Resources\PropertiesHS.png" />
+    <None Include="Resources\Properties.bmp" />
+    <None Include="Resources\props.ico" />
+    <None Include="Resources\Properties.ico" />
     <Content Include="Resources\Reload.ico" />
     <Content Include="Resources\Report.ico" />
     <Content Include="Resources\Sort.png" />

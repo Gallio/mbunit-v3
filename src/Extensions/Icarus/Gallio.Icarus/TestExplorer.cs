@@ -75,6 +75,12 @@ namespace Gallio.Icarus
                 false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
+        public override sealed BindingContext BindingContext
+        {
+            get { return base.BindingContext; }
+            set { base.BindingContext = value; }
+        }
+
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!(testTree.SelectedNode.Tag is TestTreeNode))
@@ -151,11 +157,13 @@ namespace Gallio.Icarus
         private void testTree_SelectionChanged(object sender, EventArgs e)
         {
             mediator.TestController.SelectedTests.Clear();
+
             if (testTree.SelectedNode != null)
             {
                 TestTreeNode testTreeNode = (TestTreeNode)testTree.SelectedNode.Tag;
-                removeAssemblyToolStripMenuItem.Enabled = testTreeNode.NodeType == TestKinds.Assembly;
+                removeAssemblyToolStripMenuItem.Enabled = (testTreeNode.NodeType == TestKinds.Assembly);
                 viewSourceCodeToolStripMenuItem.Enabled = testTreeNode.SourceCodeAvailable;
+
                 if (testTreeNode.NodeType == TestKinds.Namespace)
                 {
                     foreach (Node n in testTreeNode.Nodes)
@@ -163,7 +171,9 @@ namespace Gallio.Icarus
                             mediator.TestController.SelectedTests.Add((TestTreeNode)n);
                 }
                 else
+                {
                     mediator.TestController.SelectedTests.Add(testTreeNode);
+                }
             }
             else
             {
@@ -200,6 +210,21 @@ namespace Gallio.Icarus
         private void testTree_DoubleClick(object sender, EventArgs e)
         {
             ViewSourceCode();
+        }
+
+        private void selectFailedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            testTree.Select(TestStatus.Failed);
+        }
+
+        private void selectPassedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            testTree.Select(TestStatus.Passed);
+        }
+
+        private void selectInconclusiveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            testTree.Select(TestStatus.Inconclusive);
         }
     }
 }

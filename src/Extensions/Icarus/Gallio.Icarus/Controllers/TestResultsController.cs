@@ -21,7 +21,6 @@ using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using System;
-using Gallio.Icarus.Utilities;
 using Gallio.Runner.Reports;
 using Aga.Controls.Tree;
 using Gallio.Model;
@@ -39,6 +38,8 @@ namespace Gallio.Icarus.Controllers
         private int firstItem;
         private int lastItem;
         private int index;
+        private int sortColumn = -1;
+        private SortOrder sortOrder;
 
         public int ResultsCount
         {
@@ -78,22 +79,22 @@ namespace Gallio.Icarus.Controllers
             get { return optionsController.SkippedColor; }
         }
 
-        public int Passed
+        public int PassedTestCount
         {
             get { return testController.Passed; }
         }
 
-        public int Failed
+        public int FailedTestCount
         {
             get { return testController.Failed; }
         }
 
-        public int Skipped
+        public int SkippedTestCount
         {
             get { return testController.Skipped; }
         }
 
-        public int Inconclusive
+        public int InconclusiveTestCount
         {
             get { return testController.Inconclusive; }
         }
@@ -119,7 +120,6 @@ namespace Gallio.Icarus.Controllers
             testController.SelectedTests.ListChanged += delegate
             {
                 CountResults();
-                OnPropertyChanged(new PropertyChangedEventArgs("TestCount"));
             };
             testController.ExploreStarted += delegate
             {
@@ -240,18 +240,61 @@ namespace Gallio.Icarus.Controllers
                 foreach (TestTreeNode node in testController.SelectedTests)
                     UpdateTestResults(node, 0);
             }
+
+            if (sortColumn != -1)
+                SortAndTrimListViewItems();
+        }
+
+        private void SortAndTrimListViewItems()
+        {
+            // sort by relevant column
+            listViewItems.Sort(delegate(ListViewItem left, ListViewItem right)
+            {
+                int result;
+                switch (sortColumn)
+                {
+                    case 2:
+                        // duration (double)
+                        double dl = Convert.ToDouble(left.SubItems[sortColumn].Text);
+                        double dr = Convert.ToDouble(right.SubItems[sortColumn].Text);
+                        result = dl.CompareTo(dr);
+                        break;
+
+                    case 3:
+                        // assert count (int)
+                        double il = Convert.ToInt32(left.SubItems[sortColumn].Text);
+                        double ir = Convert.ToInt32(right.SubItems[sortColumn].Text);
+                        result = il.CompareTo(ir);
+                        break;
+
+                    default:
+                        // string comparison
+                        string sl = left.SubItems[sortColumn].Text;
+                        string sr = right.SubItems[sortColumn].Text;
+                        result = sl.CompareTo(sr);
+                        break;
+                }
+                return sortOrder == SortOrder.Ascending ? result : -result;
+            });
+
+            // trim list to viewport
+            ListViewItem[] relevantItems = new ListViewItem[lastItem - firstItem];
+            listViewItems.CopyTo(firstItem, relevantItems, 0, lastItem - firstItem);
+            listViewItems.Clear();
+            listViewItems.AddRange(relevantItems);
         }
 
         private void UpdateTestResults(TestTreeNode node, int indentCount)
         {
             // performance optimization, no need to worry about items outside the viewport
-            if (index > lastItem)
+            // (only works when unsorted)
+            if (index > lastItem && sortColumn == -1)
                 return;
 
             foreach (TestStepRun tsr in node.TestStepRuns)
                 AddTestStepRun(node.NodeType, tsr, indentCount);
 
-            if (node.NodeType != "Namespace")
+            if (node.NodeType != "Namespace" && sortColumn == -1)
                 indentCount++;
 
             foreach (Node n in node.Nodes)
@@ -261,7 +304,8 @@ namespace Gallio.Icarus.Controllers
         private void AddTestStepRun(string testKind, TestStepRun testStepRun, int indentCount)
         {
             // performance optimization, no need to worry about items outside the viewport
-            if (index < firstItem)
+            // (only works when unsorted)
+            if (index < firstItem && sortColumn == -1)
             {
                 index++;
                 return;
@@ -303,6 +347,19 @@ namespace Gallio.Icarus.Controllers
             lvi.SubItems.AddRange(new[] { testKind, duration, assertCount, codeReference, assemblyName });
             lvi.IndentCount = indentCount;
             return lvi;
+        }
+
+        public void SetSortColumn(int column)
+        {
+            // if sorting by the same column, reverse sort order
+            if (sortColumn == column)
+                sortOrder = (sortOrder == SortOrder.Ascending) ? SortOrder.Descending : SortOrder.Ascending;
+            else
+            {
+                // default to sorting ascending
+                sortColumn = column;
+                sortOrder = SortOrder.Ascending;
+            }
         }
     }
 }

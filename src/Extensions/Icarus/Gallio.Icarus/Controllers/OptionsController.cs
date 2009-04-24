@@ -23,6 +23,7 @@ using Gallio.Model;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
+using Gallio.Runtime;
 
 namespace Gallio.Icarus.Controllers
 {

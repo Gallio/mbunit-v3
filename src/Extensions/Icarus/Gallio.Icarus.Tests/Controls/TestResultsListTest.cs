@@ -13,147 +13,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Drawing;
-
-using Gallio.Icarus.Controls;
-
-using MbUnit.Framework;
-using Gallio.Model;
-using Gallio.Model.Serialization;
-using Gallio.Runner.Reports;
 using System.Windows.Forms;
-using Gallio.Reflection;
+using Gallio.Icarus.Controls;
+using MbUnit.Framework;
 
 namespace Gallio.Icarus.Tests.Controls
 {
     [TestFixture, Category("Controls")]
-    public class TestResultsListTest : TestResultsList
+    public class TestResultsListTest
     {
-        //private TestResultsList testResultsList;
+        [Test]
+        public void TestResultsList_Test()
+        {
+            var testResultsList = new TestResultsList();
 
-    //    [SetUp]
-    //    public void SetUp()
-    //    {
-    //        testResultsList = new TestResultsList();
-    //    }
+            Assert.AreEqual(6, testResultsList.Columns.Count);
 
-    //    [Test]
-    //    public void AddTestStepRun_Passed_Test()
-    //    {
-    //        TestStepData testStepData = new TestStepData("id", "name", "fullName", "testId");
-    //        testStepData.CodeReference = new CodeReference("assemblyName", "namespaceName", "typeName", "memberName", "parameterName");
-    //        TestStepRun testStepRun = new TestStepRun(testStepData);
-    //        testStepRun.Result.Outcome = new TestOutcome(TestStatus.Passed);
-    //        Assert.AreEqual(0, testResultsList.Items.Count);
-    //        string testKind = "testKind";
-    //        testResultsList.AddTestStepRun(testKind, testStepRun, 0);
-    //        Assert.AreEqual(1, testResultsList.Items.Count);
-    //        ListViewItem lvi = testResultsList.Items[0];
-    //        Assert.AreEqual(0, lvi.ImageIndex);
-    //        Assert.AreEqual(testStepRun.Step.Name, lvi.Text);
-    //        Assert.AreEqual(testKind, lvi.SubItems[1].Text);
-    //        Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[2].Text);
-    //        Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[3].Text);
-    //        Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[4].Text);
-    //        Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[5].Text);
-    //        Assert.AreEqual(0, lvi.IndentCount);
-    //    }
+            var stepName = testResultsList.Columns[0];
+            Assert.AreEqual("Step name", stepName.Text);
+            Assert.AreEqual(200, stepName.Width);
 
-    //    [Test]
-    //    public void AddTestStepRun_Failed_Test()
-    //    {
-    //        TestStepData testStepData = new TestStepData("id", "name", "fullName", "testId");
-    //        testStepData.CodeReference = new CodeReference("assemblyName", "namespaceName", "typeName", "memberName", "parameterName");
-    //        TestStepRun testStepRun = new TestStepRun(testStepData);
-    //        testStepRun.Result.Outcome = new TestOutcome(TestStatus.Failed);
-    //        Assert.AreEqual(0, testResultsList.Items.Count);
-    //        string testKind = "testKind";
-    //        testResultsList.AddTestStepRun(testKind, testStepRun, 0);
-    //        Assert.AreEqual(1, testResultsList.Items.Count);
-    //        ListViewItem lvi = testResultsList.Items[0];
-    //        Assert.AreEqual(1, lvi.ImageIndex);
-    //        Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[0].Text);
-    //        Assert.AreEqual(testKind, lvi.SubItems[1].Text);
-    //        Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[2].Text);
-    //        Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[3].Text);
-    //        Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[4].Text);
-    //        Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[5].Text);
-    //        Assert.AreEqual(0, lvi.IndentCount);
-    //    }
+            // etc...
 
-    //    [Test]
-    //    public void AddTestStepRun_Inconclusive_Test()
-    //    {
-    //        TestStepData testStepData = new TestStepData("id", "name", "fullName", "testId");
-    //        testStepData.CodeReference = new CodeReference("assemblyName", "namespaceName", "typeName", "memberName", "parameterName");
-    //        TestStepRun testStepRun = new TestStepRun(testStepData);
-    //        testStepRun.Result.Outcome = new TestOutcome(TestStatus.Inconclusive);
-    //        Assert.AreEqual(0, testResultsList.Items.Count);
-    //        string testKind = "testKind";
-    //        testResultsList.AddTestStepRun(testKind, testStepRun, 0);
-    //        Assert.AreEqual(1, testResultsList.Items.Count);
-    //        ListViewItem lvi = testResultsList.Items[0];
-    //        Assert.AreEqual(2, lvi.ImageIndex);
-    //        Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[0].Text);
-    //        Assert.AreEqual(testKind, lvi.SubItems[1].Text);
-    //        Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[2].Text);
-    //        Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[3].Text);
-    //        Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[4].Text);
-    //        Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[5].Text);
-    //        Assert.AreEqual(0, lvi.IndentCount);
-    //    }
-
-    //    [Test]
-    //    public void AddTestStepRun_Skipped_Test()
-    //    {
-    //        TestStepData testStepData = new TestStepData("id", "name", "fullName", "testId");
-    //        testStepData.CodeReference = new CodeReference("assemblyName", "namespaceName", "typeName", "memberName", "parameterName");
-    //        TestStepRun testStepRun = new TestStepRun(testStepData);
-    //        testStepRun.Result.Outcome = new TestOutcome(TestStatus.Skipped);
-    //        Assert.AreEqual(0, testResultsList.Items.Count);
-    //        string testKind = "testKind";
-    //        testResultsList.AddTestStepRun(testKind, testStepRun, 0);
-    //        Assert.AreEqual(1, testResultsList.Items.Count);
-    //        ListViewItem lvi = testResultsList.Items[0];
-    //        Assert.AreEqual(-1, lvi.ImageIndex);
-    //        Assert.AreEqual(testStepRun.Step.Name, lvi.SubItems[0].Text);
-    //        Assert.AreEqual(testKind, lvi.SubItems[1].Text);
-    //        Assert.AreEqual(testStepRun.Result.Duration.ToString("0.000"), lvi.SubItems[2].Text);
-    //        Assert.AreEqual(testStepRun.Result.AssertCount.ToString(), lvi.SubItems[3].Text);
-    //        Assert.AreEqual(testStepRun.Step.CodeReference.TypeName, lvi.SubItems[4].Text);
-    //        Assert.AreEqual(testStepRun.Step.CodeReference.AssemblyName, lvi.SubItems[5].Text);
-    //        Assert.AreEqual(0, lvi.IndentCount);
-    //    }
-
-    //    [Test]
-    //    public void Clear_Test()
-    //    {
-    //        Assert.AreEqual(0, testResultsList.Items.Count);
-    //        testResultsList.Items.Add("test");
-    //        Assert.AreEqual(1, testResultsList.Items.Count);
-    //        testResultsList.Clear();
-    //        Assert.AreEqual(0, testResultsList.Items.Count);
-    //    }
-
-    //    [Test]
-    //    public void OnColumnClick_Test()
-    //    {
-    //        columnSorter.SortColumn = 0;
-    //        columnSorter.Order = System.Windows.Forms.SortOrder.None;
-    //        OnColumnClick(new ColumnClickEventArgs(0));
-    //        Assert.AreEqual(System.Windows.Forms.SortOrder.Ascending, columnSorter.Order);
-    //    }
-
-    //    [Test]
-    //    public void OnColumnClick_Reverse_Test()
-    //    {
-    //        columnSorter.SortColumn = 0;
-    //        columnSorter.Order = System.Windows.Forms.SortOrder.Ascending;
-    //        OnColumnClick(new ColumnClickEventArgs(0));
-    //        Assert.AreEqual(System.Windows.Forms.SortOrder.Descending, columnSorter.Order);
-    //        OnColumnClick(new ColumnClickEventArgs(0));
-    //        Assert.AreEqual(System.Windows.Forms.SortOrder.Ascending, columnSorter.Order);
-    //    }
+            Assert.AreEqual(true, testResultsList.VirtualMode);
+            Assert.AreEqual(true, testResultsList.FullRowSelect);
+            Assert.AreEqual(View.Details, testResultsList.View);
+        }
     }
 }

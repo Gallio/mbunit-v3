@@ -19,6 +19,7 @@ using Aga.Controls.Tree.NodeControls;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Model;
+using System.Windows.Forms;
 
 namespace Gallio.Icarus.Controls
 {
@@ -113,22 +114,22 @@ namespace Gallio.Icarus.Controls
         public void Expand(TestStatus state)
         {
             BeginUpdate();
+            
             CollapseAll();
+            
             foreach (TreeNodeAdv node in AllNodes)
-                TestNodes(node, state);
+                ExpandNode(node, state);
+            
             EndUpdate();
         }
 
-        private void TestNodes(TreeNodeAdv node, TestStatus state)
+        private void ExpandNode(TreeNodeAdv node, TestStatus state)
         {
-            if (node.Tag is TestTreeNode)
-                if (((TestTreeNode)node.Tag).TestStatus == state)
-                    Expand(node);
+            if (((TestTreeNode)node.Tag).TestStatus == state)
+                Expand(node);
 
-            // Loop though all the child nodes and expand them if they
-            // meet the test state.
             foreach (TreeNodeAdv tNode in node.Children)
-                TestNodes(tNode, state);
+                ExpandNode(tNode, state);
         }
 
         public void Expand(TreeNodeAdv node)
@@ -149,6 +150,39 @@ namespace Gallio.Icarus.Controls
                 if (treeNode.IsExpanded && nodes.Contains(((TestTreeNode)treeNode.Tag).Name))
                     treeNode.Collapse();
             }
+        }
+
+        public void Select(TestStatus testStatus)
+        {
+            BeginUpdate();
+
+            CollapseAll();
+
+            foreach (TreeNodeAdv node in AllNodes)
+                SelectNode(node, testStatus);
+
+            EndUpdate();
+        }
+
+        private void SelectNode(TreeNodeAdv node, TestStatus testStatus)
+        {
+            if (((TestTreeNode)node.Tag).IsTest)
+            {
+                if (((TestTreeNode)node.Tag).TestStatus == testStatus)
+                {
+                    ((TestTreeNode)node.Tag).CheckState = CheckState.Checked;
+                    Expand(node);
+                }
+                else
+                {
+                    ((TestTreeNode)node.Tag).CheckState = CheckState.Unchecked;
+                }
+            }
+            else
+                ((TestTreeNode)node.Tag).CheckState = CheckState.Unchecked;
+
+            foreach (TreeNodeAdv tNode in node.Children)
+                SelectNode(tNode, testStatus);
         }
     }
 }

@@ -61,6 +61,8 @@ namespace Gallio.Icarus.Mediator
 
         public IOptionsController OptionsController { get; set; }
 
+        public ISourceCodeController SourceCodeController { get; set; }
+
         public ProgressMonitorProvider ProgressMonitorProvider
         {
             get { return progressMonitorProvider; }
@@ -83,7 +85,7 @@ namespace Gallio.Icarus.Mediator
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
                     {
                         TestController.SetTestPackageConfig(ProjectController.TestPackageConfig);
-                        TestController.Explore(subProgressMonitor);
+                        TestController.Explore(subProgressMonitor, ProjectController.TestRunnerExtensions);
                     }
                 }
             }));
@@ -158,7 +160,7 @@ namespace Gallio.Icarus.Mediator
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(90))
                     {
                         TestController.SetTestPackageConfig(ProjectController.TestPackageConfig);
-                        TestController.Explore(subProgressMonitor);
+                        TestController.Explore(subProgressMonitor, ProjectController.TestRunnerExtensions);
                     }
                 }
             }));
@@ -180,7 +182,7 @@ namespace Gallio.Icarus.Mediator
                         using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(80))
                         {
                             TestController.SetTestPackageConfig(ProjectController.TestPackageConfig);
-                            TestController.Explore(subProgressMonitor);
+                            TestController.Explore(subProgressMonitor, ProjectController.TestRunnerExtensions);
                         }
 
                         if (progressMonitor.IsCanceled)
@@ -200,7 +202,7 @@ namespace Gallio.Icarus.Mediator
                 {
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(95))
                     {
-                        TestController.Explore(subProgressMonitor);
+                        TestController.Explore(subProgressMonitor, ProjectController.TestRunnerExtensions);
                     }
 
                     if (progressMonitor.IsCanceled)
@@ -250,7 +252,7 @@ namespace Gallio.Icarus.Mediator
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(50))
                     {
                         TestController.SetTestPackageConfig(ProjectController.TestPackageConfig);
-                        TestController.Explore(subProgressMonitor);
+                        TestController.Explore(subProgressMonitor, ProjectController.TestRunnerExtensions);
                     }
                 }
             }));
@@ -285,7 +287,7 @@ namespace Gallio.Icarus.Mediator
 
                     // run the tests
                     using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(96))
-                        TestController.Run(attachDebugger, subProgressMonitor);
+                        TestController.Run(attachDebugger, subProgressMonitor, ProjectController.TestRunnerExtensions);
 
                     if (OptionsController.GenerateReportAfterTestRun)
                         GenerateReport();
@@ -318,18 +320,20 @@ namespace Gallio.Icarus.Mediator
 
         public void ShowReport(string reportFormat)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => TestController.ReadReport(
-                delegate(Report report)
-                {
-                    string fileName = ReportController.ShowReport(report, reportFormat, progressMonitor);
-                    if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
-                        Process.Start(fileName);
-                })));
+            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
+                TestController.ReadReport(
+                    delegate(Report report)
+                    {
+                        string fileName = ReportController.ShowReport(report, reportFormat, progressMonitor);
+                        if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
+                            Process.Start(fileName);
+                    })));
         }
 
         public void ViewSourceCode(string testId)
         {
-            TestController.ViewSourceCode(testId, NullProgressMonitor.CreateInstance());
+            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
+                SourceCodeController.ViewSourceCode(testId, progressMonitor)));
         }
 
         public void Cancel()

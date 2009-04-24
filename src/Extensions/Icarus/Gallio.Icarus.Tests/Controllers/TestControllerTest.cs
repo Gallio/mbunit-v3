@@ -73,7 +73,7 @@ namespace Gallio.Icarus.Tests.Controllers
             const string treeViewCategory = "treeViewCategory";
             testController.TreeViewCategory = treeViewCategory;
 
-            testController.Explore(progressMonitor);
+            testController.Explore(progressMonitor, new List<string>());
             
             Assert.IsTrue(exploreStartedFlag);
             testRunner.AssertWasCalled(tr => tr.Initialize(Arg<TestRunnerOptions>.Is.Anything, 
@@ -99,7 +99,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunner.Stub(tr => tr.Events).Return(testRunnerEvents);
             testRunnerFactory.Stub(trf => trf.CreateTestRunner()).Return(testRunner);
             testController.SetTestRunnerFactory(testRunnerFactory);
-            testController.Explore(progressMonitor);
+            testController.Explore(progressMonitor, new List<string>());
             TestStepFinishedEventArgs testStepFinishedEventArgs = new TestStepFinishedEventArgs(new Report(), 
                 new TestData("id", "name", "fullName"), 
                 new TestStepRun(new TestStepData("id", "name", "fullName", "testId")));
@@ -127,7 +127,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunner.Stub(tr => tr.Events).Return(testRunnerEvents);
             testRunnerFactory.Stub(trf => trf.CreateTestRunner()).Return(testRunner);
             testController.SetTestRunnerFactory(testRunnerFactory);
-            testController.Explore(progressMonitor);
+            testController.Explore(progressMonitor, new List<string>());
             var testStepRun = new TestStepRun(new TestStepData("id", "name", "fullName", "testId"))
                                   {
                                       Result = new TestResult { Outcome = new TestOutcome(TestStatus.Failed) }
@@ -156,7 +156,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunner.Stub(tr => tr.Events).Return(testRunnerEvents);
             testRunnerFactory.Stub(trf => trf.CreateTestRunner()).Return(testRunner);
             testController.SetTestRunnerFactory(testRunnerFactory);
-            testController.Explore(progressMonitor);
+            testController.Explore(progressMonitor, new List<string>());
             Report report = new Report();
 
             testRunnerEvents.Raise(tre => tre.RunStarted += null, testRunner,
@@ -180,7 +180,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testRunner.Stub(tr => tr.Events).Return(testRunnerEvents);
             testRunnerFactory.Stub(trf => trf.CreateTestRunner()).Return(testRunner);
             testController.SetTestRunnerFactory(testRunnerFactory);
-            testController.Explore(progressMonitor);
+            testController.Explore(progressMonitor, new List<string>());
             Report report = new Report();
 
             testRunnerEvents.Raise(tre => tre.ExploreStarted += null, testRunner, 
@@ -199,7 +199,7 @@ namespace Gallio.Icarus.Tests.Controllers
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
             var testController = new TestController(testTreeModel, optionsController);
 
-            Assert.Throws<InvalidOperationException>(() => testController.Explore(progressMonitor));
+            Assert.Throws<InvalidOperationException>(() => testController.Explore(progressMonitor, new List<string>()));
         }
 
         [Test]
@@ -325,7 +325,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testController.SetTestRunnerFactory(testRunnerFactory);
 
             testController.GenerateFilterSetFromSelectedTests();
-            testController.Run(false, progressMonitor);
+            testController.Run(false, progressMonitor, new List<string>());
 
             Assert.IsTrue(runStartedFlag);
         }
@@ -355,7 +355,7 @@ namespace Gallio.Icarus.Tests.Controllers
 
             testController.SetTestPackageConfig(testPackageConfig);
             testController.GenerateFilterSetFromSelectedTests();
-            testController.Run(false, progressMonitor);
+            testController.Run(false, progressMonitor, new List<string>());
 
             Assert.IsTrue(runStartedFlag);
             testTreeModel.AssertWasCalled(ttm => ttm.GenerateFilterSetFromSelectedTests());
@@ -367,7 +367,7 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
-        public void TestRunnerExtensions_Test()
+        public void TestRunnerExtensions_are_found_from_OptionsController()
         {
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
 
@@ -389,7 +389,35 @@ namespace Gallio.Icarus.Tests.Controllers
             testController.SetTestRunnerFactory(testRunnerFactory);
 
             testController.GenerateFilterSetFromSelectedTests();
-            testController.Run(false, progressMonitor);
+            testController.Run(false, progressMonitor, new List<string>());
+
+            testRunner.AssertWasCalled(tr => tr.RegisterExtension(Arg<DebugExtension>.Is.Anything));
+        }
+
+        [Test]
+        public void TestRunnerExtensions_are_found_from_Project()
+        {
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var filter = new FilterSet<ITest>(new NoneFilter<ITest>());
+            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
+
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testRunnerExtensions = new BindingList<string>(new List<string>());
+            optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
+
+            var testController = new TestController(testTreeModel, optionsController);
+
+            var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
+            var testRunner = MockRepository.GenerateStub<ITestRunner>();
+            var testRunnerEvents = MockRepository.GenerateStub<ITestRunnerEvents>();
+            testRunner.Stub(tr => tr.Events).Return(testRunnerEvents);
+            testRunnerFactory.Stub(trf => trf.CreateTestRunner()).Return(testRunner);
+            testController.SetTestRunnerFactory(testRunnerFactory);
+
+            testController.GenerateFilterSetFromSelectedTests();
+            testController.Run(false, progressMonitor, new List<string>(new[] { "DebugExtension, Gallio" }));
 
             testRunner.AssertWasCalled(tr => tr.RegisterExtension(Arg<DebugExtension>.Is.Anything));
         }

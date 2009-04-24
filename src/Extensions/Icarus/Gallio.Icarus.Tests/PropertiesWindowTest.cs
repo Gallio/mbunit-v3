@@ -13,24 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.ComponentModel;
 using Gallio.Icarus.Controllers.Interfaces;
 using MbUnit.Framework;
 using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests
 {
-    [MbUnit.Framework.Category("Views")]
-    class PropertiesWindowTest : MockTest
+    [Category("Views")]
+    internal class PropertiesWindowTest
     {
         [Test]
         public void Constructor_Test()
         {
-            IProjectController projectController = mocks.StrictMock<IProjectController>();
-            Expect.Call(projectController.HintDirectories).Return(new BindingList<string>(new List<string>()));
-            mocks.ReplayAll();
-            PropertiesWindow propertiesWindow = new PropertiesWindow(projectController);
+            var projectController = MockRepository.GenerateStub<IProjectController>();
+            var propertiesWindow = new PropertiesWindow(projectController);
         }
     }
 }

@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.IO;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Runner;
@@ -47,6 +46,7 @@ namespace Gallio.Icarus.Options
             {
                 TestRunnerExtensionUtils.CreateExtensionFromSpecification(newExtensionTextBox.Text);
                 optionsController.TestRunnerExtensions.Add(newExtensionTextBox.Text);
+                newExtensionTextBox.Text = string.Empty;
             }
             catch (RunnerException ex)
             {

@@ -14,10 +14,11 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Gallio.Icarus.Controllers.Interfaces;
+using Gallio.Runner;
+using Gallio.Runner.Extensions;
 
 namespace Gallio.Icarus
 {
@@ -36,6 +37,7 @@ namespace Gallio.Icarus
                 "TestPackageConfig.HostSetup.WorkingDirectory", false, DataSourceUpdateMode.OnPropertyChanged);
             shadowCopyCheckBox.DataBindings.Add("Checked", projectController, 
                 "TestPackageConfig.HostSetup.ShadowCopy", false, DataSourceUpdateMode.OnPropertyChanged);
+            testRunnerExtensionsListBox.DataSource = projectController.TestRunnerExtensions;
         }
 
         private void findHintDirectoryButton_Click(object sender, EventArgs e)
@@ -83,6 +85,30 @@ namespace Gallio.Icarus
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 workingDirectoryTextBox.Text = folderBrowserDialog.SelectedPath;
+        }
+
+        private void addExtensionButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                TestRunnerExtensionUtils.CreateExtensionFromSpecification(newExtensionTextBox.Text);
+                projectController.TestRunnerExtensions.Add(newExtensionTextBox.Text);
+                newExtensionTextBox.Text = string.Empty;
+            }
+            catch (RunnerException ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void removeExtensionButton_Click(object sender, EventArgs e)
+        {
+            projectController.TestRunnerExtensions.Remove((string)testRunnerExtensionsListBox.SelectedItem);
+        }
+
+        private void testRunnerExtensionsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            removeExtensionButton.Enabled = (testRunnerExtensionsListBox.SelectedItems.Count > 0);
         }
     }
 }

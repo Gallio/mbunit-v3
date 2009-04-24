@@ -26,12 +26,13 @@ namespace Gallio.Icarus.Controllers.Interfaces
         Color FailedColor { get; }
         Color InconclusiveColor { get; }
         Color SkippedColor { get; }
-        int Passed { get; }
-        int Failed { get; }
-        int Skipped { get; }
-        int Inconclusive { get; }
+        int PassedTestCount { get; }
+        int FailedTestCount { get; }
+        int SkippedTestCount { get; }
+        int InconclusiveTestCount { get; }
 
         void CacheVirtualItems(int startIndex, int endIndex);
         ListViewItem RetrieveVirtualItem(int itemIndex);
+        void SetSortColumn(int column);
     }
 }

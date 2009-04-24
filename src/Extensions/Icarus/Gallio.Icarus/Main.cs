@@ -75,7 +75,7 @@ namespace Gallio.Icarus
 
             mediator.TestController.RunFinished += TestControllerRunFinished;
             mediator.TestController.ExploreFinished += TestControllerLoadFinished;
-            mediator.TestController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
+            mediator.SourceCodeController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
             
             mediator.ProgressMonitorProvider.ProgressUpdate += ProgressUpdate;
             progressMonitor = new ProgressMonitor(mediator);

@@ -30,6 +30,7 @@ using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Icarus.Services;
 using Gallio.Utilities;
+using Gallio.Icarus.Models.Interfaces;
 
 namespace Gallio.Icarus
 {
@@ -89,7 +90,8 @@ namespace Gallio.Icarus
 
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
-                testController = new TestController(new TestTreeModel(), optionsController);
+                var testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
+                testController = new TestController(testTreeModel, optionsController);
 
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 
@@ -109,6 +111,7 @@ namespace Gallio.Icarus
                 mediator.AnnotationsController = new AnnotationsController(mediator.TestController, mediator.OptionsController);
                 mediator.TestResultsController = new TestResultsController(mediator.TestController, 
                     mediator.OptionsController);
+                mediator.SourceCodeController = new SourceCodeController(testController);
 
                 var applicationController = new ApplicationController(Arguments, mediator);
                 var main = new Main(applicationController);

@@ -31,6 +31,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         TestPackageConfig TestPackageConfig { get; }
         BindingList<FilterInfo> TestFilters { get; }
         BindingList<string> HintDirectories { get; }
+        BindingList<string> TestRunnerExtensions { get; }
         string ProjectFileName { get; }
         List<string> CollapsedNodes { get; set; }
         string TreeViewCategory { get; set; }

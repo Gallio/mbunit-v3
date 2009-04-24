@@ -76,6 +76,10 @@ namespace Gallio.Icarus
             this.filterInconclusiveTestsToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.sortAscToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
             this.sortDescToolStripButton = new Gallio.Icarus.Controls.ToolStripButton();
+            this.selectAlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectPassedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectFailedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectInconclusiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testTreeMenuStrip.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -112,13 +116,14 @@ namespace Gallio.Icarus
             this.toolStripSeparator7,
             this.expandMenuItem,
             this.filterToolStripMenuItem,
+            this.selectAlToolStripMenuItem,
             this.toolStripSeparator9,
             this.resetTestsMenuItem,
             this.toolStripSeparator10,
             this.assembliesToolStripMenuItem,
             this.viewSourceCodeToolStripMenuItem});
             this.testTreeMenuStrip.Name = "classTreeMenuStrip";
-            this.testTreeMenuStrip.Size = new System.Drawing.Size(169, 176);
+            this.testTreeMenuStrip.Size = new System.Drawing.Size(169, 220);
             // 
             // expandAllMenuItem
             // 
@@ -153,7 +158,7 @@ namespace Gallio.Icarus
             // 
             this.expandPassedTestsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.tick;
             this.expandPassedTestsToolStripMenuItem.Name = "expandPassedTestsToolStripMenuItem";
-            this.expandPassedTestsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.expandPassedTestsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.expandPassedTestsToolStripMenuItem.Text = "Passed";
             this.expandPassedTestsToolStripMenuItem.Click += new System.EventHandler(this.expandPassedTestsToolStripMenuItem_Click);
             // 
@@ -161,7 +166,7 @@ namespace Gallio.Icarus
             // 
             this.expandFailedTestsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.cross;
             this.expandFailedTestsToolStripMenuItem.Name = "expandFailedTestsToolStripMenuItem";
-            this.expandFailedTestsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.expandFailedTestsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.expandFailedTestsToolStripMenuItem.Text = "Failed";
             this.expandFailedTestsToolStripMenuItem.Click += new System.EventHandler(this.expandFailedTestsToolStripMenuItem_Click);
             // 
@@ -169,7 +174,7 @@ namespace Gallio.Icarus
             // 
             this.expandSkippedTestsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.error;
             this.expandSkippedTestsToolStripMenuItem.Name = "expandSkippedTestsToolStripMenuItem";
-            this.expandSkippedTestsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.expandSkippedTestsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.expandSkippedTestsToolStripMenuItem.Text = "Inconclusive";
             this.expandSkippedTestsToolStripMenuItem.Click += new System.EventHandler(this.expandInconclusiveTestsToolStripMenuItem_Click);
             // 
@@ -188,7 +193,7 @@ namespace Gallio.Icarus
             this.filterPassedTestsToolStripMenuItem.CheckOnClick = true;
             this.filterPassedTestsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.FilterPassed;
             this.filterPassedTestsToolStripMenuItem.Name = "filterPassedTestsToolStripMenuItem";
-            this.filterPassedTestsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.filterPassedTestsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.filterPassedTestsToolStripMenuItem.Text = "Passed";
             // 
             // filterFailedTestsToolStripMenuItem
@@ -196,7 +201,7 @@ namespace Gallio.Icarus
             this.filterFailedTestsToolStripMenuItem.CheckOnClick = true;
             this.filterFailedTestsToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.FilterFailed;
             this.filterFailedTestsToolStripMenuItem.Name = "filterFailedTestsToolStripMenuItem";
-            this.filterFailedTestsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.filterFailedTestsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.filterFailedTestsToolStripMenuItem.Text = "Failed";
             // 
             // filterInconclusiveTestsToolStripMenuItem
@@ -204,7 +209,7 @@ namespace Gallio.Icarus
             this.filterInconclusiveTestsToolStripMenuItem.CheckOnClick = true;
             this.filterInconclusiveTestsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("filterInconclusiveTestsToolStripMenuItem.Image")));
             this.filterInconclusiveTestsToolStripMenuItem.Name = "filterInconclusiveTestsToolStripMenuItem";
-            this.filterInconclusiveTestsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.filterInconclusiveTestsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.filterInconclusiveTestsToolStripMenuItem.Text = "Inconclusive";
             // 
             // toolStripSeparator9
@@ -356,6 +361,40 @@ namespace Gallio.Icarus
             this.sortDescToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.sortDescToolStripButton.Text = "Sort tree (desc)";
             // 
+            // selectAlToolStripMenuItem
+            // 
+            this.selectAlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectPassedToolStripMenuItem,
+            this.selectFailedToolStripMenuItem,
+            this.selectInconclusiveToolStripMenuItem});
+            this.selectAlToolStripMenuItem.Name = "selectAlToolStripMenuItem";
+            this.selectAlToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.selectAlToolStripMenuItem.Text = "Select";
+            // 
+            // selectPassedToolStripMenuItem
+            // 
+            this.selectPassedToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.tick;
+            this.selectPassedToolStripMenuItem.Name = "selectPassedToolStripMenuItem";
+            this.selectPassedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectPassedToolStripMenuItem.Text = "Passed";
+            this.selectPassedToolStripMenuItem.Click += new System.EventHandler(this.selectPassedToolStripMenuItem_Click);
+            // 
+            // selectFailedToolStripMenuItem
+            // 
+            this.selectFailedToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.cross;
+            this.selectFailedToolStripMenuItem.Name = "selectFailedToolStripMenuItem";
+            this.selectFailedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectFailedToolStripMenuItem.Text = "Failed";
+            this.selectFailedToolStripMenuItem.Click += new System.EventHandler(this.selectFailedToolStripMenuItem_Click);
+            // 
+            // selectInconclusiveToolStripMenuItem
+            // 
+            this.selectInconclusiveToolStripMenuItem.Image = global::Gallio.Icarus.Properties.Resources.error;
+            this.selectInconclusiveToolStripMenuItem.Name = "selectInconclusiveToolStripMenuItem";
+            this.selectInconclusiveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectInconclusiveToolStripMenuItem.Text = "Inconclusive";
+            this.selectInconclusiveToolStripMenuItem.Click += new System.EventHandler(this.selectInconclusiveToolStripMenuItem_Click);
+            // 
             // TestExplorer
             // 
             this.AllowDrop = true;
@@ -410,5 +449,9 @@ namespace Gallio.Icarus
         private System.Windows.Forms.ToolStripMenuItem removeAssemblyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeAssembliesToolStripMenuItem;
         private ToolStripButton sortAscToolStripButton;
+        private System.Windows.Forms.ToolStripMenuItem selectAlToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectPassedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectFailedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectInconclusiveToolStripMenuItem;
     }
 }

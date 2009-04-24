@@ -22,23 +22,14 @@ using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Models
 {
-    public class TestTreeNode : Node
+    public sealed class TestTreeNode : Node
     {
         private TestStatus testStatus = TestStatus.Skipped;
-        private readonly string name;
-        private readonly string nodeType;
-        protected Image nodeTypeIcon, testStatusIcon;
         private readonly List<TestStepRun> testStepRuns;
 
-        public string Name
-        {
-            get { return name; }
-        }
+        public string Name { get; private set; }
 
-        public string NodeType
-        {
-            get { return nodeType; }
-        }
+        public string NodeType { get; private set; }
 
         public TestStatus TestStatus
         {
@@ -46,7 +37,8 @@ namespace Gallio.Icarus.Models
             set
             {
                 testStatus = value;
-                testStatusIcon = GetTestStatusIcon(value);
+                TestStatusIcon = GetTestStatusIcon(value);
+                NotifyModel();
                 UpdateParentTestStatus();
             }
         }
@@ -106,15 +98,9 @@ namespace Gallio.Icarus.Models
             }
         }
 
-        public Image NodeTypeIcon
-        {
-            get { return nodeTypeIcon; }
-        }
+        public Image NodeTypeIcon { get; private set; }
 
-        public Image TestStatusIcon
-        {
-            get { return testStatusIcon; }
-        }
+        public Image TestStatusIcon { get; private set; }
 
         public List<TestStepRun> TestStepRuns
         {
@@ -124,36 +110,36 @@ namespace Gallio.Icarus.Models
         public TestTreeNode(string text, string name, string nodeType)
             : base(text)
         {
-            this.name = name;
-            this.nodeType = nodeType;
+            this.Name = name;
+            this.NodeType = nodeType;
             CheckState = CheckState.Checked;
             testStepRuns = new List<TestStepRun>();
 
             switch (nodeType)
             {
                 case TestKinds.Assembly:
-                    nodeTypeIcon = Properties.Resources.Assembly;
+                    NodeTypeIcon = Properties.Resources.Assembly;
                     break;
                 case "Namespace":
-                    nodeTypeIcon = Properties.Resources.Namespace;
+                    NodeTypeIcon = Properties.Resources.Namespace;
                     break;
                 case TestKinds.Fixture:
-                    nodeTypeIcon = Properties.Resources.Fixture;
+                    NodeTypeIcon = Properties.Resources.Fixture;
                     break;
                 case TestKinds.Test:
-                    nodeTypeIcon = Properties.Resources.Test;
+                    NodeTypeIcon = Properties.Resources.Test;
                     break;
                 case TestKinds.Group:
-                    nodeTypeIcon = Properties.Resources.Group;
+                    NodeTypeIcon = Properties.Resources.Group;
                     break;
                 case "FilterPassed":
-                    nodeTypeIcon = Properties.Resources.FilterPassed;
+                    NodeTypeIcon = Properties.Resources.FilterPassed;
                     break;
                 case "FilterFailed":
-                    nodeTypeIcon = Properties.Resources.FilterFailed;
+                    NodeTypeIcon = Properties.Resources.FilterFailed;
                     break;
                 case "FilterInconclusive":
-                    nodeTypeIcon = Properties.Resources.FilterSkipped;
+                    NodeTypeIcon = Properties.Resources.FilterSkipped;
                     break;
                 // TODO: Icons for metadata etc...
             }
@@ -286,7 +272,7 @@ namespace Gallio.Icarus.Models
         public void Reset()
         {
             testStatus = TestStatus.Skipped;
-            testStatusIcon = GetTestStatusIcon(TestStatus.Skipped);
+            TestStatusIcon = GetTestStatusIcon(TestStatus.Skipped);
 
             testStepRuns.Clear();
 

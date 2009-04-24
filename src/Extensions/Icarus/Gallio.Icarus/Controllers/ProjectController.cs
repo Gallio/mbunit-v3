@@ -35,11 +35,11 @@ namespace Gallio.Icarus.Controllers
         private readonly IOptionsController optionsController;
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerializer xmlSerializer;
-        private readonly BindingList<FilterInfo> testFilters;
-        private readonly List<FilterInfo> testFiltersList = new List<FilterInfo>();
-        private readonly BindingList<string> hintDirectories;
-        private readonly List<string> hintDirectoriesList = new List<string>();
         private readonly AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
+
+        private readonly List<FilterInfo> testFilters = new List<FilterInfo>();
+        private readonly List<string> hintDirectories = new List<string>();
+        private readonly List<string> testRunnerExtensions = new List<string>();
 
         public event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
 
@@ -53,15 +53,11 @@ namespace Gallio.Icarus.Controllers
             get { return projectTreeModel.Project.TestPackageConfig; }
         }
 
-        public BindingList<FilterInfo> TestFilters
-        {
-            get { return testFilters; }
-        }
+        public BindingList<FilterInfo> TestFilters { get; private set; }
 
-        public BindingList<string> HintDirectories
-        {
-            get { return hintDirectories; }
-        }
+        public BindingList<string> HintDirectories { get; private set; }
+
+        public BindingList<string> TestRunnerExtensions { get; private set; }
 
         public string ProjectFileName
         {
@@ -88,35 +84,36 @@ namespace Gallio.Icarus.Controllers
             this.fileSystem = fileSystem;
             this.xmlSerializer = xmlSerializer;
 
-            testFilters = new BindingList<FilterInfo>(testFiltersList);
-            testFilters.ListChanged += testFilters_ListChanged;
+            TestFilters = new BindingList<FilterInfo>(testFilters);
+            TestFilters.ListChanged += delegate
+            {
+                projectTreeModel.Project.TestFilters.Clear();
+                projectTreeModel.Project.TestFilters.AddRange(TestFilters);
+            };
 
-            hintDirectories = new BindingList<string>(hintDirectoriesList);
-            hintDirectories.ListChanged += hintDirectories_ListChanged;
+            HintDirectories = new BindingList<string>(hintDirectories);
+            HintDirectories.ListChanged += delegate
+            {
+                projectTreeModel.Project.TestPackageConfig.HintDirectories.Clear();
+                projectTreeModel.Project.TestPackageConfig.HintDirectories.AddRange(HintDirectories);
+            };
 
-            assemblyWatcher.AssemblyChangedEvent += assemblyWatcher_AssemblyChangedEvent;
+            TestRunnerExtensions = new BindingList<string>(testRunnerExtensions);
+            TestRunnerExtensions.ListChanged += delegate
+            {
+                projectTreeModel.Project.TestRunnerExtensions.Clear();
+                projectTreeModel.Project.TestRunnerExtensions.AddRange(TestRunnerExtensions);
+            };
+
+            assemblyWatcher.AssemblyChangedEvent += delegate(string fullPath)
+            {
+                string assemblyName = Path.GetFileNameWithoutExtension(fullPath);
+                EventHandlerUtils.SafeInvoke(AssemblyChanged, this, new AssemblyChangedEventArgs(assemblyName));
+            };
 
             // default tree view category
             TreeViewCategory = "Namespace";
             CollapsedNodes = new List<string>();
-        }
-
-        private void testFilters_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            projectTreeModel.Project.TestFilters.Clear();
-            projectTreeModel.Project.TestFilters.AddRange(testFiltersList);
-        }
-
-        private void hintDirectories_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            projectTreeModel.Project.TestPackageConfig.HintDirectories.Clear();
-            projectTreeModel.Project.TestPackageConfig.HintDirectories.AddRange(hintDirectoriesList);
-        }
-
-        private void assemblyWatcher_AssemblyChangedEvent(string fullPath)
-        {
-            string assemblyName = Path.GetFileNameWithoutExtension(fullPath);
-            EventHandlerUtils.SafeInvoke(AssemblyChanged, this, new AssemblyChangedEventArgs(assemblyName));
         }
 
         public void AddAssemblies(IList<string> assemblies, IProgressMonitor progressMonitor)
@@ -139,7 +136,7 @@ namespace Gallio.Icarus.Controllers
         public void DeleteFilter(FilterInfo filterInfo, IProgressMonitor progressMonitor)
         {
             using (progressMonitor.BeginTask("Deleting filter", 1))
-                testFilters.Remove(filterInfo);
+                TestFilters.Remove(filterInfo);
         }
 
         public FilterSet<ITest> GetFilterSet(string filterName, IProgressMonitor progressMonitor)
@@ -167,14 +164,14 @@ namespace Gallio.Icarus.Controllers
 
         public void SaveFilterSet(string filterName, FilterSet<ITest> filterSet, IProgressMonitor progressMonitor)
         {
-            foreach (FilterInfo filterInfo in testFilters)
+            foreach (FilterInfo filterInfo in TestFilters)
             {
                 if (filterInfo.FilterName != filterName)
                     continue;
                 filterInfo.Filter = filterSet.ToFilterSetExpr();
                 return;
             }
-            testFilters.Add(new FilterInfo(filterName, filterSet.ToFilterSetExpr()));
+            TestFilters.Add(new FilterInfo(filterName, filterSet.ToFilterSetExpr()));
         }
 
         public void OpenProject(string projectName, IProgressMonitor progressMonitor)
@@ -276,17 +273,13 @@ namespace Gallio.Icarus.Controllers
 
         private void PublishUpdates()
         {
-            testFilters.ListChanged -= testFilters_ListChanged;
             testFilters.Clear();
             foreach (FilterInfo filterInfo in projectTreeModel.Project.TestFilters)
                 testFilters.Add(filterInfo);
-            testFilters.ListChanged += testFilters_ListChanged;
 
-            hintDirectories.ListChanged -= hintDirectories_ListChanged;
             hintDirectories.Clear();
             foreach (string hintDirectory in TestPackageConfig.HintDirectories)
                 hintDirectories.Add(hintDirectory);
-            hintDirectories.ListChanged += hintDirectories_ListChanged;
 
             OnPropertyChanged(new PropertyChangedEventArgs("TestPackageConfig"));
         }

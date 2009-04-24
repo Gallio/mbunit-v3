@@ -100,7 +100,7 @@
             this.groupBoxPluginDirectories.Controls.Add(this.addExtensionButton);
             this.groupBoxPluginDirectories.Location = new System.Drawing.Point(3, 3);
             this.groupBoxPluginDirectories.Name = "groupBoxPluginDirectories";
-            this.groupBoxPluginDirectories.Size = new System.Drawing.Size(444, 250);
+            this.groupBoxPluginDirectories.Size = new System.Drawing.Size(444, 255);
             this.groupBoxPluginDirectories.TabIndex = 12;
             this.groupBoxPluginDirectories.TabStop = false;
             this.groupBoxPluginDirectories.Text = "Test Runner Extensions";

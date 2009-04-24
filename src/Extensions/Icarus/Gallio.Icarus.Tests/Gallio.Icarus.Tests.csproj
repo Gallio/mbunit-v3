@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A90A40C4-4D48-4D0B-BE9B-432510EB1057}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -63,15 +63,17 @@
     <Compile Include="CodeWindowTest.cs" />
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
+    <Compile Include="Controllers\NotifyControllerTest.cs" />
     <Compile Include="Controllers\OptionsControllerTest.cs" />
     <Compile Include="Controllers\ProjectControllerTest.cs" />
     <Compile Include="Controllers\ReportControllerTest.cs" />
     <Compile Include="Controllers\RuntimeLogControllerTest.cs" />
+    <Compile Include="Controllers\SourceCodeControllerTest.cs" />
     <Compile Include="Controllers\TestControllerTest.cs" />
+    <Compile Include="Controllers\TestResultsControllerTest.cs" />
     <Compile Include="Controls\NodeCheckBoxTest.cs" />
     <Compile Include="Controls\ProjectTreeViewTest.cs" />
     <Compile Include="Controls\TestResultsListTest.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\TestStatusBarTest.cs">
       <SubType>Component</SubType>
@@ -99,7 +101,7 @@
     <Compile Include="TestExplorerTest.cs" />
     <Compile Include="TestResultsTest.cs">
     </Compile>
-    <Compile Include="Utilities\EventAssert.cs" />
+    <Compile Include="Utilities\TestSynchronizationContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Gallio\Gallio.UI\Gallio.UI.csproj">

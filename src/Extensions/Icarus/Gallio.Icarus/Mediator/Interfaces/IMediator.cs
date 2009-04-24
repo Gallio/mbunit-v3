@@ -33,6 +33,7 @@ namespace Gallio.Icarus.Mediator.Interfaces
         ITestController TestController { get; set; }
         ISynchronizationContext SynchronizationContext { set; }
         ITestResultsController TestResultsController { get; set; }
+        ISourceCodeController SourceCodeController { get; set; }
 
         void AddAssemblies(IList<string> assemblyFiles);
         void ApplyFilter(string filter);

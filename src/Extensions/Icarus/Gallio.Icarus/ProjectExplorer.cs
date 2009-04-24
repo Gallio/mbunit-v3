@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Utilities;
+using Gallio.Icarus.Models;
 
 namespace Gallio.Icarus
 {
@@ -52,64 +53,24 @@ namespace Gallio.Icarus
                 {
                     mediator.ConvertSavedReport((string)((Node)projectTree.SelectedNode.Tag).Tag, menuItem.Text);
                 };
-                viewReportAsToolStripMenuItem.DropDownItems.Add(menuItem);
+                viewReportAsMenuItem.DropDownItems.Add(menuItem);
             }
         }
 
         private void projectTree_SelectionChanged(object sender, EventArgs e)
         {
-            Sync.Invoke(this, delegate
-                                  {
-                                      if (projectTree.SelectedNode != null)
-                                      {
-                                          Node node = (Node) projectTree.SelectedNode.Tag;
-                                          if (node != null && node.Text == "Assemblies")
-                                          {
-                                              addAssembliesToolStripMenuItem.Visible = true;
-                                              addAssembliesToolStripMenuItem.Enabled = true;
-                                              removeAssemblyToolStripMenuItem.Visible = true;
-                                              removeAssemblyToolStripMenuItem.Enabled = false;
-                                              removeAssembliesToolStripMenuItem.Visible = true;
-                                              removeAssembliesToolStripMenuItem.Enabled = true;
-                                              viewReportAsToolStripMenuItem.Visible = false;
-                                              deleteReportToolStripMenuItem.Visible = false;
-                                              return;
-                                          }
-                                          if (projectTree.SelectedNode.Parent != null)
-                                          {
-                                              node = (Node) projectTree.SelectedNode.Parent.Tag;
-                                              if (node != null && node.Text == "Assemblies")
-                                              {
-                                                  addAssembliesToolStripMenuItem.Visible = true;
-                                                  addAssembliesToolStripMenuItem.Enabled = true;
-                                                  removeAssemblyToolStripMenuItem.Visible = true;
-                                                  removeAssemblyToolStripMenuItem.Enabled = true;
-                                                  removeAssembliesToolStripMenuItem.Visible = true;
-                                                  removeAssembliesToolStripMenuItem.Enabled = true;
-                                                  viewReportAsToolStripMenuItem.Visible = false;
-                                                  deleteReportToolStripMenuItem.Visible = false;
-                                                  return;
-                                              }
-                                              if (node != null && node.Text == "Reports")
-                                              {
-                                                  addAssembliesToolStripMenuItem.Visible = false;
-                                                  addAssembliesToolStripMenuItem.Enabled = false;
-                                                  removeAssemblyToolStripMenuItem.Visible = false;
-                                                  removeAssemblyToolStripMenuItem.Enabled = false;
-                                                  removeAssembliesToolStripMenuItem.Visible = false;
-                                                  removeAssembliesToolStripMenuItem.Enabled = false;
-                                                  viewReportAsToolStripMenuItem.Visible = true;
-                                                  deleteReportToolStripMenuItem.Visible = true;
-                                                  return;
-                                              }
-                                          }
-                                      }
-                                      addAssembliesToolStripMenuItem.Visible = false;
-                                      removeAssemblyToolStripMenuItem.Visible = false;
-                                      removeAssembliesToolStripMenuItem.Visible = false;
-                                      viewReportAsToolStripMenuItem.Visible = false;
-                                      deleteReportToolStripMenuItem.Visible = false;
-                                  });
+            if (projectTree.SelectedNode == null) 
+                return;
+
+            Node node = (Node)projectTree.SelectedNode.Tag;
+            if (node != null && node.Text == "Assemblies")
+                projectTree.ContextMenuStrip = assembliesNodeMenuStrip;
+            else if (node is AssemblyNode)
+                projectTree.ContextMenuStrip = assemblyNodeMenuStrip;
+            else if (node is ReportNode)
+                projectTree.ContextMenuStrip = reportNodeMenuStrip;
+            else
+                projectTree.ContextMenuStrip = null;
         }
 
         private void removeAssemblyToolStripMenuItem_Click(object sender, EventArgs e)
