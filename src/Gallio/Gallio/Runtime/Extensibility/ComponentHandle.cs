@@ -70,8 +70,12 @@ namespace Gallio.Runtime.Extensibility
         /// </summary>
         /// <param name="type">The type to examine</param>
         /// <returns>True if the type is a component handle type</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null</exception>
         public static bool IsComponentHandleType(Type type)
         {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
             return type == typeof(ComponentHandle)
                 || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ComponentHandle<,>);
         }
@@ -83,6 +87,18 @@ namespace Gallio.Runtime.Extensibility
         {
             get { return componentDescriptor; }
         }
+
+        /// <summary>
+        /// Gets the service type.
+        /// </summary>
+        /// <returns>The service type</returns>
+        public abstract Type ServiceType { get; }
+
+        /// <summary>
+        /// Gets the traits type.
+        /// </summary>
+        /// <returns>The traits type</returns>
+        public abstract Type TraitsType { get; }
 
         /// <summary>
         /// Gets the component instance.
@@ -104,18 +120,6 @@ namespace Gallio.Runtime.Extensibility
             return GetTraitsImpl();
         }
 
-        /// <summary>
-        /// Gets the service type.
-        /// </summary>
-        /// <returns>The service type</returns>
-        public abstract Type GetServiceType();
-
-        /// <summary>
-        /// Gets the traits type.
-        /// </summary>
-        /// <returns>The traits type</returns>
-        public abstract Type GetTraitsType();
-
         internal abstract object GetComponentImpl();
         internal abstract Traits GetTraitsImpl();
     }
@@ -136,6 +140,18 @@ namespace Gallio.Runtime.Extensibility
         {
         }
 
+        /// <inheritdoc />
+        public override Type ServiceType
+        {
+            get { return typeof(TService); }
+        }
+
+        /// <inheritdoc />
+        public override Type TraitsType
+        {
+            get { return typeof(TTraits); }
+        }
+
         /// <summary>
         /// Gets the component instance.
         /// </summary>
@@ -154,18 +170,6 @@ namespace Gallio.Runtime.Extensibility
         new public TTraits GetTraits()
         {
             return traitsMemoizer.Memoize(() => (TTraits)Descriptor.ResolveTraits());
-        }
-
-        /// <inheritdoc />
-        public override Type GetServiceType()
-        {
-            return typeof(TService);
-        }
-
-        /// <inheritdoc />
-        public override Type GetTraitsType()
-        {
-            return typeof(TTraits);
         }
 
         internal override object GetComponentImpl()

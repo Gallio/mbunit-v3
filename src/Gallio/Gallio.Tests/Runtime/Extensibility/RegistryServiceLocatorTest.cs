@@ -21,327 +21,631 @@ namespace Gallio.Tests.Runtime.Extensibility
         }
 
         [Test]
-        public void Resolve_WhenServiceTypeIsNull_Throws()
+        public void Registry_Always_ReturnsRegistry()
         {
-            var registry = new FakeRegistry();
+            var registry = MockRepository.GenerateStub<IRegistry>();
             var serviceLocator = new RegistryServiceLocator(registry);
 
-            Assert.Throws<ArgumentNullException>(() => serviceLocator.Resolve(null));
+            Assert.AreSame(registry, serviceLocator.Registry);
         }
 
-        [Test]
-        public void Resolve_WhenServiceTypeNotRegistered_Throws()
+        public class ResolvingInstances
         {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
+            [Test]
+            public void Resolve_WhenServiceTypeIsNull_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
 
-            var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve(typeof(DummyService)));
-            Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+                Assert.Throws<ArgumentNullException>(() => serviceLocator.Resolve(null));
+            }
+
+            [Test]
+            public void Resolve_WhenServiceTypeNotRegistered_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve(typeof(DummyService)));
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void Resolve_WhenServiceTypeRegisteredButNoComponents_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterService(typeof(DummyService));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve(typeof(DummyService)));
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void Resolve_WhenServiceTypeRegisteredButMoreThanOneComponent_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(serviceDescriptor, "component1Id", typeof(DummyComponent));
+                registry.RegisterComponent(serviceDescriptor, "component2Id", typeof(DummyComponent2));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve(typeof(DummyService)));
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there are more than one of them registered and enabled so the request is ambiguous.");
+            }
+
+            [Test]
+            public void Resolve_WhenServiceTypeMapsToExactlyOneComponent_ReturnsResolvedComponent()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var component = (DummyComponent)serviceLocator.Resolve(typeof(DummyService));
+
+                Assert.IsNotNull(component);
+            }
+
+            [Test]
+            public void Resolve_WhenServiceTypeMapsToExactlyOneComponentButItIsDisabled_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterDisabledComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve(typeof(DummyService)));
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveGeneric_WhenServiceTypeNotRegistered_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve<DummyService>());
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveGeneric_WhenServiceTypeRegisteredButNoComponents_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterService(typeof(DummyService));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve<DummyService>());
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveGeneric_WhenServiceTypeRegisteredButMoreThanOneComponent_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(serviceDescriptor, "component1Id", typeof(DummyComponent));
+                registry.RegisterComponent(serviceDescriptor, "component2Id", typeof(DummyComponent2));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve<DummyService>());
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there are more than one of them registered and enabled so the request is ambiguous.");
+            }
+
+            [Test]
+            public void ResolveGeneric_WhenServiceTypeMapsToExactlyOneComponent_ReturnsResolvedComponent()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var component = (DummyComponent)serviceLocator.Resolve<DummyService>();
+
+                Assert.IsNotNull(component);
+            }
+
+            [Test]
+            public void ResolveGeneric_WhenServiceTypeMapsToExactlyOneComponentButItIsDisabled_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterDisabledComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve<DummyService>());
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveAll_WhenServiceTypeIsNull_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                Assert.Throws<ArgumentNullException>(() => serviceLocator.ResolveAll(null));
+            }
+
+            [Test]
+            public void ResolveAll_WhenServiceTypeNotRegistered_ReturnsAnEmptyList()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var result = serviceLocator.ResolveAll(typeof(DummyService));
+
+                Assert.IsEmpty(result);
+            }
+
+            [Test]
+            public void ResolveAll_WhenServiceTypeRegisteredButNoComponents_ReturnsAnEmptyList()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterService(typeof(DummyService));
+
+                var result = serviceLocator.ResolveAll(typeof(DummyService));
+
+                Assert.IsEmpty(result);
+            }
+
+            [Test]
+            public void ResolveAll_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllResolvedComponents()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(serviceDescriptor, "component1Id", typeof(DummyComponent));
+                registry.RegisterComponent(serviceDescriptor, "component2Id", typeof(DummyComponent2));
+
+                var result = serviceLocator.ResolveAll(typeof(DummyService));
+
+                Assert.AreEqual(2, result.Count);
+                Assert.IsInstanceOfType<DummyComponent>(result[0]);
+                Assert.IsInstanceOfType<DummyComponent2>(result[1]);
+            }
+
+            [Test]
+            public void ResolveAllGeneric_WhenServiceTypeNotRegistered_ReturnsAnEmptyList()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var result = serviceLocator.ResolveAll<DummyService>();
+
+                Assert.IsEmpty(result);
+            }
+
+            [Test]
+            public void ResolveAllGeneric_WhenServiceTypeRegisteredButNoComponents_ReturnsAnEmptyList()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterService(typeof(DummyService));
+
+                var result = serviceLocator.ResolveAll<DummyService>();
+
+                Assert.IsEmpty(result);
+            }
+
+            [Test]
+            public void ResolveAllGeneric_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllResolvedComponents()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(serviceDescriptor, "component1Id", typeof(DummyComponent));
+                registry.RegisterComponent(serviceDescriptor, "component2Id", typeof(DummyComponent2));
+
+                var result = serviceLocator.ResolveAll<DummyService>();
+
+                Assert.AreEqual(2, result.Count);
+                Assert.IsInstanceOfType<DummyComponent>(result[0]);
+                Assert.IsInstanceOfType<DummyComponent2>(result[1]);
+            }
+
+            [Test]
+            public void ResolveByComponentId_WhenComponentIdIsNull_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                Assert.Throws<ArgumentNullException>(() => serviceLocator.ResolveByComponentId(null));
+            }
+
+            [Test]
+            public void ResolveByComponentId_WhenComponentNotRegistered_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveByComponentId("componentId"));
+                Assert.Contains(ex.Message, "Could not resolve component with id 'componentId' because it does not appear to be registered.");
+            }
+
+            [Test]
+            public void ResolveByComponentId_WhenComponentRegistered_ReturnsResolvedComponent()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var component = (DummyComponent)serviceLocator.ResolveByComponentId("componentId");
+
+                Assert.IsNotNull(component);
+            }
+
+            [Test]
+            public void ResolveByComponentId_WhenComponentRegisteredButItIsDisabled_ReturnsResolvedComponent()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterDisabledComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveByComponentId("componentId"));
+                Assert.Contains(ex.Message, "Could not resolve component with id 'componentId' because it has been disabled.  Reason: ");
+            }
         }
 
-        [Test]
-        public void Resolve_WhenServiceTypeRegisteredButNoComponents_Throws()
+        public class ResolvingHandles
         {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            registry.RegisterService(typeof(DummyService));
+            [Test]
+            public void ResolveHandle_WhenServiceTypeIsNull_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
 
-            var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve(typeof(DummyService)));
-            Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+                Assert.Throws<ArgumentNullException>(() => serviceLocator.ResolveHandle(null));
+            }
+
+            [Test]
+            public void ResolveHandle_WhenServiceTypeNotRegistered_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandle(typeof(DummyService)));
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveHandle_WhenServiceTypeRegisteredButNoComponents_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterService(typeof(DummyService));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandle(typeof(DummyService)));
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveHandle_WhenServiceTypeRegisteredButMoreThanOneComponent_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(serviceDescriptor, "component1Id", typeof(DummyComponent));
+                registry.RegisterComponent(serviceDescriptor, "component2Id", typeof(DummyComponent2));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandle(typeof(DummyService)));
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there are more than one of them registered and enabled so the request is ambiguous.");
+            }
+
+            [Test]
+            public void ResolveHandle_WhenServiceTypeMapsToExactlyOneComponent_ReturnsComponentHandle()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                var componentDescriptor = registry.RegisterComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var componentHandle = serviceLocator.ResolveHandle(typeof(DummyService));
+
+                Assert.AreSame(componentDescriptor, componentHandle.Descriptor);
+            }
+
+            [Test]
+            public void ResolveHandle_WhenServiceTypeMapsToExactlyOneComponentButItIsDisabled_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterDisabledComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandle(typeof(DummyService)));
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveHandleGeneric_WhenServiceTypeNotRegistered_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandle<DummyService, DummyTraits>());
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveHandleGeneric_WhenServiceTypeRegisteredButNoComponents_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterService(typeof(DummyService));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandle<DummyService, DummyTraits>());
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveHandleGeneric_WhenServiceTypeRegisteredButMoreThanOneComponent_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(serviceDescriptor, "component1Id", typeof(DummyComponent));
+                registry.RegisterComponent(serviceDescriptor, "component2Id", typeof(DummyComponent2));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandle<DummyService, DummyTraits>());
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there are more than one of them registered and enabled so the request is ambiguous.");
+            }
+
+            [Test]
+            public void ResolveHandleGeneric_WhenServiceTypeMapsToExactlyOneComponent_ReturnsComponentHandle()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                var componentDescriptor = registry.RegisterComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var componentHandle = serviceLocator.ResolveHandle<DummyService, DummyTraits>();
+
+                Assert.AreSame(componentDescriptor, componentHandle.Descriptor);
+            }
+
+            [Test]
+            public void ResolveHandleGeneric_WhenServiceTypeMapsToExactlyOneComponentButItIsDisabled_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterDisabledComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandle<DummyService, DummyTraits>());
+                Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
+            }
+
+            [Test]
+            public void ResolveAllHandles_WhenServiceTypeIsNull_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                Assert.Throws<ArgumentNullException>(() => serviceLocator.ResolveAllHandles(null));
+            }
+
+            [Test]
+            public void ResolveAllHandles_WhenServiceTypeNotRegistered_ReturnsAnEmptyList()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var result = serviceLocator.ResolveAllHandles(typeof(DummyService));
+
+                Assert.IsEmpty(result);
+            }
+
+            [Test]
+            public void ResolveAllHandles_WhenServiceTypeRegisteredButNoComponents_ReturnsAnEmptyList()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterService(typeof(DummyService));
+
+                var result = serviceLocator.ResolveAllHandles(typeof(DummyService));
+
+                Assert.IsEmpty(result);
+            }
+
+            [Test]
+            public void ResolveAllHandles_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllComponentHandles()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                var component1Descriptor = registry.RegisterComponent(serviceDescriptor, "component1Id", typeof(DummyComponent));
+                var component2Descriptor = registry.RegisterComponent(serviceDescriptor, "component2Id", typeof(DummyComponent2));
+
+                var result = serviceLocator.ResolveAllHandles(typeof(DummyService));
+
+                Assert.AreEqual(2, result.Count);
+                Assert.AreSame(component1Descriptor, result[0].Descriptor);
+                Assert.AreSame(component2Descriptor, result[1].Descriptor);
+            }
+
+            [Test]
+            public void ResolveAllHandlesGeneric_WhenServiceTypeNotRegistered_ReturnsAnEmptyList()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var result = serviceLocator.ResolveAllHandles<DummyService, DummyTraits>();
+
+                Assert.IsEmpty(result);
+            }
+
+            [Test]
+            public void ResolveAllHandlesGeneric_WhenServiceTypeRegisteredButNoComponents_ReturnsAnEmptyList()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterService(typeof(DummyService));
+
+                var result = serviceLocator.ResolveAllHandles<DummyService, DummyTraits>();
+
+                Assert.IsEmpty(result);
+            }
+
+            [Test]
+            public void ResolveAllHandlesGeneric_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllComponentHandles()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                var component1Descriptor = registry.RegisterComponent(serviceDescriptor, "component1Id", typeof(DummyComponent));
+                var component2Descriptor = registry.RegisterComponent(serviceDescriptor, "component2Id", typeof(DummyComponent2));
+
+                var result = serviceLocator.ResolveAllHandles<DummyService, DummyTraits>();
+
+                Assert.AreEqual(2, result.Count);
+                Assert.AreSame(component1Descriptor, result[0].Descriptor);
+                Assert.AreSame(component2Descriptor, result[1].Descriptor);
+            }
+
+            [Test]
+            public void ResolveHandleByComponentId_WhenComponentIdIsNull_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                Assert.Throws<ArgumentNullException>(() => serviceLocator.ResolveHandleByComponentId(null));
+            }
+
+            [Test]
+            public void ResolveHandleByComponentId_WhenComponentNotRegistered_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandleByComponentId("componentId"));
+                Assert.Contains(ex.Message, "Could not resolve component with id 'componentId' because it does not appear to be registered.");
+            }
+
+            [Test]
+            public void ResolveHandleByComponentId_WhenComponentRegistered_ReturnsComponentHandle()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                var componentDescriptor = registry.RegisterComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var componentHandle = serviceLocator.ResolveHandleByComponentId("componentId");
+
+                Assert.AreSame(componentDescriptor, componentHandle.Descriptor);
+            }
+
+            [Test]
+            public void ResolveHandleByComponentId_WhenComponentRegisteredButItIsDisabled_ReturnsComponentHandle()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var serviceDescriptor = registry.RegisterService(typeof(DummyService));
+                registry.RegisterDisabledComponent(serviceDescriptor, "componentId", typeof(DummyComponent));
+
+                var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveHandleByComponentId("componentId"));
+                Assert.Contains(ex.Message, "Could not resolve component with id 'componentId' because it has been disabled.  Reason: ");
+            }
         }
 
-        [Test]
-        public void Resolve_WhenServiceTypeRegisteredButMoreThanOneComponent_Throws()
+        public class ExistanceQueries
         {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var service = registry.RegisterService(typeof(DummyService));
-            registry.RegisterComponent(service, "component1Id", typeof(DummyComponent));
-            registry.RegisterComponent(service, "component2Id", typeof(DummyComponent2));
+            [Test]
+            public void HasService_WhenServiceTypeIsNull_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
 
-            var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve(typeof(DummyService)));
-            Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there are more than one of them registered and enabled so the request is ambiguous.");
-        }
+                Assert.Throws<ArgumentNullException>(() => serviceLocator.HasService(null));
+            }
 
-        [Test]
-        public void Resolve_WhenServiceTypeMapsToExactlyOneComponent_ReturnsResolvedComponent()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var service = registry.RegisterService(typeof(DummyService));
-            registry.RegisterComponent(service, "componentId", typeof(DummyComponent));
+            [Test]
+            public void HasService_WhenServiceTypeNotRegistered_ReturnsFalse()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
 
-            var component = (DummyComponent)serviceLocator.Resolve(typeof(DummyService));
+                var result = serviceLocator.HasService(typeof(DummyService));
 
-            Assert.IsNotNull(component);
-        }
+                Assert.IsFalse(result);
+            }
 
-        [Test]
-        public void ResolveGeneric_WhenServiceTypeNotRegistered_Throws()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
+            [Test]
+            public void HasService_WhenServiceTypeRegistered_ReturnsTrue()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterService(typeof(DummyService));
 
-            var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve<DummyService>());
-            Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
-        }
+                var result = serviceLocator.HasService(typeof(DummyService));
 
-        [Test]
-        public void ResolveGeneric_WhenServiceTypeRegisteredButNoComponents_Throws()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            registry.RegisterService(typeof(DummyService));
+                Assert.IsTrue(result);
+            }
 
-            var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve<DummyService>());
-            Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there do not appear to be any components registered and enabled for that service type.");
-        }
+            [Test]
+            public void HasService_WhenServiceTypeRegisteredButDisabled_ReturnsFalse()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                registry.RegisterDisabledService(typeof(DummyService));
 
-        [Test]
-        public void ResolveGeneric_WhenServiceTypeRegisteredButMoreThanOneComponent_Throws()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var service = registry.RegisterService(typeof(DummyService));
-            registry.RegisterComponent(service, "component1Id", typeof(DummyComponent));
-            registry.RegisterComponent(service, "component2Id", typeof(DummyComponent2));
+                var result = serviceLocator.HasService(typeof(DummyService));
 
-            var ex = Assert.Throws<RuntimeException>(() => serviceLocator.Resolve<DummyService>());
-            Assert.Contains(ex.Message, "Could not resolve component for service type '" + typeof(DummyService) + "' because there are more than one of them registered and enabled so the request is ambiguous.");
-        }
+                Assert.IsFalse(result);
+            }
 
-        [Test]
-        public void ResolveGeneric_WhenServiceTypeMapsToExactlyOneComponent_ReturnsResolvedComponent()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var service = registry.RegisterService(typeof(DummyService));
-            registry.RegisterComponent(service, "componentId", typeof(DummyComponent));
+            [Test]
+            public void HasComponent_WhenComponentIdIsNull_Throws()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
 
-            var component = (DummyComponent)serviceLocator.Resolve<DummyService>();
+                Assert.Throws<ArgumentNullException>(() => serviceLocator.HasComponent(null));
+            }
 
-            Assert.IsNotNull(component);
-        }
+            [Test]
+            public void HasComponent_WhenComponentNotRegistered_ReturnsFalse()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
 
-        [Test]
-        public void ResolveAll_WhenServiceTypeIsNull_Throws()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
+                var result = serviceLocator.HasComponent("componentId");
 
-            Assert.Throws<ArgumentNullException>(() => serviceLocator.ResolveAll(null));
-        }
+                Assert.IsFalse(result);
+            }
 
-        [Test]
-        public void ResolveAll_WhenServiceTypeNotRegistered_ReturnsAnEmptyList()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var result = serviceLocator.ResolveAll(typeof(DummyService));
+            [Test]
+            public void HasComponent_WhenComponentRegistered_ReturnsTrue()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var service = registry.RegisterService(typeof(DummyService));
+                registry.RegisterComponent(service, "componentId", typeof(DummyComponent));
 
-            Assert.IsEmpty(result);
-        }
+                var result = serviceLocator.HasComponent("componentId");
 
-        [Test]
-        public void ResolveAll_WhenServiceTypeRegisteredButNoComponents_ReturnsAnEmptyList()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            registry.RegisterService(typeof(DummyService));
+                Assert.IsTrue(result);
+            }
 
-            var result = serviceLocator.ResolveAll(typeof(DummyService));
+            [Test]
+            public void HasComponent_WhenComponentRegisteredButDisabled_ReturnsFalse()
+            {
+                var registry = new FakeRegistry();
+                var serviceLocator = new RegistryServiceLocator(registry);
+                var service = registry.RegisterService(typeof(DummyService));
+                registry.RegisterDisabledComponent(service, "componentId", typeof(DummyComponent2));
 
-            Assert.IsEmpty(result);
-        }
+                var result = serviceLocator.HasComponent("componentId");
 
-        [Test]
-        public void ResolveAll_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllResolvedComponents()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var service = registry.RegisterService(typeof(DummyService));
-            registry.RegisterComponent(service, "component1Id", typeof(DummyComponent));
-            registry.RegisterComponent(service, "component2Id", typeof(DummyComponent2));
-
-            var result = serviceLocator.ResolveAll(typeof(DummyService));
-
-            Assert.AreEqual(2, result.Count);
-            Assert.IsInstanceOfType<DummyComponent>(result[0]);
-            Assert.IsInstanceOfType<DummyComponent2>(result[1]);
-        }
-
-        [Test]
-        public void ResolveAllGeneric_WhenServiceTypeNotRegistered_ReturnsAnEmptyList()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-
-            var result = serviceLocator.ResolveAll<DummyService>();
-
-            Assert.IsEmpty(result);
-        }
-
-        [Test]
-        public void ResolveAllGeneric_WhenServiceTypeRegisteredButNoComponents_ReturnsAnEmptyList()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            registry.RegisterService(typeof(DummyService));
-
-            var result = serviceLocator.ResolveAll<DummyService>();
-
-            Assert.IsEmpty(result);
-        }
-
-        [Test]
-        public void ResolveAllGeneric_WhenServiceTypeRegisteredAndAtLeastOneComponent_ReturnsAllResolvedComponents()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var service = registry.RegisterService(typeof(DummyService));
-            registry.RegisterComponent(service, "component1Id", typeof(DummyComponent));
-            registry.RegisterComponent(service, "component2Id", typeof(DummyComponent2));
-
-            var result = serviceLocator.ResolveAll<DummyService>();
-
-            Assert.AreEqual(2, result.Count);
-            Assert.IsInstanceOfType<DummyComponent>(result[0]);
-            Assert.IsInstanceOfType<DummyComponent2>(result[1]);
-        }
-
-        [Test]
-        public void ResolveByComponentId_WhenComponentIdIsNull_Throws()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-
-            Assert.Throws<ArgumentNullException>(() => serviceLocator.ResolveByComponentId(null));
-        }
-
-        [Test]
-        public void ResolveByComponentId_WhenComponentNotRegistered_Throws()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-
-            var ex = Assert.Throws<RuntimeException>(() => serviceLocator.ResolveByComponentId("componentId"));
-            Assert.Contains(ex.Message, "Could not resolve component with id 'componentId' because it does not appear to be registered.");
-        }
-
-        [Test]
-        public void ResolveByComponentId_WhenComponentRegistered_ReturnsResolvedComponent()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var service = registry.RegisterService(typeof(DummyService));
-            registry.RegisterComponent(service, "componentId", typeof(DummyComponent));
-
-            var component = (DummyComponent)serviceLocator.ResolveByComponentId("componentId");
-
-            Assert.IsNotNull(component);
-        }
-
-        [Test]
-        public void HasService_WhenServiceTypeIsNull_Throws()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-
-            Assert.Throws<ArgumentNullException>(() => serviceLocator.HasService(null));
-        }
-
-        [Test]
-        public void HasService_WhenServiceTypeNotRegistered_ReturnsFalse()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-
-            var result = serviceLocator.HasService(typeof(DummyService));
-
-            Assert.IsFalse(result);
-        }
-
-        [Test]
-        public void HasService_WhenServiceTypeRegistered_ReturnsTrue()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            registry.RegisterService(typeof(DummyService));
-
-            var result = serviceLocator.HasService(typeof(DummyService));
-
-            Assert.IsTrue(result);
-        }
-
-        [Test]
-        public void HasService_WhenServiceTypeRegisteredButDisabled_ReturnsFalse()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            registry.RegisterDisabledService(typeof(DummyService));
-
-            var result = serviceLocator.HasService(typeof(DummyService));
-
-            Assert.IsFalse(result);
-        }
-
-        [Test]
-        public void HasComponent_WhenComponentIdIsNull_Throws()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-
-            Assert.Throws<ArgumentNullException>(() => serviceLocator.HasComponent(null));
-        }
-
-        [Test]
-        public void HasComponent_WhenComponentNotRegistered_ReturnsFalse()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-
-            var result = serviceLocator.HasComponent("componentId");
-
-            Assert.IsFalse(result);
-        }
-
-        [Test]
-        public void HasComponent_WhenComponentRegistered_ReturnsTrue()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var service = registry.RegisterService(typeof(DummyService));
-            registry.RegisterComponent(service, "componentId", typeof(DummyComponent));
-
-            var result = serviceLocator.HasComponent("componentId");
-
-            Assert.IsTrue(result);
-        }
-
-        [Test]
-        public void HasComponent_WhenComponentRegisteredButDisabled_ReturnsFalse()
-        {
-            var registry = new FakeRegistry();
-            var serviceLocator = new RegistryServiceLocator(registry);
-            var service = registry.RegisterService(typeof(DummyService));
-            registry.RegisterDisabledComponent(service, "componentId", typeof(DummyComponent2));
-
-            var result = serviceLocator.HasComponent("componentId");
-
-            Assert.IsFalse(result);
-        }
-
-        private interface DummyService
-        {
+                Assert.IsFalse(result);
+            }
         }
 
         [Traits(typeof(DummyTraits))]
-        private interface DummyServiceWithTraits
-        {
-        }
-
-        [Traits(typeof(object))]
-        private interface DummyServiceWithInvalidTraits
+        private interface DummyService
         {
         }
 

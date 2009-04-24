@@ -54,7 +54,7 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
         }
 
-        public class PropertyConversions
+        public class ResolveByServiceLocation
         {
             [Test]
             public void ResolveDependency_WhenArgumentIsNullAndTypeIsScalar_ResolvesDependencyWithServiceLocatorByType()
@@ -75,6 +75,41 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreSame(service, result.Value);
                 });
 
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenArgumentIsNullAndTypeIsScalarOfGenericComponentHandle_ResolvesDependencyWithServiceLocatorByType()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+                var componentHandle = CreateStubComponentHandle<IService, Traits>();
+                serviceLocator.Expect(x => x.HasService(typeof(IService))).Return(true);
+                serviceLocator.Expect(x => x.ResolveHandle(typeof(IService))).Return(componentHandle);
+
+                var result = dependencyResolver.ResolveDependency("service", typeof(ComponentHandle<IService, Traits>), null);
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.AreSame(componentHandle, result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenArgumentIsNullAndTypeIsScalarOfNonGenericComponentHandle_Throws()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+
+                var ex = Assert.Throws<RuntimeException>(() => dependencyResolver.ResolveDependency("service", typeof(ComponentHandle), null));
+                Assert.AreEqual("Could not detect service type from non-generic component handle.", ex.Message);
                 serviceLocator.VerifyAllExpectations();
                 resourceLocator.VerifyAllExpectations();
             }
@@ -103,6 +138,46 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreSame(service2, resultValue[1]);
                 });
 
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenArgumentIsNullAndTypeIsArrayOfGenericComponentHandle_ResolvesDependencyWithServiceLocatorByTypeAndReturnsAllMatches()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+                var componentHandle1 = CreateStubComponentHandle<IService, Traits>();
+                var componentHandle2 = CreateStubComponentHandle<IService, Traits>();
+                serviceLocator.Expect(x => x.HasService(typeof(IService))).Return(true);
+                serviceLocator.Expect(x => x.ResolveAllHandles(typeof(IService))).Return(new ComponentHandle[] { componentHandle1, componentHandle2 });
+
+                var result = dependencyResolver.ResolveDependency("service", typeof(ComponentHandle<IService, Traits>[]), null);
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+
+                    var resultValue = (ComponentHandle<IService, Traits>[])result.Value;
+                    Assert.AreEqual(2, resultValue.Length);
+                    Assert.AreSame(componentHandle1, resultValue[0]);
+                    Assert.AreSame(componentHandle2, resultValue[1]);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenArgumentIsNullAndTypeIsArrayOfNonGenericComponentHandle_Throws()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+
+                var ex = Assert.Throws<RuntimeException>(() => dependencyResolver.ResolveDependency("service", typeof(ComponentHandle[]), null));
+                Assert.AreEqual("Could not detect service type from non-generic component handle.", ex.Message);
                 serviceLocator.VerifyAllExpectations();
                 resourceLocator.VerifyAllExpectations();
             }
@@ -138,7 +213,10 @@ namespace Gallio.Tests.Runtime.Extensibility
                 serviceLocator.VerifyAllExpectations();
                 resourceLocator.VerifyAllExpectations();
             }
+        }
 
+        public class ResolveByConfiguration
+        {
             [Test]
             public void ResolveDependency_WhenArgumentSpecifiesComponentId_ResolvesDependencyWithServiceLocatorUsingComponentId()
             {
@@ -157,6 +235,43 @@ namespace Gallio.Tests.Runtime.Extensibility
                     Assert.AreSame(service, result.Value);
                 });
 
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenArgumentSpecifiesComponentIdAndRequestedHandle_ResolvesDependencyWithServiceLocatorUsingComponentId()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+                var componentHandle = CreateStubComponentHandle<IService, Traits>();
+                serviceLocator.Expect(x => x.ResolveHandleByComponentId("componentId")).Return(componentHandle);
+
+                var result = dependencyResolver.ResolveDependency("service", typeof(ComponentHandle), "${componentId}");
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.AreSame(componentHandle, result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ResolveDependency_WhenArgumentSpecifiesComponentIdThatDoesNotActuallyImplementServiceType_Throws()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+                var service = new object();
+                serviceLocator.Expect(x => x.ResolveByComponentId("componentId")).Return(service);
+
+                var ex = Assert.Throws<RuntimeException>(() => dependencyResolver.ResolveDependency("service", typeof(IService), "${componentId}"));
+                Assert.AreEqual(string.Format("Could not inject component with id 'componentId' into a dependency of type '{0}' because it is of the wrong type even though the component was explicitly specified using the '${{component.id}}' property value syntax.",
+                    typeof(IService)), ex.Message);
                 serviceLocator.VerifyAllExpectations();
                 resourceLocator.VerifyAllExpectations();
             }
@@ -311,6 +426,18 @@ namespace Gallio.Tests.Runtime.Extensibility
         public enum YesNo
         {
             Yes, No
+        }
+
+        private static ComponentHandle<TService, TTraits> CreateStubComponentHandle<TService, TTraits>()
+            where TTraits : Traits
+        {
+            var serviceDescriptor = MockRepository.GenerateMock<IServiceDescriptor>();
+            serviceDescriptor.Stub(x => x.ResolveServiceType()).Return(typeof(TService));
+            serviceDescriptor.Stub(x => x.ResolveTraitsType()).Return(typeof(TTraits));
+
+            var componentDescriptor = MockRepository.GenerateMock<IComponentDescriptor>();
+            componentDescriptor.Stub(x => x.Service).Return(serviceDescriptor);
+            return ComponentHandle.CreateInstance<TService, TTraits>(componentDescriptor);
         }
     }
 }
