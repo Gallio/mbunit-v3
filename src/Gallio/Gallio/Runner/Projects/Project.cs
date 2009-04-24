@@ -36,6 +36,7 @@ namespace Gallio.Runner.Projects
         {
             TestPackageConfig = new TestPackageConfig();
             TestFilters = new List<FilterInfo>();
+            TestRunnerExtensions = new List<string>();
         }
 
         /// <summary>
@@ -50,5 +51,12 @@ namespace Gallio.Runner.Projects
         [XmlArray("testFilters", IsNullable = false)]
         [XmlArrayItem("testFilter", typeof (FilterInfo), IsNullable = false)]
         public List<FilterInfo> TestFilters { get; set; }
+
+        /// <summary>
+        /// A list of test runner extensions used by the project.
+        /// </summary>
+        [XmlArray("extensionSpecifications", IsNullable = false)]
+        [XmlArrayItem("extensionSpecification", typeof(string), IsNullable = false)]
+        public List<string> TestRunnerExtensions { get; set; }
     }
 }
