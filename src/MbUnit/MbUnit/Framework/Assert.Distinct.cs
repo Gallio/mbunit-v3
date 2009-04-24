@@ -33,7 +33,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Distinct<T>(IEnumerable<T> values)
         {
-            Distinct(values, (x, y) => ComparisonSemantics.Equals<T>(x, y), null, null);
+            Distinct(values, (EqualityComparison<T>)null, null, null);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Distinct<T>(IEnumerable<T> values, string messageFormat, params object[] messageArgs)
         {
-            Distinct(values, (x, y) => ComparisonSemantics.Equals<T>(x, y), messageFormat, messageArgs);
+            Distinct(values, (EqualityComparison<T>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -54,11 +54,11 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="comparer">A comparer instance to be used to determine whether two elements are equal</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Distinct<T>(IEnumerable<T> values, IEqualityComparer<T> comparer)
         {
-            Distinct(values, (x, y) => comparer.Equals(x, y), null, null);
+            Distinct(values, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, null, null);
         }
 
         /// <summary>
@@ -66,13 +66,13 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="comparer">A comparer instance to be used to determine whether two elements are equal</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Distinct<T>(IEnumerable<T> values, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
-            Distinct(values, (x, y) => comparer.Equals(x, y), messageFormat, messageArgs);
+            Distinct(values, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -80,11 +80,11 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="compare">A delegate used to determine whether two objects are equal.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Distinct<T>(IEnumerable<T> values, EqualityComparison<T> compare)
+        public static void Distinct<T>(IEnumerable<T> values, EqualityComparison<T> comparer)
         {
-            Distinct(values, compare, null, null);
+            Distinct(values, comparer, null, null);
         }
 
         /// <summary>
@@ -92,14 +92,17 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
-        /// <param name="compare">A delegate used to determine whether two objects are equal.</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Distinct<T>(IEnumerable<T> values, EqualityComparison<T> compare, string messageFormat, params object[] messageArgs)
+        public static void Distinct<T>(IEnumerable<T> values, EqualityComparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(() =>
             {
+                if (comparer == null)
+                    comparer = ComparisonSemantics.Equals;
+
                 var duplicates = new List<T>();
                 int i = 0;
 
@@ -109,7 +112,7 @@ namespace MbUnit.Framework
 
                     foreach (var value2 in values)
                     {
-                        if ((i != j) && compare(value1, value2) && !duplicates.Contains(value1))
+                        if ((i != j) && comparer(value1, value2) && !duplicates.Contains(value1))
                         {
                             duplicates.Add(value1);
                         }

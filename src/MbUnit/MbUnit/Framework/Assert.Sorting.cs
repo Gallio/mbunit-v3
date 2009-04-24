@@ -34,7 +34,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder)
         {
-            Sorted(values, sortOrder, (x, y) => ComparisonSemantics.Compare(x, y), null, null);
+            Sorted(values, sortOrder, (Comparison<T>)null, null, null);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, string messageFormat, params object[] messageArgs)
         {
-            Sorted(values, sortOrder, (x, y) => ComparisonSemantics.Compare(x, y), messageFormat, messageArgs);
+            Sorted(values, sortOrder, (Comparison<T>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -57,11 +57,11 @@ namespace MbUnit.Framework
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
         /// <param name="sortOrder">The expected sort order</param>
-        /// <param name="comparer">A comparer instance to be used to compare two elements of the sequence</param>
+        /// <param name="comparer">A comparer instance to be used to compare two elements of the sequence, or null to use a default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, IComparer<T> comparer)
         {
-            Sorted(values, sortOrder, (x, y) => comparer.Compare(x, y), null, null);
+            Sorted(values, sortOrder, comparer != null ? comparer.Compare : (Comparison<T>)null, null, null);
         }
 
         /// <summary>
@@ -70,13 +70,13 @@ namespace MbUnit.Framework
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
         /// <param name="sortOrder">The expected sort order</param>
-        /// <param name="comparer">A comparer instance to be used to compare two elements of the sequence</param>
+        /// <param name="comparer">A comparer instance to be used to compare two elements of the sequence, or null to use a default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, IComparer<T> comparer, string messageFormat, params object[] messageArgs)
         {
-            Sorted(values, sortOrder, (x, y) => comparer.Compare(x, y), messageFormat, messageArgs);
+            Sorted(values, sortOrder, comparer != null ? comparer.Compare : (Comparison<T>)null, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace MbUnit.Framework
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
         /// <param name="sortOrder">The expected sort order</param>
-        /// <param name="compare">A comparison function to be used to compare two elements of the sequence</param>
+        /// <param name="compare">A comparison function to be used to compare two elements of the sequence, or null to use a default one</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, Comparison<T> compare)
         {
@@ -98,11 +98,11 @@ namespace MbUnit.Framework
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
         /// <param name="sortOrder">The expected sort order</param>
-        /// <param name="compare">A comparison function to be used to compare two elements of the sequence</param>
+        /// <param name="comparer">A comparison function to be used to compare two elements of the sequence, or null to use a default one</param>
         /// <param name="messageFormat">The custom assertion message format, or null if none</param>
         /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
-        public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, Comparison<T> compare, string messageFormat, params object[] messageArgs)
+        public static void Sorted<T>(IEnumerable<T> values, SortOrder sortOrder, Comparison<T> comparer, string messageFormat, params object[] messageArgs)
         {
             AssertionHelper.Verify(() =>
             {
@@ -112,13 +112,16 @@ namespace MbUnit.Framework
                 int delta;
                 int index = 0;
 
+                if (comparer == null)
+                    comparer = ComparisonSemantics.Compare;
+
                 foreach (T value in values)
                 {
                     if (!first)
                     {
                         try
                         {
-                            delta = compare(value, previous);
+                            delta = comparer(value, previous);
                         }
                         catch (InvalidOperationException exception)
                         {

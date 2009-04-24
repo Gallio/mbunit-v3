@@ -36,7 +36,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence)
         {
-            AreElementsEqual(expectedSequence, actualSequence, null, null, null);
+            AreElementsEqual(expectedSequence, actualSequence, (EqualityComparison<T>)null, null, null);
         }
 
         /// <summary>
@@ -51,9 +51,39 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs)
         {
-            AreElementsEqual(expectedSequence, actualSequence, null, messageFormat, messageArgs);
+            AreElementsEqual(expectedSequence, actualSequence, (EqualityComparison<T>)null, messageFormat, messageArgs);
         }
 
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are equal and in the same order.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer)
+        {
+            AreElementsEqual(expectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are equal and in the same order.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <param name="comparer">The comparer to use</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsEqual<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
+		{
+            AreElementsEqual(expectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
+		}
+		
         /// <summary>
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal and in the same order.
@@ -117,7 +147,7 @@ namespace MbUnit.Framework
 
                     T expectedValue = expectedEnumerator.Current;
                     T actualValue = actualEnumerator.Current;
-                    if (! comparer(expectedValue, actualValue))
+                    if (!comparer(expectedValue, actualValue))
                     {
                         return new AssertionFailureBuilder(
                             "Expected elements to be equal but they differ in at least one position.")
@@ -157,7 +187,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence)
         {
-            AreElementsNotEqual(unexpectedSequence, actualSequence, null, null, null);
+            AreElementsNotEqual(unexpectedSequence, actualSequence, (EqualityComparison<T>)null, null, null);
         }
 
         /// <summary>
@@ -171,9 +201,38 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs)
         {
-            AreElementsNotEqual(unexpectedSequence, actualSequence, null, messageFormat, messageArgs);
+            AreElementsNotEqual(unexpectedSequence, actualSequence, (EqualityComparison<T>)null, messageFormat, messageArgs);
         }
 
+        /// <summary>
+        /// Verifies that unexpected and actual sequences differ in at least one element.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer)
+        {
+            AreElementsNotEqual(unexpectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that unexpected and actual sequences differ in at least one element.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="unexpectedSequence">The unexpected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsNotEqual<T>(IEnumerable<T> unexpectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
+		{
+            AreElementsNotEqual(unexpectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
+		}
+		
         /// <summary>
         /// Verifies that unexpected and actual sequences differ in at least one element.
         /// </summary>
@@ -226,7 +285,7 @@ namespace MbUnit.Framework
                     if (!actualEnumerator.MoveNext())
                         return null; // different lengths
 
-                    if (! comparer(unexpectedEnumerator.Current, actualEnumerator.Current))
+                    if (!comparer(unexpectedEnumerator.Current, actualEnumerator.Current))
                         return null; // different contents
                 }
 
@@ -254,7 +313,7 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence)
         {
-            AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, null, null, null);
+            AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, (EqualityComparison<T>)null, null, null);
         }
 
         /// <summary>
@@ -269,9 +328,39 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, string messageFormat, params object[] messageArgs)
         {
-            AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, null, messageFormat, messageArgs);
+            AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, (EqualityComparison<T>)null, messageFormat, messageArgs);
         }
 
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are equal but perhaps in a different order.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer)
+        {
+            AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, null, null);
+        }
+
+        /// <summary>
+        /// Verifies that expected and actual sequences have the same number of elements and
+        /// that the elements are equal but perhaps in a different order.
+        /// </summary>
+        /// <typeparam name="T">The type of value</typeparam>
+        /// <param name="expectedSequence">The expected sequence</param>
+        /// <param name="actualSequence">The actual sequence</param>
+        /// <param name="comparer">The comparer to use, or null to use the default one</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static void AreElementsEqualIgnoringOrder<T>(IEnumerable<T> expectedSequence, IEnumerable<T> actualSequence, IEqualityComparer<T> comparer, string messageFormat, params object[] messageArgs)
+		{
+            AreElementsEqualIgnoringOrder(expectedSequence, actualSequence, comparer != null ? comparer.Equals : (EqualityComparison<T>)null, messageFormat, messageArgs);
+		}		
+		
         /// <summary>
         /// Verifies that expected and actual sequences have the same number of elements and
         /// that the elements are equal but perhaps in a different order.
