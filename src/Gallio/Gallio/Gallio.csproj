@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accessor.cs" />
     <Compile Include="Action.cs" />
     <Compile Include="Collections\ArrayEqualityComparer.cs" />
     <Compile Include="Collections\HashSet.cs" />

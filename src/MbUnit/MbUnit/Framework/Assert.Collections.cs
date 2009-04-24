@@ -318,12 +318,12 @@ namespace MbUnit.Framework
                     comparer = ComparisonSemantics.Equals;
 
                 // Count the number of matching expected and actual elements.
-                MatchTable<T> table = new MatchTable<T>(comparer);
+                var table = new MatchTable<T>(comparer);
                 foreach (T expectedElement in expectedSequence)
-                    table.AddExpectedValue(expectedElement);
+                    table.AddLeftValue(expectedElement);
 
                 foreach (T actualElement in actualSequence)
-                    table.AddActualValue(actualElement);
+                    table.AddRightValue(actualElement);
 
                 // Find out what's different.
                 if (table.NonEqualCount == 0)
@@ -359,62 +359,6 @@ namespace MbUnit.Framework
                 list.Add(value);
         }
 
-        private sealed class MatchTable<T>
-        {
-            private readonly EqualityComparison<T> comparer;
-            private readonly List<KeyValuePair<T, Pair<int, int>>> items;
-            private int nonEqualCount;
-
-            public MatchTable(EqualityComparison<T> comparer)
-            {
-                this.comparer = comparer;
-                items = new List<KeyValuePair<T,Pair<int,int>>>();
-            }
-
-            public int NonEqualCount
-            {
-                get { return nonEqualCount; }
-            }
-
-            public IEnumerable<KeyValuePair<T, Pair<int, int>>> Items
-            {
-                get { return items; }
-            }
-
-            public void AddExpectedValue(T key)
-            {
-                Add(key, 1, 0);
-            }
-
-            public void AddActualValue(T key)
-            {
-                Add(key, 0, 1);
-            }
-
-            private void Add(T key, int expectedCount, int actualCount)
-            {
-                for (int i = 0; i < items.Count; i++)
-                {
-                    KeyValuePair<T, Pair<int, int>> item = items[i];
-                    if (comparer(item.Key, key))
-                    {
-                        Pair<int, int> oldCounters = items[i].Value;
-                        Pair<int, int> newCounters = new Pair<int,int>(oldCounters.First + expectedCount, oldCounters.Second + actualCount);
-                        items[i] = new KeyValuePair<T, Pair<int, int>>(item.Key, newCounters);
-
-                        if (newCounters.First == newCounters.Second)
-                            nonEqualCount -= 1;
-                        else if (oldCounters.First == oldCounters.Second)
-                            nonEqualCount += 1;
-
-                        return;
-                    }
-                }
-
-                items.Add(new KeyValuePair<T, Pair<int, int>>(key, new Pair<int,int>(expectedCount, actualCount)));
-                nonEqualCount += 1;
-            }
-        }
         #endregion
 
         #region Contains

@@ -155,7 +155,10 @@
     <Compile Include="Framework\DefaultTestCaseTimeoutAttribute.cs" />
     <Compile Include="Framework\DegreeOfParallelismAttribute.cs" />
     <Compile Include="Framework\LinkMixinAttribute.cs" />
+    <Compile Include="Framework\MatchTable.cs" />
     <Compile Include="Framework\SortOrder.cs" />
+    <Compile Include="Framework\StructuralEqualityComparer.cs" />
+    <Compile Include="Framework\StructuralEqualityComparerOptions.cs" />
     <Compile Include="Framework\XmlDataAttribute.cs" />
     <Compile Include="Framework\ContractVerifiers\ComparisonContract.cs" />
     <Compile Include="Framework\ContractVerifiers\EqualityContract.cs" />
