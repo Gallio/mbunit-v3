@@ -92,15 +92,15 @@ namespace Gallio.NAntTasks
         private string statisticsPropertiesPrefix;
         private bool showReports;
         private string runnerType = StandardTestRunnerFactoryNames.IsolatedProcess;
-        private ArgumentCollection runnerExtensions = new ArgumentCollection();
+        private readonly ArgumentCollection runnerExtensions = new ArgumentCollection();
         private bool doNotRun;
         private bool ignoreAnnotations;
         private bool echoResults = true;
         private TimeSpan? runTimeLimit;
         private Verbosity verbosity = Verbosity.Normal;
 
-        private ArgumentCollection runnerProperties = new ArgumentCollection();
-        private ArgumentCollection reportFormatterProperties = new ArgumentCollection();
+        private readonly ArgumentCollection runnerProperties = new ArgumentCollection();
+        private readonly ArgumentCollection reportFormatterProperties = new ArgumentCollection();
 
         #endregion
 
@@ -599,7 +599,7 @@ namespace Gallio.NAntTasks
             if (!String.IsNullOrEmpty(reportNameFormat))
                 launcher.ReportNameFormat = reportNameFormat;
             if (reportTypes != null)
-                GenericUtils.AddAll(reportTypes.Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries),
+                GenericUtils.AddAll(reportTypes.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
                                     launcher.ReportFormats);
 
             TestLauncherResult result = RunLauncher(launcher);

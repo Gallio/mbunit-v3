@@ -132,6 +132,20 @@ namespace Gallio.Collections
         }
 
         /// <summary>
+        /// Adds elements of the input enumeration to the output collection, 
+        /// if not already present.
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="input">The input enumeration</param>
+        /// <param name="output">The output collection</param>
+        public static void AddAllIfNotAlreadyPresent<T>(IEnumerable<T> input, ICollection<T> output)
+        {
+            foreach (T value in input)
+                if (!output.Contains(value))
+                    output.Add(value);
+        }
+
+        /// <summary>
         /// Returns true if the elements of both lists are equal.
         /// </summary>
         /// <param name="a">The first collection</param>

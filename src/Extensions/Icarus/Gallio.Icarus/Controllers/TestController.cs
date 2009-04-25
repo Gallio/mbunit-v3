@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Gallio.Collections;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
@@ -331,8 +332,9 @@ namespace Gallio.Icarus.Controllers
                 var logger = RuntimeAccessor.Logger;
 
                 List<string> extensionSpecifications = new List<string>();
-                extensionSpecifications.AddRange(testRunnerExtensions);
-                extensionSpecifications.AddRange(optionsController.TestRunnerExtensions);
+                GenericUtils.AddAllIfNotAlreadyPresent(testRunnerExtensions, extensionSpecifications);
+                GenericUtils.AddAllIfNotAlreadyPresent(optionsController.TestRunnerExtensions, 
+                    extensionSpecifications);
 
                 foreach (string extensionSpecification in extensionSpecifications)
                 {

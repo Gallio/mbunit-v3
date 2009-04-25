@@ -148,7 +148,7 @@ namespace Gallio.Echo
 
         private static bool CheckAssembly(TestLauncher launcher, EchoArguments arguments, string assembly)
         {
-            if (Path.GetExtension(assembly) == ".gallio")
+            if (Path.GetExtension(assembly) == Project.Extension)
             {
                 if (arguments.Assemblies.Length > 1)
                     throw new ArgumentException("Please don't mix and match gallio project files and assemblies!");
@@ -156,6 +156,12 @@ namespace Gallio.Echo
                 ProjectUtils projectUtils = new ProjectUtils(new FileSystem(), new DefaultXmlSerializer());
                 Project project = projectUtils.LoadProject(assembly);
                 launcher.TestPackageConfig = project.TestPackageConfig;
+
+                // add test runner extensions from project to command line args
+                List<string> testRunnerExtensions = project.TestRunnerExtensions;
+                testRunnerExtensions.AddRange(arguments.RunnerExtensions);
+                arguments.RunnerExtensions = testRunnerExtensions.ToArray();
+
                 return false;
             }
                 
@@ -249,7 +255,7 @@ namespace Gallio.Echo
             }
         }
 
-        private void ShowRegisteredComponents<T>(string heading, IList<T> handles,
+        private void ShowRegisteredComponents<T>(string heading, ICollection<T> handles,
             Func<T, string> getName, Func<T, string> getDescription)
         {
             Console.WriteLine(heading);

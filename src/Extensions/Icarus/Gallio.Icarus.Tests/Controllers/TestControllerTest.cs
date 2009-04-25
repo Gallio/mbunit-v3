@@ -423,6 +423,35 @@ namespace Gallio.Icarus.Tests.Controllers
         }
 
         [Test]
+        public void Duplicate_TestRunnerExtensions_are_only_added_once()
+        {
+            var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
+
+            var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
+            var filter = new FilterSet<ITest>(new NoneFilter<ITest>());
+            testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
+
+            var optionsController = MockRepository.GenerateStub<IOptionsController>();
+            var testRunnerExtensions = new BindingList<string>(new List<string>());
+            optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
+
+            var testController = new TestController(testTreeModel, optionsController);
+
+            var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
+            var testRunner = MockRepository.GenerateMock<ITestRunner>();
+            var testRunnerEvents = MockRepository.GenerateStub<ITestRunnerEvents>();
+            testRunner.Stub(tr => tr.Events).Return(testRunnerEvents);
+            testRunnerFactory.Stub(trf => trf.CreateTestRunner()).Return(testRunner);
+            testController.SetTestRunnerFactory(testRunnerFactory);
+
+            testController.GenerateFilterSetFromSelectedTests();
+            testController.Run(false, progressMonitor, new List<string>(new[] { "DebugExtension, Gallio", 
+                "DebugExtension, Gallio" }));
+
+            testRunner.AssertWasCalled(tr => tr.RegisterExtension(Arg<DebugExtension>.Is.Anything));
+        }
+
+        [Test]
         public void SelectedTests_Test()
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();

@@ -15,11 +15,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using Gallio.Collections;
 using Gallio.Model.Execution;
 using Gallio.Runner.Extensions;
 using Gallio.Runtime.Logging;
@@ -528,7 +528,7 @@ namespace Gallio.Runner
             }
 
             ITestRunner runner = factory.CreateTestRunner();
-            TestLauncherResult result = new TestLauncherResult(new Report() { TestPackageConfig = TestPackageConfig });
+            TestLauncherResult result = new TestLauncherResult(new Report { TestPackageConfig = TestPackageConfig });
             try
             {
                 try
@@ -625,22 +625,20 @@ namespace Gallio.Runner
             if (reportFormats.Count == 0)
                 return;
 
-            RunWithProgress(delegate(IProgressMonitor progressMonitor)
-            {
-                result.GenerateReports(reportDirectory, GenerateReportName(result.Report), reportFormats,
-                    reportFormatterOptions, reportManager, progressMonitor);
-            });
+            RunWithProgress(progressMonitor => result.GenerateReports(reportDirectory, 
+                GenerateReportName(result.Report), reportFormats, reportFormatterOptions, 
+                reportManager, progressMonitor));
         }
 
         private void ShowReportDocuments(TestLauncherResult result)
         {
-            if (result.ReportDocumentPaths.Count != 0)
-            {
-                logger.Log(LogSeverity.Important, "Displaying reports.");
+            if (result.ReportDocumentPaths.Count == 0) 
+                return;
 
-                if (! result.ShowReportDocuments())
-                    logger.Log(LogSeverity.Important, "There was an error opening the report documents.");
-            }
+            logger.Log(LogSeverity.Important, "Displaying reports.");
+
+            if (!result.ShowReportDocuments())
+                logger.Log(LogSeverity.Important, "There was an error opening the report documents.");
         }
 
         private bool ValidateReportFormats(IReportManager reportManager)
@@ -648,11 +646,12 @@ namespace Gallio.Runner
             foreach (string reportFormat in reportFormats)
             {
                 IReportFormatter formatter = reportManager.GetReportFormatter(reportFormat);
-                if (formatter == null)
-                {
-                    logger.Log(LogSeverity.Error, String.Format("Unrecognized report format: '{0}'.", reportFormat));
-                    return false;
-                }
+                
+                if (formatter != null) 
+                    continue;
+
+                logger.Log(LogSeverity.Error, String.Format("Unrecognized report format: '{0}'.", reportFormat));
+                return false;
             }
 
             if (reportNameFormat.Length == 0)
@@ -672,8 +671,17 @@ namespace Gallio.Runner
             foreach (ITestRunnerExtension extension in extensions)
                 runner.RegisterExtension(extension);
 
-            foreach (string extensionSpecification in extensionSpecifications)
-                runner.RegisterExtension(TestRunnerExtensionUtils.CreateExtensionFromSpecification(extensionSpecification));
+            // de-dupe extension specs
+            List<string> uniqueExtensionSpecifications = new List<string>();
+            GenericUtils.AddAllIfNotAlreadyPresent(extensionSpecifications, 
+                uniqueExtensionSpecifications);
+
+            foreach (string extensionSpecification in uniqueExtensionSpecifications)
+            {
+                var testRunnerExtension = 
+                    TestRunnerExtensionUtils.CreateExtensionFromSpecification(extensionSpecification);
+                runner.RegisterExtension(testRunnerExtension);
+            }
         }
 
         /// <summary>
@@ -688,11 +696,11 @@ namespace Gallio.Runner
                     List<string> assembliesToRemove = new List<string>();
                     foreach (string assemblyName in testPackageConfig.AssemblyFiles)
                     {
-                        if (!File.Exists(assemblyName) || assemblyName != assemblyName.TrimEnd('\\', '/'))
-                        {
-                            assembliesToRemove.Add(assemblyName);
-                            logger.Log(LogSeverity.Error, String.Format("Cannot find assembly: {0}", assemblyName));
-                        }
+                        if (File.Exists(assemblyName) && assemblyName == assemblyName.TrimEnd('\\', '/')) 
+                            continue;
+
+                        assembliesToRemove.Add(assemblyName);
+                        logger.Log(LogSeverity.Error, String.Format("Cannot find assembly: {0}", assemblyName));
                     }
 
                     // Remove invalid assemblies
@@ -713,17 +721,17 @@ namespace Gallio.Runner
 
         private void DisplayPaths(ICollection<string> paths, string name)
         {
-            if (paths != null && paths.Count > 0)
-            {
-                StringBuilder message = new StringBuilder();
-                message.Append(name);
+            if (paths == null || paths.Count <= 0) 
+                return;
 
-                foreach (string path in paths)
-                    message.Append("\n\t").Append(path);
-                message.AppendLine();
+            StringBuilder message = new StringBuilder();
+            message.Append(name);
 
-                logger.Log(LogSeverity.Info, message.ToString());
-            }
+            foreach (string path in paths)
+                message.Append("\n\t").Append(path);
+            message.AppendLine();
+
+            logger.Log(LogSeverity.Info, message.ToString());
         }
 
         private void Canonicalize(string baseDirectory)
@@ -736,10 +744,8 @@ namespace Gallio.Runner
 
         private void DoInitialize(ITestRunner runner)
         {
-            RunWithProgress(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.Initialize(testRunnerOptions, logger, progressMonitor);
-            });
+            RunWithProgress(progressMonitor => runner.Initialize(testRunnerOptions, 
+                logger, progressMonitor));
         }
 
         private Report DoExploreOrRun(ITestRunner runner)
@@ -747,10 +753,8 @@ namespace Gallio.Runner
             Report report = null;
             RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
-                if (doNotRun)
-                    report = runner.Explore(testPackageConfig, testExplorationOptions, progressMonitor);
-                else
-                    report = runner.Run(testPackageConfig, testExplorationOptions, testExecutionOptions, progressMonitor);
+                report = doNotRun ? runner.Explore(testPackageConfig, testExplorationOptions, progressMonitor) : 
+                    runner.Run(testPackageConfig, testExplorationOptions, testExecutionOptions, progressMonitor);
             });
 
             return report;
@@ -758,10 +762,7 @@ namespace Gallio.Runner
 
         private void DoDispose(ITestRunner runner)
         {
-            RunWithProgress(delegate(IProgressMonitor progressMonitor)
-            {
-                runner.Dispose(progressMonitor);
-            });
+            RunWithProgress(runner.Dispose);
         }
 
         private string GenerateReportName(Report report)

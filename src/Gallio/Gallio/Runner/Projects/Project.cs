@@ -30,6 +30,11 @@ namespace Gallio.Runner.Projects
     public sealed class Project
     {
         /// <summary>
+        /// The file extension for Gallio project files.
+        /// </summary>
+        public static readonly string Extension = ".gallio";
+
+        /// <summary>
         /// Creates an empty project.
         /// </summary>
         public Project()

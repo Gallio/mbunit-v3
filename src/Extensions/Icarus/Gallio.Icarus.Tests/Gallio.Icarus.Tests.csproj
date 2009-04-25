@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A90A40C4-4D48-4D0B-BE9B-432510EB1057}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -62,6 +62,7 @@
     <Compile Include="AboutDialogTest.cs" />
     <Compile Include="CodeWindowTest.cs" />
     <Compile Include="Controllers\AnnotationsControllerTest.cs" />
+    <Compile Include="Controllers\ApplicationControllerTest.cs" />
     <Compile Include="Controllers\ExecutionLogControllerTest.cs" />
     <Compile Include="Controllers\NotifyControllerTest.cs" />
     <Compile Include="Controllers\OptionsControllerTest.cs" />
