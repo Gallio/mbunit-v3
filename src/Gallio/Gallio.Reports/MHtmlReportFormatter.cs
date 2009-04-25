@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Specialized;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runner.Reports;
 
@@ -36,13 +35,9 @@ namespace Gallio.Reports
         /// <summary>
         /// Creates a report formatter.
         /// </summary>
-        /// <param name="name">The formatter name</param>
-        /// <param name="description">The formatter description</param>
         /// <param name="htmlReportFormatter">The HTML report formatter</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/>,
-        /// <paramref name="description"/> or <paramref name="htmlReportFormatter"/> is null</exception>
-        public MHtmlReportFormatter(string name, string description, IReportFormatter htmlReportFormatter)
-            : base(name, description)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="htmlReportFormatter"/> is null</exception>
+        public MHtmlReportFormatter(IReportFormatter htmlReportFormatter)
         {
             if (htmlReportFormatter == null)
                 throw new ArgumentNullException("htmlReportFormatter");
@@ -53,7 +48,7 @@ namespace Gallio.Reports
         /// <inheritdoc />
         public override void Format(IReportWriter reportWriter, ReportFormatterOptions formatterOptions, IProgressMonitor progressMonitor)
         {
-            using (progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10))
+            using (progressMonitor.BeginTask("Formatting report.", 10))
             {
                 using (MultipartMimeReportContainer archiveContainer = new MultipartMimeReportContainer(reportWriter.ReportContainer))
                 {

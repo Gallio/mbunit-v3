@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Specialized;
 using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runner.Reports;
@@ -48,12 +47,7 @@ namespace Gallio.Reports
         /// <summary>
         /// Creates an Xml report formatter.
         /// </summary>
-        /// <param name="name">The formatter name</param>
-        /// <param name="description">The formatter description</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
-        /// or <paramref name="description"/> is null</exception>
-        public XmlReportFormatter(string name, string description)
-            : base(name, description)
+        public XmlReportFormatter()
         {
         }
 

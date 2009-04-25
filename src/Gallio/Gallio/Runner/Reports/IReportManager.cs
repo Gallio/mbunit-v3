@@ -14,8 +14,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runner.Reports
@@ -26,10 +27,17 @@ namespace Gallio.Runner.Reports
     public interface IReportManager
     {
         /// <summary>
-        /// Gets a resolver for resolving registered
-        /// <see cref="IReportFormatter" /> components by name.
+        /// Gets handles for all registered formatters.
         /// </summary>
-        IRegisteredComponentResolver<IReportFormatter> FormatterResolver { get; }
+        IList<ComponentHandle<IReportFormatter, ReportFormatterTraits>> FormatterHandles { get; }
+
+        /// <summary>
+        /// Gets the report formatter with the specified name, or null if none.
+        /// </summary>
+        /// <param name="formatterName">The formatter name</param>
+        /// <returns>The formatter, or null on failure</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterName"/> is null</exception>
+        IReportFormatter GetReportFormatter(string formatterName);
 
         /// <summary>
         /// Formats the report indicated by the report writer.

@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -64,8 +63,6 @@ namespace Gallio.Reports
         /// Creates an XSLT report formatter.
         /// </summary>
         /// <param name="runtime">The runtime</param>
-        /// <param name="name">The formatter name</param>
-        /// <param name="description">The formatter description</param>
         /// <param name="extension">The preferred extension without a '.'</param>
         /// <param name="contentType">The content type of the main report document</param>
         /// <param name="contentUri">The Uri of the content directory</param>
@@ -73,8 +70,7 @@ namespace Gallio.Reports
         /// <param name="resourcePaths">The paths of the resources (such as images or CSS) to copy
         /// to the report directory relative to the content directory</param>
         /// <exception cref="ArgumentNullException">Thrown if any arguments are null</exception>
-        public XsltReportFormatter(IRuntime runtime, string name, string description, string extension, string contentType, string contentUri, string xsltPath, string[] resourcePaths)
-            : base(name, description)
+        public XsltReportFormatter(IRuntime runtime, string extension, string contentType, string contentUri, string xsltPath, string[] resourcePaths)
         {
             if (runtime == null)
                 throw new ArgumentNullException(@"runtime");
@@ -102,7 +98,7 @@ namespace Gallio.Reports
         {
             AttachmentContentDisposition attachmentContentDisposition = GetAttachmentContentDisposition(options);
 
-            using (progressMonitor.BeginTask(String.Format("Formatting report as {0}.", Name), 10))
+            using (progressMonitor.BeginTask("Formatting report.", 10))
             {
                 progressMonitor.SetStatus("Applying XSL transform.");
                 ApplyTransform(reportWriter, attachmentContentDisposition, options);

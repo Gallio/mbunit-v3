@@ -14,7 +14,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using Gallio.Collections;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runtime;
 
@@ -25,25 +29,36 @@ namespace Gallio.Runner.Reports
     /// </summary>
     public class DefaultReportManager : IReportManager
     {
-        private readonly IRegisteredComponentResolver<IReportFormatter> formatterResolver;
+        private readonly IList<ComponentHandle<IReportFormatter, ReportFormatterTraits>> formatterHandles;
 
         /// <summary>
         /// Creates a report manager.
         /// </summary>
-        /// <param name="formatterResolver">The formatter resolver</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterResolver"/> is null</exception>
-        public DefaultReportManager(IRegisteredComponentResolver<IReportFormatter> formatterResolver)
+        /// <param name="formatterHandles">The report formatter handles</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="formatterHandles"/> is null</exception>
+        public DefaultReportManager(ComponentHandle<IReportFormatter, ReportFormatterTraits>[] formatterHandles)
         {
-            if (formatterResolver == null)
+            if (formatterHandles == null)
                 throw new ArgumentNullException("formatterResolver");
 
-            this.formatterResolver = formatterResolver;
+            this.formatterHandles = formatterHandles;
         }
 
         /// <inheritdoc />
-        public IRegisteredComponentResolver<IReportFormatter> FormatterResolver
+        public IList<ComponentHandle<IReportFormatter, ReportFormatterTraits>> FormatterHandles
         {
-            get { return formatterResolver; }
+            get { return new ReadOnlyCollection<ComponentHandle<IReportFormatter, ReportFormatterTraits>>(formatterHandles); }
+        }
+
+        /// <inheritdoc />
+        public IReportFormatter GetReportFormatter(string formatterName)
+        {
+            if (formatterName == null)
+                throw new ArgumentNullException("name");
+
+            ComponentHandle<IReportFormatter, ReportFormatterTraits> handle
+                = GenericUtils.Find(formatterHandles, h => string.Compare(h.GetTraits().Name, formatterName, true) == 0);
+            return handle != null ? handle.GetComponent() : null;
         }
 
         /// <inheritdoc />
@@ -59,7 +74,7 @@ namespace Gallio.Runner.Reports
             if (progressMonitor == null)
                 throw new ArgumentNullException(@"progressMonitor");
 
-            IReportFormatter formatter = formatterResolver.Resolve(formatterName);
+            IReportFormatter formatter = GetReportFormatter(formatterName);
             if (formatter == null)
                 throw new InvalidOperationException(String.Format("There is no report formatter named '{0}'.", formatterName));
 

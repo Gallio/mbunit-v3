@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runner
 {
@@ -27,16 +28,9 @@ namespace Gallio.Runner
     public interface ITestRunnerManager
     {
         /// <summary>
-        /// Gets a resolver for resolving registered
-        /// <see cref="ITestRunnerFactory" /> components by name.
+        /// Gets handles for all registered test runner factories.
         /// </summary>
-        IRegisteredComponentResolver<ITestRunnerFactory> FactoryResolver { get; }
-
-        /// <summary>
-        /// Gets the names of all supported test runner factories.
-        /// </summary>
-        /// <returns>The names of all runner factories</returns>
-        IList<string> GetFactoryNames();
+        IList<ComponentHandle<ITestRunnerFactory, TestRunnerFactoryTraits>> TestRunnerFactoryHandles { get; }
 
         /// <summary>
         /// Gets the factory by name, or null if none.

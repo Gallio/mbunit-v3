@@ -38,6 +38,8 @@
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
         <testDriverFactory>${NCoverIntegration.NCoverTestDriverFactory.v1.5.8}</testDriverFactory>
+      </parameters>
+      <traits>
         <name>NCover</name>
         <description>
           Runs tests in an external process with NCover v1.5.8.  NCover v1.5.8 is included and does not need to be installed.
@@ -46,7 +48,7 @@
           - NCoverArguments: Specifies additional command-line arguments for NCover.  eg. "//eas Gallio"
           - NCoverCoverageFile: Specifies the path of the coverage file to write.  The default is 'Coverage.xml'.
         </description>
-      </parameters>
+      </traits>
     </component>
 
     <component componentId="NCoverIntegration.NCoverTestDriverFactory.v1.5.8"
@@ -72,6 +74,8 @@
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
         <testDriverFactory>${NCoverIntegration.NCoverTestDriverFactory.v2}</testDriverFactory>
+      </parameters>
+      <traits>
         <name>NCover2</name>
         <description>
           Runs tests in an external process with NCover v2.  NCover v2 must be installed separately.
@@ -80,7 +84,7 @@
           - NCoverArguments: Specifies additional command-line arguments for NCover.  eg. "//eas Gallio"
           - NCoverCoverageFile: Specifies the path of the coverage file to write.  The default is 'Coverage.xml'.
         </description>
-      </parameters>
+      </traits>
     </component>
 
     <component componentId="NCoverIntegration.NCoverTestDriverFactory.v2"
@@ -106,6 +110,8 @@
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
         <testDriverFactory>${NCoverIntegration.NCoverTestDriverFactory.v3}</testDriverFactory>
+      </parameters>
+      <traits>
         <name>NCover3</name>
         <description>
           Runs tests in an external process with NCover v3.  NCover v3 must be installed separately.
@@ -114,7 +120,7 @@
           - NCoverArguments: Specifies additional command-line arguments for NCover.  eg. "//eas Gallio"
           - NCoverCoverageFile: Specifies the path of the coverage file to write.  The default is 'Coverage.xml'.
         </description>
-      </parameters>
+      </traits>
     </component>
 
     <component componentId="NCoverIntegration.NCoverTestDriverFactory.v3"

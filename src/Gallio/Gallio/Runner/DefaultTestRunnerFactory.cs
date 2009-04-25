@@ -25,41 +25,19 @@ namespace Gallio.Runner
     public class DefaultTestRunnerFactory : ITestRunnerFactory
     {
         private readonly ITestDriverFactory testDriverFactory;
-        private readonly string name;
-        private readonly string description;
 
         /// <summary>
         /// Creates a test runner factory.
         /// </summary>
         /// <param name="testDriverFactory">The test driver factory</param>
-        /// <param name="name">The test runner factory name</param>
-        /// <param name="description">The test runner factory description</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="testDriverFactory"/>,
         /// <paramref name="name"/> or <paramref name="description"/> is null</exception>
-        public DefaultTestRunnerFactory(ITestDriverFactory testDriverFactory, string name, string description)
+        public DefaultTestRunnerFactory(ITestDriverFactory testDriverFactory)
         {
             if (testDriverFactory == null)
                 throw new ArgumentNullException("testDriverFactory");
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (description == null)
-                throw new ArgumentNullException("description");
 
             this.testDriverFactory = testDriverFactory;
-            this.name = name;
-            this.description = description;
-        }
-
-        /// <inheritdoc />
-        public string Name
-        {
-            get { return name; }
-        }
-
-        /// <inheritdoc />
-        public string Description
-        {
-            get { return description; }
         }
 
         /// <inheritdoc />

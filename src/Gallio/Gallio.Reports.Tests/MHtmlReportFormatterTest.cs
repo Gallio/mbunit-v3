@@ -35,21 +35,9 @@ namespace Gallio.Reports.Tests
         private delegate void FormatDelegate(IReportWriter reportWriter, ReportFormatterOptions formatterOptions, IProgressMonitor progressMonitor);
 
         [Test, ExpectedArgumentNullException]
-        public void NameCannotBeNull()
-        {
-            new MHtmlReportFormatter(null, "description", Mocks.Stub<IReportFormatter>());
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void DescriptionCannotBeNull()
-        {
-            new MHtmlReportFormatter("name", null, Mocks.Stub<IReportFormatter>());
-        }
-
-        [Test, ExpectedArgumentNullException]
         public void HtmlReportFormatterCannotBeNull()
         {
-            new MHtmlReportFormatter("name", "description", null);
+            new MHtmlReportFormatter(null);
         }
 
         [Test]
@@ -97,7 +85,7 @@ namespace Gallio.Reports.Tests
 
                 using (Mocks.Playback())
                 {
-                    MHtmlReportFormatter formatter = new MHtmlReportFormatter("SomeName", "description", htmlReportFormatter);
+                    MHtmlReportFormatter formatter = new MHtmlReportFormatter(htmlReportFormatter);
 
                     formatter.Format(reportWriter, reportFormatterOptions, progressMonitor);
 

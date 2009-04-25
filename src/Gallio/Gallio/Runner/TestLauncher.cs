@@ -647,7 +647,7 @@ namespace Gallio.Runner
         {
             foreach (string reportFormat in reportFormats)
             {
-                IReportFormatter formatter = reportManager.FormatterResolver.Resolve(reportFormat);
+                IReportFormatter formatter = reportManager.GetReportFormatter(reportFormat);
                 if (formatter == null)
                 {
                     logger.Log(LogSeverity.Error, String.Format("Unrecognized report format: '{0}'.", reportFormat));

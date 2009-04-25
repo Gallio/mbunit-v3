@@ -14,9 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Text;
 using Gallio.Model.Logging;
 using Gallio.Runtime.ProgressMonitoring;
 using Gallio.Runner.Reports;
@@ -28,8 +25,6 @@ namespace Gallio.Reports
     /// </summary>
     public abstract class BaseReportFormatter : IReportFormatter
     {
-        private readonly string name;
-        private readonly string description;
         private AttachmentContentDisposition defaultAttachmentContentDisposition;
 
         /// <summary>
@@ -40,19 +35,8 @@ namespace Gallio.Reports
         /// <summary>
         /// Creates a report formatter.
         /// </summary>
-        /// <param name="name">The formatter name</param>
-        /// <param name="description">The formatter description</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="name"/> 
-        /// or <paramref name="description"/> is null</exception>
-        protected BaseReportFormatter(string name, string description)
+        protected BaseReportFormatter()
         {
-            if (name == null)
-                throw new ArgumentNullException(@"name");
-            if (description == null)
-                throw new ArgumentNullException("description");
-
-            this.name = name;
-            this.description = description;
         }
 
         /// <summary>
@@ -86,18 +70,6 @@ namespace Gallio.Reports
             }
 
             return defaultAttachmentContentDisposition;
-        }
-
-        /// <inheritdoc />
-        public string Name
-        {
-            get { return name; }
-        }
-
-        /// <inheritdoc />
-        public string Description
-        {
-            get { return description; }
         }
 
         /// <inheritdoc />

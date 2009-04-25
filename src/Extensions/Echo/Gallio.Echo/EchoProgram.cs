@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Gallio.Runner.Projects;
 using Gallio.Runtime.Logging;
@@ -239,31 +240,32 @@ namespace Gallio.Echo
             using (RuntimeBootstrap.Initialize(setup, CreateLogger()))
             {
                 IReportManager reportManager = RuntimeAccessor.ServiceLocator.Resolve<IReportManager>();
-                ShowRegisteredComponents("Supported report types:", reportManager.FormatterResolver);
+                ShowRegisteredComponents("Supported report types:", reportManager.FormatterHandles,
+                    h => h.GetTraits().Name, h => h.GetTraits().Description);
 
                 ITestRunnerManager runnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
-                ShowRegisteredComponents("Supported runner types:", runnerManager.FactoryResolver);
+                ShowRegisteredComponents("Supported runner types:", runnerManager.TestRunnerFactoryHandles,
+                    h => h.GetTraits().Name, h => h.GetTraits().Description);
             }
         }
 
-        private void ShowRegisteredComponents<T>(string heading, IRegisteredComponentResolver<T> resolver)
-            where T : class, IRegisteredComponent
+        private void ShowRegisteredComponents<T>(string heading, IList<T> handles,
+            Func<T, string> getName, Func<T, string> getDescription)
         {
             Console.WriteLine(heading);
             Console.WriteLine();
 
-            string[] names = GenericUtils.ToArray(resolver.GetNames());
-            if (names.Length == 0)
+            T[] sortedHandles = GenericUtils.ToArray(handles);
+            Array.Sort(sortedHandles, (x, y) => getName(x).CompareTo(getName(y)));
+            if (sortedHandles.Length == 0)
             {
                 CommandLineOutput.PrintArgumentHelp("", "<none>", null, null, null, null);
             }
             else
             {
-                Array.Sort(names);
-                foreach (string name in names)
+                foreach (T handle in sortedHandles)
                 {
-                    T component = resolver.Resolve(name);
-                    CommandLineOutput.PrintArgumentHelp("", name, null, component.Description, null, null);
+                    CommandLineOutput.PrintArgumentHelp("", getName(handle), null, getDescription(handle), null, null);
                     Console.WriteLine();
                 }
             }

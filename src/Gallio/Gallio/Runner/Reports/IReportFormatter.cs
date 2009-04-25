@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Specialized;
 using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.ProgressMonitoring;
 
 namespace Gallio.Runner.Reports
@@ -23,7 +24,8 @@ namespace Gallio.Runner.Reports
     /// <summary>
     /// A report formatter provides a strategy for formatting reports for human consumption.
     /// </summary>
-    public interface IReportFormatter : IRegisteredComponent
+    [Traits(typeof(ReportFormatterTraits))]
+    public interface IReportFormatter
     {
         /// <summary>
         /// Formats the report indicated by the report writer.

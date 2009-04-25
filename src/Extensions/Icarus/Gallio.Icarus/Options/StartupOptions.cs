@@ -30,7 +30,8 @@ namespace Gallio.Icarus.Options
 
             // retrieve list of possible factories
             ITestRunnerManager testRunnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
-            string[] factories = GenericUtils.ToArray(testRunnerManager.GetFactoryNames());
+            string[] factories = GenericUtils.ConvertAllToArray(testRunnerManager.TestRunnerFactoryHandles,
+                h => h.GetTraits().Name);
 
             testRunnerFactories.Items.AddRange(factories);
             testRunnerFactories.DataBindings.Add("Text", optionsController, "TestRunnerFactory");

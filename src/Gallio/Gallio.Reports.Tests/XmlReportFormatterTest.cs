@@ -26,43 +26,17 @@ namespace Gallio.Reports.Tests
     [TestsOn(typeof(XmlReportFormatter))]
     public class XmlReportFormatterTest : BaseTestWithMocks
     {
-        [Test, ExpectedArgumentNullException]
-        public void NameCannotBeNull()
-        {
-            new XmlReportFormatter(null, "description");
-        }
-
-        [Test, ExpectedArgumentNullException]
-        public void DescriptionCannotBeNull()
-        {
-            new XmlReportFormatter("name", null);
-        }
-
-        [Test]
-        public void NameIsTheSameAsWasSpecifiedInTheConstructor()
-        {
-            XmlReportFormatter formatter = new XmlReportFormatter("SomeName", "description");
-            Assert.AreEqual("SomeName", formatter.Name);
-        }
-
-        [Test]
-        public void DescriptionIsTheSameAsWasSpecifiedInTheConstructor()
-        {
-            XmlReportFormatter formatter = new XmlReportFormatter("SomeName", "description");
-            Assert.AreEqual("description", formatter.Description);
-        }
-
         [Test]
         public void TheDefaultAttachmentContentDispositionIsAbsent()
         {
-            XmlReportFormatter formatter = new XmlReportFormatter("Xml", "description");
+            XmlReportFormatter formatter = new XmlReportFormatter();
             Assert.AreEqual(AttachmentContentDisposition.Absent, formatter.DefaultAttachmentContentDisposition);
         }
 
         [Test]
         public void TheDefaultAttachmentContentDispositionCanBeChanged()
         {
-            XmlReportFormatter formatter = new XmlReportFormatter("Xml", "description");
+            XmlReportFormatter formatter = new XmlReportFormatter();
 
             formatter.DefaultAttachmentContentDisposition = AttachmentContentDisposition.Inline;
             Assert.AreEqual(AttachmentContentDisposition.Inline, formatter.DefaultAttachmentContentDisposition);
@@ -81,7 +55,7 @@ namespace Gallio.Reports.Tests
 
             using (Mocks.Playback())
             {
-                XmlReportFormatter formatter = new XmlReportFormatter("Xml", "description");
+                XmlReportFormatter formatter = new XmlReportFormatter();
                 var reportFormatterOptions = new ReportFormatterOptions();
 
                 formatter.Format(writer, reportFormatterOptions, progressMonitor);
@@ -101,7 +75,7 @@ namespace Gallio.Reports.Tests
 
             using (Mocks.Playback())
             {
-                XmlReportFormatter formatter = new XmlReportFormatter("Xml", "description");
+                XmlReportFormatter formatter = new XmlReportFormatter();
                 ReportFormatterOptions options = new ReportFormatterOptions();
                 options.Properties.Add(XmlReportFormatter.AttachmentContentDispositionOption, AttachmentContentDisposition.Link.ToString());
 

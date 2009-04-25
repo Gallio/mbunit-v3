@@ -15,8 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using Gallio.Runtime;
+using System.Collections.ObjectModel;
+using Gallio.Collections;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runner
 {
@@ -25,31 +26,25 @@ namespace Gallio.Runner
     /// </summary>
     public class DefaultTestRunnerManager : ITestRunnerManager
     {
-        private readonly IRegisteredComponentResolver<ITestRunnerFactory> factoryResolver;
+        private readonly IList<ComponentHandle<ITestRunnerFactory, TestRunnerFactoryTraits>> factoryHandles;
 
         /// <summary>
         /// Creates a test runner manager.
         /// </summary>
-        /// <param name="factoryResolver">The formatter resolver</param>
+        /// <param name="factoryHandles">The factory handles</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="factoryResolver"/> is null</exception>
-        public DefaultTestRunnerManager(IRegisteredComponentResolver<ITestRunnerFactory> factoryResolver)
+        public DefaultTestRunnerManager(ComponentHandle<ITestRunnerFactory, TestRunnerFactoryTraits>[] factoryHandles)
         {
-            if (factoryResolver == null)
-                throw new ArgumentNullException("factoryResolver");
+            if (factoryHandles == null)
+                throw new ArgumentNullException("factoryHandles");
 
-            this.factoryResolver = factoryResolver;
+            this.factoryHandles = factoryHandles;
         }
 
         /// <inheritdoc />
-        public IRegisteredComponentResolver<ITestRunnerFactory> FactoryResolver
+        public IList<ComponentHandle<ITestRunnerFactory, TestRunnerFactoryTraits>> TestRunnerFactoryHandles
         {
-            get { return factoryResolver; }
-        }
-
-        /// <inheritdoc />
-        public IList<string> GetFactoryNames()
-        {
-            return factoryResolver.GetNames();
+            get { return new ReadOnlyCollection<ComponentHandle<ITestRunnerFactory, TestRunnerFactoryTraits>>(factoryHandles); }
         }
 
         /// <inheritdoc />
@@ -58,7 +53,9 @@ namespace Gallio.Runner
             if (factoryName == null)
                 throw new ArgumentNullException(@"factoryName");
 
-            return factoryResolver.Resolve(factoryName);
+            ComponentHandle<ITestRunnerFactory, TestRunnerFactoryTraits> handle
+                = GenericUtils.Find(factoryHandles, h => string.Compare(h.GetTraits().Name, factoryName, true) == 0);
+            return handle != null ? handle.GetComponent() : null;
         }
 
         /// <inheritdoc />

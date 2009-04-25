@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Runner
 {
@@ -23,7 +24,8 @@ namespace Gallio.Runner
     /// <see cref="ITestRunnerManager" /> to select the particular factory to use
     /// for a given test run.
     /// </summary>
-    public interface ITestRunnerFactory : IRegisteredComponent
+    [Traits(typeof(TestRunnerFactoryTraits))]
+    public interface ITestRunnerFactory
     {
         /// <summary>
         /// Creates a test runner.

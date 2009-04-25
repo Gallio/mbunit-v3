@@ -25,9 +25,11 @@
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
         <testDriverFactory>${AutoCAD.AcadTestDriverFactory}</testDriverFactory>
+      </parameters>
+      <traits>
         <name>AutoCAD</name>
         <description>Runs tests within an AutoCAD instance.</description>
-      </parameters>
+      </traits>
     </component>
 
     <component componentId="AutoCAD.AcadTestDriverFactory"

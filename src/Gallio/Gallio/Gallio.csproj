@@ -266,6 +266,8 @@
     <Compile Include="Runner\Events\OperationFinishedEventArgs.cs" />
     <Compile Include="Runner\Reports\LogEntry.cs" />
     <Compile Include="Runner\Reports\ReportFormatterOptions.cs" />
+    <Compile Include="Runner\Reports\ReportFormatterTraits.cs" />
+    <Compile Include="Runner\TestRunnerFactoryTraits.cs" />
     <Compile Include="Runtime\Debugging\AttachDebuggerResult.cs" />
     <Compile Include="Runtime\Debugging\DefaultDebuggerManager.cs" />
     <Compile Include="Runtime\Debugging\DetachDebuggerResult.cs" />
@@ -505,13 +507,10 @@
     <Compile Include="Runtime\RuntimeException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Runtime\RuntimeRegisteredComponentResolver.cs" />
     <Compile Include="Runtime\Hosting\HostConfiguration.cs" />
     <Compile Include="Runtime\Hosting\HostException.cs" />
     <Compile Include="Runtime\Hosting\HostServiceChannelInterop.cs" />
     <Compile Include="Runtime\Hosting\HostSetup.cs" />
-    <Compile Include="Runtime\IRegisteredComponent.cs" />
-    <Compile Include="Runtime\IRegisteredComponentResolver.cs" />
     <Compile Include="Runtime\Hosting\IHostService.cs" />
     <Compile Include="Runtime\Hosting\RemoteHost.cs" />
     <Compile Include="Runtime\Hosting\IHost.cs" />

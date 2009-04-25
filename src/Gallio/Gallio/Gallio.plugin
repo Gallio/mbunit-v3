@@ -83,12 +83,6 @@
 
     <service serviceId="Gallio.FormattingRule"
              serviceType="Gallio.Framework.Formatting.IFormattingRule, Gallio" />
-
-    <service serviceId="Gallio.ReportFormatterResolver"
-             serviceType="Gallio.Runtime.IRegisteredComponentResolver`1[[Gallio.Runner.Reports.IReportFormatter, Gallio, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e]], Gallio" />
-
-    <service serviceId="Gallio.TestRunnerFactoryResolver"
-             serviceType="Gallio.Runtime.IRegisteredComponentResolver`1[[Gallio.Runner.ITestRunnerFactory, Gallio, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e]], Gallio" />
   </services>
   
   <components>
@@ -139,14 +133,6 @@
     <component componentId="Gallio.DebuggerManager"
                serviceId="Gallio.DebuggerManager"
                componentType="Gallio.Runtime.Debugging.DefaultDebuggerManager, Gallio" />
-
-    <component componentId="Gallio.ReportFormatterResolver"
-               serviceId="Gallio.ReportFormatterResolver"
-               componentType="Gallio.Runtime.RuntimeRegisteredComponentResolver`1[[Gallio.Runner.Reports.IReportFormatter, Gallio, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e]], Gallio" />
-
-    <component componentId="Gallio.TestRunnerFactoryResolver"
-               serviceId="Gallio.TestRunnerFactoryResolver"
-               componentType="Gallio.Runtime.RuntimeRegisteredComponentResolver`1[[Gallio.Runner.ITestRunnerFactory, Gallio, Version=0.0.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e]], Gallio" />
     
     <component componentId="Gallio.LocalHostFactory"
                serviceId="Gallio.HostFactory"
@@ -165,9 +151,11 @@
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
         <testDriverFactory>${Gallio.LocalTestDriverFactory}</testDriverFactory>
+      </parameters>
+      <traits>
         <name>Local</name>
         <description>Runs tests locally within the same process as the test runner application.</description>
-      </parameters>
+      </traits>
     </component>
 
     <component componentId="Gallio.IsolatedAppDomainTestRunnerFactory"
@@ -175,9 +163,11 @@
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
         <testDriverFactory>${Gallio.IsolatedAppDomainTestDriverFactory}</testDriverFactory>
+      </parameters>
+      <traits>
         <name>IsolatedAppDomain</name>
         <description>Runs tests within an isolated AppDomain of the same process as the test runner application.  The additional isolation provided is not generally required since tests typically run in their own isolated AppDomain nested within the test runner.</description>
-      </parameters>
+      </traits>
     </component>
 
     <component componentId="Gallio.IsolatedProcessTestRunnerFactory"
@@ -185,9 +175,11 @@
                componentType="Gallio.Runner.DefaultTestRunnerFactory, Gallio">
       <parameters>
         <testDriverFactory>${Gallio.IsolatedProcessTestDriverFactory}</testDriverFactory>
+      </parameters>
+      <traits>
         <name>IsolatedProcess</name>
         <description>Runs tests within an isolated process external to the test runner.  This mode protects the test runner application from faults that may occur during test execution.</description>
-      </parameters>
+      </traits>
     </component>
 
     <component componentId="Gallio.LocalTestDriverFactory"

@@ -235,7 +235,6 @@
     </Compile>
     <Compile Include="Runtime\RuntimeExceptionTest.cs" />
     <Compile Include="Runtime\RuntimeAccessorTest.cs" />
-    <Compile Include="Runtime\RuntimeRegisteredComponentResolverTest.cs" />
     <Compile Include="Integration\StubContextIntegrationTest.cs" />
     <Compile Include="Framework\TestLogTest.cs" />
     <Compile Include="Model\Logging\TextualTestLogWriterTest.cs" />

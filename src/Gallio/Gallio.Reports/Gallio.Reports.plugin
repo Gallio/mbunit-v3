@@ -19,6 +19,9 @@
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.XmlReportFormatter, Gallio.Reports">
       <parameters>
+        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
+      </parameters>
+      <traits>
         <name>Xml</name>
         <description>
           Generates XML reports with linked attachment files.
@@ -26,26 +29,25 @@
           Supported report formatter properties:
           - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
         </description>
-        <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
-      </parameters>
+      </traits>
     </component>
 
     <component componentId="ReportFormatter.Xml-Inline"
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.XmlReportFormatter, Gallio.Reports">
       <parameters>
-        <name>Xml-Inline</name>
-        <description>Generates XML reports with inline encoded attachments.</description>
         <defaultAttachmentContentDisposition>Inline</defaultAttachmentContentDisposition>
       </parameters>
+      <traits>
+        <name>Xml-Inline</name>
+        <description>Generates XML reports with inline encoded attachments.</description>
+      </traits>
     </component>
 
     <component componentId="ReportFormatter.Text"
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
-        <name>Text</name>
-        <description>Generates plain text reports.</description>
         <extension>txt</extension>
         <contentType>text/plain</contentType>
         <defaultAttachmentContentDisposition>Absent</defaultAttachmentContentDisposition>
@@ -53,19 +55,16 @@
         <xsltPath>xsl/Gallio-Report.txt.xsl</xsltPath>
         <resourcePaths></resourcePaths>
       </parameters>
+      <traits>
+        <name>Text</name>
+        <description>Generates plain text reports.</description>
+      </traits>
     </component>
 
     <component componentId="ReportFormatter.Html"
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
-        <name>Html</name>
-        <description>
-          Generates HTML reports.
-
-          Supported report formatter properties:
-          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
-        </description>
         <extension>html</extension>
         <contentType>text/html</contentType>
         <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
@@ -73,19 +72,21 @@
         <xsltPath>xsl/Gallio-Report.html.xsl</xsltPath>
         <resourcePaths>css;js;img</resourcePaths>
       </parameters>
+      <traits>
+        <name>Html</name>
+        <description>
+          Generates HTML reports.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
     </component>
 
     <component componentId="ReportFormatter.Html-Condensed"
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
-        <name>Html-Condensed</name>
-        <description>
-          Generates HTML reports that omit passing tests.
-
-          Supported report formatter properties:
-          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
-        </description>
         <extension>html</extension>
         <contentType>text/html</contentType>
         <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
@@ -93,19 +94,21 @@
         <xsltPath>xsl/Gallio-Report.html-condensed.xsl</xsltPath>
         <resourcePaths>css;js;img</resourcePaths>
       </parameters>
+      <traits>
+        <name>Html-Condensed</name>
+        <description>
+          Generates HTML reports that omit passing tests.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
     </component>
 
     <component componentId="ReportFormatter.XHtml"
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
-        <name>XHtml</name>
-        <description>
-          Generates XHTML reports.
-
-          Supported report formatter properties:
-          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
-        </description>
         <extension>xhtml</extension>
         <contentType>text/xhtml+xml</contentType>
         <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
@@ -113,19 +116,21 @@
         <xsltPath>xsl/Gallio-Report.xhtml.xsl</xsltPath>
         <resourcePaths>css;js;img</resourcePaths>
       </parameters>
+      <traits>
+        <name>XHtml</name>
+        <description>
+          Generates XHTML reports.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
     </component>
 
     <component componentId="ReportFormatter.XHtml-Condensed"
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.XsltReportFormatter, Gallio.Reports">
       <parameters>
-        <name>XHtml-Condensed</name>
-        <description>
-          Generates XHTML reports that omit passing tests.
-
-          Supported report formatter properties:
-          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
-        </description>
         <extension>xhtml</extension>
         <contentType>text/xhtml+xml</contentType>
         <defaultAttachmentContentDisposition>Link</defaultAttachmentContentDisposition>
@@ -133,26 +138,39 @@
         <xsltPath>xsl/Gallio-Report.xhtml-condensed.xsl</xsltPath>
         <resourcePaths>css;js;img</resourcePaths>
       </parameters>
+      <traits>
+        <name>XHtml-Condensed</name>
+        <description>
+          Generates XHTML reports that omit passing tests.
+
+          Supported report formatter properties:
+          - AttachmentContentDisposition: Specifies how attachments should be stored.  "Absent", "Link" or "Inline".  Default is "Link".
+        </description>
+      </traits>
     </component>
 
     <component componentId="ReportFormatter.MHtml"
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.MHtmlReportFormatter, Gallio.Reports">
       <parameters>
-        <name>MHtml</name>
-        <description>Generates MHTML reports.</description>
         <htmlReportFormatter>${ReportFormatter.Html}</htmlReportFormatter>
       </parameters>
+      <traits>
+        <name>MHtml</name>
+        <description>Generates MHTML reports.</description>
+      </traits>
     </component>
 
     <component componentId="ReportFormatter.MHtml-Condensed"
                serviceId="Gallio.ReportFormatter"
                componentType="Gallio.Reports.MHtmlReportFormatter, Gallio.Reports">
       <parameters>
-        <name>MHtml-Condensed</name>
-        <description>Generates MHTML reports that omit passing tests.</description>
         <htmlReportFormatter>${ReportFormatter.Html-Condensed}</htmlReportFormatter>
       </parameters>
+      <traits>
+        <name>MHtml-Condensed</name>
+        <description>Generates MHTML reports that omit passing tests.</description>
+      </traits>
     </component>
   </components>
 </plugin>
