@@ -74,6 +74,17 @@ namespace MbUnit.Framework
         private readonly List<EqualityComparison<T>> predicates = new List<EqualityComparison<T>>();
 
         /// <summary>
+        /// Gets a default neutral structural equality comparer for the type.
+        /// </summary>
+        public static StructuralEqualityComparer<T> Default
+        {
+            get
+            {
+                return new StructuralEqualityComparer<T> { { x => x } };
+            }
+        }
+
+        /// <summary>
         /// <para>
         /// Adds a matching criterion to the structural equality comparer.
         /// </para>
@@ -110,7 +121,7 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
         public void Add<TValue>(Accessor<T, TValue> accessor)
         {
-            Add(accessor, (x, y) => ComparisonSemantics.Equals<TValue>(x, y));
+            Add(accessor, ComparisonSemantics.Equals<TValue>);
         }
 
         /// <summary>
@@ -160,16 +171,11 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets a value from the tested object.</param>
-        /// <param name="comparer">A comparer instance for the values returned by the accessor.</param>
-        /// <exception cref="ArgumentNullException">One of the specified arguments is null reference.</exception>
+        /// <param name="comparer">A comparer instance, or null to use the default one.</param>
+        /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
         public void Add<TValue>(Accessor<T, TValue> accessor, IEqualityComparer<TValue> comparer)
         {
-            if (comparer == null)
-            {
-                throw new ArgumentNullException("comparer");
-            }
-
-            Add(accessor, (x, y) => comparer.Equals(x, y));
+            Add(accessor, comparer == null ? (EqualityComparison<TValue>)null : comparer.Equals);
         }
 
         /// <summary>
@@ -206,21 +212,17 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets a value from the tested object.</param>
-        /// <param name="comparison">A equality comparison delegate to compare the values returned by the accessor.</param>
-        /// <exception cref="ArgumentNullException">One of the specified arguments is null reference.</exception>
-        public void Add<TValue>(Accessor<T, TValue> accessor, EqualityComparison<TValue> comparison)
+        /// <param name="comparer">A equality comparison delegate to compare the values returned by the accessor, or null to use the default one.</param>
+        /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
+        public void Add<TValue>(Accessor<T, TValue> accessor, EqualityComparison<TValue> comparer)
         {
             if (accessor == null)
-            {
                 throw new ArgumentNullException("accessor");
-            }
 
-            if (comparison == null)
-            {
-                throw new ArgumentNullException("comparison");
-            }
+            if (comparer == null)
+                comparer = ComparisonSemantics.Equals<TValue>;
 
-            predicates.Add((x, y) => comparison(accessor(x), accessor(y)));
+            predicates.Add((x, y) => comparer(accessor(x), accessor(y)));
         }
 
         /// <summary>
@@ -255,16 +257,10 @@ namespace MbUnit.Framework
         /// </example>
         /// </para>
         /// </summary>
-        /// <param name="comparison">An equality comparison delegate to directly compare two instances..</param>
-        /// <exception cref="ArgumentNullException">The specified comparison argument is a null reference.</exception>
-        public void Add(EqualityComparison<T> comparison)
+        /// <param name="comparer">An equality comparison delegate to directly compare two instances, or null to use the default one.</param>
+        public void Add(EqualityComparison<T> comparer)
         {
-            if (comparison == null)
-            {
-                throw new ArgumentNullException("comparison");
-            }
-
-            predicates.Add(comparison);
+            predicates.Add(comparer ?? ComparisonSemantics.Equals<T>);
         }
 
         /// <summary>
@@ -312,16 +308,10 @@ namespace MbUnit.Framework
         /// </example>
         /// </para>
         /// </summary>
-        /// <param name="comparer">An comparer object to directly compare two instances.</param>
-        /// <exception cref="ArgumentNullException">The specified comparer argument is a null reference.</exception>
+        /// <param name="comparer">An comparer object to directly compare two instances, or null to use the default one.</param>
         public void Add(IEqualityComparer<T> comparer)
         {
-            if (comparer == null)
-            {
-                throw new ArgumentNullException("comparer");
-            }
-
-            predicates.Add(comparer.Equals);
+            predicates.Add(comparer == null ? (EqualityComparison<T>)null : comparer.Equals);
         }
 
         /// <summary>
@@ -361,8 +351,8 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets an enumeration of values from the tested object.</param>
-        /// <param name="comparer">A comparer instance for the values returned by the accessor.</param>
-        /// <exception cref="ArgumentNullException">One of the specified arguments is null reference.</exception>
+        /// <param name="comparer">A comparer instance for the values returned by the accessor, or null to use the default one.</param>
+        /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
         public void Add<TValue>(Accessor<T, IEnumerable<TValue>> accessor, IEqualityComparer<TValue> comparer)
         {
             Add(accessor, comparer, StructuralEqualityComparerOptions.Default);
@@ -405,15 +395,58 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets an enumeration of values from the tested object.</param>
-        /// <param name="comparer">A comparer instance for the values returned by the accessor.</param>
+        /// <param name="comparer">A comparer instance for the values returned by the accessor, or null to use the default one.</param>
         /// <param name="options">Some options indicating how to compare the enumeration of values returned by the accessor.</param>
-        /// <exception cref="ArgumentNullException">One of the specified arguments is null reference.</exception>
+        /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
         public void Add<TValue>(Accessor<T, IEnumerable<TValue>> accessor, IEqualityComparer<TValue> comparer, StructuralEqualityComparerOptions options)
         {
+            Add(accessor, comparer, StructuralEqualityComparerOptions.Default);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Adds a matching criterion to the structural equality comparer.
+        /// </para>
+        /// <para>
+        /// The enumerations of values returned by the accessor are compared by using the specified comparer.
+        /// <example>
+        /// <code><![CDATA[
+        /// public class Foo
+        /// {
+        ///     public int[] Values;
+        /// }
+        /// 
+        /// [TestFixture]
+        /// public class FooTest
+        /// {
+        ///     [Test]
+        ///     public void MyTest()
+        ///     {
+        ///         var foo1 = new Foo() { Values = new int[] { 1, 2, 3, 4, 5 } };    
+        ///         var foo2 = new Foo() { Values = new int[] { 5, 4, 3, 2, 1 } };
+        ///         
+        ///         Assert.AreEqual(foo1, foo2, new StructuralEqualityComparer<Foo>
+        ///         {
+        ///             { x => x.Values,
+        ///               new StructuralEqualityComparer<int> { { x => x } },
+        ///               StructuralEqualityComparerOptions.IgnoreEnumerableOrder
+        ///             },
+        ///         });
+        ///     }
+        /// }
+        /// ]]></code>
+        /// </example>
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
+        /// <param name="accessor">An accessor that gets an enumeration of values from the tested object.</param>
+        /// <param name="comparer">A comparer instance for the values returned by the accessor, or null to use the default one.</param>
+        /// <param name="options">Some options indicating how to compare the enumeration of values returned by the accessor.</param>
+        /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
+        public void Add<TValue>(Accessor<T, IEnumerable<TValue>> accessor, EqualityComparison<TValue> comparer, StructuralEqualityComparerOptions options)
+        {
             if (comparer == null)
-            {
-                throw new ArgumentNullException("comparer");
-            }
+                comparer = ComparisonSemantics.Equals<TValue>;
 
             if ((options & StructuralEqualityComparerOptions.IgnoreEnumerableOrder) != 0)
             {
@@ -425,7 +458,7 @@ namespace MbUnit.Framework
             }
         }
 
-        private bool CompareEnumerables<TValue>(IEnumerable<TValue> xEnumerable, IEnumerable<TValue> yEnumerable, IEqualityComparer<TValue> comparer)
+        private bool CompareEnumerables<TValue>(IEnumerable<TValue> xEnumerable, IEnumerable<TValue> yEnumerable, EqualityComparison<TValue> comparer)
         {
             var xEnumerator = xEnumerable.GetEnumerator();
             var yEnumerator = yEnumerable.GetEnumerator();
@@ -440,7 +473,7 @@ namespace MbUnit.Framework
                 TValue xValue = xEnumerator.Current;
                 TValue yValue = yEnumerator.Current;
 
-                if (!comparer.Equals(xValue, yValue))
+                if (!comparer(xValue, yValue))
                 {
                     return false;
                 }
@@ -454,9 +487,9 @@ namespace MbUnit.Framework
             return true;
         }
 
-        private bool CompareEnumerablesIgnoringOrder<TValue>(IEnumerable<TValue> xEnumerable, IEnumerable<TValue> yEnumerable, IEqualityComparer<TValue> comparer)
+        private bool CompareEnumerablesIgnoringOrder<TValue>(IEnumerable<TValue> xEnumerable, IEnumerable<TValue> yEnumerable, EqualityComparison<TValue> comparer)
         {
-            var table = new MatchTable<TValue>(comparer.Equals);
+            var table = new MatchTable<TValue>(comparer);
 
             foreach (TValue xElement in xEnumerable)
                 table.AddLeftValue(xElement);

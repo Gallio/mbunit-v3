@@ -33,11 +33,7 @@ namespace MbUnit.Tests.Framework
         [Row(123, 456, false)]
         public void Compare_Int32_default(int value1, int value2, bool expected)
         {
-            var comparer = new StructuralEqualityComparer<int>
-            {
-                { x => x }
-            };
-
+            var comparer = StructuralEqualityComparer<int>.Default;
             bool result = comparer.Equals(value1, value2);
             Assert.AreEqual(expected, result);
         }
@@ -143,7 +139,7 @@ namespace MbUnit.Tests.Framework
                 { x => x.Number },
                 
                 { (x, y) => String.Compare(x.Text, y.Text, true) == 0 },
-                
+
                 { x => x.Duration, 
                     new StructuralEqualityComparer<TimeSpan>
                     {
@@ -187,10 +183,7 @@ namespace MbUnit.Tests.Framework
             var comparer = new StructuralEqualityComparer<Foo>
             {
                 { x => x.Number },
-                
-                { x => x.Values, 
-                  new StructuralEqualityComparer<int> { { x => x } }
-                }
+                { x => x.Values,  StructuralEqualityComparer<int>.Default }
             };
 
             bool result = comparer.Equals(value1, value2);
@@ -228,11 +221,7 @@ namespace MbUnit.Tests.Framework
             var comparer = new StructuralEqualityComparer<Foo>
             {
                 { x => x.Number },
-                
-                { x => x.Values, 
-                  new StructuralEqualityComparer<int> { { x => x } }, 
-                  StructuralEqualityComparerOptions.IgnoreEnumerableOrder
-                }
+                { x => x.Values,  StructuralEqualityComparer<int>.Default, StructuralEqualityComparerOptions.IgnoreEnumerableOrder }
             };
 
             bool result = comparer.Equals(value1, value2);
