@@ -13,18 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using Gallio.Icarus.Mediator.Interfaces;
+using Gallio.Runner.Projects;
+using Gallio.Utilities;
 
 namespace Gallio.Icarus.Controllers
 {
-    public class ApplicationController : IApplicationController
+    public class ApplicationController : NotifyController, IApplicationController
     {
         private readonly IcarusArguments arguments;
         private string projectFileName = string.Empty;
+        private readonly IFileSystem fileSystem;
         
         public IMediator Mediator { get; private set; }
         
@@ -32,8 +34,9 @@ namespace Gallio.Icarus.Controllers
         {
             get
             {
-                return string.IsNullOrEmpty(projectFileName) ? "Gallio Icarus" :
-                    string.Format("{0} - Gallio Icarus", Path.GetFileNameWithoutExtension(projectFileName));
+                return string.IsNullOrEmpty(projectFileName) ? Properties.Resources.ApplicationName :
+                    string.Format("{0} - {1}", Path.GetFileNameWithoutExtension(projectFileName), 
+                    Properties.Resources.ApplicationName);
             }
             set
             {
@@ -42,10 +45,11 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public ApplicationController(IcarusArguments args, IMediator mediator)
+        public ApplicationController(IcarusArguments args, IMediator mediator, IFileSystem fileSystem)
         {
             arguments = args;
             Mediator = mediator;
+            this.fileSystem = fileSystem;
         }
 
         public void Load()
@@ -55,10 +59,10 @@ namespace Gallio.Icarus.Controllers
             {
                 foreach (var assembly in arguments.Assemblies)
                 {
-                    if (!File.Exists(assembly))
+                    if (!fileSystem.FileExists(assembly))
                         continue;
 
-                    if (Path.GetExtension(assembly) == ".gallio")
+                    if (Path.GetExtension(assembly) == Project.Extension)
                     {
                         Mediator.OpenProject(assembly);
                         break;
@@ -90,14 +94,6 @@ namespace Gallio.Icarus.Controllers
         {
             ProjectFileName = string.Empty;
             Mediator.NewProject();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, e);
         }
     }
 }

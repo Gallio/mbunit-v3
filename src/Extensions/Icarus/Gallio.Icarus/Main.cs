@@ -29,6 +29,7 @@ using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.ProgressMonitoring.EventArgs;
 using Gallio.Reflection;
+using Gallio.Runner.Projects;
 using Gallio.Runtime;
 using Gallio.Utilities;
 using WeifenLuo.WinFormsUI.Docking;
@@ -58,6 +59,8 @@ namespace Gallio.Icarus
         private readonly FiltersWindow filtersWindow;
         private readonly ExecutionLogWindow executionLogWindow;
         private readonly AnnotationsWindow annotationsWindow;
+
+        private readonly string projectFileFilter = string.Format("Gallio Projects (*{0})|*{0}", Project.Extension);
 
         private readonly ProgressMonitor progressMonitor;
 
@@ -293,7 +296,7 @@ namespace Gallio.Icarus
         {
             using (OpenFileDialog openFile = new OpenFileDialog())
             {
-                openFile.Filter = "Gallio Projects (*.gallio)|*.gallio";
+                openFile.Filter = projectFileFilter;
 
                 if (openFile.ShowDialog() != DialogResult.OK)
                     return;
@@ -308,8 +311,8 @@ namespace Gallio.Icarus
             {
                 OverwritePrompt = true,
                 AddExtension = true,
-                DefaultExt = "Gallio Projects (*.gallio)|*.gallio",
-                Filter = "Gallio Projects (*.gallio)|*.gallio"
+                DefaultExt = projectFileFilter,
+                Filter = projectFileFilter
             };
             if (saveFile.ShowDialog() != DialogResult.OK) 
                 return;

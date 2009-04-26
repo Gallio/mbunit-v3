@@ -113,7 +113,7 @@ namespace Gallio.Icarus
                     mediator.OptionsController);
                 mediator.SourceCodeController = new SourceCodeController(testController);
 
-                var applicationController = new ApplicationController(Arguments, mediator);
+                var applicationController = new ApplicationController(Arguments, mediator, new FileSystem());
                 var main = new Main(applicationController);
 
                 Application.Run(main);

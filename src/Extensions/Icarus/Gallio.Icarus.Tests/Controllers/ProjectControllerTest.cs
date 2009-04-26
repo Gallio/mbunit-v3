@@ -18,6 +18,7 @@ using System.Reflection;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -190,7 +191,10 @@ namespace Gallio.Icarus.Tests.Controllers
             progressMonitor.Stub(x => x.BeginTask(Arg<string>.Is.Anything, Arg<double>.Is.Anything)).Return(new ProgressMonitorTaskCookie(progressMonitor));
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
 
-            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer);
+            var projectController = new ProjectController(projectTreeModel, optionsController, fileSystem, xmlSerializer)
+                                        {
+                                            SynchronizationContext = new TestSynchronizationContext()
+                                        };
 
             projectController.PropertyChanged += ((sender, e) => Assert.AreEqual("TestPackageConfig", e.PropertyName));
             projectController.NewProject(progressMonitor);
