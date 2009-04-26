@@ -332,6 +332,26 @@ namespace Gallio.Tests.Runtime.Extensibility
             }
 
             [Test]
+            public void ResolveDependency_WhenDependencyIsOfTypeGuid_ConvertsPropertyStringToGuid()
+            {
+                var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();
+                var resourceLocator = MockRepository.GenerateMock<IResourceLocator>();
+                var dependencyResolver = new DefaultObjectDependencyResolver(serviceLocator, resourceLocator);
+
+                var result = dependencyResolver.ResolveDependency("guid", typeof(Guid), "{6DAA03EC-D603-43d4-A3E1-1607375A50A1}");
+
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(result.IsSatisfied);
+                    Assert.IsInstanceOfType<Guid>(result.Value);
+                    Assert.AreEqual(new Guid("{6DAA03EC-D603-43d4-A3E1-1607375A50A1}"), result.Value);
+                });
+
+                serviceLocator.VerifyAllExpectations();
+                resourceLocator.VerifyAllExpectations();
+            }
+
+            [Test]
             public void ResolveDependency_WhenDependencyIsOfTypeInt_ConvertsPropertyStringToInt()
             {
                 var serviceLocator = MockRepository.GenerateMock<IServiceLocator>();

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Reflection;
 using Gallio.NUnitAdapter.Properties;
 using Gallio.Model;
@@ -25,24 +26,10 @@ namespace Gallio.NUnitAdapter.Model
     /// </summary>
     public class NUnitTestFramework : BaseTestFramework
     {
-        private static readonly Guid FrameworkId = new Guid("{E0273D0F-BEAE-47ff-9391-D6782417F000}");
-
         /// <inheritdoc />
-        public override Guid Id
+        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
         {
-            get { return FrameworkId; }
-        }
-
-        /// <inheritdoc />
-        public override string Name
-        {
-            get { return Resources.NUnitTestFramework_NUnitFrameworkName; }
-        }
-
-        /// <inheritdoc />
-        public override ITestExplorer CreateTestExplorer(TestModel testModel)
-        {
-            return new NUnitTestExplorer(testModel);
+            explorers.Add(new NUnitTestExplorer());
         }
     }
 }

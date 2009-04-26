@@ -14,11 +14,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Gallio.Model;
-using Gallio.CSUnitAdapter.Properties;
-using Gallio.Runtime.Hosting;
 
 namespace Gallio.CSUnitAdapter.Model
 {
@@ -27,24 +25,10 @@ namespace Gallio.CSUnitAdapter.Model
     /// </summary>
     public class CSUnitTestFramework : BaseTestFramework
     {
-        private static readonly Guid FrameworkId = new Guid("{B55A8096-EFB9-4570-B977-75695D614E3B}");
-
         /// <inheritdoc />
-        public override Guid Id
+        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
         {
-            get { return FrameworkId; }
-        }
-
-        /// <inheritdoc />
-        public override string Name
-        {
-            get { return Resources.CSUnitTestFramework_FrameworkName; }
-        }
-
-        /// <inheritdoc />
-        public override ITestExplorer CreateTestExplorer(TestModel testModel)
-        {
-            return new CSUnitTestExplorer(testModel);
+            explorers.Add(new CSUnitTestExplorer());
         }
     }
 }

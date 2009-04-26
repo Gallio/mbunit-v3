@@ -129,7 +129,4 @@
   <data name="CSUnitTestExplorer_FrameworkNameWithVersionFormat" xml:space="preserve">
     <value>csUnit v{0}</value>
   </data>
-  <data name="CSUnitTestFramework_FrameworkName" xml:space="preserve">
-    <value>csUnit</value>
-  </data>
 </root>

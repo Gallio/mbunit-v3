@@ -40,7 +40,7 @@ namespace Gallio.Runner.Drivers
     public class HostedTestDriver : AggregateTestDriver
     {
         private readonly IHostFactory hostFactory;
-        private readonly ITestFramework[] frameworks;
+        private readonly ITestFrameworkManager frameworkManager;
         private readonly IRuntime runtime;
         private readonly bool shareAppDomain;
 
@@ -48,22 +48,22 @@ namespace Gallio.Runner.Drivers
         /// Creates a hosted test driver.
         /// </summary>
         /// <param name="hostFactory">The host factory</param>
-        /// <param name="frameworks">The test frameworks that should participate in test domain configuration</param>
+        /// <param name="frameworkManager">The test framework manager</param>
         /// <param name="runtime">The Gallio runtime</param>
         /// <param name="sharedAppDomain">If true, uses a shared app-domain for all test domains</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
-        /// <paramref name="frameworks"/>, or <paramref name="runtime"/> is null</exception>
-        public HostedTestDriver(IHostFactory hostFactory, ITestFramework[] frameworks, IRuntime runtime, bool sharedAppDomain)
+        /// <paramref name="frameworkManager"/>, or <paramref name="runtime"/> is null</exception>
+        public HostedTestDriver(IHostFactory hostFactory, ITestFrameworkManager frameworkManager, IRuntime runtime, bool sharedAppDomain)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
-            if (frameworks == null)
+            if (frameworkManager == null)
                 throw new ArgumentNullException("frameworks");
             if (runtime == null)
                 throw new ArgumentNullException("runtime");
 
             this.hostFactory = hostFactory;
-            this.frameworks = frameworks;
+            this.frameworkManager = frameworkManager;
             this.runtime = runtime;
             this.shareAppDomain = sharedAppDomain;
         }
@@ -181,8 +181,8 @@ namespace Gallio.Runner.Drivers
                     }
                 }
 
-                foreach (ITestFramework framework in frameworks)
-                    framework.ConfigureTestDomain(testDomain);
+                ITestExplorer explorer = frameworkManager.GetTestExplorer(traits => testDomain.TestPackageConfig.IsFrameworkRequested(traits.Id));
+                explorer.ConfigureTestDomain(testDomain);
 
                 TestDomainSetup existingTestDomain;
                 if (testDomains.TryGetValue(testDomain.TestPackageConfig.HostSetup, out existingTestDomain))

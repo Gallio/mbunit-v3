@@ -23,46 +23,25 @@ namespace Gallio.Model
     /// </summary>
     public abstract class BaseTestExplorer : ITestExplorer
     {
-        private readonly TestModel testModel;
-
-        /// <summary>
-        /// Creates a test explorer.
-        /// </summary>
-        /// <param name="testModel">The test model that is incrementally populated by the test
-        /// explorer as it explores tests.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="testModel"/> is null</exception>
-        public BaseTestExplorer(TestModel testModel)
+        /// <inheritdoc />
+        public virtual void ConfigureTestDomain(TestDomainSetup testDomainSetup)
         {
-            if (testModel == null)
-                throw new ArgumentNullException("testModel");
-
-            this.testModel = testModel;
         }
 
         /// <inheritdoc />
-        public TestModel TestModel
-        {
-            get { return testModel; }
-        }
-
-        /// <inheritdoc />
-        public virtual bool IsTest(ICodeElementInfo element)
+        public virtual bool IsTest(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
             return false;
         }
 
         /// <inheritdoc />
-        public virtual void ExploreAssembly(IAssemblyInfo assembly, Action<ITest> consumer)
+        public virtual bool IsTestPart(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
+            return IsTest(reflectionPolicy, codeElement);
         }
 
         /// <inheritdoc />
-        public virtual void ExploreType(ITypeInfo type, Action<ITest> consumer)
-        {
-        }
-
-        /// <inheritdoc />
-        public virtual void FinishModel()
+        public virtual void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
         {
         }
     }

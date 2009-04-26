@@ -22,27 +22,27 @@ using MbUnit.Framework;
 namespace Gallio.Tests.Framework.Pattern
 {
     [TestFixture]
-    [TestsOn(typeof(ToolInfo))]
-    public class ToolInfoTest
+    [TestsOn(typeof(PatternTestFrameworkExtensionInfo))]
+    public class PatternTestFrameworkExtensionInfoTest
     {
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsWhenIdIsNull()
         {
-            new ToolInfo(null, "name");
+            new PatternTestFrameworkExtensionInfo(null, "name");
         }
 
         [Test, ExpectedArgumentNullException]
         public void ConstructorThrowsWhenNameIsNull()
         {
-            new ToolInfo("id", null);
+            new PatternTestFrameworkExtensionInfo("id", null);
         }
 
         [Test]
         public void TheValuesPassedToTheConstructorAreExposedInTheProperties()
         {
-            ToolInfo info = new ToolInfo("toolId", "toolName");
-            Assert.AreEqual("toolId", info.Id);
-            Assert.AreEqual("toolName", info.Name);
+            PatternTestFrameworkExtensionInfo info = new PatternTestFrameworkExtensionInfo("id", "name");
+            Assert.AreEqual("id", info.Id);
+            Assert.AreEqual("name", info.Name);
         }
     }
 }

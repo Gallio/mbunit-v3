@@ -28,28 +28,28 @@ namespace Gallio.Runner.Drivers
     public class HostedTestDriverFactory : ITestDriverFactory
     {
         private readonly IHostFactory hostFactory;
-        private readonly ITestFramework[] frameworks;
+        private readonly ITestFrameworkManager frameworkManager;
         private readonly IRuntime runtime;
 
         /// <summary>
         /// Creates a hosted test driver factory.
         /// </summary>
         /// <param name="hostFactory">The host factory</param>
-        /// <param name="frameworks">The test frameworks that should participate in test domain configuration</param>
+        /// <param name="frameworkManager">The test framework manager</param>
         /// <param name="runtime">The Gallio runtime</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
-        /// <paramref name="frameworks"/>, or <paramref name="runtime"/> is null</exception>
-        public HostedTestDriverFactory(IHostFactory hostFactory, ITestFramework[] frameworks, IRuntime runtime)
+        /// <paramref name="frameworkManager"/>, or <paramref name="runtime"/> is null</exception>
+        public HostedTestDriverFactory(IHostFactory hostFactory, ITestFrameworkManager frameworkManager, IRuntime runtime)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
-            if (frameworks == null)
+            if (frameworkManager == null)
                 throw new ArgumentNullException("frameworks");
             if (runtime == null)
                 throw new ArgumentNullException("runtime");
 
             this.hostFactory = hostFactory;
-            this.frameworks = frameworks;
+            this.frameworkManager = frameworkManager;
             this.runtime = runtime;
         }
 
@@ -71,7 +71,7 @@ namespace Gallio.Runner.Drivers
         /// <inheritdoc />
         public ITestDriver CreateTestDriver()
         {
-            return new HostedTestDriver(hostFactory, frameworks, runtime, ShareAppDomain);
+            return new HostedTestDriver(hostFactory, frameworkManager, runtime, ShareAppDomain);
         }
     }
 }

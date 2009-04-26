@@ -17,6 +17,8 @@ using System;
 using System.Reflection;
 using Gallio.Framework.Pattern;
 using Gallio.Reflection;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using MbUnit.Core;
 using MbUnit.Framework;
 using Gallio.Model;
@@ -26,18 +28,19 @@ using Gallio.Tests.Model;
 namespace MbUnit.Tests.Model
 {
     [TestFixture]
-    [TestsOn(typeof(MbUnitTestFrameworkExtension))]
+    [TestsOn(typeof(MbUnitTestFramework))]
     [Author("Jeff", "jeff@ingenio.com")]
-    public class MbUnitTestFrameworkExtensionTest : BaseTestFrameworkTest
+    public class MbUnitTestFrameworkTest : BaseTestFrameworkTest
     {
         protected override Assembly GetSampleAssembly()
         {
             return typeof(SimpleTest).Assembly;
         }
 
-        protected override ITestFramework CreateFramework()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
         {
-            return new PatternTestFramework(new IPatternTestFrameworkExtension[] { new MbUnitTestFrameworkExtension()});
+            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("MbUnit.TestFramework");
         }
 
         /// <summary>

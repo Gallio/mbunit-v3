@@ -17,6 +17,8 @@ using System;
 using System.Reflection;
 using Gallio.Model;
 using Gallio.Reflection;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.XunitAdapter.Model;
 using Gallio.XunitAdapter.TestResources;
 using Gallio.XunitAdapter.TestResources.Metadata;
@@ -36,16 +38,11 @@ namespace Gallio.XunitAdapter.Tests.Model
             return typeof(SimpleTest).Assembly;
         }
 
-        protected override ITestFramework CreateFramework()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
         {
-            return new XunitTestFramework();
+            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("XunitAdapter.TestFramework");
         }
-
-        [Test]
-        public void NameIsXunit()
-        {
-            Assert.AreEqual("xUnit.net", framework.Name);
-        }        
 
         [Test]
         public void MetadataImport_SkipReason()

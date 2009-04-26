@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <Binary Include="Gallio.Icarus\bin\Gallio.Icarus.exe" />
-    <PluginFile Include="Gallio.Icarus\bin\Gallio.Icarus.exe.config" />    
+    <PluginFile Include="Gallio.Icarus\bin\Gallio.Icarus.exe.config" />
+    <PluginFile Include="Gallio.Icarus\Gallio.Icarus.plugin" />    
     <Binary Include="Gallio.Icarus\bin\Gallio.Icarus.XmlSerializers.dll" />
 
     <Binary Include="libs\Aga.Controls.dll" />

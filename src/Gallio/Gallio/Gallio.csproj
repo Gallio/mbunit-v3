@@ -82,6 +82,8 @@
     <Compile Include="Concurrency\ThreadTask.cs" />
     <Compile Include="EqualityComparison.cs" />
     <Compile Include="Framework\DiagnosticLog.cs" />
+    <Compile Include="Framework\Pattern\ReflectionOnlyTestModelBuilder.cs" />
+    <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfo.cs" />
     <Compile Include="Framework\TestTerminatedException.cs" />
     <Compile Include="Framework\Pattern\BaseBuilder.cs" />
     <Compile Include="Framework\Pattern\DefaultTestBuilder.cs" />
@@ -171,15 +173,17 @@
     </Compile>
     <Compile Include="Framework\Text\DiffStyle.cs" />
     <Compile Include="ICloneable.cs" />
+    <Compile Include="Model\DefaultTestFrameworkManager.cs" />
     <Compile Include="Model\Diagnostics\StackTraceData.cs" />
     <Compile Include="Model\Diagnostics\TestFrameworkInternalAttribute.cs" />
     <Compile Include="Model\Diagnostics\StackTraceFilter.cs" />
     <Compile Include="Model\Diagnostics\TestEntryPointAttribute.cs" />
-    <Compile Include="Model\DefaultTestPackageExplorerFactory.cs" />
     <Compile Include="Model\Filters\FilterRule.cs" />
     <Compile Include="Model\Filters\FilterRuleType.cs" />
     <Compile Include="Model\Filters\FilterSet.cs" />
     <Compile Include="Model\Filters\FilterSetResult.cs" />
+    <Compile Include="Model\ITestFrameworkManager.cs" />
+    <Compile Include="Model\ITestExplorer.cs" />
     <Compile Include="Model\Logging\FallbackTestLogWriter.cs" />
     <Compile Include="Model\Messages\RemoteTestExplorationListener.cs" />
     <Compile Include="Model\Messages\ITestExecutionListener.cs" />
@@ -217,11 +221,12 @@
     <Compile Include="Model\Messages\ITestExplorationListener.cs" />
     <Compile Include="Model\Messages\RemoteTestExecutionListener.cs" />
     <Compile Include="Model\Filters\FilterParseException.cs" />
-    <Compile Include="Model\ITestPackageExplorerFactory.cs" />
     <Compile Include="Model\Logging\StringTestLogWriter.cs" />
     <Compile Include="Model\TestDomainSetup.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\TestFrameworkTraits.cs" />
+    <Compile Include="Model\TestSource.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="Reflection\ConstantValue.cs" />
     <Compile Include="Reflection\Impl\BaseReflectionPolicy.cs" />
@@ -434,7 +439,6 @@
     <Compile Include="Framework\Pattern\TestAssemblyInitializationAttribute.cs" />
     <Compile Include="Framework\Pattern\TestAssemblyPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\BasePattern.cs" />
-    <Compile Include="Framework\Pattern\BasePatternTestFrameworkExtension.cs" />
     <Compile Include="Framework\Pattern\BootstrapTestAssemblyPattern.cs" />
     <Compile Include="Framework\Pattern\DataPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\DeclarativePatternResolver.cs" />
@@ -447,7 +451,6 @@
     <Compile Include="Framework\Pattern\TestDependencyPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\IPattern.cs" />
     <Compile Include="Framework\Pattern\IPatternResolver.cs" />
-    <Compile Include="Framework\Pattern\IPatternTestFrameworkExtension.cs" />
     <Compile Include="Framework\Pattern\IPatternTestHandler.cs" />
     <Compile Include="Framework\Pattern\IPatternTestInstanceHandler.cs" />
     <Compile Include="Framework\Pattern\DefaultPatternEvaluator.cs" />
@@ -473,7 +476,6 @@
     <Compile Include="Framework\Pattern\TestParameterPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestTypeDecoratorPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\TestTypePatternAttribute.cs" />
-    <Compile Include="Framework\Pattern\ToolInfo.cs" />
     <Compile Include="Framework\Sandbox.cs" />
     <Compile Include="Framework\SilentTestException.cs" />
     <Compile Include="Framework\TestStep.cs" />
@@ -644,7 +646,6 @@
     <Compile Include="Model\ITestParameter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\NullTestExplorer.cs" />
     <Compile Include="Reflection\AttributeUtils.cs" />
     <Compile Include="Reflection\DeclaringTypeComparer.cs" />
     <Compile Include="Reflection\IAssemblyInfo.cs" />
@@ -678,7 +679,6 @@
     <Compile Include="Reflection\Impl\NativeTypeWrapper.cs" />
     <Compile Include="Reflection\Reflector.cs" />
     <Compile Include="Reflection\ReflectionUtils.cs" />
-    <Compile Include="Model\AggregateTestExplorer.cs" />
     <Compile Include="Model\TestModel.cs" />
     <Compile Include="Model\TestPackage.cs" />
     <Compile Include="Model\TestParameterInfo.cs">
@@ -694,7 +694,6 @@
     <Compile Include="Runner\Harness\ITestHarness.cs" />
     <Compile Include="Runner\Harness\ITestHarnessFactory.cs" />
     <Compile Include="Runner\Harness\TraceTestEnvironment.cs" />
-    <Compile Include="Model\ITestExplorer.cs" />
     <Compile Include="Runner\Harness\UnhandledExceptionTestEnvironment.cs" />
     <Compile Include="Runner\Projects\FilterInfo.cs" />
     <Compile Include="Runner\Projects\Project.cs" />

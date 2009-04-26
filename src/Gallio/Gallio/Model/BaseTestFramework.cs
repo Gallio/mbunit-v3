@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 
 namespace Gallio.Model
 {
@@ -23,19 +24,7 @@ namespace Gallio.Model
     public abstract class BaseTestFramework : ITestFramework
     {
         /// <inheritdoc />
-        public abstract Guid Id { get; }
-
-        /// <inheritdoc />
-        public abstract string Name { get; }
-
-        /// <inheritdoc />
-        public virtual ITestExplorer CreateTestExplorer(TestModel testModel)
-        {
-            return new NullTestExplorer(testModel);
-        }
-
-        /// <inheritdoc />
-        public virtual void ConfigureTestDomain(TestDomainSetup testDomainSetup)
+        public virtual void RegisterTestExplorers(IList<ITestExplorer> explorers)
         {
         }
     }

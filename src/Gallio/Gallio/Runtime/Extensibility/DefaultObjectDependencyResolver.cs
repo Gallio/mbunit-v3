@@ -54,6 +54,7 @@ namespace Gallio.Runtime.Extensibility
     /// implements the requested service type then a handle of that component is injected.</item>
     /// <item>If the parameter type is an enum then the value is parsed to a 
     /// value of that enum type, case-insensitively.</item>
+    /// <item>If the parameter type is <see cref="Guid" /> then the value is parsed into a Guid.</item>
     /// <item>If the parameter type is <see cref="Image" /> then the value is treated as a relative file
     /// path to a resource and the image is loaded from the resource locator.</item>
     /// <item>If the parameter type is <see cref="Icon" /> then the value is treated as a relative file
@@ -201,6 +202,9 @@ namespace Gallio.Runtime.Extensibility
 
             if (type.IsEnum)
                 return Enum.Parse(type, value, true);
+
+            if (type == typeof(Guid))
+                return new Guid(value);
 
             if (type == typeof(Image))
                 return Image.FromFile(resourceLocator.GetFullPath(value));

@@ -15,8 +15,7 @@
 
 using System;
 using System.Collections.Generic;
-using Gallio.Model;
-using Gallio.Runtime.Hosting;
+using Gallio.Runtime.Extensibility;
 
 namespace Gallio.Model
 {
@@ -26,33 +25,14 @@ namespace Gallio.Model
     /// may be supported by defining and registering a suitable implementation
     /// of this interface.
     /// </summary>
+    [Traits(typeof(TestFrameworkTraits))]
     public interface ITestFramework
     {
         /// <summary>
-        /// Gets the unique id of the test framework.
+        /// Registers the test explorers of this framework into an aggregate list of explorers
+        /// from all frameworks.
         /// </summary>
-        Guid Id { get; }
-
-        /// <summary>
-        /// Gets the name of the test framework.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Creates a test explorer for this test framework.
-        /// </summary>
-        /// <param name="testModel">The test model to populate incrementally as tests are discovered</param>
-        /// <returns>The test explorer</returns>
-        ITestExplorer CreateTestExplorer(TestModel testModel);
-
-        /// <summary>
-        /// Applies additional contributions to a test domain, if desired.
-        /// </summary>
-        /// <remarks>
-        /// This method may be used by a test framework to set additional binding redirects
-        /// or hint directories prior to loading a test package in a test domain.
-        /// </remarks>
-        /// <param name="testDomainSetup">The test domain setup to modify</param>
-        void ConfigureTestDomain(TestDomainSetup testDomainSetup);
+        /// <param name="explorers">The explorer list, not null</param>
+        void RegisterTestExplorers(IList<ITestExplorer> explorers);
     }
 }

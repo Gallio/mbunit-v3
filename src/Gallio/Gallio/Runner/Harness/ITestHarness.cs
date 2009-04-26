@@ -41,13 +41,6 @@ namespace Gallio.Runner.Harness
         TestModel TestModel { get; }
 
         /// <summary>
-        /// Adds a test framework.
-        /// </summary>
-        /// <param name="framework">The test framework to add</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="framework"/> is null</exception>
-        void AddTestFramework(ITestFramework framework);
-
-        /// <summary>
         /// Adds a test environment.
         /// </summary>
         /// <param name="environment">The test framework to add</param>

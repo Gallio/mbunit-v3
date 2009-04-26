@@ -21,6 +21,7 @@ using Gallio.Model;
 using Gallio.Model.Serialization;
 using Gallio.Runtime;
 using Gallio.Reflection;
+using Gallio.Runtime.Loader;
 using Microsoft.VisualStudio.TestTools.Common;
 using TestResult=Microsoft.VisualStudio.TestTools.Common.TestResult;
 
@@ -49,7 +50,7 @@ namespace Gallio.VisualStudio.Tip
                 return EmptyArray<TestElement>.Instance;
 
             // Explore the tests.
-            ITestPackageExplorerFactory explorerFactory = RuntimeAccessor.ServiceLocator.Resolve<ITestPackageExplorerFactory>();
+            ITestFrameworkManager frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
             WarningLogger logger = new WarningLogger(warningHandler);
 
             TestPackageConfig testPackageConfig = new TestPackageConfig();
@@ -60,18 +61,24 @@ namespace Gallio.VisualStudio.Tip
             ReflectionOnlyAssemblyLoader loader = new ReflectionOnlyAssemblyLoader();
             loader.AddHintDirectory(Path.GetDirectoryName(location));
 
-            ITestExplorer explorer = explorerFactory.CreateTestExplorer(testPackageConfig, loader.ReflectionPolicy);
+            ITestExplorer explorer = frameworkManager.GetTestExplorer(traits => testPackageConfig.IsFrameworkRequested(traits.Id));
+            TestPackage testPackage = new TestPackage(testPackageConfig, loader.ReflectionPolicy,
+                RuntimeAccessor.ServiceLocator.Resolve<ILoader>());
+            TestModel testModel = new TestModel(testPackage);
+                
             IAssemblyInfo assembly = loader.ReflectionPolicy.LoadAssemblyFrom(location);
-            explorer.ExploreAssembly(assembly, null);
+            TestSource testSource = new TestSource();
+            testSource.AddAssembly(assembly);
+            explorer.Explore(testModel, testSource, null);
 
             ArrayList tests = new ArrayList();
-            foreach (ITest test in explorer.TestModel.AllTests)
+            foreach (ITest test in testModel.AllTests)
             {
                 if (test.IsTestCase)
                     tests.Add(GallioTestElementFactory.CreateTestElement(new TestData(test), location, projectData));
             }
 
-            foreach (Annotation annotation in explorer.TestModel.Annotations)
+            foreach (Annotation annotation in testModel.Annotations)
                 new AnnotationData(annotation).Log(logger, true);
 
             return tests;

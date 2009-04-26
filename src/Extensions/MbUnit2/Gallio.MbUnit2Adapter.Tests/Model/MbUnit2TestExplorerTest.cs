@@ -18,6 +18,8 @@ using Gallio.MbUnit2Adapter.Model;
 using Gallio.MbUnit2Adapter.TestResources;
 using Gallio.MbUnit2Adapter.TestResources.Metadata;
 using Gallio.Model;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Tests.Model;
 using MbUnit.Framework;
 
@@ -28,9 +30,10 @@ namespace Gallio.MbUnit2Adapter.Tests.Model
     [Author("Julian", "julian.hidalgo@gallio.org")]
     public class MbUnit2TestExplorerTest : BaseTestExplorerTest<SimpleTest>
     {
-        protected override ITestFramework CreateFramework()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
         {
-            return new MbUnit2TestFramework();
+            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("MbUnit2Adapter.TestFramework");
         }
 
         protected override string PassTestName

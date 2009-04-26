@@ -138,7 +138,4 @@
   <data name="NUnitTestController_ResultStackTraceSectionName" xml:space="preserve">
     <value>Stack Trace</value>
   </data>
-  <data name="NUnitTestFramework_NUnitFrameworkName" xml:space="preserve">
-    <value>NUnit</value>
-  </data>
 </root>

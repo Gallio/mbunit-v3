@@ -60,6 +60,7 @@
     <Compile Include="Concurrency\ProcessTaskTest.cs" />
     <Compile Include="Concurrency\ThreadAbortScopeTest.cs" />
     <Compile Include="Framework\Assertions\AssertionHelperTest.cs" />
+    <Compile Include="Framework\Pattern\PatternTestFrameworkExtensionInfoTest.cs" />
     <Compile Include="Framework\TestTerminatedExceptionTest.cs" />
     <Compile Include="Framework\Pattern\ParallelizableTestCaseSchedulerTest.cs" />
     <Compile Include="Framework\Pattern\TestAssemblyExecutionParametersTest.cs" />
@@ -147,8 +148,6 @@
     <Compile Include="Framework\Formatting\TypeFormattingRuleTest.cs" />
     <Compile Include="Framework\Formatting\XPathNavigableFormattingRuleTest.cs" />
     <Compile Include="Framework\Pattern\PatternUsageErrorExceptionTest.cs" />
-    <Compile Include="Framework\Pattern\PatternTestFrameworkTest.cs" />
-    <Compile Include="Framework\Pattern\ToolInfoTest.cs" />
     <Compile Include="Framework\SilentTestExceptionTest.cs" />
     <Compile Include="Framework\TestFailedExceptionTest.cs" />
     <Compile Include="Framework\TestInconclusiveExceptionTest.cs" />

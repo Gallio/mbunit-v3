@@ -35,6 +35,12 @@
   <components>
     <component componentId="MbUnit2Adapter.TestFramework"
                serviceId="Gallio.TestFramework"
-               componentType="Gallio.MbUnit2Adapter.Model.MbUnit2TestFramework, Gallio.MbUnit2Adapter" />
+               componentType="Gallio.MbUnit2Adapter.Model.MbUnit2TestFramework, Gallio.MbUnit2Adapter">
+      <traits>
+        <id>{81CE2FDD-D9E8-46a6-8D2E-AF5E474BA537}</id>
+        <name>MbUnit v2</name>
+        <frameworkAssemblyNames>MbUnit.Framework</frameworkAssemblyNames>
+      </traits>
+    </component>
   </components>
 </plugin>

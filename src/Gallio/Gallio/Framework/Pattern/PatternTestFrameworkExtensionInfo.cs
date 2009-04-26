@@ -18,22 +18,21 @@ using System;
 namespace Gallio.Framework.Pattern
 {
     /// <summary>
-    /// Provides information about a tool that extends the <see cref="PatternTestFramework" />.
+    /// Provides information about a particular pattern test framework extension.
     /// </summary>
-    /// <seealso cref="IPatternTestFrameworkExtension"/>
-    public sealed class ToolInfo
+    public sealed class PatternTestFrameworkExtensionInfo
     {
         private readonly string id;
         private readonly string name;
 
         /// <summary>
-        /// Creates a tool information object.
+        /// Creates an information object.
         /// </summary>
-        /// <param name="id">The unique id of the tool</param>
-        /// <param name="name">The display name of the tool</param>
+        /// <param name="id">The unique id of the extension</param>
+        /// <param name="name">The display name of the extension</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> or <paramref name="name"/>
         /// is null</exception>
-        public ToolInfo(string id, string name)
+        public PatternTestFrameworkExtensionInfo(string id, string name)
         {
             if (id == null)
                 throw new ArgumentNullException("id");
@@ -45,7 +44,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Gets the unique id of the tool.
+        /// Gets the unique id of the extension.
         /// </summary>
         public string Id
         {
@@ -53,7 +52,7 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <summary>
-        /// Gets the display name of the tool.
+        /// Gets the display name of the extension.
         /// </summary>
         public string Name
         {

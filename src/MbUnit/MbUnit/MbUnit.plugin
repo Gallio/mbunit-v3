@@ -15,8 +15,14 @@
   </assemblies>
 
   <components>
-    <component componentId="MbUnit.MbUnitTestFrameworkExtension"
-               serviceId="Gallio.PatternTestFrameworkExtension"
-               componentType="MbUnit.Core.MbUnitTestFrameworkExtension, MbUnit" />
+    <component componentId="MbUnit.TestFramework"
+               serviceId="Gallio.TestFramework"
+               componentType="MbUnit.Core.MbUnitTestFramework, MbUnit">
+      <traits>
+        <id>{4E3D9921-A01A-4e6c-9C3D-B8848AD9327B}</id>
+        <name>MbUnit v3</name>
+        <frameworkAssemblyNames>MbUnit</frameworkAssemblyNames>
+      </traits>
+    </component>
   </components>
 </plugin>

@@ -14,8 +14,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Model;
-using Gallio.XunitAdapter.Properties;
 
 namespace Gallio.XunitAdapter.Model
 {
@@ -24,24 +24,10 @@ namespace Gallio.XunitAdapter.Model
     /// </summary>
     public class XunitTestFramework : BaseTestFramework
     {
-        private static readonly Guid FrameworkId = new Guid("{CA37318B-0097-4fbe-B013-CB5256F8CF45}");
-
         /// <inheritdoc />
-        public override Guid Id
+        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
         {
-            get { return FrameworkId; }
-        }
-
-        /// <inheritdoc />
-        public override string Name
-        {
-            get { return Resources.XunitTestFramework_XunitFrameworkName; }
-        }
-
-        /// <inheritdoc />
-        public override ITestExplorer CreateTestExplorer(TestModel testModel)
-        {
-            return new XunitTestExplorer(testModel);
+            explorers.Add(new XunitTestExplorer());
         }
     }
 }

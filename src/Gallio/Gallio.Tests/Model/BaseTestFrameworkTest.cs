@@ -15,6 +15,7 @@
 
 using System.Reflection;
 using Gallio.Model.Messages;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime;
 using Gallio.Framework;
@@ -31,25 +32,27 @@ namespace Gallio.Tests.Model
     public abstract class BaseTestFrameworkTest
     {
         protected Assembly sampleAssembly;
-        protected ITestFramework framework;
+        protected ComponentHandle<ITestFramework, TestFrameworkTraits> frameworkHandle;
         protected TestModel testModel;
 
         private ITestHarness harness;
 
         protected abstract Assembly GetSampleAssembly();
 
-        protected abstract ITestFramework CreateFramework();
+        protected abstract ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle();
 
         [SetUp]
         public void SetUp()
         {
             sampleAssembly = GetSampleAssembly();
 
-            harness = new DefaultTestHarness(TestContextTrackerAccessor.Instance,
-                RuntimeAccessor.ServiceLocator.Resolve<ILoader>());
+            frameworkHandle = GetFrameworkHandle();
+            DefaultTestFrameworkManager frameworkManager = new DefaultTestFrameworkManager(
+                new[] { frameworkHandle });
 
-            framework = CreateFramework();
-            harness.AddTestFramework(framework);
+            harness = new DefaultTestHarness(TestContextTrackerAccessor.Instance,
+                RuntimeAccessor.ServiceLocator.Resolve<ILoader>(),
+                frameworkManager);
         }
 
         [TearDown]
@@ -59,7 +62,7 @@ namespace Gallio.Tests.Model
             {
                 harness.Dispose();
                 harness = null;
-                framework = null;
+                frameworkHandle = null;
                 sampleAssembly = null;
             }
         }

@@ -17,6 +17,8 @@ using System.Reflection;
 using Gallio.CSUnitAdapter.Model;
 using Gallio.CSUnitAdapter.TestResources;
 using Gallio.Model;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Tests.Model;
 using MbUnit.Framework;
 
@@ -32,15 +34,10 @@ namespace Gallio.CSUnitAdapter.Tests.Model
             return typeof(SimpleTest).Assembly;
         }
 
-        protected override ITestFramework CreateFramework()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
         {
-            return new CSUnitTestFramework();
-        }
-
-        [Test]
-        public void NameIs_csUnit()
-        {
-            Assert.AreEqual("csUnit", framework.Name);
+            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("CSUnitAdapter.TestFramework");
         }
     }
 }

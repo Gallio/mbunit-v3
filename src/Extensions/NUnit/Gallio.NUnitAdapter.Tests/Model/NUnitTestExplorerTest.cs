@@ -17,6 +17,8 @@ using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.NUnitAdapter.TestResources;
 using Gallio.NUnitAdapter.TestResources.Metadata;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Tests.Model;
 using Gallio.NUnitAdapter.Model;
 using MbUnit.Framework;
@@ -28,9 +30,10 @@ namespace Gallio.NUnitAdapter.Tests.Model
     [Author("Julian", "julian.hidalgo@gallio.org")]
     public class NUnitTestExplorerTest : BaseTestExplorerTest<SimpleTest>
     {
-        protected override ITestFramework CreateFramework()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
         {
-            return new NUnitTestFramework();
+            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter.TestFramework");
         }
     }
 }

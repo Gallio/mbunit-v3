@@ -20,6 +20,12 @@
   <components>
     <component componentId="XunitAdapter.TestFramework"
                serviceId="Gallio.TestFramework"
-               componentType="Gallio.XunitAdapter.Model.XunitTestFramework, Gallio.XunitAdapter" />
+               componentType="Gallio.XunitAdapter.Model.XunitTestFramework, Gallio.XunitAdapter">
+      <traits>
+        <id>{CA37318B-0097-4fbe-B013-CB5256F8CF45}</id>
+        <name>xUnit.net</name>
+        <frameworkAssemblyNames>xunit</frameworkAssemblyNames>
+      </traits>
+    </component>
   </components>
 </plugin>

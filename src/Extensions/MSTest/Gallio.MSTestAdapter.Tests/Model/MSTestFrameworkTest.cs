@@ -20,6 +20,8 @@ using Gallio.Reflection;
 using Gallio.MSTestAdapter.Model;
 using Gallio.MSTestAdapter.TestResources;
 using Gallio.MSTestAdapter.TestResources.Metadata;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Tests.Model;
 using MbUnit.Framework;
 
@@ -35,15 +37,10 @@ namespace Gallio.MSTestAdapter.Tests.Model
             return typeof(SimpleTest).Assembly;
         }
 
-        protected override ITestFramework CreateFramework()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
         {
-            return new MSTestFramework();
-        }
-
-        [Test]
-        public void NameIsMSTest()
-        {
-            Assert.AreEqual("MSTest", framework.Name);
+            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("MSTestAdapter.TestFramework");
         }
     }
 }

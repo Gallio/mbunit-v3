@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using System;
-using Gallio.Framework.Pattern;
+using System.Collections.Generic;
+using Gallio.Collections;
 using Gallio.Model;
+using Gallio.Reflection;
 
 namespace Gallio.Framework.Pattern
 {
@@ -26,7 +28,7 @@ namespace Gallio.Framework.Pattern
     /// </para>
     /// <para>
     /// The pattern test framework does not provide many attributes that end-users would use
-    /// to write tests.  The framework is intended to be extended by <see cref="IPatternTestFrameworkExtension"/>
+    /// to write tests.  The framework is intended to be extended by 
     /// components and libraries that define the test syntax and other facilities.
     /// </para>
     /// <para>
@@ -59,41 +61,34 @@ namespace Gallio.Framework.Pattern
     /// provides a quite flexible implementation pattern for a wide variety of testing features.
     /// </para>
     /// </remarks>
-    public class PatternTestFramework : BaseTestFramework
+    public abstract class PatternTestFramework : BaseTestFramework
     {
-        private static readonly Guid FrameworkId = new Guid("{4E3D9921-A01A-4e6c-9C3D-B8848AD9327B}");
+        /// <inheritdoc />
+        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
+        {
+            var explorer = (PatternTestExplorer)GenericUtils.Find(explorers, x => x is PatternTestExplorer);
+            if (explorer == null)
+            {
+                explorer = new PatternTestExplorer();
+                explorers.Add(explorer);
+            }
 
-        private readonly IPatternTestFrameworkExtension[] extensions;
+            explorer.RegisterExtensionProvider(GetExtensions);
+        }
 
         /// <summary>
-        /// Creates an instance of the pattern test framework.
+        /// Gets information about a particular pattern test framework extension.
+        /// The information will be included in the report as part of the framework
+        /// node that contains the assembly.
         /// </summary>
-        /// <param name="extensions">The framework extensions</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="extensions"/> is null</exception>
-        public PatternTestFramework(IPatternTestFrameworkExtension[] extensions)
-        {
-            if (extensions == null)
-                throw new ArgumentNullException("extensions");
-
-            this.extensions = extensions;
-        }
-
-        /// <inheritdoc />
-        public override Guid Id
-        {
-            get { return FrameworkId; }
-        }
-
-        /// <inheritdoc />
-        public override string Name
-        {
-            get { return "Gallio Pattern Test Framework"; }
-        }
-
-        /// <inheritdoc />
-        public override ITestExplorer CreateTestExplorer(TestModel testModel)
-        {
-            return new PatternTestExplorer(testModel, extensions);
-        }
+        /// <remarks>
+        /// <para>
+        /// If there are not framework extensions applied to a particular assembly then
+        /// the assembly will not be explored for tests.
+        /// </para>
+        /// </remarks>
+        /// <param name="assembly">The test assembly</param>
+        /// <returns>The pattern test framework extension information</returns>
+        protected abstract IEnumerable<PatternTestFrameworkExtensionInfo> GetExtensions(IAssemblyInfo assembly);
     }
 }

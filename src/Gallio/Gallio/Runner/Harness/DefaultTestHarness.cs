@@ -42,10 +42,10 @@ namespace Gallio.Runner.Harness
     {
         private readonly ITestContextTracker contextTracker;
         private readonly ILoader loader;
+        private readonly ITestFrameworkManager frameworkManager;
 
         private bool isDisposed;
 
-        private List<ITestFramework> frameworks;
         private List<ITestEnvironment> environments;
 
         private string workingDirectory;
@@ -57,19 +57,23 @@ namespace Gallio.Runner.Harness
         /// </summary>
         /// <param name="contextTracker">The test context tracker</param>
         /// <param name="loader">The loader</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>
-        /// or <paramref name="loader "/> is null</exception>
-        public DefaultTestHarness(ITestContextTracker contextTracker, ILoader loader)
+        /// <param name="frameworkManager">The test framework manager</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="contextTracker"/>,
+        /// <paramref name="loader "/> or <paramref name="frameworkManager"/> is null</exception>
+        public DefaultTestHarness(ITestContextTracker contextTracker, ILoader loader,
+            ITestFrameworkManager frameworkManager)
         {
             if (contextTracker == null)
                 throw new ArgumentNullException("contextTracker");
             if (loader == null)
                 throw new ArgumentNullException("loader");
+            if (frameworkManager == null)
+                throw new ArgumentNullException("frameworkManager");
 
             this.contextTracker = contextTracker;
             this.loader = loader;
+            this.frameworkManager = frameworkManager;
 
-            frameworks = new List<ITestFramework>();
             environments = new List<ITestEnvironment>();
         }
 
@@ -82,7 +86,6 @@ namespace Gallio.Runner.Harness
 
                 package = null;
                 model = null;
-                frameworks = null;
                 environments = null;
             }
         }
@@ -105,16 +108,6 @@ namespace Gallio.Runner.Harness
                 ThrowIfDisposed();
                 return model;
             }
-        }
-
-        /// <inheritdoc />
-        public void AddTestFramework(ITestFramework framework)
-        {
-            if (framework == null)
-                throw new ArgumentNullException(@"framework");
-
-            ThrowIfDisposed();
-            frameworks.Add(framework);
         }
 
         /// <inheritdoc />
@@ -218,13 +211,13 @@ namespace Gallio.Runner.Harness
                 {
                     model = new TestModel(package);
 
-                    AggregateTestExplorer explorer = new AggregateTestExplorer(model);
-                    explorer.AddExplorersForRequestedFrameworks(frameworks);
+                    ITestExplorer explorer = frameworkManager.GetTestExplorer(traits => package.Config.IsFrameworkRequested(traits.Id));
 
+                    TestSource source = new TestSource();
                     foreach (IAssemblyInfo assembly in package.Assemblies)
-                        explorer.ExploreAssembly(assembly, null);
+                        source.AddAssembly(assembly);
 
-                    explorer.FinishModel();
+                    explorer.Explore(model, source, null);
                 }
 
                 foreach (Annotation annotation in model.Annotations)

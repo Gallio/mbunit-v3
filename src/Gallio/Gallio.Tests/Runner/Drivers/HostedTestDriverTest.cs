@@ -84,7 +84,7 @@ namespace Gallio.Tests.Runner.Drivers
 
             public StubbedHostedTestDriver()
                 : base(MockRepository.GenerateStub<IHostFactory>(),
-                EmptyArray<ITestFramework>.Instance,
+                RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>(),
                 RuntimeAccessor.Instance, false)
             {
             }

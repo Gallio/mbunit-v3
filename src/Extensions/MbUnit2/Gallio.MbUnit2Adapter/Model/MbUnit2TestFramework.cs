@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Gallio.Model;
@@ -27,24 +28,10 @@ namespace Gallio.MbUnit2Adapter.Model
     /// </summary>
     public class MbUnit2TestFramework : BaseTestFramework
     {
-        private static readonly Guid FrameworkId = new Guid("{81CE2FDD-D9E8-46a6-8D2E-AF5E474BA537}");
-
         /// <inheritdoc />
-        public override Guid Id
+        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
         {
-            get { return FrameworkId; }
-        }
-
-        /// <inheritdoc />
-        public override string Name
-        {
-            get { return Resources.MbUnit2TestFramework_FrameworkName; }
-        }
-
-        /// <inheritdoc />
-        public override ITestExplorer CreateTestExplorer(TestModel testModel)
-        {
-            return new MbUnit2TestExplorer(testModel);
+            explorers.Add(new MbUnit2TestExplorer());
         }
     }
 }

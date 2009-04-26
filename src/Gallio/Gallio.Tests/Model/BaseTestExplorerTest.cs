@@ -20,6 +20,7 @@ using Gallio.Model.Messages;
 using Gallio.Reflection;
 using Gallio.Runner.Harness;
 using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Runtime.Loader;
 using Gallio.Runtime.ProgressMonitoring;
 using MbUnit.Framework;
@@ -30,7 +31,7 @@ namespace Gallio.Tests.Model
     public abstract class BaseTestExplorerTest<TSampleFixture>
     {
         protected Assembly sampleAssembly;
-        protected ITestFramework framework;
+        protected ComponentHandle<ITestFramework, TestFrameworkTraits> frameworkHandle;
         protected TestModel testModel;
         private ITestHarness harness;
         private string adapterAssemblyName;
@@ -41,7 +42,7 @@ namespace Gallio.Tests.Model
             return typeof(TSampleFixture).Assembly;
         }
 
-        protected abstract ITestFramework CreateFramework();
+        protected abstract ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle();
 
         protected virtual string PassTestName
         {
@@ -58,12 +59,14 @@ namespace Gallio.Tests.Model
         {
             sampleAssembly = GetSampleAssembly();
 
-            harness = new DefaultTestHarness(TestContextTrackerAccessor.Instance,
-                RuntimeAccessor.ServiceLocator.Resolve<ILoader>());
+            frameworkHandle = GetFrameworkHandle();
+            DefaultTestFrameworkManager frameworkManager = new DefaultTestFrameworkManager(
+                new[] { frameworkHandle });
 
-            framework = CreateFramework();
-            harness.AddTestFramework(framework);
-            adapterAssemblyName = framework.GetType().Assembly.GetName().Name;
+            harness = new DefaultTestHarness(TestContextTrackerAccessor.Instance,
+                RuntimeAccessor.ServiceLocator.Resolve<ILoader>(), frameworkManager);
+
+            adapterAssemblyName = frameworkHandle.GetComponent().GetType().Assembly.GetName().Name;
             testResourcesNamespace = sampleAssembly.GetName().Name;
         }
 
@@ -74,7 +77,7 @@ namespace Gallio.Tests.Model
             {
                 harness.Dispose();
                 harness = null;
-                framework = null;
+                frameworkHandle = null;
                 sampleAssembly = null;
             }
         }
@@ -177,7 +180,7 @@ namespace Gallio.Tests.Model
             Assert.AreEqual("MbUnit Project", assemblyTest.Metadata.GetValue(MetadataKeys.Company));
             Assert.AreEqual("Test", assemblyTest.Metadata.GetValue(MetadataKeys.Configuration));
             Assert.Contains(assemblyTest.Metadata.GetValue(MetadataKeys.Copyright), "Gallio Project");
-            Assert.AreEqual("A sample test assembly for " + framework.Name + ".", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
+            Assert.AreEqual("A sample test assembly for " + frameworkHandle.GetTraits().Name + ".", assemblyTest.Metadata.GetValue(MetadataKeys.Description));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Product));
             Assert.AreEqual(testResourcesNamespace, assemblyTest.Metadata.GetValue(MetadataKeys.Title));
             Assert.AreEqual("Gallio", assemblyTest.Metadata.GetValue(MetadataKeys.Trademark));

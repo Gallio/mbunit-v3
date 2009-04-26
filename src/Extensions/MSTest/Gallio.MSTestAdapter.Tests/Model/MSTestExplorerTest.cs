@@ -17,6 +17,8 @@ using Gallio.Model;
 using Gallio.Reflection;
 using Gallio.MSTestAdapter.TestResources;
 using Gallio.MSTestAdapter.TestResources.Metadata;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using Gallio.Tests.Model;
 using Gallio.MSTestAdapter.Model;
 using MbUnit.Framework;
@@ -28,9 +30,10 @@ namespace Gallio.MSTestAdapter.Tests.Model
     [Author("Julian", "julian.hidalgo@gallio.org")]
     public class MSTestExplorerTest : BaseTestExplorerTest<SimpleTest>
     {
-        protected override Gallio.Model.ITestFramework CreateFramework()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
         {
-            return new MSTestFramework();
+            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("MSTestAdapter.TestFramework");
         }
         
         [Test]

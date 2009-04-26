@@ -76,8 +76,10 @@ namespace Gallio.Icarus.Controllers
             get
             {
                 List<string> frameworks = new List<string>();
-                foreach (ITestFramework framework in RuntimeAccessor.ServiceLocator.ResolveAll<ITestFramework>())
-                    frameworks.Add(framework.Name);
+                var frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
+
+                foreach (var frameworkHandle in frameworkManager.FrameworkHandles)
+                    frameworks.Add(frameworkHandle.GetTraits().Name);
                 return frameworks;
             }
         }

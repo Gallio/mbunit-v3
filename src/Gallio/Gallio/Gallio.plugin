@@ -42,14 +42,11 @@
     <service serviceId="Gallio.ReportFormatter"
              serviceType="Gallio.Runner.Reports.IReportFormatter, Gallio" />
 
-    <service serviceId="Gallio.PatternTestFrameworkExtension"
-             serviceType="Gallio.Framework.Pattern.IPatternTestFrameworkExtension, Gallio" />
-
     <service serviceId="Gallio.Loader"
              serviceType="Gallio.Runtime.Loader.ILoader, Gallio" />
 
-    <service serviceId="Gallio.TestPackageExplorerFactory"
-             serviceType="Gallio.Model.ITestPackageExplorerFactory, Gallio" />
+    <service serviceId="Gallio.TestFrameworkManager"
+             serviceType="Gallio.Model.ITestFrameworkManager, Gallio" />
 
     <service serviceId="Gallio.TestRunnerManager"
              serviceType="Gallio.Runner.ITestRunnerManager, Gallio" />
@@ -90,9 +87,9 @@
                serviceId="Gallio.Loader"
                componentType="Gallio.Runtime.Loader.DefaultLoader, Gallio" />
 
-    <component componentId="Gallio.TestPackageExplorerFactory"
-               serviceId="Gallio.TestPackageExplorerFactory"
-               componentType="Gallio.Model.DefaultTestPackageExplorerFactory, Gallio" />
+    <component componentId="Gallio.TestFrameworkManager"
+               serviceId="Gallio.TestFrameworkManager"
+               componentType="Gallio.Model.DefaultTestFrameworkManager, Gallio" />
 
     <component componentId="Gallio.TestRunnerManager"
                serviceId="Gallio.TestRunnerManager"
@@ -121,10 +118,6 @@
     <component componentId="Gallio.TestContextTracker"
                serviceId="Gallio.TestContextTracker"
                componentType="Gallio.Model.Execution.DefaultTestContextTracker, Gallio" />
-
-    <component componentId="Gallio.PatternTestFramework"
-               serviceId="Gallio.TestFramework"
-               componentType="Gallio.Framework.Pattern.PatternTestFramework, Gallio" />
 
     <component componentId="Gallio.PatternTestController"
                serviceId="Gallio.PatternTestController"

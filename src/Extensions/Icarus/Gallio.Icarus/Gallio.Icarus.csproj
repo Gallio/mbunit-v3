@@ -474,7 +474,7 @@
     <None Include="Gallio.Icarus.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Icarus.plugin" />
+    <None Include="Gallio.Icarus.plugin" />
     <None Include="Resources\Group.png" />
     <Content Include="Resources\help-browser.png" />
     <Content Include="Resources\LinkToMBU.png" />

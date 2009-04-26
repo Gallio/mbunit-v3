@@ -15,7 +15,7 @@
   <components>
     <component componentId="Gallio.Icarus.UnhandledExceptionPolicy" 
                serviceId="Gallio.Icarus.UnhandledExceptionPolicy" 
-               componentType="Gallio.Utilites.UnhandledExceptionPolicy, Gallio.Icarus" />
+               componentType="Gallio.Icarus.Utilities.UnhandledExceptionPolicy, Gallio.Icarus" />
 
     <component componentId="Gallio.Icarus.TestTreeModel" 
                serviceId="Gallio.Icarus.TestTreeModel" 

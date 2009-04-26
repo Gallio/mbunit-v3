@@ -8,6 +8,7 @@
             <Component Id="Gallio.Icarus.exe" Guid="2a7e3285-c570-44fa-8132-cb6d22f2f7c0" Win64="no">
                 <File Name="Gallio.Icarus.exe" KeyPath="yes" />
                 <File Name="Gallio.Icarus.exe.config" />
+                <File Name="Gallio.Icarus.plugin" />
                 <File Name="Gallio.Icarus.XmlSerializers.dll" />
             </Component>
             <Component Id="Aga.Controls.dll" Guid="3c58ac7a-fe23-4bd4-9bb4-1bd5c107ba89" Win64="no">

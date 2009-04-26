@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Gallio.Model;
 
 namespace Gallio.MSTestAdapter.Model
@@ -23,24 +24,10 @@ namespace Gallio.MSTestAdapter.Model
     /// </summary>
     public class MSTestFramework : BaseTestFramework
     {
-        private static readonly Guid FrameworkId = new Guid("{559AA77B-E0E5-43bb-AF48-EF50D0025D3C}");
-
         /// <inheritdoc />
-        public override Guid Id
+        public override void RegisterTestExplorers(IList<ITestExplorer> explorers)
         {
-            get { return FrameworkId; }
-        }
-
-        /// <inheritdoc />
-        public override string Name
-        {
-            get { return "MSTest"; }
-        }
-
-        /// <inheritdoc />
-        public override ITestExplorer CreateTestExplorer(TestModel testModel)
-        {
-            return new MSTestExplorer(testModel);
-        }
+            explorers.Add(new MSTestExplorer());
+        } 
     }
 }

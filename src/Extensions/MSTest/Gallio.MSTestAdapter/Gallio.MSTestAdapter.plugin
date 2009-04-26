@@ -17,6 +17,12 @@
   <components>
     <component componentId="MSTestAdapter.TestFramework"
                serviceId="Gallio.TestFramework"
-               componentType="Gallio.MSTestAdapter.Model.MSTestFramework, Gallio.MSTestAdapter" />
+               componentType="Gallio.MSTestAdapter.Model.MSTestFramework, Gallio.MSTestAdapter">
+      <traits>
+        <id>{559AA77B-E0E5-43bb-AF48-EF50D0025D3C}</id>
+        <name>MSTest</name>
+        <frameworkAssemblyNames>Microsoft.VisualStudio.QualityTools.UnitTestFramework</frameworkAssemblyNames>
+      </traits>
+    </component>
   </components>
 </plugin>

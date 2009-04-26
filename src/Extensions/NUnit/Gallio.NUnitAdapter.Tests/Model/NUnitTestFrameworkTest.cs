@@ -17,6 +17,8 @@ using System;
 using System.Reflection;
 using Gallio.NUnitAdapter.Model;
 using Gallio.Reflection;
+using Gallio.Runtime;
+using Gallio.Runtime.Extensibility;
 using MbUnit.Framework;
 using Gallio.Model;
 using Gallio.NUnitAdapter.TestResources;
@@ -35,15 +37,10 @@ namespace Gallio.NUnitAdapter.Tests.Model
             return typeof(SimpleTest).Assembly;
         }
 
-        protected override ITestFramework CreateFramework()
+        protected override ComponentHandle<ITestFramework, TestFrameworkTraits> GetFrameworkHandle()
         {
-            return new NUnitTestFramework();
-        }
-
-        [Test]
-        public void NameIsNUnit()
-        {
-            Assert.AreEqual("NUnit", framework.Name);
+            return (ComponentHandle<ITestFramework, TestFrameworkTraits>)
+                RuntimeAccessor.ServiceLocator.ResolveHandleByComponentId("NUnitAdapter.TestFramework");
         }
         
         [Test]
