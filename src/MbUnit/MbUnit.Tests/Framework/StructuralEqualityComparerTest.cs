@@ -83,6 +83,13 @@ namespace MbUnit.Tests.Framework
             public string Text;
             public TimeSpan Duration;
             public int[] Values;
+            public ChildFoo[] Children;
+        }
+
+        public class ChildFoo
+        {
+            public int Tag;
+            public string Name;
         }
 
         public IEnumerable<object[]> ProvideTestData1()
@@ -222,6 +229,149 @@ namespace MbUnit.Tests.Framework
             {
                 { x => x.Number },
                 { x => x.Values,  StructuralEqualityComparer<int>.Default, StructuralEqualityComparerOptions.IgnoreEnumerableOrder }
+            };
+
+            bool result = comparer.Equals(value1, value2);
+            Assert.AreEqual(expected, result);
+        }
+
+        public IEnumerable<object[]> ProvideTestData4()
+        {
+            yield return new object[] 
+            {
+                new Foo() 
+                { 
+                    Number = 123, 
+                    Text = "Hello", 
+                    Values = new int[] { 1, 2, 3, 4, 5 } ,
+                    Children = new[] 
+                    { 
+                        new ChildFoo() { Tag = 1, Name = "ABC" },
+                        new ChildFoo() { Tag = 2, Name = "DEF" },
+                        new ChildFoo() { Tag = 3, Name = "GHI" }
+                    }
+                },
+                
+                new Foo() 
+                { 
+                    Number = 321, 
+                    Text = "HELLO", 
+                    Values = new int[] { 5, 4, 3, 2, 1 } ,
+                    Children = new[] 
+                    { 
+                        new ChildFoo() { Tag = 3, Name = "JKL" },
+                        new ChildFoo() { Tag = 1, Name = "MNO" },
+                        new ChildFoo() { Tag = 2, Name = "PQR" }
+                    }
+                },
+
+                true
+            };
+
+            yield return new object[] 
+            {
+                new Foo() 
+                { 
+                    Number = 123, 
+                    Text = "Hello", 
+                    Values = new int[] { 1, 2, 3, 4, 5 } ,
+                    Children = new[] 
+                    { 
+                        new ChildFoo() { Tag = 1, Name = "ABC" },
+                        new ChildFoo() { Tag = 2, Name = "DEF" },
+                        new ChildFoo() { Tag = 3, Name = "GHI" }
+                    }
+                },
+                
+                new Foo() 
+                { 
+                    Number = 321, 
+                    Text = "HELLO", 
+                    Values = new int[] { 5, 4, 3, 2, 1 } ,
+                    Children = new[] 
+                    { 
+                        new ChildFoo() { Tag = 3, Name = "JKL" },
+                        new ChildFoo() { Tag = 1, Name = "MNO" },
+                        new ChildFoo() { Tag = 4, Name = "PQR" }
+                    }
+                },
+
+                false,
+            };
+
+            yield return new object[] 
+            {
+                new Foo() 
+                { 
+                    Number = 123, 
+                    Text = "Hello", 
+                    Values = new int[] { 1, 2, 3, 4, 5 } ,
+                    Children = new[] 
+                    { 
+                        new ChildFoo() { Tag = 1, Name = "ABC" },
+                        new ChildFoo() { Tag = 2, Name = "DEF" },
+                        new ChildFoo() { Tag = 3, Name = "GHI" }
+                    }
+                },
+                
+                new Foo() 
+                { 
+                    Number = 252, 
+                    Text = "HELLO", 
+                    Values = new int[] { 5, 4, 3, 2, 1 } ,
+                    Children = new[] 
+                    { 
+                        new ChildFoo() { Tag = 3, Name = "JKL" },
+                        new ChildFoo() { Tag = 1, Name = "MNO" },
+                        new ChildFoo() { Tag = 2, Name = "PQR" }
+                    }
+                },
+
+                false,
+            };
+
+            yield return new object[] 
+            {
+                new Foo() 
+                { 
+                    Number = 123, 
+                    Text = "Hello", 
+                    Values = new int[] { 1, 2, 3, 4, 5 } ,
+                    Children = new[] 
+                    { 
+                        new ChildFoo() { Tag = 1, Name = "ABC" },
+                        new ChildFoo() { Tag = 2, Name = "DEF" },
+                        new ChildFoo() { Tag = 3, Name = "GHI" }
+                    }
+                },
+                
+                new Foo() 
+                { 
+                    Number = 321, 
+                    Text = "Hello!", 
+                    Values = new int[] { 5, 4, 3, 2, 1 } ,
+                    Children = new[] 
+                    { 
+                        new ChildFoo() { Tag = 3, Name = "JKL" },
+                        new ChildFoo() { Tag = 1, Name = "MNO" },
+                        new ChildFoo() { Tag = 4, Name = "PQR" }
+                    }
+                },
+
+                false,
+            };
+        }
+
+        [Test]
+        [Factory("ProvideTestData4")]
+        public void Complex_comparers_with_nested_enumerations(Foo value1, Foo value2, bool expected)
+        {
+            var comparer = new StructuralEqualityComparer<Foo>
+            {
+                { x => x.Number % 2 },
+                { x => x.Text, (x, y) => String.Compare(x, y, true) == 0 },
+                { x => x.Values, StructuralEqualityComparer<int>.Default, StructuralEqualityComparerOptions.IgnoreEnumerableOrder },
+                { x => x.Children, new StructuralEqualityComparer<ChildFoo> { { x => x.Tag } }, StructuralEqualityComparerOptions.IgnoreEnumerableOrder }
             };
 
             bool result = comparer.Equals(value1, value2);

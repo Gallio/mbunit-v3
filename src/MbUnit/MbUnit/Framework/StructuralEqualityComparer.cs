@@ -37,7 +37,7 @@ namespace MbUnit.Framework
     /// </para>
     /// <para>
     /// <example>
-    /// The following example contains a test fixture that checks for the equality between two <strong>Foo</strong> 
+    /// The following example shows a test fixture that checks for the equality between two <strong>Foo</strong> 
     /// objects by using the well known <see cref="Assert.AreEqual{T}(T, T, IEqualityComparer{T})"/> assertion. The custom equality comparer which 
     /// is provided to the assertion method, declares two <strong>Foo</strong> objects equal when the <strong>Value</strong> 
     /// fields have the same parity, and when the <strong>Text</strong> fields are equal (case insensitive):
@@ -68,19 +68,27 @@ namespace MbUnit.Framework
     /// </example>
     /// </para>
     /// </summary>
-    /// <typeparam name="T">The type of the compared objects.</typeparam>
+    /// <typeparam name="T">The type of the objects. to compare.</typeparam>
     public class StructuralEqualityComparer<T> : IEqualityComparer<T>, IEnumerable<EqualityComparison<T>>
     {
-        private readonly List<EqualityComparison<T>> predicates = new List<EqualityComparison<T>>();
+        private readonly List<EqualityComparison<T>> conditions = new List<EqualityComparison<T>>();
 
         /// <summary>
-        /// Gets a default neutral structural equality comparer for the type.
+        /// <para>
+        /// Gets a default neutral structural equality comparer for the tested type.
+        /// </para>
+        /// <para>
+        /// The default comparer uses <see cref="Object.Equals(Object)"/> to determine whether
+        /// two objects are equal. Is is usually sufficient for primitive types, and
+        /// user types implementing <see cref="IEquatable{T}"/>.
+        /// </para>
         /// </summary>
+        /// <seealso cref="ComparisonSemantics.Equals"/>
         public static StructuralEqualityComparer<T> Default
         {
             get
             {
-                return new StructuralEqualityComparer<T> { { x => x } };
+                return new StructuralEqualityComparer<T> { { x => x, ComparisonSemantics.Equals<T> } };
             }
         }
 
@@ -121,7 +129,7 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
         public void Add<TValue>(Accessor<T, TValue> accessor)
         {
-            Add(accessor, ComparisonSemantics.Equals<TValue>);
+            Add<TValue>(accessor, StructuralEqualityComparer<TValue>.Default);
         }
 
         /// <summary>
@@ -171,11 +179,14 @@ namespace MbUnit.Framework
         /// </summary>
         /// <typeparam name="TValue">The type of the value returned by the accessor.</typeparam>
         /// <param name="accessor">An accessor that gets a value from the tested object.</param>
-        /// <param name="comparer">A comparer instance, or null to use the default one.</param>
+        /// <param name="comparer">A comparer instance, or null to use the default one (<see cref="StructuralEqualityComparer{T}.Default"/>).</param>
         /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
         public void Add<TValue>(Accessor<T, TValue> accessor, IEqualityComparer<TValue> comparer)
         {
-            Add(accessor, comparer == null ? (EqualityComparison<TValue>)null : comparer.Equals);
+            if (comparer == null)
+                comparer = StructuralEqualityComparer<TValue>.Default;
+
+            Add<TValue>(accessor, comparer.Equals);
         }
 
         /// <summary>
@@ -222,7 +233,7 @@ namespace MbUnit.Framework
             if (comparer == null)
                 comparer = ComparisonSemantics.Equals<TValue>;
 
-            predicates.Add((x, y) => comparer(accessor(x), accessor(y)));
+            conditions.Add((x, y) => comparer(accessor(x), accessor(y)));
         }
 
         /// <summary>
@@ -260,7 +271,7 @@ namespace MbUnit.Framework
         /// <param name="comparer">An equality comparison delegate to directly compare two instances, or null to use the default one.</param>
         public void Add(EqualityComparison<T> comparer)
         {
-            predicates.Add(comparer ?? ComparisonSemantics.Equals<T>);
+            conditions.Add(comparer ?? ComparisonSemantics.Equals<T>);
         }
 
         /// <summary>
@@ -311,7 +322,10 @@ namespace MbUnit.Framework
         /// <param name="comparer">An comparer object to directly compare two instances, or null to use the default one.</param>
         public void Add(IEqualityComparer<T> comparer)
         {
-            predicates.Add(comparer == null ? (EqualityComparison<T>)null : comparer.Equals);
+            if (comparer == null)
+                comparer = StructuralEqualityComparer<T>.Default;
+
+            Add(comparer.Equals);
         }
 
         /// <summary>
@@ -400,7 +414,10 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
         public void Add<TValue>(Accessor<T, IEnumerable<TValue>> accessor, IEqualityComparer<TValue> comparer, StructuralEqualityComparerOptions options)
         {
-            Add(accessor, comparer == null ? (EqualityComparison<TValue>)null : comparer.Equals, options);
+            if (comparer == null)
+                comparer = StructuralEqualityComparer<TValue>.Default;
+
+            Add(accessor, comparer.Equals, options);
         }
 
         /// <summary>
@@ -450,11 +467,11 @@ namespace MbUnit.Framework
 
             if ((options & StructuralEqualityComparerOptions.IgnoreEnumerableOrder) != 0)
             {
-                predicates.Add((x, y) => CompareEnumerablesIgnoringOrder(accessor(x), accessor(y), comparer));
+                conditions.Add((x, y) => CompareEnumerablesIgnoringOrder(accessor(x), accessor(y), comparer));
             }
             else
             {
-                predicates.Add((x, y) => CompareEnumerables(accessor(x), accessor(y), comparer));
+                conditions.Add((x, y) => CompareEnumerables(accessor(x), accessor(y), comparer));
             }
         }
 
@@ -508,7 +525,7 @@ namespace MbUnit.Framework
         /// <returns>true if the specified objects are equal; otherwise, false.</returns>
         public bool Equals(T x, T y)
         {
-            return predicates.TrueForAll(predicate => predicate(x, y));
+            return conditions.TrueForAll(predicate => predicate(x, y));
         }
 
         /// <summary>
@@ -528,12 +545,12 @@ namespace MbUnit.Framework
         /// <returns>A strongly-typed enumerator that iterates through the collection.</returns>
         public IEnumerator<EqualityComparison<T>> GetEnumerator()
         {
-            return predicates.GetEnumerator();
+            return conditions.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            foreach (var predicate in predicates)
+            foreach (var predicate in conditions)
             {
                 yield return predicate;
             }
