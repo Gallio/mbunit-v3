@@ -29,14 +29,20 @@ namespace Gallio.Icarus
         public PropertiesWindow(IProjectController projectController)
         {
             this.projectController = projectController;
+            
             InitializeComponent();
+
             hintDirectoriesListBox.DataSource = projectController.HintDirectories;
+
             applicationBaseDirectoryTextBox.DataBindings.Add("Text", projectController,
                 "TestPackageConfig.HostSetup.ApplicationBaseDirectory", false, DataSourceUpdateMode.OnPropertyChanged);
+
             workingDirectoryTextBox.DataBindings.Add("Text", projectController,
                 "TestPackageConfig.HostSetup.WorkingDirectory", false, DataSourceUpdateMode.OnPropertyChanged);
+
             shadowCopyCheckBox.DataBindings.Add("Checked", projectController, 
                 "TestPackageConfig.HostSetup.ShadowCopy", false, DataSourceUpdateMode.OnPropertyChanged);
+
             testRunnerExtensionsListBox.DataSource = projectController.TestRunnerExtensions;
         }
 

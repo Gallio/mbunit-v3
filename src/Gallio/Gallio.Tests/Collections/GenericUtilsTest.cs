@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using Gallio.Collections;
 using MbUnit.Framework;
 
@@ -24,29 +25,33 @@ namespace Gallio.Tests.Collections
     public class GenericUtilsTest
     {
         [Test]
-        [Row(new int[] { 1, 2, 3 }, 3, new string[] { "1", "2", "3" })]
+        [Row(new[] { 1, 2, 3 }, 3, new[] { "1", "2", "3" })]
         public void ConvertAndCopyAll(int[] input, int outputLength, string[] expectedOutput)
         {
             string[] output = new string[outputLength];
 
-            GenericUtils.ConvertAndCopyAll<int, string>(input, output, delegate(int value)
-            {
-                return value.ToString();
-            });
+            GenericUtils.ConvertAndCopyAll(input, output, value => value.ToString());
 
             Assert.AreEqual(expectedOutput, output);
         }
 
         [Test]
-        [Row(new int[] { 1, 2, 3 }, new string[] { "1", "2", "3" })]
+        [Row(new[] { 1, 2, 3 }, new[] { "1", "2", "3" })]
         public void ConvertAllToArray(int[] input, string[] expectedOutput)
         {
-            string[] output = GenericUtils.ConvertAllToArray<int, string>(input, delegate(int value)
-            {
-                return value.ToString();
-            });
+            string[] output = GenericUtils.ConvertAllToArray(input, value => value.ToString());
 
             Assert.AreEqual(expectedOutput, output);
+        }
+
+        [Test]
+        public void AddAllIfNotAlreadyPresent()
+        {
+            string[] input = new[] { "one", "one", "two" };
+            List<string> output = new List<string>();
+            GenericUtils.AddAllIfNotAlreadyPresent(input, output);
+            Assert.AreEqual(2, output.Count);
+            Assert.AreElementsEqual(new[] { "one" ,"two" }, output);
         }
     }
 }

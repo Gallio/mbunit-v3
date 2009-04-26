@@ -41,6 +41,8 @@ namespace Gallio.Icarus.Controllers
         private readonly List<string> hintDirectories = new List<string>();
         private readonly List<string> testRunnerExtensions = new List<string>();
 
+        private bool updating;
+
         public event EventHandler<AssemblyChangedEventArgs> AssemblyChanged;
 
         public IProjectTreeModel Model
@@ -87,6 +89,9 @@ namespace Gallio.Icarus.Controllers
             TestFilters = new BindingList<FilterInfo>(testFilters);
             TestFilters.ListChanged += delegate
             {
+                if (updating)
+                    return;
+
                 projectTreeModel.Project.TestFilters.Clear();
                 projectTreeModel.Project.TestFilters.AddRange(TestFilters);
             };
@@ -94,6 +99,9 @@ namespace Gallio.Icarus.Controllers
             HintDirectories = new BindingList<string>(hintDirectories);
             HintDirectories.ListChanged += delegate
             {
+                if (updating)
+                    return;
+
                 projectTreeModel.Project.TestPackageConfig.HintDirectories.Clear();
                 projectTreeModel.Project.TestPackageConfig.HintDirectories.AddRange(HintDirectories);
             };
@@ -101,6 +109,9 @@ namespace Gallio.Icarus.Controllers
             TestRunnerExtensions = new BindingList<string>(testRunnerExtensions);
             TestRunnerExtensions.ListChanged += delegate
             {
+                if (updating)
+                    return;
+
                 projectTreeModel.Project.TestRunnerExtensions.Clear();
                 projectTreeModel.Project.TestRunnerExtensions.AddRange(TestRunnerExtensions);
             };
@@ -273,15 +284,27 @@ namespace Gallio.Icarus.Controllers
 
         private void PublishUpdates()
         {
-            testFilters.Clear();
-            foreach (FilterInfo filterInfo in projectTreeModel.Project.TestFilters)
-                testFilters.Add(filterInfo);
+            // need to deal with x-thread databinding
+            SynchronizationContext.Send(delegate
+            {
+                updating = true;
 
-            hintDirectories.Clear();
-            foreach (string hintDirectory in TestPackageConfig.HintDirectories)
-                hintDirectories.Add(hintDirectory);
+                TestFilters.Clear();
+                foreach (var filterInfo in projectTreeModel.Project.TestFilters)
+                    TestFilters.Add(filterInfo);
 
-            OnPropertyChanged(new PropertyChangedEventArgs("TestPackageConfig"));
+                HintDirectories.Clear();
+                foreach (var hintDirectory in TestPackageConfig.HintDirectories)
+                    HintDirectories.Add(hintDirectory);
+
+                TestRunnerExtensions.Clear();
+                foreach (var testRunnerExtension in projectTreeModel.Project.TestRunnerExtensions)
+                    TestRunnerExtensions.Add(testRunnerExtension);
+
+                OnPropertyChanged(new PropertyChangedEventArgs("TestPackageConfig"));
+
+                updating = false;
+            }, null);
         }
     }
 }
