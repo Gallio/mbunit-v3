@@ -477,9 +477,12 @@ namespace Gallio.Runner
 
             Stopwatch stopWatch = Stopwatch.StartNew();
             logger.Log(LogSeverity.Important, String.Format("Start time: {0}", DateTime.Now.ToShortTimeString()));
+            bool wasCanceled = false;
             try
             {
-                VerifyAssemblies();
+                VerifyAssemblies(ref wasCanceled);
+                if (wasCanceled)
+                    return CreateResult(ResultCode.Canceled);
 
                 if (testPackageConfig.AssemblyFiles.Count == 0)
                 {
@@ -529,32 +532,24 @@ namespace Gallio.Runner
 
             ITestRunner runner = factory.CreateTestRunner();
             TestLauncherResult result = new TestLauncherResult(new Report() { TestPackageConfig = TestPackageConfig });
+            bool wasCanceled = false;
             try
             {
-                try
-                {
-                    DoRegisterExtensions(runner);
-                    DoInitialize(runner);
-                }
-                catch (OperationCanceledException)
-                {
-                    result.SetResultCode(ResultCode.Canceled);
-                    return result;
-                }
+                DoRegisterExtensions(runner);
+                DoInitialize(runner, ref wasCanceled);
 
-                result = RunWithInitializedRunner(runner, reportManager);
+                if (!wasCanceled)
+                {
+                    result = RunWithInitializedRunner(runner, reportManager);
+                }
             }
             finally
             {
-                try
-                {
-                    DoDispose(runner);
-                }
-                catch (OperationCanceledException)
-                {
-                    result.SetResultCode(ResultCode.Canceled);
-                }
+                DoDispose(runner, ref wasCanceled);
             }
+
+            if (wasCanceled)
+                result.SetResultCode(ResultCode.Canceled);
 
             return result;
         }
@@ -564,15 +559,7 @@ namespace Gallio.Runner
             bool wasCanceled = false;
 
             // Explore or Run tests.
-            Report report = null;
-            try
-            {
-                report = DoExploreOrRun(runner);
-            }
-            catch (OperationCanceledException)
-            {
-                wasCanceled = true;
-            }
+            Report report = DoExploreOrRun(runner, ref wasCanceled);
 
             if (report == null)
                 report = new Report();
@@ -580,15 +567,8 @@ namespace Gallio.Runner
 
             // Generate reports even if the test run is canceled, unless this step
             // also gets canceled.
-            try
-            {
-                if (result.Report.TestPackageRun != null)
-                    GenerateReports(result, reportManager);
-            }
-            catch (OperationCanceledException)
-            {
-                wasCanceled = true;
-            }
+            if (result.Report.TestPackageRun != null)
+                GenerateReports(result, reportManager, ref wasCanceled);
 
             // Done.
             if (showReports)
@@ -620,7 +600,8 @@ namespace Gallio.Runner
 
         #region Private Methods
 
-        private void GenerateReports(TestLauncherResult result, IReportManager reportManager)
+        private void GenerateReports(TestLauncherResult result, IReportManager reportManager,
+            ref bool canceled)
         {
             if (reportFormats.Count == 0)
                 return;
@@ -629,7 +610,7 @@ namespace Gallio.Runner
             {
                 result.GenerateReports(reportDirectory, GenerateReportName(result.Report), reportFormats,
                     reportFormatterOptions, reportManager, progressMonitor);
-            });
+            }, ref canceled);
         }
 
         private void ShowReportDocuments(TestLauncherResult result)
@@ -679,7 +660,7 @@ namespace Gallio.Runner
         /// <summary>
         /// Removes any non-existing assemblies from the list of test assemblies.
         /// </summary>
-        private void VerifyAssemblies()
+        private void VerifyAssemblies(ref bool canceled)
         {
             RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
@@ -699,7 +680,7 @@ namespace Gallio.Runner
                     foreach (string assemblyName in assembliesToRemove)
                         testPackageConfig.AssemblyFiles.Remove(assemblyName);
                 }
-            });
+            }, ref canceled);
         }
 
         private void DisplayConfiguration()
@@ -734,15 +715,15 @@ namespace Gallio.Runner
                 runtimeSetup.Canonicalize(baseDirectory);
         }
 
-        private void DoInitialize(ITestRunner runner)
+        private void DoInitialize(ITestRunner runner, ref bool canceled)
         {
             RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 runner.Initialize(testRunnerOptions, logger, progressMonitor);
-            });
+            }, ref canceled);
         }
 
-        private Report DoExploreOrRun(ITestRunner runner)
+        private Report DoExploreOrRun(ITestRunner runner, ref bool canceled)
         {
             Report report = null;
             RunWithProgress(delegate(IProgressMonitor progressMonitor)
@@ -751,17 +732,17 @@ namespace Gallio.Runner
                     report = runner.Explore(testPackageConfig, testExplorationOptions, progressMonitor);
                 else
                     report = runner.Run(testPackageConfig, testExplorationOptions, testExecutionOptions, progressMonitor);
-            });
+            }, ref canceled);
 
             return report;
         }
 
-        private void DoDispose(ITestRunner runner)
+        private void DoDispose(ITestRunner runner, ref bool canceled)
         {
             RunWithProgress(delegate(IProgressMonitor progressMonitor)
             {
                 runner.Dispose(progressMonitor);
-            });
+            }, ref canceled);
         }
 
         private string GenerateReportName(Report report)
@@ -783,34 +764,41 @@ namespace Gallio.Runner
             return result;
         }
 
-        private void RunWithProgress(TaskWithProgress task)
+        private void RunWithProgress(TaskWithProgress task, ref bool canceled)
         {
-            progressMonitorProvider.Run(progressMonitor =>
+            try
             {
-                try
+                progressMonitorProvider.Run(progressMonitor =>
                 {
-                    bool wasCanceled;
-                    lock (cancelationSyncRoot)
+                    try
                     {
-                        wasCanceled = isCanceled;
-                        cancelableProgressMonitor = progressMonitor;
-                    }
+                        bool wasCanceled;
+                        lock (cancelationSyncRoot)
+                        {
+                            wasCanceled = isCanceled;
+                            cancelableProgressMonitor = progressMonitor;
+                        }
 
-                    if (wasCanceled)
-                    {
-                        progressMonitor.Cancel();
+                        if (wasCanceled)
+                        {
+                            progressMonitor.Cancel();
+                        }
+                        else
+                        {
+                            task(progressMonitor);
+                        }
                     }
-                    else
+                    finally
                     {
-                        task(progressMonitor);
+                        lock (cancelationSyncRoot)
+                            cancelableProgressMonitor = null;
                     }
-                }
-                finally
-                {
-                    lock (cancelationSyncRoot)
-                        cancelableProgressMonitor = null;
-                }
-            });
+                });
+            }
+            catch (OperationCanceledException)
+            {
+                canceled = true;
+            }
         }
 
         #endregion

@@ -113,6 +113,12 @@ namespace Gallio.Framework.Pattern
                 {
                     DoWithApartmentState(test.ApartmentState, delegate
                     {
+                        if (progressMonitor.IsCanceled)
+                        {
+                            outcome = TestOutcome.Canceled;
+                            return;
+                        }
+
                         IPatternTestHandler testHandler = test.TestActions;
 
                         if (testHandlerDecorator != null)
@@ -172,6 +178,9 @@ namespace Gallio.Framework.Pattern
                 TestOutcome outcome = TestOutcome.Passed;
                 foreach (IDataItem item in testState.BindingContext.GetItems(!options.SkipDynamicTests))
                 {
+                    if (progressMonitor.IsCanceled)
+                        return TestOutcome.Canceled;
+
                     outcome = outcome.CombineWith(RunTestInstance(testCommand, primaryContext, testState, item, reusePrimaryTestStep));
                 }
 
@@ -282,6 +291,9 @@ namespace Gallio.Framework.Pattern
         {
             try
             {
+                if (progressMonitor.IsCanceled)
+                    return TestOutcome.Canceled;
+
                 if (options.SkipTestExecution)
                 {
                     return RunTestChildren(testCommand, context.Sandbox, testInstanceState);
