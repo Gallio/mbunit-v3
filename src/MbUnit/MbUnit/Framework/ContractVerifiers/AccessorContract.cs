@@ -199,7 +199,7 @@ namespace MbUnit.Framework.ContractVerifiers
         /// </summary>
         /// <seealso cref="Setter"/>
         /// <seealso cref="PropertyName"/>
-        public Func<TTarget, TValue> Getter
+        public Accessor<TTarget, TValue> Getter
         {
             get;
             set;
