@@ -30,7 +30,7 @@
             <UpgradeVersion OnlyDetect="no" Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
 <?endif ?>
         </Upgrade>
-        <Condition Message="Another version of Gallio is already installed.  It must be removed before this version can be installed.">NOT NEWERVERSIONDETECTED</Condition>
+        <Condition Message="A newer version of Gallio is already installed.  It must be removed before this version can be installed.">NOT NEWERVERSIONDETECTED</Condition>
         <Condition Message="An administrator must approve or install [ProductName].">Privileged</Condition>
 
         <!-- Check that Microsoft .NET Framework is installed (WinNetFxExtension) -->
