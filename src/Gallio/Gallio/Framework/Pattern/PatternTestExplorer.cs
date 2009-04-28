@@ -40,13 +40,13 @@ namespace Gallio.Framework.Pattern
         public override bool IsTest(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
             var evaluator = CreateReflectionOnlyPatternEvaluator(reflectionPolicy);
-            return evaluator.IsTest(element, GetAutomaticPattern(element));
+            return evaluator.IsTest(element, GetAutomaticPattern(codeElement));
         }
 
         public override bool IsTestPart(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
             var evaluator = CreateReflectionOnlyPatternEvaluator(reflectionPolicy);
-            return evaluator.IsTestPart(element, GetAutomaticPattern(element));
+            return evaluator.IsTestPart(element, GetAutomaticPattern(codeElement));
         }
 
         public override void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
