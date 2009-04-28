@@ -8,7 +8,7 @@
         Name="Gallio $(var.Version)"
         Version="$(var.Version)"
         Manufacturer="www.gallio.org"
-        UpgradeCode="{FAAF3C4B-8757-437A-A3D6-9D882DE7D088}"
+        UpgradeCode="FAAF3C4B-8757-437A-A3D6-9D882DE7D088"
         Language="1033">
         <Package
             Comments="Gallio Bundle"
@@ -19,15 +19,18 @@
             />
 
         <!-- Major upgrade -->
-        <Upgrade Id="{FAAF3C4B-8757-437A-A3D6-9D882DE7D088}">
-            <UpgradeVersion Minimum="$(var.Version)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
+        <Property Id="NEWERVERSIONDETECTED" Secure="yes" />
+        <Property Id="OLDERVERSIONBEINGUPGRADED" Secure="yes" />
+        <Upgrade Id="FAAF3C4B-8757-437A-A3D6-9D882DE7D088">
+            <UpgradeVersion OnlyDetect="yes" Minimum="$(var.Version)" IncludeMinimum="no" Property="NEWERVERSIONDETECTED" />
+
 <?if $(var.Version) = "0.0.0.0" ?>
-            <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
+            <UpgradeVersion OnlyDetect="no" Maximum="$(var.Version)" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
 <?else ?>
-            <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
+            <UpgradeVersion OnlyDetect="no" Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
 <?endif ?>
         </Upgrade>
-        <Condition Message="Another version of Gallio is already installed.  It must be removed before this version can be installed.">NOT NEWERVERSIONDETECTED</Condition>
+        <Condition Message="A newer version of Gallio is already installed.  It must be removed before this version can be installed.">NOT NEWERVERSIONDETECTED</Condition>
         <Condition Message="An administrator must approve or install [ProductName].">Privileged</Condition>
 
         <!-- Check that Microsoft .NET Framework is installed (WinNetFxExtension) -->
@@ -69,8 +72,8 @@
     
             <!-- Local Application Data -->
             <Directory Id="CommonAppDataFolder" Name="CommonAppData">
-	        <Directory Id="GallioCommonAppDataFolder" Name="Gallio" />
-	    </Directory>
+                <Directory Id="GallioCommonAppDataFolder" Name="Gallio" />
+            </Directory>
         </Directory>
 
         <DirectoryRef Id="GallioMenuFolder">
@@ -99,7 +102,7 @@
 
         <InstallExecuteSequence>
             <FindRelatedProducts Before="LaunchConditions" />
-            <RemoveExistingProducts After="InstallValidate" />
+            <RemoveExistingProducts After="InstallInitialize" />
 
             <Custom Action="VS2005Setup" Before="InstallFinalize"><![CDATA[(&feat_MbUnit3.Templates.VS2005 > 1) AND VS2005DEVENV <> ""]]></Custom>
     
@@ -127,9 +130,9 @@
         </UI>
 
         <!-- Define the features in the bundle -->
-	
-	<!-- About the Display attribute.
-	     From the MSDN:
+        
+        <!-- About the Display attribute.
+             From the MSDN:
 
              The number in this field specifies the order in which the feature is to be displayed in the user interface.
 
@@ -138,7 +141,7 @@
              * If the value is odd, the feature node is expanded initially.
              * If the value is even, the feature node is collapsed initially.
         -->
-	
+        
         <FeatureRef Id='feat_Gallio'> <!-- Display="2" -->
             <FeatureRef Id='feat_Gallio.VisualStudio.Interop'/>
         </FeatureRef>

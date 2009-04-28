@@ -103,7 +103,7 @@ namespace Gallio.Tests.Reflection
 
         protected IMethodInfo GetMethod(MethodInfo member)
         {
-            IMethodInfo wrapper =  FindByName(GetType(member.DeclaringType).GetMethods(All), member.Name);
+            IMethodInfo wrapper = FindByName(GetType(member.DeclaringType).GetMethods(All), member.Name);
             Assert.IsNotNull(wrapper, "Could not find method '{0}'.", member);
             return wrapper;
         }
@@ -232,6 +232,8 @@ namespace Gallio.Tests.Reflection
         [Test]
         [Row(typeof(ReflectionPolicySample.Class1), "Method1")]
         [Row(typeof(ReflectionPolicySample.Class1), "Method2")]
+        [Row(typeof(ReflectionPolicySample.Class1), "op_Equality")]
+        [Row(typeof(ReflectionPolicySample.Class1), "op_Inequality")]
         public void MethodWrapper(Type type, string methodName)
         {
             MethodInfo target = type.GetMethod(methodName, All);
