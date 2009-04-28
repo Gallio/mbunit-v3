@@ -229,8 +229,7 @@ namespace Gallio.Icarus.Controllers
                     var testExplorationOptions = new TestExplorationOptions();
                     var testExecutionOptions = new TestExecutionOptions
                     {
-                        FilterSet = GenerateFilterSetFromSelectedTests(),
-                        ExactFilter = true
+                        FilterSet = GenerateFilterSetFromSelectedTests()
                     };
 
                     testRunner.Run(testPackageConfigCopy, testExplorationOptions, testExecutionOptions,
