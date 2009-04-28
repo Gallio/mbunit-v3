@@ -240,8 +240,7 @@ namespace Gallio.Icarus.Controllers
                     var testExecutionOptions = new TestExecutionOptions
                     {
                         // re-use filter set generated when saving "last run" filter
-                        FilterSet = filterSet,
-                        ExactFilter = false
+                        FilterSet = filterSet
                     };
 
                     testRunner.Run(testPackageConfigCopy, testExplorationOptions, testExecutionOptions,
