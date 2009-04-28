@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using Gallio.Reflection;
 using Gallio.Runtime.Logging;
 using Gallio.Concurrency;
 using Gallio.Runtime.Hosting;
@@ -55,6 +56,11 @@ namespace Gallio.NCoverIntegration
             this.logger = logger;
             this.ncoverArguments = ncoverArguments;
             this.ncoverCoverageFile = ncoverCoverageFile;
+        }
+
+        internal static string GetEmbeddedNCoverInstallDir()
+        {
+            return Path.GetDirectoryName(AssemblyUtils.GetAssemblyLocalPath(typeof(ProfilerDriver).Assembly));
         }
 
         protected override Process StartProcess(ProcessStartInfo startInfo)

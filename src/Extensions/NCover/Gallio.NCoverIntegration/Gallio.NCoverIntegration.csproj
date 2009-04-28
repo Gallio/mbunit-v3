@@ -61,6 +61,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\libs\v1.5.8\NCover.Console.exe">
+      <Link>v1.5.8\NCover.Console.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Gallio.NCoverIntegration.plugin" />
     <Content Include="..\libs\v1.5.8\NCover.Framework.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -81,6 +85,12 @@
     <Content Include="..\libs\v1.5.8\Microsoft.VC80.CRT.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>v1.5.8\Microsoft.VC80.CRT.manifest</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\libs\v1.5.8\NCover.Console.exe.config">
+      <Link>v1.5.8\NCover.Console.exe.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

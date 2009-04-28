@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using Gallio.Runtime.Logging;
 using Gallio.Concurrency;
 using Gallio.Runtime.Hosting;
@@ -39,7 +40,7 @@ namespace Gallio.NCoverIntegration
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostSetup"/> 
         /// <paramref name="logger"/>, or <paramref name="installationPath"/> is null</exception>
         public NCoverHost(HostSetup hostSetup, ILogger logger, string installationPath, NCoverVersion version)
-            : base(hostSetup, logger, installationPath)
+            : base(ForceProcessorArchitectureIfRequired(hostSetup, version), logger, installationPath)
         {
             this.version = version;
         }
@@ -56,21 +57,22 @@ namespace Gallio.NCoverIntegration
                 ncoverCoverageFile = "Coverage.xml";
 
             ncoverCoverageFile = Path.Combine(workingDirectory, ncoverCoverageFile);
+            return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, version, Logger, ncoverArguments, ncoverCoverageFile);
+        }
 
-            switch (version)
+        private static HostSetup ForceProcessorArchitectureIfRequired(HostSetup hostSetup, NCoverVersion version)
+        {
+            if (version == NCoverVersion.V1)
             {
-                case NCoverVersion.V1:
-                    return new EmbeddedNCoverProcessTask(executablePath, arguments, workingDirectory, Logger, ncoverArguments, ncoverCoverageFile);
+                ProcessorArchitecture currentArch = hostSetup.ProcessorArchitecture;
+                if (currentArch == ProcessorArchitecture.Amd64 || currentArch == ProcessorArchitecture.IA64)
+                    throw new HostException("NCover v1.5.8 must run code as a 32bit process but the requested architecture was 64bit.");
 
-                case NCoverVersion.V2:
-                    return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, 2, Logger, ncoverArguments, ncoverCoverageFile);
-
-                case NCoverVersion.V3:
-                    return NCoverTool.CreateProcessTask(executablePath, arguments, workingDirectory, 3, Logger, ncoverArguments, ncoverCoverageFile);
-
-                default:
-                    throw new NotSupportedException("Unrecognized NCover version.");
+                hostSetup = hostSetup.Copy();
+                hostSetup.ProcessorArchitecture = ProcessorArchitecture.X86;
             }
+
+            return hostSetup;
         }
     }
 }
