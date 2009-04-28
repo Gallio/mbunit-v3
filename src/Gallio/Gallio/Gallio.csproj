@@ -399,7 +399,6 @@
     <Compile Include="Framework\Pattern\TestAssemblyPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\BasePattern.cs" />
     <Compile Include="Framework\Pattern\BasePatternTestFrameworkExtension.cs" />
-    <Compile Include="Framework\Pattern\BootstrapTestAssemblyPattern.cs" />
     <Compile Include="Framework\Pattern\DataPatternAttribute.cs" />
     <Compile Include="Framework\Pattern\DeclarativePatternResolver.cs" />
     <Compile Include="Framework\Pattern\DecoratorPatternAttribute.cs" />

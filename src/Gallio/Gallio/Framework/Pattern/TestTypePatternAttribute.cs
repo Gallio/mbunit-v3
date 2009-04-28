@@ -43,6 +43,9 @@ namespace Gallio.Framework.Pattern
     {
         private static readonly Key<ObjectCreationSpec> FixtureObjectCreationSpecKey = new Key<ObjectCreationSpec>("FixtureObjectCreationSpec");
 
+        private const BindingFlags ConstructorBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        private const BindingFlags NestedTypeBindingFlags = BindingFlags.Public | BindingFlags.NonPublic;
+
         /// <summary>
         /// Gets an instance of the test type pattern attribute to use when no
         /// other pattern consumes the type.  If the type can be inferred to be a
@@ -172,21 +175,36 @@ namespace Gallio.Framework.Pattern
         /// <param name="type">The type whose constructors are to be consumed</param>
         protected void ConsumeConstructors(IPatternScope typeScope, ITypeInfo type)
         {
-            // Note: We only consider instance members of concrete types because abstract types
-            //       cannot be instantiated so the members cannot be accessed.  An abstract type
-            //       might yet be a static test fixture so we still consider its static members.
-            if (!type.IsAbstract && !type.IsInterface)
+            if (ShouldConsumeConstructors(type))
             {
-                foreach (IConstructorInfo constructor in type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
-                {
+                // FIXME: Currently we arbitrarily choose the first constructor and throw away the rest.
+                //        This should be replaced by a more intelligent mechanism that supports a constructor
+                //        selection policy based on some criterion.
+                IConstructorInfo constructor = GetFirstConstructorWithPreferenceForPublicConsructor(type);
+                if (constructor != null)
                     typeScope.Consume(constructor, false, DefaultConstructorPattern);
-
-                    // FIXME: Currently we arbitrarily choose the first constructor and throw away the rest.
-                    //        This should be replaced by a more intelligent mechanism that supports a constructor
-                    //        selection policy based on some criterion.
-                    break;
-                }
             }
+        }
+
+        private static IConstructorInfo GetFirstConstructorWithPreferenceForPublicConsructor(ITypeInfo type)
+        {
+            IConstructorInfo result = null;
+
+            foreach (IConstructorInfo constructor in type.GetConstructors(ConstructorBindingFlags))
+            {
+                if (constructor.IsPublic)
+                    return constructor;
+
+                if (result == null)
+                    result = constructor;
+            }
+
+            return result;
+        }
+
+        private static bool ShouldConsumeConstructors(ITypeInfo type)
+        {
+            return !type.IsAbstract && !type.IsInterface;
         }
 
         /// <summary>
@@ -196,7 +214,7 @@ namespace Gallio.Framework.Pattern
         /// <param name="type">The type whose nested types are to be consumed</param>
         protected void ConsumeNestedTypes(IPatternScope typeScope, ITypeInfo type)
         {
-            foreach (ITypeInfo nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (ITypeInfo nestedType in type.GetNestedTypes(NestedTypeBindingFlags))
                 typeScope.Consume(nestedType, false, DefaultNestedTypePattern);
         }
 
@@ -377,7 +395,7 @@ namespace Gallio.Framework.Pattern
         /// <returns>The binding flags for enumerating members</returns>
         protected virtual BindingFlags GetMemberBindingFlags(ITypeInfo type)
         {
-            BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+            BindingFlags bindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
             if (!type.IsAbstract)
                 bindingFlags |= BindingFlags.Instance;
             return bindingFlags;
@@ -402,12 +420,17 @@ namespace Gallio.Framework.Pattern
             if (HasCodeElementWithPattern(evaluator, type.GetMethods(bindingFlags))
                 || HasCodeElementWithPattern(evaluator, type.GetProperties(bindingFlags))
                 || HasCodeElementWithPattern(evaluator, type.GetFields(bindingFlags))
-                || HasCodeElementWithPattern(evaluator, type.GetConstructors(bindingFlags))
-                || HasCodeElementWithPattern(evaluator, type.GetEvents(bindingFlags))
-                || (type.IsGenericTypeDefinition && HasCodeElementWithPattern(evaluator, type.GenericArguments)))
+                || HasCodeElementWithPattern(evaluator, type.GetEvents(bindingFlags)))
                 return true;
 
-            foreach (ITypeInfo nestedType in type.GetNestedTypes(bindingFlags))
+            if (type.IsGenericTypeDefinition && HasCodeElementWithPattern(evaluator, type.GenericArguments))
+                return true;
+
+            if (ShouldConsumeConstructors(type)
+                && HasCodeElementWithPattern(evaluator, type.GetConstructors(ConstructorBindingFlags)))
+                return true;
+
+            foreach (ITypeInfo nestedType in type.GetNestedTypes(NestedTypeBindingFlags))
                 if (InferTestType(evaluator, nestedType))
                     return true;
 
@@ -425,15 +448,17 @@ namespace Gallio.Framework.Pattern
 
         private sealed class AutomaticImpl : TestTypePatternAttribute
         {
-            public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+            public override bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
             {
                 ITypeInfo type = codeElement as ITypeInfo;
-                if (type != null)
+                return type != null && InferTestType(evaluator, type);
+            }
+
+            public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
+            {
+                if (IsTest(containingScope.Evaluator, codeElement))
                 {
-                    if (InferTestType(containingScope.Evaluator, type))
-                    {
-                        base.Consume(containingScope, codeElement, skipChildren);
-                    }
+                    base.Consume(containingScope, codeElement, skipChildren);
                 }
             }
         }

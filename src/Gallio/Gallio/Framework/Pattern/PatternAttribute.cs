@@ -50,6 +50,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
+        public virtual bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+        {
+            return IsTest(evaluator, codeElement);
+        }
+
+        /// <inheritdoc />
         public virtual void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
         }

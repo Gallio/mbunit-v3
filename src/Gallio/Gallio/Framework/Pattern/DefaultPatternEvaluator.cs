@@ -115,9 +115,29 @@ namespace Gallio.Framework.Pattern
                 if (primaryPattern != null)
                     return primaryPattern.IsTest(this, codeElement);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                testModelBuilder.PublishExceptionAsAnnotation(codeElement, ex);
+                // Return false if an exception occurs.
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc />
+        public bool IsTestPart(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern)
+        {
+            if (codeElement == null)
+                throw new ArgumentNullException("codeElement");
+
+            try
+            {
+                IPattern primaryPattern = GetPrimaryPattern(codeElement) ?? defaultPrimaryPattern;
+                if (primaryPattern != null)
+                    return primaryPattern.IsTestPart(this, codeElement);
+            }
+            catch (Exception)
+            {
+                // Return false if an exception occurs.
             }
 
             return false;

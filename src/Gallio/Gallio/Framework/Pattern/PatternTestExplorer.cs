@@ -61,7 +61,32 @@ namespace Gallio.Framework.Pattern
         /// <inheritdoc />
         public override bool IsTest(ICodeElementInfo element)
         {
-            return BootstrapTestAssemblyPattern.Instance.IsTest(evaluator, element);
+            return evaluator.IsTest(element, GetAutomaticPattern(element));
+        }
+
+        private static IPattern GetAutomaticPattern(ICodeElementInfo element)
+        {
+            switch (element.Kind)
+            {
+                case CodeElementKind.Type:
+                    return TestTypePatternAttribute.AutomaticInstance;
+
+                case CodeElementKind.Field:
+                case CodeElementKind.Property:
+                    return TestParameterPatternAttribute.AutomaticInstance;
+
+                case CodeElementKind.Assembly:
+                case CodeElementKind.Constructor:
+                case CodeElementKind.Parameter:
+                case CodeElementKind.GenericParameter:
+                case CodeElementKind.Namespace:
+                case CodeElementKind.Event:
+                case CodeElementKind.Method:
+                    return null;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         /// <inheritdoc />
@@ -124,7 +149,7 @@ namespace Gallio.Framework.Pattern
 
                 InitializeAssembly(frameworkScope, assembly);
 
-                BootstrapTestAssemblyPattern.Instance.Consume(frameworkScope, assembly, skipChildren);
+                frameworkScope.Consume(assembly, skipChildren, TestAssemblyPatternAttribute.DefaultInstance);
             }
 
             return fullyPopulated;
