@@ -50,10 +50,10 @@ namespace Gallio.Runner.Drivers
         /// <param name="hostFactory">The host factory</param>
         /// <param name="frameworkManager">The test framework manager</param>
         /// <param name="runtime">The Gallio runtime</param>
-        /// <param name="sharedAppDomain">If true, uses a shared app-domain for all test domains</param>
+        /// <param name="shareAppDomain">If true, uses a shared app-domain for all test domains</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="hostFactory"/>,
         /// <paramref name="frameworkManager"/>, or <paramref name="runtime"/> is null</exception>
-        public HostedTestDriver(IHostFactory hostFactory, ITestFrameworkManager frameworkManager, IRuntime runtime, bool sharedAppDomain)
+        public HostedTestDriver(IHostFactory hostFactory, ITestFrameworkManager frameworkManager, IRuntime runtime, bool shareAppDomain)
         {
             if (hostFactory == null)
                 throw new ArgumentNullException("hostFactory");
@@ -65,7 +65,7 @@ namespace Gallio.Runner.Drivers
             this.hostFactory = hostFactory;
             this.frameworkManager = frameworkManager;
             this.runtime = runtime;
-            this.shareAppDomain = sharedAppDomain;
+            this.shareAppDomain = shareAppDomain;
         }
 
         /// <summary>
