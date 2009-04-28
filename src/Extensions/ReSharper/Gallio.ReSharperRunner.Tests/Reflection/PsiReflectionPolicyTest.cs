@@ -72,6 +72,7 @@ namespace Gallio.ReSharperRunner.Tests.Reflection
             Assert.IsNull(reflectionPolicy.Wrap((IFunction)null));
             Assert.IsNull(reflectionPolicy.Wrap((IConstructor)null));
             Assert.IsNull(reflectionPolicy.Wrap((IMethod)null));
+            Assert.IsNull(reflectionPolicy.Wrap((IOperator)null));
             Assert.IsNull(reflectionPolicy.Wrap((IParameter)null));
             Assert.IsNull(reflectionPolicy.Wrap((IProperty)null));
             Assert.IsNull(reflectionPolicy.Wrap((ITypeElement)null));

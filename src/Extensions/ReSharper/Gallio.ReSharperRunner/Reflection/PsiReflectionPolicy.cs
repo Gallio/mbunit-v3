@@ -128,7 +128,18 @@ namespace Gallio.ReSharperRunner.Reflection
                 return null;
 
             IConstructor constructor = target as IConstructor;
-            return constructor != null ? (StaticFunctionWrapper) Wrap(constructor) : Wrap((IMethod) target);
+            if (constructor != null)
+                return Wrap(constructor);
+
+            IMethod method = target as IMethod;
+            if (method != null)
+                return Wrap(method);
+
+            IOperator @operator = target as IOperator;
+            if (@operator != null)
+                return Wrap(@operator);
+
+            throw new NotSupportedException("Unsupported declared element type: " + target);
         }
 
         /// <summary>
@@ -151,6 +162,20 @@ namespace Gallio.ReSharperRunner.Reflection
         /// <param name="target">The method, or null if none</param>
         /// <returns>The reflection wrapper, or null if none</returns>
         public StaticMethodWrapper Wrap(IMethod target)
+        {
+            if (target == null)
+                return null;
+
+            StaticDeclaredTypeWrapper declaringType = MakeDeclaredTypeWithoutSubstitution(target.GetContainingType());
+            return new StaticMethodWrapper(this, target, declaringType, declaringType, declaringType.Substitution);
+        }
+
+        /// <summary>
+        /// Obtains a reflection wrapper for an operator.
+        /// </summary>
+        /// <param name="target">The method, or null if none</param>
+        /// <returns>The reflection wrapper, or null if none</returns>
+        public StaticMethodWrapper Wrap(IOperator target)
         {
             if (target == null)
                 return null;

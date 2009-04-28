@@ -907,6 +907,14 @@ namespace Gallio.ReSharperRunner.Reflection
                                 && MethodParameterInfo.IsMatchingParameterList(parameters, method.Parameters))
                                 return method;
                         }
+
+                        foreach (IOperator @operator in type.Operators)
+                        {
+                            if (@operator.IsStatic == isStatic
+                                && @operator.ShortName == name
+                                && MethodParameterInfo.IsMatchingParameterList(parameters, @operator.Parameters))
+                                return @operator;
+                        }
                     }
 
                     return null;
