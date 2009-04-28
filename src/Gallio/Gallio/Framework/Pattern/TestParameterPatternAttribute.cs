@@ -56,6 +56,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
+        public override bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             ISlotInfo slot = codeElement as ISlotInfo;
@@ -119,10 +125,17 @@ namespace Gallio.Framework.Pattern
 
         private sealed class AutomaticImpl : TestParameterPatternAttribute
         {
+            public override bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+            {
+                return evaluator.HasPatterns(codeElement);
+            }
+
             public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
             {
-                if (containingScope.Evaluator.HasPatterns(codeElement))
+                if (IsTestPart(containingScope.Evaluator, codeElement))
+                {
                     base.Consume(containingScope, codeElement, skipChildren);
+                }
             }
         }
     }

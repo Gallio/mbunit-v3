@@ -39,9 +39,14 @@ namespace Gallio.Framework.Pattern
 
         public override bool IsTest(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
         {
-            var testModelBuilder = new ReflectionOnlyTestModelBuilder(reflectionPolicy);
-            var evaluator = new DefaultPatternEvaluator(testModelBuilder, DeclarativePatternResolver.Instance);
-            return BootstrapTestAssemblyPattern.Instance.IsTest(evaluator, codeElement);
+            var evaluator = CreateReflectionOnlyPatternEvaluator(reflectionPolicy);
+            return evaluator.IsTest(element, GetAutomaticPattern(element));
+        }
+
+        public override bool IsTestPart(IReflectionPolicy reflectionPolicy, ICodeElementInfo codeElement)
+        {
+            var evaluator = CreateReflectionOnlyPatternEvaluator(reflectionPolicy);
+            return evaluator.IsTestPart(element, GetAutomaticPattern(element));
         }
 
         public override void Explore(TestModel testModel, TestSource testSource, Action<ITest> consumer)
@@ -55,6 +60,37 @@ namespace Gallio.Framework.Pattern
                 state.ExploreType(type, consumer);
 
             state.FinishModel();
+        }
+
+        private static IPatternEvaluator CreateReflectionOnlyPatternEvaluator(IReflectionPolicy reflectionPolicy)
+        {
+            var testModelBuilder = new ReflectionOnlyTestModelBuilder(reflectionPolicy);
+            return new DefaultPatternEvaluator(testModelBuilder, DeclarativePatternResolver.Instance);
+        }
+
+        private static IPattern GetAutomaticPattern(ICodeElementInfo element)
+        {
+            switch (element.Kind)
+            {
+                case CodeElementKind.Type:
+                    return TestTypePatternAttribute.AutomaticInstance;
+
+                case CodeElementKind.Field:
+                case CodeElementKind.Property:
+                    return TestParameterPatternAttribute.AutomaticInstance;
+
+                case CodeElementKind.Assembly:
+                case CodeElementKind.Constructor:
+                case CodeElementKind.Parameter:
+                case CodeElementKind.GenericParameter:
+                case CodeElementKind.Namespace:
+                case CodeElementKind.Event:
+                case CodeElementKind.Method:
+                    return null;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private sealed class ExplorerState
@@ -134,7 +170,7 @@ namespace Gallio.Framework.Pattern
 
                     InitializeAssembly(frameworkScope, assembly);
 
-                    BootstrapTestAssemblyPattern.Instance.Consume(frameworkScope, assembly, skipChildren);
+                    frameworkScope.Consume(assembly, skipChildren, TestAssemblyPatternAttribute.DefaultInstance);
                 }
 
                 return fullyPopulated;

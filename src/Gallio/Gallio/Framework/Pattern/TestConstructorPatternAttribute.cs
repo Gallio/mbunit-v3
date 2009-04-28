@@ -43,6 +43,12 @@ namespace Gallio.Framework.Pattern
         }
 
         /// <inheritdoc />
+        public override bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
         public override void Consume(IPatternScope containingScope, ICodeElementInfo codeElement, bool skipChildren)
         {
             IConstructorInfo constructor = codeElement as IConstructorInfo;

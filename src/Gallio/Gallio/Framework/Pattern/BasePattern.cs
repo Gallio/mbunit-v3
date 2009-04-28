@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Gallio.Model.Diagnostics;
 using Gallio.Reflection;
 using Gallio.Framework.Pattern;
@@ -36,6 +37,12 @@ namespace Gallio.Framework.Pattern
         public virtual bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
         {
             return false;
+        }
+
+        /// <inheritdoc />
+        public virtual bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement)
+        {
+            return IsTest(evaluator, codeElement);
         }
 
         /// <inheritdoc />

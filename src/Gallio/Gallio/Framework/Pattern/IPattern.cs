@@ -35,11 +35,13 @@ namespace Gallio.Framework.Pattern
     /// as required.
     /// </para>
     /// <para>
-    /// Pattern processing is performed recursively.  First a top-level <see cref="BootstrapTestAssemblyPattern" />
-    /// identifies the primary pattern for an assembly.  This pattern then takes over and performs
-    /// reflection over the types within the assembly and hands off control to any primary patterns
-    /// it finds there.  And so on.  Each primary pattern also provides an opportunity for non-primary patterns
-    /// associated with the same code element to run.
+    /// Pattern processing is performed recursively.  First the primary pattern for the assembly
+    /// is found.  If none is registered then the default assembly pattern is used instead.
+    /// The assembly pattern then performs reflection over the types within the assembly and hands
+    /// off control (via <see cref="Consume"/>) to any primary patterns it finds each type.  Likewise the
+    /// types scan their members and call into their primary patterns.  And so on.  Each primary pattern
+    /// is responsible for invoking (via <see cref="Process" />) any additional non-primary patterns
+    /// associated with their code element after they have established the appropriate evaluation scope.
     /// </para>
     /// <para>
     /// Typically a pattern is associated with a code element by means of a <see cref="PatternAttribute" />
@@ -99,6 +101,25 @@ namespace Gallio.Framework.Pattern
         /// and report an error message to the user as an annotation that describes how the
         /// pattern was misapplied.</exception>
         bool IsTest(IPatternEvaluator evaluator, ICodeElementInfo codeElement);
+
+        /// <summary>
+        /// <para>
+        /// Returns true if the code element represents a part of a test such as a test method
+        /// or a test contribution like a setup or teardown method.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method is only called for primary patterns.
+        /// </para>
+        /// </remarks>
+        /// <param name="evaluator">The evaluator</param>
+        /// <param name="codeElement">The code element</param>
+        /// <returns>True if the code element represents a test</returns>
+        /// <exception cref="PatternUsageErrorException">May be thrown to halt processing of the pattern
+        /// and report an error message to the user as an annotation that describes how the
+        /// pattern was misapplied.</exception>
+        bool IsTestPart(IPatternEvaluator evaluator, ICodeElementInfo codeElement);
 
         /// <summary>
         /// <para>

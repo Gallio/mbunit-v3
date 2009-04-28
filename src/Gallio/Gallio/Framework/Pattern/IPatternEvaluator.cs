@@ -71,8 +71,7 @@ namespace Gallio.Framework.Pattern
         /// Returns true if the code element represents a test.
         /// </summary>
         /// <remarks>
-        /// Any exceptions thrown by a pattern are caught and manifested as annotations
-        /// associated with the code element.  <seealso cref="PatternUsageErrorException"/>
+        /// If an exception occurs, this method returns false.
         /// </remarks>
         /// <param name="codeElement">The code element</param>
         /// <param name="defaultPrimaryPattern">The default primary pattern to use, if none can be resolved
@@ -80,6 +79,19 @@ namespace Gallio.Framework.Pattern
         /// <returns>True if the code element represents a test</returns>
         /// <seealso cref="IPattern.IsTest"/>
         bool IsTest(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern);
+
+        /// <summary>
+        /// Returns true if the code element represents a part of a test.
+        /// </summary>
+        /// <remarks>
+        /// If an exception occurs, this method returns false.
+        /// </remarks>
+        /// <param name="codeElement">The code element</param>
+        /// <param name="defaultPrimaryPattern">The default primary pattern to use, if none can be resolved
+        /// for the code element.  May be null if none.</param>
+        /// <returns>True if the code element represents a test</returns>
+        /// <seealso cref="IPattern.IsTest"/>
+        bool IsTestPart(ICodeElementInfo codeElement, IPattern defaultPrimaryPattern);
 
         /// <summary>
         /// Consumes the specified code element.
