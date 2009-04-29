@@ -51,6 +51,35 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
+        /// Verifies that a block of code throws an exception of a particular type; and that 
+        /// the exception has an inner exception of a particular type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the block of code throws a subtype of the expected exception type then
+        /// this method will still succeed.
+        /// </para>
+        /// <para>
+        /// This method returns the exception that was caught.  To verify additional
+        /// properties of the exception, such as the exception message, follow up this
+        /// assertion with additional ones that verify these properties of the exception object
+        /// that was returned.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="TExpectedException">The expected type of exception</typeparam>
+        /// <typeparam name="TExpectedInnerException">The expected type of the inner exception</typeparam>
+        /// <param name="action">The action delegate to evaluate</param>
+        /// <returns>The exception that was thrown</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static TExpectedException Throws<TExpectedException, TExpectedInnerException>(Action action)
+            where TExpectedException : Exception
+            where TExpectedInnerException : Exception
+        {
+            return Throws<TExpectedException, TExpectedInnerException>(action, null, null);
+        }
+
+        /// <summary>
         /// Verifies that a block of code throws an exception of a particular type.
         /// </summary>
         /// <remarks>
@@ -75,7 +104,38 @@ namespace MbUnit.Framework
         public static TExpectedException Throws<TExpectedException>(Action action, string messageFormat, params object[] messageArgs)
             where TExpectedException : Exception
         {
-            return (TExpectedException)Throws(typeof(TExpectedException), action, messageFormat, messageArgs);
+            return (TExpectedException)Throws(typeof(TExpectedException), null, action, messageFormat, messageArgs);
+        }
+
+        /// <summary>
+        /// Verifies that a block of code throws an exception of a particular type; and that 
+        /// the exception has an inner exception of a particular type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the block of code throws a subtype of the expected exception type then
+        /// this method will still succeed.
+        /// </para>
+        /// <para>
+        /// This method returns the exception that was caught.  To verify additional
+        /// properties of the exception, such as the exception message, follow up this
+        /// assertion with additional ones that verify these properties of the exception object
+        /// that was returned.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="TExpectedException">The expected type of the exception</typeparam>
+        /// <typeparam name="TExpectedInnerException">The expected type of the inner exception</typeparam>
+        /// <param name="action">The action delegate to evaluate</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <returns>The exception that was thrown</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static TExpectedException Throws<TExpectedException, TExpectedInnerException>(Action action, string messageFormat, params object[] messageArgs)
+            where TExpectedException : Exception
+            where TExpectedInnerException : Exception
+        {
+            return (TExpectedException)Throws(typeof(TExpectedException), typeof(TExpectedInnerException), action, messageFormat, messageArgs);
         }
 
         /// <summary>
@@ -101,7 +161,35 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static Exception Throws(Type expectedExceptionType, Action action)
         {
-            return Throws(expectedExceptionType, action, null);
+            return Throws(expectedExceptionType, null, action, null);
+        }
+
+        /// <summary>
+        /// Verifies that a block of code throws an exception of a particular type; and that 
+        /// the exception has an inner exception of a particular type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the block of code throws a subtype of the expected exception type then
+        /// this method will still succeed.
+        /// </para>
+        /// <para>
+        /// This method returns the exception that was caught.  To verify additional
+        /// properties of the exception, such as the exception message, follow up this
+        /// assertion with additional ones that verify these properties of the exception object
+        /// that was returned.
+        /// </para>
+        /// </remarks>
+        /// <param name="expectedExceptionType">The expected exception type</param>
+        /// <param name="expectedInnerExceptionType">The expected inner exception type, or null to ignore the inner exception</param>
+        /// <param name="action">The action delegate to evaluate</param>
+        /// <returns>The exception that was thrown</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedExceptionType"/>
+        /// or <paramref name="action"/> is null</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static Exception Throws(Type expectedExceptionType, Type expectedInnerExceptionType, Action action)
+        {
+            return Throws(expectedExceptionType, expectedInnerExceptionType, action, null);
         }
 
         /// <summary>
@@ -129,13 +217,43 @@ namespace MbUnit.Framework
         /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
         public static Exception Throws(Type expectedExceptionType, Action action, string messageFormat, params object[] messageArgs)
         {
+            return Throws(expectedExceptionType, null, action, messageFormat, messageArgs);
+     }
+
+        /// <summary>
+        /// Verifies that a block of code throws an exception of a particular type; and that 
+        /// the exception has an inner exception of a particular type.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the block of code throws a subtype of the expected exception type then
+        /// this method will still succeed.
+        /// </para>
+        /// <para>
+        /// This method returns the exception that was caught.  To verify additional
+        /// properties of the exception, such as the exception message, follow up this
+        /// assertion with additional ones that verify these properties of the exception object
+        /// that was returned.
+        /// </para>
+        /// </remarks>
+        /// <param name="expectedExceptionType">The expected exception type</param>
+        /// <param name="expectedInnerExceptionType">The expected inner exception type, or null to ignore the inner exception</param>
+        /// <param name="action">The action delegate to evaluate</param>
+        /// <param name="messageFormat">The custom assertion message format, or null if none</param>
+        /// <param name="messageArgs">The custom assertion message arguments, or null if none</param>
+        /// <returns>The exception that was thrown</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="expectedExceptionType"/>
+        /// or <paramref name="action"/> is null</exception>
+        /// <exception cref="AssertionException">Thrown if the verification failed unless the current <see cref="AssertionContext.AssertionFailureBehavior" /> indicates otherwise</exception>
+        public static Exception Throws(Type expectedExceptionType, Type expectedInnerExceptionType, Action action, string messageFormat, params object[] messageArgs)
+        {
             if (expectedExceptionType == null)
                 throw new ArgumentNullException("expectedExceptionType");
             if (action == null)
                 throw new ArgumentNullException("action");
 
             Exception result = null;
-            AssertionHelper.Verify(delegate
+            AssertionHelper.Verify(() =>
             {
                 try
                 {
@@ -150,6 +268,29 @@ namespace MbUnit.Framework
                     if (expectedExceptionType.IsInstanceOfType(actualException))
                     {
                         result = actualException;
+
+                        if (expectedInnerExceptionType != null)
+                        {
+                            if (expectedInnerExceptionType.IsInstanceOfType(actualException.InnerException))
+                            {
+                                return null;
+                            }
+
+                            if (actualException.InnerException == null)
+                            {
+                                return new AssertionFailureBuilder("The block threw an exception of the expected type, but having no inner expection.")
+                                   .SetMessage(messageFormat, messageArgs)
+                                   .AddRawLabeledValue("Expected Inner Exception Type", expectedInnerExceptionType)
+                                   .ToAssertionFailure();
+                            }
+
+                            return new AssertionFailureBuilder("The block threw an exception of the expected type, but having an unexpected inner expection.")
+                                .SetMessage(messageFormat, messageArgs)
+                                .AddRawLabeledValue("Expected Inner Exception Type", expectedInnerExceptionType)
+                                .AddException(actualException.InnerException)
+                                .ToAssertionFailure();
+                        }
+
                         return null;
                     }
 

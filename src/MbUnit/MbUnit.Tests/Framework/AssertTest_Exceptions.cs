@@ -60,7 +60,6 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Exception", ex.Message);
         }
 
-
         [Test]
         public void Throws_with_message_passes_and_returns_exception_when_subtype_of_expected_exception_occurs()
         {
@@ -92,7 +91,6 @@ namespace MbUnit.Tests.Framework
             Assert.IsNotNull(ex);
             Assert.AreEqual("Exception", ex.Message);
         }
-
 
         [Test]
         public void Throws_with_type_with_message_passes_and_returns_exception_when_subtype_of_expected_exception_occurs()
@@ -210,6 +208,54 @@ namespace MbUnit.Tests.Framework
             Assert.AreEqual("Hello World", failures[0].Message);
             Assert.AreEqual("The block threw an exception but none was expected.", failures[0].Description);
             Assert.AreEqual("Boom.", failures[0].Exceptions[0].Message);
+        }
+
+        [Test]
+        public void Throws_passes_and_returns_exception_when_expected_exception_and_inner_exception_occur()
+        {
+            InvalidOperationException ex = Assert.Throws<InvalidOperationException, ArgumentException>(() =>
+                {
+                    throw new InvalidOperationException("Exception", new ArgumentException());
+                });
+            Assert.IsNotNull(ex);
+            Assert.AreEqual("Exception", ex.Message);
+        }
+
+        [Test]
+        public void Throws_passes_and_returns_exception_when_expected_exception_and_derived_inner_exception_occur()
+        {
+            InvalidOperationException ex = Assert.Throws<InvalidOperationException, ArgumentException>(() =>
+            {
+                throw new InvalidOperationException("Exception", new ArgumentOutOfRangeException());
+            });
+            Assert.IsNotNull(ex);
+            Assert.AreEqual("Exception", ex.Message);
+        }
+
+        [Test]
+        public void Throws_fails_if_no_inner_exception()
+        {
+            AssertionFailure[] failures = Capture(() =>
+                Assert.Throws<InvalidOperationException, ArgumentException>(() =>
+                {
+                    throw new InvalidOperationException("Exception");
+                }));
+            Assert.AreEqual(1, failures.Length);
+            Assert.IsNull(failures[0].Message);
+            Assert.AreEqual("The block threw an exception of the expected type, but having no inner expection.", failures[0].Description);
+        }
+
+        [Test]
+        public void Throws_fails_if_inner_exception_does_not_match()
+        {
+            AssertionFailure[] failures = Capture(() => 
+                Assert.Throws<InvalidOperationException, ArgumentException>(() =>
+                {
+                    throw new InvalidOperationException("Exception", new NotSupportedException());
+                }));
+            Assert.AreEqual(1, failures.Length);
+            Assert.IsNull(failures[0].Message);
+            Assert.AreEqual("The block threw an exception of the expected type, but having an unexpected inner expection.", failures[0].Description);
         }
     }
 }
