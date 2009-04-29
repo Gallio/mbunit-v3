@@ -84,21 +84,17 @@
       <Project>{111FD89D-58A1-4445-B4A4-8A50D65DB714}</Project>
       <Name>Gallio.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Gallio\Gallio35\Gallio35.csproj">
-      <Project>{BC28AB7E-5B71-4AEE-BF2D-54ACF7299889}</Project>
-      <Name>Gallio35</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Gallio\Gallio\Gallio.csproj">
       <Project>{6CAB7735-05DA-480D-9A04-50615B00F886}</Project>
       <Name>Gallio %28Gallio\Gallio%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MbUnit.TestResources\MbUnit.TestResources.csproj">
-      <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
-      <Name>MbUnit.TestResources</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MbUnit.Compatibility\MbUnit.Compatibility.csproj">
       <Project>{F588B51F-786A-48E2-950E-636062F9C302}</Project>
       <Name>MbUnit.Compatibility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MbUnit.TestResources\MbUnit.TestResources.csproj">
+      <Project>{9FFB657C-7099-4594-A1DD-6E9AC5D7171E}</Project>
+      <Name>MbUnit.TestResources</Name>
     </ProjectReference>
     <ProjectReference Include="..\MbUnit35\MbUnit35.csproj">
       <Project>{D147F5CC-0166-4B9C-B095-F905220090FA}</Project>
