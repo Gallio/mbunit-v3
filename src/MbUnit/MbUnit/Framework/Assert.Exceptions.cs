@@ -56,11 +56,11 @@ namespace MbUnit.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If the block of code throws a subtype of the expected exception type then
+        /// If the block of code throws a subtype of the expected exception types then
         /// this method will still succeed.
         /// </para>
         /// <para>
-        /// This method returns the exception that was caught.  To verify additional
+        /// This method returns the exception that was caught. To verify additional
         /// properties of the exception, such as the exception message, follow up this
         /// assertion with additional ones that verify these properties of the exception object
         /// that was returned.
@@ -113,11 +113,11 @@ namespace MbUnit.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If the block of code throws a subtype of the expected exception type then
+        /// If the block of code throws a subtype of the expected exception types then
         /// this method will still succeed.
         /// </para>
         /// <para>
-        /// This method returns the exception that was caught.  To verify additional
+        /// This method returns the exception that was caught. To verify additional
         /// properties of the exception, such as the exception message, follow up this
         /// assertion with additional ones that verify these properties of the exception object
         /// that was returned.
@@ -170,11 +170,11 @@ namespace MbUnit.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If the block of code throws a subtype of the expected exception type then
+        /// If the block of code throws a subtype of the expected exception types then
         /// this method will still succeed.
         /// </para>
         /// <para>
-        /// This method returns the exception that was caught.  To verify additional
+        /// This method returns the exception that was caught. To verify additional
         /// properties of the exception, such as the exception message, follow up this
         /// assertion with additional ones that verify these properties of the exception object
         /// that was returned.
@@ -201,7 +201,7 @@ namespace MbUnit.Framework
         /// this method will still succeed.
         /// </para>
         /// <para>
-        /// This method returns the exception that was caught.  To verify additional
+        /// This method returns the exception that was caught. To verify additional
         /// properties of the exception, such as the exception message, follow up this
         /// assertion with additional ones that verify these properties of the exception object
         /// that was returned.
@@ -226,7 +226,7 @@ namespace MbUnit.Framework
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If the block of code throws a subtype of the expected exception type then
+        /// If the block of code throws a subtype of the expected exception types then
         /// this method will still succeed.
         /// </para>
         /// <para>
