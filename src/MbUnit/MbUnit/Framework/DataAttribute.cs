@@ -34,16 +34,13 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public abstract class DataAttribute : DataPatternAttribute
     {
-        private string description;
-        private Type expectedException;
-
         /// <summary>
         /// Gets or sets a description of the values provided by the data source.
         /// </summary>
         public string Description
         {
-            get { return description; }
-            set { description = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -52,8 +49,8 @@ namespace MbUnit.Framework
         /// </summary>
         public Type ExpectedException
         {
-            get { return expectedException; }
-            set { expectedException = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -62,10 +59,10 @@ namespace MbUnit.Framework
         /// <returns>The metadata keys and values</returns>
         protected virtual IEnumerable<KeyValuePair<string, string>> GetMetadata()
         {
-            if (description != null)
-                yield return new KeyValuePair<string, string>(MetadataKeys.Description, description);
-            if (expectedException != null)
-                yield return new KeyValuePair<string, string>(MetadataKeys.ExpectedException, expectedException.FullName);
+            if (Description != null)
+                yield return new KeyValuePair<string, string>(MetadataKeys.Description, Description);
+            if (ExpectedException != null)
+                yield return new KeyValuePair<string, string>(MetadataKeys.ExpectedException, ExpectedException.FullName);
         }
     }
 }

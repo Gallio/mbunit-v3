@@ -173,6 +173,9 @@
     <Compile Include="Framework\ContractVerifiers\ListContractTest.cs" />
     <Compile Include="Framework\AssertTest_Sorting.cs" />
     <Compile Include="Framework\AssertTest_Distinct.cs" />
+    <Compile Include="Framework\ColumnAttributeTest.cs" />
+    <Compile Include="Framework\SequenceDataAttributeTest.cs" />
+    <Compile Include="Framework\EnumDataAttributeTest.cs" />
     <Compile Include="Framework\DependsOnTest.cs" />
     <Compile Include="Framework\StructuralEqualityComparerTest.cs" />
     <Compile Include="Framework\TimeoutAttributeTest.cs" />

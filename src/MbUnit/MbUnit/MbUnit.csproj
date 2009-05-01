@@ -152,6 +152,8 @@
     <Compile Include="Framework\Assert.Serialization.cs" />
     <Compile Include="Framework\Assert.Sorting.cs" />
     <Compile Include="Framework\Assert.Distinct.cs" />
+    <Compile Include="Framework\SequenceDataAttribute.cs" />
+    <Compile Include="Framework\EnumDataAttribute.cs" />
     <Compile Include="Framework\DefaultTestCaseTimeoutAttribute.cs" />
     <Compile Include="Framework\DegreeOfParallelismAttribute.cs" />
     <Compile Include="Framework\LinkMixinAttribute.cs" />
