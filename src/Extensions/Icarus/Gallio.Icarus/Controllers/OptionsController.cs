@@ -187,8 +187,8 @@ namespace Gallio.Icarus.Controllers
             if (settings.TreeViewCategories.Count == 0)
             {
                 // add default categories
-                settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, MetadataKeys.Category,
-                    MetadataKeys.Importance, MetadataKeys.TestsOn });
+                settings.TreeViewCategories.AddRange(new[] { "Namespace", MetadataKeys.AuthorName, 
+                    MetadataKeys.Category, MetadataKeys.Importance, MetadataKeys.TestsOn });
             }
 
             // add unselected categories for treeview (test explorer)

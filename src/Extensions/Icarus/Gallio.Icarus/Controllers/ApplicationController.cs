@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -45,9 +46,18 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public ApplicationController(IcarusArguments args, IMediator mediator, IFileSystem fileSystem)
+        public ApplicationController(IcarusArguments arguments, IMediator mediator, IFileSystem fileSystem)
         {
-            arguments = args;
+            if (arguments == null) 
+                throw new ArgumentNullException("arguments");
+
+            if (mediator == null) 
+                throw new ArgumentNullException("mediator");
+
+            if (fileSystem == null) 
+                throw new ArgumentNullException("fileSystem");
+
+            this.arguments = arguments;
             Mediator = mediator;
             this.fileSystem = fileSystem;
         }
@@ -55,7 +65,7 @@ namespace Gallio.Icarus.Controllers
         public void Load()
         {
             var assemblyFiles = new List<string>();
-            if (arguments != null && arguments.Assemblies.Length > 0)
+            if (arguments.Assemblies.Length > 0)
             {
                 foreach (var assembly in arguments.Assemblies)
                 {
@@ -94,6 +104,19 @@ namespace Gallio.Icarus.Controllers
         {
             ProjectFileName = string.Empty;
             Mediator.NewProject();
+        }
+
+        public override Utilities.ISynchronizationContext SynchronizationContext
+        {
+            get
+            {
+                return base.SynchronizationContext;
+            }
+            set
+            {
+                base.SynchronizationContext = value;
+                Mediator.SynchronizationContext = value;
+            }
         }
     }
 }

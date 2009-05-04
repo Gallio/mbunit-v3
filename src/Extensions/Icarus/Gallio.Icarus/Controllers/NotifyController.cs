@@ -21,7 +21,7 @@ namespace Gallio.Icarus.Controllers
 {
     public class NotifyController : INotifyController
     {
-        public ISynchronizationContext SynchronizationContext { get; set; }
+        public virtual ISynchronizationContext SynchronizationContext { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

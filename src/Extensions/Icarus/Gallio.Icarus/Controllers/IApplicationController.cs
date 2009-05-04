@@ -13,18 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
+using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 
 namespace Gallio.Icarus.Controllers
 {
-    public interface IApplicationController
+    public interface IApplicationController : INotifyController
     {
         IMediator Mediator { get; }
         string ProjectFileName { get; set; }
 
-        event PropertyChangedEventHandler PropertyChanged;
-        
         void Load();
         void NewProject();
         void OpenProject(string projectName);

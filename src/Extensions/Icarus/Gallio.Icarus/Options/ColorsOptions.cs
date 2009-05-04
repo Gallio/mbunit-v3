@@ -37,14 +37,18 @@ namespace Gallio.Icarus.Options
 
         private void color_Click(object sender, EventArgs e)
         {
+            var label = (Label) sender;
             using (ColorDialog colorDialog = new ColorDialog())
             {
-                colorDialog.Color = ((Label) sender).BackColor;
+                colorDialog.Color = label.BackColor;
+
                 if (colorDialog.ShowDialog() != DialogResult.OK)
                     return;
-                ((Label) sender).BackColor = colorDialog.Color;
+                
+                label.BackColor = colorDialog.Color;
+                
                 // two way databinding doesn't appear to work!
-                switch (((Label)sender).Name)
+                switch (label.Name)
                 {
                     case "passedColor":
                         optionsController.PassedColor = colorDialog.Color;

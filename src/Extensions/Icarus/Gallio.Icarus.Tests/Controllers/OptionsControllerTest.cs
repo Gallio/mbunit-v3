@@ -26,9 +26,9 @@ using Rhino.Mocks;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    class OptionsControllerTest
+    internal class OptionsControllerTest
     {
-        private OptionsController SetUpOptionsController(Settings settings)
+        private static OptionsController SetUpOptionsController(Settings settings)
         {
             var fileSystem = MockRepository.GenerateStub<IFileSystem>();
             var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
@@ -303,6 +303,52 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var optionsController = SetUpOptionsController(new Settings());
             Assert.AreEqual(1000, optionsController.UpdateDelay);
+        }
+
+        [Test]
+        public void AnnotationShowErrors_Test()
+        {
+            var optionsController = SetUpOptionsController(new Settings());
+            
+            Assert.AreEqual(false, optionsController.AnnotationsShowErrors);
+            optionsController.AnnotationsShowErrors = true;
+            Assert.AreEqual(true, optionsController.AnnotationsShowErrors);
+        }
+
+        [Test]
+        public void AnnotationShowInfos_Test()
+        {
+            var optionsController = SetUpOptionsController(new Settings());
+
+            Assert.AreEqual(false, optionsController.AnnotationsShowInfos);
+            optionsController.AnnotationsShowInfos = true;
+            Assert.AreEqual(true, optionsController.AnnotationsShowInfos);
+        }
+
+        [Test]
+        public void AnnotationShowWarnings_Test()
+        {
+            var optionsController = SetUpOptionsController(new Settings());
+
+            Assert.AreEqual(false, optionsController.AnnotationsShowWarnings);
+            optionsController.AnnotationsShowWarnings = true;
+            Assert.AreEqual(true, optionsController.AnnotationsShowWarnings);
+        }
+
+        [Test]
+        public void Load_should_use_new_settings_if_file_cannot_be_found()
+        {
+            var fileSystem = MockRepository.GenerateStub<IFileSystem>();
+            var xmlSerialization = MockRepository.GenerateStub<IXmlSerializer>();
+            var unhandledExceptionPolicy = MockRepository.GenerateStub<IUnhandledExceptionPolicy>();
+
+            var optionsController = new OptionsController(fileSystem, xmlSerialization, unhandledExceptionPolicy);
+            optionsController.Load();
+
+            Assert.AreEqual(5, optionsController.SelectedTreeViewCategories.Count);
+            Assert.AreEqual(0, optionsController.PluginDirectories.Count);
+            Assert.AreEqual(0, optionsController.AddIns.Count);
+            Assert.AreEqual(0, optionsController.TestRunnerExtensions.Count);
         }
     }
 }

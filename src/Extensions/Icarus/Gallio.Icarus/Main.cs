@@ -80,9 +80,6 @@ namespace Gallio.Icarus
             mediator.TestController.ExploreFinished += TestControllerLoadFinished;
             mediator.SourceCodeController.ShowSourceCode += ((sender, e) => ShowSourceCode(e.CodeLocation));
             
-            mediator.ProgressMonitorProvider.ProgressUpdate += ProgressUpdate;
-            progressMonitor = new ProgressMonitor(mediator);
-
             InitializeComponent();
 
             UnhandledExceptionPolicy.ReportUnhandledException += ReportUnhandledException;
@@ -100,10 +97,8 @@ namespace Gallio.Icarus
             // used by dock window framework to re-assemble layout
             deserializeDockContent = GetContentFromPersistString;
 
-            // set up delay timer for progress monitor
-            timer.Interval = 1000;
-            timer.AutoReset = false;
-            timer.Elapsed += delegate { Sync.Invoke(this, () => progressMonitor.Show(this)); };
+            progressMonitor = new ProgressMonitor(mediator);
+            SetupProgressMonitor();
 
             SetupReportMenus();
 
@@ -115,6 +110,16 @@ namespace Gallio.Icarus
                 if (e.PropertyName == "ProjectFileName")
                     Text = applicationController.ProjectFileName;
             };
+        }
+
+        private void SetupProgressMonitor()
+        {
+            mediator.ProgressMonitorProvider.ProgressUpdate += ProgressUpdate;
+
+            // set up delay timer for progress monitor
+            timer.Interval = 1000;
+            timer.AutoReset = false;
+            timer.Elapsed += delegate { Sync.Invoke(this, () => progressMonitor.Show(this)); };
         }
 
         private void SetupReportMenus()
@@ -215,6 +220,7 @@ namespace Gallio.Icarus
 
         private void Form_Load(object sender, EventArgs e)
         {
+            // deal with arguments
             applicationController.Load();
 
             // Set the application version in the window title
@@ -233,10 +239,12 @@ namespace Gallio.Icarus
             }
 
             // provide WindowsFormsSynchronizationContext for cross-thread databinding
-            mediator.SynchronizationContext = new Utilities.SynchronizationContext(SynchronizationContext.Current);
+            applicationController.SynchronizationContext = new Utilities.SynchronizationContext(SynchronizationContext.Current);
 
+            // restore window size & location
             if (!mediator.OptionsController.Size.Equals(Size.Empty))
                 Size = mediator.OptionsController.Size;
+
             if (!mediator.OptionsController.Location.Equals(Point.Empty))
                 Location = mediator.OptionsController.Location;
         }
@@ -437,8 +445,11 @@ namespace Gallio.Icarus
             applicationController.SaveProject();
 
             // save window size & location for when we restore
-            mediator.OptionsController.Size = Size;
-            mediator.OptionsController.Location = Location;
+            if (WindowState != FormWindowState.Minimized)
+            {
+                mediator.OptionsController.Size = Size;
+                mediator.OptionsController.Location = Location;
+            }
             mediator.OptionsController.Save();
 
             // save dock panel config

@@ -24,6 +24,6 @@ namespace Gallio.Icarus
             Description = "The test assemblies to load.",
             ValueLabel = "assemblies"
             )]
-        public string[] Assemblies;
+        public string[] Assemblies = new string[0];
     }
 }
