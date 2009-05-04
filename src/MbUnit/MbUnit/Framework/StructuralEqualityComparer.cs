@@ -414,10 +414,7 @@ namespace MbUnit.Framework
         /// <exception cref="ArgumentNullException">The specified accessor argument is a null reference.</exception>
         public void Add<TValue>(Accessor<T, IEnumerable<TValue>> accessor, IEqualityComparer<TValue> comparer, StructuralEqualityComparerOptions options)
         {
-            if (comparer == null)
-                comparer = StructuralEqualityComparer<TValue>.Default;
-
-            Add(accessor, comparer.Equals, options);
+            Add(accessor, (comparer ?? StructuralEqualityComparer<TValue>.Default).Equals, options);
         }
 
         /// <summary>

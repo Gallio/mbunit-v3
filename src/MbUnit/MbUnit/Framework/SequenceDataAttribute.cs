@@ -26,8 +26,9 @@ namespace MbUnit.Framework
     /// Provides a column of sequential values as a data source.
     /// </para>
     /// <para>
-    /// The range of values is determined by the <see cref="From"/> and <see cref="To"/> named parameters.
-    /// The increment between each value is optionnally set by the <see cref="Step"/> named parameter.
+    /// The range of values is determined by the 'from' and 'to' arguments specified in the constructor.
+    /// The increment between each value of the sequence is optionnally set 
+    /// by the <see cref="Step"/> named parameter.
     /// </para>
     /// <example>
     /// <code><![CDATA[
@@ -35,13 +36,13 @@ namespace MbUnit.Framework
     /// public class MyTestFixture
     /// {
     ///     [Test]
-    ///     public void MyTestMethod([SequenceData(From = 1, To = 4)] int value)
+    ///     public void MyTestMethod1([SequenceData(1, 4)] int value)
     ///     {
     ///         // This test will run 4 times with the values 1, 2, 3 and 4.
     ///     }
     ///     
     ///     [Test]
-    ///     public void MyTestMethod([SequenceData(From = 0, To = 10, Step = 2)] int value)
+    ///     public void MyTestMethod2([SequenceData(0, 10, Step = 2)] int value)
     ///     {
     ///         // This test will run 6 times with the values 0, 2, 4, 6, 8, and 10.
     ///     }
@@ -53,49 +54,17 @@ namespace MbUnit.Framework
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
     public class SequenceDataAttribute : DataAttribute
     {
-        private double from;
-        private bool fromSpecified;
-        private double to;
-        private bool toSpecified;
-
-        /// <summary>
-        /// Gets or sets the starting value of the sequence.
-        /// </summary>
-        public double From
-        {
-            get
-            {
-                return from;
-            }
-            set
-            {
-                fromSpecified = true;
-                from = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the ending value of the sequence.
-        /// </summary>
-        public double To
-        {
-            get
-            {
-                return to;
-            }
-            set
-            {
-                toSpecified = true;
-                to = value;
-            }
-        }
+        private readonly double from;
+        private readonly double to;
 
         /// <summary>
         /// <para>
         /// Gets or sets the increment between each value of the sequence.
         /// </para>
         /// <remark>
-        /// This parameter is optional. The default value is 1.
+        /// This parameter is optional. If the the 'from' and 'to' values specified
+        /// in the <see cref="SequenceDataAttribute(double, double)"/> constructor define
+        /// an ascending sequence, the default value is 1; otherwise it is -1.
         /// </remark>
         /// </summary>
         public double Step
@@ -108,34 +77,33 @@ namespace MbUnit.Framework
         /// <para>
         /// Adds a column of sequential values.
         /// </para>
-        /// <para>
-        /// Use the <see cref="From"/> and <see cref="To"/> named parameters to specify the
-        /// range of the sequence. Optionnally, use the <see cref="Step"/> named parameter
-        /// to specify a increment.
-        /// </para>
         /// </summary>
+        /// <param name="from">The starting value of the sequence.</param>
+        /// <param name="to">The ending value of the sequence.</param>
+        /// <exception cref="ArgumentException">One of the specified argument is invalid.</exception>
         [CLSCompliant(false)]
-        public SequenceDataAttribute()
+        public SequenceDataAttribute(double from, double to)
         {
-            Step = 1;
+            if (Double.IsNaN(from) ||
+                Double.IsInfinity(from))
+                throw new ArgumentException("Cannot be NaN of Infinity", "from");
+
+            if (Double.IsNaN(to) ||
+                Double.IsInfinity(to))
+                throw new ArgumentException("Cannot be NaN of Infinity", "to");
+
+            this.from = from;
+            this.to = to;
+            Step = (Math.Sign(to - from) >= 0 ? 1 : -1);
         }
 
         /// <inheritdoc />
         protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-            if (!fromSpecified)
-                ThrowUsageErrorException("The 'SequenceData' attribute needs a valid 'From' value.");
-
-            if (!toSpecified)
-                ThrowUsageErrorException("The 'SequenceData' attribute needs a valid 'To' value.");
-
-            if (to == from)
-                ThrowUsageErrorException("The 'SequenceData' attribute needs distinct 'From' and 'To' values.");
-
             if (Step == 0)
                 ThrowUsageErrorException("Expected the 'SequenceData' step to be different from zero.");
 
-            if (Math.Sign(to - from) != Math.Sign(Step))
+            if ((from != to) && (Math.Sign(to - from) != Math.Sign(Step)))
                 ThrowUsageErrorException("Expected the sign of the 'SequenceData' step to be consistent " +
                     "with the 'From' and 'To' values.");
 
@@ -144,7 +112,7 @@ namespace MbUnit.Framework
 
         private IEnumerable GetSequence()
         {
-            for (var n = from; n <= to; n += Step)
+            for (double n = from; n <= to; n += Step)
             {
                 yield return n;
             }

@@ -67,6 +67,8 @@ namespace MbUnit.Framework
         /// </para>
         /// </summary>
         /// <param name="enumerationType">The type of the enumeration.</param>
+        /// <exception cref="ArgumentNullException">The specified type is null.</exception>
+        /// <exception cref="ArgumentException">The specified type is not an enumeration type.</exception>
         [CLSCompliant(false)]
         public EnumDataAttribute(Type enumerationType)
         {

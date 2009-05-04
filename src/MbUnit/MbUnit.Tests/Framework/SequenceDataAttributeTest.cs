@@ -56,39 +56,39 @@ namespace MbUnit.Tests.Framework
         public class SequenceDataSample
         {
             [Test]
-            public void SingleDoubleSequenceWithDefaultStep([SequenceData(From = 1, To = 4)] double value)
+            public void SingleDoubleSequenceWithDefaultStep([SequenceData(1, 4)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
             
             [Test]
-            public void SingleDoubleSequence([SequenceData(From = 1, To = 2, Step = 0.25)] double value)
+            public void SingleDoubleSequence([SequenceData(1, 2, Step = 0.25)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
-            public void SingleDoubleSequenceWithUnreachableToValue([SequenceData(From = 1, To = 2, Step = 0.3)] double value)
+            public void SingleDoubleSequenceWithUnreachableToValue([SequenceData(1, 2, Step = 0.3)] double value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
-            public void SingleInt32Sequence([SequenceData(From = 10, To = 30, Step = 10)] int value)
+            public void SingleInt32Sequence([SequenceData(10, 30, Step = 10)] int value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
-            public void SingleDecimalSequence([SequenceData(From = 1, To = 4)] Decimal value)
+            public void SingleDecimalSequence([SequenceData(1, 4)] Decimal value)
             {
                 TestLog.WriteLine("[{0}]", value);
             }
 
             [Test]
             public void TwoCombinatorialSequences(
-                [SequenceData(From = 1, To = 4)] double value1,
-                [SequenceData(From = 8, To = 9)] double value2)
+                [SequenceData(1, 4)] double value1,
+                [SequenceData(8, 9)] double value2)
             {
                 TestLog.WriteLine("[{0},{1}]", value1, value2);
             }
