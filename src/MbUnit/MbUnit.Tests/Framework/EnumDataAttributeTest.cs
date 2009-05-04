@@ -33,17 +33,28 @@ namespace MbUnit.Tests.Framework
         [Row("SingleEnum", new[] 
         {   "[Vanilla]", 
             "[Strawberry]", 
-            "[Chocolate]" })]
+            "[Chocolate]",
+            "[Pistachio]"})]
+        [Row("SingleEnumWithOneExclusion", new[] 
+        {   "[Vanilla]", 
+            "[Strawberry]", 
+            "[Chocolate]"})]
+        [Row("SingleEnumWithSeveralExclusions", new[] 
+        {   "[Vanilla]", 
+            "[Chocolate]"})]
         [Row("TwoCombinatorialEnums", new[] 
         {   "[Vanilla,Liliput]", 
             "[Strawberry,Liliput]", 
-            "Chocolate,Liliput]", 
-            "Vanilla,Normal]", 
+            "[Chocolate,Liliput]", 
+            "[Pistachio,Liliput]", 
+            "[Vanilla,Normal]", 
             "[Strawberry,Normal]", 
             "[Chocolate,Normal]",
+            "[Pistachio,Normal]",
             "[Vanilla,Gargantua]", 
             "[Strawberry,Gargantua]", 
-            "[Chocolate,Gargantua]"})]
+            "[Chocolate,Gargantua]",
+            "[Pistachio,Gargantua]"})]
         public void EnumData(string testMethod, string[] expectedTestLogOutput)
         {
             var run = Runner.GetPrimaryTestStepRun(CodeReference.CreateFromMember(typeof(EnumDataSample).GetMethod(testMethod)));
@@ -56,7 +67,8 @@ namespace MbUnit.Tests.Framework
         {
             Vanilla,
             Strawberry,
-            Chocolate
+            Chocolate,
+            Pistachio
         }
 
         public enum Size
@@ -76,13 +88,24 @@ namespace MbUnit.Tests.Framework
             }
 
             [Test]
+            public void SingleEnumWithOneExclusion([EnumData(typeof(Flavor), ExcludeValue = Flavor.Pistachio)] Flavor flavor)
+            {
+                TestLog.WriteLine("[{0}]", flavor);
+            }
+
+            [Test]
+            public void SingleEnumWithSeveralExclusions([EnumData(typeof(Flavor), ExcludeValues = new object[] { Flavor.Pistachio, Flavor.Strawberry })] Flavor flavor)
+            {
+                TestLog.WriteLine("[{0}]", flavor);
+            }
+
+            [Test]
             public void TwoCombinatorialEnums(
                 [EnumData(typeof(Flavor))] Flavor flavor,
                 [EnumData(typeof(Size))] Size size)
             {
                 TestLog.WriteLine("[{0},{1}]", flavor, size);
             }
-
         }
     }
 }

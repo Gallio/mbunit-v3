@@ -17,6 +17,7 @@ using System;
 using Gallio.Framework.Data;
 using Gallio.Framework.Pattern;
 using Gallio.Reflection;
+using System.Collections;
 
 namespace MbUnit.Framework
 {
@@ -63,6 +64,36 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// <para>
+        /// Sets or gets the single enumeration value that must be excluded from the column.
+        /// </para>
+        /// <para>
+        /// If you want to exclude several values, use <see cref="EnumDataAttribute.ExcludeValues"/> instead.
+        /// </para>
+        /// </summary>
+        /// <seealso cref="EnumDataAttribute.ExcludeValues"/>
+        public object ExcludeValue
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sets or gets the enumeration values that must be excluded from the column.
+        /// </para>
+        /// <para>
+        /// If you want to exclude one value only, use <see cref="EnumDataAttribute.ExcludeValue"/> instead.
+        /// </para>
+        /// </summary>
+        /// <seealso cref="EnumDataAttribute.ExcludeValue"/>
+        public object[] ExcludeValues
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// <para>
         /// Adds a column of enumeration values.
         /// </para>
         /// </summary>
@@ -85,7 +116,40 @@ namespace MbUnit.Framework
         /// <inheritdoc />
         protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-            dataSource.AddDataSet(new ValueSequenceDataSet(Enum.GetValues(enumerationType), GetMetadata(), false));
+            dataSource.AddDataSet(new ValueSequenceDataSet(GetValues(), GetMetadata(), false));
+        }
+
+        private ArrayList GetAllExcluded()
+        {
+            var allExcluded = new ArrayList();
+
+            if (ExcludeValues != null)
+                allExcluded.AddRange(ExcludeValues);
+
+            if (ExcludeValue != null)
+                allExcluded.Add(ExcludeValue);
+
+            foreach (object value in allExcluded)
+            {
+                if (!Enum.IsDefined(enumerationType, value))
+                    ThrowUsageErrorException(String.Format(
+                        "The specified excluded value '{0}' is not a defined enumeration value of type '{1}'", value, enumerationType));
+            }
+
+            return allExcluded;
+        }
+
+        private IEnumerable GetValues()
+        {
+            ArrayList allExcluded = GetAllExcluded();
+
+            foreach (object value in Enum.GetValues(enumerationType))
+            {
+                if (!allExcluded.Contains(value))
+                {
+                    yield return value;
+                }
+            }
         }
     }
 }
