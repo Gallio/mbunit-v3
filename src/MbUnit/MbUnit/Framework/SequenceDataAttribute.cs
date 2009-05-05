@@ -28,7 +28,8 @@ namespace MbUnit.Framework
     /// <para>
     /// The range of values is determined by the 'from' and 'to' arguments specified in the constructor.
     /// The increment between each value of the sequence is optionnally set 
-    /// by the <see cref="Step"/> named parameter.
+    /// by the <see cref="Step"/> named parameter. The default step is 1 or -1, depending on the
+    /// direction of the sequence.
     /// </para>
     /// <example>
     /// <code><![CDATA[
@@ -42,9 +43,9 @@ namespace MbUnit.Framework
     ///     }
     ///     
     ///     [Test]
-    ///     public void MyTestMethod2([SequenceData(0, 10, Step = 2)] int value)
+    ///     public void MyTestMethod2([SequenceData(0, 9, Step = 2.5)] double value)
     ///     {
-    ///         // This test will run 6 times with the values 0, 2, 4, 6, 8, and 10.
+    ///         // This test will run 5 times with the values 0, 2.5, 5, 7.5, and 10.
     ///     }
     /// }]]></code>
     /// </example>
@@ -80,17 +81,15 @@ namespace MbUnit.Framework
         /// </summary>
         /// <param name="from">The starting value of the sequence.</param>
         /// <param name="to">The ending value of the sequence.</param>
-        /// <exception cref="ArgumentException">One of the specified argument is invalid.</exception>
+        /// <exception cref="ArgumentException">One of the specified arguments is NaN of Infinity.</exception>
         [CLSCompliant(false)]
         public SequenceDataAttribute(double from, double to)
         {
-            if (Double.IsNaN(from) ||
-                Double.IsInfinity(from))
-                throw new ArgumentException("Cannot be NaN of Infinity", "from");
+            if (Double.IsNaN(from) || Double.IsInfinity(from))
+                throw new ArgumentException("Cannot be NaN of Infinity.", "from");
 
-            if (Double.IsNaN(to) ||
-                Double.IsInfinity(to))
-                throw new ArgumentException("Cannot be NaN of Infinity", "to");
+            if (Double.IsNaN(to) || Double.IsInfinity(to))
+                throw new ArgumentException("Cannot be NaN of Infinity.", "to");
 
             this.from = from;
             this.to = to;

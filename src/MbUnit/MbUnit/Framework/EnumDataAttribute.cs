@@ -54,6 +54,11 @@ namespace MbUnit.Framework
     ///     }
     /// }]]></code>
     /// </example>
+    /// <para>
+    /// It is possible to exclude some specific values of the enumeration from the column.
+    /// Use <see cref="EnumDataAttribute.Exclude"/> or <see cref="EnumDataAttribute.ExcludeArray"/> 
+    /// for that purpose.
+    /// </para>
     /// </summary>
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
@@ -67,11 +72,11 @@ namespace MbUnit.Framework
         /// Sets or gets the single enumeration value that must be excluded from the column.
         /// </para>
         /// <para>
-        /// If you want to exclude several values, use <see cref="EnumDataAttribute.ExcludeValues"/> instead.
+        /// If you want to exclude several values at once, use <see cref="EnumDataAttribute.ExcludeArray"/> instead.
         /// </para>
         /// </summary>
-        /// <seealso cref="EnumDataAttribute.ExcludeValues"/>
-        public object ExcludeValue
+        /// <seealso cref="EnumDataAttribute.ExcludeArray"/>
+        public object Exclude
         {
             get;
             set;
@@ -79,14 +84,14 @@ namespace MbUnit.Framework
 
         /// <summary>
         /// <para>
-        /// Sets or gets the enumeration values that must be excluded from the column.
+        /// Sets or gets an array of values that must be excluded from the column.
         /// </para>
         /// <para>
-        /// If you want to exclude one value only, use <see cref="EnumDataAttribute.ExcludeValue"/> instead.
+        /// If you want to exclude one value only, use <see cref="EnumDataAttribute.Exclude"/> instead.
         /// </para>
         /// </summary>
-        /// <seealso cref="EnumDataAttribute.ExcludeValue"/>
-        public object[] ExcludeValues
+        /// <seealso cref="EnumDataAttribute.Exclude"/>
+        public object[] ExcludeArray
         {
             get;
             set;
@@ -123,11 +128,11 @@ namespace MbUnit.Framework
         {
             var allExcluded = new ArrayList();
 
-            if (ExcludeValues != null)
-                allExcluded.AddRange(ExcludeValues);
+            if (ExcludeArray != null)
+                allExcluded.AddRange(ExcludeArray);
 
-            if (ExcludeValue != null)
-                allExcluded.Add(ExcludeValue);
+            if (Exclude != null)
+                allExcluded.Add(Exclude);
 
             foreach (object value in allExcluded)
             {

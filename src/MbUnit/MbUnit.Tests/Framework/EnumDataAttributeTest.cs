@@ -88,13 +88,13 @@ namespace MbUnit.Tests.Framework
             }
 
             [Test]
-            public void SingleEnumWithOneExclusion([EnumData(typeof(Flavor), ExcludeValue = Flavor.Pistachio)] Flavor flavor)
+            public void SingleEnumWithOneExclusion([EnumData(typeof(Flavor), Exclude = Flavor.Pistachio)] Flavor flavor)
             {
                 TestLog.WriteLine("[{0}]", flavor);
             }
 
             [Test]
-            public void SingleEnumWithSeveralExclusions([EnumData(typeof(Flavor), ExcludeValues = new object[] { Flavor.Pistachio, Flavor.Strawberry })] Flavor flavor)
+            public void SingleEnumWithSeveralExclusions([EnumData(typeof(Flavor), ExcludeArray = new object[] { Flavor.Pistachio, Flavor.Strawberry })] Flavor flavor)
             {
                 TestLog.WriteLine("[{0}]", flavor);
             }

@@ -26,7 +26,7 @@ namespace MbUnit.Framework
     public abstract partial class Assert
     {
         /// <summary>
-        /// Verifies that the sequence of values contains distinct instances.
+        /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
@@ -37,7 +37,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that the sequence of values contains distinct instances.
+        /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
@@ -50,7 +50,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that the sequence of values contains distinct instances.
+        /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
@@ -62,7 +62,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that the sequence of values contains distinct instances.
+        /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
@@ -76,7 +76,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that the sequence of values contains distinct instances.
+        /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
@@ -88,7 +88,7 @@ namespace MbUnit.Framework
         }
 
         /// <summary>
-        /// Verifies that the sequence of values contains distinct instances.
+        /// Verifies that the sequence of objects contains distinct values.
         /// </summary>
         /// <typeparam name="T">The type of value</typeparam>
         /// <param name="values">The sequence of values to be tested</param>
