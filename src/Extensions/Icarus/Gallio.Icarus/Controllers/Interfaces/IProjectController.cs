@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.EventArgs;
-using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Models;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner.Projects;

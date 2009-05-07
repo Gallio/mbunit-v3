@@ -16,22 +16,21 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
-using Gallio.Icarus.Models.Interfaces;
 using Gallio.Model.Logging;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using MbUnit.Framework;
 using Rhino.Mocks;
+using Gallio.Icarus.Tests.Utilities;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
-    [MbUnit.Framework.Category("Controllers"), Author("Graham Hay")]
+    [MbUnit.Framework.Category("Controllers"), Author("Graham Hay"), TestsOn(typeof(ExecutionLogController))]
     class ExecutionLogControllerTest
     {
         [Test]
@@ -40,7 +39,8 @@ namespace Gallio.Icarus.Tests.Controllers
             var testStepRun = new TestStepRun(new TestStepData("root", "name", "fullName", "root"))
                                   {TestLog = new StructuredTestLog()};
             testStepRun.TestLog.Attachments.Add(new TextAttachment("name", "contentType", "text").ToAttachmentData());
-            var e = new TestStepFinishedEventArgs(new Report(), new TestData("root", "name", "fullName"), testStepRun);
+            var testStepFinishedEventArgs = new TestStepFinishedEventArgs(new Report(), 
+                new TestData("root", "name", "fullName"), testStepRun);
             
             var testController = MockRepository.GenerateStub<ITestController>();
             testController.Stub(x => x.SelectedTests).Return(new BindingList<TestTreeNode>(new List<TestTreeNode>()));
@@ -55,18 +55,19 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "root", "nodeType"));
             testController.Stub(x => x.Model).Return(testTreeModel);
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            optionsController.Stub(x => x.UpdateDelay).Return(1);
+            var taskManager = new TestTaskManager();
 
-            var executionLogController = new ExecutionLogController(testController, optionsController);
+            var executionLogController = new ExecutionLogController(testController, taskManager);
             var flag = false;
-            executionLogController.ExecutionLogUpdated += delegate { flag = true; };
+            executionLogController.ExecutionLogUpdated += (sender, e) =>
+            {
+                Assert.AreEqual(1, e.TestStepRuns.Count);
+                flag = true;
+            };
 
-            testController.Raise(x => x.TestStepFinished += null, testController, e);
+            testController.Raise(x => x.TestStepFinished += null, testController, testStepFinishedEventArgs);
 
-            Thread.Sleep(200);
             Assert.IsTrue(flag);
-            Assert.AreEqual(1, executionLogController.TestStepRuns.Count);
         }
 
         [Test]
@@ -74,15 +75,18 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testController = MockRepository.GenerateStub<ITestController>();
             testController.Stub(x => x.SelectedTests).Return(new BindingList<TestTreeNode>(new List<TestTreeNode>()));
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            optionsController.Stub(x => x.UpdateDelay).Return(1);
-            var executionLogController = new ExecutionLogController(testController, optionsController);
+            var taskManager = new TestTaskManager();
+
+            var executionLogController = new ExecutionLogController(testController, taskManager);
+
             bool executionLogResetFlag = false;
-            executionLogController.ExecutionLogReset += delegate { executionLogResetFlag = true; };
+            executionLogController.ExecutionLogReset += (sender, e) =>
+            {
+                executionLogResetFlag = true;
+            };
 
             testController.Raise(tc => tc.RunStarted += null, this, EventArgs.Empty);
 
-            Assert.AreEqual(0, executionLogController.TestStepRuns.Count);
             Assert.IsTrue(executionLogResetFlag);
         }
 
@@ -104,15 +108,14 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(x => x.Root).Return(new TestTreeNode("root", "name", "nodeType"));
             testController.Stub(x => x.Model).Return(testTreeModel);
-            var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            optionsController.Stub(x => x.UpdateDelay).Return(1);
+            var taskManager = new TestTaskManager();
 
-            var executionLogController = new ExecutionLogController(testController, optionsController);
+            var executionLogController = new ExecutionLogController(testController, taskManager);
+
             var flag = false;
             executionLogController.ExecutionLogUpdated += delegate { flag = true; };
             selectedTests.Add(new TestTreeNode("text", "rootStep", "nodeType"));
 
-            Thread.Sleep(200);
             Assert.IsTrue(flag);
         }
     }

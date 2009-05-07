@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Gallio.Icarus.Mediator.Interfaces;
-using Gallio.Utilities;
+using Gallio.Icarus.Models.ProjectTreeNodes;
 using Gallio.Icarus.Models;
 
 namespace Gallio.Icarus
@@ -99,26 +99,28 @@ namespace Gallio.Icarus
             if (projectTree.SelectedNode == null)
                 return;
 
-            if (((Node)projectTree.SelectedNode.Tag).Text == "Properties")
-            {
-                if (ParentForm != null)
-                    ((Main) ParentForm).ShowWindow("propertiesToolStripMenuItem");
-            }
-            else if (projectTree.SelectedNode.Parent != null && projectTree.SelectedNode.Parent.Tag != null && 
-                ((Node)projectTree.SelectedNode.Parent.Tag).Text == "Reports")
-            {
+            var selectedNode = (Node) projectTree.SelectedNode.Tag;
+            if (selectedNode is PropertiesNode && ParentForm != null)
+                ((Main) ParentForm).ShowWindow("propertiesToolStripMenuItem");
+            else if (selectedNode is ReportNode)
                 OpenReport();
-            }
         }
 
         private void OpenReport()
         {
-            Process.Start((string)((Node)projectTree.SelectedNode.Tag).Tag);
+            string filename = (string) ((Node) projectTree.SelectedNode.Tag).Tag;
+            Process.Start(filename);
         }
 
         private void deleteReportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             mediator.DeleteReport((string)((Node)projectTree.SelectedNode.Tag).Tag);
+        }
+
+        private void propertiesToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (ParentForm != null) 
+                ((Main)ParentForm).ShowWindow("propertiesToolStripMenuItem");
         }
     }
 }

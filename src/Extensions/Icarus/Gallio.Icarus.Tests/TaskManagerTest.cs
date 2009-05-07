@@ -34,10 +34,10 @@ namespace Gallio.Icarus.Tests
         }
 
         [Test]
-        public void StartTask_Test()
+        public void QueueTask_Test()
         {
             bool[] flag = {true};
-            taskManager.StartTask(delegate
+            taskManager.QueueTask(delegate
             {
                 do
                 { }
@@ -53,7 +53,7 @@ namespace Gallio.Icarus.Tests
         public void ExceptionHandling_Test()
         {
             Exception ex = new Exception();
-            taskManager.StartTask(delegate { throw ex; });
+            taskManager.QueueTask(delegate { throw ex; });
             Thread.Sleep(200);
             unhandledExceptionPolicy.AssertWasCalled(x => 
                 x.Report("An exception occurred in a background task.", ex));
@@ -62,7 +62,7 @@ namespace Gallio.Icarus.Tests
         [Test]
         public void OperationCanceled_Test()
         {
-            taskManager.StartTask(delegate { throw new OperationCanceledException(); });
+            taskManager.QueueTask(delegate { throw new OperationCanceledException(); });
             Thread.Sleep(200);
             unhandledExceptionPolicy.AssertWasNotCalled(x => 
                 x.Report(Arg<string>.Is.Anything, Arg<Exception>.Is.Anything));
@@ -73,8 +73,8 @@ namespace Gallio.Icarus.Tests
         {
             bool flag1 = false;
             bool flag2 = false;
-            taskManager.StartTask(delegate { Thread.Sleep(100); flag1 = true; });
-            taskManager.StartTask(delegate { flag2 = true; });
+            taskManager.QueueTask(delegate { Thread.Sleep(100); flag1 = true; });
+            taskManager.QueueTask(delegate { flag2 = true; });
             Thread.Sleep(200);
             Assert.IsTrue(flag1);
             Assert.IsTrue(flag2);

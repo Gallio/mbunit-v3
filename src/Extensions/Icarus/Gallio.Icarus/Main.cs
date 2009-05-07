@@ -60,7 +60,8 @@ namespace Gallio.Icarus
         private readonly ExecutionLogWindow executionLogWindow;
         private readonly AnnotationsWindow annotationsWindow;
 
-        private readonly string projectFileFilter = string.Format("Gallio Projects (*{0})|*{0}", Project.Extension);
+        private readonly string projectFileFilter = string.Format("Gallio Projects (*{0})|*{0}", 
+            Project.Extension);
 
         private readonly ProgressMonitor progressMonitor;
 
@@ -169,11 +170,11 @@ namespace Gallio.Icarus
 
         public void ShowSourceCode(CodeLocation codeLocation)
         {
-            foreach (DockPane dockPane in dockPanel.Panes)
+            foreach (var dockPane in dockPanel.Panes)
             {
-                foreach (IDockContent dockContent in dockPane.Contents)
+                foreach (var dockContent in dockPane.Contents)
                 {
-                    if (dockContent.ToString() != codeLocation.Path)
+                    if (!(dockContent is CodeWindow) || dockContent.ToString() != codeLocation.Path)
                         continue;
 
                     ((CodeWindow)dockContent).JumpTo(codeLocation.Line, codeLocation.Column);

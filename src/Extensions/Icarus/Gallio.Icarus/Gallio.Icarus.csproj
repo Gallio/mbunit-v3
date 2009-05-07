@@ -96,6 +96,7 @@
     <Compile Include="Controllers\AnnotationsController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\EventArgs\AssemblyChangedEventArgs.cs" />
+    <Compile Include="Controllers\EventArgs\ExecutionLogUpdatedEventArgs.cs" />
     <Compile Include="Controllers\EventArgs\ShowSourceCodeEventArgs.cs" />
     <Compile Include="Controllers\ExecutionLogController.cs" />
     <Compile Include="Controllers\IApplicationController.cs" />
@@ -144,8 +145,15 @@
     <Compile Include="Controls\ToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Models\AssemblyNode.cs" />
-    <Compile Include="Models\ReportNode.cs" />
+    <Compile Include="ITaskManager.cs" />
+    <Compile Include="Models\IProjectTreeModel.cs" />
+    <Compile Include="Models\ITestTreeModel.cs" />
+    <Compile Include="Models\ProjectTreeNodes\AssembliesNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\AssemblyNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\ProjectTreeNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\PropertiesNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\ReportNode.cs" />
+    <Compile Include="Models\ProjectTreeNodes\ReportsNode.cs" />
     <Compile Include="Options\ReportOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -158,6 +166,7 @@
     <Compile Include="Options\TestRunnerExtensionOptions.Designer.cs">
       <DependentUpon>TestRunnerExtensionOptions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Remoting\IAssemblyWatcher.cs" />
     <Compile Include="ServiceProvider.cs" />
     <Compile Include="Utilities\ISynchronizationContext.cs" />
     <Compile Include="Utilities\MRUList.cs" />
@@ -178,7 +187,6 @@
     <Compile Include="IWindowManager.cs" />
     <Compile Include="Mediator\Interfaces\IMediator.cs" />
     <Compile Include="Mediator\Mediator.cs" />
-    <Compile Include="Models\Interfaces\IProjectTreeModel.cs" />
     <Compile Include="Controllers\Interfaces\IRuntimeLogController.cs" />
     <Compile Include="Controllers\Interfaces\ITestController.cs" />
     <Compile Include="ProgressMonitor.cs">
@@ -190,7 +198,6 @@
     <Compile Include="ProgressMonitoring\EventArgs\ProgressUpdateEventArgs.cs" />
     <Compile Include="Remoting\AssemblyWatcher.cs" />
     <Compile Include="Services\Interfaces\IReportService.cs" />
-    <Compile Include="Models\Interfaces\ITestTreeModel.cs" />
     <Compile Include="Models\ProjectTreeModel.cs" />
     <Compile Include="Models\TestTreeModel.cs" />
     <Compile Include="Models\TestTreeNode.cs" />

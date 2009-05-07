@@ -31,8 +31,9 @@ namespace Gallio.Icarus.Mediator
 {
     public class Mediator : IMediator
     {
-        private readonly TaskManager taskManager = new TaskManager();
         private readonly ProgressMonitorProvider progressMonitorProvider = new ProgressMonitorProvider();
+
+        public ITaskManager TaskManager { get; set; }
 
         public IProjectController ProjectController { get; set; }
 
@@ -70,7 +71,7 @@ namespace Gallio.Icarus.Mediator
 
         public void AddAssemblies(IList<string> assemblyFiles)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Adding assemblies", 100))
                 {
@@ -93,13 +94,13 @@ namespace Gallio.Icarus.Mediator
 
         public void ApplyFilter(string filter)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(progressMonitor => 
                 TestController.ApplyFilterSet(FilterUtils.ParseTestFilterSet(filter))));
         }
 
         public void ConvertSavedReport(string fileName, string format)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 string fn = ReportController.ConvertSavedReport(fileName, format, progressMonitor);
                 if (!string.IsNullOrEmpty(fn) && File.Exists(fn))
@@ -109,13 +110,13 @@ namespace Gallio.Icarus.Mediator
 
         public void DeleteFilter(FilterInfo filterInfo)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(progressMonitor => 
                 ProjectController.DeleteFilter(filterInfo, progressMonitor)));
         }
 
         public void DeleteReport(string fileName)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Deleting report", 100))
                 {
@@ -129,23 +130,24 @@ namespace Gallio.Icarus.Mediator
 
         public void GenerateReport()
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
-            {
-                var reportFolder = Path.Combine(Path.GetDirectoryName(ProjectController.ProjectFileName),
-                    "Reports");
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(GenerateReportImpl));
+        }
 
-                // good luck cancelling that fast!
-                if (progressMonitor.IsCanceled)
-                    throw new OperationCanceledException();
+        private void GenerateReportImpl(IProgressMonitor progressMonitor)
+        {
+            var reportFolder = Path.Combine(Path.GetDirectoryName(ProjectController.ProjectFileName),
+                "Reports");
 
-                TestController.ReadReport(
-                    report => ReportController.GenerateReport(report, reportFolder, progressMonitor));
-            }));
+            if (progressMonitor.IsCanceled)
+                throw new OperationCanceledException();
+
+            TestController.ReadReport(
+                report => ReportController.GenerateReport(report, reportFolder, progressMonitor));            
         }
 
         public void NewProject()
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Creating new project.", 100))
                 {
@@ -168,18 +170,24 @@ namespace Gallio.Icarus.Mediator
 
         public void OpenProject(string fileName)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(
                 delegate(IProgressMonitor progressMonitor)
                 {
                     using (progressMonitor.BeginTask("Opening project", 100))
                     {
-                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+                        using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                            TestController.ResetTestStatus(subProgressMonitor);
+
+                        if (progressMonitor.IsCanceled)
+                            throw new OperationCanceledException();
+
+                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                             ProjectController.OpenProject(fileName, subProgressMonitor);
 
                         if (progressMonitor.IsCanceled)
                             throw new OperationCanceledException();
 
-                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(80))
+                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
                         {
                             TestController.SetTestPackageConfig(ProjectController.TestPackageConfig);
                             TestController.Explore(subProgressMonitor, ProjectController.TestRunnerExtensions);
@@ -188,7 +196,7 @@ namespace Gallio.Icarus.Mediator
                         if (progressMonitor.IsCanceled)
                             throw new OperationCanceledException();
 
-                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
+                        using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                             RestoreFilter(subProgressMonitor);
                     }
                 }));
@@ -196,7 +204,7 @@ namespace Gallio.Icarus.Mediator
 
         public void Reload()
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Reloading", 100))
                 {
@@ -237,7 +245,7 @@ namespace Gallio.Icarus.Mediator
 
         public void RemoveAllAssemblies()
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Removing all assemblies.", 100))
                 {
@@ -260,24 +268,27 @@ namespace Gallio.Icarus.Mediator
 
         public void RemoveAssembly(string fileName)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(progressMonitor => 
                 ProjectController.RemoveAssembly(fileName, progressMonitor)));
         }
 
         public void ResetTests()
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(progressMonitor => 
                 TestController.ResetTestStatus(progressMonitor)));
         }
 
         public void RunTests(bool attachDebugger)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(delegate(IProgressMonitor progressMonitor)
             {
                 using (progressMonitor.BeginTask("Running tests.", 100))
                 {
+                    using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                        TestController.ResetTestStatus(subProgressMonitor);
+
                     // save current filter as last run
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(1))
+                    using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
                         ProjectController.SaveFilterSet("LastRun", TestController.GenerateFilterSetFromSelectedTests(),
                             subProgressMonitor);
 
@@ -286,11 +297,12 @@ namespace Gallio.Icarus.Mediator
                         throw new OperationCanceledException();
 
                     // run the tests
-                    using (IProgressMonitor subProgressMonitor = progressMonitor.CreateSubProgressMonitor(96))
+                    using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(85))
                         TestController.Run(attachDebugger, subProgressMonitor, ProjectController.TestRunnerExtensions);
 
-                    if (OptionsController.GenerateReportAfterTestRun)
-                        GenerateReport();
+                    using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(5))
+                        if (OptionsController.GenerateReportAfterTestRun)
+                            GenerateReportImpl(subProgressMonitor);
                 }
             }));    
         }
@@ -320,7 +332,7 @@ namespace Gallio.Icarus.Mediator
 
         public void ShowReport(string reportFormat)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
+            TaskManager.QueueTask(() => progressMonitorProvider.Run(progressMonitor => 
                 TestController.ReadReport(
                     delegate(Report report)
                     {
@@ -332,15 +344,15 @@ namespace Gallio.Icarus.Mediator
 
         public void ViewSourceCode(string testId)
         {
-            taskManager.StartTask(() => progressMonitorProvider.Run(progressMonitor => 
-                SourceCodeController.ViewSourceCode(testId, progressMonitor)));
+            progressMonitorProvider.Run(progressMonitor => 
+                SourceCodeController.ViewSourceCode(testId, progressMonitor));
         }
 
         public void Cancel()
         {
             if (progressMonitorProvider.ProgressMonitor != null)
                 progressMonitorProvider.ProgressMonitor.Cancel();
-            taskManager.Stop();
+            TaskManager.Stop();
         }
     }
 }

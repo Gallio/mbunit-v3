@@ -13,17 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
+using Aga.Controls.Tree;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
-using System;
-using Gallio.Runner.Reports;
-using Aga.Controls.Tree;
 using Gallio.Model;
+using Gallio.Runner.Reports;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -113,70 +114,64 @@ namespace Gallio.Icarus.Controllers
         {
             this.testController = testController;
 
-            testController.TestStepFinished += delegate
-            {
-                CountResults();
-            };
-            testController.SelectedTests.ListChanged += delegate
-            {
-                CountResults();
-            };
-            testController.ExploreStarted += delegate
-            {
-                Reset();
-            };
-            testController.ExploreFinished += delegate
+            testController.TestStepFinished += (sender, e) => CountResults(e.TestStepRun);
+            testController.SelectedTests.ListChanged += (sender, e) => CountResults(null);
+            testController.ExploreStarted += (sender, e) => Reset();
+            testController.ExploreFinished += (sender, e) => 
             {
                 OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
             };
-            testController.RunStarted += delegate
+            testController.RunStarted += (sender, e) =>
             {
                 Reset();
                 stopwatch.Start();
             };
-            testController.RunFinished += delegate
-            {
-                stopwatch.Stop();
-            };
+            testController.RunFinished += (sender, e) => stopwatch.Stop();
             testController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
 
             this.optionsController = optionsController;
             optionsController.PropertyChanged += ((sender, e) => OnPropertyChanged(e));
         }
 
-        private void CountResults()
+        private void CountResults(TestStepRun testStepRun)
         {
-            if (testController.Model.Root == null)
-                return;
-
-            // invalidate cache
-            ResultsCount = 0;
-
-            int count = 0;
-
-            if (testController.SelectedTests.Count == 0)
-                count = CountResults(testController.Model.Root);
-            else
+            ThreadPool.QueueUserWorkItem(cb =>
             {
-                // need to do this because poxy namespace nodes don't really exist!
-                foreach (TestTreeNode node in testController.SelectedTests)
-                    count += CountResults(node);
-            }
+                if (testController.Model.Root == null)
+                    return;
 
-            ResultsCount = count;
+                int count = 0;
 
-            OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
+                if (testController.SelectedTests.Count == 0)
+                    CountResults(testController.Model.Root, testStepRun, ref count);
+                else
+                {
+                    // need to do this because poxy namespace nodes don't really exist!
+                    foreach (TestTreeNode node in testController.SelectedTests)
+                        CountResults(node, testStepRun, ref count);
+                }
+
+                // invalidate cache
+                firstItem = 0;
+
+                ResultsCount = count;
+
+                OnPropertyChanged(new PropertyChangedEventArgs("ElapsedTime"));
+            });
         }
 
-        private static int CountResults(TestTreeNode node)
+        private void CountResults(TestTreeNode node, TestStepRun testStepRun, ref int count)
         {
-            int count = 0;
-            count += node.TestStepRuns.Count;
+            foreach (var tsr in node.TestStepRuns)
+            {
+                count++;
+
+                if (tsr == testStepRun && count <= lastItem)
+                    firstItem = lastItem = 0; // invalidate cache
+            }
 
             foreach (Node n in node.Nodes)
-                count += CountResults((TestTreeNode) n);
-
-            return count;
+                CountResults((TestTreeNode) n, testStepRun, ref count);
         }
 
         private void Reset()

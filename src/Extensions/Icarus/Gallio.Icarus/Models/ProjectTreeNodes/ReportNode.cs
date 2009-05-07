@@ -18,7 +18,7 @@ using System.IO;
 
 namespace Gallio.Icarus.Models
 {
-    internal class ReportNode : Node
+    internal sealed class ReportNode : Node
     {
         public ReportNode(string file)
         {

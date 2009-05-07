@@ -16,56 +16,44 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using Gallio.Collections;
+using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;
 using Gallio.Runner.Reports;
 using Gallio.Utilities;
-using Timer = System.Timers.Timer;
-using Gallio.Icarus.Mediator.Interfaces;
 
 namespace Gallio.Icarus.Controllers
 {
     class ExecutionLogController : IExecutionLogController
     {
         private readonly ITestController testController;
+        private readonly ITaskManager taskManager;
         private readonly HashSet<string> selectedTestIds;
-        private readonly Timer timer = new Timer();
 
-        public ExecutionLogController(ITestController testController, IOptionsController optionsController)
+        public ExecutionLogController(ITestController testController, ITaskManager taskManager)
         {
             this.testController = testController;
+            this.taskManager = taskManager;
 
             testController.SelectedTests.ListChanged += ListChanged;
             testController.TestStepFinished += TestStepFinished;
-            testController.RunStarted += RunStarted;
+            
+            testController.RunStarted += (sender, e) =>
+            {
+                TestModelData = null;
 
+                EventHandlerUtils.SafeInvoke(ExecutionLogReset, true, System.EventArgs.Empty);
+            };
+            
             selectedTestIds = new HashSet<string>();
-
-            TestStepRuns = new List<TestStepRun>();
-            Update();
-
-            timer.Interval = optionsController.UpdateDelay;
-            timer.AutoReset = false;
-            timer.Elapsed += delegate { Update(); };
         }
 
         public event EventHandler<System.EventArgs> ExecutionLogReset;
-        public event EventHandler<System.EventArgs> ExecutionLogUpdated;
-
-        public IList<TestStepRun> TestStepRuns { get; private set; }
+        public event EventHandler<ExecutionLogUpdatedEventArgs> ExecutionLogUpdated;
 
         public TestModelData TestModelData { get; private set; }
-
-        private void RunStarted(object sender, System.EventArgs e)
-        {
-            TestModelData = null;
-            TestStepRuns.Clear();
-
-            EventHandlerUtils.SafeInvoke(ExecutionLogReset, true, System.EventArgs.Empty);
-        }
 
         private void ListChanged(object sender, ListChangedEventArgs e)
         {
@@ -74,24 +62,24 @@ namespace Gallio.Icarus.Controllers
             foreach (var node in testController.SelectedTests)
                 selectedTestIds.Add(node.Name);
 
-            timer.Enabled = true;
+            Update();
         }
 
         private void TestStepFinished(object sender, TestStepFinishedEventArgs e)
         {
             if (selectedTestIds.Count == 0 || selectedTestIds.Contains(e.Test.Id))
-                timer.Enabled = true;
+                Update();
         }
 
         private void Update()
         {
             // Do this work in the background to avoid a possible deadlock acquiring the report lock
             // on the UI thread.
-            ThreadPool.QueueUserWorkItem(dummy => testController.ReadReport(report =>
+            taskManager.BackgroundTask(() => testController.ReadReport(report =>
             {
                 TestModelData = report.TestModel;
 
-                TestStepRuns.Clear();
+                var testStepRuns = new List<TestStepRun>();
 
                 if (report.TestPackageRun != null)
                 {
@@ -100,10 +88,11 @@ namespace Gallio.Icarus.Controllers
                     foreach (var run in report.TestPackageRun.AllTestStepRuns)
                         if (selectedTestIds.Contains(run.Step.TestId) || 
                             (selectedTestIds.Count == 0 && run.Step.TestId == testController.Model.Root.Name))
-                            TestStepRuns.Add(run);
+                            testStepRuns.Add(run);
                 }
 
-                EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, System.EventArgs.Empty);
+                EventHandlerUtils.SafeInvoke(ExecutionLogUpdated, this, 
+                    new ExecutionLogUpdatedEventArgs(testStepRuns));
             }));
         }
     }

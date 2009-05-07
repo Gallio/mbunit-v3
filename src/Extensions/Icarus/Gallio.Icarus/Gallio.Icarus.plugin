@@ -9,7 +9,7 @@
              serviceType="Gallio.Icarus.Utilities.IUnhandledExceptionPolicy, Gallio.Icarus" />
 
     <service serviceId="Gallio.Icarus.TestTreeModel" 
-             serviceType="Gallio.Icarus.Models.Interfaces.ITestTreeModel, Gallio.Icarus" />
+             serviceType="Gallio.Icarus.Models.ITestTreeModel, Gallio.Icarus" />
   </services>
 
   <components>

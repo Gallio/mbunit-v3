@@ -30,6 +30,7 @@ namespace Gallio.Icarus.Mediator.Interfaces
         IProjectController ProjectController { get; set; }
         IReportController ReportController { get; set; }
         IRuntimeLogController RuntimeLogController { get; }
+        ITaskManager TaskManager { get; set; }
         ITestController TestController { get; set; }
         ISynchronizationContext SynchronizationContext { set; }
         ITestResultsController TestResultsController { get; set; }

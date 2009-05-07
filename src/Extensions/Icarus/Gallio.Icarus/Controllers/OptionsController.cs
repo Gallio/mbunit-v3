@@ -23,7 +23,6 @@ using Gallio.Model;
 using Gallio.Icarus.Utilities;
 using Gallio.Runtime.Logging;
 using Gallio.Utilities;
-using Gallio.Runtime;
 
 namespace Gallio.Icarus.Controllers
 {
@@ -203,7 +202,6 @@ namespace Gallio.Icarus.Controllers
             PluginDirectories = new BindingList<string>(settings.PluginDirectories);
             SelectedTreeViewCategories = new BindingList<string>(settings.TreeViewCategories);
             UnselectedTreeViewCategories = new BindingList<string>(unselectedTreeViewCategoriesList);
-            AddIns = new BindingList<string>(settings.AddIns);
             TestRunnerExtensions = new BindingList<string>(settings.TestRunnerExtensions);
         }
 
@@ -237,8 +235,6 @@ namespace Gallio.Icarus.Controllers
             }
         }
 
-        public BindingList<string> AddIns { get; private set; }
-        
         public bool GenerateReportAfterTestRun
         {
             get { return settings.GenerateReportAfterTestRun; }

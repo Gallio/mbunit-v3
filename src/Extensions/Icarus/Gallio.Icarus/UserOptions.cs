@@ -26,6 +26,8 @@ namespace Gallio.Icarus
     [XmlType(Namespace = XmlSerializationUtils.GallioNamespace)]
     public class UserOptions
     {
+        public static readonly string Extension = ".user";
+
         [XmlElement("treeViewCategory")]
         public string TreeViewCategory
         {

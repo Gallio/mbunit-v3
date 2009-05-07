@@ -17,22 +17,19 @@ using Gallio.Icarus.Controllers.Interfaces;
 
 namespace Gallio.Icarus
 {
-    public partial class ExecutionLogWindow : DockWindow
+    internal partial class ExecutionLogWindow : DockWindow
     {
         public ExecutionLogWindow(IExecutionLogController executionLogController)
         {
             InitializeComponent();
 
-            executionLogController.ExecutionLogUpdated += delegate
+            executionLogController.ExecutionLogUpdated += (sender, e) =>
             {
                 if (!IsHidden)
-                    reportViewer.Show(executionLogController.TestStepRuns, executionLogController.TestModelData);
+                    reportViewer.Show(e.TestStepRuns, executionLogController.TestModelData);
             };
 
-            executionLogController.ExecutionLogReset += delegate
-            {
-                reportViewer.Clear();
-            };
+            executionLogController.ExecutionLogReset += (sender, e) => reportViewer.Clear();
         }
     }
 }

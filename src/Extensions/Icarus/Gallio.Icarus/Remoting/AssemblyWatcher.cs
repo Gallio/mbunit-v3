@@ -64,14 +64,14 @@ namespace Gallio.Icarus.Remoting
 	/// </code>
 	/// </para>
 	/// </remarks>
-	public class AssemblyWatcher
+	public class AssemblyWatcher : IAssemblyWatcher
 	{
 		private readonly Dictionary<string, FileWatcher> fileWatchers = new Dictionary<string, FileWatcher>();
 
 		protected Timer timer;
 		protected string changedAssemblyPath; 
 
-		public delegate void AssemblyChangedHandler(String fullPath);
+		public delegate void AssemblyChangedHandler(string fullPath);
 		public event AssemblyChangedHandler AssemblyChangedEvent;
 
 		public AssemblyWatcher()

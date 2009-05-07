@@ -16,13 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows.Forms;
 using Gallio.Collections;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
-using Gallio.Icarus.Models.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
@@ -42,6 +42,7 @@ namespace Gallio.Icarus.Controllers
     {
         private readonly ITestTreeModel testTreeModel;
         private readonly IOptionsController optionsController;
+        private readonly ITaskManager taskManager;
         private LockBox<Report> reportLockBox;
 
         private ITestRunnerFactory testRunnerFactory;
@@ -71,15 +72,15 @@ namespace Gallio.Icarus.Controllers
             get { return testTreeModel; }
         }
 
-        public IList<string> TestFrameworks
+        public IList<TestFrameworkTraits> TestFrameworks
         {
             get
             {
-                List<string> frameworks = new List<string>();
+                var frameworks = new List<TestFrameworkTraits>();
                 var frameworkManager = RuntimeAccessor.ServiceLocator.Resolve<ITestFrameworkManager>();
 
                 foreach (var frameworkHandle in frameworkManager.FrameworkHandles)
-                    frameworks.Add(frameworkHandle.GetTraits().Name);
+                    frameworks.Add(frameworkHandle.GetTraits());
                 return frameworks;
             }
         }
@@ -185,10 +186,11 @@ namespace Gallio.Icarus.Controllers
 
         public bool FailedTests { get; private set; }
 
-        public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController)
+        public TestController(ITestTreeModel testTreeModel, IOptionsController optionsController, ITaskManager taskManager)
         {
             this.testTreeModel = testTreeModel;
             this.optionsController = optionsController;
+            this.taskManager = taskManager;
 
             testPackageConfig = new TestPackageConfig();
             reportLockBox = new LockBox<Report>(new Report());
@@ -228,9 +230,6 @@ namespace Gallio.Icarus.Controllers
 
                 progressMonitor.Worked(5);
 
-                using (var subProgressMonitor = progressMonitor.CreateSubProgressMonitor(10))
-                    testTreeModel.ResetTestStatus(subProgressMonitor);
-
                 DoWithTestRunner(testRunner =>
                 {
                     var testPackageConfigCopy = testPackageConfig.Copy();
@@ -244,9 +243,9 @@ namespace Gallio.Icarus.Controllers
                     };
 
                     testRunner.Run(testPackageConfigCopy, testExplorationOptions, testExecutionOptions,
-                        progressMonitor.CreateSubProgressMonitor(70));
+                        progressMonitor.CreateSubProgressMonitor(85));
 
-                }, progressMonitor, 10, testRunnerExtensions);
+                }, progressMonitor, 5, testRunnerExtensions);
 
                 EventHandlerUtils.SafeInvoke(RunFinished, this, System.EventArgs.Empty);
             }
@@ -346,15 +345,15 @@ namespace Gallio.Icarus.Controllers
                 testRunner.Initialize(testRunnerOptions, logger, 
                     progressMonitor.CreateSubProgressMonitor(initializationAndDisposalWorkUnits / 2));
 
-                testRunner.Events.TestStepFinished += (sender, e) =>
+                testRunner.Events.TestStepFinished += (sender, e) => taskManager.BackgroundTask(() =>
                 {
                     testTreeModel.UpdateTestStatus(e.Test, e.TestStepRun);
-                    
+
                     EventHandlerUtils.SafeInvoke(TestStepFinished, this, e);
 
                     if (e.TestStepRun.Result.Outcome.Status == TestStatus.Failed)
                         FailedTests = true;
-                };
+                });
 
                 testRunner.Events.RunStarted += (sender, e) =>
                 {

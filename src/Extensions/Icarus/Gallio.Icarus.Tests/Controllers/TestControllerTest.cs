@@ -20,11 +20,13 @@ using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Models;
+using Gallio.Icarus.Tests.Utilities;
 using Gallio.Icarus.Utilities;
 using Gallio.Model;
 using Gallio.Model.Execution;
 using Gallio.Model.Filters;
+using Gallio.Model.Serialization;
 using Gallio.Runner;
 using Gallio.Runner.Events;
 using Gallio.Runner.Extensions;
@@ -32,7 +34,6 @@ using Gallio.Runner.Reports;
 using Gallio.Runtime.Logging;
 using MbUnit.Framework;
 using Rhino.Mocks;
-using Gallio.Model.Serialization;
 
 namespace Gallio.Icarus.Tests.Controllers
 {
@@ -44,11 +45,12 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             Filter<ITest> filter = new NoneFilter<ITest>();
             FilterSet<ITest> filterSet = new FilterSet<ITest>(filter);
-
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
+            
             testController.ApplyFilterSet(filterSet);
+            
             testTreeModel.AssertWasCalled(ttm => ttm.ApplyFilterSet(filterSet));
         }
 
@@ -59,7 +61,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var exploreStartedFlag = false;
             testController.ExploreStarted += delegate { exploreStartedFlag = true; };
             var exploreFinishedFlag = false;
@@ -92,7 +94,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
             var testRunner = MockRepository.GenerateStub<ITestRunner>();
             var testRunnerEvents = MockRepository.GenerateStub<ITestRunnerEvents>();
@@ -120,7 +122,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
             var testRunner = MockRepository.GenerateStub<ITestRunner>();
             var testRunnerEvents = MockRepository.GenerateStub<ITestRunnerEvents>();
@@ -149,7 +151,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
             var testRunner = MockRepository.GenerateStub<ITestRunner>();
             var testRunnerEvents = MockRepository.GenerateStub<ITestRunnerEvents>();
@@ -173,7 +175,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
             var testRunner = MockRepository.GenerateStub<ITestRunner>();
             var testRunnerEvents = MockRepository.GenerateStub<ITestRunnerEvents>();
@@ -197,7 +199,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.Throws<InvalidOperationException>(() => testController.Explore(progressMonitor, new List<string>()));
         }
@@ -208,7 +210,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(ttm => ttm.FilterFailed).Return(true);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.IsTrue(testController.FilterFailed);
         }
@@ -218,7 +220,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.IsFalse(testController.FilterFailed);
             testController.FilterFailed = true;
@@ -231,7 +233,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(ttm => ttm.FilterInconclusive).Return(true);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.IsTrue(testController.FilterInconclusive);
         }
@@ -241,7 +243,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.IsFalse(testController.FilterInconclusive);
             testController.FilterInconclusive = true;
@@ -254,7 +256,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             testTreeModel.Stub(ttm => ttm.FilterPassed).Return(true);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.IsTrue(testController.FilterPassed);
         }
@@ -264,7 +266,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.IsFalse(testController.FilterPassed);
             testController.FilterPassed = true;
@@ -278,7 +280,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var filter = new FilterSet<ITest>(new NoneFilter<ITest>());
             testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.AreEqual(filter, testController.GenerateFilterSetFromSelectedTests());
         }
@@ -288,7 +290,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.AreEqual(testTreeModel, testController.Model);
         }
@@ -298,7 +300,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var progressMonitor = MockProgressMonitor.GetMockProgressMonitor();
 
             testController.ResetTestStatus(progressMonitor);
@@ -314,7 +316,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var runStartedFlag = false;
             testController.RunStarted += delegate { runStartedFlag = true; };
             var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
@@ -339,7 +341,7 @@ namespace Gallio.Icarus.Tests.Controllers
             testTreeModel.Stub(ttm => ttm.GenerateFilterSetFromSelectedTests()).Return(filter);
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(new BindingList<string>(new List<string>()));
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var runStartedFlag = false;
             testController.RunStarted += delegate { runStartedFlag = true; };
             var runFinishedFlag = false;
@@ -379,7 +381,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testRunnerExtensions = new BindingList<string>(new List<string>(new[] {"DebugExtension, Gallio"}));
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
 
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
             var testRunner = MockRepository.GenerateStub<ITestRunner>();
@@ -407,7 +409,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testRunnerExtensions = new BindingList<string>(new List<string>());
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
 
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
             var testRunner = MockRepository.GenerateStub<ITestRunner>();
@@ -435,7 +437,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testRunnerExtensions = new BindingList<string>(new List<string>());
             optionsController.Stub(oc => oc.TestRunnerExtensions).Return(testRunnerExtensions);
 
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             var testRunnerFactory = MockRepository.GenerateStub<ITestRunnerFactory>();
             var testRunner = MockRepository.GenerateMock<ITestRunner>();
@@ -456,7 +458,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.AreEqual(0, testController.SelectedTests.Count);
         }
@@ -466,7 +468,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.Throws<ArgumentNullException>(() => testController.SetTestPackageConfig(null));
         }
@@ -476,7 +478,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             Assert.Throws<ArgumentNullException>(() => testController.SetTestRunnerFactory(null));
         }
@@ -486,7 +488,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             testTreeModel.Stub(ttm => ttm.SortAsc).Return(true);
 
             Assert.IsTrue(testController.SortAsc);
@@ -497,7 +499,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             testController.SortAsc = true;
 
@@ -509,7 +511,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
 
             testController.SortAsc = false;
 
@@ -521,7 +523,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var synchronizationContext = MockRepository.GenerateStub<ISynchronizationContext>();
             bool sortDescFlag = false;
             testController.PropertyChanged += delegate(object e, PropertyChangedEventArgs sender) 
@@ -546,7 +548,7 @@ namespace Gallio.Icarus.Tests.Controllers
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
             
-            new TestController(testTreeModel, optionsController) { SortDesc = true };
+            new TestController(testTreeModel, optionsController, new TestTaskManager()) { SortDesc = true };
 
             testTreeModel.AssertWasCalled(ttm => ttm.SetSortOrder(System.Windows.Forms.SortOrder.Descending));
         }
@@ -556,8 +558,8 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            
-            new TestController(testTreeModel, optionsController) { SortDesc = false };
+
+            new TestController(testTreeModel, optionsController, new TestTaskManager()) { SortDesc = false };
 
             testTreeModel.AssertWasCalled(ttm => ttm.SetSortOrder(System.Windows.Forms.SortOrder.None));
         }
@@ -567,7 +569,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             var synchronizationContext = MockRepository.GenerateStub<ISynchronizationContext>();
             bool sortAscFlag = false;
             testController.PropertyChanged += delegate(object e, PropertyChangedEventArgs sender)
@@ -591,7 +593,7 @@ namespace Gallio.Icarus.Tests.Controllers
         {
             var testTreeModel = MockRepository.GenerateStub<ITestTreeModel>();
             var optionsController = MockRepository.GenerateStub<IOptionsController>();
-            var testController = new TestController(testTreeModel, optionsController);
+            var testController = new TestController(testTreeModel, optionsController, new TestTaskManager());
             const int testCount = 5;
             testTreeModel.Stub(ttm => ttm.TestCount).Return(testCount);
 

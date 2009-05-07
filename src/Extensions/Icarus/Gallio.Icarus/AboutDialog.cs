@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
@@ -33,9 +34,12 @@ namespace Gallio.Icarus
             versionLabel.Text = String.Format(CultureInfo.CurrentCulture, versionLabel.Text, 
                 appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
 
+            // add the list of available test frameworks
+            // TODO: display other trait information
             componentList.Items.Clear();
-            foreach (string testFramework in testController.TestFrameworks)
-                    componentList.Items.Add(testFramework);
+
+            foreach (var testFramework in testController.TestFrameworks)
+                componentList.Items.Add(testFramework.Name);
         }
 
         private void buttonClose_Click(object sender, EventArgs e)
@@ -43,22 +47,17 @@ namespace Gallio.Icarus
             Close();
         }
 
-        void websiteLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void websiteLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
-                VisitGallioLink();
+                Process.Start("http://www.gallio.org");
+                websiteLink.LinkVisited = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Unable to open the gallio.org website.\n" + ex);
             }
-        }
-
-        private void VisitGallioLink()
-        {
-            websiteLink.LinkVisited = true;
-            System.Diagnostics.Process.Start("http://www.gallio.org");
         }
     }
 }

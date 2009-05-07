@@ -19,7 +19,6 @@ using System.Drawing;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Models;
-using Gallio.Icarus.Models.Interfaces;
 using Gallio.Icarus.Tests.Utilities;
 using Gallio.Model.Serialization;
 using Gallio.Runner.Events;

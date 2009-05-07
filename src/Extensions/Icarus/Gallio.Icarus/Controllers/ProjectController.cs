@@ -19,7 +19,7 @@ using System.ComponentModel;
 using System.IO;
 using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Controllers.Interfaces;
-using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Models;
 using Gallio.Icarus.Remoting;
 using Gallio.Model;
 using Gallio.Model.Filters;
@@ -35,11 +35,13 @@ namespace Gallio.Icarus.Controllers
         private readonly IOptionsController optionsController;
         private readonly IFileSystem fileSystem;
         private readonly IXmlSerializer xmlSerializer;
-        private readonly AssemblyWatcher assemblyWatcher = new AssemblyWatcher();
+        private readonly IAssemblyWatcher assemblyWatcher;
 
         private readonly List<FilterInfo> testFilters = new List<FilterInfo>();
         private readonly List<string> hintDirectories = new List<string>();
         private readonly List<string> testRunnerExtensions = new List<string>();
+
+        private string treeViewCategory;
 
         private bool updating;
 
@@ -74,17 +76,25 @@ namespace Gallio.Icarus.Controllers
 
         public string TreeViewCategory
         {
-            get;
-            set;
+            get
+            {
+                return treeViewCategory;
+            }
+            set
+            {
+                treeViewCategory = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
+            }
         }
 
         public ProjectController(IProjectTreeModel projectTreeModel, IOptionsController optionsController, 
-            IFileSystem fileSystem, IXmlSerializer xmlSerializer)
+            IFileSystem fileSystem, IXmlSerializer xmlSerializer, IAssemblyWatcher assemblyWatcher)
         {
             this.projectTreeModel = projectTreeModel;
             this.optionsController = optionsController;
             this.fileSystem = fileSystem;
             this.xmlSerializer = xmlSerializer;
+            this.assemblyWatcher = assemblyWatcher;
 
             TestFilters = new BindingList<FilterInfo>(testFilters);
             TestFilters.ListChanged += delegate
@@ -201,14 +211,22 @@ namespace Gallio.Icarus.Controllers
         {
             using (progressMonitor.BeginTask("Loading user options", 100))
             {
-                string projectUserOptionsFile = projectName + ".user";
+                // check if the project has a user options file
+                string projectUserOptionsFile = projectName + UserOptions.Extension;
                 if (!fileSystem.FileExists(projectUserOptionsFile))
                     return;
 
-                UserOptions userOptions = xmlSerializer.LoadFromXml<UserOptions>(projectUserOptionsFile);
-                TreeViewCategory = userOptions.TreeViewCategory;
-                OnPropertyChanged(new PropertyChangedEventArgs("TreeViewCategory"));
-                CollapsedNodes = userOptions.CollapsedNodes;
+                // if it does, use it!
+                try
+                {
+                    var userOptions = xmlSerializer.LoadFromXml<UserOptions>(projectUserOptionsFile);
+                    TreeViewCategory = userOptions.TreeViewCategory;
+                    CollapsedNodes = userOptions.CollapsedNodes;
+                }
+                catch 
+                {
+                    // eat any errors
+                }
             }
         }
 
@@ -251,29 +269,39 @@ namespace Gallio.Icarus.Controllers
                 if (string.IsNullOrEmpty(projectName))
                     projectName = projectTreeModel.FileName;
 
-                // create folder (if necessary)
-                string dir = Path.GetDirectoryName(projectName);
-                if (!fileSystem.DirectoryExists(dir))
-                    fileSystem.CreateDirectory(dir);
-                progressMonitor.Worked(10);
+                SaveProjectFile(progressMonitor, projectName);
 
-                ProjectUtils projectUtils = new ProjectUtils(fileSystem, xmlSerializer);
-                projectUtils.SaveProject(projectTreeModel.Project, projectName);
-                progressMonitor.Worked(50);
-
-                optionsController.RecentProjects.Add(projectName);
-
-                progressMonitor.SetStatus("Saving user options");
-                string projectUserOptionsFile = projectName + ".user";
-                UserOptions userOptions = new UserOptions
-                                              {
-                                                  TreeViewCategory = TreeViewCategory,
-                                                  CollapsedNodes = CollapsedNodes
-                                              };
-                progressMonitor.Worked(10);
-
-                xmlSerializer.SaveToXml(userOptions, projectUserOptionsFile);
+                SaveUserOptions(progressMonitor, projectName);
             }
+        }
+
+        private void SaveUserOptions(IProgressMonitor progressMonitor, string projectName)
+        {
+            progressMonitor.SetStatus("Saving user options");
+            string projectUserOptionsFile = projectName + UserOptions.Extension;
+            UserOptions userOptions = new UserOptions
+                                          {
+                                              TreeViewCategory = TreeViewCategory,
+                                              CollapsedNodes = CollapsedNodes
+                                          };
+            progressMonitor.Worked(10);
+
+            xmlSerializer.SaveToXml(userOptions, projectUserOptionsFile);
+        }
+
+        private void SaveProjectFile(IProgressMonitor progressMonitor, string projectName)
+        {
+            string dir = Path.GetDirectoryName(projectName);
+            // create folder (if necessary)
+            if (!fileSystem.DirectoryExists(dir))
+                fileSystem.CreateDirectory(dir);
+            progressMonitor.Worked(10);
+
+            ProjectUtils projectUtils = new ProjectUtils(fileSystem, xmlSerializer);
+            projectUtils.SaveProject(projectTreeModel.Project, projectName);
+            progressMonitor.Worked(50);
+
+            optionsController.RecentProjects.Add(projectName);
         }
 
         public void RefreshTree(IProgressMonitor progressMonitor)

@@ -15,14 +15,34 @@
 
 using System;
 using System.IO;
+using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus
 {
+    /// <summary>
+    /// Paths used by Icarus.
+    /// </summary>
     public static class Paths
     {
-        public static string IcarusAppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Gallio\Icarus");
-        public static string DefaultProject = Path.Combine(IcarusAppDataFolder, @"Icarus.gallio");
-        public static string SettingsFile = Path.Combine(IcarusAppDataFolder, @"Icarus.settings");
+        /// <summary>
+        /// The location of the Icarus app data folder.
+        /// </summary>
+        public static string IcarusAppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
+            Path.Combine("Gallio", "Icarus"));
+        
+        /// <summary>
+        /// The location of the default project used by Icarus.
+        /// </summary>
+        public static string DefaultProject = Path.Combine(IcarusAppDataFolder, "Icarus" + Project.Extension);
+        
+        /// <summary>
+        /// The location of the Icarus settings (options) file
+        /// </summary>
+        public static string SettingsFile = Path.Combine(IcarusAppDataFolder, "Icarus" + Settings.Extension);
+
+        /// <summary>
+        /// The location of the file used to store the configuration of the tabs/windows in Icarus.
+        /// </summary>
         public static string DockConfigFile = Path.Combine(IcarusAppDataFolder, @"DockPanel.config");
     }
 }

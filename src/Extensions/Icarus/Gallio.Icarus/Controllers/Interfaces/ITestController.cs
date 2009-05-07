@@ -17,9 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Concurrency;
-using Gallio.Icarus.Controllers.EventArgs;
 using Gallio.Icarus.Models;
-using Gallio.Icarus.Models.Interfaces;
 using Gallio.Model;
 using Gallio.Model.Filters;
 using Gallio.Runner;
@@ -54,7 +52,7 @@ namespace Gallio.Icarus.Controllers.Interfaces
         /// <summary>
         /// Gets the list of all test framework names.
         /// </summary>
-        IList<string> TestFrameworks { get; }
+        IList<TestFrameworkTraits> TestFrameworks { get; }
 
         /// <summary>
         /// Gets the total number of tests.

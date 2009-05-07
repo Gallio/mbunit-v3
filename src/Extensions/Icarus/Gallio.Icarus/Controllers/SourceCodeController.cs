@@ -41,12 +41,12 @@ namespace Gallio.Icarus.Controllers
                 CodeLocation codeLocation = CodeLocation.Unknown;
                 testController.ReadReport(report =>
                 {
-                    if (report.TestModel != null)
-                    {
-                        TestData testData = report.TestModel.GetTestById(testId);
-                        if (testData != null)
-                            codeLocation = testData.CodeLocation;
-                    }
+                    if (report.TestModel == null) 
+                        return;
+
+                    TestData testData = report.TestModel.GetTestById(testId);
+                    if (testData != null)
+                        codeLocation = testData.CodeLocation;
                 });
 
                 if (codeLocation == CodeLocation.Unknown || codeLocation.Path.EndsWith(".dll")

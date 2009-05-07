@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
-using Gallio.Icarus.Models.Interfaces;
 using MbUnit.Framework;
 using Rhino.Mocks;
 using Gallio.Icarus.Models;

@@ -38,7 +38,6 @@ namespace Gallio.Icarus.Controllers.Interfaces
         double UpdateDelay { get; }
         Size Size { get; set; }
         Point Location { get; set; }
-        BindingList<string> AddIns { get; }
         bool GenerateReportAfterTestRun { get; set; }
         MRUList RecentProjects { get; }
         LogSeverity MinLogSeverity { get; set; }

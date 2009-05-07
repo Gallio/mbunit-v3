@@ -16,7 +16,7 @@
 using System.Collections;
 using System.IO;
 using Aga.Controls.Tree;
-using Gallio.Icarus.Models.Interfaces;
+using Gallio.Icarus.Models.ProjectTreeNodes;
 using Gallio.Runner.Projects;
 
 namespace Gallio.Icarus.Models
@@ -24,9 +24,6 @@ namespace Gallio.Icarus.Models
     public class ProjectTreeModel : TreeModelBase, IProjectTreeModel
     {
         private readonly Node projectRoot;
-        private readonly Node assemblies;
-        private readonly Node reports;
-        private readonly Node properties;
         private Project project;
         private string fileName;
 
@@ -58,14 +55,9 @@ namespace Gallio.Icarus.Models
 
             projectRoot = new Node(Path.GetFileNameWithoutExtension(fileName));
 
-            properties = new Node("Properties") { Image = Properties.Resources.Properties.ToBitmap() };
-            projectRoot.Nodes.Add(properties);
-            
-            assemblies = new Node("Assemblies");
-            projectRoot.Nodes.Add(assemblies);
-            
-            reports = new Node("Reports") { Image = Properties.Resources.Report.ToBitmap() };
-            projectRoot.Nodes.Add(reports);
+            projectRoot.Nodes.Add(new PropertiesNode());
+            projectRoot.Nodes.Add(new AssembliesNode());
+            projectRoot.Nodes.Add(new ReportsNode());
         }
 
         public override IEnumerable GetChildren(TreePath treePath)
@@ -79,12 +71,12 @@ namespace Gallio.Icarus.Models
                 foreach (Node n in projectRoot.Nodes)
                     yield return n;
             }
-            else if (treePath.LastNode == assemblies)
+            else if (treePath.LastNode is AssembliesNode)
             {
                 foreach (string assemblyFile in project.TestPackageConfig.AssemblyFiles)
                     yield return new AssemblyNode(assemblyFile);
             }
-            else if (treePath.LastNode == reports && !string.IsNullOrEmpty(fileName))
+            else if (treePath.LastNode is ReportsNode && !string.IsNullOrEmpty(fileName))
             {
                 string reportDirectory = Path.Combine(Path.GetDirectoryName(fileName), "Reports");
                 if (Directory.Exists(reportDirectory))
@@ -96,7 +88,7 @@ namespace Gallio.Icarus.Models
         public override bool IsLeaf(TreePath treePath)
         {
             Node n = treePath.LastNode as Node;
-            return (n != projectRoot && n != assemblies) && n != reports;
+            return n != projectRoot && !(n is AssembliesNode) && !(n is ReportsNode);
         }
 
         public void Refresh()

@@ -18,6 +18,7 @@ using System.Drawing;
 using Gallio.Icarus.Controllers;
 using Gallio.Icarus.Controls;
 using Gallio.Runner;
+using Gallio.Runtime.Logging;
 using Gallio.Utilities;
 using MbUnit.Framework;
 using System;
@@ -347,8 +348,18 @@ namespace Gallio.Icarus.Tests.Controllers
 
             Assert.AreEqual(5, optionsController.SelectedTreeViewCategories.Count);
             Assert.AreEqual(0, optionsController.PluginDirectories.Count);
-            Assert.AreEqual(0, optionsController.AddIns.Count);
             Assert.AreEqual(0, optionsController.TestRunnerExtensions.Count);
+        }
+
+        [Test]
+        public void MinLogSeverity_should_return_value_from_settings()
+        {
+            var settings = new Settings { MinLogSeverity = LogSeverity.Error };
+            var optionsController = SetUpOptionsController(settings);
+
+            Assert.AreEqual(LogSeverity.Error, optionsController.MinLogSeverity);
+            optionsController.MinLogSeverity = LogSeverity.Debug;
+            Assert.AreEqual(LogSeverity.Debug, optionsController.MinLogSeverity);
         }
     }
 }

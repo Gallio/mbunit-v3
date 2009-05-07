@@ -15,12 +15,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Gallio.Concurrency;
 using Gallio.Icarus.Utilities;
 
 namespace Gallio.Icarus
 {
-    public sealed class TaskManager
+    public sealed class TaskManager : ITaskManager
     {
         private Task currentWorkerTask;
         private readonly Queue<Action> queue = new Queue<Action>();
@@ -39,12 +40,17 @@ namespace Gallio.Icarus
             this.unhandledExceptionPolicy = unhandledExceptionPolicy;
         }
 
-        public void StartTask(Action action)
+        public void QueueTask(Action action)
         {
             queue.Enqueue(action);
 
             if (currentWorkerTask == null)
                 RunTask();
+        }
+
+        public void BackgroundTask(Action action)
+        {
+            ThreadPool.QueueUserWorkItem(cb => action());
         }
 
         private void RunTask()

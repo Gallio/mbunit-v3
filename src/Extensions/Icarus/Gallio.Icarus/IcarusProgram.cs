@@ -22,6 +22,7 @@ using Gallio.Icarus.Controllers.Interfaces;
 using Gallio.Icarus.Mediator.Interfaces;
 using Gallio.Icarus.Models;
 using Gallio.Icarus.Properties;
+using Gallio.Icarus.Remoting;
 using Gallio.Reflection;
 using Gallio.Runner;
 using Gallio.Runner.Projects;
@@ -30,7 +31,6 @@ using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
 using Gallio.Icarus.Services;
 using Gallio.Utilities;
-using Gallio.Icarus.Models.Interfaces;
 
 namespace Gallio.Icarus
 {
@@ -91,7 +91,8 @@ namespace Gallio.Icarus
             using (RuntimeBootstrap.Initialize(runtimeSetup, runtimeLogController))
             {
                 var testTreeModel = RuntimeAccessor.ServiceLocator.Resolve<ITestTreeModel>();
-                testController = new TestController(testTreeModel, optionsController);
+                var taskManager = new TaskManager();
+                testController = new TestController(testTreeModel, optionsController, taskManager);
 
                 ConfigureTestRunnerFactory(optionsController.TestRunnerFactory);
 
@@ -100,18 +101,17 @@ namespace Gallio.Icarus
                 IMediator mediator = new Mediator.Mediator
                 {
                     ProjectController = new ProjectController(new ProjectTreeModel(Paths.DefaultProject, new Project()),
-                        optionsController, new FileSystem(), new DefaultXmlSerializer()),
+                        optionsController, new FileSystem(), new DefaultXmlSerializer(), new AssemblyWatcher()),
                     TestController = testController,
                     ReportController = new ReportController(new ReportService(reportManager), new FileSystem()),
-                    RuntimeLogController = runtimeLogController,
-                    OptionsController = optionsController
+                    RuntimeLogController = runtimeLogController, 
+                    OptionsController = optionsController,
+                    TaskManager = taskManager,
+                    ExecutionLogController = new ExecutionLogController(testController, taskManager),
+                    AnnotationsController = new AnnotationsController(testController, optionsController),
+                    TestResultsController = new TestResultsController(testController, optionsController),
+                    SourceCodeController = new SourceCodeController(testController)
                 };
-                mediator.ExecutionLogController = new ExecutionLogController(mediator.TestController,
-                    optionsController);
-                mediator.AnnotationsController = new AnnotationsController(mediator.TestController, mediator.OptionsController);
-                mediator.TestResultsController = new TestResultsController(mediator.TestController, 
-                    mediator.OptionsController);
-                mediator.SourceCodeController = new SourceCodeController(testController);
 
                 var applicationController = new ApplicationController(Arguments, mediator, new FileSystem());
                 var main = new Main(applicationController);

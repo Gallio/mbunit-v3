@@ -22,7 +22,7 @@ using Gallio.Model.Serialization;
 using Gallio.Runner.Reports;
 using Gallio.Runtime.ProgressMonitoring;
 
-namespace Gallio.Icarus.Models.Interfaces
+namespace Gallio.Icarus.Models
 {
     public interface ITestTreeModel : ITreeModel, INotifyPropertyChanged
     {
@@ -40,7 +40,7 @@ namespace Gallio.Icarus.Models.Interfaces
 
         void ApplyFilterSet(FilterSet<ITest> filterSet);
         void BuildTestTree(IProgressMonitor progressMonitor, TestModelData testModelData, 
-            string treeViewCategory);
+                           string treeViewCategory);
         Node FindNode(TreePath path);
         FilterSet<ITest> GenerateFilterSetFromSelectedTests();
         TreePath GetPath(Node node);

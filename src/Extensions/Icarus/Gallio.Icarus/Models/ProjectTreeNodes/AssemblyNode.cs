@@ -13,16 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Aga.Controls.Tree;
-using Gallio.Runner.Projects;
+using System.IO;
 
-namespace Gallio.Icarus.Models.Interfaces
+namespace Gallio.Icarus.Models.ProjectTreeNodes
 {
-    public interface IProjectTreeModel : ITreeModel
+    internal sealed class AssemblyNode : ProjectTreeNode
     {
-        string FileName { get; set; }
-        Project Project { get; set; }
-
-        void Refresh();
+        public AssemblyNode(string assemblyFile)
+        {
+            Text = Path.GetFileNameWithoutExtension(assemblyFile);
+            Image = Properties.Resources.Assembly;
+            Tag = assemblyFile;
+        }
     }
 }
