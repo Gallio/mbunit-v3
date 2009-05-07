@@ -33,15 +33,10 @@ namespace MbUnit.Framework
     /// public class MyTestFixture
     /// {
     ///     [Test]
-    ///     public void MyTestMethod([SequenceData(From = 1, To = 4)] int value)
+    ///     public void MyTestMethod([RandomData(3, 0, 10)] int value)
     ///     {
-    ///         // This test will run 4 times with the values 1, 2, 3 and 4.
-    ///     }
-    ///     
-    ///     [Test]
-    ///     public void MyTestMethod([SequenceData(From = 0, To = 10, Step = 2)] int value)
-    ///     {
-    ///         // This test will run 6 times with the values 0, 2, 4, 6, 8, and 10.
+    ///         // This test will run 3 times. It generates at each iteration
+    ///         // a integer between 0 and 10.
     ///     }
     /// }]]></code>
     /// </example>
@@ -49,15 +44,15 @@ namespace MbUnit.Framework
     /// <seealso cref="ColumnAttribute"/>
     [CLSCompliant(false)]
     [AttributeUsage(PatternAttributeTargets.DataContext, AllowMultiple = true, Inherited = true)]
-    public class RandomNumberDataAttribute : DataAttribute
+    public class RandomDataAttribute : DataAttribute
     {
         private static readonly Random generator = new Random();
         private readonly int repeat;
-        private double minimum;
-        private double maximum;
+        private readonly double minimum;
+        private readonly double maximum;
 
         /// <summary>
-        /// 
+        /// Gets the lower bound of the range of possible values.
         /// </summary>
         public double Minimum
         {
@@ -65,21 +60,10 @@ namespace MbUnit.Framework
             {
                 return minimum;
             }
-
-            set
-            {
-                if (Double.IsNaN(value) ||
-                    Double.IsInfinity(value) ||
-                    value == Double.MaxValue)
-                    throw new ArgumentException("The minimum value cannot be equal to Double.NaN, Double.MaxValue, " +
-                        "Double.NegativeInfinity, or Double.PositiveInfinity.", "value");
-
-                minimum = value;
-            }
         }
 
         /// <summary>
-        /// 
+        /// Gets the upper bound of the range of possible values.
         /// </summary>
         public double Maximum
         {
@@ -87,21 +71,10 @@ namespace MbUnit.Framework
             {
                 return maximum;
             }
-
-            set
-            {
-                if (Double.IsNaN(value) ||
-                    Double.IsInfinity(value) ||
-                    value == Double.MinValue)
-                    throw new ArgumentException("The maximum value cannot be equal to Double.NaN, Double.MinValue, " +
-                        "Double.NegativeInfinity, or Double.PositiveInfinity.", "value");
-
-                maximum = value;
-            }
         }
 
         /// <summary>
-        /// 
+        /// Gets the number of times the generator will run.
         /// </summary>
         public double Repeat
         {
@@ -117,55 +90,55 @@ namespace MbUnit.Framework
         /// </para>
         /// </summary>
         /// <param name="repeat">The number of random values to generate.</param>
-        /// <exception cref="ArgumentOutOfRangeException">The argument must be greater than or equal to one.</exception>
+        /// <param name="minimum">The lower bound of the range.</param>
+        /// <param name="maximum">TThe lower bound of the range.</param>
+        /// <exception cref="ArgumentOutOfRangeException">The repeat argument is negative or zero, or the 
+        /// minimum or maximum values are <see cref="Double.NaN"/>, <see cref="Double.MinValue"/>, 
+        /// <see cref="Double.MaxValue"/>, <see cref="Double.PositiveInfinity"/>, 
+        /// or <see cref="Double.NegativeInfinity"/>.</exception>
+        /// <exception cref="ArgumentException">The maximum value is less than the minimum value.</exception>
         [CLSCompliant(false)]
-        public RandomNumberDataAttribute(int repeat)
+        public RandomDataAttribute(int repeat, double minimum, double maximum)
         {
             if (repeat <= 0)
                 throw new ArgumentOutOfRangeException("repeat", "The specified value must be greater than or equal to one.");
 
+            if (Double.IsNaN(minimum) ||
+                Double.IsInfinity(minimum) ||
+                minimum == Double.MinValue ||
+                minimum == Double.MaxValue)
+                throw new ArgumentOutOfRangeException("The minimum value cannot be Double.NaN, Double.MinValue, " +
+                    "Double.MaxValue, Double.NegativeInfinity, or Double.PositiveInfinity.", "minimum");
+
+            if (Double.IsNaN(maximum) ||
+                Double.IsInfinity(maximum) ||
+                maximum == Double.MinValue ||
+                maximum == Double.MaxValue)
+                throw new ArgumentOutOfRangeException("The maximum value cannot be Double.NaN, Double.MinValue, " +
+                    "Double.MaxValue, Double.NegativeInfinity, or Double.PositiveInfinity.", "maximum");
+
+            if (minimum > maximum)
+                throw new ArgumentException("The maximum value must be greater than the minimum value.", "maximum");
+
             this.repeat = repeat;
-            this.minimum = Double.MinValue;
-            this.maximum = Double.MaxValue;
+            this.minimum = minimum;
+            this.maximum = maximum;
         }
 
         /// <inheritdoc />
         protected override void PopulateDataSource(IPatternScope scope, DataSource dataSource, ICodeElementInfo codeElement)
         {
-
             dataSource.AddDataSet(new ValueSequenceDataSet(GetSequence(), GetMetadata(), false));
         }
 
         private IEnumerable GetSequence()
         {
-            var generator = new Random();
+            double range = maximum - minimum;
 
-            for (int i = 0; i < repeat; i++ )
+            for (int i = 0; i < repeat; i++)
             {
-                yield return GetRandomValue();
+                yield return minimum + generator.NextDouble() * range;
             }
-        }
-
-        private double GetRandomValue()
-        {
-            if ((minimum == Double.MinValue) ||
-                (minimum == Double.MaxValue))
-            {
-                return GetUnboundRandomValue();
-            }
-            else
-            {
-                return GetBoundRandomValue();
-            }
-        }
-
-        private double GetUnboundRandomValue()
-        {
-        }
-
-        private double GetBoundRandomValue()
-        {
-            return minimum + (maximum - minimum) * generator.NextDouble();
         }
     }
 }
