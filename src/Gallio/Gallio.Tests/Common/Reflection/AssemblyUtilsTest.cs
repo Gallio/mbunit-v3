@@ -14,23 +14,20 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using Gallio.Common.Platform;
+using Gallio.Common.Reflection;
 using MbUnit.Framework;
 
-namespace Gallio.Tests.Common.Platform
+namespace Gallio.Tests.Common.Reflection
 {
-    [TestsOn(typeof(DotNetFrameworkSupport))]
-    public class DotNetFrameworkSupportTest
+    [TestsOn(typeof(AssemblyUtils))]
+    public class AssemblyUtilsTest
     {
         [Test]
         public void IsAssembly_WhenStreamIsNull_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => DotNetRuntimeSupport.IsAssembly((string) null));
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.IsAssembly((string) null));
         }
 
         [Test]
@@ -38,7 +35,7 @@ namespace Gallio.Tests.Common.Platform
         {
             var stream = new MemoryStream();
 
-            Assert.IsFalse(DotNetRuntimeSupport.IsAssembly(stream));
+            Assert.IsFalse(AssemblyUtils.IsAssembly(stream));
         }
 
         [Test]
@@ -47,7 +44,7 @@ namespace Gallio.Tests.Common.Platform
             var stream = new MemoryStream();
             stream.SetLength(1024); // only contains nulls
 
-            Assert.IsFalse(DotNetRuntimeSupport.IsAssembly(stream));
+            Assert.IsFalse(AssemblyUtils.IsAssembly(stream));
         }
 
         [Test]
@@ -56,7 +53,7 @@ namespace Gallio.Tests.Common.Platform
             var path = Assembly.GetExecutingAssembly().Location;
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                Assert.IsTrue(DotNetRuntimeSupport.IsAssembly(stream));
+                Assert.IsTrue(AssemblyUtils.IsAssembly(stream));
             }
         }
 
@@ -66,7 +63,7 @@ namespace Gallio.Tests.Common.Platform
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"kernel32.dll");
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                Assert.IsFalse(DotNetRuntimeSupport.IsAssembly(stream));
+                Assert.IsFalse(AssemblyUtils.IsAssembly(stream));
             }
         }
     }

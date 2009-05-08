@@ -33,7 +33,7 @@ namespace Gallio.Runtime.FileTypes
             Stream stream;
             if (fileInspector.TryGetStream(out stream))
             {
-                return DotNetRuntimeSupport.IsAssembly(stream);
+                return AssemblyUtils.IsAssembly(stream);
             }
 
             return false;

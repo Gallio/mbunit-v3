@@ -68,6 +68,7 @@
     <Compile Include="Common\Reflection\CodeLocationTest.cs" />
     <Compile Include="Common\Reflection\CodeReferenceTest.cs" />
     <Compile Include="Common\Reflection\DeclaringTypeComparerTest.cs" />
+    <Compile Include="Common\Reflection\AssemblyUtilsTest.cs" />
     <Compile Include="Common\Reflection\Impl\CecilReflectionPolicyTest.cs" />
     <Compile Include="Common\Reflection\Impl\ComDebugSymbolResolverTest.cs" />
     <Compile Include="Common\Reflection\Impl\DebugSymbolUtilsTest.cs" />
@@ -161,7 +162,6 @@
     <Compile Include="Model\Logging\Tags\TextAttachmentTest.cs" />
     <Compile Include="Model\Logging\Tags\TextTagTest.cs" />
     <Compile Include="Model\ModelExceptionTest.cs" />
-    <Compile Include="Common\Platform\DotNetRuntimeSupportTest.cs" />
     <Compile Include="Runner\Caching\DiskCacheExceptionTest.cs" />
     <Compile Include="Runner\Caching\SimpleDiskCacheTest.cs" />
     <Compile Include="Runner\Caching\TemporaryDiskCacheTest.cs" />
@@ -344,8 +344,8 @@
     <None Include="Resources\SampleImage.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Common\Platform\" />
     <Folder Include="Framework\Utilities\" />
-    <Folder Include="Utilities\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
